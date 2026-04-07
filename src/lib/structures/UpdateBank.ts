@@ -13,7 +13,7 @@ import type { SafeUserUpdateInput } from '@/lib/user/update.js';
 import type { GearWithSetupType } from '@/lib/user/userTypes.js';
 import type { ClientBankKey } from '@/lib/util/clientSettings.js';
 import { fetchUserStats } from '@/lib/util/fetchUserStats.js';
-import type { JsonKeys } from '@/lib/util.js';
+import { addItemBanks, type JsonKeys } from '@/lib/util.js';
 
 export class UpdateBank {
 	// Things removed
@@ -31,6 +31,7 @@ export class UpdateBank {
 	public gearChanges: GearWithSetupType[] = [];
 	public userStats: Omit<Prisma.UserStatsUpdateInput, 'user_id'> = {};
 	public userStatsBankUpdates: Partial<Record<JsonKeys<UserStats>, Bank>> = {};
+	public userStatsSafeBankUpdates: Partial<Record<JsonKeys<UserStats>, ItemBank>> = {};
 	public userUpdates: SafeUserUpdateInput = {};
 
 	public clientStatsBankUpdates: Partial<Record<ClientBankKey, Bank>> = {};
@@ -105,6 +106,12 @@ export class UpdateBank {
 			for (const [key, value] of objectEntries(this.userStatsBankUpdates)) {
 				const newValue = new Bank((currentStats[key] ?? {}) as ItemBank).add(value);
 				userStatsUpdates[key] = newValue.toJSON();
+			}
+		}
+		if (Object.keys(this.userStatsSafeBankUpdates).length > 0) {
+			const currentStats = await fetchUserStats(user.id);
+			for (const [key, value] of objectEntries(this.userStatsSafeBankUpdates)) {
+				userStatsUpdates[key] = addItemBanks([(currentStats[key] ?? {}) as ItemBank, value ?? {}]);
 			}
 		}
 

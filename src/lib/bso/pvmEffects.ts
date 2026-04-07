@@ -13,6 +13,7 @@ import type { KillableMonster } from '@/lib/minions/types.js';
 import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import type { UpdateBank } from '@/lib/structures/UpdateBank.js';
+import { addItemBanks } from '@/lib/util.js';
 import type { SlayerContext } from '@/tasks/minions/monsterActivity.js';
 
 export type UserStatsNeededForMidPvmEffects = {
@@ -125,15 +126,17 @@ export function slayerMasksHelms({
 	) {
 		return;
 	}
-	const bankToAdd = new Bank().add(monster.id, slayerContext.effectiveSlayed);
+	const bankToAdd: ItemBank = {};
+	bankToAdd[monster.id] = slayerContext.effectiveSlayed;
+
 	const maskHelmForThisMonster = slayerMaskHelms.find(i => i.monsters.includes(monster.id));
 	const matchingMaskOrHelm =
 		maskHelmForThisMonster &&
 		gearBank.hasEquippedOrInBank([maskHelmForThisMonster.mask.id, maskHelmForThisMonster.helm.id])
 			? maskHelmForThisMonster
 			: null;
-	const oldMaskScores = new Bank(userStats.onTaskWithMaskMonsterScores as ItemBank);
-	const newMaskScores = oldMaskScores.clone().add(bankToAdd);
+	const oldMaskScores = userStats.onTaskWithMaskMonsterScores as ItemBank;
+	const newMaskScores = addItemBanks([bankToAdd, oldMaskScores]);
 	if (maskHelmForThisMonster && !gearBank.hasEquippedOrInBank(maskHelmForThisMonster.mask.id)) {
 		for (let i = 0; i < slayerContext.effectiveSlayed; i++) {
 			if (roll(maskHelmForThisMonster.maskDropRate)) {
@@ -143,8 +146,7 @@ export function slayerMasksHelms({
 			}
 		}
 	}
-	updateBank.userStats.on_task_monster_scores = new Bank(userStats.onTaskMonsterScores as ItemBank)
-		.add(bankToAdd)
-		.toJSON();
-	updateBank.userStats.on_task_with_mask_monster_scores = matchingMaskOrHelm ? newMaskScores.toJSON() : undefined;
+
+	updateBank.userStats.on_task_monster_scores = addItemBanks([userStats.onTaskMonsterScores as ItemBank, bankToAdd]);
+	updateBank.userStats.on_task_with_mask_monster_scores = matchingMaskOrHelm ? newMaskScores : undefined;
 }

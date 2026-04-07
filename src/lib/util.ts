@@ -1,6 +1,6 @@
 import { cleanUsername, removeFromArr } from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
-import { convertXPtoLVL } from 'oldschooljs';
+import { convertXPtoLVL, type ItemBank } from 'oldschooljs';
 
 import type { Prisma, User } from '@/prisma/main.js';
 import { type BitField, BitFieldData, MAX_LEVEL, MAX_XP } from '@/lib/constants.js';
@@ -119,4 +119,15 @@ export type JsonKeys<T> = {
 
 export function ISODateString(date?: Date) {
 	return (date ?? new Date()).toISOString().slice(0, 10);
+}
+
+// Safe version for masks etc
+export function addItemBanks(banks: ItemBank[]): ItemBank {
+	const bank: ItemBank = {};
+	for (const _bank of banks) {
+		for (const [item, qty] of Object.entries(_bank)) {
+			bank[item] = (bank[item] ?? 0) + qty;
+		}
+	}
+	return bank;
 }
