@@ -53,19 +53,19 @@ const scamLines = [
 ] as const;
 
 const wubufuLines = [
-	`🐋 He produces a rotund blue pet with a proud grin. Huh. That is almost definitely Wubufu. You receive Wubufu.`,
-	`✨ With great ceremony, he unveils Wubufu. From far away, in dim light, it is extremely convincing. You receive Wubufu.`,
-	`🐳 He hands you a whale pet and refuses eye contact. The tiny tag says Wubufu. You receive Wubufu.`,
-	`🎁 He presents what appears to be the bargain-bin cousin of greatness. Still, it is yours now. You receive Wubufu.`,
-	`👀 He swears this one is "basically Wubbles". It is, in fact, Wubufu. You receive Wubufu.`
+	`🐋 He produces a rotund blue plush with a proud grin. Huh. That is almost definitely Wubufu. You receive 1x Wubufu.`,
+	`✨ With great ceremony, he unveils Wubufu. From far away, in dim light, it is extremely convincing. You receive 1x Wubufu.`,
+	`🐳 He hands you a whale... pet? and refuses eye contact. The tiny tag says Wubufu. You receive 1x Wubufu.`,
+	`🎁 He presents what appears to be the bargain-bin cousin of greatness. Still, it is yours now. You receive 1x Wubufu.`,
+	`👀 He swears this is "basically Wubbles". It is, in fact, Wubufu. You receive 1x Wubufu.`
 ] as const;
 
 const wubblesLines = [
-	`🐋 He produces a rotund blue pet with a trembling grin. Wait... that actually is Wubbles. You receive Wubbles.`,
-	`✨ With great ceremony, he unveils Wubbles. Somehow, against all reason, the real thing is right there. You receive Wubbles.`,
-	`🐳 He hands you a whale pet and looks genuinely emotional. This one really is Wubbles. You receive Wubbles.`,
-	`🎁 He presents pure, improbable greatness. No knock-off, no gimmick, just Wubbles. You receive Wubbles.`,
-	`👀 He swears this is "the authentic article," and for once he is telling the truth. You receive Wubbles.`
+	`🐋 He produces a rotund blue pet with a trembling grin. Wait... that actually is Wubbles. You receive 1x Wubbles.`,
+	`✨ With great ceremony, he unveils Wubbles. Somehow, against all reason, the real thing is right there. You receive 1x Wubbles.`,
+	`🐳 He hands you a whale pet and looks genuinely emotional. This one really is Wubbles. You receive 1x Wubbles.`,
+	`🎁 He presents pure, improbable greatness. No knock-off, no gimmick, just Wubbles. You receive 1x Wubbles.`,
+	`👀 He swears this is "the authentic article," and for once he is telling the truth. You receive 1x Wubbles.`
 ] as const;
 
 export type ParsedWhaleTradeInteraction = {
@@ -108,14 +108,24 @@ export function getWhaleTradeMissingCardLine() {
 
 export function rollWhaleTradeResult(user: MUser, fake?: boolean) {
 	let roll = randInt(1, 100);
+	let prize: string | null = null;
 	if (!fake) {
-		if (!user.cl.has('Wubbles')) {
-			if (user.cl.amount('The whale card') === 1) {
-				roll = 100;
-			} else if (user.bank.amount('The whale card') <= 1) {
-				roll = 100;
-			} else {
-				roll *= 2;
+		for (const wubz of ['Wubbles', 'Wubufu']) {
+			if (!user.cl.has(wubz)) {
+				if (user.cl.amount('The whale card') === 1) {
+					Logging.logDebug(`User ${user.id} has 0 ${wubz} in CL, guaranteed ${wubz} for only 1 Card in CL.`);
+					roll = 100;
+					prize = wubz;
+				} else if (user.bank.amount('The whale card') <= 1) {
+					Logging.logDebug(`User ${user.id} has 0 ${wubz} in CL, guaranteed ${wubz} for only 1 Card left.`);
+					roll = 100;
+					prize = wubz;
+				} else {
+					Logging.logDebug(`User ${user.id} has 0 ${wubz} in CL, doubling chance for ${wubz}`);
+					roll *= 2;
+					prize = wubz;
+				}
+				break;
 			}
 		}
 	}
@@ -136,7 +146,7 @@ export function rollWhaleTradeResult(user: MUser, fake?: boolean) {
 	}
 	return {
 		type: 'wubbles' as const,
-		loot: new Bank().add('Wubbles'),
-		message: randArrItem(wubblesLines)
+		loot: new Bank().add(prize ?? 'Wubbles'),
+		message: prize && prize === 'Wubufu' ? randArrItem(wubufuLines) : randArrItem(wubblesLines)
 	};
 }
