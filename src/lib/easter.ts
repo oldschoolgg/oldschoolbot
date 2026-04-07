@@ -7,6 +7,8 @@ import { Bank, LootTable, resolveItems } from 'oldschooljs';
 
 export const MAGNEGG_STARTING_RATE = 50;
 export const MAGNEGG_SCALING_RATE = 1.2;
+export const WABBIT_EGG_STARTING_RATE = 40;
+
 
 const easterClues = new LootTable()
 	.tertiary(20, 'Clue scroll (medium)')
@@ -192,7 +194,7 @@ export function rollPassiveEasterLoot(
 	const minutes = Math.floor(duration / Time.Minute);
 	if (minutes < 1) return null;
 
-	let wabbitEggChance = 40;
+	let wabbitEggChance = WABBIT_EGG_STARTING_RATE;
 	let magneggChance =
 		typeof user === 'boolean'
 			? MAGNEGG_STARTING_RATE
