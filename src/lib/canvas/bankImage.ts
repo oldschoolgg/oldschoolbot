@@ -263,6 +263,7 @@ class BankImageTask {
 			[itemID('Radiant Magnabbit'), this.redEffect!],
 			[itemID('Monkey egg'), this.bananaEffect!],
 			[itemID('Dragon egg'), this.redEffect!],
+			[itemID('Eagle egg'), this.easterEffect],
 			[itemID('Wubbles'), this.wubblesEffect!]
 		];
 
