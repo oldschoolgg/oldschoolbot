@@ -227,13 +227,22 @@ async function handleWhaleTradeButton(user: MUser, id: string, interaction: MInt
 	}
 	if (parsed.userID !== user.id) {
 		return {
-			content: 'This degenerate gambler is only interested in the owner of the whale card.',
+			content: 'This degenerate gambler is not interested in you.',
 			ephemeral: true
 		};
 	}
-	if (Date.now() > parsed.expiresAt) {
+	const cacheResult = await Cache.getString(`bso:users:${parsed.userID}:whale_trade`);
+	if (cacheResult && parsed.expiresAt <= Number(cacheResult)) {
 		return { content: 'The degenerate gambler has already wandered off.', ephemeral: true };
+	} else {
+		// Set the flag consuming the event:
+		await Cache.setString(
+			`bso:users:${parsed.userID}:whale_trade`,
+			parsed.expiresAt.toString(),
+			(Time.Day * 10) / 1000
+		);
 	}
+
 	const delay = await Cache.tryRatelimit(user.id, 'degen_timeout');
 	if (!delay.success) {
 		return {
