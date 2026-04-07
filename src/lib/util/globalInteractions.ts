@@ -237,7 +237,7 @@ async function handleWhaleTradeButton(user: MUser, id: string, interaction: MInt
 	const delay = await Cache.tryRatelimit(user.id, 'degen_timeout');
 	if (!delay.success) {
 		return {
-			content: `Nice try, but you can't interact with him again for ${formatDuration(delay.timeRemainingMs, true)}.`,
+			content: `Sorry, but you can't interact with him again for ${formatDuration(delay.timeRemainingMs, true)}. Even if it's a new trip/offer :(`,
 			ephemeral: true
 		};
 	}

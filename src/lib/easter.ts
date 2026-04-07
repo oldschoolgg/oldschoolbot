@@ -8,6 +8,7 @@ import { Bank, LootTable, resolveItems } from 'oldschooljs';
 export const MAGNEGG_STARTING_RATE = 50;
 export const MAGNEGG_SCALING_RATE = 1.2;
 export const WABBIT_EGG_STARTING_RATE = 40;
+export const EASTER_EVENT_START = new Date('2026-04-06T07:30:17.840Z');
 
 
 const easterClues = new LootTable()
@@ -68,6 +69,17 @@ export interface PassiveEasterLootResult {
 	magneggs: number;
 	wabbitEggs: number;
 	petBoost?: boolean;
+}
+
+export interface PassiveEasterExpectedRates {
+	wabbitEggChance: number;
+	magneggChance: number;
+}
+
+export interface PassiveEasterExpectedLoot extends PassiveEasterExpectedRates {
+	minutes: number;
+	expectedWabbitEggs: number;
+	expectedMagneggs: number;
 }
 
 const passiveEasterFlavorText = [
@@ -182,6 +194,56 @@ export function getMagneggHatchMessage() {
 function tameHasFedEasterPet(activeTame?: MTame | null) {
 	if (!activeTame) return false;
 	return easterPets.some(petID => activeTame.hasBeenFed(petID));
+}
+
+export function getPassiveEasterExpectedRates({
+	tame = false,
+	petBoost = false
+}: {
+	tame?: boolean;
+	petBoost?: boolean;
+}): PassiveEasterExpectedRates {
+	let wabbitEggChance = WABBIT_EGG_STARTING_RATE;
+	let magneggChance = MAGNEGG_STARTING_RATE;
+
+	if (tame) {
+		wabbitEggChance = Math.ceil(wabbitEggChance * 2);
+		magneggChance = Math.ceil(magneggChance * 1.5);
+	}
+
+	if (petBoost) {
+		wabbitEggChance = Math.ceil(wabbitEggChance * 0.75);
+		magneggChance = Math.ceil(magneggChance * 0.75);
+	}
+
+	return {
+		wabbitEggChance,
+		magneggChance
+	};
+}
+
+export function getExpectedPassiveEasterLoot({
+	duration,
+	tame = false,
+	petBoost = false
+}: {
+	duration: number;
+	tame?: boolean;
+	petBoost?: boolean;
+}): PassiveEasterExpectedLoot {
+	const minutes = Math.floor(duration / Time.Minute);
+	const { wabbitEggChance, magneggChance } = getPassiveEasterExpectedRates({
+		tame,
+		petBoost
+	});
+
+	return {
+		minutes,
+		wabbitEggChance,
+		magneggChance,
+		expectedWabbitEggs: minutes / wabbitEggChance,
+		expectedMagneggs: minutes / (wabbitEggChance * magneggChance)
+	};
 }
 
 export function rollPassiveEasterLoot(
