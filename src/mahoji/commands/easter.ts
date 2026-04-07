@@ -80,9 +80,20 @@ export const easterCommand = defineCommand({
 					}
 				}
 			]
+		},
+		{
+			type: 'Subcommand',
+			name: 'dryness',
+			description: 'See how dry you are',
+			options: []
 		}
 	],
 	run: async ({ options, user }) => {
+		if (options.dryness) {
+			const eventStart = new Date('2026-04-06T07:30:17.840Z');
+
+		}
+
 		let quantity: string | undefined | number = options.turn_in?.quantity;
 		if (!quantity) {
 			return `You must choose how many Wabbit eggs to turn in.`;
