@@ -1686,6 +1686,14 @@ export const allCollectionLogs: ICollection = {
 				]),
 				counts: false
 			},
+			'Easter 2026': {
+				items: resolveItems([
+					'Wabbit eggs',
+					'Magnegg',
+					'Magnabbit'
+				]),
+				counts: false
+			},
 			'Thanksgiving 2021': {
 				items: resolveItems(['Raw turkey', 'Turkey', 'Turkey drumstick', 'Burnt turkey', 'Cornucopia']),
 				counts: false
