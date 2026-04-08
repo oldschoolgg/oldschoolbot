@@ -2968,8 +2968,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000_000
@@ -14381,8 +14380,7 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			isDiscontinued: true,
-			isSuperUntradeable: true
+			isDiscontinued: true
 		}
 	},
 	1_000_000
@@ -14394,8 +14392,7 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			isDiscontinued: true,
-			isSuperUntradeable: true
+			isDiscontinued: true
 		}
 	},
 	1_000_000
@@ -14418,8 +14415,7 @@ setCustomItem(
 	'Herbi',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSecret: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	1_000_000
@@ -14430,8 +14426,7 @@ setCustomItem(
 	'Herbi',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSecret: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	1_000_000
@@ -14443,8 +14438,7 @@ setCustomItem(
 	'Herbi',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	1_000_000

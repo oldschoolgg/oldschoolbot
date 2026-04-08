@@ -231,6 +231,14 @@ async function handleWhaleTradeButton(user: MUser, id: string, interaction: MInt
 			ephemeral: true
 		};
 	}
+	const delay = await Cache.tryRatelimit(user.id, 'degen_timeout');
+	if (!delay.success) {
+		return {
+			content: `Sorry, but you can't interact with him again for ${formatDuration(delay.timeRemainingMs, true)}. Even if it's a new trip/offer :(`,
+			ephemeral: true
+		};
+	}
+
 	const cacheResult = await Cache.getString(`bso:users:${parsed.userID}:whale_trade`);
 	if (cacheResult && parsed.expiresAt <= Number(cacheResult)) {
 		return { content: 'The degenerate gambler has already wandered off.', ephemeral: true };
@@ -243,13 +251,6 @@ async function handleWhaleTradeButton(user: MUser, id: string, interaction: MInt
 		);
 	}
 
-	const delay = await Cache.tryRatelimit(user.id, 'degen_timeout');
-	if (!delay.success) {
-		return {
-			content: `Sorry, but you can't interact with him again for ${formatDuration(delay.timeRemainingMs, true)}. Even if it's a new trip/offer :(`,
-			ephemeral: true
-		};
-	}
 	if (!user.owns('The whale card') && !user.owns('The whale card (fake)')) {
 		return {
 			content: getWhaleTradeMissingCardLine(),

@@ -36,22 +36,23 @@
 			"**/*.tsx",
 			"**/*.html",
 			"**/*.css",
-			"!**/node_modules",
-			"!**/dist",
-			"!**/coverage",
-			"!**/profiling",
-			"!**/logs",
-			"!**/icon_cache",
-			"!**/.astro",
-			"!**/.yarn",
-			"!**/.pnpm-store",
-			"!src/prisma/clients"
+			"!!**/node_modules",
+			"!!**/dist",
+			"!!**/coverage",
+			"!!**/profiling",
+			"!!**/logs",
+			"!!**/icon_cache",
+			"!!**/.astro",
+			"!!**/.yarn",
+			"!!**/.pnpm-store",
+			"!!src/prisma/clients"
 		]
 	},
 	"vcs": {
 		"enabled": true,
 		"clientKind": "git",
-		"defaultBranch": "master"
+		"defaultBranch": "master",
+		"useIgnoreFile": true
 	},
 	"linter": {
 		"enabled": true,
