@@ -8,6 +8,10 @@ You can train thieving using the [[/steal]] command. To start training Thieving,
 
 You can also train thieving via Pyramid Plunder or obtain the Rogues outfit for double loot when pickpocketing any NPC. - See the [Pyramid Plunder](https://wiki.oldschool.gg/osb/skills/thieving/pyramid-plunder/#_top) page for details.- See the [Rogues Den](https://wiki.oldschool.gg/osb/skills/thieving/rogues-den/#_top) page for details.
 
+#### Stealing artefacts
+
+Stealing artefacts is a thieving-focused minigame starting at level 49 Thieving. Use [[/minigames stealing_artefacts start]] to begin, and optionally pair it with glassblowing for Crafting XP. See the [Stealing artefacts minigame page](/osb/minigames/stealing-artefacts) for details on boosts, teleports, and glassblowing options.
+
 ## Boosts
 
 **Pyramid Plunder** - 5% for Pharaoh's sceptre, remove 7.5% time penalty for full graceful. \
