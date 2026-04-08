@@ -1,3 +1,5 @@
+import { itemID } from 'oldschooljs';
+
 import { Castables } from '@/lib/skilling/skills/magic/castables.js';
 import type { CastingActivityTaskOptions } from '@/lib/types/minions.js';
 
@@ -39,6 +41,22 @@ export const castingTask: MinionTask = {
 			});
 		}
 
+		let smithXpReceived = 0;
+		let smithXpRes = '';
+		if (spell.smithingXp) {
+			if (spell.id === itemID('Gold bar') && user.hasEquipped('Goldsmith gauntlets')) {
+				smithXpReceived = 56.2 * quantity;
+			} else {
+				smithXpReceived = spell.smithingXp * quantity;
+			}
+
+			smithXpRes = await user.addXP({
+				skillName: 'smithing',
+				amount: smithXpReceived,
+				duration
+			});
+		}
+
 		const loot = spell.output?.clone().multiply(quantity);
 		if (loot) {
 			await user.transactItems({
@@ -49,7 +67,7 @@ export const castingTask: MinionTask = {
 
 		const str = `${user}, ${user.minionName} finished casting ${quantity}x ${spell.name}, you received ${
 			loot ?? 'no items'
-		}. ${xpRes} ${craftXpRes}${prayerXpRes}`;
+		}. ${xpRes} ${craftXpRes}${prayerXpRes}${smithXpRes}`;
 
 		handleTripFinish({ user, channelId, message: str, data, loot: loot ?? null });
 	}

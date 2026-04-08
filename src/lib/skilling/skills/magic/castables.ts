@@ -15,6 +15,8 @@ export interface Castable {
 	agilityBoost?: number[][];
 	travelTime?: number;
 	prayerXp?: number;
+	smithingLevel?: number;
+	smithingXp?: number;
 }
 
 export const Castables: Castable[] = [
@@ -429,5 +431,126 @@ export const Castables: Castable[] = [
 		output: null,
 		ticks: 8,
 		prayerXp: 990
+	},
+	{
+		id: itemID('Bronze bar'),
+		name: 'Superheat Bronze bar',
+		level: 43,
+		xp: 53,
+		input: new Bank().add('Fire rune', 4).add('Nature rune', 1).add('Tin ore', 1).add('Copper ore', 1),
+		output: new Bank().add('Bronze bar', 1),
+		ticks: 3,
+		smithingLevel: 1,
+		smithingXp: 6.2
+	},
+	{
+		id: itemID('Iron bar'),
+		name: 'Superheat Iron bar',
+		level: 43,
+		xp: 53,
+		input: new Bank().add('Fire rune', 4).add('Nature rune', 1).add('Iron ore', 1),
+		output: new Bank().add('Iron bar', 1),
+		ticks: 3,
+		smithingLevel: 15,
+		smithingXp: 12.5
+	},
+	{
+		id: itemID('Silver bar'),
+		name: 'Superheat Silver bar',
+		level: 43,
+		xp: 53,
+		input: new Bank().add('Fire rune', 4).add('Nature rune', 1).add('Silver ore', 1),
+		output: new Bank().add('Silver bar', 1),
+		ticks: 3,
+		smithingLevel: 20,
+		smithingXp: 13.7
+	},
+	//{
+	//	id: itemID('Lead bar'),
+	//	name: 'Superheat Lead bar',
+	//	level: 43,
+	//	xp: 53,
+	//	input: new Bank().add('Fire rune', 4).add('Nature rune', 1).add('Lead ore', 2),
+	//	output: new Bank().add('Lead bar', 1),
+	//	ticks: 3,
+	//	smithingLevel: 25,
+	//	smithingXp: 15.5
+	//},
+	{
+		id: itemID('Steel bar'),
+		name: 'Superheat Steel bar',
+		level: 43,
+		xp: 53,
+		input: new Bank().add('Fire rune', 4).add('Nature rune', 1).add('Iron ore', 1).add('Coal', 2),
+		output: new Bank().add('Steel bar', 1),
+		ticks: 3,
+		smithingLevel: 30,
+		smithingXp: 17.5
+	},
+	{
+		id: itemID('Gold bar'),
+		name: 'Superheat Gold bar',
+		level: 43,
+		xp: 53,
+		input: new Bank().add('Fire rune', 4).add('Nature rune', 1).add('Gold ore', 1),
+		output: new Bank().add('Gold bar', 1),
+		ticks: 3,
+		smithingLevel: 40,
+		smithingXp: 22.5
+	},
+	//{
+	//	id: itemID('Lovakite bar'),
+	//	name: 'Superheat Lovakite bar',
+	//	level: 43,
+	//	xp: 53,
+	//	input: new Bank().add('Fire rune', 4).add('Nature rune', 1).add('Lovakite ore', 1).add('Coal', 2),
+	//	output: new Bank().add('Lovakite bar', 1),
+	//	ticks: 3,
+	//	smithingLevel: 45,
+	//	smithingXp: 20
+	//},
+	{
+		id: itemID('Mithril bar'),
+		name: 'Superheat Mithril bar',
+		level: 43,
+		xp: 53,
+		input: new Bank().add('Fire rune', 4).add('Nature rune', 1).add('Mithril ore', 1).add('Coal', 4),
+		output: new Bank().add('Mithril bar', 1),
+		ticks: 3,
+		smithingLevel: 50,
+		smithingXp: 30
+	},
+	{
+		id: itemID('Adamantite bar'),
+		name: 'Superheat Adamantite bar',
+		level: 43,
+		xp: 53,
+		input: new Bank().add('Fire rune', 4).add('Nature rune', 1).add('Adamantite ore', 1).add('Coal', 6),
+		output: new Bank().add('Adamantite bar', 1),
+		ticks: 3,
+		smithingLevel: 70,
+		smithingXp: 37.5
+	},
+	//{
+	//	id: itemID('Cupronickel bar'),
+	//	name: 'Superheat Cupronickel bar',
+	//	level: 43,
+	//	xp: 53,
+	//	input: new Bank().add('Fire rune', 4).add('Nature rune', 1).add('Nickel ore', 1).add('Copper ore', 2),
+	//	output: new Bank().add('Cupronickel bar', 1),
+	//	ticks: 3,
+	//	smithingLevel: 74,
+	//	smithingXp: 42
+	//},
+	{
+		id: itemID('Runite bar'),
+		name: 'Superheat Runite bar',
+		level: 43,
+		xp: 53,
+		input: new Bank().add('Fire rune', 4).add('Nature rune', 1).add('Runite ore', 1).add('Coal', 8),
+		output: new Bank().add('Runite bar', 1),
+		ticks: 3,
+		smithingLevel: 85,
+		smithingXp: 50
 	}
 ];

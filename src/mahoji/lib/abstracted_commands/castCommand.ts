@@ -1,4 +1,5 @@
 import { formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { itemID } from 'oldschooljs';
 
 import { Castables } from '@/lib/skilling/skills/magic/castables.js';
 import type { CastingActivityTaskOptions } from '@/lib/types/minions.js';
@@ -22,6 +23,10 @@ export async function castCommand(channelId: string, user: MUser, name: string, 
 
 	if (spell.craftLevel && user.skillsAsLevels.crafting < spell.craftLevel) {
 		return `${user.minionName} needs ${spell.craftLevel} Crafting to cast ${spell.name}.`;
+	}
+
+	if (spell.smithingLevel && user.skillsAsLevels.smithing < spell.smithingLevel) {
+		return `${user.minionName} needs ${spell.smithingLevel} Smithing to cast ${spell.name}.`;
 	}
 
 	if (spell.qpRequired && user.QP < spell.qpRequired) {
@@ -133,6 +138,19 @@ export async function castCommand(channelId: string, user: MUser, name: string, 
 		response += ` and** ${Math.round(
 			((spell.prayerXp * quantity) / (duration / Time.Minute)) * 60
 		).toLocaleString()} Prayer XP/Hr**`;
+	}
+
+	if (spell.smithingXp) {
+		let smithXp = spell.smithingXp;
+		let additionalInfo = '';
+		if (spell.id === itemID('Gold bar') && user.hasEquipped('Goldsmith gauntlets')) {
+			smithXp = 56.2;
+			additionalInfo = ' (Goldsmith gauntlet boost applied)';
+		}
+
+		response += ` and** ${Math.round(
+			((smithXp * quantity) / (duration / Time.Minute)) * 60
+		).toLocaleString()} Smithing XP/Hr**${additionalInfo}`;
 	}
 
 	if (boosts.length > 0) {
