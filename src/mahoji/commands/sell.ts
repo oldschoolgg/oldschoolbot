@@ -1,7 +1,7 @@
+import { roll } from '@oldschoolgg/rng';
 import { calcPercentOfNum, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { Bank, type Item, itemID, MAX_INT_JAVA, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
-import { roll } from '@oldschoolgg/rng';
 
 import type { Prisma } from '@/prisma/main.js';
 import { filterOption } from '@/discord/presetCommandOptions.js';
@@ -159,26 +159,26 @@ export const sellCommand = defineCommand({
 					exchangeBank.add(item, qty);
 				}
 			}
-			
+
 			const totalItems = exchangeElderPieces.reduce((sum, item) => sum + exchangeBank.amount(item), 0);
-			
+
 			await interaction.confirmation(
 				`${user}, please confirm you want to exchange ${exchangeBank} for Elder scroll pieces.`
 			);
-			
+
 			const loot = new Bank();
 			for (let i = 0; i < totalItems; i++) {
 				if (roll(2)) {
 					loot.add('Elder scroll piece');
 				}
 			}
-			
+
 			await user.transactItems({
 				collectionLog: true,
 				itemsToAdd: loot,
 				itemsToRemove: exchangeBank
 			});
-			
+
 			return `You exchanged ${exchangeBank} and received: ${loot.length ? loot : 'nothing. Better luck next time!'}.`;
 		}
 
