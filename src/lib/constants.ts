@@ -517,6 +517,14 @@ export const MAX_LEVEL_XP = convertLVLtoXP(MAX_LEVEL);
 export const MAX_TOTAL_LEVEL = SkillsArray.length * MAX_LEVEL;
 export const SILENT_ERROR = 'SILENT_ERROR';
 
+export const COMBAT_TIER_XP = {
+	TIER_1: 104_300_000,
+	TIER_2: 1_000_000_000,
+	TIER_3: 5_000_000_000
+} as const;
+
+export const ARCHON_SPAWN_CHANCE = 50;
+
 export const PATRON_ONLY_GEAR_SETUP =
 	'Sorry - but the `other` gear setup is only available for Tier 3 Patrons (and higher) to use.';
 
