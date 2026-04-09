@@ -287,12 +287,12 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 	}
 
 	const islandBossIDs = [
-		142_001, // Orym
-		142_002, // Orrodil
-		142_003, // Crystalline Sentinel
-		142_004, // Fungal Behemoth
-		142_005, // Elder Mimic
-		142_006 // Burning Dominion
+		EBSOMonster.ORYM,
+		EBSOMonster.ORRODIL,
+		EBSOMonster.CRYSTALLINE_SENTINEL,
+		EBSOMonster.FUNGAL_BEHEMOTH,
+		EBSOMonster.ELDER_MIMIC,
+		EBSOMonster.BURNING_DOMINION
 	];
 
 	const islandUpgrades = args.islandUpgrades ?? defaultIslandUpgrades;

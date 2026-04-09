@@ -7,12 +7,14 @@ import {
 	getTier,
 	type IslandUpgradeTiers
 } from '@/lib/bso/commands/islandUpgrades.js';
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 
 import type { ButtonBuilder } from '@oldschoolgg/discord';
 import { randInt, roll } from '@oldschoolgg/rng';
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank, itemID } from 'oldschooljs';
 
+import { ARCHON_SPAWN_CHANCE, COMBAT_TIER_XP } from '@/lib/constants.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { makeArchonButton } from '@/lib/util/interactions.js';
 
@@ -39,9 +41,9 @@ const COMBAT_SKILLS = ['attack', 'strength', 'defence', 'ranged', 'magic', 'hitp
 function getEligibleTier(user: MUser): 1 | 2 | 3 | null {
 	const xpValues = COMBAT_SKILLS.map(skill => user.skillsAsXP[skill] ?? 0);
 
-	const has120InAny = xpValues.some(xp => xp >= 104_300_000);
-	const has1bInAny = xpValues.filter(xp => xp >= 1_000_000_000).length >= 2;
-	const has5bIn3 = xpValues.filter(xp => xp >= 5_000_000_000).length >= 3;
+	const has120InAny = xpValues.some(xp => xp >= COMBAT_TIER_XP.TIER_1);
+	const has1bInAny = xpValues.filter(xp => xp >= COMBAT_TIER_XP.TIER_2).length >= 2;
+	const has5bIn3 = xpValues.filter(xp => xp >= COMBAT_TIER_XP.TIER_3).length >= 3;
 
 	if (has5bIn3) return 3;
 	if (has1bInAny) return 2;
@@ -49,12 +51,11 @@ function getEligibleTier(user: MUser): 1 | 2 | 3 | null {
 	return null;
 }
 
-const ARCHON_SPAWN_CHANCE = 50; // number in N trips
-
 export function getArchonTier(user: MUser): 1 | 2 | 3 | null {
 	if (!roll(ARCHON_SPAWN_CHANCE)) return null;
 	return getEligibleTier(user);
 }
+
 const meleeSlots: [string, number][] = [
 	['Axe of the high sungod', 30],
 	['Empyrean greathelm', 10],
@@ -140,12 +141,12 @@ export function calcArchonContribution(
 }
 
 const archonEligibleMonsterIDs = [
-	142_001, // Orym
-	142_002, // Orrodil
-	142_003, // Crystalline Sentinel
-	142_004, // Fungal Behemoth
-	142_005, // Elder Mimic
-	142_006 // Burning Dominion
+	EBSOMonster.ORYM,
+	EBSOMonster.ORRODIL,
+	EBSOMonster.CRYSTALLINE_SENTINEL,
+	EBSOMonster.FUNGAL_BEHEMOTH,
+	EBSOMonster.ELDER_MIMIC,
+	EBSOMonster.BURNING_DOMINION
 ];
 
 const activitiesCanSpawnArchon = [
