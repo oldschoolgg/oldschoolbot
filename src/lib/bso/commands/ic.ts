@@ -1,4 +1,4 @@
-import { ItemContracts } from '@/lib/bso/itemContracts.js';
+import { ItemContracts, resetBrokenContracts } from '@/lib/bso/itemContracts.js';
 
 import { Emoji, formatDuration } from '@oldschoolgg/toolkit';
 
@@ -30,6 +30,9 @@ export const icCommand = defineCommand({
 	],
 	run: async ({ options, user, interaction }) => {
 		const details = ItemContracts.getItemContractDetails(user);
+		if (!details) {
+			return resetBrokenContracts(user);
+		}
 		const components =
 			details.nextContractIsReady &&
 			details.currentItem !== null &&
@@ -57,6 +60,9 @@ ${details.infoStr}`
 			: await ItemContracts.handInContract(interaction, user);
 
 		const nextIcDetails = ItemContracts.getItemContractDetails(user);
+		if (!nextIcDetails) {
+			return resetBrokenContracts(user);
+		}
 		return `${Emoji.ItemContract} ${res}\n\n${nextIcDetails.infoStr}`;
 	}
 });
