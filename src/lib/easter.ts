@@ -6,7 +6,7 @@ import { Time } from '@oldschoolgg/toolkit';
 import { Bank, LootTable, resolveItems } from 'oldschooljs';
 
 export const MAGNEGG_STARTING_RATE = 50;
-export const MAGNEGG_SCALING_RATE = 1.2;
+export const MAGNEGG_SCALING_RATE = 1.125;
 export const WABBIT_EGG_STARTING_RATE = 40;
 export const EASTER_EVENT_START = new Date('2026-04-06T07:30:17.840Z');
 
