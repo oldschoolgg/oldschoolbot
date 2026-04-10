@@ -1985,7 +1985,6 @@ export const allCollectionLogs: ICollection = {
 					'Golden shard',
 					'Golden partyhat',
 					'Black swan',
-					'Frosty'
 				]),
 				counts: false
 			}
