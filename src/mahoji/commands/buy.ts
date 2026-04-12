@@ -129,10 +129,16 @@ export const buyCommand = defineCommand({
 				} to buy this, you only have ${kc} KC.`;
 			}
 		}
+		let gpCost = user.isIronman && buyable.ironmanPrice !== undefined ? buyable.ironmanPrice : buyable.gpCost;
 
 		if (stringMatches(buyable.name, Items.getOrThrow('The whale card (fake)').name)) {
+			const hardMax = 5;
 			quantity = 1;
 
+			const cardsBought = user.cl.amount('The whale card (fake)');
+			if (cardsBought >= hardMax) {
+				return `You have already bought the maximum amount of fake Whale cards!`;
+			}
 			const qualifyingWindowStart = new Date(EASTER_EVENT_START.getTime() - Time.Day * 30);
 			const [qualifyingActivity, qualifyingCommandCount] = await Promise.all([
 				prisma.activity.aggregate({
@@ -169,11 +175,15 @@ export const buyCommand = defineCommand({
 			} else if (qualifyingDuration > requiredDuration / 4 || qualifyingCommandCount > requiredCommandCount / 4) {
 				limit = 1;
 			}
-			if (user.cl.amount('The whale card (fake)') >= limit) {
+			const increasedCost = cardsBought >= limit;
+			if (increasedCost) {
+				gpCost! *= 10;
+			}
+			limit += 2;
+			if (cardsBought >= limit) {
 				return `With your recent activity, you can only buy: ${limit} fake Whale cards!`;
 			}
 		}
-		let gpCost = user.isIronman && buyable.ironmanPrice !== undefined ? buyable.ironmanPrice : buyable.gpCost;
 
 		if (buyable.name === Items.getOrThrow('Festive present').name) {
 			if (!(await isElligibleForPresent(user))) {
