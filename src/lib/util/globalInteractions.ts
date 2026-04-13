@@ -16,13 +16,6 @@ import { type RunCommandArgs, runCommand } from '@/lib/settings/settings.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import { updateGiveawayMessage } from '@/lib/util/giveaway.js';
 import { fetchRepeatTrips, repeatTrip } from '@/lib/util/repeatStoredTrip.js';
-import {
-	getWhaleTradeDeclineLine,
-	getWhaleTradeMissingCardLine,
-	getWhaleTradePitch,
-	parseWhaleTradeInteractionID,
-	rollWhaleTradeResult
-} from '@/lib/whaleCardTrade.js';
 import { autoSlayCommand } from '@/mahoji/lib/abstracted_commands/autoSlayCommand.js';
 import { cancelGEListingCommand } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
 import { autoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
@@ -217,116 +210,6 @@ async function handleGEButton(user: MUser, id: string): CommandResponse {
 	return { content: 'Unknown GE button interaction.', ephemeral: true };
 }
 
-async function handleWhaleTradeButton(user: MUser, id: string, interaction: MInteraction): Promise<CommandResponse> {
-	const parsed = parseWhaleTradeInteractionID(id);
-	if (!parsed) {
-		return {
-			content: 'This degenerate seems to have forgotten what he was doing.',
-			ephemeral: true
-		};
-	}
-	if (parsed.userID !== user.id) {
-		return {
-			content: 'This degenerate gambler is not interested in you.',
-			ephemeral: true
-		};
-	}
-	const delay = await Cache.tryRatelimit(user.id, 'degen_timeout');
-	if (!delay.success) {
-		return {
-			content: `Sorry, but you can't interact with him again for ${formatDuration(delay.timeRemainingMs, true)}. Even if it's a new trip/offer :(`,
-			ephemeral: true
-		};
-	}
-
-	const cacheResult = await Cache.getString(`bso:users:${parsed.userID}:whale_trade`);
-	if (cacheResult && parsed.expiresAt <= Number(cacheResult)) {
-		return { content: 'The degenerate gambler has already wandered off.', ephemeral: true };
-	} else {
-		// Set the flag consuming the event:
-		await Cache.setString(
-			`bso:users:${parsed.userID}:whale_trade`,
-			parsed.expiresAt.toString(),
-			(Time.Day * 10) / 1000
-		);
-	}
-
-	if (!user.owns('The whale card') && !user.owns('The whale card (fake)')) {
-		return {
-			content: getWhaleTradeMissingCardLine(),
-			ephemeral: true
-		};
-	}
-	const fake = user.bank.has('The whale card (fake)');
-	const hasReal = user.bank.has('The whale card');
-	const options = [{ label: 'No Thanks', id: 'decline' }];
-	if (fake) {
-		options.unshift({ label: 'Trade (fake)', id: 'trade_fake' });
-	}
-	if (hasReal) {
-		options.unshift({ label: 'Trade', id: 'trade' });
-	}
-
-	const choice = await globalClient.pickStringWithButtons({
-		interaction,
-		options,
-		content: getWhaleTradePitch(fake)
-	});
-
-	if (!choice || choice.choice.id === 'decline') {
-		await interaction.reply({
-			content: getWhaleTradeDeclineLine(),
-			components: []
-		});
-		return SpecialResponse.RespondedManually;
-	}
-
-	const card = choice.choice.id === 'trade_fake' ? 'The whale card (fake)' : 'The whale card';
-
-	await user.sync();
-	if (!user.bank.has(card)) {
-		await interaction.reply({
-			content: getWhaleTradeMissingCardLine(),
-			components: []
-		});
-		return SpecialResponse.RespondedManually;
-	}
-
-	const costBank = new Bank();
-	costBank.add(card);
-	const result = rollWhaleTradeResult(user, costBank.has('The whale card (fake)'));
-
-	const lootBank = result.loot.clone();
-	if (result.loot.length > 0) {
-		await user.transactItems({
-			itemsToRemove: costBank,
-			itemsToAdd: result.loot,
-			collectionLog: true
-		});
-	} else {
-		await user.removeItemsFromBank(costBank);
-	}
-	const currentStats = (await user.fetchStats()) as {
-		wild_degen_cost_bank: ItemBank;
-		wild_degen_loot_bank: ItemBank;
-	};
-	await user.statsUpdate({
-		wild_degen_cost_bank: costBank
-			.clone()
-			.add(currentStats.wild_degen_cost_bank as ItemBank)
-			.toJSON(),
-		wild_degen_loot_bank: lootBank
-			.clone()
-			.add(currentStats.wild_degen_loot_bank as ItemBank)
-			.toJSON()
-	} as any);
-	await interaction.reply({
-		content: result.message,
-		components: []
-	});
-	return SpecialResponse.RespondedManually;
-}
-
 async function globalButtonInteractionHandler({
 	interaction,
 	id,
@@ -390,8 +273,8 @@ async function globalButtonInteractionHandler({
 		Logging.logDebug(`${user.id} clicked Diff[${formatDuration(timeSinceMessage)}] Button[${id}]`);
 	}
 
-	if (parseWhaleTradeInteractionID(id)) {
-		return handleWhaleTradeButton(user, id, interaction);
+	if (id.startsWith(InteractionID.Commands.WhaleTrade)) {
+		return 'The degenerate gambler has disappeared.';
 	}
 
 	async function doClue(tier: ClueTier['name']) {

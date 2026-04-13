@@ -3,7 +3,6 @@ import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import { EmojiId } from '@/lib/data/emojis.js';
 import { InteractionID } from '@/lib/InteractionID.js';
-import { buildWhaleTradeInteractionID } from '@/lib/whaleCardTrade.js';
 
 export function makeOpenCasketButton(tier: ClueTier) {
 	const name: Uppercase<ClueTier['name']> = tier.name.toUpperCase() as Uppercase<ClueTier['name']>;
@@ -139,13 +138,5 @@ export function makeFishingContestButton() {
 		.setCustomId(InteractionID.Commands.DoFishingContest)
 		.setLabel('Fishing Contest')
 		.setEmoji({ id: EmojiId.Fishing })
-		.setStyle(ButtonStyle.Secondary);
-}
-
-export function makeWhaleTradeOfferButton(userID: string, expiresAt: number) {
-	return new ButtonBuilder()
-		.setCustomId(buildWhaleTradeInteractionID(userID, expiresAt))
-		.setLabel('Approach Degenerate')
-		.setEmoji({ name: '🐋' })
 		.setStyle(ButtonStyle.Secondary);
 }
