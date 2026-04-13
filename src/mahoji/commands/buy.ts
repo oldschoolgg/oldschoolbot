@@ -1,11 +1,12 @@
 import { isElligibleForPresent } from '@/lib/bso/bsoUtil.js';
 
 import { bold } from '@oldschoolgg/discord';
-import { Events, formatOrdinal, stringMatches } from '@oldschoolgg/toolkit';
+import { Events, formatOrdinal, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, Items, itemID } from 'oldschooljs';
 
 import Buyables from '@/lib/data/buyables/buyables.js';
 import { tripBuyables } from '@/lib/data/buyables/tripBuyables.js';
+import { EASTER_EVENT_START } from '@/lib/easter.js';
 import { quests } from '@/lib/minions/data/quests.js';
 import { countUsersWithItemInCl } from '@/lib/rawSql.js';
 import { Minigames } from '@/lib/settings/minigames.js';
@@ -129,6 +130,60 @@ export const buyCommand = defineCommand({
 			}
 		}
 		let gpCost = user.isIronman && buyable.ironmanPrice !== undefined ? buyable.ironmanPrice : buyable.gpCost;
+
+		if (stringMatches(buyable.name, Items.getOrThrow('The whale card (fake)').name)) {
+			const hardMax = 5;
+			quantity = 1;
+
+			const cardsBought = user.cl.amount('The whale card (fake)');
+			if (cardsBought >= hardMax) {
+				return `You have already bought the maximum amount of fake Whale cards!`;
+			}
+			const qualifyingWindowStart = new Date(EASTER_EVENT_START.getTime() - Time.Day * 30);
+			const [qualifyingActivity, qualifyingCommandCount] = await Promise.all([
+				prisma.activity.aggregate({
+					_sum: {
+						duration: true
+					},
+					where: {
+						user_id: BigInt(user.id),
+						completed: true,
+						finish_date: {
+							gte: qualifyingWindowStart,
+							lt: EASTER_EVENT_START
+						}
+					}
+				}),
+				prisma.commandUsage.count({
+					where: {
+						user_id: BigInt(user.id),
+						date: {
+							gte: qualifyingWindowStart,
+							lt: EASTER_EVENT_START
+						}
+					}
+				})
+			]);
+			const qualifyingDuration = qualifyingActivity._sum.duration ?? 0;
+			const requiredDuration = Time.Hour * 40;
+			const requiredCommandCount = 100;
+			let limit = 0;
+			if (qualifyingDuration > requiredDuration || qualifyingCommandCount > requiredCommandCount) {
+				limit = 3;
+			} else if (qualifyingDuration > requiredDuration / 2 || qualifyingCommandCount > requiredCommandCount / 2) {
+				limit = 2;
+			} else if (qualifyingDuration > requiredDuration / 4 || qualifyingCommandCount > requiredCommandCount / 4) {
+				limit = 1;
+			}
+			const increasedCost = cardsBought >= limit;
+			if (increasedCost) {
+				gpCost! *= 10;
+			}
+			limit += 2;
+			if (cardsBought >= limit) {
+				return `With your recent activity, you can only buy: ${limit} fake Whale cards!`;
+			}
+		}
 
 		if (buyable.name === Items.getOrThrow('Festive present').name) {
 			if (!(await isElligibleForPresent(user))) {
