@@ -1,7 +1,7 @@
 import { cryptoRng } from 'node-rng/crypto';
 
 import type { Activity, activity_type_enum } from '@/prisma/main.js';
-import { globalConfig } from '@/lib/constants.js';
+import { BitField, globalConfig } from '@/lib/constants.js';
 import { onMinionActivityFinish } from '@/lib/events.js';
 import { allTasks } from '@/lib/Task.js';
 import type { PrismaCompatibleJsonObject } from '@/lib/types/index.js';
@@ -72,9 +72,32 @@ class SActivityManager {
 	}
 
 	async processPendingActivities(): Promise<void> {
-		const activities: Activity[] = globalConfig.isProduction
+		let activities: Activity[] = globalConfig.isProduction
 			? await prisma.$queryRaw`SELECT * FROM activity WHERE completed = false AND finish_date < NOW() LIMIT 5;`
 			: await prisma.$queryRaw`SELECT * FROM activity WHERE completed = false;`;
+
+		if (!globalConfig.isProduction && activities.length > 0) {
+			const userIDs = [...new Set(activities.map(i => i.user_id.toString()))];
+			const users = await prisma.user.findMany({
+				where: {
+					id: {
+						in: userIDs
+					}
+				},
+				select: {
+					id: true,
+					bitfield: true
+				}
+			});
+			const usersWithNormalTripTimes = new Set(
+				users.filter(i => i.bitfield.includes(BitField.NormalTestBotTripTimes)).map(i => i.id)
+			);
+			const now = Date.now();
+			activities = activities.filter(
+				activity =>
+					activity.finish_date.getTime() < now || !usersWithNormalTripTimes.has(activity.user_id.toString())
+			);
+		}
 
 		if (activities.length > 0) {
 			await prisma.activity.updateMany({

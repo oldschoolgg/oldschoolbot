@@ -163,7 +163,8 @@ export enum BitField {
 	DisableDynamicTimestamp = 49,
 	WikiContributor = 50,
 	UnlimitedGiveaways = 51,
-	ServerSupport = 52
+	ServerSupport = 52,
+	NormalTestBotTripTimes = 53
 }
 
 export interface IBitFieldData {
@@ -293,7 +294,12 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 	[BitField.ToggleAutoRummage]: { name: 'Auto Rummage Vale Offerings', protected: false, userConfigurable: true },
 	[BitField.WikiContributor]: { name: 'Wiki Contributor', protected: false, userConfigurable: false },
 	[BitField.UnlimitedGiveaways]: { name: 'Unlimited Giveaways', protected: false, userConfigurable: false },
-	[BitField.ServerSupport]: { name: 'Server Support', protected: true, userConfigurable: false }
+	[BitField.ServerSupport]: { name: 'Server Support', protected: true, userConfigurable: false },
+	[BitField.NormalTestBotTripTimes]: {
+		name: 'Normal Test Bot Trip Times',
+		protected: false,
+		userConfigurable: false
+	}
 } as const;
 
 export const BadgesEnum = {

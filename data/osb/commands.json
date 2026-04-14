@@ -1,6 +1,6 @@
 {
-	"hash": "4e6b5f19ee746f8ca06542ac4d142529",
-	"date": "2026-02-20T07:19:34.772Z",
+	"hash": "f65934bd9069c076afa2035e57744b98",
+	"date": "2026-04-14T08:56:11.227Z",
 	"data": [
 		{
 			"name": "activities",
@@ -224,7 +224,7 @@
 		},
 		{
 			"name": "giveaway",
-			"desc": "Giveaway items from your ban to other players.",
+			"desc": "Giveaway items from your bank to other players.",
 			"examples": ["/giveaway items:10 trout, 5 coal time:1h"],
 			"subOptions": ["list", "start"]
 		},

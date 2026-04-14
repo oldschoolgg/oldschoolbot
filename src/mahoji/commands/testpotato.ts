@@ -11,7 +11,7 @@ import {
 } from '@/lib/bitFieldUtils.js';
 import { allStashUnitsFlat, allStashUnitTiers } from '@/lib/clues/stashUnits.js';
 import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
-import { BitFieldData, globalConfig } from '@/lib/constants.js';
+import { BitField, BitFieldData, globalConfig } from '@/lib/constants.js';
 import { spiritAnglerOutfit } from '@/lib/data/CollectionsExport.js';
 import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '@/lib/data/cox.js';
 import { leaguesCreatables } from '@/lib/data/creatables/leagueCreatables.js';
@@ -554,6 +554,11 @@ export const testPotatoCommand = globalConfig.isProduction
 				},
 				{
 					type: 'Subcommand',
+					name: 'triptimes',
+					description: 'Toggle normal trip timing (instead of instant trips) on the test bot.'
+				},
+				{
+					type: 'Subcommand',
 					name: 'forcegrow',
 					description: 'Force a plant to grow.',
 					options: [
@@ -789,6 +794,15 @@ export const testPotatoCommand = globalConfig.isProduction
 						minion_ironman: !current
 					});
 					return `You now ${!current ? 'ARE' : 'ARE NOT'} an ironman.`;
+				}
+				if (options.triptimes) {
+					const nowEnabled = !user.bitfield.includes(BitField.NormalTestBotTripTimes);
+					await user.update({
+						bitfield: nowEnabled
+							? [...user.bitfield, BitField.NormalTestBotTripTimes]
+							: user.bitfield.filter(i => i !== BitField.NormalTestBotTripTimes)
+					});
+					return `Normal trip times are now ${nowEnabled ? 'enabled' : 'disabled'} for your test bot account.`;
 				}
 				if (options.wipe) {
 					const { thing } = options.wipe;
