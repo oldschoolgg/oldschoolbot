@@ -274,7 +274,10 @@ async function globalButtonInteractionHandler({
 	}
 
 	if (id.startsWith(InteractionID.Commands.WhaleTrade)) {
-		return 'The degenerate gambler has disappeared.';
+		return {
+			content: 'You search the surrounding mist, but the degenerate gambler has disappeared...',
+			ephemeral: true
+		};
 	}
 
 	async function doClue(tier: ClueTier['name']) {
