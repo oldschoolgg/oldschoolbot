@@ -32,9 +32,9 @@ export class RUser {
 	get perkTier(): PatronTier | null {
 		let tier = tiers.find(t => t.perkTier === this._user.perk_tier) ?? null;
 		const pExpires = this._user.premium_balance_expiry_date ?? 0;
-		if (pExpires  > Date.now()) {
+		if (pExpires > Date.now()) {
 			const tTier = this._user.premium_balance_tier ?? 0;
-			if (tTier && (tTier + 1 > Number(tier))) {
+			if (tTier && tTier + 1 > Number(tier)) {
 				const pTier = tiers.find(t => t.perkTier === tTier) ?? 0;
 				if (pTier) {
 					tier = pTier;

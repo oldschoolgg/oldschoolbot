@@ -2,7 +2,7 @@ import { Time } from '@oldschoolgg/toolkit';
 import { LRUCache } from 'lru-cache';
 
 import { BitField, PerkTier } from '@/lib/constants.js';
-import {RobochimpUser} from "@/lib/roboChimp.js";
+import type { RobochimpUser } from '@/lib/roboChimp.js';
 
 export const allPerkBitfields: BitField[] = [
 	BitField.PatronTier6,
@@ -113,14 +113,13 @@ export async function getUsersPerkTier({
 		});
 		await Cache.setRoboChimpUser(user.id, resultRoboUser);
 		return resultRoboUser;
-	}
-
+	};
 
 	// Get the hard tier since we'll be updating Robo
 	const reliableTier = Math.max(...eligibleTiers, 0);
 
 	// Temp ones should not update robo.
-	const tempExpiry = Math.max( ...tempPateonExpiryDates)
+	const tempExpiry = Math.max(...tempPateonExpiryDates);
 	const tempTier = Math.max(...tempPatreonTiers, 0);
 	if (tempTier > reliableTier && tempExpiry > Date.now()) {
 		eligibleTiers.push(tempTier);

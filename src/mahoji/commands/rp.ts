@@ -1,32 +1,32 @@
-import {codeBlock, dateFm} from '@oldschoolgg/discord';
-import {type GearSetupType, GearSetupTypes} from '@oldschoolgg/gear';
-import {sumArr, Time, toTitleCase} from '@oldschoolgg/toolkit';
-import {isValidDiscordSnowflake} from '@oldschoolgg/util';
-import {DiscordSnowflake} from '@sapphire/snowflake';
-import {Duration} from '@sapphire/time-utilities';
-import {Bank, type Item, type ItemBank} from 'oldschooljs';
+import { codeBlock, dateFm } from '@oldschoolgg/discord';
+import { type GearSetupType, GearSetupTypes } from '@oldschoolgg/gear';
+import { sumArr, Time, toTitleCase } from '@oldschoolgg/toolkit';
+import { isValidDiscordSnowflake } from '@oldschoolgg/util';
+import { DiscordSnowflake } from '@sapphire/snowflake';
+import { Duration } from '@sapphire/time-utilities';
+import { Bank, type Item, type ItemBank } from 'oldschooljs';
 
-import {UserEventType, xp_gains_skill_enum} from '@/prisma/main/enums.js';
-import {choicesOf, gearSetupOption} from '@/discord/index.js';
-import {marketPricemap} from '@/lib/cache.js';
-import {Channel, globalConfig} from '@/lib/constants.js';
-import {allCollectionLogsFlat} from '@/lib/data/Collections.js';
-import {GrandExchange} from '@/lib/grandExchange.js';
-import {unEquipAllCommand} from '@/lib/minions/functions/unequipAllCommand.js';
-import {unequipPet} from '@/lib/minions/functions/unequipPet.js';
-import {PremiumPatreonTiers, premiumPatronTime} from '@/lib/premiumPatronTime.js';
-import {TeamLoot} from '@/lib/simulation/TeamLoot.js';
+import { UserEventType, xp_gains_skill_enum } from '@/prisma/main/enums.js';
+import { choicesOf, gearSetupOption } from '@/discord/index.js';
+import { marketPricemap } from '@/lib/cache.js';
+import { Channel, globalConfig } from '@/lib/constants.js';
+import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
+import { GrandExchange } from '@/lib/grandExchange.js';
+import { unEquipAllCommand } from '@/lib/minions/functions/unequipAllCommand.js';
+import { unequipPet } from '@/lib/minions/functions/unequipPet.js';
+import { PremiumPatreonTiers, premiumPatronTime } from '@/lib/premiumPatronTime.js';
+import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
-import {makeBankImage} from '@/lib/util/makeBankImage.js';
-import {migrateUser} from '@/lib/util/migrateUser.js';
-import {parseBank} from '@/lib/util/parseStringBank.js';
-import {refreshUserCache} from '@/lib/util/refreshCache.js';
-import {insertUserEvent} from '@/lib/util/userEvents.js';
-import {gifs} from '@/mahoji/commands/admin.js';
-import {getUserInfo} from '@/mahoji/commands/minion.js';
-import {sellPriceOfItem} from '@/mahoji/commands/sell.js';
-import {cancelUsersListings} from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
-import {gearViewCommand} from '@/mahoji/lib/abstracted_commands/gearCommands.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { migrateUser } from '@/lib/util/migrateUser.js';
+import { parseBank } from '@/lib/util/parseStringBank.js';
+import { refreshUserCache } from '@/lib/util/refreshCache.js';
+import { insertUserEvent } from '@/lib/util/userEvents.js';
+import { gifs } from '@/mahoji/commands/admin.js';
+import { getUserInfo } from '@/mahoji/commands/minion.js';
+import { sellPriceOfItem } from '@/mahoji/commands/sell.js';
+import { cancelUsersListings } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
+import { gearViewCommand } from '@/mahoji/lib/abstracted_commands/gearCommands.js';
 
 const itemFilters = [
 	{
@@ -541,16 +541,23 @@ Date: ${dateFm(date)}`;
 		if (options.player?.add_patron_time) {
 			let { tier, time, user: userToGive, remove } = options.player.add_patron_time;
 			if (remove) {
-				time = undefined; tier = undefined;
+				time = undefined;
+				tier = undefined;
 			}
-			if ((!tier || !time)) {
+			if (!tier || !time) {
 				return 'Must either specify time or remove flag';
 			}
-			const duration = (time && !remove) ? (new Duration(time)).offset : undefined;
+			const duration = time && !remove ? new Duration(time).offset : undefined;
 			if (!PremiumPatreonTiers.includes(tier)) return 'Invalid tier';
 
 			if (duration && (duration < Time.Second || duration > Time.Year * 10)) return 'Invalid duration specified.';
-			return await premiumPatronTime({duration, tier: tier, user: await mUserFetch(userToGive.user.id), interaction, remove});
+			return await premiumPatronTime({
+				duration,
+				tier: tier,
+				user: await mUserFetch(userToGive.user.id),
+				interaction,
+				remove
+			});
 		}
 
 		// Unequip Items

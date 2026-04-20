@@ -1,9 +1,22 @@
 import { formatDuration } from '@oldschoolgg/toolkit';
-import {roboChimpUserFetch} from "@/lib/roboChimp.js";
+
+import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 
 export const PremiumPatreonTiers = [1, 2, 3, 4, 5, 6];
 
-export async function premiumPatronTime({duration, tier, user, interaction, remove} : {duration: number | null | undefined, tier: number | null | undefined, user: MUser, interaction: MInteraction, remove: boolean | undefined | null}) {
+export async function premiumPatronTime({
+	duration,
+	tier,
+	user,
+	interaction,
+	remove
+}: {
+	duration: number | null | undefined;
+	tier: number | null | undefined;
+	user: MUser;
+	interaction: MInteraction;
+	remove: boolean | undefined | null;
+}) {
 	if (remove) {
 		duration = undefined;
 		tier = undefined;
@@ -17,16 +30,14 @@ export async function premiumPatronTime({duration, tier, user, interaction, remo
 	const roboUser = await roboChimpUserFetch(user.id);
 	const roboExpiry = Number(roboUser.premium_balance_expiry_date ?? 0);
 	const botExpiry = Number(user.user.premium_balance_expiry_date ?? 0);
-	const roboTier = ((roboExpiry > Date.now()) && roboUser.premium_balance_tier ? roboUser.premium_balance_tier : 0);
-	const botTier = ((botExpiry > Date.now()) && user.user.premium_balance_tier ? user.user.premium_balance_tier : 0);
-
+	const roboTier = roboExpiry > Date.now() && roboUser.premium_balance_tier ? roboUser.premium_balance_tier : 0;
+	const botTier = botExpiry > Date.now() && user.user.premium_balance_tier ? user.user.premium_balance_tier : 0;
 
 	const currentPatreonTier = Math.max(roboTier, botTier);
 	const currentExpiry = Math.max(roboExpiry, botExpiry);
 	const currentBalance = Math.max(0, currentExpiry - Date.now());
 
 	const isExpired = currentPatreonTier <= 0 || currentBalance <= 0;
-
 
 	let newBalanceExpiryTime: number | null = Date.now();
 	let confirmMsg = '';
@@ -37,9 +48,8 @@ export async function premiumPatronTime({duration, tier, user, interaction, remo
 		confirmMsg = `Are you sure you wish to remove ${formatDuration(currentBalance)} of Tier ${currentPatreonTier} patreon (PerkTier ${currentPatreonTier + 1}) from ${user}?`;
 		newBalanceExpiryTime = null;
 		tier = null;
-
 	} else {
-		if (!duration || !tier ||  !PremiumPatreonTiers.includes(tier)) {
+		if (!duration || !tier || !PremiumPatreonTiers.includes(tier)) {
 			const debugInfo = {
 				uid: user.id,
 				rx: roboExpiry,
@@ -59,20 +69,17 @@ export async function premiumPatronTime({duration, tier, user, interaction, remo
 			newBalanceExpiryTime = Date.now() + duration;
 		} else if (currentPatreonTier !== tier) {
 			const modeStr = tier > currentPatreonTier ? 'upgrade' : '**downgrade**';
-			confirmMsg = `They already have ${formatDuration(currentBalance)} of Tier ${currentPatreonTier} (PerkTier: ${currentPatreonTier+1}); this will ${modeStr} the user's tier to ${tier} (PerkTier: ${tier+1},  but increase whatever their existing balance of ${formatDuration(currentBalance)} to ${formatDuration(currentBalance + duration)}. Are you sure?`;
+			confirmMsg = `They already have ${formatDuration(currentBalance)} of Tier ${currentPatreonTier} (PerkTier: ${currentPatreonTier + 1}); this will ${modeStr} the user's tier to ${tier} (PerkTier: ${tier + 1},  but increase whatever their existing balance of ${formatDuration(currentBalance)} to ${formatDuration(currentBalance + duration)}. Are you sure?`;
 			newBalanceExpiryTime = Date.now() + currentBalance + duration;
 		} else {
 			// so currentPatreonTier === tier
 			const increasedDuration = currentBalance + duration;
 			confirmMsg = `Are you sure you wish to increase ${user}'s existing ${formatDuration(duration)} of Tier ${tier} patreon (PerkTier ${tier + 1}) to total of ${formatDuration(increasedDuration)}?`;
-			newBalanceExpiryTime = Date.now() + increasedDuration ;
+			newBalanceExpiryTime = Date.now() + increasedDuration;
 		}
 	}
 
-	await interaction.confirmation(
-		confirmMsg
-	);
-
+	await interaction.confirmation(confirmMsg);
 
 	const dataTier = tier ?? 0;
 	const dataExpiry = newBalanceExpiryTime ?? 0;
@@ -87,9 +94,8 @@ export async function premiumPatronTime({duration, tier, user, interaction, remo
 			id: BigInt(user.id)
 		},
 		update: { premium_balance_tier: dataTier + 1, premium_balance_expiry_date: dataExpiry },
-		create: { id: BigInt(user.id),  premium_balance_tier: dataTier + 1, premium_balance_expiry_date: dataExpiry  }
-	})
-
+		create: { id: BigInt(user.id), premium_balance_tier: dataTier + 1, premium_balance_expiry_date: dataExpiry }
+	});
 
 	if (isRemoving) {
 		return `Removed all time-limited patreon time from ${user}.`;
