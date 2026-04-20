@@ -32,6 +32,19 @@ function createUsernameWithBadges(user: Pick<User, 'username' | 'badges' | 'mini
 	return `${badges ? `${badges} ` : ''}${user.username}`;
 }
 
+export async function getUsername(id: string): Promise<string> {
+	if (typeof Cache === 'undefined') return id;
+	try {
+		return await Cache.getBadgedUsername(id);
+	} catch {
+		return id;
+	}
+}
+
+export function getUsernameSync(id: string): string {
+	return id;
+}
+
 export async function fetchUsernameAndCache(_id: string | bigint): Promise<string> {
 	const id = _id.toString();
 
