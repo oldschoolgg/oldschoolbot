@@ -1,80 +1,101 @@
-import { formatDuration, Time } from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit';
 import {roboChimpUserFetch} from "@/lib/roboChimp.js";
-import {mode} from "simple-statistics";
 
-enum UpdateMode {
-	Add = 'add',
-	Remove = 'remove',
-	Upgrade = 'upgrade',
-	Downgrade = 'downgrade'
-}
+export const PremiumPatreonTiers = [1, 2, 3, 4, 5, 6];
 
-export async function premiumPatronTime(timeMs: number | null, tier: number, userToGive: MUser, interaction: MInteraction) {
-	if (![1, 2, 3, 4, 5, 6].includes(tier)) return 'Invalid input.';
-	if (timeMs && (timeMs < Time.Second || timeMs > Time.Year * 10)) return 'Invalid input.';
-
-	const currentBalanceTier = userToGive.user.premium_balance_tier;
-
-	if (currentBalanceTier !== null && currentBalanceTier !== tier) {
-		await interaction.confirmation(
-			`They already have Tier ${currentBalanceTier}; this will replace the existing balance entirely, are you sure?`
-		);
+export async function premiumPatronTime({duration, tier, user, interaction, remove} : {duration: number | null | undefined, tier: number | null | undefined, user: MUser, interaction: MInteraction, remove: boolean | undefined | null}) {
+	if (remove) {
+		duration = undefined;
+		tier = undefined;
+	} else {
+		if (!tier || !duration) {
+			return `You must specify a tier and duration unless you're removing perks.`;
+		}
 	}
 
-	const roboUser = await roboChimpUserFetch(userToGive.id);
+	const isRemoving = remove;
+	const roboUser = await roboChimpUserFetch(user.id);
 	const roboExpiry = Number(roboUser.premium_balance_expiry_date ?? 0);
-	const botExpiry = Number(userToGive.user.premium_balance_expiry_date ?? 0);
+	const botExpiry = Number(user.user.premium_balance_expiry_date ?? 0);
 	const roboTier = ((roboExpiry > Date.now()) && roboUser.premium_balance_tier ? roboUser.premium_balance_tier : 0);
-	const botTier = ((botExpiry > Date.now()) && userToGive.user.premium_balance_tier ? userToGive.user.premium_balance_tier : 0);
+	const botTier = ((botExpiry > Date.now()) && user.user.premium_balance_tier ? user.user.premium_balance_tier : 0);
 
 
 	const currentPatreonTier = Math.max(roboTier, botTier);
 	const currentExpiry = Math.max(roboExpiry, botExpiry);
-	const currentBalance = currentExpiry - Date.now();
+	const currentBalance = Math.max(0, currentExpiry - Date.now());
 
-	const isExpired = currentBalance <= 0;
+	const isExpired = currentPatreonTier <= 0 || currentBalance <= 0;
 
 
-	let mode : UpdateMode = UpdateMode.Add;
+	let newBalanceExpiryTime: number | null = Date.now();
 	let confirmMsg = '';
-	if (timeMs) {
-		if (currentPatreonTier !== tier) {
-			mode = tier > currentPatreonTier ? UpdateMode.Upgrade : UpdateMode.Downgrade;
+	if (isRemoving) {
+		if (isExpired) {
+			return `${user} does not have any patreon time to remove.`;
+		}
+		confirmMsg = `Are you sure you wish to remove ${formatDuration(currentBalance)} of Tier ${currentPatreonTier} patreon (PerkTier ${currentPatreonTier + 1}) from ${user}?`;
+		newBalanceExpiryTime = null;
+		tier = null;
 
-			confirmMsg = `They already have ${formatDuration(currentBalance)} of Tier ${currentPatreonTier}; this will ${mode === 'upgrade' ? 'upgrade' : 'downgrade'} the user's tier, but increase whatever the existing balance. Are you sure?`;
-		} else if (timeMs) {
-			mode = timeMs > currentBalance ? UpdateMode.Add : UpdateMode.Remove;
-			confirmMsg = `They already have ${formatDuration(currentBalance)} of Tier ${currentPatreonTier}; this will ${mode} the existing balance entirely, are you sure?`;
+	} else {
+		if (!duration || !tier ||  !PremiumPatreonTiers.includes(tier)) {
+			const debugInfo = {
+				uid: user.id,
+				rx: roboExpiry,
+				bx: botExpiry,
+				rt: roboTier,
+				bt: botTier,
+				ct: currentPatreonTier,
+				cb: currentBalance,
+				tm: duration,
+				ie: isExpired,
+				ir: isRemoving
+			};
+			return `This shouldn't happen..... Show this to Magna or Cyr: \`\`\`${JSON.stringify(debugInfo)}\`\`\``;
+		}
+		if (isExpired) {
+			confirmMsg = `Are you sure you wish to give ${user} Tier ${tier} patreon (PerkTier ${tier + 1})?`;
+			newBalanceExpiryTime = Date.now() + duration;
+		} else if (currentPatreonTier !== tier) {
+			const modeStr = tier > currentPatreonTier ? 'upgrade' : '**downgrade**';
+			confirmMsg = `They already have ${formatDuration(currentBalance)} of Tier ${currentPatreonTier} (PerkTier: ${currentPatreonTier+1}); this will ${modeStr} the user's tier to ${tier} (PerkTier: ${tier+1},  but increase whatever their existing balance of ${formatDuration(currentBalance)} to ${formatDuration(currentBalance + duration)}. Are you sure?`;
+			newBalanceExpiryTime = Date.now() + currentBalance + duration;
+		} else {
+			// so currentPatreonTier === tier
+			const increasedDuration = currentBalance + duration;
+			confirmMsg = `Are you sure you wish to increase ${user}'s existing ${formatDuration(duration)} of Tier ${tier} patreon (PerkTier ${tier + 1}) to total of ${formatDuration(increasedDuration)}?`;
+			newBalanceExpiryTime = Date.now() + increasedDuration ;
 		}
 	}
 
-
-	const confirmMsg = timeMs ?
-		`Are you sure you want to add ${formatDuration(timeMs)} of Tier ${tier} patron to ${userToGive}?` :
-		`Are you sure you want to remove the temporary Patreon Time from ${userToGive}?`;
 	await interaction.confirmation(
 		confirmMsg
 	);
 
 
+	const dataTier = tier ?? 0;
+	const dataExpiry = newBalanceExpiryTime ?? 0;
 
-
-	await userToGive.update({
-		premium_balance_tier: tier,
-		premium_balance_expiry_date: newBalanceExpiryTime
+	await user.update({
+		premium_balance_tier: dataExpiry,
+		premium_balance_expiry_date: dataExpiry
 	});
 
 	await roboChimpClient.user.upsert({
 		where: {
-			id: BigInt(userToGive.id)
+			id: BigInt(user.id)
 		},
-		update: { premium_balance_tier: tier + 1 },
-		create: { id: BigInt(userToGive.id),  premium_balance_tier: tier + 1,  }
+		update: { premium_balance_tier: dataTier + 1, premium_balance_expiry_date: dataExpiry },
+		create: { id: BigInt(user.id),  premium_balance_tier: dataTier + 1, premium_balance_expiry_date: dataExpiry  }
 	})
 
 
+	if (isRemoving) {
+		return `Removed all time-limited patreon time from ${user}.`;
+	}
 
-	return `Gave ${formatDuration(timeMs)} of Tier ${tier} patron to ${userToGive}. They have ${formatDuration(
-		newBalanceExpiryTime - Date.now()
+	return `Gave ${formatDuration(duration!)} of Tier ${tier} patron to ${user}. They have ${formatDuration(
+		dataExpiry - Date.now()
 	)} remaining.`;
 }
