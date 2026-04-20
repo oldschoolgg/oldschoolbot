@@ -22,12 +22,17 @@ export async function premiumPatronTime(timeMs: number | null, tier: number, use
 	}
 
 	const roboUser = await roboChimpUserFetch(userToGive.id);
-	const bestTimedTier = [roboUser.premium_balance_tier ?? 0, userToGive.user.premium_balance_tier ?? 0];
-	const currentPatreonTier = Math.max(...bestTimedTier);
-	const currentExpiry = Math.max(Number(roboUser.premium_balance_expiry_date ?? 0), Number(userToGive.user.premium_balance_expiry_date ?? 0));
+	const roboExpiry = Number(roboUser.premium_balance_expiry_date ?? 0);
+	const botExpiry = Number(userToGive.user.premium_balance_expiry_date ?? 0);
+	const roboTier = ((roboExpiry > Date.now()) && roboUser.premium_balance_tier ? roboUser.premium_balance_tier : 0);
+	const botTier = ((botExpiry > Date.now()) && userToGive.user.premium_balance_tier ? userToGive.user.premium_balance_tier : 0);
+
+
+	const currentPatreonTier = Math.max(roboTier, botTier);
+	const currentExpiry = Math.max(roboExpiry, botExpiry);
 	const currentBalance = currentExpiry - Date.now();
 
-	const expired = currentBalance <= 0;
+	const isExpired = currentBalance <= 0;
 
 
 	let mode : UpdateMode = UpdateMode.Add;
