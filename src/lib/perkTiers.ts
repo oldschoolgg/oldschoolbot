@@ -2,6 +2,7 @@ import { Time } from '@oldschoolgg/toolkit';
 import { LRUCache } from 'lru-cache';
 
 import { BitField, PerkTier } from '@/lib/constants.js';
+import type { RobochimpUser } from '@/lib/roboChimp.js';
 
 export const allPerkBitfields: BitField[] = [
 	BitField.PatronTier6,
@@ -54,6 +55,7 @@ export async function getUsersPerkTier({
 	}
 
 	const eligibleTiers = [];
+
 	if (user.isContributor() || user.isModOrAdmin()) {
 		eligibleTiers.push(PerkTier.Four);
 	} else if (user.isTrusted()) {
@@ -82,12 +84,6 @@ export async function getUsersPerkTier({
 		eligibleTiers.push(PerkTier.Three);
 	}
 
-	const roboChimpCached = await Cache.getRoboChimpUser(user.id);
-	if (roboChimpCached) {
-		eligibleTiers.push(roboChimpCached.perk_tier);
-	}
-
-	// Why bother looking for the member if it doesn't help get a higher tier
 	if (
 		user.bitfield.includes(BitField.PatronTier1) ||
 		user.bitfield.includes(BitField.HasPermanentTierOne) ||
@@ -97,16 +93,43 @@ export async function getUsersPerkTier({
 	}
 	// Server boosting perk has been eliminated
 
-	const tier = Math.max(...eligibleTiers, 0);
-	// If tier is higher than what robochimp thinks, smack that fool.
-	if (tier > (roboChimpCached?.perk_tier ?? 0)) {
-		await roboChimpClient.user.upsert({
+	const tempPateonExpiryDates = [Number(user.user.premium_balance_expiry_date ?? 0)];
+	const tempPatreonTiers = [user.user.premium_balance_tier ?? 0];
+
+	const roboChimpCached = await Cache.getRoboChimpUser(user.id);
+	if (roboChimpCached) {
+		eligibleTiers.push(roboChimpCached.perk_tier);
+		tempPatreonTiers.push(roboChimpCached.premium_balance_tier ?? 0);
+		tempPateonExpiryDates.push(Number(roboChimpCached.premium_balance_expiry_date ?? 0));
+	}
+
+	const updateRobo = async (user: MUser, tier: number) => {
+		const resultRoboUser: RobochimpUser = await roboChimpClient.user.upsert({
 			where: {
 				id: BigInt(user.id)
 			},
 			update: { perk_tier: tier },
 			create: { id: BigInt(user.id) }
 		});
+		await Cache.setRoboChimpUser(user.id, resultRoboUser);
+		return resultRoboUser;
+	};
+
+	// Get the hard tier since we'll be updating Robo
+	const reliableTier = Math.max(...eligibleTiers, 0);
+
+	// Temp ones should not update robo.
+	const tempExpiry = Math.max(...tempPateonExpiryDates);
+	const tempTier = Math.max(...tempPatreonTiers, 0);
+	if (tempTier > reliableTier && tempExpiry > Date.now()) {
+		eligibleTiers.push(tempTier);
+	}
+
+	const tier = Math.max(...eligibleTiers, 0);
+
+	// If tier is higher than what robochimp thinks, smack that fool.
+	if (reliableTier > (roboChimpCached?.perk_tier ?? 0)) {
+		await updateRobo(user, tier);
 	}
 	setHotCache(user.id, tier);
 	return tier;

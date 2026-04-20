@@ -14,7 +14,7 @@ import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { unEquipAllCommand } from '@/lib/minions/functions/unequipAllCommand.js';
 import { unequipPet } from '@/lib/minions/functions/unequipPet.js';
-import { premiumPatronTime } from '@/lib/premiumPatronTime.js';
+import { PremiumPatreonTiers, premiumPatronTime } from '@/lib/premiumPatronTime.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
@@ -152,14 +152,20 @@ export const rpCommand = defineCommand({
 							type: 'Integer',
 							name: 'tier',
 							description: 'The tier to give.',
-							required: true,
+							required: false,
 							choices: choicesOf([1, 2, 3, 4, 5, 6])
 						},
 						{
 							type: 'String',
 							name: 'time',
-							description: 'The time.',
-							required: true
+							description: 'The amount of time to add.',
+							required: false
+						},
+						{
+							type: 'Boolean',
+							name: 'remove',
+							description: 'Strips patron time from user.',
+							required: false
 						}
 					]
 				},
@@ -533,13 +539,25 @@ Date: ${dateFm(date)}`;
 		}
 
 		if (options.player?.add_patron_time) {
-			const { tier, time, user: userToGive } = options.player.add_patron_time;
-			const duration = new Duration(time);
-			if (![1, 2, 3, 4, 5, 6].includes(tier)) return 'Invalid input.';
-			const ms = duration.offset;
-			if (ms < Time.Second || ms > Time.Year * 3) return 'Invalid input.';
-			const res = await premiumPatronTime(ms, tier, await mUserFetch(userToGive.user.id), interaction);
-			return res;
+			let { tier, time, user: userToGive, remove } = options.player.add_patron_time;
+			if (remove) {
+				time = undefined;
+				tier = undefined;
+			}
+			if (!tier || !time) {
+				return 'Must either specify time or remove flag';
+			}
+			const duration = time && !remove ? new Duration(time).offset : undefined;
+			if (!PremiumPatreonTiers.includes(tier)) return 'Invalid tier';
+
+			if (duration && (duration < Time.Second || duration > Time.Year * 10)) return 'Invalid duration specified.';
+			return await premiumPatronTime({
+				duration,
+				tier: tier,
+				user: await mUserFetch(userToGive.user.id),
+				interaction,
+				remove
+			});
 		}
 
 		// Unequip Items
