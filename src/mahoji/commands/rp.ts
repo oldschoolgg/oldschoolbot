@@ -159,7 +159,13 @@ export const rpCommand = defineCommand({
 							type: 'String',
 							name: 'time',
 							description: 'The time.',
-							required: true
+							required: false
+						},
+						{
+							type: 'Boolean',
+							name: 'remove',
+							description: 'Strips patron time from user.',
+							required: false
 						}
 					]
 				},
@@ -533,12 +539,15 @@ Date: ${dateFm(date)}`;
 		}
 
 		if (options.player?.add_patron_time) {
-			const { tier, time, user: userToGive } = options.player.add_patron_time;
-			const duration = new Duration(time);
-			if (![1, 2, 3, 4, 5, 6].includes(tier)) return 'Invalid input.';
-			const ms = duration.offset;
-			if (ms < Time.Second || ms > Time.Year * 3) return 'Invalid input.';
-			const res = await premiumPatronTime(ms, tier, await mUserFetch(userToGive.user.id), interaction);
+			const { tier, time, user: userToGive, remove } = options.player.add_patron_time;
+			if (!time && !remove) {
+				return 'Must either specify time or remove flag';
+			}
+			const duration = (time && !remove) ? (new Duration(time)).offset : null;
+			if (![1, 2, 3, 4, 5, 6].includes(tier)) return 'Invalid tier';
+
+			if (duration && (duration < Time.Second || duration > Time.Year * 10)) return 'Invalid duration specified.';
+			const res = await premiumPatronTime(duration, tier, await mUserFetch(userToGive.user.id), interaction);
 			return res;
 		}
 
