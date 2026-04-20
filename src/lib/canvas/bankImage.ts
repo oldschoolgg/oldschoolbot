@@ -20,7 +20,6 @@ import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 import { BitField, PerkTier } from '@/lib/constants.js';
 import { allCLItems } from '@/lib/data/Collections.js';
 import { filterableTypes } from '@/lib/data/filterables.js';
-import { easterPets } from '@/lib/easter.js';
 import { marketPriceOfBank, marketPriceOrBotPrice } from '@/lib/marketPrices.js';
 import backgroundImages, { type BankBackground } from '@/lib/minions/data/bankBackgrounds.js';
 import { type FlagMap, type Flags, OverrideStatus } from '@/lib/minions/types.js';
@@ -267,9 +266,6 @@ class BankImageTask {
 			[itemID('Wubbles'), this.wubblesEffect!]
 		];
 
-		for (const pet of easterPets) {
-			coolItemEffects.push([pet, this.easterEffect!]);
-		}
 		for (const [itemId, itemEffect] of coolItemEffects) {
 			this.effects.set(itemId, itemEffect);
 		}

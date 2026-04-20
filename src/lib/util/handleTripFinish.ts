@@ -21,7 +21,6 @@ import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';
 import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements.js';
 import { BitField, CONSTANTS, PerkTier } from '@/lib/constants.js';
-import { getPassiveEasterTripMessage, rollPassiveEasterLoot } from '@/lib/easter.js';
 import { handleGrowablePetGrowth } from '@/lib/growablePets.js';
 import { handlePassiveImplings } from '@/lib/implings.js';
 import { triggerRandomEvent } from '@/lib/randomEvents.js';
@@ -450,19 +449,6 @@ const tripFinishEffects: TripFinishEffect[] = [
 					itemsToAddWithCL: loot
 				};
 			}
-		}
-	},
-	{
-		name: 'Passive Easter',
-		fn: async ({ data, user, messages }) => {
-			const easterLoot = rollPassiveEasterLoot(user, data.duration);
-			if (!easterLoot) return;
-
-			messages.push('\n\n**🐰!!...** ');
-			messages.push(getPassiveEasterTripMessage(easterLoot));
-			return {
-				itemsToAddWithCL: easterLoot.loot
-			};
 		}
 	},
 	{
