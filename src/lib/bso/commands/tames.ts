@@ -52,7 +52,6 @@ import { type ClueTier, ClueTiers } from '@/lib/clues/clueTiers.js';
 import { badges, PerkTier } from '@/lib/constants.js';
 import { Eatables } from '@/lib/data/eatables.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
-import { easterPets } from '@/lib/easter.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { Planks } from '@/lib/minions/data/planks.js';
 import getUserFoodFromBank from '@/lib/minions/functions/getUserFoodFromBank.js';
@@ -855,11 +854,6 @@ Note: Some items must be equipped to your tame, not fed. Check that you are feed
 		if (species!.id === eggSpecies && bankToAdd.fits(eggBank) && eggGrowth.includes(tame.growthStage)) {
 			egg = ` ${easterEgg}`;
 		}
-	}
-
-	// Easter Easter Eggs:
-	if (easterPets.some(pet => bankToAdd.has(pet))) {
-		egg = '\n\n🌞 Your tame seems less hungry!';
 	}
 
 	const newBoosts: string[] = [];
