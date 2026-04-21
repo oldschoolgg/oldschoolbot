@@ -64,8 +64,8 @@ export const growablePets: GrowablePet[] = [
 		shinyVersion: Items.getOrThrow('Radiant Magnabbit').id,
 		message: (item, shiny, _user) => {
 			return shiny
-				? `\n\n🐣 Your Magnabbit has hatched!`
-				: `\n\n✨ What the... you're Magnegg has just hatched into a **SHINY** ${item.name}!!!!`;
+				? `\n\n🐇.... You might want to pinch yourself because **YOU JUST GOT A SHINY MAGNA!!**`
+				: `\n\n🐣 Your ${item.name} has hatched!`;
 		}
 	}
 ];
