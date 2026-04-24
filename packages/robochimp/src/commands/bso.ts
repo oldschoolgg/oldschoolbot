@@ -2,12 +2,7 @@ import { userMention } from '@oldschoolgg/discord';
 import { SimpleTable, Time } from '@oldschoolgg/toolkit';
 import { convertLVLtoXP, type ItemBank } from 'oldschooljs';
 
-const LampTable = new SimpleTable<number>()
-	.add(6796, 40)
-	.add(21_642, 30)
-	.add(23_516, 20)
-	.add(22_320, 5)
-	.add(11_157, 1);
+const LampTable = new SimpleTable<number>().add(6796, 40).add(21_642, 30).add(23_516, 20).add(22_320, 5).add(11_157, 1);
 
 const lampMap: Record<number, string> = {
 	6796: 'Tiny lamp',
