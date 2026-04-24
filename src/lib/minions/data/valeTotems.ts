@@ -149,9 +149,9 @@ const offeringsTable = (forestryKit: boolean) => {
 
 	if (forestryKit) table.add('Anima-infused bark', [70, 90], 50);
 
-	clueTiers.forEach(([tier, rate]) => {
+	for (const [tier, rate] of clueTiers) {
 		table.tertiary(rate, createClueNest(tier));
-	});
+	}
 
 	return table;
 };
@@ -166,7 +166,7 @@ export function createRummageOfferingsTable(fletchLvl: number, forestryKit: bool
 		[65, [OfferingsSeedTableLevelUnder65, 1]],
 		[80, [OfferingsSeedTableLevelUnder80, 1]],
 		[90, [OfferingsSeedTableLevelUnder90, 2]],
-		[100, [OfferingsSeedTableLevel90Plus, 2]]
+		[121, [OfferingsSeedTableLevel90Plus, 2]]
 	];
 
 	const [, [seedTable, nestQty]] = lootByLevel.find(([maxLvl]) => fletchLvl < maxLvl)!;
@@ -183,7 +183,7 @@ export function createCleanDirtyArrowsTable(fletchLvl: number): LootTable {
 		[65, dirtyArrowTableLevelUnder65],
 		[80, dirtyArrowTableLevelUnder80],
 		[90, dirtyArrowTableLevelUnder90],
-		[100, dirtyArrowTableLevel90Plus]
+		[121, dirtyArrowTableLevel90Plus]
 	];
 
 	const selectedTable = tableByLevel.find(([maxLvl]) => fletchLvl < maxLvl)![1];
