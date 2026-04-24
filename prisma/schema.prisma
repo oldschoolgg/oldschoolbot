@@ -647,6 +647,7 @@ enum economy_transaction_type {
   duel
   gri
   gift
+  admin
 }
 
 model EconomyTransaction {
