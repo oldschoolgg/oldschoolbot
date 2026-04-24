@@ -1,8 +1,9 @@
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 
+import assert from 'node:assert';
 import { bold } from '@oldschoolgg/discord';
 import { Events, formatOrdinal, increaseNumByPercent } from '@oldschoolgg/toolkit';
-import { Bank, Items, LootTable } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
 import type {
 	ShadesOfMortonOptions,
@@ -72,9 +73,10 @@ export const shadesOfMortonTask: MinionTask = {
 		const garyDroprate = clAdjustedDroprate(user, 'Gary', baseGaryRate, 1.4);
 
 		for (let i = 0; i < quantity; i++) {
-			loot.add(table.roll());
+			const rollResult = table.roll();
+			loot.add(rollResult);
 
-			for (const [item, qty] of roll_result.items()) {
+			for (const [item, qty] of rollResult.items()) {
 				if (item.name.toLowerCase().includes('key')) {
 					totalKeysProduced += qty;
 				}

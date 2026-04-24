@@ -299,7 +299,13 @@ export const easyTasks: Task[] = [
 		id: 41,
 		name: 'Fish 1000 fish',
 		has: async ({ cl }) => {
-			return sumArr(Fishing.Fishes.map(i => cl.amount(i.id))) >= 1000;
+			return (
+				sumArr(
+					Fishing.Fishes.map(i => i.id)
+						.filter(notEmpty)
+						.map(id => cl.amount(id))
+				) >= 1000
+			);
 		}
 	},
 	{

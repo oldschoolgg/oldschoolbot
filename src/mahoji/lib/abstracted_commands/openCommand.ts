@@ -1,8 +1,9 @@
 import { checkElderClueRequirements } from '@/lib/bso/elderClueRequirements.js';
 
 import type { ButtonBuilder } from '@oldschoolgg/discord';
-import { percentChance } from 'node-rng';
 import { Emoji, notEmpty, stringMatches, uniqueArr } from '@oldschoolgg/toolkit';
+import { percentChance } from 'node-rng';
+import { cryptoRng } from 'node-rng/crypto';
 import { Bank, Items, itemID, resolveItems } from 'oldschooljs';
 
 import type { MessageBuilderClass } from '@/discord/MessageBuilder.js';
@@ -48,15 +49,19 @@ export async function abstractedOpenUntilCommand(
 	user: MUser,
 	name: string,
 	openUntilItem: string,
-	disable_pets: boolean | undefined
+	disable_pets: boolean | undefined,
+	quantity: number | undefined,
+	resultQuantity: number | undefined
 ) {
-	const quantity = 1;
+	if (quantity === undefined) quantity = 1;
 	if (quantity < 1 || !Number.isInteger(quantity)) {
 		return 'The quantity must be a positive integer.';
 	}
+	if (resultQuantity === undefined) resultQuantity = 1;
+	if (resultQuantity < 1 || !Number.isInteger(resultQuantity)) {
+		return 'The result quantity must be a positive integer.';
+	}
 
-	const perkTier = await user.fetchPerkTier();
-	if (perkTier < PerkTier.Three) return patronMsg(PerkTier.Three);
 	name = name.replace(regex, '$1');
 	const openableItem = allOpenables.find(o => o.aliases.some(alias => stringMatches(alias, name)));
 	if (!openableItem) return "That's not a valid item.";
@@ -68,6 +73,11 @@ export async function abstractedOpenUntilCommand(
 	}
 	if (!openable.allItems.includes(openUntil.id)) {
 		return `${openable.openedItem.name} doesn't drop ${openUntil.name}.`;
+	}
+
+	const perkTier = await user.fetchPerkTier();
+	if (quantity === undefined && perkTier < PerkTier.Three) {
+		return patronMsg(PerkTier.Three);
 	}
 
 	let amountOfThisOpenableOwned = user.bank.amount(openableItem.id);
@@ -86,11 +96,12 @@ export async function abstractedOpenUntilCommand(
 	const cost = new Bank();
 	const loot = new Bank();
 	let amountOpened = 0;
-	const max = Math.min(10000, amountOfThisOpenableOwned);
+	const max = Math.min(10000, amountOfThisOpenableOwned, quantity);
 	const totalLeaguesPoints = (await roboChimpUserFetch(user.id)).leagues_points_total;
 	for (let i = 0; i < max; i++) {
 		cost.add(openable.openedItem.id);
 		const thisLoot = await getOpenableLoot({
+			rng: cryptoRng,
 			openable,
 			quantity: 1,
 			user,
@@ -98,7 +109,7 @@ export async function abstractedOpenUntilCommand(
 		});
 		loot.add(thisLoot.bank);
 		amountOpened++;
-		if (loot.has(openUntil.id)) break;
+		if (loot.amount(openUntil.id) >= resultQuantity) break;
 	}
 
 	// Now that we have the final total, we add the key cost:
@@ -185,6 +196,7 @@ async function finalizeOpening({
 			loot.add(
 				(
 					await getOpenableLoot({
+						rng: cryptoRng,
 						user,
 						openable,
 						quantity: smokeyBonus,
@@ -204,9 +216,9 @@ async function finalizeOpening({
 	if (!user.owns(cost)) {
 		return `You don't own: ${cost}.`;
 	}
-	await user.transactItems({ itemsToRemove: cost });
-	const { previousCL } = await user.addItemsToBank({
-		items: loot,
+	const { previousCL } = await user.transactItems({
+		itemsToRemove: cost,
+		itemsToAdd: loot,
 		collectionLog: true,
 		filterLoot: false,
 		dontAddToTempCL: openables.some(i => itemsThatDontAddToTempCL.includes(i.id))

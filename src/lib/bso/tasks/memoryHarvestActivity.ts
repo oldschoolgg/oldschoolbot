@@ -7,8 +7,8 @@ import {
 } from '@/lib/bso/skills/divination.js';
 import { inventionBoosts } from '@/lib/bso/skills/invention/inventions.js';
 
-import { roll } from 'node-rng';
 import { calcPercentOfNum, Emoji, increaseNumByPercent } from '@oldschoolgg/toolkit';
+import { roll } from 'node-rng';
 import { Bank } from 'oldschooljs';
 
 const SECONDS_TO_HARVEST = 60;

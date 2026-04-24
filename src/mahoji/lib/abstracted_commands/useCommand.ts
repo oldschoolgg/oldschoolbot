@@ -5,8 +5,8 @@ import { mysteriousStepData } from '@/lib/bso/mysteryTrail.js';
 import { divinationEnergies } from '@/lib/bso/skills/divination.js';
 
 import { bold } from '@oldschoolgg/discord';
-import { randArrItem, randInt } from 'node-rng';
 import { notEmpty, objectEntries, Time } from '@oldschoolgg/toolkit';
+import { randArrItem, randInt } from 'node-rng';
 import { Bank, type Item, Items, resolveItems } from 'oldschooljs';
 
 import { gearImages } from '@/lib/canvas/gearImageData.js';
@@ -253,7 +253,9 @@ export const genericUsables: {
 			content: 'You open the bottle, reading the scroll inside, and then return it to the ocean...',
 			files: [
 				{
-					buffer: await scriptImageGenerator.generateScriptImage(randArrItem(messageInABottleMessages)),
+					buffer: await scriptImageGenerator.generateScriptImage(
+						randArrItem(messageInABottleMessages) ?? messageInABottleMessages[0]
+					),
 					name: 'image.png'
 				}
 			]

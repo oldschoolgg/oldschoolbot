@@ -50,8 +50,8 @@ export async function minionKillCommand(
 	if (user.usingPet('Ishi')) {
 		name = 'Ogress Warrior';
 	}
-	if (stringMatches(name, 'colosseum')) return colosseumCommand(user, channelId, inputQuantity);
-	if (stringMatches(name, 'zalcano')) return zalcanoCommand(user, channelId, inputQuantity);
+	if (stringMatches(name, 'colosseum')) return colosseumCommand(interaction, inputQuantity);
+	if (stringMatches(name, 'zalcano')) return zalcanoCommand(rng, user, channelId, inputQuantity);
 	if (stringMatches(name, 'tempoross')) return temporossCommand(user, channelId, inputQuantity);
 	if (name.toLowerCase().includes('nightmare')) return nightmareCommand(user, channelId, name, inputQuantity);
 	if (name.toLowerCase().includes('wintertodt')) return wintertodtCommand(user, channelId);

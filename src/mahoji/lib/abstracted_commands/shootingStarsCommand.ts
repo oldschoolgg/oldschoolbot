@@ -208,7 +208,6 @@ export async function shootingStarsCommand({
 	for (const s of stars) {
 		const [timeToMine, newQuantity] = determineMiningTime({
 			quantity: Math.round(s.dustAvailable / usersWith),
-			gearBank: user.gearBank,
 			ore: star,
 			ticksBetweenRolls: currentPickaxe.ticksBetweenRolls,
 			glovesRate: 0,
@@ -236,7 +235,7 @@ export async function shootingStarsCommand({
 		}
 
 		// Roll for pet
-		if (s.petChance && rng.roll(Math.round(Math.min(s.petChance - skills.mining * 25) / newQuantity))) {
+		if (s.petChance && rng.roll(Math.round((s.petChance - skills.mining * 25) / newQuantity))) {
 			loot.add('Rock golem');
 		}
 		if (duration >= (await user.calcMaxTripLength('Mining'))) {

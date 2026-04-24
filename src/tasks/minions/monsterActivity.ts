@@ -8,15 +8,8 @@ import {
 	type UserStatsNeededForMidPvmEffects
 } from '@/lib/bso/pvmEffects.js';
 
-import {
-	calcPerHour,
-	calcWhatPercent,
-	deepEqual,
-	Emoji,
-	reduceNumByPercent,
-	Time,
-	uniqueArr
-} from '@oldschoolgg/toolkit';
+import { calcPerHour, calcWhatPercent, Emoji, reduceNumByPercent, Time, uniqueArr } from '@oldschoolgg/toolkit';
+import { roll } from 'node-rng';
 import { Bank, EMonster, type ItemBank, type MonsterKillOptions, MonsterSlayerMaster, Monsters } from 'oldschooljs';
 import { clone, isDeepEqual } from 'remeda';
 

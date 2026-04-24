@@ -2,8 +2,8 @@ import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 import { globalDroprates } from '@/lib/bso/globalDroprates.js';
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 
-import { randArrItem, roll } from 'node-rng';
 import { SimpleTable } from '@oldschoolgg/toolkit';
+import { randArrItem, roll } from 'node-rng';
 import { Bank, type Item, Items, LootTable } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
@@ -194,6 +194,7 @@ export function calculateZygomiteLoot(minutes: number, userBank: Bank) {
 	for (let i = 0; i < minutes; i++) {
 		if (roll(zygomiteSeedMutChance)) {
 			const randomZyg = randArrItem(zygomiteFarmingSource.filter(z => z.lootTable !== null));
+			if (!randomZyg) continue;
 			const sourceSeed = randomZyg.mutatedFromItems?.roll();
 			if (!sourceSeed) continue;
 			if (userBank.amount(sourceSeed.item.id) < cost.amount(sourceSeed.item.id) + 1) continue;

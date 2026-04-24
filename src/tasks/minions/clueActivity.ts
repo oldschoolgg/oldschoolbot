@@ -1,7 +1,7 @@
 import { incrementUserCounter } from '@/lib/bso/userCounter.js';
 
-import { randInt, roll } from 'node-rng';
 import { Time } from '@oldschoolgg/toolkit';
+import { randInt, roll } from 'node-rng';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';

@@ -11,7 +11,7 @@ type CalcLootXPHuntingOptions = {
 	usingStaminaPotion: boolean;
 	graceful: boolean;
 	experienceScore: number;
-	noRandomness: false;
+	noRandomness: boolean;
 };
 
 export function calcLootXPHunting({

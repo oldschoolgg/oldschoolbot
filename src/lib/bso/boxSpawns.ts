@@ -3,9 +3,9 @@ import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 
 import type { GatewayMessageCreateDispatchData } from '@oldschoolgg/discord';
 import { EmbedBuilder } from '@oldschoolgg/discord';
-import { randArrItem, roll, shuffleArr } from 'node-rng';
 import type { IMessage } from '@oldschoolgg/schemas';
 import { formatOrdinal, isFunction, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { MathRNG, randArrItem, roll } from 'node-rng';
 import { Bank, Items, LootTable, Monsters } from 'oldschooljs';
 
 import { globalConfig } from '@/lib/constants.js';
@@ -74,7 +74,7 @@ const itemChallenge: Challenge = async (msg: IMessage): Promise<MUser | null> =>
 	const randomItem = Items.random();
 	const scrambed = randomItem.name
 		.split(' ')
-		.map(part => shuffleArr([...part]).join(''))
+		.map(part => MathRNG.shuffle([...part]).join(''))
 		.join(' ');
 
 	return runChallenge({
@@ -94,6 +94,7 @@ const createdChallenge: Challenge = async (msg: IMessage): Promise<MUser | null>
 			!isFunction(i.inputItems)
 	);
 	const randomCreatable = randArrItem(all);
+	if (!randomCreatable) return null;
 
 	return runChallenge({
 		msg,
@@ -126,7 +127,8 @@ const monsters = [...Object.values(BSOMonsters), ...killableMonsters]
 
 const monsterDropChallenge: Challenge = async (msg: IMessage): Promise<MUser | null> => {
 	const monster = randArrItem(monsters);
-	const items = shuffleArr(monster.allItems).slice(0, 3);
+	if (!monster) return null;
+	const items = MathRNG.shuffle(monster.allItems).slice(0, 3);
 	const validMonsters = monsters.filter(mon => items.every(t => mon.allItems.includes(t)));
 
 	return runChallenge({
@@ -139,6 +141,7 @@ const monsterDropChallenge: Challenge = async (msg: IMessage): Promise<MUser | n
 
 const collectionLogChallenge: Challenge = async (msg: IMessage): Promise<MUser | null> => {
 	const cl = randArrItem(allCollectionLogsFlat);
+	if (!cl) return null;
 
 	return runChallenge({
 		msg,
@@ -186,15 +189,16 @@ export async function boxSpawnHandler(msg: IMessage) {
 	if (!roll(20)) return;
 	lastDrop = Date.now();
 
-	const item: Challenge = randArrItem([
-		itemChallenge,
-		triviaChallenge,
-		createdChallenge,
-		collectionLogChallenge,
-		collectionLogChallenge,
-		monsterDropChallenge,
-		monsterDropChallenge
-	]);
+	const item: Challenge =
+		randArrItem([
+			itemChallenge,
+			triviaChallenge,
+			createdChallenge,
+			collectionLogChallenge,
+			collectionLogChallenge,
+			monsterDropChallenge,
+			monsterDropChallenge
+		]) ?? itemChallenge;
 	const winner = await item(msg);
 	if (!winner) return;
 	const wonStr = `This is your ${formatOrdinal(await winner.fetchUserStat('main_server_challenges_won'))} challenge win!`;

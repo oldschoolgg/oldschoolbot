@@ -10,7 +10,6 @@ import { calculateCompCapeProgress } from '@/lib/bso/util/calculateCompCapeProgr
 import { findGroupOfUser } from '@/lib/bso/util/findGroupOfUser.js';
 import { repairBrokenItemsFromUser } from '@/lib/bso/util/repairBrokenItems.js';
 
-import type { MInteraction } from '@oldschoolgg/discord';
 import { defaultGearSetup, type EquipmentSlot, type GearSetup } from '@oldschoolgg/gear';
 import {
 	type IBirdhouseData,
@@ -23,7 +22,8 @@ import {
 import { calcWhatPercent, isObject, type PerkTier, Time, UserError, uniqueArr } from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { Mutex } from 'async-mutex';
-import { cryptoRng, SeedableRNG } from 'node-rng/crypto';
+import { randArrItem, SeedableRNG } from 'node-rng';
+import { cryptoRng } from 'node-rng/crypto';
 import { Bank, EMonster, type Item, type ItemBank, Items, itemID } from 'oldschooljs';
 import { clone } from 'remeda';
 
@@ -182,16 +182,8 @@ export class MUserClass extends BaseUser {
 		return getPerkTierCached(this.id) !== null;
 	}
 
-	async fetchPerkTier({
-		guildId,
-		interaction,
-		forceNoCache
-	}: {
-		guildId?: string | null;
-		interaction?: MInteraction;
-		forceNoCache?: boolean;
-	} = {}): Promise<0 | PerkTier> {
-		return await getUsersPerkTier({ user: this, interaction, forceNoCache, guildId });
+	async fetchPerkTier({ forceNoCache }: { forceNoCache?: boolean } = {}): Promise<0 | PerkTier> {
+		return await getUsersPerkTier({ user: this, forceNoCache });
 	}
 
 	hasMonsterRequirements(monster: KillableMonster) {
@@ -1183,7 +1175,10 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 			stepData: mysteriousStepData[currentStepID],
 			nextStepData: mysteriousStepData[(currentStepID + 1) as keyof typeof mysteriousStepData],
 			previousStepData: mysteriousStepData[(currentStepID - 1) as keyof typeof mysteriousStepData],
-			minionMessage: randArrItem(mysteriousStepData[currentStepID].messages).replace('{minion}', this.minionName)
+			minionMessage: (randArrItem(mysteriousStepData[currentStepID].messages) ?? '').replace(
+				'{minion}',
+				this.minionName
+			)
 		};
 	}
 

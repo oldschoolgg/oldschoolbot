@@ -1,7 +1,13 @@
+import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
+import { globalDroprates } from '@/lib/bso/globalDroprates.js';
+
 import { Time } from '@oldschoolgg/toolkit';
-import { EItem, toKMB } from 'oldschooljs';
+import { roll } from 'node-rng';
+import { type Bank, EItem, toKMB } from 'oldschooljs';
 
 import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
+import { Cookables } from '@/lib/skilling/skills/cooking/cooking.js';
 import type { Fish, SkillNameType } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
@@ -26,7 +32,8 @@ export function calcFishingTripResult({
 	usedBarbarianCutEat = false,
 	isPowerfishing = false,
 	sharkLureQuantity,
-	extraCatchRolls = []
+	extraCatchRolls = [],
+	collectionLog
 }: {
 	fish: Fish;
 	duration: number;
@@ -40,6 +47,7 @@ export function calcFishingTripResult({
 	isPowerfishing?: boolean;
 	sharkLureQuantity?: SharkLureQuantity;
 	extraCatchRolls?: number[];
+	collectionLog: Bank;
 }) {
 	const updateBank = new UpdateBank();
 	const messages: string[] = [];
@@ -88,6 +96,7 @@ export function calcFishingTripResult({
 		const xpPerCatch = sharkLureSettings ? sharkLureSettings.xpPerCatch : subfish.xp;
 		fishingXP += quantity * xpPerCatch;
 		const totalLoot = isPowerfishing ? 0 : Math.max(quantity + extraRolls, rawLootQty);
+
 		if (totalLoot > 0) {
 			updateBank.itemLootBank.add(subfish.id, totalLoot);
 		}
@@ -211,14 +220,20 @@ export function calcFishingTripResult({
 	}
 	// BSO Klik pet
 	if (gearBank.usingPet('Klik')) {
-		const cookedFish = Cookables.find(c => Boolean(c.inputCookables[fish.id]));
-		if (cookedFish) {
-			updateBank.itemLootBank.remove(fish.id, quantity);
+		for (const subfish of fish.subfishes ?? []) {
+			const cookedFish = Cookables.find(c => Boolean(c.inputCookables[subfish.id]));
+			if (!cookedFish) continue;
+
+			const quantity = updateBank.itemLootBank.amount(subfish.id);
+			if (quantity <= 0) continue;
+
+			updateBank.itemLootBank.remove(subfish.id, quantity);
 			updateBank.itemLootBank.add(cookedFish.id, quantity);
-			boosts.push(
-				'<:klik:749945070932721676> Klik breathes a incredibly hot fire breath, and cooks all your fish!'
-			);
 		}
+
+		messages.push(
+			'<:klik:749945070932721676> Klik breathes an incredibly hot fire breath, and cooks all your fish!'
+		);
 	}
 
 	if (duration >= MIN_LENGTH_FOR_PET) {
@@ -232,7 +247,7 @@ export function calcFishingTripResult({
 		for (let i = 0; i < minutesInTrip; i++) {
 			if (roll(petChance)) {
 				updateBank.itemLootBank.add('Shelldon');
-				boosts.push(
+				messages.push(
 					'<:shelldon:748496988407988244> A crab steals your fish just as you catch it! After some talking, the crab, called shelldon, decides to join you on your fishing adventures. You can equip Shelldon and he will help you fish!'
 				);
 				break;

@@ -1,5 +1,5 @@
-import { roll } from 'node-rng';
 import { reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { roll } from 'node-rng';
 import { Bank, Items, resolveItems } from 'oldschooljs';
 
 const crateItem = Items.getOrThrow('Frozen crate (s8)');

@@ -1,4 +1,4 @@
-import { calcPerHour, Emoji, Events, formatOrdinal, increaseNumByPercent } from '@oldschoolgg/toolkit';
+import { calcPerHour, increaseNumByPercent } from '@oldschoolgg/toolkit';
 
 import { getTemporossLoot } from '@/lib/simulation/tempoross.js';
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
@@ -7,7 +7,7 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const temporossTask: MinionTask = {
 	type: 'Tempoross',
-	async run(data: TemporossActivityTaskOptions, { user, handleTripFinish, rng }) {
+	async run(data: TemporossActivityTaskOptions, { user, handleTripFinish }) {
 		const { channelId, quantity, rewardBoost, duration } = data;
 
 		const currentLevel = user.skillsAsLevels.fishing;

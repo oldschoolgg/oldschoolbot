@@ -1,6 +1,7 @@
 import '../../lib/customItems/customItems.js';
 import '../data/itemAliases.js';
 
+import { MathRNG, randInt } from 'node-rng';
 import { Bank, EliteMimicTable, type ItemBank, MasterMimicTable } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';

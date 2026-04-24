@@ -82,6 +82,10 @@ export const fletchCommand = defineCommand({
 				'<:scruffy:749945071146762301> To help out, Scruffy is fetching items from the bank for you - making your training much faster! Good boy! (+100% for Scruffy)'
 			);
 		}
+
+		if (fletchKnifeBoost) {
+			boostMsg.push(`**Fletching knife bonus:** -1 tick per item`);
+		}
 		if (user.hasEquippedOrInBank('Dwarven knife')) {
 			boostMsg.push('+100% for Dwarven knife');
 			boost += 1;

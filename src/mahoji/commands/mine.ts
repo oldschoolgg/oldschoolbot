@@ -1,5 +1,5 @@
 import { increaseNumByPercent, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
-import { Items, itemID } from 'oldschooljs';
+import { Items } from 'oldschooljs';
 
 import { QuestID } from '@/lib/minions/data/quests.js';
 import { determineMiningTime } from '@/lib/skilling/functions/determineMiningTime.js';
@@ -181,7 +181,6 @@ export function calculateMiningInput({
 		powermining: isPowermining,
 		goldSilverBoost,
 		miningLvl: effectiveMiningLevel,
-		maxTripLength,
 		hasKaramjaMedium,
 		rng
 	});
@@ -256,6 +255,7 @@ export const mineCommand = defineCommand({
 	],
 	run: async ({ options, user, channelId, rng }) => {
 		const { quantity, powermine } = options;
+		const hasKaramjaMedium = user.hasDiary('karamja.medium');
 
 		const motherlodeMine =
 			stringMatches(Mining.MotherlodeMine.name, options.name) ||
@@ -276,8 +276,6 @@ export const mineCommand = defineCommand({
 			craftingLevel: user.skillLevel('crafting'),
 			strengthLevel: user.skillLevel('strength'),
 			maxTripLength: await user.calcMaxTripLength('Mining'),
-			isPowermining: !!powermine,
-			quantityInput: quantity,
 			hasKaramjaMedium,
 			hasDT2Quest: user.user.finished_quest_ids.includes(QuestID.DesertTreasureII),
 			rng
@@ -305,8 +303,8 @@ export const mineCommand = defineCommand({
 			quantity ? `mined ${newQuantity}x or gets tired` : 'is satisfied'
 		}, it'll take ${
 			quantity
-				? `between ${formatTripDuration(user, res.fakeDurationMin)} **and** ${formatTripDuration(user, res.fakeDurationMax)}`
-				: formatTripDuration(user, res.duration)
+				? `between ${formatTripDuration(user, fakeDurationMin)} **and** ${formatTripDuration(user, fakeDurationMax)}`
+				: formatTripDuration(user, duration)
 		} to finish.`;
 
 		if (user.usingPet('Doug')) {

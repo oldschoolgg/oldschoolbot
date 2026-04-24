@@ -3,7 +3,8 @@ import { handleSpecialCoxLoot } from '@/lib/bso/handleSpecialCoxLoot.js';
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
 
-import { Emoji, Events, formatOrdinal } from '@oldschoolgg/toolkit';
+import { Emoji } from '@oldschoolgg/toolkit';
+import { MathRNG, randArrItem, randomVariation, roll } from 'node-rng';
 import { Bank, ChambersOfXeric, resolveItems } from 'oldschooljs';
 
 import { drawChestLootImage } from '@/lib/canvas/chestImage.js';
@@ -72,7 +73,7 @@ async function handleCoxXP(user: MUser, qty: number, isCm: boolean) {
 
 export const raidsTask: MinionTask = {
 	type: 'Raids',
-	async run(data: RaidsOptions, { handleTripFinish, rng }) {
+	async run(data: RaidsOptions, { handleTripFinish }) {
 		const { channelId, users, challengeMode, duration, leader, quantity: _quantity, cc } = data;
 		const quantity = _quantity ?? 1;
 		const allUsers = await Promise.all(users.map(async u => mUserFetch(u)));
@@ -135,7 +136,7 @@ export const raidsTask: MinionTask = {
 				const hasDust = userData.loot.has('Metamorphic dust') || userData.mUser.cl.has('Metamorphic dust');
 				if (challengeMode && roll(50) && hasDust) {
 					const result = userData.loot.clone().add(userData.mUser.allItemsOwned);
-					const unownedPet = shuffleArr(chambersOfXericMetamorphPets).find(pet => !result.has(pet));
+					const unownedPet = MathRNG.shuffle(chambersOfXericMetamorphPets).find(pet => !result.has(pet));
 					if (unownedPet) {
 						userLoot.add(unownedPet);
 					}

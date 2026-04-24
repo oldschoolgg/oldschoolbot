@@ -1,5 +1,3 @@
-import '../base.js';
-
 import { Table } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 

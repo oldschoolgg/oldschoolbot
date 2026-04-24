@@ -1,4 +1,5 @@
 import { Time } from '@oldschoolgg/toolkit';
+import { roll } from 'node-rng';
 import { Bank, Items, resolveItems } from 'oldschooljs';
 
 import type { TripFinishEffect } from '@/lib/util/handleTripFinish.js';

@@ -1,4 +1,3 @@
-import { Emoji, Events } from '@oldschoolgg/toolkit';
 import { LootTable } from 'oldschooljs';
 
 import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';

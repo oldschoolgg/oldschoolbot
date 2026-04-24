@@ -391,7 +391,7 @@ export class OSRSCanvas {
 		let customImage: Image | null = null;
 
 		if (user && show_paints !== false) {
-			if (show_paints === true || !user.bitfield.includes(BitField.DisablePaints)) {
+			if (show_paints === true || !(user.bitfield?.includes(BitField.DisablePaints) ?? false)) {
 				customImage = await applyCustomItemEffects(user, itemID);
 			}
 		}

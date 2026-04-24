@@ -10,6 +10,7 @@ import {
 	Time,
 	UserError
 } from '@oldschoolgg/toolkit';
+import { percentChance, randInt } from 'node-rng';
 import { Bank, EMonster, type ItemBank, Items, itemID, resolveItems } from 'oldschooljs';
 
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';

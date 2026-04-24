@@ -20,7 +20,6 @@ import { calculateMaximumTameFeedingLevelGain, getTameStatus, sortTames } from '
 import { readFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { bold, time } from '@oldschoolgg/discord';
-import { percentChance, randInt } from 'node-rng';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
@@ -34,6 +33,7 @@ import {
 	Time,
 	toTitleCase
 } from '@oldschoolgg/toolkit';
+import { percentChance, randInt } from 'node-rng';
 import { Bank, type Item, type ItemBank, Items, itemID, resolveItems } from 'oldschooljs';
 import { type Canvas, loadImage } from 'skia-canvas';
 

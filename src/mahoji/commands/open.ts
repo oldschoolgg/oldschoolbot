@@ -1,4 +1,5 @@
-import { clamp, truncateString } from '@oldschoolgg/toolkit';
+import { truncateString } from '@oldschoolgg/toolkit';
+import { clamp } from 'remeda';
 
 import { allOpenables, allOpenablesIDs } from '@/lib/openables.js';
 import {
@@ -54,6 +55,12 @@ export const openCommand = defineCommand({
 			}
 		},
 		{
+			type: 'Integer',
+			name: 'result_quantity',
+			description: 'The quantity of the result item to open until.',
+			required: false
+		},
+		{
 			type: 'Boolean',
 			name: 'disable_pets',
 			description: 'Disables octo & smokey when opening.',
@@ -68,13 +75,28 @@ export const openCommand = defineCommand({
 				1950
 			)}.`;
 		}
-		options.quantity = clamp(options.quantity ?? 1, { min: 1, max: 100_000_000 });
-		if (options.open_until) {
-			return abstractedOpenUntilCommand(rng, user, options.name, options.open_until, options.disable_pets);
+
+		if (options.quantity !== undefined && (!Number.isInteger(options.quantity) || options.quantity < 1)) {
+			return 'The quantity must be a positive integer.';
 		}
+
+		options.quantity = clamp(options.quantity ?? 1, { min: 1, max: 100_000_000 });
+
+		if (options.open_until) {
+			return abstractedOpenUntilCommand(
+				user,
+				options.name,
+				options.open_until,
+				options.disable_pets,
+				options.quantity,
+				options.result_quantity
+			);
+		}
+
 		if (options.name.toLowerCase() === 'all') {
 			return abstractedOpenCommand(rng, interaction, user, ['all'], 'auto', false);
 		}
+
 		return abstractedOpenCommand(rng, interaction, user, [options.name], options.quantity, options.disable_pets);
 	}
 });

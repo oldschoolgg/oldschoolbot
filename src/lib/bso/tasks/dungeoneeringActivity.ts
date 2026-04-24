@@ -8,8 +8,8 @@ import {
 	numberOfGorajanOutfitsEquipped
 } from '@/lib/bso/skills/dungoneering/dungDbFunctions.js';
 
-import { randomVariation, roll } from 'node-rng';
 import { reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { randomVariation, roll } from 'node-rng';
 import { Bank, toKMB } from 'oldschooljs';
 
 export function calculateDungeoneeringResult({

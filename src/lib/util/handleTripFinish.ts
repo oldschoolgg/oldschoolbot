@@ -11,6 +11,7 @@ import { DougTable, PekyTable } from '@/lib/bso/tables/sharedTables.js';
 
 import { type ButtonBuilder, bold } from '@oldschoolgg/discord';
 import { getNextUTCReset, notEmpty, Time } from '@oldschoolgg/toolkit';
+import { MathRNG, randArrItem, randInt, roll } from 'node-rng';
 import { cryptoRng } from 'node-rng/crypto';
 import { Bank, EItem, itemID, toKMB } from 'oldschooljs';
 
@@ -405,7 +406,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 	},
 	{
 		name: 'Divine eggs',
-		fn: async ({ data, user, portents, messages }) => {
+		fn: async ({ data, user, portents, messages, rng }) => {
 			const skillingTypes: activity_type_enum[] = [
 				activity_type_enum.Fishing,
 				activity_type_enum.Mining,
@@ -422,9 +423,14 @@ const tripFinishEffects: TripFinishEffect[] = [
 			if (!charges) return;
 			let eggsReceived = 0;
 			for (let i = 0; i < fiveMinuteSegments; i++) {
-				perHourChance(Time.Minute * 5, 2, () => {
-					eggsReceived += 1;
-				});
+				perHourChance(
+					Time.Minute * 5,
+					2,
+					() => {
+						eggsReceived += 1;
+					},
+					rng
+				);
 			}
 			eggsReceived = Math.min(eggsReceived, charges);
 			if (eggsReceived === 0) return;
@@ -689,9 +695,9 @@ export async function handleTripFinish(
 			loot: loot ?? null,
 			components,
 			messages,
+			portents,
 			lastDailyTimestamp: last_daily_timestamp,
 			lastTearsOfGuthixTimestamp: last_tears_of_guthix_timestamp,
-			perkTier,
 			perkTier,
 			rng: cryptoRng
 		});
@@ -717,8 +723,6 @@ export async function handleTripFinish(
 	if (components.length > 0) {
 		message.addComponents(components);
 	}
-
-	handleTriggerShootingStar(user, data, components);
 
 	message.addAllowedUserMentions([user.id]);
 	if ('users' in data) {

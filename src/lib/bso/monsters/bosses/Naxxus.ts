@@ -2,8 +2,8 @@ import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { makeKillTable, setCustomMonster } from '@/lib/bso/monsters/setCustomMonster.js';
 
 import { GearStat } from '@oldschoolgg/gear';
-import { roll } from 'node-rng';
 import { Time } from '@oldschoolgg/toolkit';
+import { roll } from 'node-rng';
 import { Bank, LootTable, Monsters, resolveItems } from 'oldschooljs';
 
 export function rollNaxxusLoot(quantity = 1, cl?: Bank) {

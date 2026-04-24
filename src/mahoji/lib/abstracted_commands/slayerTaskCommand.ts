@@ -4,6 +4,7 @@ import { EItem, type Monster, Monsters } from 'oldschooljs';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { slayerActionButtons } from '@/lib/slayer/slayerButtons.js';
 import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
+import { SlayerRewardsShop } from '@/lib/slayer/slayerUnlocks.js';
 import {
 	assignNewSlayerTask,
 	calcMaxBlockedTasks,

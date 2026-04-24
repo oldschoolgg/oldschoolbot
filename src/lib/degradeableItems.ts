@@ -1,5 +1,6 @@
 import type { GearSetupType, PrimaryGearSetupType } from '@oldschoolgg/gear';
 import { Time } from '@oldschoolgg/toolkit';
+import { MathRNG } from 'node-rng';
 import { Bank, type Item, Items, itemID, type Monster } from 'oldschooljs';
 
 import type { KillableMonster } from '@/lib/minions/types.js';

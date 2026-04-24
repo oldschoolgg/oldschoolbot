@@ -431,6 +431,24 @@ const fishes: Fish[] = [
 		canPowerfish: true,
 		powerfishTicks: 3,
 		powerfishLostTicks: 0.05
+	},
+	{
+		name: 'Rocktail',
+		alias: ['rocktail', 'rocktails'],
+		subfishes: [
+			{
+				id: itemID('Raw rocktail'),
+				level: 120,
+				xp: 230,
+				intercept: 0.02,
+				slope: 0.0031
+			}
+		],
+		petChance: 129_434,
+		clueScrollChance: 25_434,
+		lostTicks: 0.1,
+		bankingTime: 25,
+		ticksPerRoll: 5
 	}
 ];
 

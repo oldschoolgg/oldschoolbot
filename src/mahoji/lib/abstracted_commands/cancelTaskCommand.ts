@@ -38,15 +38,17 @@ export async function cancelTaskCommand(user: MUser, interaction?: MInteraction)
 	}
 
 	if (currentTask.type === 'Mortimer') {
-		return randArrItem([
-			"Run all you want; you're still trapped in my illusion.",
-			"You think you can flee? I'm the maze you can't escape.",
-			"Escape is futile; you're a part of my act now.",
-			'No exits on this stage, only curtains.',
-			"Where do you think you're going? The show's not over.",
-			'Trying to quit the game? I decide when it ends.',
-			"You can't break free; you're woven into my story now."
-		]);
+		return (
+			randArrItem([
+				"Run all you want; you're still trapped in my illusion.",
+				"You think you can flee? I'm the maze you can't escape.",
+				"Escape is futile; you're a part of my act now.",
+				'No exits on this stage, only curtains.',
+				"Where do you think you're going? The show's not over.",
+				'Trying to quit the game? I decide when it ends.',
+				"You can't break free; you're woven into my story now."
+			]) ?? "You can't escape Mortimer's illusion."
+		);
 	}
 
 	if ('users' in currentTask && currentTask.users.length > 1) {

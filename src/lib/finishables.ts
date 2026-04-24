@@ -6,6 +6,7 @@ import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
 import { NEX_UNIQUE_DROPRATE, NexMonster } from '@/lib/bso/monsters/nex.js';
 
 import { notEmpty, stringMatches } from '@oldschoolgg/toolkit';
+import { cryptoRng } from 'node-rng/crypto';
 import {
 	Bank,
 	BeginnerCasket,
@@ -152,7 +153,7 @@ export const finishables: Finishable[] = [
 		cl: wintertodtCL,
 		aliases: ['todt', 'wintertodt', 'wt'],
 		kill: ({ accumulatedLoot, rng }) => {
-			new Bank(
+			const loot = new Bank(
 				WintertodtCrate.open({
 					points: 500,
 					itemsOwned: accumulatedLoot,
@@ -170,7 +171,7 @@ export const finishables: Finishable[] = [
 				})
 			);
 			// Wintertoad: Assume 1 game per 5 minutes, Wintertoad rate is 1 in 3k minutes
-			if (roll(600)) loot.add('Wintertoad');
+			if (rng.roll(600)) loot.add('Wintertoad');
 			return loot;
 		}
 	},
@@ -185,8 +186,8 @@ export const finishables: Finishable[] = [
 		cl: nexCL.filter(i => i !== itemID('Frozen key')),
 		kill: () => {
 			const loot = new Bank(NexMonster.table.kill(1, {}));
-			if (roll(NEX_UNIQUE_DROPRATE(1))) {
-				loot.add(randArrItem(nexUniqueDrops), 1);
+			if (cryptoRng.roll(NEX_UNIQUE_DROPRATE(1))) {
+				loot.add(cryptoRng.pick(nexUniqueDrops)!, 1);
 			}
 			return loot;
 		}

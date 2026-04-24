@@ -6,8 +6,8 @@ import type { CustomMonster } from '@/lib/bso/monsters/CustomMonster.js';
 import { runeWeaponTable } from '@/lib/bso/tables/sharedTables.js';
 
 import { GearStat } from '@oldschoolgg/gear';
-import { randomVariation, roll, shuffleArr } from 'node-rng';
 import { Time, uniqueArr } from '@oldschoolgg/toolkit';
+import { MathRNG, randomVariation, roll } from 'node-rng';
 import { Bank, LootTable, Monsters, resolveItems } from 'oldschooljs';
 
 const JewelleryTable = new LootTable()
@@ -103,7 +103,7 @@ export const VladimirDrakan: CustomMonster = {
 				'Vampyre hunter cuffs',
 				'Vampyre hunter hat'
 			]);
-			const unownedPiece = shuffleArr(outfit).find(i => !cl.has(i));
+			const unownedPiece = MathRNG.shuffle(outfit).find(i => !cl.has(i));
 			if (unownedPiece && roll(32)) {
 				loot.add(unownedPiece);
 			}

@@ -8,6 +8,7 @@ import {
 	reduceNumByPercent,
 	Time
 } from '@oldschoolgg/toolkit';
+import { MathRNG } from 'node-rng';
 import { Bank, type ChambersOfXericOptions, type Item, Items } from 'oldschooljs';
 
 import { checkUserCanUseDegradeableItem } from '@/lib/degradeableItems.js';

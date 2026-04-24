@@ -19,16 +19,15 @@ export async function wintertodtCommand(user: MUser, channelId: string, quantity
 	// Up to a 10% boost for 99 WC
 	const wcBoost = (wcLevel + 1) / 10;
 
-	const boosts: string[] = [];
-	const foodStr: string[] = [];
+	const messages: string[] = [];
 
 	if (wcBoost > 1) {
-		boosts.push(`**Boosts:** ${wcBoost.toFixed(2)}% for Woodcutting level`);
+		messages.push(`**Boosts:** ${wcBoost.toFixed(2)}% for Woodcutting level`);
 	}
 
 	if (user.hasEquippedOrInBank('Dwarven greataxe')) {
 		durationPerTodt /= 2;
-		boosts.push('2x faster for Dwarven greataxe.');
+		messages.push('2x faster for Dwarven greataxe.');
 	}
 
 	durationPerTodt = reduceNumByPercent(durationPerTodt, wcBoost);
@@ -72,10 +71,10 @@ export async function wintertodtCommand(user: MUser, channelId: string, quantity
 			continue;
 		}
 
-		foodStr.push(`**Food:** ${healAmountNeeded} HP/kill`);
+		messages.push(`**Food:** ${healAmountNeeded} HP/kill`);
 
 		if (healAmountNeeded !== baseHealAmountNeeded) {
-			foodStr.push(
+			messages.push(
 				`Reduced from ${baseHealAmountNeeded}, -${calcWhatPercent(
 					baseHealAmountNeeded - healAmountNeeded,
 					baseHealAmountNeeded
@@ -85,7 +84,7 @@ export async function wintertodtCommand(user: MUser, channelId: string, quantity
 
 		const cost = new Bank().add(food.id, amountNeeded);
 
-		foodStr.push(`**Removed ${cost}**`);
+		messages.push(`**Removed ${cost}**`);
 
 		await user.removeItemsFromBank(cost);
 
@@ -121,5 +120,5 @@ export async function wintertodtCommand(user: MUser, channelId: string, quantity
 	return `${user.minionName} is now off to kill Wintertodt ${quantity}x times, their trip will return in about ${formatTripDuration(
 		user,
 		durationPerTodt * quantity
-	)}. (${formatDuration(durationPerTodt)} per Wintertodt)\n\n${messages.join('')}.`;
+	)}. (${formatDuration(durationPerTodt)} per Wintertodt)${messages.length > 0 ? `\n\n${messages.join(', ')}.` : ''}`;
 }

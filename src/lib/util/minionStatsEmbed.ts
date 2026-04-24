@@ -2,6 +2,7 @@ import { MALEDICT_MORTIMER_ID } from '@/lib/bso/maledictMortimer.js';
 
 import { EmbedBuilder } from '@oldschoolgg/discord';
 import { sumArr, toTitleCase } from '@oldschoolgg/toolkit';
+import { MathRNG } from 'node-rng';
 import { Bank, convertXPtoLVL, type ItemBank, toKMB } from 'oldschooljs';
 import type { SkillsScore } from 'oldschooljs/hiscores';
 

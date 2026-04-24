@@ -3,9 +3,8 @@ import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/skills/divinatio
 import { clueUpgraderEffect } from '@/lib/bso/skills/invention/effects/clueUpgraderEffect.js';
 import { forcefullyUnequipItem } from '@/lib/bso/util/forcefullyUnequipItem.js';
 
-import { percentChance, randInt, roll } from 'node-rng';
-import { Events, Time } from '@oldschoolgg/toolkit';
-import { Bank, Items, resolveItems } from 'oldschooljs';
+import { Time } from '@oldschoolgg/toolkit';
+import { Items, resolveItems } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { Thieving } from '@/lib/skilling/skills/thieving/index.js';
@@ -29,7 +28,6 @@ export function calcLootXPPickpocketing(
 	hasThievingCape: boolean,
 	hasDiary: boolean,
 	armband: boolean,
-	hasDiary: boolean,
 	rng: { percentChance: (percent: number) => boolean }
 ): [number, number, number, number] {
 	let xpReceived = 0;
@@ -110,10 +108,15 @@ export const pickpocketTask: MinionTask = {
 		if (user.hasEquipped("Thieves' armband")) {
 			boosts.push('3x loot for Thieves armband');
 			updateBank.itemLootBank.multiply(3, notMultiplied);
-			await perHourChance(duration, 40, async () => {
-				await forcefullyUnequipItem(user, Items.getOrThrow("Thieves' armband"));
-				boosts.push('Your thieves armband broke!');
-			});
+			await perHourChance(
+				duration,
+				40,
+				async () => {
+					await forcefullyUnequipItem(user, Items.getOrThrow("Thieves' armband"));
+					boosts.push('Your thieves armband broke!');
+				},
+				rng
+			);
 		} else {
 			const { didCharge } = await chargePortentIfHasCharges({
 				user,

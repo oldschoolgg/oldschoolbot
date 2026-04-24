@@ -3,6 +3,7 @@ import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
 
 import { ECombatOption } from '@oldschoolgg/schemas';
 import { notEmpty, stringMatches } from '@oldschoolgg/toolkit';
+import { randInt } from 'node-rng';
 import { type Bank, EMonster, type Monster, Monsters, resolveItems } from 'oldschooljs';
 
 import { caTiers } from '@/lib/combat_achievements/combatAchievements.js';

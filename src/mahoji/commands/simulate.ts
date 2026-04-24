@@ -60,8 +60,7 @@ function simulateColosseumRuns(samples = 100) {
 				hasSungodAxe: true,
 				hasGora: true,
 				hasBHook: true,
-				hasBulwark: true
-				bloodFuryCharges: 0,
+				hasBulwark: true,
 				rng: MathRNG
 			});
 			totalDuration += result.realDuration;

@@ -106,18 +106,18 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 		| 'bitfield';
 
 	const bitFieldsToKeep: BitField[] = [
-		BitField.IsPatronTier1,
-		BitField.IsPatronTier2,
-		BitField.IsPatronTier3,
-		BitField.IsPatronTier4,
-		BitField.IsPatronTier5,
-		BitField.isModerator,
+		BitField.PatronTier1,
+		BitField.PatronTier2,
+		BitField.PatronTier3,
+		BitField.PatronTier4,
+		BitField.PatronTier5,
+		BitField.Moderator,
 		BitField.BypassAgeRestriction,
 		BitField.HasPermanentEventBackgrounds,
 		BitField.HasPermanentTierOne,
 		BitField.DisabledRandomEvents,
 		BitField.AlwaysSmallBank,
-		BitField.IsPatronTier6
+		BitField.PatronTier6
 	];
 
 	const createOptions: Required<Pick<Prisma.UserCreateInput, KeysThatArentReset>> = {

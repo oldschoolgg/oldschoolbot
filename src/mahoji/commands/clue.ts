@@ -1,8 +1,10 @@
 import { checkElderClueRequirements } from '@/lib/bso/elderClueRequirements.js';
 
-import { increaseNumByPercent, isWeekend, notEmpty, stringMatches, Time } from '@oldschoolgg/toolkit';
-import { Bank, clamp, type Item, type ItemBank, Items } from 'oldschooljs';
+import { formatDuration, increaseNumByPercent, isWeekend, notEmpty, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
+import { clamp } from 'remeda';
 
+import { MessageBuilderClass } from '@/discord/MessageBuilder.js';
 import { type ClueTier, ClueTiers } from '@/lib/clues/clueTiers.js';
 import { clueHunterOutfit } from '@/lib/data/CollectionsExport.js';
 import { getPOHObject } from '@/lib/poh/index.js';
@@ -406,10 +408,12 @@ ${reqs.unmetRequirements.map(str => `- ${str}`).join('\n')}`;
 			type: 'ClueCompletion'
 		});
 
+		const response = new MessageBuilderClass();
+		const implingLootString = '';
 		response.setContent(
 			`${user.minionName} is now completing ${quantity}x ${
 				clueTier.name
-			} clues, it'll take around ${formatTripDuration(duration)} to finish (${((quantity / duration) * 3600000).toFixed(1)}/hr).${
+			} clues, it'll take around ${formatTripDuration(user, duration)} to finish (${((quantity / duration) * 3600000).toFixed(1)}/hr).${
 				boosts.length > 0 ? `\n\n**Boosts:** ${boosts.join(', ')}.` : ''
 			}${implingLootString}`
 		);

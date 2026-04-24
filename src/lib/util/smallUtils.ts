@@ -1,7 +1,8 @@
 import { createHash } from 'node:crypto';
 import { gzip } from 'node:zlib';
-import { clamp, objectEntries, stripEmojis, toTitleCase } from '@oldschoolgg/toolkit';
+import { objectEntries, stripEmojis, toTitleCase } from '@oldschoolgg/toolkit';
 import { type ArrayItemsResolved, type Bank, Items } from 'oldschooljs';
+import { clamp } from 'remeda';
 
 import { type BitField, BitFieldData } from '@/lib/constants.js';
 import { skillEmoji } from '@/lib/data/emojis.js';

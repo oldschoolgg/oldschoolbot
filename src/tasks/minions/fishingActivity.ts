@@ -88,7 +88,8 @@ export const fishingTask: MinionTask = {
 			usedBarbarianCutEat,
 			isPowerfishing: powerfish,
 			sharkLureQuantity,
-			extraCatchRolls: extraCatchRollsArray
+			extraCatchRolls: extraCatchRollsArray,
+			collectionLog: user.cl
 		});
 
 		if (fish.moonKeyHalfCatchRate) {
@@ -103,16 +104,6 @@ export const fishingTask: MinionTask = {
 			});
 		}
 
-		if (user.usingPet('Klik')) {
-			const cookedFish = Cookables.find(c => Boolean(c.inputCookables[fish.id]));
-			if (cookedFish) {
-				loot.remove(fish.id, quantity);
-				loot.add(cookedFish.id, quantity);
-				str +=
-					'\n<:klik:749945070932721676> Klik breathes a incredibly hot fire breath, and cooks all your fish!';
-			}
-		}
-
 		const updateResult = await result.updateBank.transact(user);
 		if (typeof updateResult === 'string') {
 			throw new Error(`Fishing trip update bank failed: ${updateResult}`);
@@ -123,24 +114,6 @@ export const fishingTask: MinionTask = {
 		let message = `${user}, ${user.minionName} finished fishing ${result.totalCatches} ${fish.name}. `;
 		if (powerfish) {
 			message += '\n**Since you were powerfishing, you dropped all of those fish on the ground!**\n';
-		}
-
-		if (duration >= MIN_LENGTH_FOR_PET) {
-			const minutesInTrip = Math.ceil(duration / 1000 / 60);
-			const petChance = clAdjustedDroprate(
-				user,
-				'Shelldon',
-				globalDroprates.shelldon.baseRate,
-				globalDroprates.shelldon.clIncrease
-			);
-			for (let i = 0; i < minutesInTrip; i++) {
-				if (rng.roll(petChance)) {
-					loot.add('Shelldon');
-					str +=
-						'\n<:shelldon:748496988407988244> A crab steals your fish just as you catch it! After some talking, the crab, called shelldon, decides to join you on your fishing adventures. You can equip Shelldon and he will help you fish!';
-					break;
-				}
-			}
 		}
 
 		const bonusXpEntries = Object.entries(result.bonusXpPerHour ?? {}).filter(([, value]) => value);

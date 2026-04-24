@@ -1,5 +1,5 @@
-import { MathRNG, randArrItem, SeedableRNG } from 'node-rng';
 import { averageArr, calcPercentOfNum, gaussianRandom, toTitleCase } from '@oldschoolgg/toolkit';
+import { MathRNG, randArrItem, SeedableRNG } from 'node-rng';
 import { type Item, Items } from 'oldschooljs';
 
 import type { FishingContestCatch } from '@/prisma/main.js';

@@ -1,6 +1,8 @@
 import { CHINCANNON_MESSAGES } from '@/lib/bso/bsoConstants.js';
 
-import { Emoji, Events, formatOrdinal, miniID } from '@oldschoolgg/toolkit';
+import { Emoji, miniID } from '@oldschoolgg/toolkit';
+import { randArrItem, roll } from 'node-rng';
+import { cryptoRng } from 'node-rng/crypto';
 import { Bank } from 'oldschooljs';
 
 import { drawChestLootImage } from '@/lib/canvas/chestImage.js';
@@ -43,7 +45,7 @@ function handleTobXP(user: MUser, isHm: boolean, xpCounter: XPCounter): void {
 
 export const tobTask: MinionTask = {
 	type: 'TheatreOfBlood',
-	async run(data: TheatreOfBloodTaskOptions, { handleTripFinish }) {
+	async run(data: TheatreOfBloodTaskOptions, { handleTripFinish, rng: taskRng }) {
 		const {
 			channelId,
 			users,
@@ -53,9 +55,9 @@ export const tobTask: MinionTask = {
 			duration,
 			deaths: allDeaths,
 			quantity,
-			cc: chincannonUser,
-			rng
+			cc: chincannonUser
 		} = data;
+		const rng = taskRng ?? cryptoRng;
 		const allUsers = await Promise.all(users.map(async u => mUserFetch(u)));
 		const uniqueUsersMap = new Map<string, MUser>();
 		for (const user of allUsers) {
@@ -139,7 +141,7 @@ export const tobTask: MinionTask = {
 
 				const { cl } = user;
 				if (hardMode && rng.roll(30) && cl.has("Lil' zik") && cl.has('Sanguine dust')) {
-					const unownedPet = rng.shuffle(tobMetamorphPets).find(pet => !bank.has(pet));
+					const unownedPet = rng.shuffle(tobMetamorphPets).find((pet: number | string) => !bank.has(pet));
 					if (unownedPet) {
 						userLoot.add(unownedPet);
 					}

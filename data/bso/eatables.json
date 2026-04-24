@@ -194,6 +194,12 @@
 		"raw": null
 	},
 	{
+		"name": "Rainbow fish",
+		"id": 10136,
+		"heal_amount": 11,
+		"raw": null
+	},
+	{
 		"name": "Raw yeti meat",
 		"id": 71576,
 		"heal_amount": 26,

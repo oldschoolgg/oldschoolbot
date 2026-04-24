@@ -2,8 +2,8 @@ import type { BathhouseTaskOptions } from '@/lib/bso/bsoTypes.js';
 import { calculateBathouseResult } from '@/lib/bso/minigames/baxtorianBathhouses.js';
 
 import { userMention } from '@oldschoolgg/discord';
-import { randArrItem, roll } from 'node-rng';
 import { uniqueArr } from '@oldschoolgg/toolkit';
+import { randArrItem, roll } from 'node-rng';
 import { resolveItems } from 'oldschooljs';
 
 export const bathhouseTask: MinionTask = {

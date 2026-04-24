@@ -1,7 +1,7 @@
 import { IVY_MAX_TRIP_LENGTH_BOOST } from '@/lib/bso/bsoConstants.js';
 import { InventionID, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 
-import { increaseNumByPercent, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
+import { formatDuration, increaseNumByPercent, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
 import { Items, itemID, resolveItems } from 'oldschooljs';
 
 import { determineWoodcuttingTime } from '@/lib/skilling/functions/determineWoodcuttingTime.js';
@@ -200,7 +200,8 @@ export const chopCommand = defineCommand({
 				powerchopping: Boolean(powerchop),
 				forestry: forestry_events,
 				woodcuttingLvl: wcLvl,
-				maxTripLength
+				maxTripLength,
+				rng
 			});
 			const boostRes = await inventionItemBoost({
 				user,

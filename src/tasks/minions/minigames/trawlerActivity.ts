@@ -1,6 +1,6 @@
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 
-import { calcPercentOfNum } from '@oldschoolgg/toolkit';
+import { roll } from 'node-rng';
 import { Bank } from 'oldschooljs';
 
 import { fishingTrawlerLoot } from '@/lib/simulation/fishingTrawler.js';

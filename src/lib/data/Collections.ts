@@ -64,7 +64,6 @@ import { inventionCL } from '@/lib/bso/skills/invention/inventions.js';
 import { slayerMasksHelmsCL } from '@/lib/bso/skills/slayer/slayerMaskHelms.js';
 import { getAllIgneTameKCs, tameKillableMonsters } from '@/lib/bso/tames/tames.js';
 
-import { CollectionLog } from '@oldschoolgg/collectionlog';
 import { calcWhatPercent, notEmpty, stringMatches, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import {
 	Bank,

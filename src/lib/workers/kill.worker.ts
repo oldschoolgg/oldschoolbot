@@ -6,8 +6,7 @@ import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { bsoKillableMonsters } from '@/lib/bso/monsters/bsoKillableMonsters.js';
 
 import { stringMatches } from '@oldschoolgg/toolkit';
-import { MathRNG } from 'node-rng';
-import { Bank, calcDropRatesFromBank, Misc, Monsters, resolveItems } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { simulatedKillables } from '@/lib/simulation/simulatedKillables.js';

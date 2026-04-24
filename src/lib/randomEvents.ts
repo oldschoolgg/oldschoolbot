@@ -1,4 +1,5 @@
 import { Time } from '@oldschoolgg/toolkit';
+import { MathRNG } from 'node-rng';
 import { Bank, ItemGroups, LootTable } from 'oldschooljs';
 
 import { activity_type_enum } from '@/prisma/main/enums.js';

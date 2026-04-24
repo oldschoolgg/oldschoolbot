@@ -5,8 +5,8 @@ import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/skills/divinatio
 import { InventionID } from '@/lib/bso/skills/invention/inventions.js';
 import { type StoneSpirit, stoneSpirits } from '@/lib/bso/skills/mining/stoneSpirits.js';
 
-import { randInt } from 'node-rng';
 import { increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { randInt } from 'node-rng';
 import { Bank, itemID, toKMB } from 'oldschooljs';
 
 import { upgradedDragonstoneOutfit } from '@/lib/data/CollectionsExport.js';
@@ -189,7 +189,7 @@ export function calculateMiningResult({
 				loot.remove(ore.id, loot.amount(ore.id));
 				loot.add(barsFromKlikBank);
 				messages.push(
-					'<:klik:749945070932721676> Klik breathes a incredibly hot fire breath, and smelts all your ores!'
+					'<:klik:749945070932721676> Klik breathes an incredibly hot fire breath, and smelts all your ores!'
 				);
 			}
 		}

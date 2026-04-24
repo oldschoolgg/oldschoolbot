@@ -1,15 +1,6 @@
 import type { ButtonBuilder } from '@oldschoolgg/discord';
-import {
-	calcWhatPercent,
-	Events,
-	formatDuration,
-	formatOrdinal,
-	reduceNumByPercent,
-	round,
-	stringMatches,
-	Time
-} from '@oldschoolgg/toolkit';
-import { Bank, Items, itemID } from 'oldschooljs';
+import { calcWhatPercent, formatDuration, reduceNumByPercent, round, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { Bank, Items } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';

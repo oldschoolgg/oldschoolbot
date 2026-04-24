@@ -2,7 +2,6 @@ import { BSOItem } from '@/lib/bso/BSOItem.js';
 import type { DOAStoredRaid } from '@/lib/bso/bsoTypes.js';
 
 import { bold } from '@oldschoolgg/discord';
-import { percentChance, randArrItem, randInt } from 'node-rng';
 import {
 	calcPercentOfNum,
 	formatDuration,
@@ -11,6 +10,7 @@ import {
 	reduceNumByPercent,
 	Time
 } from '@oldschoolgg/toolkit';
+import { percentChance, randArrItem, randInt } from 'node-rng';
 import { Bank, type ItemBank, Items, itemID, resolveItems } from 'oldschooljs';
 import { clamp } from 'remeda';
 

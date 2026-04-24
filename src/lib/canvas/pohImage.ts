@@ -15,6 +15,11 @@ import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 import { DUNGEON_FLOOR_Y, GROUND_FLOOR_Y, HOUSE_WIDTH, Placeholders, TOP_FLOOR_Y } from '@/lib/poh/index.js';
 
 const CONSTRUCTION_IMG_DIR = './src/lib/poh/images';
+const BG_PATH_CANDIDATES = [
+	['bg_1.jpg', 'bg_1.png'],
+	['bg_2.jpg', 'bg_2.png'],
+	['bg_3.jpg', 'bg_3.png']
+] as const;
 const FOLDERS = [
 	'prayer_altar',
 	'mounted_cape',
@@ -40,10 +45,20 @@ class PoHImage {
 	public bgImages: CanvasImage[] = [];
 	public ready: boolean = false;
 
+	private async loadBackgroundImage(candidates: readonly string[]) {
+		for (const candidate of candidates) {
+			const fullPath = path.join(CONSTRUCTION_IMG_DIR, candidate);
+			if (fs.existsSync(fullPath)) {
+				return loadImage(fullPath);
+			}
+		}
+		throw new Error(`Missing PoH background image, checked: ${candidates.join(', ')}`);
+	}
+
 	async init() {
-		this.bgImages.push(await loadImage('./src/lib/poh/images/bg_1.jpg'));
-		this.bgImages.push(await loadImage('./src/lib/poh/images/bg_2.jpg'));
-		this.bgImages.push(await loadImage('./src/lib/poh/images/bg_3.jpg'));
+		for (const candidates of BG_PATH_CANDIDATES) {
+			this.bgImages.push(await this.loadBackgroundImage(candidates));
+		}
 		for (const folder of FOLDERS) {
 			const currentPath = path.join(CONSTRUCTION_IMG_DIR, folder);
 			const filesInDir = await fs.promises.readdir(currentPath);

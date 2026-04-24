@@ -1,7 +1,6 @@
 import type { NewBossOptions } from '@/lib/bso/bsoTypes.js';
 
 import type { GearStats } from '@oldschoolgg/gear';
-import { randFloat } from 'node-rng';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
@@ -13,6 +12,7 @@ import {
 	Time,
 	UserError
 } from '@oldschoolgg/toolkit';
+import { randFloat } from 'node-rng';
 import { Bank } from 'oldschooljs';
 
 import type { GearSetupType } from '@/prisma/main.js';

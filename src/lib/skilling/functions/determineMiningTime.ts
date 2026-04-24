@@ -32,7 +32,6 @@ export function determineMiningTime({
 	passedDuration,
 	hasGlory,
 	maxTripLength,
-	gearBank,
 	hasKaramjaMedium,
 	rng
 }: MiningTimeOptions): [number, number] {
@@ -76,7 +75,7 @@ export function determineMiningTime({
 		while (!rng.percentChance(chanceOfSuccess)) {
 			timeElapsed += effectiveTicksBetween;
 		}
-		if (!percentChance(glovesRate)) {
+		if (!rng.percentChance(glovesRate)) {
 			timeElapsed += respawnTimeOrPick;
 		}
 		newQuantity++;

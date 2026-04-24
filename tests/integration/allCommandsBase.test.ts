@@ -130,8 +130,8 @@ export async function generateCommandInputs(
 }
 
 const bitfields = [
-	BitField.IsPatronTier3,
-	BitField.IsPatronTier1,
+	BitField.PatronTier3,
+	BitField.PatronTier1,
 	BitField.HasDexScroll,
 	BitField.CleanHerbsFarming,
 	BitField.ShowDetailedInfo,
