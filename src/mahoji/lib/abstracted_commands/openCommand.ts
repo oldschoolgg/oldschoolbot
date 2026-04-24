@@ -46,22 +46,26 @@ export const OpenUntilItems = uniqueArr(allOpenables.map(i => i.allItems).flat(2
 	});
 
 export async function abstractedOpenUntilCommand(
+	rng: RNGProvider,
 	user: MUser,
 	name: string,
 	openUntilItem: string,
-	disable_pets: boolean | undefined,
-	quantity: number | undefined,
-	resultQuantity: number | undefined
+	maxOpenQuantity?: number,
+	result_quantity?: number,
+	disable_pets?: boolean | undefined
 ) {
-	if (quantity === undefined) quantity = 1;
-	if (quantity < 1 || !Number.isInteger(quantity)) {
-		return 'The quantity must be a positive integer.';
-	}
-	if (resultQuantity === undefined) resultQuantity = 1;
-	if (resultQuantity < 1 || !Number.isInteger(resultQuantity)) {
+	const targetQuantity = result_quantity ?? 1;
+	if (targetQuantity < 1 || !Number.isInteger(targetQuantity)) {
 		return 'The result quantity must be a positive integer.';
 	}
+	if (maxOpenQuantity !== undefined && (maxOpenQuantity < 1 || !Number.isInteger(maxOpenQuantity))) {
+		return 'The quantity must be a positive integer.';
+	}
 
+	const perkTier = await user.fetchPerkTier();
+	if (maxOpenQuantity === undefined && perkTier < PerkTier.Three) {
+		return patronMsg(PerkTier.Three);
+	}
 	name = name.replace(regex, '$1');
 	const openableItem = allOpenables.find(o => o.aliases.some(alias => stringMatches(alias, name)));
 	if (!openableItem) return "That's not a valid item.";
@@ -73,11 +77,6 @@ export async function abstractedOpenUntilCommand(
 	}
 	if (!openable.allItems.includes(openUntil.id)) {
 		return `${openable.openedItem.name} doesn't drop ${openUntil.name}.`;
-	}
-
-	const perkTier = await user.fetchPerkTier();
-	if (quantity === undefined && perkTier < PerkTier.Three) {
-		return patronMsg(PerkTier.Three);
 	}
 
 	let amountOfThisOpenableOwned = user.bank.amount(openableItem.id);
@@ -96,20 +95,17 @@ export async function abstractedOpenUntilCommand(
 	const cost = new Bank();
 	const loot = new Bank();
 	let amountOpened = 0;
-	const max = Math.min(10000, amountOfThisOpenableOwned, quantity);
+	let targetCount = 0;
+	const maxOpenLimit = maxOpenQuantity ?? amountOfThisOpenableOwned;
+	const max = Math.min(10000, amountOfThisOpenableOwned, maxOpenLimit);
 	const totalLeaguesPoints = (await roboChimpUserFetch(user.id)).leagues_points_total;
 	for (let i = 0; i < max; i++) {
 		cost.add(openable.openedItem.id);
-		const thisLoot = await getOpenableLoot({
-			rng: cryptoRng,
-			openable,
-			quantity: 1,
-			user,
-			totalLeaguesPoints
-		});
+		const thisLoot = await getOpenableLoot({ openable, quantity: 1, user, rng, totalLeaguesPoints });
 		loot.add(thisLoot.bank);
 		amountOpened++;
-		if (loot.amount(openUntil.id) >= resultQuantity) break;
+		targetCount = loot.amount(openUntil.id);
+		if (targetCount >= targetQuantity) break;
 	}
 
 	// Now that we have the final total, we add the key cost:
@@ -122,10 +118,12 @@ export async function abstractedOpenUntilCommand(
 		cost,
 		loot,
 		messages: [
-			`You opened ${amountOpened}x ${openable.openedItem.name}, ${
-				loot.has(openUntil.id)
-					? `until you got a ${openUntil.name}!`
-					: `but you didn't get a ${openUntil.name}!`
+			`You opened ${amountOpened}x ${openable.openedItem.name} ${
+				targetCount === 0
+					? `but you didn't get a ${openUntil.name}!`
+					: targetCount >= targetQuantity
+						? `and successfully obtained ${targetCount}x ${openUntil.name}.`
+						: `but only received ${targetCount}/${targetQuantity}x ${openUntil.name}.`
 			}`
 		],
 		openables: [openable],
@@ -169,7 +167,8 @@ async function finalizeOpening({
 	openables: UnifiedOpenable[];
 	disable_pets: boolean;
 }) {
-	if (!user.bank.has(cost)) return `You don't have ${cost}.`;
+	const { bank } = user;
+	if (!bank.has(cost)) return new MessageBuilder().setContent(`You don't have ${cost}.`);
 	const newOpenableScores = await addToOpenablesScores(user, kcBank);
 
 	const hasSmokey = !disable_pets && user.allItemsOwned.has('Smokey');
@@ -213,9 +212,6 @@ async function finalizeOpening({
 	}
 	if (smokeyMsg) messages.push(smokeyMsg);
 
-	if (!user.owns(cost)) {
-		return `You don't own: ${cost}.`;
-	}
 	const { previousCL } = await user.transactItems({
 		itemsToRemove: cost,
 		itemsToAdd: loot,

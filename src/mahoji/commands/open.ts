@@ -84,12 +84,13 @@ export const openCommand = defineCommand({
 
 		if (options.open_until) {
 			return abstractedOpenUntilCommand(
+				rng,
 				user,
 				options.name,
 				options.open_until,
-				options.disable_pets,
 				options.quantity,
-				options.result_quantity
+				options.result_quantity,
+				options.disable_pets
 			);
 		}
 
