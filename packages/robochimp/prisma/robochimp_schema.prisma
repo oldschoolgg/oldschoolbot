@@ -56,6 +56,8 @@ model User {
   bso_cl_percent  Float?
   osb_mastery     Float?
   bso_mastery     Float?
+  osb_prize_bank  Json   @default("{}") @db.JsonB
+  bso_prize_bank  Json   @default("{}") @db.JsonB
 
   store_bitfield Int[]
 
