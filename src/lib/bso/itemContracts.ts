@@ -237,7 +237,7 @@ async function donateICHandler(interaction: MInteraction): CommandResponse {
 		await tradePlayerItems(donator, user, cost);
 		await donator.statsBankUpdate('ic_donations_given_bank', cost);
 		await user.statsBankUpdate('ic_donations_received_bank', cost);
-		const handInResult = await handInContract(interaction, user);
+		const handInResult = await handInContract(interaction, user, { skipConfirmation: true });
 		const nextIcDetails = getItemContractDetails(user);
 		if (!nextIcDetails) {
 			Logging.logError(
@@ -265,7 +265,11 @@ ${Emoji.ItemContract} Your next contract is: ${nextIcDetails.currentItem?.name} 
 	}
 }
 
-async function handInContract(interaction: MInteraction, user: MUser): Promise<string> {
+async function handInContract(
+	interaction: MInteraction,
+	user: MUser,
+	options: { skipConfirmation?: boolean } = {}
+): Promise<string> {
 	const details = getItemContractDetails(user);
 	if (!details) {
 		return resetBrokenContracts(user);
@@ -281,7 +285,7 @@ async function handInContract(interaction: MInteraction, user: MUser): Promise<s
 			current_item_contract: pickItemContract(streak),
 			last_item_contract_date: Date.now()
 		});
-		return handInContract(interaction, user);
+		return handInContract(interaction, user, options);
 	}
 
 	if (!owns) {
@@ -290,9 +294,11 @@ async function handInContract(interaction: MInteraction, user: MUser): Promise<s
 	const cost = new Bank().add(currentItem.id);
 	const newStreak = streak + 1;
 
-	await interaction.confirmation(
-		`Are you sure you want to hand in ${cost} for your ${formatOrdinal(newStreak)} Item Contract?`
-	);
+	if (!options.skipConfirmation) {
+		await interaction.confirmation(
+			`Are you sure you want to hand in ${cost} for your ${formatOrdinal(newStreak)} Item Contract?`
+		);
+	}
 
 	const loot = new Bank().add(contractTable.roll());
 	let gotBonus = '';

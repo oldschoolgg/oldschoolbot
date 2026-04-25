@@ -1,5 +1,5 @@
-import { randArrItem, roll } from '@oldschoolgg/rng';
 import { Emoji } from '@oldschoolgg/toolkit';
+import { randArrItem, roll } from 'node-rng';
 import { Bank, Items, resolveItems } from 'oldschooljs';
 
 // roll(chanceToDouble) to decide if the item doubles
@@ -64,11 +64,11 @@ export async function feedHammyCommand(interaction: MInteraction, user: MUser, i
 		const loot = new Bank();
 		loot.add(firstItem.id);
 		await user.addItemsToBank({ items: loot, collectionLog: false });
-		return randArrItem(hammyDoubleMessages).replace(/\{item\}/g, firstItem.name);
+		return randArrItem(hammyDoubleMessages)!.replace(/\{item\}/g, firstItem.name);
 	}
 	if (roll(chanceToSave)) {
-		return randArrItem(hammyFailMessages).replace(/\{item\}/g, firstItem.name);
+		return randArrItem(hammyFailMessages)!.replace(/\{item\}/g, firstItem.name);
 	}
 	await user.removeItemsFromBank(new Bank().add(firstItem.id));
-	return randArrItem(hammyMessages).replace(/\{item\}/g, firstItem.name);
+	return randArrItem(hammyMessages)!.replace(/\{item\}/g, firstItem.name);
 }
