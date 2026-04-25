@@ -1,3 +1,5 @@
+import type { MegaDuckLocation } from '@/lib/bso/megaDuck.js';
+
 import {
 	type IChannel,
 	type IEmoji,
@@ -12,7 +14,7 @@ import { Time } from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake, MockedRedis, RedisKeys } from '@oldschoolgg/util';
 import { Redis } from 'ioredis';
 
-import type { Guild } from '@/prisma/main.js';
+import type { Guild, Prisma } from '@/prisma/main.js';
 import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
 import type { RobochimpUser } from '@/lib/roboChimp.js';
 import { fetchUsernameAndCache } from '@/lib/util.js';
@@ -48,6 +50,10 @@ const RATELIMITS: Record<RatelimitType, RatelimitConfig> = {
 } as const;
 
 const BotKeys = RedisKeys[BOT_TYPE];
+type CachedGuildSettings = Pick<Guild, 'id' | 'disabledCommands' | 'petchannel' | 'staffOnlyChannels'>;
+type GuildUpdateInput = Partial<IGuild> & {
+	mega_duck_location?: MegaDuckLocation | Prisma.InputJsonValue;
+};
 
 class CacheManager {
 	private client: Redis;
@@ -95,7 +101,7 @@ class CacheManager {
 		await pipeline.exec();
 	}
 
-	private async getGuildSettings(id: string): Promise<Guild | null> {
+	private async getGuildSettings(id: string): Promise<CachedGuildSettings | null> {
 		const guildSettings = await prisma.guild.findUnique({
 			where: { id },
 			select: {
@@ -137,19 +143,21 @@ class CacheManager {
 		return guild;
 	}
 
-	public async updateGuild(guildId: string, updates: Partial<IGuild>) {
+	public async updateGuild(guildId: string, updates: GuildUpdateInput) {
 		const guildSettings = await prisma.guild.upsert({
 			where: { id: guildId },
 			create: {
 				id: guildId,
 				disabledCommands: updates.disabled_commands ?? undefined,
 				petchannel: updates.petchannel ?? undefined,
-				staffOnlyChannels: updates.staff_only_channels ?? undefined
+				staffOnlyChannels: updates.staff_only_channels ?? undefined,
+				mega_duck_location: updates.mega_duck_location as Prisma.InputJsonValue | undefined
 			},
 			update: {
 				disabledCommands: updates.disabled_commands ?? undefined,
 				petchannel: updates.petchannel ?? undefined,
-				staffOnlyChannels: updates.staff_only_channels ?? undefined
+				staffOnlyChannels: updates.staff_only_channels ?? undefined,
+				mega_duck_location: updates.mega_duck_location as Prisma.InputJsonValue | undefined
 			}
 		});
 

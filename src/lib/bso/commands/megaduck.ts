@@ -170,7 +170,7 @@ export const megaDuckCommand = defineCommand({
 		}
 		newLocation.steps.push([newLocation.x, newLocation.y]);
 		await Cache.updateGuild(guildId, {
-			mega_duck_location: newLocation as any
+			mega_duck_location: newLocation
 		});
 		if (
 			!locationIsFinished(location) &&
@@ -193,7 +193,7 @@ export const megaDuckCommand = defineCommand({
 				placesVisited: [...newLocation.placesVisited, 'ocean']
 			};
 			await Cache.updateGuild(guildId, {
-				mega_duck_location: newT as any
+				mega_duck_location: newT
 			});
 
 			const guild = await globalClient.fetchGuild(guildId).catch(() => null);
