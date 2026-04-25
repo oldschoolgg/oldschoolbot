@@ -6,7 +6,7 @@ import { slayerMaskHelms } from '@/lib/bso/skills/slayer/slayerMaskHelms.js';
 
 import { increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { roll } from 'node-rng';
-import { Bank, type ItemBank, MonsterAttribute, Monsters } from 'oldschooljs';
+import { type Bank, type ItemBank, MonsterAttribute, Monsters } from 'oldschooljs';
 
 import type { BitField } from '@/lib/constants.js';
 import type { KillableMonster } from '@/lib/minions/types.js';

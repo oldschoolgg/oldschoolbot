@@ -11,11 +11,10 @@ import {
 	ZRole
 } from '@oldschoolgg/schemas';
 import { Time } from '@oldschoolgg/toolkit';
-import { isValidDiscordSnowflake, RedisKeys } from '@oldschoolgg/util';
+import { isValidDiscordSnowflake, MockedRedis, RedisKeys } from '@oldschoolgg/util';
 import { Redis } from 'ioredis';
 
 import type { Guild } from '@/prisma/main.js';
-import { MockedRedis } from '@/lib/cache/redis-mock.js';
 import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
 import type { RobochimpUser } from '@/lib/roboChimp.js';
 import type { PrismaCompatibleJsonObject } from '@/lib/types/index.js';
@@ -34,19 +33,14 @@ type RatelimitConfig = {
 	max: number;
 };
 
-type RatelimitType =
-	| 'random_events'
-	| 'global_buttons'
-	| 'stats_command'
-	| 'delay_member_fetch'
-	| 'megaduck_command';
+type RatelimitType = 'random_events' | 'global_buttons' | 'stats_command' | 'delay_member_fetch' | 'megaduck_command';
 
 const RATELIMITS: Record<RatelimitType, RatelimitConfig> = {
 	global_buttons: { windowSeconds: 2, max: 1 },
 	random_events: { windowSeconds: TTL.Hour * 3, max: 5 },
 	stats_command: { windowSeconds: 5, max: 1 },
 	delay_member_fetch: { windowSeconds: TTL.Hour, max: 1 },
-	megaduck_command: { windowSeconds: 3, max: 1 },
+	megaduck_command: { windowSeconds: 3, max: 1 }
 } as const;
 
 const BotKeys = RedisKeys[BOT_TYPE];
