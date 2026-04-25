@@ -263,7 +263,9 @@ class BankImageTask {
 			[itemID('Monkey egg'), this.bananaEffect!],
 			[itemID('Dragon egg'), this.redEffect!],
 			[itemID('Eagle egg'), this.easterEffect],
-			[itemID('Wubbles'), this.wubblesEffect!]
+			[itemID('Hoppy'), this.easterEffect],
+			[itemID('Wubbles'), this.wubblesEffect!],
+			[itemID('Seer'), this.whiteEffect!]
 		];
 
 		for (const [itemId, itemEffect] of coolItemEffects) {
