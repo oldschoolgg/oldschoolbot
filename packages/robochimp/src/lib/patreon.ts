@@ -309,7 +309,7 @@ class PatreonTask {
 			if (!userWithThisGithubID) continue;
 			const rUser = new RUser(userWithThisGithubID);
 			if (rUser.perkTierRaw < PerkTier.Two) continue;
-			const freeT3 = [Bits.Mod, Bits.Admin, Bits.WikiContributor].some(bit => rUser.bits.includes(bit));
+			const freeT3 = [Bits.Moderator, Bits.Admin, Bits.WikiContributor].some(bit => rUser.bits.includes(bit));
 			if (freeT3 && rUser.perkTierRaw <= PerkTier.Four) continue;
 			const res = await this.validatePerks(
 				userWithThisGithubID.id,
@@ -374,7 +374,7 @@ class PatreonTask {
 	async updateFreePerks() {
 		const freeTierThree = await roboChimpClient.user.findMany({
 			where: {
-				OR: [Bits.Admin, Bits.Mod, Bits.WikiContributor, Bits.IsContributor].map(bit => ({
+				OR: [Bits.Admin, Bits.Moderator, Bits.WikiContributor, Bits.Contributor].map(bit => ({
 					bits: { has: bit }
 				}))
 			},
@@ -479,7 +479,7 @@ AND u1.id <> u2.id
 					}
 				});
 			}
-			const getFreeT3 = [Bits.Mod, Bits.Admin, Bits.WikiContributor].some(bit => user.bits.includes(bit));
+			const getFreeT3 = [Bits.Moderator, Bits.Admin, Bits.WikiContributor].some(bit => user.bits.includes(bit));
 
 			// If their last payment was more than a month ago, remove their status and continue.
 			if (
