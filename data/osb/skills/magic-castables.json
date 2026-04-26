@@ -1259,6 +1259,147 @@
 		"craft_level": 61
 	},
 	{
+		"id": 2361,
+		"name": "Superheat Adamantite bar",
+		"level": 43,
+		"xp": 53,
+		"input": {
+			"449": 1,
+			"453": 6,
+			"554": 4,
+			"561": 1
+		},
+		"output": {
+			"2361": 1
+		},
+		"ticks": 3,
+		"smithing_level": 70,
+		"smithing_xp": 37.5
+	},
+	{
+		"id": 2349,
+		"name": "Superheat Bronze bar",
+		"level": 43,
+		"xp": 53,
+		"input": {
+			"436": 1,
+			"438": 1,
+			"554": 4,
+			"561": 1
+		},
+		"output": {
+			"2349": 1
+		},
+		"ticks": 3,
+		"smithing_level": 1,
+		"smithing_xp": 6.2
+	},
+	{
+		"id": 2357,
+		"name": "Superheat Gold bar",
+		"level": 43,
+		"xp": 53,
+		"input": {
+			"444": 1,
+			"554": 4,
+			"561": 1
+		},
+		"output": {
+			"2357": 1
+		},
+		"ticks": 3,
+		"smithing_level": 40,
+		"smithing_xp": 22.5
+	},
+	{
+		"id": 2351,
+		"name": "Superheat Iron bar",
+		"level": 43,
+		"xp": 53,
+		"input": {
+			"440": 1,
+			"554": 4,
+			"561": 1
+		},
+		"output": {
+			"2351": 1
+		},
+		"ticks": 3,
+		"smithing_level": 15,
+		"smithing_xp": 12.5
+	},
+	{
+		"id": 2359,
+		"name": "Superheat Mithril bar",
+		"level": 43,
+		"xp": 53,
+		"input": {
+			"447": 1,
+			"453": 4,
+			"554": 4,
+			"561": 1
+		},
+		"output": {
+			"2359": 1
+		},
+		"ticks": 3,
+		"smithing_level": 50,
+		"smithing_xp": 30
+	},
+	{
+		"id": 2363,
+		"name": "Superheat Runite bar",
+		"level": 43,
+		"xp": 53,
+		"input": {
+			"451": 1,
+			"453": 8,
+			"554": 4,
+			"561": 1
+		},
+		"output": {
+			"2363": 1
+		},
+		"ticks": 3,
+		"smithing_level": 85,
+		"smithing_xp": 50
+	},
+	{
+		"id": 2355,
+		"name": "Superheat Silver bar",
+		"level": 43,
+		"xp": 53,
+		"input": {
+			"442": 1,
+			"554": 4,
+			"561": 1
+		},
+		"output": {
+			"2355": 1
+		},
+		"ticks": 3,
+		"smithing_level": 20,
+		"smithing_xp": 13.7
+	},
+	{
+		"id": 2353,
+		"name": "Superheat Steel bar",
+		"level": 43,
+		"xp": 53,
+		"input": {
+			"440": 1,
+			"453": 2,
+			"554": 4,
+			"561": 1
+		},
+		"output": {
+			"2353": 1
+		},
+		"ticks": 3,
+		"smithing_level": 30,
+		"smithing_xp": 17.5
+	},
+	{
 		"id": 2509,
 		"name": "Tan Black Dragon Leather",
 		"input": {
