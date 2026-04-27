@@ -1,6 +1,7 @@
 import { Bank, convertLVLtoXP } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
+import { BitField } from '@/lib/constants.js';
 import { mockMUser } from './userutil.js';
 
 const testUser = mockMUser({
@@ -65,5 +66,22 @@ describe('MUser.test', () => {
 	test('cl', () => {
 		expect(testUser.cl.has('Coal')).toEqual(true);
 		expect(testUser.cl.length).toEqual(1);
+	});
+	test('isModPlus', () => {
+		expect(
+			mockMUser({
+				bitfield: [BitField.Moderator, BitField.Praetor]
+			}).isModPlus()
+		).toEqual(true);
+		expect(
+			mockMUser({
+				bitfield: [BitField.Praetor]
+			}).isModPlus()
+		).toEqual(false);
+		expect(
+			mockMUser({
+				bitfield: [BitField.Moderator]
+			}).isModPlus()
+		).toEqual(false);
 	});
 });

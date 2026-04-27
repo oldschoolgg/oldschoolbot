@@ -136,6 +136,7 @@ After becoming an ironman:
 		BitField.PatronTier4,
 		BitField.PatronTier5,
 		BitField.Moderator,
+		BitField.Praetor,
 		BitField.BypassAgeRestriction,
 		BitField.HasPermanentEventBackgrounds,
 		BitField.HasPermanentTierOne,

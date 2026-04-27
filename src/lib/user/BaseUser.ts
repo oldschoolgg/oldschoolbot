@@ -366,6 +366,9 @@ export class BaseUser {
 	isMod(): boolean {
 		return this.bitfield.includes(BitField.Moderator);
 	}
+	isModPlus(): boolean {
+		return this.isMod() && this.bitfield.includes(BitField.Praetor);
+	}
 	isContributor(): boolean {
 		return this.bitfield.includes(BitField.Contributor);
 	}

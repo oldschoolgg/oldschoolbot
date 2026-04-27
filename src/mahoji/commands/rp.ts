@@ -21,6 +21,7 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { migrateUser } from '@/lib/util/migrateUser.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { refreshUserCache } from '@/lib/util/refreshCache.js';
+import { tradePlayerItems } from '@/lib/util/tradePlayerItems.js';
 import { insertUserEvent } from '@/lib/util/userEvents.js';
 import { gifs } from '@/mahoji/commands/admin.js';
 import { getUserInfo } from '@/mahoji/commands/minion.js';
@@ -273,6 +274,36 @@ export const rpCommand = defineCommand({
 				},
 				{
 					type: 'Subcommand',
+					name: 'transfer_bank',
+					description: "Transfer a user's bank into another account",
+					options: [
+						{
+							type: 'User',
+							name: 'source',
+							description: 'Source account to transfer items out of',
+							required: true
+						},
+						{
+							type: 'User',
+							name: 'target',
+							description: 'Target account to receive the transferred items',
+							required: true
+						},
+						{
+							type: 'Boolean',
+							name: 'untradeables',
+							description: 'Include untradeable items as well',
+							required: false
+						},
+						{
+							type: 'String',
+							name: 'reason',
+							description: 'The reason'
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
 					name: 'list_trades',
 					description: 'Show trades between users',
 					options: [
@@ -416,6 +447,7 @@ export const rpCommand = defineCommand({
 	run: async ({ options, user: adminUser, interaction, guildId, rng }) => {
 		await interaction.defer();
 		const isAdmin = adminUser.isAdmin();
+		const isModPlus = adminUser.isModPlus();
 		const isMod = isAdmin || adminUser.isMod();
 		if (!guildId || (globalConfig.isProduction && guildId.toString() !== globalConfig.supportServerID)) {
 			return rng.pick(gifs);
@@ -680,6 +712,74 @@ Date: ${dateFm(date)}`;
 				return 'Done';
 			}
 			return result;
+		}
+
+		if (options.player?.transfer_bank) {
+			if (!isAdmin && !isModPlus) {
+				return rng.pick(gifs);
+			}
+
+			const { source, target, reason, untradeables = false } = options.player.transfer_bank;
+			if (untradeables && !isAdmin) {
+				return 'Only admins can transfer untradeables.';
+			}
+			if (source.user.id === target.user.id) {
+				return 'Target cannot be the same as the source!';
+			}
+
+			const sourceUser = await mUserFetch(source.user.id);
+			const targetUser = await mUserFetch(target.user.id);
+
+			if (!isAdmin && (isProtectedAccount(sourceUser) || isProtectedAccount(targetUser))) {
+				return 'Only admins can transfer banks to or from protected accounts.';
+			}
+
+			const itemsToTransfer = new Bank();
+			for (const [item, qty] of sourceUser.bank.items()) {
+				if (!untradeables && !itemIsTradeable(item.id, true)) continue;
+				itemsToTransfer.add(item.id, qty);
+			}
+			if (itemsToTransfer.length === 0) {
+				return `${sourceUser.logName} has no ${untradeables ? '' : 'tradeable '}items to transfer.`;
+			}
+
+			const transferPreview = itemsToTransfer.toString();
+			const transferPreviewDisplay =
+				transferPreview.length > 1500 ? `${transferPreview.slice(0, 1500)}...` : transferPreview;
+			await interaction.confirmation(
+				`Transfer ${transferPreviewDisplay} from \`${sourceUser.logName}\` to \`${targetUser.logName}\`${
+					untradeables ? ', including untradeables' : ''
+				}?`
+			);
+
+			const result = await tradePlayerItems(sourceUser, targetUser, itemsToTransfer, new Bank());
+			if (!result.success) {
+				return `Transfer failed because: ${result.message}`;
+			}
+
+			await prisma.economyTransaction.create({
+				data: {
+					guild_id: BigInt(guildId),
+					sender: BigInt(sourceUser.id),
+					recipient: BigInt(targetUser.id),
+					items_sent: itemsToTransfer.toJSON(),
+					items_received: undefined,
+					type: 'admin'
+				}
+			});
+
+			const fullTransfer = itemsToTransfer.toStringFull();
+			await globalClient.sendMessage(Channel.BotLogs, {
+				content: `${adminUser.logName} transferred ${transferPreview.slice(0, 500)} from ${sourceUser.logName} to ${
+					targetUser.logName
+				}${untradeables ? ' (including untradeables)' : ''}${reason ? `, for ${reason}` : ''}`,
+				files:
+					fullTransfer.length > 500
+						? [{ buffer: Buffer.from(fullTransfer), name: 'transfer_bank.txt' }]
+						: undefined
+			});
+
+			return `Transferred ${transferPreviewDisplay} from ${sourceUser.mention} to ${targetUser.mention}.`;
 		}
 		if (options.player?.list_trades) {
 			const baseSql =
