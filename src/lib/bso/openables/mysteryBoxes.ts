@@ -57,8 +57,10 @@ export const mysteryBoxTypeTables = [
 	{ abbreviation: 'PMB', itemIDs: PMBTable.allItems }
 ] as const;
 
+type MysteryBoxAbbreviation = (typeof mysteryBoxTypeTables)[number]['abbreviation'] | 'IRON_PMB';
+
 export function getMysteryBoxAbbreviationsForItem(targetItemID: number) {
-	const abbreviations = mysteryBoxTypeTables
+	const abbreviations: MysteryBoxAbbreviation[] = mysteryBoxTypeTables
 		.filter(table => table.itemIDs.includes(targetItemID))
 		.map(table => table.abbreviation);
 
