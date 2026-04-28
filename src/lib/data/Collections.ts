@@ -127,6 +127,7 @@ import {
 	volcanicMineCL,
 	vorkathCL,
 	wintertodtCL,
+	yamaCL,
 	zalcanoCL,
 	zulrahCL
 } from '@/lib/data/CollectionsExport.js';
@@ -583,9 +584,10 @@ export const allCollectionLogs: ICollection = {
 				items: wintertodtCL,
 				fmtProg: mgProg('wintertodt')
 			},
-			///	Yama: {
-			///		items: CollectionLog.Yami.items
-			///	},
+			Yama: {
+				items: yamaCL,
+				allItems: Monsters.Yama.allItems
+			},
 			Zalcano: { items: zalcanoCL, fmtProg: ({ stats }) => `${stats.kcBank[EMonster.ZALCANO] ?? 0} KC` },
 			Zulrah: {
 				alias: Monsters.Zulrah.aliases,

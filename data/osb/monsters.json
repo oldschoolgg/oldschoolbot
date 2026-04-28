@@ -1,6 +1,6 @@
 {
-	"hash": "b13cccd1bbe5e0be98a4dfea453f16a7",
-	"date": "2026-03-27T09:56:04.388Z",
+	"hash": "846a28b827c304707b076c8f3366fafb",
+	"date": "2026-04-28T10:43:28.262Z",
 	"data": [
 		{
 			"id": 2,
@@ -6157,6 +6157,32 @@
 			"items_required": ["Boots of stone"],
 			"qp_required": 0,
 			"item_in_bank_boosts": [],
+			"can_barrage": false,
+			"can_chin": false,
+			"can_cannon": false,
+			"cannon_multi": false
+		},
+		{
+			"id": 14176,
+			"name": "Yama",
+			"base_kill_time_ms": 480000,
+			"respawn_time_ms": 5000,
+			"is_wildy": false,
+			"is_slayer_only": false,
+			"can_be_pked": false,
+			"is_wildy_multi": false,
+			"items_required": [],
+			"qp_required": 115,
+			"item_in_bank_boosts": [
+				{
+					"Arclight": 10,
+					"Darklight": 6,
+					"Emberlight": 15
+				},
+				{
+					"Lightbearer": 2
+				}
+			],
 			"can_barrage": false,
 			"can_chin": false,
 			"can_cannon": false,

@@ -76,7 +76,14 @@ export async function abstractedOpenUntilCommand(
 	const max = Math.min(10000, amountOfThisOpenableOwned, maxOpenLimit);
 	for (let i = 0; i < max; i++) {
 		cost.add(openable.openedItem.id);
-		const thisLoot = await getOpenableLoot({ openable, quantity: 1, user, rng });
+		const thisLoot = await getOpenableLoot({
+			openable,
+			quantity: 1,
+			user,
+			rng,
+			openedCountOffset: amountOpened,
+			previousLoot: loot
+		});
 		loot.add(thisLoot.bank);
 		amountOpened++;
 		targetCount = loot.amount(openUntil.id);

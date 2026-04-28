@@ -31,6 +31,7 @@ import { Vardorvis } from './Vardorvis.js';
 import { Vorkath } from './Vorkath.js';
 import { CorporealBeast } from './wildy/CorporealBeast.js';
 import { allWildyBosses } from './wildy/index.js';
+import { Yama } from './Yama.js';
 import { Zulrah } from './Zulrah.js';
 
 export const allBosses: Record<string, SimpleMonster> = {
@@ -67,6 +68,7 @@ export const allBosses: Record<string, SimpleMonster> = {
 	Branda,
 	Eldric,
 	RoyalTitans,
+	Yama,
 	...allWildyBosses,
 	...allSlayerBosses
 };
