@@ -1,9 +1,10 @@
-import { Emoji, formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { Emoji, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { randInt, randomVariation } from 'node-rng';
 import { Bank, Items } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export const OuraniaBuyables = [
 	{
@@ -89,7 +90,8 @@ export async function odsStartCommand(user: MUser, channelId: string) {
 	await user.removeItemsFromBank(cost);
 	await ClientSettings.updateBankSetting('ods_cost', cost);
 
-	let str = `${user.minionName} is now off to do ${quantity} deliveries. The total trip will take ${formatDuration(
+	let str = `${user.minionName} is now off to do ${quantity} deliveries. The total trip will take ${formatTripDuration(
+		user,
 		duration
 	)}. Removed ${cost} from your bank.`;
 

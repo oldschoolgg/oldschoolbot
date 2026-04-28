@@ -6,6 +6,7 @@ import { Bank, Items } from 'oldschooljs';
 
 import { type Eatable, Eatables } from '@/lib/data/eatables.js';
 import { getRealHealAmount } from '@/lib/minions/functions/getUserFoodFromBank.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export const kibbleCommand = defineCommand({
 	name: 'kibble',
@@ -113,7 +114,7 @@ export const kibbleCommand = defineCommand({
 
 		let message = `${user.minionName} is now creating ${options.quantity}x ${
 			kibble.item.name
-		}, it will take ${formatDuration(duration)}. Removed ${cost} from your bank.`;
+		}, it will take ${formatTripDuration(user, duration)}. Removed ${cost} from your bank.`;
 		if (user.usingPet('Remy')) {
 			message += '\n**Boosts:** 2x boost for Remy';
 		}

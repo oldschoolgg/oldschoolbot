@@ -2,11 +2,12 @@ import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { BossInstance } from '@/lib/bso/structures/Boss.js';
 
 import { EmbedBuilder } from '@oldschoolgg/discord';
-import { formatDuration, sumArr, Time } from '@oldschoolgg/toolkit';
+import { sumArr, Time } from '@oldschoolgg/toolkit';
 import { randInt } from 'node-rng';
 import { Bank } from 'oldschooljs';
 
 import { Gear } from '@/lib/structures/Gear.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export const vasaBISGear = new Gear({
 	head: 'Gorajan occult helmet',
@@ -70,7 +71,8 @@ export async function vasaCommand(interaction: MInteraction, user: MUser, channe
 	});
 	const { bossUsers } = await instance.start();
 	const embed = new EmbedBuilder().setDescription(
-		`Your team is off to fight ${instance.quantity}x Vasa Magus. The total trip will take ${formatDuration(
+		`Your team is off to fight ${instance.quantity}x Vasa Magus. The total trip will take ${formatTripDuration(
+			user,
 			instance.duration
 		)}.
 

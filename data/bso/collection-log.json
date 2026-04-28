@@ -10963,6 +10963,10 @@
 				],
 				"counts": false
 			},
+			"easter_2026": {
+				"items": ["Magnabbit", "Magnegg", "Wabbit eggs"],
+				"counts": false
+			},
 			"thanksgiving_2021": {
 				"items": ["Burnt turkey", "Cornucopia", "Raw turkey", "Turkey", "Turkey drumstick"],
 				"counts": false
@@ -10985,6 +10989,7 @@
 					"Hoppy",
 					"Kuro",
 					"Leia",
+					"Magnabbit",
 					"Mini mortimer",
 					"Mini Pumpkinhead",
 					"Mumpkin",
@@ -10997,8 +11002,7 @@
 					"Snappy the Turtle",
 					"Tasty",
 					"Waddles",
-					"Wubbles",
-					"Wubufu"
+					"Wubbles"
 				],
 				"counts": false
 			},
@@ -11319,7 +11323,8 @@
 					"Golden cape shard",
 					"Golden partyhat",
 					"Golden shard",
-					"The whale card"
+					"The whale card",
+					"Wubufu"
 				],
 				"counts": false
 			},
