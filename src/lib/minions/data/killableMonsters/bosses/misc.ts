@@ -1473,6 +1473,7 @@ export const miscBossKillables: KillableMonster[] = [
 		customMonsterHP: 2500,
 		difficultyRating: 10,
 		notifyDrops: resolveItems(['Yami']),
+		itemsRequired: resolveItems(['Purging staff']),
 		qpRequired: 115,
 		itemInBankBoosts: [
 			{

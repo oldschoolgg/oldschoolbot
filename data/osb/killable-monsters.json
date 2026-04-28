@@ -9705,6 +9705,7 @@
 		"custom_monster_hp": 2500,
 		"difficulty_rating": 10,
 		"notify_drops": ["Yami"],
+		"items_required": ["Purging staff"],
 		"qp_required": 115,
 		"item_in_bank_boosts": [
 			{
