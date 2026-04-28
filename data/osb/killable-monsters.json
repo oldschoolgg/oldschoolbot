@@ -9702,6 +9702,7 @@
 		"name": "Yama",
 		"time_to_finish": 480000,
 		"respawn_time": 5000,
+		"custom_monster_hp": 2500,
 		"difficulty_rating": 10,
 		"notify_drops": ["Yami"],
 		"qp_required": 115,

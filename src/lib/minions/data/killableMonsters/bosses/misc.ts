@@ -1470,6 +1470,7 @@ export const miscBossKillables: KillableMonster[] = [
 		timeToFinish: Time.Minute * 8,
 		respawnTime: 5000,
 		table: Monsters.Yama,
+		customMonsterHP: 2500,
 		difficultyRating: 10,
 		notifyDrops: resolveItems(['Yami']),
 		qpRequired: 115,

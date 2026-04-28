@@ -421,7 +421,7 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 							degItem.charges({
 								killableMon: monster,
 								osjsMonster: osjsMon!,
-								totalHP: (osjsMon?.data.hitpoints ?? 100) * quantity,
+								totalHP: (monster.customMonsterHP ?? osjsMon?.data?.hitpoints ?? 100) * quantity,
 								duration
 							})
 						);
