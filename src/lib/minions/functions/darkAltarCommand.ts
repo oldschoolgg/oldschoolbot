@@ -1,7 +1,8 @@
-import { formatDuration, increaseNumByPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { increaseNumByPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import type { DarkAltarOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 
 export const darkAltarRunes = {
@@ -108,7 +109,8 @@ export async function darkAltarCommand({
 		useExtracts: extracts
 	});
 
-	let response = `${user.minionName} is now going to Runecraft ${runeData.item.name}'s for ${formatDuration(
+	let response = `${user.minionName} is now going to Runecraft ${runeData.item.name}'s for ${formatTripDuration(
+		user,
 		duration
 	)} at the Dark altar.`;
 

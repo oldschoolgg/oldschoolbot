@@ -1,3 +1,7 @@
+---
+title: "Celestara"
+---
+
 ## Celestara
  
 Celestara is a high-level melee only boss. Igne tames cannot be used to kill Celestara.

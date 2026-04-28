@@ -1,11 +1,18 @@
 import { EmbedBuilder, userMention } from '@oldschoolgg/discord';
-import { noOp, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
-import { Bank, convertLVLtoXP, ItemGroups, Items, itemID, MAX_INT_JAVA } from 'oldschooljs';
+import { noOp, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { Bank, convertLVLtoXP, ItemGroups, Items, itemID, MAX_INT_JAVA, resolveItems } from 'oldschooljs';
 
 import { xp_gains_skill_enum } from '@/prisma/main.js';
+import {
+	bitfieldCanUserManipulate,
+	changeBitFieldForUser,
+	getBitFieldData,
+	listBitFields
+} from '@/lib/bitFieldUtils.js';
 import { allStashUnitsFlat, allStashUnitTiers } from '@/lib/clues/stashUnits.js';
 import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
 import { BitFieldData, globalConfig } from '@/lib/constants.js';
+import { spiritAnglerOutfit } from '@/lib/data/CollectionsExport.js';
 import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '@/lib/data/cox.js';
 import { leaguesCreatables } from '@/lib/data/creatables/leagueCreatables.js';
 import { Eatables } from '@/lib/data/eatables.js';
@@ -30,7 +37,6 @@ import { allSlayerMonsters } from '@/lib/slayer/tasks/index.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import type { SafeUserUpdateInput } from '@/lib/user/update.js';
 import { parseStringBank } from '@/lib/util/parseStringBank.js';
-import { isValidBitField } from '@/lib/util/smallUtils.js';
 import { fetchBingosThatUserIsInvolvedIn } from '@/mahoji/commands/bingo.js';
 import { gearViewCommand } from '@/mahoji/lib/abstracted_commands/gearCommands.js';
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
@@ -212,6 +218,32 @@ for (const food of Eatables.map(food => food.id)) {
 	foodPreset.addItem(food, 100_000);
 }
 
+const anglerOutfit = resolveItems(['Angler hat', 'Angler top', 'Angler waders', 'Angler boots']);
+const fishingPreset = new Bank()
+	.add('Fish sack barrel')
+	.add('Fish barrel')
+	.add("Rada's blessing 4")
+	.add('Shark lure', MAX_INT_JAVA)
+	.add('Feather', MAX_INT_JAVA)
+	.add('Fishing bait', MAX_INT_JAVA)
+	.add('Raw karambwanji', MAX_INT_JAVA)
+	.add('Fishing bait', MAX_INT_JAVA)
+	.add('Sandworms', MAX_INT_JAVA)
+	.add('Spirit flakes', MAX_INT_JAVA)
+	.add('Crystal shard', MAX_INT_JAVA)
+	.add('Stripy feather', MAX_INT_JAVA)
+	.add('Pearl fly fishing rod')
+	.add('Pearl fishing rod')
+	.add('Fly fishing rod')
+	.add('Fishing rod')
+	.add('Oily fishing rod')
+	.add('Crystal harpoon')
+	.add('Infernal harpoon')
+	.add('Dark fishing bait', MAX_INT_JAVA);
+for (const anglerPiece of [...spiritAnglerOutfit, ...anglerOutfit]) {
+	fishingPreset.add(anglerPiece);
+}
+
 const runePreset = new Bank()
 	.add('Air rune', MAX_INT_JAVA)
 	.add('Mind rune', MAX_INT_JAVA)
@@ -235,6 +267,7 @@ const runePreset = new Bank()
 	.add('Steam rune', MAX_INT_JAVA);
 
 const spawnPresets = [
+	['fishing', fishingPreset],
 	['openables', openablesBank],
 	['random', new Bank()],
 	['equippables', equippablesBank],
@@ -699,44 +732,18 @@ export const testPotatoCommand = globalConfig.isProduction
 				}
 
 				if (options.bitfield) {
-					const bitInput = options.bitfield.add ?? options.bitfield.remove;
-					const bitEntry = Object.entries(BitFieldData).find(i => i[0] === bitInput);
-					const action: 'add' | 'remove' = options.bitfield.add ? 'add' : 'remove';
-					if (!bitEntry) {
-						return Object.entries(BitFieldData)
-							.map(entry => `**${entry[0]}:** ${entry[1]?.name}`)
-							.join('\n');
+					if (!options.bitfield.add && !options.bitfield.remove) {
+						return 'you must choose a valid bitfield from either add or remove';
 					}
-					const bit = Number.parseInt(bitEntry[0]);
+					const aor = () => Boolean(options.bitfield!.add);
 
-					if (
-						!bit ||
-						!isValidBitField(bit) ||
-						[7, 8].includes(bit) ||
-						(action !== 'add' && action !== 'remove')
-					) {
-						return 'Invalid bitfield.';
-					}
-
-					let newBits = [...user.bitfield];
-
-					if (action === 'add') {
-						if (newBits.includes(bit)) {
-							return "Already has this bit, so can't add.";
-						}
-						newBits.push(bit);
-					} else {
-						if (!newBits.includes(bit)) {
-							return "Doesn't have this bit, so can't remove.";
-						}
-						newBits = newBits.filter(i => i !== bit);
-					}
-
-					await user.update({
-						bitfield: uniqueArr(newBits)
-					});
-
-					return `${action === 'add' ? 'Added' : 'Removed'} '${(BitFieldData)[bit].name}' bit.`;
+					const bitInput = options.bitfield.add ?? options.bitfield.remove!;
+					const bit = getBitFieldData(bitInput);
+					const action: 'add' | 'remove' = aor() ? 'add' : 'remove';
+					if (!bit) return listBitFields(user);
+					const canManipulate = bitfieldCanUserManipulate({ user, bit });
+					if (canManipulate !== true) return canManipulate;
+					return changeBitFieldForUser(user, bit.bit, action);
 				}
 				if (options.bingo_tools) {
 					if (options.bingo_tools.start_bingo) {

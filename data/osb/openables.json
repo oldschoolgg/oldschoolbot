@@ -46,6 +46,12 @@
 		]
 	},
 	{
+		"name": "Bale of flax",
+		"id": 31045,
+		"opened_item": "Bale of flax",
+		"all_items": ["Flax"]
+	},
+	{
 		"name": "Bird nest",
 		"id": 5070,
 		"opened_item": "Bird nest",
@@ -3708,6 +3714,12 @@
 			"Grimy ranarr weed",
 			"Grimy torstol"
 		]
+	},
+	{
+		"name": "Soft clay pack",
+		"id": 12009,
+		"opened_item": "Soft clay pack",
+		"all_items": ["Soft clay"]
 	},
 	{
 		"name": "Spoils of war",
