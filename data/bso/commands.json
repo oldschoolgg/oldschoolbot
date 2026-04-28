@@ -1,6 +1,6 @@
 {
-	"hash": "f6918774d9850789b290640b6594ab20",
-	"date": "2026-04-24T10:26:23.909Z",
+	"hash": "d46f9f4bbd08085b30f707573adb71b5",
+	"date": "2026-04-28T11:01:41.779Z",
 	"data": [
 		{
 			"name": "activities",
@@ -152,7 +152,7 @@
 		{
 			"name": "dg",
 			"desc": "The Dungeoneering skill.",
-			"subOptions": ["buy", "start", "stats"]
+			"subOptions": ["buy", "info", "start"]
 		},
 		{
 			"name": "divination",

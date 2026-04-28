@@ -154,7 +154,7 @@
 	{
 		"name": "dg",
 		"desc": "The Dungeoneering skill.",
-		"subOptions": ["start", "stats", "buy"]
+		"subOptions": ["start", "info", "buy"]
 	},
 	{
 		"name": "divination",
