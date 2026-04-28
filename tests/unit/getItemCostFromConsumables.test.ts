@@ -136,4 +136,35 @@ describe('getItemCostFromConsumables', () => {
 		expect(consumablesCost?.finalQuantity).toEqual(2);
 		expect(consumablesCost?.itemCost?.amount('Blood rune')).toEqual(63);
 	});
+
+	test('qtyPerKillRange rune reductions clamp using rounded-up costs', () => {
+		const consumableCosts = [
+			{
+				itemCost: new Bank().add('Blood rune', 3),
+				qtyPerKillRange: [8, 12] as [number, number],
+				isRuneCost: true
+			}
+		];
+
+		for (const [ownedRunes, expectedQuantity] of [
+			[62, 1],
+			[63, 2]
+		]) {
+			const gearBank = makeGearBank();
+			gearBank.gear.mage.equip('Kodai wand');
+			gearBank.bank.add('Blood rune', ownedRunes);
+
+			const consumablesCost = getItemCostFromConsumables({
+				consumableCosts,
+				gearBank,
+				inputQuantity: 2,
+				timeToFinish: Time.Minute,
+				maxTripLength: Time.Minute * 10,
+				slayerKillsRemaining: null
+			});
+
+			expect(consumablesCost?.finalQuantity).toEqual(expectedQuantity);
+			expect(consumablesCost?.itemCost?.amount('Blood rune')).toEqual(expectedQuantity === 1 ? 33 : 63);
+		}
+	});
 });

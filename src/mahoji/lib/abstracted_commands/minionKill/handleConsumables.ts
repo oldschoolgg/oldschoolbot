@@ -130,31 +130,39 @@ export function getItemCostFromConsumables({
 	if (slayerKillsRemaining && finalQuantity > slayerKillsRemaining) {
 		finalQuantity = slayerKillsRemaining;
 	}
-	const tripCost = new FloatBank();
-	for (const used of consumablesUsed) {
-		if (used.range) {
-			// Use a deterministic upper bound for ranged per-kill consumables so
-			// requirement checks and trip finalization can't disagree.
-			let total = Math.ceil(used.range[1] * finalQuantity);
-			if (used.runeReductionMultiplier) {
-				total = Math.ceil(total * used.runeReductionMultiplier);
-			}
-			for (const [item, qty] of used.consumable.itemCost.items()) {
-				tripCost.add(item.id, qty * total);
-			}
-		} else {
-			const total = used.perKillValue * finalQuantity;
-			for (const [item, qty] of used.consumable.itemCost.items()) {
-				tripCost.add(item.id, qty * total);
+	const calculateTripCost = (quantity: number) => {
+		const tripCost = new FloatBank();
+		for (const used of consumablesUsed) {
+			if (used.range) {
+				// Use a deterministic upper bound for ranged per-kill consumables so
+				// requirement checks and trip finalization can't disagree.
+				let total = Math.ceil(used.range[1] * quantity);
+				if (used.runeReductionMultiplier) {
+					total = Math.ceil(total * used.runeReductionMultiplier);
+				}
+				for (const [item, qty] of used.consumable.itemCost.items()) {
+					tripCost.add(item.id, qty * total);
+				}
+			} else {
+				const total = used.perKillValue * quantity;
+				for (const [item, qty] of used.consumable.itemCost.items()) {
+					tripCost.add(item.id, qty * total);
+				}
 			}
 		}
-	}
 
-	if (hasInfiniteWaterRunes) {
-		tripCost.remove(EItem.WATER_RUNE, tripCost.amount(EItem.WATER_RUNE));
-	}
+		if (hasInfiniteWaterRunes) {
+			tripCost.remove(EItem.WATER_RUNE, tripCost.amount(EItem.WATER_RUNE));
+		}
 
-	const itemCost = tripCost.toItemBankRoundedUp();
+		return tripCost.toItemBankRoundedUp();
+	};
+
+	let itemCost = calculateTripCost(finalQuantity);
+	while (finalQuantity > 1 && !gearBank.bank.has(itemCost)) {
+		finalQuantity--;
+		itemCost = calculateTripCost(finalQuantity);
+	}
 
 	if (consumableCosts.length === 0) {
 		return {
