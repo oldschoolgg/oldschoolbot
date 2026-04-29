@@ -4,7 +4,7 @@ import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 export async function diceCommand(rng: RNGProvider, user: MUser, interaction: MInteraction, diceamount?: string) {
 	await interaction.defer();
-	const roll = rng.randInt(0, 100);
+	const roll = rng.randInt(0, 99);
 	const amount = mahojiParseNumber({ input: diceamount, min: 1, max: 500_000_000_000 });
 
 	if (!diceamount) {
