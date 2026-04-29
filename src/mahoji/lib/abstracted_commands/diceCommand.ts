@@ -26,7 +26,7 @@ export async function diceCommand(rng: RNGProvider, user: MUser, interaction: MI
 
 	const gp = user.GP;
 	if (amount > gp) return "You don't have enough GP.";
-	const won = roll > 50;
+	const won = roll >= 50;
 	const amountToAdd = won ? amount : -amount;
 
 	await ClientSettings.updateClientGPTrackSetting('gp_dice', amountToAdd);
