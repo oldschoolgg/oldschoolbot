@@ -1,8 +1,10 @@
 import { ActivityType, GatewayIntentBits, PresenceUpdateStatus } from '@oldschoolgg/discord';
+import type { WebSocketManager } from '@discordjs/ws';
 
 import { onRawGuildCreate } from '@/discord/handlers/guildCreate.js';
 import { interactionHandler } from '@/discord/interactionHandler.js';
 import { OldSchoolBotClient } from '@/discord/OldSchoolBotClient.js';
+import { OSBWorkerShardingStrategy } from '@/discord/OSBWorkerShardingStrategy.js';
 import { Channel, globalConfig } from '@/lib/constants.js';
 import { onMessage } from '@/lib/events.js';
 import { onStartup } from '@/mahoji/lib/events.js';
@@ -26,8 +28,9 @@ const client = new OldSchoolBotClient({
 	token: globalConfig.botToken,
 	isProduction: globalConfig.isProduction,
 	mainServerId: globalConfig.supportServerID,
-	userUsernameFetcher: async userId => Cache.getBadgedUsername(userId)
-});
+	userUsernameFetcher: async (userId: string) => Cache.getBadgedUsername(userId),
+	buildStrategy: (manager: WebSocketManager) => new OSBWorkerShardingStrategy(manager, { shardsPerWorker: 4 })
+} as any);
 
 declare global {
 	var globalClient: OldSchoolBotClient;

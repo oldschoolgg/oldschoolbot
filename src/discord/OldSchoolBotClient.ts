@@ -1,4 +1,4 @@
-import { WebSocketShardEvents } from '@discordjs/ws';
+import { WebSocketShardEvents, WebSocketShardStatus } from '@discordjs/ws';
 import {
 	type APIApplication,
 	type APIUser,
@@ -27,6 +27,18 @@ import { allCommandsDONTIMPORT } from '@/mahoji/commands/allCommands.js';
 export class OldSchoolBotClient extends DiscordClient {
 	public isShuttingDown = false;
 	public allCommands = allCommandsDONTIMPORT;
+	private shardStats = new Map<
+		number,
+		{
+			latencies: number[];
+			lastHeartbeatAt?: number;
+			lastAckAt?: number;
+			lastCloseCode?: number;
+			lastResumeAt?: number;
+			lastReadyAt?: number;
+			lastError?: string;
+		}
+	>();
 
 	constructor(options: DiscordClientOptions) {
 		super(options);
@@ -57,6 +69,88 @@ export class OldSchoolBotClient extends DiscordClient {
 		this.ws.on(WebSocketShardEvents.Resumed, p => {
 			Logging.logDebug(`WS Resumed: ${p}`);
 		});
+		this.ws.on(WebSocketShardEvents.HeartbeatComplete, (stats, shardId) => {
+			const existing = this.getShardStatsEntry(shardId);
+			existing.lastHeartbeatAt = stats.heartbeatAt;
+			existing.lastAckAt = stats.ackAt;
+			existing.latencies.push(stats.latency);
+			if (existing.latencies.length > 12) existing.latencies.shift();
+		});
+		this.ws.on(WebSocketShardEvents.Closed, (code, shardId) => {
+			this.getShardStatsEntry(shardId).lastCloseCode = code;
+		});
+		this.ws.on(WebSocketShardEvents.Resumed, shardId => {
+			this.getShardStatsEntry(shardId).lastResumeAt = Date.now();
+		});
+		this.ws.on(WebSocketShardEvents.Ready, (_data, shardId) => {
+			this.getShardStatsEntry(shardId).lastReadyAt = Date.now();
+		});
+		this.ws.on(WebSocketShardEvents.Error, (err, shardId) => {
+			this.getShardStatsEntry(shardId).lastError = err.message;
+		});
+		this.ws.on(WebSocketShardEvents.SocketError, (err, shardId) => {
+			this.getShardStatsEntry(shardId).lastError = err.message;
+		});
+	}
+
+	private getShardStatsEntry(shardId: number) {
+		let entry = this.shardStats.get(shardId);
+		if (!entry) {
+			entry = { latencies: [] };
+			this.shardStats.set(shardId, entry);
+		}
+		return entry;
+	}
+
+	private calcShardHealth(status: WebSocketShardStatus, shardId: number) {
+		const stats = this.shardStats.get(shardId);
+		const avgLatency =
+			stats && stats.latencies.length > 0 ? Math.round(stats.latencies.reduce((sum, val) => sum + val, 0) / stats.latencies.length) : null;
+		const lastLatency = stats?.latencies.at(-1) ?? null;
+		const staleHeartbeat = stats?.lastAckAt ? Date.now() - stats.lastAckAt > Time.Minute * 2 : true;
+		const isDead = status !== WebSocketShardStatus.Ready;
+		const isLagged = (avgLatency !== null && avgLatency >= 10_000) || (lastLatency !== null && lastLatency >= 15_000);
+		const isUnhealthy = isDead || staleHeartbeat || isLagged;
+		return {
+			label: isDead ? 'dead' : isUnhealthy ? 'unhealthy' : 'healthy',
+			isDead,
+			isUnhealthy,
+			avgLatency,
+			lastLatency,
+			staleHeartbeat
+		};
+	}
+
+	async getShardStatusReport() {
+		const statuses = await this.ws.fetchStatus();
+		return [...statuses.entries()]
+			.sort((a, b) => a[0] - b[0])
+			.map(([shardId, status]) => ({
+				shardId,
+				status,
+				statusName: WebSocketShardStatus[status],
+				health: this.calcShardHealth(status, shardId),
+				stats: this.shardStats.get(shardId)
+			}));
+	}
+
+	async restartShards(which: 'all' | 'dead' | 'unhealthy') {
+		const strategy = (this.ws as any).strategy;
+		if (typeof strategy?.restartShard !== 'function') {
+			throw new Error('Shard restart strategy is unavailable.');
+		}
+		const report = await this.getShardStatusReport();
+		const targetShardIds = report
+			.filter(entry => {
+				if (which === 'all') return true;
+				if (which === 'dead') return entry.health.isDead;
+				return entry.health.isUnhealthy;
+			})
+			.map(entry => entry.shardId);
+		for (const shardId of targetShardIds) {
+			await strategy.restartShard(shardId);
+		}
+		return targetShardIds;
 	}
 
 	async upsertDiscordUser(user: APIUser) {
