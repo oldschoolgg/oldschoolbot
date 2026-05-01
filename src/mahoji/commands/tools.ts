@@ -13,7 +13,7 @@ import pets from '@/lib/data/pets.js';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
 import { allOpenables, type UnifiedOpenable } from '@/lib/openables.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
-import { Minigames } from '@/lib/settings/minigames.js';
+import { Minigames, minigameColumnToNameMap } from '@/lib/settings/minigames.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
 import { isGroupActivity, isNexActivity, isRaidsActivity, isTOBOrTOAActivity } from '@/lib/util/activityTypeCheck.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
@@ -242,6 +242,80 @@ function formatRecapRows(rows: string[], fallback: string) {
 // 	slots: 'Slots'
 // };
 
+const minigameRecapActivityTypes = [
+	'AgilityArena',
+	'BarbarianAssault',
+	'BigChompyBirdHunting',
+	'CastleWars',
+	'ChampionsChallenge',
+	'Colosseum',
+	'FishingTrawler',
+	'Gauntlet',
+	'GiantsFoundry',
+	'GnomeRestaurant',
+	'GuardiansOfTheRift',
+	'Inferno',
+	'LastManStanding',
+	'MageTrainingArena',
+	'MahoganyHomes',
+	'NightmareZone',
+	'PestControl',
+	'Plunder',
+	'PuroPuro',
+	'Raids',
+	'RoguesDenMaze',
+	'Sepulchre',
+	'ShadesOfMorton',
+	'SoulWars',
+	'Tempoross',
+	'TheatreOfBlood',
+	'TitheFarm',
+	'TombsOfAmascut',
+	'TearsOfGuthix',
+	'Trekking',
+	'TroubleBrewing',
+	'ValeTotems',
+	'VolcanicMine',
+	'Wintertodt'
+];
+
+const minigameActivityTypeNames: Record<string, string> = {
+	AgilityArena: 'Brimhaven Agility Arena',
+	BarbarianAssault: 'Barbarian Assault',
+	BigChompyBirdHunting: 'Big Chompy Bird Hunting',
+	CastleWars: 'Castle Wars',
+	ChampionsChallenge: "Champions' Challenge",
+	Colosseum: 'Fortis Colosseum',
+	FishingTrawler: 'Fishing Trawler',
+	Gauntlet: 'Gauntlet',
+	GiantsFoundry: "Giants' Foundry",
+	GnomeRestaurant: 'Gnome Restaurant',
+	GuardiansOfTheRift: 'Guardians Of The Rift',
+	Inferno: 'Inferno',
+	LastManStanding: 'Last Man Standing',
+	MageTrainingArena: 'Magic Training Arena',
+	MahoganyHomes: 'Mahogany Homes',
+	NightmareZone: 'Nightmare Zone',
+	PestControl: 'Pest Control',
+	Plunder: 'Pyramid Plunder',
+	PuroPuro: 'Puro Puro',
+	Raids: 'Chambers of Xeric',
+	RoguesDenMaze: "Rogues' Den",
+	Sepulchre: 'Hallowed Sepulchre',
+	ShadesOfMorton: "Shades of Mort'ton",
+	SoulWars: 'Soul Wars',
+	Tempoross: 'Tempoross',
+	TheatreOfBlood: 'Theatre of Blood',
+	TitheFarm: 'Tithe farm',
+	TombsOfAmascut: 'Tombs of Amascut',
+	TearsOfGuthix: 'Tears Of Guthix',
+	Trekking: 'Temple Trekking',
+	TroubleBrewing: 'Trouble Brewing',
+	ValeTotems: 'Vale Totems',
+	VolcanicMine: 'Volcanic Mine',
+	Wintertodt: 'Wintertodt'
+};
+
 async function recapCommand(user: MUser, interval: RecapInterval): CommandResponse {
 	const intervalStart = recapIntervalStart(interval);
 	const clDetails = calcCLDetails(user);
@@ -268,15 +342,16 @@ async function recapCommand(user: MUser, interval: RecapInterval): CommandRespon
 		}
 	});
 
-	const [xpRecords, monsterRecords, clueRecords, activityRecords, [activityTotals]] = await Promise.all([
-		prisma.$queryRawUnsafe<{ skill: string; total_xp: number }[]>(`
+	const [xpRecords, monsterRecords, clueRecords, activityRecords, [activityTotals], farmingRecords, minigameRecords] =
+		await Promise.all([
+			prisma.$queryRawUnsafe<{ skill: string; total_xp: number }[]>(`
 SELECT skill::text, SUM(xp)::int AS total_xp
 FROM xp_gains
 WHERE user_id = ${user.id}
 AND date >= now() - INTERVAL '1 ${interval}'
 GROUP BY skill
 ORDER BY total_xp DESC;`),
-		prisma.$queryRawUnsafe<{ monster_id: string; qty: number }[]>(`
+			prisma.$queryRawUnsafe<{ monster_id: string; qty: number }[]>(`
 SELECT a."data"->>'mi' AS monster_id, SUM((a."data"->>'q')::int)::int AS qty
 FROM activity a
 WHERE a.user_id = ${user.id}
@@ -287,7 +362,7 @@ AND a."data" ? 'mi'
 AND a."data" ? 'q'
 GROUP BY a."data"->>'mi'
 ORDER BY qty DESC;`),
-		prisma.$queryRawUnsafe<{ tier_id: string; qty: number }[]>(`
+			prisma.$queryRawUnsafe<{ tier_id: string; qty: number }[]>(`
 SELECT a."data"->>'ci' AS tier_id, SUM((a."data"->>'q')::int)::int AS qty
 FROM activity a
 WHERE a.user_id = ${user.id}
@@ -298,7 +373,7 @@ AND a."data" ? 'ci'
 AND a."data" ? 'q'
 GROUP BY a."data"->>'ci'
 ORDER BY qty DESC;`),
-		prisma.$queryRawUnsafe<{ type: string; trips: number; duration: number }[]>(`
+			prisma.$queryRawUnsafe<{ type: string; trips: number; duration: number }[]>(`
 SELECT type::text, COUNT(*)::int AS trips, COALESCE(SUM(duration), 0)::int AS duration
 FROM activity
 WHERE user_id = ${user.id}
@@ -307,27 +382,60 @@ AND finish_date >= now() - INTERVAL '1 ${interval}'
 GROUP BY type
 ORDER BY trips DESC, duration DESC
 LIMIT 5;`),
-		prisma.$queryRawUnsafe<{ trips: number; duration: number }[]>(`
+			prisma.$queryRawUnsafe<{ trips: number; duration: number }[]>(`
 SELECT COUNT(*)::int AS trips, COALESCE(SUM(duration), 0)::int AS duration
 FROM activity
 WHERE user_id = ${user.id}
 AND completed = true
-AND finish_date >= now() - INTERVAL '1 ${interval}';`)
-		// Restore with the dated gambling PnL branch once the tracking table exists.
-		// prisma.$queryRawUnsafe<{ type: string; pnl: bigint }[]>(`
-		// SELECT type::text, COALESCE(SUM(pnl), 0)::bigint AS pnl
-		// FROM gambling_transaction
-		// WHERE user_id = ${user.id}
-		// AND date >= now() - INTERVAL '1 ${interval}'
-		// GROUP BY type
-		// ORDER BY pnl DESC;`)
-	]);
+AND finish_date >= now() - INTERVAL '1 ${interval}';`),
+			prisma.$queryRawUnsafe<
+				{ plant_name: string; trips: number; planting_trips: number; harvest_trips: number; patches: number }[]
+			>(`
+SELECT
+	COALESCE(data->>'plantsName', 'Unknown crop') AS plant_name,
+	COUNT(*)::int AS trips,
+	COALESCE(SUM(CASE WHEN data->>'planting' = 'true' THEN 1 ELSE 0 END), 0)::int AS planting_trips,
+	COALESCE(SUM(CASE WHEN data->>'planting' = 'false' THEN 1 ELSE 0 END), 0)::int AS harvest_trips,
+	COALESCE(SUM(CASE WHEN data ? 'quantity' THEN (data->>'quantity')::int ELSE 1 END), 0)::int AS patches
+FROM activity
+WHERE user_id = ${user.id}
+AND type = 'Farming'
+AND completed = true
+AND finish_date >= now() - INTERVAL '1 ${interval}'
+GROUP BY COALESCE(data->>'plantsName', 'Unknown crop')
+ORDER BY trips DESC, patches DESC
+LIMIT 5;`),
+			prisma.$queryRawUnsafe<{ minigame_id: string; activity_type: string; trips: number; quantity: number }[]>(`
+SELECT
+	COALESCE(data->>'minigameID', data->>'id', type::text) AS minigame_id,
+	type::text AS activity_type,
+	COUNT(*)::int AS trips,
+	COALESCE(SUM(CASE WHEN data ? 'quantity' THEN (data->>'quantity')::int ELSE 1 END), 0)::int AS quantity
+FROM activity
+WHERE (user_id = ${user.id} OR all_user_ids @> ARRAY[${user.id}::bigint])
+AND completed = true
+AND finish_date >= now() - INTERVAL '1 ${interval}'
+AND type::text IN (${minigameRecapActivityTypes.map(type => `'${type}'`).join(', ')})
+GROUP BY COALESCE(data->>'minigameID', data->>'id', type::text), type::text
+ORDER BY trips DESC, quantity DESC
+LIMIT 5;`)
+			// Restore with the dated gambling PnL branch once the tracking table exists.
+			// prisma.$queryRawUnsafe<{ type: string; pnl: bigint }[]>(`
+			// SELECT type::text, COALESCE(SUM(pnl), 0)::bigint AS pnl
+			// FROM gambling_transaction
+			// WHERE user_id = ${user.id}
+			// AND date >= now() - INTERVAL '1 ${interval}'
+			// GROUP BY type
+			// ORDER BY pnl DESC;`)
+		]);
 
 	const totalXP = xpRecords.reduce((sum, record) => sum + Number(record.total_xp), 0);
 	const totalMonsterKC = monsterRecords.reduce((sum, record) => sum + Number(record.qty), 0);
 	const totalClues = clueRecords.reduce((sum, record) => sum + Number(record.qty), 0);
 	const totalTrips = Number(activityTotals?.trips ?? 0);
 	const totalDuration = Number(activityTotals?.duration ?? 0);
+	const totalFarmingTrips = farmingRecords.reduce((sum, record) => sum + Number(record.trips), 0);
+	const totalMinigameTrips = minigameRecords.reduce((sum, record) => sum + Number(record.trips), 0);
 	// Restore with the dated gambling PnL branch once the tracking table exists.
 	// const totalGamblingPnL = gamblingRecords.reduce((sum, record) => sum + Number(record.pnl), 0);
 	const clProgressLine = clBaseline
@@ -349,6 +457,24 @@ AND finish_date >= now() - INTERVAL '1 ${interval}';`)
 	const activityRows = activityRecords.map(record => {
 		return `${record.type}: ${Number(record.trips).toLocaleString()} trips (${formatDuration(Number(record.duration))})`;
 	});
+	const farmingRows = farmingRecords.map(record => {
+		const planting = Number(record.planting_trips);
+		const harvesting = Number(record.harvest_trips);
+		const tripParts = [
+			planting > 0 ? `${planting.toLocaleString()} planted` : null,
+			harvesting > 0 ? `${harvesting.toLocaleString()} harvested` : null
+		].filter(Boolean);
+		return `${record.plant_name}: ${Number(record.trips).toLocaleString()} trips (${tripParts.join(', ')})`;
+	});
+	const minigameRows = minigameRecords.map(record => {
+		const minigameName =
+			minigameColumnToNameMap.get(record.minigame_id) ??
+			minigameActivityTypeNames[record.activity_type] ??
+			record.minigame_id;
+		return `${minigameName}: ${Number(record.trips).toLocaleString()} trips (${Number(
+			record.quantity
+		).toLocaleString()} completions)`;
+	});
 	// Restore with the dated gambling PnL branch once the tracking table exists.
 	// const gamblingRows = gamblingRecords.map(record => {
 	// 	return `${gamblingTypeNames[record.type] ?? record.type}: ${toKMB(Number(record.pnl))} GP`;
@@ -365,6 +491,8 @@ AND finish_date >= now() - INTERVAL '1 ${interval}';`)
 					`Solo monster KC gained: ${totalMonsterKC.toLocaleString()}`,
 					`Clue completions: ${totalClues.toLocaleString()}`,
 					clProgressLine,
+					`Farming trips: ${totalFarmingTrips.toLocaleString()}`,
+					`Minigame trips: ${totalMinigameTrips.toLocaleString()}`,
 					// Restore with the dated gambling PnL branch once the tracking table exists.
 					// `Gambling PnL: ${toKMB(totalGamblingPnL)} GP`,
 					`Completed trips: ${totalTrips.toLocaleString()} (${formatDuration(totalDuration)})`
@@ -385,6 +513,14 @@ AND finish_date >= now() - INTERVAL '1 ${interval}';`)
 			{
 				name: 'Activities',
 				value: formatRecapRows(activityRows, 'No completed activities.')
+			},
+			{
+				name: 'Farming',
+				value: formatRecapRows(farmingRows, 'No farming trips.')
+			},
+			{
+				name: 'Minigames',
+				value: formatRecapRows(minigameRows, 'No minigame trips.')
 			}
 			// Restore with the dated gambling PnL branch once the tracking table exists.
 			// {
