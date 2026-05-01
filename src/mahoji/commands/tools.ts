@@ -7,7 +7,7 @@ import { choicesOf, itemOption, monsterOption, skillOption } from '@/discord/ind
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { allStashUnitsFlat } from '@/lib/clues/stashUnits.js';
 import { PerkTier } from '@/lib/constants.js';
-import { allCLItemsFiltered, allDroppedItems } from '@/lib/data/Collections.js';
+import { allCLItemsFiltered, allDroppedItems, calcCLDetails } from '@/lib/data/Collections.js';
 import { gnomeRestaurantCL, guardiansOfTheRiftCL, shadesOfMorttonCL } from '@/lib/data/CollectionsExport.js';
 import pets from '@/lib/data/pets.js';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
@@ -212,6 +212,185 @@ async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean) 
 					)
 				)
 			).join('\n')
+		);
+
+	return { embeds: [embed] };
+}
+
+const recapIntervals = ['day', 'week', 'month'] as const;
+
+type RecapInterval = (typeof recapIntervals)[number];
+
+function recapIntervalStart(interval: RecapInterval) {
+	const date = new Date();
+	if (interval === 'day') date.setDate(date.getDate() - 1);
+	if (interval === 'week') date.setDate(date.getDate() - 7);
+	if (interval === 'month') date.setMonth(date.getMonth() - 1);
+	return date;
+}
+
+function formatRecapRows(rows: string[], fallback: string) {
+	return rows.length > 0 ? rows.join('\n') : fallback;
+}
+
+// Restore with the dated gambling PnL branch once the tracking table exists.
+// const gamblingTypeNames: Record<string, string> = {
+// 	dice: 'Dice',
+// 	duel: 'Duel',
+// 	hot_cold: 'Hot/Cold',
+// 	lucky_pick: 'Lucky Pick',
+// 	slots: 'Slots'
+// };
+
+async function recapCommand(user: MUser, interval: RecapInterval): CommandResponse {
+	const intervalStart = recapIntervalStart(interval);
+	const clDetails = calcCLDetails(user);
+	const clBaseline = await prisma.historicalData.findFirst({
+		where: {
+			user_id: user.id,
+			date: {
+				lte: intervalStart
+			}
+		},
+		orderBy: {
+			date: 'desc'
+		},
+		select: {
+			cl_completion_count: true
+		}
+	});
+	const clSnapshotsInPeriod = await prisma.historicalData.count({
+		where: {
+			user_id: user.id,
+			date: {
+				gte: intervalStart
+			}
+		}
+	});
+
+	const [xpRecords, monsterRecords, clueRecords, activityRecords, [activityTotals]] = await Promise.all([
+		prisma.$queryRawUnsafe<{ skill: string; total_xp: number }[]>(`
+SELECT skill::text, SUM(xp)::int AS total_xp
+FROM xp_gains
+WHERE user_id = ${user.id}
+AND date >= now() - INTERVAL '1 ${interval}'
+GROUP BY skill
+ORDER BY total_xp DESC;`),
+		prisma.$queryRawUnsafe<{ monster_id: string; qty: number }[]>(`
+SELECT a."data"->>'mi' AS monster_id, SUM((a."data"->>'q')::int)::int AS qty
+FROM activity a
+WHERE a.user_id = ${user.id}
+AND a.type = 'MonsterKilling'
+AND a.completed = true
+AND a.finish_date >= now() - INTERVAL '1 ${interval}'
+AND a."data" ? 'mi'
+AND a."data" ? 'q'
+GROUP BY a."data"->>'mi'
+ORDER BY qty DESC;`),
+		prisma.$queryRawUnsafe<{ tier_id: string; qty: number }[]>(`
+SELECT a."data"->>'ci' AS tier_id, SUM((a."data"->>'q')::int)::int AS qty
+FROM activity a
+WHERE a.user_id = ${user.id}
+AND a.type = 'ClueCompletion'
+AND a.completed = true
+AND a.finish_date >= now() - INTERVAL '1 ${interval}'
+AND a."data" ? 'ci'
+AND a."data" ? 'q'
+GROUP BY a."data"->>'ci'
+ORDER BY qty DESC;`),
+		prisma.$queryRawUnsafe<{ type: string; trips: number; duration: number }[]>(`
+SELECT type::text, COUNT(*)::int AS trips, COALESCE(SUM(duration), 0)::int AS duration
+FROM activity
+WHERE user_id = ${user.id}
+AND completed = true
+AND finish_date >= now() - INTERVAL '1 ${interval}'
+GROUP BY type
+ORDER BY trips DESC, duration DESC
+LIMIT 5;`),
+		prisma.$queryRawUnsafe<{ trips: number; duration: number }[]>(`
+SELECT COUNT(*)::int AS trips, COALESCE(SUM(duration), 0)::int AS duration
+FROM activity
+WHERE user_id = ${user.id}
+AND completed = true
+AND finish_date >= now() - INTERVAL '1 ${interval}';`)
+		// Restore with the dated gambling PnL branch once the tracking table exists.
+		// prisma.$queryRawUnsafe<{ type: string; pnl: bigint }[]>(`
+		// SELECT type::text, COALESCE(SUM(pnl), 0)::bigint AS pnl
+		// FROM gambling_transaction
+		// WHERE user_id = ${user.id}
+		// AND date >= now() - INTERVAL '1 ${interval}'
+		// GROUP BY type
+		// ORDER BY pnl DESC;`)
+	]);
+
+	const totalXP = xpRecords.reduce((sum, record) => sum + Number(record.total_xp), 0);
+	const totalMonsterKC = monsterRecords.reduce((sum, record) => sum + Number(record.qty), 0);
+	const totalClues = clueRecords.reduce((sum, record) => sum + Number(record.qty), 0);
+	const totalTrips = Number(activityTotals?.trips ?? 0);
+	const totalDuration = Number(activityTotals?.duration ?? 0);
+	// Restore with the dated gambling PnL branch once the tracking table exists.
+	// const totalGamblingPnL = gamblingRecords.reduce((sum, record) => sum + Number(record.pnl), 0);
+	const clProgressLine = clBaseline
+		? `CL gained: ${Math.max(0, clDetails.owned.length - Number(clBaseline.cl_completion_count)).toLocaleString()}`
+		: `CL snapshots logged: ${clSnapshotsInPeriod.toLocaleString()} (no baseline before this period)`;
+
+	const xpRows = xpRecords.slice(0, 5).map(record => {
+		const skill = skillsVals.find(_skill => _skill.id === record.skill);
+		return `${skill?.name ?? record.skill}: ${Number(record.total_xp).toLocaleString()} XP`;
+	});
+	const monsterRows = monsterRecords.slice(0, 5).map(record => {
+		const monster = killableMonsters.find(mon => mon.id === Number(record.monster_id));
+		return `${monster?.name ?? `Monster ${record.monster_id}`}: ${Number(record.qty).toLocaleString()} KC`;
+	});
+	const clueRows = clueRecords.map(record => {
+		const clueTier = ClueTiers.find(tier => tier.id === Number(record.tier_id));
+		return `${clueTier?.name ?? `Tier ${record.tier_id}`}: ${Number(record.qty).toLocaleString()}`;
+	});
+	const activityRows = activityRecords.map(record => {
+		return `${record.type}: ${Number(record.trips).toLocaleString()} trips (${formatDuration(Number(record.duration))})`;
+	});
+	// Restore with the dated gambling PnL branch once the tracking table exists.
+	// const gamblingRows = gamblingRecords.map(record => {
+	// 	return `${gamblingTypeNames[record.type] ?? record.type}: ${toKMB(Number(record.pnl))} GP`;
+	// });
+
+	const embed = new EmbedBuilder()
+		.setTitle(`${user.usernameOrMention}'s ${interval} recap`)
+		.setDescription(`Progress since ${intervalStart.toLocaleDateString('en-GB')}.`)
+		.addFields(
+			{
+				name: 'Summary',
+				value: [
+					`XP gained: ${totalXP.toLocaleString()}`,
+					`Solo monster KC gained: ${totalMonsterKC.toLocaleString()}`,
+					`Clue completions: ${totalClues.toLocaleString()}`,
+					clProgressLine,
+					// Restore with the dated gambling PnL branch once the tracking table exists.
+					// `Gambling PnL: ${toKMB(totalGamblingPnL)} GP`,
+					`Completed trips: ${totalTrips.toLocaleString()} (${formatDuration(totalDuration)})`
+				].join('\n')
+			},
+			{
+				name: 'Top XP',
+				value: formatRecapRows(xpRows, 'No XP gained.')
+			},
+			{
+				name: 'Top KC',
+				value: formatRecapRows(monsterRows, 'No solo monster KC gained.')
+			},
+			{
+				name: 'Clues',
+				value: formatRecapRows(clueRows, 'No clue completions.')
+			},
+			{
+				name: 'Activities',
+				value: formatRecapRows(activityRows, 'No completed activities.')
+			}
+			// Restore with the dated gambling PnL branch once the tracking table exists.
+			// {
+			// 	name: 'Gambling',
+			// 	value: formatRecapRows(gamblingRows, 'No gambling tracked.')
+			// }
 		);
 
 	return { embeds: [embed] };
@@ -770,6 +949,20 @@ export const toolsCommand = defineCommand({
 				},
 				{
 					type: 'Subcommand',
+					name: 'recap',
+					description: 'Shows a summary of your recent gains.',
+					options: [
+						{
+							type: 'String',
+							name: 'time',
+							description: 'The time period.',
+							required: true,
+							choices: choicesOf(recapIntervals)
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
 					name: 'drystreak',
 					description: "Show's the biggest drystreaks for certain drops from a certain monster.",
 					options: [
@@ -959,6 +1152,10 @@ export const toolsCommand = defineCommand({
 			if (patron.xp_gains) {
 				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return xpGains(patron.xp_gains.time, patron.xp_gains.skill, patron.xp_gains.ironman);
+			}
+			if (patron.recap) {
+				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);
+				return recapCommand(user, patron.recap.time as RecapInterval);
 			}
 			if (patron.drystreak) {
 				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);
