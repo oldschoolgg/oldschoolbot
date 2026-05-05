@@ -44,6 +44,8 @@ The bot persists:
 `status` can be used while your minion is busy.
 `status` and previews do not save changes.
 
+Resources accumulate until the OSRS resource-point cap is reached. Once capped, the coffer and favour stop changing until you claim.
+
 ## Topup Trip Time
 
 Topup trip time scales by days since your last topup:

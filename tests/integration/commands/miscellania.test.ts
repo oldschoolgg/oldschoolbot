@@ -73,6 +73,7 @@ describe('Managing Miscellania Command', () => {
 		expect(res).toContain('Approval:');
 		expect(res).toContain('Topup:');
 		expect(res).toContain('Claim:');
+		expect(res).toContain('Resources capped: no');
 		expect(res).toContain('Estimated GP due on claim:');
 	});
 
@@ -144,7 +145,7 @@ describe('Managing Miscellania Command', () => {
 		expect(state.cofferAtLastClaim).toEqual(state.coffer);
 	});
 
-	it('caps persisted progression to 100 days even if state is much older', async () => {
+	it('persists progression beyond the top-up duration cap until resources cap', async () => {
 		const user = await createTestUser(undefined, { GP: 5_000_000 });
 		await user.runCommand('testpotato', {
 			miscellania_set: {
@@ -171,7 +172,7 @@ describe('Managing Miscellania Command', () => {
 		});
 		const state = stateRes.miscellania_state as unknown as MiscellaniaState;
 		const expected = simulateDetailedMiscellania({
-			days: 100,
+			days: 300,
 			startingCoffer: 7_500_000,
 			startingFavour: 100,
 			constantFavour: false
@@ -234,6 +235,7 @@ describe('Managing Miscellania Command', () => {
 			}
 		});
 		expect(res).toContain('Managing Miscellania claim preview:');
+		expect(res).toContain('Resources capped: no');
 	});
 
 	it('does not persist state from claim preview', async () => {

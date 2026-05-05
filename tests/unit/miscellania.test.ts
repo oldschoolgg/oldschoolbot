@@ -15,7 +15,7 @@ describe('miscellania simplified mechanics', () => {
 		expect(calculateMiscellaniaDays(null, 1_000_000)).toEqual(1);
 	});
 
-	test('days elapsed is clamped to 100', () => {
+	test('claim days are not clamped by the top-up trip cap', () => {
 		const now = 1_000_000_000;
 		const state = {
 			lastClaimedAt: now - 130 * 24 * 60 * 60 * 1000,
@@ -28,7 +28,7 @@ describe('miscellania simplified mechanics', () => {
 			favour: 100,
 			resourcePoints: 0
 		} as const;
-		expect(calculateMiscellaniaDays(state, now)).toEqual(100);
+		expect(calculateMiscellaniaDays(state, now)).toEqual(130);
 	});
 
 	test('trip seconds scale by days', () => {
@@ -105,7 +105,7 @@ describe('miscellania simplified mechanics', () => {
 		expect(result.endingFavour).toEqual(88);
 	});
 
-	test('advance is capped to 100 days of progression since last claim', () => {
+	test('advance progresses until the resource point cap', () => {
 		const now = 1_000_000_000;
 		const state = {
 			lastClaimedAt: now - 300 * 24 * 60 * 60 * 1000,
@@ -120,7 +120,7 @@ describe('miscellania simplified mechanics', () => {
 		} as const;
 		const advanced = advanceMiscellaniaState(state, now);
 		const expected = simulateDetailedMiscellania({
-			days: 100,
+			days: 300,
 			startingCoffer: 7_500_000,
 			startingFavour: 100,
 			constantFavour: false
@@ -133,5 +133,19 @@ describe('miscellania simplified mechanics', () => {
 		expect(advancedAgain.coffer).toEqual(advanced.coffer);
 		expect(advancedAgain.resourcePoints).toEqual(advanced.resourcePoints);
 		expect(advancedAgain.favour).toEqual(advanced.favour);
+	});
+
+	test('simulation stops coffer and favour changes at the resource point cap', () => {
+		const capped = simulateDetailedMiscellania({
+			days: 10,
+			startingCoffer: 7_500_000,
+			startingFavour: 100,
+			constantFavour: false,
+			startingResourcePoints: 262_142
+		});
+
+		expect(capped.resourcePoints).toEqual(262_143);
+		expect(capped.endingCoffer).toEqual(7_425_000);
+		expect(capped.endingFavour).toEqual(97);
 	});
 });

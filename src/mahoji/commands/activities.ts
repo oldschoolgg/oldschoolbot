@@ -11,6 +11,7 @@ import {
 	calculateMiscellaniaDays,
 	calculateTopupTripSeconds,
 	daysElapsedSince,
+	MISCELLANIA_RESOURCE_POINT_CAP,
 	MISCELLANIA_TRIP_SECONDS_PER_DAY,
 	type MiscellaniaState,
 	miscellaniaAreaKeys,
@@ -684,6 +685,7 @@ export const activitiesCommand = defineCommand({
 			const claimDays = calculateMiscellaniaDays(existing, now);
 			const isPreview = Boolean(options.managing_miscellania.preview);
 			const gpCostToClaim = Math.max(0, existing.cofferAtLastClaim - existing.coffer);
+			const isResourceCapped = existing.resourcePoints >= MISCELLANIA_RESOURCE_POINT_CAP;
 			const shouldShowIntro = !existing.introShown;
 			const introMessage =
 				'Managing Miscellania quick guide: use `action:topup` to restore approval, then `action:claim` to collect loot and pay the accrued GP cost.';
@@ -712,6 +714,7 @@ export const activitiesCommand = defineCommand({
 Approval: ${existing.favour.toFixed(1)}%
 Topup: ${topupBlocked ? `ready in ${formatDuration(topupReadyInMs)}` : 'ready now'}
 Claim: ${claimAvailable ? 'available' : 'not available'}
+Resources capped: ${isResourceCapped ? 'yes' : 'no'}
 Estimated GP due on claim: ${gpCostToClaim.toLocaleString()} GP`;
 				return statusText;
 			}
@@ -727,6 +730,7 @@ Secondary area: ${miscellaniaAreaLabels[secondaryArea]}
 Days since last claim: ${claimDays}
 Current coffer: ${existing.coffer.toLocaleString()}
 Current favour: ${existing.favour.toFixed(1)}%
+Resources capped: ${isResourceCapped ? 'yes' : 'no'}
 GP cost to claim now: ${gpCostToClaim.toLocaleString()} GP
 Can afford now: ${user.GP >= gpCostToClaim ? 'yes' : 'no'}`;
 				}

@@ -61,7 +61,8 @@ export interface MiscellaniaDetailedSimulationResult {
 	resourcePointsGained: number;
 }
 
-export const MISCELLANIA_MAX_DAYS = 100;
+export const MISCELLANIA_RESOURCE_POINT_CAP = 262_143;
+export const MISCELLANIA_TOPUP_MAX_DAYS = 100;
 export const MISCELLANIA_TRIP_SECONDS_PER_DAY = 15;
 const MISCELLANIA_FAVOUR_SUBTRACTION = 131;
 const MISCELLANIA_COFFER_DAILY_CAP = 75_000;
@@ -73,11 +74,11 @@ export function daysElapsedSince(timestamp: number, now = Date.now()): number {
 
 export function calculateMiscellaniaDays(state: MiscellaniaState | null, now = Date.now()): number {
 	if (!state) return 1;
-	return Math.max(1, Math.min(MISCELLANIA_MAX_DAYS, daysElapsedSince(state.lastClaimedAt, now)));
+	return Math.max(1, daysElapsedSince(state.lastClaimedAt, now));
 }
 
 export function calculateMiscellaniaTripSeconds(days: number): number {
-	return Math.max(1, Math.min(MISCELLANIA_MAX_DAYS, days)) * MISCELLANIA_TRIP_SECONDS_PER_DAY;
+	return Math.max(1, Math.min(MISCELLANIA_TOPUP_MAX_DAYS, days)) * MISCELLANIA_TRIP_SECONDS_PER_DAY;
 }
 
 export function validateAreas(primaryArea: MiscellaniaAreaKey, secondaryArea: MiscellaniaAreaKey): string | null {
@@ -114,7 +115,7 @@ export function simulateDetailedMiscellania({
 	let currentFavour = Math.max(25, Math.min(100, startingFavour));
 	let currentCoffer = Math.max(0, Math.floor(startingCoffer));
 
-	for (let day = 1; day <= simDays; day++) {
+	for (let day = 1; day <= simDays && resourcePoints < MISCELLANIA_RESOURCE_POINT_CAP; day++) {
 		const cofferReduction = Math.min(
 			5 + Math.floor(currentCoffer / 10),
 			MISCELLANIA_COFFER_DAILY_CAP,
@@ -123,6 +124,7 @@ export function simulateDetailedMiscellania({
 		currentCoffer -= cofferReduction;
 		const workerEffectiveness = Math.floor((cofferReduction * 100) / 8333);
 		resourcePoints += Math.floor((workerEffectiveness * currentFavour) / 100);
+		resourcePoints = Math.min(MISCELLANIA_RESOURCE_POINT_CAP, resourcePoints);
 		if (currentFavour > 32 && !constantFavour) {
 			currentFavour = Math.max(
 				32,
@@ -130,8 +132,6 @@ export function simulateDetailedMiscellania({
 			);
 		}
 	}
-
-	resourcePoints = Math.min(262_143, resourcePoints);
 
 	return {
 		days: simDays,
@@ -182,12 +182,8 @@ export function normalizeMiscellaniaState(
 export function advanceMiscellaniaState(state: MiscellaniaState, now = Date.now()): MiscellaniaState {
 	const elapsedSinceUpdate = daysElapsedSince(state.lastUpdatedAt, now);
 	if (elapsedSinceUpdate <= 0) return state;
-	const progressedSinceClaim = Math.max(0, daysElapsedSince(state.lastClaimedAt, state.lastUpdatedAt));
-	const daysRemainingUntilCap = Math.max(0, MISCELLANIA_MAX_DAYS - progressedSinceClaim);
-	const elapsed = Math.min(elapsedSinceUpdate, daysRemainingUntilCap);
-	if (elapsed <= 0) return state;
 	const sim = simulateDetailedMiscellania({
-		days: elapsed,
+		days: elapsedSinceUpdate,
 		startingCoffer: state.coffer,
 		startingFavour: state.favour,
 		constantFavour: false,
@@ -198,11 +194,11 @@ export function advanceMiscellaniaState(state: MiscellaniaState, now = Date.now(
 		coffer: sim.endingCoffer,
 		favour: sim.endingFavour,
 		resourcePoints: sim.resourcePoints,
-		lastUpdatedAt: state.lastUpdatedAt + elapsed * Time.Day
+		lastUpdatedAt: state.lastUpdatedAt + elapsedSinceUpdate * Time.Day
 	};
 }
 
 export function calculateTopupTripSeconds(state: MiscellaniaState, now = Date.now()): number {
 	const elapsed = daysElapsedSince(state.lastTopupAt, now);
-	return Math.max(1, Math.min(MISCELLANIA_MAX_DAYS, elapsed)) * MISCELLANIA_TRIP_SECONDS_PER_DAY;
+	return Math.max(1, Math.min(MISCELLANIA_TOPUP_MAX_DAYS, elapsed)) * MISCELLANIA_TRIP_SECONDS_PER_DAY;
 }
