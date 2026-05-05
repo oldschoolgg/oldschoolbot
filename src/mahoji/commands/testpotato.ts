@@ -2,7 +2,7 @@ import { EmbedBuilder, userMention } from '@oldschoolgg/discord';
 import { noOp, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, convertLVLtoXP, ItemGroups, Items, itemID, MAX_INT_JAVA, resolveItems } from 'oldschooljs';
 
-import { xp_gains_skill_enum } from '@/prisma/main.js';
+import { Prisma, xp_gains_skill_enum } from '@/prisma/main.js';
 import {
 	bitfieldCanUserManipulate,
 	changeBitFieldForUser,
@@ -20,6 +20,13 @@ import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '@/lib/data/tob
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import potions from '@/lib/minions/data/potions.js';
 import { MAX_QP, quests } from '@/lib/minions/data/quests.js';
+import {
+	type MiscellaniaAreaKey,
+	type MiscellaniaState,
+	miscellaniaAreaKeys,
+	miscellaniaAreaLabels,
+	validateAreas
+} from '@/lib/miscellania/calc.js';
 import { allOpenables } from '@/lib/openables.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
@@ -620,6 +627,80 @@ export const testPotatoCommand = globalConfig.isProduction
 				},
 				{
 					type: 'Subcommand',
+					name: 'miscellania_set',
+					description: 'Set or replace your Miscellania state for testing.',
+					options: [
+						{
+							type: 'Integer',
+							name: 'days_ago',
+							description: 'Set last claim this many days ago.',
+							required: false,
+							min_value: 0,
+							max_value: 365
+						},
+						{
+							type: 'Integer',
+							name: 'coffer',
+							description: 'Stored coffer amount.',
+							required: false,
+							min_value: 0,
+							max_value: 7_500_000
+						},
+						{
+							type: 'Integer',
+							name: 'favour',
+							description: 'Stored favour percent.',
+							required: false,
+							min_value: 25,
+							max_value: 100
+						},
+						{
+							type: 'Integer',
+							name: 'resource_points',
+							description: 'Stored resource points.',
+							required: false,
+							min_value: 0,
+							max_value: 262_143
+						},
+						{
+							type: 'String',
+							name: 'primary_area',
+							description: 'Main area (10 workers).',
+							required: false,
+							choices: miscellaniaAreaKeys.map(key => ({ name: miscellaniaAreaLabels[key], value: key }))
+						},
+						{
+							type: 'String',
+							name: 'secondary_area',
+							description: 'Secondary area (5 workers).',
+							required: false,
+							choices: miscellaniaAreaKeys.map(key => ({ name: miscellaniaAreaLabels[key], value: key }))
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'miscellania_age',
+					description: 'Move Miscellania timestamps backwards to simulate missed days.',
+					options: [
+						{
+							type: 'Integer',
+							name: 'days',
+							description: 'How many days to move back.',
+							required: true,
+							min_value: 1,
+							max_value: 365
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'miscellania_clear',
+					description: 'Delete your Miscellania test state.',
+					options: []
+				},
+				{
+					type: 'Subcommand',
 					name: 'setslayertask',
 					description: 'Set slayer task.',
 					options: [
@@ -1135,6 +1216,65 @@ export const testPotatoCommand = globalConfig.isProduction
 					});
 
 					return `You set your slayer task to ${selectedMonster.name} using ${selectedMaster.name}.`;
+				}
+
+				if (options.miscellania_clear) {
+					await prisma.user.update({
+						where: { id: user.id },
+						data: { miscellania_state: Prisma.JsonNull }
+					});
+					return 'Cleared your Miscellania state.';
+				}
+
+				if (options.miscellania_set) {
+					const now = Date.now();
+					const daysAgo = options.miscellania_set.days_ago ?? 0;
+					const timestamp = now - daysAgo * Time.Day;
+					const primaryArea = (options.miscellania_set.primary_area ?? 'maple') as MiscellaniaAreaKey;
+					const secondaryArea = (options.miscellania_set.secondary_area ?? 'herbs') as MiscellaniaAreaKey;
+					const areaErr = validateAreas(primaryArea, secondaryArea);
+					if (areaErr) return areaErr;
+					const state: MiscellaniaState = {
+						lastClaimedAt: timestamp,
+						lastUpdatedAt: timestamp,
+						lastTopupAt: timestamp,
+						primaryArea,
+						secondaryArea,
+						coffer: options.miscellania_set.coffer ?? 7_500_000,
+						cofferAtLastClaim: options.miscellania_set.coffer ?? 7_500_000,
+						favour: options.miscellania_set.favour ?? 100,
+						resourcePoints: options.miscellania_set.resource_points ?? 0
+					};
+
+					await prisma.user.update({
+						where: { id: user.id },
+						data: { miscellania_state: state as any }
+					});
+
+					return `Set Miscellania state. primary=${state.primaryArea}, secondary=${state.secondaryArea}, daysAgo=${daysAgo}.`;
+				}
+
+				if (options.miscellania_age) {
+					const existing = await prisma.user.findUnique({
+						where: { id: user.id },
+						select: { miscellania_state: true }
+					});
+					if (!existing?.miscellania_state) {
+						return 'No Miscellania state found. Use testpotato miscellania_set first.';
+					}
+					const state = existing.miscellania_state as unknown as MiscellaniaState;
+					const days = options.miscellania_age.days;
+					const progressed = {
+						...state,
+						lastClaimedAt: state.lastClaimedAt - days * Time.Day,
+						lastUpdatedAt: state.lastUpdatedAt - days * Time.Day,
+						lastTopupAt: state.lastTopupAt - days * Time.Day
+					};
+					await prisma.user.update({
+						where: { id: user.id },
+						data: { miscellania_state: progressed as any }
+					});
+					return `Aged Miscellania by ${days} day(s).`;
 				}
 
 				return 'Nothin!';

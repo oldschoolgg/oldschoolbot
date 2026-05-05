@@ -4,6 +4,7 @@ import type { CropUpgradeType } from '@/prisma/main/enums.js';
 import type { NMZStrategy } from '@/lib/constants.js';
 import type { SlayerActivityConstants } from '@/lib/minions/data/combatConstants.js';
 import type { AttackStyles } from '@/lib/minions/functions/index.js';
+import type { MiscellaniaAreaKey } from '@/lib/miscellania/calc.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
 import type { UnderwaterAgilityThievingTrainingSkill } from '@/lib/skilling/skills/agility.js';
 import type { IPatchData } from '@/lib/skilling/skills/farming/utils/types.js';
@@ -542,6 +543,12 @@ export interface KourendFavourActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface MiscellaniaTopupActivityTaskOptions extends ActivityTaskOptions {
+	type: 'MiscellaniaTopup';
+	primaryArea: MiscellaniaAreaKey;
+	secondaryArea: MiscellaniaAreaKey;
+}
+
 export interface TokkulShopOptions extends ActivityTaskOptions {
 	type: 'TokkulShop';
 	itemID: number;
@@ -634,6 +641,7 @@ export type ActivityTaskData =
 	| TemporossActivityTaskOptions
 	| PuroPuroActivityTaskOptions
 	| KourendFavourActivityTaskOptions
+	| MiscellaniaTopupActivityTaskOptions
 	| AgilityActivityTaskOptions
 	| InfernoOptions
 	| TOAOptions

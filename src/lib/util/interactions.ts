@@ -14,6 +14,13 @@ export function makeOpenCasketButton(tier: ClueTier) {
 		.setEmoji({ id: EmojiId.Casket });
 }
 
+export function makeMiscellaniaTopupButton() {
+	return new ButtonBuilder()
+		.setCustomId(InteractionID.Commands.TopupMiscellania)
+		.setLabel('Top-up Miscellania')
+		.setStyle(ButtonStyle.Secondary);
+}
+
 export function makeOpenSeedPackButton() {
 	return new ButtonBuilder()
 		.setCustomId(InteractionID.Open.SeedPack)

@@ -58,6 +58,7 @@ import type {
 	KourendFavourActivityTaskOptions,
 	MinigameActivityTaskOptionsWithNoChanges,
 	MiningActivityTaskOptions,
+	MiscellaniaTopupActivityTaskOptions,
 	MonsterActivityTaskOptions,
 	MotherlodeMiningActivityTaskOptions,
 	NexTaskOptions,
@@ -603,6 +604,10 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 		case 'KourendFavour': {
 			const data = currentTask as KourendFavourActivityTaskOptions;
 			return `${name} is currently doing ${data.favour} Favour tasks. ${formattedDuration}`;
+		}
+		case 'MiscellaniaTopup': {
+			const data = currentTask as MiscellaniaTopupActivityTaskOptions;
+			return `${name} is currently doing Managing Miscellania (${data.primaryArea} + ${data.secondaryArea}). ${formattedDuration}`;
 		}
 		case 'Inferno': {
 			const data = currentTask as InfernoOptions;
