@@ -40,6 +40,8 @@ Killing Revenants allows you to collect wildy weapons and many high-tier resourc
 
 To start a trip, use (for example) [[/k name\:Revenant imp]].
 
+Revenant trips can also incidentally encounter the [[Revenant maledictus]]. This is not directly killable; it can only appear while killing regular Revenants. Its chance scales with the combat level of the Revenant being killed. If encountered, its drops and KC are tracked separately from the regular Revenant.
+
 ---
 
 ### Boosts
@@ -87,4 +89,3 @@ You can upgrade and charge revenant weapons using 7000 [[revenant ether]] for be
 - [[/create item\:Webweaver bow]]
 - [[/create item\:Accursed sceptre]]
 - [[/create item\:Ursine chainmace]]
-

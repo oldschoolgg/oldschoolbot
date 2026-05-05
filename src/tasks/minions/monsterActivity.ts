@@ -21,6 +21,9 @@ import { increaseWildEvasionXp } from '@/lib/util/calcWildyPkChance.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { calculateSimpleMonsterDeathChance } from '@/lib/util/smallUtils.js';
 
+const revMaledictusID = 11_246;
+const revMaledictusSpawnRateDivisor = 300_000;
+
 function handleSlayerTaskCompletion({
 	slayerContext,
 	updateBank,
@@ -169,6 +172,7 @@ export function doMonsterTrip(data: newOptions) {
 	if (isRevenantMonster) skulled = true;
 
 	const messages: string[] = [];
+	const additionalLootTracks: { id: string; kc: number; loot: Bank; duration: number }[] = [];
 
 	// Wilderness PK Encounters and PK Deaths, handle remaining anti-pk supplies if any
 	if (hasWildySupplies) {
@@ -331,6 +335,32 @@ export function doMonsterTrip(data: newOptions) {
 		if (monster.specialLoot) {
 			monster.specialLoot({ loot, ownedItems: gearBank.bank, quantity: finalQuantity, cl: data.cl });
 		}
+		if (isRevenantMonster) {
+			const revenantCombatLevel = Monsters.get(monster.id)?.data.combatLevel ?? 0;
+			if (revenantCombatLevel > 0) {
+				const maledictusSpawnRate = Math.max(1, Math.ceil(revMaledictusSpawnRateDivisor / revenantCombatLevel));
+				let maledictusKills = 0;
+				for (let i = 0; i < finalQuantity; i++) {
+					if (rng.roll(maledictusSpawnRate)) {
+						maledictusKills++;
+					}
+				}
+
+				if (maledictusKills > 0) {
+					const maledictus = Monsters.RevenantMaledictus;
+					const maledictusLoot = maledictus.kill(maledictusKills, killOptions);
+					loot.add(maledictusLoot);
+					updateBank.kcBank.add(revMaledictusID as EMonster, maledictusKills);
+					additionalLootTracks.push({
+						id: maledictus.name,
+						kc: maledictusKills,
+						loot: maledictusLoot,
+						duration: 0
+					});
+					messages.push(`\n**You encountered and killed ${maledictusKills}x ${maledictus.name}.**`);
+				}
+			}
+		}
 		if (
 			monster.name.toLowerCase() === 'unicorn' &&
 			gearBank.hasEquipped('Iron dagger') &&
@@ -431,6 +461,7 @@ export function doMonsterTrip(data: newOptions) {
 		slayerContext,
 		quantity,
 		messages,
+		additionalLootTracks,
 		newKC,
 		updateBank,
 		monster
@@ -455,7 +486,7 @@ export const monsterTask: MinionTask = {
 		const slayerInfo = await user.fetchSlayerInfo();
 		const monster = killableMonsters.find(mon => mon.id === data.mi)!;
 		const attackStyles = data.attackStyles ?? user.getAttackStyles();
-		const { slayerContext, quantity, newKC, messages, updateBank } = doMonsterTrip({
+		const { slayerContext, quantity, newKC, messages, updateBank, additionalLootTracks } = doMonsterTrip({
 			...data,
 			monster,
 			tertiaryItemPercentageChanges: user.buildTertiaryItemChanges(
@@ -513,8 +544,13 @@ export const monsterTask: MinionTask = {
 			]
 		});
 
+		const primaryMonsterLoot = updateBank.itemLootBank.clone();
+		for (const lootTrack of additionalLootTracks) {
+			primaryMonsterLoot.remove(lootTrack.loot);
+		}
+
 		await trackLoot({
-			totalLoot: updateBank.itemLootBank,
+			totalLoot: primaryMonsterLoot,
 			id: monster.name.toString(),
 			type: 'Monster',
 			changeType: 'loot',
@@ -528,6 +564,24 @@ export const monsterTask: MinionTask = {
 				}
 			]
 		});
+
+		for (const lootTrack of additionalLootTracks) {
+			await trackLoot({
+				totalLoot: lootTrack.loot,
+				id: lootTrack.id,
+				type: 'Monster',
+				changeType: 'loot',
+				kc: lootTrack.kc,
+				duration: lootTrack.duration,
+				users: [
+					{
+						id: user.id,
+						loot: lootTrack.loot,
+						duration: lootTrack.duration
+					}
+				]
+			});
+		}
 
 		const resultOrError = await updateBank.transact(user, { isInWilderness: data.isInWilderness });
 		if (typeof resultOrError === 'string') {

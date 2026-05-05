@@ -398,6 +398,11 @@ export const effectiveMonsters = [
 		name: 'Nex',
 		aliases: ['nex'],
 		id: EMonster.NEX
+	},
+	{
+		name: 'Revenant maledictus',
+		aliases: ['revenant maledictus', 'maledictus', 'rev boss'],
+		id: 11_246
 	}
 ] satisfies EffectiveMonster[];
 

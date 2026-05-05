@@ -42,6 +42,7 @@ async function determineKillLimit(user: MUser) {
 const ALL_VALID_KILLABLE_MONSTERS = [
 	...autocompleteMonsters.map(i => ({ name: i.name, aliases: i.aliases })),
 	...simulatedKillables.map(i => ({ name: i.name, aliases: [i.name] })),
+	{ name: 'Revenant maledictus', aliases: ['revenant maledictus', 'maledictus', 'rev boss'] },
 	{ name: 'nightmare', aliases: ['nightmare'] }
 ];
 

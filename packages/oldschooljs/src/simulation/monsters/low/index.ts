@@ -206,6 +206,7 @@ import { RevenantHellhound } from './n-s/RevenantHellhound.js';
 import { RevenantHobgoblin } from './n-s/RevenantHobgoblin.js';
 import { RevenantImp } from './n-s/RevenantImp.js';
 import { RevenantKnight } from './n-s/RevenantKnight.js';
+import { RevenantMaledictus } from './n-s/RevenantMaledictus.js';
 import { RevenantOrk } from './n-s/RevenantOrk.js';
 import { RevenantPyrefiend } from './n-s/RevenantPyrefiend.js';
 import { RiylShade } from './n-s/RiylShade.js';
@@ -305,6 +306,7 @@ export const allLowMonsters: Record<string, SimpleMonster> = {
 	RevenantDragon,
 	RevenantDemon,
 	RevenantDarkBeast,
+	RevenantMaledictus,
 	Pirate,
 	Mammoth,
 	MagicAxe,
