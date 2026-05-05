@@ -134,6 +134,7 @@ interface newOptions {
 	bitfield: readonly BitField[];
 	cl: Bank;
 	rng: RNGProvider;
+	user?: MUser;
 }
 
 export function doMonsterTrip(data: newOptions) {
@@ -329,7 +330,14 @@ export function doMonsterTrip(data: newOptions) {
 	const loot = wiped ? new Bank() : monster.table.kill(finalQuantity, killOptions);
 	if (!wiped) {
 		if (monster.specialLoot) {
-			monster.specialLoot({ loot, ownedItems: gearBank.bank, quantity: finalQuantity, cl: data.cl });
+			monster.specialLoot({
+				loot,
+				ownedItems: gearBank.bank,
+				quantity: finalQuantity,
+				cl: data.cl,
+				user: data.user,
+				messages
+			});
 		}
 		if (
 			monster.name.toLowerCase() === 'unicorn' &&
@@ -473,7 +481,8 @@ export const monsterTask: MinionTask = {
 			hasEliteCA: user.hasCompletedCATier('elite'),
 			bitfield: user.bitfield,
 			cl: user.cl,
-			rng
+			rng,
+			user
 		});
 		if (slayerContext.isOnTask) {
 			await prisma.slayerTask.update({

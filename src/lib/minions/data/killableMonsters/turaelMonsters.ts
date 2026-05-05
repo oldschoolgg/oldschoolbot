@@ -526,7 +526,17 @@ export const turaelMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		healAmountNeeded: 8,
 		attackStyleToUse: GearStat.AttackSlash,
-		attackStylesUsed: [GearStat.AttackMagic]
+		attackStylesUsed: [GearStat.AttackMagic],
+		specialLoot: ({ loot, user, messages }) => {
+			if (user?.user.finished_quest_ids.includes(QuestID.TheHeartOfDarkness)) return;
+			if (loot.has('Frozen tear') || loot.has('Tooth half of key (moon key)')) {
+				messages?.push(
+					"You didn't receive some Icefiend loot because you haven't completed The Heart of Darkness quest."
+				);
+			}
+			loot.clear('Frozen tear');
+			loot.clear('Tooth half of key (moon key)');
+		}
 	},
 	{
 		id: Monsters.IceWolf.id,
