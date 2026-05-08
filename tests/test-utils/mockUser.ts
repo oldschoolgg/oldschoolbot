@@ -10,6 +10,7 @@ import type { GearSetupType, Prisma, User, UserStats } from '@/prisma/main.js';
 import { rawCommandHandlerInner } from '@/discord/commandHandler.js';
 import { MessageBuilderClass } from '@/discord/MessageBuilder.js';
 import type { PvMMethod } from '@/lib/constants.js';
+import { BitField } from '@/lib/constants.js';
 import type { DegradeableItem } from '@/lib/degradeableItems.js';
 import { type SkillNameType, SkillsArray } from '@/lib/skilling/types.js';
 import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
@@ -36,6 +37,15 @@ export class TestUser extends MUserClass {
 	async setBank(bank: Bank) {
 		// @ts-expect-error
 		await this.update({ bank: bank.toJSON() });
+		return this;
+	}
+
+	async givePatronTier(tier: number) {
+		await this.update({
+			bitfield: {
+				push: tier + 1
+			}
+		});
 		return this;
 	}
 
@@ -354,6 +364,7 @@ export async function mockUser(
 export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.UserCreateInput> = {}) {
 	const id = userData.id ?? mockedId();
 	userData.username ??= `TestUser`;
+	userData.bitfield ??= [BitField.DisabledRandomEvents, BitField.DisabledPassiveImplings];
 
 	const bank = _bank ? _bank.clone() : null;
 	let GP = userData.GP ? Number(userData.GP) : undefined;

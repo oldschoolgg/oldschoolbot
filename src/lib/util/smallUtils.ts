@@ -45,7 +45,8 @@ export function bankToStrShortNames(bank: Bank) {
 	const str = [];
 	for (const [item, qty] of bank.items()) {
 		const shortName = shortItemNames.get(item);
-		str.push(`${qty}x ${shortName ?? item.name}${qty > 1 ? 's' : ''}`);
+		const name = shortName ?? item.name;
+		str.push(`${qty}x ${qty > 1 ? pluraliseItemName(name) : name}`);
 	}
 	return str.join(', ');
 }
@@ -98,7 +99,13 @@ export function hasSkillReqsRaw(skills: SkillRequirements, requirements: SkillRe
 export function hasSkillReqs(user: MUser, reqs: Skills): [boolean, string | null] {
 	const hasReqs = hasSkillReqsRaw(user.skillsAsRequirements, reqs);
 	if (!hasReqs) {
-		return [false, formatSkillRequirements(reqs)];
+		const missingReqs = Object.fromEntries(
+			objectEntries(reqs).filter(([skillName, requiredLevel]) => {
+				const userLevel = user.skillsAsRequirements[skillName];
+				return !userLevel || userLevel < requiredLevel!;
+			})
+		) as SkillRequirements;
+		return [false, formatSkillRequirements(missingReqs)];
 	}
 	return [true, null];
 }

@@ -120,6 +120,7 @@ import {
 	tormentedDemonCL,
 	troubleBrewingCL,
 	tzHaarCL,
+	valeTotemsCL,
 	vardorvisCL,
 	venenatisCL,
 	vetionCL,
@@ -500,6 +501,11 @@ export const allCollectionLogs: ICollection = {
 					'Ice element staff crown',
 					'Fire element staff crown',
 					'Desiccated page'
+				]),
+				allItems: uniqueArr([
+					...Monsters.Branda.allItems,
+					...Monsters.Eldric.allItems,
+					...Monsters.RoyalTitans.allItems
 				]),
 				fmtProg: ({ stats }) => [
 					`${stats.kcBank[Monsters.Branda.id] ?? 0} Branda KC`,
@@ -942,9 +948,12 @@ export const allCollectionLogs: ICollection = {
 				isActivity: true,
 				fmtProg: mgProg('trouble_brewing')
 			},
-			///	'Vale Totems': {
-			///		items: CollectionLog.ValeTotems.items
-			///	},
+			'Vale Totems': {
+				alias: ['vt', 'vale', 'totems', 'vale totems'],
+				items: valeTotemsCL,
+				isActivity: true,
+				fmtProg: mgProg('vale_totems')
+			},
 			'Volcanic Mine': {
 				items: volcanicMineCL,
 				alias: ['vm', 'vmine', 'volcanic'],
