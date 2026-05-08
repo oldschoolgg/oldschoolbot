@@ -48,9 +48,14 @@ test-bot-store-*.json
 .db
 
 src/prisma/clients
+src/prisma/migrations
 
 .DS_Store
+.aiignore
+.noai
 
 itx
 
 .claude
+
+diffs

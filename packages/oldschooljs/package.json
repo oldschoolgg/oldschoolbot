@@ -7,19 +7,17 @@
 	"exports": {
 		".": {
 			"types": "./dist/esm/index.d.mts",
-			"require": "./dist/cjs/index.cjs",
 			"import": "./dist/esm/index.mjs"
 		},
 		"./*": {
 			"types": "./dist/esm/index.d.mts",
-			"require": "./dist/cjs/index.cjs",
 			"import": "./dist/esm/index.mjs"
 		}
 	},
 	"license": "MIT",
 	"scripts": {
-		"test": "concurrently \"pnpm test:unit\" \"tsc --noEmit -p test\" \"tsc --noEmit -p src\"",
-		"test:unit": "vitest run --coverage",
+		"test:types": "concurrently \"tsc --noEmit -p test\" \"tsc --noEmit -p src\"",
+		"test:unit": "vitest run",
 		"generate": "tsx --tsconfig scripts/tsconfig.json scripts/prepare && tsx --tsconfig scripts/tsconfig.json scripts/itemsPostProcess.ts",
 		"enum": "tsx --tsconfig scripts/tsconfig.json scripts/enum.ts",
 		"build": "tsdown"

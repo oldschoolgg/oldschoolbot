@@ -1,5 +1,6 @@
-import { calcWhatPercent, deepEqual, formatOrdinal, round, sumArr } from '@oldschoolgg/toolkit';
+import { calcWhatPercent, formatOrdinal, round, sumArr } from '@oldschoolgg/toolkit';
 import type { Bank } from 'oldschooljs';
+import { isDeepEqual } from 'remeda';
 
 import { Prisma, type TriviaQuestion, type User } from '@/prisma/clients/robochimp/client.js';
 import { BOT_TYPE, globalConfig, masteryKey } from '@/lib/constants.js';
@@ -82,10 +83,20 @@ export async function roboChimpSyncData(user: MUser, newCL?: Bank) {
 		}
 	});
 
-	if (!deepEqual(newUser.store_bitfield, user.user.store_bitfield)) {
+	if (!isDeepEqual(newUser.store_bitfield, user.user.store_bitfield)) {
 		await user.update({ store_bitfield: newUser.store_bitfield });
 	}
 	return newUser;
+}
+
+export async function roboChimpUserFetchCached(userID: string): Promise<RobochimpUser> {
+	const rateCheck = await Cache.tryRatelimit(userID, 'delay_robochimp_fetch');
+	if (!rateCheck.success) {
+		// Ratelimit success means we can re-fetch
+		const cachedUser = await Cache.getRoboChimpUser(userID);
+		if (cachedUser) return cachedUser;
+	}
+	return await roboChimpUserFetch(userID);
 }
 
 export async function roboChimpUserFetch(userID: string): Promise<RobochimpUser> {
@@ -100,6 +111,7 @@ export async function roboChimpUserFetch(userID: string): Promise<RobochimpUser>
 			},
 			update: {}
 		});
+		await Cache.setRoboChimpUser(userID, result);
 		return result;
 	} catch (err) {
 		// Ignore unique constraint errors, they already have a row
@@ -115,6 +127,7 @@ export async function roboChimpUserFetch(userID: string): Promise<RobochimpUser>
 		}
 	});
 
+	await Cache.setRoboChimpUser(userID, result);
 	return result;
 }
 

@@ -17,6 +17,20 @@ export function normalizeTOAUsers(data: TOAOptions) {
 	return detailedUsers;
 }
 
+export function getSuccessfulTOARaidCount({
+	wipedRooms,
+	quantity
+}: {
+	wipedRooms: (number | null)[];
+	quantity: number;
+}) {
+	return Math.max(0, quantity - wipedRooms.filter(room => room !== null).length);
+}
+
+export function didAllTOAMembersDieInRoom(users: { deaths: number[] }[], roomID: number) {
+	return users.every(member => member.deaths.includes(roomID));
+}
+
 export function getToaKCs(toaRaidLevelsBank: Prisma.JsonValue) {
 	let entryKC = 0;
 	let normalKC = 0;

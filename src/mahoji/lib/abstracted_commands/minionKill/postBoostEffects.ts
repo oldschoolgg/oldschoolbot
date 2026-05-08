@@ -22,7 +22,7 @@ type PostBoostEffectReturn = Pick<
 export type PostBoostEffect = {
 	description: string;
 	run: (
-		args: { currentPeak: Peak; duration: number; quantity: number } & Omit<
+		args: { currentPeak: Peak; duration: number; quantity: number; rng: RNGProvider } & Omit<
 			BoostArgs,
 			'addPostBoostEffect' | 'itemCost'
 		>
@@ -110,7 +110,8 @@ export const postBoostEffects: PostBoostEffect[] = [
 			gearBank,
 			pkEvasionExperience,
 			bitfield,
-			currentPeak
+			currentPeak,
+			rng
 		}) => {
 			if (!isInWilderness) return;
 
@@ -148,15 +149,16 @@ export const postBoostEffects: PostBoostEffect[] = [
 					'Your minion brought some supplies to survive potential pkers. (Handed back after trip if lucky)'
 				);
 			}
-			const { pkEncounters, died, chanceString } = calcWildyPKChance(
+			const { pkEncounters, died, chanceString } = calcWildyPKChance({
 				currentPeak,
 				gearBank,
 				monster,
 				duration,
-				hasWildySupplies,
-				Boolean(currentTaskOptions.usingCannon),
-				pkEvasionExperience
-			);
+				supplies: hasWildySupplies,
+				cannonMulti: Boolean(currentTaskOptions.usingCannon),
+				pkEvasionExperience,
+				rng
+			});
 			messages.push(chanceString);
 			if (currentPeak.peakTier === PeakTier.High && !bitfield.includes(BitField.DisableHighPeakTimeWarning)) {
 				confirmationString = `Are you sure you want to kill ${monster.name} during high peak time? PKers are more active.`;

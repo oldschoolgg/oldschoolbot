@@ -15,7 +15,7 @@ declare global {
 	export type MInteraction = import('@oldschoolgg/discord').MInteraction;
 
 	type RoboChimpCommand = import('@/discord/commandOptions.js').RoboChimpCommand;
-	type RNGProvider = import('@oldschoolgg/rng').RNGProvider;
+	type RNGProvider = import('node-rng').RNGProvider;
 }
 
 export {};

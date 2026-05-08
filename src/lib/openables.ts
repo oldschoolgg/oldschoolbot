@@ -1,4 +1,3 @@
-import { roll } from '@oldschoolgg/rng';
 import type { IFarmingContract } from '@oldschoolgg/schemas';
 import { Emoji, Events, formatOrdinal } from '@oldschoolgg/toolkit';
 import {
@@ -87,10 +86,13 @@ const FrozenCacheTable = new LootTable()
 	.add('Spirit seed', 1, 2)
 	.add('Rune sword');
 
+const BaleOfFlax = new LootTable().add('Flax', 25);
+
 interface OpenArgs {
 	quantity: number;
 	user: MUser;
 	self: UnifiedOpenable;
+	rng: RNGProvider;
 }
 
 export interface UnifiedOpenable {
@@ -120,14 +122,14 @@ for (const clueTier of ClueTiers) {
 		id: casketItem.id,
 		openedItem: casketItem,
 		aliases: [clueTier.name.toLowerCase()],
-		output: async ({ quantity, user, self }) => {
+		output: async ({ quantity, user, self, rng }) => {
 			const clueTier = ClueTiers.find(c => c.id === self.id)!;
 			const loot = clueTier.table.roll(quantity);
 			let mimicNumber = 0;
 			if (clueTier.mimicChance) {
 				const table = clueTier.name === 'Master' ? MasterMimicTable : EliteMimicTable;
 				for (let i = 0; i < quantity; i++) {
-					if (roll(clueTier.mimicChance)) {
+					if (rng.roll(clueTier.mimicChance)) {
 						loot.add(table.roll());
 						mimicNumber++;
 					}
@@ -534,6 +536,30 @@ export const allOpenables: UnifiedOpenable[] = [
 		output: FrozenCacheTable,
 		allItems: FrozenCacheTable.allItems
 	},
+	{
+		name: 'Olive oil pack',
+		id: itemID('Olive oil pack'),
+		openedItem: Items.getOrThrow('Olive oil pack'),
+		aliases: ['olive oil pack', 'olive oil'],
+		output: new LootTable().every('Olive oil(4)', 100),
+		allItems: resolveItems(['Olive oil(4)'])
+	},
+	{
+		name: 'Bale of flax',
+		id: itemID('Bale of flax'),
+		openedItem: Items.getOrThrow('Bale of flax'),
+		aliases: ['bale of flax', 'flax bale', 'bale flax'],
+		output: BaleOfFlax,
+		allItems: BaleOfFlax.allItems
+	},
+	{
+		name: 'Soft clay pack',
+		id: itemID('Soft clay pack'),
+		openedItem: Items.getOrThrow('Soft clay pack'),
+		aliases: ['soft clay pack', 'clay pack'],
+		output: new LootTable().add('Soft clay', 100),
+		allItems: resolveItems(['Soft clay'])
+	},
 	...clueOpenables,
 	...osjsOpenables,
 	...shadeChestOpenables
@@ -549,13 +575,15 @@ export const allOpenablesIDs = new Set(allOpenables.map(i => i.id));
 export function getOpenableLoot({
 	openable,
 	quantity,
-	user
+	user,
+	rng
 }: {
 	openable: UnifiedOpenable;
 	quantity: number;
 	user: MUser;
+	rng: RNGProvider;
 }) {
 	return openable.output instanceof LootTable
 		? { bank: openable.output.roll(quantity), message: null }
-		: openable.output({ user, self: openable, quantity });
+		: openable.output({ user, self: openable, quantity, rng });
 }

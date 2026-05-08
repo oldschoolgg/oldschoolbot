@@ -1,5 +1,5 @@
-import { randArrItem, randFloat, randInt, roll } from '@oldschoolgg/rng';
 import { reduceNumByPercent } from '@oldschoolgg/util';
+import { randArrItem, randFloat, randInt, roll } from 'node-rng';
 
 import { Bank } from './Bank.js';
 import { Items } from './Items.js';
@@ -248,7 +248,7 @@ export default class LootTable {
 
 			if (this.cachedOptimizedTable) {
 				this.addResultToLoot(
-					this.table[randArrItem(this.cachedOptimizedTable)],
+					this.table[randArrItem(this.cachedOptimizedTable)!],
 					loot,
 					options.tertiaryItemPercentageChanges
 				);

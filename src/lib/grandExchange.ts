@@ -7,7 +7,7 @@ import { clamp } from 'remeda';
 import { type GEListing, GEListingType, type GETransaction } from '@/prisma/main.js';
 import { GE_SLOTS_CACHE, marketPricemap } from '@/lib/cache.js';
 import { BitField, globalConfig, PerkTier } from '@/lib/constants.js';
-import { type RobochimpUser, roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { type RobochimpUser, roboChimpUserFetchCached } from '@/lib/roboChimp.js';
 import { fetchTableBank, makeTransactFromTableBankQueries } from '@/lib/table-banks/tableBank.js';
 import { assert } from '@/lib/util/logError.js';
 
@@ -177,7 +177,7 @@ class GrandExchangeSingleton {
 	): Promise<{ slots: number; doesntHaveNames: string[]; possibleExtra: number; maxPossible: number }> {
 		const cached = GE_SLOTS_CACHE.get(user.id);
 		if (cached) return cached;
-		const robochimpUser = await roboChimpUserFetch(user.id);
+		const robochimpUser = await roboChimpUserFetchCached(user.id);
 		let slots = 0;
 		const doesntHaveNames = [];
 		let possibleExtra = 0;
@@ -593,7 +593,8 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 					quantity_remaining: newBuyerListingQuantityRemaining,
 					fulfilled_at: newBuyerListingQuantityRemaining === 0 ? new Date() : null,
 					gp_refunded: buyerRefund
-				}
+				},
+				select: { id: true }
 			}),
 			prisma.gEListing.update({
 				where: {
@@ -602,7 +603,8 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 				data: {
 					quantity_remaining: newSellerListingQuantityRemaining,
 					fulfilled_at: newSellerListingQuantityRemaining === 0 ? new Date() : null
-				}
+				},
+				select: { id: true }
 			}),
 			prisma.clientStorage.update({
 				where: {

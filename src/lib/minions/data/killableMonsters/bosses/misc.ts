@@ -1,5 +1,4 @@
 import { GearStat } from '@oldschoolgg/gear';
-import { roll } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, deepResolveItems, itemID, Monsters, resolveItems } from 'oldschooljs';
 
@@ -514,11 +513,11 @@ export const miscBossKillables: KillableMonster[] = [
 				gearSetup: 'mage'
 			}
 		],
-		effect: ({ quantity, gearBank }) => {
+		effect: ({ quantity, gearBank, rng }) => {
 			if (gearBank.bank.has('Charged ice')) return;
 			const loot = new Bank();
 			for (let i = 0; i < quantity; i++) {
-				if (roll(20)) {
+				if (rng.roll(20)) {
 					loot.add('Charged ice');
 					break;
 				}
@@ -1055,6 +1054,8 @@ export const miscBossKillables: KillableMonster[] = [
 		timeToFinish: Time.Minute * 2.5,
 		respawnTime: 500,
 		table: Monsters.Branda,
+		wildy: false,
+		difficultyRating: 8,
 		deathProps: {
 			hardness: 0.2,
 			steepness: 0.99
@@ -1198,6 +1199,8 @@ export const miscBossKillables: KillableMonster[] = [
 		timeToFinish: Time.Minute * 2.5,
 		respawnTime: 500,
 		table: Monsters.Eldric,
+		wildy: false,
+		difficultyRating: 8,
 		deathProps: {
 			hardness: 0.2,
 			steepness: 0.99
@@ -1337,6 +1340,8 @@ export const miscBossKillables: KillableMonster[] = [
 		timeToFinish: Time.Minute * 2.5,
 		respawnTime: 500,
 		table: Monsters.RoyalTitans,
+		wildy: false,
+		difficultyRating: 8,
 		deathProps: {
 			hardness: 0.2,
 			steepness: 0.99

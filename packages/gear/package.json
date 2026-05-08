@@ -9,7 +9,8 @@
 	},
 	"scripts": {
 		"build": "tsdown",
-		"test": "pnpm tsc -p src --noEmit && vitest run --coverage"
+		"test:types": "concurrently \"tsc -p src\" \"tsc -p tests\"",
+		"test:unit": "vitest run --coverage"
 	},
 	"dependencies": {}
 }
