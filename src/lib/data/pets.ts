@@ -609,6 +609,172 @@ const pets: Pet[] = [
 		altNames: ['NEXLING'],
 		formatFinish: (num: number) =>
 			`You had to kill Nex ${fm(num)} times to get Nexling! <:Nexling:931565564151869460>`
+	},
+	{
+		id: 50,
+		emoji: ':pet:',
+		chance: 4000,
+		name: 'Abyssal protector',
+		type: 'SPECIAL',
+		altNames: ['ABYSSALPROTECTOR', 'PROTECTOR', 'GOTR'],
+		formatFinish: (num: number) =>
+			`You had to close ${fm(num)} Guardians of the Rift rifts to get the Abyssal protector! :pet:`
+	},
+	{
+		id: 51,
+		emoji: ':pet:',
+		chance: 650,
+		name: "Tumeken's guardian",
+		type: 'BOSS',
+		altNames: ['TUMEKENSGUARDIAN', 'TOA', 'TOMBS'],
+		formatFinish: (num: number) =>
+			`You had to complete Tombs of Amascut ${fm(num)} times to get Tumeken's guardian! :pet:`,
+		bossKeys: ['tombsofAmascut', 'tombsofAmascutExpert']
+	},
+	{
+		id: 52,
+		emoji: ':pet:',
+		chance: 2500,
+		name: 'Muphin',
+		type: 'BOSS',
+		altNames: ['MUPHIN', 'MUSPAH', 'PHANTOMMUSPAH'],
+		formatFinish: (num: number) => `You had to kill Phantom Muspah ${fm(num)} times to get Muphin! :pet:`,
+		bossKeys: ['phantomMuspah']
+	},
+	{
+		id: 53,
+		emoji: ':pet:',
+		chance: 2500,
+		name: 'Baron',
+		type: 'BOSS',
+		altNames: ['BARON', 'DUKE', 'DUKESUCELLUS'],
+		formatFinish: (num: number) => `You had to kill Duke Sucellus ${fm(num)} times to get Baron! :pet:`,
+		bossKeys: ['dukeSucellus']
+	},
+	{
+		id: 54,
+		emoji: ':pet:',
+		chance: 3000,
+		name: 'Butch',
+		type: 'BOSS',
+		altNames: ['BUTCH', 'VARDORVIS'],
+		formatFinish: (num: number) => `You had to kill Vardorvis ${fm(num)} times to get Butch! :pet:`,
+		bossKeys: ['vardorvis']
+	},
+	{
+		id: 55,
+		emoji: ':pet:',
+		chance: 2500,
+		name: "Lil'viathan",
+		type: 'BOSS',
+		altNames: ['LILVIATHAN', 'LEVIATHAN', 'THELEVIATHAN'],
+		formatFinish: (num: number) => `You had to kill The Leviathan ${fm(num)} times to get Lil'viathan! :pet:`,
+		bossKeys: ['theLeviathan']
+	},
+	{
+		id: 56,
+		emoji: ':pet:',
+		chance: 2000,
+		name: 'Wisp',
+		type: 'BOSS',
+		altNames: ['WISP', 'WHISPERER', 'THEWHISPERER'],
+		formatFinish: (num: number) => `You had to kill The Whisperer ${fm(num)} times to get Wisp! :pet:`,
+		bossKeys: ['theWhisperer']
+	},
+	{
+		id: 57,
+		emoji: ':pet:',
+		chance: 3000,
+		name: 'Scurry',
+		type: 'BOSS',
+		altNames: ['SCURRY', 'SCURRIUS'],
+		formatFinish: (num: number) => `You had to kill Scurrius ${fm(num)} times to get Scurry! :pet:`,
+		bossKeys: ['scurrius']
+	},
+	{
+		id: 58,
+		emoji: ':pet:',
+		chance: 200,
+		name: 'Smol heredit',
+		type: 'BOSS',
+		altNames: ['SMOLHEREDIT', 'SOLHEREDIT', 'COLOSSEUM'],
+		formatFinish: (num: number) => `You had to defeat Sol Heredit ${fm(num)} times to get Smol heredit! :pet:`,
+		bossKeys: ['solHeredit']
+	},
+	{
+		id: 59,
+		emoji: ':pet:',
+		chance: 1000,
+		name: 'Quetzin',
+		type: 'SKILL',
+		altNames: ['QUETZIN', 'HUNTER', 'RUMOURS', 'HUNTERSRUMOURS'],
+		formatFinish: (num: number) => `You had to open ${fm(num)} Hunters' loot sacks to get Quetzin! :pet:`
+	},
+	{
+		id: 60,
+		emoji: ':pet:',
+		chance: 3000,
+		name: 'Nid',
+		type: 'BOSS',
+		altNames: ['NID', 'ARAXXOR', 'RAX'],
+		formatFinish: (num: number) => `You had to kill Araxxor ${fm(num)} times to get Nid! :pet:`,
+		bossKeys: ['araxxor']
+	},
+	{
+		id: 61,
+		emoji: ':pet:',
+		chance: 400,
+		name: 'Huberte',
+		type: 'BOSS',
+		altNames: ['HUBERTE', 'HUEY', 'HUEYCOATL', 'THEHUEYCOATL'],
+		formatFinish: (num: number) => `You had to kill The Hueycoatl ${fm(num)} times to get Huberte! :pet:`,
+		bossKeys: ['theHueycoatl']
+	},
+	{
+		id: 62,
+		emoji: ':pet:',
+		chance: 3000,
+		name: 'Moxi',
+		type: 'BOSS',
+		altNames: ['MOXI', 'AMOXLIATL'],
+		formatFinish: (num: number) => `You had to kill Amoxliatl ${fm(num)} times to get Moxi! :pet:`,
+		bossKeys: ['amoxliatl']
+	},
+	{
+		id: 63,
+		emoji: ':pet:',
+		chance: 3000,
+		name: 'Bran',
+		type: 'BOSS',
+		altNames: ['BRAN', 'ROYALTITANS', 'TITANS'],
+		formatFinish: (num: number) => `You had to defeat the Royal Titans ${fm(num)} times to get Bran! :pet:`
+	},
+	{
+		id: 64,
+		emoji: ':pet:',
+		chance: 2500,
+		name: 'Yami',
+		type: 'BOSS',
+		altNames: ['YAMI', 'YAMA'],
+		formatFinish: (num: number) => `You had to defeat Yama ${fm(num)} times to get Yami! :pet:`
+	},
+	{
+		id: 65,
+		emoji: ':pet:',
+		chance: 1000,
+		name: 'Dom',
+		type: 'BOSS',
+		altNames: ['DOM', 'DOOMOFMOKHAIOTL', 'MOKHAIOTL'],
+		formatFinish: (num: number) => `You had to defeat Doom of Mokhaiotl ${fm(num)} times to get Dom! :pet:`
+	},
+	{
+		id: 66,
+		emoji: ':pet:',
+		chance: 4691,
+		name: 'Soup',
+		type: 'SKILL',
+		altNames: ['SOUP', 'SAILING'],
+		formatFinish: (num: number) => `You had to complete ${fm(num)} Sailing activities to get Soup! :pet:`
 	}
 ];
 

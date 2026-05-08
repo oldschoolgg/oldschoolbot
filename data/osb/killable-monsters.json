@@ -6139,6 +6139,8 @@
 		"name": "Royal Titans (Branda)",
 		"time_to_finish": 150000,
 		"respawn_time": 500,
+		"wildy": false,
+		"difficulty_rating": 8,
 		"death_props": {
 			"hardness": 0.2,
 			"steepness": 0.99
@@ -6325,6 +6327,8 @@
 		"name": "Royal Titans (Eldric)",
 		"time_to_finish": 150000,
 		"respawn_time": 500,
+		"wildy": false,
+		"difficulty_rating": 8,
 		"death_props": {
 			"hardness": 0.2,
 			"steepness": 0.99
@@ -6511,6 +6515,8 @@
 		"name": "Royal Titans (sacrifice)",
 		"time_to_finish": 150000,
 		"respawn_time": 500,
+		"wildy": false,
+		"difficulty_rating": 8,
 		"death_props": {
 			"hardness": 0.2,
 			"steepness": 0.99
