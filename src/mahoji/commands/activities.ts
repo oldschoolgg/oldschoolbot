@@ -170,13 +170,17 @@ export const activitiesCommand = defineCommand({
 					type: 'String',
 					name: 'name',
 					description: 'The name of the quest (optional).',
-					autocomplete: async ({ userId }: StringAutoComplete) => {
+					autocomplete: async ({ userId, value }: StringAutoComplete) => {
 						const user = await mUserFetch(userId);
+						const search = value.toLowerCase();
 						let list = quests
 							.filter(i => !user.user.finished_quest_ids.includes(i.id))
+							.filter(i => (!search ? true : i.name.toLowerCase().includes(search)))
 							.map(i => ({ name: i.name, value: i.name }));
 						if (list.length === 0) {
-							list = quests.map(i => ({ name: `${i.name} (completed)`, value: i.name }));
+							list = quests
+								.filter(i => (!search ? true : i.name.toLowerCase().includes(search)))
+								.map(i => ({ name: `${i.name} (completed)`, value: i.name }));
 						}
 						return list;
 					},
