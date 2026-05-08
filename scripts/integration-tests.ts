@@ -38,9 +38,12 @@ async function pushSchemas() {
 		run(['pnpm', 'prisma', 'db', 'push', '--schema=./prisma/schema.prisma', '--skip-generate', '--force-reset'], {
 			stdio: 'ignore'
 		}),
-		run(['pnpm', 'prisma', 'db', 'push', '--schema=./prisma/robochimp.prisma', '--skip-generate', '--force-reset'], {
-			stdio: 'ignore'
-		})
+		run(
+			['pnpm', 'prisma', 'db', 'push', '--schema=./prisma/robochimp.prisma', '--skip-generate', '--force-reset'],
+			{
+				stdio: 'ignore'
+			}
+		)
 	]);
 }
 
