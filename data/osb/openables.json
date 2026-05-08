@@ -3680,6 +3680,12 @@
 		]
 	},
 	{
+		"name": "Soft clay pack",
+		"id": 12009,
+		"opened_item": "Soft clay pack",
+		"all_items": ["Soft clay"]
+	},
+	{
 		"name": "Spoils of war",
 		"id": 25342,
 		"opened_item": "Spoils of war",
