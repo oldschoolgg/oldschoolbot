@@ -34,3 +34,50 @@ The spritesheet is a big image file containing most icons the bot uses for items
 - If new osrs items are being added, you first need to download [the new cache](https://github.com/runelite/static.runelite.net/archive/refs/heads/gh-pages.zip) and extract it so `/cache/item/icon` is in `tmp/icons` in the repo.
 - Must only be run on the master (osb) branch.
 - If new BSO items are added, the images should be put in the master branch in `src/lib/resources/images/bso_icons`, and the item names/ids in the `bso_items.json` file.
+
+### OSRS Item Updates
+
+Item updates usually touch `packages/oldschooljs/src/assets/item_data.json`, `packages/oldschooljs/src/EItem.ts`, `packages/oldschooljs/src/EGear.ts`, `scripts/spritesheet.ts`, and the item spritesheet files.
+
+First check whether `osrsreboxed-db` has newer item data than the commit pinned in `packages/oldschooljs/scripts/fetchRawItems.ts`:
+
+```sh
+git ls-remote https://github.com/0xNeffarion/osrsreboxed-db.git HEAD
+```
+
+If the SHA has changed, update the pinned SHA in `fetchRawItems.ts`, then run:
+
+```sh
+pnpm --dir packages/oldschooljs generate
+```
+
+If the pinned source is already current but new OSRS items exist in MOID/the wiki, use the scraper instead:
+
+```sh
+cd packages/oldschooljs
+pnpm exec tsx --tsconfig scripts/tsconfig.json scripts/item-scraper.ts
+pnpm exec tsx --tsconfig scripts/tsconfig.json scripts/itemsPostProcess.ts
+cd ../..
+```
+
+After scraping, review the diff carefully. It should normally add new entries without deleting existing items. If the scraper rewrites JSON with spaces, reformat `item_data.json` back to the repo's tab-indented style before committing.
+
+For items that need bot icons or enum entries, add their IDs to `itemsMustBeInSpritesheet` in `scripts/spritesheet.ts`, then run:
+
+```sh
+pnpm --filter oldschooljs build
+pnpm spritesheet
+pnpm --dir packages/oldschooljs enum
+pnpm --filter oldschooljs build
+```
+
+If `pnpm spritesheet` fails because `https://cdn.oldschool.gg/icons/items/` is missing new icons, download the missing IDs into `tmp/icons` from the fallback URL mentioned in `scripts/spritesheet.ts` (`https://chisel.weirdgloop.org/static/img/osrs-sprite/<item_id>.png`), then rerun `pnpm spritesheet`.
+
+Before opening the PR, run at least:
+
+```sh
+pnpm --dir packages/oldschooljs test:unit
+pnpm --dir packages/oldschooljs test:types
+pnpm test:lint
+pnpm test:types
+```
