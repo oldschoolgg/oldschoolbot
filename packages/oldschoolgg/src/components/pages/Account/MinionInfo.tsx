@@ -70,7 +70,7 @@ export function MinionInfo({ data }: { data: FullMinionData }) {
 		'Collection Log': Object.keys(data.collection_log_bank).length,
 		Sacrificed: `${data.total_sacrificed_value.toLocaleString()} GP`
 	};
-	const hasCurrentActivityData = Object.prototype.hasOwnProperty.call(data, 'current_activity');
+	const hasCurrentActivityData = Object.hasOwn(data, 'current_activity');
 	const currentActivity = hasCurrentActivityData ? data.current_activity : undefined;
 	return (
 		<div className="flex items-center justify-center flex-col">
