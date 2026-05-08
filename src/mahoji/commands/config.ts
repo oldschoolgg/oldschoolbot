@@ -123,8 +123,9 @@ async function favFoodConfig(
 	}
 	const currentFavorites = user.user.favorite_food;
 	const item = Items.getItem(itemToAdd ?? itemToRemove);
-	const currentItems = `Your current favorite food is: ${currentFavorites.length === 0 ? 'None' : currentFavorites.map(i => Items.itemNameFromId(i)).join(', ')
-		}.`;
+	const currentItems = `Your current favorite food is: ${
+		currentFavorites.length === 0 ? 'None' : currentFavorites.map(i => Items.itemNameFromId(i)).join(', ')
+	}.`;
 	if (!item) return currentItems;
 	if (!Eatables.some(i => i.id === item.id)) return "That's not a valid item.";
 
@@ -153,13 +154,14 @@ async function favItemConfig(
 	}
 	const currentFavorites = user.user.favoriteItems;
 	const item = Items.getItem(itemToAdd ?? itemToRemove);
-	const currentItems = `Your current favorite items are: ${currentFavorites.length === 0
+	const currentItems = `Your current favorite items are: ${
+		currentFavorites.length === 0
 			? 'None'
 			: currentFavorites
-				.map(i => Items.itemNameFromId(i))
-				.join(', ')
-				.slice(0, 1500)
-		}.`;
+					.map(i => Items.itemNameFromId(i))
+					.join(', ')
+					.slice(0, 1500)
+	}.`;
 
 	if (!item) return currentItems;
 	if (itemToAdd) {
@@ -264,8 +266,9 @@ async function favBhSeedsConfig(
 		}
 	}
 
-	const currentItems = `Your current favorite items are: ${currentFavorites.length === 0 ? 'None' : currentFavorites.map(i => Items.itemNameFromId(i)).join(', ')
-		}.`;
+	const currentItems = `Your current favorite items are: ${
+		currentFavorites.length === 0 ? 'None' : currentFavorites.map(i => Items.itemNameFromId(i)).join(', ')
+	}.`;
 	return currentItems;
 }
 
