@@ -1,14 +1,11 @@
 import { userMention } from '@oldschoolgg/discord';
-import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 
+import type { RUser } from '@/structures/RUser.js';
 import { type Bits, bitsDescriptions } from '../util.js';
 
-export async function getInfoStrOfUser(target: string) {
-	if (!isValidDiscordSnowflake(target)) {
-		return 'Invalid user ID.';
-	}
-	const djsUser = await globalClient.fetchUser(target).catch(() => null);
-	const roboChimpUser = await globalClient.fetchRUser(target);
+export async function getInfoStrOfUser(roboChimpUser: RUser) {
+	const djsUser = await globalClient.fetchUser(roboChimpUser.id.toString()).catch(() => null);
+
 	const linkedAccounts = await roboChimpUser.findGroup();
 	let tier = `Tier ${roboChimpUser.perkTier?.number ?? 'None'}`;
 
@@ -22,7 +19,7 @@ export async function getInfoStrOfUser(target: string) {
 	const isBlacklisted =
 		(await roboChimpClient.blacklistedEntity.count({
 			where: {
-				id: BigInt(target),
+				id: roboChimpUser.id,
 				type: 'user'
 			}
 		})) > 0;
@@ -55,6 +52,14 @@ export async function getInfoStrOfUser(target: string) {
 		name: 'Global OSBSO CL%',
 		value: `${roboChimpUser.globalCLPercent().toFixed(1)}%`
 	});
+
+	const richMember = await globalClient.fetchMainServerMember(roboChimpUser.id.toString()).catch(() => null);
+	if (richMember) {
+		result.push({
+			name: 'Roles',
+			value: richMember.roles_detailed.map(role => role.name).join(', ')
+		});
+	}
 
 	return `${djsUser?.username} (${djsUser?.id})
 ${result.map(r => `**${r.name}:** ${r.value}`).join('\n')}`;
