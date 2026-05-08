@@ -1,5 +1,5 @@
 import { calcWhatPercent, generateHexColorForCashStack, objectEntries, toTitleCase } from '@oldschoolgg/toolkit';
-import { type Bank, Items, toKMB } from 'oldschooljs';
+import { type Bank, Items, itemID, toKMB } from 'oldschooljs';
 
 import { bankImageTask } from '@/lib/canvas/bankImage.js';
 import type { IBgSprite } from '@/lib/canvas/canvasUtil.js';
@@ -21,6 +21,9 @@ export const CollectionLogFlags = [
 ];
 
 class CollectionLogTask {
+	private static readonly COLLECTION_LOG_ITEM_ICON_OVERRIDES = new Map<number, number>([
+		[itemID('Bones to peaches'), itemID('Peach')]
+	]);
 	COLORS = {
 		ORANGEY: '#FF981F',
 		WHITE: '#FFFFFF',
@@ -271,8 +274,10 @@ class CollectionLogTask {
 
 			totalPrice += (Items.getOrThrow(item).price ?? 0) * qtyText;
 
+			const displayItemID = CollectionLogTask.COLLECTION_LOG_ITEM_ICON_OVERRIDES.get(item) ?? item;
+
 			await canvas.drawItemIDSprite({
-				itemID: item,
+				itemID: displayItemID,
 				x: Math.floor(i * (itemSize + itemSpacer)) + 1,
 				y: Math.floor(y * (itemSize + itemSpacer)) + 1,
 				quantity: qtyText > 0 ? qtyText : undefined

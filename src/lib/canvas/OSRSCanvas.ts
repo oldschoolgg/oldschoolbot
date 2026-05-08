@@ -16,6 +16,11 @@ import { type CanvasImage, drawImageWithOutline, getClippedRegion, type IBgSprit
 import { type IconPackID, ItemIconPacks } from '@/lib/canvas/iconPacks.js';
 import { BOT_TYPE } from '@/lib/constants.js';
 
+// Spell → Item icon aliases (rendering only)
+const IMAGE_ID_ALIAS: Record<number, number> = {
+	6926: 6883 // Bones to Peaches (spell) → Peach (item)
+};
+
 const Fonts = {
 	Compact: '16px OSRSFontCompact',
 	Bold: '16px RuneScape Bold 12',
@@ -318,39 +323,58 @@ export class OSRSCanvas {
 		itemID: number;
 		iconPackId?: IconPackID;
 	}): Promise<Canvas | CanvasImage> {
+		const renderID = IMAGE_ID_ALIAS[itemID] ?? itemID;
+
 		// Custom item icon pack icons
-		if (iconPackId && ItemIconPacks[iconPackId].icons.has(itemID)) {
-			return ItemIconPacks[iconPackId].icons.get(itemID) as Image;
+		if (iconPackId && ItemIconPacks[iconPackId].icons.has(renderID)) {
+			return ItemIconPacks[iconPackId].icons.get(renderID) as Image;
 		}
 
 		// Spritesheet icons
-		const itemSpriteData = OSRSCanvas.getItemSpriteData(itemID);
+		const itemSpriteData = OSRSCanvas.getItemSpriteData(renderID);
 		if (itemSpriteData) {
-			const { x, y, width, height } = itemSpriteData.getData(itemID) as SpriteData;
+			const { x, y, width, height } = itemSpriteData.getData(renderID) as SpriteData;
 			return getClippedRegion(itemSpriteData.getImage(), x, y, width, height);
 		}
 
-		return OSRSCanvas.loadLocalIcon(itemID);
+		return OSRSCanvas.loadLocalIcon(renderID);
 	}
 
-	// If the image isnt in the spritesheet, use a local image instead
+	// If the image isn't in the spritesheet, use a local image instead
 	private static async loadLocalIcon(itemID: number): Promise<Image> {
 		const cached = OSRSCanvas.LOCAL_ICON_CACHE.get(itemID);
 		if (cached) return cached;
-		const onDisk = await readFile(path.join(OSRSCanvas.ITEM_ICON_CACHE_DIR, `${itemID}.png`)).catch(() => null);
+
+		// Ensure cache directory exists
+		await import('node:fs/promises').then(fs => fs.mkdir(OSRSCanvas.ITEM_ICON_CACHE_DIR, { recursive: true }));
+
+		const filePath = path.join(OSRSCanvas.ITEM_ICON_CACHE_DIR, `${itemID}.png`);
+
+		// Try disk
+		const onDisk = await readFile(filePath).catch(() => null);
 		if (onDisk) {
 			const image = await loadImage(onDisk);
 			OSRSCanvas.LOCAL_ICON_CACHE.set(itemID, image);
 			return image;
 		}
-		const imageBuffer = await fetch(`https://chisel.weirdgloop.org/static/img/osrs-sprite/${itemID}.png`).then(
-			result => result.arrayBuffer().then(Buffer.from)
-		);
+		// Download → write → load
+		try {
+			const imageBuffer = await fetch(`https://chisel.weirdgloop.org/static/img/osrs-sprite/${itemID}.png`).then(
+				result => result.arrayBuffer().then(Buffer.from)
+			);
 
-		await writeFile(path.join(OSRSCanvas.ITEM_ICON_CACHE_DIR, `${itemID}.png`), imageBuffer);
-		const image = await loadImage(imageBuffer);
-		OSRSCanvas.LOCAL_ICON_CACHE.set(itemID, image);
-		return image;
+			await writeFile(filePath, imageBuffer);
+			const image = await loadImage(imageBuffer);
+			OSRSCanvas.LOCAL_ICON_CACHE.set(itemID, image);
+			return image;
+		} catch {
+			// Last-resort placeholder so CL never crashes
+			const placeholderPath = path.resolve(__dirname, '../resources/placeholder.png');
+			const buf = await readFile(placeholderPath);
+			const image = await loadImage(buf);
+			OSRSCanvas.LOCAL_ICON_CACHE.set(itemID, image);
+			return image;
+		}
 	}
 
 	async drawItemIDSprite({

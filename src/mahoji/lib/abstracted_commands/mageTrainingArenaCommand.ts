@@ -8,10 +8,12 @@ import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { pizazzPointsPerHour } from '@/tasks/minions/minigames/mageTrainingArenaActivity.js';
 
 const RuneTable = new LootTable()
-	.every('Law rune', [11, 14])
-	.every('Cosmic rune', [18, 22])
-	.every('Nature rune', [18, 22])
-	.every('Fire rune', [35, 45]);
+	.every('Law rune', [36, 40])
+	.every('Cosmic rune', [89, 97])
+	.every('Nature rune', [85, 93])
+	.every('Fire rune', [170, 190]);
+
+const bonesToPeachesItem = Items.getOrThrow('Bones to peaches');
 
 export const mageTrainingArenaBuyables = [
 	{
@@ -55,7 +57,15 @@ export const mageTrainingArenaBuyables = [
 	},
 	{
 		item: Items.getOrThrow("Mage's book"),
-		cost: 1260
+		cost: 1115
+	},
+	{
+		item: Items.getOrThrow('Rune pouch'),
+		cost: 400
+	},
+	{
+		item: bonesToPeachesItem,
+		cost: 600
 	}
 ];
 
@@ -68,11 +78,18 @@ export async function mageTrainingArenaBuyCommand(user: MUser, input = '') {
 	}
 
 	const { item, cost, upgradesFrom } = buyable;
+
+	const isBonesToPeaches = item.id === bonesToPeachesItem.id;
+
 	const newUser = await getNewUser(user.id);
 	const balance = newUser.pizazz_points;
 
 	if (upgradesFrom && !user.owns(upgradesFrom.id)) {
 		return `To buy a ${item.name}, you need to upgrade to it with a ${upgradesFrom.name}, which you do not own.`;
+	}
+
+	if (isBonesToPeaches && user.cl.amount(item.id) > 0) {
+		return 'You have already unlocked the Bones to peaches spell.';
 	}
 
 	if (balance < cost) {
@@ -94,6 +111,11 @@ export async function mageTrainingArenaBuyCommand(user: MUser, input = '') {
 		}
 	});
 
+	if (isBonesToPeaches) {
+		await user.addItemsToCollectionLog({ itemsToAdd: new Bank().add(item.id) });
+		return `Successfully unlocked the ${item.name} spell for ${cost} Pizazz Points.`;
+	}
+
 	await user.addItemsToBank({ items: new Bank().add(item.id, 1), collectionLog: true });
 
 	return `Successfully purchased 1x ${item.name} for ${cost} Pizazz Points.`;
@@ -102,13 +124,14 @@ export async function mageTrainingArenaBuyCommand(user: MUser, input = '') {
 export async function mageTrainingArenaPointsCommand(user: MUser) {
 	const parsedUser = await getNewUser(user.id);
 
-	return `You have **${parsedUser.pizazz_points.toLocaleString()}** Pizazz points.
-**Pizazz Points Per Hour:** ${pizazzPointsPerHour}
-${mageTrainingArenaBuyables
-	.map(i => `${i.item.name} - ${i.cost} pts - ${formatDuration((i.cost / pizazzPointsPerHour) * (Time.Minute * 60))}`)
-	.join('\n')}
+	const rewardsList = mageTrainingArenaBuyables
+		.map(buyable => {
+			const duration = Math.round((buyable.cost / pizazzPointsPerHour) * (Time.Minute * 60));
+			return `${buyable.item.name} - ${buyable.cost} pts - ${formatDuration(duration)}`;
+		})
+		.join('\n');
 
-Hint: Magic Training Arena is combined into 1 room, and 1 set of points - rewards take approximately the same amount of time to get. To get started use **/minigames mage_training_arena start**. You can buy rewards using **/minigames mage_training_arena buy**.`;
+	return `You have **${parsedUser.pizazz_points.toLocaleString()}** Pizazz points.\n**Pizazz Points Per Hour:** ${pizazzPointsPerHour}\n${rewardsList}\n\nNote: Apprentice, Teacher, and Master wands are sequential upgrades that require turning in the previous wand.\n\nHint: Magic Training Arena is combined into 1 room, and 1 set of points - rewards take approximately the same amount of time to get. To get started use **/minigames mage_training_arena start**. You can buy rewards using **/minigames mage_training_arena buy**.`;
 }
 
 export async function mageTrainingArenaStartCommand(user: MUser, channelId: string): CommandResponse {
