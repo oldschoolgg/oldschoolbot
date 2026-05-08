@@ -5017,6 +5017,10 @@
 				],
 				"is_activity": true
 			},
+			"vale_totems": {
+				"items": ["Bow string spool", "Ent branch", "Fletching knife", "Greenman mask", "Vale offerings"],
+				"is_activity": true
+			},
 			"volcanic_mine": {
 				"items": [
 					"Ash covered tome",
@@ -5652,11 +5656,13 @@
 					"Abyssal head",
 					"Abyssal whip",
 					"Adamant boots",
+					"Alchemist's signet",
 					"Ancient ceremonial boots",
 					"Ancient ceremonial gloves",
 					"Ancient ceremonial legs",
 					"Ancient ceremonial mask",
 					"Ancient ceremonial top",
+					"Antler guard",
 					"Aranea boots",
 					"Basilisk head",
 					"Basilisk jaw",
@@ -5664,6 +5670,7 @@
 					"Black mask (10)",
 					"Blood shard",
 					"Brine sabre",
+					"Broken antler",
 					"Broken dragon hasta",
 					"Bronze boots",
 					"Cockatrice head",

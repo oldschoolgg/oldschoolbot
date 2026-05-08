@@ -1,6 +1,7 @@
 import { choicesOf } from '@/discord/index.js';
 import { NMZ_STRATEGY } from '@/lib/constants.js';
 import TrekShopItems from '@/lib/data/buyables/trekBuyables.js';
+import { ValeTotemsBuyables, ValeTotemsSellables } from '@/lib/data/buyables/valeTotemsBuyables.js';
 import { LMSBuyables } from '@/lib/data/CollectionsExport.js';
 import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
 import {
@@ -82,6 +83,13 @@ import {
 import { tearsOfGuthixCommand } from '@/mahoji/lib/abstracted_commands/tearsOfGuthixCommand.js';
 import { trekCommand, trekShop } from '@/mahoji/lib/abstracted_commands/trekCommand.js';
 import { troubleBrewingStartCommand } from '@/mahoji/lib/abstracted_commands/troubleBrewingCommand.js';
+import {
+	ValeTotemsDecorations,
+	valeTotemsBuyCommand,
+	valeTotemsRummageCommand,
+	valeTotemsSellCommand,
+	valeTotemsStartCommand
+} from '@/mahoji/lib/abstracted_commands/valeTotemsCommand.js';
 import {
 	VolcanicMineShop,
 	volcanicMineCommand,
@@ -1060,7 +1068,7 @@ export const minigamesCommand = defineCommand({
 							description: 'The pyre logs you want to use.',
 							type: 'String',
 							required: true,
-							choices: shadesLogs.map(i => ({ name: i.normalLog.name, value: i.normalLog.name }))
+							choices: shadesLogs.map(i => ({ name: i.oiledLog.name, value: i.oiledLog.name }))
 						}
 					]
 				},
@@ -1087,6 +1095,104 @@ export const minigamesCommand = defineCommand({
 							description: 'How many logs to oil.',
 							required: false,
 							min_value: 1
+						}
+					]
+				}
+			]
+		},
+		/**
+		 *
+		 * Vale Totems
+		 *
+		 */
+		{
+			type: 'SubcommandGroup',
+			name: 'vale_totems',
+			description: 'Vale Totems fletching minigame.',
+			options: [
+				{
+					type: 'Subcommand',
+					name: 'start',
+					description: 'Start a trip.',
+					options: [
+						{
+							type: 'String',
+							name: 'item_to_fletch',
+							description: 'Item to fletch during minigame.',
+							required: true,
+							autocomplete: async ({ value }: StringAutoComplete) => {
+								return ValeTotemsDecorations.filter(i =>
+									!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
+								).map(i => ({ name: i.item.name, value: i.item.name }));
+							}
+						},
+						{
+							type: 'Boolean',
+							name: 'stamina_pot',
+							description: 'Whether to use Stamina Potion for trip.',
+							required: false
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'buy',
+					description: 'Buy Vale Totem minigame reward.',
+					options: [
+						{
+							type: 'String',
+							name: 'item',
+							description: 'Item to buy using research points.',
+							required: false,
+							choices: choicesOf(ValeTotemsBuyables.map(i => i.name))
+						},
+						{
+							type: 'Integer',
+							name: 'quantity',
+							description: 'Quantity.',
+							required: false,
+							min_value: 1
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'sell',
+					description: 'Sell Vale Totem minigame reward.',
+					options: [
+						{
+							type: 'String',
+							name: 'item',
+							description: 'Item to sell using research points.',
+							required: true,
+							choices: choicesOf(ValeTotemsSellables.map(i => i.name))
+						},
+						{
+							type: 'Integer',
+							name: 'quantity',
+							description: 'Quantity.',
+							required: false,
+							min_value: 1
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'rummage',
+					description: 'Rummage Vale offerings.',
+					options: [
+						{
+							type: 'Integer',
+							name: 'quantity',
+							description: 'Quantity.',
+							required: false,
+							min_value: 1
+						},
+						{
+							type: 'Boolean',
+							name: 'all',
+							description: 'Rummage all offerings.',
+							required: false
 						}
 					]
 				}
@@ -1427,6 +1533,44 @@ export const minigamesCommand = defineCommand({
 				channelId,
 				options.shades_of_morton.create_pyre_logs.logs,
 				options.shades_of_morton.create_pyre_logs.quantity
+			);
+		}
+
+		/**
+		 *
+		 * Vale Totems
+		 *
+		 */
+		if (options.vale_totems?.start) {
+			return valeTotemsStartCommand(
+				user,
+				channelId,
+				options.vale_totems?.start.item_to_fletch,
+				options.vale_totems?.start.stamina_pot
+			);
+		}
+		if (options.vale_totems?.buy) {
+			return valeTotemsBuyCommand(
+				interaction,
+				user,
+				options.vale_totems.buy.item,
+				options.vale_totems.buy.quantity
+			);
+		}
+		if (options.vale_totems?.sell) {
+			return valeTotemsSellCommand(
+				interaction,
+				user,
+				options.vale_totems.sell.item,
+				options.vale_totems.sell.quantity
+			);
+		}
+		if (options.vale_totems?.rummage) {
+			return valeTotemsRummageCommand(
+				interaction,
+				user,
+				options.vale_totems.rummage.quantity,
+				options.vale_totems.rummage.all
 			);
 		}
 

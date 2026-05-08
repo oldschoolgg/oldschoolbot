@@ -44,7 +44,7 @@ export const shadesOfMortonTask: MinionTask = {
 				source: 'ShadesOfMorton'
 			});
 
-			const str = `${user}, Your minion finished oiling ${quantity}x ${recipe.pyreLogs.name} and received ${xpStr}.`;
+			const str = `${user}, Your minion finished oiling ${quantity}x ${recipe.pyreLogs.name}. ${xpStr}.`;
 			return handleTripFinish({ user, channelId, message: str, data, loot: itemsAdded });
 		}
 
@@ -52,7 +52,7 @@ export const shadesOfMortonTask: MinionTask = {
 
 		await user.incrementMinigameScore('shades_of_morton', quantity);
 
-		const log = shadesLogs.find(i => i.normalLog.id === logID)!;
+		const log = shadesLogs.find(i => i.oiledLog.id === logID)!;
 		const shade = shades.find(i => i.shadeName === shadeID)!;
 
 		const table = buildShadeTable(shade);
@@ -113,6 +113,6 @@ export const shadesOfMortonTask: MinionTask = {
 		if (loot.length > 0) str += ` You received: ${itemsAdded}.`;
 		if (messages.length > 0) str += `\n${messages.join(' ')}`;
 
-		handleTripFinish({ user, channelId, message: str, data, loot: itemsAdded });
+		return handleTripFinish({ user, channelId, message: str, data, loot: itemsAdded });
 	}
 };
