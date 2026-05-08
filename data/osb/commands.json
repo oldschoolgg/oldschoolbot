@@ -1,6 +1,6 @@
 {
-	"hash": "22029f343be8d8dfc703539200b49c9c",
-	"date": "2026-05-08T09:36:21.294Z",
+	"hash": "d8ca20e29c86281066b822803297e84e",
+	"date": "2026-05-08T10:09:36.390Z",
 	"data": [
 		{
 			"name": "activities",
@@ -243,6 +243,11 @@
 			"desc": "Hunt creatures with the Hunter skill.",
 			"examples": ["/hunt name:Ferret"],
 			"subOptions": []
+		},
+		{
+			"name": "info",
+			"desc": "Shows bot information through subcommands.",
+			"subOptions": ["commit", "overview", "recent_updates", "uptime"]
 		},
 		{
 			"name": "invite",
