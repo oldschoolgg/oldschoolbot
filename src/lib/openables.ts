@@ -544,6 +544,14 @@ export const allOpenables: UnifiedOpenable[] = [
 		output: BaleOfFlax,
 		allItems: BaleOfFlax.allItems
 	},
+	{
+		name: 'Soft clay pack',
+		id: itemID('Soft clay pack'),
+		openedItem: Items.getOrThrow('Soft clay pack'),
+		aliases: ['soft clay pack', 'clay pack'],
+		output: new LootTable().add('Soft clay', 100),
+		allItems: resolveItems(['Soft clay'])
+	},
 	...clueOpenables,
 	...osjsOpenables,
 	...shadeChestOpenables

@@ -669,6 +669,7 @@ Date: ${dateFm(date)}`;
 			await interaction.confirmation(
 				`Are you 1000%, totally, **REALLY** sure that \`${sourceUser.logName}\` is the account you want to preserve, and \`${destUser.logName}\` is the new account that will have ALL existing data destroyed?`
 			);
+			await interaction.reply('Reticulating splines...');
 			const result = await migrateUser(sourceUser, destUser);
 			if (result === true) {
 				await globalClient.sendMessage(Channel.BotLogs, {
