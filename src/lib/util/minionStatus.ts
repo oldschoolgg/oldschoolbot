@@ -710,7 +710,7 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 		case 'ShadesOfMortonPyreLogs': {
 			const data = currentTask as ShadesOfMortonPyreLogsOptions;
 			const log = shadesLogs.find(i => i.normalLog.id === data.logID)!;
-			return `${name} is currently creating ${data.quantity} ${log.oiledLog.name}${data.quantity} The trip should take ${formatTripDuration(user, durationRemaining)}.`;
+			return `${name} is currently creating ${data.quantity}x ${log.oiledLog.name}. The trip should take ${formatTripDuration(user, durationRemaining)}.`;
 		}
 		case 'ValeTotems': {
 			const data = currentTask as ValeTotemsActivityTaskOptions;
