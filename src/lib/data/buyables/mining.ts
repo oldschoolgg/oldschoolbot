@@ -42,13 +42,13 @@ export const miningBuyables: Buyable[] = [
 	{
 		name: 'Mining gloves',
 		itemCost: new Bank({
-			'Unidentified minerals': 60
+			'Unidentified minerals': 40
 		})
 	},
 	{
 		name: 'Superior mining gloves',
 		itemCost: new Bank({
-			'Unidentified minerals': 120
+			'Unidentified minerals': 100
 		})
 	},
 	{
@@ -56,7 +56,7 @@ export const miningBuyables: Buyable[] = [
 		itemCost: new Bank({
 			'Superior mining gloves': 1,
 			'Mining gloves': 1,
-			'Unidentified minerals': 60
+			'Unidentified minerals': 40
 		})
 	},
 	{
@@ -72,6 +72,24 @@ export const miningBuyables: Buyable[] = [
 		}),
 		itemCost: new Bank({
 			'Unidentified minerals': 20
+		})
+	},
+	{
+		name: 'Soft clay pack (minerals)',
+		outputItems: new Bank({
+			'Soft clay pack': 1
+		}),
+		itemCost: new Bank({
+			'Unidentified minerals': 10
+		})
+	},
+	{
+		name: 'Soft clay pack (golden nuggets)',
+		outputItems: new Bank({
+			'Soft clay pack': 1
+		}),
+		itemCost: new Bank({
+			'Golden nugget': 10
 		})
 	}
 ];

@@ -30,14 +30,21 @@ type RatelimitConfig = {
 	max: number;
 };
 
-type RatelimitType = 'random_events' | 'global_buttons' | 'stats_command' | 'delay_member_fetch' | 'delay_guild_fetch';
+type RatelimitType =
+	| 'random_events'
+	| 'global_buttons'
+	| 'stats_command'
+	| 'delay_member_fetch'
+	| 'delay_guild_fetch'
+	| 'delay_robochimp_fetch';
 
 const RATELIMITS: Record<RatelimitType, RatelimitConfig> = {
 	global_buttons: { windowSeconds: 2, max: 1 },
 	random_events: { windowSeconds: TTL.Hour * 3, max: 5 },
 	stats_command: { windowSeconds: 5, max: 1 },
 	delay_member_fetch: { windowSeconds: 5 * 60, max: 1 },
-	delay_guild_fetch: { windowSeconds: 5 * 60, max: 1 }
+	delay_guild_fetch: { windowSeconds: 5 * 60, max: 1 },
+	delay_robochimp_fetch: { windowSeconds: 5 * 60, max: 1 }
 } as const;
 
 const BotKeys = RedisKeys[BOT_TYPE];
@@ -155,25 +162,44 @@ class CacheManager {
 		return this.setJson(BotKeys.GuildSettings(guildId), newGuild);
 	}
 
-	async getMember(guildId: string, userId: string) {
+	// We will only try to getMember's when guildId == SupportServerID, UNLESS forceFetch is true, in which case we will always fetch.
+	async getMember({
+		guildId,
+		userId,
+		cacheOnly,
+		refreshCache,
+		externalServer
+	}: {
+		guildId: string;
+		userId: string;
+		cacheOnly?: boolean;
+		refreshCache?: boolean;
+		externalServer?: boolean;
+	}): Promise<IMember | null> {
 		// If we cache this guild, lets check it
-		if (globalConfig.guildIdsToCache.includes(guildId)) {
+		const cachedServer = globalConfig.guildIdsToCache.includes(guildId);
+		if (cachedServer) {
 			const key = `${guildId}:${userId}`;
+			if (refreshCache) return await globalClient.fetchMember({ guildId, userId });
 			const delayCheck = await Cache.tryRatelimit(key, 'delay_member_fetch');
-			if (!delayCheck.success) {
+			if (cacheOnly || !delayCheck.success) {
 				// If we're under time out, it could be assumed to be cached, but...
 				const cacheMember = await this.getJson<IMember>(RedisKeys.Discord.Member(guildId, userId));
 				if (cacheMember) {
 					return cacheMember;
 				} else {
+					if (cacheOnly) return null;
 					const member = await globalClient.fetchMember({ guildId, userId });
 					await Cache.setMember(member);
 					return member;
 				}
 			}
 		}
-		// We can fetch now
-		return await globalClient.fetchMember({ guildId, userId });
+		if (cachedServer || externalServer) {
+			// We can fetch now
+			return await globalClient.fetchMember({ guildId, userId });
+		}
+		return null;
 	}
 
 	async getChannel(channelId: string): Promise<IChannel> {
@@ -224,6 +250,9 @@ class CacheManager {
 		await this.bulkSet(roles, r => RedisKeys.Discord.Role(r.guild_id, r.id));
 	}
 
+	async setRoboChimpUser(userID: string, user: RobochimpUser): Promise<void> {
+		await this.setJson(RedisKeys.RoboChimpUser(BigInt(userID)), user);
+	}
 	async getRoboChimpUser(userId: string): Promise<RobochimpUser | null> {
 		return this.getJson<RobochimpUser>(RedisKeys.RoboChimpUser(BigInt(userId)));
 	}

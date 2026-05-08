@@ -1,7 +1,7 @@
 import { escapeMarkdown, userMention } from '@oldschoolgg/discord';
 import { defaultGearSetup, type GearSetup } from '@oldschoolgg/gear';
 import { type ECombatOption, type IBlowpipeData, ZBlowpipeData } from '@oldschoolgg/schemas';
-import { cleanUsername, Emoji, type PerkTier, sumArr } from '@oldschoolgg/toolkit';
+import { cleanUsername, Emoji, sumArr } from '@oldschoolgg/toolkit';
 import { Bank, convertXPtoLVL, type Item, type ItemBank, Items, resolveItems } from 'oldschooljs';
 import { clone } from 'remeda';
 
@@ -59,7 +59,6 @@ export class BaseUser {
 	badgesString!: string;
 	bitfield!: readonly BitField[];
 	iconPackId!: IconPackID | null;
-	perkTier: PerkTier | 0;
 
 	private _bankLazy: Bank | null = null;
 	private _clLazy: Bank | null = null;
@@ -67,7 +66,6 @@ export class BaseUser {
 
 	constructor(user: User) {
 		this.id = user.id;
-		this.perkTier = 0;
 		this._updateRawUser(user);
 	}
 
@@ -353,15 +351,28 @@ export class BaseUser {
 	modifyBusy(type: 'lock' | 'unlock', reason: string): void {
 		modifyUserBusy({ type, reason, userID: this.id });
 	}
-
+	isSupport(): boolean {
+		return this.bitfield.includes(BitField.ServerSupport);
+	}
+	isTrusted(): boolean {
+		return this.isWikiContrib() || this.isStaff();
+	}
+	isStaff(): boolean {
+		return this.isModOrAdmin() || this.isSupport() || this.isContributor();
+	}
+	isWikiContrib(): boolean {
+		return this.bitfield.includes(BitField.WikiContributor);
+	}
 	isMod(): boolean {
-		return this.bitfield.includes(BitField.isModerator);
+		return this.bitfield.includes(BitField.Moderator);
+	}
+	isContributor(): boolean {
+		return this.bitfield.includes(BitField.Contributor);
 	}
 
 	isAdmin(): boolean {
 		return globalConfig.adminUserIDs.includes(this.id);
 	}
-
 	isModOrAdmin(): boolean {
 		return this.isAdmin() || this.isMod();
 	}

@@ -1,8 +1,14 @@
 import { EmbedBuilder, userMention } from '@oldschoolgg/discord';
-import { noOp, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
+import { noOp, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, convertLVLtoXP, ItemGroups, Items, itemID, MAX_INT_JAVA, resolveItems } from 'oldschooljs';
 
 import { xp_gains_skill_enum } from '@/prisma/main.js';
+import {
+	bitfieldCanUserManipulate,
+	changeBitFieldForUser,
+	getBitFieldData,
+	listBitFields
+} from '@/lib/bitFieldUtils.js';
 import { allStashUnitsFlat, allStashUnitTiers } from '@/lib/clues/stashUnits.js';
 import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
 import { BitFieldData, globalConfig } from '@/lib/constants.js';
@@ -31,7 +37,6 @@ import { allSlayerMonsters } from '@/lib/slayer/tasks/index.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import type { SafeUserUpdateInput } from '@/lib/user/update.js';
 import { parseStringBank } from '@/lib/util/parseStringBank.js';
-import { isValidBitField } from '@/lib/util/smallUtils.js';
 import { fetchBingosThatUserIsInvolvedIn } from '@/mahoji/commands/bingo.js';
 import { gearViewCommand } from '@/mahoji/lib/abstracted_commands/gearCommands.js';
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
@@ -145,6 +150,18 @@ const thingsToReset = [
 ];
 
 async function setMinigameKC(user: MUser, _minigame: string, kc: number) {
+	if (_minigame.toLowerCase() === 'all') {
+		await prisma.minigame.update({
+			where: {
+				user_id: user.id
+			},
+			data: Object.fromEntries(Minigames.map(game => [game.column, kc]))
+		});
+		await user.statsUpdate({
+			tithe_farms_completed: kc
+		});
+		return `Set all ${Minigames.length} minigame KCs to ${kc}.`;
+	}
 	const minigame = Minigames.find(m => m.column === _minigame.toLowerCase());
 	if (!minigame) return 'No kc set because invalid minigame.';
 	await prisma.minigame.update({
@@ -155,10 +172,21 @@ async function setMinigameKC(user: MUser, _minigame: string, kc: number) {
 			[minigame.column]: kc
 		}
 	});
+	if (minigame.column === 'tithe_farm') {
+		await user.statsUpdate({
+			tithe_farms_completed: kc
+		});
+	}
 	return `Set your ${minigame.name} KC to ${kc}.`;
 }
 
 async function setXP(user: MUser, skillName: string, xp: number) {
+	if (skillName === 'all') {
+		await user.update(
+			Object.fromEntries(Object.values(xp_gains_skill_enum).map(enumSkill => [`skills_${enumSkill}`, xp]))
+		);
+		return `Set all ${Object.values(xp_gains_skill_enum).length} skills to ${xp} XP.`;
+	}
 	const skill = Object.values(Skills).find(c => c.id === skillName);
 	if (!skill) return 'No xp set because invalid skill.';
 	await user.update({
@@ -400,7 +428,10 @@ export const testPotatoCommand = globalConfig.isProduction
 							name: 'skill',
 							description: 'The skill.',
 							required: true,
-							choices: Object.values(Skills).map(s => ({ name: s.name, value: s.id }))
+							choices: [
+								{ name: 'All skills', value: 'all' },
+								...Object.values(Skills).map(s => ({ name: s.name, value: s.id }))
+							]
 						},
 						{
 							type: 'Integer',
@@ -423,13 +454,23 @@ export const testPotatoCommand = globalConfig.isProduction
 							description: 'The minigame you want to set your KC for.',
 							required: true,
 							autocomplete: async ({ value }: StringAutoComplete) => {
-								return Minigames.filter(i => {
-									if (!value) return true;
-									return [i.name.toLowerCase(), i.aliases].some(i => i.includes(value.toLowerCase()));
-								}).map(i => ({
-									name: i.name,
-									value: i.column
-								}));
+								return [
+									{ name: 'All minigames', value: 'all' },
+									...Minigames.filter(i => {
+										if (!value) return true;
+										return [i.name.toLowerCase(), i.aliases].some(alias =>
+											alias.includes(value.toLowerCase())
+										);
+									}).map(i => ({
+										name: i.name,
+										value: i.column
+									}))
+								].filter(i =>
+									!value
+										? true
+										: i.name.toLowerCase().includes(value.toLowerCase()) ||
+											i.value.includes(value.toLowerCase())
+								);
 							}
 						},
 						{
@@ -519,17 +560,25 @@ export const testPotatoCommand = globalConfig.isProduction
 							description: 'The monster you want to set your KC for.',
 							required: true,
 							autocomplete: async ({ value }: StringAutoComplete) => {
-								return effectiveMonsters
-									.filter(i => {
-										if (!value) return true;
-										return [i.name.toLowerCase(), i.aliases].some(i =>
-											i.includes(value.toLowerCase())
-										);
-									})
-									.map(i => ({
-										name: i.name,
-										value: i.name
-									}));
+								return [
+									{ name: 'All monsters', value: 'all' },
+									...effectiveMonsters
+										.filter(i => {
+											if (!value) return true;
+											return [i.name.toLowerCase(), i.aliases].some(alias =>
+												alias.includes(value.toLowerCase())
+											);
+										})
+										.map(i => ({
+											name: i.name,
+											value: i.name
+										}))
+								].filter(i =>
+									!value
+										? true
+										: i.name.toLowerCase().includes(value.toLowerCase()) ||
+											i.value.toLowerCase().includes(value.toLowerCase())
+								);
 							}
 						},
 						{
@@ -727,44 +776,18 @@ export const testPotatoCommand = globalConfig.isProduction
 				}
 
 				if (options.bitfield) {
-					const bitInput = options.bitfield.add ?? options.bitfield.remove;
-					const bitEntry = Object.entries(BitFieldData).find(i => i[0] === bitInput);
-					const action: 'add' | 'remove' = options.bitfield.add ? 'add' : 'remove';
-					if (!bitEntry) {
-						return Object.entries(BitFieldData)
-							.map(entry => `**${entry[0]}:** ${entry[1]?.name}`)
-							.join('\n');
+					if (!options.bitfield.add && !options.bitfield.remove) {
+						return 'you must choose a valid bitfield from either add or remove';
 					}
-					const bit = Number.parseInt(bitEntry[0]);
+					const aor = () => Boolean(options.bitfield!.add);
 
-					if (
-						!bit ||
-						!isValidBitField(bit) ||
-						[7, 8].includes(bit) ||
-						(action !== 'add' && action !== 'remove')
-					) {
-						return 'Invalid bitfield.';
-					}
-
-					let newBits = [...user.bitfield];
-
-					if (action === 'add') {
-						if (newBits.includes(bit)) {
-							return "Already has this bit, so can't add.";
-						}
-						newBits.push(bit);
-					} else {
-						if (!newBits.includes(bit)) {
-							return "Doesn't have this bit, so can't remove.";
-						}
-						newBits = newBits.filter(i => i !== bit);
-					}
-
-					await user.update({
-						bitfield: uniqueArr(newBits)
-					});
-
-					return `${action === 'add' ? 'Added' : 'Removed'} '${(BitFieldData)[bit].name}' bit.`;
+					const bitInput = options.bitfield.add ?? options.bitfield.remove!;
+					const bit = getBitFieldData(bitInput);
+					const action: 'add' | 'remove' = aor() ? 'add' : 'remove';
+					if (!bit) return listBitFields(user);
+					const canManipulate = bitfieldCanUserManipulate({ user, bit });
+					if (canManipulate !== true) return canManipulate;
+					return changeBitFieldForUser(user, bit.bit, action);
 				}
 				if (options.bingo_tools) {
 					if (options.bingo_tools.start_bingo) {
@@ -1054,6 +1077,17 @@ export const testPotatoCommand = globalConfig.isProduction
 				}
 
 				if (options.setmonsterkc) {
+					if (options.setmonsterkc.monster.toLowerCase() === 'all') {
+						const kc = options.setmonsterkc.kc ?? 1;
+						const stats = await user.fetchStats();
+						await user.statsUpdate({
+							monster_scores: {
+								...(stats.monster_scores as Record<string, number>),
+								...Object.fromEntries(effectiveMonsters.map(mon => [mon.id, kc]))
+							}
+						});
+						return `Set all ${effectiveMonsters.length} monster KCs to ${kc}.`;
+					}
 					const monster = effectiveMonsters.find(m =>
 						stringMatches(m.name, options.setmonsterkc?.monster ?? '')
 					);
