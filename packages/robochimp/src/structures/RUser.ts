@@ -34,12 +34,20 @@ export class RUser {
 		return tier ?? null;
 	}
 
+	public isSupport(): boolean {
+		return [Bits.Admin, Bits.Moderator, Bits.SupportStaff].some(_bit => this.bits.includes(_bit));
+	}
+
+	public isAdmin(): boolean {
+		return this.bits.includes(Bits.Admin);
+	}
+
 	public isMod(): boolean {
-		return [Bits.Admin, Bits.Mod].some(_bit => this.bits.includes(_bit));
+		return [Bits.Admin, Bits.Moderator].some(_bit => this.bits.includes(_bit));
 	}
 
 	public isTrusted(): boolean {
-		return [Bits.Admin, Bits.Mod, Bits.Trusted].some(_bit => this.bits.includes(_bit));
+		return [Bits.Admin, Bits.Moderator, Bits.Trusted].some(_bit => this.bits.includes(_bit));
 	}
 
 	get testingPoints(): number {

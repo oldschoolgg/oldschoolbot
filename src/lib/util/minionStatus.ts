@@ -324,7 +324,7 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 		}
 		case 'CutLeapingFish': {
 			const data = currentTask as CutLeapingFishActivityTaskOptions;
-			const barbarianFish = LeapingFish.find(item => item.item.id === data.id);
+			const barbarianFish = LeapingFish.find(item => item.item.id === data.fishID);
 
 			return `${name} is currently cutting ${data.quantity}x ${
 				barbarianFish?.item.name
@@ -697,7 +697,7 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 		}
 		case 'ShadesOfMorton': {
 			const data = currentTask as ShadesOfMortonOptions;
-			const log = shadesLogs.find(i => i.normalLog.id === data.logID)!;
+			const log = shadesLogs.find(i => i.oiledLog.id === data.logID)!;
 			const shade = shades.find(i => i.shadeName === data.shadeID)!;
 			return `${name} is currently doing ${data.quantity} trips of Shades of Mort'ton, cremating ${
 				shade.shadeName
@@ -710,7 +710,7 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 		case 'ShadesOfMortonPyreLogs': {
 			const data = currentTask as ShadesOfMortonPyreLogsOptions;
 			const log = shadesLogs.find(i => i.normalLog.id === data.logID)!;
-			return `${name} is currently creating ${data.quantity} ${log.oiledLog.name}${data.quantity > 1 ? 's' : ''} The trip should take ${formatTripDuration(user, durationRemaining)}.`;
+			return `${name} is currently creating ${data.quantity} ${log.oiledLog.name}${data.quantity} The trip should take ${formatTripDuration(user, durationRemaining)}.`;
 		}
 		case 'ValeTotems': {
 			const data = currentTask as ValeTotemsActivityTaskOptions;

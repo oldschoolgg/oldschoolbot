@@ -44,32 +44,20 @@ export const toolsCommand = defineCommand({
 	],
 	run: async ({ options, user, interaction }) => {
 		await interaction.defer();
-		if (!user.isMod()) return 'Ook';
 
-		if (options.debug_patreon) {
-			const res = await patreonTask.fetchPatrons();
-			return {
-				content: 'Debug',
-				files: [{ buffer: Buffer.from(JSON.stringify(res)), name: 'data.json' }]
-			};
-		}
+		// Support Staff+ Commands:
+		if (!user.isSupport()) return 'Ook';
 
-		if (options.detect_mischief) {
-			if (
-				globalConfig.isProduction &&
-				![CHANNELS.MODERATORS, CHANNELS.MODERATORS_OTHER].includes(interaction.channelId)
-			) {
-				return "You can't run this command in this channel.";
+		if (options.patreon_sync) {
+			const res = await patreonTask.run();
+			if (res) {
+				console.log(res.join('\n').slice(0, 1950));
 			}
-			const [osbResult, bsoResult] = await Promise.all([detectMischief('osb'), detectMischief('bso')]);
-			return {
-				content: "Here's the mischief reports!",
-				files: [
-					{ buffer: Buffer.from(osbResult), name: 'osb.txt' },
-					{ buffer: Buffer.from(bsoResult), name: 'bso.txt' }
-				]
-			};
+			return 'Done.';
 		}
+
+		if (!user.isMod()) return 'Ook';
+		// Mod+ Commands:
 
 		if (options.setgithubid) {
 			const githubSetUser = await globalClient.fetchRUser(options.setgithubid.user.user.id);
@@ -104,15 +92,31 @@ export const toolsCommand = defineCommand({
 			await patreonTask.syncGithub();
 			return `Set ${options.setgithubid.user.user.username}'s github ID to ${githubSetUser.githubId}, and synced their patron tier to: ${githubSetUser.perkTier}.`;
 		}
-
-		if (options.patreon_sync) {
-			const res = await patreonTask.run();
-			if (res) {
-				console.log(res.join('\n').slice(0, 1950));
-			}
-			return 'Done.';
+		if (!user.isAdmin()) return 'Sorry, these are restricted to admins only';
+		if (options.debug_patreon) {
+			const res = await patreonTask.fetchPatrons();
+			return {
+				content: 'Debug',
+				files: [{ buffer: Buffer.from(JSON.stringify(res)), name: 'data.json' }]
+			};
 		}
 
+		if (options.detect_mischief) {
+			if (
+				globalConfig.isProduction &&
+				![CHANNELS.MODERATORS, CHANNELS.MODERATORS_OTHER].includes(interaction.channelId)
+			) {
+				return "You can't run this command in this channel.";
+			}
+			const [osbResult, bsoResult] = await Promise.all([detectMischief('osb'), detectMischief('bso')]);
+			return {
+				content: "Here's the mischief reports!",
+				files: [
+					{ buffer: Buffer.from(osbResult), name: 'osb.txt' },
+					{ buffer: Buffer.from(bsoResult), name: 'bso.txt' }
+				]
+			};
+		}
 		return 'Invalid command.';
 	}
 });
