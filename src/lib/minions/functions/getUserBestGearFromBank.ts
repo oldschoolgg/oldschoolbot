@@ -1,7 +1,6 @@
-import { Bank, type EquipmentSlot, type Item, Items } from 'oldschooljs';
-import { GearStat } from 'oldschooljs/gear';
+import { type EquipmentSlot, type GearSetupType, GearStat } from '@oldschoolgg/gear';
+import { Bank, type Item, Items } from 'oldschooljs';
 
-import type { GearSetupType } from '@/lib/gear/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 
 function getItemScore(item: Item) {

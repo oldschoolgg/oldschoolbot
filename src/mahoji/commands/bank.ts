@@ -1,6 +1,7 @@
 import { codeBlock, EmbedBuilder } from '@oldschoolgg/discord';
-import { chunk, Emoji } from '@oldschoolgg/toolkit';
+import { Emoji } from '@oldschoolgg/toolkit';
 import type { Bank } from 'oldschooljs';
+import { chunk } from 'remeda';
 
 import { choicesOf, filterOption, itemOption } from '@/discord/index.js';
 import type { BankFlag } from '@/lib/canvas/bankImage.js';

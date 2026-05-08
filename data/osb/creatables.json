@@ -1,6 +1,6 @@
 {
-	"hash": "7360c379e2a0b51db5b5172998f403a8",
-	"date": "2025-09-27T08:29:43.912Z",
+	"hash": "0e07104917eed2985ba1dd0d63a28523",
+	"date": "2026-03-05T11:16:59.512Z",
 	"data": [
 		{
 			"name": "3rd age felling axe",
@@ -1276,6 +1276,17 @@
 			"required_stats": {
 				"smithing": 82,
 				"crafting": 82
+			},
+			"qp_required": 150
+		},
+		{
+			"name": "Bow of faerdhinen (inactive) (bypass stats)",
+			"items_created": {
+				"Bow of faerdhinen (inactive)": 1
+			},
+			"items_required": {
+				"Crystal shard": 150,
+				"Enhanced crystal weapon seed": 1
 			},
 			"qp_required": 150
 		},
@@ -4018,6 +4029,16 @@
 				"Mithril kiteshield (t)": 1,
 				"Mithril platebody (t)": 1,
 				"Mithril plateskirt (t)": 1
+			}
+		},
+		{
+			"name": "Moon key",
+			"items_created": {
+				"Moon key": 1
+			},
+			"items_required": {
+				"Loop half of key (moon key)": 1,
+				"Tooth half of key (moon key)": 1
 			}
 		},
 		{
@@ -9536,6 +9557,17 @@
 			"required_stats": {
 				"smithing": 90
 			}
+		},
+		{
+			"name": "Uncharged dragonfire shield (bypass stats)",
+			"items_created": {
+				"Uncharged dragonfire shield": 1
+			},
+			"items_required": {
+				"Anti-dragon shield": 1,
+				"Draconic visage": 1
+			},
+			"qp_required": 34
 		},
 		{
 			"name": "Uncharged dragonfire ward",

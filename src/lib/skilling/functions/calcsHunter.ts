@@ -1,17 +1,27 @@
-import { percentChance } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
 import { LootTable } from 'oldschooljs';
 
 import type { Creature } from '@/lib/skilling/types.js';
 
-export function calcLootXPHunting(
-	currentLevel: number,
-	creature: Creature,
-	quantity: number,
-	usingStaminaPotion: boolean,
-	graceful: boolean,
-	experienceScore: number
-): [number, number, number] {
+type CalcLootXPHuntingOptions = {
+	rng: RNGProvider;
+	currentLevel: number;
+	creature: Creature;
+	quantity: number;
+	usingStaminaPotion: boolean;
+	graceful: boolean;
+	experienceScore: number;
+};
+
+export function calcLootXPHunting({
+	currentLevel,
+	creature,
+	quantity,
+	usingStaminaPotion,
+	graceful,
+	experienceScore,
+	rng
+}: CalcLootXPHuntingOptions): [number, number, number] {
 	let xpReceived = 0;
 	let successful = 0;
 
@@ -36,7 +46,7 @@ export function calcLootXPHunting(
 	}
 
 	for (let i = 0; i < quantity; i++) {
-		if (!percentChance(chanceOfSuccess)) {
+		if (!rng.percentChance(chanceOfSuccess)) {
 			continue;
 		}
 		successful++;

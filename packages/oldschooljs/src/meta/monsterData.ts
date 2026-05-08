@@ -33,13 +33,13 @@ export interface MonsterData {
 	combatLevel: number;
 	hitpoints?: number | null;
 	maxHit?: number | null;
-	attackType: MonsterAttackType[];
+	attackType?: MonsterAttackType[];
 	attackSpeed: number | null;
 	aggressive: boolean;
 	poisonous?: boolean;
 	immuneToPoison: boolean;
 	immuneToVenom: boolean;
-	attributes: MonsterAttribute[];
+	attributes?: MonsterAttribute[];
 	category?: string[];
 	attackLevel: number;
 	strengthLevel: number;

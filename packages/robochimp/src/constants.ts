@@ -20,7 +20,10 @@ const globalConfigSchema = z.object({
 	supportServerID: z.string().min(10),
 	patreonWebhookSecret: z.string().min(10),
 	githubWebhookSecret: z.string().min(10),
-	patronLogWebhookURL: z.string().min(10)
+	patronLogWebhookURL: z.string().min(10),
+	apiUrl: z.url(),
+	frontendUrl: z.url(),
+	cookieOrigin: z.string()
 });
 
 export const globalConfig = globalConfigSchema.parse({
@@ -34,5 +37,12 @@ export const globalConfig = globalConfigSchema.parse({
 	supportServerID: isProduction ? REAL_SUPPORT_SERVER_ID : TEST_SERVER_ID,
 	patreonWebhookSecret: process.env.PATREON_WEBHOOK_SECRET,
 	githubWebhookSecret: process.env.GITHUB_WEBHOOK_SECRET,
-	patronLogWebhookURL: process.env.PATRON_LOGS_WEBHOOK
+	patronLogWebhookURL: process.env.PATRON_LOGS_WEBHOOK,
+	apiUrl: process.env.API_URL,
+	frontendUrl: process.env.FRONTEND_URL,
+	cookieOrigin: process.env.COOKIE_ORIGIN
 });
+
+if (!process.env.OAUTH_SECRET) {
+	throw new Error('OAUTH_SECRET is not set in environment variables');
+}

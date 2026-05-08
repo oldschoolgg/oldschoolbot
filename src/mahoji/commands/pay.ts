@@ -6,6 +6,7 @@ import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 export const payCommand = defineCommand({
 	name: 'pay',
+	flags: ['REQUIRES_LOCK'],
 	description: 'Send GP to another user.',
 	options: [
 		{
@@ -91,7 +92,8 @@ export const payCommand = defineCommand({
 				items_sent: new Bank().add('Coins', amount),
 				items_received: undefined,
 				type: 'trade'
-			}
+			},
+			select: { id: true }
 		});
 
 		globalClient.emit(Events.EconomyLog, `${user.mention} paid ${amount} GP to ${recipient.mention}.`);

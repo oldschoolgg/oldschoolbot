@@ -7,25 +7,25 @@
 	"exports": {
 		".": {
 			"types": "./dist/esm/index.d.mts",
-			"require": "./dist/cjs/index.cjs",
 			"import": "./dist/esm/index.mjs"
 		},
 		"./*": {
 			"types": "./dist/esm/index.d.mts",
-			"require": "./dist/cjs/index.cjs",
 			"import": "./dist/esm/index.mjs"
 		}
 	},
 	"license": "MIT",
 	"scripts": {
-		"test": "concurrently \"pnpm test:unit\" \"tsc --noEmit -p test\" \"tsc --noEmit -p src\"",
-		"test:unit": "vitest run --coverage",
+		"test:types": "concurrently \"tsc --noEmit -p test\" \"tsc --noEmit -p src\"",
+		"test:unit": "vitest run",
 		"generate": "tsx --tsconfig scripts/tsconfig.json scripts/prepare && tsx --tsconfig scripts/tsconfig.json scripts/itemsPostProcess.ts",
 		"enum": "tsx --tsconfig scripts/tsconfig.json scripts/enum.ts",
 		"build": "tsdown"
 	},
 	"dependencies": {
-		"deepmerge": "4.3.1"
+		"deepmerge": "4.3.1",
+		"@oldschoolgg/gear": "workspace:*",
+		"@oldschoolgg/util": "workspace:*"
 	},
 	"devDependencies": {
 		"deep-object-diff": "^1.1.9",

@@ -456,6 +456,17 @@ const crystalTools: Createable[] = [
 		QPRequired: 150
 	},
 	{
+		name: 'Bow of faerdhinen (inactive) (bypass stats)',
+		inputItems: {
+			[itemID('Enhanced crystal weapon seed')]: 1,
+			[itemID('Crystal shard')]: 150
+		},
+		outputItems: {
+			[itemID('Bow of faerdhinen (inactive)')]: 1
+		},
+		QPRequired: 150
+	},
+	{
 		name: 'Revert bow of faerdhinen (inactive)',
 		inputItems: {
 			[itemID('Bow of faerdhinen (inactive)')]: 1,
@@ -1538,6 +1549,16 @@ const Createables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Crystal key')]: 1
+		}
+	},
+	{
+		name: 'Moon key',
+		inputItems: {
+			[itemID('Loop half of key (moon key)')]: 1,
+			[itemID('Tooth half of key (moon key)')]: 1
+		},
+		outputItems: {
+			[itemID('Moon key')]: 1
 		}
 	},
 	{

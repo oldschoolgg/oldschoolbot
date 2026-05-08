@@ -1,5 +1,5 @@
 import { cleanString, evalMathExpression, notEmpty, stringMatches } from '@oldschoolgg/toolkit';
-import { Bank, type Item, Items, itemNameMap } from 'oldschooljs';
+import { Bank, type Item, Items } from 'oldschooljs';
 
 import { filterableTypes } from '@/lib/data/filterables.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
@@ -40,7 +40,7 @@ export function parseQuantityAndItem(str = '', inputBank?: Bank): [Item[], numbe
 	} else {
 		osItems = Array.from(
 			Items.filter(
-				i => itemNameMap.get(cleanString(parsedName)) === i.id || stringMatches(i.name, parsedName)
+				i => Items.itemNameMap.get(cleanString(parsedName)) === i.id || stringMatches(i.name, parsedName)
 			).values()
 		);
 	}

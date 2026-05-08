@@ -1,9 +1,5 @@
 import type { SkillNameType } from '@/lib/skilling/types.js';
 
-export interface ItemBank {
-	[key: string]: number;
-}
-
 export interface MakePartyOptions {
 	maxSize: number;
 	minSize: number;

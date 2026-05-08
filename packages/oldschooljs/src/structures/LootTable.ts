@@ -1,6 +1,6 @@
-import { randArrItem, randFloat, randInt, roll } from '@oldschoolgg/rng';
+import { reduceNumByPercent } from '@oldschoolgg/util';
+import { randArrItem, randFloat, randInt, roll } from 'node-rng';
 
-import { reduceNumByPercent } from '@/util/smallUtils.js';
 import { Bank } from './Bank.js';
 import { Items } from './Items.js';
 
@@ -101,6 +101,10 @@ export default class LootTable {
 			if (this.allItems.includes(items)) return;
 			this.allItems.push(items);
 		} else {
+			if (!items.item) {
+				console.trace(`Invalid LootTableItem: missing item property: ${JSON.stringify(items)}`);
+				throw new Error(`Invalid LootTableItem: missing item property: ${JSON.stringify(items)}`);
+			}
 			this.addToAllItems(items.item);
 		}
 	}
@@ -244,7 +248,7 @@ export default class LootTable {
 
 			if (this.cachedOptimizedTable) {
 				this.addResultToLoot(
-					this.table[randArrItem(this.cachedOptimizedTable)],
+					this.table[randArrItem(this.cachedOptimizedTable)!],
 					loot,
 					options.tertiaryItemPercentageChanges
 				);

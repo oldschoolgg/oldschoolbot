@@ -1,11 +1,11 @@
 import { Time } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
+import type { Mutex } from 'async-mutex';
 import { LRUCache } from 'lru-cache';
 import type PromiseQueue from 'p-queue';
-import PQueue from 'p-queue';
 
 import type { Giveaway } from '@/prisma/main.js';
-import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
+import { globalConfig } from '@/lib/constants.js';
 import type { MarketPriceData } from '@/lib/marketPrices.js';
 
 export const lastRoboChimpSyncCache = new Map<string, number>();
@@ -79,24 +79,6 @@ export function userIsBusy(userID: string): boolean {
 	return busyUsers.has(userID);
 }
 
-export async function populateUsernameCache() {
-	if (BOT_TYPE === 'OSB') return;
-	const users = await prisma.user.findMany({
-		where: {
-			username_with_badges: {
-				not: null
-			}
-		},
-		select: {
-			id: true,
-			username_with_badges: true
-		}
-	});
-	console.log(`Populating username cache with ${users.length}x... (this should be removed soon`);
+export const MUTEX_CACHE = new Map<string, Mutex>();
 
-	const queue = new PQueue({ concurrency: 10 });
-	for (const user of users) {
-		if (!user.username_with_badges) return;
-		queue.add(async () => Cache.setBadgedUsername(user.id, user.username_with_badges!));
-	}
-}
+export const DISCORD_USER_IDS_INSERTED_CACHE = new Set<string>();

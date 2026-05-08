@@ -1,4 +1,3 @@
-import { roll } from '@oldschoolgg/rng';
 import { notEmpty, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import { type Item, Items } from 'oldschooljs';
 import { clone } from 'remeda';
@@ -167,11 +166,13 @@ const indexesWithRng = entries.flatMap(i => i[1].tasks.filter(t => 'rng' in t));
 export const combatAchievementTripEffect = async ({
 	data,
 	messages,
-	user
+	user,
+	rng
 }: {
 	data: ActivityTaskData;
 	user: MUser;
 	messages: string[];
+	rng: RNGProvider;
 }) => {
 	const dataCopy = clone(data);
 
@@ -212,7 +213,7 @@ export const combatAchievementTripEffect = async ({
 					: task.rng.hasChance(dataCopy, user);
 			if (!hasChance) continue;
 			for (let i = 0; i < qty; i++) {
-				if (roll(task.rng.chancePerKill)) {
+				if (rng.roll(task.rng.chancePerKill)) {
 					completedTasks.push(task);
 					qty--;
 					break;

@@ -21,3 +21,12 @@ You can feed the eagle tame certain items with [[/tames feed item\:[item]]]<br /
 | **Equip, do not feed:** Third Age Jibwings e | +30 minutes max trip length                                              |
 
 Send your eagle on clue trips with [[/tames collect clue_tier:master]]. It completes clues by itself and benefits from the items above.
+
+## Mechanics and requirements
+
+- Only Eagle tames can do clue trips.
+- Time per clue starts at clue base time * 1.15, then reduced by support level scaling.
+- [[Divine ring]] gives a speed bonus on Eagle clue trips.
+- Cost per clue trip: clue scrolls + extraordinary kibble (scaled by tier and quantity).
+- For Grandmaster/Elder clues, all STASH units must be built and full.
+- Elder clueing requires feeding [[Elder knowledge]].

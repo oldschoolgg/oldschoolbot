@@ -1,15 +1,15 @@
-import { randomVariation } from '@oldschoolgg/rng';
-import { formatDuration, Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import type { ActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
-export async function mageArenaCommand(user: MUser, channelId: string) {
+export async function mageArenaCommand(rng: RNGProvider, user: MUser, channelId: string) {
 	if (user.skillsAsLevels.magic < 60) {
 		return 'You need level 60 Magic to do the Mage Arena.';
 	}
-	const duration = randomVariation(Time.Minute * 10, 5);
+	const duration = rng.randomVariation(Time.Minute * 10, 5);
 
 	const itemsNeeded = new Bank({
 		'Blood rune': 100,
@@ -43,7 +43,5 @@ export async function mageArenaCommand(user: MUser, channelId: string) {
 		type: 'MageArena'
 	});
 
-	return `${user.minionName} is now doing the Mage Arena, it will take approximately ${formatDuration(
-		duration
-	)}. Removed ${totalCost} from your bank.`;
+	return `${user.minionName} is now doing the Mage Arena, it will take approximately ${formatTripDuration(user, duration)}. Removed ${totalCost} from your bank.`;
 }

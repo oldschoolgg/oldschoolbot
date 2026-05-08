@@ -11,9 +11,9 @@ export const pollCommand = defineCommand({
 			required: true
 		}
 	],
-	run: async ({ interaction, channelId }) => {
+	run: async ({ interaction, channelId, user, options }) => {
 		const createdMessage = await interaction.replyWithResponse({
-			content: 'Poll created. Users can click on the two reactions to vote.'
+			content: `Poll from ${user.username}: ${options.question}`
 		});
 		const messageId = createdMessage!.message_id;
 		await globalClient.reactToMsg({ channelId: channelId, messageId, emojiId: 'Happy' });

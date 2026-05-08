@@ -1,4 +1,4 @@
-import { GeneralBank, type GeneralBankType } from '@oldschoolgg/toolkit/GeneralBank';
+import { GeneralBank, type GeneralBankType } from '@oldschoolgg/toolkit';
 import type { EMonster, ItemBank } from 'oldschooljs';
 
 import type { Prisma } from '@/prisma/main.js';

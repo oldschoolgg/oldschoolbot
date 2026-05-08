@@ -4,13 +4,13 @@ title: "Igne"
 
 Once you've received a Dragon Egg drop from Ignecarus, you can grow your own tame! The dragon tame can go on PvM trips to earn loot.
 
-An idle dragon tame reduces log and ore costs by 20% at the [Baxtorian Bathhouses](../../minigames/baxtorian-bathhouses.md#boosts).
+An idle dragon tame reduces log and ore costs by 20% at the [Baxtorian Bathhouses](/bso/minigames/baxtorian-bathhouses#boosts).
 
 ## Hatching the Tame
 
 The dragon tame takes 18.5 hours to hatch. There is a 1/30 chance of hatching a shiny dragon, increased to 1/29 with a Ring of Luck equipped or in the bank.
 
-See [Tames](./#hatching-the-tame) for more info.
+See [Tames](#hatching-the-tame) for more info.
 
 ## Growth
 
@@ -24,7 +24,7 @@ For more commands, see [Tames](./).
 
 ## Boosts
 
-Feed items using [[/tames feed item\:ItemName]]  
+Feed items using [[/tames feed item\:ItemName]]
 **Note:** Feeding non-boost items has no effect.
 
 | **Item**                   | **Effect**                                                                                                 |
@@ -35,18 +35,18 @@ Feed items using [[/tames feed item\:ItemName]]
 | Dwarven Warhammer          | 30% speed boost                                                                                            |
 | Mr. E                      | 1/12 chance to double loot                                                                                 |
 | Impling Locator            | Chance to find implings                                                                                    |
-| **Equip only:** Igne Claws | 5–35% speed boost ([Igne Claws](igne-equipment.md#igne-claw-creation))                                     |
-| **Equip only:** Igne Armor | Reduces food usage by 5–33%, allows additional kills ([Igne Armor](igne-equipment.md#igne-armor-creation)) |
+| **Equip only:** Igne Claws | 5–35% speed boost ([Igne Claws](igne-equipment#igne-claw-creation))                                     |
+| **Equip only:** Igne Armor | Reduces food usage by 5–33%, allows additional kills ([Igne Armor](igne-equipment#igne-armor-creation)) |
 
 ### Boss Requirements
 
 The following [demi bosses](../../bso-custom-killables/demi-bosses/) require **Justiciar Igne Armor** or higher:
 
-- [Nihiliz](../../bso-custom-killables/demi-bosses/nihiliz.md)
-- [Treebeard](../../bso-custom-killables/demi-bosses/treebeard.md)
-- [Queen Black Dragon](../../bso-custom-killables/demi-bosses/queen-black-dragon.md)
-- [Sea Kraken](../../bso-custom-killables/demi-bosses/sea-kraken.md)
-- [Malygos](../../bso-custom-killables/demi-bosses/malygos.md)
+- [[Nihiliz]]
+- [[Treebeard]]
+- [[Queen Black Dragon]]
+- [[Sea Kraken]]
+- [[Malygos]]
 - Callisto
 - Vet'ion
 - Venenatis
@@ -57,7 +57,7 @@ The following [demi bosses](../../bso-custom-killables/demi-bosses/) require **J
 
 Create gear using [[/create]] starting with **Runite Igne Claws** or **Dragon Igne Armor**.
 
-Equip gear with [[/tames equip item\:TierName]]  
+Equip gear with [[/tames equip item\:TierName]]
 Unequip gear with [[/tames unequip item\:TierName]]
 
 **Skill requirements to craft:**

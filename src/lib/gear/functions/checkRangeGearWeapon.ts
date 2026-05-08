@@ -8,7 +8,7 @@ import { formatList } from '@/lib/util/smallUtils.js';
 
 export function checkRangeGearWeapon(gear: Gear) {
 	const weapon = gear.equippedWeapon();
-	const { ammo } = gear;
+	const ammo = gear.get('ammo');
 	if (!weapon) return 'You have no weapon equipped.';
 	const usingBowfa = getSimilarItems(EItem.BOW_OF_FAERDHINEN_C).includes(weapon.id);
 	if (usingBowfa) {

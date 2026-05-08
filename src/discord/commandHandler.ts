@@ -1,5 +1,5 @@
 import { type APIChatInputApplicationCommandInteraction, SpecialResponse } from '@oldschoolgg/discord';
-import { cryptoRng } from '@oldschoolgg/rng';
+import { cryptoRng } from 'node-rng/crypto';
 
 import { convertAPIOptionsToCommandOptions } from '@/discord/index.js';
 import { preCommand } from '@/discord/preCommand.js';
@@ -13,7 +13,7 @@ export async function rawCommandHandlerInner({
 	ignoreUserIsBusy,
 	rng
 }: {
-	interaction: MInteraction;
+	interaction: OSInteraction;
 	command: AnyCommand;
 	options: CommandOptions;
 	ignoreUserIsBusy?: true;
@@ -31,12 +31,12 @@ export async function rawCommandHandlerInner({
 			};
 		}
 	}
-	const user = await mUserFetch(interaction.userId);
+	const user = interaction.user;
+	RawSQL.updateUserLastCommandDate({ userId: interaction.userId }).catch(err => Logging.logError(err));
 
-	RawSQL.updateUserLastCommandDate({ userId: interaction.userId }).catch(console.error);
-
+	// TODO: remove later
 	if (user.user.completed_achievement_diaries.length === 0) {
-		user.syncCompletedAchievementDiaries().catch(console.error);
+		user.syncCompletedAchievementDiaries().catch(err => Logging.logError(err));
 	}
 
 	const shouldIgnoreBusy = ignoreUserIsBusy || busyImmuneCommands.includes(command.name);
@@ -65,16 +65,25 @@ export async function rawCommandHandlerInner({
 			};
 		}
 
-		const response: Awaited<CommandResponse> = await command.run({
-			interaction,
-			options,
-			user,
-			member: interaction.member,
-			channelId: interaction.channelId,
-			guildId: interaction.guildId,
-			userId: interaction.userId,
-			rng
-		});
+		const runClosure = () =>
+			command.run({
+				interaction,
+				options,
+				user,
+				member: interaction.member,
+				channelId: interaction.channelId,
+				guildId: interaction.guildId,
+				userId: interaction.userId,
+				rng
+			});
+
+		const requiresLock = Boolean('flags' in command && command.flags?.includes('REQUIRES_LOCK'));
+		if (requiresLock) {
+			await interaction.defer();
+		}
+		const response: Awaited<CommandResponse> = requiresLock
+			? await user.withLock(command.name, runClosure)
+			: await runClosure();
 		return response;
 	} catch (err) {
 		if ((err as Error).message === SILENT_ERROR) return SpecialResponse.SilentErrorResponse;
@@ -95,7 +104,7 @@ export async function rawCommandHandlerInner({
 
 export async function commandHandler(
 	rawInteraction: APIChatInputApplicationCommandInteraction,
-	interaction: MInteraction
+	interaction: OSInteraction
 ) {
 	const command = globalClient.allCommands.find(c => c.name === rawInteraction.data.name)!;
 	const options = convertAPIOptionsToCommandOptions({

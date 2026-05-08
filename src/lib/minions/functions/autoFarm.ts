@@ -14,7 +14,7 @@ export async function autoFarm(interaction: MInteraction, user: MUser, patchesDe
 	let toPlant: Plant | undefined;
 	let canPlant: Plant | undefined;
 	let canHarvest: Plant | undefined;
-	let elligible: Plant[] = [];
+	let eligible: Plant[] = [];
 	let errorString = '';
 	let { autoFarmFilter } = user;
 
@@ -22,7 +22,7 @@ export async function autoFarm(interaction: MInteraction, user: MUser, patchesDe
 		autoFarmFilter = AutoFarmFilterEnum.AllFarm;
 	}
 
-	elligible = [...plants]
+	eligible = [...plants]
 		.filter(p => {
 			switch (autoFarmFilter) {
 				case AutoFarmFilterEnum.AllFarm: {
@@ -39,7 +39,7 @@ export async function autoFarm(interaction: MInteraction, user: MUser, patchesDe
 		.sort((a, b) => b.level - a.level);
 
 	if (autoFarmFilter === AutoFarmFilterEnum.AllFarm) {
-		canHarvest = elligible.find(p => patchesDetailed.find(_p => _p.patchName === p.seedType)?.ready);
+		canHarvest = eligible.find(p => patchesDetailed.find(_p => _p.patchName === p.seedType)?.ready);
 		errorString = "There's no Farming crops that you have the requirements to plant, and nothing to harvest.";
 	}
 	if (autoFarmFilter === AutoFarmFilterEnum.Replant) {
@@ -47,7 +47,7 @@ export async function autoFarm(interaction: MInteraction, user: MUser, patchesDe
 			"There's no Farming crops that you have planted that are ready to be replanted or no seeds remaining.";
 	}
 
-	canPlant = elligible.find(p => {
+	canPlant = eligible.find(p => {
 		const patchData = patchesDetailed.find(_p => _p.patchName === p.seedType)!;
 		if (patchData.ready === false) return false;
 		return true;

@@ -1,5 +1,6 @@
 import type { ButtonBuilder } from '@oldschoolgg/discord';
 import { getNextUTCReset } from '@oldschoolgg/toolkit';
+import { cryptoRng } from 'node-rng/crypto';
 import { Bank, EItem } from 'oldschooljs';
 
 import type { activity_type_enum } from '@/prisma/main/enums.js';
@@ -10,12 +11,13 @@ import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAch
 import { BitField, CONSTANTS, PerkTier } from '@/lib/constants.js';
 import { handleGrowablePetGrowth } from '@/lib/growablePets.js';
 import { handlePassiveImplings } from '@/lib/implings.js';
-import { MUserClass } from '@/lib/MUser.js';
 import { triggerRandomEvent } from '@/lib/randomEvents.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
+import { MUserClass } from '@/lib/user/MUser.js';
 import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
 import {
 	makeAutoContractButton,
+	makeAutoRummageToggleButton,
 	makeAutoSlayButton,
 	makeBirdHouseTripButton,
 	makeClaimDailyButton,
@@ -26,6 +28,7 @@ import {
 	makeTearsOfGuthixButton
 } from '@/lib/util/interactions.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
+import { isUsersDailyReady } from '@/mahoji/lib/abstracted_commands/dailyCommand.js';
 import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
 import { handleTriggerShootingStar } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
 import {
@@ -49,6 +52,7 @@ interface TripFinishEffectOptions {
 	lastDailyTimestamp: bigint | null;
 	lastTearsOfGuthixTimestamp: bigint | null;
 	perkTier: PerkTier | 0;
+	rng: RNGProvider;
 }
 
 type TripEffectReturn = {
@@ -92,14 +96,14 @@ const tripFinishEffects: TripFinishEffect[] = [
 	},
 	{
 		name: 'Growable Pets',
-		fn: async ({ data, messages, user }) => {
-			await handleGrowablePetGrowth(user, data, messages);
+		fn: async args => {
+			await handleGrowablePetGrowth(args);
 		}
 	},
 	{
 		name: 'Random Events',
-		fn: async ({ data, messages, user }) => {
-			return triggerRandomEvent(user, data.type, data.duration, messages);
+		fn: async ({ data, messages, user, rng }) => {
+			return triggerRandomEvent(user, data.type, data.duration, messages, rng);
 		}
 	},
 	{
@@ -110,8 +114,8 @@ const tripFinishEffects: TripFinishEffect[] = [
 	},
 	{
 		name: 'Shooting Stars',
-		fn: async ({ user, data, components }) => {
-			await handleTriggerShootingStar(user, data, components);
+		fn: async ({ user, data, components, rng }) => {
+			await handleTriggerShootingStar({ user, data, components, rng });
 		}
 	},
 	{
@@ -144,12 +148,11 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Claim Daily Button',
 		requiredPerkTier: PerkTier.Two,
-		fn: async ({ user, components, lastDailyTimestamp }) => {
+		fn: async ({ user, components }) => {
 			if (user.bitfield.includes(BitField.DisableDailyButton)) return;
-			const last = Number(lastDailyTimestamp);
-			const ready = last <= 0 || Date.now() - last >= CONSTANTS.DAILY_COOLDOWN;
 
-			if (ready) {
+			const { isReady } = await isUsersDailyReady(user);
+			if (isReady) {
 				components.push(makeClaimDailyButton());
 			}
 		}
@@ -198,6 +201,14 @@ const tripFinishEffects: TripFinishEffect[] = [
 		fn: async ({ components, loot }) => {
 			if (loot?.has('Seed pack')) {
 				components.push(makeOpenSeedPackButton());
+			}
+		}
+	},
+	{
+		name: 'Vale Offerings - Toggle Auto Rummage',
+		fn: async ({ components, data }) => {
+			if (data.type === 'ValeTotems') {
+				components.push(makeAutoRummageToggleButton());
 			}
 		}
 	}
@@ -291,7 +302,8 @@ export async function handleTripFinish(
 			messages,
 			lastDailyTimestamp: last_daily_timestamp,
 			lastTearsOfGuthixTimestamp: last_tears_of_guthix_timestamp,
-			perkTier
+			perkTier,
+			rng: cryptoRng
 		});
 		if (res?.itemsToAddWithCL) itemsToAddWithCL.add(res.itemsToAddWithCL);
 		if (res?.itemsToRemove) itemsToRemove.add(res.itemsToRemove);

@@ -238,14 +238,15 @@ export const slayerCommand = defineCommand({
 			description: 'Shows status of current slayer task'
 		}
 	],
-	run: async ({ options, user, interaction }) => {
+	run: async ({ options, user, interaction, rng }) => {
 		await interaction.defer();
 		if (options.autoslay) {
 			return autoSlayCommand({
 				user,
 				modeOverride: options.autoslay.mode,
 				saveMode: Boolean(options.autoslay.save),
-				interaction
+				interaction,
+				rng
 			});
 		}
 		if (options.new_task) {
@@ -254,7 +255,8 @@ export const slayerCommand = defineCommand({
 				interaction,
 				slayerMasterOverride: options.new_task.master,
 				saveDefaultSlayerMaster: Boolean(options.new_task.save),
-				showButtons: true
+				showButtons: true,
+				rng
 			});
 		}
 		if (options.manage) {
@@ -266,7 +268,8 @@ export const slayerCommand = defineCommand({
 					user,
 					block: options.manage.command === 'block',
 					newTask: Boolean(options.manage.new),
-					interaction
+					interaction,
+					rng
 				});
 			}
 		}

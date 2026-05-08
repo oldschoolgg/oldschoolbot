@@ -1,5 +1,5 @@
 import { bold, EmbedBuilder, inlineCode } from '@oldschoolgg/discord';
-import type { IGuild } from '@oldschoolgg/schemas';
+import { ECombatOption, type IGuild } from '@oldschoolgg/schemas';
 import {
 	formatDuration,
 	hexToDecimal,
@@ -17,60 +17,29 @@ import type { activity_type_enum } from '@/prisma/main/enums.js';
 import { choicesOf, itemOption } from '@/discord/index.js';
 import { CanvasModule } from '@/lib/canvas/CanvasModule.js';
 import { ItemIconPacks } from '@/lib/canvas/iconPacks.js';
-import { BitField, PerkTier } from '@/lib/constants.js';
+import { BitField, BitFieldData, PerkTier } from '@/lib/constants.js';
 import { Eatables } from '@/lib/data/eatables.js';
-import { CombatOptionsArray, CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
+import { CombatOptionsArray } from '@/lib/minions/data/combatConstants.js';
 import { birdhouseSeeds } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
 import { autoslayChoices, slayerMasterChoices } from '@/lib/slayer/constants.js';
 import { setDefaultAutoslay, setDefaultSlayerMaster } from '@/lib/slayer/slayerUtil.js';
 import { BankSortMethods, isValidBankSortMethod } from '@/lib/sorts.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isValidNickname, patronMsg } from '@/lib/util/smallUtils.js';
+import { toggleBitfield } from '@/lib/util.js';
 
-interface UserConfigToggle {
-	name: string;
+type ExtendedBitFieldDataa = (typeof BitFieldData)[BitField] & {
 	bit: BitField;
 	canToggle?: (
 		user: MUser,
 		interaction?: MInteraction
 	) => Promise<{ result: false; message: string } | { result: true; message?: string }>;
-}
+};
 
-const toggles: UserConfigToggle[] = [
-	{
-		name: 'Disable Random Events',
-		bit: BitField.DisabledRandomEvents
-	},
-	{
-		name: 'Small Bank Images',
-		bit: BitField.AlwaysSmallBank
-	},
-	{
-		name: 'Disable Birdhouse Run Button',
-		bit: BitField.DisableBirdhouseRunButton
-	},
-	{
-		name: 'Disable Auto Slay Button',
-		bit: BitField.DisableAutoSlayButton
-	},
-	{
-		name: 'Disable Ash Sanctifier',
-		bit: BitField.DisableAshSanctifier
-	},
-	{
-		name: 'Disable Auto Farm Contract Button',
-		bit: BitField.DisableAutoFarmContractButton
-	},
-	{
-		name: "Disable Grand Exchange DM's",
-		bit: BitField.DisableGrandExchangeDMs
-	},
-	{
-		name: 'Clean herbs during farm runs',
-		bit: BitField.CleanHerbsFarming
-	},
-	{
+const configBitFieldOverrides: Partial<Record<BitField, Partial<ExtendedBitFieldDataa>>> = {
+	[BitField.SelfGamblingLocked]: {
 		name: 'Lock Self From Gambling',
+		userConfigurable: true,
 		bit: BitField.SelfGamblingLocked,
 		canToggle: async (user, interaction) => {
 			if (user.bitfield.includes(BitField.SelfGamblingLocked)) {
@@ -111,46 +80,24 @@ const toggles: UserConfigToggle[] = [
 				}
 				return { result: false, message: 'Cancelled.' };
 			}
-			// If handleToggle called without an interaction, perhaps by non-interactive code, allow toggle.
 			return { result: true };
 		}
-	},
-	{
-		name: 'Disable farming reminders',
-		bit: BitField.DisabledFarmingReminders
-	},
-	{
-		name: 'Disable Clue Buttons',
-		bit: BitField.DisableClueButtons
-	},
-	{
-		name: 'Disable wilderness high peak time warning',
-		bit: BitField.DisableHighPeakTimeWarning
-	},
-	{
-		name: 'Disable Names on Opens',
-		bit: BitField.DisableOpenableNames
-	},
-	{
-		name: 'Disable Tears of Guthix Trip Button',
-		bit: BitField.DisableTearsOfGuthixButton
-	},
-	{
-		name: 'Show Detailed Info',
-		bit: BitField.ShowDetailedInfo
-	},
-	{
-		name: 'Disable Minion Daily Button',
-		bit: BitField.DisableDailyButton
-	},
-	{
-		name: 'Allow Public API Data Retrieval',
-		bit: BitField.AllowPublicAPIDataRetrieval
 	}
-];
+};
+
+const userBitToggles: ExtendedBitFieldDataa[] = Object.entries(BitFieldData)
+	.map(([bit, data]) => {
+		const bitField = Number(bit) as BitField;
+		return {
+			...data,
+			bit: bitField,
+			...configBitFieldOverrides[bitField]
+		};
+	})
+	.filter(toggle => toggle.userConfigurable);
 
 async function handleToggle(user: MUser, name: string, interaction?: MInteraction): Promise<string> {
-	const toggle = toggles.find(i => stringMatches(i.name, name));
+	const toggle = userBitToggles.find(i => stringMatches(i.name, name));
 	if (!toggle) return 'Invalid toggle name.';
 	let messageExtra = '';
 	if (toggle.canToggle) {
@@ -161,12 +108,7 @@ async function handleToggle(user: MUser, name: string, interaction?: MInteractio
 			messageExtra = toggleResult.message;
 		}
 	}
-	const includedNow = user.bitfield.includes(toggle.bit);
-	const nextArr = includedNow ? removeFromArr(user.bitfield, toggle.bit) : [...user.bitfield, toggle.bit];
-	await user.update({
-		bitfield: nextArr
-	});
-	return `Toggled '${toggle.name}' ${includedNow ? 'Off' : 'On'}.${messageExtra ? `\n\n${messageExtra}` : ''}`;
+	return (await toggleBitfield(user, toggle.bit, toggle.name)) + ' ' + messageExtra;
 }
 
 async function favFoodConfig(
@@ -541,18 +483,18 @@ async function handleCombatOptions(user: MUser, command: 'add' | 'remove' | 'lis
 	// If enabling Ice Barrage, make sure burst isn't also enabled:
 	if (
 		nextBool &&
-		newcbopt.id === CombatOptionsEnum.AlwaysIceBarrage &&
-		combatOptions.includes(CombatOptionsEnum.AlwaysIceBurst)
+		newcbopt.id === ECombatOption.AlwaysIceBarrage &&
+		combatOptions.includes(ECombatOption.AlwaysIceBurst)
 	) {
-		combatOptions = removeFromArr(combatOptions, CombatOptionsEnum.AlwaysIceBurst);
+		combatOptions = removeFromArr(combatOptions, ECombatOption.AlwaysIceBurst);
 	}
 	// If enabling Ice Burst, make sure barrage isn't also enabled:
 	if (
 		nextBool &&
-		newcbopt.id === CombatOptionsEnum.AlwaysIceBurst &&
-		combatOptions.includes(CombatOptionsEnum.AlwaysIceBarrage)
+		newcbopt.id === ECombatOption.AlwaysIceBurst &&
+		combatOptions.includes(ECombatOption.AlwaysIceBarrage)
 	) {
-		combatOptions = removeFromArr(combatOptions, CombatOptionsEnum.AlwaysIceBarrage);
+		combatOptions = removeFromArr(combatOptions, ECombatOption.AlwaysIceBarrage);
 	}
 	if (nextBool && !combatOptions.includes(newcbopt.id)) {
 		await user.update({
@@ -737,10 +679,11 @@ export const configCommand = defineCommand({
 							required: true,
 							autocomplete: async ({ value, user }: StringAutoComplete) => {
 								const bitfield = user.bitfield;
-								return toggles
+								return userBitToggles
 									.filter(i => {
+										if ((!i.userConfigurable || i.protected) && !user.isAdmin()) return false;
 										if (!value) return true;
-										return i.name.toLowerCase().includes(value.toLowerCase());
+										return stringMatches(i.name, value);
 									})
 									.map(i => ({
 										name: `${i.name} (Currently ${bitfield.includes(i.bit) ? 'On' : 'Off'})`,

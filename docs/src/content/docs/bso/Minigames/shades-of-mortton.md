@@ -9,7 +9,7 @@ description: "BSO only content: Necromancer Kit, Shade Skull, Gary"
 | ------------------------------------------------------------------------- | --------------------------------------------------------------------- |
 | Necromancer Kit                                                           | 1/375 from any Gold key open                                          |
 | Shade Skull                                                               | 1/400 from any Gold key open                                          |
-| [Gary](../custom-items/pets.md#meme-pets-and-no-perk-pets) (perkless pet) | 1/1200 × shade tier (Urium: 1/1200, Fiyr: 1/2400, Asyn: 1/3600, etc.) |
+| [Gary](/bso/custom-items/pets#meme-pets-and-no-perk-pets) (perkless pet) | 1/1200 × shade tier (Urium: 1/1200, Fiyr: 1/2400, Asyn: 1/3600, etc.) |
 
 ### Necromancer Kit
 

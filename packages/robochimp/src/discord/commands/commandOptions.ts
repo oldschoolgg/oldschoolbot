@@ -62,11 +62,12 @@ type OptionValue<O> = O extends { type: 'String'; choices?: infer C }
 					? string
 					: never;
 
-type ExtractArgs<T extends AnyArr<unknown> | undefined> = T extends AnyArr<unknown>
-	? [ParamEntry<Extract<T[number], CommandOption>>] extends [never]
-		? {}
-		: Simplify<UnionToIntersection<ParamEntry<Extract<T[number], CommandOption>>>>
-	: {};
+type ExtractArgs<T extends AnyArr<unknown> | undefined> =
+	T extends AnyArr<unknown>
+		? [ParamEntry<Extract<T[number], CommandOption>>] extends [never]
+			? {}
+			: Simplify<UnionToIntersection<ParamEntry<Extract<T[number], CommandOption>>>>
+		: {};
 
 type CommandEntry<C> = C extends { type: 'Subcommand'; name: infer N extends string; options?: infer Sub }
 	? { [K in N]?: ExtractArgs<AsOptArr<Sub>> }
@@ -74,9 +75,8 @@ type CommandEntry<C> = C extends { type: 'Subcommand'; name: infer N extends str
 		? { [K in G]?: ExtractCommands<AsOptArr<SubG>> }
 		: never;
 
-type ExtractCommands<T extends AnyArr<unknown> | undefined> = T extends AnyArr<unknown>
-	? Simplify<UnionToIntersection<CommandEntry<Extract<T[number], CommandOption>>>>
-	: {};
+type ExtractCommands<T extends AnyArr<unknown> | undefined> =
+	T extends AnyArr<unknown> ? Simplify<UnionToIntersection<CommandEntry<Extract<T[number], CommandOption>>>> : {};
 
 export type AsOptArr<T> = T extends AnyArr<infer E> ? readonly (E & CommandOption)[] : readonly [];
 

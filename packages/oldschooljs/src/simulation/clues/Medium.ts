@@ -1,4 +1,4 @@
-import LootTable from '@/structures/LootTable.js';
+import LootTable from '../../structures/LootTable.js';
 import { BlessingTable, PrayerPageTable, TeleportScrollTable } from './General.js';
 
 export const MediumUnicornTable: LootTable = new LootTable().add('White unicorn mask').add('Black unicorn mask');

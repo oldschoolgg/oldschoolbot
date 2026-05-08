@@ -1,8 +1,8 @@
-import { cryptoRng } from '@oldschoolgg/rng';
 import { Emoji, Events, sleep } from '@oldschoolgg/toolkit';
 import { Bank, toKMB } from 'oldschooljs';
 
-import { MUserClass } from '@/lib/MUser.js';
+import { BOT_TYPE } from '@/lib/constants.js';
+import { MUserClass } from '@/lib/user/MUser.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 async function checkBal(user: MUser, amount: number) {
@@ -20,7 +20,7 @@ async function handleFinishUpdates({
 	winner: MUser;
 	loser: MUser;
 }) {
-	const taxRate = 0.95;
+	const taxRate = BOT_TYPE === 'OSB' ? 0.95 : 1;
 	const winningAmount = amount * 2;
 	const tax = winningAmount - Math.floor(winningAmount * taxRate);
 	const dividedAmount = tax / 1_000_000;
@@ -62,6 +62,7 @@ async function handleFinishUpdates({
 }
 
 export async function duelCommand(
+	rng: RNGProvider,
 	user: MUser,
 	interaction: MInteraction,
 	duelUser: MUser,
@@ -130,7 +131,7 @@ export async function duelCommand(
 		});
 	}
 
-	const [winner, loser] = cryptoRng.shuffle([duelSourceUser, duelTargetUser]);
+	const [winner, loser] = rng.shuffle([duelSourceUser, duelTargetUser]);
 	const { amountGPWinnerReceives, taxPaid } = await handleFinishUpdates({
 		winner,
 		loser,

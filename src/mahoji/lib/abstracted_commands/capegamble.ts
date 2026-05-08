@@ -1,4 +1,3 @@
-import { roll } from '@oldschoolgg/rng';
 import { Events, formatOrdinal } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
@@ -61,7 +60,13 @@ const itemGambles = [
 	}
 ] as const;
 
-export async function capeGambleCommand(user: MUser, type: string, interaction: MInteraction, autoconfirm = false) {
+export async function capeGambleCommand(
+	user: MUser,
+	type: string,
+	interaction: MInteraction,
+	rng: RNGProvider,
+	autoconfirm = false
+) {
 	const src = itemGambles.find(i => i.type === type);
 	if (!src) return 'Invalid type. You can only gamble fire capes, infernal capes, or quivers.';
 	const { item } = src;
@@ -87,7 +92,7 @@ export async function capeGambleCommand(user: MUser, type: string, interaction: 
 
 	const { chance } = src;
 	const pet = src.success.loot;
-	const gotPet = roll(chance);
+	const gotPet = rng.roll(chance);
 	const loot = gotPet ? new Bank().add(pet.id) : undefined;
 
 	await user.transactItems({ itemsToAdd: loot, itemsToRemove: new Bank().add(item.id), collectionLog: true });

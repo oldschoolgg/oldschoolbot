@@ -53,7 +53,7 @@ export async function bankBgCommand(interaction: MInteraction, user: MUser, name
 	}
 
 	if (selectedImage.bitfield && !user.bitfield.includes(selectedImage.bitfield)) {
-		return "You're not elligible to use this bank background.";
+		return "You're not eligible to use this bank background.";
 	}
 
 	// Check they have required collection log items.

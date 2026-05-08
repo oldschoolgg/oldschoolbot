@@ -1,6 +1,6 @@
+import { GearStat } from '@oldschoolgg/gear';
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, deepResolveItems, EMonster, itemID, Monsters, resolveItems } from 'oldschooljs';
-import { GearStat } from 'oldschooljs/gear';
 
 import { QuestID } from '@/lib/minions/data/quests.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
@@ -116,6 +116,27 @@ export const chaeldarMonsters: KillableMonster[] = [
 		healAmountNeeded: 20,
 		attackStyleToUse: GearStat.AttackMagic,
 		attackStylesUsed: [GearStat.AttackMagic]
+	},
+	{
+		id: Monsters.ElderCustodianStalker.id,
+		name: Monsters.ElderCustodianStalker.name,
+		aliases: Monsters.ElderCustodianStalker.aliases,
+		timeToFinish: Time.Second * 65,
+		table: Monsters.ElderCustodianStalker,
+		wildy: false,
+		existsInCatacombs: false,
+		difficultyRating: 3,
+		levelRequirements: {
+			slayer: 76
+		},
+		requiredQuests: [QuestID.ShadowsOfCustodia],
+		healAmountNeeded: 38,
+		attackStyleToUse: GearStat.AttackSlash,
+		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackMagic],
+		superior: Monsters.AncientCustodian,
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: true
 	},
 	{
 		id: Monsters.FossilIslandWyvernAncient.id,
@@ -262,6 +283,27 @@ export const chaeldarMonsters: KillableMonster[] = [
 		canBarrage: false
 	},
 	{
+		id: Monsters.JuvenileCustodianStalker.id,
+		name: Monsters.JuvenileCustodianStalker.name,
+		aliases: Monsters.JuvenileCustodianStalker.aliases,
+		timeToFinish: Time.Second * 32,
+		table: Monsters.JuvenileCustodianStalker,
+		wildy: false,
+		existsInCatacombs: false,
+		difficultyRating: 2,
+		levelRequirements: {
+			slayer: 54
+		},
+		requiredQuests: [QuestID.ShadowsOfCustodia],
+		healAmountNeeded: 18,
+		attackStyleToUse: GearStat.AttackSlash,
+		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackMagic],
+		superior: Monsters.AncientCustodian,
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: true
+	},
+	{
 		id: Monsters.Kraken.id,
 		name: Monsters.Kraken.name,
 		aliases: Monsters.Kraken.aliases,
@@ -383,6 +425,27 @@ export const chaeldarMonsters: KillableMonster[] = [
 		canCannon: true,
 		cannonMulti: false,
 		canBarrage: false
+	},
+	{
+		id: Monsters.MatureCustodianStalker.id,
+		name: Monsters.MatureCustodianStalker.name,
+		aliases: Monsters.MatureCustodianStalker.aliases,
+		timeToFinish: Time.Second * 48,
+		table: Monsters.MatureCustodianStalker,
+		wildy: false,
+		existsInCatacombs: false,
+		difficultyRating: 2,
+		levelRequirements: {
+			slayer: 67
+		},
+		requiredQuests: [QuestID.ShadowsOfCustodia],
+		healAmountNeeded: 28,
+		attackStyleToUse: GearStat.AttackSlash,
+		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackMagic],
+		superior: Monsters.AncientCustodian,
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: true
 	},
 	{
 		id: Monsters.SkeletalWyvern.id,
