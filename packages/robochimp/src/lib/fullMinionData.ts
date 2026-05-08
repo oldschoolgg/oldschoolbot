@@ -40,14 +40,32 @@ export async function fetchFullMinionData(bot: IBotType, targetUserId: string): 
 		bot === 'osb'
 			? await osbClient.activity.findFirst({
 					where: {
-						user_id: BigInt(targetUserId),
+						OR: [
+							{
+								user_id: BigInt(targetUserId)
+							},
+							{
+								all_user_ids: {
+									has: BigInt(targetUserId)
+								}
+							}
+						],
 						completed: false
 					},
 					orderBy: { finish_date: 'desc' }
 				})
 			: await bsoClient.activity.findFirst({
 					where: {
-						user_id: BigInt(targetUserId),
+						OR: [
+							{
+								user_id: BigInt(targetUserId)
+							},
+							{
+								all_user_ids: {
+									has: BigInt(targetUserId)
+								}
+							}
+						],
 						completed: false
 					},
 					orderBy: { finish_date: 'desc' }

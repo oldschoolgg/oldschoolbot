@@ -70,7 +70,8 @@ export function MinionInfo({ data }: { data: FullMinionData }) {
 		'Collection Log': Object.keys(data.collection_log_bank).length,
 		Sacrificed: `${data.total_sacrificed_value.toLocaleString()} GP`
 	};
-	const currentActivity = data.current_activity;
+	const hasCurrentActivityData = Object.prototype.hasOwnProperty.call(data, 'current_activity');
+	const currentActivity = hasCurrentActivityData ? data.current_activity : undefined;
 	return (
 		<div className="flex items-center justify-center flex-col">
 			<div className="flex items-center flex-col mb-4">
@@ -98,19 +99,29 @@ export function MinionInfo({ data }: { data: FullMinionData }) {
 				<p className="text-center font-semibold mb-2 text-white">Current Activity</p>
 				<div className="flex justify-between">
 					<span className="font-extrabold text-white">Activity:</span>
-					<span className="text-gray-300">{currentActivity?.name ?? 'Idle'}</span>
+					<span className="text-gray-300">
+						{hasCurrentActivityData ? (currentActivity?.name ?? 'Idle') : 'Unavailable'}
+					</span>
 				</div>
 				<div className="flex justify-between">
 					<span className="font-extrabold text-white">Started:</span>
-					<span className="text-gray-300">{formatTimestamp(currentActivity?.started_at ?? null)}</span>
+					<span className="text-gray-300">
+						{hasCurrentActivityData ? formatTimestamp(currentActivity?.started_at ?? null) : '—'}
+					</span>
 				</div>
 				<div className="flex justify-between">
 					<span className="font-extrabold text-white">Ends:</span>
-					<span className="text-gray-300">{formatTimestamp(currentActivity?.finishes_at ?? null)}</span>
+					<span className="text-gray-300">
+						{hasCurrentActivityData ? formatTimestamp(currentActivity?.finishes_at ?? null) : '—'}
+					</span>
 				</div>
 				<div className="flex justify-between">
 					<span className="font-extrabold text-white">Countdown:</span>
-					<ActivityCountdown finishesAt={currentActivity?.finishes_at ?? null} />
+					{hasCurrentActivityData ? (
+						<ActivityCountdown finishesAt={currentActivity?.finishes_at ?? null} />
+					) : (
+						<span className="text-gray-300">—</span>
+					)}
 				</div>
 			</div>
 			<BankImage sort="name" title="Bank" bank={data.bank} />
