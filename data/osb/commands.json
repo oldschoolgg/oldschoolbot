@@ -1,6 +1,6 @@
 {
-	"hash": "f65934bd9069c076afa2035e57744b98",
-	"date": "2026-05-05T16:04:42.027Z",
+	"hash": "71d91719076c1c946a280ee0017a2e01",
+	"date": "2026-05-08T10:47:41.709Z",
 	"data": [
 		{
 			"name": "activities",
@@ -281,6 +281,7 @@
 				"clues",
 				"combat_achievements",
 				"farming_contracts",
+				"giants_foundry",
 				"global",
 				"gp",
 				"hunter_catches",
@@ -448,7 +449,7 @@
 		{
 			"name": "rp",
 			"desc": "Admin tools second set",
-			"subOptions": ["player", "user_event"]
+			"subOptions": ["player", "roles", "user_event"]
 		},
 		{
 			"name": "runecraft",

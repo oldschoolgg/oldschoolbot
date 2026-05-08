@@ -163,7 +163,8 @@ export enum BitField {
 	DisableDynamicTimestamp = 49,
 	WikiContributor = 50,
 	UnlimitedGiveaways = 51,
-	ServerSupport = 52
+	ServerSupport = 52,
+	DisabledPassiveImplings = 53
 }
 
 export interface IBitFieldData {
@@ -284,6 +285,11 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 	},
 	[BitField.DisableDynamicTimestamp]: {
 		name: 'Disable Dynamic Minion Return Time',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisabledPassiveImplings]: {
+		name: 'Disabled Passive Implings',
 		protected: false,
 		userConfigurable: true
 	},
