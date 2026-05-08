@@ -1,22 +1,18 @@
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { calcPerHour } from '@oldschoolgg/toolkit/util';
-import { randInt } from 'e';
+import { calcPerHour, Emoji, Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { trackLoot } from '../../../lib/lootTrack';
-import { winterTodtPointsTable } from '../../../lib/simulation/simulatedKillables';
-import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
-import Firemaking from '../../../lib/skilling/skills/firemaking';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { winterTodtPointsTable } from '@/lib/simulation/simulatedKillables.js';
+import { WintertodtCrate } from '@/lib/simulation/wintertodt.js';
+import Firemaking from '@/lib/skilling/skills/firemaking.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const wintertodtTask: MinionTask = {
 	type: 'Wintertodt',
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { userID, channelID, quantity } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
+		const { channelId, quantity } = data;
+
 		const { newScore } = await user.incrementMinigameScore('wintertodt', quantity);
 		const loot = new Bank();
 
@@ -31,13 +27,14 @@ export const wintertodtTask: MinionTask = {
 					points,
 					itemsOwned: user.allItemsOwned.clone().add(loot),
 					skills: user.skillsAsXP,
-					firemakingXP: user.skillsAsXP.firemaking
+					firemakingXP: user.skillsAsXP.firemaking,
+					rng
 				})
 			);
 		}
 
 		// Track loot in Economy Stats
-		await updateBankSetting('economyStats_wintertodtLoot', loot);
+		await ClientSettings.updateBankSetting('economyStats_wintertodtLoot', loot);
 
 		if (loot.has('Phoenix')) {
 			globalClient.emit(
@@ -66,7 +63,7 @@ export const wintertodtTask: MinionTask = {
 		const constructionXPPerBrazier = conLevel * 4;
 		let numberOfBraziers = 0;
 		for (let i = 0; i < quantity; i++) {
-			numberOfBraziers += randInt(1, 7);
+			numberOfBraziers += rng.randInt(1, 7);
 		}
 		const conXP = numberOfBraziers * constructionXPPerBrazier;
 		let xpStr = await user.addXP({ skillName: 'construction', amount: conXP, duration: data.duration });
@@ -105,8 +102,7 @@ export const wintertodtTask: MinionTask = {
 			source: 'Wintertodt'
 		})}`;
 
-		const { itemsAdded, previousCL } = await transactItems({
-			userID: user.id,
+		const { itemsAdded, previousCL } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
@@ -140,6 +136,12 @@ export const wintertodtTask: MinionTask = {
 			]
 		});
 
-		handleTripFinish(user, channelID, output, image.file.attachment, data, itemsAdded);
+		return handleTripFinish({
+			user,
+			channelId,
+			message: { content: output, files: [image] },
+			data,
+			loot: itemsAdded
+		});
 	}
 };

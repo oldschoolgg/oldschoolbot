@@ -1,7 +1,6 @@
-import { Bank } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
-import getOSItem from '../../util/getOSItem';
-import type { Createable } from '../createables';
+import type { Createable } from '@/lib/data/createables.js';
 
 export const toaCreatables: Createable[] = [
 	{
@@ -159,8 +158,8 @@ const transMogPets = [
 ] as const;
 
 for (const [ornament, _pet] of transMogPets) {
-	const ornKit = getOSItem(ornament);
-	const pet = getOSItem(_pet);
+	const ornKit = Items.getOrThrow(ornament);
+	const pet = Items.getOrThrow(_pet);
 	toaCreatables.push({
 		name: `${pet.name}`,
 		inputItems: new Bank().add(ornKit.id).add("Tumeken's guardian"),
@@ -177,8 +176,8 @@ for (const [ornament, _pet] of transMogPets) {
 const spiritShields = [['Arcane sigil', 'Arcane spirit shield']] as const;
 
 for (const [_sigil, _shield] of spiritShields) {
-	const sigil = getOSItem(_sigil);
-	const shield = getOSItem(_shield);
+	const sigil = Items.getOrThrow(_sigil);
+	const shield = Items.getOrThrow(_shield);
 	toaCreatables.push({
 		name: `Revert ${shield.name}`,
 		inputItems: new Bank().add(shield.id),

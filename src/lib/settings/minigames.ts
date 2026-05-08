@@ -1,4 +1,4 @@
-import type { Minigame } from '@prisma/client';
+import type { Minigame } from '@/prisma/main.js';
 
 export type MinigameName = keyof Omit<Minigame, 'id' | 'user_id'>;
 
@@ -129,6 +129,11 @@ export const Minigames: readonly BotMinigame[] = [
 		name: 'Pest Control',
 		aliases: ['pest', 'pc'],
 		column: 'pest_control'
+	},
+	{
+		name: 'Vale Totems',
+		aliases: ['vt', 'vale totems'],
+		column: 'vale_totems'
 	},
 	{
 		name: 'Volcanic Mine',

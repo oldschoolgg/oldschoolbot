@@ -1,6 +1,6 @@
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
-import { globalBingoTiles } from './globalTiles';
+import { globalBingoTiles } from '@/mahoji/lib/bingo/globalTiles.js';
 
 interface CustomReq {
 	customReq: (cl: Bank) => boolean;
@@ -34,7 +34,7 @@ export type GlobalBingoTile = (OneOf | AllOf | BankTile | CustomReq) & {
 	name: string;
 };
 
-export function isGlobalTile(data: any): data is StoredGlobalTile {
+export function isGlobalTile(data: StoredBingoTile): data is StoredGlobalTile {
 	return 'global' in data;
 }
 

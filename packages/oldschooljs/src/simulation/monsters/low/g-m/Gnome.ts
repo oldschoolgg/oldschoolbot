@@ -1,5 +1,5 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const GnomeTable = new LootTable({ limit: 128 })
 	.add('King worm', 1, 55)
@@ -11,7 +11,7 @@ const GnomeTable = new LootTable({ limit: 128 })
 	.tertiary(150, 'Clue scroll (medium)')
 	.tertiary(108_718, 'Rocky');
 
-export default new SimpleMonster({
+export const Gnome: SimpleMonster = new SimpleMonster({
 	id: 5969,
 	name: 'Gnome',
 	pickpocketTable: GnomeTable,

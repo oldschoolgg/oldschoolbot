@@ -1,42 +1,32 @@
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
+import { Emoji, Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { roll } from '@/lib/util/rng';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
-import { skillingPetDropRate } from '../../../lib/util';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
+import type { TitheFarmActivityTaskOptions } from '@/lib/types/minions.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 
 export const titheFarmTask: MinionTask = {
 	type: 'TitheFarm',
-	async run(data: TitheFarmActivityTaskOptions) {
-		const { userID, channelID } = data;
+	async run(data: TitheFarmActivityTaskOptions, { user, handleTripFinish, rng }) {
+		const { channelId } = data;
 		const baseHarvest = 85;
-		const lootStr: string[] = [];
 
-		const user = await mUserFetch(userID);
-		const userStats = await user.fetchStats({ tithe_farm_points: true, tithe_farms_completed: true });
+		const userStats = await user.fetchStats();
 
-		const farmingLvl = user.skillLevel(SkillsEnum.Farming);
+		const farmingLvl = user.skillsAsLevels.farming;
 		const titheFarmsCompleted = userStats.tithe_farms_completed;
 		const titheFarmPoints = userStats.tithe_farm_points;
 
 		const determineHarvest = baseHarvest + Math.min(15, titheFarmsCompleted);
 		const determinePoints = determineHarvest - 74;
 
-		await userStatsUpdate(
-			user.id,
-			{
-				tithe_farms_completed: {
-					increment: 1
-				},
-				tithe_farm_points: {
-					increment: determinePoints
-				}
+		await user.statsUpdate({
+			tithe_farms_completed: {
+				increment: 1
 			},
-			{}
-		);
+			tithe_farm_points: {
+				increment: determinePoints
+			}
+		});
 
 		let fruit = '';
 		let fruitXp = 0;
@@ -90,14 +80,14 @@ export const titheFarmTask: MinionTask = {
 		}
 
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Farming,
+			skillName: 'farming',
 			amount: Math.floor(totalXp),
 			duration: data.duration
 		});
 
 		const loot = new Bank();
-		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Farming, 7_494_389);
-		if (roll(petDropRate / determineHarvest)) {
+		const { petDropRate } = skillingPetDropRate(user, 'farming', 7_494_389);
+		if (rng.roll(Math.ceil(petDropRate / determineHarvest))) {
 			loot.add('Tangleroot');
 			globalClient.emit(
 				Events.ServerNotification,
@@ -108,15 +98,14 @@ export const titheFarmTask: MinionTask = {
 				} run!`
 			);
 
-			await transactItems({
-				userID: user.id,
+			await user.transactItems({
 				collectionLog: true,
 				itemsToAdd: loot
 			});
 		}
 
-		const returnStr = `${harvestStr} ${xpRes} ${bonusXpStr}\n\n${completedStr}${lootStr}\n`;
+		const message = `${harvestStr} ${xpRes} ${bonusXpStr}\n\n${completedStr}\n`;
 
-		handleTripFinish(user, channelID, returnStr, undefined, data, loot.length > 0 ? loot : null);
+		handleTripFinish({ user, channelId, message, data, loot });
 	}
 };

@@ -1,4 +1,4 @@
-import { isFunction } from './typeChecking';
+import { isFunction } from './typeChecking.js';
 
 const untrustworthyEscapeHTML = (str: string) =>
 	str
@@ -89,7 +89,7 @@ export class Markdown {
 		return this;
 	}
 
-	addLine(str: string) {
+	addLine(str: string): this {
 		this.elements.push(`${str}\n`);
 		return this;
 	}

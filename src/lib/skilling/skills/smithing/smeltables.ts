@@ -1,7 +1,7 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank, itemID } from 'oldschooljs';
 
-import type { Bar } from '../../types';
+import type { Bar } from '@/lib/skilling/types.js';
 
 const Bars: Bar[] = [
 	{

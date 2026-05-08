@@ -1,5 +1,4 @@
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { objectValues, randInt } from 'e';
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, ItemGroups, Items } from 'oldschooljs';
 
 import {
@@ -7,11 +6,9 @@ import {
 	HardEncounterLoot,
 	MediumEncounterLoot,
 	rewardTokens
-} from '../../../lib/minions/data/templeTrekking';
-import type { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { percentChance } from '../../../lib/util/rng';
+} from '@/lib/minions/data/templeTrekking.js';
+import type { TempleTrekkingActivityTaskOptions } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 function getLowestCountOutfitPiece(bank: Bank, user: MUser): number {
 	let lowestCountPiece = 0;
@@ -20,7 +17,7 @@ function getLowestCountOutfitPiece(bank: Bank, user: MUser): number {
 	for (const piece of ItemGroups.templeTrekkingOutfit) {
 		let amount = bank.amount(piece);
 
-		for (const setup of objectValues(user.gear)) {
+		for (const setup of Object.values(user.gear)) {
 			const thisItemEquipped = Object.values(setup).find(setup => setup?.item === piece);
 			if (thisItemEquipped) amount += thisItemEquipped.quantity;
 		}
@@ -37,9 +34,9 @@ function getLowestCountOutfitPiece(bank: Bank, user: MUser): number {
 export const templeTrekkingTask: MinionTask = {
 	type: 'Trekking',
 
-	async run(data: TempleTrekkingActivityTaskOptions) {
-		const { channelID, quantity, userID, difficulty } = data;
-		const user = await mUserFetch(userID);
+	async run(data: TempleTrekkingActivityTaskOptions, { user, handleTripFinish, rng }) {
+		const { channelId, quantity, difficulty } = data;
+
 		await user.incrementMinigameScore('temple_trekking', quantity);
 		const userBank = user.bank.clone();
 		const loot = new Bank();
@@ -53,14 +50,14 @@ export const templeTrekkingTask: MinionTask = {
 		let totalEncounters = 0;
 		for (let trip = 0; trip < quantity; trip++) {
 			const encounters = stringMatches(difficulty, 'hard')
-				? randInt(0, 7)
+				? rng.randInt(0, 7)
 				: stringMatches(difficulty, 'medium')
-					? randInt(0, 4)
-					: randInt(0, 5);
+					? rng.randInt(0, 4)
+					: rng.randInt(0, 5);
 
 			for (let i = 0; i < encounters; i++) {
 				// 2 out of 12 encounters drop loot, 16%
-				if (percentChance(16)) {
+				if (rng.percentChance(16)) {
 					if (stringMatches(difficulty, 'hard')) {
 						loot.add(HardEncounterLoot.roll());
 					} else if (stringMatches(difficulty, 'medium')) {
@@ -68,7 +65,7 @@ export const templeTrekkingTask: MinionTask = {
 					} else {
 						loot.add(EasyEncounterLoot.roll());
 					}
-				} else if (percentChance(3)) {
+				} else if (rng.percentChance(3)) {
 					const piece = getLowestCountOutfitPiece(userBank, user);
 					userBank.add(piece);
 					loot.add(piece);
@@ -81,8 +78,7 @@ export const templeTrekkingTask: MinionTask = {
 			loot.add(rewardToken.id);
 		}
 
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
+		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
@@ -96,6 +92,6 @@ export const templeTrekkingTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
+		handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data, loot: itemsAdded });
 	}
 };

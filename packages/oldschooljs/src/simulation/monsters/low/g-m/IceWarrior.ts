@@ -1,10 +1,10 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import { GemTable } from '../../../subtables/RareDropTable';
-import { UncommonSeedDropTable } from '../../../subtables/index';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
+import { UncommonSeedDropTable } from '@/simulation/subtables/index.js';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-export const IceWarriorTable = new LootTable({ limit: 128 })
+export const IceWarriorTable: LootTable = new LootTable({ limit: 128 })
 	/* Weapons */
 	.add('Iron battleaxe', 1, 3)
 	.add('Mithril mace', 1, 1)
@@ -34,7 +34,7 @@ export const IceWarriorTable = new LootTable({ limit: 128 })
 	/* Tertiary */
 	.tertiary(128, 'Clue scroll (medium)');
 
-export default new SimpleMonster({
+export const IceWarrior: SimpleMonster = new SimpleMonster({
 	id: 2841,
 	name: 'Ice warrior',
 	table: IceWarriorTable,

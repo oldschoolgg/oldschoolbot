@@ -1,10 +1,9 @@
-import { calcPercentOfNum } from 'e';
+import { calcPercentOfNum } from '@oldschoolgg/util';
 
-import type { LootBank } from '../../meta/types';
-import Bank from '../../structures/Bank';
-import LootTable from '../../structures/LootTable';
-import SimpleTable from '../../structures/SimpleTable';
-import { resolveNameBank } from '../../util/bank';
+import { Bank, type LootBank } from '@/structures/Bank.js';
+import LootTable from '@/structures/LootTable.js';
+import SimpleTable from '@/structures/SimpleTable.js';
+import { resolveNameBank } from '@/util/bank.js';
 
 interface TeamMember {
 	id: string;
@@ -52,13 +51,13 @@ const data: Record<string, [number[], number]> = {
 const nonUniqueItemRanges = resolveNameBank(data);
 
 const NonUniqueTable = new SimpleTable<number>();
-for (const [id, data] of Object.entries(nonUniqueItemRanges)) {
-	NonUniqueTable.add(Number.parseInt(id), data[1]);
+for (const [id, _d] of Object.entries(nonUniqueItemRanges)) {
+	NonUniqueTable.add(Number.parseInt(id), _d[1]);
 }
 
-const toolSeedTable = new LootTable().tertiary(40, 'Uncut onyx').every('Crystal tool seed');
+const toolSeedTable: LootTable = new LootTable().tertiary(40, 'Uncut onyx').every('Crystal tool seed');
 
-const tertiaryTable = new LootTable()
+const tertiaryTable: LootTable = new LootTable()
 	.tertiary(2250, 'Smolcano')
 	.tertiary(200, toolSeedTable)
 	.tertiary(1125, 'Zalcano shard');
@@ -102,6 +101,4 @@ class ZalcanoClass {
 	}
 }
 
-const Zalcano = new ZalcanoClass();
-
-export default Zalcano;
+export const Zalcano: ZalcanoClass = new ZalcanoClass();

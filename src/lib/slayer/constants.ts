@@ -1,3 +1,5 @@
+import { Monsters } from 'oldschooljs';
+
 export enum AutoslayOptionsEnum {
 	Default = 0,
 	HighestUnlocked = 1,
@@ -49,3 +51,21 @@ export const autoslayChoices = autoslayModes.map(asm => ({
 	name: `${asm.name} (Focus: ${asm.focus})`,
 	value: asm.name
 }));
+
+export const wildySlayerOnlyMonsters = [
+	Monsters.DustDevil,
+	Monsters.GreaterNechryael,
+	Monsters.AbyssalDemon,
+	Monsters.Jelly
+];
+
+export enum SlayerMasterEnum {
+	Reserved = 0,
+	Turael = 1,
+	Mazchna = 2,
+	Vannaka = 3,
+	Chaeldar = 4,
+	Konar = 5,
+	Nieve = 6,
+	Duradel = 7
+}

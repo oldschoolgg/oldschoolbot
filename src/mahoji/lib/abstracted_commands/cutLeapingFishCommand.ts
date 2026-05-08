@@ -1,20 +1,18 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import LeapingFish from '../../../lib/skilling/skills/cooking/leapingFish';
-import type { CutLeapingFishActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { LeapingFish } from '@/lib/skilling/skills/cooking/leapingFish.js';
+import type { CutLeapingFishActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export async function cutLeapingFishCommand({
 	user,
-	channelID,
+	channelId,
 	name,
 	quantity
 }: {
 	user: MUser;
-	channelID: string;
+	channelId: string;
 	name: string;
 	quantity?: number;
 }) {
@@ -31,7 +29,7 @@ export async function cutLeapingFishCommand({
 
 	const timeToCutSingleItem = barbarianFish.tickRate * Time.Second * 0.6;
 
-	const maxTripLength = calcMaxTripLength(user, 'Cooking');
+	const maxTripLength = await user.calcMaxTripLength('Cooking');
 
 	if (!quantity) quantity = Math.floor(maxTripLength / timeToCutSingleItem);
 
@@ -63,10 +61,10 @@ export async function cutLeapingFishCommand({
 	}
 	await user.removeItemsFromBank(finalCost);
 
-	await addSubTaskToActivityTask<CutLeapingFishActivityTaskOptions>({
+	await ActivityManager.startTrip<CutLeapingFishActivityTaskOptions>({
 		fishID: barbarianFish.item.id,
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity,
 		duration,
 		type: 'CutLeapingFish'
@@ -74,5 +72,5 @@ export async function cutLeapingFishCommand({
 
 	return `${user.minionName} is now cutting ${quantity}x ${
 		barbarianFish.item.name
-	}, it'll take around ${formatDuration(duration)} to finish.`;
+	}, it'll take around ${formatTripDuration(user, duration)} to finish.`;
 }

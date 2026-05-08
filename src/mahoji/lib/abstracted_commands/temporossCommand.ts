@@ -1,11 +1,9 @@
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
+import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 
-import type { TemporossActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import type { TemporossActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
-export async function temporossCommand(user: MUser, channelID: string, quantity: number | undefined) {
+export async function temporossCommand(user: MUser, channelId: string, quantity: number | undefined) {
 	const fLevel = user.skillLevel('fishing');
 	if (fLevel < 35) {
 		return 'You need 35 Fishing to have a chance at defeating Tempoross.';
@@ -44,7 +42,7 @@ export async function temporossCommand(user: MUser, channelID: string, quantity:
 		durationPerRoss = reduceNumByPercent(durationPerRoss, 10);
 	}
 
-	const maxTripLength = calcMaxTripLength(user, 'Tempoross');
+	const maxTripLength = await user.calcMaxTripLength('Tempoross');
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / durationPerRoss);
 	}
@@ -59,17 +57,15 @@ export async function temporossCommand(user: MUser, channelID: string, quantity:
 		)}.`;
 	}
 
-	await addSubTaskToActivityTask<TemporossActivityTaskOptions>({
+	await ActivityManager.startTrip<TemporossActivityTaskOptions>({
 		minigameID: 'tempoross',
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity,
 		duration,
 		type: 'Tempoross',
 		rewardBoost
 	});
 
-	return `${user.minionName} is now off to kill Tempoross ${quantity}x times, their trip will take ${formatDuration(
-		duration
-	)}. (${formatDuration(durationPerRoss)} per ross)\n\n${messages.join(', ')}.`;
+	return `${user.minionName} is now off to kill Tempoross ${quantity}x times, their trip will return in about ${formatTripDuration(user, duration)}. (${formatDuration(durationPerRoss)} per ross)\n\n${messages.join(', ')}.`;
 }

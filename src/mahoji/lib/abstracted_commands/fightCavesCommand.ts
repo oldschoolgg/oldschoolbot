@@ -1,12 +1,8 @@
-import { type CommandResponse, formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time, calcWhatPercent, percentChance, randInt, reduceNumByPercent } from 'e';
-import { Bank, Monsters, itemID } from 'oldschooljs';
+import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { Bank, EMonster, itemID } from 'oldschooljs';
 
-import { newChatHeadImage } from '../../../lib/canvas/chatHeadImage';
-import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
-import type { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
+import type { FightCavesActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const fightCavesCost = new Bank({
 	'Prayer potion(4)': 10,
@@ -20,7 +16,7 @@ async function determineDuration(user: MUser): Promise<[number, string]> {
 	let debugStr = '';
 
 	// Reduce time based on KC
-	const jadKC = await user.getKC(Monsters.TzTokJad.id);
+	const jadKC = await user.getKC(EMonster.TZTOKJAD);
 	const zukKC = await user.fetchMinigameScore('inferno');
 	const experienceKC = jadKC + zukKC * 3;
 	const percentIncreaseFromKC = Math.min(50, experienceKC);
@@ -95,13 +91,21 @@ function checkGear(user: MUser): string | undefined {
 	}
 }
 
-export async function fightCavesCommand(user: MUser, channelID: string): CommandResponse {
+export async function fightCavesCommand({
+	rng,
+	user,
+	channelId
+}: {
+	rng: RNGProvider;
+	user: MUser;
+	channelId: string;
+}): CommandResponse {
 	const gearFailure = checkGear(user);
 	if (gearFailure) {
 		return {
 			files: [
 				{
-					attachment: await newChatHeadImage({ content: gearFailure, head: 'mejJal' }),
+					buffer: await newChatHeadImage({ content: gearFailure, head: 'mejJal' }),
 					name: 'fightcaves.jpg'
 				}
 			]
@@ -110,9 +114,9 @@ export async function fightCavesCommand(user: MUser, channelID: string): Command
 
 	let [duration, debugStr] = await determineDuration(user);
 
-	const { fight_caves_attempts: attempts } = await user.fetchStats({ fight_caves_attempts: true });
+	const { fight_caves_attempts: attempts } = await user.fetchStats();
 
-	const jadKC = await user.getKC(Monsters.TzTokJad.id);
+	const jadKC = await user.getKC(EMonster.TZTOKJAD);
 	const zukKC = await user.fetchMinigameScore('inferno');
 	const hasInfernoKC = zukKC > 0;
 
@@ -121,16 +125,16 @@ export async function fightCavesCommand(user: MUser, channelID: string): Command
 
 	const usersRangeStats = user.gear.range.stats;
 
-	duration += (randInt(1, 5) * duration) / 100;
+	duration += (rng.randInt(1, 5) * duration) / 100;
 
 	await user.removeItemsFromBank(fightCavesCost);
 
 	// Add slayer
-	const usersTask = await getUsersCurrentSlayerInfo(user.id);
+	const usersTask = await user.fetchSlayerInfo();
 	const isOnTask =
 		usersTask.currentTask !== null &&
 		usersTask.currentTask !== undefined &&
-		usersTask.currentTask?.monster_id === Monsters.TzHaarKet.id &&
+		usersTask.currentTask?.monster_id === EMonster.TZHAARKET &&
 		usersTask.currentTask?.quantity_remaining === usersTask.currentTask?.quantity;
 
 	// 15% boost for on task
@@ -139,14 +143,18 @@ export async function fightCavesCommand(user: MUser, channelID: string): Command
 		debugStr += ', 15% on Task with Black mask (i)';
 	}
 
-	const diedPreJad = percentChance(preJadDeathChance);
+	const diedPreJad = rng.percentChance(preJadDeathChance);
 	const fakeDuration = duration;
-	duration = diedPreJad ? randInt(Time.Minute * 20, duration) : duration;
+	if (diedPreJad) {
+		const minDuration = Time.Minute * 20;
+		const maxDuration = Math.max(minDuration, Math.floor(duration));
+		duration = rng.randInt(minDuration, maxDuration);
+	}
 	const preJadDeathTime = diedPreJad ? duration : null;
 
-	await addSubTaskToActivityTask<FightCavesActivityTaskOptions>({
+	await ActivityManager.startTrip<FightCavesActivityTaskOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity: 1,
 		duration,
 		type: 'FightCaves',
@@ -156,7 +164,7 @@ export async function fightCavesCommand(user: MUser, channelID: string): Command
 		fakeDuration
 	});
 
-	updateBankSetting('economyStats_fightCavesCost', fightCavesCost);
+	await ClientSettings.updateBankSetting('economyStats_fightCavesCost', fightCavesCost);
 
 	const totalDeathChance = (((100 - preJadDeathChance) * (100 - jadDeathChance)) / 100).toFixed(1);
 
@@ -171,7 +179,7 @@ export async function fightCavesCommand(user: MUser, channelID: string): Command
 **Removed from your bank:** ${fightCavesCost}`,
 		files: [
 			{
-				attachment: await newChatHeadImage({
+				buffer: await newChatHeadImage({
 					content: `You're on your own now JalYt, prepare to fight for your life! I think you have ${totalDeathChance}% chance of survival.`,
 					head: 'mejJal'
 				}),

@@ -1,6 +1,6 @@
 import { describe, test } from 'vitest';
 
-import { kcGains } from '../../src/mahoji/commands/tools';
+import { kcGains } from '../../src/mahoji/commands/tools.js';
 
 describe('Leaderboard', async () => {
 	test('kcGains Leaderboard', async () => {

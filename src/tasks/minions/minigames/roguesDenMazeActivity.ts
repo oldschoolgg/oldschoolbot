@@ -1,9 +1,7 @@
-import { randInt } from 'e';
 import { Bank, ItemGroups } from 'oldschooljs';
 
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 function getLowestCountOutfitPiece(bank: Bank): number {
 	let lowestCountPiece = 0;
@@ -23,19 +21,18 @@ function getLowestCountOutfitPiece(bank: Bank): number {
 export const roguesDenTask: MinionTask = {
 	type: 'RoguesDenMaze',
 
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { channelID, quantity, userID } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
+		const { channelId, quantity } = data;
 
 		await user.incrementMinigameScore('rogues_den', quantity);
 
 		const loot = new Bank();
 		const userBankCopy = user.allItemsOwned.clone();
 
-		let str = `<@${userID}>, ${user.minionName} finished completing ${quantity}x laps of the Rogues' Den Maze.`;
+		let str = `<@${user.id}>, ${user.minionName} finished completing ${quantity}x laps of the Rogues' Den Maze.`;
 
 		for (let i = 0; i < quantity; i++) {
-			if (randInt(1, 8) <= 5) {
+			if (rng.randInt(1, 8) <= 5) {
 				const piece = getLowestCountOutfitPiece(userBankCopy);
 				userBankCopy.add(piece);
 				loot.add(piece);
@@ -47,8 +44,7 @@ export const roguesDenTask: MinionTask = {
 			str += `\n**${user.minionName} failed to find any Rogue outfit pieces!**`;
 		}
 
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
+		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
@@ -60,6 +56,6 @@ export const roguesDenTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(user, channelID, str, gotLoot ? image.file.attachment : undefined, data, itemsAdded);
+		handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data, loot: itemsAdded });
 	}
 };

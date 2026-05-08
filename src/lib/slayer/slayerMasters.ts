@@ -1,14 +1,14 @@
 import { MonsterSlayerMaster } from 'oldschooljs';
 
-import { chaeldarTasks } from './tasks/chaeldarTasks';
-import { duradelTasks } from './tasks/duradelTasks';
-import { konarTasks } from './tasks/konarTasks';
-import { krystiliaTasks } from './tasks/krystiliaTasks';
-import { mazchnaTasks } from './tasks/mazchnaTasks';
-import { nieveTasks } from './tasks/nieveTasks';
-import { turaelTasks } from './tasks/turaelTasks';
-import { vannakaTasks } from './tasks/vannakaTasks';
-import type { SlayerMaster } from './types';
+import { chaeldarTasks } from '@/lib/slayer/tasks/chaeldarTasks.js';
+import { duradelTasks } from '@/lib/slayer/tasks/duradelTasks.js';
+import { konarTasks } from '@/lib/slayer/tasks/konarTasks.js';
+import { krystiliaTasks } from '@/lib/slayer/tasks/krystiliaTasks.js';
+import { mazchnaTasks } from '@/lib/slayer/tasks/mazchnaTasks.js';
+import { nieveTasks } from '@/lib/slayer/tasks/nieveTasks.js';
+import { turaelTasks } from '@/lib/slayer/tasks/turaelTasks.js';
+import { vannakaTasks } from '@/lib/slayer/tasks/vannakaTasks.js';
+import type { SlayerMaster } from '@/lib/slayer/types.js';
 
 export const slayerMasters: SlayerMaster[] = [
 	{

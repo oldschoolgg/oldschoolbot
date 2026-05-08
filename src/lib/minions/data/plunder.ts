@@ -1,10 +1,7 @@
-import { randInt } from 'e';
+import { MathRNG } from 'node-rng';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { roll } from '@/lib/util/rng';
-import { SkillsEnum } from '../../skilling/types';
-import { skillingPetDropRate } from '../../util';
-import type { MUserClass } from './../../MUser';
+import { skillingPetDropRate } from '@/lib/util.js';
 
 const Room1Table = new LootTable().add('Ivory Comb', 1, 3).add('Pottery scarab').add('Pottery statuette');
 
@@ -126,22 +123,22 @@ export const plunderBoosts = new Bank({
 	"Pharaoh's sceptre": 5
 });
 
-export function lootRoom(user: MUserClass, room: number): [Bank, number] {
+export function lootRoom(user: MUser, room: number, rng: RNGProvider = MathRNG): [Bank, number] {
 	const loot = new Bank();
 	const roomObj = plunderRooms[room - 1];
-	const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Thieving, roomObj.rockyChance);
-	if (roll(petDropRate)) {
+	const { petDropRate } = skillingPetDropRate(user, 'thieving', roomObj.rockyChance);
+	if (rng.roll(petDropRate)) {
 		loot.add('Rocky');
 	}
 
 	for (let i = 0; i < 2; i++) {
-		if (roll(roomObj.sceptreChance)) {
+		if (rng.roll(roomObj.sceptreChance)) {
 			loot.add("Pharaoh's sceptre");
 			break;
 		}
 	}
 
-	const amountUrns = randInt(9, 14);
+	const amountUrns = rng.randInt(9, 14);
 	for (let i = 0; i < amountUrns; i++) {
 		loot.add(roomObj.roomTable.roll());
 	}

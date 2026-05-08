@@ -1,4 +1,4 @@
-import { type Bank, Items } from '../';
+import { type Bank, Items } from '../src/index.js';
 
 export function withinThreshold(source: number, target: number, epsilon = 5): boolean {
 	if (source === target) return true;
@@ -7,7 +7,7 @@ export function withinThreshold(source: number, target: number, epsilon = 5): bo
 
 export function checkThreshold(expectedRates: Record<string, number>, _result: Bank, numberDone: number): void {
 	for (const [name, qty] of Object.entries(expectedRates)) {
-		const item = Items.get(name);
+		const item = Items.getItem(name);
 		if (!item) throw new Error(`Missing item: ${name}`);
 		if (!_result.has(item.id)) {
 			throw new Error(`Was no ${item.name}[${item.id}] in result, should have been.`);

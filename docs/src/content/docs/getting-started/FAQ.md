@@ -10,11 +10,11 @@ Almost everything from OSRS is coded into the bot. Read this wiki and look throu
 
 ### Where can I report bugs?
 
-Report them on [GitHub](https://github.com/oldschoolgg/oldschoolbot/issues/new?assignees=&labels=&template=bug.md). Ask in the [support server](https://discord.com/invite/ob) first to confirm it's a bug.
+Report them on [GitHub](https://github.com/oldschoolgg/oldschoolbot/issues/new?assignees=&labels=&template=bug). Ask in the [support server](https://discord.com/invite/ob) first to confirm it's a bug.
 
 ### Where can I make suggestions for the bot?
 
-Make feature requests on [GitHub](https://github.com/oldschoolgg/oldschoolbot/issues/new?labels=feature+request&template=feature.md). Search existing suggestions [here](https://github.com/oldschoolgg/oldschoolbot/issues) first.
+Make feature requests on [GitHub](https://github.com/oldschoolgg/oldschoolbot/issues/new?labels=feature+request&template=feature). Search existing suggestions [here](https://github.com/oldschoolgg/oldschoolbot/issues) first.
 
 ### How do I sell/buy items to someone?
 
@@ -22,9 +22,9 @@ Use the Grand Exchange: [[/ge]].
 
 ### How do I equip gear on my minion?
 
-There are 8 setups: Melee, Range, Mage, Misc, Skilling, Wildy, Fashion and Other.  
+There are 8 setups: Melee, Range, Mage, Misc, Skilling, Wildy, Fashion and Other.
 Example: [[/gear equip gear_setup\:Melee item\:Bandos chestplate]].
-Skilling gear (e.g. Pyromancer) goes in your Skilling setup.  
+Skilling gear (e.g. Pyromancer) goes in your Skilling setup.
 Equip pets using: [[/gear pet equip\:Zilyana]].
 
 ### Can I stop my minion from going on a trip I started by accident?
@@ -53,18 +53,18 @@ Possible reasons:
 
 ### How do I get X item?
 
-Same as in OSRS. Monsters drop the same loot.  
-Use [[/buy]] or [[/create]] for quest/shop items.  
+Same as in OSRS. Monsters drop the same loot.
+Use [[/buy]] or [[/create]] for quest/shop items.
 Example: [[/create item\:Graceful]], [[/create item\:Odium ward]].
 
 ### How do I create a godsword?
 
-Example: [[/create item\:Godsword blade]] and [[/create item\:Bandos godsword]], requires [[smithing:80]].  
+Example: [[/create item\:Godsword blade]] and [[/create item\:Bandos godsword]], requires [[smithing:80]].
 You can pay someone else to create it in the [support server](https://discord.gg/ob).
 
 ### How do I get Barrows gloves?
 
-Use [[/buy name\:Barrows gloves]]. Requires [[qp:175]] and 1m GP. 
+Use [[/buy name\:Barrows gloves]]. Requires [[qp:175]] and 1m GP.
 
 ### How do I get Runecrafting pouches?
 
@@ -84,7 +84,7 @@ Try mentioning the bot (`@Old School Bot`), and check bot permissions. Ask in th
 
 ### How do I create/deconstruct a Barrows set?
 
-To create: [[/create item\:Dharok's armour set]]  
+To create: [[/create item\:Dharok's armour set]]
 To unpack: [[/create item\:Unpack dharok's armour set]]
 
 ### The bot says it needs “Manage Messages” permission. How?
@@ -98,31 +98,31 @@ Go to Server Settings → Roles → Old School Bot → Enable **Manage Messages*
 - [[/buy name\:Bolt of cloth]]
 - [[/buy name\:Gold leaf quantity\:3]]
 
-**Ring of dueling:**  
-[[/craft name\:Emerald ring quantity\:20]]  
+**Ring of dueling:**
+[[/craft name\:Emerald ring quantity\:20]]
 [[/activities enchant name\:Emerald ring quantity\:20]]
 
-**Games necklace(8):**  
-[[/craft name\:Sapphire necklace quantity\:20]]  
+**Games necklace(8):**
+[[/craft name\:Sapphire necklace quantity\:20]]
 [[/activities enchant name\:Sapphire necklace quantity\:20]]
 
-**Skills necklace(4):**  
-[[/craft name\:Dragon necklace quantity\:25]]  
-[[/activities enchant name\:Dragon necklace quantity\:25]]  
+**Skills necklace(4):**
+[[/craft name\:Dragon necklace quantity\:25]]
+[[/activities enchant name\:Dragon necklace quantity\:25]]
 [[/activities cast spell\:Recharge Skills Necklace quantity\:1]]
 
-**Combat Bracelet(4):**  
-[[/craft name\:Dragonstone bracelet quantity\:25]]  
-[[/activities enchant name\:Dragonstone bracelet quantity\:25]]  
+**Combat Bracelet(4):**
+[[/craft name\:Dragonstone bracelet quantity\:25]]
+[[/activities enchant name\:Dragonstone bracelet quantity\:25]]
 [[/activities castspell\:Recharge Combat Bracelet quantity\:1]]
 
-**Ring of Wealth (5):**  
-[[/craft name\:Dragonstone ring quantity\:26]]  
-[[/activities enchant name\:Dragonstone ring quantity\:26]]  
+**Ring of Wealth (5):**
+[[/craft name\:Dragonstone ring quantity\:26]]
+[[/activities enchant name\:Dragonstone ring quantity\:26]]
 [[/activities charge item\:Ring of wealth quantity\:1]]
 
-**Amulet of Glory(4):**  
-[[/craft name\:Dragonstone amulet (u) quantity\:25]]  
-[[/craft name\:Dragonstone amulet quantity\:25]]  
-[[/activities enchant name\:Dragonstone amulet quantity\:25]]  
+**Amulet of Glory(4):**
+[[/craft name\:Dragonstone amulet (u) quantity\:25]]
+[[/craft name\:Dragonstone amulet quantity\:25]]
+[[/activities enchant name\:Dragonstone amulet quantity\:25]]
 [[/activities castspell\:Recharge Glory quantity\:1]]

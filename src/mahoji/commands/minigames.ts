@@ -1,93 +1,103 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
-
-import { LMSBuyables } from '../../lib/data/CollectionsExport';
-import TrekShopItems from '../../lib/data/buyables/trekBuyables';
-import { zeroTimeFletchables } from '../../lib/skilling/skills/fletching/fletchables';
+import { choicesOf } from '@/discord/index.js';
+import { NMZ_STRATEGY } from '@/lib/constants.js';
+import TrekShopItems from '@/lib/data/buyables/trekBuyables.js';
+import { ValeTotemsBuyables, ValeTotemsSellables } from '@/lib/data/buyables/valeTotemsBuyables.js';
+import { LMSBuyables } from '@/lib/data/CollectionsExport.js';
+import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
 import {
-	agilityArenaBuyCommand,
 	agilityArenaBuyables,
+	agilityArenaBuyCommand,
 	agilityArenaCommand,
 	agilityArenaXPCommand
-} from '../lib/abstracted_commands/agilityArenaCommand';
+} from '@/mahoji/lib/abstracted_commands/agilityArenaCommand.js';
 import {
 	BarbBuyables,
-	GambleTiers,
 	barbAssaultBuyCommand,
 	barbAssaultGambleCommand,
 	barbAssaultLevelCommand,
 	barbAssaultStartCommand,
-	barbAssaultStatsCommand
-} from '../lib/abstracted_commands/barbAssault';
-import { castleWarsStartCommand, castleWarsStatsCommand } from '../lib/abstracted_commands/castleWarsCommand';
-import { fishingTrawlerCommand } from '../lib/abstracted_commands/fishingTrawler';
-import { gauntletCommand } from '../lib/abstracted_commands/gauntletCommand';
+	barbAssaultStatsCommand,
+	GambleTiers
+} from '@/mahoji/lib/abstracted_commands/barbAssault.js';
+import { castleWarsStartCommand, castleWarsStatsCommand } from '@/mahoji/lib/abstracted_commands/castleWarsCommand.js';
+import { fishingTrawlerCommand } from '@/mahoji/lib/abstracted_commands/fishingTrawler.js';
+import { gauntletCommand } from '@/mahoji/lib/abstracted_commands/gauntletCommand.js';
 import {
+	giantsFoundryAlloys,
+	giantsFoundryBuyables,
 	giantsFoundryShopCommand,
 	giantsFoundryStartCommand,
 	giantsFoundryStatsCommand
-} from '../lib/abstracted_commands/giantsFoundryCommand';
-import { gnomeRestaurantCommand } from '../lib/abstracted_commands/gnomeRestaurantCommand';
-import { guardiansOfTheRiftStartCommand } from '../lib/abstracted_commands/guardiansOfTheRiftCommand';
-import { lmsCommand } from '../lib/abstracted_commands/lmsCommand';
-import { mageArena2Command } from '../lib/abstracted_commands/mageArena2Command';
-import { mageArenaCommand } from '../lib/abstracted_commands/mageArenaCommand';
+} from '@/mahoji/lib/abstracted_commands/giantsFoundryCommand.js';
+import { gnomeRestaurantCommand } from '@/mahoji/lib/abstracted_commands/gnomeRestaurantCommand.js';
+import { guardiansOfTheRiftStartCommand } from '@/mahoji/lib/abstracted_commands/guardiansOfTheRiftCommand.js';
+import { lmsCommand } from '@/mahoji/lib/abstracted_commands/lmsCommand.js';
+import { mageArena2Command } from '@/mahoji/lib/abstracted_commands/mageArena2Command.js';
+import { mageArenaCommand } from '@/mahoji/lib/abstracted_commands/mageArenaCommand.js';
 import {
-	mageTrainingArenaBuyCommand,
 	mageTrainingArenaBuyables,
+	mageTrainingArenaBuyCommand,
 	mageTrainingArenaPointsCommand,
 	mageTrainingArenaStartCommand
-} from '../lib/abstracted_commands/mageTrainingArenaCommand';
+} from '@/mahoji/lib/abstracted_commands/mageTrainingArenaCommand.js';
 import {
 	contractTiers,
 	mahoganyHomesBuildCommand,
-	mahoganyHomesBuyCommand,
 	mahoganyHomesBuyables,
+	mahoganyHomesBuyCommand,
 	mahoganyHomesPointsCommand
-} from '../lib/abstracted_commands/mahoganyHomesCommand';
+} from '@/mahoji/lib/abstracted_commands/mahoganyHomesCommand.js';
 import {
+	nightmareZoneBuyables,
+	nightmareZoneImbueables,
+	nightmareZoneImbueCommand,
 	nightmareZoneShopCommand,
 	nightmareZoneStartCommand,
 	nightmareZoneStatsCommand
-} from '../lib/abstracted_commands/nightmareZoneCommand';
+} from '@/mahoji/lib/abstracted_commands/nightmareZoneCommand.js';
 import {
-	pestControlBuyCommand,
 	pestControlBuyables,
+	pestControlBuyCommand,
 	pestControlStartCommand,
 	pestControlStatsCommand,
 	pestControlXPCommand
-} from '../lib/abstracted_commands/pestControlCommand';
-import { pyramidPlunderCommand } from '../lib/abstracted_commands/pyramidPlunderCommand';
-import { roguesDenCommand } from '../lib/abstracted_commands/roguesDenCommand';
-import { sepulchreCommand } from '../lib/abstracted_commands/sepulchreCommand';
-import { shades, shadesLogs, shadesOfMortonStartCommand } from '../lib/abstracted_commands/shadesOfMortonCommand';
+} from '@/mahoji/lib/abstracted_commands/pestControlCommand.js';
+import { pyramidPlunderCommand } from '@/mahoji/lib/abstracted_commands/pyramidPlunderCommand.js';
+import { roguesDenCommand } from '@/mahoji/lib/abstracted_commands/roguesDenCommand.js';
+import { sepulchreCommand } from '@/mahoji/lib/abstracted_commands/sepulchreCommand.js';
 import {
-	soulWarsBuyCommand,
+	pyreLogRecipes,
+	shades,
+	shadesLogs,
+	shadesOfMortonCreatePyreLogsCommand,
+	shadesOfMortonSacredOilCommand,
+	shadesOfMortonStartCommand
+} from '@/mahoji/lib/abstracted_commands/shadesOfMortonCommand.js';
+import {
 	soulWarsBuyables,
-	soulWarsImbueCommand,
+	soulWarsBuyCommand,
 	soulWarsImbueables,
-	soulWarsStartCommand,
-	soulWarsTokensCommand
-} from '../lib/abstracted_commands/soulWarsCommand';
-import { tearsOfGuthixCommand } from '../lib/abstracted_commands/tearsOfGuthixCommand';
-import { trekCommand, trekShop } from '../lib/abstracted_commands/trekCommand';
-import { troubleBrewingStartCommand } from '../lib/abstracted_commands/troubleBrewingCommand';
+	soulWarsImbueCommand,
+	soulWarsStartCommand
+} from '@/mahoji/lib/abstracted_commands/soulWarsCommand.js';
+import { tearsOfGuthixCommand } from '@/mahoji/lib/abstracted_commands/tearsOfGuthixCommand.js';
+import { trekCommand, trekShop } from '@/mahoji/lib/abstracted_commands/trekCommand.js';
+import { troubleBrewingStartCommand } from '@/mahoji/lib/abstracted_commands/troubleBrewingCommand.js';
+import {
+	ValeTotemsDecorations,
+	valeTotemsBuyCommand,
+	valeTotemsRummageCommand,
+	valeTotemsSellCommand,
+	valeTotemsStartCommand
+} from '@/mahoji/lib/abstracted_commands/valeTotemsCommand.js';
 import {
 	VolcanicMineShop,
 	volcanicMineCommand,
 	volcanicMineShopCommand,
 	volcanicMineStatsCommand
-} from '../lib/abstracted_commands/volcanicMineCommand';
-import type { NMZStrategy } from './../../lib/constants';
-import { NMZ_STRATEGY } from './../../lib/constants';
-import { giantsFoundryAlloys, giantsFoundryBuyables } from './../lib/abstracted_commands/giantsFoundryCommand';
-import {
-	nightmareZoneBuyables,
-	nightmareZoneImbueCommand,
-	nightmareZoneImbueables
-} from './../lib/abstracted_commands/nightmareZoneCommand';
+} from '@/mahoji/lib/abstracted_commands/volcanicMineCommand.js';
 
-export const minigamesCommand: OSBMahojiCommand = {
+export const minigamesCommand = defineCommand({
 	name: 'minigames',
 	description: 'Send your minion to do various minigames.',
 	options: [
@@ -97,33 +107,33 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 *
 		 */
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'barb_assault',
 			description: 'The Barbarian Assault minigame.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a trip.'
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'buy',
 					description: 'Purchase items with Honour points.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'name',
 							description: 'The item to buy.',
 							required: true,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return BarbBuyables.filter(i =>
 									!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
 								).map(i => ({ name: i.item.name, value: i.item.name }));
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'quantity',
 							description: 'Quantity.',
 							required: false,
@@ -133,24 +143,24 @@ export const minigamesCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'level',
 					description: 'Level up Honour Level with Honour points.'
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'gamble',
 					description: 'Gamble for rewards with Honour points.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'tier',
 							description: 'What tier of gamble to do.',
 							required: true,
-							choices: GambleTiers.map(i => ({ name: i.name, value: i.name }))
+							choices: choicesOf(GambleTiers.map(i => i.name))
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'quantity',
 							description: 'The amount of gambles to do.',
 							required: true,
@@ -159,7 +169,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'stats',
 					description: 'Show Barbarian Assault stats.'
 				}
@@ -171,17 +181,17 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 *
 		 */
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'castle_wars',
 			description: 'The Castle Wars minigame.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'stats',
 					description: 'Show Castle Wars stats.'
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a trip.'
 				}
@@ -195,29 +205,29 @@ export const minigamesCommand: OSBMahojiCommand = {
 		{
 			name: 'lms',
 			description: 'The Last Man Standing minigame.',
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'stats',
 					description: 'Show Last Man Standing stats.'
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a Trip'
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'buy',
 					description: 'Buy a reward using points.',
 					options: [
 						{
 							name: 'name',
 							description: 'The item to purchase.',
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							required: true,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return LMSBuyables.filter(i =>
 									!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
 								).map(i => ({ name: i.item.name, value: i.item.name }));
@@ -226,7 +236,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 						{
 							name: 'quantity',
 							description: 'Quantity.',
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							required: false,
 							min_value: 1,
 							max_value: 1000
@@ -234,7 +244,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'simulate',
 					description: 'Simulate a Last Man Standing game with Discord friends.',
 					options: [
@@ -242,7 +252,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 							name: 'names',
 							description: 'Names. e.g. Magnaboy, Kyra, Alex',
 							required: false,
-							type: ApplicationCommandOptionType.String
+							type: 'String'
 						}
 					]
 				}
@@ -255,52 +265,59 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 */ {
 			name: 'pest_control',
 			description: 'The Pest Control minigame.',
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'stats',
 					description: 'Show Pest Control stats.'
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a trip.'
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'xp',
 					description: 'Buy XP using Pest Control commendation games.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'skill',
 							required: true,
 							description: 'The skill to put XP in.',
-							choices: ['attack', 'strength', 'defence', 'hitpoints', 'ranged', 'magic', 'prayer'].map(
-								i => ({ name: i, value: i })
-							)
+							choices: choicesOf([
+								'attack',
+								'strength',
+								'defence',
+								'hitpoints',
+								'ranged',
+								'magic',
+								'prayer'
+							])
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'amount',
 							description: 'The amount of points you want to spend.',
 							min_value: 1,
-							max_value: 1000
+							max_value: 1000,
+							required: true
 						}
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'buy',
 					description: 'Buy items with your Pest Control commendation games.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'name',
 							required: true,
 							description: 'The skill you want XP in.',
-							autocomplete: async value => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return pestControlBuyables
 									.filter(i =>
 										!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
@@ -319,10 +336,10 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 */ {
 			name: 'fishing_trawler',
 			description: 'The Fishing Trawler minigame.',
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a trip.'
 				}
@@ -336,10 +353,10 @@ export const minigamesCommand: OSBMahojiCommand = {
 		{
 			name: 'mage_arena',
 			description: 'The Mage Arena 1 minigame.',
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a trip.'
 				}
@@ -353,10 +370,10 @@ export const minigamesCommand: OSBMahojiCommand = {
 		{
 			name: 'mage_arena_2',
 			description: 'The Mage Arena 2 minigame.',
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a trip.'
 				}
@@ -370,10 +387,10 @@ export const minigamesCommand: OSBMahojiCommand = {
 		{
 			name: 'gnome_restaurant',
 			description: 'The Gnome Restaurant minigame.',
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a trip.'
 				}
@@ -387,17 +404,17 @@ export const minigamesCommand: OSBMahojiCommand = {
 		{
 			name: 'temple_trek',
 			description: 'The Temple Trekking minigame',
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a trip.',
 					options: [
 						{
 							name: 'difficulty',
 							description: 'The difficulty of the trek.',
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							required: true,
 							choices: [
 								{
@@ -417,7 +434,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 						{
 							name: 'quantity',
 							description: 'Amount of treks.',
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							required: false,
 							min_value: 1,
 							max_value: 1000
@@ -425,16 +442,16 @@ export const minigamesCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'buy',
 					description: 'Exchange reward tokens.',
 					options: [
 						{
 							name: 'reward',
 							description: 'The reward to purchase.',
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							required: true,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return TrekShopItems.filter(i =>
 									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 								).map(i => ({ name: i.name, value: i.name }));
@@ -443,7 +460,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 						{
 							name: 'difficulty',
 							description: 'The difficulty of token to use',
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							required: true,
 							choices: [
 								{
@@ -464,7 +481,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 						{
 							name: 'quantity',
 							description: 'Quantity',
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							required: false,
 							min_value: 1,
 							max_value: 1000
@@ -481,19 +498,19 @@ export const minigamesCommand: OSBMahojiCommand = {
 		{
 			name: 'sepulchre',
 			description: 'The Hallowed Sepulchre minigame.',
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a Sepulchre trip.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'fletching',
 							description: 'The item you wish to fletch',
 							required: false,
-							autocomplete: async (value: number) => {
+							autocomplete: async ({ value }: NumberAutoComplete) => {
 								const search = value?.toString() ?? '';
 								return zeroTimeFletchables
 									.filter(i => i.name.toLowerCase().includes(search.toLowerCase()))
@@ -515,15 +532,15 @@ export const minigamesCommand: OSBMahojiCommand = {
 		{
 			name: 'gauntlet',
 			description: 'The Gauntlet minigame.',
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a Gauntlet trip.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'corrupted',
 							description: 'Corrupted Gauntlet.',
 							required: false
@@ -540,29 +557,29 @@ export const minigamesCommand: OSBMahojiCommand = {
 		{
 			name: 'mage_training_arena',
 			description: 'The Mage Training Arena minigame.',
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a trip.'
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'points',
 					description: 'Mage Training Arena point balance.'
 				},
 				{
 					name: 'buy',
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					description: 'Buy items with Mage Training Arena points.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'name',
 							required: true,
 							description: 'The item to buy.',
-							autocomplete: async value => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return mageTrainingArenaBuyables
 									.filter(i =>
 										!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
@@ -582,37 +599,37 @@ export const minigamesCommand: OSBMahojiCommand = {
 		{
 			name: 'mahogany_homes',
 			description: 'The Mahogany Homes minigame.',
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a trip.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'tier',
 							required: false,
 							description: 'The tier contract you wish to do.',
-							autocomplete: async value => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return contractTiers
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
-									.map(i => ({ name: i.name, value: i.tier }));
+									.map(i => ({ name: i.name, value: i.tier.toString() }));
 							}
 						}
 					]
 				},
 				{
 					name: 'buy',
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					description: 'Buy items with points.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'name',
 							required: true,
 							description: 'The item to buy.',
-							autocomplete: async value => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return mahoganyHomesBuyables
 									.filter(i =>
 										!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
@@ -621,7 +638,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'quantity',
 							description: 'Quantity.',
 							required: false,
@@ -632,7 +649,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 				},
 				{
 					name: 'points',
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					description: 'Mahogany Homes point balance.'
 				}
 			]
@@ -645,10 +662,10 @@ export const minigamesCommand: OSBMahojiCommand = {
 		{
 			name: 'tears_of_guthix',
 			description: 'The Tears of Guthix minigame.',
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a trip.'
 				}
@@ -662,10 +679,10 @@ export const minigamesCommand: OSBMahojiCommand = {
 		{
 			name: 'pyramid_plunder',
 			description: 'The Pyramid Plunder minigame.',
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a trip.'
 				}
@@ -679,10 +696,10 @@ export const minigamesCommand: OSBMahojiCommand = {
 		{
 			name: 'rogues_den',
 			description: 'The Rogues Den minigame.',
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a trip.'
 				}
@@ -696,29 +713,29 @@ export const minigamesCommand: OSBMahojiCommand = {
 		{
 			name: 'soul_wars',
 			description: 'The Soul Wars minigame.',
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a trip.'
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'tokens',
 					description: 'Zeal token balance.'
 				},
 				{
 					name: 'buy',
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					description: 'Buy using Zeal Tokens.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'name',
 							required: true,
 							description: 'The item to buy.',
-							autocomplete: async value => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return soulWarsBuyables
 									.filter(i =>
 										!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
@@ -727,7 +744,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'quantity',
 							description: 'Quantity.',
 							required: false,
@@ -737,15 +754,15 @@ export const minigamesCommand: OSBMahojiCommand = {
 				},
 				{
 					name: 'imbue',
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					description: 'Imbue using Zeal Tokens.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'name',
 							required: true,
 							description: 'The item to imbue.',
-							autocomplete: async value => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return soulWarsImbueables
 									.filter(i =>
 										!value ? true : i.input.name.toLowerCase().includes(value.toLowerCase())
@@ -758,17 +775,17 @@ export const minigamesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'volcanic_mine',
 			description: 'The Volcanic Mine minigame.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a trip.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'quantity',
 							description: 'The amount of games to do.',
 							required: false,
@@ -777,23 +794,23 @@ export const minigamesCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'buy',
 					description: 'Purchase using reward points.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'item',
 							description: 'The item to buy.',
 							required: true,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return VolcanicMineShop.filter(i =>
 									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 								).map(i => ({ name: `${i.name}`, value: i.name }));
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'quantity',
 							description: 'Quantity.',
 							required: false,
@@ -802,24 +819,24 @@ export const minigamesCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'stats',
 					description: 'Show Volcanic Mine stats.'
 				}
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'agility_arena',
 			description: 'The Brimhaven Agility Arena minigame.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a trip.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'quantity',
 							description: 'Amount of brimhaven agility course laps you want to do.',
 							required: false,
@@ -828,19 +845,19 @@ export const minigamesCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'buy',
 					description: 'Purchase a reward.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'item',
 							description: 'The item to buy.',
 							required: true,
-							choices: agilityArenaBuyables.map(i => ({ name: `${i.name}`, value: i.name }))
+							choices: choicesOf(agilityArenaBuyables.map(i => i.name))
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'quantity',
 							description: 'Quantity.',
 							required: false,
@@ -849,56 +866,56 @@ export const minigamesCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'xp',
 					description: 'Purchase XP using tickets.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'quantity',
 							description: 'Quantity.',
 							required: true,
-							choices: [1, 10, 25, 100, 1000].map(i => ({ name: i.toString(), value: i }))
+							choices: choicesOf([1, 10, 25, 100, 1000])
 						}
 					]
 				}
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'trouble_brewing',
 			description: 'The Trouble Brewing minigame.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a trip.'
 				}
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'giants_foundry',
 			description: "The Giants' Foundry minigame.",
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a trip.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'name',
 							description: 'The alloy/metal to use.',
 							required: true,
-							autocomplete: async value => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return giantsFoundryAlloys
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 									.map(i => ({ name: i.name, value: i.name }));
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'quantity',
 							description: 'The amount of weapons to make.',
 							required: false,
@@ -908,22 +925,22 @@ export const minigamesCommand: OSBMahojiCommand = {
 				},
 				{
 					name: 'buy',
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					description: 'Buy items with Foundry Reputation.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'item',
 							description: 'The item to buy.',
 							required: false,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return giantsFoundryBuyables
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 									.map(i => ({ name: `${i.name}`, value: i.name }));
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'quantity',
 							description: 'Quantity.',
 							required: false,
@@ -933,25 +950,25 @@ export const minigamesCommand: OSBMahojiCommand = {
 				},
 				{
 					name: 'stats',
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					description: "Giants' Foundry stats"
 				}
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'gotr',
 			description: 'The Guardians of the Rift minigame.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a trip.',
 					options: [
 						{
 							name: 'combination_runes',
 							description: 'Craft combination runes for extra points.',
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							required: false
 						}
 					]
@@ -959,42 +976,42 @@ export const minigamesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'nmz',
 			description: 'The Nightmare Zone minigame.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a trip.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'strategy',
 							description: 'The strategy to use.',
 							required: true,
-							choices: NMZ_STRATEGY.map(i => ({ name: i, value: i }))
+							choices: choicesOf(NMZ_STRATEGY)
 						}
 					]
 				},
 				{
 					name: 'buy',
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					description: 'Buy items with Nightmare Zone points.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'item',
 							description: 'The item to buy.',
 							required: false,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return nightmareZoneBuyables
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 									.map(i => ({ name: `${i.name}`, value: i.name }));
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'quantity',
 							description: 'Quantity.',
 							required: false,
@@ -1004,20 +1021,20 @@ export const minigamesCommand: OSBMahojiCommand = {
 				},
 				{
 					name: 'stats',
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					description: 'Nightmare Zone stats'
 				},
 				{
 					name: 'imbue',
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					description: 'Imbue using Nightmare Zone points.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'name',
 							required: true,
 							description: 'The item to imbue.',
-							autocomplete: async value => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return nightmareZoneImbueables
 									.filter(i =>
 										!value ? true : i.input.name.toLowerCase().includes(value.toLowerCase())
@@ -1030,128 +1047,166 @@ export const minigamesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'shades_of_morton',
 			description: "The Shades of Mort'ton minigame.",
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
+					name: 'start',
+					description: 'Start a cremation trip.',
+					options: [
+						{
+							type: 'String',
+							name: 'shade',
+							description: 'The shade you want to use.',
+							required: true,
+							choices: choicesOf(shades.map(i => i.shadeName))
+						},
+						{
+							name: 'logs',
+							description: 'The pyre logs you want to use.',
+							type: 'String',
+							required: true,
+							choices: shadesLogs.map(i => ({ name: i.oiledLog.name, value: i.oiledLog.name }))
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'sacred_oil',
+					description: "Sanctify Olive oil(4) into Sacred oil(4) at the Mort'ton temple (400/hr)."
+				},
+				{
+					type: 'Subcommand',
+					name: 'create_pyre_logs',
+					description: 'Apply Sacred oil(4) to logs to make pyre logs (1400/hr, 20 FM xp each).',
+					options: [
+						{
+							type: 'String',
+							name: 'logs',
+							description: 'The logs you want to apply sacred oil to.',
+							required: true,
+							choices: pyreLogRecipes.map(r => ({ name: r.log.name, value: r.log.name }))
+						},
+						{
+							type: 'Integer',
+							name: 'quantity',
+							description: 'How many logs to oil.',
+							required: false,
+							min_value: 1
+						}
+					]
+				}
+			]
+		},
+		/**
+		 *
+		 * Vale Totems
+		 *
+		 */
+		{
+			type: 'SubcommandGroup',
+			name: 'vale_totems',
+			description: 'Vale Totems fletching minigame.',
+			options: [
+				{
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a trip.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
-							name: 'shade',
-							description: 'The shade you want to use.',
+							type: 'String',
+							name: 'item_to_fletch',
+							description: 'Item to fletch during minigame.',
 							required: true,
-							choices: shades.map(i => ({ name: i.shadeName, value: i.shadeName }))
+							autocomplete: async ({ value }: StringAutoComplete) => {
+								return ValeTotemsDecorations.filter(i =>
+									!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
+								).map(i => ({ name: i.item.name, value: i.item.name }));
+							}
 						},
 						{
-							name: 'logs',
-							description: 'The logs you want to use.',
-							type: ApplicationCommandOptionType.String,
+							type: 'Boolean',
+							name: 'stamina_pot',
+							description: 'Whether to use Stamina Potion for trip.',
+							required: false
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'buy',
+					description: 'Buy Vale Totem minigame reward.',
+					options: [
+						{
+							type: 'String',
+							name: 'item',
+							description: 'Item to buy using research points.',
+							required: false,
+							choices: choicesOf(ValeTotemsBuyables.map(i => i.name))
+						},
+						{
+							type: 'Integer',
+							name: 'quantity',
+							description: 'Quantity.',
+							required: false,
+							min_value: 1
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'sell',
+					description: 'Sell Vale Totem minigame reward.',
+					options: [
+						{
+							type: 'String',
+							name: 'item',
+							description: 'Item to sell using research points.',
 							required: true,
-							choices: shadesLogs.map(i => ({ name: i.normalLog.name, value: i.normalLog.name }))
+							choices: choicesOf(ValeTotemsSellables.map(i => i.name))
+						},
+						{
+							type: 'Integer',
+							name: 'quantity',
+							description: 'Quantity.',
+							required: false,
+							min_value: 1
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'rummage',
+					description: 'Rummage Vale offerings.',
+					options: [
+						{
+							type: 'Integer',
+							name: 'quantity',
+							description: 'Quantity.',
+							required: false,
+							min_value: 1
+						},
+						{
+							type: 'Boolean',
+							name: 'all',
+							description: 'Rummage all offerings.',
+							required: false
 						}
 					]
 				}
 			]
 		}
 	],
-	run: async ({
-		interaction,
-		options,
-		userID,
-		channelID
-	}: CommandRunOptions<{
-		barb_assault?: {
-			start?: { quantity?: number };
-			buy?: { name: string; quantity?: number };
-			level?: {};
-			gamble?: { tier: string; quantity: number };
-			stats?: {};
-		};
-		castle_wars?: { stats?: {}; start?: {} };
-		lms?: {
-			stats?: {};
-			start?: {};
-			buy?: { name?: string; quantity?: number };
-			simulate?: { names?: string };
-		};
-		pest_control?: {
-			stats?: {};
-			xp?: { skill: string; amount: number };
-			start?: {};
-			buy?: { name: string };
-		};
-		fishing_trawler?: { start?: {} };
-		mage_arena?: { start?: {} };
-		mage_arena_2?: { start?: {} };
-		gnome_restaurant?: { start?: {} };
-		temple_trek?: {
-			start?: { difficulty: string; quantity?: number };
-			buy?: { reward: string; difficulty: string; quantity?: number };
-		};
-		sepulchre?: { start?: { fletching?: number } };
-		gauntlet?: { start?: { corrupted?: boolean } };
-		mage_training_arena?: {
-			start?: {};
-			buy?: { name: string };
-			points?: {};
-		};
-		mahogany_homes?: {
-			start?: { tier?: number };
-			buy?: { name: string; quantity?: number };
-			points?: {};
-		};
-		tears_of_guthix?: { start?: {} };
-		pyramid_plunder?: { start?: {} };
-		rogues_den?: { start?: {} };
-		soul_wars?: { start?: {}; buy?: { name: string; quantity?: number }; imbue?: { name: string }; tokens?: {} };
-		volcanic_mine?: {
-			start?: { quantity?: number };
-			buy?: { item: string; quantity?: number };
-			stats?: {};
-		};
-		agility_arena?: {
-			start?: { quantity?: number };
-			buy?: { item: string; quantity?: number };
-			recolor?: {};
-			xp: { quantity: number };
-		};
-		trouble_brewing?: {
-			start?: {};
-		};
-		giants_foundry?: {
-			start?: { name: string; quantity?: number };
-			buy?: { item: string; quantity?: number };
-			stats?: {};
-		};
-		gotr?: {
-			start?: { combination_runes?: boolean };
-		};
-		nmz?: {
-			start?: { strategy: NMZStrategy };
-			buy?: { item: string; quantity?: number };
-			stats?: {};
-			imbue?: { name: string };
-		};
-		shades_of_morton?: {
-			start?: {
-				shade: string;
-				logs: string;
-			};
-		};
-	}>) => {
-		const user = await mUserFetch(userID);
-
+	run: async ({ interaction, options, user, channelId, rng }) => {
 		/**
 		 *
 		 * Barbarian Assault
 		 *
 		 */
 		if (options.barb_assault?.start) {
-			return barbAssaultStartCommand(channelID, user);
+			return barbAssaultStartCommand(interaction);
 		}
 		if (options.barb_assault?.buy) {
 			return barbAssaultBuyCommand(
@@ -1185,7 +1240,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 			return castleWarsStatsCommand(user);
 		}
 		if (options.castle_wars?.start) {
-			return castleWarsStartCommand(user, channelID);
+			return castleWarsStartCommand(user, channelId);
 		}
 
 		/**
@@ -1193,7 +1248,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 * LMS
 		 *
 		 */
-		if (options.lms) return lmsCommand(options.lms, user, channelID, interaction);
+		if (options.lms) return lmsCommand(options.lms, user, channelId, interaction, rng);
 
 		/**
 		 *
@@ -1210,7 +1265,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 			);
 		}
 		if (options.pest_control?.start) {
-			return pestControlStartCommand(user, channelID);
+			return pestControlStartCommand(user, channelId);
 		}
 		if (options.pest_control?.buy) {
 			return pestControlBuyCommand(user, options.pest_control.buy.name);
@@ -1221,28 +1276,28 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 * Fishing Trawler
 		 *
 		 */
-		if (options.fishing_trawler?.start) return fishingTrawlerCommand(user, channelID);
+		if (options.fishing_trawler?.start) return fishingTrawlerCommand(user, channelId);
 
 		/**
 		 *
 		 * Mage Arena
 		 *
 		 */
-		if (options.mage_arena?.start) return mageArenaCommand(user, channelID);
+		if (options.mage_arena?.start) return mageArenaCommand(rng, user, channelId);
 
 		/**
 		 *
 		 * Mage Arena 2
 		 *
 		 */
-		if (options.mage_arena_2?.start) return mageArena2Command(user, channelID);
+		if (options.mage_arena_2?.start) return mageArena2Command(rng, user, channelId);
 
 		/**
 		 *
 		 * Gnome Restaurant
 		 *
 		 */
-		if (options.gnome_restaurant?.start) return gnomeRestaurantCommand(user, channelID);
+		if (options.gnome_restaurant?.start) return gnomeRestaurantCommand(rng, user, channelId);
 
 		/**
 		 *
@@ -1252,11 +1307,11 @@ export const minigamesCommand: OSBMahojiCommand = {
 		if (options.temple_trek) {
 			if (options.temple_trek.buy) {
 				const { reward, difficulty, quantity } = options.temple_trek.buy!;
-				return trekShop(user, reward, difficulty, quantity, interaction);
+				return trekShop(rng, user, reward, difficulty, quantity, interaction);
 			}
 			if (options.temple_trek.start) {
 				const { difficulty, quantity } = options.temple_trek.start!;
-				return trekCommand(user, channelID, difficulty, quantity);
+				return trekCommand(user, channelId, difficulty, quantity);
 			}
 		}
 
@@ -1267,7 +1322,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 */
 		if (options.sepulchre?.start) {
 			const fletchingItem = options.sepulchre.start.fletching;
-			return sepulchreCommand(user, channelID, fletchingItem);
+			return sepulchreCommand(user, channelId, fletchingItem);
 		}
 
 		/**
@@ -1276,7 +1331,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 *
 		 */
 		if (options.gauntlet?.start) {
-			return gauntletCommand(user, channelID, options.gauntlet.start.corrupted ? 'corrupted' : 'normal');
+			return gauntletCommand(rng, user, channelId, options.gauntlet.start.corrupted ? 'corrupted' : 'normal');
 		}
 
 		/**
@@ -1289,7 +1344,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 				return mageTrainingArenaBuyCommand(user, options.mage_training_arena.buy.name);
 			}
 			if (options.mage_training_arena.start) {
-				return mageTrainingArenaStartCommand(user, channelID);
+				return mageTrainingArenaStartCommand(user, channelId);
 			}
 			if (options.mage_training_arena.points) {
 				return mageTrainingArenaPointsCommand(user);
@@ -1310,7 +1365,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 				);
 			}
 			if (options.mahogany_homes.start) {
-				return mahoganyHomesBuildCommand(user, channelID, options.mahogany_homes.start.tier);
+				return mahoganyHomesBuildCommand(rng, user, channelId, options.mahogany_homes.start.tier);
 			}
 			if (options.mahogany_homes.points) {
 				return mahoganyHomesPointsCommand(user);
@@ -1323,7 +1378,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 *
 		 */
 		if (options.tears_of_guthix) {
-			return tearsOfGuthixCommand(user, channelID);
+			return tearsOfGuthixCommand(user, channelId);
 		}
 
 		/**
@@ -1332,7 +1387,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 *
 		 */
 		if (options.pyramid_plunder) {
-			return pyramidPlunderCommand(user, channelID);
+			return pyramidPlunderCommand(user, channelId);
 		}
 
 		/**
@@ -1341,7 +1396,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 *
 		 */
 		if (options.rogues_den) {
-			return roguesDenCommand(user, channelID);
+			return roguesDenCommand(user, channelId);
 		}
 
 		/**
@@ -1351,7 +1406,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 */
 		if (options.soul_wars) {
 			if (options.soul_wars.start) {
-				return soulWarsStartCommand(user, channelID);
+				return soulWarsStartCommand(rng, user, channelId);
 			}
 			if (options.soul_wars.imbue) {
 				return soulWarsImbueCommand(user, options.soul_wars.imbue.name);
@@ -1360,7 +1415,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 				return soulWarsBuyCommand(user, options.soul_wars.buy.name, options.soul_wars.buy.quantity);
 			}
 			if (options.soul_wars.tokens) {
-				return soulWarsTokensCommand(user.user);
+				return `You have ${user.user.zeal_tokens} Zeal Tokens.`;
 			}
 		}
 
@@ -1370,7 +1425,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 *
 		 */
 		if (options.volcanic_mine?.start) {
-			return volcanicMineCommand(user, channelID, options.volcanic_mine.start.quantity);
+			return volcanicMineCommand(user, channelId, options.volcanic_mine.start.quantity);
 		}
 		if (options.volcanic_mine?.buy) {
 			return volcanicMineShopCommand(
@@ -1390,7 +1445,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 *
 		 */
 		if (options.agility_arena?.start) {
-			return agilityArenaCommand(user, channelID, options.agility_arena.start.quantity);
+			return agilityArenaCommand(user, channelId, options.agility_arena.start.quantity);
 		}
 		if (options.agility_arena?.buy) {
 			return agilityArenaBuyCommand(user, options.agility_arena.buy.item, options.agility_arena.buy.quantity);
@@ -1405,7 +1460,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 *
 		 */
 		if (options.trouble_brewing) {
-			return troubleBrewingStartCommand(user, channelID);
+			return troubleBrewingStartCommand(user, channelId);
 		}
 
 		/**
@@ -1418,7 +1473,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 				user,
 				options.giants_foundry.start.name,
 				options.giants_foundry.start.quantity,
-				channelID
+				channelId
 			);
 		}
 		if (options.giants_foundry?.buy) {
@@ -1437,7 +1492,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 *
 		 */
 		if (options.gotr) {
-			return guardiansOfTheRiftStartCommand(user, channelID, options.gotr.start?.combination_runes);
+			return guardiansOfTheRiftStartCommand(rng, user, channelId, options.gotr.start?.combination_runes);
 		}
 
 		/**
@@ -1446,7 +1501,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 *
 		 */
 		if (options.nmz?.start) {
-			return nightmareZoneStartCommand(user, options.nmz.start.strategy, channelID);
+			return nightmareZoneStartCommand(user, options.nmz.start.strategy, channelId);
 		}
 		if (options.nmz?.buy) {
 			return nightmareZoneShopCommand(interaction, user, options.nmz.buy.item, options.nmz.buy.quantity);
@@ -1464,12 +1519,61 @@ export const minigamesCommand: OSBMahojiCommand = {
 		if (options.shades_of_morton?.start) {
 			return shadesOfMortonStartCommand(
 				user,
-				channelID,
+				channelId,
 				options.shades_of_morton.start.logs,
 				options.shades_of_morton.start.shade
+			);
+		}
+		if (options.shades_of_morton && 'sacred_oil' in options.shades_of_morton) {
+			return shadesOfMortonSacredOilCommand(user, channelId);
+		}
+		if (options.shades_of_morton?.create_pyre_logs) {
+			return shadesOfMortonCreatePyreLogsCommand(
+				user,
+				channelId,
+				options.shades_of_morton.create_pyre_logs.logs,
+				options.shades_of_morton.create_pyre_logs.quantity
+			);
+		}
+
+		/**
+		 *
+		 * Vale Totems
+		 *
+		 */
+		if (options.vale_totems?.start) {
+			return valeTotemsStartCommand(
+				user,
+				channelId,
+				options.vale_totems?.start.item_to_fletch,
+				options.vale_totems?.start.stamina_pot
+			);
+		}
+		if (options.vale_totems?.buy) {
+			return valeTotemsBuyCommand(
+				interaction,
+				user,
+				options.vale_totems.buy.item,
+				options.vale_totems.buy.quantity
+			);
+		}
+		if (options.vale_totems?.sell) {
+			return valeTotemsSellCommand(
+				interaction,
+				user,
+				options.vale_totems.sell.item,
+				options.vale_totems.sell.quantity
+			);
+		}
+		if (options.vale_totems?.rummage) {
+			return valeTotemsRummageCommand(
+				interaction,
+				user,
+				options.vale_totems.rummage.quantity,
+				options.vale_totems.rummage.all
 			);
 		}
 
 		return 'Invalid command.';
 	}
-};
+});

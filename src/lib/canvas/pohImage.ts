@@ -1,19 +1,18 @@
 import * as fs from 'node:fs';
 import path from 'node:path';
-import type { PlayerOwnedHouse } from '@prisma/client';
-import { objectEntries, randInt } from 'e';
-import { loadImage } from 'skia-canvas';
+import { objectEntries } from '@oldschoolgg/toolkit';
 
-import { DUNGEON_FLOOR_Y, GROUND_FLOOR_Y, HOUSE_WIDTH, Placeholders, TOP_FLOOR_Y } from '../poh';
-import { OSRSCanvas } from './OSRSCanvas';
+import type { PlayerOwnedHouse } from '@/prisma/main.js';
 import {
 	type Canvas,
 	type CanvasContext,
 	type CanvasImage,
 	canvasToBuffer,
 	createCanvas,
-	loadAndCacheLocalImage
-} from './canvasUtil';
+	loadImage
+} from '@/lib/canvas/canvasUtil.js';
+import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
+import { DUNGEON_FLOOR_Y, GROUND_FLOOR_Y, HOUSE_WIDTH, Placeholders, TOP_FLOOR_Y } from '@/lib/poh/index.js';
 
 const CONSTRUCTION_IMG_DIR = './src/lib/poh/images';
 const FOLDERS = [
@@ -39,12 +38,11 @@ const FOLDERS = [
 class PoHImage {
 	public imageCache: Map<number, CanvasImage> = new Map();
 	public bgImages: CanvasImage[] = [];
-	initPromise: Promise<void> | null = this.init();
-	initFinished = false;
+	public ready: boolean = false;
 
 	async init() {
-		this.bgImages.push(await loadAndCacheLocalImage('./src/lib/poh/images/bg_1.jpg'));
-		this.bgImages.push(await loadAndCacheLocalImage('./src/lib/poh/images/bg_2.jpg'));
+		this.bgImages.push(await loadImage('./src/lib/poh/images/bg_1.jpg'));
+		this.bgImages.push(await loadImage('./src/lib/poh/images/bg_2.jpg'));
 		for (const folder of FOLDERS) {
 			const currentPath = path.join(CONSTRUCTION_IMG_DIR, folder);
 			const filesInDir = await fs.promises.readdir(currentPath);
@@ -56,7 +54,6 @@ class PoHImage {
 				this.imageCache.set(id, image);
 			}
 		}
-		this.initFinished = true;
 	}
 
 	generateCanvas(bgId: number): [Canvas, CanvasContext] {
@@ -71,12 +68,12 @@ class PoHImage {
 		return [canvas, ctx];
 	}
 
-	randMinionCoords(): [number, number] {
+	randMinionCoords(rng: RNGProvider): [number, number] {
 		if (process.env.TEST) {
 			return [100, TOP_FLOOR_Y];
 		}
-		const roll = randInt(1, 4);
-		const x = randInt(1, HOUSE_WIDTH);
+		const roll = rng.randInt(1, 4);
+		const x = rng.randInt(1, HOUSE_WIDTH);
 		switch (roll) {
 			case 1:
 				return [x, TOP_FLOOR_Y];
@@ -85,14 +82,17 @@ class PoHImage {
 			case 3:
 				return [x, DUNGEON_FLOOR_Y];
 			case 4:
-				return [x + randInt(1, HOUSE_WIDTH), GROUND_FLOOR_Y];
+				return [x + rng.randInt(1, HOUSE_WIDTH), GROUND_FLOOR_Y];
 			default:
 				throw new Error('Unmatched case');
 		}
 	}
 
-	async run(poh: PlayerOwnedHouse, showSpaces = true) {
-		if (!this.initFinished) await this.initPromise;
+	async run({ poh, rng, showSpaces = true }: { poh: PlayerOwnedHouse; rng: RNGProvider; showSpaces?: boolean }) {
+		if (!this.ready) {
+			await this.init();
+			this.ready = true;
+		}
 		const [canvas, ctx] = this.generateCanvas(poh.background_id);
 		for (const [key, objects] of objectEntries(Placeholders)) {
 			if (!key || !objects) continue;
@@ -124,11 +124,13 @@ class PoHImage {
 				ctx.drawImage(image, x - width / 2, y - height, width, height);
 			}
 		}
-		const activity = ActivityManager.getActivityOfUser(poh.user_id);
-		if (!activity) {
-			const image = this.imageCache.get(11)!;
-			const [x, y] = this.randMinionCoords();
-			ctx.drawImage(image, x - image.width, y - image.height, image.width, image.height);
+		if (!process.env.TEST) {
+			const activity = await ActivityManager.getActivityOfUser(poh.user_id);
+			if (!activity) {
+				const image = this.imageCache.get(11)!;
+				const [x, y] = this.randMinionCoords(rng);
+				ctx.drawImage(image, x - image.width, y - image.height, image.width, image.height);
+			}
 		}
 		return canvasToBuffer(canvas);
 	}

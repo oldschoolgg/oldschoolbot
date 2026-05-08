@@ -34,7 +34,7 @@ Main accounts can sell duplicates in #grand-exchange or use [[/sell]] for early 
 
 ### Part 3: The Rest of the Game
 
-With some basic gear, easy access to food, and mid-high combat stats, you can now do most activities on the bot. 
+With some basic gear, easy access to food, and mid-high combat stats, you can now do most activities on the bot.
 
 Some monsters have item/stat requirements, shown on the [Boosts & Requirements](/osb/monsters) page. This page also lists boosts for bosses. You can check out what attack style gear you should be using for monsters with [[/k show_info\:true]].
 

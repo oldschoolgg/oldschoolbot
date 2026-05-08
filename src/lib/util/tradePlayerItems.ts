@@ -1,15 +1,26 @@
 import { Bank } from 'oldschooljs';
 
-import { modifyBusyCounter } from '../busyCounterCache';
-import { logError } from './logError';
-import { userQueueFn } from './userQueues';
+import { userQueueFn } from '@/lib/util/userQueues.js';
 
-export async function tradePlayerItems(sender: MUser, recipient: MUser, _itemsToSend?: Bank, _itemsToReceive?: Bank) {
-	if (recipient.isBusy) {
+type TradePlayerResult =
+	| {
+			success: true;
+			message: null;
+	  }
+	| {
+			success: false;
+			message: string;
+	  };
+
+export async function tradePlayerItems(
+	sender: MUser,
+	recipient: MUser,
+	_itemsToSend?: Bank,
+	_itemsToReceive?: Bank
+): Promise<TradePlayerResult> {
+	if (await recipient.getIsLocked()) {
 		return { success: false, message: `${recipient.usernameOrMention} is busy.` };
 	}
-	modifyBusyCounter(sender.id, 1);
-	modifyBusyCounter(recipient.id, 1);
 
 	const itemsToSend = _itemsToSend ? _itemsToSend.clone() : new Bank();
 	const itemsToReceive = _itemsToReceive ? _itemsToReceive.clone() : new Bank();
@@ -71,9 +82,9 @@ export async function tradePlayerItems(sender: MUser, recipient: MUser, _itemsTo
 				await prisma.$transaction([updateSender, updateRecipient]);
 				await Promise.all([sender.sync(), recipient.sync()]);
 				return { success: true, message: null };
-			} catch (e: any) {
+			} catch (e) {
 				// We should only get here if something bad happened... most likely prisma, but possibly command competition
-				logError(e, undefined, {
+				Logging.logError(e as Error, {
 					sender: sender.id,
 					recipient: recipient.id,
 					command: 'trade',
@@ -81,9 +92,6 @@ export async function tradePlayerItems(sender: MUser, recipient: MUser, _itemsTo
 					items_received: itemsToReceive.toString()
 				});
 				return { success: false, message: 'Temporary error, please try again.' };
-			} finally {
-				modifyBusyCounter(sender.id, -1);
-				modifyBusyCounter(recipient.id, -1);
 			}
 		});
 	});

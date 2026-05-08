@@ -1,8 +1,4 @@
-import { existsSync } from 'node:fs';
-import path from 'node:path';
+import { BOT_TYPE } from '../src/lib/constants.js';
 
-const checkPath = path.join(__dirname, '../src/lib/bso');
-const __BOT_TYPE__ = existsSync(checkPath) ? 'BSO' : 'OSB';
-
-export const baseSnapshotPath = `tests/unit/snapshots/${__BOT_TYPE__.toLowerCase()}/`;
-export const XP_MULTIPLIER = __BOT_TYPE__ === 'BSO' ? 5 : 1;
+export const baseSnapshotPath = `tests/unit/snapshots/${BOT_TYPE.toLowerCase()}/`;
+export const XP_MULTIPLIER = BOT_TYPE === 'BSO' ? 5 : 1;

@@ -1,7 +1,7 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const MasterFarmerTable = new LootTable()
+const MasterFarmerTable: LootTable = new LootTable()
 	.add('Potato seed', [1, 4], 1 / 5.6)
 	.add('Onion seed', [1, 3], 1 / 7.47)
 	.add('Cabbage seed', [1, 3], 1 / 14.3)
@@ -59,7 +59,7 @@ const MasterFarmerTable = new LootTable()
 	.add('Potato cactus seed', 1, 1 / 2200)
 	.tertiary(257_211, 'Rocky');
 
-export default new SimpleMonster({
+export const MasterFarmer: SimpleMonster = new SimpleMonster({
 	id: 5730,
 	name: 'Master Farmer',
 	pickpocketTable: MasterFarmerTable,

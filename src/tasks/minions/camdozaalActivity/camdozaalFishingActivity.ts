@@ -1,14 +1,11 @@
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { calcPercentOfNum } from 'e';
+import { Emoji, Events } from '@oldschoolgg/toolkit';
 import { LootTable } from 'oldschooljs';
 
-import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot';
-import { Fishing } from '@/lib/skilling/skills/fishing/fishing';
-import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions';
-import { skillingPetDropRate } from '@/lib/util';
-import { handleTripFinish } from '@/lib/util/handleTripFinish';
-import { makeBankImage } from '@/lib/util/makeBankImage';
-import { roll } from '@/lib/util/rng';
+import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
+import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 
 const guppy = Fishing.camdozaalFishes.find(_fish => _fish.name === 'Raw guppy')!;
 const cavefish = Fishing.camdozaalFishes.find(_fish => _fish.name === 'Raw cavefish')!;
@@ -20,25 +17,25 @@ function generateFishTable(currentFishLevel: number): LootTable {
 	const camdozaalFishTable = new LootTable()
 		.oneIn(256, 'Barronite handle')
 		.oneIn(5, 'Barronite shards', 3)
-		.add(guppy.id, 1, 4);
+		.add(guppy.id!, 1, 4);
 
-	if (currentFishLevel >= cavefish.level) {
-		camdozaalFishTable.add(cavefish.id, 1, 3);
+	if (currentFishLevel >= cavefish.level!) {
+		camdozaalFishTable.add(cavefish.id!, 1, 3);
 	}
-	if (currentFishLevel >= tetra.level) {
-		camdozaalFishTable.add(tetra.id, 1, 2);
+	if (currentFishLevel >= tetra.level!) {
+		camdozaalFishTable.add(tetra.id!, 1, 2);
 	}
-	if (currentFishLevel >= catfish.level) {
-		camdozaalFishTable.add(catfish.id, 1, 1);
+	if (currentFishLevel >= catfish.level!) {
+		camdozaalFishTable.add(catfish.id!, 1, 1);
 	}
 	return camdozaalFishTable;
 }
 
 export const camdozaalFishingTask: MinionTask = {
 	type: 'CamdozaalFishing',
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { userID, channelID, quantity, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
+		const { channelId, quantity, duration } = data;
+
 		const currentFishLevel = user.skillsAsLevels.fishing;
 
 		const camdozaalFishTable = generateFishTable(currentFishLevel);
@@ -47,17 +44,15 @@ export const camdozaalFishingTask: MinionTask = {
 
 		const loot = camdozaalFishTable.roll(quantity);
 		for (const fish of Fishing.camdozaalFishes) {
-			fishingXP += loot.amount(fish.id) * fish.xp;
+			fishingXP += loot.amount(fish.id!) * fish.xp!;
 		}
 
-		let bonusXP = 0;
-
-		const anglerBoostPercent = Fishing.util.calcAnglerBoostPercent(user.gearBank);
-		if (anglerBoostPercent > 0) {
-			const amountToAdd = Math.ceil(calcPercentOfNum(anglerBoostPercent, fishingXP));
-			fishingXP += amountToAdd;
-			bonusXP += amountToAdd;
-		}
+		const { totalXP: fishingXPWithAngler, bonusXP } = Fishing.util.calcAnglerBonusXP({
+			gearBank: user.gearBank,
+			xp: fishingXP,
+			roundingMethod: 'ceil'
+		});
+		fishingXP = fishingXPWithAngler;
 
 		// Add xp to user
 		const xpRes = await user.addXP({
@@ -75,11 +70,11 @@ export const camdozaalFishingTask: MinionTask = {
 
 		// Add clue scrolls
 		const clueScrollChance = guppy.clueScrollChance!;
-		addSkillingClueToLoot(user, 'fishing', quantity, clueScrollChance, loot);
+		addSkillingClueToLoot(rng, user, 'fishing', quantity, clueScrollChance, loot);
 
 		// Heron Pet roll
 		const { petDropRate } = skillingPetDropRate(user, 'fishing', guppy.petChance!);
-		if (roll(petDropRate / quantity)) {
+		if (rng.roll(Math.ceil(petDropRate / quantity))) {
 			loot.add('Heron');
 			globalClient.emit(
 				Events.ServerNotification,
@@ -88,8 +83,7 @@ export const camdozaalFishingTask: MinionTask = {
 		}
 
 		// Give the user the items from the trip
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
+		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
@@ -102,6 +96,6 @@ export const camdozaalFishingTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, loot);
+		handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data, loot });
 	}
 };

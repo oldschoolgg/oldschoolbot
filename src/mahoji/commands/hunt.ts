@@ -1,24 +1,17 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, ECreature, itemID } from 'oldschooljs';
 
-import { type Peak, generateDailyPeakIntervals } from '@/lib/util/peaks';
+import { hasWildyHuntGearEquipped } from '@/lib/gear/functions/hasWildyHuntGearEquipped.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { soteSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';
+import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
+import { HunterTechniqueEnum } from '@/lib/skilling/types.js';
+import type { HunterActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
+import { generateDailyPeakIntervals, type Peak } from '@/lib/util/peaks.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 
-import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntGearEquipped';
-import { trackLoot } from '../../lib/lootTrack';
-import { soteSkillRequirements } from '../../lib/skilling/functions/questRequirements';
-import creatures from '../../lib/skilling/skills/hunter/creatures';
-import Hunter from '../../lib/skilling/skills/hunter/hunter';
-import { HunterTechniqueEnum, SkillsEnum } from '../../lib/skilling/types';
-import type { HunterActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { userHasGracefulEquipped } from '../mahojiSettings';
-
-export const huntCommand: OSBMahojiCommand = {
+export const huntCommand = defineCommand({
 	name: 'hunt',
 	description: 'Hunt creatures with the Hunter skill.',
 	attributes: {
@@ -28,45 +21,40 @@ export const huntCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The creature you want to hunt.',
 			required: true,
-			autocomplete: async (value: string) => {
-				return creatures
-					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
-					.map(i => ({
-						name: i.name,
-						value: i.name
-					}));
+			autocomplete: async ({ value }: StringAutoComplete) => {
+				return Hunter.Creatures.filter(i =>
+					!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
+				).map(i => ({
+					name: i.name,
+					value: i.name
+				}));
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to hunt (optional).',
 			required: false,
 			min_value: 1
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'hunter_potion',
 			description: 'Do you want to use Hunter potions for this trip?',
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'stamina_potions',
 			description: 'Use stam potions for Herbiboar?',
 			required: false
 		}
 	],
-	run: async ({
-		options,
-		userID,
-		channelID
-	}: CommandRunOptions<{ name: string; quantity?: number; hunter_potion?: boolean; stamina_potions?: boolean }>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user, channelId }) => {
 		const userBank = user.bank;
 		const userQP = user.QP;
 		const boosts = [];
@@ -88,7 +76,7 @@ export const huntCommand: OSBMahojiCommand = {
 
 		if (!creature) return "That's not a valid creature to hunt.";
 
-		if (user.skillLevel(SkillsEnum.Hunter) + (usingHuntPotion ? 2 : 0) < creature.level) {
+		if (user.skillsAsLevels.hunter + (usingHuntPotion ? 2 : 0) < creature.level) {
 			return `${user.minionName} needs ${creature.level} Hunter to hunt ${creature.name}.`;
 		}
 
@@ -96,17 +84,17 @@ export const huntCommand: OSBMahojiCommand = {
 			return `${user.minionName} needs ${creature.qpRequired} QP to hunt ${creature.name}.`;
 		}
 
-		if (creature.prayerLvl && user.skillLevel(SkillsEnum.Prayer) < creature.prayerLvl) {
+		if (creature.prayerLvl && user.skillsAsLevels.prayer < creature.prayerLvl) {
 			return `${user.minionName} needs ${creature.prayerLvl} Prayer to hunt ${creature.name}.`;
 		}
 
-		if (creature.herbloreLvl && user.skillLevel(SkillsEnum.Herblore) < creature.herbloreLvl) {
+		if (creature.herbloreLvl && user.skillsAsLevels.herblore < creature.herbloreLvl) {
 			return `${user.minionName} needs ${creature.herbloreLvl} Herblore to hunt ${creature.name}.`;
 		}
 
 		if (creature.multiTraps) {
 			traps +=
-				Math.min(Math.floor((user.skillLevel(SkillsEnum.Hunter) + (usingHuntPotion ? 2 : 0)) / 20), 5) +
+				Math.min(Math.floor((user.skillsAsLevels.hunter + (usingHuntPotion ? 2 : 0)) / 20), 5) +
 				(creature.wildy ? 1 : 0);
 		}
 
@@ -147,13 +135,13 @@ export const huntCommand: OSBMahojiCommand = {
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for being experienced hunting this creature`);
 
 		// Reduce time by 5% if user has graceful equipped
-		if (!creature.wildy && userHasGracefulEquipped(user)) {
+		if (!creature.wildy && user.hasGracefulEquipped()) {
 			boosts.push('5% boost for using Graceful');
 			catchTime *= 0.95;
 		}
 
 		if (creature.wildy) {
-			const [bol, reason, score] = hasWildyHuntGearEquipped(user.gear.wildy);
+			const [bol, reason, score] = hasWildyHuntGearEquipped(user.gear.wildy.raw());
 			wildyScore = score;
 			if (!bol) {
 				return `To hunt ${creature.name} in the wilderness you need to meet the following requirement: ${reason}, check your wildy gear.`;
@@ -163,11 +151,11 @@ export const huntCommand: OSBMahojiCommand = {
 			}
 		}
 
-		if (creature.id === ECreature.HERBIBOAR || creature.id === ECreature.RAZOR_KEBBIT) {
+		if (creature.id === ECreature.HERBIBOAR || creature.id === ECreature.RAZOR_BACKED_KEBBIT) {
 			if (usingStaminaPotion) catchTime *= 0.8;
 		}
 
-		const maxTripLength = calcMaxTripLength(user, 'Hunter');
+		const maxTripLength = await user.calcMaxTripLength('Hunter');
 
 		let { quantity } = options;
 		if (!quantity) {
@@ -210,7 +198,11 @@ export const huntCommand: OSBMahojiCommand = {
 
 		// If creatures Herbiboar or Razor-backed kebbit use Stamina potion(4)
 		if (usingStaminaPotion) {
-			if (creature.id === ECreature.HERBIBOAR || creature.id === ECreature.RAZOR_KEBBIT || crystalImpling) {
+			if (
+				creature.id === ECreature.HERBIBOAR ||
+				creature.id === ECreature.RAZOR_BACKED_KEBBIT ||
+				crystalImpling
+			) {
 				const staminaPotionQuantity =
 					creature.id === ECreature.HERBIBOAR || crystalImpling
 						? Math.round(duration / (9 * Time.Minute))
@@ -233,14 +225,14 @@ export const huntCommand: OSBMahojiCommand = {
 			boosts.push(`+2 hunter level for using ${hunterPotionQuantity}x Hunter potion(4) every 2nd minute.`);
 		}
 
-		updateBankSetting('hunter_cost', removeBank);
+		await ClientSettings.updateBankSetting('hunter_cost', removeBank);
 		await user.removeItemsFromBank(removeBank);
 
 		let wildyPeak = null;
 		let wildyStr = '';
 
 		if (creature.wildy) {
-			const date = new Date().getTime();
+			const date = Date.now();
 			const cachedPeakInterval: Peak[] = generateDailyPeakIntervals().peaks;
 			for (const peak of cachedPeakInterval) {
 				if (peak.startTime < date && peak.finishTime > date) {
@@ -266,10 +258,10 @@ export const huntCommand: OSBMahojiCommand = {
 			]
 		});
 
-		await addSubTaskToActivityTask<HunterActivityTaskOptions>({
+		await ActivityManager.startTrip<HunterActivityTaskOptions>({
 			creatureID: creature.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			duration,
 			usingHuntPotion: usingHuntPotion ? true : undefined,
@@ -280,7 +272,7 @@ export const huntCommand: OSBMahojiCommand = {
 
 		let response = `${user.minionName} is now ${crystalImpling ? 'hunting' : `${creature.huntTechnique}`}${
 			crystalImpling ? ' ' : ` ${quantity}x `
-		}${creature.name}, it'll take around ${formatDuration(duration)} to finish.`;
+		}${creature.name}, it'll take around ${formatTripDuration(user, duration)} to finish.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
@@ -292,4 +284,4 @@ export const huntCommand: OSBMahojiCommand = {
 
 		return response;
 	}
-};
+});

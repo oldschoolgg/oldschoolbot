@@ -1,34 +1,29 @@
-import { increaseNumByPercent, randInt } from 'e';
+import { increaseNumByPercent } from '@oldschoolgg/toolkit';
 
-import { LumbridgeDraynorDiary, userhasDiaryTier } from '../../../lib/diaries';
-import type { SkillsEnum } from '../../../lib/skilling/types';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
+import { type SkillNameType, SkillsArray } from '@/lib/skilling/types.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 
 export const togTask: MinionTask = {
 	type: 'TearsOfGuthix',
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { userID, channelID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
+		const { channelId, duration } = data;
+
 		await user.incrementMinigameScore('tears_of_guthix', 1);
-		await userStatsUpdate(
-			user.id,
-			{
-				last_tears_of_guthix_timestamp: new Date().getTime()
-			},
-			{}
-		);
+		await user.statsUpdate({
+			last_tears_of_guthix_timestamp: Date.now()
+		});
 
 		// Find lowest level skill
 		let lowestXp = Object.values(user.skillsAsXP)[0];
-		let lowestSkill = Object.keys(user.skillsAsXP)[0] as SkillsEnum;
-		Object.entries(user.skillsAsXP).forEach(([skill, xp]) => {
-			if (xp < lowestXp) {
+		let lowestSkill = Object.keys(user.skillsAsXP)[0] as SkillNameType;
+		for (const skill of SkillsArray) {
+			const lvl = user.skillsAsLevels[skill];
+			const xp = user.skillsAsXP[skill];
+			if (lvl < user.skillsAsLevels[lowestSkill] || (lvl === user.skillsAsLevels[lowestSkill] && xp < lowestXp)) {
+				lowestSkill = skill;
 				lowestXp = xp;
-				lowestSkill = skill as SkillsEnum;
 			}
-		});
+		}
 
 		// Calculate number of tears collected
 		// QP = Game length in ticks
@@ -37,7 +32,7 @@ export const togTask: MinionTask = {
 		const streams = Math.floor(qp / 15);
 		let tears = 0;
 		for (let stream = 0; stream < streams; stream++) {
-			const percentCollected = randInt(80, 100); // Collect 80 - 100% of each stream, depending on RNG of spawn and Runelite
+			const percentCollected = rng.randInt(80, 100); // Collect 80 - 100% of each stream, depending on RNG of spawn and Runelite
 			tears += Math.ceil(15 * (percentCollected / 100));
 		}
 
@@ -52,17 +47,17 @@ export const togTask: MinionTask = {
 		let xpToGive = tears * scaledXPperTear;
 
 		// 10% boost for Lumbridge&Draynor Hard
-		const [hasDiary] = await userhasDiaryTier(user, LumbridgeDraynorDiary.hard);
+		const hasDiary = user.hasDiary('lumbridge&draynor.hard');
 		if (hasDiary) xpToGive = increaseNumByPercent(xpToGive, 10);
 
 		const xpStr = await user.addXP({ skillName: lowestSkill, amount: xpToGive, duration, source: 'TearsOfGuthix' });
 
-		const output = `${user}, ${
+		const message = `${user}, ${
 			user.minionName
 		} finished telling Juna a story and drinking from the Tears of Guthix and collected ${tears} tears.\nLowest XP skill is ${lowestSkill}.\n${xpStr.toLocaleString()}.${
 			hasDiary ? '\n10% XP bonus for Lumbridge & Draynor Hard diary.' : ''
 		}`;
 
-		handleTripFinish(user, channelID, output, undefined, data, null);
+		return handleTripFinish({ user, channelId, message, data });
 	}
 };

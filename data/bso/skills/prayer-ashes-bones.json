@@ -1,0 +1,176 @@
+[
+	{
+		"name": "Abyssal ashes",
+		"level": 1,
+		"xp": 85,
+		"input_id": 25775
+	},
+	{
+		"name": "Abyssal dragon bones",
+		"level": 99,
+		"xp": 250,
+		"input_id": 24199
+	},
+	{
+		"name": "Babydragon bones",
+		"level": 1,
+		"xp": 30,
+		"input_id": 534
+	},
+	{
+		"name": "Bat bones",
+		"level": 1,
+		"xp": 5.3,
+		"input_id": 530
+	},
+	{
+		"name": "Big bones",
+		"level": 1,
+		"xp": 15,
+		"input_id": 532
+	},
+	{
+		"name": "Bones",
+		"level": 1,
+		"xp": 4.5,
+		"input_id": 526
+	},
+	{
+		"name": "Dagannoth bones",
+		"level": 1,
+		"xp": 125,
+		"input_id": 6729
+	},
+	{
+		"name": "Dragon bones",
+		"level": 1,
+		"xp": 72,
+		"input_id": 536
+	},
+	{
+		"name": "Drake bones",
+		"level": 1,
+		"xp": 80,
+		"input_id": 22783
+	},
+	{
+		"name": "Fayrg bones",
+		"level": 1,
+		"xp": 84,
+		"input_id": 4830
+	},
+	{
+		"name": "Fiendish ashes",
+		"level": 1,
+		"xp": 10,
+		"input_id": 25766
+	},
+	{
+		"name": "Frost dragon bones",
+		"level": 80,
+		"xp": 165,
+		"input_id": 50049
+	},
+	{
+		"name": "Hydra bones",
+		"level": 1,
+		"xp": 110,
+		"input_id": 22786
+	},
+	{
+		"name": "Infernal ashes",
+		"level": 1,
+		"xp": 110,
+		"input_id": 25778
+	},
+	{
+		"name": "Jogre bones",
+		"level": 1,
+		"xp": 15,
+		"input_id": 3125
+	},
+	{
+		"name": "Lava dragon bones",
+		"level": 1,
+		"xp": 85,
+		"input_id": 11943
+	},
+	{
+		"name": "Malicious ashes",
+		"level": 1,
+		"xp": 65,
+		"input_id": 25772
+	},
+	{
+		"name": "Monkey bones",
+		"level": 1,
+		"xp": 5,
+		"input_id": 3183
+	},
+	{
+		"name": "Nightmarish ashes",
+		"level": 1,
+		"xp": 965,
+		"input_id": 73165
+	},
+	{
+		"name": "Ourg bones",
+		"level": 1,
+		"xp": 140,
+		"input_id": 4834
+	},
+	{
+		"name": "Raurg bones",
+		"level": 1,
+		"xp": 96,
+		"input_id": 4832
+	},
+	{
+		"name": "Royal dragon bones",
+		"level": 99,
+		"xp": 250,
+		"input_id": 50111
+	},
+	{
+		"name": "Shaikahan bones",
+		"level": 1,
+		"xp": 25,
+		"input_id": 3123
+	},
+	{
+		"name": "Superior dragon bones",
+		"level": 70,
+		"xp": 150,
+		"input_id": 22124
+	},
+	{
+		"name": "Vile ashes",
+		"level": 1,
+		"xp": 25,
+		"input_id": 25769
+	},
+	{
+		"name": "Wolf bones",
+		"level": 1,
+		"xp": 4.5,
+		"input_id": 2859
+	},
+	{
+		"name": "Wyrm bones",
+		"level": 1,
+		"xp": 50,
+		"input_id": 22780
+	},
+	{
+		"name": "Wyvern bones",
+		"level": 1,
+		"xp": 72,
+		"input_id": 6812
+	},
+	{
+		"name": "Zogre bones",
+		"level": 1,
+		"xp": 22.5,
+		"input_id": 4812
+	}
+]

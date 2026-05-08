@@ -1,11 +1,10 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import { GemTable } from '../../../subtables/RareDropTable';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-export const BlackGuardTable = new LootTable()
+export const BlackGuardTable: LootTable = new LootTable()
 	.every('Bones')
 	.tertiary(128, 'Clue scroll (medium)')
-	// TODO: Check over the drop rates in future.
 	/* Weapons and Armour*/
 	.add('Bronze med helm', 1, 11)
 	.add('Bronze battleaxe', 1, 4)
@@ -34,7 +33,7 @@ export const BlackGuardTable = new LootTable()
 	/* Gem drop table */
 	.add(GemTable);
 
-export default new SimpleMonster({
+export const BlackGuard: SimpleMonster = new SimpleMonster({
 	id: 6046,
 	name: 'Black Guard',
 	table: BlackGuardTable,

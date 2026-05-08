@@ -1,7 +1,7 @@
-import { Time, percentChance } from 'e';
+import { Time } from '@oldschoolgg/toolkit';
 
-import type { GearBank } from '../../structures/GearBank';
-import type { Ore } from './../types';
+import type { Ore } from '@/lib/skilling/types.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
 
 interface MiningTimeOptions {
 	quantity: number | undefined;
@@ -17,6 +17,7 @@ interface MiningTimeOptions {
 	maxTripLength: number;
 	gearBank: GearBank;
 	hasKaramjaMedium: boolean;
+	rng: RNGProvider;
 }
 
 export function determineMiningTime({
@@ -32,7 +33,8 @@ export function determineMiningTime({
 	passedDuration,
 	maxTripLength,
 	gearBank,
-	hasKaramjaMedium
+	hasKaramjaMedium,
+	rng
 }: MiningTimeOptions): [number, number] {
 	let { intercept } = ore;
 	if (ore.name === 'Gem rock' && gearBank.hasEquipped('Amulet of glory')) {
@@ -73,7 +75,7 @@ export function determineMiningTime({
 	let remainingNoDeplete = glovesEffect;
 
 	while (timeElapsed < userMaxTripTicks) {
-		while (!percentChance(chanceOfSuccess)) {
+		while (!rng.percentChance(chanceOfSuccess)) {
 			timeElapsed += effectiveTicksBetween;
 		}
 		if (remainingNoDeplete <= 0) {
@@ -84,10 +86,10 @@ export function determineMiningTime({
 			remainingNoDeplete--;
 		}
 		newQuantity++;
-		if (percentChance(miningCapeEffect)) {
+		if (rng.percentChance(miningCapeEffect)) {
 			newQuantity++;
 		}
-		if (percentChance(armourEffect)) {
+		if (rng.percentChance(armourEffect)) {
 			newQuantity++;
 		}
 		// Add 28th of banking time every quantity

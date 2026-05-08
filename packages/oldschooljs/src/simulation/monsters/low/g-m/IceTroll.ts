@@ -1,10 +1,10 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import { GemTable } from '../../../subtables/RareDropTable';
-import { UncommonSeedDropTable } from '../../../subtables/index';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
+import { UncommonSeedDropTable } from '@/simulation/subtables/index.js';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const IceTrollTable = new LootTable()
+const IceTrollTable: LootTable = new LootTable()
 	.every('Big bones')
 
 	/* Weapons and armour */
@@ -40,7 +40,7 @@ const IceTrollTable = new LootTable()
 	.tertiary(400, 'Long bone')
 	.tertiary(5013, 'Curved bone');
 
-export default new SimpleMonster({
+export const IceTroll: SimpleMonster = new SimpleMonster({
 	id: 648,
 	name: 'Ice Troll',
 	table: IceTrollTable,

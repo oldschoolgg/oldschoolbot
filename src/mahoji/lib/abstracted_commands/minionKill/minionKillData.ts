@@ -1,6 +1,6 @@
 import { EItem, ItemGroups, Items } from 'oldschooljs';
 
-import type { GearBank } from '@/lib/structures/GearBank';
+import type { GearBank } from '@/lib/structures/GearBank.js';
 
 export const dragonHunterWeapons = [
 	{
@@ -12,6 +12,11 @@ export const dragonHunterWeapons = [
 		item: Items.getOrThrow('Dragon hunter crossbow'),
 		attackStyle: 'range',
 		boost: 15
+	},
+	{
+		item: Items.getOrThrow('Dragon hunter wand'),
+		attackStyle: 'mage',
+		boost: 15
 	}
 ] as const;
 
@@ -19,7 +24,11 @@ export function calculateVirtusBoost({
 	isInWilderness,
 	gearBank,
 	isOnTask
-}: { gearBank: GearBank; isInWilderness: boolean; isOnTask: boolean }) {
+}: {
+	gearBank: GearBank;
+	isInWilderness: boolean;
+	isOnTask: boolean;
+}) {
 	let virtusPiecesEquipped = 0;
 	const hasBlackMask =
 		(isOnTask && gearBank.gear.mage.hasEquipped('Black mask (i)')) ||

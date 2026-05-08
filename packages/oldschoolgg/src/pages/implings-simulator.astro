@@ -1,0 +1,18 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { ImplingsSimulator as ImplingsSimulatorComponent } from "@/components/pages/ImplingsSimulator.js";
+---
+
+<Layout
+	pageTitle="Impling Simulator"
+	keywords={[
+		"impling simulator",
+		"puro puro",
+		"lucky impling",
+		"osrs",
+		"simulator",
+	]}
+	desc="The Impling/Puro Puro simulator lets you simulate getting loot from Implings."
+>
+	<ImplingsSimulatorComponent client:only />
+</Layout>

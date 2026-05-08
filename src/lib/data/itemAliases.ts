@@ -1,7 +1,7 @@
-import { replaceWhitespaceAndUppercase } from '@oldschoolgg/toolkit/string-util';
-import { ItemGroups, Items, getItemOrThrow, itemNameMap, resolveItems } from 'oldschooljs';
+import { replaceWhitespaceAndUppercase } from '@oldschoolgg/toolkit';
+import { ItemGroups, Items } from 'oldschooljs';
 
-export function setItemAlias(id: number, name: string | string[], rename = true) {
+function setItemAlias(id: number, name: string | string[], rename = true) {
 	const existingItem = Items.get(id);
 	if (!existingItem) {
 		throw new Error(`Tried to add item alias for a non-existant item: ${name} ${id}`);
@@ -10,13 +10,13 @@ export function setItemAlias(id: number, name: string | string[], rename = true)
 	// Add the item to the custom items array
 	if (typeof name === 'string') {
 		firstName = name;
-		itemNameMap.set(name, id);
-		itemNameMap.set(replaceWhitespaceAndUppercase(name), id);
+		Items.itemNameMap.set(name, id);
+		Items.itemNameMap.set(replaceWhitespaceAndUppercase(name), id);
 	} else {
 		for (const _name of name) {
 			if (!firstName) firstName = _name;
-			itemNameMap.set(_name, id);
-			itemNameMap.set(replaceWhitespaceAndUppercase(_name), id);
+			Items.itemNameMap.set(_name, id);
+			Items.itemNameMap.set(replaceWhitespaceAndUppercase(_name), id);
 		}
 	}
 	// Update the item name to it's first alias
@@ -323,7 +323,7 @@ setItemAlias(26_507, 'Placeholder steel trophy');
 setItemAlias(26_505, 'Placeholder iron trophy');
 setItemAlias(26_503, 'Placeholder bronze trophy');
 
-export const allTrophyItems = resolveItems([
+export const allTrophyItems = Items.resolveItems([
 	'BSO dragon trophy',
 	'BSO rune trophy',
 	'BSO adamant trophy',
@@ -361,20 +361,21 @@ for (const item of allTrophyItems) {
  * Item modifications
  */
 
-export interface CustomItemData {
-	cantBeSacrificed?: true;
-}
 declare module 'oldschooljs' {
 	interface Item {
 		customItemData?: CustomItemData;
 	}
 }
 
+export interface CustomItemData {
+	cantBeSacrificed?: true;
+}
+
 for (const id of ItemGroups.teamCapes) {
 	Items.modifyItem(id, {
 		price: 100
 	});
-	if (getItemOrThrow(id).price !== 100) {
+	if (Items.getOrThrow(id).price !== 100) {
 		throw new Error(`Failed to modify price of item ${id}`);
 	}
 }

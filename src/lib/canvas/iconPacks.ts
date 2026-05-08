@@ -1,6 +1,6 @@
-import { StoreBitfield } from '@oldschoolgg/toolkit/util';
+import { StoreBitfield } from '@oldschoolgg/toolkit';
 
-import type { CanvasImage } from './canvasUtil';
+import type { CanvasImage } from '@/lib/canvas/canvasUtil.js';
 
 export enum IconPackID {
 	Halloween = 'halloween'

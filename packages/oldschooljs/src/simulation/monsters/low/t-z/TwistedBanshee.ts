@@ -1,10 +1,10 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import { GemTable } from '../../../subtables/RareDropTable';
-import RareSeedTable from '../../../subtables/RareSeedTable';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import RareSeedTable from '@/simulation/subtables/RareSeedTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-export const TwistedBansheePreTable = new LootTable()
+export const TwistedBansheePreTable: LootTable = new LootTable()
 	/* Weapons and armour */
 	.add('Battlestaff', 1, 10)
 	.add('Air battlestaff', 1, 4)
@@ -40,13 +40,13 @@ export const TwistedBansheePreTable = new LootTable()
 	.add(RareSeedTable, 1, 26)
 	.add(GemTable, 1, 4);
 
-const TwistedBansheeTable = new LootTable()
+const TwistedBansheeTable: LootTable = new LootTable()
 	.every(TwistedBansheePreTable)
 
 	/* Tertiary */
 	.tertiary(128, 'Clue scroll (hard)', 1);
 
-export default new SimpleMonster({
+export const TwistedBanshee: SimpleMonster = new SimpleMonster({
 	id: 7272,
 	name: 'Twisted Banshee',
 	table: TwistedBansheeTable,

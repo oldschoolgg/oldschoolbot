@@ -1,0 +1,14 @@
+{
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		"outDir": "dist",
+		"jsx": "react-jsx",
+		"noEmit": false,
+		"paths": {
+			"@/*": ["../../src/*"],
+			"@scripts/*": ["../../scripts/*"]
+		},
+		"isolatedModules": true
+	},
+	"include": ["src", "../../src/**/*"]
+}

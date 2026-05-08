@@ -1,9 +1,6 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
-import { time } from 'discord.js';
-
-import { SeedableRNG } from './rng';
+import { time } from '@oldschoolgg/discord';
+import { Emoji, Time, toTitleCase } from '@oldschoolgg/toolkit';
+import { SeedableRNG } from 'node-rng';
 
 export interface Peak {
 	startTime: number;

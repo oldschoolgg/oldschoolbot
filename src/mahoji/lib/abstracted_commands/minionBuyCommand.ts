@@ -1,10 +1,8 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit/util';
-import { ComponentType } from 'discord.js';
-
-import { mahojiInformationalButtons } from '../../../lib/sharedComponents';
+import { mahojiInformationalButtons } from '@/lib/sharedComponents.js';
+import { fetchUserStats } from '@/lib/util/fetchUserStats.js';
 
 export async function minionBuyCommand(user: MUser, ironman: boolean): CommandResponse {
-	if (user.user.minion_hasBought) return 'You already have a minion!';
+	if (user.hasMinion) return 'You already have a minion!';
 
 	await user.update({
 		minion_hasBought: true,
@@ -13,15 +11,7 @@ export async function minionBuyCommand(user: MUser, ironman: boolean): CommandRe
 	});
 
 	// Ensure user has a userStats row
-	await prisma.userStats.upsert({
-		where: {
-			user_id: BigInt(user.id)
-		},
-		create: {
-			user_id: BigInt(user.id)
-		},
-		update: {}
-	});
+	await fetchUserStats(user.id);
 
 	return {
 		content: `You have successfully got yourself a minion, and you're ready to use the bot now! Please check out the links below for information you should read.
@@ -35,11 +25,6 @@ export async function minionBuyCommand(user: MUser, ironman: boolean): CommandRe
 <:BSO:863823820435619890> **BSO:** I run a 2nd bot called BSO (Bot School Old), which you can also play, it has lots of fun and unique changes, like 5x XP and infinitely stacking clues. Type \`/help\` for more information.
 
 Please click the buttons below for important links.`,
-		components: [
-			{
-				type: ComponentType.ActionRow,
-				components: mahojiInformationalButtons
-			}
-		]
+		components: mahojiInformationalButtons
 	};
 }

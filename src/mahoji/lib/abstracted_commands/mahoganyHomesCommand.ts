@@ -1,14 +1,9 @@
-import { type CommandResponse, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { Time, calcPercentOfNum, calcWhatPercent, randArrItem, randInt, roll } from 'e';
-import { Bank } from 'oldschooljs';
+import { calcPercentOfNum, calcWhatPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { Bank, Items } from 'oldschooljs';
 
-import { Plank } from '../../../lib/skilling/skills/construction/constructables';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { MahoganyHomesActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import getOSItem from '../../../lib/util/getOSItem';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { Plank } from '@/lib/skilling/skills/construction/constructables.js';
+import type { MahoganyHomesActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 interface IContract {
 	name: string;
@@ -62,6 +57,7 @@ export const contractTiers: IContract[] = [
 const planksTable = [1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 4];
 
 function calcTrip(
+	rng: RNGProvider,
 	tier: IContract,
 	kc: number,
 	maxLen: number,
@@ -77,16 +73,16 @@ function calcTrip(
 	let xp = 0;
 
 	for (let i = 0; i < qty; i++) {
-		if (tier.name !== 'Beginner' && roll(5)) {
-			itemsNeeded.add('Steel bar', randInt(2, 4));
+		if (tier.name !== 'Beginner' && rng.roll(5)) {
+			itemsNeeded.add('Steel bar', rng.randInt(2, 4));
 		}
 		let planksNeeded = 0;
-		const planksCap = randInt(10, 16);
+		const planksCap = rng.randInt(10, 16);
 
 		while (planksNeeded <= planksCap - 2) {
-			const plankBuild = randArrItem(planksTable);
+			const plankBuild = rng.pick(planksTable);
 			planksNeeded += plankBuild;
-			xp += tier.plankXP[roll(2) ? 0 : 1] * plankBuild;
+			xp += tier.plankXP[rng.roll(2) ? 0 : 1] * plankBuild;
 		}
 		itemsNeeded.add(tier.plank, planksNeeded);
 		xp += tier.xp;
@@ -97,14 +93,14 @@ function calcTrip(
 }
 
 export const mahoganyHomesBuyables = [
-	{ item: getOSItem('Builders supply crate'), cost: 25 },
-	{ item: getOSItem("Amy's saw"), cost: 500 },
-	{ item: getOSItem('Plank sack'), cost: 350 },
-	{ item: getOSItem('Hosidius blueprints'), cost: 2000 },
-	{ item: getOSItem("Carpenter's helmet"), cost: 400 },
-	{ item: getOSItem("Carpenter's shirt"), cost: 800 },
-	{ item: getOSItem("Carpenter's trousers"), cost: 600 },
-	{ item: getOSItem("Carpenter's boots"), cost: 200 }
+	{ item: Items.getOrThrow('Builders supply crate'), cost: 25 },
+	{ item: Items.getOrThrow("Amy's saw"), cost: 500 },
+	{ item: Items.getOrThrow('Plank sack'), cost: 350 },
+	{ item: Items.getOrThrow('Hosidius blueprints'), cost: 2000 },
+	{ item: Items.getOrThrow("Carpenter's helmet"), cost: 400 },
+	{ item: Items.getOrThrow("Carpenter's shirt"), cost: 800 },
+	{ item: Items.getOrThrow("Carpenter's trousers"), cost: 600 },
+	{ item: Items.getOrThrow("Carpenter's boots"), cost: 200 }
 ];
 
 export async function mahoganyHomesBuyCommand(user: MUser, input = '', quantity?: number) {
@@ -126,13 +122,16 @@ export async function mahoganyHomesBuyCommand(user: MUser, input = '', quantity?
 			cost * quantity
 		}, but you have only ${balance}.`;
 	}
-	await user.update({
-		carpenter_points: {
-			decrement: cost * quantity
+	const loot = new Bank().add(item.id, quantity);
+	await user.transactItems({
+		itemsToAdd: loot,
+		collectionLog: true,
+		otherUpdates: {
+			carpenter_points: {
+				decrement: cost * quantity
+			}
 		}
 	});
-	const loot = new Bank().add(item.id, quantity);
-	await transactItems({ userID: user.id, itemsToAdd: loot, collectionLog: true });
 
 	return `Successfully purchased ${loot} for ${cost * quantity} Carpenter Points.`;
 }
@@ -142,10 +141,15 @@ export async function mahoganyHomesPointsCommand(user: MUser) {
 	return `You have **${balance.toLocaleString()}** Mahogany Homes points.`;
 }
 
-export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, tier?: number): CommandResponse {
-	if (user.minionIsBusy) return `${user.minionName} is currently busy.`;
+export async function mahoganyHomesBuildCommand(
+	rng: RNGProvider,
+	user: MUser,
+	channelId: string,
+	tier?: string
+): CommandResponse {
+	if (await user.minionIsBusy()) return `${user.minionName} is currently busy.`;
 
-	const conLevel = user.skillLevel(SkillsEnum.Construction);
+	const conLevel = user.skillsAsLevels.construction;
 	const kc = await user.fetchMinigameScore('mahogany_homes');
 
 	let tierData = contractTiers.find(contractTier => conLevel >= contractTier.level)!;
@@ -161,9 +165,10 @@ export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, 
 
 	const hasSack = user.hasEquippedOrInBank('Plank sack');
 	const [quantity, itemsNeeded, xp, duration, points] = calcTrip(
+		rng,
 		tierData,
 		kc,
-		calcMaxTripLength(user, 'MahoganyHomes'),
+		await user.calcMaxTripLength('MahoganyHomes'),
 		hasSack
 	);
 
@@ -172,11 +177,11 @@ export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, 
 	}
 	await user.removeItemsFromBank(itemsNeeded);
 
-	updateBankSetting('construction_cost_bank', itemsNeeded);
+	await ClientSettings.updateBankSetting('construction_cost_bank', itemsNeeded);
 
-	await addSubTaskToActivityTask<MahoganyHomesActivityTaskOptions>({
+	await ActivityManager.startTrip<MahoganyHomesActivityTaskOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		type: 'MahoganyHomes',
 		minigameID: 'mahogany_homes',
 		quantity,
@@ -188,7 +193,7 @@ export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, 
 
 	let str = `${user.minionName} is now doing ${quantity}x ${
 		tierData.name
-	} Mahogany homes contracts, the trip will take ${formatDuration(duration)}. Removed ${itemsNeeded} from your bank.`;
+	} Mahogany homes contracts, the trip will return in about ${formatTripDuration(user, duration)}. Removed ${itemsNeeded} from your bank.`;
 
 	if (hasSack) {
 		str += "\nYou're getting more XP/Hr because of your Plank sack!";

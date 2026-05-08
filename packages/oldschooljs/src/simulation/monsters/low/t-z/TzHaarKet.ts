@@ -1,11 +1,11 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const OnyxBoltTipTable = new LootTable().add('Onyx bolt tips', [1, 4], 1).add('Onyx bolt tips', 20, 1);
+const OnyxBoltTipTable: LootTable = new LootTable().add('Onyx bolt tips', [1, 4], 1).add('Onyx bolt tips', 20, 1);
 
-const TzHaarKetTable = new LootTable()
+const TzHaarKetTable: LootTable = new LootTable()
 	/* Weapons and armour */
-	.oneIn(512, 'Tzhaar-ket-om')
+	.oneIn(512, 'TzHaar-ket-om')
 	.oneIn(512, 'Toktz-ket-xil')
 	.oneIn(512, 'Obsidian cape')
 	.oneIn(2000, 'Obsidian helmet')
@@ -25,7 +25,7 @@ const TzHaarKetTable = new LootTable()
 	/* Tertiary */
 	.tertiary(35, 'Ensouled tzhaar head');
 
-export default new SimpleMonster({
+export const TzHaarKet: SimpleMonster = new SimpleMonster({
 	id: 2173,
 	name: 'TzHaar-Ket',
 	table: TzHaarKetTable,

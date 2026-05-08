@@ -1,6 +1,6 @@
 import { test } from 'vitest';
 
-import { InteractionID } from '../../src/lib/InteractionID';
+import { InteractionID } from '../../src/lib/InteractionID.js';
 
 test('InteractionID', () => {
 	const allStrings = Object.values(InteractionID)

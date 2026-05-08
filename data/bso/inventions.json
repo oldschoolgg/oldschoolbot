@@ -1,0 +1,355 @@
+[
+	{
+		"id": 14,
+		"name": "Abyssal amulet",
+		"description": "Provides a significant boost to Runecrafting runes.",
+		"flags": ["bank"],
+		"itemCost": {
+			"70014": 1
+		},
+		"inventionLevelNeeded": 120,
+		"usageCostMultiplier": 0.5,
+		"item": "Abyssal amulet",
+		"extraDescription": "**65%** faster Runecrafting for the following runes: Fire rune, Water rune, Air rune, Earth rune, Body rune, Mind rune\n**35%** faster Runecrafting for the following runes: Mist rune, Mud rune, Dust rune\n**20%** faster Runecrafting for the following runes: Lava rune, Steam rune, Smoke rune\n**50%** faster Runecrafting for the following runes: Death rune, Astral rune, Wrath rune, Law rune, Nature rune\n**60%** faster Runecrafting for the following runes: Chaos rune, Cosmic rune\n**65%** faster Runecrafting for the following runes: Blood rune, Soul rune\n**95%** faster Runecrafting for the following runes: Blood rune (zeah), Soul rune (zeah)\n**65%** faster Runecrafting for the following runes: Elder rune\n",
+		"materialTypeBank": {
+			"magic": 4,
+			"treasured": 3,
+			"metallic": 3
+		}
+	},
+	{
+		"id": 7,
+		"name": "Arcane harvester",
+		"description": "Increases farming and herbiboar yield by 100%.",
+		"flags": ["bank"],
+		"itemCost": null,
+		"inventionLevelNeeded": 110,
+		"usageCostMultiplier": 0.75,
+		"item": "Arcane harvester",
+		"extraDescription": null,
+		"materialTypeBank": {
+			"organic": 5,
+			"magic": 5
+		}
+	},
+	{
+		"id": 16,
+		"name": "Chincannon",
+		"description": "A cannon that shoots chinchompas with extra ferocity and speed.",
+		"itemCost": null,
+		"flags": ["equipped"],
+		"inventionLevelNeeded": 100,
+		"usageCostMultiplier": 3,
+		"item": "Chincannon",
+		"extraDescription": null,
+		"materialTypeBank": {
+			"explosive": 10
+		}
+	},
+	{
+		"id": 8,
+		"name": "Clue upgrader",
+		"description": "Has a chance to upgrade Beginner-Elite clues to the next tier when received as loot in PvM.",
+		"flags": ["bank"],
+		"itemCost": null,
+		"inventionLevelNeeded": 110,
+		"usageCostMultiplier": 0.3,
+		"item": "Clue upgrader",
+		"extraDescription": "**Beginner:** 40% chance to upgrade into Easy, costs 3 minutes\n**Easy:** 35% chance to upgrade into Medium, costs 6 minutes\n**Medium:** 30% chance to upgrade into Hard, costs 9 minutes\n**Hard:** 25% chance to upgrade into Elite, costs 12 minutes\n**Elite:** 20% chance to upgrade into Master, costs 15 minutes\n",
+		"materialTypeBank": {
+			"treasured": 8,
+			"metallic": 2
+		}
+	},
+	{
+		"id": 18,
+		"name": "Divine hand",
+		"description": "A device that enhances the harvesting of divination memories, increasing energy yield by 30% and harvesting clue scrolls.",
+		"itemCost": null,
+		"flags": ["bank"],
+		"inventionLevelNeeded": 100,
+		"usageCostMultiplier": 1,
+		"item": "Divine hand",
+		"extraDescription": null,
+		"materialTypeBank": {
+			"pious": 2,
+			"magic": 7,
+			"strong": 1
+		}
+	},
+	{
+		"id": 19,
+		"name": "Drygore axe",
+		"description": "Speeds up woodcutting by 30%.",
+		"itemCost": {
+			"472": 1
+		},
+		"flags": ["equipped", "bank"],
+		"inventionLevelNeeded": 100,
+		"usageCostMultiplier": 0.65,
+		"item": "Drygore axe",
+		"extraDescription": null,
+		"materialTypeBank": {
+			"drygore": 7,
+			"sharp": 3
+		}
+	},
+	{
+		"id": 10,
+		"name": "Drygore saw",
+		"description": "40% faster construction building.",
+		"flags": ["bank"],
+		"itemCost": null,
+		"inventionLevelNeeded": 105,
+		"usageCostMultiplier": 0.6,
+		"item": "Drygore saw",
+		"extraDescription": null,
+		"materialTypeBank": {
+			"drygore": 7,
+			"sharp": 3
+		}
+	},
+	{
+		"id": 11,
+		"name": "Dwarven toolkit",
+		"description": "Makes disassembly 35% faster",
+		"flags": ["bank"],
+		"itemCost": null,
+		"inventionLevelNeeded": 80,
+		"usageCostMultiplier": 0.05,
+		"item": "Dwarven toolkit",
+		"extraDescription": null,
+		"materialTypeBank": {
+			"dwarven": 8,
+			"metallic": 2
+		}
+	},
+	{
+		"id": 13,
+		"name": "Master Hammer and Chisel",
+		"description": "Makes Crafting 45% faster.",
+		"flags": ["bank"],
+		"itemCost": null,
+		"inventionLevelNeeded": 90,
+		"usageCostMultiplier": 0.9,
+		"item": "Master hammer and chisel",
+		"extraDescription": null,
+		"materialTypeBank": {
+			"simple": 3,
+			"sharp": 2,
+			"metallic": 2,
+			"swift": 3
+		}
+	},
+	{
+		"id": 5,
+		"name": "Mecha mortar",
+		"description": "Makes Herblore training 45% faster.",
+		"flags": ["bank"],
+		"itemCost": null,
+		"inventionLevelNeeded": 95,
+		"usageCostMultiplier": 0.8,
+		"item": "Mecha mortar",
+		"extraDescription": null,
+		"materialTypeBank": {
+			"organic": 8,
+			"metallic": 2
+		}
+	},
+	{
+		"id": 12,
+		"name": "Mecha Rod",
+		"description": "Makes fishing 45% faster.",
+		"flags": ["bank"],
+		"itemCost": null,
+		"inventionLevelNeeded": 85,
+		"usageCostMultiplier": 0.7,
+		"item": "Mecha rod",
+		"extraDescription": null,
+		"materialTypeBank": {
+			"flexible": 4,
+			"organic": 4,
+			"strong": 2
+		}
+	},
+	{
+		"id": 20,
+		"name": "Moonlight mutator",
+		"description": "Mutates seeds from your bank into zygomite spores.",
+		"itemCost": {
+			"73075": 250,
+			"73110": 1
+		},
+		"flags": ["bank"],
+		"inventionLevelNeeded": 100,
+		"usageCostMultiplier": 0.1,
+		"item": "Moonlight mutator",
+		"extraDescription": null,
+		"materialTypeBank": {
+			"organic": 5,
+			"magic": 5
+		}
+	},
+	{
+		"id": 9,
+		"name": "Portable tanner",
+		"description": "Tans hides received from PvM.",
+		"flags": ["bank"],
+		"itemCost": null,
+		"inventionLevelNeeded": 95,
+		"usageCostMultiplier": 0.5,
+		"item": "Portable tanner",
+		"extraDescription": null,
+		"materialTypeBank": {
+			"metallic": 2,
+			"plated": 3,
+			"organic": 5
+		}
+	},
+	{
+		"id": 6,
+		"name": "Quick trap",
+		"description": "Makes box-trap hunting 25% faster.",
+		"flags": ["bank"],
+		"itemCost": null,
+		"inventionLevelNeeded": 90,
+		"usageCostMultiplier": 0.5,
+		"item": "Quick trap",
+		"extraDescription": null,
+		"materialTypeBank": {
+			"precious": 1,
+			"magic": 6,
+			"organic": 3
+		}
+	},
+	{
+		"id": 15,
+		"name": "RoboFlappy",
+		"description": "A robotic terrorbird which provides extra loot from minigames.",
+		"itemCost": null,
+		"flags": ["bank"],
+		"inventionLevelNeeded": 120,
+		"usageCostMultiplier": 0.5,
+		"item": "RoboFlappy",
+		"extraDescription": null,
+		"materialTypeBank": {
+			"magic": 4,
+			"organic": 2,
+			"metallic": 4
+		}
+	},
+	{
+		"id": 4,
+		"name": "Silverhawk boots",
+		"description": "Makes agility 1.9x faster, and gives up to 36k/hr passive agility XP.",
+		"flags": ["equipped"],
+		"itemCost": {
+			"11860": 1
+		},
+		"inventionLevelNeeded": 90,
+		"usageCostMultiplier": 0.1,
+		"item": "Silverhawk boots",
+		"extraDescription": null,
+		"materialTypeBank": {
+			"swift": 5,
+			"protective": 1,
+			"dextrous": 4
+		}
+	},
+	{
+		"id": 1,
+		"name": "Superior bonecrusher",
+		"description": "Provides a 25% increase in XP over the Gorajan bonecrusher.",
+		"flags": ["bank"],
+		"itemCost": {
+			"48013": 1
+		},
+		"inventionLevelNeeded": 70,
+		"usageCostMultiplier": 0.5,
+		"item": "Superior bonecrusher",
+		"extraDescription": null,
+		"materialTypeBank": {
+			"pious": 5,
+			"sharp": 1,
+			"magic": 4
+		}
+	},
+	{
+		"id": 2,
+		"name": "Superior dwarf multicannon",
+		"description": "A 37-65% stronger version of the Dwarven multicannon.",
+		"flags": ["bank"],
+		"itemCost": {
+			"6": 1,
+			"8": 1,
+			"10": 1,
+			"12": 1,
+			"506": 1
+		},
+		"inventionLevelNeeded": 80,
+		"usageCostMultiplier": 0.1,
+		"item": "Superior dwarf multicannon",
+		"extraDescription": null,
+		"materialTypeBank": {
+			"strong": 4,
+			"heavy": 2,
+			"metallic": 4
+		}
+	},
+	{
+		"id": 3,
+		"name": "Superior inferno adze",
+		"description": "Chops, and firemakes logs. Mines, and smelts ores.",
+		"flags": ["equipped"],
+		"itemCost": {
+			"11920": 1,
+			"48319": 1,
+			"63200": 1
+		},
+		"inventionLevelNeeded": 80,
+		"usageCostMultiplier": 0,
+		"item": "Superior inferno adze",
+		"extraDescription": null,
+		"materialTypeBank": {
+			"sharp": 3,
+			"base": 3,
+			"metallic": 1,
+			"magic": 3
+		}
+	},
+	{
+		"id": 21,
+		"name": "Webshooter",
+		"description": "A handheld webshooter that helps catch implings by 30% and hunter creatures by 20%.",
+		"itemCost": {
+			"73180": 1
+		},
+		"flags": ["bank"],
+		"inventionLevelNeeded": 100,
+		"usageCostMultiplier": 0.4,
+		"item": "Webshooter",
+		"extraDescription": null,
+		"materialTypeBank": {
+			"strong": 4,
+			"flexible": 4,
+			"organic": 2
+		}
+	},
+	{
+		"id": 17,
+		"name": "Wisp-buster",
+		"description": "A device increases the speed of memory harvesting, giving 30% more xp.",
+		"itemCost": null,
+		"flags": ["equipped"],
+		"inventionLevelNeeded": 100,
+		"usageCostMultiplier": 1,
+		"item": "Wisp-buster",
+		"extraDescription": null,
+		"materialTypeBank": {
+			"pious": 4,
+			"powerful": 1,
+			"magic": 4,
+			"heavy": 1
+		}
+	}
+]

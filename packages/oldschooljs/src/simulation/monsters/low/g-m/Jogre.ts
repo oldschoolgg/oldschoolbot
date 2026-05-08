@@ -1,10 +1,10 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import CommonSeedDropTable from '../../../subtables/CommonSeedDropTable';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import { GemTable } from '../../../subtables/RareDropTable';
+import { CommonSeedDropTable } from '@/simulation/subtables/CommonSeedDropTable.js';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-export const JogreTable = new LootTable({ limit: 129 })
+export const JogreTable: LootTable = new LootTable({ limit: 129 })
 	.tertiary(5000, 'Jogre champion scroll')
 	.tertiary(129, 'Clue scroll (medium)')
 	.every('Jogre bones')
@@ -32,7 +32,7 @@ export const JogreTable = new LootTable({ limit: 129 })
 	.add('Big bones', 3, 2)
 	.add('Bones', 1, 2);
 
-export default new SimpleMonster({
+export const Jogre: SimpleMonster = new SimpleMonster({
 	id: 2094,
 	name: 'Jogre',
 	table: JogreTable,

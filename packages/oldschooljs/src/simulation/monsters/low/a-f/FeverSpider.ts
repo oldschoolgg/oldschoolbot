@@ -1,6 +1,6 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import { GemTable } from '../../../subtables';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const FeverSpiderTable = new LootTable({ limit: 36 })
 	.add("Red d'hide chaps", 1, 3)
@@ -14,7 +14,7 @@ const FeverSpiderTable = new LootTable({ limit: 36 })
 	.add('Pure essence', [100, 200], 2)
 	.add(GemTable, 1, 1);
 
-export default new SimpleMonster({
+export const FeverSpider: SimpleMonster = new SimpleMonster({
 	id: 626,
 	name: 'Fever spider',
 	table: FeverSpiderTable,

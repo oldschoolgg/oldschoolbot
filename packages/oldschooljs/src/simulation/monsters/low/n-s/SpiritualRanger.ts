@@ -1,5 +1,5 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const SpiritualRangerTable = new LootTable({ limit: 128 })
 
@@ -32,7 +32,7 @@ const SpiritualRangerTable = new LootTable({ limit: 128 })
 	/* Tertiary */
 	.tertiary(128, 'Clue scroll (hard)');
 
-export default new SimpleMonster({
+export const SpiritualRanger: SimpleMonster = new SimpleMonster({
 	id: 2211,
 	name: 'Spiritual Ranger',
 	table: SpiritualRangerTable,

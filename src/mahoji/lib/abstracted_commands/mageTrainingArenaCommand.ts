@@ -1,15 +1,11 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { type CommandResponse, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { Bank, LootTable } from 'oldschooljs';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { Bank, Items, LootTable } from 'oldschooljs';
 
-import { getNewUser } from '../../../lib/settings/settings';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { determineRunes } from '../../../lib/util/determineRunes';
-import getOSItem from '../../../lib/util/getOSItem';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { pizazzPointsPerHour } from '../../../tasks/minions/minigames/mageTrainingArenaActivity';
+import { getNewUser } from '@/lib/settings/settings.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { determineRunes } from '@/lib/util/determineRunes.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
+import { pizazzPointsPerHour } from '@/tasks/minions/minigames/mageTrainingArenaActivity.js';
 
 const RuneTable = new LootTable()
 	.every('Law rune', [36, 40])
@@ -17,54 +13,54 @@ const RuneTable = new LootTable()
 	.every('Nature rune', [85, 93])
 	.every('Fire rune', [170, 190]);
 
-const bonesToPeachesItem = getOSItem('Bones to peaches');
+const bonesToPeachesItem = Items.getOrThrow('Bones to peaches');
 
 export const mageTrainingArenaBuyables = [
 	{
-		item: getOSItem('Infinity gloves'),
+		item: Items.getOrThrow('Infinity gloves'),
 		cost: 420
 	},
 	{
-		item: getOSItem('Infinity hat'),
+		item: Items.getOrThrow('Infinity hat'),
 		cost: 810
 	},
 	{
-		item: getOSItem('Infinity top'),
+		item: Items.getOrThrow('Infinity top'),
 		cost: 960
 	},
 	{
-		item: getOSItem('Infinity bottoms'),
+		item: Items.getOrThrow('Infinity bottoms'),
 		cost: 1110
 	},
 	{
-		item: getOSItem('Infinity boots'),
+		item: Items.getOrThrow('Infinity boots'),
 		cost: 280
 	},
 	{
-		item: getOSItem('Beginner wand'),
+		item: Items.getOrThrow('Beginner wand'),
 		cost: 30
 	},
 	{
-		item: getOSItem('Apprentice wand'),
+		item: Items.getOrThrow('Apprentice wand'),
 		cost: 71,
-		upgradesFrom: getOSItem('Beginner wand')
+		upgradesFrom: Items.getOrThrow('Beginner wand')
 	},
 	{
-		item: getOSItem('Teacher wand'),
+		item: Items.getOrThrow('Teacher wand'),
 		cost: 143,
-		upgradesFrom: getOSItem('Apprentice wand')
+		upgradesFrom: Items.getOrThrow('Apprentice wand')
 	},
 	{
-		item: getOSItem('Master wand'),
+		item: Items.getOrThrow('Master wand'),
 		cost: 575,
-		upgradesFrom: getOSItem('Teacher wand')
+		upgradesFrom: Items.getOrThrow('Teacher wand')
 	},
 	{
-		item: getOSItem("Mage's book"),
+		item: Items.getOrThrow("Mage's book"),
 		cost: 1115
 	},
 	{
-		item: getOSItem('Rune pouch'),
+		item: Items.getOrThrow('Rune pouch'),
 		cost: 400
 	},
 	{
@@ -116,11 +112,11 @@ export async function mageTrainingArenaBuyCommand(user: MUser, input = '') {
 	});
 
 	if (isBonesToPeaches) {
-		await user.addItemsToCollectionLog(new Bank().add(item.id));
+		await user.addItemsToCollectionLog({ itemsToAdd: new Bank().add(item.id) });
 		return `Successfully unlocked the ${item.name} spell for ${cost} Pizazz Points.`;
 	}
 
-	await user.addItemsToBank({ items: { [item.id]: 1 }, collectionLog: true });
+	await user.addItemsToBank({ items: new Bank().add(item.id, 1), collectionLog: true });
 
 	return `Successfully purchased 1x ${item.name} for ${cost} Pizazz Points.`;
 }
@@ -138,11 +134,11 @@ export async function mageTrainingArenaPointsCommand(user: MUser) {
 	return `You have **${parsedUser.pizazz_points.toLocaleString()}** Pizazz points.\n**Pizazz Points Per Hour:** ${pizazzPointsPerHour}\n${rewardsList}\n\nNote: Apprentice, Teacher, and Master wands are sequential upgrades that require turning in the previous wand.\n\nHint: Magic Training Arena is combined into 1 room, and 1 set of points - rewards take approximately the same amount of time to get. To get started use **/minigames mage_training_arena start**. You can buy rewards using **/minigames mage_training_arena buy**.`;
 }
 
-export async function mageTrainingArenaStartCommand(user: MUser, channelID: string): CommandResponse {
-	if (user.minionIsBusy) return `${user.minionName} is currently busy.`;
+export async function mageTrainingArenaStartCommand(user: MUser, channelId: string): CommandResponse {
+	if (await user.minionIsBusy()) return `${user.minionName} is currently busy.`;
 
 	const roomDuration = Time.Minute * 14;
-	const quantity = Math.floor(calcMaxTripLength(user, 'MageTrainingArena') / roomDuration);
+	const quantity = Math.floor((await user.calcMaxTripLength('MageTrainingArena')) / roomDuration);
 	const duration = quantity * roomDuration;
 
 	const cost = determineRunes(user, new Bank().add(RuneTable.roll())).multiply(quantity);
@@ -151,13 +147,13 @@ export async function mageTrainingArenaStartCommand(user: MUser, channelID: stri
 		return `You don't have enough items for this trip, you need: ${cost}.`;
 	}
 
-	await transactItems({ userID: user.id, itemsToRemove: cost });
+	await user.transactItems({ itemsToRemove: cost });
 
-	await updateBankSetting('mta_cost', cost);
+	await ClientSettings.updateBankSetting('mta_cost', cost);
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		duration,
 		type: 'MageTrainingArena',
 		quantity,
@@ -166,7 +162,5 @@ export async function mageTrainingArenaStartCommand(user: MUser, channelID: stri
 
 	return `${
 		user.minionName
-	} is now doing ${quantity} Magic Training Arena rooms. The trip will take around ${formatDuration(
-		duration
-	)}. Removed ${cost} from your bank.`;
+	} is now doing ${quantity} Magic Training Arena rooms. The trip will return in about around ${formatTripDuration(user, duration)}. Removed ${cost} from your bank.`;
 }

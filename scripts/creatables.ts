@@ -1,13 +1,13 @@
 import { readFileSync, writeFileSync } from 'node:fs';
-import { md5sum } from '@oldschoolgg/toolkit/node';
-import { Stopwatch } from '@oldschoolgg/toolkit/structures';
+import { Stopwatch } from '@oldschoolgg/toolkit';
 import { DateTime } from 'luxon';
 import { Bank } from 'oldschooljs';
 
-import { BOT_TYPE } from '@/lib/constants';
-import Createables from '@/lib/data/createables';
+import { BOT_TYPE } from '@/lib/constants.js';
+import Createables from '@/lib/data/createables.js';
+import { md5sum } from '@/lib/util/smallUtils.js';
 
-export async function renderCreatablesFile() {
+export function renderCreatablesFile() {
 	const stopwatch = new Stopwatch();
 	const creatables = [];
 
@@ -16,14 +16,26 @@ export async function renderCreatablesFile() {
 		if (c.GPCost) {
 			itemsRequired.add('Coins', c.GPCost);
 		}
-		creatables.push({
+		const creatable: any = {
 			name: c.name,
 			items_created: new Bank(c.outputItems).toNamedBank(),
-			items_required: new Bank(c.inputItems).toNamedBank(),
-			required_stats: c.requiredSkills ?? {},
-			qp_required: c.QPRequired ?? 0,
-			required_slayer_unlocks: c.requiredSlayerUnlocks ?? []
-		});
+			items_required: new Bank(c.inputItems).toNamedBank()
+		};
+		if (c.requiredSkills) {
+			creatable.required_stats = c.requiredSkills;
+		}
+		if (c.QPRequired) {
+			creatable.qp_required = c.QPRequired;
+		}
+		if (c.requiredSlayerUnlocks) {
+			creatable.required_slayer_unlocks = c.requiredSlayerUnlocks;
+		}
+		for (const key of ['type', 'maxCanOwn', 'noCl', 'forceAddToCl', 'cantHveItems']) {
+			if (key in c) {
+				creatable[key] = c[key as keyof typeof c];
+			}
+		}
+		creatables.push(creatable);
 	}
 
 	creatables.sort((a, b) => a.name.localeCompare(b.name));
@@ -32,7 +44,6 @@ export async function renderCreatablesFile() {
 
 	const hash = md5sum(JSON.stringify(creatables));
 	if (hash === previousHash) {
-		console.log('Creatables JSON file is up to date');
 		return;
 	}
 	writeFileSync(

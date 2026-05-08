@@ -1,8 +1,8 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import { GemTable } from '../../../subtables/RareDropTable';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const SpiritualMageTable = new LootTable()
+const SpiritualMageTable: LootTable = new LootTable()
 
 	/* Armour */
 	.add('Dragon boots', 1, 1)
@@ -42,7 +42,7 @@ const SpiritualMageTable = new LootTable()
 	/* Tertiary */
 	.tertiary(128, 'Clue scroll (hard)');
 
-export default new SimpleMonster({
+export const SpiritualMage: SimpleMonster = new SimpleMonster({
 	id: 2212,
 	name: 'Spiritual Mage',
 	table: SpiritualMageTable,

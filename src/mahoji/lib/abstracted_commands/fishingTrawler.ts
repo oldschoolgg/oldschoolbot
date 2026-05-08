@@ -1,11 +1,9 @@
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
+import { calcWhatPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
-export async function fishingTrawlerCommand(user: MUser, channelID: string) {
+export async function fishingTrawlerCommand(user: MUser, channelId: string) {
 	if (user.skillLevel('fishing') < 15) {
 		return 'You need at least level 15 Fishing to do the Fishing Trawler.';
 	}
@@ -17,19 +15,17 @@ export async function fishingTrawlerCommand(user: MUser, channelID: string) {
 	const boost = Math.min(100, calcWhatPercent(tripsDone, 50)) / 10;
 	tripLength = reduceNumByPercent(tripLength, boost);
 
-	const quantity = Math.floor(calcMaxTripLength(user, 'FishingTrawler') / tripLength);
+	const quantity = Math.floor((await user.calcMaxTripLength('FishingTrawler')) / tripLength);
 	const duration = quantity * tripLength;
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		type: 'FishingTrawler',
 		minigameID: 'fishing_trawler',
 		quantity,
 		duration
 	});
 
-	return `${user.minionName} is now doing ${quantity}x Fishing Trawler trips, it will take around ${formatDuration(
-		duration
-	)} to finish.\n\n**Boosts:** ${boost}% boost for experience`;
+	return `${user.minionName} is now doing ${quantity}x Fishing Trawler trips, it will take around ${formatTripDuration(user, duration)} to finish.\n\n**Boosts:** ${boost}% boost for experience`;
 }

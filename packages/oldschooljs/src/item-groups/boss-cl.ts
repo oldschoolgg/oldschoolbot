@@ -1,6 +1,6 @@
-import { EItem } from '../EItem';
+import { EItem } from '../EItem.js';
 
-export const toaCL = [
+export const toaCL: EItem[] = [
 	EItem.TUMEKENS_GUARDIAN,
 	EItem.TUMEKENS_SHADOW_UNCHARGED,
 	EItem.ELIDINIS_WARD,
@@ -29,7 +29,7 @@ export const toaCL = [
 	EItem.ANCIENT_REMNANT
 ];
 
-export const toaPurpleItems = [
+export const toaPurpleItems: EItem[] = [
 	EItem.TUMEKENS_GUARDIAN,
 	EItem.TUMEKENS_SHADOW_UNCHARGED,
 	EItem.ELIDINIS_WARD,
@@ -40,4 +40,8 @@ export const toaPurpleItems = [
 	EItem.OSMUMTENS_FANG
 ];
 
-export const godWarsDungeonGodswordShards = [EItem.GODSWORD_SHARD_1, EItem.GODSWORD_SHARD_2, EItem.GODSWORD_SHARD_3];
+export const godWarsDungeonGodswordShards: EItem[] = [
+	EItem.GODSWORD_SHARD_1,
+	EItem.GODSWORD_SHARD_2,
+	EItem.GODSWORD_SHARD_3
+];

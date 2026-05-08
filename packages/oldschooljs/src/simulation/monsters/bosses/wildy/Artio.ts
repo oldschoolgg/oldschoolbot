@@ -1,7 +1,7 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const ArtioUniqueTable = new LootTable()
+const ArtioUniqueTable: LootTable = new LootTable()
 	.oneIn(358, 'Dragon 2h sword')
 	.oneIn(358, 'Dragon pickaxe')
 	.oneIn(618, 'Claws of callisto')
@@ -16,7 +16,7 @@ const ArtioSecondarySupplyTable = new LootTable({ limit: 18 })
 	.add('Ranging potion(2)', [2, 3], 1)
 	.add('Super combat potion(2)', [2, 3], 1);
 
-const ArtioTable = new LootTable()
+const ArtioTable: LootTable = new LootTable()
 	.every('Big bones')
 
 	/* Unique table */
@@ -67,9 +67,9 @@ const ArtioTable = new LootTable()
 	.tertiary(2800, 'Callisto cub')
 	.tertiary(5013, 'Curved bone');
 
-const ArtioTotalTable = new LootTable().every(ArtioSecondarySupplyTable).every(ArtioTable);
+const ArtioTotalTable: LootTable = new LootTable().every(ArtioSecondarySupplyTable).every(ArtioTable);
 
-export default new SimpleMonster({
+export const Artio: SimpleMonster = new SimpleMonster({
 	id: 11_992,
 	name: 'Artio',
 	table: ArtioTotalTable,

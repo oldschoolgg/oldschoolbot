@@ -1,9 +1,11 @@
-import { round } from 'e';
+import type { GearSetup } from '@oldschoolgg/gear';
+import { round } from '@oldschoolgg/toolkit';
 import { itemID } from 'oldschooljs';
 
-import type { GearSetup } from '../../../gear/types';
+import { Gear } from '@/lib/structures/Gear.js';
 
-export function calcConBonusXP(setup: GearSetup): number {
+export function calcConBonusXP(_setup: GearSetup | Gear): number {
+	const setup = _setup instanceof Gear ? _setup.raw() : _setup;
 	let bonusMultiplier = 0;
 	let numberOfItems = 0;
 

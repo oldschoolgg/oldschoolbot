@@ -1,6 +1,6 @@
-import { Bank, ItemGroups, deepResolveItems, resolveItems } from 'oldschooljs';
+import { Bank, deepResolveItems, ItemGroups, resolveItems } from 'oldschooljs';
 
-import type { ClueTier } from './clueTiers';
+import type { ClueTier } from '@/lib/clues/clueTiers.js';
 
 export interface IStashUnit {
 	id: number;

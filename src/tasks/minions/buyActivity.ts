@@ -1,16 +1,13 @@
-import { calcPerHour } from '@oldschoolgg/toolkit/util';
+import { calcPerHour } from '@oldschoolgg/toolkit';
 import { Bank, Items, toKMB } from 'oldschooljs';
 
-import { findTripBuyable } from '../../lib/data/buyables/tripBuyables';
-import type { BuyActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import { findTripBuyable } from '@/lib/data/buyables/tripBuyables.js';
+import type { BuyActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const buyTask: MinionTask = {
 	type: 'Buy',
-	async run(data: BuyActivityTaskOptions) {
-		const { userID, channelID, itemID, quantity, totalCost, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: BuyActivityTaskOptions, { user, handleTripFinish }) {
+		const { channelId, itemID, quantity, totalCost, duration } = data;
 
 		const tripBuyable = findTripBuyable(itemID, quantity);
 		if (!tripBuyable) {
@@ -25,19 +22,17 @@ export const buyTask: MinionTask = {
 			tripBuyable.quantity && tripBuyable.quantity > 0 ? quantity / tripBuyable.quantity : quantity;
 
 		const loot = new Bank().add(itemID, quantity);
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			itemsToAdd: loot,
 			collectionLog: false
 		});
 
-		await updateBankSetting('buy_loot_bank', loot);
+		await ClientSettings.updateBankSetting('buy_loot_bank', loot);
 
 		handleTripFinish(
 			user,
-			channelID,
+			channelId,
 			`${user}, ${user.minionName} finished buying ${toKMB(displayQuantity)} ${itemNameWithRate}. This cost ${toKMB(totalCost)} GP (avg ${average.toLocaleString()} GP ea).`,
-			undefined,
 			data,
 			loot
 		);

@@ -17,7 +17,7 @@ There are three PKer peak periods, changing every ~2 hours. The chance to encoun
 If you encounter a PKer, you lose some KC and loot. The base chance of being PKed is 10%, modified by:
 
 - Your wildy gear's defensive stats (60% magic, 40% ranged, 20% melee)
-- Anti-PK supplies, see [Smite Chance](./#smite-chance)
+- Anti-PK supplies, see [Smite Chance](#smite-chance)
 - Having [[prayer:43]] for overheads
 - Your wildy boss experience
 - Being in a multi-combat area
@@ -44,7 +44,7 @@ To start a trip, use (for example) [[/k name\:Revenant imp]].
 
 ### Boosts
 
-- You get faster kill times based on your attack style bonus (range, magic, or crush). 
+- You get faster kill times based on your attack style bonus (range, magic, or crush).
 - Charged wildy weapon: 35% (must be equipped in wildy setup)
 - [[Salve amulet]]: 20% (must be equipped in wildy setup, [[Salve Amulet(ei)]] needed if training range or mage)
 - [[Revenant cave teleport]]: 5%
@@ -74,7 +74,7 @@ You can sell ancient items for their OSRS values using [[/sell items\:1 Ancient 
 
 ## Wildy Bosses
 
-Killing Callisto, Vet'ion, or Venenatis (and their weaker variants) can risk some of your gear in your wildy setup. **Do not equip items you're not willing to lose.** See [Wildy Gear](./#wildy-gear). You are never skulled, so you keep your best 4 items (or 3 if smited). For info on boosts and requirements for Wilderness bosses, see [monsters](/osb/monsters).
+Killing Callisto, Vet'ion, or Venenatis (and their weaker variants) can risk some of your gear in your wildy setup. **Do not equip items you're not willing to lose.** See [Wildy Gear](#wildy-gear). You are never skulled, so you keep your best 4 items (or 3 if smited). For info on boosts and requirements for Wilderness bosses, see [monsters](/osb/monsters).
 
 ### Voidwaker
 

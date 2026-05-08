@@ -1,3 +1,4 @@
+import path from 'node:path';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
@@ -22,12 +23,11 @@ export default defineConfig({
 		},
 		isolate: false,
 		pool: 'threads',
-		poolOptions: {
-			threads: {
-				minThreads: 5,
-				maxThreads: 5,
-				execArgv: ['--disable-warning=ExperimentalWarning']
-			}
+		maxWorkers: 4
+	},
+	resolve: {
+		alias: {
+			'@': path.resolve(import.meta.dirname, './src')
 		}
 	}
 });

@@ -1,8 +1,8 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import { GemTable } from '../../../subtables/RareDropTable';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const SeaSnakeYoungTable = new LootTable()
+const SeaSnakeYoungTable: LootTable = new LootTable()
 	.every('Big bones')
 
 	/* Runes and ammunition */
@@ -37,7 +37,7 @@ const SeaSnakeYoungTable = new LootTable()
 	.tertiary(400, 'Long bone')
 	.tertiary(5013, 'Curved bone');
 
-export default new SimpleMonster({
+export const SeaSnakeYoung: SimpleMonster = new SimpleMonster({
 	id: 1097,
 	name: 'Sea Snake Young',
 	table: SeaSnakeYoungTable,

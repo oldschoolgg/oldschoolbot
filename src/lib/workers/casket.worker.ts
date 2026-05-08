@@ -1,10 +1,10 @@
-import '../data/itemAliases';
+import '../data/itemAliases.js';
 
-import { roll } from 'e';
+import { MathRNG } from 'node-rng';
 import { EliteMimicTable, type ItemBank, MasterMimicTable } from 'oldschooljs';
 
-import type { CasketWorkerArgs } from '.';
-import { ClueTiers } from '../clues/clueTiers';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import type { CasketWorkerArgs } from '@/lib/workers/index.js';
 
 if (global.prisma) {
 	throw new Error('Prisma is loaded in the casket worker!');
@@ -17,7 +17,7 @@ export default async ({ clueTierID, quantity }: CasketWorkerArgs): Promise<[Item
 	if (clueTier.mimicChance) {
 		const table = clueTier.name === 'Master' ? MasterMimicTable : EliteMimicTable;
 		for (let i = 0; i < quantity; i++) {
-			if (roll(clueTier.mimicChance)) {
+			if (MathRNG.roll(clueTier.mimicChance)) {
 				loot.add(table.roll());
 				mimicNumber++;
 			}

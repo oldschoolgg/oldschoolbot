@@ -1,19 +1,19 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import RareDropTable from '../../subtables/RareDropTable';
+import { RareDropTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const ZulrahUniqueTable = new LootTable()
+const ZulrahUniqueTable: LootTable = new LootTable()
 	.add('Tanzanite fang')
 	.add('Magic fang')
 	.add('Serpentine visage')
 	.add('Uncut onyx');
 
-const ZulrahFlaxMutagenTable = new LootTable()
+const ZulrahFlaxMutagenTable: LootTable = new LootTable()
 	.add('Tanzanite mutagen', 1, 10)
 	.add('Magma mutagen', 1, 10)
 	.add('Flax', 1000, 5244);
 
-const ZulrahTable = new LootTable()
+const ZulrahTable: LootTable = new LootTable()
 	.add(RareDropTable, 1, 9)
 	.oneIn(256, ZulrahUniqueTable)
 
@@ -65,14 +65,14 @@ const ZulrahTable = new LootTable()
 	.add('Swamp tar', 1000, 5)
 	.add("Zulrah's scales", 500, 5);
 
-const TotalZulrahTable = new LootTable()
+const TotalZulrahTable: LootTable = new LootTable()
 	.every(ZulrahTable, 2)
 	.every("Zulrah's scales", [100, 299])
 	.tertiary(75, 'Clue scroll (elite)')
 	.tertiary(3000, 'Jar of swamp')
 	.tertiary(4000, 'Pet snakeling');
 
-export default new SimpleMonster({
+export const Zulrah: SimpleMonster = new SimpleMonster({
 	id: 2042,
 	name: 'Zulrah',
 	table: TotalZulrahTable,

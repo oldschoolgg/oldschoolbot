@@ -1,9 +1,9 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-export const GhostTable = new LootTable().tertiary(90, 'Clue scroll (beginner)', 1);
+export const GhostTable: LootTable = new LootTable().tertiary(90, 'Clue scroll (beginner)', 1);
 
-export default new SimpleMonster({
+export const Ghost: SimpleMonster = new SimpleMonster({
 	id: 85,
 	name: 'Ghost',
 	table: GhostTable,

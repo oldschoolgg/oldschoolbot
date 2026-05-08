@@ -1,6 +1,6 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import CommonSeedDropTable from '../../../subtables/CommonSeedDropTable';
+import { CommonSeedDropTable } from '@/simulation/subtables/CommonSeedDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const LizardmanTable = new LootTable({ limit: 78 })
 	.every('Bones')
@@ -13,7 +13,7 @@ const LizardmanTable = new LootTable({ limit: 78 })
 	.add('Xerician fabric', 1, 8)
 	.oneIn(125, "Xeric's talisman (inert)");
 
-export default new SimpleMonster({
+export const Lizardman: SimpleMonster = new SimpleMonster({
 	id: 6914,
 	name: 'Lizardman',
 	table: LizardmanTable,

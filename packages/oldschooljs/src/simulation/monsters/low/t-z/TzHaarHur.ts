@@ -1,5 +1,5 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const TzHaarHurTable = new LootTable({ limit: 195 })
 	.add('Tokkul', [3, 7], 182)
@@ -9,7 +9,7 @@ const TzHaarHurTable = new LootTable({ limit: 195 })
 	.add('Uncut diamond', 1, 1)
 	.tertiary(176_743, 'Rocky');
 
-export default new SimpleMonster({
+export const TzHaarHur: SimpleMonster = new SimpleMonster({
 	id: 2161,
 	name: 'TzHaar-Hur',
 	pickpocketTable: TzHaarHurTable,

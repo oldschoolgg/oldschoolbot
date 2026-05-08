@@ -1,11 +1,11 @@
 import { readFileSync, writeFileSync } from 'node:fs';
-import { md5sum } from '@oldschoolgg/toolkit/node';
-import { Stopwatch } from '@oldschoolgg/toolkit/structures';
+import { Stopwatch } from '@oldschoolgg/toolkit';
 import { DateTime } from 'luxon';
 import { Bank, Items } from 'oldschooljs';
 
-import { BOT_TYPE } from '@/lib/constants';
-import killableMonsters from '@/lib/minions/data/killableMonsters';
+import { BOT_TYPE } from '@/lib/constants.js';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { md5sum } from '@/lib/util/smallUtils.js';
 
 export function createMonstersJson() {
 	const stopwatch = new Stopwatch();
@@ -44,7 +44,6 @@ export function createMonstersJson() {
 
 	const hash = md5sum(JSON.stringify(monstersJsonFile));
 	if (hash === previousHash) {
-		console.log('Monsters JSON file is up to date');
 		return;
 	}
 	writeFileSync(

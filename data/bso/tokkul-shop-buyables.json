@@ -1,0 +1,326 @@
+[
+	{
+		"name": "Adamantite ore",
+		"item_id": 449,
+		"rin_shop_stock": 2,
+		"tokkul_cost": 600,
+		"tokkul_return": 60,
+		"diary_tokkul_cost": 520,
+		"diary_tokkul_return": 140
+	},
+	{
+		"name": "Air rune",
+		"item_id": 556,
+		"stock": 5000,
+		"tokkul_return": 0,
+		"tokkul_cost": 6,
+		"diary_tokkul_return": 0,
+		"diary_tokkul_cost": 5
+	},
+	{
+		"name": "Body rune",
+		"item_id": 559,
+		"stock": 5000,
+		"tokkul_return": 1,
+		"tokkul_cost": 4,
+		"diary_tokkul_return": 1,
+		"diary_tokkul_cost": 3
+	},
+	{
+		"name": "Chaos rune",
+		"item_id": 562,
+		"stock": 2500,
+		"tokkul_return": 9,
+		"tokkul_cost": 135,
+		"diary_tokkul_return": 20,
+		"diary_tokkul_cost": 117
+	},
+	{
+		"name": "Coal",
+		"item_id": 453,
+		"rin_shop_stock": 20,
+		"tokkul_cost": 67,
+		"tokkul_return": 6,
+		"diary_tokkul_cost": 58,
+		"diary_tokkul_return": 15
+	},
+	{
+		"name": "Copper ore",
+		"item_id": 436,
+		"stock": 5,
+		"rin_shop_stock": 25,
+		"tokkul_cost": 4,
+		"tokkul_return": 0,
+		"diary_tokkul_cost": 3,
+		"diary_tokkul_return": 1
+	},
+	{
+		"name": "Death rune",
+		"item_id": 560,
+		"stock": 2500,
+		"tokkul_return": 18,
+		"tokkul_cost": 270,
+		"diary_tokkul_return": 42,
+		"diary_tokkul_cost": 234
+	},
+	{
+		"name": "Earth rune",
+		"item_id": 557,
+		"stock": 5000,
+		"tokkul_return": 0,
+		"tokkul_cost": 6,
+		"diary_tokkul_return": 0,
+		"diary_tokkul_cost": 5
+	},
+	{
+		"name": "Fire rune",
+		"item_id": 554,
+		"stock": 5000,
+		"tokkul_return": 0,
+		"tokkul_cost": 6,
+		"diary_tokkul_return": 0,
+		"diary_tokkul_cost": 5
+	},
+	{
+		"name": "Gold ore",
+		"item_id": 444,
+		"rin_shop_stock": 12,
+		"tokkul_cost": 225,
+		"tokkul_return": 22,
+		"diary_tokkul_cost": 195,
+		"diary_tokkul_return": 52
+	},
+	{
+		"name": "Iron ore",
+		"item_id": 440,
+		"stock": 2,
+		"rin_shop_stock": 12,
+		"tokkul_cost": 25,
+		"tokkul_return": 2,
+		"diary_tokkul_cost": 22,
+		"diary_tokkul_return": 5
+	},
+	{
+		"name": "Mind rune",
+		"item_id": 558,
+		"stock": 5000,
+		"tokkul_return": 1,
+		"tokkul_cost": 4,
+		"diary_tokkul_return": 1,
+		"diary_tokkul_cost": 3
+	},
+	{
+		"name": "Mithril ore",
+		"item_id": 447,
+		"rin_shop_stock": 4,
+		"tokkul_cost": 243,
+		"tokkul_return": 24,
+		"diary_tokkul_cost": 210,
+		"diary_tokkul_return": 56
+	},
+	{
+		"name": "Obsidian cape",
+		"item_id": 6568,
+		"stock": 1,
+		"tokkul_return": 6000,
+		"tokkul_cost": 90000,
+		"diary_tokkul_return": 14000,
+		"diary_tokkul_cost": 78000
+	},
+	{
+		"name": "Obsidian dagger",
+		"item_id": 6525,
+		"stock": 1,
+		"tokkul_return": 2500,
+		"tokkul_cost": 37500,
+		"diary_tokkul_return": 5827,
+		"diary_tokkul_cost": 32500
+	},
+	{
+		"name": "Obsidian helmet",
+		"item_id": 21298,
+		"stock": 1,
+		"tokkul_return": 5632,
+		"tokkul_cost": 84480,
+		"diary_tokkul_return": 13141,
+		"diary_tokkul_cost": 73216,
+		"require_fire_cape": true
+	},
+	{
+		"name": "Obsidian mace",
+		"item_id": 6527,
+		"stock": 1,
+		"tokkul_return": 3000,
+		"tokkul_cost": 45000,
+		"diary_tokkul_return": 7000,
+		"diary_tokkul_cost": 39000
+	},
+	{
+		"name": "Obsidian maul",
+		"item_id": 6528,
+		"stock": 1,
+		"tokkul_return": 5000,
+		"tokkul_cost": 75001,
+		"diary_tokkul_return": 11665,
+		"diary_tokkul_cost": 65001
+	},
+	{
+		"name": "Obsidian platebody",
+		"item_id": 21301,
+		"stock": 1,
+		"tokkul_return": 8400,
+		"tokkul_cost": 126000,
+		"diary_tokkul_return": 19600,
+		"diary_tokkul_cost": 109200,
+		"require_fire_cape": true
+	},
+	{
+		"name": "Obsidian platelegs",
+		"item_id": 21304,
+		"stock": 1,
+		"tokkul_return": 6700,
+		"tokkul_cost": 100500,
+		"diary_tokkul_return": 15633,
+		"diary_tokkul_cost": 87100,
+		"require_fire_cape": true
+	},
+	{
+		"name": "Obsidian shield",
+		"item_id": 6524,
+		"stock": 1,
+		"tokkul_return": 4500,
+		"tokkul_cost": 67500,
+		"diary_tokkul_return": 10500,
+		"diary_tokkul_cost": 58500
+	},
+	{
+		"name": "Obsidian staff",
+		"item_id": 6526,
+		"stock": 1,
+		"tokkul_return": 3500,
+		"tokkul_cost": 52500,
+		"diary_tokkul_return": 8166,
+		"diary_tokkul_cost": 45500
+	},
+	{
+		"name": "Obsidian sword",
+		"item_id": 6523,
+		"stock": 1,
+		"tokkul_return": 4000,
+		"tokkul_cost": 60000,
+		"diary_tokkul_return": 9332,
+		"diary_tokkul_cost": 52000
+	},
+	{
+		"name": "Obsidian throwing ring",
+		"item_id": 6522,
+		"stock": 500,
+		"tokkul_return": 25,
+		"tokkul_cost": 375,
+		"diary_tokkul_return": 57,
+		"diary_tokkul_cost": 325
+	},
+	{
+		"name": "Onyx bolt tips",
+		"item_id": 9194,
+		"stock": 50,
+		"tokkul_cost": 1500,
+		"tokkul_return": 150,
+		"diary_tokkul_cost": 1300,
+		"diary_tokkul_return": 350
+	},
+	{
+		"name": "Runite ore",
+		"item_id": 451,
+		"rin_shop_stock": 1,
+		"tokkul_cost": 4800,
+		"tokkul_return": 480,
+		"diary_tokkul_cost": 4160,
+		"diary_tokkul_return": 1120
+	},
+	{
+		"name": "Silver ore",
+		"item_id": 442,
+		"rin_shop_stock": 15,
+		"tokkul_cost": 112,
+		"tokkul_return": 11,
+		"diary_tokkul_cost": 97,
+		"diary_tokkul_return": 26
+	},
+	{
+		"name": "Tin ore",
+		"item_id": 438,
+		"stock": 5,
+		"rin_shop_stock": 25,
+		"tokkul_cost": 4,
+		"tokkul_return": 0,
+		"diary_tokkul_cost": 3,
+		"diary_tokkul_return": 1
+	},
+	{
+		"name": "Uncut diamond",
+		"item_id": 1617,
+		"rin_shop_stock": 6,
+		"rin_im_shop_stock": 2,
+		"tokkul_cost": 300,
+		"tokkul_return": 30,
+		"diary_tokkul_cost": 260,
+		"diary_tokkul_return": 70
+	},
+	{
+		"name": "Uncut dragonstone",
+		"item_id": 1631,
+		"tokkul_return": 150,
+		"diary_tokkul_return": 350
+	},
+	{
+		"name": "Uncut emerald",
+		"item_id": 1621,
+		"stock": 1,
+		"rin_shop_stock": 12,
+		"rin_im_shop_stock": 7,
+		"tokkul_cost": 75,
+		"tokkul_return": 7,
+		"diary_tokkul_cost": 65,
+		"diary_tokkul_return": 17
+	},
+	{
+		"name": "Uncut onyx",
+		"item_id": 6571,
+		"stock": 1,
+		"tokkul_cost": 300000,
+		"tokkul_return": 30000,
+		"diary_tokkul_cost": 260000,
+		"diary_tokkul_return": 70000
+	},
+	{
+		"name": "Uncut ruby",
+		"item_id": 1619,
+		"rin_shop_stock": 8,
+		"rin_im_shop_stock": 4,
+		"tokkul_cost": 150,
+		"tokkul_return": 15,
+		"diary_tokkul_cost": 130,
+		"diary_tokkul_return": 35
+	},
+	{
+		"name": "Uncut sapphire",
+		"item_id": 1623,
+		"stock": 1,
+		"rin_shop_stock": 16,
+		"rin_im_shop_stock": 10,
+		"tokkul_cost": 37,
+		"tokkul_return": 3,
+		"diary_tokkul_cost": 32,
+		"diary_tokkul_return": 8
+	},
+	{
+		"name": "Water rune",
+		"item_id": 555,
+		"stock": 5000,
+		"tokkul_return": 0,
+		"tokkul_cost": 6,
+		"diary_tokkul_return": 0,
+		"diary_tokkul_cost": 5
+	}
+]

@@ -1,0 +1,141 @@
+.discord_channel {
+	font-weight: 500;
+	background: #35373c;
+	width: max-content;
+	padding: 3px 10px;
+	font-size: 13.4px;
+	color: #81868f !important;
+	display: flex;
+	align-items: center;
+	border-radius: 4px;
+	text-decoration: none;
+
+	&:hover {
+		color: rgb(192, 192, 192) !important;
+		cursor: pointer;
+		background: rgb(50, 50, 55);
+	}
+}
+
+.contributor {
+	width: max-content;
+	border-radius: 8px;
+	color: var(--sl-color-text-accent);
+	font-weight: bold;
+	font-size: 25px;
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	justify-content: center;
+	justify-items: center;
+
+	background: #ff803c14;
+	padding: 5px 9px;
+}
+
+.contributor .contributor_name {
+	margin-top: 0;
+	font-weight: 500;
+}
+
+.contributor_avatar {
+	height: 29px !important;
+	border-radius: 64px;
+	margin-right: 3px;
+}
+
+.contributor_small {
+	display: inline-flex;
+	width: max-content;
+	border-radius: 10px;
+	align-items: center;
+	justify-content: center;
+	align-content: center;
+	padding: 3px 9px;
+	padding-left: 1px;
+	font-size: 13px;
+	gap: 5px;
+	font-weight: bold;
+	vertical-align: middle;
+	margin: 0;
+	position: relative;
+
+	background: #ff803c14;
+	color: #ff7f3c;
+
+	.contributor_avatar {
+		height: 20px !important;
+	}
+}
+
+.ca-complete {
+	background: #e6f7e6 !important;
+	color: #225c22 !important;
+}
+
+/* Discord Commands */
+.discord_command_copy {
+	text-align: center;
+	background-color: light-dark(#6b72c7, #4e538f);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0px 5px;
+	font-size: 13px;
+	color: white;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: background 0.2s;
+	margin: 0 2px;
+	white-space: nowrap;
+}
+
+.discord_command_copy:hover {
+	background: #6a6fcf;
+}
+
+.discord_command_copy.copied {
+	background: #3cb371;
+}
+
+/* Items */
+
+.osrs_item {
+	background-color: light-dark(#c7b69d, #2d2924);
+	color: light-dark(#382412, #ecd0b7);
+
+	width: max-content;
+	border-radius: 10px;
+	justify-content: center;
+	padding: 1px 9px;
+	gap: 5px;
+	font-weight: bold;
+	display: inline-flex;
+	align-items: center;
+	vertical-align: middle;
+	margin-top: 0px !important;
+	margin-left: 3px;
+	margin-right: 3px;
+}
+
+.bso_item {
+	background-color: light-dark(#b39dc7, #59516d9d);
+}
+
+.osrs_item_image {
+	display: inline !important;
+	vertical-align: middle;
+	zoom: 0.75;
+	padding: 3px 0px;
+}
+
+.osrs_item_image_full {
+	max-height: unset;
+}
+
+.osrs_item_name {
+	text-decoration: none !important;
+	font-size: 1em;
+	text-align: center;
+	white-space: nowrap;
+}
