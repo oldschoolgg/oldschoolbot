@@ -29,6 +29,7 @@ import puroOptions, { puroPuroStartCommand } from '@/mahoji/lib/abstracted_comma
 import { questCommand } from '@/mahoji/lib/abstracted_commands/questCommand.js';
 import { sawmillCommand } from '@/mahoji/lib/abstracted_commands/sawmillCommand.js';
 import { scatterCommand } from '@/mahoji/lib/abstracted_commands/scatterCommand.js';
+import { unchargeGloriesCommand } from '@/mahoji/lib/abstracted_commands/unchargeGloriesCommand.js';
 import { underwaterAgilityThievingCommand } from '@/mahoji/lib/abstracted_commands/underwaterCommand.js';
 import { warriorsGuildCommand } from '@/mahoji/lib/abstracted_commands/warriorsGuildCommand.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
@@ -212,28 +213,36 @@ export const activitiesCommand = defineCommand({
 		{
 			type: 'Subcommand',
 			name: 'charge',
-			description: 'Charge glories, or rings of wealth.',
+			description: 'Charge/uncharge glories, or charge rings of wealth.',
 			options: [
 				{
 					type: 'String',
 					name: 'item',
-					description: 'The item you want to charge',
+					description: 'The jewellery you want to charge or uncharage',
 					required: true,
 					choices: [
 						{
-							name: 'Amulet of glory',
+							name: 'Charge Amulet of glory',
 							value: 'glory'
 						},
 						{
-							name: 'Ring of wealth',
+							name: 'Charge Ring of wealth',
 							value: 'wealth'
+						},
+						{
+							name: "Uncharge Glory's manually in a trip",
+							value: 'glory_uncharge'
+						},
+						{
+							name: "Uncharge Glory's (Instant via GE for 5000 gp/ea)",
+							value: 'glory_exchange'
 						}
 					]
 				},
 				{
 					type: 'Integer',
 					name: 'quantity',
-					description: 'The amount of inventories you want to charge.  (optional)',
+					description: 'The amount to do. (optional)',
 					required: false,
 					min_value: 1
 				}
@@ -502,6 +511,9 @@ export const activitiesCommand = defineCommand({
 		if (options.decant) {
 			return decantCommand(user, options.decant.potion_name, options.decant.dose);
 		}
+		if (options.charge?.item === 'glory_exchange') {
+			return unchargeGloriesCommand(user, channelId, options.charge.quantity, true);
+		}
 		if (options.inferno?.action === 'stats') return infernoStatsCommand({ rng, user });
 		if (options.birdhouses?.action === 'check') return birdhouseCheckCommand(user);
 
@@ -560,6 +572,9 @@ export const activitiesCommand = defineCommand({
 		}
 		if (options.charge?.item === 'wealth') {
 			return chargeWealthCommand(user, channelId, options.charge.quantity);
+		}
+		if (options.charge?.item === 'glory_uncharge') {
+			return unchargeGloriesCommand(user, channelId, options.charge.quantity, false);
 		}
 		if (options.fight_caves) {
 			return fightCavesCommand({ rng, user, channelId });

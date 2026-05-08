@@ -1,6 +1,6 @@
 import { GearStat } from '@oldschoolgg/gear';
 import { Time } from '@oldschoolgg/toolkit';
-import { Bank, itemID, Monsters, resolveItems } from 'oldschooljs';
+import { Bank, deepResolveItems, EMonster, itemID, Monsters, resolveItems } from 'oldschooljs';
 
 import { QuestID } from '@/lib/minions/data/quests.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
@@ -97,6 +97,23 @@ export const lowKillableMonsters: KillableMonster[] = [
 		healAmountNeeded: 30,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
+	},
+	{
+		id: EMonster.GORAK,
+		name: Monsters.Gorak.name,
+		aliases: Monsters.Gorak.aliases,
+		timeToFinish: Time.Second * 39.2,
+		table: Monsters.Gorak,
+		wildy: false,
+		difficultyRating: 2,
+		itemsRequired: deepResolveItems([['Ring of wealth', 'Ring of wealth (i)']]),
+		qpRequired: 30,
+		levelRequirements: {
+			prayer: 43,
+			crafting: 31,
+			woodcutting: 36
+		},
+		itemInBankBoosts: [{ [itemID('Gem bag')]: 20 }]
 	},
 	{
 		id: Monsters.JubblyBird.id,

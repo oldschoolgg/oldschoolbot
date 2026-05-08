@@ -145,7 +145,11 @@ export async function fightCavesCommand({
 
 	const diedPreJad = rng.percentChance(preJadDeathChance);
 	const fakeDuration = duration;
-	duration = diedPreJad ? rng.randInt(Time.Minute * 20, duration) : duration;
+	if (diedPreJad) {
+		const minDuration = Time.Minute * 20;
+		const maxDuration = Math.max(minDuration, Math.floor(duration));
+		duration = rng.randInt(minDuration, maxDuration);
+	}
 	const preJadDeathTime = diedPreJad ? duration : null;
 
 	await ActivityManager.startTrip<FightCavesActivityTaskOptions>({

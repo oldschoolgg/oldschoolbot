@@ -15,6 +15,9 @@ title: "Farming"
 - Grand crystal acorn - Plant at 115 Farming in Crystal Tree patch, gives Crystal Shards when harvested.
 - Mysterious Tree seed - Plant at 120 Farming in tree patch, gives various Mystery Boxes when harvested.
 
+- You are able to sell spirit seeds (via [[/sell items\:Spirit seed]]) to receive (immediately opened) t5 seed packs.
+- Furthermore, all custom seeds can be obtained via this method, as well as through traditionally obtained seed packs.
+
 ## Boosts
 
 - [Scroll of Farming](dungeoneering-training/dg-rewards#buyable-boosts-utility) - Gives +2 patches of all types. You must [[/minion use item\:Scroll of farming]] to receive the bonus patches.

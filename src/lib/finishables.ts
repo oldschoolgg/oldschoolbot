@@ -268,7 +268,13 @@ export const finishables: Finishable[] = [
 				const key = Items.getOrThrow(`${tier} key red`);
 				const lock = Items.getOrThrow(`${tier} locks`);
 				if (accumulatedLoot.has(lock.id) && tier !== 'Gold') continue;
-				return openShadeChest({ item: key, allItemsOwned: accumulatedLoot, qty: totalRuns, rng }).bank;
+				return openShadeChest({
+					item: key,
+					allItemsOwned: accumulatedLoot,
+					qty: totalRuns,
+					rng,
+					hasEliteCA: true
+				}).bank;
 			}
 			throw new Error('Not possible!');
 		}
