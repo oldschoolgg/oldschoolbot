@@ -1295,7 +1295,7 @@
 	{
 		"name": "Expert mining gloves",
 		"item_cost": {
-			"21341": 60,
+			"21341": 40,
 			"21343": 1,
 			"21345": 1
 		},
@@ -2755,7 +2755,7 @@
 	{
 		"name": "Mining gloves",
 		"item_cost": {
-			"21341": 60
+			"21341": 40
 		},
 		"output_items": {
 			"21343": 1
@@ -3871,6 +3871,24 @@
 		}
 	},
 	{
+		"name": "Soft clay pack (golden nuggets)",
+		"output_items": {
+			"12009": 1
+		},
+		"item_cost": {
+			"12012": 10
+		}
+	},
+	{
+		"name": "Soft clay pack (minerals)",
+		"output_items": {
+			"12009": 1
+		},
+		"item_cost": {
+			"21341": 10
+		}
+	},
+	{
 		"name": "Spiny helmet",
 		"gp_cost": 65000,
 		"output_items": {
@@ -3947,7 +3965,7 @@
 	{
 		"name": "Superior mining gloves",
 		"item_cost": {
-			"21341": 120
+			"21341": 100
 		},
 		"output_items": {
 			"21345": 1

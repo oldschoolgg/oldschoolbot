@@ -432,11 +432,6 @@ export async function shadesOfMortonCreatePyreLogsCommand(
 	const pyreLog = shadesLogs.find(l => l.normalLog.id === recipe.log.id);
 	if (!pyreLog) return 'Could not find pyre log data.';
 
-	const userStats = user.skillsAsLevels;
-	if (userStats.firemaking < pyreLog.fmLevel) {
-		return `You need ${pyreLog.fmLevel} Firemaking to create ${recipe.pyreLogs.name}.`;
-	}
-
 	const logsOwned = user.bank.amount(recipe.log.id);
 	const sacredOilOwned = user.bank.amount(sacredOilItem.id);
 
