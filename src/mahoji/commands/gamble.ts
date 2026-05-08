@@ -1,6 +1,5 @@
 import { isSuperUntradeable } from '@/lib/bso/bsoUtil.js';
 
-import { randArrItem } from '@oldschoolgg/rng';
 import { Bank } from 'oldschooljs';
 
 import { choicesOf } from '@/discord/index.js';
@@ -167,7 +166,7 @@ export const gambleCommand = defineCommand({
 	run: async ({ options, interaction, guildId, user, rng }) => {
 		if (options.item) {
 			if (options.item.item) {
-				return capeGambleCommand(user, options.item.item, interaction, options.item.autoconfirm);
+				return capeGambleCommand(user, options.item.item, interaction, rng, options.item.autoconfirm);
 			}
 			return capeGambleStatsCommand(user);
 		}
@@ -178,7 +177,7 @@ export const gambleCommand = defineCommand({
 			if (options.duel.amount && [user, targetUser].some(u => u.bitfield.includes(BitField.SelfGamblingLocked))) {
 				return 'One of you has gambling disabled and cannot participate in this duel!';
 			}
-			return duelCommand(user, interaction, targetUser, options.duel.user, options.duel.amount);
+			return duelCommand(rng, user, interaction, targetUser, options.duel.user, options.duel.amount);
 		}
 
 		if (options.dice) {
@@ -194,11 +193,11 @@ export const gambleCommand = defineCommand({
 		}
 
 		if (options.lucky_pick) {
-			return luckyPickCommand(user, options.lucky_pick.amount, interaction);
+			return luckyPickCommand(rng, user, options.lucky_pick.amount, interaction);
 		}
 
 		if (options.slots) {
-			return slotsCommand(interaction, user, options.slots.amount);
+			return slotsCommand(rng, interaction, user, options.slots.amount);
 		}
 
 		if (options.hot_cold) {
@@ -224,7 +223,7 @@ export const gambleCommand = defineCommand({
 				.items()
 				.filter(i => !isSuperUntradeable(i[0].id))
 				.filter(i => !user.user.favoriteItems.includes(i[0].id));
-			const entry = randArrItem(bank);
+			const entry = rng.pick(bank);
 			if (!entry) return 'You have no items you can give away!';
 			const [item, qty] = entry;
 			const loot = new Bank().add(item.id, qty);

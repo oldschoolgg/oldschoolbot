@@ -20,11 +20,6 @@ export async function calcMaxTripLength(user: MUser, activity?: activity_type_en
 	let regularHPBoost = false;
 
 	switch (activity) {
-		case 'Fishing':
-			if (user.allItemsOwned.has('Fish sack barrel') || user.allItemsOwned.has('Fish barrel')) {
-				max += Time.Minute * 9;
-			}
-			break;
 		case 'Nightmare':
 		case 'GroupMonsterKilling':
 		case 'MonsterKilling':

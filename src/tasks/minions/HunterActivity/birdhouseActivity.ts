@@ -1,6 +1,5 @@
 import { calcBirdhouseLimit } from '@/lib/bso/bsoUtil.js';
 
-import { roll } from '@oldschoolgg/rng';
 import { Bank, itemID } from 'oldschooljs';
 
 import birdhouses from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
@@ -86,7 +85,7 @@ export const birdHouseTask: MinionTask = {
 					loot.add('Clue scroll(beginner)');
 				}
 			}
-			if (!gotClue && roll(1000)) {
+			if (!gotClue && rng.roll(1000)) {
 				loot.add('Clue scroll(beginner)');
 			}
 		}

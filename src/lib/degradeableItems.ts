@@ -1,6 +1,6 @@
 import type { GearSetupType, PrimaryGearSetupType } from '@oldschoolgg/gear';
-import { percentChance } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
+import { MathRNG } from 'node-rng';
 import { Bank, type Item, Items, itemID, type Monster } from 'oldschooljs';
 
 import type { KillableMonster } from '@/lib/minions/types.js';
@@ -357,7 +357,7 @@ export async function degradeItem({
 	let pennyReduction = 0;
 	if (user.hasEquipped("Ghommal's lucky penny")) {
 		for (let i = 0; i < chargesToDegrade; i++) {
-			if (percentChance(5)) {
+			if (MathRNG.percentChance(5)) {
 				pennyReduction++;
 			}
 		}

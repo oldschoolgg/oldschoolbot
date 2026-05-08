@@ -1,8 +1,8 @@
 import { bsoOpenables } from '@/lib/bso/openables/bsoOpenables.js';
 
-import { percentChance, randInt, roll } from '@oldschoolgg/rng';
 import type { IFarmingContract } from '@oldschoolgg/schemas';
 import { Emoji, Events, formatOrdinal } from '@oldschoolgg/toolkit';
+import { percentChance, randInt } from 'node-rng';
 import {
 	Bank,
 	BrimstoneChest,
@@ -88,11 +88,14 @@ const FrozenCacheTable = new LootTable()
 	.add('Spirit seed', 1, 2)
 	.add('Rune sword');
 
+const BaleOfFlax = new LootTable().add('Flax', 25);
+
 export interface OpenArgs {
 	quantity: number;
 	user: MUser;
 	self: UnifiedOpenable;
 	totalLeaguesPoints: number;
+	rng: RNGProvider;
 }
 
 export interface UnifiedOpenable {
@@ -163,7 +166,7 @@ for (const clueTier of ClueTiers) {
 		id: casketItem.id,
 		openedItem: casketItem,
 		aliases: [clueTier.name.toLowerCase()],
-		output: async ({ quantity, user, self }) => {
+		output: async ({ quantity, user, self, rng }) => {
 			const clueTier = ClueTiers.find(c => c.id === self.id)!;
 
 			// BSO Clue roll code:
@@ -191,7 +194,7 @@ for (const clueTier of ClueTiers) {
 			if (clueTier.mimicChance) {
 				const table = clueTier.name === 'Master' ? MasterMimicTable : EliteMimicTable;
 				for (let i = 0; i < quantity; i++) {
-					if (roll(clueTier.mimicChance)) {
+					if (rng.roll(clueTier.mimicChance)) {
 						loot.add(table.roll());
 						mimicNumber++;
 					}
@@ -597,6 +600,14 @@ export const allOpenables: UnifiedOpenable[] = [
 		output: FrozenCacheTable,
 		allItems: FrozenCacheTable.allItems
 	},
+	{
+		name: 'Bale of flax',
+		id: itemID('Bale of flax'),
+		openedItem: Items.getOrThrow('Bale of flax'),
+		aliases: ['bale of flax', 'flax bale', 'bale flax'],
+		output: BaleOfFlax,
+		allItems: BaleOfFlax.allItems
+	},
 	...clueOpenables,
 	...osjsOpenables,
 	...bsoOpenables,
@@ -614,14 +625,16 @@ export function getOpenableLoot({
 	openable,
 	quantity,
 	user,
-	totalLeaguesPoints
+	totalLeaguesPoints,
+	rng
 }: {
 	openable: UnifiedOpenable;
 	quantity: number;
 	user: MUser;
 	totalLeaguesPoints: number;
+	rng: RNGProvider;
 }) {
 	return openable.output instanceof LootTable
 		? { bank: openable.output.roll(quantity), message: null }
-		: openable.output({ user, self: openable, quantity, totalLeaguesPoints });
+		: openable.output({ user, self: openable, quantity, totalLeaguesPoints, rng });
 }

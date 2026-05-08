@@ -92,13 +92,13 @@ export const herbloreTask: MinionTask = {
 
 		await user.transactItems({ collectionLog: true, itemsToAdd: loot });
 
-		handleTripFinish(
+		await handleTripFinish({
 			user,
 			channelId,
-			`${user}, ${user.minionName} finished making ${outputQuantity}x ${mixableItem.item.name}. ${xpRes}`,
+			message: `${user}, ${user.minionName} finished making ${outputQuantity}x ${mixableItem.item.name}. ${xpRes}`,
 			data,
 			loot,
 			messages
-		);
+		});
 	}
 };

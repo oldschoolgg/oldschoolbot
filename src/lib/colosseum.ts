@@ -1,12 +1,13 @@
 import { gorajanGearBoost } from '@/lib/bso/gorajanGearBoost.js';
 
 import type { EquipmentSlot, GearSetupType } from '@oldschoolgg/gear';
-import { percentChance, randInt } from '@oldschoolgg/rng';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
 	exponentialPercentScale,
 	formatDuration,
+	GeneralBank,
+	type GeneralBankType,
 	increaseNumByPercent,
 	objectEntries,
 	reduceNumByPercent,
@@ -14,7 +15,6 @@ import {
 	Time,
 	UserError
 } from '@oldschoolgg/toolkit';
-import { GeneralBank, type GeneralBankType } from '@oldschoolgg/toolkit/node';
 import { Bank, type ItemBank, Items, LootTable, resolveItems } from 'oldschooljs';
 import { clamp } from 'remeda';
 
@@ -342,7 +342,7 @@ function calculateTimeInMs(waveTwelveKC: number): number {
 	return 0;
 }
 
-function calculateGlory(kcBank: ColosseumWaveBank, wave: Wave) {
+function calculateGlory(rng: RNGProvider, kcBank: ColosseumWaveBank, wave: Wave) {
 	const waveKCSkillBank = new ColosseumWaveBank();
 	for (const [waveNumber, kc] of kcBank.entries()) {
 		waveKCSkillBank.add(waveNumber, clamp(calcWhatPercent(kc, 30 - waveNumber), { min: 1, max: 100 }));
@@ -353,7 +353,9 @@ function calculateGlory(kcBank: ColosseumWaveBank, wave: Wave) {
 	const maxPossibleGlory = 60_000;
 	const ourMaxGlory = calcPercentOfNum(expSkill, maxPossibleGlory);
 	const wavePerformance = exponentialPercentScale((totalKCSkillPercent + kcSkill) / 2);
-	const glory = randInt(calcPercentOfNum(wavePerformance, ourMaxGlory), ourMaxGlory);
+	const minGlory = Math.floor(calcPercentOfNum(wavePerformance, ourMaxGlory));
+	const maxGlory = Math.floor(ourMaxGlory);
+	const glory = rng.randInt(Math.max(0, minGlory), Math.max(0, maxGlory));
 	return glory;
 }
 
@@ -437,6 +439,7 @@ export const startColosseumRun = (options: {
 	hasGora: boolean;
 	hasBHook: boolean;
 	hasBulwark: boolean;
+	rng: RNGProvider;
 }): ColosseumResult => {
 	const bank = new Bank();
 	const addedWaveKCBank = new ColosseumWaveBank();
@@ -463,11 +466,11 @@ export const startColosseumRun = (options: {
 	for (const wave of colosseumWaves) {
 		realDuration += waveDuration;
 		const kcForThisWave = options.kcBank.amount(wave.waveNumber);
-		maxGlory = Math.max(calculateGlory(options.kcBank, wave), maxGlory);
+		maxGlory = Math.max(calculateGlory(options.rng, options.kcBank, wave), maxGlory);
 		const deathChance = calculateDeathChance(kcForThisWave, options.hasBF, options.hasSGS, options.hasBulwark);
 		deathChances.push(deathChance);
 
-		if (percentChance(deathChance)) {
+		if (options.rng.percentChance(deathChance)) {
 			return {
 				diedAt: wave.waveNumber,
 				loot: null,
@@ -506,7 +509,9 @@ export const startColosseumRun = (options: {
 	throw new Error('Colosseum run did not end correctly.');
 };
 
-export async function colosseumCommand(user: MUser, channelId: string, quantity: number | undefined) {
+export async function colosseumCommand(itx: OSInteraction, inputQuantity?: number) {
+	const { user, rng, channelId } = itx;
+	let quantity = inputQuantity;
 	if (await user.minionIsBusy()) {
 		return `${user.usernameOrMention} is busy`;
 	}
@@ -661,7 +666,8 @@ export async function colosseumCommand(user: MUser, channelId: string, quantity:
 			hasSungodAxe,
 			hasGora,
 			hasBHook,
-			hasBulwark
+			hasBulwark,
+			rng
 		});
 		results.push(res);
 		const minutes = res.realDuration / Time.Minute;

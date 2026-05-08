@@ -136,6 +136,11 @@ export const Minigames: readonly BotMinigame[] = [
 		column: 'pest_control'
 	},
 	{
+		name: 'Vale Totems',
+		aliases: ['vt', 'vale totems'],
+		column: 'vale_totems'
+	},
+	{
 		name: 'Volcanic Mine',
 		aliases: ['vm'],
 		column: 'volcanic_mine'

@@ -76,7 +76,8 @@ export enum SlayerTaskUnlocksEnum {
 	EyeSeeYou = 202,
 	MoreEyesThanSense = 203,
 	WarpedReality = 204,
-	OffTaskSlayer = 205
+	OffTaskSlayer = 205,
+	UnRestrainingOrder = 206
 }
 
 export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
@@ -608,6 +609,16 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		slayerPointCost: 5000,
 		canBeRemoved: true,
 		aliases: ['off task slayer', 'off-task slayer', 'taskless slayer']
+	},
+	{
+		id: SlayerTaskUnlocksEnum.UnRestrainingOrder,
+		name: 'Un-restraining Order',
+		desc: 'Number of custodian stalkers assigned is increased to 200-250.',
+		slayerPointCost: 100,
+		extendID: [Monsters.JuvenileCustodianStalker.id],
+		extendMult: 2.857,
+		canBeRemoved: true,
+		aliases: ['extend custodian stalkers', 'extend stalkers']
 	}
 ];
 

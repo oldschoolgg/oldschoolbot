@@ -1,6 +1,6 @@
 {
-	"hash": "6e99679cadc7e5f3571790ea266eac4c",
-	"date": "2025-12-24T04:50:42.790Z",
+	"hash": "19aa74940f9c332a4ff508c3589c86f4",
+	"date": "2026-04-24T10:26:23.947Z",
 	"data": [
 		{
 			"name": "3rd age felling axe",
@@ -1754,6 +1754,17 @@
 			"required_stats": {
 				"smithing": 82,
 				"crafting": 82
+			},
+			"qp_required": 150
+		},
+		{
+			"name": "Bow of faerdhinen (inactive) (bypass stats)",
+			"items_created": {
+				"Bow of faerdhinen (inactive)": 1
+			},
+			"items_required": {
+				"Crystal shard": 150,
+				"Enhanced crystal weapon seed": 1
 			},
 			"qp_required": 150
 		},
@@ -14693,6 +14704,17 @@
 			"required_stats": {
 				"smithing": 90
 			}
+		},
+		{
+			"name": "Uncharged dragonfire shield (bypass stats)",
+			"items_created": {
+				"Uncharged dragonfire shield": 1
+			},
+			"items_required": {
+				"Anti-dragon shield": 1,
+				"Draconic visage": 1
+			},
+			"qp_required": 34
 		},
 		{
 			"name": "Uncharged dragonfire ward",

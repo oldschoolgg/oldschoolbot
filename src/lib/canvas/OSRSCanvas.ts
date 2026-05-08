@@ -368,7 +368,8 @@ export class OSRSCanvas {
 		textColor,
 		glow,
 		user,
-		override_show_paints: show_paints
+		override_show_paints: show_paints,
+		effect
 	}: {
 		itemID: number;
 		x: number;
@@ -384,6 +385,7 @@ export class OSRSCanvas {
 		};
 		user?: MUser | null | undefined;
 		override_show_paints?: boolean | undefined;
+		effect?: Image | undefined;
 	}) {
 		const itemIcon: Image | Canvas = await OSRSCanvas.getItemImage({ itemID, iconPackId });
 		const destX = Math.floor(x + (this.itemSize.width - itemIcon.width) / 2);
@@ -391,7 +393,7 @@ export class OSRSCanvas {
 		let customImage: Image | null = null;
 
 		if (user && show_paints !== false) {
-			if (show_paints === true || !user.bitfield.includes(BitField.DisablePaints)) {
+			if (show_paints === true || !(user.bitfield?.includes(BitField.DisablePaints) ?? false)) {
 				customImage = await applyCustomItemEffects(user, itemID);
 			}
 		}
@@ -408,6 +410,13 @@ export class OSRSCanvas {
 			itemIcon.height
 		] as const;
 
+		if (effect) {
+			const centerX = destX + itemIcon.width / 2;
+			const centerY = destY + itemIcon.height / 2;
+			const effectX = centerX - effect.width / 2;
+			const effectY = centerY - effect.height / 2;
+			this.ctx.drawImage(effect, effectX, effectY, effect.width, effect.height);
+		}
 		glow = handleSlayerMaskGlow({ itemID, user, glow });
 
 		if (glow) {

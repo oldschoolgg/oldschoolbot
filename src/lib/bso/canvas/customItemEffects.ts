@@ -1,7 +1,7 @@
 import { BSOItem } from '@/lib/bso/BSOItem.js';
 import { getPaintedItemImage, paintColorsMap } from '@/lib/bso/paintColors.js';
 
-import { randFloat, randInt } from '@oldschoolgg/rng';
+import { randFloat, randInt } from 'node-rng';
 import { EItem } from 'oldschooljs';
 import { type Canvas, loadImage } from 'skia-canvas';
 

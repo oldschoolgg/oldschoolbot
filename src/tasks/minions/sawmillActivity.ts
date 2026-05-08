@@ -1,6 +1,6 @@
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 
-import { roll } from '@oldschoolgg/rng';
+import { roll } from 'node-rng';
 import { Bank } from 'oldschooljs';
 
 import { Planks } from '@/lib/minions/data/planks.js';

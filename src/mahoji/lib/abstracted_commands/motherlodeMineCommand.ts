@@ -1,17 +1,19 @@
-import { randomVariation } from '@oldschoolgg/rng';
-import { formatDuration, increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
+import { increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
 import { determineMiningTime } from '@/lib/skilling/functions/determineMiningTime.js';
 import { pickaxes } from '@/lib/skilling/functions/miningBoosts.js';
 import Mining from '@/lib/skilling/skills/mining.js';
 import type { MotherlodeMiningActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export async function motherlodeMineCommand({
 	user,
 	channelId,
-	quantity
+	quantity,
+	rng
 }: {
+	rng: RNGProvider;
 	user: MUser;
 	channelId: string;
 	quantity?: number;
@@ -73,11 +75,12 @@ export async function motherlodeMineCommand({
 		miningLvl: miningLevel,
 		hasGlory: user.hasEquippedOrInBank('Amulet of glory'),
 		maxTripLength: await user.calcMaxTripLength('MotherlodeMining'),
-		hasKaramjaMedium: false
+		hasKaramjaMedium: false,
+		rng
 	});
 
-	const fakeDurationMin = quantity ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
-	const fakeDurationMax = quantity ? randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
+	const fakeDurationMin = quantity ? rng.randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
+	const fakeDurationMax = quantity ? rng.randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
 
 	await ActivityManager.startTrip<MotherlodeMiningActivityTaskOptions>({
 		userID: user.id,
@@ -93,8 +96,8 @@ export async function motherlodeMineCommand({
 		quantity ? `mined ${quantity}x pay-dirt or gets tired` : 'is satisfied'
 	}, it'll take ${
 		quantity
-			? `between ${formatDuration(fakeDurationMin)} **and** ${formatDuration(fakeDurationMax)}`
-			: formatDuration(duration)
+			? `between ${formatTripDuration(user, fakeDurationMin)} **and** ${formatTripDuration(user, fakeDurationMax)}`
+			: formatTripDuration(user, duration)
 	} to finish.`;
 
 	if (user.usingPet('Doug')) {

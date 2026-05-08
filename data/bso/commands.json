@@ -1,6 +1,6 @@
 {
-	"hash": "e4c4edaee60ef3edd454d0e900c6564c",
-	"date": "2025-09-27T10:56:17.425Z",
+	"hash": "f6918774d9850789b290640b6594ab20",
+	"date": "2026-04-24T10:26:23.909Z",
 	"data": [
 		{
 			"name": "activities",
@@ -230,7 +230,7 @@
 		},
 		{
 			"name": "giveaway",
-			"desc": "Giveaway items from your ban to other players.",
+			"desc": "Giveaway items from your bank to other players.",
 			"examples": ["/giveaway items:10 trout, 5 coal time:1h"],
 			"subOptions": ["list", "start"]
 		},
@@ -388,6 +388,7 @@
 				"tears_of_guthix",
 				"temple_trek",
 				"trouble_brewing",
+				"vale_totems",
 				"volcanic_mine"
 			]
 		},
@@ -495,7 +496,7 @@
 		{
 			"name": "rp",
 			"desc": "Admin tools second set",
-			"subOptions": ["action", "player", "user_event"]
+			"subOptions": ["player", "user_event"]
 		},
 		{
 			"name": "runecraft",

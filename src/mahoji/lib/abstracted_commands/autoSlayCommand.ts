@@ -393,12 +393,14 @@ export async function autoSlayCommand({
 	user,
 	modeOverride,
 	saveMode,
-	interaction
+	interaction,
+	rng
 }: {
 	user: MUser;
 	modeOverride?: string;
 	saveMode?: boolean;
-	interaction: MInteraction;
+	interaction: OSInteraction;
+	rng: RNGProvider;
 }): CommandResponse {
 	modeOverride = modeOverride?.toLowerCase();
 	const autoslayOptions = user.user.slayer_autoslay_options;
@@ -406,7 +408,7 @@ export async function autoSlayCommand({
 	const isOnTask = usersTask.assignedTask !== null && usersTask.currentTask !== null;
 
 	if (!isOnTask) {
-		return slayerNewTaskCommand({ user, interaction, showButtons: true });
+		return slayerNewTaskCommand({ user, interaction, showButtons: true, rng });
 	}
 	const savedMethod = determineAutoslayMethod(autoslayOptions as AutoslayOptionsEnum[]);
 	const method = modeOverride ?? savedMethod;

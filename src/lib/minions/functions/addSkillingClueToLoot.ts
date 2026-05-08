@@ -1,4 +1,3 @@
-import { percentChance, randFloat, roll } from '@oldschoolgg/rng';
 import { sumArr } from '@oldschoolgg/toolkit';
 import { type Bank, itemID } from 'oldschooljs';
 
@@ -22,6 +21,7 @@ const clues = [
 ];
 
 export default function addSkillingClueToLoot(
+	rng: RNGProvider,
 	user: MUser | GearBank | number,
 	skill: SkillNameType,
 	quantity: number,
@@ -48,8 +48,8 @@ export default function addSkillingClueToLoot(
 	}
 
 	for (let i = 0; i < quantity; i++) {
-		if (skill === 'woodcutting' && !clueNestsOnly && roll(nestChance)) {
-			if (twitcherSetting && percentChance(20)) {
+		if (skill === 'woodcutting' && !clueNestsOnly && rng.roll(nestChance)) {
+			if (twitcherSetting && rng.percentChance(20)) {
 				switch (twitcherSetting) {
 					case 'egg':
 						loot.add(eggNest.roll());
@@ -73,10 +73,10 @@ export default function addSkillingClueToLoot(
 			}
 		}
 
-		if (!roll(chance)) continue;
+		if (!rng.roll(chance)) continue;
 		const nextTier = false;
 		let gotClue = false;
-		let clueRoll = randFloat(0, cluesTotalWeight);
+		let clueRoll = rng.randFloat(0, cluesTotalWeight);
 		for (const clue of clues) {
 			if (clueRoll < clue[1] || nextTier) {
 				nests++;
@@ -87,7 +87,7 @@ export default function addSkillingClueToLoot(
 			// Remove weighting to check next tier.
 			clueRoll -= clue[1];
 		}
-		if (!gotClue && roll(1000)) {
+		if (!gotClue && rng.roll(1000)) {
 			loot.add('Clue scroll (beginner)');
 			gotClue = true;
 		}

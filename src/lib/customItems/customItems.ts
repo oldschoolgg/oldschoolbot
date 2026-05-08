@@ -228,7 +228,7 @@ setCustomItem(516, 'Nuts of monkey', 'Rune platelegs');
 /**
  * Exclusive Items
  *
- * Items from 40_000 to 45_000 will not be dropped by any mystery box, and are untradeable
+ * Items from 40_000 to 45_000 will not be dropped by any mystery box and are untradeable
  */
 // Master capes
 setCustomItem(40_000, 'Construction master cape', 'Abyssal cape', {}, 200_000_000);
@@ -1230,7 +1230,6 @@ setCustomItem(
 			slot: EquipmentSlot.Neck,
 			requirements: {
 				defence: 99,
-				// @ts-expect-error dgg
 				dungeoneering: 99,
 				magic: 99
 			}
@@ -1261,7 +1260,6 @@ setCustomItem(
 			slot: EquipmentSlot.Neck,
 			requirements: {
 				defence: 99,
-				// @ts-expect-error dgg
 				dungeoneering: 99,
 				ranged: 99
 			}
@@ -1292,7 +1290,6 @@ setCustomItem(
 			slot: EquipmentSlot.Neck,
 			requirements: {
 				defence: 99,
-				// @ts-expect-error dgg
 				dungeoneering: 99
 			}
 		}
@@ -2971,8 +2968,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000_000
@@ -14363,6 +14359,101 @@ setCustomItem(74_006, 'Ember', 'Herbi', {
 		cantDropFromMysteryBoxes: true
 	}
 });
+
+setCustomItem(
+	74_007,
+	'The whale card',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	74_008,
+	'Wubbles',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	1_000_000
+);
+setCustomItem(
+	74_009,
+	'Wubufu',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	1_000_000
+);
+setCustomItem(
+	74_010,
+	'Wabbit eggs',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+setCustomItem(
+	74_011,
+	'Magnegg',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+setCustomItem(
+	73_969,
+	'Radiant Magnabbit',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	74_012,
+	'Magnabbit',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+setCustomItem(
+	74_013,
+	'The whale card (fake)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	1_000_000
+);
 
 export const discontinuedItems = resolveItems([
 	'Turkey',

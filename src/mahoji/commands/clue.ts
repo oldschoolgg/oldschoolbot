@@ -1,14 +1,15 @@
 import { checkElderClueRequirements } from '@/lib/bso/elderClueRequirements.js';
 
-import { randInt } from '@oldschoolgg/rng';
 import { formatDuration, increaseNumByPercent, isWeekend, notEmpty, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 import { clamp } from 'remeda';
 
+import { MessageBuilderClass } from '@/discord/MessageBuilder.js';
 import { type ClueTier, ClueTiers } from '@/lib/clues/clueTiers.js';
 import { clueHunterOutfit } from '@/lib/data/CollectionsExport.js';
 import { getPOHObject } from '@/lib/poh/index.js';
 import type { ClueActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 
 export async function calcClueScores(user: MUser) {
@@ -107,7 +108,7 @@ export const clueCommand = defineCommand({
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelId }) => {
+	run: async ({ options, user, channelId, rng }) => {
 		if (options.tier === 'Elder (Info)') {
 			const reqs = await checkElderClueRequirements(user);
 			if (reqs.unmetRequirements.length > 0) {
@@ -391,7 +392,7 @@ ${reqs.unmetRequirements.map(str => `- ${str}`).join('\n')}`;
 
 		await user.removeItemsFromBank(new Bank().add(clueTier.scrollID, quantity));
 
-		const randomAddedDuration = randInt(
+		const randomAddedDuration = rng.randInt(
 			clueTierName === 'Grandmaster' ? -5 : 1,
 			clueTierName === 'Grandmaster' ? 5 : 20
 		);
@@ -406,10 +407,16 @@ ${reqs.unmetRequirements.map(str => `- ${str}`).join('\n')}`;
 			duration,
 			type: 'ClueCompletion'
 		});
-		return `${user.minionName} is now completing ${quantity}x ${
-			clueTier.name
-		} clues, it'll take around ${formatDuration(duration)} to finish.${
-			boosts.length > 0 ? `\n\n**Boosts:** ${boosts.join(', ')}.` : ''
-		}`;
+
+		const response = new MessageBuilderClass();
+		const implingLootString = '';
+		response.setContent(
+			`${user.minionName} is now completing ${quantity}x ${
+				clueTier.name
+			} clues, it'll take around ${formatTripDuration(user, duration)} to finish (${((quantity / duration) * 3600000).toFixed(1)}/hr).${
+				boosts.length > 0 ? `\n\n**Boosts:** ${boosts.join(', ')}.` : ''
+			}${implingLootString}`
+		);
+		return response;
 	}
 });

@@ -1,5 +1,5 @@
-import { MathRNG } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
+import { MathRNG } from 'node-rng';
 import { Monsters } from 'oldschooljs';
 import { expect, test } from 'vitest';
 

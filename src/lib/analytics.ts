@@ -127,6 +127,9 @@ FROM users;
 			gpSlots: currentClientSettings.gp_slots,
 			gpHotCold: currentClientSettings.gp_hotcold,
 			gpItemContracts: currentClientSettings.gp_ic
+		},
+		select: {
+			timestamp: true
 		}
 	});
 }

@@ -1,4 +1,4 @@
-import { randArrItem } from '@oldschoolgg/rng';
+import { randArrItem } from 'node-rng';
 import { LootTable } from 'oldschooljs';
 
 export const pumpkinHeadUniqueTable = new LootTable()

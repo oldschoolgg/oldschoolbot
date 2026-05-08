@@ -11,8 +11,8 @@ import {
 } from '@/lib/bso/tables/sharedTables.js';
 
 import { userMention } from '@oldschoolgg/discord';
-import { randInt } from '@oldschoolgg/rng';
 import { calcPerHour, Events, formatOrdinal } from '@oldschoolgg/toolkit';
+import { randInt } from 'node-rng';
 import { Bank, Items, increaseBankQuantitesByPercent, resolveItems } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';

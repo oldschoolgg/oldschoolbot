@@ -1,4 +1,5 @@
-import { roll } from '@oldschoolgg/rng';
+import { createHash } from 'node:crypto';
+import { gzip } from 'node:zlib';
 import { objectEntries, stripEmojis, toTitleCase } from '@oldschoolgg/toolkit';
 import { type ArrayItemsResolved, type Bank, Items } from 'oldschooljs';
 import { clamp } from 'remeda';
@@ -44,7 +45,8 @@ export function bankToStrShortNames(bank: Bank) {
 	const str = [];
 	for (const [item, qty] of bank.items()) {
 		const shortName = shortItemNames.get(item);
-		str.push(`${qty}x ${shortName ?? item.name}${qty > 1 ? 's' : ''}`);
+		const name = shortName ?? item.name;
+		str.push(`${qty}x ${qty > 1 ? pluraliseItemName(name) : name}`);
 	}
 	return str.join(', ');
 }
@@ -127,13 +129,14 @@ export function isValidSkill(skill: string): skill is SkillNameType {
 export function perHourChance(
 	durationMilliseconds: number,
 	oneInXPerHourChance: number,
-	successFunction: () => unknown
+	successFunction: () => unknown,
+	rng: RNGProvider
 ) {
 	const minutesPassed = Math.floor(durationMilliseconds / 60_000);
 	const perMinuteChance = oneInXPerHourChance * 60;
 
 	for (let i = 0; i < minutesPassed; i++) {
-		if (roll(perMinuteChance)) {
+		if (rng.roll(perMinuteChance)) {
 			successFunction();
 		}
 	}
@@ -146,4 +149,36 @@ export function patronMsg(tierNeeded: number) {
 
 export function isValidBitField(bit: number): bit is BitField {
 	return Boolean(BitFieldData[bit as keyof typeof BitFieldData]);
+}
+
+export async function asyncGzip(buffer: Buffer): Promise<Buffer> {
+	return new Promise<Buffer>((resolve, reject) => {
+		gzip(buffer, {}, (error, gzipped) => {
+			if (error) {
+				reject(error);
+			}
+			resolve(gzipped);
+		});
+	});
+}
+
+export function md5sum(str: string): string {
+	return createHash('md5').update(str).digest('hex');
+}
+
+const wordBlacklistBase64 =
+	'YXNzDQpzaGl0DQpiaXRjaA0KYm9vYnMNCnRpdHMNCmJhbGxzYWNrDQpiYncNCmJkc20NCmJhc3RhcmQNCmJpbWJvDQpjb2NrDQpkaWNrDQpjbGl0DQpibG93am9iDQpib2xsb2NrDQpib25kYWdlDQpib25lcg0KYm9vYg0KYnVra2FrZQ0KZHlrZQ0KYnVsbHNoaXQNCmJ1bQ0KYnV0dGhvbGUNCmNhbXNsdXQNCmNhbXdob3JlDQpjaGluaw0KY2hvYWQNCmdhbmdiYW5nDQpjdW0NCmN1bnQNCmRlZXB0aHJvYXQNCmRpbGRvDQpjb2NrDQpmdWNrDQpwZW5pcw0KdmFnaW5hDQp2dWx2YQ0Kc2x1dA0KbWFzdHVyYmF0ZQ0Kc2hpdA0KbmlnZ2VyDQpjcmFja2VyDQpqZXcNCmlzcmFlbA0KcGFsZXN0aW5lDQp0cnVtcA0KYmlkZW4NCnJlcHVibGljYW4NCmRlbW9jcmF0DQpuYXppDQphbnRpZmE=';
+const wordBlacklist = Buffer.from(wordBlacklistBase64.trim(), 'base64')
+	.toString('utf8')
+	.split('\n')
+	.map(word => word.trim().toLowerCase());
+
+export function containsBlacklistedWord(str: string): boolean {
+	const lowerCaseStr = str.toLowerCase();
+	for (const word of wordBlacklist) {
+		if (lowerCaseStr.includes(word)) {
+			return true;
+		}
+	}
+	return false;
 }

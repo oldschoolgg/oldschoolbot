@@ -1,5 +1,4 @@
 import type { ButtonBuilder } from '@oldschoolgg/discord';
-import { randomVariation, roll } from '@oldschoolgg/rng';
 import { calcWhatPercent, formatDuration, reduceNumByPercent, round, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 import { clamp } from 'remeda';
@@ -9,6 +8,7 @@ import { degradeItem } from '@/lib/degradeableItems.js';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '@/lib/simulation/baGamble.js';
 import { maxOtherStats } from '@/lib/structures/Gear.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export const BarbBuyables = [
 	{
@@ -185,13 +185,13 @@ export async function barbAssaultGambleCommand(interaction: MInteraction, user: 
 	return response;
 }
 
-export async function barbAssaultStartCommand(channelId: string, user: MUser) {
+export async function barbAssaultStartCommand({ user, channelId, rng }: OSInteraction) {
 	const boosts = [];
 
-	let waveTime = randomVariation(Time.Minute * 4, 10);
+	let waveTime = rng.randomVariation(Time.Minute * 4, 10);
 
 	// Up to 12.5% speed boost for max strength
-	if (roll(4)) {
+	if (rng.roll(4)) {
 		const gearStats = user.gear.melee.stats;
 		const strengthPercent = round(calcWhatPercent(gearStats.melee_strength, maxOtherStats.melee_strength) / 8, 2);
 		waveTime = reduceNumByPercent(waveTime, strengthPercent);
@@ -237,7 +237,7 @@ export async function barbAssaultStartCommand(channelId: string, user: MUser) {
 		user.minionName
 	} is now off to do ${quantity} waves of Barbarian Assault. Each wave takes ${formatDuration(
 		waveTime
-	)} - the total trip will take ${formatDuration(duration)}.`;
+	)} - the total trip will return in about ${formatTripDuration(user, duration)}.`;
 
 	str += `\n\n**Boosts:** ${boosts.join(', ')}.${venBowMsg}`;
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({

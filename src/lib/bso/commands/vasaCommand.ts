@@ -2,8 +2,8 @@ import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { BossInstance } from '@/lib/bso/structures/Boss.js';
 
 import { EmbedBuilder } from '@oldschoolgg/discord';
-import { randInt } from '@oldschoolgg/rng';
 import { formatDuration, sumArr, Time } from '@oldschoolgg/toolkit';
+import { randInt } from 'node-rng';
 import { Bank } from 'oldschooljs';
 
 import { Gear } from '@/lib/structures/Gear.js';

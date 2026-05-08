@@ -7,7 +7,6 @@ import {
 import { inventionBoosts } from '@/lib/bso/skills/invention/inventions.js';
 
 import type { GearStats } from '@oldschoolgg/gear';
-import { randFloat, randInt, randomVariation } from '@oldschoolgg/rng';
 import { calcPercentOfNum, calcWhatPercent, reduceNumByPercent, round, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items, resolveItems } from 'oldschooljs';
 
@@ -73,7 +72,8 @@ export function calculateTOBDeaths(
 		range: number;
 		mage: number;
 		total: number;
-	}
+	},
+	rng: RNGProvider
 ): TOBDeaths {
 	const deaths: number[] = [];
 	const wipeDeaths: number[] = [];
@@ -109,7 +109,7 @@ export function calculateTOBDeaths(
 		const room = TOBRooms[i];
 		const wipeDeathChance = Math.min(98, (1 + room.difficultyRating / 10) * baseDeathChance);
 		const realDeathChance = wipeDeathChance / actualDeathReductionFactor;
-		const roll = randFloat(0, 100);
+		const roll = rng.randFloat(0, 100);
 		if (roll < realDeathChance) {
 			deaths.push(i);
 		}
@@ -452,12 +452,14 @@ export function createTOBRaid({
 	team,
 	hardMode,
 	baseDuration,
-	disableVariation
+	disableVariation,
+	rng
 }: {
 	team: TobTeam[];
 	baseDuration: number;
 	hardMode: boolean;
 	disableVariation?: true;
+	rng: RNGProvider;
 }): {
 	chinCannonUser: MUser | null;
 	duration: number;
@@ -469,7 +471,15 @@ export function createTOBRaid({
 
 	for (const u of team) {
 		const gearPercents = calculateTOBUserGearPercents(u.user);
-		const deathChances = calculateTOBDeaths(u.kc, u.hardKC, u.attempts, u.hardAttempts, hardMode, gearPercents);
+		const deathChances = calculateTOBDeaths(
+			u.kc,
+			u.hardKC,
+			u.attempts,
+			u.hardAttempts,
+			hardMode,
+			gearPercents,
+			rng
+		);
 		parsedTeam.push({
 			kc: u.kc,
 			hardKC: u.hardKC,
@@ -480,7 +490,7 @@ export function createTOBRaid({
 		});
 	}
 
-	const duration = Math.floor(randomVariation(baseDuration, 5));
+	const duration = Math.floor(rng.randomVariation(baseDuration, 5));
 
 	let chinCannonUser: MUser | null = null;
 
@@ -499,7 +509,10 @@ export function createTOBRaid({
 		if (parsedTeam.every(member => member.wipeDeaths.includes(i))) {
 			wipedRoom = room;
 			deathDuration += Math.floor(
-				calcPercentOfNum(disableVariation ? room.timeWeighting / 2 : randInt(1, room.timeWeighting), duration)
+				calcPercentOfNum(
+					disableVariation ? room.timeWeighting / 2 : rng.randInt(1, room.timeWeighting),
+					duration
+				)
 			);
 			break;
 		} else {

@@ -1,229 +1,156 @@
-import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
-import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
-import { globalDroprates } from '@/lib/bso/globalDroprates.js';
+import { Emoji, Events } from '@oldschoolgg/toolkit';
+import { EItem } from 'oldschooljs';
 
-import { calcPercentOfNum } from '@oldschoolgg/toolkit';
-import { Bank, itemID } from 'oldschooljs';
-
-import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
-import { Cookables } from '@/lib/skilling/skills/cooking/cooking.js';
+import { QuestID } from '@/lib/minions/data/quests.js';
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
+import { FISHING_REWORK_MESSAGE, findFishingSpotForStoredTrip } from '@/lib/skilling/skills/fishing/fishingRework.js';
 import type { FishingActivityTaskOptions } from '@/lib/types/minions.js';
-import { skillingPetDropRate } from '@/lib/util.js';
-
-function radasBlessing(user: MUser) {
-	const blessingBoosts = [
-		["Rada's blessing 4", 8],
-		["Rada's blessing 3", 6],
-		["Rada's blessing 2", 4],
-		["Rada's blessing 1", 2]
-	];
-
-	for (const [itemName, boostPercent] of blessingBoosts) {
-		if (user.hasEquippedOrInBank(itemName)) {
-			return { blessingEquipped: true, blessingChance: boostPercent as number };
-		}
-	}
-	return { blessingEquipped: false, blessingChance: 0 };
-}
+import { rollForMoonKeyHalf } from '@/lib/util/minionUtils.js';
 
 export const fishingTask: MinionTask = {
 	type: 'Fishing',
-	async run(data: FishingActivityTaskOptions, { user, handleTripFinish, rng }) {
-		const { fishID, quantity, channelId, duration } = data;
-		let { flakesQuantity } = data;
-		const { blessingEquipped, blessingChance } = radasBlessing(user);
+	async run(data: FishingActivityTaskOptions, { handleTripFinish, user, rng }) {
+		const {
+			channelId,
+			qty,
+			loot,
+			blessingExtra: storedBlessingExtra,
+			flakeExtra: storedFlakeExtra,
+			blessingQuantity,
+			flakesQuantity,
+			usedBarbarianCutEat = false,
+			powerfish = false,
+			sharkLureQuantity = 0,
+			extraCatchRolls
+		} = data;
 
-		const fish = Fishing.Fishes.find(fish => fish.id === fishID)!;
-
-		const minnowQuantity: { [key: number]: number[] } = {
-			99: [10, 14],
-			95: [11, 13],
-			90: [10, 13],
-			85: [10, 11],
-			1: [10, 10]
+		const coerceNumber = (value: unknown): number | undefined => {
+			if (value === null || value === undefined) {
+				return undefined;
+			}
+			const num = typeof value === 'number' ? value : typeof value === 'string' ? Number(value) : Number.NaN;
+			return Number.isFinite(num) ? num : undefined;
 		};
 
-		let xpReceived = 0;
-		let leapingSturgeon = 0;
-		let leapingSalmon = 0;
-		let leapingTrout = 0;
-		let agilityXpReceived = 0;
-		let strengthXpReceived = 0;
+		const blessingExtra = coerceNumber(storedBlessingExtra) ?? coerceNumber(blessingQuantity) ?? 0;
+		const flakeExtra = coerceNumber(storedFlakeExtra) ?? coerceNumber(flakesQuantity) ?? 0;
 
-		const stats = user.skillsAsLevels;
-		const canGetSturgeon = stats.fishing >= 70 && stats.agility >= 45 && stats.strength >= 45;
-		const canGetSalmon = stats.fishing >= 58 && stats.agility >= 30 && stats.strength >= 30;
-		const sturgeonChance = Math.floor(255 / (8 + Math.floor(0.5714 * stats.fishing)));
-		const salmonChance = Math.floor(255 / (16 + Math.floor(0.8616 * stats.fishing)));
-		const leapingChance = Math.floor(255 / (32 + Math.floor(1.632 * stats.fishing)));
+		const fish = findFishingSpotForStoredTrip(data.fishID);
+		if (!fish || !fish.subfishes) {
+			return handleTripFinish(user, channelId, FISHING_REWORK_MESSAGE, data);
+		}
 
-		if (fish.name === 'Barbarian fishing') {
-			for (let i = 0; i < quantity; i++) {
-				if (canGetSturgeon && rng.percentChance(100 / sturgeonChance)) {
-					xpReceived += 80;
-					leapingSturgeon += blessingEquipped && rng.percentChance(blessingChance) ? 2 : 1;
-					agilityXpReceived += 7;
-					strengthXpReceived += 7;
-				} else if (canGetSalmon && rng.percentChance(100 / salmonChance)) {
-					xpReceived += 70;
-					leapingSalmon += blessingEquipped && rng.percentChance(blessingChance) ? 2 : 1;
-					agilityXpReceived += 6;
-					strengthXpReceived += 6;
-				} else if (rng.percentChance(100 / leapingChance)) {
-					xpReceived += 50;
-					leapingTrout += blessingEquipped && rng.percentChance(blessingChance) ? 2 : 1;
-					agilityXpReceived += 5;
-					strengthXpReceived += 5;
+		if (!Array.isArray(qty) || qty.length !== fish.subfishes.length) {
+			return handleTripFinish(user, channelId, FISHING_REWORK_MESSAGE, data);
+		}
+
+		if (loot !== undefined && (!Array.isArray(loot) || loot.length !== fish.subfishes.length)) {
+			return handleTripFinish(user, channelId, FISHING_REWORK_MESSAGE, data);
+		}
+
+		const subfishCount = fish.subfishes.length;
+		const normalizeNumericArray = (input: number[] | undefined, length: number) => {
+			const normalized: number[] = new Array(length).fill(0);
+			if (!input) {
+				return normalized;
+			}
+
+			for (let i = 0; i < length; i++) {
+				const value = input[i];
+				normalized[i] = typeof value === 'number' ? value : Number(value ?? 0);
+				if (!Number.isFinite(normalized[i])) {
+					normalized[i] = 0;
 				}
 			}
-		} else {
-			xpReceived = quantity * fish.xp;
+			return normalized;
+		};
+
+		const catches = normalizeNumericArray(qty, subfishCount);
+		const lootArray = normalizeNumericArray(loot, subfishCount);
+		const extraCatchRollsArray = normalizeNumericArray(extraCatchRolls, subfishCount);
+
+		for (let i = catches.length; i < subfishCount; i++) {
+			catches[i] = 0;
+		}
+		for (let i = lootArray.length; i < subfishCount; i++) {
+			lootArray[i] = 0;
 		}
 
-		let xpRes = await user.addXP({
-			skillName: 'fishing',
-			amount: xpReceived,
-			duration
-		});
-		xpRes +=
-			agilityXpReceived > 0
-				? await user.addXP({
-						skillName: 'agility',
-						amount: agilityXpReceived,
-						duration
-					})
-				: '';
-		xpRes +=
-			strengthXpReceived > 0
-				? await user.addXP({
-						skillName: 'strength',
-						amount: strengthXpReceived,
-						duration
-					})
-				: '';
-
-		let str = `${user}, ${user.minionName} finished fishing ${quantity} ${fish.name}. ${xpRes}`;
-
-		let lootQuantity = 0;
-		const baseKarambwanji = 1 + Math.floor(user.skillLevel('fishing') / 5);
-		let baseMinnow = [10, 10];
-		for (const [level, quantities] of Object.entries(minnowQuantity).reverse()) {
-			if (user.skillLevel('fishing') >= Number.parseInt(level)) {
-				baseMinnow = quantities;
-				break;
-			}
-		}
-
-		for (let i = 0; i < quantity; i++) {
-			if (fish.id === itemID('Raw karambwanji')) {
-				lootQuantity +=
-					blessingEquipped && rng.percentChance(blessingChance) ? baseKarambwanji * 2 : baseKarambwanji;
-			} else if (fish.id === itemID('Minnow')) {
-				lootQuantity +=
-					blessingEquipped && rng.percentChance(blessingChance)
-						? rng.randInt(baseMinnow[0], baseMinnow[1]) * 2
-						: rng.randInt(baseMinnow[0], baseMinnow[1]);
-			} else {
-				lootQuantity += blessingEquipped && rng.percentChance(blessingChance) ? 2 : 1;
-			}
-
-			if (flakesQuantity && flakesQuantity > 0) {
-				lootQuantity += rng.percentChance(50) ? 1 : 0;
-				flakesQuantity--;
-			}
-		}
-
-		const loot = new Bank({
-			[fish.id]: lootQuantity
+		const result = Fishing.util.calcFishingTripResult({
+			fish,
+			duration: data.duration,
+			catches,
+			loot: lootArray,
+			gearBank: user.gearBank,
+			blessingExtra,
+			flakeExtra,
+			rng,
+			usedBarbarianCutEat,
+			isPowerfishing: powerfish,
+			sharkLureQuantity,
+			extraCatchRolls: extraCatchRollsArray,
+			collectionLog: user.cl
 		});
 
-		if (user.usingPet('Klik')) {
-			const cookedFish = Cookables.find(c => Boolean(c.inputCookables[fish.id]));
-			if (cookedFish) {
-				loot.remove(fish.id, quantity);
-				loot.add(cookedFish.id, quantity);
-				str +=
-					'\n<:klik:749945070932721676> Klik breathes a incredibly hot fire breath, and cooks all your fish!';
+		if (fish.moonKeyHalfCatchRate) {
+			const perCatchRate = fish.moonKeyHalfCatchRate;
+			rollForMoonKeyHalf({
+				rng,
+				user: user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun),
+				duration: data.duration,
+				loot: result.updateBank.itemLootBank,
+				quantity: result.totalCatchRolls,
+				perCatchRate
+			});
+		}
+
+		const updateResult = await result.updateBank.transact(user);
+		if (typeof updateResult === 'string') {
+			throw new Error(`Fishing trip update bank failed: ${updateResult}`);
+		}
+
+		const { itemTransactionResult, message: xpMessage } = updateResult;
+
+		let message = `${user}, ${user.minionName} finished fishing ${result.totalCatches} ${fish.name}. `;
+		if (powerfish) {
+			message += '\n**Since you were powerfishing, you dropped all of those fish on the ground!**\n';
+		}
+
+		const bonusXpEntries = Object.entries(result.bonusXpPerHour ?? {}).filter(([, value]) => value);
+		const perHourSegments = [`${result.xpPerHour}/Hr`];
+		if (bonusXpEntries.length > 0) {
+			for (const [skill, value] of bonusXpEntries) {
+				const formattedSkill = `${skill.charAt(0).toUpperCase()}${skill.slice(1)}`;
+				perHourSegments.push(`${value}/Hr ${formattedSkill}`);
+			}
+		}
+		message += `You received ${result.updateBank.xpBank} (${perHourSegments.join(', ')}).`;
+
+		if (xpMessage) {
+			const congratsLines = xpMessage
+				.split('\n')
+				.map(line => line.trim())
+				.filter(line => line.startsWith('**Congratulations'));
+			if (congratsLines.length > 0) {
+				message += `\n${congratsLines.join('\n')}`;
 			}
 		}
 
-		if (fish.clueScrollChance) {
-			addSkillingClueToLoot(user, 'fishing', quantity, fish.clueScrollChance, loot);
+		if (itemTransactionResult?.itemsAdded.length) {
+			message += `\nYou received ${itemTransactionResult.itemsAdded}.`;
 		}
 
-		// Add barbarian fish to loot
-		if (fish.name === 'Barbarian fishing') {
-			loot.remove(fish.id, loot.amount(fish.id));
-			loot.add('Leaping sturgeon', leapingSturgeon);
-			loot.add('Leaping salmon', leapingSalmon);
-			loot.add('Leaping trout', leapingTrout);
+		if (result.messages.length > 0) {
+			message += `\n${result.messages.join(', ')}.`;
 		}
 
-		let bonusXP = 0;
-		const xpBonusPercent = Fishing.util.calcAnglerBoostPercent(user.gearBank);
-		if (xpBonusPercent > 0) {
-			bonusXP += Math.ceil(calcPercentOfNum(xpBonusPercent, xpReceived));
-		}
-
-		if (bonusXP > 0) {
-			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
-		}
-
-		// Roll for pet
-		if (fish.petChance) {
-			const { petDropRate } = skillingPetDropRate(user, 'fishing', fish.petChance);
-			for (let i = 0; i < quantity; i++) {
-				if (rng.roll(petDropRate)) {
-					loot.add('Heron');
-					str += "\nYou have a funny feeling you're being followed...";
-				}
-			}
-		}
-
-		if (fish.bigFishRate && fish.bigFish) {
-			for (let i = 0; i < quantity; i++) {
-				if (rng.roll(fish.bigFishRate)) {
-					loot.add(fish.bigFish);
-				}
-			}
-		}
-
-		if (duration >= MIN_LENGTH_FOR_PET) {
-			const minutesInTrip = Math.ceil(duration / 1000 / 60);
-			const petChance = clAdjustedDroprate(
-				user,
-				'Shelldon',
-				globalDroprates.shelldon.baseRate,
-				globalDroprates.shelldon.clIncrease
+		if (itemTransactionResult?.itemsAdded.has(EItem.HERON)) {
+			globalClient.emit(
+				Events.ServerNotification,
+				`${Emoji.Fishing} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a Heron while fishing ${fish.name} at level ${user.skillsAsLevels.fishing} Fishing!`
 			);
-			for (let i = 0; i < minutesInTrip; i++) {
-				if (rng.roll(petChance)) {
-					loot.add('Shelldon');
-					str +=
-						'\n<:shelldon:748496988407988244> A crab steals your fish just as you catch it! After some talking, the crab, called shelldon, decides to join you on your fishing adventures. You can equip Shelldon and he will help you fish!';
-					break;
-				}
-			}
 		}
 
-		await user.transactItems({
-			collectionLog: true,
-			itemsToAdd: loot
-		});
-
-		str += `\n\nYou received: ${loot}.`;
-
-		if (blessingEquipped) {
-			str += `\nYour Rada's Blessing gives ${blessingChance}% chance of extra fish.`;
-		}
-
-		return handleTripFinish({
-			user,
-			channelId,
-			message: str,
-			data,
-			loot
-		});
+		return handleTripFinish(user, channelId, message, data, result.updateBank.itemLootBank);
 	}
 };

@@ -4,9 +4,9 @@ import { clueUpgraderEffect } from '@/lib/bso/skills/invention/effects/clueUpgra
 import { portableTannerEffect } from '@/lib/bso/skills/invention/effects/portableTannerEffect.js';
 import { slayerMaskHelms } from '@/lib/bso/skills/slayer/slayerMaskHelms.js';
 
-import { roll } from '@oldschoolgg/rng';
 import { increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
-import { Bank, type ItemBank, MonsterAttribute, Monsters } from 'oldschooljs';
+import { roll } from 'node-rng';
+import { type Bank, type ItemBank, MonsterAttribute, Monsters } from 'oldschooljs';
 
 import type { BitField } from '@/lib/constants.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
@@ -115,7 +115,6 @@ export function slayerMasksHelms({
 	slayerUnlocks,
 	updateBank,
 	gearBank,
-	userStats,
 	messages
 }: MidPVMEffectArgs) {
 	if (
@@ -125,15 +124,15 @@ export function slayerMasksHelms({
 	) {
 		return;
 	}
-	const bankToAdd = new Bank().add(monster.id, slayerContext.effectiveSlayed);
+	const bankToAdd: ItemBank = {};
+	bankToAdd[monster.id] = slayerContext.effectiveSlayed;
+
 	const maskHelmForThisMonster = slayerMaskHelms.find(i => i.monsters.includes(monster.id));
 	const matchingMaskOrHelm =
 		maskHelmForThisMonster &&
 		gearBank.hasEquippedOrInBank([maskHelmForThisMonster.mask.id, maskHelmForThisMonster.helm.id])
 			? maskHelmForThisMonster
 			: null;
-	const oldMaskScores = new Bank(userStats.onTaskWithMaskMonsterScores as ItemBank);
-	const newMaskScores = oldMaskScores.clone().add(bankToAdd);
 	if (maskHelmForThisMonster && !gearBank.hasEquippedOrInBank(maskHelmForThisMonster.mask.id)) {
 		for (let i = 0; i < slayerContext.effectiveSlayed; i++) {
 			if (roll(maskHelmForThisMonster.maskDropRate)) {
@@ -143,8 +142,7 @@ export function slayerMasksHelms({
 			}
 		}
 	}
-	updateBank.userStats.on_task_monster_scores = new Bank(userStats.onTaskMonsterScores as ItemBank)
-		.add(bankToAdd)
-		.toJSON();
-	updateBank.userStats.on_task_with_mask_monster_scores = matchingMaskOrHelm ? newMaskScores.toJSON() : undefined;
+
+	updateBank.userStatsSafeBankUpdates.on_task_monster_scores = bankToAdd;
+	updateBank.userStatsSafeBankUpdates.on_task_with_mask_monster_scores = matchingMaskOrHelm ? bankToAdd : undefined;
 }

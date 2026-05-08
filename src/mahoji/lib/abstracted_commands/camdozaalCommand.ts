@@ -1,4 +1,3 @@
-import { randomVariation } from '@oldschoolgg/rng';
 import { formatDuration, increaseNumByPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
@@ -7,8 +6,9 @@ import { pickaxes } from '@/lib/skilling/functions/miningBoosts.js';
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import Mining from '@/lib/skilling/skills/mining.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
-async function miningCommand(user: MUser, channelId: string, quantity: number | undefined) {
+async function miningCommand(rng: RNGProvider, user: MUser, channelId: string, quantity: number | undefined) {
 	let miningLevel = user.skillsAsLevels.mining;
 	if (miningLevel < 14) {
 		return 'You need at least level 14 Mining to mine in the Ruins of Camdozaal.';
@@ -55,11 +55,12 @@ async function miningCommand(user: MUser, channelId: string, quantity: number | 
 		miningLvl: miningLevel,
 		hasGlory: user.hasEquipped('Amulet of glory'),
 		maxTripLength: await user.calcMaxTripLength('CamdozaalMining'),
-		hasKaramjaMedium: false
+		hasKaramjaMedium: false,
+		rng
 	});
 
-	const fakeDurationMin = quantity ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
-	const fakeDurationMax = quantity ? randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
+	const fakeDurationMin = quantity ? rng.randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
+	const fakeDurationMax = quantity ? rng.randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
 
 	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
@@ -74,8 +75,8 @@ async function miningCommand(user: MUser, channelId: string, quantity: number | 
 		quantity ? `mined ${quantity}x barronite rocks or gets tired` : 'is satisfied'
 	}, it'll take ${
 		quantity
-			? `between ${formatDuration(fakeDurationMin)} **and** ${formatDuration(fakeDurationMax)}`
-			: formatDuration(duration)
+			? `between ${formatTripDuration(user, fakeDurationMin)} **and** ${formatTripDuration(user, fakeDurationMax)}`
+			: formatTripDuration(user, duration)
 	} to finish.`;
 
 	if (boosts.length > 0) {
@@ -124,9 +125,7 @@ async function smithingCommand(user: MUser, channelId: string, quantity: number 
 		type: 'CamdozaalSmithing'
 	});
 
-	return `${user.minionName} is now smithing in the Ruins of Camdozaal, it will take around ${formatDuration(
-		duration
-	)} to finish.`;
+	return `${user.minionName} is now smithing in the Ruins of Camdozaal, it will take around ${formatTripDuration(user, duration)} to finish.`;
 }
 
 async function fishingCommand(user: MUser, channelId: string, quantity: number | undefined) {
@@ -137,7 +136,7 @@ async function fishingCommand(user: MUser, channelId: string, quantity: number |
 
 	const maxTripLength = await user.calcMaxTripLength('CamdozaalFishing');
 	const camdozaalfish = Fishing.camdozaalFishes.find(_fish => _fish.name === 'Raw guppy')!;
-	const timePerFish = camdozaalfish.timePerFish * Time.Second;
+	const timePerFish = camdozaalfish.timePerFish! * Time.Second;
 
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timePerFish);
@@ -161,17 +160,21 @@ async function fishingCommand(user: MUser, channelId: string, quantity: number |
 		type: 'CamdozaalFishing'
 	});
 
-	return `${user.minionName} is now fishing in the Ruins of Camdozaal, it will take around ${formatDuration(
-		duration
-	)} to finish.`;
+	return `${user.minionName} is now fishing in the Ruins of Camdozaal, it will take around ${formatTripDuration(user, duration)} to finish.`;
 }
-export async function camdozaalCommand(user: MUser, channelId: string, choice: string, quantity: number | undefined) {
+export async function camdozaalCommand(
+	rng: RNGProvider,
+	user: MUser,
+	channelId: string,
+	choice: string,
+	quantity: number | undefined
+) {
 	const qp = user.QP;
 	if (qp <= 16) {
 		return "You haven't completed enough quests to enter the Ruins of Camdozaal, return when you have at least 17 quest points.";
 	}
 	if (choice === 'mining') {
-		return miningCommand(user, channelId, quantity);
+		return miningCommand(rng, user, channelId, quantity);
 	}
 	if (choice === 'smithing') {
 		return smithingCommand(user, channelId, quantity);

@@ -5,6 +5,7 @@ import { formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldsch
 import { Craftables } from '@/lib/skilling/skills/crafting/craftables/index.js';
 import Tanning from '@/lib/skilling/skills/crafting/craftables/tanning.js';
 import type { CraftingActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export const craftCommand = defineCommand({
 	name: 'craft',
@@ -149,7 +150,7 @@ export const craftCommand = defineCommand({
 		});
 		let str = `${user.minionName} is now crafting ${quantity}${sets} ${
 			craftable.name
-		}, it'll take around ${formatDuration(duration)} to finish. Removed ${itemsNeeded} from your bank.`;
+		}, it'll take around ${formatTripDuration(user, duration)} to finish. Removed ${itemsNeeded} from your bank.`;
 		if (boosts.length > 0) {
 			str += `**Boosts:** ${boosts.join(', ')}`;
 		}

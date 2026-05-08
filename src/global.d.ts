@@ -1,12 +1,21 @@
 type MUserInstance = MUser;
 
+declare module 'oldschooljs' {
+	interface ItemRequirements {
+		dungeoneering: number;
+		invention: number;
+		divination: number;
+	}
+}
+
 declare global {
 	export type MUserClass = import('./lib/user/MUser.js').MUserClass;
 	export type MUser = import('./lib/user/MUser.js').MUserClass;
 	export var mUserFetch: typeof import('./lib/user/MUser.js').srcMUserFetch;
 
-	export type RNGProvider = import('@oldschoolgg/rng').RNGProvider;
+	export type RNGProvider = import('node-rng').RNGProvider;
 	export type MInteraction = import('@oldschoolgg/discord').MInteraction;
+	export type OSInteraction = import('./lib/structures/OSInteraction.js').OSInteraction;
 
 	export type MahojiUserOption = import('./discord/index.js').MahojiUserOption;
 	export type AnyCommand = import('./discord/index.js').AnyCommand;

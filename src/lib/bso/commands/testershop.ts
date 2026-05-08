@@ -45,6 +45,9 @@ export const testerShopCommand = defineCommand({
 		const item = shop.find(i => i.name === options.name);
 		if (!item) return 'Invalid item.';
 		const quantity = options.quantity ?? 1;
+		if (quantity <= 0) {
+			return 'Invalid quantity.';
+		}
 		const cost = item.cost * quantity;
 		if (robochimpUser.testing_points_balance < cost) {
 			return `You don't have enough points to buy ${quantity}x ${item.name}.`;

@@ -1,17 +1,14 @@
-import './base.js';
-
 import { readFileSync, writeFileSync } from 'node:fs';
 import { Stopwatch } from '@oldschoolgg/toolkit';
-import { md5sum } from '@oldschoolgg/toolkit/node';
 import { DateTime } from 'luxon';
 import { Bank } from 'oldschooljs';
 import { isFunction } from 'remeda';
 
 import { BOT_TYPE } from '@/lib/constants.js';
 import Createables from '@/lib/data/createables.js';
-import { tearDownScript } from './scriptUtil.js';
+import { md5sum } from '@/lib/util/smallUtils.js';
 
-function renderCreatablesFile() {
+export function renderCreatablesFile() {
 	const stopwatch = new Stopwatch();
 	const creatables = [];
 
@@ -48,7 +45,6 @@ function renderCreatablesFile() {
 
 	const hash = md5sum(JSON.stringify(creatables));
 	if (hash === previousHash) {
-		console.log('Creatables JSON file is up to date');
 		return;
 	}
 	writeFileSync(
@@ -65,6 +61,3 @@ function renderCreatablesFile() {
 	);
 	stopwatch.check('Finished creatables file.');
 }
-
-renderCreatablesFile();
-tearDownScript();

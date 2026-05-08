@@ -15,6 +15,9 @@ title: "Farming"
 - Grand crystal acorn - Plant at 115 Farming in Crystal Tree patch, gives Crystal Shards when harvested.
 - Mysterious Tree seed - Plant at 120 Farming in tree patch, gives various Mystery Boxes when harvested.
 
+- You are able to sell spirit seeds (via [[/sell items\:Spirit seed]]) to receive (immediately opened) t5 seed packs.
+- Furthermore, all custom seeds can be obtained via this method, as well as through traditionally obtained seed packs.
+
 ## Boosts
 
 - [Scroll of Farming](dungeoneering-training/dg-rewards#buyable-boosts-utility) - Gives +2 patches of all types. You must [[/minion use item\:Scroll of farming]] to receive the bonus patches.
@@ -32,3 +35,21 @@ title: "Farming"
 | ---------- | ------------- | ---------------- |
 | Athelas    | 1,235,501     | 15,270,786       |
 | Korulsi    | 386,179       | 4,773,172        |
+
+
+## Mushroom & toxic spores (BSO)
+
+### Mushroom spore
+
+- Main source: harvest loot from planted zygomites (Herbal/Barky/Fruity zygomite tables).
+- Used for farming mushroom content and related farming recipes.
+
+### Toxic zygomite spores
+
+- Created by using [[Deathly toxic potion]] on any zygomite spore.
+- Planting/harvesting [[Toxic zygomite]] unlocks Venatrix access bitfield.
+
+### Morchella mushroom spore
+
+- Dropped from BSO resource-dungeon monster tables (varies by dungeon, including 1/264 and 1/64 sources).
+- Used to plant Morchella mushrooms in Farming.

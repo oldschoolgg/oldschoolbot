@@ -62,7 +62,7 @@
 		"output_items": {
 			"13069": 1
 		},
-		"qp_required": 5028,
+		"qp_required": 5035,
 		"gp_cost": 99000
 	},
 	{
@@ -3631,6 +3631,20 @@
 		}
 	},
 	{
+		"name": "Olive oil pack",
+		"gp_cost": 2670,
+		"output_items": {
+			"12857": 1
+		}
+	},
+	{
+		"name": "Olive oil(4)",
+		"gp_cost": 220,
+		"output_items": {
+			"3422": 1
+		}
+	},
+	{
 		"name": "Pearl barbarian rod",
 		"item_cost": {
 			"22820": 150
@@ -3948,7 +3962,7 @@
 			"9813": 1,
 			"9814": 1
 		},
-		"qp_required": 5028,
+		"qp_required": 5035,
 		"gp_cost": 99000
 	},
 	{
@@ -3956,7 +3970,7 @@
 		"output_items": {
 			"13068": 1
 		},
-		"qp_required": 5028,
+		"qp_required": 5035,
 		"gp_cost": 99000
 	},
 	{

@@ -3,8 +3,8 @@ import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 import { mutations } from '@/lib/bso/skills/farming/mutations.js';
 import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 
-import { randInt, roll } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
+import { randInt, roll } from 'node-rng';
 import { Bank, Items, increaseBankQuantitesByPercent, Monsters } from 'oldschooljs';
 
 import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements.js';
@@ -236,6 +236,7 @@ export const farmingTask: MinionTask = {
 				}
 				if (plantToHarvest.variableYield) {
 					cropYield = Farming.calcVariableYield(
+						rng,
 						plantToHarvest,
 						patchType.lastUpgradeType,
 						currentFarmingLevel,
@@ -420,7 +421,7 @@ export const farmingTask: MinionTask = {
 					channelId: data.channelId,
 					id: 1
 				};
-				await combatAchievementTripEffect({ user, messages: infoStr, data: fakeMonsterTaskOptions });
+				await combatAchievementTripEffect({ user, messages: infoStr, data: fakeMonsterTaskOptions, rng });
 				loot = hesporiLoot;
 				const plopperDroprate = clAdjustedDroprate(
 					user,

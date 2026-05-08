@@ -1,9 +1,9 @@
-import { randomVariation } from '@oldschoolgg/rng';
-import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { LMSBuyables } from '@/lib/data/CollectionsExport.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { getUsersLMSStats } from '@/tasks/minions/minigames/lmsActivity.js';
 
 export async function lmsCommand(
@@ -14,7 +14,8 @@ export async function lmsCommand(
 	},
 	user: MUser,
 	channelId: string,
-	interaction: MInteraction
+	interaction: MInteraction,
+	rng: RNGProvider
 ) {
 	const stats = await getUsersLMSStats(user);
 
@@ -74,7 +75,7 @@ export async function lmsCommand(
 	}
 	const durationPerGame = Time.Minute * 5.5;
 	const quantity = Math.floor((await user.calcMaxTripLength('LastManStanding')) / durationPerGame);
-	const duration = randomVariation(quantity * durationPerGame, 5);
+	const duration = rng.randomVariation(quantity * durationPerGame, 5);
 
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		minigameID: 'lms',
@@ -87,7 +88,5 @@ export async function lmsCommand(
 
 	return `${
 		user.minionName
-	} is now off to do ${quantity} games of competitive Last Man Standing. The trip will take ${formatDuration(
-		duration
-	)}.`;
+	} is now off to do ${quantity} games of competitive Last Man Standing. The trip will return in about ${formatTripDuration(user, duration)}.`;
 }

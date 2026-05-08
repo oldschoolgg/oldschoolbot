@@ -1,4 +1,3 @@
-import { randInt, roll } from '@oldschoolgg/rng';
 import { calcPercentOfNum, normal, SimpleTable } from '@oldschoolgg/toolkit';
 import { Bank, convertXPtoLVL, itemID, LootTable, resolveItems } from 'oldschooljs';
 
@@ -10,6 +9,7 @@ interface WintertodtCrateOptions {
 	itemsOwned: Bank;
 	skills: Partial<LevelRequirements>;
 	firemakingXP: number;
+	rng: RNGProvider;
 }
 
 type WintertodtTableSlot = [number, [number, number]];
@@ -164,8 +164,8 @@ class WintertodtCrateClass {
 		}
 	}
 
-	public lootRoll(loot: Bank, skills: Partial<LevelRequirements>) {
-		const roll = randInt(1, 9);
+	public lootRoll(loot: Bank, skills: Partial<LevelRequirements>, rng: RNGProvider) {
+		const roll = rng.randInt(1, 9);
 
 		if (roll <= 6) {
 			const matTable = roll === 1 ? SeedTables.rollOrThrow() : MaterialTables.rollOrThrow();
@@ -173,7 +173,7 @@ class WintertodtCrateClass {
 			const skillLevel = convertXPtoLVL(skills[skill] ?? 1, MAX_LEVEL);
 			const rolledItem = this.pickWeightedLootItem<WintertodtTableSlot>(skillLevel, matTable);
 			const [min, max] = rolledItem[1];
-			return loot.add(rolledItem[0], randInt(min, max));
+			return loot.add(rolledItem[0], rng.randInt(min, max));
 		}
 
 		OtherTable.roll(1, { targetBank: loot });
@@ -188,18 +188,18 @@ class WintertodtCrateClass {
 		return rolls + 1;
 	}
 
-	public rollUnique(itemsOwned: Bank, firemakingXP: number): [number, number] | undefined {
+	public rollUnique(rng: RNGProvider, itemsOwned: Bank, firemakingXP: number): [number, number] | undefined {
 		// https://oldschool.runescape.wiki/w/Supply_crate#Reward_rolls
-		if (roll(10_000)) return [itemID('Dragon axe'), 1];
+		if (rng.roll(10_000)) return [itemID('Dragon axe'), 1];
 
 		let phoenixDroprate = 5000;
 		if (firemakingXP === MAX_XP) {
 			phoenixDroprate = Math.floor(phoenixDroprate / 15);
 		}
 
-		if (roll(phoenixDroprate)) return [itemID('Phoenix'), 1];
-		if (roll(1000)) return [itemID('Tome of fire'), 1];
-		if (roll(150)) {
+		if (rng.roll(phoenixDroprate)) return [itemID('Phoenix'), 1];
+		if (rng.roll(1000)) return [itemID('Tome of fire'), 1];
+		if (rng.roll(150)) {
 			const glovesOwned = itemsOwned.amount('Warm gloves');
 
 			// If they already own 3 gloves, give only magic seeds.
@@ -209,7 +209,7 @@ class WintertodtCrateClass {
 			return [itemID('Warm gloves'), 1];
 		}
 
-		if (roll(150)) {
+		if (rng.roll(150)) {
 			const torchID = itemID('Bruma torch');
 			const torchesOwned = itemsOwned.amount(torchID);
 
@@ -221,7 +221,7 @@ class WintertodtCrateClass {
 			return [torchID, 1];
 		}
 
-		if (roll(150)) {
+		if (rng.roll(150)) {
 			// Checks in order: Garb, Hood, Robes, Boots
 			// If any part is lesser than the previous, it rewards that
 			// Otherwise, rewards the first one
@@ -236,7 +236,7 @@ class WintertodtCrateClass {
 		}
 	}
 
-	public open({ points, itemsOwned, skills, firemakingXP }: WintertodtCrateOptions): Bank {
+	public open({ points, itemsOwned, skills, firemakingXP, rng }: WintertodtCrateOptions): Bank {
 		const rolls = this.calcNumberOfRolls(points);
 		if (rolls <= 0) {
 			return new Bank();
@@ -245,7 +245,7 @@ class WintertodtCrateClass {
 		const loot = new Bank();
 
 		for (let i = 0; i < rolls; i++) {
-			const rolledUnique = this.rollUnique(new Bank().add(itemsOwned).add(loot), firemakingXP);
+			const rolledUnique = this.rollUnique(rng, new Bank().add(itemsOwned).add(loot), firemakingXP);
 
 			if (Array.isArray(rolledUnique)) {
 				const [itemID, qty] = rolledUnique;
@@ -254,7 +254,7 @@ class WintertodtCrateClass {
 			}
 
 			loot.add(rolledUnique);
-			this.lootRoll(loot, skills);
+			this.lootRoll(loot, skills, rng);
 		}
 
 		return loot;

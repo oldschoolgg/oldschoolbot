@@ -1,8 +1,8 @@
-import { randomVariation } from '@oldschoolgg/rng';
-import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export const soulWarsBuyables = [
 	{
@@ -130,9 +130,9 @@ export const soulWarsImbueables = [
 	}
 ];
 
-export async function soulWarsStartCommand(user: MUser, channelId: string) {
+export async function soulWarsStartCommand(rng: RNGProvider, user: MUser, channelId: string) {
 	if (await user.minionIsBusy()) return `${user.minionName} is busy.`;
-	const perDuration = randomVariation(Time.Minute * 7, 5);
+	const perDuration = rng.randomVariation(Time.Minute * 7, 5);
 	const quantity = Math.floor((await user.calcMaxTripLength('SoulWars')) / perDuration);
 	const duration = quantity * perDuration;
 
@@ -147,7 +147,7 @@ export async function soulWarsStartCommand(user: MUser, channelId: string) {
 
 	return `${
 		user.minionName
-	} is now off to do ${quantity}x games of Soul Wars - the total trip will take ${formatDuration(duration)}.`;
+	} is now off to do ${quantity}x games of Soul Wars - the total trip will return in about ${formatTripDuration(user, duration)}.`;
 }
 
 export async function soulWarsBuyCommand(user: MUser, input = '', quantity?: number) {

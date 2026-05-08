@@ -1,13 +1,13 @@
 import { IVY_MAX_TRIP_LENGTH_BOOST } from '@/lib/bso/bsoConstants.js';
 import { InventionID, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 
-import { randomVariation } from '@oldschoolgg/rng';
 import { formatDuration, increaseNumByPercent, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
 import { Items, itemID, resolveItems } from 'oldschooljs';
 
 import { determineWoodcuttingTime } from '@/lib/skilling/functions/determineWoodcuttingTime.js';
 import Woodcutting from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import type { WoodcuttingActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 const axes = [
 	{
@@ -118,7 +118,7 @@ export const chopCommand = defineCommand({
 			choices: Woodcutting.twitchersGloves.map(i => ({ name: `${i} nest`, value: i }))
 		}
 	],
-	run: async ({ options, user, channelId }) => {
+	run: async ({ options, user, channelId, rng }) => {
 		const log = Woodcutting.Logs.find(
 			log =>
 				stringMatches(log.name, options.name) ||
@@ -200,7 +200,8 @@ export const chopCommand = defineCommand({
 				powerchopping: Boolean(powerchop),
 				forestry: forestry_events,
 				woodcuttingLvl: wcLvl,
-				maxTripLength
+				maxTripLength,
+				rng
 			});
 			const boostRes = await inventionItemBoost({
 				user,
@@ -267,13 +268,14 @@ export const chopCommand = defineCommand({
 			powerchopping: powerchop,
 			forestry: forestry_events,
 			woodcuttingLvl: wcLvl,
-			maxTripLength
+			maxTripLength,
+			rng
 		});
 
 		const duration = timeToChop;
 
-		const fakeDurationMin = quantity ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
-		const fakeDurationMax = quantity ? randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
+		const fakeDurationMin = quantity ? rng.randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
+		const fakeDurationMax = quantity ? rng.randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
 
 		await ActivityManager.startTrip<WoodcuttingActivityTaskOptions>({
 			logID: log.id,
@@ -294,8 +296,8 @@ export const chopCommand = defineCommand({
 			quantity ? `chopped ${newQuantity}x or gets tired` : 'is satisfied'
 		}, it'll take ${
 			quantity
-				? `between ${formatDuration(fakeDurationMin)} **and** ${formatDuration(fakeDurationMax)}`
-				: formatDuration(duration)
+				? `between ${formatTripDuration(user, fakeDurationMin)} **and** ${formatTripDuration(user, fakeDurationMax)}`
+				: formatTripDuration(user, duration)
 		} to finish.`;
 
 		if (boosts.length > 0) {

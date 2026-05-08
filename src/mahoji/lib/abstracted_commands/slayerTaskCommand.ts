@@ -68,6 +68,7 @@ export async function slayerStatusCommand(mahojiUser: MUser) {
 }
 
 export async function slayerNewTaskCommand({
+	rng,
 	user,
 	interaction,
 	extraContent,
@@ -75,8 +76,9 @@ export async function slayerNewTaskCommand({
 	saveDefaultSlayerMaster,
 	showButtons
 }: {
+	rng: RNGProvider;
 	user: MUser;
-	interaction: MInteraction;
+	interaction: OSInteraction;
 	extraContent?: string;
 	slayerMasterOverride?: string | undefined;
 	saveDefaultSlayerMaster?: boolean;
@@ -146,7 +148,7 @@ export async function slayerNewTaskCommand({
 		});
 		await user.statsUpdate({ [taskStreakKey]: 0 });
 
-		const newSlayerTask = await assignNewSlayerTask(user, slayerMaster);
+		const newSlayerTask = await assignNewSlayerTask({ user, rng }, slayerMaster);
 		const commonName = getCommonTaskName(newSlayerTask.assignedTask.monster);
 		const returnMessage =
 			`Your task has been skipped.\n\n ${slayerMaster.name}` +
@@ -199,7 +201,7 @@ export async function slayerNewTaskCommand({
 		return resultMessage;
 	}
 
-	const newSlayerTask = await assignNewSlayerTask(user, slayerMaster);
+	const newSlayerTask = await assignNewSlayerTask({ user, rng }, slayerMaster);
 
 	let commonName = getCommonTaskName(newSlayerTask.assignedTask.monster);
 	if (commonName === 'TzHaar') {
@@ -229,12 +231,14 @@ export async function slayerSkipTaskCommand({
 	user,
 	block,
 	newTask,
-	interaction
+	interaction,
+	rng
 }: {
 	user: MUser;
 	block: boolean;
 	newTask: boolean;
-	interaction: MInteraction;
+	interaction: OSInteraction;
+	rng: RNGProvider;
 }): CommandResponse {
 	const { currentTask } = await user.fetchSlayerInfo();
 	const myBlockList = user.user.slayer_blocked_ids;
@@ -247,7 +251,8 @@ export async function slayerSkipTaskCommand({
 			return slayerNewTaskCommand({
 				user,
 				interaction,
-				showButtons: true
+				showButtons: true,
+				rng
 			});
 		}
 		return "You don't have an active task!";
@@ -287,7 +292,8 @@ export async function slayerSkipTaskCommand({
 				user,
 				interaction,
 				extraContent: resultMessage,
-				showButtons: true
+				showButtons: true,
+				rng
 			});
 		}
 		return resultMessage;

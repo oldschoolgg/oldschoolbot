@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises';
-import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
 import { toTitleCase } from '@oldschoolgg/toolkit';
+import { randArrItem, randInt, roll } from 'node-rng';
 import { type Item, Items } from 'oldschooljs';
 import { loadImage } from 'skia-canvas';
 
@@ -166,7 +166,7 @@ export const monkeyPhrases = ['Ah Ah!', 'Ah Uh Ah!', 'Ah!', 'Ook Ah Ook!', 'Ook 
 export const getMonkeyPhrase = () => {
 	const arr = [];
 	for (let i = 0; i < randInt(5, 10); i++) {
-		arr.push(randArrItem(monkeyPhrases));
+		arr.push(randArrItem(monkeyPhrases) ?? monkeyPhrases[0]);
 	}
 	return arr.join(' ');
 };
@@ -205,15 +205,15 @@ export interface Monkey {
 }
 
 export function getRandomMonkey(exclude: Monkey[], chanceOfSpecial: number): Monkey {
-	const firstName = randArrItem(firstNames);
-	const lastName = randArrItem(lastNames);
-	const title = toTitleCase(randArrItem(titles));
+	const firstName = randArrItem(firstNames) ?? firstNames[0];
+	const lastName = randArrItem(lastNames) ?? lastNames[0];
+	const title = toTitleCase(randArrItem(titles) ?? titles[0]);
 	const name = `${firstName} ${lastName} the ${title}`;
 	const nameKey = `${firstName.toLowerCase()}-${lastName.toLowerCase()}-${title.toLowerCase()}`;
 	if (exclude.some(m => m.nameKey === nameKey)) return getRandomMonkey(exclude, chanceOfSpecial);
 
 	const special = roll(chanceOfSpecial);
-	const randomHead = randArrItem(special ? specialHeads : normalHeads);
+	const randomHead = randArrItem(special ? specialHeads : normalHeads) ?? normalHeads[0];
 
 	const monkey: Monkey = {
 		name,

@@ -1,5 +1,5 @@
-import { MathRNG, type RNGProvider } from '@oldschoolgg/rng';
 import { toKMB } from '@oldschoolgg/util';
+import { MathRNG, type RNGProvider } from 'node-rng';
 
 import type { Item } from '@/meta/item.js';
 import { Items } from './Items.js';

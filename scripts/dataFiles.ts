@@ -1,5 +1,3 @@
-import './base.js';
-
 import { writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { Bank } from 'oldschooljs';
@@ -41,7 +39,7 @@ import { Thieving } from '@/lib/skilling/skills/thieving/index.js';
 import Woodcutting from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import { genericUsables, usableUnlocks } from '@/mahoji/lib/abstracted_commands/useCommand.js';
 import { renderBsoItemsFile } from './bsoData.js';
-import { serializeSnapshotItem, tearDownScript, Util } from './scriptUtil.js';
+import { serializeSnapshotItem, Util } from './scriptUtil.js';
 
 const rootDir = path.join('data', BOT_TYPE.toLowerCase());
 
@@ -282,5 +280,3 @@ function renderCombatAchievementsFile() {
 	writeRootJson('combat-achievements.json', finalJSON);
 }
 renderCombatAchievementsFile();
-
-tearDownScript();

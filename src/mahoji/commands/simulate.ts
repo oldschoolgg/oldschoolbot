@@ -1,5 +1,5 @@
-import { randInt, roll } from '@oldschoolgg/rng';
 import { formatDuration, PerkTier } from '@oldschoolgg/toolkit';
+import { MathRNG, randInt, roll } from 'node-rng';
 import { averageBank, Bank, ChambersOfXeric, toKMB } from 'oldschooljs';
 
 import { ColosseumWaveBank, startColosseumRun } from '@/lib/colosseum.js';
@@ -60,7 +60,8 @@ function simulateColosseumRuns(samples = 100) {
 				hasSungodAxe: true,
 				hasGora: true,
 				hasBHook: true,
-				hasBulwark: true
+				hasBulwark: true,
+				rng: MathRNG
 			});
 			totalDuration += result.realDuration;
 			kcBank.add(result.addedWaveKCBank);

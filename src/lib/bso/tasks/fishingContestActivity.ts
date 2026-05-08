@@ -3,8 +3,8 @@ import { catchFishAtLocation, fishingLocations } from '@/lib/bso/minigames/fishi
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 import { ClueTable } from '@/lib/bso/tables/sharedTables.js';
 
-import { roll } from '@oldschoolgg/rng';
 import { calcPercentOfNum } from '@oldschoolgg/toolkit';
+import { roll } from 'node-rng';
 import { Bank, Items } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
@@ -32,7 +32,7 @@ export const fishingContestTask: MinionTask = {
 		caughtFish.sort((a, b) => b.lengthCentimetres - a.lengthCentimetres);
 		await prisma.fishingContestCatch.createMany({
 			data: caughtFish.map(f => ({
-				name: f.name,
+				name: f.name ?? 'Unknown fish',
 				user_id: BigInt(user.id),
 				length_cm: f.lengthCentimetres
 			}))

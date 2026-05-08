@@ -4,8 +4,8 @@ import { globalDroprates } from '@/lib/bso/globalDroprates.js';
 import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/skills/divination.js';
 import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 
-import { randInt, roll } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
+import { randInt, roll } from 'node-rng';
 import { Bank, ECreature, type ItemBank, increaseBankQuantitesByPercent, itemID, toKMB } from 'oldschooljs';
 
 import { MAX_LEVEL } from '@/lib/constants.js';
@@ -55,6 +55,7 @@ export function calculateHunterResult({
 	isUsingArcaneHarvester,
 	arcaneHarvesterMessages,
 	portentResult,
+	rng,
 	invincible = false,
 	noRandomness = false,
 	graceful,
@@ -78,6 +79,7 @@ export function calculateHunterResult({
 	isUsingArcaneHarvester: boolean;
 	arcaneHarvesterMessages?: string;
 	portentResult: Awaited<ReturnType<typeof chargePortentIfHasCharges>>;
+	rng: RNGProvider;
 	invincible?: boolean;
 	noRandomness?: boolean;
 	graceful: boolean;
@@ -90,17 +92,19 @@ export function calculateHunterResult({
 	const totalCost = new Bank();
 	let newWildyGear: Gear | null = null;
 
-	let [successfulQuantity, totalHunterXP] = calcLootXPHunting(
-		Math.min(Math.floor(skillsAsLevels.hunter + (usingHuntPotion ? 2 : 0)), MAX_LEVEL),
+	const crystalImpling = creature.name === 'Crystal impling';
+
+	let [successfulQuantity, xpReceived] = calcLootXPHunting({
+		currentLevel: Math.min(Math.floor(skillsAsLevels.hunter + (usingHuntPotion ? 2 : 0)), MAX_LEVEL),
 		creature,
 		quantity,
 		usingStaminaPotion,
 		graceful,
 		experienceScore,
-		noRandomness
-	);
-
-	const crystalImpling = creature.name === 'Crystal impling';
+		noRandomness,
+		rng
+	});
+	let totalHunterXP = xpReceived;
 
 	if (creature.wildy) {
 		let riskPkChance = creature.id === ECreature.BLACK_CHINCHOMPA ? 100 : 200;
@@ -273,7 +277,7 @@ export function calculateHunterResult({
 
 export const hunterTask: MinionTask = {
 	type: 'Hunter',
-	async run(data: HunterActivityTaskOptions, { handleTripFinish, user }) {
+	async run(data: HunterActivityTaskOptions, { handleTripFinish, user, rng }) {
 		const {
 			creatureID,
 			quantity,
@@ -291,7 +295,6 @@ export const hunterTask: MinionTask = {
 		}
 
 		const crystalImpling = creature.name === 'Crystal impling';
-
 		const graceful = user.hasGracefulEquipped();
 
 		const experienceScore = await user.getCreatureScore(creature.id);
@@ -332,6 +335,7 @@ export const hunterTask: MinionTask = {
 				isUsingArcaneHarvester: boostRes?.success ?? false,
 				arcaneHarvesterMessages: boostRes?.success ? boostRes.messages : undefined,
 				portentResult,
+				rng,
 				graceful,
 				experienceScore
 			});

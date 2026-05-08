@@ -1,6 +1,6 @@
 import { slayerMaskHelms } from '@/lib/bso/skills/slayer/slayerMaskHelms.js';
 
-import { Bank, type ItemBank } from 'oldschooljs';
+import type { ItemBank } from 'oldschooljs';
 
 import { slayerMaskLeaderboardCache } from '@/lib/cache.js';
 
@@ -15,12 +15,12 @@ WHERE on_task_with_mask_monster_scores IS NOT NULL AND on_task_with_mask_monster
 
 	const parsedUsers = [];
 	for (const user of result) {
-		const kcBank = new Bank(user.on_task_with_mask_monster_scores);
-		const maskKCBank = new Bank();
+		const kcBank = user.on_task_with_mask_monster_scores as ItemBank;
+		const maskKCBank = {} as ItemBank;
 		const parsedUser = { userID: user.user_id, maskKCBank };
 		for (const { mask, monsters } of slayerMaskHelms) {
 			for (const mon of monsters) {
-				maskKCBank.add(mask.id, kcBank.amount(mon));
+				maskKCBank[mask.id] = (maskKCBank[mask.id] ?? 0) + (kcBank[mon] ?? 0);
 			}
 		}
 		parsedUsers.push(parsedUser);
@@ -28,11 +28,11 @@ WHERE on_task_with_mask_monster_scores IS NOT NULL AND on_task_with_mask_monster
 
 	for (const { mask, helm } of slayerMaskHelms) {
 		const rankOneForThisMask = parsedUsers.sort(
-			(a, b) => b.maskKCBank.amount(mask.id) - a.maskKCBank.amount(mask.id)
+			(a, b) => (b.maskKCBank[mask.id] ?? 0) - (a.maskKCBank[mask.id] ?? 0)
 		)[0];
 
 		if (!rankOneForThisMask) continue;
-		if (!rankOneForThisMask.maskKCBank.has(mask.id)) continue;
+		if (!rankOneForThisMask.maskKCBank[mask.id]) continue;
 
 		slayerMaskLeaderboardCache.set(mask.id, rankOneForThisMask.userID);
 		slayerMaskLeaderboardCache.set(helm.id, rankOneForThisMask.userID);

@@ -1,5 +1,5 @@
-import { roll } from '@oldschoolgg/rng';
 import { calcPercentOfNum, calcWhatPercent, Events, formatDuration, formatOrdinal } from '@oldschoolgg/toolkit';
+import { roll } from 'node-rng';
 import { Bank, EMonster, type ItemBank, itemID, Monsters } from 'oldschooljs';
 
 import chatHeadImage from '@/lib/canvas/chatHeadImage.js';

@@ -1,7 +1,7 @@
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 import { globalDroprates } from '@/lib/bso/globalDroprates.js';
 
-import { roll } from '@oldschoolgg/rng';
+import { roll } from 'node-rng';
 import type { Bank } from 'oldschooljs';
 
 // user is null if tame is killing

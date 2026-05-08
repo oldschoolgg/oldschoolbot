@@ -1,4 +1,4 @@
-import { roll } from '@oldschoolgg/rng';
+import { roll } from 'node-rng';
 import { Bank, type Item } from 'oldschooljs';
 import { shuffle } from 'remeda';
 

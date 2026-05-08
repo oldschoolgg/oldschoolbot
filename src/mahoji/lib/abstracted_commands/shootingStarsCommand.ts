@@ -1,6 +1,5 @@
 import type { ButtonBuilder } from '@oldschoolgg/discord';
-import { percentChance, randInt, roll } from '@oldschoolgg/rng';
-import { formatDuration, SimpleTable, Time } from '@oldschoolgg/toolkit';
+import { SimpleTable, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import type { activity_type_enum } from '@/prisma/main/enums.js';
@@ -11,6 +10,7 @@ import { determineMiningTime } from '@/lib/skilling/functions/determineMiningTim
 import { pickaxes } from '@/lib/skilling/functions/miningBoosts.js';
 import type { ActivityTaskData, ShootingStarsOptions } from '@/lib/types/minions.js';
 import { makeShootingStarButton } from '@/lib/util/interactions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export const starSizes: Star[] = [
 	{
@@ -159,11 +159,17 @@ export const starSizes: Star[] = [
 	}
 ];
 
-export async function shootingStarsCommand(
-	channelId: string,
-	user: MUser,
-	_star: ShootingStars | Star
-): Promise<string> {
+export async function shootingStarsCommand({
+	rng,
+	channelId,
+	user,
+	star: _star
+}: {
+	rng: RNGProvider;
+	channelId: string;
+	user: MUser;
+	star: ShootingStars | Star;
+}): Promise<string> {
 	const skills = user.skillsAsLevels;
 	const boosts = [];
 	const star: Star = ('dustAvailable' in _star ? _star : starSizes.find(s => s.size === _star.size))!;
@@ -195,13 +201,13 @@ export async function shootingStarsCommand(
 	}
 	const stars = starSizes.filter(i => i.size <= star.size);
 	const loot = new Bank();
-	const usersWith = randInt(1, 4);
+	const usersWith = rng.randInt(1, 4);
 	let duration = 0;
 	let dustReceived = 0;
 	let totalXp = 0;
-	for (const star of stars) {
+	for (const s of stars) {
 		const [timeToMine, newQuantity] = determineMiningTime({
-			quantity: Math.round(star.dustAvailable / usersWith),
+			quantity: Math.round(s.dustAvailable / usersWith),
 			ore: star,
 			ticksBetweenRolls: currentPickaxe.ticksBetweenRolls,
 			glovesRate: 0,
@@ -213,22 +219,23 @@ export async function shootingStarsCommand(
 			passedDuration: duration,
 			hasGlory: user.hasEquipped('Amulet of glory'),
 			maxTripLength: await user.calcMaxTripLength('ShootingStars'),
-			hasKaramjaMedium: false
+			hasKaramjaMedium: false,
+			rng
 		});
 		duration += timeToMine;
 		dustReceived += newQuantity;
-		totalXp += newQuantity * star.xp;
+		totalXp += newQuantity * s.xp;
 		for (let i = 0; i < newQuantity; i++) {
-			if (percentChance(star.additionalDustPercent)) {
+			if (rng.percentChance(s.additionalDustPercent)) {
 				dustReceived++;
 			}
 		}
-		if (star.clueScrollChance) {
-			addSkillingClueToLoot(user, 'mining', newQuantity, star.clueScrollChance, loot);
+		if (s.clueScrollChance) {
+			addSkillingClueToLoot(rng, user, 'mining', newQuantity, s.clueScrollChance, loot);
 		}
 
 		// Roll for pet
-		if (star.petChance && roll((star.petChance - skills.mining * 25) / newQuantity)) {
+		if (s.petChance && rng.roll(Math.round((s.petChance - skills.mining * 25) / newQuantity))) {
 			loot.add('Rock golem');
 		}
 		if (duration >= (await user.calcMaxTripLength('Mining'))) {
@@ -252,7 +259,7 @@ export async function shootingStarsCommand(
 
 	let str = `${user.minionName} is now mining a size ${star.size} Crashed Star with ${
 		usersWith - 1 || 'no'
-	} other players! The trip will take ${formatDuration(duration)}.`;
+	} other players! The trip will return in about ${formatTripDuration(user, duration)}.`;
 
 	if (boosts.length > 0) {
 		str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
@@ -281,14 +288,24 @@ const activitiesCantGetStars: activity_type_enum[] = [
 	'CamdozaalFishing'
 ];
 
-export async function handleTriggerShootingStar(user: MUser, data: ActivityTaskData, components: ButtonBuilder[]) {
+export async function handleTriggerShootingStar({
+	rng,
+	user,
+	data,
+	components
+}: {
+	rng: RNGProvider;
+	user: MUser;
+	data: ActivityTaskData;
+	components: ButtonBuilder[];
+}) {
 	if (activitiesCantGetStars.includes(data.type)) return;
 	const miningLevel = user.skillsAsLevels.mining;
 	const eligibleStars = starSizes.filter(i => i.chance > 0 && i.level <= miningLevel);
 	const minutes = Math.floor(data.duration / Time.Minute);
 	if (minutes < 1) return;
 	const baseChance = Math.floor(540 / minutes);
-	if (!roll(baseChance)) return;
+	if (!rng.roll(baseChance)) return;
 	const shootingStarTable = new SimpleTable<Star>();
 	for (const star of eligibleStars) shootingStarTable.add(star, star.chance);
 	const star = shootingStarTable.roll();

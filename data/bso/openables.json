@@ -46,6 +46,12 @@
 		]
 	},
 	{
+		"name": "Bale of flax",
+		"id": 31045,
+		"opened_item": "Bale of flax",
+		"all_items": ["Flax"]
+	},
+	{
 		"name": "Beach mystery box",
 		"id": 47521,
 		"opened_item": "Beach mystery box",
@@ -3031,7 +3037,6 @@
 			"Butch",
 			"Callisto cub",
 			"Chompy chick",
-			"Dom",
 			"Giant squirrel",
 			"Hellpuppy",
 			"Herbi",
@@ -3083,7 +3088,6 @@
 			"Vet'ion jr.",
 			"Vorki",
 			"Wisp",
-			"Yami",
 			"Youngllef"
 		],
 		"smokey_applies": true

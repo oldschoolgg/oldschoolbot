@@ -10,9 +10,7 @@ test('comp cape reqs', () => {
 	for (const item of items) {
 		expect(item.equipment!.requirements?.agility).toEqual(120);
 		expect(item.equipment!.requirements?.attack).toEqual(120);
-		// @ts-expect-error ignore
 		expect(item.equipment!.requirements?.divination).toEqual(120);
 	}
-	// @ts-expect-error ignore
 	expect(Items.getOrThrow("Gatherer's cape").equipment!.requirements?.divination).toEqual(120);
 });

@@ -1,8 +1,7 @@
-import { randFloat, roll } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
-import { Bank, Items, resolveItems } from 'oldschooljs';
+import { Bank, type Item, Items, resolveItems } from 'oldschooljs';
 
-import type { ActivityTaskOptions } from '@/lib/types/minions.js';
+import type { TripFinishEffect } from '@/lib/util/handleTripFinish.js';
 
 export const kittens = resolveItems([
 	'Grey and black kitten',
@@ -22,11 +21,14 @@ export const cats = resolveItems([
 	'Grey and blue cat'
 ]);
 
+type GrowablePetMessage = (item: Item, shiny: boolean, user: MUser) => string | null;
+
 interface GrowablePet {
 	growthRate: number;
 	stages: number[];
 	shinyVersion?: number;
 	shinyChance?: number;
+	message?: GrowablePetMessage | string;
 }
 
 export const growablePets: GrowablePet[] = [
@@ -53,6 +55,17 @@ export const growablePets: GrowablePet[] = [
 	{
 		growthRate: (Time.Hour * 2) / Time.Minute,
 		stages: resolveItems(['Penguin egg', 'Skip'])
+	},
+	{
+		growthRate: (Time.Hour * 12) / Time.Minute,
+		stages: resolveItems(['Magnegg', 'Magnabbit']),
+		shinyChance: 50,
+		shinyVersion: Items.getOrThrow('Radiant Magnabbit').id,
+		message: (item, shiny, _user) => {
+			return shiny
+				? `\n\n🐇.... You might want to pinch yourself because **YOU JUST GOT A SHINY MAGNA!!**`
+				: `\n\n🐣 Your ${item.name} has hatched!`;
+		}
 	}
 ];
 
@@ -65,26 +78,32 @@ for (let i = 0; i < kittens.length; i++) {
 	});
 }
 
-export async function handleGrowablePetGrowth(user: MUser, data: ActivityTaskOptions, messages: string[]) {
+export const handleGrowablePetGrowth: TripFinishEffect['fn'] = async ({ user, data, messages, rng }) => {
 	const equippedPet = user.user.minion_equippedPet;
 	if (!equippedPet) return;
 	const equippedGrowablePet = growablePets.find(pet => pet.stages.includes(equippedPet));
 	if (!equippedGrowablePet) return;
 	if (equippedGrowablePet.stages[equippedGrowablePet.stages.length - 1] === equippedPet) return;
 	const minutesInThisTrip = data.duration / Time.Minute;
-	if (randFloat(0, equippedGrowablePet.growthRate) <= minutesInThisTrip) {
-		let nextPet = equippedGrowablePet.stages[equippedGrowablePet.stages.indexOf(equippedPet) + 1];
-		const isLastPet = nextPet === equippedGrowablePet.stages[equippedGrowablePet.stages.length - 1];
-		if (nextPet === -1) {
-			throw new Error(`${user.usernameOrMention}'s pet[${equippedPet}] has no index in growable pet stages.`);
-		}
+	if (rng.randFloat(0, equippedGrowablePet.growthRate) <= minutesInThisTrip) {
+		let nextPet = Items.getOrThrow(equippedGrowablePet.stages[equippedGrowablePet.stages.indexOf(equippedPet) + 1]);
+		const isLastPet = nextPet.id === equippedGrowablePet.stages[equippedGrowablePet.stages.length - 1];
+		let shiny = false;
 		if (
 			isLastPet &&
 			equippedGrowablePet.shinyChance &&
 			equippedGrowablePet.shinyVersion &&
-			roll(equippedGrowablePet.shinyChance)
+			rng.roll(equippedGrowablePet.shinyChance)
 		) {
-			nextPet = equippedGrowablePet.shinyVersion;
+			shiny = true;
+			nextPet = Items.getOrThrow(equippedGrowablePet.shinyVersion);
+		}
+		if (equippedGrowablePet.message) {
+			const growthMsg =
+				typeof equippedGrowablePet.message === 'string'
+					? equippedGrowablePet.message
+					: equippedGrowablePet.message(nextPet, shiny, user);
+			if (growthMsg) messages.push(growthMsg);
 		}
 
 		// Sync to avoid out of date CL
@@ -92,13 +111,12 @@ export async function handleGrowablePetGrowth(user: MUser, data: ActivityTaskOpt
 		await user.addItemsToCollectionLog({
 			itemsToAdd: new Bank().add(nextPet),
 			otherUpdates: {
-				minion_equippedPet: nextPet
+				minion_equippedPet: nextPet.id
 			}
 		});
-		messages.push(`Your ${Items.getOrThrow(equippedPet).name} grew into a ${Items.getOrThrow(nextPet).name}!`);
 	}
-}
+};
 
 export const growablePetsCL = growablePets
 	.flatMap(i => i.stages)
-	.filter(i => !resolveItems(['Skip', 'Penguin egg']).includes(i));
+	.filter(i => !resolveItems(['Magnabbit', 'Magnegg', 'Skip', 'Penguin egg']).includes(i));

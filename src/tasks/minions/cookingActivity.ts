@@ -2,16 +2,16 @@ import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 import { globalDroprates } from '@/lib/bso/globalDroprates.js';
 
-import { roll } from '@oldschoolgg/rng';
+import { roll } from 'node-rng';
 import { Bank } from 'oldschooljs';
 
-import calcBurntCookables from '@/lib/skilling/functions/calcBurntCookables.js';
+import { calcBurntCookables } from '@/lib/skilling/functions/calcBurntCookables.js';
 import Cooking from '@/lib/skilling/skills/cooking/cooking.js';
 import type { CookingActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const cookingTask: MinionTask = {
 	type: 'Cooking',
-	async run(data: CookingActivityTaskOptions, { user, handleTripFinish }) {
+	async run(data: CookingActivityTaskOptions, { user, handleTripFinish, rng }) {
 		const { cookableID, quantity, channelId, duration } = data;
 
 		const cookable = Cooking.Cookables.find(cookable => cookable.id === cookableID)!;
@@ -31,7 +31,12 @@ export const cookingTask: MinionTask = {
 			stopBurningLvl = cookable.stopBurnAt;
 		}
 
-		burnedAmount = calcBurntCookables(quantity, stopBurningLvl, user.skillsAsLevels.cooking);
+		burnedAmount = calcBurntCookables({
+			rng,
+			qtyCooking: quantity,
+			stopBurningLvl,
+			cookingLvl: user.skillsAsLevels.cooking
+		});
 
 		const xpReceived = (quantity - burnedAmount) * cookable.xp;
 

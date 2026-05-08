@@ -150,7 +150,9 @@ type OSBClientBankKey =
 	| 'toa_loot'
 	| 'ourania_loot'
 	| 'colo_cost'
-	| 'colo_loot';
+	| 'colo_loot'
+	| 'vt_cost'
+	| 'vt_loot';
 
 export type ClientBankKey = OSBClientBankKey | BSOClientBankKey;
 

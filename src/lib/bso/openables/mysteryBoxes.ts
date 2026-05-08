@@ -4,7 +4,7 @@ import { cmbClothes } from '@/lib/bso/openables/cmb.js';
 import { mysteryBoxBlacklist } from '@/lib/bso/openables/mysteryBoxBlacklist.js';
 import { IronmanPMBTable, PMBTable } from '@/lib/bso/openables/pmb.js';
 
-import { randArrItem, roll } from '@oldschoolgg/rng';
+import { randArrItem, roll } from 'node-rng';
 import { Bank, Items, itemID, LootTable } from 'oldschooljs';
 
 import type { UnifiedOpenable } from '@/lib/openables.js';
@@ -53,6 +53,7 @@ const MR_E_DROPRATE_FROM_EMB = 500;
 
 function randomEquippable(): number {
 	const res = randArrItem(embTable);
+	if (res === undefined) return itemID('Coins');
 	if (mysteryBoxBlacklist.includes(res)) return randomEquippable();
 	if (res >= 40_000 && res <= 50_000) return randomEquippable();
 	if (roll(MR_E_DROPRATE_FROM_EMB)) {
@@ -63,6 +64,7 @@ function randomEquippable(): number {
 
 function findMysteryBoxItem(table: number[]): number {
 	const result = randArrItem(table);
+	if (result === undefined) return itemID('Coins');
 	if (mysteryBoxBlacklist.includes(result)) return findMysteryBoxItem(table);
 	if (result >= 40_000 && result <= 50_000) return findMysteryBoxItem(table);
 	return result;

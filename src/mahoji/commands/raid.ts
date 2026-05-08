@@ -219,12 +219,12 @@ export const raidCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ interaction, options, user, channelId }) => {
+	run: async ({ interaction, options, user, channelId, rng }) => {
 		if (interaction) await interaction.defer();
 
 		const { cox, tob } = options;
 		if (cox?.stats) return coxStatsCommand(user);
-		if (tob?.stats) return tobStatsCommand(user);
+		if (tob?.stats) return tobStatsCommand(interaction);
 		if (tob?.check) return tobCheckCommand(user, Boolean(tob.check.hard_mode));
 		if (options.toa?.help) return toaHelpCommand(user, channelId);
 		if (options.doa?.help) {
@@ -235,6 +235,7 @@ export const raidCommand = defineCommand({
 
 		if (cox?.start) {
 			return coxCommand(
+				rng,
 				interaction,
 				channelId,
 				user,
@@ -246,6 +247,7 @@ export const raidCommand = defineCommand({
 		}
 		if (tob?.start) {
 			return tobStartCommand(
+				rng,
 				interaction,
 				user,
 				channelId,
@@ -259,7 +261,6 @@ export const raidCommand = defineCommand({
 		if (options.toa?.start) {
 			return toaStartCommand(
 				interaction,
-				user,
 				Boolean(options.toa.start.solo),
 				channelId,
 				options.toa.start.raid_level,

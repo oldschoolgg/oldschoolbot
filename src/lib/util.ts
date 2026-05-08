@@ -1,9 +1,9 @@
-import { cleanUsername } from '@oldschoolgg/toolkit';
+import { cleanUsername, removeFromArr } from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
-import { convertXPtoLVL } from 'oldschooljs';
+import { convertXPtoLVL, type ItemBank } from 'oldschooljs';
 
 import type { Prisma, User } from '@/prisma/main.js';
-import { MAX_LEVEL, MAX_XP } from '@/lib/constants.js';
+import { type BitField, BitFieldData, MAX_LEVEL, MAX_XP } from '@/lib/constants.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
@@ -86,6 +86,22 @@ export async function fetchUsernameAndCache(_id: string | bigint): Promise<strin
 	return badgedUsername;
 }
 
+export async function toggleBitfield(user: MUser, bit: BitField, toggleName?: string) {
+	const includedNow = user.bitfield.includes(bit);
+	const nextArr = includedNow ? removeFromArr(user.bitfield, bit) : [...user.bitfield, bit];
+	await user.update({
+		bitfield: nextArr
+	});
+	const name = toggleName ?? BitFieldData[bit].name;
+	return `Toggled '${name}' ${includedNow ? 'Off' : 'On'}`;
+}
+
+export function getIdFromMention(mention: string) {
+	const id = mention.replace(/[<@#&/!>]/g, '');
+	const parts = id.split(':');
+	return parts[0];
+}
+
 export async function runTimedLoggedFn<T>(name: string, fn: () => Promise<T>): Promise<T> {
 	const start = performance.now();
 	const result = await fn();
@@ -103,4 +119,15 @@ export type JsonKeys<T> = {
 
 export function ISODateString(date?: Date) {
 	return (date ?? new Date()).toISOString().slice(0, 10);
+}
+
+// Safe version for masks etc
+export function addItemBanks(banks: ItemBank[]): ItemBank {
+	const bank: ItemBank = {};
+	for (const _bank of banks) {
+		for (const [item, qty] of Object.entries(_bank)) {
+			bank[item] = (bank[item] ?? 0) + qty;
+		}
+	}
+	return bank;
 }

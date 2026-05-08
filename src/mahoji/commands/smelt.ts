@@ -5,6 +5,7 @@ import { Bank, itemID, resolveItems } from 'oldschooljs';
 
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import type { SmeltingActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 export const smeltingCommand = defineCommand({
@@ -178,7 +179,7 @@ export const smeltingCommand = defineCommand({
 
 		const response = `${user.minionName} is now smelting ${quantity}x ${
 			bar.name
-		}, it'll take around ${formatDuration(duration)} to finish. ${
+		}, it'll take around ${formatTripDuration(user, duration)} to finish. ${
 			blast_furnace ? `\nYou paid ${coinsToRemove} GP to use the Blast Furnace.` : ''
 		} ${boosts.length > 0 ? `\n\n**Boosts: ** ${boosts.join(', ')}.` : ''}`;
 

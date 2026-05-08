@@ -11,8 +11,8 @@ import {
 	TOTAL_MONKEYS
 } from '@/lib/bso/minigames/monkey-rumble/monkeyRumble.js';
 
-import { randArrItem } from '@oldschoolgg/rng';
 import { Emoji, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { randArrItem } from 'node-rng';
 import { Bank } from 'oldschooljs';
 
 export async function monkeyRumbleStatsCommand(user: MUser) {
@@ -120,6 +120,11 @@ export async function monkeyRumbleCommand(user: MUser, channelId: string): Comma
 
 	return {
 		content: str,
-		files: [await monkeyHeadImage({ monkey: monkeysToFight[0], content: randArrItem(fightingMessages) })]
+		files: [
+			await monkeyHeadImage({
+				monkey: monkeysToFight[0],
+				content: randArrItem(fightingMessages) ?? fightingMessages[0]
+			})
+		]
 	};
 }

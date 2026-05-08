@@ -1,6 +1,6 @@
 import { ExoticSeedsTable } from '@/lib/bso/tables/sharedTables.js';
 
-import { randFloat } from '@oldschoolgg/rng';
+import { randFloat } from 'node-rng';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';

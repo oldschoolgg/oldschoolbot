@@ -11,8 +11,9 @@ import {
 import { tameLastFinishedActivity } from '@/lib/bso/tames/tameUtil.js';
 
 import { userMention } from '@oldschoolgg/discord';
-import { percentChance, randArrItem, randInt, roll } from '@oldschoolgg/rng';
 import { calcPerHour, formatDuration, increaseNumByPercent, isFunction, Time } from '@oldschoolgg/toolkit';
+import { percentChance, randArrItem, randInt, roll } from 'node-rng';
+import { cryptoRng } from 'node-rng/crypto';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 import { isEmpty } from 'remeda';
 
@@ -107,10 +108,11 @@ export const arbitraryTameActivities: ArbitraryTameActivity[] = [
 			for (let i = 0; i < quantity; i++) {
 				loot.add(
 					WintertodtCrate.open({
-						points: randArrItem([500, 500, 750, 1000]),
+						points: randArrItem([500, 500, 750, 1000]) ?? 500,
 						itemsOwned: user.bank,
 						skills: user.skillsAsXP,
-						firemakingXP: user.skillsAsXP.firemaking
+						firemakingXP: user.skillsAsXP.firemaking,
+						rng: cryptoRng
 					})
 				);
 			}
@@ -152,7 +154,8 @@ async function handleImplingLocator(user: MUser, tame: MTame, duration: number, 
 										user,
 										quantity: qty,
 										self: openable,
-										totalLeaguesPoints: 0
+										totalLeaguesPoints: 0,
+										rng: cryptoRng
 									})
 								).bank
 							: openable.output.roll(qty)
@@ -414,7 +417,7 @@ export async function repeatTameTrip({
 					}
 				},
 				user,
-				interaction,
+				interaction: interaction as unknown as OSInteraction,
 				continueDeltaMillis
 			});
 		}
@@ -427,7 +430,7 @@ export async function repeatTameTrip({
 					}
 				},
 				user,
-				interaction,
+				interaction: interaction as unknown as OSInteraction,
 				continueDeltaMillis
 			});
 		}
@@ -471,7 +474,7 @@ export async function repeatTameTrip({
 					cast: args
 				},
 				user,
-				interaction,
+				interaction: interaction as unknown as OSInteraction,
 				continueDeltaMillis
 			});
 		}
@@ -485,7 +488,7 @@ export async function repeatTameTrip({
 					}
 				},
 				user,
-				interaction,
+				interaction: interaction as unknown as OSInteraction,
 				continueDeltaMillis
 			});
 		}
@@ -499,7 +502,7 @@ export async function repeatTameTrip({
 					}
 				},
 				user,
-				interaction,
+				interaction: interaction as unknown as OSInteraction,
 				continueDeltaMillis
 			});
 		}

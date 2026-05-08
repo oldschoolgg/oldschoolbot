@@ -43,6 +43,7 @@ export const tickers: {
 					}
 				}
 			});
+			if (result.length === 0) return;
 
 			await Promise.all(result.map(t => handleGiveawayCompletion(t)));
 		}
@@ -60,7 +61,10 @@ export const tickers: {
 				data.eventLoopDelayMean = 0;
 			}
 			await prisma.metric.create({
-				data
+				data,
+				select: {
+					timestamp: true
+				}
 			});
 		}
 	},
@@ -106,11 +110,11 @@ export const tickers: {
 FROM users u
 WHERE
   bitfield && ARRAY[
-    4,  -- IsPatronTier3
-    5,  -- IsPatronTier4
-    6,  -- IsPatronTier5
-    21, -- IsPatronTier6
-    7   -- isModerator
+    4,  -- PatronTier3
+    5,  -- PatronTier4
+    6,  -- PatronTier5
+    21, -- PatronTier6
+    7   -- Moderator
   ]::int[]
 AND last_command_date > now() - INTERVAL '5 days'
 AND EXISTS (
@@ -127,7 +131,8 @@ AND (
 )
 ORDER BY random()
 LIMIT 10;`);
-			for (const user of users.map(_u => new MUserClass(_u))) {
+			for (const u of users) {
+				const user = new MUserClass(u);
 				const { patches } = Farming.getFarmingInfoFromUser(user);
 
 				const patchesReadyToHarvest: FarmingPatchName[] = [];
@@ -292,26 +297,28 @@ LIMIT 10;`;
 	}
 ];
 
+async function runTicker(ticker: (typeof tickers)[number]): Promise<void> {
+	try {
+		if (globalClient.isShuttingDown) return;
+
+		if (ticker.interval > Time.Minute * 30) {
+			Logging.logDebug(`Running ${ticker.name} ticker`);
+		}
+
+		await ticker.cb();
+	} catch (err) {
+		Logging.logError(err as Error);
+	} finally {
+		if (ticker.timer) TimerManager.clearTimeout(ticker.timer);
+		ticker.timer = TimerManager.setTimeout(runTicker, ticker.interval, ticker);
+	}
+}
+
 export function initTickers() {
 	for (const ticker of tickers) {
 		if (ticker.timer !== null) clearTimeout(ticker.timer);
 		if (ticker.productionOnly && !globalConfig.isProduction) continue;
-		const fn = async () => {
-			try {
-				if (globalClient.isShuttingDown) return;
-				if (ticker.interval > Time.Minute * 30) {
-					Logging.logDebug(`Running ${ticker.name} ticker`);
-				}
-				await ticker.cb();
-			} catch (err) {
-				Logging.logError(err as Error);
-			} finally {
-				if (ticker.timer) TimerManager.clearTimeout(ticker.timer);
-				ticker.timer = TimerManager.setTimeout(fn, ticker.interval);
-			}
-		};
-		ticker.timer = TimerManager.setTimeout(() => {
-			fn();
-		}, ticker.startupWait ?? 1);
+
+		ticker.timer = TimerManager.setTimeout(runTicker, ticker.startupWait ?? 1, ticker);
 	}
 }

@@ -26,7 +26,11 @@ import { SlayerActivityConstants } from '@/lib/minions/data/combatConstants.js';
 import { autocompleteMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { runCommand } from '@/lib/settings/settings.js';
 import { courses } from '@/lib/skilling/skills/agility.js';
-import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
+import {
+	ensureValidStoredFishingTripIdentifier,
+	FISHING_REWORK_MESSAGE,
+	FishingStoredTripError
+} from '@/lib/skilling/skills/fishing/fishingRework.js';
 import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
 import type {
 	ActivityTaskData,
@@ -77,6 +81,7 @@ import type {
 	ScatteringActivityTaskOptions,
 	SepulchreActivityTaskOptions,
 	ShadesOfMortonOptions,
+	ShadesOfMortonPyreLogsOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	TempleTrekkingActivityTaskOptions,
@@ -84,6 +89,7 @@ import type {
 	TiaraRunecraftActivityTaskOptions,
 	TOAOptions,
 	UnderwaterAgilityThievingTaskOptions,
+	ValeTotemsActivityTaskOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '@/lib/types/minions.js';
@@ -407,11 +413,14 @@ const tripHandlers: {
 	[activity_type_enum.Fishing]: {
 		commandName: 'fish',
 		args: (data: FishingActivityTaskOptions) => {
-			const fish = Fishing.Fishes.find(f => f.id === (data.fishID as number));
+			const fish = ensureValidStoredFishingTripIdentifier(data);
+
 			return {
-				name: fish ? fish.name : Items.itemNameFromId(data.fishID),
+				name: fish.name,
 				quantity: data.iQty,
-				flakes: data.flakesQuantity !== undefined
+				powerfish: data.powerfish ?? false,
+				spirit_flakes: data.spiritFlakePreference ?? data.spiritFlakes ?? false,
+				shark_lure: data.sharkLurePreference ?? data.sharkLureQuantity ?? 0
 			};
 		}
 	},
@@ -430,6 +439,12 @@ const tripHandlers: {
 	[activity_type_enum.GloryCharging]: {
 		commandName: 'activities',
 		args: (data: ActivityTaskOptionsWithQuantity) => ({ charge: { item: 'glory', quantity: data.quantity } })
+	},
+	[activity_type_enum.GloryUncharging]: {
+		commandName: 'activities',
+		args: (data: ActivityTaskOptionsWithQuantity) => ({
+			charge: { item: 'glory_uncharge', quantity: data.quantity }
+		})
 	},
 	[activity_type_enum.GnomeRestaurant]: {
 		commandName: 'minigames',
@@ -678,6 +693,12 @@ const tripHandlers: {
 		commandName: 'minigames',
 		args: () => ({ trouble_brewing: { start: {} } })
 	},
+	[activity_type_enum.ValeTotems]: {
+		commandName: 'minigames',
+		args: (data: ValeTotemsActivityTaskOptions) => {
+			return { vale_totems: { start: { item_to_fletch: data.itemId, stamina_pot: data.staminaPot } } };
+		}
+	},
 	[activity_type_enum.VolcanicMine]: {
 		commandName: 'minigames',
 		args: (data: ActivityTaskOptionsWithQuantity) => ({ volcanic_mine: { start: { quantity: data.quantity } } })
@@ -856,6 +877,18 @@ const tripHandlers: {
 			}
 		})
 	},
+	[activity_type_enum.ShadesOfMortonSacredOil]: {
+		commandName: 'minigames',
+		args: () => ({
+			shades_of_morton: { sacred_oil: {} }
+		})
+	},
+	[activity_type_enum.ShadesOfMortonPyreLogs]: {
+		commandName: 'minigames',
+		args: (data: ShadesOfMortonPyreLogsOptions) => ({
+			shades_of_morton: { create_pyre_logs: { logs: Items.itemNameFromId(data.logID) } }
+		})
+	},
 	[activity_type_enum.TombsOfAmascut]: {
 		commandName: 'raid',
 		args: (data: TOAOptions) => ({
@@ -990,16 +1023,25 @@ export async function makeRepeatTripButtons(user: MUser) {
 	return buttons;
 }
 
-export async function repeatTrip(user: MUser, interaction: MInteraction, activity: Activity): CommandResponse {
+export async function repeatTrip(user: MUser, interaction: OSInteraction, activity: Activity): CommandResponse {
 	if (!activity || !activity.data || !activity.type) {
 		return { content: "Couldn't find any trip to repeat.", ephemeral: true };
 	}
 	const handler = tripHandlers[activity.type];
 	const args: ActivityTaskData = ActivityManager.convertStoredActivityToFlatActivity(activity);
+	let commandArgs: CommandOptions;
+	try {
+		commandArgs = handler.args(args as any) as CommandOptions;
+	} catch (err) {
+		if (err instanceof FishingStoredTripError) {
+			return { content: FISHING_REWORK_MESSAGE, ephemeral: true };
+		}
+		throw err;
+	}
 	return runCommand({
 		commandName: handler.commandName,
 		isContinue: true,
-		args: handler.args(args as any) as CommandOptions,
+		args: commandArgs,
 		interaction,
 		user,
 		continueDeltaMillis: 0

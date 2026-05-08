@@ -3,8 +3,8 @@ import type { BathhouseTaskOptions } from '@/lib/bso/bsoTypes.js';
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 import type { MTame } from '@/lib/bso/structures/MTame.js';
 
-import { randArrItem } from '@oldschoolgg/rng';
 import { Emoji, formatDuration, reduceNumByPercent, stringMatches, Table, Time } from '@oldschoolgg/toolkit';
+import { randArrItem } from 'node-rng';
 import { Bank, type Item, Items, LootTable, resolveItems } from 'oldschooljs';
 
 import type { User } from '@/prisma/main.js';
@@ -383,7 +383,10 @@ export function calculateBathouseResult(data: BathhouseTaskOptions) {
 	const firemakingXP = herbXP * 15.5 * tier.xpMultiplier + ore.warmth * 5000;
 
 	const speciesServed: BathhouseSpecies[] = [];
-	for (let i = 0; i < quantity; i++) speciesServed.push(randArrItem(speciesCanServe));
+	for (let i = 0; i < quantity; i++) {
+		const randomSpecies = randArrItem(speciesCanServe);
+		if (randomSpecies) speciesServed.push(randomSpecies);
+	}
 
 	let gaveExtraTips: BathhouseSpecies | null = null;
 
