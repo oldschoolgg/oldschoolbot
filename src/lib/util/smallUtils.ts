@@ -99,7 +99,13 @@ export function hasSkillReqsRaw(skills: SkillRequirements, requirements: SkillRe
 export function hasSkillReqs(user: MUser, reqs: Skills): [boolean, string | null] {
 	const hasReqs = hasSkillReqsRaw(user.skillsAsRequirements, reqs);
 	if (!hasReqs) {
-		return [false, formatSkillRequirements(reqs)];
+		const missingReqs = Object.fromEntries(
+			objectEntries(reqs).filter(([skillName, requiredLevel]) => {
+				const userLevel = user.skillsAsRequirements[skillName];
+				return !userLevel || userLevel < requiredLevel!;
+			})
+		) as SkillRequirements;
+		return [false, formatSkillRequirements(missingReqs)];
 	}
 	return [true, null];
 }
