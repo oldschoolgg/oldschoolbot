@@ -18,6 +18,12 @@ import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 import { economy_transaction_type } from '@/prisma/main/enums.js';
 import type { ClientStorage } from '@/prisma/main.js';
 import { bulkUpdateCommands, itemOption } from '@/discord/index.js';
+import {
+	bitfieldCanUserManipulate,
+	changeBitFieldForUser,
+	getBitFieldData,
+	listBitFields
+} from '@/lib/bitFieldUtils.js';
 import { BadgesEnum, BitField, BitFieldData, badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { syncCustomPrices } from '@/lib/preStartup.js';
@@ -25,7 +31,6 @@ import { countUsersWithItemInCl } from '@/lib/rawSql.js';
 import { sorts } from '@/lib/sorts.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
-import { isValidBitField } from '@/lib/util/smallUtils.js';
 
 export const gifs = [
 	'https://tenor.com/view/angry-stab-monkey-knife-roof-gif-13841993',
@@ -532,9 +537,13 @@ export const adminCommand = defineCommand({
 					name: 'add',
 					description: 'The bitfield to add',
 					required: false,
-					autocomplete: async ({ value }: StringAutoComplete) => {
+					autocomplete: async ({ value, user }: StringAutoComplete) => {
 						return Object.entries(BitFieldData)
-							.filter(bf => (!value ? true : bf[1].name.toLowerCase().includes(value.toLowerCase())))
+							.filter(bf => {
+								if (bf[1].protected && !user.isAdmin()) return false;
+								if (!value) return true;
+								return stringMatches(bf[1].name, value);
+							})
 							.map(i => ({ name: i[1].name, value: i[0] }));
 					}
 				},
@@ -647,10 +656,10 @@ export const adminCommand = defineCommand({
 			let newBadges = [...userToUpdateBadges.user.badges];
 
 			if (action === 'add') {
-				if (newBadges.includes(badgeID)) return "Already has this badge, so can't add.";
+				if (newBadges.includes(badgeID)) return "Already has this badge, so you can't add it O_o";
 				newBadges.push(badgeID);
 			} else {
-				if (!newBadges.includes(badgeID)) return "Doesn't have this badge, so can't remove.";
+				if (!newBadges.includes(badgeID)) return "Doesn't have this badge, so you can't remove it o_O";
 				newBadges = newBadges.filter(i => i !== badgeID);
 			}
 
@@ -721,42 +730,18 @@ export const adminCommand = defineCommand({
 		}
 
 		if (options.bitfield) {
-			const bitInput = options.bitfield.add ?? options.bitfield.remove;
+			const { bitfield: bitOpts } = options;
+			if (!bitOpts.add && !bitOpts.remove) {
+				return 'you must choose a valid bitfield from either add or remove';
+			}
+			const bitInput = bitOpts.add ?? bitOpts.remove!;
 			const user = await mUserFetch(options.bitfield.user.user.id);
-			const bitEntry = Object.entries(BitFieldData).find(i => i[0] === bitInput);
-			const action: 'add' | 'remove' = options.bitfield.add ? 'add' : 'remove';
-			if (!bitEntry) {
-				return Object.entries(BitFieldData)
-					.map(entry => `**${entry[0]}:** ${entry[1]?.name}`)
-					.join('\n');
-			}
-			const bit = Number.parseInt(bitEntry[0]);
-
-			if (!bit || !isValidBitField(bit) || [7, 8].includes(bit) || (action !== 'add' && action !== 'remove')) {
-				return 'Invalid bitfield.';
-			}
-
-			let newBits = [...user.bitfield];
-
-			if (action === 'add') {
-				if (newBits.includes(bit)) {
-					return "Already has this bit, so can't add.";
-				}
-				newBits.push(bit);
-			} else {
-				if (!newBits.includes(bit)) {
-					return "Doesn't have this bit, so can't remove.";
-				}
-				newBits = newBits.filter(i => i !== bit);
-			}
-
-			await user.update({
-				bitfield: uniqueArr(newBits)
-			});
-
-			return `${action === 'add' ? 'Added' : 'Removed'} '${(BitFieldData)[bit].name}' bit to ${
-				options.bitfield.user.user.username
-			}.`;
+			const bit = getBitFieldData(bitInput);
+			const action: 'add' | 'remove' = bitOpts.add ? 'add' : 'remove';
+			if (!bit) return listBitFields(adminUser);
+			const canManipulate = bitfieldCanUserManipulate({ user: adminUser, bit, target: user });
+			if (canManipulate !== true) return canManipulate;
+			return changeBitFieldForUser(user, bit.bit, action);
 		}
 
 		if (options.shut_down) {

@@ -36,6 +36,11 @@ export const ZRole = z.object({
 
 export type IRole = z.infer<typeof ZRole>;
 
+export const ZRichMember = ZMember.extend({
+	roles_detailed: z.array(ZRole)
+});
+export type IRichMember = z.infer<typeof ZRichMember>;
+
 export const ZChannel = z.object({
 	id: z.string(),
 	guild_id: z.string().nullable(),

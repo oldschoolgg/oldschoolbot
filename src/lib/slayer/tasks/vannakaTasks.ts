@@ -158,7 +158,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.FireGiant,
 		amount: [40, 90],
 		weight: 7,
-		monsters: [Monsters.FireGiant.id],
+		monsters: [Monsters.FireGiant.id, Monsters.Branda.id, Monsters.RoyalTitans.id],
 		combatLevel: 65,
 		unlocked: true
 	},
@@ -224,7 +224,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.IceGiant,
 		amount: [30, 80],
 		weight: 7,
-		monsters: [Monsters.IceGiant.id],
+		monsters: [Monsters.IceGiant.id, Monsters.Eldric.id, Monsters.RoyalTitans.id],
 		combatLevel: 50,
 		unlocked: true
 	},

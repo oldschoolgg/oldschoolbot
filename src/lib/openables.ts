@@ -537,12 +537,28 @@ export const allOpenables: UnifiedOpenable[] = [
 		allItems: FrozenCacheTable.allItems
 	},
 	{
+		name: 'Olive oil pack',
+		id: itemID('Olive oil pack'),
+		openedItem: Items.getOrThrow('Olive oil pack'),
+		aliases: ['olive oil pack', 'olive oil'],
+		output: new LootTable().every('Olive oil(4)', 100),
+		allItems: resolveItems(['Olive oil(4)'])
+	},
+	{
 		name: 'Bale of flax',
 		id: itemID('Bale of flax'),
 		openedItem: Items.getOrThrow('Bale of flax'),
 		aliases: ['bale of flax', 'flax bale', 'bale flax'],
 		output: BaleOfFlax,
 		allItems: BaleOfFlax.allItems
+	},
+	{
+		name: 'Soft clay pack',
+		id: itemID('Soft clay pack'),
+		openedItem: Items.getOrThrow('Soft clay pack'),
+		aliases: ['soft clay pack', 'clay pack'],
+		output: new LootTable().add('Soft clay', 100),
+		allItems: resolveItems(['Soft clay'])
 	},
 	...clueOpenables,
 	...osjsOpenables,
