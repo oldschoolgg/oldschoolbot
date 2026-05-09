@@ -1,5 +1,4 @@
 import { userMention } from '@oldschoolgg/discord';
-import { shuffleArr } from '@oldschoolgg/rng';
 import { Emoji, uniqueArr } from '@oldschoolgg/toolkit';
 
 import { getRandomTriviaQuestions } from '@/lib/roboChimp.js';
@@ -18,13 +17,13 @@ export const triviaCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ interaction, userId, options }) => {
+	run: async ({ interaction, userId, options, rng }) => {
 		await interaction.defer();
 		const users: string[] = [userId];
 		if (options.duel) users.push(options.duel.user.id);
 
 		const [question, ...fakeQuestions] = await getRandomTriviaQuestions();
-		const allAnswers = uniqueArr(shuffleArr([question, ...fakeQuestions].map(q => q.answers[0])));
+		const allAnswers = uniqueArr(rng.shuffle([question, ...fakeQuestions].map(q => q.answers[0])));
 
 		const choice = await globalClient.pickStringWithButtons({
 			interaction,

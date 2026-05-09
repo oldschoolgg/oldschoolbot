@@ -23,7 +23,6 @@ import {
 	generateRandomBank,
 	increaseBankQuantitesByPercent
 } from './util/bank.js';
-import { fromKMB, toKMB } from './util/smallUtils.js';
 import { convertLVLtoXP, convertXPtoLVL } from './util/util.js';
 
 export {
@@ -40,8 +39,6 @@ export {
 	EItem,
 	ECreature,
 	ItemGroups,
-	toKMB,
-	fromKMB,
 	resolveItems,
 	addItemToBank,
 	addBanks,
@@ -72,9 +69,10 @@ export const NIGHTMARES_HP = 2400;
 export const ZAM_HASTA_CRUSH = 65;
 export const MAX_INT_JAVA = 2_147_483_647;
 
-export * from './gear/index.js';
 export * from './hiscores/Hiscores.js';
 
 export function itemID(name: string | number): number {
 	return Items.getId(name);
 }
+
+export { toKMB } from '@oldschoolgg/util';

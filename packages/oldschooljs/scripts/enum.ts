@@ -3,6 +3,7 @@ import { writeFileSync } from 'node:fs';
 import type { Item } from '@/meta/item.js';
 import { Monsters } from '@/simulation/monsters/index.js';
 import { Items } from '@/structures/Items.js';
+import spritesheetJSON from '../../../src/lib/resources/spritesheets/items-spritesheet.json' with { type: 'json' };
 
 export function safeItemName(itemName: string) {
 	let key = itemName;
@@ -16,9 +17,6 @@ export function safeItemName(itemName: string) {
 const startsWithNumber = (str: string): boolean => /^[0-9]/.test(str);
 
 async function main() {
-	const spritesheetJSON: any = await fetch(
-		'https://raw.githubusercontent.com/oldschoolgg/oldschoolbot/refs/heads/master/src/lib/resources/spritesheets/items-spritesheet.json'
-	).then(res => res.json());
 	const osbItems = new Set(Object.keys(spritesheetJSON).map(stringID => Number(stringID)));
 
 	function shouldIgnoreItem(item: Item) {

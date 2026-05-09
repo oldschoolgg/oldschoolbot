@@ -1,10 +1,9 @@
+import type { OffenceGearStat, PrimaryGearSetupType } from '@oldschoolgg/gear';
 import { calcWhatPercent, sumArr } from '@oldschoolgg/toolkit';
 import { Bank, type Item, Items, type Monster, MonsterAttribute, Monsters } from 'oldschooljs';
-import type { OffenceGearStat } from 'oldschooljs/gear';
 
 import type { PvMMethod } from '@/lib/constants.js';
 import { degradeableItems, degradeablePvmBoostItems } from '@/lib/degradeableItems.js';
-import type { PrimaryGearSetupType } from '@/lib/gear/types.js';
 import {
 	boostCannon,
 	boostCannonMulti,

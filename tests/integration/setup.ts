@@ -8,8 +8,8 @@ import { vi } from 'vitest';
 import type { OldSchoolBotClient } from '@/discord/OldSchoolBotClient.js';
 import { globalConfig } from '@/lib/constants.js';
 import { createDb } from '@/lib/globals.js';
-import { MUserClass } from '@/lib/MUser.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
+import { MUserClass } from '@/lib/user/MUser.js';
 import { handleTripFinishResults } from '../test-utils/misc.js';
 import { TestClient } from './util.js';
 

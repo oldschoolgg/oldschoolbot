@@ -19,7 +19,7 @@ The Queen Black Dragon is a demi-boss that drops several mid-game items and mid-
 - Ancient Rejuvenation Pool – 6%
 - Royal Crossbow – 8%
 - Dragon Hunter Crossbow / Dragon Hunter Lance – 20%
-- [Additional global boosts apply](../../skills/combat-skills.md#boosts)
+- [Additional global boosts apply](/bso/skills/combat-skills#boosts)
 
 ## Loot
 

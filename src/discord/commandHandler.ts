@@ -1,5 +1,5 @@
 import { type APIChatInputApplicationCommandInteraction, SpecialResponse } from '@oldschoolgg/discord';
-import { cryptoRng } from '@oldschoolgg/rng/crypto';
+import { cryptoRng } from 'node-rng/crypto';
 
 import { convertAPIOptionsToCommandOptions } from '@/discord/index.js';
 import { preCommand } from '@/discord/preCommand.js';
@@ -13,7 +13,7 @@ export async function rawCommandHandlerInner({
 	ignoreUserIsBusy,
 	rng
 }: {
-	interaction: MInteraction;
+	interaction: OSInteraction;
 	command: AnyCommand;
 	options: CommandOptions;
 	ignoreUserIsBusy?: true;
@@ -31,12 +31,12 @@ export async function rawCommandHandlerInner({
 			};
 		}
 	}
-	const user = await mUserFetch(interaction.userId);
+	const user = interaction.user;
+	RawSQL.updateUserLastCommandDate({ userId: interaction.userId }).catch(err => Logging.logError(err));
 
-	RawSQL.updateUserLastCommandDate({ userId: interaction.userId }).catch(console.error);
-
+	// TODO: remove later
 	if (user.user.completed_achievement_diaries.length === 0) {
-		user.syncCompletedAchievementDiaries().catch(console.error);
+		user.syncCompletedAchievementDiaries().catch(err => Logging.logError(err));
 	}
 
 	const shouldIgnoreBusy = ignoreUserIsBusy || busyImmuneCommands.includes(command.name);
@@ -104,7 +104,7 @@ export async function rawCommandHandlerInner({
 
 export async function commandHandler(
 	rawInteraction: APIChatInputApplicationCommandInteraction,
-	interaction: MInteraction
+	interaction: OSInteraction
 ) {
 	const command = globalClient.allCommands.find(c => c.name === rawInteraction.data.name)!;
 	const options = convertAPIOptionsToCommandOptions({

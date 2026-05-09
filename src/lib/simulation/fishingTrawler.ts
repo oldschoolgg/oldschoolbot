@@ -1,4 +1,3 @@
-import { randomVariation, roll } from '@oldschoolgg/rng';
 import { Bank, itemID, LootTable, resolveItems } from 'oldschooljs';
 
 export const trawlerFish = [
@@ -64,13 +63,23 @@ const JunkTable = new LootTable().add(RawJunkTable, [0, 1]).add(RawJunkTable, [0
 
 const anglerOutfit = resolveItems(['Angler hat', 'Angler top', 'Angler waders', 'Angler boots']);
 
-export function fishingTrawlerLoot(fishingLevel: number, hasEliteArd: boolean, bank: Bank) {
+export function fishingTrawlerLoot({
+	rng,
+	fishingLevel,
+	hasEliteArd,
+	bank
+}: {
+	rng: RNGProvider;
+	fishingLevel: number;
+	hasEliteArd: boolean;
+	bank: Bank;
+}) {
 	const loot = new Bank();
-	if (roll(5000)) {
+	if (rng.roll(5000)) {
 		loot.add('Heron');
 	}
 
-	if (roll(8)) {
+	if (rng.roll(8)) {
 		for (const item of anglerOutfit) {
 			if (!bank.has(item)) {
 				loot.add(item);
@@ -91,7 +100,7 @@ export function fishingTrawlerLoot(fishingLevel: number, hasEliteArd: boolean, b
 	for (let i = 0; i < len; i++) {
 		const fishToGive = possibleFish[0];
 
-		let qty = Math.floor(randomVariation((ableToFish.indexOf(fishToGive) + 1) * multiplier, 50));
+		let qty = Math.floor(rng.randomVariation((ableToFish.indexOf(fishToGive) + 1) * multiplier, 50));
 		// 50% Extra fish for having elite diary
 		if (hasEliteArd) {
 			qty = Math.floor(qty * 1.5);
@@ -103,8 +112,8 @@ export function fishingTrawlerLoot(fishingLevel: number, hasEliteArd: boolean, b
 		loot.add(fishToGive.id, qty);
 
 		// Cant get same fish twice in 1 trawler
-		possibleFish = possibleFish.filter(i => i !== fishToGive);
-		if (roll(3)) break;
+		possibleFish = possibleFish.filter(_f => _f !== fishToGive);
+		if (rng.roll(3)) break;
 	}
 
 	return { loot, xp };

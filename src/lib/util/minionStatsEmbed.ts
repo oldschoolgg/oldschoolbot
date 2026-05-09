@@ -1,6 +1,6 @@
 import { EmbedBuilder } from '@oldschoolgg/discord';
-import { shuffleArr } from '@oldschoolgg/rng';
 import { sumArr, toTitleCase } from '@oldschoolgg/toolkit';
+import { MathRNG } from 'node-rng';
 import { Bank, convertXPtoLVL, type ItemBank, toKMB } from 'oldschooljs';
 import type { SkillsScore } from 'oldschooljs/hiscores';
 
@@ -14,7 +14,13 @@ import { courses } from '@/lib/skilling/skills/agility.js';
 import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
 import type { Skills } from '@/lib/types/index.js';
 
-export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
+export async function minionStatsEmbed({
+	user,
+	rng = MathRNG
+}: {
+	user: MUser;
+	rng?: RNGProvider;
+}): Promise<EmbedBuilder> {
 	const { QP } = user;
 
 	const xp = sumArr(Object.values(user.skillsAsXP) as number[]);
@@ -150,7 +156,8 @@ export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 
 	embed.addFields({
 		name: 'Other',
-		value: shuffleArr(otherStats)
+		value: rng
+			.shuffle(otherStats)
 			.slice(0, 4)
 			.map(([name, text]) => {
 				return `**${name}:** ${text}`;

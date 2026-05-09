@@ -21,6 +21,7 @@ model Activity {
   type           activity_type_enum
   channel_id     BigInt?
   data           Json?              @db.JsonB
+  all_user_ids   BigInt[]           @default([])
   pinnedTrip     PinnedTrip[]
 
   @@index([user_id, finish_date])
@@ -135,6 +136,8 @@ model ClientStorage {
   ourania_loot                 Json     @default("{}") @db.Json
   colo_cost                    Json     @default("{}") @db.Json
   colo_loot                    Json     @default("{}") @db.Json
+  vt_cost                      Json     @default("{}") @db.Json
+  vt_loot                      Json     @default("{}") @db.Json
 
   grand_exchange_is_locked Boolean @default(false)
   grand_exchange_total_tax BigInt  @default(0)
@@ -926,6 +929,8 @@ enum activity_type_enum {
   HalloweenEvent
   NightmareZone
   ShadesOfMorton
+  ShadesOfMortonSacredOil
+  ShadesOfMortonPyreLogs
   TombsOfAmascut
   UnderwaterAgilityThieving
   StrongholdOfSecurity
