@@ -53,11 +53,15 @@ export const ImplingsSimulator = () => {
 			{currentLoot && totalLoot && (
 				<div className="flex flex-col w-full max-w-full items-center">
 					<div className="max-w-sm w-full">
-						<BankImage bank={currentLoot} title={`Loot from ${lastOpenedName}`} showPrice={false} />
+						<BankImage
+							bank={currentLoot.toJSON()}
+							title={`Loot from ${lastOpenedName}`}
+							showPrice={false}
+						/>
 					</div>
 					<br />
 					<BankImage
-						bank={totalLoot}
+						bank={totalLoot.toJSON()}
 						title={`Total Loot From ${Object.entries(openedCount)
 							.map(ent => `${ent[1]}x ${ent[0]}`)
 							.join(' ')}`}

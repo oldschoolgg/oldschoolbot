@@ -34,12 +34,20 @@ export class RUser {
 		return tier ?? null;
 	}
 
+	public isSupport(): boolean {
+		return [Bits.Admin, Bits.Moderator, Bits.SupportStaff].some(_bit => this.bits.includes(_bit));
+	}
+
+	public isAdmin(): boolean {
+		return this.bits.includes(Bits.Admin);
+	}
+
 	public isMod(): boolean {
-		return [Bits.Admin, Bits.Mod].some(_bit => this.bits.includes(_bit));
+		return [Bits.Admin, Bits.Moderator].some(_bit => this.bits.includes(_bit));
 	}
 
 	public isTrusted(): boolean {
-		return [Bits.Admin, Bits.Mod, Bits.Trusted].some(_bit => this.bits.includes(_bit));
+		return [Bits.Admin, Bits.Moderator, Bits.Trusted].some(_bit => this.bits.includes(_bit));
 	}
 
 	get testingPoints(): number {
@@ -67,6 +75,16 @@ export class RUser {
 		});
 		if (!group) return [this._user.id.toString()];
 		return group.map(u => u.id.toString());
+	}
+
+	async fetchGroup(): Promise<User[]> {
+		const allUserIds = await this.findGroup();
+		const users = await roboChimpClient.user.findMany({
+			where: {
+				id: { in: allUserIds.map(id => BigInt(id)) }
+			}
+		});
+		return users;
 	}
 
 	async update(data: Prisma.UserUncheckedUpdateInput): Promise<this> {

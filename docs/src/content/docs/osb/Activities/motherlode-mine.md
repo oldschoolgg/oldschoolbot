@@ -12,7 +12,7 @@ To mine here, use [[/mine name\:Motherlode mine]].
 - Falador Elite diary provides a slight increase in better ores
 - Invisible +4 Mining level boost for [[Celestial ring]] or [[Celestial signet]] (works from bank)
 - Pickaxe boost (see [Mining page](/osb/skills/mining/#pickaxes))
-- Prospector outfit (see [Mining page](/osb/skills/mining//#prospectors-outfit)) — **must be equipped in the skilling setup**
+- Prospector outfit (see [Mining page](/osb/skills/mining/#prospectors-outfit)) — **must be equipped in the skilling setup**
 
 ## Golden Nuggets
 

@@ -20,7 +20,7 @@ Smelting bars at the Blast Furnace is faster than smelting bars normally, and th
 ## Boosts
 
 - 60% boost for Coal bag (only applies to bars that require coal)
-- 7.5% time penalty if full Graceful not equipped (in any [gear setup](../../getting-started/gear.md))
+- 7.5% time penalty if full Graceful not equipped (in any [gear setup](../../getting-started/gear))
 - Goldsmith gauntlets (22.5 to 56.2 XP/bar) **– MUST BE EQUIPPED IN ANY SETUP!**
 
 ## Bars

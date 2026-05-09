@@ -1,12 +1,12 @@
 import { bold } from '@oldschoolgg/discord';
-import { randInt } from '@oldschoolgg/rng';
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
+import { formatDuration, stringMatches, UserError } from '@oldschoolgg/toolkit';
 
 import { quests } from '@/lib/minions/data/quests.js';
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import { Thieving } from '@/lib/skilling/skills/thieving/index.js';
 import { type Stealable, stealables } from '@/lib/skilling/skills/thieving/stealables.js';
 import type { PickpocketActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { calcLootXPPickpocketing } from '@/tasks/minions/pickpocketActivity.js';
 
 export const stealCommand = defineCommand({
@@ -42,7 +42,7 @@ export const stealCommand = defineCommand({
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelId }) => {
+	run: async ({ options, user, channelId, rng }) => {
 		const stealable: Stealable | undefined = stealables.find(
 			obj =>
 				stringMatches(obj.name, options.name) ||
@@ -121,7 +121,7 @@ export const stealCommand = defineCommand({
 
 		let str = `${user.minionName} is now going to ${
 			stealable.type === 'pickpockable' ? 'pickpocket' : 'steal from'
-		} a ${stealable.name} ${quantity}x times, it'll take around ${formatDuration(duration)} to finish.`;
+		} a ${stealable.name} ${quantity}x times, it'll take around ${formatTripDuration(user, duration)} to finish.`;
 
 		if (stealable.type === 'pickpockable') {
 			const hasArdyHard = user.hasDiary('ardougne.hard');
@@ -134,7 +134,8 @@ export const stealCommand = defineCommand({
 				stealable,
 				quantity,
 				user.hasEquipped(['Thieving cape', 'Thieving cape(t)']),
-				hasArdyHard
+				hasArdyHard,
+				rng
 			);
 
 			if (user.hasEquipped(['Thieving cape', 'Thieving cape(t)'])) {
@@ -147,19 +148,28 @@ export const stealCommand = defineCommand({
 				);
 			}
 
-			const { foodRemoved } = await removeFoodFromUser({
-				user,
-				totalHealingNeeded: damageTaken,
-				healPerAction: Math.ceil(damageTaken / quantity),
-				activityName: 'Pickpocketing',
-				attackStylesUsed: []
-			});
+			let removeFoodResult: Awaited<ReturnType<typeof removeFoodFromUser>>;
+			try {
+				removeFoodResult = await removeFoodFromUser({
+					user,
+					totalHealingNeeded: damageTaken,
+					healPerAction: Math.ceil(damageTaken / quantity),
+					activityName: 'Pickpocketing',
+					attackStylesUsed: []
+				});
+			} catch (err: unknown) {
+				if (err instanceof UserError) {
+					return err.message;
+				}
+				throw err;
+			}
+			const foodRemoved = removeFoodResult.foodRemoved;
 
 			await ClientSettings.updateBankSetting('economyStats_thievingCost', foodRemoved);
 			str += ` Removed ${foodRemoved}.`;
 		} else {
 			// Up to 5% fail chance, random
-			successfulQuantity = Math.floor((quantity * randInt(95, 100)) / 100);
+			successfulQuantity = Math.floor((quantity * rng.randInt(95, 100)) / 100);
 			xpReceived = successfulQuantity * stealable.xp;
 		}
 

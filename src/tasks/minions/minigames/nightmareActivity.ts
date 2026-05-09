@@ -1,4 +1,3 @@
-import { percentChance, randomVariation } from '@oldschoolgg/rng';
 import { Bank, EMonster, Misc } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
@@ -13,7 +12,7 @@ const RawNightmare = Misc.Nightmare;
 
 export const nightmareTask: MinionTask = {
 	type: 'Nightmare',
-	async run(data: NightmareActivityTaskOptions, { user, handleTripFinish }) {
+	async run(data: NightmareActivityTaskOptions, { user, handleTripFinish, rng }) {
 		const { channelId, quantity, duration, isPhosani = false, method } = data;
 
 		const monsterID = isPhosani ? EMonster.PHOSANI_NIGHTMARE : NightmareMonster.id;
@@ -30,12 +29,12 @@ export const nightmareTask: MinionTask = {
 			const _loot = RawNightmare.kill({
 				team: parsedUsers.map(user => ({
 					id: user.id,
-					damageDone: team.length === 1 ? 2400 : randomVariation(user.damageDone, 5)
+					damageDone: team.length === 1 ? 2400 : rng.randomVariation(user.damageDone, 5)
 				})),
 				isPhosani
 			});
 
-			const died = percentChance(userStats.chanceOfDeath);
+			const died = rng.percentChance(userStats.chanceOfDeath);
 			if (died) {
 				deaths++;
 			} else {
@@ -52,7 +51,13 @@ export const nightmareTask: MinionTask = {
 			taskQuantity: null
 		});
 
-		const { newKC } = await user.incrementKC(monsterID, kc);
+		let newKC = 0;
+		if (kc > 0) {
+			const { newKC: resKc } = await user.incrementKC(monsterID, kc);
+			newKC = resKc;
+		} else {
+			newKC = (await user.getKC(monsterID)) + kc;
+		}
 		const ownsOrUsedTablet =
 			user.bank.has('Slepey tablet') ||
 			(user.bitfield.includes(BitField.HasSlepeyTablet) && user.cl.has('Slepey Tablet'));
@@ -61,7 +66,6 @@ export const nightmareTask: MinionTask = {
 				userLoot.remove('Slepey tablet', userLoot.amount('Slepey tablet'));
 			}
 			if (!ownsOrUsedTablet && !userLoot.has('Slepey tablet')) {
-				// const { newKC } = await user.incrementKC(monsterID, kc);
 				if (newKC >= 25) {
 					userLoot.add('Slepey tablet');
 				}
