@@ -1,3 +1,4 @@
+import { Bank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
 
@@ -14,7 +15,19 @@ const CastleWarsSupplyCrateTable: LootTable = new LootTable()
 	.add('Rune javelin', [100, 120])
 	.add('Castle wars ticket', 2);
 
-export const CastleWarsSupplyCrate: SimpleOpenable = new SimpleOpenable({
+class CastleWarsSupplyCrateOpenable extends SimpleOpenable {
+	public override open(quantity = 1): Bank {
+		const loot = new Bank();
+
+		for (let i = 0; i < quantity; i++) {
+			loot.add(this.table.roll(3));
+		}
+
+		return loot;
+	}
+}
+
+export const CastleWarsSupplyCrate: SimpleOpenable = new CastleWarsSupplyCrateOpenable({
 	id: 30_690,
 	name: 'Castle wars supply crate',
 	aliases: ['castle wars supply crate'],

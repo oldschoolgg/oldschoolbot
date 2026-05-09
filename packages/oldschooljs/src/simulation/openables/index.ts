@@ -121,7 +121,8 @@ const openablesObject: Record<string, SimpleOpenable> = {
 	BasicSack,
 	AdeptSack,
 	ExpertSack,
-	MasterSack
+	MasterSack,
+	CastleWarsSupplyCrate
 };
 
 const allMonsters: [number, Openable][] = Object.values(openablesObject).map(openable => [openable.id, openable]);
