@@ -1,5 +1,6 @@
 import { GearStat } from '@oldschoolgg/gear';
 import { Time } from '@oldschoolgg/toolkit';
+import { roll } from 'node-rng';
 import { Bank, deepResolveItems, itemID, Monsters, resolveItems } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
@@ -1057,7 +1058,7 @@ export const miscBossKillables: KillableMonster[] = [
 		wildy: false,
 		difficultyRating: 8,
 		deathProps: {
-			hardness: 0.2,
+			hardness: 0.1,
 			steepness: 0.99
 		},
 		equippedItemBoosts: [
