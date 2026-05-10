@@ -58,7 +58,7 @@ _Replace X with the number of minutes. Less time = fewer nets required._
 
 [[/k name\:tempoross]] from [[fishing:71]]–[[fishing:99]] using a crystal harpoon
 
-[Tempoross](tempoross.md) is a faster option than Barbarian Fishing once you have a crystal tool seed (from Zalcano) and a Dragon harpoon (from Wyrms or Tempoross) to create a crystal harpoon. Requires [[fishing:35]]. Tempoross also provides large amounts of raw food for ironmen.
+[Tempoross](tempoross) is a faster option than Barbarian Fishing once you have a crystal tool seed (from Zalcano) and a Dragon harpoon (from Wyrms or Tempoross) to create a crystal harpoon. Requires [[fishing:35]]. Tempoross also provides large amounts of raw food for ironmen.
 
 Alternatively, continuing Barbarian Fishing is the cheaper and next-best method to reach 99.
 
@@ -68,13 +68,13 @@ Currently, the fastest pet method is fishing Karambwans.
 
 ### Additional Information
 
-[Aerial Fishing](aerial-fishing.md) at [[fishing:43]]/[[hunter:35]] is more efficient than training Hunting or Fishing separately if your goal is 99 in both.
+[Aerial Fishing](aerial-fishing) at [[fishing:43]]/[[hunter:35]] is more efficient than training Hunting or Fishing separately if your goal is 99 in both.
 
 ### **Collection Log Slots Obtainable by Fishing**
 
 - Bass (Big Bass)
 - Swordfish (Big Swordfish)
 - Shark (Big Shark)
-- [Fishing Trawler](fishing-trawler.md): Angler outfit
-- [Aerial Fishing](aerial-fishing.md): 3 Rods, Golden Tench, Fish Sack
+- [Fishing Trawler](fishing-trawler): Angler outfit
+- [Aerial Fishing](aerial-fishing): 3 Rods, Golden Tench, Fish Sack
 

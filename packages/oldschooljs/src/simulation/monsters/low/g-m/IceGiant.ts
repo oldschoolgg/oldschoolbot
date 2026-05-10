@@ -3,7 +3,7 @@ import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const WildySlayerCaveTable = new LootTable()
+const WildySlayerCaveTable: LootTable = new LootTable()
 	.add('Blighted entangle sack', [1, 10], 13200)
 	.add('Blighted anglerfish', [1, 2], 9900)
 	.add('Blighted manta ray', [1, 2], 9900)
@@ -28,7 +28,7 @@ const WildySlayerCaveTable = new LootTable()
 	.add('Trouver parchment', 2, 66)
 	.add('Looting bag note', 1, 66);
 
-const IceGiantTable = new LootTable()
+const IceGiantTable: LootTable = new LootTable()
 	.every('Big bones')
 
 	/* Weapons and armour */
@@ -77,12 +77,12 @@ const IceGiantTable = new LootTable()
 	.tertiary(5000, 'Giant champion scroll')
 	.tertiary(5013, 'Curved bone');
 
-const IceGiantWildyCaveTable = new LootTable()
+const IceGiantWildyCaveTable: LootTable = new LootTable()
 	.every(IceGiantTable)
 	.add(WildySlayerCaveTable, 1, 73)
 	.add(new LootTable(), 1, 27);
 
-export default new SimpleMonster({
+export const IceGiant: SimpleMonster = new SimpleMonster({
 	id: 2085,
 	name: 'Ice giant',
 	table: IceGiantTable,

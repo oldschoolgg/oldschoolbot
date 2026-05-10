@@ -1,15 +1,15 @@
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { CollectingOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
 
 export async function collectCommand(
 	user: MUser,
-	channelID: string,
+	channelId: string,
 	objectName: string,
 	quantity?: number,
 	no_stams?: boolean
@@ -21,7 +21,7 @@ export async function collectCommand(
 			.join(', ')}.`;
 	}
 
-	const maxTripLength = user.calcMaxTripLength('Collecting');
+	const maxTripLength = await user.calcMaxTripLength('Collecting');
 	if (collectable.qpRequired && user.QP < collectable.qpRequired) {
 		return `You need ${collectable.qpRequired} QP to collect ${collectable.item.name}.`;
 	}
@@ -35,7 +35,7 @@ export async function collectCommand(
 	}
 
 	if (collectable.item.id === 245) {
-		const [hasDiary] = await userhasDiaryTier(user, WildernessDiary.hard);
+		const hasDiary = user.hasDiary('wilderness.hard');
 		if (hasDiary) {
 			collectable.duration = Time.Minute * 2;
 		}
@@ -82,7 +82,7 @@ export async function collectCommand(
 	await ActivityManager.startTrip<CollectingOptions>({
 		collectableID: collectable.item.id,
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		noStaminas: no_stams,
@@ -91,7 +91,7 @@ export async function collectCommand(
 
 	return `${user.minionName} is now collecting ${quantity * collectable.quantity}x ${
 		collectable.item.name
-	}, it'll take around ${formatDuration(duration)} to finish.${
+	}, it'll take around ${formatTripDuration(user, duration)} to finish.${
 		cost.toString().length > 0
 			? `
 Removed ${cost} from your bank.`

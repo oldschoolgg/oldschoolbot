@@ -1,10 +1,11 @@
+import { randInt, roll } from 'node-rng';
+
 import { Bank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
 import type { OpenableOpenOptions } from '@/structures/Openable.js';
 import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
-import { randInt, roll } from '@/util/smallUtils.js';
 
-const LowSeedPackTable = new LootTable()
+const LowSeedPackTable: LootTable = new LootTable()
 	.add('Potato seed', [8, 12], 2)
 	.add('Onion seed', [8, 12], 2)
 	.add('Cabbage seed', [8, 12], 2)
@@ -37,7 +38,7 @@ const LowSeedPackTable = new LootTable()
 	.add('Mushroom spore', [4, 6], 1)
 	.add('Belladonna seed', [4, 6], 1);
 
-const MediumSeedPackTable = new LootTable()
+const MediumSeedPackTable: LootTable = new LootTable()
 	.add('Irit seed', [2, 6], 3)
 	.add('Limpwurt seed', [4, 8], 3)
 	.add('Watermelon seed', [8, 12], 2)
@@ -58,7 +59,7 @@ const MediumSeedPackTable = new LootTable()
 	.add('Calquat tree seed', [3, 6], 1)
 	.add('Teak seed', [1, 3], 1);
 
-const HighSeedPackTable = new LootTable()
+const HighSeedPackTable: LootTable = new LootTable()
 	.add('Papaya tree seed', [1, 3], 5)
 	.add('Palm tree seed', [1, 2], 5)
 	.add('Hespori seed', 1, 5)
@@ -74,11 +75,11 @@ const HighSeedPackTable = new LootTable()
 	.add('Spirit seed', 1, 1)
 	.add('Redwood tree seed', 1, 1);
 
-const SeedPackTable = new LootTable().add(LowSeedPackTable).add(MediumSeedPackTable).add(HighSeedPackTable);
+const SeedPackTable: LootTable = new LootTable().add(LowSeedPackTable).add(MediumSeedPackTable).add(HighSeedPackTable);
 
-export class SeedPackOpenable extends SimpleOpenable {
-	public override open(quantity = 1, options: OpenableOpenOptions = { seedTier: '5' }) {
-		const tempTable = new LootTable();
+export class SeedPackOpenableClass extends SimpleOpenable {
+	public override open(quantity = 1, options: OpenableOpenOptions = { seedTier: '5' }): Bank {
+		const tempTable: LootTable = new LootTable();
 		const loot = new Bank();
 		const tier = options.seedTier ?? '5';
 
@@ -136,7 +137,7 @@ export class SeedPackOpenable extends SimpleOpenable {
 	}
 }
 
-export default new SeedPackOpenable({
+export const SeedPackOpenable: SeedPackOpenableClass = new SeedPackOpenableClass({
 	id: 22_993,
 	name: 'Seed pack',
 	aliases: ['seed pack'],

@@ -1,14 +1,15 @@
 import { miniID, Time } from '@oldschoolgg/toolkit';
-import { Bank } from 'oldschooljs';
+import { Bank, type ItemBank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { type Prisma, TableBankType } from '@/prisma/main.js';
+import type { Prisma } from '@/prisma/main.js';
 import { DELETED_USER_ID } from '../../../src/lib/constants.js';
 import { ironmanCommand } from '../../../src/mahoji/lib/abstracted_commands/ironmanCommand.js';
 import { mockedId } from '../util.js';
 
 describe('Ironman Command', () => {
-	async function createUserWithEverything(userId: string, userData: Partial<Prisma.UserCreateInput> = {}) {
+	async function createUserWithEverything(userData: Partial<Prisma.UserCreateInput> = {}) {
+		const userId = mockedId();
 		await global.prisma!.user.create({
 			data: { id: userId, skills_agility: 100_000_000, skills_attack: 100_000_000, ...userData }
 		});
@@ -95,22 +96,22 @@ describe('Ironman Command', () => {
 				tickets_bought: 1
 			}
 		});
-		return { testBingo };
+		return { testBingo, userId };
 	}
 
 	test('Should reset everything', async () => {
-		const userId = mockedId();
-		const { testBingo } = await createUserWithEverything(userId);
+		const { testBingo, userId } = await createUserWithEverything();
 		const userBeingReset = await mUserFetch(userId);
 		await userBeingReset.addItemsToBank({
 			items: new Bank().add('Dragon scimitar').add('Twisted bow').add('Coins', 1_000_000_000),
 			collectionLog: true
 		});
 		expect(userBeingReset.cl.length).toEqual(3);
-		const clBankId = await global.prisma.tableBank.findFirstOrThrow({
-			where: { user_id: userId, type: TableBankType.CollectionLog }
-		});
-		expect(await global.prisma!.tableBankItem.count({ where: { bank_id: clBankId.id } })).toEqual(3);
+		expect(
+			await global.prisma.jsonBank.count({
+				where: { user_id: userId, type: 'CollectionLog' }
+			})
+		).toEqual(1);
 
 		const result = await ironmanCommand(userBeingReset, null, false);
 		expect(result).toEqual('You are now an ironman.');
@@ -138,10 +139,9 @@ describe('Ironman Command', () => {
 		expect(userStats?.cl_array).toEqual(undefined);
 		expect(userStats?.cl_array_length).toEqual(undefined);
 
-		const tableBanks = await global.prisma!.tableBank.findMany({ where: { user_id: userId } });
+		const tableBanks = await global.prisma!.jsonBank.findMany({ where: { user_id: userId } });
 		for (const tableBank of tableBanks) {
-			const items = await global.prisma!.tableBankItem.count({ where: { bank_id: tableBank.id } });
-			expect(items).toEqual(0);
+			expect(Object.keys(tableBank.bank as ItemBank).length).toEqual(0);
 		}
 
 		// Bingo
@@ -153,8 +153,7 @@ describe('Ironman Command', () => {
 	});
 
 	test('Should de-iron', async () => {
-		const userId = mockedId();
-		await createUserWithEverything(userId, { minion_ironman: true });
+		const { userId } = await createUserWithEverything({ minion_ironman: true });
 		const initialUser = await mUserFetch(userId);
 		expect(initialUser.isIronman).toEqual(true);
 		const result = await ironmanCommand(initialUser, null, false);

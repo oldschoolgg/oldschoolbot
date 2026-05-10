@@ -48,7 +48,7 @@ const BanditTable = new LootTable({ limit: 143 })
 	.add('Dark fishing bait', [10, 24], 2)
 	.add(GemTable, 1, 4);
 
-export default new SimpleMonster({
+export const Bandit: SimpleMonster = new SimpleMonster({
 	id: 6605,
 	name: 'Bandit',
 	table: BanditTable,

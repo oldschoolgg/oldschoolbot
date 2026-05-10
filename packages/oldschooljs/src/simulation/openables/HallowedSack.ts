@@ -1,7 +1,7 @@
 import LootTable from '@/structures/LootTable.js';
 import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
 
-const LowTierLootTable = new LootTable()
+const LowTierLootTable: LootTable = new LootTable()
 	.add("Monk's robe top")
 	.add("Monk's robe")
 	.add('Holy symbol')
@@ -13,7 +13,7 @@ const LowTierLootTable = new LootTable()
 	.add('White lily')
 	.add('Coins', [1500, 3000]);
 
-const MidTierLootTable = new LootTable()
+const MidTierLootTable: LootTable = new LootTable()
 	.add('Adamant 2h sword')
 	.add('Adamant platebody')
 	.add('Cosmic rune', [60, 100])
@@ -25,7 +25,7 @@ const MidTierLootTable = new LootTable()
 	.add('Grimy ranarr weed', [1, 2])
 	.add('Coins', [7500, 12_500]);
 
-const HighTierLootTable = new LootTable()
+const HighTierLootTable: LootTable = new LootTable()
 	.add('Rune 2h sword')
 	.add('Rune platebody')
 	.add('Law rune', [150, 250])
@@ -37,12 +37,12 @@ const HighTierLootTable = new LootTable()
 	.add('Ranarr seed', [1, 2])
 	.add('Coins', [17_500, 25_000]);
 
-export const HallowedSackTable = new LootTable()
+export const HallowedSackTable: LootTable = new LootTable()
 	.every(LowTierLootTable, 5)
 	.every(MidTierLootTable)
 	.every(HighTierLootTable, 2);
 
-export default new SimpleOpenable({
+export const HallowedSack: SimpleOpenable = new SimpleOpenable({
 	id: 24_946,
 	name: 'Hallowed Sack',
 	aliases: ['hallow sack', 'hallowed sack'],

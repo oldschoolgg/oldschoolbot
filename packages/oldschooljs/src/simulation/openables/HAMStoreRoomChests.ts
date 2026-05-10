@@ -1,8 +1,7 @@
 import LootTable from '@/structures/LootTable.js';
 import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
 
-// TODO: check back for wiki drop table update from another one in the repo
-const GemTable = new LootTable()
+const GemTable: LootTable = new LootTable()
 	.add('Sapphire necklace', 1, 4)
 	.add('Sapphire amulet', 1, 4)
 	.add('Sapphire ring', 1, 4)
@@ -23,7 +22,7 @@ const GemTable = new LootTable()
 	.add('Diamond ring', 1, 1)
 	.add('Diamond', 1, 1);
 
-const HAMChestTable = new LootTable()
+const HAMChestTable: LootTable = new LootTable()
 	.every('Coins', [0, 99])
 	.add(GemTable, 1, 1)
 	.add(GemTable, 2, 1)
@@ -31,28 +30,28 @@ const HAMChestTable = new LootTable()
 	.add(GemTable, 4, 1)
 	.add(GemTable, 5, 1);
 
-export const BronzeHAMChest = new SimpleOpenable({
+export const BronzeHAMChest: SimpleOpenable = new SimpleOpenable({
 	id: 8867,
 	name: 'Bronze HAM chest',
 	aliases: ['Bronze', 'bronze ham chest', 'bronze chest'],
 	table: HAMChestTable
 });
 
-export const IronHAMChest = new SimpleOpenable({
+export const IronHAMChest: SimpleOpenable = new SimpleOpenable({
 	id: 8869,
 	name: 'Iron HAM chest',
 	aliases: ['iron', 'iron ham chest', 'iron chest'],
 	table: HAMChestTable
 });
 
-export const SilverHAMChest = new SimpleOpenable({
+export const SilverHAMChest: SimpleOpenable = new SimpleOpenable({
 	id: 8868,
 	name: 'Silver HAM chest',
 	aliases: ['silver', 'silver ham chest', 'silver chest'],
 	table: HAMChestTable
 });
 
-export const SteelHAMChest = new SimpleOpenable({
+export const SteelHAMChest: SimpleOpenable = new SimpleOpenable({
 	id: 8866,
 	name: 'Steel HAM chest',
 	aliases: ['steel', 'steel ham chest', 'steel chest'],

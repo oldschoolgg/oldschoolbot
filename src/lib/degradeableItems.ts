@@ -1,25 +1,15 @@
-import { percentChance } from '@oldschoolgg/rng';
+import type { GearSetupType, PrimaryGearSetupType } from '@oldschoolgg/gear';
+import { MathRNG } from 'node-rng';
 import { Bank, type Item, Items, itemID, type Monster } from 'oldschooljs';
 
-import type { GearSetupType, PrimaryGearSetupType } from '@/lib/gear/types.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 import type { ChargeBank } from '@/lib/structures/Bank.js';
+import type { DegradeableItemColumns } from '@/lib/user/userTypes.js';
 import { assert } from '@/lib/util/logError.js';
 
 export interface DegradeableItem {
 	item: Item;
-	settingsKey:
-		| 'tentacle_charges'
-		| 'sang_charges'
-		| 'celestial_ring_charges'
-		| 'ash_sanctifier_charges'
-		| 'serp_helm_charges'
-		| 'blood_fury_charges'
-		| 'tum_shadow_charges'
-		| 'blood_essence_charges'
-		| 'trident_charges'
-		| 'scythe_of_vitur_charges'
-		| 'venator_bow_charges';
+	settingsKey: DegradeableItemColumns;
 	itemsToRefundOnBreak: Bank;
 	refundVariants: {
 		variant: Item;
@@ -333,7 +323,7 @@ export async function degradeItem({
 	let pennyReduction = 0;
 	if (user.hasEquipped("Ghommal's lucky penny")) {
 		for (let i = 0; i < chargesToDegrade; i++) {
-			if (percentChance(5)) {
+			if (MathRNG.percentChance(5)) {
 				pennyReduction++;
 			}
 		}
@@ -366,11 +356,14 @@ export async function degradeItem({
 			// Unequip and delete the users item.
 			const gear = { ...user.gear[degItem.setup].raw() };
 			gear[item.equipment!.slot] = null;
-			await user.update({
-				[`gear_${degItem.setup}`]: gear
-			});
 			// Give the user the uncharged version of their charged item.
-			await user.addItemsToBank({ items: refundItems, collectionLog: false });
+			await user.transactItems({
+				itemsToAdd: refundItems,
+				collectionLog: false,
+				otherUpdates: {
+					[`gear_${degItem.setup}`]: gear
+				}
+			});
 		} else if (hasInBank && degItem.itemsToRefundOnBreak) {
 			// If its in bank, just remove 1 from bank.
 			await user.transactItems({

@@ -1,9 +1,9 @@
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-export const PorazdirTable = new LootTable().every("Demon's heart");
+export const PorazdirTable: LootTable = new LootTable().every("Demon's heart");
 
-export default new SimpleMonster({
+export const Porazdir: SimpleMonster = new SimpleMonster({
 	id: 7860,
 	name: 'Porazdir',
 	table: PorazdirTable,

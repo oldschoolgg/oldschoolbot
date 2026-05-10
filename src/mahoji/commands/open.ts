@@ -16,7 +16,7 @@ export const openCommand = defineCommand({
 			name: 'name',
 			description: 'The thing you want to open.',
 			required: false,
-			autocomplete: async (value: string, user: MUser) => {
+			autocomplete: async ({ value, user }: StringAutoComplete) => {
 				return user.bank
 					.items()
 					.filter(i => allOpenablesIDs.has(i[0].id))
@@ -45,7 +45,7 @@ export const openCommand = defineCommand({
 			name: 'open_until',
 			description: 'Keep opening items until you get this item.',
 			required: false,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				if (!value) return OpenUntilItems.map(i => ({ name: i.name, value: i.name }));
 				return OpenUntilItems.filter(i => i.name.toLowerCase().includes(value.toLowerCase())).map(i => ({
 					name: i.name,
@@ -62,7 +62,7 @@ export const openCommand = defineCommand({
 			max_value: 1000
 		}
 	],
-	run: async ({ user, options, interaction }) => {
+	run: async ({ user, options, interaction, rng }) => {
 		if (interaction) await interaction.defer();
 
 		if (!options.name) {
@@ -73,16 +73,18 @@ export const openCommand = defineCommand({
 		}
 		if (options.open_until) {
 			return abstractedOpenUntilCommand(
+				rng,
 				interaction,
 				user,
 				options.name,
 				options.open_until,
+				options.quantity,
 				options.result_quantity
 			);
 		}
 		if (options.name.toLowerCase() === 'all') {
-			return abstractedOpenCommand(interaction, user, ['all'], 'auto');
+			return abstractedOpenCommand(rng, interaction, user, ['all'], 'auto');
 		}
-		return abstractedOpenCommand(interaction, user, [options.name], options.quantity);
+		return abstractedOpenCommand(rng, interaction, user, [options.name], options.quantity);
 	}
 });

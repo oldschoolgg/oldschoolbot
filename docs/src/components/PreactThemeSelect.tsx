@@ -24,12 +24,11 @@ const getPreferredColorScheme = (): Exclude<Theme, 'auto'> => {
 };
 
 const addMQChangeListener = (mql: MediaQueryList, cb: (e: MediaQueryListEvent) => void) => {
-	if ((mql as any).addEventListener) {
-		(mql as any).addEventListener('change', cb as unknown as EventListener);
+	if (mql.addEventListener) {
+		mql.addEventListener('change', cb as unknown as EventListener);
 		return () => (mql as any).removeEventListener('change', cb as unknown as EventListener);
 	}
 	(mql as any).addListener?.(cb);
-	return () => (mql as any).removeListener?.(cb);
 };
 
 export const PreactThemeSelect = () => {
@@ -88,7 +87,7 @@ export const PreactThemeSelect = () => {
 		<button
 			ref={btnRef}
 			type="button"
-			class="theme-toggle"
+			class="theme-toggle social-icon"
 			id="theme-toggle"
 			title="Toggle theme (auto / light / dark)"
 			aria-label="light theme"

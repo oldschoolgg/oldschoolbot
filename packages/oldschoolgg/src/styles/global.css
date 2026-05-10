@@ -1,0 +1,70 @@
+@import "tailwindcss";
+@import "./fonts.css";
+@import "./position.css";
+
+.dark {
+	--color-background: #0b080c;
+	--color-text: #ffffff;
+	--color-primary: var(--color-blood-orange);
+}
+
+.light {
+	--color-background: white;
+	--color-text: black;
+	--color-primary: #242447;
+}
+
+body {
+	--color-blood-orange: oklch(0.64 0.22 32.24 / 1);
+	--color-navy: oklch(0.22 0.06 238.76);
+	--color-navy-2: oklch(0.29 0.03 247.1);
+	--color-bright-blue: oklch(0.47 0.15 248.07);
+	--color-bright-saturated-blue: oklch(0.39 0.19 263.55);
+	--color-dark: #111117;
+	--color-blurple: #5865f2;
+	--color-border: hsl(215.97deg 100% 72.5% / 18%);
+
+	--color-background: white;
+	--color-text: black;
+	--color-primary: #242447;
+
+	color: var(--color-text);
+	background-color: var(--color-background);
+
+	font-synthesis: none;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	font-size: 1.1rem;
+	font-family: "InterVariable", sans-serif;
+}
+
+html,
+body {
+	margin: 0;
+	width: 100%;
+	height: 100%;
+}
+
+h1,
+h2,
+h3 {
+	font-weight: bold;
+}
+
+main {
+	padding: 24px 32px;
+}
+
+.bg-primary {
+	background-color: var(--color-primary);
+}
+
+.border-main {
+	border: 2px solid var(--color-border);
+}
+
+.link {
+	color: rgb(57, 115, 223);
+	text-decoration: underline;
+}

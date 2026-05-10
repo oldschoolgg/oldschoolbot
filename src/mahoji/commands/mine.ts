@@ -1,10 +1,7 @@
-import { randomVariation } from '@oldschoolgg/rng';
-import { formatDuration, increaseNumByPercent, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
+import { increaseNumByPercent, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
 import { Items, itemID } from 'oldschooljs';
 
-import { userhasDiaryTier } from '@/lib/diaries.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
-import { DiaryID } from '@/lib/minions/types.js';
 import { determineMiningTime } from '@/lib/skilling/functions/determineMiningTime.js';
 import { miningCapeOreEffect, miningGloves, pickaxes, varrockArmours } from '@/lib/skilling/functions/miningBoosts.js';
 import { sinsOfTheFatherSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';
@@ -12,6 +9,7 @@ import Mining from '@/lib/skilling/skills/mining.js';
 import type { Ore } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import type { MiningActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { motherlodeMineCommand } from '@/mahoji/lib/abstracted_commands/motherlodeMineCommand.js';
 
@@ -22,7 +20,8 @@ export function determineMiningTrip({
 	isPowermining,
 	quantityInput,
 	hasKaramjaMedium,
-	randomVariationEnabled = true
+	randomVariationEnabled = true,
+	rng
 }: {
 	gearBank: GearBank;
 	ore: Ore;
@@ -31,6 +30,7 @@ export function determineMiningTrip({
 	quantityInput: number | undefined;
 	hasKaramjaMedium: boolean;
 	randomVariationEnabled?: boolean;
+	rng: RNGProvider;
 }) {
 	const boosts = [];
 	// Invisible mining level, dosen't help equip pickaxe etc
@@ -118,15 +118,18 @@ export function determineMiningTrip({
 		goldSilverBoost,
 		miningLvl: miningLevel,
 		maxTripLength,
-		hasKaramjaMedium
+		hasKaramjaMedium,
+		rng
 	});
 
 	const duration = timeToMine;
 
 	const fakeDurationMin =
-		quantityInput && randomVariationEnabled ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
+		quantityInput && randomVariationEnabled ? rng.randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
 	const fakeDurationMax =
-		quantityInput && randomVariationEnabled ? randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
+		quantityInput && randomVariationEnabled
+			? rng.randomVariation(increaseNumByPercent(duration, 25), 20)
+			: duration;
 
 	if (ore.name === 'Gem rock' && gearBank.hasEquipped('Amulet of glory')) {
 		boosts.push('3x success rate for having an Amulet of glory equipped');
@@ -160,7 +163,7 @@ export const mineCommand = defineCommand({
 			name: 'name',
 			description: 'The thing you want to mine.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return [...Mining.Ores.map(i => i.name), Mining.MotherlodeMine.name]
 					.filter(name => (!value ? true : name.toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({
@@ -174,7 +177,8 @@ export const mineCommand = defineCommand({
 			name: 'quantity',
 			description: 'The quantity you want to mine (optional).',
 			required: false,
-			min_value: 1
+			min_value: 1,
+			max_value: 100_000
 		},
 		{
 			type: 'Boolean',
@@ -183,7 +187,7 @@ export const mineCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId, rng }) => {
 		const { quantity, powermine } = options;
 
 		const motherlodeMine =
@@ -191,7 +195,7 @@ export const mineCommand = defineCommand({
 			Mining.MotherlodeMine.aliases?.some(a => stringMatches(a, options.name));
 
 		if (motherlodeMine) {
-			return motherlodeMineCommand({ user, channelID, quantity });
+			return motherlodeMineCommand({ user, channelId, quantity, rng });
 		}
 		const ore = Mining.Ores.find(
 			ore =>
@@ -227,21 +231,21 @@ export const mineCommand = defineCommand({
 			}
 		}
 
-		const hasKaramjaMedium =
-			ore.name === 'Gem rock' ? (await userhasDiaryTier(user, [DiaryID.Karamja, 'medium']))[0] : false;
+		const hasKaramjaMedium = user.hasDiary('karamja.medium');
 		const res = determineMiningTrip({
 			gearBank: user.gearBank,
 			ore,
-			maxTripLength: user.calcMaxTripLength('Mining'),
+			maxTripLength: await user.calcMaxTripLength('Mining'),
 			isPowermining: !!powermine,
 			quantityInput: quantity,
-			hasKaramjaMedium
+			hasKaramjaMedium,
+			rng
 		});
 
 		await ActivityManager.startTrip<MiningActivityTaskOptions>({
 			oreID: ore.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity: res.quantity,
 			iQty: options.quantity ? options.quantity : undefined,
 			powermine: res.isPowermining,
@@ -255,8 +259,8 @@ export const mineCommand = defineCommand({
 			quantity ? `mined ${quantity}x or gets tired` : 'is satisfied'
 		}, it'll take ${
 			quantity
-				? `between ${formatDuration(res.fakeDurationMin)} **and** ${formatDuration(res.fakeDurationMax)}`
-				: formatDuration(res.duration)
+				? `between ${formatTripDuration(user, res.fakeDurationMin)} **and** ${formatTripDuration(user, res.fakeDurationMax)}`
+				: formatTripDuration(user, res.duration)
 		} to finish.`;
 
 		if (res.boosts.length > 0) {

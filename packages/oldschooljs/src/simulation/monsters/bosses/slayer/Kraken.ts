@@ -2,7 +2,7 @@ import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const KrakenTable = new LootTable()
+const KrakenTable: LootTable = new LootTable()
 	/* Weapons and armour */
 	.add('Mystic water staff', 1, 3)
 	.add('Rune warhammer', 1, 2)
@@ -57,7 +57,7 @@ const KrakenTable = new LootTable()
 	.tertiary(1000, 'Jar of dirt')
 	.tertiary(3000, 'Pet kraken');
 
-export default new SimpleMonster({
+export const Kraken: SimpleMonster = new SimpleMonster({
 	id: 494,
 	name: 'Kraken',
 	table: KrakenTable,

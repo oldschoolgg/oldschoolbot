@@ -11,7 +11,7 @@ export const dataCommand = defineCommand({
 			type: 'String',
 			name: 'name',
 			description: 'The data you want to see.',
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return dataPoints
 					.map(i => i.name)
 					.filter(i => (!value ? true : i.toLowerCase().includes(value.toLowerCase())))

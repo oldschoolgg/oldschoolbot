@@ -6,6 +6,7 @@ import { sinsOfTheFatherSkillRequirements } from '@/lib/skilling/functions/quest
 import Runecraft from '@/lib/skilling/skills/runecraft.js';
 import type { RunecraftActivityTaskOptions } from '@/lib/types/minions.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { ouraniaAltarStartCommand } from '@/mahoji/lib/abstracted_commands/ouraniaAltarCommand.js';
 import { tiaraRunecraftCommand } from '@/mahoji/lib/abstracted_commands/tiaraRunecraftCommand.js';
@@ -36,7 +37,7 @@ export const runecraftCommand = defineCommand({
 			name: 'rune',
 			description: 'The Rune/Tiara you want to craft.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return [
 					...Runecraft.Runes.map(i => i.name),
 					'ourania altar',
@@ -78,7 +79,7 @@ export const runecraftCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ user, options, channelID }) => {
+	run: async ({ user, options, channelId }) => {
 		let { rune, quantity, usestams, daeyalt_essence, extracts } = options;
 
 		rune = rune.toLowerCase().replace('rune', '').trim();
@@ -90,15 +91,16 @@ export const runecraftCommand = defineCommand({
 		const tiaraObj = Runecraft.Tiaras.find(_tiara => stringMatches(_tiara.name, rune));
 
 		if (tiaraObj) {
-			return tiaraRunecraftCommand({ user, channelID, name: rune, quantity });
+			return tiaraRunecraftCommand({ user, channelId, name: rune, quantity });
 		}
 
-		if (rune.includes('ourania')) {
-			return ouraniaAltarStartCommand({ user, channelID, quantity, usestams, daeyalt_essence });
+		const isZMI = rune.includes('ourania') || rune.includes('zmi');
+		if (isZMI) {
+			return ouraniaAltarStartCommand({ user, channelId, quantity, usestams, daeyalt_essence });
 		}
 
 		if (rune.includes('(zeah)')) {
-			return darkAltarCommand({ user, channelID, name: rune, extracts });
+			return darkAltarCommand({ user, channelId, name: rune, extracts });
 		}
 
 		const runeObj = Runecraft.Runes.find(
@@ -170,7 +172,7 @@ export const runecraftCommand = defineCommand({
 			boosts.push('3% for Runecraft cape');
 		}
 
-		const maxTripLength = user.calcMaxTripLength('Runecraft');
+		const maxTripLength = await user.calcMaxTripLength('Runecraft');
 		const maxCanDo = Math.floor(maxTripLength / tripLength) * inventorySize;
 
 		// If no quantity provided, set it to the max.
@@ -317,7 +319,7 @@ export const runecraftCommand = defineCommand({
 		await ActivityManager.startTrip<RunecraftActivityTaskOptions>({
 			runeID: runeObj.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			essenceQuantity: quantity,
 			useStaminas: usestams,
 			daeyaltEssence: daeyalt_essence,
@@ -335,7 +337,8 @@ export const runecraftCommand = defineCommand({
 			response += ' Pure ';
 		}
 
-		response += `Essence into ${runeObj.name}, it'll take around ${formatDuration(
+		response += `Essence into ${runeObj.name}, it'll take around ${formatTripDuration(
+			user,
 			duration
 		)} to finish, this will take ${numberOfInventories}x trips to the altar. You'll get ${
 			quantityPerEssence * quantity

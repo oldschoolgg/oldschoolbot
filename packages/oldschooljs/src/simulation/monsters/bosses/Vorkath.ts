@@ -3,7 +3,7 @@ import TreeHerbSeedTable from '@/simulation/subtables/TreeHerbSeedTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const VorkathBoltTipTable = new LootTable()
+const VorkathBoltTipTable: LootTable = new LootTable()
 	.add('Diamond bolt tips', [25, 30], 10)
 	.add('Emerald bolt tips', [25, 30], 8)
 	.add('Ruby bolt tips', [25, 30], 8)
@@ -11,7 +11,7 @@ const VorkathBoltTipTable = new LootTable()
 	.add('Onyx bolt tips', [25, 30], 3)
 	.add('Sapphire bolt tips', [25, 30], 2);
 
-const VorkathTable = new LootTable()
+const VorkathTable: LootTable = new LootTable()
 	.every('Superior dragon bones')
 	.every('Blue dragonhide')
 
@@ -59,7 +59,7 @@ const VorkathTable = new LootTable()
 	.add('Dragonstone', [2, 3], 3)
 	.add('Wrath talisman', 1, 3);
 
-const TotalVorkathTable = new LootTable()
+const TotalVorkathTable: LootTable = new LootTable()
 	.every(VorkathTable, 2)
 	.tertiary(10, 'Scaly blue dragonhide')
 	.tertiary(50, 21_907) // Vorkath's head, exists twice, this is the head with 50k worth
@@ -70,7 +70,7 @@ const TotalVorkathTable = new LootTable()
 	.tertiary(5000, 'Draconic visage')
 	.tertiary(5000, 'Skeletal visage');
 
-export default new SimpleMonster({
+export const Vorkath: SimpleMonster = new SimpleMonster({
 	id: 8061,
 	name: 'Vorkath',
 	table: TotalVorkathTable,

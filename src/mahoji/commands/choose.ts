@@ -1,5 +1,4 @@
-import { randArrItem } from '@oldschoolgg/rng';
-import { inlineCode } from 'discord.js';
+import { inlineCode } from '@oldschoolgg/discord';
 
 export const chooseCommand = defineCommand({
 	name: 'choose',
@@ -15,7 +14,7 @@ export const chooseCommand = defineCommand({
 			required: true
 		}
 	],
-	run: async ({ options }) => {
+	run: async ({ options, rng }) => {
 		const list = options.list.split(',');
 		if (list.length === 0) return "You didn't supply a list.";
 		return {
@@ -24,7 +23,7 @@ export const chooseCommand = defineCommand({
 				.map(inlineCode)
 				.join(', ')}
 
-I choose... **${randArrItem(list)}**.`,
+I choose... **${rng.pick(list)}**.`,
 			allowedMentions: { parse: [], roles: [], users: [] }
 		};
 	}

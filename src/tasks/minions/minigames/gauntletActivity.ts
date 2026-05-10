@@ -1,4 +1,3 @@
-import { percentChance } from '@oldschoolgg/rng';
 import { calcWhatPercent, Events, formatOrdinal } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
@@ -9,8 +8,8 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const gauntletTask: MinionTask = {
 	type: 'Gauntlet',
-	async run(data: GauntletOptions, { user, handleTripFinish }) {
-		const { channelID, quantity, corrupted } = data;
+	async run(data: GauntletOptions, { user, handleTripFinish, rng }) {
+		const { channelId, quantity, corrupted } = data;
 		const key: MinigameName = corrupted ? 'corrupted_gauntlet' : 'gauntlet';
 
 		const kc = await user.fetchMinigameScore(key);
@@ -22,7 +21,7 @@ export const gauntletTask: MinionTask = {
 
 		let deaths = 0;
 		for (let i = 0; i < quantity; i++) {
-			const died = percentChance(chanceOfDeath);
+			const died = rng.percentChance(chanceOfDeath);
 			if (died) {
 				deaths++;
 			}
@@ -69,6 +68,6 @@ export const gauntletTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, loot);
+		return handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data, loot });
 	}
 };

@@ -1,6 +1,6 @@
 import LootTable from '@/structures/LootTable.js';
 
-const RareSeedTable = new LootTable()
+const RareSeedTable: LootTable = new LootTable()
 	.add('Toadflax seed', 1, 47)
 	.add('Irit seed', 1, 32)
 	.add('Belladonna seed', 1, 31)

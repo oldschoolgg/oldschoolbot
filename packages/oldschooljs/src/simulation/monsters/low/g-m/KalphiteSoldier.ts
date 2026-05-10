@@ -38,7 +38,7 @@ const KalphiteSoldierTable = new LootTable({ limit: 128 })
 	/* Tertiary */
 	.tertiary(90, 'Ensouled kalphite head');
 
-export default new SimpleMonster({
+export const KalphiteSoldier: SimpleMonster = new SimpleMonster({
 	id: 957,
 	name: 'Kalphite Soldier',
 	table: KalphiteSoldierTable,

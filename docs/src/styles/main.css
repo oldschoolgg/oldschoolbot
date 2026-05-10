@@ -1,10 +1,15 @@
-@import "tailwindcss";
+@layer base, starlight, theme, components, utilities;
+
+@import "@astrojs/starlight-tailwind";
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
 
 @import "./custom-components.css";
 @import "./markdown.css";
 @import "./utils.css";
 @import "./sidebar.css";
 @import "./toc.css";
+@import "./header.css";
 
 .site-title {
 	color: light-dark(var(--dark-brown), #f4ddcb);
@@ -12,6 +17,15 @@
 
 :root {
 	font-family: "InterVariable", sans-serif;
+	font-feature-settings:
+		"liga" 1,
+		"calt" 1;
+	--sl-font: "InterVariable", sans-serif;
+	--font-display: "InterVariable", sans-serif;
+	--font-sans: "InterVariable", sans-serif;
+}
+
+:root {
 	font-optical-sizing: auto;
 	color-scheme: light dark;
 
@@ -22,7 +36,7 @@
 	--verydark-brown: #100e0c;
 
 	--sl-nav-pad-x: 1rem;
-	--sl-font: "Inter", sans-serif;
+	--sl-font: "InterVariable", sans-serif;
 	--sl-content-width: 55rem;
 	--sl-color-hairline-light: rgba(0, 0, 0, 0);
 
@@ -39,7 +53,7 @@
 	--sl-color-text: var(--dark-brown);
 	--sl-color-text-accent: var(--light-brown);
 	--sl-color-accent: var(--light-brown);
-	--sl-icon-color: var(--dark-brown);
+	--sl-icon-color: #634327;
 	--secondary-bg-color: var(--cream);
 	--secondary-text-color: var(--dark-brown);
 	--sl-color-accent-input: var(--cream);
@@ -113,12 +127,6 @@
 	scrollbar-color: rgba(152, 106, 74, 0.525) #15120f;
 }
 
-.theme-toggle {
-	fill: var(--sl-icon-color);
-	color: var(--sl-icon-color);
-	cursor: pointer;
-}
-
 body {
 	background-color: var(--sl-color-bg);
 }
@@ -143,10 +151,6 @@ starlight-menu-button > button {
 	padding: 10px 20px;
 }
 
-.social-icons::after {
-	display: none;
-}
-
 h1,
 h2,
 h3,
@@ -164,14 +168,6 @@ h1 {
 
 .content-panel + .content-panel {
 	border-top: 0;
-}
-
-.social-icons a {
-	font-size: 1.7em;
-}
-
-.social-icons a[href*="github"] {
-	font-size: 24px;
 }
 
 @media (min-width: 72.85rem) {
@@ -202,17 +198,11 @@ h1 {
 	opacity: 1;
 }
 
-.rehype-heading-wrapper:not(:first-child):is(
-		.rehype-level-h3,
-		.rehype-level-h4,
-		.rehype-level-h5
-	) {
+.rehype-heading-wrapper:not(:first-child):is(.rehype-level-h3, .rehype-level-h4, .rehype-level-h5) {
 	margin-block-start: 2em;
 }
 
-.rehype-heading-wrapper:not(:first-child):is(.rehype-level-h2):not(
-		.rehype-with-extra-margin
-	) {
+.rehype-heading-wrapper:not(:first-child):is(.rehype-level-h2):not(.rehype-with-extra-margin) {
 	margin-block-start: 3.75em;
 }
 
@@ -258,10 +248,6 @@ ol + ol li blockquote {
 
 .edit_this_page {
 	color: var(--sl-color-text-accent);
-}
-
-.sl-badge {
-	font-family: "Inter", sans-serif;
 }
 
 .danger:where(.astro-ixkmpc6r) {

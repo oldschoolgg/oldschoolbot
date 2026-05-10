@@ -13,7 +13,7 @@ const OgreTable = new LootTable({ limit: 128 })
 	.tertiary(400, 'Long bone')
 	.tertiary(5013, 'Curved bone');
 
-export default new SimpleMonster({
+export const Ogre: SimpleMonster = new SimpleMonster({
 	id: 136,
 	name: 'Ogre',
 	table: OgreTable,

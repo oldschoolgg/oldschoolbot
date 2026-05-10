@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import Constructables from '@/lib/skilling/skills/construction/constructables.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { ConstructionActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 const ds2Requirements: Skills = {
 	magic: 75,
@@ -41,7 +42,7 @@ export const buildCommand = defineCommand({
 			name: 'name',
 			description: 'The object you want to build.',
 			required: true,
-			autocomplete: async (value: string, user: MUser) => {
+			autocomplete: async ({ value, user }: StringAutoComplete) => {
 				return Constructables.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 					.filter(c => c.level <= user.skillsAsLevels.construction)
 					.map(i => ({
@@ -58,7 +59,7 @@ export const buildCommand = defineCommand({
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId }) => {
 		const object = Constructables.find(
 			object =>
 				stringMatches(object.id.toString(), options.name) ||
@@ -92,7 +93,7 @@ export const buildCommand = defineCommand({
 		const userBank = user.bank;
 		const planksHas = userBank.amount(plank);
 
-		const maxTripLength = user.calcMaxTripLength('Construction');
+		const maxTripLength = await user.calcMaxTripLength('Construction');
 
 		let { quantity } = options;
 		if (!quantity) {
@@ -127,7 +128,7 @@ export const buildCommand = defineCommand({
 		await ActivityManager.startTrip<ConstructionActivityTaskOptions>({
 			objectID: object.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			duration,
 			type: 'Construction'
@@ -135,7 +136,8 @@ export const buildCommand = defineCommand({
 
 		const xpHr = `${(((object.xp * quantity) / (duration / Time.Minute)) * 60).toLocaleString()} XP/Hr`;
 
-		return `${user.minionName} is now constructing ${quantity}x ${object.name}, it'll take around ${formatDuration(
+		return `${user.minionName} is now constructing ${quantity}x ${object.name}, it'll take around ${formatTripDuration(
+			user,
 			duration
 		)} to finish. Removed ${cost} from your bank. **${xpHr}**
 

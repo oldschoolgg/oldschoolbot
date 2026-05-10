@@ -1,12 +1,12 @@
 import { Emoji } from '@oldschoolgg/toolkit';
-import { itemID } from 'oldschooljs';
+import { type ItemBank, itemID } from 'oldschooljs';
 
 import { defineSkill } from '@/lib/skilling/types.js';
 import BlastableBars from './blastables.js';
 import Bars from './smeltables.js';
 import SmithableItems from './smithables/index.js';
 
-const smithsUniformItems: { [key: number]: number } = {
+const smithsUniformItems: ItemBank = {
 	[itemID('Smiths tunic')]: 20,
 	[itemID('Smiths trousers')]: 20,
 	[itemID('Smiths gloves')]: 20,

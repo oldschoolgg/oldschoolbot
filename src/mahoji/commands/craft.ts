@@ -1,8 +1,8 @@
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 
-import { FaladorDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { Craftables } from '@/lib/skilling/skills/crafting/craftables/index.js';
 import type { CraftingActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export const craftCommand = defineCommand({
 	name: 'craft',
@@ -18,7 +18,7 @@ export const craftCommand = defineCommand({
 			name: 'name',
 			description: 'The item you want to craft.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return Craftables.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase()))).map(
 					i => ({
 						name: i.name,
@@ -35,7 +35,7 @@ export const craftCommand = defineCommand({
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId }) => {
 		let { quantity } = options;
 
 		if (options.name.toLowerCase().includes('zenyte') && quantity === null) quantity = 1;
@@ -69,12 +69,12 @@ export const craftCommand = defineCommand({
 
 		// Get the base time to craft the item then add on quarter of a second per item to account for banking/etc.
 		let timeToCraftSingleItem = craftable.tickRate * Time.Second * 0.6 + Time.Second / 4;
-		const [hasFallyHard] = await userhasDiaryTier(user, FaladorDiary.hard);
+		const hasFallyHard = user.hasDiary('falador.hard');
 		if (craftable.bankChest && (hasFallyHard || user.skillsAsLevels.crafting >= 99)) {
 			timeToCraftSingleItem /= 3.25;
 		}
 
-		const maxTripLength = user.calcMaxTripLength('Crafting');
+		const maxTripLength = await user.calcMaxTripLength('Crafting');
 
 		if (!quantity) {
 			quantity = Math.floor(maxTripLength / timeToCraftSingleItem);
@@ -107,7 +107,7 @@ export const craftCommand = defineCommand({
 		await ActivityManager.startTrip<CraftingActivityTaskOptions>({
 			craftableID: craftable.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			duration,
 			type: 'Crafting'
@@ -115,6 +115,6 @@ export const craftCommand = defineCommand({
 
 		return `${user.minionName} is now crafting ${quantity}${sets} ${
 			craftable.name
-		}, it'll take around ${formatDuration(duration)} to finish. Removed ${itemsNeeded} from your bank.`;
+		}, it'll take around ${formatTripDuration(user, duration)} to finish. Removed ${itemsNeeded} from your bank.`;
 	}
 });

@@ -8,12 +8,10 @@ import { Prisma } from '@/prisma/main.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { BadgesEnum, globalConfig, MAX_LEVEL, Roles } from '@/lib/constants.js';
 import { getCollectionItems } from '@/lib/data/Collections.js';
-import { loggedRawPrismaQuery } from '@/lib/rawSql.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
-import { SkillsArray } from '@/lib/skilling/types.js';
+import { type SkillNameType, SkillsArray } from '@/lib/skilling/types.js';
 import { fetchMultipleCLLeaderboards } from '@/lib/util/clLeaderboard.js';
-import { getUsernameSync } from '@/lib/util.js';
 
 const RoleResultSchema = z.object({
 	roleID: z.string().min(17).max(19),
@@ -50,7 +48,7 @@ async function topSkillers() {
 	const results: RoleResult[] = [];
 
 	const [top200TotalXPUsers, ...top200ms] = await prisma.$transaction([
-		prisma.$queryRawUnsafe<any>(
+		prisma.$queryRawUnsafe<({ id: string; totalxp: bigint } & Record<`skills.${SkillNameType}`, bigint>)[]>(
 			`SELECT id, ${SkillsArray.map(s => `"skills.${s}"`)}, ${SkillsArray.map(s => `"skills.${s}"::bigint`).join(
 				' + '
 			)} as totalxp FROM users ORDER BY totalxp DESC LIMIT 200;`
@@ -75,7 +73,7 @@ async function topSkillers() {
 	}
 
 	const rankOneTotal = top200TotalXPUsers
-		.map((u: any) => {
+		.map(u => {
 			let totalLevel = 0;
 			for (const skill of SkillsArray) {
 				totalLevel += convertXPtoLVL(Number(u[`skills.${skill}`]), MAX_LEVEL);
@@ -85,7 +83,7 @@ async function topSkillers() {
 				totalLevel
 			};
 		})
-		.sort((a: any, b: any) => b.totalLevel - a.totalLevel)[0];
+		.sort((a, b) => b.totalLevel - a.totalLevel)[0];
 
 	results.push({
 		userID: rankOneTotal.id,
@@ -392,44 +390,47 @@ export async function runRolesTask(dryRun: boolean): Promise<CommandResponse> {
 	debugMessages.push(`Finished role functions, ${results.length} results`);
 
 	const allBadgeIDs = uniqueArr(results.map(i => i.badge)).filter(notEmpty);
-	const allRoleIDs = uniqueArr(results.map(i => i.roleID)).filter(notEmpty);
+	// const allRoleIDs = uniqueArr(results.map(i => i.roleID)).filter(notEmpty);
 
 	if (!dryRun) {
 		const roleNames = new Map<string, string>();
-		const supportServerGuild = globalClient.guilds.cache.get(globalConfig.supportServerID)!;
-		if (!supportServerGuild) throw new Error('No support guild');
+		// const supportServerGuild = globalClient.guilds.cache.get(globalConfig.supportServerID)!;
 
 		// Remove all top badges from all users (and add back later)
 		const badgeIDs = `ARRAY[${allBadgeIDs.join(',')}]`;
-		await loggedRawPrismaQuery(`
+		await prisma.$queryRawUnsafe(`
 UPDATE users
 SET badges = badges - ${badgeIDs}
 WHERE badges && ${badgeIDs}
 `);
 
 		// Remove roles from ineligible users
-		for (const member of supportServerGuild.members.cache.values()) {
-			const rolesToRemove = member.roles.cache
-				.filter(r => allRoleIDs.includes(r.id))
-				.filter(roleToRemove => {
-					const shouldHaveThisRole = results.some(
-						r => r.userID === member.id && r.roleID === roleToRemove.id
-					);
-					return !shouldHaveThisRole;
-				});
-			if (rolesToRemove.size > 0) {
-				await member.roles.remove(rolesToRemove.map(r => r.id)).catch(console.error);
-				debugMessages.push(
-					`Removing these roles from ${member.user.tag}: ${rolesToRemove.map(r => r.name).join(', ')}`
-				);
-			}
-		}
+		// for (const member of supportServerGuild.members.cache.values()) {
+		// 	const rolesToRemove = member.roles.cache
+		// 		.filter(r => allRoleIDs.includes(r.id))
+		// 		.filter(roleToRemove => {
+		// 			const shouldHaveThisRole = results.some(
+		// 				r => r.userID === member.id && r.roleID === roleToRemove.id
+		// 			);
+		// 			return !shouldHaveThisRole;
+		// 		});
+		// 	if (rolesToRemove.size > 0) {
+		// 		await member.roles.remove(rolesToRemove.map(r => r.id)).catch(console.error);
+		// 		debugMessages.push(
+		// 			`Removing these roles from ${member.user.tag}: ${rolesToRemove.map(r => r.name).join(', ')}`
+		// 		);
+		// 	}
+		// }
 
 		// Add roles to users
+		const mainServerRoles = await globalClient.fetchRolesOfGuild(globalConfig.supportServerID);
+
 		for (const { userID, roleID, badge } of results) {
 			if (!userID) continue;
-			const role = await supportServerGuild.roles.fetch(roleID).catch(console.error);
-			const member = await supportServerGuild.members.fetch(userID).catch(noOp);
+			const user = await mUserFetch(userID);
+
+			const role = mainServerRoles.find(_r => _r.id === roleID);
+			const member = await globalClient.fetchMainServerMember(userID).catch(noOp);
 			if (!member) {
 				debugMessages.push(`Failed to find member ${userID}`);
 				continue;
@@ -440,30 +441,37 @@ WHERE badges && ${badgeIDs}
 			}
 			roleNames.set(roleID, role.name);
 
-			if (!member.roles.cache.has(roleID)) {
-				await member.roles.add(roleID).catch(console.error);
-				debugMessages.push(`Adding the ${role.name} role to ${member.user.tag}`);
+			if (!member.roles.some(_r => _r === roleID)) {
+				// await member.roles.add(roleID).catch(console.error);
+				debugMessages.push(`Adding the ${role.name} role to ${user.username}`);
 			} else {
-				debugMessages.push(`${member.user.tag} already has the ${role.name} role`);
+				debugMessages.push(`${user.username} already has the ${role.name} role`);
 			}
 
 			if (badge) {
-				const user = await mUserFetch(userID);
 				if (!user.user.badges.includes(badge)) {
 					await user.update({
 						badges: {
 							push: badge
 						}
 					});
-					debugMessages.push(`Adding badge ${badge} to ${member.user.tag}`);
+					debugMessages.push(`Adding badge ${badge} to ${user.username}`);
 				} else {
-					debugMessages.push(`${member.user.tag} already has badge ${badge}`);
+					debugMessages.push(`${user.username} already has badge ${badge}`);
 				}
 			}
 		}
 
+		const text = (
+			await Promise.all(
+				results.map(
+					async r =>
+						`${await Cache.getBadgedUsername(r.userID)} got ${roleNames.get(r.roleID)} because ${r.reason}`
+				)
+			)
+		).join('\n');
 		return `Roles
-${results.map(r => `${getUsernameSync(r.userID)} got ${roleNames.get(r.roleID)} because ${r.reason}`).join('\n')}
+${text}
 
 Debug Messages:
 ${debugMessages.join('\n')}`;

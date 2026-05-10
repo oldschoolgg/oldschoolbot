@@ -1,9 +1,9 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
 
 import { AutoFarmFilterEnum } from '@/prisma/main/enums.js';
+import { choicesOf } from '@/discord/index.js';
 import TitheFarmBuyables from '@/lib/data/buyables/titheFarmBuyables.js';
 import { superCompostables } from '@/lib/data/filterables.js';
-import { choicesOf } from '@/lib/discord/index.js';
 import { autoFarm } from '@/lib/minions/functions/autoFarm.js';
 import { CompostTiers, Farming } from '@/lib/skilling/skills/farming/index.js';
 import { ContractOptions } from '@/lib/skilling/skills/farming/utils/types.js';
@@ -13,7 +13,11 @@ import {
 	harvestCommand
 } from '@/mahoji/lib/abstracted_commands/farmingCommand.js';
 import { farmingContractCommand } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
-import { titheFarmCommand, titheFarmShopCommand } from '@/mahoji/lib/abstracted_commands/titheFarmCommand.js';
+import {
+	titheFarmCommand,
+	titheFarmShopCommand,
+	titheFarmShopInfoCommand
+} from '@/mahoji/lib/abstracted_commands/titheFarmCommand.js';
 
 const autoFarmFilterTexts: Record<AutoFarmFilterEnum, string> = {
 	AllFarm: 'All crops will be farmed with the highest available seed',
@@ -41,7 +45,7 @@ export const farmingCommand = defineCommand({
 					name: 'plant_name',
 					description: 'The plant you want to plant.',
 					required: true,
-					autocomplete: async (value: string, user: MUser) => {
+					autocomplete: async ({ value, user }: StringAutoComplete) => {
 						return Farming.Plants.filter(i => user.skillsAsLevels.farming >= i.level)
 							.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i.name, value: i.name }));
@@ -51,7 +55,8 @@ export const farmingCommand = defineCommand({
 					type: 'Integer',
 					name: 'quantity',
 					description: 'The quantity you want to plant.',
-					required: false
+					required: false,
+					min_value: 1
 				},
 				{
 					type: 'Boolean',
@@ -129,11 +134,24 @@ export const farmingCommand = defineCommand({
 					name: 'buy_reward',
 					description: 'Buy a Tithe Farm reward.',
 					required: false,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return TitheFarmBuyables.filter(i =>
 							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 						).map(i => ({ name: i.name, value: i.name }));
 					}
+				},
+				{
+					type: 'Integer',
+					name: 'quantity',
+					description: 'The quantity of this reward you want to buy.',
+					required: false,
+					min_value: 1
+				},
+				{
+					type: 'Boolean',
+					name: 'show_info',
+					description: 'Shows your Tithe Farm points and all reward costs.',
+					required: false
 				}
 			]
 		},
@@ -148,7 +166,7 @@ export const farmingCommand = defineCommand({
 					name: 'plant_name',
 					description: 'The plant you want to put in the Compost Bins.',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return superCompostables
 							.filter(i => (!value ? true : i.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i, value: i }));
@@ -179,7 +197,7 @@ export const farmingCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ user, options, interaction, channelID }) => {
+	run: async ({ user, options, interaction, channelId }) => {
 		await interaction.defer();
 		const { patchesDetailed } = Farming.getFarmingInfoFromUser(user);
 
@@ -232,10 +250,18 @@ export const farmingCommand = defineCommand({
 			});
 		}
 		if (options.tithe_farm) {
-			if (options.tithe_farm.buy_reward) {
-				return titheFarmShopCommand(interaction, user, options.tithe_farm.buy_reward);
+			if (options.tithe_farm.show_info) {
+				return titheFarmShopInfoCommand(user);
 			}
-			return titheFarmCommand(user, channelID);
+			if (options.tithe_farm.buy_reward) {
+				return titheFarmShopCommand(
+					interaction,
+					user,
+					options.tithe_farm.buy_reward,
+					options.tithe_farm.quantity
+				);
+			}
+			return titheFarmCommand(user, channelId);
 		}
 		if (options.compost_bin) {
 			return compostBinCommand(interaction, user, options.compost_bin.plant_name, options.compost_bin.quantity);

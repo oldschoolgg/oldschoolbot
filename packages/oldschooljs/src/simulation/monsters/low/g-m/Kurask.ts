@@ -4,7 +4,7 @@ import RareSeedTable from '@/simulation/subtables/RareSeedTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-export const KuraskPreTable = new LootTable({ limit: 124 })
+export const KuraskPreTable: LootTable = new LootTable({ limit: 124 })
 	/* Weapons and armor */
 	.add('Mithril kiteshield', 1, 3)
 	.add('Rune longsword', 1, 3)
@@ -37,7 +37,7 @@ export const KuraskPreTable = new LootTable({ limit: 124 })
 	/* RDT */
 	.add(GemTable, 1, 6);
 
-const KuraskTable = new LootTable()
+const KuraskTable: LootTable = new LootTable()
 	.every('Bones')
 	.every(KuraskPreTable)
 
@@ -45,7 +45,7 @@ const KuraskTable = new LootTable()
 	.tertiary(128, 'Clue scroll (hard)')
 	.tertiary(3000, 'Kurask head');
 
-export default new SimpleMonster({
+export const Kurask: SimpleMonster = new SimpleMonster({
 	id: 410,
 	name: 'Kurask',
 	table: KuraskTable,

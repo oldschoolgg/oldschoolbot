@@ -1,12 +1,15 @@
 import { readFileSync, writeFileSync } from 'node:fs';
+import { increaseNumByPercent, objectValues, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { diff } from 'deep-object-diff';
 import deepMerge from 'deepmerge';
 import { clone } from 'remeda';
 
 import { EquipmentSlot, type Item } from '@/meta/item.js';
-import { CLUE_SCROLL_NAMES, CLUE_SCROLLS, Items, USELESS_ITEMS } from '@/structures/Items.js';
-import { increaseNumByPercent, reduceNumByPercent } from '@/util/smallUtils.js';
+import { Items } from '@/structures/Items.js';
+import { USELESS_ITEMS } from '@/structures/ItemsClass.js';
 import bsoItemsJson from '../../../data/bso/bso_items.json' with { type: 'json' };
+import { fetchPrices } from './fetchPrices.js';
+import { fetchRawItems } from './fetchRawItems.js';
 import { itemChanges } from './manualItemChanges.js';
 
 const ITEM_UPDATE_CONFIG = {
@@ -41,17 +44,20 @@ const itemsBeingModified = new Set([...equipmentModSrc.map(i => i[0]), ...itemsT
 
 const newItemJSON: { [key: string]: Item } = {};
 
-interface RawItemCollection {
-	[index: string]: Item & {
-		duplicate: boolean;
-		noted: boolean;
-		placeholder: boolean;
-		linked_id_item: number | null;
-	};
-}
-
 // This regex matches the nearly 600 individual clue-step items:
 const clueStepRegex = /^Clue scroll \((beginner|easy|medium|hard|elite|master)\) - .*$/;
+const CLUE_SCROLL_NAMES: string[] = [
+	'Clue scroll (beginner)',
+	'Clue scroll (easy)',
+	'Clue scroll (medium)',
+	'Clue scroll (hard)',
+	'Clue scroll (elite)',
+	'Clue scroll (master)'
+];
+const CLUE_SCROLLS: number[] = [
+	// Clue scrolls
+	2677, 2801, 2722, 12_073, 19_835, 23_182
+];
 
 function itemShouldntBeAdded(item: any) {
 	if (CLUE_SCROLLS.includes(item.id)) return false;
@@ -80,7 +86,6 @@ const manualItems: Item[] = [
 		name: 'Ring of shadows',
 		members: true,
 		equipable: true,
-		equipable_by_player: true,
 		cost: 75_000,
 		lowalch: 30_000,
 		highalch: 45_000,
@@ -108,7 +113,6 @@ const manualItems: Item[] = [
 		id: 28_409,
 		name: 'Ancient lamp',
 		cost: 1,
-		wiki_name: 'Ancient lamp',
 		price: 0
 	},
 	{
@@ -121,7 +125,6 @@ const manualItems: Item[] = [
 		cost: 100,
 		lowalch: 40,
 		highalch: 60,
-		wiki_name: 'Scaly blue dragonhide',
 		price: 2011
 	},
 	{
@@ -134,7 +137,6 @@ const manualItems: Item[] = [
 		cost: 100,
 		lowalch: 1,
 		highalch: 1,
-		wiki_name: "Butler's tray",
 		price: 1,
 		equipment: {
 			attack_stab: 0,
@@ -165,7 +167,6 @@ const manualItems: Item[] = [
 		cost: 100,
 		lowalch: 1,
 		highalch: 1,
-		wiki_name: 'Costume needle',
 		price: 1
 	}
 ];
@@ -281,23 +282,10 @@ const keysToWarnIfRemovedOrAdded: (keyof Item)[] = ['equipable', 'equipment', 'w
 
 export default async function prepareItems(): Promise<void> {
 	const messages: string[] = [];
-	const allItemsRaw: RawItemCollection = await fetch(
-		'https://raw.githubusercontent.com/0xNeffarion/osrsreboxed-db/37322fed3abb2d58236c59dfc6babb37a27a50ea/docs/items-complete.json'
-	).then((res): Promise<any> => res.json());
+	const allItemsRaw = await fetchRawItems();
 	const allItems = clone(allItemsRaw);
 
-	const allPrices = await fetch('https://prices.runescape.wiki/api/v1/osrs/latest', {
-		headers: {
-			'User-Agent': 'oldschooljs - @magnaboy'
-		}
-	})
-		.then((res): Promise<any> => res.json())
-		.then(res => res.data);
-
-	if (!allPrices[20_997]) {
-		throw new Error('Failed to fetch prices');
-	}
-
+	const allPrices = await fetchPrices();
 	const newItems: Item[] = [];
 	const nameChanges: string[] = [];
 
@@ -333,15 +321,12 @@ export default async function prepareItems(): Promise<void> {
 		}
 
 		for (const boolKey of [
-			'incomplete',
 			'members',
 			'tradeable',
 			'tradeable_on_ge',
 			'stackable',
 			'noteable',
 			'equipable',
-			'equipable_by_player',
-			'equipable_weapon',
 			'buy_limit',
 			'equipment',
 			'weapon'
@@ -369,17 +354,18 @@ export default async function prepareItems(): Promise<void> {
 			// Calculate average of High + Low
 			item.price = Math.ceil(Math.max(0, ((price.high as number) + (price.low as number)) / 2));
 		} else {
-			item.price = 0;
+			delete item.price;
 		}
 		if (item.id === 995) {
 			item.price = 1;
 		}
-		if (itemsToIgnorePrices.includes(item.id) || !item.tradeable) {
-			item.price = 0;
+		if (itemsToIgnorePrices.includes(item.id)) {
+			delete item.price;
 		}
 
 		let dontChange = false;
 		if (previousItem?.price && item.tradeable) {
+			if (item.price === undefined) item.price = previousItem.price;
 			// If major price increase, just dont fucking change it.
 			if (previousItem.price < item.price / 20 && previousItem.price !== 0) dontChange = true;
 			// Prevent weird bug with expensive items: (An item with 2b val on GE had high = 1 & low = 100k)
@@ -401,22 +387,23 @@ export default async function prepareItems(): Promise<void> {
 		// }
 
 		// Dont change price if its only a <10% difference and price is less than 100k
-		if (
-			previousItem?.price &&
-			item.price > reduceNumByPercent(previousItem?.price, 10) &&
-			item.price < increaseNumByPercent(previousItem?.price, 10) &&
-			item.price < 100_000
-		) {
-			item.price = previousItem.price;
-		} else if (
-			// Ignore <3% changes in any way
-			previousItem?.price &&
-			item.price > reduceNumByPercent(previousItem?.price, 3) &&
-			item.price < increaseNumByPercent(previousItem?.price, 3)
-		) {
-			item.price = previousItem.price;
+		if (item.price) {
+			if (
+				previousItem?.price &&
+				item.price > reduceNumByPercent(previousItem?.price, 10) &&
+				item.price < increaseNumByPercent(previousItem?.price, 10) &&
+				item.price < 100_000
+			) {
+				item.price = previousItem.price;
+			} else if (
+				// Ignore <3% changes in any way
+				previousItem?.price &&
+				item.price > reduceNumByPercent(previousItem?.price, 3) &&
+				item.price < increaseNumByPercent(previousItem?.price, 3)
+			) {
+				item.price = previousItem.price;
+			}
 		}
-
 		if (previousItem && !itemsBeingModified.has(item.id)) {
 			for (const key of keysToWarnIfRemovedOrAdded) {
 				if (!item[key] && Boolean(previousItem?.[key])) {
@@ -442,15 +429,12 @@ export default async function prepareItems(): Promise<void> {
 		if (equipmentModifications.has(item.id)) {
 			const copyItem = Items.get(equipmentModifications.get(item.id)!)!;
 			item.equipment = copyItem.equipment;
-			item.equipable_by_player = copyItem.equipable_by_player;
-			item.equipable_weapon = copyItem.equipable_weapon;
 			item.equipable = copyItem.equipable;
 		}
 		if (previousItem) {
 			item.cost = previousItem.cost;
 			item.lowalch = previousItem.lowalch;
 			item.highalch = previousItem.highalch;
-			item.wiki_name = previousItem.wiki_name;
 			if (previousItem.equipment?.requirements) {
 				// @ts-expect-error ignore
 				item.equipment = {
@@ -508,13 +492,13 @@ export default async function prepareItems(): Promise<void> {
 		messages.push(`Name Changes:\n	${nameChanges.join('\n	')}`);
 	}
 
-	const deletedItems: any[] = Object.values(previousItems)
-		.filter((i: any) => !(newItemJSON as any)[i.id])
+	const deletedItems: Item[] = objectValues(previousItems)
+		.filter(i => !newItemJSON[i.id])
 		.filter(i => i !== null && i !== undefined);
 
 	messages.push(`
 New Items: ${moidLink(newItems.map(i => i.id))}
-Deleted Items: ${moidLink(deletedItems)}
+Deleted Items: ${moidLink(deletedItems.map(i => i.id))}
 `);
 
 	if (deletedItems.length > 0) {

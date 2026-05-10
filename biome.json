@@ -1,5 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.2.4/schema.json",
+	"$schema": "https://biomejs.dev/schemas/2.4.4/schema.json",
 	"assist": {
 		"actions": {
 			"source": {
@@ -9,9 +9,11 @@
 						"groups": [
 							["@bso/**", "@/lib/bso/**"],
 							":BLANK_LINE:",
-							[":URL:", ":BUN:", ":NODE:", ":PACKAGE:", ":PACKAGE_WITH_PROTOCOL:"],
+							[":URL:", ":BUN:", ":NODE:", ":PACKAGE:", ":PACKAGE_WITH_PROTOCOL:", "!@scripts/**"],
 							":BLANK_LINE:",
 							["@/prisma/**"],
+							["@/discord/**"],
+							["@scripts/**"],
 							[":ALIAS:", ":PATH:"]
 						]
 					}
@@ -32,6 +34,8 @@
 			"**/*.cjs",
 			"**/*.d.ts",
 			"**/*.tsx",
+			"**/*.html",
+			"**/*.css",
 			"!**/node_modules",
 			"!**/dist",
 			"!**/coverage",
@@ -56,15 +60,20 @@
 			"a11y": {
 				"useAltText": "off",
 				"useKeyWithClickEvents": "off",
-				"useButtonType": "off"
+				"useButtonType": "off",
+				"noSvgWithoutTitle": "off",
+				"noStaticElementInteractions": "off",
+				"noLabelWithoutControl": "off"
 			},
 			"suspicious": {
 				"noExplicitAny": "warn",
 				"noAssignInExpressions": "warn",
 				"noAsyncPromiseExecutor": "off",
+				"noImportCycles": "warn",
 				"noConfusingVoidType": "off",
 				"noFocusedTests": "off",
-				"noArrayIndexKey": "warn"
+				"noArrayIndexKey": "off",
+				"noUnsafeDeclarationMerging": "warn"
 			},
 			"style": {
 				"noNonNullAssertion": "off",
@@ -75,19 +84,26 @@
 				"noInferrableTypes": "off"
 			},
 			"correctness": {
-				"useExhaustiveDependencies": "warn",
+				"useExhaustiveDependencies": "off",
 				"noConstructorReturn": "off",
-				"useParseIntRadix": "off"
+				"useParseIntRadix": "off",
+				"noUnknownProperty": "off"
 			},
 			"complexity": {
 				"noExtraBooleanCast": "warn",
-				"noBannedTypes": "warn",
+				"noBannedTypes": "off",
 				"noForEach": "warn",
 				"noStaticOnlyClass": "off",
-				"noUselessContinue": "warn"
+				"noUselessContinue": "warn",
+				"noImportantStyles": "off"
 			},
 			"performance": {
 				"noAccumulatingSpread": "warn"
+			},
+			"nursery": {
+				"noFloatingPromises": "warn",
+				"noShadow": "warn",
+				"noMisusedPromises": "warn"
 			}
 		}
 	},
@@ -104,6 +120,22 @@
 			"quoteStyle": "single",
 			"trailingCommas": "none",
 			"arrowParentheses": "asNeeded"
+		}
+	},
+	"html": {
+		"experimentalFullSupportEnabled": true,
+		"formatter": {
+			"enabled": true,
+			"selfCloseVoidElements": "always"
+		}
+	},
+	"css": {
+		"parser": {
+			"cssModules": true,
+			"tailwindDirectives": true
+		},
+		"formatter": {
+			"enabled": true
 		}
 	}
 }

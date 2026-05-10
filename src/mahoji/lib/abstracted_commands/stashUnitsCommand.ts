@@ -69,7 +69,7 @@ Contains: ${unit.builtUnit.items_contained.map(i => Items.itemNameFromId(i)).joi
 			};
 		}
 		return {
-			files: [{ attachment: Buffer.from(str), name: 'stashunits.txt' }]
+			files: [{ buffer: Buffer.from(str), name: 'stashunits.txt' }]
 		};
 	}
 
@@ -180,7 +180,7 @@ export async function stashUnitFillAllCommand(user: MUser): CommandResponse {
 	);
 	assert(result.length === toFill.length);
 
-	const { file } = await makeBankImage({ bank: costBank, title: 'Items Removed For Stash Units' });
+	const file = await makeBankImage({ bank: costBank, title: 'Items Removed For Stash Units' });
 
 	return { files: [file], content: `You filled ${result.length} STASH units, with these items.` };
 }

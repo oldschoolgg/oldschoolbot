@@ -2,7 +2,7 @@ import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 import { SmokeDevilPreTable } from '../low/n-s/SmokeDevil.js';
 
-const NuclearSmokeDevilTable = new LootTable()
+const NuclearSmokeDevilTable: LootTable = new LootTable()
 	.every('Ashes')
 	.every(SmokeDevilPreTable, 3)
 	.tertiary(13, 'Clue scroll (hard)')
@@ -14,7 +14,7 @@ const NuclearSmokeDevilTable = new LootTable()
 	.tertiary(198, 'Eternal gem')
 	.tertiary(198, 'Imbued heart');
 
-export default new SimpleMonster({
+export const NuclearSmokeDevil: SimpleMonster = new SimpleMonster({
 	id: 7406,
 	name: 'Nuclear smoke devil',
 	table: NuclearSmokeDevilTable,

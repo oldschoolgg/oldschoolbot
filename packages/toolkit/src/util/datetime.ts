@@ -1,3 +1,5 @@
+import { PerkTier } from './misc.js';
+
 export enum Time {
 	Millisecond = 1,
 	Second = 1000,
@@ -8,21 +10,31 @@ export enum Time {
 	Year = 1000 * 60 * 60 * 24 * 365
 }
 
-export function isAtleastThisOld(date: Date | number, expectedAgeInMS: number) {
+export function isAtleastThisOld(date: Date | number, expectedAgeInMS: number): boolean {
 	const difference = Date.now() - (typeof date === 'number' ? date : date.getTime());
 	return difference >= expectedAgeInMS;
 }
 
-export function isWeekend() {
-	const currentDate = new Date(Date.now() - Time.Hour * 6);
-	return [6, 0].includes(currentDate.getDay());
+export function isWeekend(): boolean {
+	const currentDate = new Date();
+	return [6, 0].includes(currentDate.getUTCDay());
 }
 
-export function calcPerHour(value: number, duration: number) {
+export function calcPerHour(value: number, duration: number): number {
 	return (value / (duration / Time.Minute)) * 60;
 }
 
-export function formatDuration(ms: number, short = false, precise = false) {
+export function timeOnly(date: Date): string {
+	const unixSeconds = Math.floor(date.getTime() / 1000);
+	return `<t:${unixSeconds}:t>`;
+}
+
+export function relativeTimestamp(date: Date): string {
+	const unixSeconds = Math.floor(date.getTime() / 1000);
+	return `<t:${unixSeconds}:R>`;
+}
+
+export function formatDuration(ms: number, short = false, precise = false): string {
 	if (ms < 0) ms = -ms;
 	const time = {
 		day: Math.floor(ms / 86_400_000),
@@ -43,4 +55,17 @@ export function formatDuration(ms: number, short = false, precise = false) {
 	return nums
 		.map(([key, val]) => `${val}${short ? '' : ' '}${key}${val === 1 || short ? '' : 's'}`)
 		.join(short ? '' : ', ');
+}
+
+export function formatDurationWithTimestamp(
+	durationMs: number,
+	perkTier: number,
+	disableShowTimestamp: boolean
+): string {
+	const duration = formatDuration(durationMs);
+	if (perkTier >= PerkTier.Two && !disableShowTimestamp) {
+		const finishDate = new Date(Date.now() + durationMs);
+		return `${relativeTimestamp(finishDate)} (${timeOnly(finishDate)})`;
+	}
+	return duration;
 }

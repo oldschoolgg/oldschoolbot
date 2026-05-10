@@ -2,7 +2,7 @@ import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 import { JellyPreTable } from '../low/g-m/Jelly.js';
 
-const VitreousJellyTable = new LootTable()
+const VitreousJellyTable: LootTable = new LootTable()
 	.every(JellyPreTable, 3)
 	.tertiary(13, 'Clue scroll (hard)')
 
@@ -12,7 +12,7 @@ const VitreousJellyTable = new LootTable()
 	.tertiary(867, 'Eternal gem')
 	.tertiary(867, 'Imbued heart');
 
-export default new SimpleMonster({
+export const VitreousJelly: SimpleMonster = new SimpleMonster({
 	id: 7399,
 	name: 'Vitreous Jelly',
 	table: VitreousJellyTable,

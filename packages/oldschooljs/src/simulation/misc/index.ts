@@ -3,11 +3,11 @@ import { BarbarianAssault } from './BarbarianAssault.js';
 import { ChambersOfXeric } from './ChambersOfXeric.js';
 import { FishingTrawler } from './FishingTrawler.js';
 import { Gauntlet } from './Gauntlet.js';
-import Nightmare from './Nightmare.js';
+import { Nightmare } from './Nightmare.js';
 import { Tempoross } from './Tempoross.js';
-import Zalcano from './Zalcano.js';
+import { Zalcano } from './Zalcano.js';
 
-export const GrandHallowedCoffin = new LootTable()
+export const GrandHallowedCoffin: LootTable = new LootTable()
 	.every('Hallowed mark', [8, 10])
 	.tertiary(200, 'Ring of endurance (uncharged)')
 	.tertiary(30, 'Clue scroll (elite)')
@@ -22,7 +22,7 @@ export const GrandHallowedCoffin = new LootTable()
 	.add('Ranarr seed', [1, 2])
 	.add('Coins', [17_500, 25_000]);
 
-export const AncientCavernAncientPageTable = new LootTable()
+export const AncientCavernAncientPageTable: LootTable = new LootTable()
 	.add(11_341, 1, 1)
 	.add(11_342, 1, 1)
 	.add(11_343, 1, 1)

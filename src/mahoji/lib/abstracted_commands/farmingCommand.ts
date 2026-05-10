@@ -3,10 +3,10 @@ import { Bank } from 'oldschooljs';
 
 import type { CropUpgradeType } from '@/prisma/main/enums.js';
 import { superCompostables } from '@/lib/data/filterables.js';
-import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { Plant } from '@/lib/skilling/types.js';
 import type { FarmingActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 function treeCheck(plant: Plant, wcLevel: number, bal: number, quantity: number): string | null {
 	if (plant.needsChopForHarvest && plant.treeWoodcuttingLevel && wcLevel < plant.treeWoodcuttingLevel) {
@@ -27,7 +27,7 @@ export async function harvestCommand({
 	seedType: string;
 	interaction: MInteraction;
 }) {
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return 'Your minion must not be busy to use this command.';
 	}
 	const { GP } = user;
@@ -72,7 +72,7 @@ export async function harvestCommand({
 		duration *= 0.9;
 	}
 
-	const maxTripLength = user.calcMaxTripLength('Farming');
+	const maxTripLength = await user.calcMaxTripLength('Farming');
 
 	if (duration > maxTripLength) {
 		return `${user.minionName} can't go on trips longer than ${formatDuration(
@@ -89,7 +89,7 @@ export async function harvestCommand({
 	}
 
 	returnMessageStr = `${user.minionName} is now harvesting ${patch.lastQuantity}x ${storeHarvestablePlant}.
-It'll take around ${formatDuration(duration)} to finish.
+It'll take around ${formatTripDuration(user, duration)} to finish.
 
 ${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
 
@@ -97,7 +97,7 @@ ${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
 		plantsName: patch.lastPlanted,
 		patchType: patches[patch.patchName],
 		userID: user.id,
-		channelID: interaction.channelId,
+		channelId: interaction.channelId,
 		upgradeType,
 		duration,
 		quantity: patch.lastQuantity,
@@ -125,7 +125,7 @@ export async function farmingPlantCommand({
 	autoFarmed: boolean;
 	pay: boolean;
 }): Promise<string> {
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return 'Your minion must not be busy to use this command.';
 	}
 	const userBank = user.bank;
@@ -173,7 +173,7 @@ export async function farmingPlantCommand({
 		return 'There are no available patches to you.';
 	}
 
-	const maxTripLength = user.calcMaxTripLength('Farming');
+	const maxTripLength = await user.calcMaxTripLength('Farming');
 
 	// If no quantity provided, set it to the max PATCHES available.
 	const maxCanDo = Math.floor(maxTripLength / (timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest));
@@ -207,12 +207,13 @@ export async function farmingPlantCommand({
 		duration *= 0.9;
 	}
 
-	for (const [diary, tier] of [[ArdougneDiary, ArdougneDiary.elite]] as const) {
-		const [has] = await userhasDiaryTier(user, tier);
-		if (has) {
-			boostStr.push(`4% time for ${diary.name} ${tier.name}`);
-			duration *= 0.96;
-		}
+	if (user.hasDiary('ardougne.hard')) {
+		boostStr.push(`4% time for Ardougne Hard diary`);
+		duration *= 0.96;
+	}
+	if (user.hasDiary('ardougne.elite')) {
+		boostStr.push(`4% time for Ardougne Elite diary`);
+		duration *= 0.96;
 	}
 
 	if (duration > maxTripLength) {
@@ -292,7 +293,7 @@ export async function farmingPlantCommand({
 		plantsName: plant.name,
 		patchType: patches[plant.seedType],
 		userID: user.id,
-		channelID: interaction.channelId,
+		channelId: interaction.channelId,
 		quantity,
 		upgradeType,
 		payment: didPay,
@@ -305,7 +306,7 @@ export async function farmingPlantCommand({
 	});
 
 	return `${infoStr.join(' ')}
-It'll take around ${formatDuration(duration)} to finish.
+It'll take around ${formatTripDuration(user, duration)} to finish.
 
 ${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
 }

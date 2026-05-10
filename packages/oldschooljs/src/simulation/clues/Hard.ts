@@ -1,8 +1,8 @@
-import { EItem } from '@/EItem.js';
-import LootTable, { itemTupleToTable } from '@/structures/LootTable.js';
+import { EItem } from '../../EItem.js';
+import LootTable, { itemTupleToTable } from '../../structures/LootTable.js';
 import { BlessingTable, FirelighterTable, GildedTable, PrayerPageTable, TeleportScrollTable } from './General.js';
 
-export const Hard3rdageTable = new LootTable()
+export const Hard3rdageTable: LootTable = new LootTable()
 	.add('3rd age range coif')
 	.add('3rd age range top')
 	.add('3rd age range legs')
@@ -17,7 +17,7 @@ export const Hard3rdageTable = new LootTable()
 	.add('3rd age plateskirt')
 	.add('3rd age kiteshield');
 
-export const HardMegaRareTable = new LootTable()
+export const HardMegaRareTable: LootTable = new LootTable()
 	.add('Super energy(4)', 15)
 	.add('Super restore(4)', 15)
 	.add('Antifire potion(4)', 15)
@@ -31,7 +31,7 @@ export const HardMegaRareTable = new LootTable()
 	.add(Hard3rdageTable)
 	.add(GildedTable, 1, 5);
 
-export const HardBlessedShields = new LootTable()
+export const HardBlessedShields: LootTable = new LootTable()
 	.add("Guthix d'hide shield")
 	.add("Saradomin d'hide shield")
 	.add("Zamorak d'hide shield")
@@ -39,14 +39,14 @@ export const HardBlessedShields = new LootTable()
 	.add("Armadyl d'hide shield")
 	.add("Bandos d'hide shield");
 
-export const HardHeralicPlatebody = new LootTable()
+export const HardHeralicPlatebody: LootTable = new LootTable()
 	.add('Rune platebody (h1)')
 	.add('Rune platebody (h2)')
 	.add('Rune platebody (h3)')
 	.add('Rune platebody (h4)')
 	.add('Rune platebody (h5)');
 
-export const HardRareTable = new LootTable()
+export const HardRareTable: LootTable = new LootTable()
 	.add('Robin hood hat')
 	.add('Tan cavalier')
 	.add('Dark cavalier')
@@ -61,7 +61,7 @@ export const HardRareTable = new LootTable()
 	.add('Amulet of glory (t4)')
 	.add('Pith helmet')
 	.add('Explorer backpack')
-	.add(19_912) // Zombie head
+	.add('Zombie head (treasure trails)')
 	.add('Nunchaku')
 	.add('Cyclops head')
 	.add('Dragon boots ornament kit')
@@ -173,9 +173,9 @@ export const HardRareTable = new LootTable()
 	.add(HardBlessedShields)
 	.add(HardHeralicPlatebody);
 
-export const HardBowTable = new LootTable().add('Magic comp bow').add('Magic longbow', 1, 9);
+export const HardBowTable: LootTable = new LootTable().add('Magic comp bow').add('Magic longbow', 1, 9);
 
-export const HardStandardTable = new LootTable()
+export const HardStandardTable: LootTable = new LootTable()
 	.add('Coins', [1000, 5000])
 	.add('Lobster', [12, 15])
 	.add('Shark', [12, 15])
@@ -203,6 +203,6 @@ export const HardStandardTable = new LootTable()
 	.add(BlessingTable)
 	.add(HardBowTable);
 
-export const HardClueTable = new LootTable().add(HardStandardTable, 1, 12).add(HardRareTable, 1, 1);
-export const HardCasket = new LootTable().add(HardClueTable, [4, 6]).tertiary(15, 'Clue scroll (master)');
+export const HardClueTable: LootTable = new LootTable().add(HardStandardTable, 1, 12).add(HardRareTable, 1, 1);
+export const HardCasket: LootTable = new LootTable().add(HardClueTable, [4, 6]).tertiary(15, 'Clue scroll (master)');
 HardCasket.allItems.push(EItem.CLUE_SCROLL_MASTER);

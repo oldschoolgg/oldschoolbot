@@ -13,7 +13,7 @@ export const createCommand = defineCommand({
 			name: 'item',
 			description: 'The item you want to create/revert.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return Createables.filter(i =>
 					!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 				).map(i => ({

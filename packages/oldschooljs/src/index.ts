@@ -1,3 +1,4 @@
+import type { ArrayItemsResolved } from '@/structures/ItemsClass.js';
 import { ECreature } from './ECreature.js';
 import { EGear } from './EGear.js';
 import { EItem } from './EItem.js';
@@ -8,7 +9,7 @@ import * as Misc from './simulation/misc/index.js';
 import { Monsters } from './simulation/monsters/index.js';
 import Openables from './simulation/openables/index.js';
 import { Bank, type ItemBank, type LootBank } from './structures/Bank.js';
-import { type ArrayItemsResolved, deepResolveItems, Items, itemNameMap, resolveItems } from './structures/Items.js';
+import { deepResolveItems, Items, resolveItems } from './structures/Items.js';
 import LootTable from './structures/LootTable.js';
 import { type Monster, type MonsterKillOptions, SimpleMonster } from './structures/Monster.js';
 import type { OpenableOpenOptions } from './structures/Openable.js';
@@ -22,7 +23,6 @@ import {
 	generateRandomBank,
 	increaseBankQuantitesByPercent
 } from './util/bank.js';
-import { fromKMB, toKMB } from './util/smallUtils.js';
 import { convertLVLtoXP, convertXPtoLVL } from './util/util.js';
 
 export {
@@ -39,21 +39,18 @@ export {
 	EItem,
 	ECreature,
 	ItemGroups,
-	toKMB,
-	fromKMB,
 	resolveItems,
 	addItemToBank,
 	addBanks,
 	averageBank,
 	convertLVLtoXP,
 	convertXPtoLVL,
-	deepResolveItems,
 	increaseBankQuantitesByPercent,
-	itemNameMap,
 	calcDropRatesFromBank,
 	convertBankToPerHourStats,
 	SimpleMonster,
-	generateRandomBank
+	generateRandomBank,
+	deepResolveItems
 };
 
 export type { ItemBank, LootBank, OpenableOpenOptions, MonsterKillOptions, Monster, ArrayItemsResolved };
@@ -72,9 +69,10 @@ export const NIGHTMARES_HP = 2400;
 export const ZAM_HASTA_CRUSH = 65;
 export const MAX_INT_JAVA = 2_147_483_647;
 
-export * from './gear/index.js';
-export * from './hiscores/index.js';
+export * from './hiscores/Hiscores.js';
 
 export function itemID(name: string | number): number {
 	return Items.getId(name);
 }
+
+export { toKMB } from '@oldschoolgg/util';

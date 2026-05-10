@@ -1,6 +1,11 @@
+import { globSync, readFileSync } from 'node:fs';
 import { collapseWhiteSpace } from 'collapse-white-space';
+import matter from 'gray-matter';
+import type { Root } from 'hast';
+import type { Plugin } from 'unified';
 import { visitParents } from 'unist-util-visit-parents';
 
+import bsoCommandsJson from '../../../data/bso/commands.json' with { type: 'json' };
 import commandsJson from '../../../data/osb/commands.json' with { type: 'json' };
 import { authors, authorsMap } from '../../../scripts/wiki/authors.js';
 import { SkillsArray } from '../../../src/lib/skilling/types.js';
@@ -9,8 +14,60 @@ import { WebItems } from '../lib/WebItems.js';
 
 const imageExtensions = ['png', 'jpg', 'jpeg', 'gif', 'webp'];
 
-export function remarkItems(_options: any) {
-	return (tree: any) => {
+const ALL_PAGES = globSync('./src/content/docs/**/*.{md,mdx}')
+	.filter(_p => _p.includes('.'))
+	.map(_path => {
+		const paths: string[] = [];
+		const truePath = _path
+			.replace(/\\/g, '/')
+			.replace('src/content/docs', '')
+			.replace(/\.mdx?$/, '')
+			.replace(/\s+/g, '-')
+			.toLowerCase();
+		paths.push(truePath);
+
+		const frontMatter = matter(readFileSync(_path, 'utf-8'));
+		if (frontMatter.data.title) {
+			paths.push(
+				truePath
+					.split('/')
+					.slice(0, -1)
+					.concat(frontMatter.data.title.replace(/\s+/g, '-').toLowerCase())
+					.join('/')
+			);
+		}
+
+		return paths;
+	});
+
+function defaultResolvePage(originalTitle: string): string | null {
+	const [title, sublink] = originalTitle.trim().split('#');
+	let partialMatch: string | null = null;
+	const page = ALL_PAGES.find(_p => {
+		for (const _path of _p.map(p => p.toLowerCase())) {
+			if (_path.endsWith(`/${title.toLowerCase()}`)) return true;
+			if (_path.endsWith(`/${title.replace(/\s+/g, '-').toLowerCase()}`)) return true;
+			if (_path === title.toLowerCase()) return true;
+			if (_path.includes(title.toLowerCase())) partialMatch = _path;
+		}
+		return false;
+	});
+	const match: string | null = page ? page[0] : partialMatch;
+	if (!match) {
+		console.warn(`Could not find page for title: ${originalTitle}`);
+		return null;
+	}
+	return match + (sublink ? `#${sublink}` : '');
+}
+
+interface RemarkItemsOptions {
+	resolvePage?: (title: string) => string | null;
+}
+
+const remarkItems: Plugin<[RemarkItemsOptions?], Root> = (options = {}) => {
+	const resolvePage = options.resolvePage || defaultResolvePage;
+
+	return (tree: Root) => {
 		visitParents(tree, 'text', (node, parents) => {
 			const parent = parents[parents.length - 1];
 			if (!parent || !Array.isArray(parent.children)) return;
@@ -50,7 +107,7 @@ ${author?.avatar ? `<img class="contributor_avatar" src="${author.avatar}" />` :
 </div>`;
 				} else if (
 					[...SkillsArray, 'divination', 'dungeoneering', 'invention', 'qp'].some(
-						s => content.includes(`${s}`) && !content.includes('/') && !content.includes('.') // some commands contain names of skills
+						s => content.includes(`${s}`) && !content.includes('/') && !content.includes('.')
 					)
 				) {
 					const [skillName, level] = content.split(':');
@@ -66,7 +123,9 @@ ${author?.avatar ? `<img class="contributor_avatar" src="${author.avatar}" />` :
 				} else if (content.includes('embed.')) {
 					html = '';
 				} else if (content.startsWith('/')) {
-					const cmd = commandsJson.data.find(c => c.name === content.slice(1).split(' ')[0]);
+					const cmd =
+						commandsJson.data.find(c => c.name === content.slice(1).split(' ')[0]) ||
+						bsoCommandsJson.data.find(c => c.name === content.slice(1).split(' ')[0]);
 					if (!cmd) {
 						console.warn(`Could not find command with name: ${match.slice(1)}`);
 					}
@@ -77,21 +136,23 @@ ${author?.avatar ? `<img class="contributor_avatar" src="${author.avatar}" />` :
 				} else {
 					const [itemName, flag] = content.split('?');
 					const rawItem = WebItems.get(itemName);
-					if (!rawItem.item) {
-						throw new Error(`Could not find item with name: ${itemName}`);
-					}
-					const { item, imageUrl, isBso } = rawItem;
-					if (!imageUrl.startsWith('http')) {
-						throw new Error(`Item with name: ${itemName} has invalid imageUrl: ${imageUrl}`);
-					}
-
-					if (flag === 'raw') {
-						html = `<img class="osrs_item_image osrs_item_image_full" data-id="item" src="${imageUrl}" alt="${item.name}" />`;
-					} else {
-						html = `<span class="osrs_item${isBso ? ' bso_item' : ''}">
+					if (rawItem.item) {
+						const { item, imageUrl, isBso } = rawItem;
+						if (flag === 'raw') {
+							html = `<img class="osrs_item_image osrs_item_image_full" data-id="item" src="${imageUrl}" alt="${item.name}" />`;
+						} else {
+							html = `<span class="osrs_item${isBso ? ' bso_item' : ''}">
 									<img class="osrs_item_image" src="${imageUrl}" alt="${item.name}" />
 									<span class="osrs_item_name">${item.name}</span>
 								</span>`;
+						}
+					}
+				}
+
+				if (html === null) {
+					const pageUrl = resolvePage(content);
+					if (pageUrl) {
+						html = `<a href="${pageUrl}">${content}</a>`;
 					}
 				}
 
@@ -113,7 +174,10 @@ ${author?.avatar ? `<img class="contributor_avatar" src="${author.avatar}" />` :
 			}
 
 			const index = parent.children.indexOf(node);
+			// @ts-expect-error
 			parent.children.splice(index, 1, ...newChildren);
 		});
 	};
-}
+};
+
+export default remarkItems;

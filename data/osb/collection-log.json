@@ -954,17 +954,6 @@
 				],
 				"items": ["Steel ring"]
 			},
-			"doom_of_mokhaiotl": {
-				"unobtainable": true,
-				"items": [
-					"Avernic treads",
-					"Demon tear",
-					"Dom",
-					"Eye of ayak (uncharged)",
-					"Mokhaiotl cloth",
-					"Mokhaiotl waystone"
-				]
-			},
 			"dagannoth_kings": {
 				"kc_activity": {
 					"default": ["Dagannoth Supreme", "Dagannoth Rex", "Dagannoth Prime"],
@@ -2142,6 +2131,59 @@
 					"Giantsoul amulet (uncharged)",
 					"Ice element staff crown",
 					"Mystic vigour prayer scroll"
+				],
+				"all_items": [
+					"Avantoe seed",
+					"Blood rune",
+					"Bran",
+					"Cadantine seed",
+					"Chaos rune",
+					"Clue scroll (elite)",
+					"Clue scroll (hard)",
+					"Coal",
+					"Coins",
+					"Deadeye prayer scroll",
+					"Death rune",
+					"Desiccated page",
+					"Dwarf weed seed",
+					"Fire battlestaff",
+					"Fire element staff crown",
+					"Fire orb",
+					"Fire rune",
+					"Giantsoul amulet (uncharged)",
+					"Gold ore",
+					"Grimy avantoe",
+					"Grimy cadantine",
+					"Grimy dwarf weed",
+					"Grimy irit leaf",
+					"Grimy kwuarm",
+					"Grimy lantadyme",
+					"Grimy ranarr weed",
+					"Ice element staff crown",
+					"Irit seed",
+					"Kwuarm seed",
+					"Lantadyme seed",
+					"Law rune",
+					"Maple seed",
+					"Mystic fire staff",
+					"Mystic vigour prayer scroll",
+					"Mystic water staff",
+					"Nature rune",
+					"Palm tree seed",
+					"Prayer potion(4)",
+					"Ranarr seed",
+					"Rune arrow",
+					"Rune axe",
+					"Rune pickaxe",
+					"Rune platelegs",
+					"Rune plateskirt",
+					"Rune scimitar",
+					"Rune sq shield",
+					"Soul rune",
+					"Water battlestaff",
+					"Water orb",
+					"Water rune",
+					"Yew seed"
 				]
 			},
 			"sarachnis": {
@@ -2641,22 +2683,6 @@
 					"Pyromancer robe",
 					"Tome of fire",
 					"Warm gloves"
-				]
-			},
-			"yami": {
-				"unobtainable": true,
-				"items": [
-					"Barrel of demonic tallow (full)",
-					"Chasm teleport scroll",
-					"Dossier",
-					"Forgotten lockbox",
-					"Oathplate chest",
-					"Oathplate helm",
-					"Oathplate legs",
-					"Oathplate shards",
-					"Rite of vile transference",
-					"Soulflame horn",
-					"Yami"
 				]
 			},
 			"zalcano": {
@@ -3833,7 +3859,7 @@
 					"Zamorak platelegs",
 					"Zamorak plateskirt",
 					"Zamorak stole",
-					"Zombie head"
+					"Zombie head (treasure trails)"
 				],
 				"kc_activity": {},
 				"items": [
@@ -3970,7 +3996,7 @@
 					"Zamorak platelegs",
 					"Zamorak plateskirt",
 					"Zamorak stole",
-					"Zombie head"
+					"Zombie head (treasure trails)"
 				],
 				"is_activity": true
 			},
@@ -4683,24 +4709,6 @@
 					"Ring of nature"
 				],
 				"is_activity": true
-			},
-			"scroll_cases": {
-				"unobtainable": true,
-				"items": [
-					"Major beginner scroll case",
-					"Major easy scroll case",
-					"Major elite scroll case",
-					"Major hard scroll case",
-					"Major master scroll case",
-					"Major medium scroll case",
-					"Mimic scroll case",
-					"Minor beginner scroll case",
-					"Minor easy scroll case",
-					"Minor elite scroll case",
-					"Minor hard scroll case",
-					"Minor master scroll case",
-					"Minor medium scroll case"
-				]
 			}
 		}
 	},
@@ -4738,6 +4746,7 @@
 				"is_activity": true
 			},
 			"castle_wars": {
+				"all_items": ["Castle wars supply crate", "Castle wars ticket"],
 				"items": [
 					"Decorative magic hat",
 					"Decorative magic robe",
@@ -4966,18 +4975,6 @@
 				],
 				"is_activity": true
 			},
-			"mastering_mixology": {
-				"unobtainable": true,
-				"items": [
-					"Alchemist gloves",
-					"Alchemist labcoat",
-					"Alchemist pants",
-					"Alchemist's amulet",
-					"Chugging barrel (disassembled)",
-					"Prescription goggles",
-					"Reagent pouch"
-				]
-			},
 			"pest_control": {
 				"items": [
 					"Elite void robe",
@@ -5075,8 +5072,8 @@
 				"is_activity": true
 			},
 			"vale_totems": {
-				"unobtainable": true,
-				"items": ["Bow string spool", "Ent branch", "Fletching knife", "Greenman mask"]
+				"items": ["Bow string spool", "Ent branch", "Fletching knife", "Greenman mask", "Vale offerings"],
+				"is_activity": true
 			},
 			"volcanic_mine": {
 				"items": [
@@ -5117,7 +5114,6 @@
 					"Butch",
 					"Callisto cub",
 					"Chompy chick",
-					"Dom",
 					"Giant squirrel",
 					"Hellpuppy",
 					"Herbi",
@@ -5168,7 +5164,6 @@
 					"Vet'ion jr.",
 					"Vorki",
 					"Wisp",
-					"Yami",
 					"Youngllef"
 				]
 			},
@@ -5545,17 +5540,6 @@
 					"Zenyte shard"
 				]
 			},
-			"hunter_guild": {
-				"unobtainable": true,
-				"items": [
-					"Guild hunter boots",
-					"Guild hunter headwear",
-					"Guild hunter legs",
-					"Guild hunter top",
-					"Huntsman's kit",
-					"Quetzin"
-				]
-			},
 			"monkey_backpacks": {
 				"kc_activity": {},
 				"items": [
@@ -5759,7 +5743,6 @@
 					"Drake's claw",
 					"Drake's tooth",
 					"Dust battlestaff",
-					"Earthbound tecpatl",
 					"Eternal gem",
 					"Flippers",
 					"Frozen tear",
@@ -7136,6 +7119,7 @@
 					"Mithril set (sk)",
 					"Mithril trimmed set (lg)",
 					"Mithril trimmed set (sk)",
+					"Moon key",
 					"Mystic air staff",
 					"Mystic boots (or)",
 					"Mystic dust staff",

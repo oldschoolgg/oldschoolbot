@@ -1,10 +1,9 @@
-import { randomVariation } from '@oldschoolgg/rng';
-import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { LMSBuyables } from '@/lib/data/CollectionsExport.js';
-import { lmsSimCommand } from '@/lib/minions/functions/lmsSimCommand.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { getUsersLMSStats } from '@/tasks/minions/minigames/lmsActivity.js';
 
 export async function lmsCommand(
@@ -15,8 +14,9 @@ export async function lmsCommand(
 		simulate?: { names?: string };
 	},
 	user: MUser,
-	channelID: string,
-	interaction: MInteraction
+	channelId: string,
+	interaction: MInteraction,
+	rng: RNGProvider
 ) {
 	const stats = await getUsersLMSStats(user);
 
@@ -32,10 +32,13 @@ export async function lmsCommand(
 	}
 
 	if (options.simulate) {
-		lmsSimCommand(globalClient.channels.cache.get(channelID.toString()), options.simulate.names);
-		return {
-			content: 'Starting simulation...'
-		};
+		// const channel = await Cache.getChannel(channelId);
+		// if (!channel) return 'Unable to find channel.';
+		// lmsSimCommand(channel, options.simulate.names);
+		// return {
+		// 	content: 'Starting simulation...'
+		// };
+		return `LMS simulation is temporarily disabled.`;
 	}
 
 	if (options.buy) {
@@ -61,33 +64,34 @@ export async function lmsCommand(
 			return `You received ${loot}.`;
 		}
 
-		const { newUser } = await user.update({
+		const otherUpdates = {
 			lms_points: {
 				decrement: cost
 			}
-		});
+		};
 		if (itemToBuy.onlyCL) {
-			await user.addItemsToCollectionLog(loot);
+			await user.addItemsToCollectionLog({ itemsToAdd: loot, otherUpdates });
 		} else {
 			await user.transactItems({
 				collectionLog: true,
-				itemsToAdd: loot
+				itemsToAdd: loot,
+				otherUpdates
 			});
 		}
-		return `You spent ${cost} points to buy ${loot}. You now have ${newUser.lms_points} LMS points.`;
+		return `You spent ${cost} points to buy ${loot}. You now have ${user.user.lms_points} LMS points.`;
 	}
 
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return 'Your minion must not be busy to do an LMS trip';
 	}
 	const durationPerGame = Time.Minute * 5.5;
-	const quantity = Math.floor(user.calcMaxTripLength('LastManStanding') / durationPerGame);
-	const duration = randomVariation(quantity * durationPerGame, 5);
+	const quantity = Math.floor((await user.calcMaxTripLength('LastManStanding')) / durationPerGame);
+	const duration = rng.randomVariation(quantity * durationPerGame, 5);
 
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		minigameID: 'lms',
 		userID: user.id,
-		channelID,
+		channelId,
 		duration,
 		type: 'LastManStanding',
 		quantity
@@ -95,7 +99,5 @@ export async function lmsCommand(
 
 	return `${
 		user.minionName
-	} is now off to do ${quantity} games of competitive Last Man Standing. The trip will take ${formatDuration(
-		duration
-	)}.`;
+	} is now off to do ${quantity} games of competitive Last Man Standing. The trip will return in about ${formatTripDuration(user, duration)}.`;
 }

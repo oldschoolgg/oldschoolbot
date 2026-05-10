@@ -627,7 +627,7 @@ const unobtainableBarrowsGear: number[] = [
 	])
 ];
 
-export const allUnobtainableGear: number[] = [
+export const allUnobtainableItems: number[] = [
 	...unobtainableGauntletGear,
 	...unobtainableEmirsArenaGear,
 	...unobtainableLeaguesItems,

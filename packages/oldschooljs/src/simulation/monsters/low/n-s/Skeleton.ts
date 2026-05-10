@@ -3,7 +3,7 @@ import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-export const SkeletonTable = new LootTable({ limit: 128 })
+export const SkeletonTable: LootTable = new LootTable({ limit: 128 })
 	.every('Bones')
 	.tertiary(5000, 'Skeleton champion scroll')
 	.tertiary(100, 'Clue scroll (beginner)')
@@ -36,7 +36,7 @@ export const SkeletonTable = new LootTable({ limit: 128 })
 
 	.add(GemTable);
 
-export default new SimpleMonster({
+export const Skeleton: SimpleMonster = new SimpleMonster({
 	id: 70,
 	name: 'Skeleton',
 	table: SkeletonTable,

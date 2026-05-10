@@ -2,7 +2,7 @@ import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const WildySlayerCaveTable = new LootTable()
+const WildySlayerCaveTable: LootTable = new LootTable()
 	.add('Blighted entangle sack', [1, 10], 6850)
 	.add('Blighted anglerfish', [1, 2], 5150)
 	.add('Blighted manta ray', [1, 2], 5150)
@@ -27,7 +27,7 @@ const WildySlayerCaveTable = new LootTable()
 	.add('Trouver parchment', 2, 34)
 	.add('Looting bag note', 1, 34);
 
-export const JellyPreTable = new LootTable()
+export const JellyPreTable: LootTable = new LootTable()
 	/* Weapons and armour */
 	.add('Steel battleaxe', 1, 11)
 	.add('Steel 2h sword', 1, 7)
@@ -52,18 +52,18 @@ export const JellyPreTable = new LootTable()
 	/* Gem drop table */
 	.add(GemTable, 1, 4);
 
-const JellyTable = new LootTable()
+const JellyTable: LootTable = new LootTable()
 	.every(JellyPreTable)
 
 	/* Tertiary */
 	.tertiary(128, 'Clue scroll (hard)');
 
-const JellyWildyCaveTable = new LootTable()
+const JellyWildyCaveTable: LootTable = new LootTable()
 	.every(JellyTable)
 	.add(WildySlayerCaveTable, 1, 76)
 	.add(new LootTable(), 1, 24);
 
-export default new SimpleMonster({
+export const Jelly: SimpleMonster = new SimpleMonster({
 	id: 437,
 	name: 'Jelly',
 	table: JellyTable,

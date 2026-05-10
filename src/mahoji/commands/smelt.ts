@@ -3,6 +3,7 @@ import { Bank, itemID, resolveItems } from 'oldschooljs';
 
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import type { SmeltingActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 export const smeltingCommand = defineCommand({
@@ -19,7 +20,7 @@ export const smeltingCommand = defineCommand({
 			name: 'name',
 			description: 'The name of the thing you want to smelt.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return Smithing.Bars.filter(bar => bar.name.toLowerCase().includes(value.toLowerCase()))
 					.slice(0, 10)
 					.map(i => ({ name: i.name, value: i.name }));
@@ -40,11 +41,11 @@ export const smeltingCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ user, options, channelID }) => {
+	run: async ({ user, options, channelId }) => {
 		let { name, quantity, blast_furnace } = options;
 
 		if (blast_furnace === undefined) blast_furnace = false;
-		const boosts = [];
+		const boosts: string[] = [];
 
 		const bar = blast_furnace
 			? Smithing.BlastableBars.find(
@@ -97,7 +98,7 @@ export const smeltingCommand = defineCommand({
 			}
 		}
 
-		const maxTripLength = user.calcMaxTripLength('Smithing');
+		const maxTripLength = await user.calcMaxTripLength('Smithing');
 
 		// If no quantity provided, set it to the max.
 		if (!quantity) {
@@ -144,7 +145,7 @@ export const smeltingCommand = defineCommand({
 		await ActivityManager.startTrip<SmeltingActivityTaskOptions>({
 			barID: bar.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			blastf: blast_furnace,
 			duration,
@@ -157,7 +158,7 @@ export const smeltingCommand = defineCommand({
 
 		const response = `${user.minionName} is now smelting ${quantity}x ${
 			bar.name
-		}, it'll take around ${formatDuration(duration)} to finish. ${
+		}, it'll take around ${formatTripDuration(user, duration)} to finish. ${
 			blast_furnace ? `You paid ${coinsToRemove} GP to use the Blast Furnace.` : ''
 		} ${boosts.length > 0 ? `\n\n**Boosts: ** ${boosts.join(', ')}` : ''}`;
 

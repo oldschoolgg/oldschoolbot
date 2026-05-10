@@ -3,9 +3,9 @@ import { UncommonSeedDropTable } from '@/simulation/subtables/index.js';
 import LootTable, { itemTupleToTable } from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const ChaosTable = new LootTable().add('Chaos rune', 100, 1).add('Chaos rune', 200, 1);
+const ChaosTable: LootTable = new LootTable().add('Chaos rune', 100, 1).add('Chaos rune', 200, 1);
 
-const BryophytaTable = new LootTable()
+const BryophytaTable: LootTable = new LootTable()
 	.every('Big bones')
 	.every('Clue scroll (beginner)')
 
@@ -59,7 +59,7 @@ const BryophytaTable = new LootTable()
 	.tertiary(5000, 'Giant champion scroll')
 	.tertiary(5013, 'Curved bone');
 
-export default new SimpleMonster({
+export const Bryophyta: SimpleMonster = new SimpleMonster({
 	id: 8195,
 	name: 'Bryophyta',
 	table: BryophytaTable,

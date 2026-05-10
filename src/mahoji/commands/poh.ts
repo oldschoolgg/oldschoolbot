@@ -1,4 +1,4 @@
-import { choicesOf, ownedItemOption } from '@/lib/discord/index.js';
+import { choicesOf, ownedItemOption } from '@/discord/index.js';
 import { PoHObjects } from '@/lib/poh/index.js';
 import {
 	getPOH,
@@ -56,7 +56,7 @@ export const pohCommand = defineCommand({
 					name: 'name',
 					description: 'The object you want to build.',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return PoHObjects.filter(i =>
 							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 						).map(i => ({
@@ -77,8 +77,8 @@ export const pohCommand = defineCommand({
 					name: 'name',
 					description: 'The object you want to destroy.',
 					required: true,
-					autocomplete: async (value: string, user: MUser) => {
-						const poh = await getPOH(user.id);
+					autocomplete: async ({ value, userId }: StringAutoComplete) => {
+						const poh = await getPOH(userId);
 						return PoHObjects.filter(obj => poh[obj.slot] === obj.id)
 							.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i.name, value: i.name }));
@@ -107,21 +107,22 @@ export const pohCommand = defineCommand({
 	],
 	run: async ({ options, user, interaction }) => {
 		if (!user.hasMinion) return "You don't own a minion yet, so you have no PoH!";
+
 		if (options.view) {
-			return makePOHImage(user, options.view.build_mode);
+			return { files: [await makePOHImage(interaction, { showSpaces: options.view.build_mode })] };
 		}
 		if (options.wallkit) {
-			return pohWallkitCommand(user, options.wallkit.name);
+			return pohWallkitCommand(interaction, options.wallkit.name);
 		}
-		if (user.minionIsBusy) return 'You cannot interact with your PoH, because your minion is busy.';
+		if (await user.minionIsBusy()) return 'You cannot interact with your PoH, because your minion is busy.';
 		if (options.build) {
-			return pohBuildCommand(interaction, user, options.build.name);
+			return pohBuildCommand(interaction, options.build.name);
 		}
 		if (options.destroy) {
-			return pohDestroyCommand(user, options.destroy.name);
+			return pohDestroyCommand(interaction, options.destroy.name);
 		}
 		if (options.mount_item) {
-			return pohMountItemCommand(user, options.mount_item.name);
+			return pohMountItemCommand(interaction, options.mount_item.name);
 		}
 		if (options.items) {
 			return pohListItemsCommand();

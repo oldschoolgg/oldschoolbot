@@ -47,7 +47,7 @@ const MountainTrollTable = new LootTable({ limit: 128 })
 	.tertiary(400, 'Long bone')
 	.tertiary(5013, 'Curved bone');
 
-export default new SimpleMonster({
+export const MountainTroll: SimpleMonster = new SimpleMonster({
 	id: 936,
 	name: 'Mountain Troll',
 	table: MountainTrollTable,

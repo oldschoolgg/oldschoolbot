@@ -24,7 +24,7 @@ const OtherworldlybeingTable = new LootTable({ limit: 128 })
 	/* Gem drop table */
 	.add(GemTable, 1, 3);
 
-export default new SimpleMonster({
+export const OtherworldlyBeing: SimpleMonster = new SimpleMonster({
 	id: 2843,
 	name: 'Otherworldly being',
 	table: OtherworldlybeingTable,

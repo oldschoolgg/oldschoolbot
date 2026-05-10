@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import Firemaking from '@/lib/skilling/skills/firemaking.js';
 import type { FiremakingActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export const lightCommand = defineCommand({
 	name: 'light',
@@ -18,7 +19,7 @@ export const lightCommand = defineCommand({
 			name: 'name',
 			description: 'The logs you want to burn.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return Firemaking.Burnables.filter(i =>
 					!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 				).map(i => ({
@@ -35,7 +36,7 @@ export const lightCommand = defineCommand({
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId }) => {
 		const log = Firemaking.Burnables.find(
 			log => stringMatches(log.name, options.name) || stringMatches(log.name.split(' ')[0], options.name)
 		);
@@ -49,7 +50,7 @@ export const lightCommand = defineCommand({
 		// All logs take 2.4s to light, add on quarter of a second to account for banking/etc.
 		const timeToLightSingleLog = Time.Second * 2.4 + Time.Second / 4;
 
-		const maxTripLength = user.calcMaxTripLength('Firemaking');
+		const maxTripLength = await user.calcMaxTripLength('Firemaking');
 
 		const amountOfLogsOwned = user.bank.amount(log.inputLogs);
 
@@ -77,13 +78,14 @@ export const lightCommand = defineCommand({
 		await ActivityManager.startTrip<FiremakingActivityTaskOptions>({
 			burnableID: log.inputLogs,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			duration,
 			type: 'Firemaking'
 		});
 
-		return `${user.minionName} is now lighting ${quantity}x ${log.name}, it'll take around ${formatDuration(
+		return `${user.minionName} is now lighting ${quantity}x ${log.name}, it'll take around ${formatTripDuration(
+			user,
 			duration
 		)} to finish.`;
 	}

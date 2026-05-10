@@ -2,7 +2,7 @@ import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 import { InfernalMagePreTable } from '../low/g-m/InfernalMage.js';
 
-const MalevolentMageTable = new LootTable()
+const MalevolentMageTable: LootTable = new LootTable()
 	.every('Bones')
 	.every(InfernalMagePreTable, 3)
 
@@ -12,7 +12,7 @@ const MalevolentMageTable = new LootTable()
 	.tertiary(960, 'Eternal gem')
 	.tertiary(960, 'Imbued heart');
 
-export default new SimpleMonster({
+export const MalevolentMage: SimpleMonster = new SimpleMonster({
 	id: 7396,
 	name: 'Malevolent Mage',
 	table: MalevolentMageTable,

@@ -46,6 +46,12 @@
 		]
 	},
 	{
+		"name": "Bale of flax",
+		"id": 31045,
+		"opened_item": "Bale of flax",
+		"all_items": ["Flax"]
+	},
+	{
 		"name": "Bird nest",
 		"id": 5070,
 		"opened_item": "Bird nest",
@@ -609,6 +615,50 @@
 			"Uncut emerald",
 			"Uncut ruby",
 			"Uncut sapphire"
+		]
+	},
+	{
+		"name": "Castle wars supply crate",
+		"id": 30690,
+		"opened_item": "Castle wars supply crate",
+		"all_items": [
+			"Blighted ancient ice sack",
+			"Blighted anglerfish",
+			"Blighted karambwan",
+			"Blighted manta ray",
+			"Blighted super restore(4)",
+			"Blighted vengeance sack",
+			"Castle wars arrow",
+			"Castle wars bolts",
+			"Castle wars ticket",
+			"Rune arrow",
+			"Rune javelin"
+		]
+	},
+	{
+		"name": "Chest (moon key)",
+		"id": 30109,
+		"opened_item": "Moon key",
+		"all_items": [
+			"Cabbage",
+			"Coal",
+			"Crystal key",
+			"Dragon platelegs",
+			"Dragonstone",
+			"Gold ore",
+			"Helmet of the moon",
+			"Huasca seed",
+			"Moon key",
+			"Nature rune",
+			"Onyx bolts",
+			"Raw monkfish",
+			"Rune platebody",
+			"Spinach roll",
+			"Sun-kissed bones",
+			"Sunfire splinters",
+			"Uncut diamond",
+			"Uncut onyx",
+			"Watermelon seed"
 		]
 	},
 	{
@@ -1950,7 +2000,7 @@
 			"Zamorak robe legs",
 			"Zamorak robe top",
 			"Zamorak stole",
-			"Zombie head"
+			"Zombie head (treasure trails)"
 		]
 	},
 	{
@@ -2170,6 +2220,12 @@
 			"Uncut opal",
 			"Zogre bones"
 		]
+	},
+	{
+		"name": "Olive oil pack",
+		"id": 12857,
+		"opened_item": "Olive oil pack",
+		"all_items": ["Olive oil(4)"]
 	},
 	{
 		"name": "Ore pack (Giant's Foundry)",
@@ -2918,7 +2974,7 @@
 			"Zamorak platelegs",
 			"Zamorak plateskirt",
 			"Zamorak stole",
-			"Zombie head"
+			"Zombie head (treasure trails)"
 		]
 	},
 	{
@@ -3646,6 +3702,12 @@
 			"Grimy ranarr weed",
 			"Grimy torstol"
 		]
+	},
+	{
+		"name": "Soft clay pack",
+		"id": 12009,
+		"opened_item": "Soft clay pack",
+		"all_items": ["Soft clay"]
 	},
 	{
 		"name": "Spoils of war",

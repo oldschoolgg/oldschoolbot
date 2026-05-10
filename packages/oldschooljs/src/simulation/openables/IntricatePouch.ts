@@ -7,7 +7,7 @@ const PreRoll = new LootTable()
 	.oneIn(60, 'Lost bag')
 	.oneIn(200, 'Blood essence');
 
-const IntricatePouchTable = new LootTable()
+const IntricatePouchTable: LootTable = new LootTable()
 	.every(PreRoll)
 
 	/* Main drops */
@@ -28,7 +28,7 @@ const IntricatePouchTable = new LootTable()
 	/* Tertiary */
 	.tertiary(10, 'Clue scroll (hard)');
 
-export default new SimpleOpenable({
+export const IntricatePouch: SimpleOpenable = new SimpleOpenable({
 	id: 26_908,
 	name: 'Intricate pouch',
 	aliases: ['intricate pouch', 'intri pouch', 'int pouch'],

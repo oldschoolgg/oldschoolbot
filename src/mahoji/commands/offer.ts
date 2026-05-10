@@ -1,4 +1,3 @@
-import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
 import { Events, formatDuration, formatOrdinal, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, ItemGroups, Items, resolveItems } from 'oldschooljs';
 
@@ -7,6 +6,7 @@ import { birdsNestID, treeSeedsNest } from '@/lib/simulation/birdsNest.js';
 import Prayer from '@/lib/skilling/skills/prayer.js';
 import type { OfferingActivityTaskOptions } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 const specialBones = [
 	{
@@ -55,7 +55,7 @@ export const offerCommand = defineCommand({
 			name: 'name',
 			description: 'The thing you want to offer.',
 			required: true,
-			autocomplete: async (value: string, user: MUser) => {
+			autocomplete: async ({ value, user }: StringAutoComplete) => {
 				return user.bank
 					.items()
 					.filter(i => offerables.has(i[0].id))
@@ -74,7 +74,7 @@ export const offerCommand = defineCommand({
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelID, interaction }) => {
+	run: async ({ options, user, channelId, interaction, rng }) => {
 		const userBank = user.bank;
 
 		await interaction.defer();
@@ -101,25 +101,27 @@ export const offerCommand = defineCommand({
 				itemsToRemove: new Bank().add(whichOfferable.itemID, quantity)
 			});
 			if (whichOfferable.economyCounter) {
-				const newStats = await user.statsUpdate({
+				await user.statsUpdate({
 					[whichOfferable.economyCounter]: {
 						increment: quantity
 					}
-				}); // Notify uniques
+				});
+				// Notify uniques
 				if (whichOfferable.uniques) {
-					const current = newStats[whichOfferable.economyCounter];
+					const currentCounter = await user.fetchUserStat(whichOfferable.economyCounter);
+
 					notifyUniques(
 						user,
 						whichOfferable.name,
 						whichOfferable.uniques,
 						itemsAdded,
 						quantity,
-						current + randInt(1, quantity)
+						currentCounter + rng.randInt(1, quantity)
 					);
 				}
 			}
 
-			const { file } = await makeBankImage({
+			const file = await makeBankImage({
 				bank: itemsAdded,
 				title: `Loot from offering ${quantity} ${whichOfferable.name}`,
 				flags: { showNewCL: 1 },
@@ -143,8 +145,8 @@ export const offerCommand = defineCommand({
 
 			const loot = new Bank();
 			for (let i = 0; i < quantity; i++) {
-				if (roll(300)) {
-					loot.add(randArrItem(ItemGroups.evilChickenOutfit));
+				if (rng.roll(300)) {
+					loot.add(rng.pick(ItemGroups.evilChickenOutfit));
 				} else {
 					loot.add(birdsNestID);
 					loot.add(treeSeedsNest.roll());
@@ -165,7 +167,7 @@ export const offerCommand = defineCommand({
 
 			notifyUniques(user, egg.name, ItemGroups.evilChickenOutfit, loot, quantity);
 
-			const { file } = await makeBankImage({
+			const file = await makeBankImage({
 				bank: itemsAdded,
 				title: `${quantity}x ${egg.name}`,
 				user,
@@ -224,7 +226,7 @@ export const offerCommand = defineCommand({
 		const amountOfThisBone = userBank.amount(bone.inputId);
 		if (!amountOfThisBone) return `You have no ${bone.name}.`;
 
-		const maxTripLength = user.calcMaxTripLength('Offering');
+		const maxTripLength = await user.calcMaxTripLength('Offering');
 
 		// If no quantity provided, set it to the max.
 		if (!quantity) {
@@ -251,13 +253,13 @@ export const offerCommand = defineCommand({
 		await ActivityManager.startTrip<OfferingActivityTaskOptions>({
 			boneID: bone.inputId,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			duration,
 			type: 'Offering'
 		});
 		return `${user.minionName} is now offering ${quantity}x ${
 			bone.name
-		} at the Chaos altar, it'll take around ${formatDuration(duration)} to finish.`;
+		} at the Chaos altar, it'll take around ${formatTripDuration(user, duration)} to finish.`;
 	}
 });

@@ -1,15 +1,8 @@
-import {
-	type APIButtonComponentWithCustomId,
-	type APIRole,
-	ButtonStyle,
-	ComponentType,
-	MessageFlags,
-	PermissionsBitField
-} from 'discord.js';
+import { ButtonBuilder, ButtonStyle, ChannelType } from '@oldschoolgg/discord';
 
 import { globalConfig, MASS_HOSTER_ROLE_ID } from '../constants.js';
 
-export const pingableRolesCommand: RoboChimpCommand = {
+export const pingableRolesCommand = defineCommand({
 	name: 'pingableroles',
 	description: 'Oook ook ook!.',
 	options: [
@@ -49,7 +42,7 @@ export const pingableRolesCommand: RoboChimpCommand = {
 					name: 'role',
 					description: 'The role.',
 					required: true,
-					autocomplete: async value => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						const roles = await roboChimpClient.pingableRole.findMany();
 						return roles
 							.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
@@ -59,100 +52,79 @@ export const pingableRolesCommand: RoboChimpCommand = {
 			]
 		}
 	],
-	run: async ({
-		options,
-		user,
-		guildID,
-		channelID,
-		member
-	}: CommandRunOptions<{
-		add?: { role: APIRole; reason: string };
-		remove?: { role: APIRole };
-		ping?: { role: string };
-	}>) => {
+	run: async ({ options, user, guildId, channelId, member }) => {
+		if (!guildId) return 'This command can only be used in a server.';
 		if (options.ping) {
 			if (!member) return 'No member found.';
-
-			const roles = Array.isArray(member.roles) ? member.roles : Array.from(member.roles.cache.keys());
-
-			if (!roles.includes(MASS_HOSTER_ROLE_ID)) {
+			if (!member.roles.includes(MASS_HOSTER_ROLE_ID)) {
 				return {
 					content: "You don't have permission to ping roles. To ping roles, you need the mass hoster role.",
-					flags: MessageFlags.Ephemeral
+					ephemeral: true
 				};
 			}
 			const role = await roboChimpClient.pingableRole.findFirst({
 				where: { name: options.ping.role }
 			});
 			if (!role) return 'Invalid role.';
-			const buttons: APIButtonComponentWithCustomId[] = [
-				{
-					label: 'Give Me This Role',
-					custom_id: `roles.add_${role.role_id}`,
-					style: ButtonStyle.Secondary,
-					type: ComponentType.Button
-				},
-				{
-					label: 'Remove This Role From Me',
-					custom_id: `roles.remove_${role.role_id}`,
-					style: ButtonStyle.Secondary,
-					type: ComponentType.Button
-				}
+			const buttons: ButtonBuilder[] = [
+				new ButtonBuilder()
+					.setLabel('Give Me This Role')
+					.setCustomId(`roles.add_${role.role_id}`)
+					.setStyle(ButtonStyle.Secondary),
+				new ButtonBuilder()
+					.setLabel('Remove This Role From Me')
+					.setCustomId(`roles.remove_${role.role_id}`)
+					.setStyle(ButtonStyle.Secondary)
 			];
-			const channel = globalClient.channels.cache.get(channelID);
-			if (!channel || !channel.isTextBased()) return 'Invalid channel.';
+			const channel = await globalClient.fetchChannel(channelId);
+			if (!channel || channel.type !== ChannelType.GuildText) return 'Invalid channel.';
 
-			globalClient.sendToChannelID(channel.id, {
-				content: `<@&${role.role_id}> - you were pinged by ${user.username}!`,
+			globalClient.sendMessage(channel.id, {
+				content: `<@&${role.role_id}> - you were pinged by ${user.mention}!`,
 				allowedMentions: {
 					roles: [role.role_id]
 				},
-				components: [
-					{
-						type: ComponentType.ActionRow,
-						components: buttons
-					}
-				]
+				components: buttons
 			});
 
 			return {
 				content: `You pinged the ${role.name} role. Please do not spam/abuse the pinging ability.`,
-				flags: MessageFlags.Ephemeral
+				ephemeral: true
 			};
 		}
 
-		if (!user.isMod()) return { content: 'Ook OOK OOK', flags: MessageFlags.Ephemeral };
+		if (!user.isMod()) return { content: 'Ook OOK OOK', ephemeral: true };
 		const inputRole = options.add?.role ?? options.remove?.role;
 		if (!inputRole) return 'Invalid role.';
-		const perms = new PermissionsBitField(BigInt(inputRole.permissions));
-		if (perms.has('Administrator') || perms.has('KickMembers')) return 'Invalid role.';
-		if (guildID !== globalConfig.supportServerID) return 'Invalid server.';
+		const role = await globalClient.fetchRole(guildId, inputRole);
+		if (!role || role.permissions.includes('ADMINISTRATOR') || role.permissions.includes('KICK_MEMBERS'))
+			return 'Invalid role.';
+		if (guildId !== globalConfig.supportServerID) return 'Invalid server.';
 
-		const { id } = inputRole;
 		const existingRole = await roboChimpClient.pingableRole.findFirst({
-			where: { role_id: id }
+			where: { role_id: role.id }
 		});
 
 		if (options.add) {
 			if (existingRole) return 'That is already a pingable role.';
 			await roboChimpClient.pingableRole.create({
 				data: {
-					role_id: id,
-					name: inputRole.name
+					role_id: role.id,
+					name: role.name
 				}
 			});
-			return `Added ${inputRole.name} as a pingable role.`;
+			return `Added ${role.name} as a pingable role.`;
 		}
 		if (options.remove) {
 			if (!existingRole) return "That role doesn't exist.";
 			await roboChimpClient.pingableRole.delete({
 				where: {
-					role_id: id
+					role_id: role.id
 				}
 			});
-			return `Removed ${inputRole.name} as a pingable role.`;
+			return `Removed ${role.name} as a pingable role.`;
 		}
 
 		return 'Invalid command.';
 	}
-};
+});

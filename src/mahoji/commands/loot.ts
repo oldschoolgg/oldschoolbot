@@ -18,8 +18,8 @@ export const lootCommand = defineCommand({
 					name: 'name',
 					description: 'The thing you want to view.',
 					required: true,
-					autocomplete: async (value: string, user: MUser) => {
-						return (await getAllTrackedLootForUser(user.id))
+					autocomplete: async ({ value, userId }: StringAutoComplete) => {
+						return (await getAllTrackedLootForUser(userId))
 							.filter(i => (!value ? true : i.key.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({
 								name: i.key,
@@ -39,8 +39,8 @@ export const lootCommand = defineCommand({
 					name: 'name',
 					description: 'The thing you want to reset.',
 					required: true,
-					autocomplete: async (value: string, user: MUser) => {
-						return (await getAllTrackedLootForUser(user.id))
+					autocomplete: async ({ value, userId }: StringAutoComplete) => {
+						return (await getAllTrackedLootForUser(userId))
 							.filter(i => (!value ? true : i.key.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({
 								name: i.key,
@@ -53,7 +53,7 @@ export const lootCommand = defineCommand({
 	],
 	run: async ({ options, user, interaction }) => {
 		const name = options.view?.name ?? options.reset?.name ?? '';
-		if (user.perkTier() < PerkTier.Four) {
+		if ((await user.fetchPerkTier()) < PerkTier.Four) {
 			const res = await prisma.lootTrack.count({
 				where: {
 					user_id: BigInt(user.id)

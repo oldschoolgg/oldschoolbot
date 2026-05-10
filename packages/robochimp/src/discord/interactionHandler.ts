@@ -1,115 +1,77 @@
-import { BlacklistedEntityType } from '@prisma/robochimp';
-import type { Interaction } from 'discord.js';
+import {
+	type APIChatInputApplicationCommandInteraction,
+	type APIInteraction,
+	ApplicationCommandType,
+	ComponentType,
+	type DiscordClient,
+	InteractionType,
+	MInteraction
+} from '@oldschoolgg/discord';
+import type { IAutoCompleteInteraction, IButtonInteraction, IChatInputCommandInteraction } from '@oldschoolgg/schemas';
+import { DiscordSnowflake } from '@sapphire/snowflake';
 
-import { globalConfig } from '@/constants.js';
 import { autoCompleteHandler } from '@/discord/autoCompleteHandler.js';
 import { commandHandler } from '@/discord/commandHandler.js';
 import { handleButtonInteraction } from '@/discord/handleButtonInteraction.js';
-import { messageCtxCommands } from '@/lib/messageCtxCommands.js';
-import { MInteraction } from '@/structures/MInteraction.js';
 
-enum HandlerResponseType {
-	Responded,
-	DidNotRespond
-}
+export async function interactionHandler(client: DiscordClient, itx: APIInteraction) {
+	const guildId = itx.guild_id ?? null;
+	const userId = (itx.member?.user.id ?? itx.user?.id)!;
 
-interface InteractionHandler {
-	name: string;
-	run: (options: { interaction: MInteraction }) => Promise<HandlerResponseType>;
-}
-
-const interactionHandlers: InteractionHandler[] = [
-	{
-		name: 'Only Usable in Support Server',
-		run: async ({ interaction }) => {
-			if (!interaction.guild || interaction.guild.id !== globalConfig.supportServerID) {
-				if (interaction.isRepliable()) {
-					await interaction.reply({
-						content: "You can't use this bot outside the support server.",
-						ephemeral: true
-					});
-				}
-				return HandlerResponseType.Responded;
-			}
-			return HandlerResponseType.DidNotRespond;
-		}
-	},
-	{
-		name: 'Blacklist Check',
-		run: async ({ interaction }) => {
-			const blacklistCount = await roboChimpClient.blacklistedEntity.count({
-				where: {
-					OR: [
-						{
-							type: BlacklistedEntityType.user,
-							id: BigInt(interaction.user.id)
-						},
-						interaction.guildId
-							? {
-									type: BlacklistedEntityType.guild,
-									id: BigInt(interaction.guildId)
-								}
-							: null
-					].filter(i => i !== null)
-				}
-			});
-			if (blacklistCount > 0) {
-				if (interaction.isRepliable()) {
-					await interaction.reply({
-						content: 'You are blacklisted.',
-						ephemeral: true
-					});
-				}
-				return HandlerResponseType.Responded;
-			}
-			return HandlerResponseType.DidNotRespond;
-		}
+	if (itx.type === InteractionType.ApplicationCommandAutocomplete) {
+		const d: IAutoCompleteInteraction = {
+			id: itx.id,
+			token: itx.token,
+			user_id: userId,
+			created_timestamp: DiscordSnowflake.timestampFrom(itx.id),
+			guild_id: guildId,
+			channel_id: itx.channel?.id ?? null,
+			kind: 'AutoComplete',
+			command_name: itx.data.name,
+			options: itx.data.options
+		};
+		return autoCompleteHandler(d);
 	}
-];
 
-export async function interactionHandler(rawInteraction: Interaction) {
-	try {
-		if (rawInteraction.isAutocomplete()) {
-			await autoCompleteHandler(rawInteraction);
-			return;
-		}
-
-		if (rawInteraction.isModalSubmit() || rawInteraction.isAnySelectMenu()) {
-			throw new Error(`Unsupported interaction type: ${rawInteraction.type}`);
-		}
-
-		const interaction = new MInteraction({ interaction: rawInteraction });
-		for (const handler of interactionHandlers) {
-			const result = await handler.run({ interaction });
-			if (result === HandlerResponseType.Responded) return;
-		}
-
-		if (rawInteraction.isButton()) {
-			await handleButtonInteraction(rawInteraction);
-			return;
-		}
-
-		if (rawInteraction.isChatInputCommand()) {
-			await commandHandler(rawInteraction);
-			return;
-		}
-
-		if (rawInteraction.isMessageContextMenuCommand()) {
-			const command = messageCtxCommands.find(c => c.name === rawInteraction.commandName);
-			if (!command) {
-				console.error(`Unknown message context menu command: ${rawInteraction.commandName}`);
-				return;
+	// Button
+	if (itx.type === InteractionType.MessageComponent && itx.data.component_type === ComponentType.Button) {
+		const d: IButtonInteraction = {
+			id: itx.id,
+			token: itx.token,
+			user_id: userId,
+			created_timestamp: DiscordSnowflake.timestampFrom(itx.id),
+			guild_id: guildId,
+			channel_id: itx.channel.id,
+			kind: 'Button',
+			custom_id: itx.data.custom_id,
+			message: {
+				id: itx.message.id,
+				channel_id: itx.message.channel_id,
+				guild_id: guildId,
+				author_id: itx.message.author.id,
+				content: itx.message.content
 			}
-			const message = await rawInteraction.channel?.messages
-				.fetch(rawInteraction.targetId)
-				.catch(() => undefined);
-			return command.run({
-				interaction: rawInteraction,
-				message,
-				user: await globalClient.fetchUser(rawInteraction.user.id)
-			});
-		}
-	} catch (err) {
-		console.error(err);
+		};
+		const interaction = new MInteraction({ interaction: d, rawInteraction: itx, client });
+		await handleButtonInteraction(interaction);
+		return;
+	}
+
+	if (itx.type === InteractionType.ApplicationCommand && itx.data.type === ApplicationCommandType.ChatInput) {
+		const chatInputItx = itx as APIChatInputApplicationCommandInteraction;
+		const d: IChatInputCommandInteraction = {
+			id: itx.id,
+			token: itx.token,
+			user_id: userId,
+			created_timestamp: DiscordSnowflake.timestampFrom(chatInputItx.id),
+			guild_id: itx.guild_id ?? null,
+			channel_id: itx.channel.id,
+			kind: 'ChatInputCommand',
+			command_name: itx.data.name,
+			command_type: itx.data.type
+		};
+		const interaction = new MInteraction({ interaction: d, rawInteraction: chatInputItx, client });
+		await commandHandler(chatInputItx, interaction);
+		return;
 	}
 }

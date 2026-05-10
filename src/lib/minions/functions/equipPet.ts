@@ -22,10 +22,12 @@ export async function equipPet(user: MUser, itemName: string) {
 		return 'You still have a pet equipped, cancelling.';
 	}
 
-	await user.update({
-		minion_equippedPet: petItem.id
+	await user.transactItems({
+		itemsToRemove: cost,
+		otherUpdates: {
+			minion_equippedPet: petItem.id
+		}
 	});
-	await user.transactItems({ itemsToRemove: cost });
 
 	return `${user.minionName} takes their ${petItem.name} from their bank, and puts it down to follow them.`;
 }

@@ -4,7 +4,7 @@ import VariableAllotmentSeedTable from '@/simulation/subtables/VariableAllotment
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-export const CaveCrawlerTable = new LootTable({ limit: 128 })
+export const CaveCrawlerTable: LootTable = new LootTable({ limit: 128 })
 	/* Armour */
 	.add('Bronze boots')
 
@@ -33,7 +33,7 @@ export const CaveCrawlerTable = new LootTable({ limit: 128 })
 	.add('Limpwurt root')
 	.add('Snape grass');
 
-export default new SimpleMonster({
+export const CaveCrawler: SimpleMonster = new SimpleMonster({
 	id: 406,
 	name: 'Cave Crawler',
 	table: CaveCrawlerTable,

@@ -2,11 +2,11 @@ import GWRareDropTable, { GWGemTable, ShardTable } from '@/simulation/subtables/
 import LootTable, { itemTupleToTable } from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const MinionUniqueTable = new LootTable().add('Coins', [1400, 1500], 124).add('Saradomin sword', 1, 3);
+const MinionUniqueTable: LootTable = new LootTable().add('Coins', [1400, 1500], 124).add('Saradomin sword', 1, 3);
 
-const MinionShardTable = new LootTable().add('Coins', [1300, 1400], 9).add(ShardTable, 1, 3);
+const MinionShardTable: LootTable = new LootTable().add('Coins', [1300, 1400], 9).add(ShardTable, 1, 3);
 
-const MinionTable = new LootTable()
+const MinionTable: LootTable = new LootTable()
 	.every('Bones')
 	.add(MinionUniqueTable, 1, 1)
 	.add(MinionShardTable, 1, 1)
@@ -21,7 +21,7 @@ const MinionTable = new LootTable()
 	.add('Snape grass', 5, 7)
 	.tertiary(128, 'Clue scroll (hard)');
 
-const UniqueTable = new LootTable()
+const UniqueTable: LootTable = new LootTable()
 	.add('Saradomin sword', 1, 4)
 	.add("Saradomin's light", 1, 2)
 	.add('Armadyl crossbow')
@@ -29,7 +29,7 @@ const UniqueTable = new LootTable()
 	.add(ShardTable, 1, 2)
 	.add('Coins', [19_500, 20_000], 2);
 
-const CommanderZilyanaTable = new LootTable()
+const CommanderZilyanaTable: LootTable = new LootTable()
 	.every('Bones')
 	.every(MinionTable, 3)
 	.add(UniqueTable, 1, 3)
@@ -72,7 +72,7 @@ const CommanderZilyanaTable = new LootTable()
 	.add(GWRareDropTable, 1, 8)
 	.add(GWGemTable, 1, 2);
 
-export default new SimpleMonster({
+export const CommanderZilyana: SimpleMonster = new SimpleMonster({
 	id: 2205,
 	name: 'Commander Zilyana',
 	table: CommanderZilyanaTable,

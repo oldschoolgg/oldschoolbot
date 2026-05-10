@@ -1,18 +1,18 @@
-import { percentChance } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
 import { EItem } from 'oldschooljs/EItem';
 
-import type { MUserClass } from '@/lib/MUser.js';
 import type { Log } from '@/lib/skilling/types.js';
 
 interface WoodcuttingTimeOptions {
 	quantity: number | undefined;
-	user: MUserClass;
+	user: MUser;
 	log: Log;
 	axeMultiplier: number;
 	powerchopping: boolean;
 	forestry: boolean;
 	woodcuttingLvl: number;
+	maxTripLength: number;
+	rng: RNGProvider;
 }
 
 export function determineWoodcuttingTime({
@@ -22,7 +22,9 @@ export function determineWoodcuttingTime({
 	axeMultiplier,
 	powerchopping,
 	forestry,
-	woodcuttingLvl
+	woodcuttingLvl,
+	maxTripLength,
+	rng
 }: WoodcuttingTimeOptions): [number, number] {
 	let timeElapsed = 0;
 
@@ -43,7 +45,6 @@ export function determineWoodcuttingTime({
 
 	let newQuantity = 0;
 
-	let maxTripLength = user.calcMaxTripLength('Woodcutting');
 	if (!powerchopping && user.hasEquippedOrInBank('Log basket')) {
 		maxTripLength += Time.Minute * 5;
 	}
@@ -55,11 +56,11 @@ export function determineWoodcuttingTime({
 
 	while (timeElapsed < userMaxTripTicks) {
 		// Keep rolling until log chopped
-		while (!percentChance(chanceOfSuccess)) {
+		while (!rng.percentChance(chanceOfSuccess)) {
 			timeElapsed += teakTick ? 1.5 : 4;
 		}
 		// Delay for depleting a tree
-		if (percentChance(log.depletionChance)) {
+		if (rng.percentChance(log.depletionChance)) {
 			timeElapsed += findNewTreeTime;
 		} else {
 			timeElapsed += teakTick ? 1.5 : 4;

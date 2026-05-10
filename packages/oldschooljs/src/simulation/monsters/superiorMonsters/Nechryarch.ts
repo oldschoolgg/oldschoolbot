@@ -2,7 +2,7 @@ import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 import { NechryaelPreTable } from '../low/n-s/Nechryael.js';
 
-const NechryarchTable = new LootTable()
+const NechryarchTable: LootTable = new LootTable()
 	.every('Malicious ashes')
 	.every(NechryaelPreTable, 3)
 	.tertiary(13, 'Clue scroll (hard)')
@@ -13,7 +13,7 @@ const NechryarchTable = new LootTable()
 	.tertiary(433, 'Eternal gem')
 	.tertiary(434, 'Imbued heart');
 
-export default new SimpleMonster({
+export const Nechryarch: SimpleMonster = new SimpleMonster({
 	id: 7411,
 	name: 'Nechryarch',
 	table: NechryarchTable,

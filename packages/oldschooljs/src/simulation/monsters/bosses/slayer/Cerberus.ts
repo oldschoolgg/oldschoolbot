@@ -2,13 +2,13 @@ import { RareDropTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const CerberusUniqueTable = new LootTable()
+const CerberusUniqueTable: LootTable = new LootTable()
 	.add('Primordial crystal')
 	.add('Pegasian crystal')
 	.add('Eternal crystal')
 	.add('Smouldering stone');
 
-const CerberusTable = new LootTable()
+const CerberusTable: LootTable = new LootTable()
 	.every('Infernal ashes')
 	.add(CerberusUniqueTable)
 	.tertiary(15, 'Ensouled hellhound head')
@@ -55,7 +55,7 @@ const CerberusTable = new LootTable()
 
 	.add(RareDropTable, 1, 3);
 
-export default new SimpleMonster({
+export const Cerberus: SimpleMonster = new SimpleMonster({
 	id: 5862,
 	name: 'Cerberus',
 	table: CerberusTable,

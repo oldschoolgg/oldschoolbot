@@ -29,8 +29,8 @@ async function determineDuration(user: MUser): Promise<[number, string[]]> {
 	return [totalTime, boostStr];
 }
 
-export async function titheFarmCommand(user: MUser, channelID: string) {
-	if (user.minionIsBusy) {
+export async function titheFarmCommand(user: MUser, channelId: string) {
+	if (await user.minionIsBusy()) {
 		return 'Your minion must not be busy to use this command.';
 	}
 	const skills = user.skillsAsLevels;
@@ -43,7 +43,7 @@ export async function titheFarmCommand(user: MUser, channelID: string) {
 	await ActivityManager.startTrip<TitheFarmActivityTaskOptions>({
 		minigameID: 'tithe_farm',
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity: 1,
 		duration,
 		type: 'TitheFarm'
@@ -78,7 +78,8 @@ export async function titheFarmShopCommand(
 	const { tithe_farm_points: titheFarmPoints } = await user.fetchStats();
 
 	if (titheFarmPoints < cost) {
-		return `You need ${cost} Tithe Farm points to make this purchase.`;
+		const maxCanAfford = Math.floor(titheFarmPoints / buyable.titheFarmPoints);
+		return `You need ${cost.toLocaleString()} Tithe Farm points to make this purchase, but you only have ${titheFarmPoints.toLocaleString()}. You can currently afford ${maxCanAfford.toLocaleString()}x ${buyable.name}.`;
 	}
 
 	const purchaseMsg = `${loot} for ${cost} Tithe Farm points`;
@@ -95,5 +96,15 @@ export async function titheFarmShopCommand(
 		itemsToAdd: loot
 	});
 
-	return `You purchased ${loot} for ${cost} Tithe Farm points.`;
+	return `You purchased ${loot} for ${cost.toLocaleString()} Tithe Farm points. You now have ${(titheFarmPoints - cost).toLocaleString()} points left.`;
+}
+
+export async function titheFarmShopInfoCommand(user: MUser) {
+	const { tithe_farm_points: titheFarmPoints } = await user.fetchStats();
+
+	const priceList = TitheFarmBuyables.map(
+		buyable => `- ${buyable.name}: ${buyable.titheFarmPoints.toLocaleString()} points`
+	).join('\n');
+
+	return `${user}, you currently have **${titheFarmPoints.toLocaleString()} Tithe Farm points**.\n\n**Tithe Farm reward costs:**\n${priceList}`;
 }

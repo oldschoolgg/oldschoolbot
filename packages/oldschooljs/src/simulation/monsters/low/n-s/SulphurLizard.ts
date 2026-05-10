@@ -4,7 +4,7 @@ import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-export const SulphurLizardTable = new LootTable()
+export const SulphurLizardTable: LootTable = new LootTable()
 	.every('Bones')
 	.oneIn(512, 'Mystic gloves (light)')
 	.tertiary(128, 'Clue scroll (medium)')
@@ -38,7 +38,7 @@ export const SulphurLizardTable = new LootTable()
 	.add(GemTable, 1, 4)
 	.add(GemTable, 2, 2);
 
-export default new SimpleMonster({
+export const SulphurLizard: SimpleMonster = new SimpleMonster({
 	id: 8614,
 	name: 'Sulphur Lizard',
 	table: SulphurLizardTable,

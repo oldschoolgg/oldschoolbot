@@ -9,7 +9,7 @@ class AwakenedVardorvisSingleton extends Monster {
 	}
 }
 
-export const AwakenedVardorvis = new AwakenedVardorvisSingleton({
+export const AwakenedVardorvis: AwakenedVardorvisSingleton = new AwakenedVardorvisSingleton({
 	id: 12_224,
 	name: 'Vardorvis (Awakened)',
 	aliases: ['vardorvis (awakened)']

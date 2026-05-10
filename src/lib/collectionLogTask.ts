@@ -4,7 +4,7 @@ import { type Bank, Items, toKMB } from 'oldschooljs';
 import { bankImageTask } from '@/lib/canvas/bankImage.js';
 import type { IBgSprite } from '@/lib/canvas/canvasUtil.js';
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
-import { allCollectionLogs, allCollectionLogsFlat, getCollection, getTotalCl } from '@/lib/data/Collections.js';
+import { allCollectionLogs, getCollection, getTotalCl } from '@/lib/data/Collections.js';
 import type { CollectionStatus, IToReturnCollection } from '@/lib/data/CollectionsExport.js';
 import type { MUserStats } from '@/lib/structures/MUserStats.js';
 
@@ -78,11 +78,7 @@ class CollectionLogTask {
 
 			_canvas.drawSquare(1, index * ITEM_HEIGHT, _canvas.width, ITEM_HEIGHT, color);
 
-			const fullCLObject = allCollectionLogsFlat.find(_cl => _cl.name === clPageName);
-			let textColor = colors[status];
-			if (fullCLObject?.unobtainable) {
-				textColor = this.COLORS.GRAY;
-			}
+			const textColor = colors[status];
 			_canvas.drawText({
 				text: clPageName,
 				x: 4,
@@ -145,7 +141,7 @@ class CollectionLogTask {
 				content: 'These are the items on your log:',
 				files: [
 					{
-						attachment: Buffer.from(
+						buffer: Buffer.from(
 							Array.from(collectionLog.collection.values())
 								.map(i => {
 									const _i = Items.getOrThrow(i);
@@ -226,7 +222,7 @@ class CollectionLogTask {
 		}
 
 		// Draw Title
-		const title = `${user.rawUsername}'s ${toTitleCase(type)} Log - ${userTotalCl[1].toLocaleString()}/${userTotalCl[0].toLocaleString()} / ${calcWhatPercent(
+		const title = `${user.username}'s ${toTitleCase(type)} Log - ${userTotalCl[1].toLocaleString()}/${userTotalCl[0].toLocaleString()} / ${calcWhatPercent(
 			userTotalCl[1],
 			userTotalCl[0]
 		).toFixed(2)}%`;
@@ -273,10 +269,6 @@ class CollectionLogTask {
 				qtyText = userCollectionBank.amount(item);
 			}
 
-			if (collectionLog.unobtainable) {
-				ctx.filter = 'saturate(0)';
-			}
-
 			totalPrice += (Items.getOrThrow(item).price ?? 0) * qtyText;
 
 			await canvas.drawItemIDSprite({
@@ -300,11 +292,7 @@ class CollectionLogTask {
 			effectiveName = `${effectiveName} (Uncounted CL)`;
 		}
 
-		let clPageTitleTextColor = this.COLORS.ORANGEY;
-		if (collectionLog.unobtainable) {
-			effectiveName = `${effectiveName} (Currently Unobtainable)`;
-			clPageTitleTextColor = this.COLORS.GRAY;
-		}
+		const clPageTitleTextColor = this.COLORS.ORANGEY;
 
 		canvas.drawText({
 			text: effectiveName,
@@ -328,9 +316,6 @@ class CollectionLogTask {
 			color = this.COLORS.PAGE_TITLE.COMPLETED;
 		} else if (collectionLog.collectionTotal !== collectionLog.collectionObtained) {
 			color = this.COLORS.PAGE_TITLE.PARTIAL_COMPLETION;
-		}
-		if (collectionLog.unobtainable) {
-			color = this.COLORS.GRAY;
 		}
 
 		const obtainableMeasure = canvas.measureText(toDraw, 'Compact');
@@ -377,7 +362,6 @@ class CollectionLogTask {
 				});
 				drawnSoFar += valueStr;
 			}
-			// TODO: Make looting count generic in future
 			if (collectionLog.name === 'Guardians of the Rift') {
 				canvas.drawText({
 					text: ' Rifts searches: ',
@@ -472,7 +456,7 @@ class CollectionLogTask {
 		}
 
 		return {
-			files: [{ attachment: await canvas.toScaledOutput(2), name: `${type}_log_${Date.now()}.png` }]
+			files: [{ buffer: await canvas.toScaledOutput(2), name: `${type}_log_${Date.now()}.png` }]
 		};
 	}
 
@@ -501,8 +485,7 @@ class CollectionLogTask {
 				collectionObtained: Array.from(clItems).filter(i => userBank.has(i)).length,
 				category: 'idk',
 				leftList: undefined,
-				counts: false,
-				unobtainable: false
+				counts: false
 			}
 		});
 	}

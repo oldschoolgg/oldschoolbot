@@ -1,7 +1,7 @@
 import LootTable, { itemTupleToTable } from '@/structures/LootTable.js';
 import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
 
-const FoodTable = new LootTable()
+const FoodTable: LootTable = new LootTable()
 	.add('Egg potato', 4, 12)
 	.add('Shark', 4, 7)
 	.add(
@@ -13,7 +13,7 @@ const FoodTable = new LootTable()
 		1
 	);
 
-const PotionTable = new LootTable()
+const PotionTable: LootTable = new LootTable()
 	.add(
 		itemTupleToTable([
 			['Super attack(2)', 1],
@@ -34,7 +34,7 @@ const PotionTable = new LootTable()
 	.add('Prayer potion(3)', 2, 3)
 	.add('Super restore(3)', 2, 1);
 
-const GrubbyChestTable = new LootTable()
+const GrubbyChestTable: LootTable = new LootTable()
 	/* Food roll */
 	.every(FoodTable, 2)
 
@@ -61,7 +61,7 @@ const GrubbyChestTable = new LootTable()
 	.tertiary(25, 'Orange egg sac')
 	.tertiary(25, 'Blue egg sac');
 
-export default new SimpleOpenable({
+export const GrubbyChest: SimpleOpenable = new SimpleOpenable({
 	id: 23_499,
 	name: 'Grubby chest',
 	aliases: ['grubby chest', 'grubby'],

@@ -1,26 +1,30 @@
-import { channelIsSendable, debounce, Events, noOp, Time } from '@oldschoolgg/toolkit';
-import { type MessageEditOptions, time, userMention } from 'discord.js';
+import { time, userMention } from '@oldschoolgg/discord';
+import { debounce, Events, Time } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import type { Giveaway } from '@/prisma/main.js';
-import { sendToChannelID } from '@/lib/util/webhook.js';
 
 async function refundGiveaway(creator: MUser, loot: Bank) {
 	await creator.transactItems({
 		itemsToAdd: loot
 	});
-	const user = await globalClient.users.fetch(creator.id);
 	Logging.logDebug('Refunding a giveaway.', { type: 'GIVEAWAY_REFUND', user_id: creator.id, loot: loot.toJSON() });
-	await user.send(`Your giveaway failed to finish, you were refunded the items: ${loot}.`).catch(noOp);
+	await globalClient.sendDm(creator.id, `Your giveaway failed to finish, you were refunded the items: ${loot}.`);
 }
 
-async function getGiveawayMessage(giveaway: Giveaway) {
-	const channel = globalClient.channels.cache.get(giveaway.channel_id);
-	if (channelIsSendable(channel)) {
-		const message = await channel.messages.fetch(giveaway.message_id).catch(noOp);
-		if (message) return message;
+export function generateGiveawayFinishedMsg(
+	host: string,
+	finishDate: Date,
+	usersEntered: string[],
+	winner: MUser | null
+) {
+	let result = `${userMention(host)} hosted a giveaway that finished  at ${time(finishDate, 'F')} (${time(finishDate, 'R')}).`;
+	if (winner !== null) {
+		result += ` ${usersEntered.length} ${usersEntered.length === 1 ? 'person' : 'people'} entered, but....the winner was...... *drumroll*..... ${winner}! Congratulations!`;
+	} else {
+		result += ` ${usersEntered.length} ${usersEntered.length === 1 ? 'person' : 'people'} entered, but no one won. Hmmm seems suss.`;
 	}
-	return null;
+	return result;
 }
 
 export function generateGiveawayContent(host: string, finishDate: Date, usersEntered: string[]) {
@@ -53,21 +57,31 @@ LIMIT 1;
 	return user;
 }
 
-export const updateGiveawayMessage = debounce(async (_giveaway: Giveaway) => {
+export const updateGiveawayMessage = debounce(async (_giveaway: Giveaway, winner?: MUser | null) => {
 	const giveaway = await prisma.giveaway.findFirst({ where: { id: _giveaway.id } });
 	if (!giveaway) return;
-	const message = await getGiveawayMessage(giveaway);
+	const message = await globalClient.fetchMessage(giveaway.channel_id, giveaway.message_id);
 	if (!message) return;
-	const newContent = generateGiveawayContent(giveaway.user_id, giveaway.finish_date, giveaway.users_entered);
-	const edits: MessageEditOptions = {};
+	let newContent: string = '';
+	if (winner === null || winner) {
+		newContent = generateGiveawayFinishedMsg(
+			giveaway.user_id,
+			giveaway.finish_date,
+			giveaway.users_entered,
+			winner
+		);
+	} else {
+		newContent = generateGiveawayContent(giveaway.user_id, giveaway.finish_date, giveaway.users_entered);
+	}
+	const edits: BaseSendableMessage = {};
 	if (giveaway.completed) edits.components = [];
 	if (message.content !== newContent) {
 		edits.content = newContent;
 	}
 	if (Object.keys(edits).length > 0) {
-		await message.edit(edits);
+		await globalClient.editMessage(giveaway.channel_id, giveaway.message_id, edits);
 	}
-}, Time.Second);
+}, Time.Second * 2);
 
 export async function handleGiveawayCompletion(_giveaway: Giveaway) {
 	Logging.logDebug('Completing a giveaway.', { type: 'GIVEAWAY_COMPLETE', giveaway_id: _giveaway.id });
@@ -86,22 +100,22 @@ export async function handleGiveawayCompletion(_giveaway: Giveaway) {
 				completed: true
 			}
 		});
+		const winner = await pickRandomGiveawayWinner(giveaway);
 
-		await updateGiveawayMessage(giveaway);
+		await updateGiveawayMessage(giveaway, winner);
 
 		const creator = await mUserFetch(giveaway.user_id);
-
-		const winner = await pickRandomGiveawayWinner(giveaway);
 
 		if (winner === null) {
 			await refundGiveaway(creator, loot);
 			return;
 		}
 
+		const guild_id = giveaway.guild_id ? BigInt(giveaway.guild_id) : undefined;
 		await winner.transactItems({ itemsToAdd: loot });
 		await prisma.economyTransaction.create({
 			data: {
-				guild_id: undefined,
+				guild_id,
 				sender: BigInt(creator.id),
 				recipient: BigInt(winner.id),
 				items_sent: loot.toJSON(),
@@ -119,8 +133,9 @@ export async function handleGiveawayCompletion(_giveaway: Giveaway) {
 
 They received these items: ${loot}`;
 
-		await sendToChannelID(giveaway.channel_id, {
-			content: str
+		await globalClient.sendMessage(giveaway.channel_id, {
+			content: str,
+			allowedMentions: { users: [giveaway.user_id, winner.id] }
 		});
 	} catch (err) {
 		Logging.logError(err as Error);

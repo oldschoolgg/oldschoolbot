@@ -4,8 +4,9 @@ import { Items } from 'oldschooljs';
 import { Enchantables } from '@/lib/skilling/skills/magic/enchantables.js';
 import type { EnchantingActivityTaskOptions } from '@/lib/types/minions.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
-export async function enchantCommand(user: MUser, channelID: string, name: string, quantity?: number) {
+export async function enchantCommand(user: MUser, channelId: string, name: string, quantity?: number) {
 	const enchantable = Enchantables.find(
 		item =>
 			stringMatches(item.name, name) ||
@@ -23,7 +24,7 @@ export async function enchantCommand(user: MUser, channelID: string, name: strin
 
 	const userBank = user.bank;
 
-	const maxTripLength = user.calcMaxTripLength('Enchanting');
+	const maxTripLength = await user.calcMaxTripLength('Enchanting');
 
 	const timeToEnchantTen = 3 * Time.Second * 0.6 + Time.Second / 4;
 
@@ -58,7 +59,7 @@ export async function enchantCommand(user: MUser, channelID: string, name: strin
 	await ActivityManager.startTrip<EnchantingActivityTaskOptions>({
 		itemID: enchantable.id,
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		type: 'Enchanting'
@@ -66,7 +67,8 @@ export async function enchantCommand(user: MUser, channelID: string, name: strin
 
 	const xpHr = `${Math.round(((enchantable.xp * quantity) / (duration / Time.Minute)) * 60).toLocaleString()} XP/Hr`;
 
-	return `${user.minionName} is now enchanting ${quantity}x ${enchantable.name}, it'll take around ${formatDuration(
+	return `${user.minionName} is now enchanting ${quantity}x ${enchantable.name}, it'll take around ${formatTripDuration(
+		user,
 		duration
 	)} to finish. Removed ${cost} from your bank. ${xpHr}`;
 }

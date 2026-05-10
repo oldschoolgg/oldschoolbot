@@ -14,7 +14,7 @@ const FeverSpiderTable = new LootTable({ limit: 36 })
 	.add('Pure essence', [100, 200], 2)
 	.add(GemTable, 1, 1);
 
-export default new SimpleMonster({
+export const FeverSpider: SimpleMonster = new SimpleMonster({
 	id: 626,
 	name: 'Fever spider',
 	table: FeverSpiderTable,

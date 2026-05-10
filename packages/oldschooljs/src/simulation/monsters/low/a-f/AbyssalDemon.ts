@@ -3,7 +3,7 @@ import { GemTable, RareDropTable } from '@/simulation/subtables/RareDropTable.js
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const WildySlayerCaveTable = new LootTable()
+const WildySlayerCaveTable: LootTable = new LootTable()
 	.add('Blighted entangle sack', [1, 10], 14500)
 	.add('Blighted anglerfish', [1, 2], 10800)
 	.add('Blighted manta ray', [1, 2], 7190)
@@ -28,7 +28,7 @@ const WildySlayerCaveTable = new LootTable()
 	.add('Trouver parchment', 2, 72)
 	.add('Looting bag note', 1, 72);
 
-export const AbyssalDemonPreTable = new LootTable()
+export const AbyssalDemonPreTable: LootTable = new LootTable()
 	/* Weapons and armour */
 	.add('Black sword', 1, 4)
 	.add('Steel battleaxe', 1, 3)
@@ -68,7 +68,7 @@ export const AbyssalDemonPreTable = new LootTable()
 	.add(RareDropTable, 1, 2)
 	.add(GemTable, 1, 5);
 
-const AbyssalDemonTable = new LootTable()
+const AbyssalDemonTable: LootTable = new LootTable()
 	.every('Abyssal ashes')
 	.every(AbyssalDemonPreTable)
 
@@ -78,12 +78,12 @@ const AbyssalDemonTable = new LootTable()
 	.tertiary(1200, 'Clue scroll (elite)')
 	.tertiary(6000, 'Abyssal head');
 
-const AbyssalDemonWildyCaveTable = new LootTable()
+const AbyssalDemonWildyCaveTable: LootTable = new LootTable()
 	.every(AbyssalDemonTable)
 	.add(WildySlayerCaveTable, 1, 80)
 	.add(new LootTable(), 1, 20);
 
-export default new SimpleMonster({
+export const AbyssalDemon: SimpleMonster = new SimpleMonster({
 	id: 415,
 	name: 'Abyssal Demon',
 	table: AbyssalDemonTable,

@@ -3,7 +3,7 @@ import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const OgressShamanTable = new LootTable()
+const OgressShamanTable: LootTable = new LootTable()
 	.every('Big bones')
 
 	/* Armour */
@@ -50,7 +50,7 @@ const OgressShamanTable = new LootTable()
 	.tertiary(1200, 'Shaman mask')
 	.tertiary(5013, 'Curved bone');
 
-export default new SimpleMonster({
+export const OgressShaman: SimpleMonster = new SimpleMonster({
 	id: 7991,
 	name: 'Ogress Shaman',
 	table: OgressShamanTable,

@@ -1,50 +1,91 @@
-import { SpecialResponse } from '@oldschoolgg/toolkit';
-import { type ChatInputCommandInteraction, type GuildMember, PermissionFlagsBits } from 'discord.js';
+import { type APIChatInputApplicationCommandInteraction, SpecialResponse } from '@oldschoolgg/discord';
 
-import { convertAPIOptionsToCommandOptions } from '@/discord/commandOptions.js';
-import { MInteraction } from '@/structures/MInteraction.js';
+import { convertAPIOptionsToCommandOptions } from '@/discord/index.js';
+import { preCommand } from '@/discord/preCommand.js';
 
-export async function commandHandler(rawInteraction: ChatInputCommandInteraction) {
-	const interaction = new MInteraction({ interaction: rawInteraction });
-	const command = globalClient.allCommands.find(c => c.name === interaction.commandName)!;
-	const options = convertAPIOptionsToCommandOptions(rawInteraction.options.data, rawInteraction.options.resolved);
-
+export async function rawCommandHandlerInner({
+	interaction,
+	command,
+	options
+}: {
+	interaction: MInteraction;
+	command: AnyCommand;
+	options: CommandOptions;
+}): CommandResponse {
 	// Permissions
 	if (command.requiredPermissions) {
-		if (!interaction.member || !interaction.member.permissions) return null;
-		for (const perm of command.requiredPermissions) {
-			if (!interaction.member.permissions.has(PermissionFlagsBits[perm])) {
-				return interaction.reply({
-					content: "You don't have permission to use this command.",
-					ephemeral: true
-				});
-			}
+		const hasPerms =
+			interaction.member !== null &&
+			(await globalClient.memberHasPermissions(interaction.member, command.requiredPermissions));
+		if (!hasPerms) {
+			return {
+				content: "You don't have permission to use this command.",
+				ephemeral: true
+			};
 		}
 	}
-
-	const user = await globalClient.fetchUser(interaction.user.id);
-	const member: GuildMember | null = rawInteraction.guild
-		? await rawInteraction.guild.members.fetch(interaction.user.id)
-		: null;
+	const user = await globalClient.fetchRUser(interaction.userId);
 
 	try {
-		const response = await command.run({
+		const inhibitedResponse = await preCommand({
+			command,
+			interaction,
+			options,
+			user
+		});
+		if (inhibitedResponse) {
+			return {
+				ephemeral: true,
+				...inhibitedResponse.reason
+			};
+		}
+
+		const response: Awaited<CommandResponse> = await command.run({
 			interaction,
 			options,
 			user,
-			member,
-			channelID: interaction.channelId,
-			guildID: interaction.guild?.id,
-			userID: interaction.user.id,
-			client: globalClient
+			member: interaction.member,
+			channelId: interaction.channelId,
+			guildId: interaction.guildId,
+			userId: interaction.userId
 		});
-		if (response === null) return;
-		if (response === SpecialResponse.PaginatedMessageResponse || response === SpecialResponse.SilentErrorResponse) {
-			return;
-		}
-
-		await interaction.reply(response);
+		return response;
 	} catch (err) {
-		console.error(err);
+		if ((err as Error).message === 'SILENT_ERROR') return SpecialResponse.SilentErrorResponse;
+		console.error({
+			err: err as Error,
+			interaction,
+			context: { command: command.name, options: JSON.stringify(options) }
+		});
+		return {
+			content: `An error occurred while running this command.`
+		};
+	} finally {
 	}
+}
+
+export async function commandHandler(
+	rawInteraction: APIChatInputApplicationCommandInteraction,
+	interaction: MInteraction
+) {
+	const command = globalClient.allCommands.find(c => c.name === rawInteraction.data.name)!;
+	const options = convertAPIOptionsToCommandOptions({
+		guildId: rawInteraction.guild_id,
+		options: rawInteraction.data.options ?? [],
+		resolvedObjects: rawInteraction.data.resolved
+	});
+
+	const response: Awaited<CommandResponse> = await rawCommandHandlerInner({
+		interaction,
+		command,
+		options
+	});
+	if (
+		response === SpecialResponse.PaginatedMessageResponse ||
+		response === SpecialResponse.SilentErrorResponse ||
+		response === SpecialResponse.RespondedManually
+	) {
+		return;
+	}
+	await interaction.reply(response);
 }

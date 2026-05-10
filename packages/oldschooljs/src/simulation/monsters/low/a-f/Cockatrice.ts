@@ -3,7 +3,7 @@ import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-export const CockatricePreTable = new LootTable({ limit: 128 })
+export const CockatricePreTable: LootTable = new LootTable({ limit: 128 })
 	/* Weapons and armour */
 	.add('Iron sword', 1, 3)
 	.add('Steel dagger', 1, 3)
@@ -37,7 +37,7 @@ export const CockatricePreTable = new LootTable({ limit: 128 })
 	/* Gem drop table */
 	.add(GemTable, 1, 2);
 
-const CockatriceTable = new LootTable()
+const CockatriceTable: LootTable = new LootTable()
 	.every('Bones')
 	.every(CockatricePreTable)
 
@@ -45,7 +45,7 @@ const CockatriceTable = new LootTable()
 	.oneIn(128, 'Clue scroll (medium)')
 	.oneIn(1000, 'Cockatrice head');
 
-export default new SimpleMonster({
+export const Cockatrice: SimpleMonster = new SimpleMonster({
 	id: 420,
 	name: 'Cockatrice',
 	table: CockatriceTable,

@@ -2,7 +2,6 @@ import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, resolveItems, toKMB } from 'oldschooljs';
 
 import { bankImageTask } from '@/lib/canvas/bankImage.js';
-import { BitField } from '@/lib/constants.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 export async function bankBgCommand(interaction: MInteraction, user: MUser, name: string) {
@@ -17,7 +16,7 @@ export async function bankBgCommand(interaction: MInteraction, user: MUser, name
 		return 'This is already your bank background.';
 	}
 
-	if (user.bitfield.includes(BitField.isModerator)) {
+	if (user.isModOrAdmin()) {
 		await user.update({
 			bankBackground: selectedImage.id
 		});
@@ -54,7 +53,7 @@ export async function bankBgCommand(interaction: MInteraction, user: MUser, name
 	}
 
 	if (selectedImage.bitfield && !user.bitfield.includes(selectedImage.bitfield)) {
-		return "You're not elligible to use this bank background.";
+		return "You're not eligible to use this bank background.";
 	}
 
 	// Check they have required collection log items.
@@ -65,7 +64,7 @@ export async function bankBgCommand(interaction: MInteraction, user: MUser, name
 	}
 
 	// Check they have the required perk tier.
-	if (selectedImage.perkTierNeeded && user.perkTier() < selectedImage.perkTierNeeded) {
+	if (selectedImage.perkTierNeeded && (await user.fetchPerkTier()) < selectedImage.perkTierNeeded) {
 		return `This background is only available for Tier ${Number(selectedImage.perkTierNeeded) - 1} patrons.`;
 	}
 

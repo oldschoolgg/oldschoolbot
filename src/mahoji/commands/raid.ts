@@ -1,4 +1,4 @@
-import { choicesOf } from '@/lib/discord/index.js';
+import { choicesOf } from '@/discord/index.js';
 import { toaHelpCommand, toaStartCommand } from '@/lib/simulation/toa.js';
 import { mileStoneBaseDeathChances } from '@/lib/simulation/toaUtils.js';
 import { coxBoostsCommand, coxCommand, coxStatsCommand } from '@/mahoji/lib/abstracted_commands/coxCommand.js';
@@ -38,7 +38,8 @@ export const raidCommand = defineCommand({
 							type: 'Integer',
 							name: 'max_team_size',
 							description: 'Choose a max size for your team.',
-							required: false
+							required: false,
+							min_value: 1
 						},
 						{
 							type: 'Integer',
@@ -88,7 +89,8 @@ export const raidCommand = defineCommand({
 							type: 'Integer',
 							name: 'max_team_size',
 							description: 'Choose a max size for your team.',
-							required: false
+							required: false,
+							min_value: 1
 						},
 						{
 							type: 'Integer',
@@ -172,22 +174,23 @@ export const raidCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ interaction, options, user, channelID }) => {
+	run: async ({ interaction, options, user, channelId, rng }) => {
 		if (interaction) await interaction.defer();
 
 		const { cox, tob } = options;
 		if (cox?.stats) return coxStatsCommand(user);
 		if (cox?.itemboosts) return coxBoostsCommand(user);
-		if (tob?.stats) return tobStatsCommand(user);
+		if (tob?.stats) return tobStatsCommand(interaction);
 		if (tob?.check) return tobCheckCommand(user, Boolean(tob.check.hard_mode));
-		if (options.toa?.help) return toaHelpCommand(user, channelID);
+		if (options.toa?.help) return toaHelpCommand(user, channelId);
 
-		if (user.minionIsBusy) return "Your minion is busy, you can't do this.";
+		if (await user.minionIsBusy()) return "Your minion is busy, you can't do this.";
 
 		if (cox?.start) {
 			return coxCommand(
+				rng,
 				interaction,
-				channelID,
+				channelId,
 				user,
 				cox.start.type,
 				cox.start.max_team_size,
@@ -197,9 +200,10 @@ export const raidCommand = defineCommand({
 		}
 		if (tob?.start) {
 			return tobStartCommand(
+				rng,
 				interaction,
 				user,
-				channelID,
+				channelId,
 				Boolean(tob.start.hard_mode),
 				tob.start.max_team_size,
 				Boolean(tob.start.solo),
@@ -210,9 +214,8 @@ export const raidCommand = defineCommand({
 		if (options.toa?.start) {
 			return toaStartCommand(
 				interaction,
-				user,
 				Boolean(options.toa.start.solo),
-				channelID,
+				channelId,
 				options.toa.start.raid_level,
 				options.toa.start.max_team_size,
 				options.toa.start.quantity

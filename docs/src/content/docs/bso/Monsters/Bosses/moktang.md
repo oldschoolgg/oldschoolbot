@@ -6,7 +6,7 @@ title: "Moktang"
 
 Moktang is a mining-skilling boss made of rocks and lava. The boss is _created_ by you using a spell on rocks. You create Moktang totems using rocky/magic materials and elder runes, then use the totems to summon and fight the boss.
 
-Moktang drops the Igne gear frame, which is used in creating the [Igne Claws](../../custom-items/tames/igne-equipment.md#igne-claw-creation) and [Igne Armour](../../custom-items/tames/igne-equipment.md#igne-armor-creation) to improve your Igne tame. It also drops an item used to create volcanic pickaxes, the highest-tier pickaxes.
+Moktang drops the Igne gear frame, which is used in creating the [Igne Claws](../../custom-items/tames/igne-equipment#igne-claw-creation) and [Igne Armour](../../custom-items/tames/igne-equipment#igne-armor-creation) to improve your Igne tame. It also drops an item used to create volcanic pickaxes, the highest-tier pickaxes.
 
 ## Get Started
 
@@ -43,3 +43,15 @@ Moktang drops the Igne gear frame, which is used in creating the [Igne Claws](..
 | Volcanic dye          | 1/750         |
 | Volcanic shards       | 1/128         |
 | Igne gear frame       | 1/716         |
+
+## Dragonstone (u) upgrades
+
+Moktang can drop [[Dragonstone upgrade kit]] at **1/5**.
+
+Use [[/create]] with one kit + base item to make:
+
+- [[Dragonstone full helm(u)]]
+- [[Dragonstone platebody(u)]]
+- [[Dragonstone platelegs(u)]]
+- [[Dragonstone boots(u)]]
+- [[Dragonstone gauntlets(u)]]

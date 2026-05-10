@@ -3,15 +3,16 @@ import { Bank } from 'oldschooljs';
 
 import Runecraft from '@/lib/skilling/skills/runecraft.js';
 import type { TiaraRunecraftActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export async function tiaraRunecraftCommand({
 	user,
-	channelID,
+	channelId,
 	name,
 	quantity
 }: {
 	user: MUser;
-	channelID: string;
+	channelId: string;
 	quantity?: number;
 	name: string;
 }) {
@@ -51,7 +52,7 @@ export async function tiaraRunecraftCommand({
 	const makeTiaraTime = Time.Second * 0.6;
 	const adjTripTime = tripLength + TIARAS_PER_INVENTORY * makeTiaraTime;
 	const maxCanDoOwned = numTiaraOwned < numTalismansOwned ? numTiaraOwned : numTalismansOwned;
-	const maxTripLength = user.calcMaxTripLength('Runecraft');
+	const maxTripLength = await user.calcMaxTripLength('Runecraft');
 	const maxCanDo = Math.floor(maxTripLength / adjTripTime) * TIARAS_PER_INVENTORY;
 
 	if (!quantity) {
@@ -93,7 +94,7 @@ export async function tiaraRunecraftCommand({
 	await ActivityManager.startTrip<TiaraRunecraftActivityTaskOptions>({
 		tiaraID: tiaraObj.id,
 		userID: user.id,
-		channelID,
+		channelId,
 		tiaraQuantity: quantity,
 		duration,
 		type: 'TiaraRunecraft'
@@ -101,7 +102,7 @@ export async function tiaraRunecraftCommand({
 
 	let response = `${user.minionName} is now turning ${quantity}x Tiaras into ${
 		tiaraObj.name
-	}s, it'll take around ${formatDuration(duration)} to finish.`;
+	}s, it'll take around ${formatTripDuration(user, duration)} to finish.`;
 
 	if (boosts.length > 0) response += `\n\n**Boosts:** ${boosts.join(', ')}`;
 

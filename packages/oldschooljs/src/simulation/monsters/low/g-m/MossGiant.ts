@@ -4,7 +4,7 @@ import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const MossGiantTable = new LootTable()
+const MossGiantTable: LootTable = new LootTable()
 	.every('Big bones')
 
 	/* Weapons and armour */
@@ -55,7 +55,7 @@ const MossGiantTable = new LootTable()
 	.tertiary(5000, 'Giant champion scroll')
 	.tertiary(5013, 'Curved bone');
 
-export default new SimpleMonster({
+export const MossGiant: SimpleMonster = new SimpleMonster({
 	id: 2090,
 	name: 'Moss giant',
 	table: MossGiantTable,

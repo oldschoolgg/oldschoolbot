@@ -5,11 +5,9 @@ import type { SawmillActivityTaskOptions } from '@/lib/types/minions.js';
 export const sawmillTask: MinionTask = {
 	type: 'Sawmill',
 	async run(data: SawmillActivityTaskOptions, { user, handleTripFinish }) {
-		const { channelID, plankID, plankQuantity } = data;
+		const { channelId, plankID, plankQuantity } = data;
 
-		const loot = new Bank({
-			[plankID]: plankQuantity
-		});
+		const loot = new Bank().add(plankID, plankQuantity);
 
 		let str = `${user}, ${user.minionName} finished creating planks, you received ${loot}.`;
 
@@ -28,6 +26,6 @@ export const sawmillTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

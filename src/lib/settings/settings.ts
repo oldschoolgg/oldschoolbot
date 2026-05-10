@@ -1,9 +1,7 @@
-import { ButtonInteraction } from 'discord.js';
+import { cryptoRng } from 'node-rng/crypto';
 
 import type { NewUser } from '@/prisma/main.js';
-import { rawCommandHandlerInner } from '@/lib/discord/commandHandler.js';
-import type { CommandOptions } from '@/lib/discord/commandOptions.js';
-import { MInteraction } from '@/lib/structures/MInteraction.js';
+import { rawCommandHandlerInner } from '@/discord/commandHandler.js';
 
 export async function getNewUser(id: string): Promise<NewUser> {
 	const value = await prisma.newUser.findUnique({ where: { id } });
@@ -23,7 +21,7 @@ export interface RunCommandArgs {
 	args: CommandOptions;
 	user: MUser;
 	isContinue?: boolean;
-	interaction: MInteraction;
+	interaction: OSInteraction;
 	continueDeltaMillis: number | null;
 	ignoreUserIsBusy?: true;
 }
@@ -31,18 +29,17 @@ export interface RunCommandArgs {
 export async function runCommand({
 	commandName,
 	args,
-	interaction: _interaction,
+	interaction,
 	ignoreUserIsBusy
 }: RunCommandArgs): CommandResponse {
-	const interaction: MInteraction =
-		_interaction instanceof ButtonInteraction ? new MInteraction({ interaction: _interaction }) : _interaction;
 	const command = globalClient.allCommands.find(c => c.name === commandName)!;
 
 	const response: Awaited<CommandResponse> = await rawCommandHandlerInner({
 		interaction,
 		command,
 		options: args,
-		ignoreUserIsBusy
+		ignoreUserIsBusy,
+		rng: cryptoRng
 	});
 	return response;
 }

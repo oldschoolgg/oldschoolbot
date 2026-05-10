@@ -1,23 +1,23 @@
+import type { GearSetupType } from '@oldschoolgg/gear';
+import { defaultGearSetup, type GearSetup, type GearStat, isValidGearSetup, isValidGearStat } from '@oldschoolgg/gear';
 import { PerkTier, stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
-import type { GearStat } from 'oldschooljs/gear';
 
 import type { GearPreset } from '@/prisma/main.js';
 import { generateGearImage } from '@/lib/canvas/generateGearImage.js';
 import { PATRON_ONLY_GEAR_SETUP } from '@/lib/constants.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
-import { isValidGearSetup, isValidGearStat } from '@/lib/gear/functions/isValidGearSetup.js';
-import type { GearSetup, GearSetupType } from '@/lib/gear/types.js';
+import { globalPresets } from '@/lib/gear/gearPresets.js';
 import getUserBestGearFromBank from '@/lib/minions/functions/getUserBestGearFromBank.js';
 import { unEquipAllCommand } from '@/lib/minions/functions/unequipAllCommand.js';
-import { defaultGear, Gear, globalPresets } from '@/lib/structures/Gear.js';
+import { Gear } from '@/lib/structures/Gear.js';
 import calculateGearLostOnDeathWilderness from '@/lib/util/calculateGearLostOnDeathWilderness.js';
 import { gearEquipMultiImpl } from '@/lib/util/equipMulti.js';
 import { assert } from '@/lib/util/logError.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName: string): CommandResponse {
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return `${user.minionName} is currently out on a trip, so you can't change their gear!`;
 	}
 
@@ -74,7 +74,7 @@ async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName
 		};
 	}
 
-	const newGear = { ...defaultGear };
+	const newGear = { ...defaultGearSetup };
 	newGear.head = gearItem(preset.head);
 	newGear.neck = gearItem(preset.neck);
 	newGear.body = gearItem(preset.body);
@@ -98,10 +98,11 @@ async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName
 
 	await unEquipAllCommand(user, gearSetup);
 
-	await user.removeItemsFromBank(toRemove);
-
-	await user.update({
-		[`gear_${gearSetup}`]: newGear
+	await user.transactItems({
+		itemsToRemove: toRemove,
+		otherUpdates: {
+			[`gear_${gearSetup}`]: newGear
+		}
 	});
 
 	if (userPreset && !globalPreset) {
@@ -123,7 +124,7 @@ async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName
 
 	return {
 		content: `You equipped the ${preset.name} preset in your ${gearSetup} setup.`,
-		files: [{ name: 'gear.png', attachment: image }]
+		files: [{ name: 'gear.png', buffer: image }]
 	};
 }
 
@@ -141,15 +142,18 @@ async function gearEquipMultiCommand(user: MUser, setup: string, items: string) 
 		unequipBank
 	} = gearEquipMultiImpl(user, setup, items);
 	if (!resultSuccess) return failMsg!;
+	if ((!equipBank || equipBank.length === 0) && (!unequipBank || unequipBank.length === 0)) {
+		return `No items were equipped.`;
+	}
 
 	const dbKey = `gear_${setup}` as const;
-	await user.update({
-		[dbKey]: equippedGear
-	});
 	await user.transactItems({
 		filterLoot: false,
 		itemsToRemove: equipBank,
-		itemsToAdd: unequipBank
+		itemsToAdd: unequipBank,
+		otherUpdates: {
+			[dbKey]: equippedGear
+		}
 	});
 
 	const image = await user.generateGearImage({ setupType: setup });
@@ -165,7 +169,7 @@ async function gearEquipMultiCommand(user: MUser, setup: string, items: string) 
 
 	return {
 		content,
-		files: [{ name: 'gear.png', attachment: image }]
+		files: [{ name: 'gear.png', buffer: image }]
 	};
 }
 
@@ -182,14 +186,14 @@ export async function gearEquipCommand(args: {
 }): CommandResponse {
 	const { user, setup, item, items, preset, quantity, auto } = args;
 	if (!isValidGearSetup(setup)) return 'Invalid gear setup.';
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return `${user.minionName} is currently out on a trip, so you can't change their gear!`;
 	}
 
 	if (items) {
 		return gearEquipMultiCommand(user, setup, items);
 	}
-	if (setup === 'other' && user.perkTier() < PerkTier.Four) {
+	if (setup === 'other' && (await user.fetchPerkTier()) < PerkTier.Four) {
 		return PATRON_ONLY_GEAR_SETUP;
 	}
 	if (preset) {
@@ -213,7 +217,7 @@ export async function gearUnequipCommand(
 	itemToUnequip: string | undefined,
 	unequipAll: boolean | undefined
 ): CommandResponse {
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return `${user.minionName} is currently out on a trip, so you can't change their gear!`;
 	}
 	if (!isValidGearSetup(gearSetup)) return "That's not a valid gear setup.";
@@ -240,26 +244,25 @@ export async function gearUnequipCommand(
 	const newGear = { ...currentGear };
 	newGear[slot] = null;
 
-	await user.addItemsToBank({
-		items: {
-			[equippedInThisSlot!.item]: equippedInThisSlot!.quantity
-		},
-		collectionLog: false
-	});
-	await user.update({
-		[`gear_${gearSetup}`]: newGear
+	const itemsToAdd = new Bank().add(equippedInThisSlot!.item, equippedInThisSlot!.quantity);
+	await user.transactItems({
+		itemsToAdd,
+		collectionLog: false,
+		otherUpdates: {
+			[`gear_${gearSetup}`]: newGear
+		}
 	});
 
 	const image = await user.generateGearImage({ setupType: gearSetup });
 
 	return {
 		content: `You unequipped ${item.name} from your ${toTitleCase(gearSetup)} setup.`,
-		files: [{ name: 'gear.png', attachment: image }]
+		files: [{ name: 'gear.png', buffer: image }]
 	};
 }
 
 async function autoEquipCommand(user: MUser, gearSetup: GearSetupType, equipmentType: string): CommandResponse {
-	if (gearSetup === 'other' && user.perkTier() < PerkTier.Four) {
+	if (gearSetup === 'other' && (await user.fetchPerkTier()) < PerkTier.Four) {
 		return PATRON_ONLY_GEAR_SETUP;
 	}
 
@@ -274,7 +277,7 @@ async function autoEquipCommand(user: MUser, gearSetup: GearSetupType, equipment
 		extra: null
 	});
 
-	if (Object.keys(toRemoveFromBank).length === 0) {
+	if (toRemoveFromBank.length === 0) {
 		return "Couldn't find anything to equip.";
 	}
 
@@ -282,20 +285,23 @@ async function autoEquipCommand(user: MUser, gearSetup: GearSetupType, equipment
 		return `You dont own ${toRemoveFromBank}!`;
 	}
 
-	await user.transactItems({ itemsToRemove: toRemoveFromBank, itemsToAdd: toRemoveFromGear });
-	await user.update({
-		[`gear_${gearSetup}`]: gearToEquip
+	await user.transactItems({
+		itemsToRemove: toRemoveFromBank,
+		itemsToAdd: toRemoveFromGear,
+		otherUpdates: {
+			[`gear_${gearSetup}`]: gearToEquip
+		}
 	});
 
 	const image = await user.generateGearImage({ setupType: gearSetup });
 	return {
 		content: `You auto-equipped your best ${equipmentType} in your ${gearSetup} preset.`,
-		files: [{ name: 'gear.png', attachment: image }]
+		files: [{ name: 'gear.png', buffer: image }]
 	};
 }
 
 export async function gearStatsCommand(user: MUser, input: string): CommandResponse {
-	const gear = { ...defaultGear };
+	const gear = { ...defaultGearSetup };
 	for (const name of input.split(',')) {
 		const item = Items.getItem(name);
 		if (item?.equipment) {
@@ -303,21 +309,21 @@ export async function gearStatsCommand(user: MUser, input: string): CommandRespo
 		}
 	}
 	const image = await user.generateGearImage({ gearSetup: new Gear(gear) });
-	return { files: [{ name: 'image.png', attachment: image }] };
+	return { files: [{ name: 'image.png', buffer: image }] };
 }
 
 export async function gearViewCommand(user: MUser, input: string, text: boolean): CommandResponse {
 	if (stringMatches(input, 'all')) {
 		const file = text
 			? {
-					attachment: Buffer.from(
+					buffer: Buffer.from(
 						Object.entries(user.gear)
 							.map(i => `${i[0]}: ${i[1].toString()}`)
 							.join('\n')
 					),
 					name: 'gear.txt'
 				}
-			: { attachment: await user.generateGearImage({ setupType: 'all' }), name: 'osbot.png' };
+			: { buffer: await user.generateGearImage({ setupType: 'all' }), name: 'osbot.png' };
 		return {
 			content: 'Here are all your gear setups',
 			files: [file]
@@ -363,7 +369,7 @@ export async function gearViewCommand(user: MUser, input: string, text: boolean)
 
 		const content = scenarios
 			.map((scenario, index) => {
-				const lostItemsString = calculateAndGetString({ gear: userGear, ...scenario }, scenario.smited);
+				const lostItemsString = calculateAndGetString({ gear: userGear.raw(), ...scenario }, scenario.smited);
 				const description = scenarioDescriptions[index];
 				return `The gear you would lose ${description}:\n${lostItemsString}`;
 			})
@@ -379,7 +385,7 @@ export async function gearViewCommand(user: MUser, input: string, text: boolean)
 		return gear.toString();
 	}
 	const image = await generateGearImage({ gearSetup: gear, gearType: input, petID: user.user.minion_equippedPet });
-	return { files: [{ attachment: image, name: 'gear.png' }] };
+	return { files: [{ buffer: image, name: 'gear.png' }] };
 }
 
 export async function gearSwapCommand(
@@ -397,16 +403,14 @@ export async function gearSwapCommand(
 		);
 	}
 
-	if ([first, second].includes('other') && user.perkTier() < PerkTier.Four) {
+	if ([first, second].includes('other') && (await user.fetchPerkTier()) < PerkTier.Four) {
 		return PATRON_ONLY_GEAR_SETUP;
 	}
 
-	const { gear } = user;
-
-	await user.update({
-		[`gear_${first}`]: gear[second],
-		[`gear_${second}`]: gear[first]
-	});
+	await user.updateGear([
+		{ setup: first, gear: user.gear[second].raw() },
+		{ setup: second, gear: user.gear[first].raw() }
+	]);
 
 	return `You swapped your ${first} gear with your ${second} gear.`;
 }

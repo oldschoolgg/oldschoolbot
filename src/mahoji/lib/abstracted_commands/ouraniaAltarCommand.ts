@@ -3,18 +3,19 @@ import { Bank, EItem } from 'oldschooljs';
 
 import Runecraft from '@/lib/skilling/skills/runecraft.js';
 import type { OuraniaAltarOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 const gracefulPenalty = 20;
 
 export async function ouraniaAltarStartCommand({
 	user,
-	channelID,
+	channelId,
 	quantity,
 	usestams,
 	daeyalt_essence
 }: {
 	user: MUser;
-	channelID: string;
+	channelId: string;
 	quantity?: number;
 	usestams?: boolean;
 	daeyalt_essence?: boolean;
@@ -59,7 +60,7 @@ export async function ouraniaAltarStartCommand({
 		timePerTrip *= 0.98;
 	}
 
-	const maxTripLength = user.calcMaxTripLength('OuraniaAltar');
+	const maxTripLength = await user.calcMaxTripLength('OuraniaAltar');
 	const maxCanDo = Math.floor(maxTripLength / timePerTrip) * inventorySize;
 
 	// If no quantity provided, set it to the max.
@@ -120,7 +121,7 @@ export async function ouraniaAltarStartCommand({
 		userID: user.id,
 		duration,
 		type: 'OuraniaAltar',
-		channelID,
+		channelId,
 		stamina,
 		daeyalt
 	});
@@ -133,7 +134,8 @@ export async function ouraniaAltarStartCommand({
 		response += ' Pure ';
 	}
 
-	response += `Essence at the Ourania Altar, it'll take around ${formatDuration(
+	response += `Essence at the Ourania Altar, it'll take around ${formatTripDuration(
+		user,
 		duration
 	)} to finish, this will take ${numberOfInventories}x trips to the altar.\nYour minion has consumed: ${itemCost}.\n\n**Boosts:** ${boosts.join(
 		', '

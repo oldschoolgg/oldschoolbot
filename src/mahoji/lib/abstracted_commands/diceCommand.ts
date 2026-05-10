@@ -44,7 +44,7 @@ export async function diceCommand(rng: RNGProvider, user: MUser, interaction: MI
 		await user.removeItemsFromBank(new Bank().add('Coins', amount));
 	}
 
-	return `${user.badgedUsername} rolled **${roll}** on the percentile dice, and you ${
+	return `${user.username} rolled **${roll}** on the percentile dice, and you ${
 		won ? 'won' : 'lost'
 	} ${toKMB(amountToAdd)} GP.`;
 }

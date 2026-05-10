@@ -22,7 +22,9 @@ model Activity {
   channel_id     BigInt?
   data           Json?              @db.JsonB
   pinnedTrip     PinnedTrip[]
+  all_user_ids   BigInt[]           @default([])
 
+  @@index([user_id, completed, finish_date])
   @@map("activity")
 }
 
@@ -131,6 +133,8 @@ model ClientStorage {
   ourania_loot                 Json     @default("{}") @db.Json
   colo_cost                    Json     @default("{}") @db.Json
   colo_loot                    Json     @default("{}") @db.Json
+  vt_cost                      Json     @default("{}") @db.Json
+  vt_loot                      Json     @default("{}") @db.Json
 
   grand_exchange_is_locked Boolean @default(false)
   grand_exchange_total_tax BigInt  @default(0)
@@ -183,7 +187,6 @@ model GearPreset {
   ammo       Int?
   ammo_qty   Int?
 
-  emoji_id       String?        @db.VarChar(19)
   times_equipped Int            @default(0)
   pinned_setup   GearSetupType?
 
@@ -198,6 +201,7 @@ model Giveaway {
   finish_date DateTime @db.Timestamp(6)
   duration    Int
   completed   Boolean
+  guild_id    String?  @db.VarChar(20)
   channel_id  String   @db.VarChar(19)
   loot        Json     @db.Json
   message_id  String   @db.VarChar(19)
@@ -274,6 +278,7 @@ enum bank_sort_method_enum {
   alch
   name
   quantity
+  market
 }
 
 model User {
@@ -322,7 +327,7 @@ model User {
   favorite_bh_seeds          Int[]              @default([])
   minion_defaultPay          Boolean            @default(false) @map("minion.defaultPay")
   minion_icon                String?            @map("minion.icon")
-  minion_name                String?            @map("minion.name")
+  minion_name                String?            @map("minion.name") @db.Text()
   bank_bg_hex                String?
   bankBackground             Int                @default(1)
   attack_style               String[]           @default([])
@@ -415,8 +420,8 @@ model User {
   farmingPatches_mushroom   Json? @map("farmingPatches.mushroom") @db.Json
   farmingPatches_belladonna Json? @map("farmingPatches.belladonna") @db.Json
 
-  username             String? @db.VarChar(32)
-  username_with_badges String? @db.VarChar()
+  username             String? @db.Text()
+  username_with_badges String? @db.Text()
 
   geListings        GEListing[]
   bingo_participant BingoParticipant[]
@@ -425,7 +430,8 @@ model User {
   gift_boxes_owned   GiftBox[] @relation("gift_boxes_owned")
   gift_boxes_created GiftBox[] @relation("gift_boxes_created")
 
-  cl_array Int[] @default([])
+  cl_array                      Int[]    @default([])
+  completed_achievement_diaries String[] @default([])
 
   gear_template Int? @db.SmallInt
 
@@ -473,6 +479,7 @@ enum XpGainSource {
   ScatteringAshes
   Zalcano
   Wintertodt
+  ValeTotems
   FishingTrawler
   Tempoross
   TearsOfGuthix
@@ -525,6 +532,7 @@ model Minigame {
   wintertodt              Int    @default(0)
   tempoross               Int    @default(0)
   sepulchre               Int    @default(0)
+  vale_totems             Int    @default(0)
   fishing_trawler         Int    @default(0)
   barb_assault            Int    @default(0)
   pyramid_plunder         Int    @default(0)
@@ -612,6 +620,15 @@ model EconomyItem {
 
   @@id([item_id, date])
   @@map("economy_item")
+}
+
+model EconomyItemBanks {
+  id   Int      @id @default(autoincrement())
+  date DateTime @default(now())
+
+  bank Json @db.JsonB
+
+  @@map("economy_item_banks")
 }
 
 model LastManStandingGame {
@@ -709,6 +726,7 @@ model UserStats {
   firecapes_sacrificed     Int @default(0)
   tithe_farms_completed    Int @default(0)
   tithe_farm_points        Int @default(0)
+  vale_research_points     Int @default(0)
   pest_control_points      Int @default(0)
   inferno_attempts         Int @default(0)
   infernal_cape_sacrifices Int @default(0)
@@ -784,6 +802,7 @@ model FarmedCrop {
   was_autofarmed      Boolean
   paid_for_protection Boolean
 
+  @@index([user_id, date_planted])
   @@map("farmed_crop")
 }
 
@@ -871,6 +890,7 @@ enum activity_type_enum {
   Butler
   Nightmare
   Sepulchre
+  ValeTotems
   Plunder
   FishingTrawler
   Zalcano
@@ -879,6 +899,7 @@ enum activity_type_enum {
   Enchanting
   Casting
   GloryCharging
+  GloryUncharging
   WealthCharging
   BarbarianAssault
   AgilityArena
@@ -923,6 +944,8 @@ enum activity_type_enum {
   HalloweenEvent
   NightmareZone
   ShadesOfMorton
+  ShadesOfMortonSacredOil
+  ShadesOfMortonPyreLogs
   TombsOfAmascut
   UnderwaterAgilityThieving
   StrongholdOfSecurity
@@ -1098,7 +1121,7 @@ model GiftBox {
   id         String        @id
   created_at DateTime      @default(now()) @db.Timestamp(6)
   status     GiftBoxStatus
-  name       String?
+  name       String?       @db.Text()
 
   creator_id String? @db.VarChar(19)
   creator    User?   @relation("gift_boxes_created", fields: [creator_id], references: [id])
@@ -1160,6 +1183,7 @@ model CLCategoryItem {
 }
 
 enum command_name_enum {
+  cache_refresh
   testpotato
   achievementdiary
   activities
@@ -1454,4 +1478,102 @@ model TableBankItem {
 
   @@id([bank_id, item_id])
   @@map("table_bank_item")
+}
+
+enum JsonBankType {
+  Bank
+  CollectionLog
+  HunterCreaturesCaught
+  MonsterKCs
+  AgilityLapsCounts
+  SacrificedItems
+  OpenedItems
+
+  ToBCost
+  ToBLoot
+  ToACost
+  ToALoot
+  ToARaidLevels
+  ColoCost
+  ColoLoot
+  ColoKC
+  BuyCommandCost
+  BuyCommandLoot
+  CreateCommandCost
+  CreateCommandLoot
+  ShadesOfMortonCost
+  GiantFoundryCost
+  GiantFoundryLoot
+
+  FarmingCost
+  FarmingLoot
+  HerbsCleanedWhileFarming
+
+  RandomEventCompletions
+  ForestryEventsCompletions
+  PuroPuroImplingsCaught
+  PassiveImplingsCaught
+  BirdEggsOffered
+  ScatteredAshes
+}
+
+model JsonBank {
+  id      Int          @id @default(autoincrement())
+  user_id String
+  type    JsonBankType
+
+  bank Json @db.JsonB
+
+  @@unique([user_id, type])
+  @@map("json_bank")
+}
+
+model ShootingStars {
+  id Int @id @default(autoincrement())
+
+  user_id        String
+  size           Int
+  expires_at     DateTime
+  has_been_mined Boolean  @default(false)
+
+  @@index([user_id, expires_at])
+  @@map("shooting_stars")
+}
+
+enum SystemLogsType {
+  ERROR
+}
+
+model SystemLogs {
+  id Int @id @default(autoincrement())
+
+  date DateTime @default(now())
+
+  type SystemLogsType
+  data Json           @db.JsonB
+
+  @@map("system_logs")
+}
+
+enum UserLogType {
+  CLICK_BUTTON
+  CANCEL_TRIP
+}
+
+model UserLog {
+  id Int @id @default(autoincrement())
+
+  user_id    BigInt
+  channel_id BigInt?
+  guild_id   BigInt?
+  message_id BigInt?
+
+  date DateTime @default(now())
+
+  type UserLogType
+
+  data Json @db.JsonB
+
+  @@index([user_id, date])
+  @@map("user_logs")
 }

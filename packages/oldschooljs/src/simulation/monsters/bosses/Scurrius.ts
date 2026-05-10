@@ -30,7 +30,7 @@ const ScurriusTable = new LootTable({ limit: 100 })
 	.tertiary(3000, 'Scurry')
 	.tertiary(5012, 'Curved bone');
 
-export default new SimpleMonster({
+export const Scurrius: SimpleMonster = new SimpleMonster({
 	id: 7222,
 	name: 'Scurrius',
 	table: ScurriusTable,

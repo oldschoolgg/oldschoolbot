@@ -1,7 +1,7 @@
 import LootTable, { itemTupleToTable } from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const NormalUniqueTable = new LootTable()
+const NormalUniqueTable: LootTable = new LootTable()
 	/* Unique */
 	.oneIn(250, 'Granite maul')
 	.oneIn(500, 'Granite gloves')
@@ -54,7 +54,7 @@ const NormalUniqueTable = new LootTable()
 	.add('Onyx bolt tips', [5, 10], 2)
 	.add('Dragon arrowtips', [50, 150], 1);
 
-const GrotesqueGuardiansTable = new LootTable()
+const GrotesqueGuardiansTable: LootTable = new LootTable()
 	.every('Granite dust', [50, 100])
 	.every(NormalUniqueTable, 2)
 
@@ -63,7 +63,7 @@ const GrotesqueGuardiansTable = new LootTable()
 	.tertiary(3000, 'Noon')
 	.tertiary(5000, 'Jar of stone');
 
-export default new SimpleMonster({
+export const GrotesqueGuardians: SimpleMonster = new SimpleMonster({
 	id: 7851,
 	name: 'Grotesque Guardians',
 	table: GrotesqueGuardiansTable,

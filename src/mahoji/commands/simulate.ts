@@ -1,5 +1,5 @@
-import { randInt, roll } from '@oldschoolgg/rng';
 import { formatDuration, PerkTier } from '@oldschoolgg/toolkit';
+import { MathRNG, randInt, roll } from 'node-rng';
 import { averageBank, Bank, ChambersOfXeric, toKMB } from 'oldschooljs';
 
 import { ColosseumWaveBank, startColosseumRun } from '@/lib/colosseum.js';
@@ -7,8 +7,8 @@ import pets from '@/lib/data/pets.js';
 import { assert } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
-function determineCoxLimit(user: MUser) {
-	const perkTier = user.perkTier();
+async function determineCoxLimit(user: MUser) {
+	const perkTier = await user.fetchPerkTier();
 
 	if (perkTier >= PerkTier.Three) {
 		return 2000;
@@ -53,7 +53,8 @@ function simulateColosseumRuns(samples = 100) {
 				hasTorture: true,
 				scytheCharges: 300,
 				venatorBowCharges: 50,
-				bloodFuryCharges: 0
+				bloodFuryCharges: 0,
+				rng: MathRNG
 			});
 			totalDuration += result.realDuration;
 			kcBank.add(result.addedWaveKCBank);
@@ -88,7 +89,7 @@ function simulateColosseumRuns(samples = 100) {
 }
 
 async function coxCommand(user: MUser, quantity: number, cm = false, points = 25_000, teamSize = 4): CommandResponse {
-	const limit = determineCoxLimit(user);
+	const limit = await determineCoxLimit(user);
 	if (quantity > limit) {
 		return `The quantity provided is over your limit of ${limit}. You can increase your limit up to 2000 by becoming a patron: <https://patreon.com/oldschoolbot>`;
 	}
@@ -124,7 +125,7 @@ async function coxCommand(user: MUser, quantity: number, cm = false, points = 25
 		content: `Personal Loot from ${quantity}x raids, with ${team.length} people, each with ${toKMB(
 			points
 		)} points.`,
-		files: [image.file]
+		files: [image]
 	};
 }
 

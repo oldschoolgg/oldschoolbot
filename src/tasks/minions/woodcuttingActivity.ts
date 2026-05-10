@@ -178,7 +178,7 @@ async function handleForestry({
 export const woodcuttingTask: MinionTask = {
 	type: 'Woodcutting',
 	async run(data: WoodcuttingActivityTaskOptions, { user, handleTripFinish, rng }) {
-		const { logID, quantity, channelID, duration, powerchopping, forestry, twitchers } = data;
+		const { logID, quantity, channelId, duration, powerchopping, forestry, twitchers } = data;
 
 		const userWcLevel = user.skillsAsLevels.woodcutting;
 		const log = Woodcutting.Logs.find(i => i.id === logID)!;
@@ -280,6 +280,7 @@ export const woodcuttingTask: MinionTask = {
 		// Add clue scrolls & nests
 		if (log.clueScrollChance) {
 			addSkillingClueToLoot(
+				rng,
 				user,
 				'woodcutting',
 				quantity,
@@ -322,7 +323,7 @@ export const woodcuttingTask: MinionTask = {
 		// Roll for pet
 		if (log.petChance) {
 			const { petDropRate } = skillingPetDropRate(user, 'woodcutting', log.petChance);
-			if (rng.roll(Math.floor(petDropRate / quantity))) {
+			if (rng.roll(Math.ceil(petDropRate / quantity))) {
 				loot.add('Beaver');
 				globalClient.emit(
 					Events.ServerNotification,
@@ -357,6 +358,6 @@ export const woodcuttingTask: MinionTask = {
 			itemsToRemove
 		});
 
-		return handleTripFinish(user, channelID, str, undefined, data, loot);
+		return handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

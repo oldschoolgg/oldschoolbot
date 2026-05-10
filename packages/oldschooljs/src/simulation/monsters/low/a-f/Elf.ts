@@ -11,7 +11,7 @@ const ElfTable = new LootTable({ limit: 128 })
 	.add('Gold ore', 1, 1)
 	.tertiary(99_175, 'Rocky');
 
-export default new SimpleMonster({
+export const Elf: SimpleMonster = new SimpleMonster({
 	id: 5299,
 	name: 'Elf',
 	pickpocketTable: ElfTable,

@@ -1,25 +1,14 @@
-import { chunk, toTitleCase } from '@oldschoolgg/toolkit';
-import { EmbedBuilder } from 'discord.js';
+import { EmbedBuilder, type PaginatedMessagePage } from '@oldschoolgg/discord';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { type BossRecords, bossNameMap, Hiscores } from 'oldschooljs/hiscores';
+import { chunk } from 'remeda';
 
+import { miscEmojis } from '@/lib/data/emojis.js';
 import pets from '@/lib/data/pets.js';
 
-// Emojis for bosses with no pets
-const miscEmojis = {
-	barrowsChests: '<:Dharoks_helm:403038864199122947>',
-	hespori: '<:Bottomless_compost_bucket:545978484078411777>',
-	bryophyta: '<:Bryophytas_essence:455835859799769108>',
-	crazyArchaeologist: '<:Fedora:456179157303427092>',
-	derangedArchaeologist: '<:Fedora:456179157303427092>',
-	mimic: '<:Casket:365003978678730772>',
-	obor: '<:Hill_giant_club:421045456194240523>'
-};
-
-type MiscEmojisKeys = keyof typeof miscEmojis;
-
-function getEmojiForBoss(key: MiscEmojisKeys | string) {
+function getEmojiForBoss(key: keyof typeof miscEmojis | string) {
 	if (key in miscEmojis) {
-		return miscEmojis[key as MiscEmojisKeys];
+		return miscEmojis[key as keyof typeof miscEmojis];
 	}
 
 	const pet = pets.find(_pet => _pet.bossKeys?.includes(key));
@@ -39,11 +28,12 @@ export const bossrecordCommand = defineCommand({
 	],
 	run: async ({ options, interaction }) => {
 		await interaction.defer();
-		const { bossRecords } = await Hiscores.fetch(options.rsn).catch(err => {
-			throw err.message;
-		});
+		const { player, error } = await Hiscores.fetch(options.rsn);
+		if (error !== null) {
+			return error;
+		}
 
-		const sortedEntries = Object.entries(bossRecords)
+		const sortedEntries = Object.entries(player.bossRecords)
 			.filter(([, { rank, score }]) => rank !== -1 && score !== -1)
 			.sort(([, a], [, b]) => a.rank - b.rank);
 
@@ -51,7 +41,7 @@ export const bossrecordCommand = defineCommand({
 			return 'You have no boss records!. Try logging into the game, and logging out.';
 		}
 
-		const pages: CompatibleResponse[] = [];
+		const pages: PaginatedMessagePage[] = [];
 		for (const page of chunk(sortedEntries, 12)) {
 			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${toTitleCase(options.rsn)} - Boss Records` })

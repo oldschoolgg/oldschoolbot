@@ -2,7 +2,7 @@ import { UncommonSeedDropTable } from '@/simulation/subtables/index.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-export const TorturedSoulTable = new LootTable({ limit: 128 })
+export const TorturedSoulTable: LootTable = new LootTable({ limit: 128 })
 
 	/* Runes */
 	.add('Body rune', 7, 7)
@@ -31,7 +31,7 @@ export const TorturedSoulTable = new LootTable({ limit: 128 })
 	/* Subtable */
 	.add(UncommonSeedDropTable, 1, 20);
 
-export default new SimpleMonster({
+export const TorturedSoul: SimpleMonster = new SimpleMonster({
 	id: 2999,
 	name: 'Tortured soul',
 	table: TorturedSoulTable,

@@ -309,19 +309,6 @@
 		"pet_chance": 127056
 	},
 	{
-		"name": "Pollnivnian Bandit",
-		"type": "pickpockable",
-		"level": 55,
-		"xp": 84.3,
-		"id": 736,
-		"stun_time": 5,
-		"stun_damage": 5,
-		"slope": 0.77209,
-		"intercept": 17.70309,
-		"custom_tick_rate": 2.5,
-		"pet_chance": 257211
-	},
-	{
 		"name": "Rogue",
 		"type": "pickpockable",
 		"level": 32,

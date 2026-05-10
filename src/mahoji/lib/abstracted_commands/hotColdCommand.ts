@@ -1,4 +1,4 @@
-import { EmbedBuilder } from 'discord.js';
+import { EmbedBuilder } from '@oldschoolgg/discord';
 import { LootTable, resolveItems, toKMB } from 'oldschooljs';
 
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';

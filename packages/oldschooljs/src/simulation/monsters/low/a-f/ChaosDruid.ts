@@ -3,7 +3,7 @@ import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-export const ChaosDruidTable = new LootTable({ limit: 128 })
+export const ChaosDruidTable: LootTable = new LootTable({ limit: 128 })
 	.every('Bones')
 
 	/* Runes and ammunition */
@@ -37,7 +37,7 @@ export const ChaosDruidTable = new LootTable({ limit: 128 })
 	/* Tertiary */
 	.tertiary(35, 'Ensouled chaos druid head');
 
-export default new SimpleMonster({
+export const ChaosDruid: SimpleMonster = new SimpleMonster({
 	id: 520,
 	name: 'Chaos druid',
 	table: ChaosDruidTable,

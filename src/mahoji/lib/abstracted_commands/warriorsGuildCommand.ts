@@ -1,37 +1,38 @@
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
-import { Bank, resolveItems } from 'oldschooljs';
+import { Bank, EGear } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithQuantity, AnimatedArmourActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export const Armours = [
 	{
 		name: 'Rune',
 		timeToFinish: Time.Minute * 1.2,
 		tokens: 40,
-		items: resolveItems(['Rune full helm', 'Rune platebody', 'Rune platelegs'])
+		items: [EGear.RUNE_FULL_HELM, EGear.RUNE_PLATEBODY, EGear.RUNE_PLATELEGS]
 	},
 	{
 		name: 'Adamant',
 		timeToFinish: Time.Minute * 1.15,
 		tokens: 30,
-		items: resolveItems(['Adamant full helm', 'Adamant platebody', 'Adamant platelegs'])
+		items: [EGear.ADAMANT_FULL_HELM, EGear.ADAMANT_PLATEBODY, EGear.ADAMANT_PLATELEGS]
 	},
 	{
 		name: 'Mithril',
 		timeToFinish: Time.Minute * 0.95,
 		tokens: 25,
-		items: resolveItems(['Mithril full helm', 'Mithril platebody', 'Mithril platelegs'])
+		items: [EGear.MITHRIL_FULL_HELM, EGear.MITHRIL_PLATEBODY, EGear.MITHRIL_PLATELEGS]
 	},
 	{
 		name: 'Black',
 		timeToFinish: Time.Minute * 0.65,
 		tokens: 20,
-		items: resolveItems(['Black full helm', 'Black platebody', 'Black platelegs'])
+		items: [EGear.BLACK_FULL_HELM, EGear.BLACK_PLATEBODY, EGear.BLACK_PLATELEGS]
 	}
 ];
 
-async function tokensCommand(user: MUser, channelID: string, quantity: number | undefined) {
-	const maxTripLength = user.calcMaxTripLength('AnimatedArmour');
+async function tokensCommand(user: MUser, channelId: string, quantity: number | undefined) {
+	const maxTripLength = await user.calcMaxTripLength('AnimatedArmour');
 	const userBank = user.bank;
 
 	const armorSet = Armours.find(set => userBank.has(set.items));
@@ -58,7 +59,7 @@ async function tokensCommand(user: MUser, channelID: string, quantity: number | 
 	await ActivityManager.startTrip<AnimatedArmourActivityTaskOptions>({
 		armourID: armorSet.name,
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		type: 'AnimatedArmour'
@@ -66,15 +67,15 @@ async function tokensCommand(user: MUser, channelID: string, quantity: number | 
 
 	const response = `${user.minionName} is now killing ${quantity}x animated ${
 		armorSet.name
-	} armour, it'll take around ${formatDuration(duration)} to finish.`;
+	} armour, it'll take around ${formatTripDuration(user, duration)} to finish.`;
 
 	return response;
 }
 
-async function cyclopsCommand(user: MUser, channelID: string, quantity: number | undefined) {
+async function cyclopsCommand(user: MUser, channelId: string, quantity: number | undefined) {
 	const userBank = user.bank;
 	const hasAttackCape = user.gear.melee.hasEquipped('Attack cape');
-	const maxTripLength = user.calcMaxTripLength('Cyclops');
+	const maxTripLength = await user.calcMaxTripLength('Cyclops');
 	// Check if either 100 warrior guild tokens or attack cape (similar items in future)
 	const amountTokens = userBank.amount('Warrior guild token');
 	if (!hasAttackCape && amountTokens < 100) {
@@ -108,15 +109,22 @@ async function cyclopsCommand(user: MUser, channelID: string, quantity: number |
 		)}x Warrior guild tokens to kill ${quantity}x cyclopes.`;
 	}
 
+	if (!hasAttackCape) {
+		await user.transactItems({
+			itemsToRemove: new Bank().add('Warrior guild token', tokensToSpend)
+		});
+	}
+
 	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		type: 'Cyclops'
 	});
 
-	const response = `${user.minionName} is now off to kill ${quantity}x Cyclops, it'll take around ${formatDuration(
+	const response = `${user.minionName} is now off to kill ${quantity}x Cyclops, it'll take around ${formatTripDuration(
+		user,
 		duration
 	)} to finish. ${
 		hasAttackCape
@@ -124,16 +132,12 @@ async function cyclopsCommand(user: MUser, channelID: string, quantity: number |
 			: `Removed ${tokensToSpend} Warrior guild tokens from your bank.`
 	}`;
 
-	if (!hasAttackCape) {
-		await user.removeItemsFromBank(new Bank().add('Warrior guild token', tokensToSpend));
-	}
-
 	return response;
 }
 
 export async function warriorsGuildCommand(
 	user: MUser,
-	channelID: string,
+	channelId: string,
 	choice: string,
 	quantity: number | undefined
 ) {
@@ -144,7 +148,7 @@ export async function warriorsGuildCommand(
 	}
 
 	if (choice === 'cyclops') {
-		return cyclopsCommand(user, channelID, quantity);
+		return cyclopsCommand(user, channelId, quantity);
 	}
-	return tokensCommand(user, channelID, quantity);
+	return tokensCommand(user, channelId, quantity);
 }

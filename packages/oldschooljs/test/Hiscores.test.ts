@@ -3,7 +3,12 @@ import { expect, test } from 'vitest';
 import { Hiscores } from '../src/index.js';
 
 test.skip('Hiscores', async () => {
-	const koru = await Hiscores.fetch('Koru');
+	async function hiScoresFetch(...params: Parameters<typeof Hiscores.fetch>) {
+		const res = await Hiscores.fetch(...params);
+		if (res.player === null) throw new Error(`User not found`);
+		return res.player;
+	}
+	const koru = await hiScoresFetch('Koru');
 
 	expect(koru.minigames.pvpArena.rank).toBeGreaterThanOrEqual(1);
 	expect(koru.minigames.pvpArena.score).toBeGreaterThanOrEqual(1);
@@ -12,12 +17,12 @@ test.skip('Hiscores', async () => {
 	expect(koru.bossRecords.dagannothRex.score).toBeGreaterThanOrEqual(1);
 
 	const [lynxTitan, zulu, b0aty, magnaboy, virtualMagnaboy, dmmTournyFaux] = await Promise.all([
-		Hiscores.fetch('Lynx Titan'),
-		Hiscores.fetch('Zulu'),
-		Hiscores.fetch('B0aty'),
-		Hiscores.fetch('Magnaboy'),
-		Hiscores.fetch('Magnaboy', { virtualLevels: true }),
-		Hiscores.fetch('Faux', { virtualLevels: true })
+		hiScoresFetch('Lynx Titan'),
+		hiScoresFetch('Zulu'),
+		hiScoresFetch('B0aty'),
+		hiScoresFetch('Magnaboy'),
+		hiScoresFetch('Magnaboy', { virtualLevels: true }),
+		hiScoresFetch('Faux', { virtualLevels: true })
 	]);
 
 	expect(lynxTitan.username).toBe('Lynx Titan');
@@ -75,20 +80,20 @@ test.skip('Hiscores', async () => {
 	expect(dmmTournyFaux.combatLevel).toBeGreaterThan(30);
 	expect(dmmTournyFaux.skills.agility.level).toBeGreaterThan(49);
 
-	// const leagues = await Hiscores.fetch('Magnaboy', { type: 'seasonal' });
+	// const leagues = await hiScoresFetch('Magnaboy', { type: 'seasonal' });
 	// expect(leagues.leaguePoints?.points).toBeGreaterThan(1);
 
-	// const leagues2 = await Hiscores.fetch('fk ezscape', { type: 'seasonal' });
+	// const leagues2 = await hiScoresFetch('fk ezscape', { type: 'seasonal' });
 	// expect(leagues2.leaguePoints?.points).toBeGreaterThan(1);
 
 	// Skillers
-	const skiller = await Hiscores.fetch('Jcw', { type: 'skiller' });
+	const skiller = await hiScoresFetch('Jcw', { type: 'skiller' });
 	expect(skiller.skills.overall.rank).toBeLessThan(10);
 	expect(skiller.skills.overall.level).toBeGreaterThan(1500);
 	expect(skiller.skills.overall.level).toBeLessThan(1601);
 
 	// Pures
-	const pure = await Hiscores.fetch('Headline', { type: 'skiller_defence' });
+	const pure = await hiScoresFetch('Headline', { type: 'skiller_defence' });
 	expect(pure.skills.overall.rank).toBe(1);
 	expect(pure.skills.overall.level).toBe(2179);
 }, 30_000);

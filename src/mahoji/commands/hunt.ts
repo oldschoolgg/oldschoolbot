@@ -7,6 +7,7 @@ import { soteSkillRequirements } from '@/lib/skilling/functions/questRequirement
 import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
 import { HunterTechniqueEnum } from '@/lib/skilling/types.js';
 import type { HunterActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { generateDailyPeakIntervals, type Peak } from '@/lib/util/peaks.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 
@@ -24,7 +25,7 @@ export const huntCommand = defineCommand({
 			name: 'name',
 			description: 'The creature you want to hunt.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return Hunter.Creatures.filter(i =>
 					!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 				).map(i => ({
@@ -53,7 +54,7 @@ export const huntCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId }) => {
 		const userBank = user.bank;
 		const userQP = user.QP;
 		const boosts = [];
@@ -140,7 +141,7 @@ export const huntCommand = defineCommand({
 		}
 
 		if (creature.wildy) {
-			const [bol, reason, score] = hasWildyHuntGearEquipped(user.gear.wildy);
+			const [bol, reason, score] = hasWildyHuntGearEquipped(user.gear.wildy.raw());
 			wildyScore = score;
 			if (!bol) {
 				return `To hunt ${creature.name} in the wilderness you need to meet the following requirement: ${reason}, check your wildy gear.`;
@@ -154,7 +155,7 @@ export const huntCommand = defineCommand({
 			if (usingStaminaPotion) catchTime *= 0.8;
 		}
 
-		const maxTripLength = user.calcMaxTripLength('Hunter');
+		const maxTripLength = await user.calcMaxTripLength('Hunter');
 
 		let { quantity } = options;
 		if (!quantity) {
@@ -260,7 +261,7 @@ export const huntCommand = defineCommand({
 		await ActivityManager.startTrip<HunterActivityTaskOptions>({
 			creatureID: creature.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			duration,
 			usingHuntPotion: usingHuntPotion ? true : undefined,
@@ -271,7 +272,7 @@ export const huntCommand = defineCommand({
 
 		let response = `${user.minionName} is now ${crystalImpling ? 'hunting' : `${creature.huntTechnique}`}${
 			crystalImpling ? ' ' : ` ${quantity}x `
-		}${creature.name}, it'll take around ${formatDuration(duration)} to finish.`;
+		}${creature.name}, it'll take around ${formatTripDuration(user, duration)} to finish.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
