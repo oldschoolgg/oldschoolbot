@@ -1,4 +1,3 @@
-import type { MInteraction } from '@oldschoolgg/discord';
 import { defaultGearSetup, type EquipmentSlot, type GearSetup } from '@oldschoolgg/gear';
 import {
 	type IBirdhouseData,
@@ -170,16 +169,8 @@ export class MUserClass extends BaseUser {
 		return getPerkTierCached(this.id) !== null;
 	}
 
-	async fetchPerkTier({
-		guildId,
-		interaction,
-		forceNoCache
-	}: {
-		guildId?: string | null;
-		interaction?: MInteraction;
-		forceNoCache?: boolean;
-	} = {}): Promise<0 | PerkTier> {
-		return await getUsersPerkTier({ user: this, interaction, forceNoCache, guildId });
+	async fetchPerkTier({ forceNoCache }: { forceNoCache?: boolean } = {}): Promise<0 | PerkTier> {
+		return await getUsersPerkTier({ user: this, forceNoCache });
 	}
 
 	hasMonsterRequirements(monster: KillableMonster) {
