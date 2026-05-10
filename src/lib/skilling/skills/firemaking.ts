@@ -1,5 +1,5 @@
 import { Emoji } from '@oldschoolgg/toolkit';
-import { EItem } from 'oldschooljs/EItem';
+import { EItem, type ItemBank } from 'oldschooljs/EItem';
 
 import { type Burnable, defineSkill } from '@/lib/skilling/types.js';
 
@@ -66,7 +66,7 @@ const burnables: Burnable[] = [
 	}
 ];
 
-const pyromancerItems: { [key: number]: number } = {
+const pyromancerItems: ItemBank = {
 	[EItem.PYROMANCER_HOOD]: 0.4,
 	[EItem.PYROMANCER_GARB]: 0.8,
 	[EItem.PYROMANCER_ROBE]: 0.6,

@@ -1,7 +1,7 @@
 import LootTable from '@/structures/LootTable.js';
 import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
 
-const CasketTable = new LootTable()
+const CasketTable: LootTable = new LootTable()
 	.add('Coins', 160, 24)
 	.add('Coins', 20, 22)
 	.add('Coins', 40, 20)
@@ -16,7 +16,7 @@ const CasketTable = new LootTable()
 	.add('Loop half of key', 1, 2)
 	.add('Tooth half of key', 1, 2);
 
-export default new SimpleOpenable({
+export const Casket: SimpleOpenable = new SimpleOpenable({
 	id: 405,
 	name: 'Casket',
 	aliases: ['casket'],

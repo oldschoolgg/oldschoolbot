@@ -34,7 +34,7 @@ const GoblinTable = new LootTable({ limit: 128 })
 	.add('Brass necklace', 1, 1)
 	.add('Air talisman', 1, 1);
 
-export default new SimpleMonster({
+export const Goblin: SimpleMonster = new SimpleMonster({
 	id: 655,
 	name: 'Goblin',
 	table: GoblinTable,

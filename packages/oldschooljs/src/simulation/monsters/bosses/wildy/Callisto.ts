@@ -1,7 +1,7 @@
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const CallistoUniqueTable = new LootTable()
+const CallistoUniqueTable: LootTable = new LootTable()
 	.oneIn(196, 'Claws of callisto')
 	.oneIn(256, 'Dragon 2h sword')
 	.oneIn(256, 'Dragon pickaxe')
@@ -16,7 +16,7 @@ const CallistoSecondarySupplyTable = new LootTable({ limit: 18 })
 	.add('Ranging potion(2)', [2, 3], 1)
 	.add('Super combat potion(2)', [2, 3], 1);
 
-const CallistoTable = new LootTable()
+const CallistoTable: LootTable = new LootTable()
 	.every('Big bones')
 
 	/* Unique table */
@@ -71,9 +71,9 @@ const CallistoTable = new LootTable()
 	.tertiary(1500, 'Callisto cub')
 	.tertiary(5013, 'Curved bone');
 
-const CallistoTotalTable = new LootTable().every(CallistoSecondarySupplyTable).every(CallistoTable);
+const CallistoTotalTable: LootTable = new LootTable().every(CallistoSecondarySupplyTable).every(CallistoTable);
 
-export default new SimpleMonster({
+export const Callisto: SimpleMonster = new SimpleMonster({
 	id: 6503,
 	name: 'Callisto',
 	table: CallistoTotalTable,

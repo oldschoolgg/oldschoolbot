@@ -1,9 +1,9 @@
-import { randArrItem, randInt } from '@oldschoolgg/rng';
 import { objectEntries, Time } from '@oldschoolgg/toolkit';
-import { activity_type_enum } from '@prisma/client';
+import { randArrItem, randInt } from 'node-rng';
 import { Bank, convertLVLtoXP } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
+import { activity_type_enum } from '@/prisma/main.js';
 import { ClueTiers } from '../../src/lib/clues/clueTiers.js';
 import { assert } from '../../src/lib/util/logError.js';
 import { createTestUser } from './util.js';
@@ -123,17 +123,19 @@ describe('MUser', () => {
 		const user = await createTestUser();
 		const loot = new Bank().add('Coal', 73);
 		{
-			const { newCL, itemsAdded, previousCL } = await user.addItemsToCollectionLog(loot);
+			const previousCL = await user.fetchCL();
+			await user.addItemsToCollectionLog({ itemsToAdd: loot });
+			const newCL = await user.fetchCL();
 			expect(newCL.equals(loot)).toEqual(true);
 			expect(previousCL.equals(new Bank())).toEqual(true);
-			expect(itemsAdded).toEqual(loot);
 		}
 
 		{
-			const { newCL, itemsAdded, previousCL } = await user.addItemsToCollectionLog(loot);
+			const previousCL = await user.fetchCL();
+			await user.addItemsToCollectionLog({ itemsToAdd: loot });
+			const newCL = await user.fetchCL();
 			expect(newCL.equals(loot.clone().multiply(2))).toEqual(true);
 			expect(previousCL.equals(loot)).toEqual(true);
-			expect(itemsAdded).toEqual(loot);
 		}
 	});
 
@@ -141,7 +143,7 @@ describe('MUser', () => {
 		const user = await createTestUser();
 		const clues = [];
 		for (let i = 0; i < 100; i++) {
-			const tier = randArrItem(ClueTiers);
+			const tier = randArrItem(ClueTiers)!;
 			clues.push({
 				id: randInt(1, 100_000_000),
 				user_id: BigInt(user.id),

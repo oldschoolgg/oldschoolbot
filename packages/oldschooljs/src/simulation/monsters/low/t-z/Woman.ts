@@ -1,8 +1,8 @@
-import ManWomanTable from '@/simulation/subtables/ManWomanTable.js';
+import { ManWomanTable } from '@/simulation/subtables/ManWomanTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-export default new SimpleMonster({
+export const Woman: SimpleMonster = new SimpleMonster({
 	id: 1119,
 	name: 'Woman',
 	table: ManWomanTable,

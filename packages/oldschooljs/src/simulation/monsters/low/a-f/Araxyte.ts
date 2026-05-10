@@ -2,7 +2,7 @@ import { HerbDropTable, UncommonSeedDropTable } from '@/simulation/subtables/ind
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-export const AraxyteTable = new LootTable()
+export const AraxyteTable: LootTable = new LootTable()
 	.every('Araxyte venom sack')
 	.tertiary(4000, 'Aranea boots')
 	.tertiary(128, 'Clue scroll (hard)')
@@ -30,7 +30,7 @@ export const AraxyteTable = new LootTable()
 	.add(HerbDropTable, 1, 10)
 	.add(UncommonSeedDropTable, 1, 10);
 
-export const Araxyte = new SimpleMonster({
+export const Araxyte: SimpleMonster = new SimpleMonster({
 	id: 11175,
 	name: 'Araxyte',
 	table: AraxyteTable,

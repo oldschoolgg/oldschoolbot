@@ -2,7 +2,7 @@ import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const FrostNaguaTable = new LootTable()
+const FrostNaguaTable: LootTable = new LootTable()
 	.tertiary(7000, 'Tooth half of key (moon key)')
 	.tertiary(500, 'Glacial temotli')
 	.tertiary(100, 'Pendant of ates (inert)')
@@ -28,7 +28,7 @@ const FrostNaguaTable = new LootTable()
 	.add('Jug of water', [10, 30], 1)
 	.add(GemTable);
 
-export const FrostNagua = new SimpleMonster({
+export const FrostNagua: SimpleMonster = new SimpleMonster({
 	id: 13_728,
 	name: 'Frost Nagua',
 	table: FrostNaguaTable,

@@ -3,7 +3,7 @@ import UsefulHerbTable from '@/simulation/subtables/UsefulHerbTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-export const BasiliskKnightPreTable = new LootTable({ limit: 52 })
+export const BasiliskKnightPreTable: LootTable = new LootTable({ limit: 52 })
 	/* Weapons and armour */
 	.add('Rune axe', 1, 2)
 	.add('Adamant platelegs', 1, 1)
@@ -31,7 +31,7 @@ export const BasiliskKnightPreTable = new LootTable({ limit: 52 })
 	/* RDT */
 	.add(GemTable, 1, 8);
 
-const BasiliskKnightTable = new LootTable()
+const BasiliskKnightTable: LootTable = new LootTable()
 	.every('Big bones')
 	.every(BasiliskKnightPreTable)
 
@@ -43,7 +43,7 @@ const BasiliskKnightTable = new LootTable()
 	.tertiary(5000, 'Basilisk jaw')
 	.tertiary(5013, 'Curved bone');
 
-const BasiliskKnightOnTaskTable = new LootTable()
+const BasiliskKnightOnTaskTable: LootTable = new LootTable()
 	.every('Big bones')
 	.every(BasiliskKnightPreTable)
 
@@ -55,7 +55,7 @@ const BasiliskKnightOnTaskTable = new LootTable()
 	.tertiary(1000, 'Basilisk jaw')
 	.tertiary(5013, 'Curved bone');
 
-export default new SimpleMonster({
+export const BasiliskKnight: SimpleMonster = new SimpleMonster({
 	id: 9293,
 	name: 'Basilisk Knight',
 	table: BasiliskKnightTable,

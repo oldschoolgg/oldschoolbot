@@ -55,7 +55,7 @@ const JungleHorrorTable = new LootTable({ limit: 129 })
 	.tertiary(40, 'Ensouled horror head')
 	.tertiary(128, 'Clue scroll (medium)');
 
-export default new SimpleMonster({
+export const JungleHorror: SimpleMonster = new SimpleMonster({
 	id: 1042,
 	name: 'Jungle horror',
 	table: JungleHorrorTable,

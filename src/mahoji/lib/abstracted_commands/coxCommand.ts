@@ -1,5 +1,4 @@
-import { randomVariation } from '@oldschoolgg/rng';
-import { calcWhatPercent, Emoji, formatDuration, sumArr } from '@oldschoolgg/toolkit';
+import { calcWhatPercent, Emoji, sumArr } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import {
@@ -19,6 +18,7 @@ import { degradeItem } from '@/lib/degradeableItems.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import type { RaidsOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 export async function coxBoostsCommand(user: MUser) {
@@ -122,8 +122,9 @@ Check \`/raid cox itemboosts\` for more information on Item boosts.`;
 }
 
 export async function coxCommand(
+	rng: RNGProvider,
 	interaction: MInteraction,
-	channelID: string,
+	channelId: string,
 	user: MUser,
 	type: 'solo' | 'mass' | 'fakemass',
 	maxSizeInput: number | undefined,
@@ -142,13 +143,14 @@ export async function coxCommand(
 			return 'You need at least 200 completions of the Chambers of Xeric before you can attempt Challenge Mode.';
 		}
 	}
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return "Your minion is busy, so you can't start a raid.";
 	}
 
 	const maxSize = mahojiParseNumber({ input: maxSizeInput, min: 2, max: 15 }) ?? 15;
 
 	const partyOptions: MakePartyOptions = {
+		interaction,
 		leader: user,
 		minSize: 2,
 		maxSize,
@@ -160,7 +162,7 @@ export async function coxCommand(
 			if (!user.hasMinion) {
 				return [true, "you don't have a minion."];
 			}
-			if (user.minionIsBusy) {
+			if (await user.minionIsBusy()) {
 				return [true, 'your minion is busy.'];
 			}
 			if (!hasMinRaidsRequirements(user)) {
@@ -203,7 +205,10 @@ export async function coxCommand(
 		users = new Array(fakeUsers).fill(user);
 		isFakeMass = true;
 	} else if (type === 'mass') {
-		users = (await interaction.makeParty(partyOptions)).filter(u => !u.minionIsBusy);
+		users = await globalClient.makeParty(partyOptions);
+		if (await ActivityManager.anyMinionIsBusy(users)) {
+			return `All team members must have their minions free.`;
+		}
 	} else {
 		users = [user];
 	}
@@ -214,7 +219,7 @@ export async function coxCommand(
 		reductions,
 		degradeables
 	} = await calcCoxDuration(users, isChallengeMode);
-	const maxTripLength = user.calcMaxTripLength('Raids');
+	const maxTripLength = await user.calcMaxTripLength('Raids');
 	const maxCanDo = Math.max(Math.floor(maxTripLength / raidDuration), 1);
 	const quantity = _quantity && _quantity * raidDuration <= maxTripLength ? _quantity : maxCanDo;
 
@@ -227,7 +232,7 @@ export async function coxCommand(
 	const duration = sumArr(
 		Array(quantity)
 			.fill(raidDuration)
-			.map(d => randomVariation(d, 5))
+			.map(d => rng.randomVariation(d, 5))
 	);
 
 	let debugStr = '';
@@ -280,7 +285,7 @@ export async function coxCommand(
 
 	await ActivityManager.startTrip<RaidsOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		duration,
 		type: 'Raids',
 		leader: user.id,
@@ -294,16 +299,16 @@ export async function coxCommand(
 	let str = isSolo
 		? `${user.minionName} is now doing ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
 				quantity > 1 ? 's' : ''
-			}. The total trip will take ${formatDuration(duration)}.`
+			}. The total trip will return in about ${formatTripDuration(user, duration)}.`
 		: isFakeMass
 			? `${partyOptions.leader.usernameOrMention} your party of (${user.minionName} & ${users.length - 1} simulated users) is now off to do ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
 					quantity > 1 ? 's' : ''
-				} - the total trip will take ${formatDuration(duration)}.`
+				} - the total trip will return in about ${formatTripDuration(user, duration)}.`
 			: `${partyOptions.leader.usernameOrMention}'s party (${users
 					.map(u => u.usernameOrMention)
 					.join(', ')}) is now off to do ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
 					quantity > 1 ? 's' : ''
-				} - the total trip will take ${formatDuration(duration)}.`;
+				} - the total trip will return in about ${formatTripDuration(user, duration)}.`;
 
 	str += ` \n\n${debugStr}`;
 

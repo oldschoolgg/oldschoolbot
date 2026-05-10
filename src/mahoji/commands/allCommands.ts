@@ -83,7 +83,7 @@ import { mahojiUseCommand } from '@/mahoji/commands/use.js';
 import { wikiCommand } from '@/mahoji/commands/wiki.js';
 import { xpCommand } from '@/mahoji/commands/xp.js';
 
-export const allCommandsDONTIMPORT: OSBMahojiCommand[] = [
+export const allCommandsDONTIMPORT: AnyCommand[] = [
 	adminCommand,
 	askCommand,
 	botLeaguesCommand,

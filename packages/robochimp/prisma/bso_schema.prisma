@@ -21,6 +21,7 @@ model Activity {
   type           activity_type_enum
   channel_id     BigInt?
   data           Json?              @db.JsonB
+  all_user_ids   BigInt[]           @default([])
   pinnedTrip     PinnedTrip[]
 
   @@index([user_id, finish_date])
@@ -508,8 +509,6 @@ model User {
   farmingPatches_flower     Json? @map("farmingPatches.flower") @db.Json
   farmingPatches_mushroom   Json? @map("farmingPatches.mushroom") @db.Json
   farmingPatches_belladonna Json? @map("farmingPatches.belladonna") @db.Json
-
-  cached_networth_value BigInt?
 
   username             String? @db.VarChar(32)
   username_with_badges String? @db.VarChar()
@@ -1231,6 +1230,8 @@ enum activity_type_enum {
   HalloweenEvent
   NightmareZone
   ShadesOfMorton
+  ShadesOfMortonSacredOil
+  ShadesOfMortonPyreLogs
   TombsOfAmascut
   BalthazarsBigBonanza
   UnderwaterAgilityThieving
@@ -1449,14 +1450,6 @@ model Portent {
   @@unique([item_id, user_id])
   @@index([user_id])
   @@map("portent")
-}
-
-model ItemMetadata {
-  id Int @id
-
-  name String?
-
-  @@map("item_metadata")
 }
 
 enum UserEventType {

@@ -27,7 +27,7 @@ async function triviaSearch(query: string) {
 	return questions;
 }
 
-export const triviaCommand: RoboChimpCommand = {
+export const triviaCommand = defineCommand({
 	name: 'trivia',
 	description: 'Manage trivia commands.',
 	options: [
@@ -73,7 +73,7 @@ export const triviaCommand: RoboChimpCommand = {
 					name: 'query',
 					description: 'Your search query.',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						const results = await triviaSearch(value);
 						return results.map(i => ({ name: i.question.slice(0, 32), value: i.id.toString() }));
 					}
@@ -81,14 +81,7 @@ export const triviaCommand: RoboChimpCommand = {
 			]
 		}
 	],
-	run: async ({
-		options,
-		user
-	}: CommandRunOptions<{
-		add?: { question: string; answers: string };
-		remove?: { id: number };
-		search?: { query: string };
-	}>) => {
+	run: async ({ options, user }) => {
 		if (!user.isTrusted()) return 'Ook.';
 		if (options.add) {
 			const { question, answers } = options.add;
@@ -133,4 +126,4 @@ ${(await triviaSearch(options.search.query)).map(q => `${q.id}. ${q.question}`).
 		}
 		return 'HUH?';
 	}
-};
+});

@@ -5,15 +5,15 @@ import { getSimilarItems } from '../../src/lib/data/similarItems.js';
 import { Gear } from '../../src/lib/structures/Gear.js';
 
 describe('Gear', () => {
-	const testGear = new Gear({
-		weapon: 'Dragon pickaxe(or)',
-		shield: 'Dragon defender (t)',
-		neck: 'Amulet of eternal glory',
-		cape: 'Max cape',
-		head: 'Twisted slayer helmet (i)'
-	});
-
 	test('', () => {
+		const testGear = new Gear({
+			weapon: 'Dragon pickaxe(or)',
+			shield: 'Dragon defender (t)',
+			neck: 'Amulet of eternal glory',
+			cape: 'Max cape',
+			head: 'Twisted slayer helmet (i)'
+		});
+
 		expect(testGear.hasEquipped('Amulet of glory')).toBeTruthy();
 		expect(testGear.hasEquipped('Dragon pickaxe')).toBeTruthy();
 		expect(testGear.hasEquipped('Dragon pickaxe(or)')).toBeTruthy();
@@ -25,12 +25,12 @@ describe('Gear', () => {
 		expect(testGear.hasEquipped('Black mask (i)')).toBeTruthy();
 	});
 
-	const testGear2 = new Gear({
-		weapon: 'Mist battlestaff',
-		cape: 'Attack cape(t)'
-	});
-
 	test('', () => {
+		const testGear2 = new Gear({
+			weapon: 'Mist battlestaff',
+			cape: 'Attack cape(t)'
+		});
+
 		expect(testGear2.allItems().includes(itemID('Mist battlestaff'))).toBeTruthy();
 		expect(testGear2.allItems(true).includes(itemID('Staff of water'))).toBeTruthy();
 		expect(testGear2.hasEquipped('Staff of water')).toBeTruthy();
@@ -39,23 +39,24 @@ describe('Gear', () => {
 		expect(testGear2.hasEquipped('Attack cape')).toBeTruthy();
 		expect(testGear2.hasEquipped('Max cape')).toBeFalsy();
 	});
-
-	const testGear3 = new Gear({
-		weapon: 'Staff of water'
-	});
-
 	test('', () => {
+		const testGear3 = new Gear({
+			weapon: 'Staff of water'
+		});
+
 		expect(testGear3.hasEquipped('Kodai wand')).toBeFalsy();
 	});
 
-	const testGear4 = new Gear({
-		weapon: 'Kodai wand',
-		head: 'Slayer helmet (i)',
-		hands: 'Barrows gloves'
-	});
 	test('', () => {
-		expect(testGear4.hasEquipped(['Staff of water', 'Black mask (i)', 'Barrows gloves'], true)).toBeTruthy();
-		expect(testGear4.hasEquipped(['Staff of water', 'Black mask (i)', 'Barrows gloves'], true, false)).toBeFalsy();
+		const testGearXXX = new Gear({
+			weapon: 'Kodai wand',
+			head: 'Slayer helmet (i)',
+			hands: 'Barrows gloves'
+		});
+		expect(testGearXXX.hasEquipped(['Staff of water', 'Black mask (i)', 'Barrows gloves'], true)).toBeTruthy();
+		expect(
+			testGearXXX.hasEquipped(['Staff of water', 'Black mask (i)', 'Barrows gloves'], true, false)
+		).toBeFalsy();
 	});
 
 	const testGear5 = new Gear({

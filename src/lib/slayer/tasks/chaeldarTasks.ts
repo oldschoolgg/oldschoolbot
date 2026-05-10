@@ -1,4 +1,4 @@
-import { Monsters } from 'oldschooljs';
+import { EMonster, Monsters } from 'oldschooljs';
 
 import { QuestID } from '@/lib/minions/data/quests.js';
 import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
@@ -126,7 +126,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monsters: [
 			Monsters.Dagannoth.id,
 			Monsters.DagannothSpawn.id,
-			Monsters.DaganothFledgeling.id,
+			Monsters.DagannothFledgeling.id,
 			Monsters.DagannothSupreme.id,
 			Monsters.DagannothRex.id,
 			Monsters.DagannothPrime.id
@@ -176,7 +176,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.FireGiant,
 		amount: [70, 130],
 		weight: 12,
-		monsters: [Monsters.FireGiant.id],
+		monsters: [Monsters.FireGiant.id, Monsters.Branda.id, Monsters.RoyalTitans.id],
 		combatLevel: 65,
 		unlocked: true
 	},
@@ -249,6 +249,21 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		combatLevel: 65,
 		questPoints: 11,
 		unlocked: true
+	},
+	{
+		monster: Monsters.JuvenileCustodianStalker,
+		amount: [70, 130],
+		extendedAmount: [200, 250],
+		extendedUnlockId: SlayerTaskUnlocksEnum.UnRestrainingOrder,
+		weight: 11,
+		monsters: [
+			Monsters.JuvenileCustodianStalker.id,
+			Monsters.MatureCustodianStalker.id,
+			Monsters.ElderCustodianStalker.id
+		],
+		slayerLevel: 54,
+		unlocked: false,
+		requiredQuests: [QuestID.ShadowsOfCustodia]
 	},
 	{
 		monster: Monsters.KalphiteWorker,
@@ -363,7 +378,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.TzHaarKet,
 		amount: [90, 150],
 		weight: 8,
-		monsters: [Monsters.TzHaarKet.id, Monsters.TzHaarXil.id, Monsters.TzHaarMej.id],
+		monsters: [EMonster.TZHAARKET, Monsters.TzHaarXil.id, Monsters.TzHaarMej.id],
 		unlocked: false
 	},
 	{

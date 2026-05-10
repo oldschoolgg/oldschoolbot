@@ -1,15 +1,219 @@
 import { convertXPtoLVL } from '../util/util.js';
-import {
-	ACCOUNT_TYPES,
-	type AccountType,
-	BASE_API_URL,
-	CLUES,
-	Errors,
-	MINIGAMES,
-	mappedBossNames,
-	SKILLS
-} from './constants.js';
-import { Player, type SkillsScore } from './Player.js';
+
+export interface SkillScore {
+	rank: number;
+	level: number;
+	xp: number;
+}
+
+export interface SkillsScore {
+	overall: SkillScore;
+	attack: SkillScore;
+	defence: SkillScore;
+	strength: SkillScore;
+	hitpoints: SkillScore;
+	ranged: SkillScore;
+	prayer: SkillScore;
+	magic: SkillScore;
+	cooking: SkillScore;
+	woodcutting: SkillScore;
+	fletching: SkillScore;
+	fishing: SkillScore;
+	firemaking: SkillScore;
+	crafting: SkillScore;
+	smithing: SkillScore;
+	mining: SkillScore;
+	herblore: SkillScore;
+	agility: SkillScore;
+	thieving: SkillScore;
+	slayer: SkillScore;
+	farming: SkillScore;
+	runecraft: SkillScore;
+	hunter: SkillScore;
+	construction: SkillScore;
+}
+export interface CluesScore {
+	all: MinigameScore;
+	beginner: MinigameScore;
+	easy: MinigameScore;
+	medium: MinigameScore;
+	hard: MinigameScore;
+	elite: MinigameScore;
+	master: MinigameScore;
+}
+
+export interface MinigameScore {
+	rank: number;
+	score: number;
+}
+
+interface IPlayer {
+	bossRecords: BossRecords;
+	username: string;
+	type: AccountType;
+	skills: SkillsScore;
+	minigames: MinigamesScore;
+	clues: CluesScore;
+	leaguePoints?: { rank: number; points: number };
+}
+
+export class Player {
+	public username: string;
+	public skills: SkillsScore;
+	public minigames: MinigamesScore;
+	public bossRecords: BossRecords;
+	public type: AccountType;
+	public clues: CluesScore;
+	public leaguePoints?: { rank: number; points: number };
+
+	public constructor(player: IPlayer) {
+		this.username = player.username;
+		this.skills = player.skills;
+		this.minigames = player.minigames;
+		this.bossRecords = player.bossRecords;
+		this.type = player.type;
+		this.clues = player.clues;
+		this.leaguePoints = player.leaguePoints;
+	}
+
+	public get combatLevel(): number {
+		const { defence, ranged, hitpoints, magic, prayer, attack, strength } = this.skills;
+		const base = 0.25 * (defence.level + hitpoints.level + Math.floor(prayer.level / 2));
+		const melee = 0.325 * (attack.level + strength.level);
+		const range = 0.325 * (Math.floor(ranged.level / 2) + ranged.level);
+		const mage = 0.325 * (Math.floor(magic.level / 2) + magic.level);
+		return Math.floor(base + Math.max(melee, range, mage));
+	}
+}
+
+export const mappedBossNames = [
+	['abyssalSire', 'Abyssal Sire'],
+	['alchemicalHydra', 'Alchemical Hydra'],
+	['amoxliatl', 'Amoxliatl'],
+	['araxxor', 'Araxxor'],
+	['artio', 'Artio'],
+	['barrowsChests', 'Barrows Chests'],
+	['bryophyta', 'Bryophyta'],
+	['callisto', 'Callisto'],
+	['calvarion', "Calvar'ion"],
+	['cerberus', 'Cerberus'],
+	['chambersofXeric', 'Chambers of Xeric'],
+	['chambersofXericChallengeMode', 'Chambers of Xeric: Challenge Mode'],
+	['chaosElemental', 'Chaos Elemental'],
+	['chaosFanatic', 'Chaos Fanatic'],
+	['commanderZilyana', 'Commander Zilyana'],
+	['corporealBeast', 'Corporeal Beast'],
+	['crazyArchaeologist', 'Crazy Archaeologist'],
+	['dagannothPrime', 'Dagannoth Prime'],
+	['dagannothRex', 'Dagannoth Rex'],
+	['dagannothSupreme', 'Dagannoth Supreme'],
+	['derangedArchaeologist', 'Deranged Archaeologist'],
+	['dukeSucellus', 'Duke Sucellus'],
+	['generalGraardor', 'General Graardor'],
+	['giantMole', 'Giant Mole'],
+	['grotesqueGuardians', 'Grotesque Guardians'],
+	['hespori', 'Hespori'],
+	['kalphiteQueen', 'Kalphite Queen'],
+	['kingBlackDragon', 'King Black Dragon'],
+	['kraken', 'Kraken'],
+	['kreeArra', "Kree'Arra"],
+	['krilTsutsaroth', "K'ril Tsutsaroth"],
+	['lunarChests', 'Lunar Chests'],
+	['mimic', 'Mimic'],
+	['nex', 'Nex'],
+	['nightmare', 'The Nightmare'],
+	['phosanisNightmare', "Phosani's Nightmare"],
+	['obor', 'Obor'],
+	['phantomMuspah', 'Phantom Muspah'],
+	['sarachnis', 'Sarachnis'],
+	['scorpia', 'Scorpia'],
+	['scurrius', 'Scurrius'],
+	['skotizo', 'Skotizo'],
+	['solHeredit', 'Sol Heredit'],
+	['spindel', 'Spindel'],
+	['tempoross', 'Tempoross'],
+	['theGauntlet', 'The Gauntlet'],
+	['theCorruptedGauntlet', 'The Corrupted Gauntlet'],
+	['theHueycoatl', 'The Hueycoatl'],
+	['theLeviathan', 'The Leviathan'],
+	['theWhisperer', 'The Whisperer'],
+	['theatreofBlood', 'Theatre of Blood'],
+	['theatreofBloodHard', 'Theatre of Blood: Hard Mode'],
+	['thermonuclearSmokeDevil', 'Thermonuclear Smoke Devil'],
+	['tombsofAmascut', 'Tombs of Amascut'],
+	['tombsofAmascutExpert', 'Tombs of Amascut: Expert Mode'],
+	['tzKalZuk', 'TzKal-Zuk'],
+	['tzTokJad', 'TzTok-Jad'],
+	['vardorvis', 'Vardorvis'],
+	['venenatis', 'Venenatis'],
+	['vetion', "Vet'ion"],
+	['vorkath', 'Vorkath'],
+	['wintertodt', 'Wintertodt'],
+	['zalcano', 'Zalcano'],
+	['zulrah', 'Zulrah']
+] as const;
+
+export const bossNameMap: Map<keyof BossRecords, string> = new Map(mappedBossNames);
+
+export const ACCOUNT_TYPES = [
+	'normal',
+	'ironman',
+	'ultimate',
+	'hardcore',
+	'deadman',
+	'seasonal',
+	'tournament',
+	'skiller',
+	'skiller_defence'
+] as const;
+type AccountType = (typeof ACCOUNT_TYPES)[number];
+
+const MINIGAMES = [
+	'bountyHunter',
+	'bountyHunterRogue',
+	'bountyHunterLegacy',
+	'bountyHunterLegacyRogue',
+	'LMS',
+	'pvpArena',
+	'soulWars',
+	'riftsClosed',
+	'colosseumGlory'
+] as const;
+
+export type BossRecords = Record<(typeof mappedBossNames)[number]['0'], MinigameScore>;
+
+export type MinigamesScore = Record<(typeof MINIGAMES)[number], MinigameScore>;
+
+const BASE_API_URL = 'https://services.runescape.com';
+
+const SKILLS = [
+	'overall',
+	'attack',
+	'defence',
+	'strength',
+	'hitpoints',
+	'ranged',
+	'prayer',
+	'magic',
+	'cooking',
+	'woodcutting',
+	'fletching',
+	'fishing',
+	'firemaking',
+	'crafting',
+	'smithing',
+	'mining',
+	'herblore',
+	'agility',
+	'thieving',
+	'slayer',
+	'farming',
+	'runecraft',
+	'hunter',
+	'construction'
+] as const;
+
+const CLUES = ['all', 'beginner', 'easy', 'medium', 'hard', 'elite', 'master'] as const;
 
 function resolvePlayerFromHiscores(csvData: string, accountType: AccountType): Player {
 	const data: string[][] = csvData
@@ -17,12 +221,12 @@ function resolvePlayerFromHiscores(csvData: string, accountType: AccountType): P
 		.split('\n')
 		.map((str): string[] => str.split(','));
 
-	const resolvedPlayer: any = {
+	const resolvedPlayer: Player = {
 		skills: {},
 		minigames: {},
 		clues: {},
 		bossRecords: {}
-	};
+	} as Player;
 
 	let accumulativeIndex = 0;
 
@@ -93,7 +297,7 @@ function hiscoreURL(type: string): string {
 	return `${BASE_API_URL}/m=${type}/index_lite.ws?player=`;
 }
 
-export const hiscoreURLs: Record<AccountType, string> = {
+const hiscoreURLs: Record<AccountType, string> = {
 	normal: hiscoreURL('hiscore_oldschool'),
 	ironman: hiscoreURL('hiscore_oldschool_ironman'),
 	ultimate: hiscoreURL('hiscore_oldschool_ultimate'),
@@ -119,27 +323,33 @@ function isValidUsername(username: string): boolean {
 }
 
 export const Hiscores = {
-	async fetch(username: string, options: GetOptions = { type: 'normal', virtualLevels: false }): Promise<Player> {
+	async fetch(
+		username: string,
+		options: GetOptions = { type: 'normal', virtualLevels: false }
+	): Promise<{ player: Player; error: null } | { player: null; error: string }> {
 		const mergedOptions = { ...defaultGetOptions, ...options };
 		const accountType = mergedOptions.type ?? 'normal';
-		if (!isValidUsername(username)) throw new Error(Errors.INVALID_USERNAME);
+		if (!isValidUsername(username)) {
+			return { player: null, error: `That is not a valid account username.` };
+		}
 		if (!ACCOUNT_TYPES.includes(accountType)) {
-			throw new Error(Errors.INVALID_ACCOUNT_TYPE);
+			return { player: null, error: `That is not a valid account type.` };
 		}
 
-		const data: Player = await fetch(hiscoreURLs[accountType] + username)
-			.then(async (res): Promise<string> => {
-				if (res.status === 404) throw new Error(Errors.ACCOUNT_NOT_FOUND);
-				if (!res.ok) throw new Error(Errors.FAILED_REQUEST);
-				const text = await res.text();
-				// If the text response is HTML, it means the hiscores are down.
-				if (text.trim().startsWith('<')) throw new Error(Errors.FAILED_REQUEST);
-				return text;
-			})
-			.then(p => resolvePlayerFromHiscores(p, accountType))
-			.catch((err): never => {
-				throw err;
-			});
+		const rawResponse = await fetch(hiscoreURLs[accountType] + username);
+		if (rawResponse.status === 404) {
+			return { player: null, error: `That username does not exist on the ${accountType} hiscores.` };
+		}
+		if (!rawResponse.ok) {
+			return { player: null, error: `Failed to fetch hiscores. The hiscores may be down.` };
+		}
+		const text = await rawResponse.text();
+		// If the text response is HTML, it means the hiscores are down.
+		if (text.trim().startsWith('<')) {
+			return { player: null, error: `Failed to fetch hiscores. The hiscores may be down.` };
+		}
+
+		const data: Player = resolvePlayerFromHiscores(text, accountType);
 
 		if (mergedOptions.virtualLevels) {
 			let overall = 0;
@@ -152,7 +362,7 @@ export const Hiscores = {
 			data.skills.overall.level = overall;
 		}
 
-		return new Player({
+		const player = new Player({
 			username,
 			type: options.type ?? 'normal',
 			skills: data.skills,
@@ -161,5 +371,6 @@ export const Hiscores = {
 			bossRecords: data.bossRecords,
 			leaguePoints: data.leaguePoints
 		});
+		return { player, error: null };
 	}
 };

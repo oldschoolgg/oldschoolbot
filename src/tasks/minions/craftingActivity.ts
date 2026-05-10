@@ -1,4 +1,3 @@
-import { randFloat } from '@oldschoolgg/rng';
 import { Bank } from 'oldschooljs';
 
 import { Craftables } from '@/lib/skilling/skills/crafting/craftables/index.js';
@@ -6,8 +5,8 @@ import type { CraftingActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const craftingTask: MinionTask = {
 	type: 'Crafting',
-	async run(data: CraftingActivityTaskOptions, { user, handleTripFinish }) {
-		const { craftableID, quantity, channelID, duration } = data;
+	async run(data: CraftingActivityTaskOptions, { user, handleTripFinish, rng }) {
+		const { craftableID, quantity, channelId, duration } = data;
 
 		const currentLevel = user.skillsAsLevels.crafting;
 		const item = Craftables.find(craft => craft.id === craftableID)!;
@@ -23,7 +22,7 @@ export const craftingTask: MinionTask = {
 		let crushed = 0;
 		if (item.crushChance) {
 			for (let i = 0; i < quantity; i++) {
-				if (randFloat(0, 1) > (currentLevel - 1) * item.crushChance[0] + item.crushChance[1]) {
+				if (rng.randFloat(0, 1) > (currentLevel - 1) * item.crushChance[0] + item.crushChance[1]) {
 					crushed++;
 				}
 			}
@@ -42,6 +41,6 @@ export const craftingTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

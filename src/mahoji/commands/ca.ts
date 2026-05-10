@@ -10,16 +10,13 @@ import {
 	caToPlayerString,
 	nextCATier
 } from '@/lib/combat_achievements/combatAchievements.js';
-import { mentionCommand } from '@/lib/discord/utils.js';
 import { Requirements } from '@/lib/structures/Requirements.js';
 
 const viewTypes = ['all', 'incomplete', 'complete'] as const;
 
 export type CAViewType = (typeof viewTypes)[number];
 
-type MonsterNames = (typeof allCAMonsterNames)[number];
-
-export const caCommand: OSBMahojiCommand = {
+export const caCommand = defineCommand({
 	name: 'ca',
 	description: 'Combat Achievements',
 	options: [
@@ -32,7 +29,7 @@ export const caCommand: OSBMahojiCommand = {
 					type: 'String',
 					name: 'name',
 					description: 'What boss do you want to view?',
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return allCAMonsterNames
 							.filter(i => (!value ? true : i.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i, value: i }));
@@ -55,17 +52,7 @@ export const caCommand: OSBMahojiCommand = {
 			options: []
 		}
 	],
-	run: async ({
-		options,
-		user,
-		interaction
-	}: CommandRunOptions<{
-		claim?: {};
-		view?: {
-			name?: MonsterNames;
-			type?: CAViewType;
-		};
-	}>) => {
+	run: async ({ options, user, interaction }) => {
 		await interaction.defer();
 
 		const completedTaskIDs = new Set(user.user.completed_ca_task_ids);
@@ -75,10 +62,10 @@ export const caCommand: OSBMahojiCommand = {
 			allCombatAchievementTasks.length
 		} (${calcWhatPercent(completedTaskIDs.size, allCombatAchievementTasks.length).toFixed(
 			2
-		)}%) tasks for ${currentPoints} points. ${nextCATier(currentPoints)}.\r\nUse ${mentionCommand(
+		)}%) tasks for ${currentPoints} points. ${nextCATier(currentPoints)}.\r\nUse ${globalClient.mentionCommand(
 			'ca',
 			'claim'
-		)} to claim tasks (for tasks that don't automatically claim), and ${mentionCommand(
+		)} to claim tasks (for tasks that don't automatically claim), and ${globalClient.mentionCommand(
 			'ca',
 			'view'
 		)} to view your specific tasks.`;
@@ -92,7 +79,7 @@ export const caCommand: OSBMahojiCommand = {
 			const reqData = await Requirements.fetchRequiredData(user);
 			for (const task of tasksToCheck) {
 				if ('requirements' in task) {
-					const { hasAll } = task.requirements.check(reqData);
+					const { hasAll } = await task.requirements.check(reqData);
 					if (hasAll) {
 						completedTasks.push(task);
 					}
@@ -171,10 +158,10 @@ export const caCommand: OSBMahojiCommand = {
 
 			return {
 				content: generalProgressString,
-				files: [{ attachment: Buffer.from(result), name: 'ca.txt' }]
+				files: [{ buffer: Buffer.from(result), name: 'ca.txt' }]
 			};
 		}
 
 		return 'Invalid command.';
 	}
-};
+});

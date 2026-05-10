@@ -1,6 +1,6 @@
-import type { PlayerOwnedHouse } from '@prisma/client';
 import { describe, expect, test } from 'vitest';
 
+import type { PlayerOwnedHouse } from '@/prisma/main.js';
 import { calcPOHBoosts, getPOHObject } from '@/lib/poh/index.js';
 
 const basePOH: PlayerOwnedHouse = {

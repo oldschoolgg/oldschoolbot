@@ -1,0 +1,24 @@
+{
+	"name": "@oldschoolgg/discord",
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		}
+	},
+	"scripts": {
+		"build": "rimraf ./dist && tsc -p src --noEmit false",
+		"test:types": "pnpm tsc -p src --noEmit",
+		"test:unit": "vitest run --config vitest.unit.config.mts"
+	},
+	"dependencies": {
+		"@discordjs/builders": "1.13.1",
+		"@discordjs/formatters": "0.6.2",
+		"@oldschoolgg/schemas": "workspace:*",
+		"@oldschoolgg/toolkit": "workspace:*",
+		"@oldschoolgg/util": "workspace:*",
+		"discord-api-types": "0.38.32",
+		"remeda": "^2.33.4"
+	}
+}

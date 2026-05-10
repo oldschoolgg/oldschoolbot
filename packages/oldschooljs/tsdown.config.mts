@@ -4,5 +4,9 @@ const entry = ['./src/index.ts'];
 
 export default createTsdownConfig({
 	entry,
-	unbundle: false
+	unbundle: true,
+	external: [],
+	copy: ['src/assets'],
+	minify: false,
+	inlineOnly: false
 });

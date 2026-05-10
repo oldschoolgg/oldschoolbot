@@ -1,7 +1,6 @@
-import { Bank, EquipmentSlot } from 'oldschooljs';
+import { EquipmentSlot, type GearSetup, isValidGearSetup } from '@oldschoolgg/gear';
+import { Bank } from 'oldschooljs';
 
-import { isValidGearSetup } from '@/lib/gear/functions/isValidGearSetup.js';
-import type { GearSetup } from '@/lib/gear/types.js';
 import { parseStringBank } from '@/lib/util/parseStringBank.js';
 
 export function gearEquipMultiImpl(
@@ -32,7 +31,7 @@ export function gearEquipMultiImpl(
 			}
 		}
 		// Make sure it's valid equipment
-		if (i.equipable_by_player && i.equipment && !oneItemPerSlot[i.equipment.slot]) {
+		if (i.equipable && i.equipment && !oneItemPerSlot[i.equipment.slot]) {
 			// Ignore items that conflict with previously specified items:
 			if (
 				(oneItemPerSlot[EquipmentSlot.TwoHanded] &&

@@ -4,10 +4,10 @@ import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const HerbFireRuneTable = new LootTable().every(HerbDropTable).every('Fire rune', 42);
-const SeedWaterskinTable = new LootTable().every(FixedAllotmentSeedTable).every('Waterskin(0)', 2);
+const HerbFireRuneTable: LootTable = new LootTable().every(HerbDropTable).every('Fire rune', 42);
+const SeedWaterskinTable: LootTable = new LootTable().every(FixedAllotmentSeedTable).every('Waterskin(0)', 2);
 
-export const DesertLizardTable = new LootTable()
+export const DesertLizardTable: LootTable = new LootTable()
 	.every('Bones')
 	.oneIn(512, 'Mystic gloves (light)')
 
@@ -39,7 +39,7 @@ export const DesertLizardTable = new LootTable()
 	.add(GemTable, 1, 4)
 	.add(GemTable, 2, 2);
 
-export default new SimpleMonster({
+export const DesertLizard: SimpleMonster = new SimpleMonster({
 	id: 459,
 	name: 'Desert Lizard',
 	table: DesertLizardTable,

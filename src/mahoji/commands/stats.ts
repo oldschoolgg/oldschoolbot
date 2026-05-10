@@ -1,5 +1,5 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import { ACCOUNT_TYPES, type AccountType, Hiscores } from 'oldschooljs/hiscores';
+import { ACCOUNT_TYPES, Hiscores } from 'oldschooljs/hiscores';
 
 import { statsEmbed } from '@/lib/util/statsEmbed.js';
 
@@ -14,7 +14,7 @@ const accountTypeOptions = ACCOUNT_TYPES.map(val => {
 	};
 });
 
-export const statsCommand: OSBMahojiCommand = {
+export const statsCommand = defineCommand({
 	name: 'stats',
 	description: 'Check the stats of a OSRS account.',
 	options: [
@@ -38,29 +38,28 @@ export const statsCommand: OSBMahojiCommand = {
 			required: false
 		}
 	],
-	run: async ({ options }: CommandRunOptions<{ username: string; type?: AccountType; virtual?: boolean }>) => {
-		try {
-			if (!options.type) {
-				options.type = 'normal';
-			}
-			const player = await Hiscores.fetch(options.username, {
-				type: options.type,
-				virtualLevels: Boolean(options.virtual)
-			});
-			const postfix = options.type === 'seasonal' ? 'Shattered Relics Leagues' : (options.type ?? null);
-			return {
-				embeds: [
-					statsEmbed({
-						username: options.username,
-						color: 7_981_338,
-						player,
-						postfix: postfix ? ` (${postfix})` : undefined,
-						key: 'level'
-					})
-				]
-			};
-		} catch (err: any) {
-			return err.message;
+	run: async ({ options }) => {
+		if (!options.type) {
+			options.type = 'normal';
 		}
+		const { player, error } = await Hiscores.fetch(options.username, {
+			type: options.type,
+			virtualLevels: Boolean(options.virtual)
+		});
+		if (error !== null) {
+			return error;
+		}
+		const postfix = options.type === 'seasonal' ? 'Shattered Relics Leagues' : (options.type ?? null);
+		return {
+			embeds: [
+				await statsEmbed({
+					username: options.username,
+					color: 7_981_338,
+					player,
+					postfix: postfix ? ` (${postfix})` : undefined,
+					key: 'level'
+				})
+			]
+		};
 	}
-};
+});

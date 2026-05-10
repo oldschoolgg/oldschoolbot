@@ -1,8 +1,9 @@
-import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { stringMatches, Time } from '@oldschoolgg/toolkit';
 import { type Item, Items, itemID } from 'oldschooljs';
 
 import type { Skills } from '@/lib/types/index.js';
 import type { PuroPuroActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 
 interface PuroImpling {
@@ -47,13 +48,12 @@ export default puroOptions;
 
 export async function puroPuroStartCommand(
 	user: MUser,
-	channelID: string,
+	channelId: string,
 	impling: string | undefined,
-	darkLure: boolean | undefined,
-	implingTier: number | undefined
+	darkLure: boolean | undefined
 ) {
 	const timePerGame = Time.Minute * 10;
-	const maxTripLength = user.calcMaxTripLength('PuroPuro');
+	const maxTripLength = await user.calcMaxTripLength('PuroPuro');
 	const quantity = Math.floor(maxTripLength / timePerGame);
 	const duration = quantity * timePerGame;
 	const skills = user.skillsAsLevels;
@@ -62,13 +62,19 @@ export async function puroPuroStartCommand(
 	const [hasDarkLureSkillReqs, lureReason] = hasSkillReqs(user, darkLureSkillRequirements);
 	if (!hasReqs) return `To hunt in Puro-Puro, you need: ${reason}.`;
 	if (user.QP < 3) return 'To hunt in Puro-Puro, you need 3 QP.';
-	let impToHunt: PuroImpling | undefined;
-	if (impling) {
-		impToHunt = puroOptions.find(i => stringMatches(i.name, impling));
-	} else if (implingTier) {
-		impToHunt = puroOptions.find(i => i.tier === implingTier);
-	}
-	if (!impToHunt) return 'Error selecting impling, please try again.';
+	let impToHunt: PuroImpling;
+	const implingInput = impling?.trim();
+
+	if (implingInput?.length === 0) return 'Error selecting impling, please try again.';
+	const matchedImp = puroOptions.find(i => {
+		if (stringMatches(i.name, implingInput)) {
+			return true;
+		}
+		return i.tier !== undefined && stringMatches(i.tier.toString(), implingInput);
+	});
+	if (!matchedImp) return 'Error selecting impling, please try again.';
+	impToHunt = matchedImp;
+
 	if (hunterLevel < impToHunt.hunterLevel)
 		return `${user.minionName} needs at least level ${impToHunt.hunterLevel} hunter to hunt ${impToHunt.name} in Puro-Puro.`;
 	if (!darkLure || (darkLure && !impToHunt.spell)) darkLure = false;
@@ -93,13 +99,11 @@ export async function puroPuroStartCommand(
 		duration,
 		darkLure,
 		type: 'PuroPuro',
-		channelID,
+		channelId,
 		minigameID: 'puro_puro'
 	});
 
-	let str = `${user.minionName} is now hunting ${impToHunt.name} in Puro-Puro! It will take ${formatDuration(
-		duration
-	)} to finish.`;
+	let str = `${user.minionName} is now hunting ${impToHunt.name} in Puro-Puro! It will take ${formatTripDuration(user, duration)} to finish.`;
 
 	if (!user.hasGracefulEquipped() && impToHunt.name !== 'Dragon Implings')
 		str += '\n20% less implings due to having no Graceful equipped.';

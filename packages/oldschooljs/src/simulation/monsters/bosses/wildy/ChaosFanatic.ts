@@ -2,9 +2,9 @@ import { GemTable, RareDropTable } from '@/simulation/subtables/RareDropTable.js
 import LootTable, { itemTupleToTable } from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const ChaosFanaticUniqueTable = new LootTable().add('Odium shard 1').add('Malediction shard 1');
+const ChaosFanaticUniqueTable: LootTable = new LootTable().add('Odium shard 1').add('Malediction shard 1');
 
-const ChaosFanaticTable = new LootTable()
+const ChaosFanaticTable: LootTable = new LootTable()
 	.every('Bones')
 	.tertiary(128, 'Clue scroll (hard)')
 	.tertiary(1000, 'Pet chaos elemental')
@@ -57,7 +57,7 @@ const ChaosFanaticTable = new LootTable()
 	.add(RareDropTable, 1, 4)
 	.add(GemTable, 1, 4);
 
-export default new SimpleMonster({
+export const ChaosFanatic: SimpleMonster = new SimpleMonster({
 	id: 6619,
 	name: 'Chaos Fanatic',
 	table: ChaosFanaticTable,

@@ -2,7 +2,7 @@ import { RareDropTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-export const WarpedTortoiseTable = new LootTable()
+export const WarpedTortoiseTable: LootTable = new LootTable()
 	.tertiary(512, 'Clue scroll (hard)')
 	.tertiary(320, 'Warped sceptre (uncharged)')
 	.tertiary(400, 'Long bone')
@@ -29,7 +29,7 @@ export const WarpedTortoiseTable = new LootTable()
 	.add('Perfect shell', [1, 3], 2)
 	.add(RareDropTable, 1, 3);
 
-export const WarpedTortoise = new SimpleMonster({
+export const WarpedTortoise: SimpleMonster = new SimpleMonster({
 	id: 12_490,
 	name: 'Warped Tortoise',
 	table: WarpedTortoiseTable,

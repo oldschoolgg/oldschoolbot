@@ -4,12 +4,12 @@ import RareSeedTable from '@/simulation/subtables/RareSeedTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const AberrantSpectreHerbTable = new LootTable()
+const AberrantSpectreHerbTable: LootTable = new LootTable()
 	.add(HerbDropTable, 1, 11)
 	.add(HerbDropTable, 2, 11)
 	.add(HerbDropTable, 3, 4);
 
-export const AberrantSpectrePreTable = new LootTable({ limit: 128 })
+export const AberrantSpectrePreTable: LootTable = new LootTable({ limit: 128 })
 	/* Weapons and armour */
 	.add('Steel axe', 1, 3)
 	.add('Mithril kiteshield', 1, 1)
@@ -30,13 +30,13 @@ export const AberrantSpectrePreTable = new LootTable({ limit: 128 })
 	/* Rdt */
 	.add(GemTable, 1, 5);
 
-const AberrantSpectreTable = new LootTable()
+const AberrantSpectreTable: LootTable = new LootTable()
 	.every(AberrantSpectrePreTable)
 
 	/* Tertiary */
 	.tertiary(128, 'Clue scroll (hard)');
 
-export default new SimpleMonster({
+export const AberrantSpectre: SimpleMonster = new SimpleMonster({
 	id: 2,
 	name: 'Aberrant Spectre',
 	table: AberrantSpectreTable,

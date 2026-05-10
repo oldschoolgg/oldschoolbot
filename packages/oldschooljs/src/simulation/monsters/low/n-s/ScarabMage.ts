@@ -48,7 +48,7 @@ const ScarabMageTable = new LootTable({ limit: 128 })
 	.add(RareDropTable, 1, 1)
 	.add(GemTable, 1, 15);
 
-export default new SimpleMonster({
+export const ScarabMage: SimpleMonster = new SimpleMonster({
 	id: 794,
 	name: 'Scarab Mage',
 	table: ScarabMageTable,

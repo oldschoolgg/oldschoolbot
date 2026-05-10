@@ -1,9 +1,9 @@
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-export const BirdTable = new LootTable();
+export const BirdTable: LootTable = new LootTable();
 
-export default new SimpleMonster({
+export const Bird: SimpleMonster = new SimpleMonster({
 	id: 5240,
 	name: 'Bird',
 	table: BirdTable,

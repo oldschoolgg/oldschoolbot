@@ -1,14 +1,26 @@
 import { Bank } from 'oldschooljs';
 
-import { modifyBusyCounter } from '@/lib/busyCounterCache.js';
 import { userQueueFn } from '@/lib/util/userQueues.js';
 
-export async function tradePlayerItems(sender: MUser, recipient: MUser, _itemsToSend?: Bank, _itemsToReceive?: Bank) {
-	if (recipient.isBusy) {
+type TradePlayerResult =
+	| {
+			success: true;
+			message: null;
+	  }
+	| {
+			success: false;
+			message: string;
+	  };
+
+export async function tradePlayerItems(
+	sender: MUser,
+	recipient: MUser,
+	_itemsToSend?: Bank,
+	_itemsToReceive?: Bank
+): Promise<TradePlayerResult> {
+	if (await recipient.getIsLocked()) {
 		return { success: false, message: `${recipient.usernameOrMention} is busy.` };
 	}
-	modifyBusyCounter(sender.id, 1);
-	modifyBusyCounter(recipient.id, 1);
 
 	const itemsToSend = _itemsToSend ? _itemsToSend.clone() : new Bank();
 	const itemsToReceive = _itemsToReceive ? _itemsToReceive.clone() : new Bank();
@@ -80,9 +92,6 @@ export async function tradePlayerItems(sender: MUser, recipient: MUser, _itemsTo
 					items_received: itemsToReceive.toString()
 				});
 				return { success: false, message: 'Temporary error, please try again.' };
-			} finally {
-				modifyBusyCounter(sender.id, -1);
-				modifyBusyCounter(recipient.id, -1);
 			}
 		});
 	});

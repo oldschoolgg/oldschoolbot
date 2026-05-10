@@ -1,13 +1,13 @@
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import smithables from '@/lib/skilling/skills/smithing/smithables/index.js';
 import type { SmithingActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { pluraliseItemName } from '@/lib/util/smallUtils.js';
 
-export const smithCommand: OSBMahojiCommand = {
+export const smithCommand = defineCommand({
 	name: 'smith',
 	description: 'Smith things using the Smithing skill.',
 	attributes: {
@@ -21,7 +21,7 @@ export const smithCommand: OSBMahojiCommand = {
 			name: 'name',
 			description: 'The thing you want to smith.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return smithables
 					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({
@@ -38,7 +38,7 @@ export const smithCommand: OSBMahojiCommand = {
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
+	run: async ({ options, user, channelId }) => {
 		const smithedItem = Smithing.SmithableItems.find(_smithedItem =>
 			stringMatches(_smithedItem.name, options.name)
 		);
@@ -82,8 +82,7 @@ export const smithCommand: OSBMahojiCommand = {
 				doubleCBall = true;
 				timeToUse /= 2;
 			}
-			const [has] = await userhasDiaryTier(user, KaramjaDiary.elite);
-			if (has) {
+			if (user.hasDiary('karamja.elite')) {
 				diaryCannonball = true;
 				timeToUse /= 1.23;
 			}
@@ -92,7 +91,7 @@ export const smithCommand: OSBMahojiCommand = {
 		// Time to smith an item, add on quarter of a second to account for banking/etc.
 		const timeToSmithSingleBar = timeToUse + Time.Second / 4 - (Time.Second * 0.6 * setBonus) / 100;
 
-		let maxTripLength = user.calcMaxTripLength('Smithing');
+		let maxTripLength = await user.calcMaxTripLength('Smithing');
 
 		if (smithedItem.name === 'Cannonball') {
 			maxTripLength *= 2;
@@ -130,7 +129,7 @@ export const smithCommand: OSBMahojiCommand = {
 		await ActivityManager.startTrip<SmithingActivityTaskOptions>({
 			smithedBarID: smithedItem.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			duration,
 			type: 'Smithing'
@@ -138,7 +137,7 @@ export const smithCommand: OSBMahojiCommand = {
 
 		return `${user.minionName} is now smithing ${quantity * smithedItem.outputMultiple}x ${
 			smithedItem.name
-		}, removed ${cost} from your bank, it'll take around ${formatDuration(duration)} to finish. ${
+		}, removed ${cost} from your bank, it'll take around ${formatTripDuration(user, duration)} to finish. ${
 			setBonus > 0
 				? `${setBonus}% chance to save 1 tick while smithing each item for using Smiths' Uniform item/items.`
 				: ''
@@ -149,4 +148,4 @@ export const smithCommand: OSBMahojiCommand = {
 				: ''
 		}`;
 	}
-};
+});

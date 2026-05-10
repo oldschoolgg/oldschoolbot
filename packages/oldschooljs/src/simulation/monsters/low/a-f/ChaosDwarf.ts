@@ -2,7 +2,7 @@ import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-export const ChaosDwarfTable = new LootTable({ limit: 128 })
+export const ChaosDwarfTable: LootTable = new LootTable({ limit: 128 })
 	.every('Bones')
 
 	/* Weapons and Armour*/
@@ -38,7 +38,7 @@ export const ChaosDwarfTable = new LootTable({ limit: 128 })
 	/* Subtable */
 	.add(GemTable, 1, 5);
 
-export default new SimpleMonster({
+export const ChaosDwarf: SimpleMonster = new SimpleMonster({
 	id: 291,
 	name: 'Chaos dwarf',
 	table: ChaosDwarfTable,

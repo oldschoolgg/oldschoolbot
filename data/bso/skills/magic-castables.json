@@ -1,0 +1,1510 @@
+[
+	{
+		"name": "10x Diamond bolts",
+		"id": 9340,
+		"input": {
+			"557": 10,
+			"563": 2,
+			"564": 1,
+			"9340": 10
+		},
+		"output": {
+			"9243": 10
+		},
+		"xp": 67,
+		"level": 57
+	},
+	{
+		"name": "10x Diamond dragon bolts",
+		"id": 21969,
+		"input": {
+			"557": 10,
+			"563": 2,
+			"564": 1,
+			"21969": 10
+		},
+		"output": {
+			"21946": 10
+		},
+		"xp": 67,
+		"level": 57
+	},
+	{
+		"name": "10x Dragonstone bolts",
+		"id": 9341,
+		"input": {
+			"557": 15,
+			"564": 1,
+			"566": 1,
+			"9341": 10
+		},
+		"output": {
+			"9244": 10
+		},
+		"xp": 78,
+		"level": 68
+	},
+	{
+		"name": "10x Dragonstone dragon bolts",
+		"id": 21971,
+		"input": {
+			"557": 15,
+			"564": 1,
+			"566": 1,
+			"21971": 10
+		},
+		"output": {
+			"21948": 10
+		},
+		"xp": 78,
+		"level": 68
+	},
+	{
+		"name": "10x Emerald bolts",
+		"id": 9338,
+		"input": {
+			"556": 3,
+			"561": 1,
+			"564": 1,
+			"9338": 10
+		},
+		"output": {
+			"9241": 10
+		},
+		"xp": 37,
+		"level": 27
+	},
+	{
+		"name": "10x Emerald dragon bolts",
+		"id": 21965,
+		"input": {
+			"556": 3,
+			"561": 1,
+			"564": 1,
+			"21965": 10
+		},
+		"output": {
+			"21942": 10
+		},
+		"xp": 37,
+		"level": 27
+	},
+	{
+		"name": "10x Jade dragon bolts",
+		"id": 21957,
+		"input": {
+			"556": 2,
+			"564": 1,
+			"21957": 10
+		},
+		"output": {
+			"21934": 10
+		},
+		"xp": 19,
+		"level": 14
+	},
+	{
+		"name": "10x Onyx bolts",
+		"id": 9342,
+		"input": {
+			"554": 20,
+			"560": 1,
+			"564": 1,
+			"9342": 10
+		},
+		"output": {
+			"9245": 10
+		},
+		"xp": 97,
+		"level": 87
+	},
+	{
+		"name": "10x Onyx dragon bolts",
+		"id": 21973,
+		"input": {
+			"554": 20,
+			"560": 20,
+			"564": 1,
+			"21973": 10
+		},
+		"output": {
+			"21950": 10
+		},
+		"xp": 97,
+		"level": 87
+	},
+	{
+		"name": "10x Opal bolts",
+		"id": 879,
+		"input": {
+			"556": 2,
+			"564": 1,
+			"879": 10
+		},
+		"output": {
+			"9236": 10
+		},
+		"xp": 9,
+		"level": 4
+	},
+	{
+		"name": "10x Opal dragon bolts",
+		"id": 21955,
+		"input": {
+			"556": 2,
+			"564": 1,
+			"21955": 10
+		},
+		"output": {
+			"21932": 10
+		},
+		"xp": 9,
+		"level": 4
+	},
+	{
+		"name": "10x Pearl bolts",
+		"id": 880,
+		"input": {
+			"555": 2,
+			"564": 1,
+			"880": 10
+		},
+		"output": {
+			"9238": 10
+		},
+		"xp": 29,
+		"level": 24
+	},
+	{
+		"name": "10x Pearl dragon bolts",
+		"id": 21959,
+		"input": {
+			"555": 2,
+			"564": 1,
+			"21959": 10
+		},
+		"output": {
+			"21936": 10
+		},
+		"xp": 29,
+		"level": 24
+	},
+	{
+		"name": "10x Ruby bolts",
+		"id": 9339,
+		"input": {
+			"554": 5,
+			"564": 1,
+			"565": 1,
+			"9339": 10
+		},
+		"output": {
+			"9242": 10
+		},
+		"xp": 59,
+		"level": 49
+	},
+	{
+		"name": "10x Ruby dragon bolts",
+		"id": 21967,
+		"input": {
+			"554": 5,
+			"564": 1,
+			"565": 1,
+			"21967": 10
+		},
+		"output": {
+			"21944": 10
+		},
+		"xp": 59,
+		"level": 49
+	},
+	{
+		"name": "10x Sapphire bolts",
+		"id": 9337,
+		"input": {
+			"555": 1,
+			"558": 1,
+			"564": 1,
+			"9337": 10
+		},
+		"output": {
+			"9240": 10
+		},
+		"xp": 17,
+		"level": 7
+	},
+	{
+		"name": "10x Sapphire dragon bolts",
+		"id": 21963,
+		"input": {
+			"555": 1,
+			"558": 1,
+			"564": 1,
+			"21963": 10
+		},
+		"output": {
+			"21940": 10
+		},
+		"xp": 17.5,
+		"level": 7
+	},
+	{
+		"name": "10x Topaz bolts",
+		"id": 9336,
+		"input": {
+			"554": 2,
+			"564": 1,
+			"9336": 10
+		},
+		"output": {
+			"9239": 10
+		},
+		"xp": 33,
+		"level": 29
+	},
+	{
+		"name": "10x Topaz dragon bolts",
+		"id": 21961,
+		"input": {
+			"554": 2,
+			"564": 1,
+			"21961": 10
+		},
+		"output": {
+			"21938": 10
+		},
+		"xp": 33,
+		"level": 49
+	},
+	{
+		"name": "Banana",
+		"id": 50047,
+		"input": {
+			"554": 15,
+			"562": 12,
+			"564": 3,
+			"1963": 1
+		},
+		"output": {
+			"50047": 1
+		},
+		"xp": 66,
+		"level": 82
+	},
+	{
+		"id": 1963,
+		"name": "Bones to Bananas",
+		"input": {
+			"526": 25,
+			"555": 2,
+			"557": 2,
+			"561": 1
+		},
+		"output": {
+			"1963": 25
+		},
+		"xp": 25,
+		"level": 15,
+		"ticks": 1
+	},
+	{
+		"id": 8010,
+		"name": "Camelot Teleport",
+		"input": {
+			"556": 5,
+			"563": 1
+		},
+		"output": null,
+		"xp": 55.5,
+		"level": 45,
+		"ticks": 5
+	},
+	{
+		"id": 573,
+		"name": "Charge air orb",
+		"input": {
+			"556": 30,
+			"564": 3,
+			"567": 1
+		},
+		"output": {
+			"573": 1
+		},
+		"xp": 76,
+		"level": 66,
+		"ticks": 3,
+		"travel_time": 187000
+	},
+	{
+		"id": 575,
+		"name": "Charge earth orb",
+		"input": {
+			"557": 30,
+			"564": 3,
+			"567": 1
+		},
+		"output": {
+			"575": 1
+		},
+		"xp": 70,
+		"level": 60,
+		"ticks": 3,
+		"travel_time": 187000
+	},
+	{
+		"id": 569,
+		"name": "Charge fire orb",
+		"input": {
+			"554": 30,
+			"564": 3,
+			"567": 1
+		},
+		"output": {
+			"569": 1
+		},
+		"xp": 73,
+		"level": 63,
+		"ticks": 3,
+		"agility_boost": [[80, 52], [70, 44]],
+		"travel_time": 362000
+	},
+	{
+		"id": 571,
+		"name": "Charge water orb",
+		"input": {
+			"555": 30,
+			"564": 3,
+			"567": 1
+		},
+		"output": {
+			"571": 1
+		},
+		"xp": 66,
+		"level": 56,
+		"ticks": 3,
+		"agility_boost": [[80, 52], [70, 44]],
+		"travel_time": 362000
+	},
+	{
+		"id": 25775,
+		"name": "Demonic offering abyssal",
+		"level": 84,
+		"xp": 175,
+		"input": {
+			"566": 1,
+			"21880": 1,
+			"25775": 3
+		},
+		"output": null,
+		"ticks": 8,
+		"prayer_xp": 765
+	},
+	{
+		"id": 25766,
+		"name": "Demonic offering fiendish",
+		"level": 84,
+		"xp": 175,
+		"input": {
+			"566": 1,
+			"21880": 1,
+			"25766": 3
+		},
+		"output": null,
+		"ticks": 8,
+		"prayer_xp": 90
+	},
+	{
+		"id": 25778,
+		"name": "Demonic offering infernal",
+		"level": 84,
+		"xp": 175,
+		"input": {
+			"566": 1,
+			"21880": 1,
+			"25778": 3
+		},
+		"output": null,
+		"ticks": 8,
+		"prayer_xp": 990
+	},
+	{
+		"id": 25772,
+		"name": "Demonic offering malicious",
+		"level": 84,
+		"xp": 175,
+		"input": {
+			"566": 1,
+			"21880": 1,
+			"25772": 3
+		},
+		"output": null,
+		"ticks": 8,
+		"prayer_xp": 585
+	},
+	{
+		"id": 73165,
+		"name": "Demonic offering nightmarish",
+		"level": 95,
+		"xp": 175,
+		"input": {
+			"566": 1,
+			"21880": 1,
+			"73165": 3
+		},
+		"output": null,
+		"ticks": 8,
+		"prayer_xp": 8685
+	},
+	{
+		"id": 25769,
+		"name": "Demonic offering vile",
+		"level": 84,
+		"xp": 175,
+		"input": {
+			"566": 1,
+			"21880": 1,
+			"25769": 3
+		},
+		"output": null,
+		"ticks": 8,
+		"prayer_xp": 225
+	},
+	{
+		"name": "Diamond amulet",
+		"id": 1700,
+		"input": {
+			"557": 10,
+			"564": 1,
+			"1700": 1
+		},
+		"output": {
+			"1731": 1
+		},
+		"xp": 67,
+		"level": 57
+	},
+	{
+		"name": "Diamond bracelet",
+		"id": 11092,
+		"input": {
+			"557": 10,
+			"564": 1,
+			"11092": 1
+		},
+		"output": {
+			"11095": 1
+		},
+		"xp": 67,
+		"level": 57
+	},
+	{
+		"name": "Diamond necklace",
+		"id": 1662,
+		"input": {
+			"557": 10,
+			"564": 1,
+			"1662": 1
+		},
+		"output": {
+			"11090": 1
+		},
+		"xp": 67,
+		"level": 57
+	},
+	{
+		"name": "Diamond ring",
+		"id": 1643,
+		"input": {
+			"557": 10,
+			"564": 1,
+			"1643": 1
+		},
+		"output": {
+			"2570": 1
+		},
+		"xp": 67,
+		"level": 57
+	},
+	{
+		"name": "Dragon necklace",
+		"id": 1664,
+		"input": {
+			"555": 15,
+			"557": 15,
+			"564": 1,
+			"1664": 1
+		},
+		"output": {
+			"11113": 1
+		},
+		"xp": 78,
+		"level": 68
+	},
+	{
+		"name": "Dragonstone amulet",
+		"id": 1702,
+		"input": {
+			"555": 15,
+			"557": 15,
+			"564": 1,
+			"1702": 1
+		},
+		"output": {
+			"1704": 1
+		},
+		"xp": 78,
+		"level": 68
+	},
+	{
+		"name": "Dragonstone bracelet",
+		"id": 11115,
+		"input": {
+			"555": 15,
+			"557": 15,
+			"564": 1,
+			"11115": 1
+		},
+		"output": {
+			"11126": 1
+		},
+		"xp": 78,
+		"level": 68
+	},
+	{
+		"name": "Dragonstone ring",
+		"id": 1645,
+		"input": {
+			"555": 15,
+			"557": 15,
+			"564": 1,
+			"1645": 1
+		},
+		"output": {
+			"2572": 1
+		},
+		"xp": 78,
+		"level": 68
+	},
+	{
+		"name": "Emerald amulet",
+		"id": 1696,
+		"input": {
+			"556": 3,
+			"564": 1,
+			"1696": 1
+		},
+		"output": {
+			"1729": 1
+		},
+		"xp": 37,
+		"level": 27
+	},
+	{
+		"name": "Emerald bracelet",
+		"id": 11076,
+		"input": {
+			"556": 3,
+			"564": 1,
+			"11076": 1
+		},
+		"output": {
+			"11079": 1
+		},
+		"xp": 37,
+		"level": 27
+	},
+	{
+		"name": "Emerald necklace",
+		"id": 1658,
+		"input": {
+			"556": 3,
+			"564": 1,
+			"1658": 1
+		},
+		"output": {
+			"5521": 1
+		},
+		"xp": 37,
+		"level": 27
+	},
+	{
+		"name": "Emerald ring",
+		"id": 1639,
+		"input": {
+			"556": 3,
+			"564": 1,
+			"1639": 1
+		},
+		"output": {
+			"2552": 1
+		},
+		"xp": 37,
+		"level": 27
+	},
+	{
+		"id": 73166,
+		"name": "Exorcise cursed onyx",
+		"input": {
+			"560": 500,
+			"565": 20,
+			"50021": 20,
+			"73166": 1
+		},
+		"output": {
+			"6571": 1
+		},
+		"xp": 7583,
+		"level": 90,
+		"ticks": 2,
+		"qp_required": 50,
+		"craft_xp": 154,
+		"craft_level": 90
+	},
+	{
+		"id": 8009,
+		"name": "Falador Teleport",
+		"input": {
+			"555": 1,
+			"556": 3,
+			"563": 1
+		},
+		"output": null,
+		"xp": 48,
+		"level": 37,
+		"ticks": 5
+	},
+	{
+		"name": "Jade amulet",
+		"id": 21111,
+		"input": {
+			"556": 3,
+			"564": 1,
+			"21111": 1
+		},
+		"output": {
+			"21163": 1
+		},
+		"xp": 37,
+		"level": 27
+	},
+	{
+		"name": "Jade bracelet",
+		"id": 21120,
+		"input": {
+			"556": 3,
+			"564": 1,
+			"21120": 1
+		},
+		"output": {
+			"21180": 1
+		},
+		"xp": 37,
+		"level": 27
+	},
+	{
+		"name": "Jade necklace",
+		"id": 21093,
+		"input": {
+			"556": 3,
+			"564": 1,
+			"21093": 1
+		},
+		"output": {
+			"21146": 1
+		},
+		"xp": 37,
+		"level": 27
+	},
+	{
+		"name": "Jade ring",
+		"id": 21084,
+		"input": {
+			"556": 3,
+			"564": 1,
+			"21084": 1
+		},
+		"output": {
+			"21129": 1
+		},
+		"xp": 37,
+		"level": 27
+	},
+	{
+		"id": 8008,
+		"name": "Lumbridge Teleport",
+		"input": {
+			"556": 3,
+			"557": 1,
+			"563": 1
+		},
+		"output": null,
+		"xp": 41,
+		"level": 31,
+		"ticks": 5
+	},
+	{
+		"name": "Onyx amulet",
+		"id": 6581,
+		"input": {
+			"554": 20,
+			"557": 20,
+			"564": 1,
+			"6581": 1
+		},
+		"output": {
+			"6585": 1
+		},
+		"xp": 97,
+		"level": 87
+	},
+	{
+		"name": "Onyx bracelet",
+		"id": 11130,
+		"input": {
+			"554": 20,
+			"557": 20,
+			"564": 1,
+			"11130": 1
+		},
+		"output": {
+			"11133": 1
+		},
+		"xp": 97,
+		"level": 87
+	},
+	{
+		"name": "Onyx necklace",
+		"id": 6577,
+		"input": {
+			"554": 20,
+			"557": 20,
+			"564": 1,
+			"6577": 1
+		},
+		"output": {
+			"11128": 1
+		},
+		"xp": 97,
+		"level": 87
+	},
+	{
+		"name": "Onyx ring",
+		"id": 6575,
+		"input": {
+			"554": 20,
+			"557": 20,
+			"564": 1,
+			"6575": 1
+		},
+		"output": {
+			"6583": 1
+		},
+		"xp": 97,
+		"level": 87
+	},
+	{
+		"name": "Opal amulet",
+		"id": 21108,
+		"input": {
+			"555": 1,
+			"564": 1,
+			"21108": 1
+		},
+		"output": {
+			"21160": 1
+		},
+		"xp": 17.5,
+		"level": 7
+	},
+	{
+		"name": "Opal bracelet",
+		"id": 21117,
+		"input": {
+			"555": 1,
+			"564": 1,
+			"21117": 1
+		},
+		"output": {
+			"21177": 1
+		},
+		"xp": 17.5,
+		"level": 7
+	},
+	{
+		"name": "Opal necklace",
+		"id": 21090,
+		"input": {
+			"555": 1,
+			"564": 1,
+			"21090": 1
+		},
+		"output": {
+			"21143": 1
+		},
+		"xp": 17.5,
+		"level": 7
+	},
+	{
+		"name": "Opal ring",
+		"id": 21081,
+		"input": {
+			"555": 1,
+			"564": 1,
+			"21081": 1
+		},
+		"output": {
+			"21126": 1
+		},
+		"xp": 17.5,
+		"level": 7
+	},
+	{
+		"id": 960,
+		"name": "Plank Make Logs",
+		"input": {
+			"557": 15,
+			"561": 1,
+			"1511": 1,
+			"9075": 2
+		},
+		"output": {
+			"960": 1
+		},
+		"xp": 90,
+		"level": 86,
+		"ticks": 3,
+		"qp_required": 50,
+		"gp_cost": 70
+	},
+	{
+		"id": 8782,
+		"name": "Plank Make Mahogany",
+		"input": {
+			"557": 15,
+			"561": 1,
+			"6332": 1,
+			"9075": 2
+		},
+		"output": {
+			"8782": 1
+		},
+		"xp": 90,
+		"level": 86,
+		"ticks": 3,
+		"qp_required": 50,
+		"gp_cost": 1050
+	},
+	{
+		"id": 8778,
+		"name": "Plank Make Oak",
+		"input": {
+			"557": 15,
+			"561": 1,
+			"1521": 1,
+			"9075": 2
+		},
+		"output": {
+			"8778": 1
+		},
+		"xp": 90,
+		"level": 86,
+		"ticks": 3,
+		"qp_required": 50,
+		"gp_cost": 175
+	},
+	{
+		"id": 8780,
+		"name": "Plank Make Teak",
+		"input": {
+			"557": 15,
+			"561": 1,
+			"6333": 1,
+			"9075": 2
+		},
+		"output": {
+			"8780": 1
+		},
+		"xp": 90,
+		"level": 86,
+		"ticks": 3,
+		"qp_required": 50,
+		"gp_cost": 350
+	},
+	{
+		"id": 11118,
+		"name": "Recharge Combat Bracelet",
+		"input": {
+			"555": 4,
+			"566": 1,
+			"9075": 1,
+			"11126": 25
+		},
+		"output": {
+			"11118": 25
+		},
+		"xp": 97.5,
+		"level": 89,
+		"ticks": 3,
+		"qp_required": 50
+	},
+	{
+		"id": 1712,
+		"name": "Recharge Glory",
+		"input": {
+			"555": 4,
+			"566": 1,
+			"1704": 25,
+			"9075": 1
+		},
+		"output": {
+			"1712": 25
+		},
+		"xp": 97.5,
+		"level": 89,
+		"ticks": 3,
+		"qp_required": 50
+	},
+	{
+		"id": 11105,
+		"name": "Recharge Skills Necklace",
+		"input": {
+			"555": 4,
+			"566": 1,
+			"9075": 1,
+			"11113": 25
+		},
+		"output": {
+			"11105": 25
+		},
+		"xp": 97.5,
+		"level": 89,
+		"ticks": 3,
+		"qp_required": 50
+	},
+	{
+		"name": "Ruby amulet",
+		"id": 1698,
+		"input": {
+			"554": 5,
+			"564": 1,
+			"1698": 1
+		},
+		"output": {
+			"1725": 1
+		},
+		"xp": 59,
+		"level": 49
+	},
+	{
+		"name": "Ruby bracelet",
+		"id": 11085,
+		"input": {
+			"554": 5,
+			"564": 1,
+			"11085": 1
+		},
+		"output": {
+			"11088": 1
+		},
+		"xp": 59,
+		"level": 49
+	},
+	{
+		"name": "Ruby necklace",
+		"id": 1660,
+		"input": {
+			"554": 5,
+			"564": 1,
+			"1660": 1
+		},
+		"output": {
+			"11194": 1
+		},
+		"xp": 59,
+		"level": 49
+	},
+	{
+		"name": "Ruby ring",
+		"id": 1641,
+		"input": {
+			"554": 5,
+			"564": 1,
+			"1641": 1
+		},
+		"output": {
+			"2568": 1
+		},
+		"xp": 59,
+		"level": 49
+	},
+	{
+		"name": "Sapphire amulet",
+		"id": 1694,
+		"input": {
+			"555": 1,
+			"564": 1,
+			"1694": 1
+		},
+		"output": {
+			"1727": 1
+		},
+		"xp": 17.5,
+		"level": 7
+	},
+	{
+		"name": "Sapphire bracelet",
+		"id": 11072,
+		"input": {
+			"555": 1,
+			"564": 1,
+			"11072": 1
+		},
+		"output": {
+			"11074": 1
+		},
+		"xp": 17.5,
+		"level": 7
+	},
+	{
+		"name": "Sapphire necklace",
+		"id": 1656,
+		"input": {
+			"555": 1,
+			"564": 1,
+			"1656": 1
+		},
+		"output": {
+			"3853": 1
+		},
+		"xp": 17.5,
+		"level": 7
+	},
+	{
+		"name": "Sapphire ring",
+		"id": 1637,
+		"input": {
+			"555": 1,
+			"564": 1,
+			"1637": 1
+		},
+		"output": {
+			"2550": 1
+		},
+		"xp": 17.5,
+		"level": 7
+	},
+	{
+		"id": 1777,
+		"name": "Spin Flax",
+		"input": {
+			"556": 5,
+			"561": 2,
+			"1779": 5,
+			"9075": 1
+		},
+		"output": {
+			"1777": 5
+		},
+		"xp": 75,
+		"level": 76,
+		"ticks": 5,
+		"qp_required": 50,
+		"craft_xp": 75,
+		"craft_level": 10
+	},
+	{
+		"id": 1700,
+		"name": "String Diamond",
+		"input": {
+			"555": 5,
+			"557": 10,
+			"1681": 1,
+			"9075": 2
+		},
+		"output": {
+			"1700": 1
+		},
+		"xp": 83,
+		"level": 80,
+		"ticks": 3,
+		"qp_required": 50,
+		"craft_xp": 4,
+		"craft_level": 70
+	},
+	{
+		"id": 1702,
+		"name": "String Dragonstone",
+		"input": {
+			"555": 5,
+			"557": 10,
+			"1683": 1,
+			"9075": 2
+		},
+		"output": {
+			"1702": 1
+		},
+		"xp": 83,
+		"level": 80,
+		"ticks": 3,
+		"qp_required": 50,
+		"craft_xp": 4,
+		"craft_level": 80
+	},
+	{
+		"id": 1696,
+		"name": "String Emerald",
+		"input": {
+			"555": 5,
+			"557": 10,
+			"1677": 1,
+			"9075": 2
+		},
+		"output": {
+			"1696": 1
+		},
+		"xp": 83,
+		"level": 80,
+		"ticks": 3,
+		"qp_required": 50,
+		"craft_xp": 4,
+		"craft_level": 31
+	},
+	{
+		"id": 1692,
+		"name": "String Gold",
+		"input": {
+			"555": 5,
+			"557": 10,
+			"1673": 1,
+			"9075": 2
+		},
+		"output": {
+			"1692": 1
+		},
+		"xp": 83,
+		"level": 80,
+		"ticks": 3,
+		"qp_required": 50,
+		"craft_xp": 4,
+		"craft_level": 8
+	},
+	{
+		"id": 6581,
+		"name": "String Onyx",
+		"input": {
+			"555": 5,
+			"557": 10,
+			"6579": 1,
+			"9075": 2
+		},
+		"output": {
+			"6581": 1
+		},
+		"xp": 83,
+		"level": 80,
+		"ticks": 3,
+		"qp_required": 50,
+		"craft_xp": 4,
+		"craft_level": 90
+	},
+	{
+		"id": 1698,
+		"name": "String Ruby",
+		"input": {
+			"555": 5,
+			"557": 10,
+			"1679": 1,
+			"9075": 2
+		},
+		"output": {
+			"1698": 1
+		},
+		"xp": 83,
+		"level": 80,
+		"ticks": 3,
+		"qp_required": 50,
+		"craft_xp": 4,
+		"craft_level": 50
+	},
+	{
+		"id": 1694,
+		"name": "String Sapphire",
+		"input": {
+			"555": 5,
+			"557": 10,
+			"1675": 1,
+			"9075": 2
+		},
+		"output": {
+			"1694": 1
+		},
+		"xp": 83,
+		"level": 80,
+		"ticks": 3,
+		"qp_required": 50,
+		"craft_xp": 4,
+		"craft_level": 24
+	},
+	{
+		"id": 21504,
+		"name": "Superglass make giant seaweed",
+		"input": {
+			"554": 6,
+			"556": 10,
+			"1783": 18,
+			"9075": 2,
+			"21504": 3
+		},
+		"output": {
+			"1775": 29
+		},
+		"xp": 78,
+		"level": 77,
+		"ticks": 12,
+		"qp_required": 50,
+		"craft_xp": 180,
+		"craft_level": 61
+	},
+	{
+		"id": 401,
+		"name": "Superglass make seaweed",
+		"input": {
+			"401": 13,
+			"554": 6,
+			"556": 10,
+			"1783": 13,
+			"9075": 2
+		},
+		"output": {
+			"1775": 17
+		},
+		"xp": 78,
+		"level": 77,
+		"ticks": 12,
+		"qp_required": 50,
+		"craft_xp": 130,
+		"craft_level": 61
+	},
+	{
+		"id": 1781,
+		"name": "Superglass make soda ash",
+		"input": {
+			"554": 6,
+			"556": 10,
+			"1781": 13,
+			"1783": 13,
+			"9075": 2
+		},
+		"output": {
+			"1775": 17
+		},
+		"xp": 78,
+		"level": 77,
+		"ticks": 12,
+		"qp_required": 50,
+		"craft_xp": 130,
+		"craft_level": 61
+	},
+	{
+		"id": 2509,
+		"name": "Tan Black Dragon Leather",
+		"input": {
+			"554": 5,
+			"561": 1,
+			"1747": 5,
+			"9075": 2
+		},
+		"output": {
+			"2509": 5
+		},
+		"xp": 81,
+		"level": 78,
+		"ticks": 3.5,
+		"qp_required": 50
+	},
+	{
+		"id": 2505,
+		"name": "Tan Blue Dragon Leather",
+		"input": {
+			"554": 5,
+			"561": 1,
+			"1751": 5,
+			"9075": 2
+		},
+		"output": {
+			"2505": 5
+		},
+		"xp": 81,
+		"level": 78,
+		"ticks": 3.5,
+		"qp_required": 50
+	},
+	{
+		"id": 1745,
+		"name": "Tan Green Dragon Leather",
+		"input": {
+			"554": 5,
+			"561": 1,
+			"1753": 5,
+			"9075": 2
+		},
+		"output": {
+			"1745": 5
+		},
+		"xp": 81,
+		"level": 78,
+		"ticks": 3.5,
+		"qp_required": 50
+	},
+	{
+		"id": 2507,
+		"name": "Tan Red Dragon Leather",
+		"input": {
+			"554": 5,
+			"561": 1,
+			"1749": 5,
+			"9075": 2
+		},
+		"output": {
+			"2507": 5
+		},
+		"xp": 81,
+		"level": 78,
+		"ticks": 3.5,
+		"qp_required": 50
+	},
+	{
+		"name": "Topaz amulet",
+		"id": 21114,
+		"input": {
+			"554": 5,
+			"564": 1,
+			"21114": 1
+		},
+		"output": {
+			"21166": 1
+		},
+		"xp": 59,
+		"level": 49
+	},
+	{
+		"name": "Topaz bracelet",
+		"id": 21123,
+		"input": {
+			"554": 5,
+			"564": 1,
+			"21123": 1
+		},
+		"output": {
+			"21183": 1
+		},
+		"xp": 59,
+		"level": 49
+	},
+	{
+		"name": "Topaz necklace",
+		"id": 21096,
+		"input": {
+			"554": 5,
+			"564": 1,
+			"21096": 1
+		},
+		"output": {
+			"21157": 1
+		},
+		"xp": 59,
+		"level": 49
+	},
+	{
+		"name": "Topaz ring",
+		"id": 21087,
+		"input": {
+			"554": 5,
+			"564": 1,
+			"21087": 1
+		},
+		"output": {
+			"21140": 1
+		},
+		"xp": 59,
+		"level": 49
+	},
+	{
+		"id": 8007,
+		"name": "Varrock Teleport",
+		"input": {
+			"554": 1,
+			"556": 3,
+			"563": 1
+		},
+		"output": null,
+		"xp": 35,
+		"level": 25,
+		"ticks": 5
+	},
+	{
+		"name": "Zenyte amulet",
+		"id": 19541,
+		"input": {
+			"564": 1,
+			"565": 20,
+			"566": 20,
+			"19541": 1
+		},
+		"output": {
+			"19553": 1
+		},
+		"xp": 110,
+		"level": 93,
+		"cant_be_doubled": true
+	},
+	{
+		"name": "Zenyte bracelet",
+		"id": 19532,
+		"input": {
+			"564": 1,
+			"565": 20,
+			"566": 20,
+			"19532": 1
+		},
+		"output": {
+			"19544": 1
+		},
+		"xp": 110,
+		"level": 93,
+		"cant_be_doubled": true
+	},
+	{
+		"name": "Zenyte necklace",
+		"id": 19535,
+		"input": {
+			"564": 1,
+			"565": 20,
+			"566": 20,
+			"19535": 1
+		},
+		"output": {
+			"19547": 1
+		},
+		"xp": 110,
+		"level": 93,
+		"cant_be_doubled": true
+	},
+	{
+		"name": "Zenyte ring",
+		"id": 19538,
+		"input": {
+			"564": 1,
+			"565": 20,
+			"566": 20,
+			"19538": 1
+		},
+		"output": {
+			"19550": 1
+		},
+		"xp": 110,
+		"level": 93,
+		"cant_be_doubled": true
+	}
+]

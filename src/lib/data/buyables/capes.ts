@@ -1,10 +1,24 @@
 import { Bank } from 'oldschooljs';
 
 import type { Buyable } from '@/lib/data/buyables/buyables.js';
-import { diaries, userhasDiaryTier } from '@/lib/diaries.js';
 import { MAX_QP } from '@/lib/minions/data/quests.js';
 import { musicCapeRequirements } from '@/lib/musicCape.js';
 import { Requirements } from '@/lib/structures/Requirements.js';
+
+const allEliteDiaries = [
+	'ardougne.elite',
+	'desert.elite',
+	'falador.elite',
+	'fremennik.elite',
+	'kandarin.elite',
+	'karamja.elite',
+	'kourend&kebos.elite',
+	'lumbridge&draynor.elite',
+	'morytania.elite',
+	'varrock.elite',
+	'westernprovinces.elite',
+	'wilderness.elite'
+] as const;
 
 export const capeBuyables: Buyable[] = [
 	{
@@ -26,10 +40,13 @@ export const capeBuyables: Buyable[] = [
 		qpRequired: MAX_QP,
 		gpCost: 99_000,
 		customReq: async user => {
-			for (const diary of diaries.map(d => d.elite)) {
-				const [has] = await userhasDiaryTier(user, diary);
+			for (const diary of allEliteDiaries) {
+				const has = user.hasDiary(diary);
 				if (!has) {
-					return [false, "You can't buy this because you haven't completed all the Elite diaries!"];
+					return [
+						false,
+						"You can't buy this because you haven't completed all the Elite Achievement diaries!"
+					];
 				}
 			}
 			return [true];
@@ -44,10 +61,13 @@ export const capeBuyables: Buyable[] = [
 		aliases: ['achievement cape'],
 		gpCost: 99_000,
 		customReq: async user => {
-			for (const diary of diaries.map(d => d.elite)) {
-				const [has] = await userhasDiaryTier(user, diary);
+			for (const diary of allEliteDiaries) {
+				const has = user.hasDiary(diary);
 				if (!has) {
-					return [false, "You can't buy this because you haven't completed all the Elite diaries!"];
+					return [
+						false,
+						"You can't buy this because you haven't completed all the Elite Achievement diaries!"
+					];
 				}
 			}
 			return [true];
@@ -62,8 +82,8 @@ export const capeBuyables: Buyable[] = [
 		qpRequired: MAX_QP,
 		gpCost: 99_000,
 		customReq: async user => {
-			for (const diary of diaries.map(d => d.elite)) {
-				const [has] = await userhasDiaryTier(user, diary);
+			for (const diary of allEliteDiaries) {
+				const has = user.hasDiary(diary);
 				if (!has) {
 					return [false, "You can't buy this because you haven't completed all the Elite diaries!"];
 				}
@@ -99,8 +119,8 @@ export const capeBuyables: Buyable[] = [
 			if (!user.cl.has('Music cape')) {
 				return [false, 'You need to own the regular Music cape first.'];
 			}
-			for (const diary of diaries.map(d => d.elite)) {
-				const [has] = await userhasDiaryTier(user, diary);
+			for (const diary of allEliteDiaries) {
+				const has = user.hasDiary(diary);
 				if (!has) {
 					return [
 						false,

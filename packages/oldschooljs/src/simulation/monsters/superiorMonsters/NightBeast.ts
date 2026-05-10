@@ -2,7 +2,7 @@ import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 import { DarkBeastPreTable } from '../low/a-f/DarkBeast.js';
 
-const NightBeastTable = new LootTable()
+const NightBeastTable: LootTable = new LootTable()
 	.every('Big bones')
 	.every(DarkBeastPreTable, 3)
 	.tertiary(13, 'Clue scroll (hard)')
@@ -16,7 +16,7 @@ const NightBeastTable = new LootTable()
 	.tertiary(255, 'Eternal gem')
 	.tertiary(254, 'Imbued heart');
 
-export default new SimpleMonster({
+export const NightBeast: SimpleMonster = new SimpleMonster({
 	id: 7409,
 	name: 'Night beast',
 	table: NightBeastTable,

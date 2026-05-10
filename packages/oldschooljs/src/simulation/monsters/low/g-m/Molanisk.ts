@@ -3,7 +3,7 @@ import { RareDropTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const MolaniskTable = new LootTable()
+const MolaniskTable: LootTable = new LootTable()
 	.every('Bones')
 
 	/* Runes */
@@ -28,7 +28,7 @@ const MolaniskTable = new LootTable()
 	/* Tertiary */
 	.tertiary(128, 'Clue scroll (easy)');
 
-export default new SimpleMonster({
+export const Molanisk: SimpleMonster = new SimpleMonster({
 	id: 1,
 	name: 'Molanisk',
 	table: MolaniskTable,

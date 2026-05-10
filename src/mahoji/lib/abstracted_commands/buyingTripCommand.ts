@@ -1,20 +1,22 @@
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
-import { Bank, Items } from 'oldschooljs';
+import { Bank, EItem, Items } from 'oldschooljs';
 
 import type { TripBuyable } from '@/lib/data/buyables/tripBuyables.js';
 import type { BuyActivityTaskOptions } from '@/lib/types/minions.js';
 import { calculateShopBuyCost } from '@/lib/util/calculateShopBuyCost.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
+import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 export async function buyingTripCommand(
 	user: MUser,
-	channelID: string,
+	channelId: string,
 	buyable: TripBuyable,
 	quantity: number | null,
 	interaction: MInteraction
 ) {
 	let quantityPerHour = buyable.quantityPerHour!;
 
-	if (buyable.item === Items.get('Coal')?.id && user.owns('Coal bag')) {
+	if (buyable.item === EItem.COAL && user.owns('Coal bag')) {
 		quantityPerHour *= 1.6;
 	}
 
@@ -24,7 +26,13 @@ export async function buyingTripCommand(
 	const itemQuantity = buyable.quantity ?? 1;
 	const gpCost = buyable.gpCost ?? 0;
 
-	const maxTripLength = user.calcMaxTripLength('Buy');
+	if (buyable.skillsNeeded && !user.hasSkillReqs(buyable.skillsNeeded)) {
+		return `You don't have the required stats to buy this item. You need ${formatSkillRequirements(
+			buyable.skillsNeeded
+		)}.`;
+	}
+
+	const maxTripLength = await user.calcMaxTripLength('Buy');
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timePerItem);
 	}
@@ -59,10 +67,10 @@ export async function buyingTripCommand(
 		itemID: osItem.id,
 		quantity: quantity * itemQuantity, // total item count
 		userID: user.id,
-		channelID,
+		channelId,
 		duration,
 		totalCost
 	});
 
-	return `${user.minionName} is now buying ${quantity}x ${itemDisplayName} and will return in ${formatDuration(duration)}.`;
+	return `${user.minionName} is now buying ${quantity}x ${itemDisplayName} and will return in ${formatTripDuration(user, duration)}.`;
 }

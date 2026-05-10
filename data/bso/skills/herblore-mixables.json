@@ -1,0 +1,1520 @@
+[
+	{
+		"item": "Agility mix(2)",
+		"level": 37,
+		"xp": 27,
+		"input_items": {
+			"3036": 1,
+			"11326": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.088
+	},
+	{
+		"item": "Agility potion(3)",
+		"level": 34,
+		"xp": 80,
+		"input_items": {
+			"2152": 1,
+			"3002": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Ancient brew(3)",
+		"level": 85,
+		"xp": 190,
+		"input_items": {
+			"109": 1,
+			"26368": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.17
+	},
+	{
+		"item": "Ancient mix(2)",
+		"level": 92,
+		"xp": 63,
+		"input_items": {
+			"11326": 1,
+			"26344": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.088
+	},
+	{
+		"item": "Anti-poison supermix(2)",
+		"level": 51,
+		"xp": 35,
+		"input_items": {
+			"183": 1,
+			"11326": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.088
+	},
+	{
+		"item": "Anti-venom(4)",
+		"level": 87,
+		"xp": 120,
+		"input_items": {
+			"5952": 1,
+			"12934": 20
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.17
+	},
+	{
+		"item": "Anti-venom+(4)",
+		"level": 94,
+		"xp": 125,
+		"input_items": {
+			"269": 1,
+			"12905": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Antidote+ mix(2)",
+		"level": 74,
+		"xp": 52,
+		"input_items": {
+			"5947": 1,
+			"11326": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.088
+	},
+	{
+		"item": "Antidote+(4)",
+		"level": 68,
+		"xp": 155,
+		"input_items": {
+			"2998": 1,
+			"5935": 1,
+			"6049": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.45
+	},
+	{
+		"item": "Antidote++(4)",
+		"level": 79,
+		"xp": 177.5,
+		"input_items": {
+			"259": 1,
+			"5935": 1,
+			"6051": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.45
+	},
+	{
+		"item": "Antifire mix(2)",
+		"level": 75,
+		"xp": 53,
+		"input_items": {
+			"2456": 1,
+			"11326": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.088
+	},
+	{
+		"item": "Antifire potion(3)",
+		"level": 69,
+		"xp": 157.5,
+		"input_items": {
+			"241": 1,
+			"2483": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Antipoison mix(2)",
+		"level": 4,
+		"xp": 8,
+		"input_items": {
+			"177": 1,
+			"11324": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.088
+	},
+	{
+		"item": "Antipoison(3)",
+		"level": 5,
+		"xp": 37.5,
+		"input_items": {
+			"93": 1,
+			"235": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Athelas paste",
+		"level": 82,
+		"xp": 10,
+		"input_items": {
+			"50010": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.17,
+		"wesley": false,
+		"output_multiple": 2
+	},
+	{
+		"item": "Attack mix(2)",
+		"level": 4,
+		"xp": 8,
+		"input_items": {
+			"123": 1,
+			"11324": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.088
+	},
+	{
+		"item": "Attack potion(3)",
+		"level": 3,
+		"xp": 25,
+		"input_items": {
+			"91": 1,
+			"221": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Avantoe",
+		"level": 48,
+		"xp": 10,
+		"input_items": {
+			"211": 1
+		},
+		"tick_rate": 0.5,
+		"bank_time_per_potion": 0.15,
+		"zahur": true
+	},
+	{
+		"item": "Avantoe potion (unf)",
+		"level": 50,
+		"xp": 0,
+		"input_items": {
+			"227": 1,
+			"261": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.3,
+		"zahur": true
+	},
+	{
+		"item": "Bastion potion(3)",
+		"level": 80,
+		"xp": 155,
+		"input_items": {
+			"245": 1,
+			"22443": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Battlemage potion(3)",
+		"level": 80,
+		"xp": 155,
+		"input_items": {
+			"3138": 1,
+			"22443": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Cadantine",
+		"level": 65,
+		"xp": 12.5,
+		"input_items": {
+			"215": 1
+		},
+		"tick_rate": 0.5,
+		"bank_time_per_potion": 0.15,
+		"zahur": true
+	},
+	{
+		"item": "Cadantine blood potion (unf)",
+		"level": 80,
+		"xp": 0,
+		"input_items": {
+			"265": 1,
+			"22446": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.3,
+		"zahur": true
+	},
+	{
+		"item": "Cadantine potion (unf)",
+		"level": 66,
+		"xp": 0,
+		"input_items": {
+			"227": 1,
+			"265": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.3,
+		"zahur": true
+	},
+	{
+		"item": "Chocolate dust",
+		"level": 1,
+		"xp": 0,
+		"input_items": {
+			"1973": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0,
+		"wesley": true
+	},
+	{
+		"item": "Combat mix(2)",
+		"level": 40,
+		"xp": 28,
+		"input_items": {
+			"9743": 1,
+			"11326": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.088
+	},
+	{
+		"item": "Combat potion(3)",
+		"level": 36,
+		"xp": 84,
+		"input_items": {
+			"97": 1,
+			"9736": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Compost potion(3)",
+		"level": 22,
+		"xp": 60,
+		"input_items": {
+			"97": 1,
+			"21622": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Crushed nest",
+		"level": 1,
+		"xp": 0,
+		"input_items": {
+			"5075": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0,
+		"wesley": true
+	},
+	{
+		"item": "Crushed superior dragon bones",
+		"level": 1,
+		"xp": 0,
+		"input_items": {
+			"22124": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0,
+		"wesley": true
+	},
+	{
+		"item": "Deathly toxic potion",
+		"level": 95,
+		"xp": 12000.5,
+		"input_items": {
+			"2398": 100,
+			"6018": 100,
+			"12932": 1,
+			"27670": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3,
+		"default_quantity": 1
+	},
+	{
+		"item": "Defence mix(2)",
+		"level": 33,
+		"xp": 25,
+		"input_items": {
+			"135": 1,
+			"11326": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.088
+	},
+	{
+		"item": "Defence potion(3)",
+		"level": 30,
+		"xp": 75,
+		"input_items": {
+			"99": 1,
+			"239": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Divination potion",
+		"level": 105,
+		"xp": 115,
+		"input_items": {
+			"73018": 1,
+			"73021": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Dragon scale dust",
+		"level": 1,
+		"xp": 0,
+		"input_items": {
+			"243": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0,
+		"wesley": true
+	},
+	{
+		"item": "Dragon's fury",
+		"level": 120,
+		"xp": 1830,
+		"input_items": {
+			"24199": 1,
+			"48207": 3
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Dwarf weed",
+		"level": 70,
+		"xp": 13.8,
+		"input_items": {
+			"217": 1
+		},
+		"tick_rate": 0.5,
+		"bank_time_per_potion": 0.15,
+		"zahur": true
+	},
+	{
+		"item": "Dwarf weed potion (unf)",
+		"level": 72,
+		"xp": 0,
+		"input_items": {
+			"227": 1,
+			"267": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.3,
+		"zahur": true
+	},
+	{
+		"item": "Energy mix(2)",
+		"level": 29,
+		"xp": 23,
+		"input_items": {
+			"3012": 1,
+			"11326": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.088
+	},
+	{
+		"item": "Energy potion(3)",
+		"level": 26,
+		"xp": 67.5,
+		"input_items": {
+			"97": 1,
+			"1975": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Enhanced divine water",
+		"level": 110,
+		"xp": 150,
+		"input_items": {
+			"23804": 10,
+			"50599": 1,
+			"70002": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Enhanced saradomin brew",
+		"level": 110,
+		"xp": 160,
+		"input_items": {
+			"6685": 1,
+			"23804": 10,
+			"70002": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Enhanced stamina potion",
+		"level": 110,
+		"xp": 160,
+		"input_items": {
+			"12625": 1,
+			"23804": 10,
+			"70002": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Enhanced super restore",
+		"level": 110,
+		"xp": 160,
+		"input_items": {
+			"3024": 1,
+			"23804": 10,
+			"70002": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Extended anti-venom+(4)",
+		"level": 94,
+		"xp": 80,
+		"input_items": {
+			"12913": 1,
+			"29784": 4
+		},
+		"tick_rate": 3,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Extended antifire mix(2)",
+		"level": 91,
+		"xp": 61,
+		"input_items": {
+			"11326": 1,
+			"11955": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.088
+	},
+	{
+		"item": "Extended antifire(4)",
+		"level": 84,
+		"xp": 110,
+		"input_items": {
+			"2452": 1,
+			"11994": 4
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.17
+	},
+	{
+		"item": "Extended super antifire mix(2)",
+		"level": 99,
+		"xp": 78,
+		"input_items": {
+			"11326": 1,
+			"22215": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.088
+	},
+	{
+		"item": "Extended super antifire(4)",
+		"level": 98,
+		"xp": 160,
+		"input_items": {
+			"11994": 4,
+			"21978": 1
+		},
+		"tick_rate": 2,
+		"qp_required": 205,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Fishing mix(2)",
+		"level": 53,
+		"xp": 38,
+		"input_items": {
+			"153": 1,
+			"11326": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.088
+	},
+	{
+		"item": "Fishing potion(3)",
+		"level": 50,
+		"xp": 112.5,
+		"input_items": {
+			"103": 1,
+			"231": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Forgotten brew(4)",
+		"level": 91,
+		"xp": 145,
+		"input_items": {
+			"26340": 1,
+			"27616": 80
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.17
+	},
+	{
+		"item": "Goat horn dust",
+		"level": 1,
+		"xp": 0,
+		"input_items": {
+			"9735": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0,
+		"wesley": true
+	},
+	{
+		"item": "Guam leaf",
+		"level": 3,
+		"xp": 2.5,
+		"input_items": {
+			"199": 1
+		},
+		"tick_rate": 0.5,
+		"bank_time_per_potion": 0.15,
+		"zahur": true
+	},
+	{
+		"item": "Guam potion (unf)",
+		"level": 3,
+		"xp": 0,
+		"input_items": {
+			"227": 1,
+			"249": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.3,
+		"zahur": true
+	},
+	{
+		"item": "Guam tar",
+		"level": 19,
+		"xp": 30,
+		"input_items": {
+			"249": 1,
+			"1939": 15
+		},
+		"tick_rate": 3,
+		"bank_time_per_potion": 0.17,
+		"output_multiple": 15
+	},
+	{
+		"item": "Guthix balance(3)",
+		"level": 22,
+		"xp": 50,
+		"input_items": {
+			"127": 1,
+			"1550": 1,
+			"7650": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Guthix rest(3)",
+		"level": 18,
+		"xp": 59,
+		"input_items": {
+			"249": 1,
+			"251": 1,
+			"255": 1,
+			"4460": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 1.5,
+		"zahur": false
+	},
+	{
+		"item": "Harralander",
+		"level": 20,
+		"xp": 6.3,
+		"input_items": {
+			"205": 1
+		},
+		"tick_rate": 0.5,
+		"bank_time_per_potion": 0.15,
+		"zahur": true
+	},
+	{
+		"item": "Harralander potion (unf)",
+		"level": 22,
+		"xp": 0,
+		"input_items": {
+			"227": 1,
+			"255": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.3,
+		"zahur": true
+	},
+	{
+		"item": "Harralander tar",
+		"level": 44,
+		"xp": 72.5,
+		"input_items": {
+			"255": 1,
+			"1939": 15
+		},
+		"tick_rate": 3,
+		"bank_time_per_potion": 0.17,
+		"output_multiple": 15
+	},
+	{
+		"item": "Heat res. brew",
+		"level": 110,
+		"xp": 230,
+		"input_items": {
+			"6685": 1,
+			"21978": 1,
+			"50025": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Heat res. restore",
+		"level": 110,
+		"xp": 230,
+		"input_items": {
+			"3024": 1,
+			"21978": 1,
+			"50025": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Huasca",
+		"level": 58,
+		"xp": 11.8,
+		"input_items": {
+			"30094": 1
+		},
+		"tick_rate": 0.5,
+		"bank_time_per_potion": 0.15,
+		"zahur": true
+	},
+	{
+		"item": "Huasca potion (unf)",
+		"level": 58,
+		"xp": 132,
+		"input_items": {
+			"227": 1,
+			"30097": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.3,
+		"zahur": true
+	},
+	{
+		"item": "Hunter potion(3)",
+		"level": 53,
+		"xp": 120,
+		"input_items": {
+			"103": 1,
+			"10111": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Hunting mix(2)",
+		"level": 58,
+		"xp": 40,
+		"input_items": {
+			"10002": 1,
+			"11326": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.088
+	},
+	{
+		"item": "Irit leaf",
+		"level": 40,
+		"xp": 8.8,
+		"input_items": {
+			"209": 1
+		},
+		"tick_rate": 0.5,
+		"bank_time_per_potion": 0.15,
+		"zahur": true
+	},
+	{
+		"item": "Irit potion (unf)",
+		"level": 45,
+		"xp": 0,
+		"input_items": {
+			"227": 1,
+			"259": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.3,
+		"zahur": true
+	},
+	{
+		"item": "Kebbit teeth dust",
+		"level": 1,
+		"xp": 0,
+		"input_items": {
+			"10109": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0,
+		"wesley": true
+	},
+	{
+		"item": "Korulsi",
+		"level": 110,
+		"xp": 25,
+		"input_items": {
+			"70001": 1
+		},
+		"tick_rate": 0.5,
+		"bank_time_per_potion": 0.15,
+		"zahur": true
+	},
+	{
+		"item": "Kwuarm",
+		"level": 54,
+		"xp": 11.3,
+		"input_items": {
+			"213": 1
+		},
+		"tick_rate": 0.5,
+		"bank_time_per_potion": 0.15,
+		"zahur": true
+	},
+	{
+		"item": "Kwuarm potion (unf)",
+		"level": 55,
+		"xp": 0,
+		"input_items": {
+			"227": 1,
+			"263": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.3,
+		"zahur": true
+	},
+	{
+		"item": "Lantadyme",
+		"level": 67,
+		"xp": 13.1,
+		"input_items": {
+			"2485": 1
+		},
+		"tick_rate": 0.5,
+		"bank_time_per_potion": 0.15,
+		"zahur": true
+	},
+	{
+		"item": "Lantadyme potion (unf)",
+		"level": 69,
+		"xp": 0,
+		"input_items": {
+			"227": 1,
+			"2481": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.3,
+		"zahur": true
+	},
+	{
+		"item": "Lava scale shard",
+		"level": 1,
+		"xp": 0,
+		"input_items": {
+			"11992": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0,
+		"wesley": true
+	},
+	{
+		"item": "Magic essence mix(2)",
+		"level": 61,
+		"xp": 43,
+		"input_items": {
+			"9023": 1,
+			"11326": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.088
+	},
+	{
+		"item": "Magic mix(2)",
+		"level": 83,
+		"xp": 57,
+		"input_items": {
+			"3044": 1,
+			"11326": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.088
+	},
+	{
+		"item": "Magic potion(3)",
+		"level": 76,
+		"xp": 172.5,
+		"input_items": {
+			"2483": 1,
+			"3138": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Marrentill",
+		"level": 5,
+		"xp": 3.8,
+		"input_items": {
+			"201": 1
+		},
+		"tick_rate": 0.5,
+		"bank_time_per_potion": 0.15,
+		"zahur": true
+	},
+	{
+		"item": "Marrentill potion (unf)",
+		"level": 5,
+		"xp": 0,
+		"input_items": {
+			"227": 1,
+			"251": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.3,
+		"zahur": true
+	},
+	{
+		"item": "Marrentill tar",
+		"level": 31,
+		"xp": 42.5,
+		"input_items": {
+			"251": 1,
+			"1939": 15
+		},
+		"tick_rate": 3,
+		"bank_time_per_potion": 0.17,
+		"output_multiple": 15
+	},
+	{
+		"item": "Menaphite remedy(3)",
+		"level": 88,
+		"xp": 200,
+		"input_items": {
+			"109": 1,
+			"27272": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Neem oil",
+		"level": 82,
+		"xp": 1.5,
+		"input_items": {
+			"1937": 1,
+			"50060": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Nihil dust",
+		"level": 1,
+		"xp": 0,
+		"input_items": {
+			"26231": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0,
+		"wesley": true
+	},
+	{
+		"item": "Prayer mix(2)",
+		"level": 42,
+		"xp": 29,
+		"input_items": {
+			"141": 1,
+			"11326": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.088
+	},
+	{
+		"item": "Prayer potion(3)",
+		"level": 38,
+		"xp": 87.5,
+		"input_items": {
+			"99": 1,
+			"231": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Prayer regeneration potion(3)",
+		"level": 58,
+		"xp": 132,
+		"input_items": {
+			"29993": 1,
+			"30100": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Ranarr potion (unf)",
+		"level": 30,
+		"xp": 0,
+		"input_items": {
+			"227": 1,
+			"257": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.3,
+		"zahur": true
+	},
+	{
+		"item": "Ranarr weed",
+		"level": 25,
+		"xp": 7.5,
+		"input_items": {
+			"207": 1
+		},
+		"tick_rate": 0.5,
+		"bank_time_per_potion": 0.15,
+		"zahur": true
+	},
+	{
+		"item": "Ranging mix(2)",
+		"level": 80,
+		"xp": 54,
+		"input_items": {
+			"171": 1,
+			"11326": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.088
+	},
+	{
+		"item": "Ranging potion(3)",
+		"level": 72,
+		"xp": 162.5,
+		"input_items": {
+			"109": 1,
+			"245": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Relicym's mix(2)",
+		"level": 9,
+		"xp": 14,
+		"input_items": {
+			"4846": 1,
+			"11324": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.088
+	},
+	{
+		"item": "Restore mix(2)",
+		"level": 24,
+		"xp": 21,
+		"input_items": {
+			"129": 1,
+			"11324": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.088
+	},
+	{
+		"item": "Restore potion(3)",
+		"level": 22,
+		"xp": 62.5,
+		"input_items": {
+			"97": 1,
+			"223": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Sanfew serum(4)",
+		"level": 65,
+		"xp": 192,
+		"input_items": {
+			"235": 1,
+			"1526": 1,
+			"3024": 1,
+			"10937": 1
+		},
+		"tick_rate": 10,
+		"bank_time_per_potion": 0.5
+	},
+	{
+		"item": "Saradomin brew(3)",
+		"level": 81,
+		"xp": 180,
+		"input_items": {
+			"3002": 1,
+			"6693": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Serum 207 (3)",
+		"level": 15,
+		"xp": 50,
+		"input_items": {
+			"95": 1,
+			"592": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Silver dust",
+		"level": 1,
+		"xp": 0,
+		"input_items": {
+			"2355": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0,
+		"wesley": false
+	},
+	{
+		"item": "Snapdragon",
+		"level": 59,
+		"xp": 11.8,
+		"input_items": {
+			"3051": 1
+		},
+		"tick_rate": 0.5,
+		"bank_time_per_potion": 0.15,
+		"zahur": true
+	},
+	{
+		"item": "Snapdragon potion (unf)",
+		"level": 63,
+		"xp": 0,
+		"input_items": {
+			"227": 1,
+			"3000": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.3,
+		"zahur": true
+	},
+	{
+		"item": "Spirit weed",
+		"level": 105,
+		"xp": 25,
+		"input_items": {
+			"73020": 1
+		},
+		"tick_rate": 0.5,
+		"bank_time_per_potion": 0.15,
+		"zahur": true
+	},
+	{
+		"item": "Stamina mix(2)",
+		"level": 86,
+		"xp": 60,
+		"input_items": {
+			"11326": 1,
+			"12629": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.088
+	},
+	{
+		"item": "Stamina potion(4)",
+		"level": 77,
+		"xp": 102,
+		"input_items": {
+			"3016": 1,
+			"12640": 4
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.17
+	},
+	{
+		"item": "Strength mix(2)",
+		"level": 14,
+		"xp": 17,
+		"input_items": {
+			"117": 1,
+			"11324": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.088
+	},
+	{
+		"item": "Strength potion(3)",
+		"level": 12,
+		"xp": 50,
+		"input_items": {
+			"95": 1,
+			"225": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Super antifire mix(2)",
+		"level": 98,
+		"xp": 70,
+		"input_items": {
+			"11326": 1,
+			"21984": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.088
+	},
+	{
+		"item": "Super antifire potion(4)",
+		"level": 92,
+		"xp": 130,
+		"input_items": {
+			"2452": 1,
+			"21975": 1
+		},
+		"tick_rate": 2,
+		"qp_required": 205,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Super attack(3)",
+		"level": 45,
+		"xp": 100,
+		"input_items": {
+			"101": 1,
+			"221": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Super combat potion(4)",
+		"level": 90,
+		"xp": 150,
+		"input_items": {
+			"269": 1,
+			"2436": 1,
+			"2440": 1,
+			"2442": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.5
+	},
+	{
+		"item": "Super def. mix(2)",
+		"level": 71,
+		"xp": 50,
+		"input_items": {
+			"165": 1,
+			"11326": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.088
+	},
+	{
+		"item": "Super defence(3)",
+		"level": 66,
+		"xp": 150,
+		"input_items": {
+			"107": 1,
+			"239": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Super energy mix(2)",
+		"level": 56,
+		"xp": 39,
+		"input_items": {
+			"3020": 1,
+			"11326": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.088
+	},
+	{
+		"item": "Super energy(3)",
+		"level": 52,
+		"xp": 117.5,
+		"input_items": {
+			"103": 1,
+			"2970": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Super restore mix(2)",
+		"level": 67,
+		"xp": 48,
+		"input_items": {
+			"3028": 1,
+			"11326": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.088
+	},
+	{
+		"item": "Super restore(3)",
+		"level": 63,
+		"xp": 142.5,
+		"input_items": {
+			"223": 1,
+			"3004": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Super str. mix(2)",
+		"level": 59,
+		"xp": 42,
+		"input_items": {
+			"159": 1,
+			"11326": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.088
+	},
+	{
+		"item": "Super strength(3)",
+		"level": 55,
+		"xp": 125,
+		"input_items": {
+			"105": 1,
+			"225": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Superantipoison(3)",
+		"level": 48,
+		"xp": 106.5,
+		"input_items": {
+			"101": 1,
+			"235": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Superattack mix(2)",
+		"level": 47,
+		"xp": 33,
+		"input_items": {
+			"147": 1,
+			"11326": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.088
+	},
+	{
+		"item": "Tarromin",
+		"level": 11,
+		"xp": 5,
+		"input_items": {
+			"203": 1
+		},
+		"tick_rate": 0.5,
+		"bank_time_per_potion": 0.15,
+		"zahur": true
+	},
+	{
+		"item": "Tarromin potion (unf)",
+		"level": 12,
+		"xp": 0,
+		"input_items": {
+			"227": 1,
+			"253": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.3,
+		"zahur": true
+	},
+	{
+		"item": "Tarromin tar",
+		"level": 39,
+		"xp": 55,
+		"input_items": {
+			"253": 1,
+			"1939": 15
+		},
+		"tick_rate": 3,
+		"bank_time_per_potion": 0.17,
+		"output_multiple": 15
+	},
+	{
+		"item": "Toadflax",
+		"level": 30,
+		"xp": 8,
+		"input_items": {
+			"3049": 1
+		},
+		"tick_rate": 0.5,
+		"bank_time_per_potion": 0.15,
+		"zahur": true
+	},
+	{
+		"item": "Toadflax potion (unf)",
+		"level": 34,
+		"xp": 0,
+		"input_items": {
+			"227": 1,
+			"2998": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.3,
+		"zahur": true
+	},
+	{
+		"item": "Torstol",
+		"level": 75,
+		"xp": 15,
+		"input_items": {
+			"219": 1
+		},
+		"tick_rate": 0.5,
+		"bank_time_per_potion": 0.15,
+		"zahur": true
+	},
+	{
+		"item": "Torstol potion (unf)",
+		"level": 78,
+		"xp": 0,
+		"input_items": {
+			"227": 1,
+			"269": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.3,
+		"zahur": true
+	},
+	{
+		"item": "Unicorn horn dust",
+		"level": 1,
+		"xp": 0,
+		"input_items": {
+			"237": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0,
+		"wesley": true
+	},
+	{
+		"item": "Vial of blood",
+		"level": 94,
+		"xp": 125,
+		"input_items": {
+			"109": 1,
+			"71945": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Weapon poison",
+		"level": 60,
+		"xp": 137.5,
+		"input_items": {
+			"105": 1,
+			"241": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Weapon poison(+)",
+		"level": 73,
+		"xp": 165,
+		"input_items": {
+			"223": 1,
+			"5935": 1,
+			"6016": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Weapon poison(++)",
+		"level": 82,
+		"xp": 165,
+		"input_items": {
+			"2398": 1,
+			"5935": 1,
+			"6018": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Zamorak brew(3)",
+		"level": 78,
+		"xp": 175,
+		"input_items": {
+			"111": 1,
+			"247": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
+		"item": "Zamorak mix(2)",
+		"level": 85,
+		"xp": 58,
+		"input_items": {
+			"191": 1,
+			"11326": 1
+		},
+		"tick_rate": 1,
+		"bank_time_per_potion": 0.088
+	}
+]

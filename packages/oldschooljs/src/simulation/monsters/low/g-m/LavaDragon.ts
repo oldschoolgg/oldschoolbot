@@ -3,7 +3,7 @@ import { GemTable, RareDropTable } from '@/simulation/subtables/RareDropTable.js
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-export const LavaDragonTable = new LootTable()
+export const LavaDragonTable: LootTable = new LootTable()
 	.every('Lava dragon bones')
 	.every('Black dragonhide')
 	.every('Lava scale')
@@ -54,7 +54,7 @@ export const LavaDragonTable = new LootTable()
 	.tertiary(250, 'Clue scroll (elite)')
 	.tertiary(10_000, 'Draconic visage');
 
-export default new SimpleMonster({
+export const LavaDragon: SimpleMonster = new SimpleMonster({
 	id: 6593,
 	name: 'Lava dragon',
 	table: LavaDragonTable,

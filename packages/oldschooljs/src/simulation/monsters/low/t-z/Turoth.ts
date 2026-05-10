@@ -4,9 +4,12 @@ import RareSeedTable from '@/simulation/subtables/RareSeedTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const TurothHerbTable = new LootTable().add(HerbDropTable, 1, 15).add(HerbDropTable, 2, 10).add(HerbDropTable, 3, 6);
+const TurothHerbTable: LootTable = new LootTable()
+	.add(HerbDropTable, 1, 15)
+	.add(HerbDropTable, 2, 10)
+	.add(HerbDropTable, 3, 6);
 
-export const TurothPreTable = new LootTable({ limit: 128 })
+export const TurothPreTable: LootTable = new LootTable({ limit: 128 })
 	/* Weapons and armour */
 	.add('Steel platelegs', 1, 7)
 	.add('Mithril axe', 1, 3)
@@ -38,14 +41,14 @@ export const TurothPreTable = new LootTable({ limit: 128 })
 	/* RDT */
 	.add(GemTable, 1, 5);
 
-const TurothTable = new LootTable()
+const TurothTable: LootTable = new LootTable()
 	.every('Bones')
 	.every(TurothPreTable)
 
 	/* Tertiary */
 	.tertiary(128, 'Clue scroll (hard)');
 
-export default new SimpleMonster({
+export const Turoth: SimpleMonster = new SimpleMonster({
 	id: 426,
 	name: 'Turoth',
 	table: TurothTable,

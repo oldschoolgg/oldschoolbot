@@ -1,7 +1,8 @@
+import { roll } from 'node-rng';
+
 import { Bank } from '@/structures/Bank.js';
 import type { MonsterKillOptions } from '@/structures/Monster.js';
 import { Monster } from '@/structures/Monster.js';
-import { roll } from '@/util/smallUtils.js';
 
 export class TzTokJadClass extends Monster {
 	public kill(quantity = 1, options: MonsterKillOptions = {}): Bank {
@@ -19,10 +20,8 @@ export class TzTokJadClass extends Monster {
 	}
 }
 
-const TzTokJad = new TzTokJadClass({
+export const TzTokJad: TzTokJadClass = new TzTokJadClass({
 	id: 3127,
 	name: 'TzTok-Jad',
 	aliases: ['tztok-jad', 'jad', 'tztok jad']
 });
-
-export default TzTokJad;

@@ -7,10 +7,11 @@ import { soteSkillRequirements } from '@/lib/skilling/functions/questRequirement
 import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
 import { HunterTechniqueEnum } from '@/lib/skilling/types.js';
 import type { HunterActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { generateDailyPeakIntervals, type Peak } from '@/lib/util/peaks.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 
-export const huntCommand: OSBMahojiCommand = {
+export const huntCommand = defineCommand({
 	name: 'hunt',
 	description: 'Hunt creatures with the Hunter skill.',
 	attributes: {
@@ -24,7 +25,7 @@ export const huntCommand: OSBMahojiCommand = {
 			name: 'name',
 			description: 'The creature you want to hunt.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return Hunter.Creatures.filter(i =>
 					!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 				).map(i => ({
@@ -53,11 +54,7 @@ export const huntCommand: OSBMahojiCommand = {
 			required: false
 		}
 	],
-	run: async ({
-		options,
-		user,
-		channelID
-	}: CommandRunOptions<{ name: string; quantity?: number; hunter_potion?: boolean; stamina_potions?: boolean }>) => {
+	run: async ({ options, user, channelId }) => {
 		const userBank = user.bank;
 		const userQP = user.QP;
 		const boosts = [];
@@ -144,7 +141,7 @@ export const huntCommand: OSBMahojiCommand = {
 		}
 
 		if (creature.wildy) {
-			const [bol, reason, score] = hasWildyHuntGearEquipped(user.gear.wildy);
+			const [bol, reason, score] = hasWildyHuntGearEquipped(user.gear.wildy.raw());
 			wildyScore = score;
 			if (!bol) {
 				return `To hunt ${creature.name} in the wilderness you need to meet the following requirement: ${reason}, check your wildy gear.`;
@@ -154,11 +151,11 @@ export const huntCommand: OSBMahojiCommand = {
 			}
 		}
 
-		if (creature.id === ECreature.HERBIBOAR || creature.id === ECreature.RAZOR_KEBBIT) {
+		if (creature.id === ECreature.HERBIBOAR || creature.id === ECreature.RAZOR_BACKED_KEBBIT) {
 			if (usingStaminaPotion) catchTime *= 0.8;
 		}
 
-		const maxTripLength = user.calcMaxTripLength('Hunter');
+		const maxTripLength = await user.calcMaxTripLength('Hunter');
 
 		let { quantity } = options;
 		if (!quantity) {
@@ -201,7 +198,11 @@ export const huntCommand: OSBMahojiCommand = {
 
 		// If creatures Herbiboar or Razor-backed kebbit use Stamina potion(4)
 		if (usingStaminaPotion) {
-			if (creature.id === ECreature.HERBIBOAR || creature.id === ECreature.RAZOR_KEBBIT || crystalImpling) {
+			if (
+				creature.id === ECreature.HERBIBOAR ||
+				creature.id === ECreature.RAZOR_BACKED_KEBBIT ||
+				crystalImpling
+			) {
 				const staminaPotionQuantity =
 					creature.id === ECreature.HERBIBOAR || crystalImpling
 						? Math.round(duration / (9 * Time.Minute))
@@ -260,7 +261,7 @@ export const huntCommand: OSBMahojiCommand = {
 		await ActivityManager.startTrip<HunterActivityTaskOptions>({
 			creatureID: creature.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			duration,
 			usingHuntPotion: usingHuntPotion ? true : undefined,
@@ -271,7 +272,7 @@ export const huntCommand: OSBMahojiCommand = {
 
 		let response = `${user.minionName} is now ${crystalImpling ? 'hunting' : `${creature.huntTechnique}`}${
 			crystalImpling ? ' ' : ` ${quantity}x `
-		}${creature.name}, it'll take around ${formatDuration(duration)} to finish.`;
+		}${creature.name}, it'll take around ${formatTripDuration(user, duration)} to finish.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
@@ -283,4 +284,4 @@ export const huntCommand: OSBMahojiCommand = {
 
 		return response;
 	}
-};
+});

@@ -1,10 +1,9 @@
-import { chunk, stringMatches } from '@oldschoolgg/toolkit';
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import { leagueBuyables } from '@/lib/data/leaguesBuyables.js';
+import { doMenuWrapper } from '@/lib/menuWrapper.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
-import { getUsername } from '@/lib/util.js';
-import { doMenu } from '@/mahoji/commands/leaderboard.js';
 
 const leaguesTrophiesBuyables = [
 	{
@@ -37,7 +36,7 @@ const leaguesTrophiesBuyables = [
 	}
 ];
 
-export const botLeaguesCommand: OSBMahojiCommand = {
+export const botLeaguesCommand = defineCommand({
 	name: 'botleagues',
 	description: 'Compete in the OSB/BSO Leagues.',
 	options: [
@@ -66,7 +65,7 @@ export const botLeaguesCommand: OSBMahojiCommand = {
 					name: 'item',
 					description: 'The item to buy.',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return leagueBuyables
 							.filter(i => (!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i.item.name, value: i.item.name }));
@@ -75,16 +74,7 @@ export const botLeaguesCommand: OSBMahojiCommand = {
 			]
 		}
 	],
-	run: async ({
-		options,
-		user,
-		interaction
-	}: CommandRunOptions<{
-		help?: {};
-		claim_trophy?: {};
-		leaderboard?: {};
-		buy_reward?: { item: string };
-	}>) => {
+	run: async ({ options, user, interaction }) => {
 		const roboChimpUser = await roboChimpUserFetch(user.id);
 
 		if (options.claim_trophy) {
@@ -144,37 +134,27 @@ ${leaguesTrophiesBuyables
 		}
 
 		if (options.leaderboard) {
+			await interaction.defer();
 			const result = await roboChimpClient.user.findMany({
 				where: {
-					leagues_points_total: {
-						gt: 0
-					}
+					leagues_points_total: { gt: 0 }
 				},
-				orderBy: {
-					leagues_points_total: 'desc'
-				},
+				orderBy: { leagues_points_total: 'desc' },
 				take: 100
 			});
-			await interaction.defer();
-			doMenu(
+
+			return doMenuWrapper({
+				ironmanOnly: false,
 				interaction,
-				await Promise.all(
-					chunk(result, 10).map(async subList =>
-						(
-							await Promise.all(
-								subList.map(
-									async ({ id, leagues_points_total }) =>
-										`**${await getUsername(id)}:** ${leagues_points_total.toLocaleString()} Pts`
-								)
-							)
-						).join('\n')
-					)
-				),
-				'Leagues Points Leaderboard'
-			);
-			return null;
+				users: result.map(r => ({
+					id: r.id.toString(),
+					score: r.leagues_points_total
+				})),
+				title: 'Leagues Points Leaderboard',
+				formatter: v => `${v.toLocaleString()} Pts`
+			});
 		}
 
 		return 'https://wiki.oldschool.gg/bso/leagues/';
 	}
-};
+});

@@ -1,8 +1,6 @@
-import { randInt } from '@oldschoolgg/rng';
 import { Events } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, Misc } from 'oldschooljs';
 
-import { KourendKebosDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import type { ZalcanoActivityTaskOptions } from '@/lib/types/minions.js';
 import { ashSanctifierEffect } from '@/lib/util/ashSanctifier.js';
@@ -10,12 +8,12 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const zalcanoTask: MinionTask = {
 	type: 'Zalcano',
-	async run(data: ZalcanoActivityTaskOptions, { user, handleTripFinish }) {
-		const { channelID, quantity, duration, performance, isMVP } = data;
+	async run(data: ZalcanoActivityTaskOptions, { user, handleTripFinish, rng }) {
+		const { channelId, quantity, duration, performance, isMVP } = data;
 
 		const { newKC } = await user.incrementKC(EMonster.ZALCANO, quantity);
-		const [hasKourendHard] = await userhasDiaryTier(user, KourendKebosDiary.hard);
-		const [hasKourendElite] = await userhasDiaryTier(user, KourendKebosDiary.elite);
+		const hasKourendHard = user.hasDiary('kourend&kebos.hard');
+		const hasKourendElite = user.hasDiary('kourend&kebos.elite');
 		const loot = new Bank();
 
 		let runecraftXP = 0;
@@ -28,9 +26,9 @@ export const zalcanoTask: MinionTask = {
 					team: [{ isMVP, performancePercentage: performance, id: '1' }]
 				})['1']
 			);
-			runecraftXP += randInt(100, 170);
-			smithingXP += randInt(250, 350);
-			miningXP += randInt(1100, 1400);
+			runecraftXP += rng.randInt(100, 170);
+			smithingXP += rng.randInt(250, 350);
+			miningXP += rng.randInt(1100, 1400);
 		}
 
 		const xpRes: string[] = [];
@@ -67,12 +65,12 @@ export const zalcanoTask: MinionTask = {
 			}
 		}
 
-		if (loot.amount('Smolcano') > 0) {
+		if (loot.has('Smolcano')) {
 			globalClient.emit(
 				Events.ServerNotification,
 				`**${user.badgedUsername}'s** minion, ${
 					user.minionName
-				}, just received **Smolcano**, their Zalcano KC is ${randInt(newKC - quantity, newKC)}!`
+				}, just received **Smolcano**, their Zalcano KC is ${rng.randInt(newKC - quantity, newKC)}!`
 			);
 		}
 
@@ -88,6 +86,6 @@ export const zalcanoTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
+		handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data, loot: itemsAdded });
 	}
 };

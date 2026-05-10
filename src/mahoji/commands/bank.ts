@@ -1,20 +1,19 @@
-import { chunk, Emoji } from '@oldschoolgg/toolkit';
-import { codeBlock, EmbedBuilder } from 'discord.js';
+import { codeBlock, EmbedBuilder } from '@oldschoolgg/discord';
+import { Emoji } from '@oldschoolgg/toolkit';
 import type { Bank } from 'oldschooljs';
+import { chunk } from 'remeda';
 
+import { choicesOf, filterOption, itemOption } from '@/discord/index.js';
 import type { BankFlag } from '@/lib/canvas/bankImage.js';
 import { bankFlags } from '@/lib/canvas/bankImage.js';
 import { PerkTier } from '@/lib/constants.js';
-import { filterOption, itemOption } from '@/lib/discord/index.js';
 import type { Flags } from '@/lib/minions/types.js';
-import type { BankSortMethod } from '@/lib/sorts.js';
 import { BankSortMethods } from '@/lib/sorts.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 
 const bankFormats = ['json', 'text_paged', 'text_full'] as const;
 const bankItemsPerPage = 10;
-type BankFormat = (typeof bankFormats)[number];
 
 async function getBankPage({
 	user,
@@ -28,26 +27,24 @@ async function getBankPage({
 	page: number;
 	mahojiFlags: BankFlag[];
 	flags?: Record<string, number | string>;
-}) {
+}): Promise<BaseSendableMessage> {
 	return {
 		files: [
-			(
-				await makeBankImage({
-					bank,
-					title: `${user.rawUsername ? `${user.rawUsername}'s` : 'Your'} Bank`,
-					flags: {
-						...flags,
-						page
-					},
-					user,
-					mahojiFlags
-				})
-			).file
+			await makeBankImage({
+				bank,
+				title: `${user.username ? `${user.username}'s` : 'Your'} Bank`,
+				flags: {
+					...flags,
+					page
+				},
+				user,
+				mahojiFlags
+			})
 		]
 	};
 }
 
-export const bankCommand: OSBMahojiCommand = {
+export const bankCommand = defineCommand({
 	name: 'bank',
 	description: 'See your minions bank.',
 	options: [
@@ -68,7 +65,7 @@ export const bankCommand: OSBMahojiCommand = {
 			name: 'format',
 			description: 'The format to return your bank in.',
 			required: false,
-			choices: bankFormats.map(i => ({ name: i, value: i }))
+			choices: choicesOf(bankFormats)
 		},
 		{
 			type: 'String',
@@ -82,41 +79,26 @@ export const bankCommand: OSBMahojiCommand = {
 			name: 'sort',
 			description: 'The method to sort your bank by.',
 			required: false,
-			choices: BankSortMethods.map(i => ({ name: i, value: i }))
+			choices: choicesOf(BankSortMethods)
 		},
 		{
 			type: 'String',
 			name: 'flag',
 			description: 'A particular flag to apply to your bank.',
 			required: false,
-			choices: bankFlags.map(i => ({ name: i, value: i }))
+			choices: choicesOf(bankFlags)
 		},
 		{
 			type: 'String',
 			name: 'flag_extra',
 			description: 'An additional flag to apply to your bank.',
 			required: false,
-			choices: bankFlags.map(i => ({ name: i, value: i }))
+			choices: choicesOf(bankFlags)
 		}
 	],
-	run: async ({
-		user,
-		options,
-		interaction
-	}: CommandRunOptions<{
-		page?: number;
-		format?: BankFormat;
-		search?: string;
-		filter?: string;
-		item?: string;
-		items?: string;
-		sort?: BankSortMethod;
-		flag?: BankFlag;
-		flag_extra?: BankFlag;
-	}>) => {
+	run: async ({ user, options, interaction }) => {
 		if (interaction) await interaction.defer();
-		const mUser = await mUserFetch(user.id);
-		const baseBank = mUser.bankWithGP;
+		const baseBank = user.bankWithGP;
 
 		const mahojiFlags: BankFlag[] = [];
 
@@ -139,7 +121,7 @@ export const bankCommand: OSBMahojiCommand = {
 				filter: options.filter
 			},
 			inputStr: options.item ?? options.items,
-			user: mUser,
+			user,
 			filters: options.filter ? [options.filter] : []
 		});
 
@@ -157,19 +139,16 @@ export const bankCommand: OSBMahojiCommand = {
 				}
 			}
 			if (options.format === 'text_full') {
-				const attachment = Buffer.from(textBank.join('\n'));
-
-				return {
-					content: 'Here is your selected bank in text file format.',
-					files: [{ attachment, name: 'Bank.txt' }]
-				};
+				return new MessageBuilder()
+					.setContent('Here is your selected bank in text file format.')
+					.addFile({ name: 'Bank.txt', buffer: Buffer.from(textBank.join('\n')) });
 			}
 
 			const pages = [];
 			for (const page of chunk(textBank, bankItemsPerPage)) {
 				pages.push({
 					embeds: [
-						new EmbedBuilder().setTitle(`${mUser.usernameOrMention}'s Bank`).setDescription(page.join('\n'))
+						new EmbedBuilder().setTitle(`${user.usernameOrMention}'s Bank`).setDescription(page.join('\n'))
 					]
 				});
 			}
@@ -179,7 +158,7 @@ export const bankCommand: OSBMahojiCommand = {
 		if (options.format === 'json') {
 			const json = JSON.stringify(baseBank.toJSON());
 			if (json.length > 1900) {
-				return { files: [{ attachment: Buffer.from(json), name: 'bank.json' }] };
+				return { files: [{ buffer: Buffer.from(json), name: 'bank.json' }] };
 			}
 			return `${codeBlock('json', json)}`;
 		}
@@ -190,7 +169,7 @@ export const bankCommand: OSBMahojiCommand = {
 		if (options.sort) flags.sort = options.sort;
 
 		const params: Parameters<typeof getBankPage>['0'] = {
-			user: mUser,
+			user,
 			bank,
 			flags,
 			mahojiFlags,
@@ -204,7 +183,7 @@ export const bankCommand: OSBMahojiCommand = {
 		if (
 			mahojiFlags.includes('show_all') ||
 			mahojiFlags.includes('wide') ||
-			mUser.perkTier() < PerkTier.Two ||
+			(await user.fetchPerkTier()) < PerkTier.Two ||
 			bankSize === 1
 		) {
 			return result;
@@ -220,4 +199,4 @@ export const bankCommand: OSBMahojiCommand = {
 			startingPage: Number(flags.page)
 		});
 	}
-};
+});

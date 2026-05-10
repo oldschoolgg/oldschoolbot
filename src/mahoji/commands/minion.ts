@@ -1,30 +1,27 @@
-import { randArrItem } from '@oldschoolgg/rng';
-import { formatOrdinal, notEmpty, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
-import { bold } from 'discord.js';
+import { bold } from '@oldschoolgg/discord';
+import { FormattedCustomEmoji, formatOrdinal, notEmpty, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
 import { convertLVLtoXP, Items } from 'oldschooljs';
 
-import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
+import { skillOption } from '@/discord/index.js';
 import { bankImageTask } from '@/lib/canvas/bankImage.js';
-import { BitField, BitFieldData, FormattedCustomEmoji, MAX_LEVEL, PerkTier } from '@/lib/constants.js';
+import { BitFieldData, MAX_LEVEL, PerkTier } from '@/lib/constants.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
 import { diaries } from '@/lib/diaries.js';
-import { skillOption } from '@/lib/discord/index.js';
 import { calculateMastery } from '@/lib/mastery.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { blowpipeCommand, blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
 import { degradeableItemsCommand } from '@/lib/minions/functions/degradeableItemsCommand.js';
-import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import { allPossibleStyles, trainCommand } from '@/lib/minions/functions/trainCommand.js';
-import { roboChimpCache } from '@/lib/perkTier.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import creatures from '@/lib/skilling/skills/hunter/creatures/index.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
-import { getKCByName } from '@/lib/util/getKCByName.js';
+import { getAllKillCounts, getKCByName } from '@/lib/util/getKCByName.js';
 import { minionStatsEmbed } from '@/lib/util/minionStatsEmbed.js';
 import { getPeakTimesString } from '@/lib/util/peaks.js';
-import { isValidNickname } from '@/lib/util/smallUtils.js';
+import { refreshUserCache } from '@/lib/util/refreshCache.js';
+import { isValidNickname, patronMsg } from '@/lib/util/smallUtils.js';
 import {
 	achievementDiaryCommand,
 	claimAchievementDiaryCommand
@@ -37,7 +34,6 @@ import { ironmanCommand } from '@/mahoji/lib/abstracted_commands/ironmanCommand.
 import { Lampables, lampCommand } from '@/mahoji/lib/abstracted_commands/lampCommand.js';
 import { minionBuyCommand } from '@/mahoji/lib/abstracted_commands/minionBuyCommand.js';
 import { minionStatusCommand } from '@/mahoji/lib/abstracted_commands/minionStatusCommand.js';
-import { patronMsg } from '@/mahoji/mahojiSettings.js';
 
 const patMessages = [
 	'You pat {name} on the head.',
@@ -48,9 +44,8 @@ const patMessages = [
 	'You give {name} head pats, they get comfortable and start falling asleep.'
 ];
 
-const randomPatMessage = (minionName: string) => randArrItem(patMessages).replace('{name}', minionName);
-
 export async function getUserInfo(user: MUser) {
+	await refreshUserCache({ user });
 	const roboChimpUser = await roboChimpUserFetch(user.id);
 	const leaguesRanking = await roboChimpClient.user.count({
 		where: {
@@ -62,18 +57,18 @@ export async function getUserInfo(user: MUser) {
 	const clRankRaw = await roboChimpClient.$queryRawUnsafe<{ count: number }[]>(roboChimpCLRankQuery(BigInt(user.id)));
 	const clRank = clRankRaw[0].count;
 
-	const bitfields = `${(user.bitfield as BitField[])
+	const bitfields = `${user.bitfield
 		.map(i => BitFieldData[i])
 		.filter(notEmpty)
 		.map(i => i.name)
 		.join(', ')}`;
 
-	const task = ActivityManager.getActivityOfUser(user.id);
+	const task = await ActivityManager.getActivityOfUser(user.id);
 	const taskText = task ? `${task.type}` : 'None';
 
 	const result = {
-		perkTier: user.perkTier(),
-		isBlacklisted: BLACKLISTED_USERS.has(user.id),
+		perkTier: user.perkTier,
+		isBlacklisted: await user.isBlacklisted(),
 		badges: user.badgesString,
 		isIronman: user.isIronman,
 		bitfields,
@@ -86,7 +81,7 @@ export async function getUserInfo(user: MUser) {
 		2
 	);
 
-	const roboCache = roboChimpCache.get(user.id);
+	const roboCache = await Cache.getRoboChimpUser(user.id);
 	return {
 		...result,
 		everythingString: `${user.badgedUsername}[${user.id}]
@@ -106,7 +101,7 @@ export async function getUserInfo(user: MUser) {
 	};
 }
 
-export const minionCommand: OSBMahojiCommand = {
+export const minionCommand = defineCommand({
 	name: 'minion',
 	description: 'Manage and control your minion.',
 	options: [
@@ -175,15 +170,13 @@ export const minionCommand: OSBMahojiCommand = {
 					type: 'String',
 					name: 'name',
 					description: 'The name of the bank background you want.',
-					autocomplete: async (value, user) => {
-						const mUser = await mUserFetch(user.id);
-						const isMod = mUser.bitfield.includes(BitField.isModerator);
+					autocomplete: async ({ value, user }: StringAutoComplete) => {
 						const bankImages = bankImageTask.backgroundImages;
 						const owned = bankImages
-							.filter(bg => bg.storeBitField && mUser.user.store_bitfield.includes(bg.storeBitField))
+							.filter(bg => bg.storeBitField && user.user.store_bitfield.includes(bg.storeBitField))
 							.map(bg => bg.id);
 						return bankImages
-							.filter(bg => isMod || bg.available || owned.includes(bg.id))
+							.filter(bg => user.isModOrAdmin() || bg.available || owned.includes(bg.id))
 							.filter(bg => (!value ? true : bg.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => {
 								const name = i.perkTierNeeded
@@ -204,16 +197,14 @@ export const minionCommand: OSBMahojiCommand = {
 					type: 'String',
 					name: 'item',
 					description: 'The item you want to use.',
-					autocomplete: async (value, user) => {
+					autocomplete: async ({ value, user }: StringAutoComplete) => {
 						const mappedLampables = Lampables.map(i => i.items)
 							.flat(2)
 							.map(id => Items.get(id))
 							.filter(notEmpty)
 							.map(i => ({ id: i.id, name: i.name }));
 
-						const botUser = await mUserFetch(user.id);
-
-						return botUser.bank
+						return user.bank
 							.items()
 							.filter(i => mappedLampables.map(l => l.id).includes(i[0].id))
 							.filter(i => {
@@ -292,11 +283,27 @@ export const minionCommand: OSBMahojiCommand = {
 					name: 'name',
 					description: 'The monster/thing you want to check your KC of.',
 					required: true,
-					autocomplete: async (value: string) => {
-						return [...effectiveMonsters, ...Minigames, ...creatures]
+					autocomplete: async ({ value }: StringAutoComplete) => {
+						const results = [...effectiveMonsters, ...Minigames, ...creatures]
 							.filter(i => (!value ? true : i.aliases.some(alias => alias.includes(value.toLowerCase()))))
 							.map(i => ({ name: i.name, value: i.name }));
+						const allOption = {
+							name: 'All killcounts (export to text file)',
+							value: 'all'
+						};
+						return [allOption, ...results].slice(0, 25);
 					}
+				},
+				{
+					type: 'String',
+					name: 'sort',
+					description: 'How to sort the exported KC list when using the all option.',
+					required: false,
+					choices: [
+						{ name: 'Alphabetical (A → Z)', value: 'alphabetical' },
+						{ name: 'Highest KC first', value: 'highest' },
+						{ name: 'Lowest KC first', value: 'lowest' }
+					]
 				}
 			]
 		},
@@ -409,41 +416,14 @@ export const minionCommand: OSBMahojiCommand = {
 			description: 'View your minions mastery.'
 		}
 	],
-	run: async ({
-		userID,
-		options,
-		interaction
-	}: CommandRunOptions<{
-		stats?: { stat?: string };
-		achievementdiary?: { diary?: string; claim?: boolean };
-		bankbg?: { name?: string };
-		cracker?: { user: MahojiUserOption };
-		lamp?: { item: string; quantity?: number; skill: string };
-		cancel?: {};
-		set_icon?: { icon: string };
-		set_name?: { name: string };
-		level?: { skill: string };
-		kc?: { name: string };
-		buy?: { ironman?: boolean };
-		ironman?: { permanent?: boolean };
-		charge?: { item?: string; amount?: number };
-		daily?: {};
-		train?: { style: AttackStyles };
-		pat?: {};
-		blowpipe?: { remove_darts?: boolean; uncharge?: boolean; add?: string; quantity?: number };
-		status?: {};
-		info?: {};
-		peak?: {};
-		mastery?: {};
-	}>) => {
-		const user = await mUserFetch(userID);
-		const perkTier = user.perkTier();
+	run: async ({ user, options, interaction, rng }) => {
+		const perkTier = await user.fetchPerkTier();
 
 		if (options.info) return (await getUserInfo(user)).everythingString;
 		if (options.status) return minionStatusCommand(user);
 
 		if (options.stats) {
-			return { embeds: [await minionStatsEmbed(user)] };
+			return { embeds: [await minionStatsEmbed({ user, rng })] };
 		}
 
 		if (options.achievementdiary) {
@@ -507,6 +487,46 @@ export const minionCommand: OSBMahojiCommand = {
 		}
 
 		if (options.kc) {
+			if (options.kc.name?.toLowerCase() === 'all') {
+				const sort = options.kc.sort ?? 'alphabetical';
+				const sortDescriptions = {
+					alphabetical: 'alphabetically (A → Z)',
+					highest: 'by highest KC',
+					lowest: 'by lowest KC'
+				} as const;
+				const allKillCounts = await getAllKillCounts(user);
+				const sortedKillCounts = [...allKillCounts].sort((a, b) => {
+					if (sort === 'alphabetical') {
+						return a.name.localeCompare(b.name);
+					}
+					if (sort === 'highest') {
+						return b.amount - a.amount || a.name.localeCompare(b.name);
+					}
+					return a.amount - b.amount || a.name.localeCompare(b.name);
+				});
+
+				const lines = [
+					`Killcount export for ${user.username}`,
+					`Total entries: ${sortedKillCounts.length}`,
+					`Sorted ${sortDescriptions[sort]}`,
+					''
+				];
+				for (const entry of sortedKillCounts) {
+					const label = entry.type === 'Monster' ? entry.name : `${entry.name} [${entry.type}]`;
+					lines.push(`${label}: ${entry.amount.toLocaleString()}`);
+				}
+
+				return {
+					content: `Exported ${sortedKillCounts.length.toLocaleString()} killcounts sorted ${sortDescriptions[sort]}.`,
+					files: [
+						{
+							buffer: Buffer.from(lines.join('\n')),
+							name: `minion-kc-${user.id}.txt`
+						}
+					]
+				};
+			}
+
 			const [kcName, kcAmount] = await getKCByName(user, options.kc.name);
 			if (!kcName) {
 				return "That's not a valid monster, minigame or hunting creature.";
@@ -520,10 +540,10 @@ export const minionCommand: OSBMahojiCommand = {
 			return degradeableItemsCommand(interaction, user, options.charge.item, options.charge.amount);
 		}
 		if (options.daily) {
-			return dailyCommand(interaction, user);
+			return dailyCommand(rng, interaction, user);
 		}
 		if (options.train) return trainCommand(user, options.train.style);
-		if (options.pat) return randomPatMessage(user.minionName);
+		if (options.pat) return rng.pick(patMessages).replace('{name}', user.minionName);
 		if (options.blowpipe) {
 			return blowpipeCommand(
 				user,
@@ -546,4 +566,4 @@ ${substr}`;
 
 		return 'Unknown command';
 	}
-};
+});

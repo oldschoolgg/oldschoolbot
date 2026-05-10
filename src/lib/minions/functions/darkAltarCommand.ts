@@ -1,8 +1,8 @@
-import { formatDuration, increaseNumByPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { increaseNumByPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
-import { KourendKebosDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import type { DarkAltarOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 
 export const darkAltarRunes = {
@@ -28,12 +28,12 @@ const mediumDiaryBoost = 20;
 
 export async function darkAltarCommand({
 	user,
-	channelID,
+	channelId,
 	name,
 	extracts
 }: {
 	user: MUser;
-	channelID: string;
+	channelId: string;
 	name: string;
 	extracts?: boolean;
 }) {
@@ -57,12 +57,12 @@ export async function darkAltarCommand({
 	let timePerRune = runeData.baseTime;
 
 	const boosts = [];
-	const [hasEliteDiary] = await userhasDiaryTier(user, KourendKebosDiary.elite);
+	const hasEliteDiary = user.hasDiary('kourend&kebos.elite');
 	if (hasEliteDiary && rune === 'blood') {
 		boosts.push('10% additional runes for Kourend/Kebos elite diary');
 	}
 
-	const [hasMediumDiary] = await userhasDiaryTier(user, KourendKebosDiary.medium);
+	const hasMediumDiary = user.hasDiary('kourend&kebos.medium');
 	if (hasMediumDiary) {
 		boosts.push(`${mediumDiaryBoost}% faster essence mining for Kourend/Kebos medium diary`);
 		timePerRune = reduceNumByPercent(timePerRune, mediumDiaryBoost);
@@ -78,7 +78,7 @@ export async function darkAltarCommand({
 		timePerRune = increaseNumByPercent(timePerRune, agilityPenalty);
 	}
 
-	const maxTripLength = user.calcMaxTripLength('DarkAltar');
+	const maxTripLength = await user.calcMaxTripLength('DarkAltar');
 	let quantity = Math.floor(maxTripLength / timePerRune);
 	let duration = maxTripLength;
 	const totalCost = new Bank();
@@ -100,7 +100,7 @@ export async function darkAltarCommand({
 
 	await ActivityManager.startTrip<DarkAltarOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		type: 'DarkAltar',
@@ -109,7 +109,8 @@ export async function darkAltarCommand({
 		useExtracts: extracts
 	});
 
-	let response = `${user.minionName} is now going to Runecraft ${runeData.item.name}'s for ${formatDuration(
+	let response = `${user.minionName} is now going to Runecraft ${runeData.item.name}'s for ${formatTripDuration(
+		user,
 		duration
 	)} at the Dark altar.`;
 

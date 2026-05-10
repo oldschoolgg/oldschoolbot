@@ -2,7 +2,7 @@ import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 import { TurothPreTable } from '../low/t-z/Turoth.js';
 
-const SpikedTurothTable = new LootTable()
+const SpikedTurothTable: LootTable = new LootTable()
 	.every('Bones')
 	.every(TurothPreTable, 3)
 	.tertiary(13, 'Clue scroll (hard)')
@@ -13,7 +13,7 @@ const SpikedTurothTable = new LootTable()
 	.tertiary(825, 'Eternal gem')
 	.tertiary(826, 'Imbued heart');
 
-export default new SimpleMonster({
+export const SpikedTuroth: SimpleMonster = new SimpleMonster({
 	id: 10_397,
 	name: 'Spiked Turoth',
 	table: SpikedTurothTable,

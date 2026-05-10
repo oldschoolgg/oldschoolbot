@@ -3,7 +3,7 @@ import UsefulHerbTable from '@/simulation/subtables/UsefulHerbTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const AdamantDragonTable = new LootTable()
+const AdamantDragonTable: LootTable = new LootTable()
 	.every('Dragon bones')
 	.every('Adamantite bar', 2)
 
@@ -45,7 +45,7 @@ const AdamantDragonTable = new LootTable()
 	.tertiary(5000, 'Dragon metal slice')
 	.tertiary(9000, 'Draconic visage');
 
-export default new SimpleMonster({
+export const AdamantDragon: SimpleMonster = new SimpleMonster({
 	id: 8030,
 	name: 'Adamant Dragon',
 	table: AdamantDragonTable,

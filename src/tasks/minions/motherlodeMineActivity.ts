@@ -1,19 +1,15 @@
-import { roll } from '@oldschoolgg/rng';
 import { Emoji, Events } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { FaladorDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import Mining from '@/lib/skilling/skills/mining.js';
 import type { MotherlodeMiningActivityTaskOptions } from '@/lib/types/minions.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
 export const motherlodeMiningTask: MinionTask = {
 	type: 'MotherlodeMining',
-	async run(data: MotherlodeMiningActivityTaskOptions, { user, handleTripFinish }) {
-		const { channelID, duration } = data;
+	async run(data: MotherlodeMiningActivityTaskOptions, { user, handleTripFinish, rng }) {
+		const { channelId, duration } = data;
 		const { quantity } = data;
-
-		const motherlode = Mining.MotherlodeMine;
 
 		let xpReceived = quantity * Mining.MotherlodeMine.xp;
 		let bonusXP = 0;
@@ -55,7 +51,7 @@ export const motherlodeMiningTask: MinionTask = {
 		let goldWeight = currentLevel >= 40 ? Math.round(100 * (0.2211 * currentLevel + 2.807)) : 0;
 
 		// Check for falador elite diary for increased ore rates
-		const [hasEliteDiary] = await userhasDiaryTier(user, FaladorDiary.elite);
+		const hasEliteDiary = user.hasDiary('falador.elite');
 		if (hasEliteDiary) {
 			if (currentLevel >= 85) runiteWeight += 100;
 			if (currentLevel >= 70) adamantiteWeight += 100;
@@ -97,8 +93,8 @@ export const motherlodeMiningTask: MinionTask = {
 
 		let str = `${user}, ${user.minionName} finished mining ${quantity} Pay-dirt. ${xpRes}`;
 
-		const { petDropRate } = skillingPetDropRate(user, 'mining', motherlode.petChance!);
-		if (roll(petDropRate / quantity)) {
+		const { petDropRate } = skillingPetDropRate(user, 'mining', Mining.MotherlodeMine.petChance!);
+		if (rng.roll(Math.ceil(petDropRate / quantity))) {
 			loot.add('Rock golem');
 			globalClient.emit(
 				Events.ServerNotification,
@@ -116,6 +112,6 @@ export const motherlodeMiningTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

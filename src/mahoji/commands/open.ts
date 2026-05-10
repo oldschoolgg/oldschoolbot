@@ -7,7 +7,7 @@ import {
 	OpenUntilItems
 } from '@/mahoji/lib/abstracted_commands/openCommand.js';
 
-export const openCommand: OSBMahojiCommand = {
+export const openCommand = defineCommand({
 	name: 'open',
 	description: 'Open an item (caskets, keys, boxes, etc).',
 	options: [
@@ -16,9 +16,8 @@ export const openCommand: OSBMahojiCommand = {
 			name: 'name',
 			description: 'The thing you want to open.',
 			required: false,
-			autocomplete: async (value, user) => {
-				const botUser = await mUserFetch(user.id);
-				return botUser.bank
+			autocomplete: async ({ value, user }: StringAutoComplete) => {
+				return user.bank
 					.items()
 					.filter(i => allOpenablesIDs.has(i[0].id))
 					.filter(i => {
@@ -46,7 +45,7 @@ export const openCommand: OSBMahojiCommand = {
 			name: 'open_until',
 			description: 'Keep opening items until you get this item.',
 			required: false,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				if (!value) return OpenUntilItems.map(i => ({ name: i.name, value: i.name }));
 				return OpenUntilItems.filter(i => i.name.toLowerCase().includes(value.toLowerCase())).map(i => ({
 					name: i.name,
@@ -63,11 +62,7 @@ export const openCommand: OSBMahojiCommand = {
 			max_value: 1000
 		}
 	],
-	run: async ({
-		user,
-		options,
-		interaction
-	}: CommandRunOptions<{ name?: string; quantity?: number; open_until?: string; result_quantity?: number }>) => {
+	run: async ({ user, options, interaction, rng }) => {
 		if (interaction) await interaction.defer();
 
 		if (!options.name) {
@@ -78,16 +73,18 @@ export const openCommand: OSBMahojiCommand = {
 		}
 		if (options.open_until) {
 			return abstractedOpenUntilCommand(
+				rng,
 				interaction,
-				user.id,
+				user,
 				options.name,
 				options.open_until,
+				options.quantity,
 				options.result_quantity
 			);
 		}
 		if (options.name.toLowerCase() === 'all') {
-			return abstractedOpenCommand(interaction, user.id, ['all'], 'auto');
+			return abstractedOpenCommand(rng, interaction, user, ['all'], 'auto');
 		}
-		return abstractedOpenCommand(interaction, user.id, [options.name], options.quantity);
+		return abstractedOpenCommand(rng, interaction, user, [options.name], options.quantity);
 	}
-};
+});

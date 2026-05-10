@@ -1,6 +1,6 @@
-import { channelIsSendable } from '@oldschoolgg/toolkit';
+import { SpecialResponse } from '@oldschoolgg/discord';
 
-export const pollCommand: OSBMahojiCommand = {
+export const pollCommand = defineCommand({
 	name: 'poll',
 	description: 'Create a reaction poll.',
 	options: [
@@ -11,22 +11,13 @@ export const pollCommand: OSBMahojiCommand = {
 			required: true
 		}
 	],
-	run: async ({ interaction, options, user, channelID }: CommandRunOptions<{ question: string }>) => {
-		const channel = globalClient.channels.cache.get(channelID.toString());
-		if (!channelIsSendable(channel)) return { ephemeral: true, content: 'Invalid channel.' };
-		await interaction.defer({ ephemeral: false });
-		try {
-			const message = await channel.send({
-				content: `**Poll from ${user.username}:** ${options.question}`,
-				allowedMentions: {
-					parse: []
-				}
-			});
-			await message.react('380915244760825857');
-			await message.react('380915244652036097');
-			return 'Poll created. Users can click on the two reactions to vote.';
-		} catch {
-			return 'There was an error making the poll.';
-		}
+	run: async ({ interaction, channelId, user, options }) => {
+		const createdMessage = await interaction.replyWithResponse({
+			content: `Poll from ${user.username}: ${options.question}`
+		});
+		const messageId = createdMessage!.message_id;
+		await globalClient.reactToMsg({ channelId: channelId, messageId, emojiId: 'Happy' });
+		await globalClient.reactToMsg({ channelId: channelId, messageId, emojiId: 'Sad' });
+		return SpecialResponse.RespondedManually;
 	}
-};
+});

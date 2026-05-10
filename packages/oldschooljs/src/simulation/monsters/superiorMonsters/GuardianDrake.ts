@@ -2,7 +2,7 @@ import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 import { DrakePreTable } from '../low/a-f/Drake.js';
 
-const GuardianDrakeTable = new LootTable()
+const GuardianDrakeTable: LootTable = new LootTable()
 	.every('Drake bones')
 	.every(DrakePreTable, 3)
 	.tertiary(13, 'Clue scroll (hard)')
@@ -13,7 +13,7 @@ const GuardianDrakeTable = new LootTable()
 	.tertiary(364, 'Eternal gem')
 	.tertiary(363, 'Imbued heart');
 
-export default new SimpleMonster({
+export const GuardianDrake: SimpleMonster = new SimpleMonster({
 	id: 10_400,
 	name: 'Guardian Drake',
 	table: GuardianDrakeTable,

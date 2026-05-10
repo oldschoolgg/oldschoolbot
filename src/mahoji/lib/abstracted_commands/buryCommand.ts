@@ -3,8 +3,9 @@ import { Bank } from 'oldschooljs';
 
 import Prayer from '@/lib/skilling/skills/prayer.js';
 import type { BuryingActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
-export async function buryCommand(user: MUser, channelID: string, boneName: string, quantity?: number) {
+export async function buryCommand(user: MUser, channelId: string, boneName: string, quantity?: number) {
 	const speedMod = 1;
 
 	const bone = Prayer.Bones.find(
@@ -21,7 +22,7 @@ export async function buryCommand(user: MUser, channelID: string, boneName: stri
 
 	const timeToBuryABone = speedMod * (Time.Second * 1.2 + Time.Second / 4);
 
-	const maxTripLength = user.calcMaxTripLength('Burying');
+	const maxTripLength = await user.calcMaxTripLength('Burying');
 
 	if (!quantity) {
 		const amountOfBonesOwned = user.bank.amount(bone.inputId);
@@ -50,11 +51,11 @@ export async function buryCommand(user: MUser, channelID: string, boneName: stri
 	await ActivityManager.startTrip<BuryingActivityTaskOptions>({
 		boneID: bone.inputId,
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		type: 'Burying'
 	});
 
-	return `${user.minionName} is now burying ${cost}, it'll take around ${formatDuration(duration)} to finish.`;
+	return `${user.minionName} is now burying ${cost}, it'll take around ${formatTripDuration(user, duration)} to finish.`;
 }

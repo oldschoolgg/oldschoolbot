@@ -1,7 +1,7 @@
 import { objectEntries } from '@oldschoolgg/toolkit';
-import type { Minigame } from '@prisma/client';
-import { type Bank, type Item, ItemGroups, Items, resolveItems } from 'oldschooljs';
+import { type Bank, EItem, type Item, ItemGroups, Items, resolveItems } from 'oldschooljs';
 
+import type { Minigame } from '@/prisma/main.js';
 import {
 	gracefulCapes,
 	gracefulFeet,
@@ -18,7 +18,7 @@ import type { MUserStats } from '@/lib/structures/MUserStats.js';
 export interface IToReturnCollection {
 	category: string;
 	name: string;
-	collection: number[];
+	collection: Set<number>;
 	completions?: Record<string, number>;
 	isActivity?: boolean;
 	collectionObtained: number;
@@ -179,6 +179,7 @@ export const muspahCL = resolveItems([
 	'Ancient essence'
 ]);
 export const crazyArchaeologistCL = resolveItems(['Odium shard 2', 'Malediction shard 2', 'Fedora']);
+export const derangedArchaeologistCL = resolveItems(['Steel ring']);
 export const dagannothKingsCL = resolveItems([
 	'Pet dagannoth prime',
 	'Pet dagannoth supreme',
@@ -788,8 +789,7 @@ export const cluesHardCL = resolveItems([
 	'Guthix crozier',
 	'Zamorak stole',
 	'Zamorak crozier',
-	// Zombie head
-	19_912,
+	'Zombie head (treasure trails)',
 	'Cyclops head',
 	"Pirate's hat",
 	'Red cavalier',
@@ -1342,6 +1342,13 @@ export const troubleBrewingCL = resolveItems([
 	'Red rum (trouble brewing)',
 	'Blue rum (trouble brewing)'
 ]);
+export const valeTotemsCL = resolveItems([
+	'Bow string spool',
+	'Ent branch',
+	'Fletching knife',
+	'Greenman mask',
+	'Vale offerings'
+]);
 export const volcanicMineCL = resolveItems([
 	'Ash covered tome',
 	'Large water container',
@@ -1419,6 +1426,8 @@ export const allPetsCL = resolveItems([
 	'Huberte',
 	'Moxi',
 	'Bran'
+	// 'Yami', // Currently unobtainable.
+	// 'Dom' // Currently unobtainable.
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',
@@ -1697,7 +1706,11 @@ export const slayerCL = resolveItems([
 	'Aranea boots',
 	'Glacial temotli',
 	'Pendant of ates (inert)',
-	'Frozen tear'
+	'Frozen tear',
+	// EItem.EARTHBOUND_TECPATL, // Currently unobtainable.
+	EItem.ANTLER_GUARD,
+	EItem.ALCHEMISTS_SIGNET,
+	EItem.BROKEN_ANTLER
 ]);
 
 export const tormentedDemonCL = resolveItems(['Tormented synapse', 'Burning claw', 'Guthixian temple teleport']);
@@ -1766,7 +1779,8 @@ export const miscellaneousCL = resolveItems([
 	'Orange egg sac',
 	'Blue egg sac',
 	'Broken zombie axe',
-	'Broken zombie helmet'
+	'Broken zombie helmet',
+	EItem.HELMET_OF_THE_MOON
 ]);
 
 export const diariesCL = [

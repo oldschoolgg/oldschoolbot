@@ -1,10 +1,11 @@
+import { bold } from '@oldschoolgg/discord';
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
-import { bold } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { quests } from '@/lib/minions/data/quests.js';
 import { courses } from '@/lib/skilling/skills/agility.js';
 import type { AgilityActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
 
 const unlimitedFireRuneProviders = [
@@ -63,7 +64,7 @@ function alching(user: MUser, tripLength: number) {
 	};
 }
 
-export const lapsCommand: OSBMahojiCommand = {
+export const lapsCommand = defineCommand({
 	name: 'laps',
 	description: 'Do laps on Agility courses to train Agility.',
 	attributes: {
@@ -77,7 +78,7 @@ export const lapsCommand: OSBMahojiCommand = {
 			name: 'name',
 			description: 'The course you want to do laps on.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return courses
 					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({
@@ -100,11 +101,7 @@ export const lapsCommand: OSBMahojiCommand = {
 			required: false
 		}
 	],
-	run: async ({
-		options,
-		user,
-		channelID
-	}: CommandRunOptions<{ name: string; quantity?: number; alch?: boolean }>) => {
+	run: async ({ options, user, channelId }) => {
 		const course = courses.find(
 			course =>
 				stringMatches(course.id.toString(), options.name) ||
@@ -133,7 +130,7 @@ export const lapsCommand: OSBMahojiCommand = {
 			}
 		}
 
-		const maxTripLength = user.calcMaxTripLength('Agility');
+		const maxTripLength = await user.calcMaxTripLength('Agility');
 
 		// If no quantity provided, set it to the max.
 		const timePerLap = course.lapTime * Time.Second;
@@ -153,7 +150,7 @@ export const lapsCommand: OSBMahojiCommand = {
 
 		let response = `${user.minionName} is now doing ${quantity}x ${
 			course.name
-		} laps, it'll take around ${formatDuration(duration)} to finish.`;
+		} laps, it'll take around ${formatTripDuration(user, duration)} to finish.`;
 
 		const alchResult = course.name === 'Ape Atoll Agility Course' || !options.alch ? null : alching(user, duration);
 		if (alchResult !== null) {
@@ -169,7 +166,7 @@ export const lapsCommand: OSBMahojiCommand = {
 		await ActivityManager.startTrip<AgilityActivityTaskOptions>({
 			courseID: course.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			duration,
 			type: 'Agility',
@@ -184,4 +181,4 @@ export const lapsCommand: OSBMahojiCommand = {
 
 		return response;
 	}
-};
+});

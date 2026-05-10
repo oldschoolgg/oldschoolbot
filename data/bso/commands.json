@@ -1,6 +1,6 @@
 {
-	"hash": "6b062fd2f537a6890639ba05408277e2",
-	"date": "2025-09-06T08:52:12.412Z",
+	"hash": "e4c4edaee60ef3edd454d0e900c6564c",
+	"date": "2025-09-27T10:56:17.425Z",
 	"data": [
 		{
 			"name": "activities",
@@ -269,12 +269,6 @@
 			"name": "k",
 			"desc": "Send your minion to kill things.",
 			"examples": ["/k name:zulrah"],
-			"subOptions": []
-		},
-		{
-			"name": "kc",
-			"desc": "See your OSRS kc for a monster/boss.",
-			"examples": ["/kc name:General Graardor"],
 			"subOptions": []
 		},
 		{

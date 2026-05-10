@@ -1,7 +1,7 @@
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const ClubOrSpearTable = new LootTable().add('Bone club').add('Bone spear');
+const ClubOrSpearTable: LootTable = new LootTable().add('Bone club').add('Bone spear');
 
 const CaveGoblinGuardTable = new LootTable({ limit: 128 })
 	.every('Bones')
@@ -16,7 +16,7 @@ const CaveGoblinGuardTable = new LootTable({ limit: 128 })
 	.add('Oil lantern', 1, 20)
 	.add('Tinderbox', 1, 20);
 
-export default new SimpleMonster({
+export const CaveGoblinGuard: SimpleMonster = new SimpleMonster({
 	id: 5334,
 	name: 'Cave goblin guard',
 	table: CaveGoblinGuardTable,

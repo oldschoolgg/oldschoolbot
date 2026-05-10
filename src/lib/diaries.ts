@@ -1,7 +1,7 @@
 import { objectEntries } from '@oldschoolgg/toolkit';
-import type { Minigame } from '@prisma/client';
-import { Items, Monsters, resolveItems } from 'oldschooljs';
+import { EMonster, Items, Monsters, resolveItems } from 'oldschooljs';
 
+import type { Minigame } from '@/prisma/main.js';
 import { MAX_QP } from '@/lib/minions/data/quests.js';
 import type { DiaryTier, DiaryTierName } from '@/lib/minions/types.js';
 import { DiaryID } from '@/lib/minions/types.js';
@@ -12,7 +12,7 @@ import type { MUserStats } from '@/lib/structures/MUserStats.js';
 import type { Skills } from '@/lib/types/index.js';
 import { formatList, formatSkillRequirements, hasSkillReqs } from '@/lib/util/smallUtils.js';
 
-interface Diary {
+export interface Diary {
 	name: string;
 	id: DiaryID;
 	alias?: string[];
@@ -104,10 +104,9 @@ export function userhasDiaryTierSync(
 	}
 
 	if (tier.monsterScores) {
-		const entries = Object.entries(tier.monsterScores);
-		for (const [name, score] of entries) {
-			const mon = Monsters.find(mon => mon.name === name)!;
-			if (!monsterScores[mon.id] || monsterScores[mon.id] < score) {
+		for (const [id, score] of objectEntries(tier.monsterScores)) {
+			const mon = Monsters.get(Number(id))!;
+			if (!monsterScores[mon.id] || monsterScores[mon.id] < score!) {
 				canDo = false;
 				reasons.push(
 					`You don't have **${score} ${mon.name}** KC, you have **${monsterScores[mon.id] ?? 0}** KC`
@@ -132,18 +131,7 @@ export function userhasDiaryTierSync(
 	};
 }
 
-export async function userhasDiaryTier(
-	user: MUser,
-	tier: [DiaryID, DiaryTierName] | DiaryTier
-): Promise<[boolean, string, Diary]> {
-	const result = userhasDiaryTierSync(user, tier, {
-		stats: await user.fetchMStats(),
-		minigameScores: await user.fetchMinigames()
-	});
-	return [result.hasDiary, result.reasons, result.diaryGroup];
-}
-
-export const WesternProv: Diary = {
+const WesternProv: Diary = {
 	name: 'Western Provinces',
 	id: DiaryID.WesternProvinces,
 	alias: ['western', 'wp', 'west', 'west prov'],
@@ -213,7 +201,7 @@ export const WesternProv: Diary = {
 		},
 		qp: 92,
 		monsterScores: {
-			Zulrah: 1
+			[EMonster.ZULRAH]: 1
 		}
 	},
 	elite: {
@@ -235,14 +223,14 @@ export const WesternProv: Diary = {
 		},
 		collectionLogReqs: resolveItems(['Magic longbow', 'Void knight top', 'Void knight robe', 'Void knight gloves']),
 		monsterScores: {
-			'Thermonuclear smoke devil': 1
+			[EMonster.THERMONUCLEAR_SMOKE_DEVIL]: 1
 		},
 		minigameReqs: {
 			big_chompy_bird_hunting: 1000
 		}
 	}
 };
-export const ArdougneDiary: Diary = {
+const ArdougneDiary: Diary = {
 	name: 'Ardougne',
 	id: DiaryID.Ardougne,
 	alias: ['ardy', 'ardougn'],
@@ -394,7 +382,7 @@ const DesertDiary: Diary = {
 			'Pollnivneach Rooftop Course': 1
 		},
 		monsterScores: {
-			'Dust Devil': 1
+			[EMonster.DUST_DEVIL]: 1
 		},
 		collectionLogReqs: resolveItems(['Mithril platebody'])
 	},
@@ -418,7 +406,7 @@ const DesertDiary: Diary = {
 	}
 };
 
-export const FaladorDiary: Diary = {
+const FaladorDiary: Diary = {
 	name: 'Falador',
 	id: DiaryID.Falador,
 	alias: ['fally', 'fal'],
@@ -478,8 +466,8 @@ export const FaladorDiary: Diary = {
 		qp: 32,
 		collectionLogReqs: resolveItems(['Mind rune', 'Prospector helmet']),
 		monsterScores: {
-			'Skeletal Wyvern': 1,
-			'Blue Dragon': 1
+			[EMonster.SKELETAL_WYVERN]: 1,
+			[EMonster.BLUE_DRAGON]: 1
 		},
 		lapsReqs: {
 			'Falador Rooftop Course': 1
@@ -580,21 +568,21 @@ const FremennikDiary: Diary = {
 			strength: 70
 		},
 		monsterScores: {
-			'Dagannoth Rex': 1,
-			'Dagannoth Prime': 1,
-			'Dagannoth Supreme': 1,
-			'General Graardor': 1,
-			"Kree'arra": 1,
-			'Commander Zilyana': 1,
-			"K'ril Tsutsaroth": 1,
-			'Spiritual Mage': 1
+			[EMonster.DAGANNOTH_REX]: 1,
+			[EMonster.DAGANNOTH_PRIME]: 1,
+			[EMonster.DAGANNOTH_SUPREME]: 1,
+			[EMonster.GENERAL_GRAARDOR]: 1,
+			[EMonster.KREEARRA]: 1,
+			[EMonster.COMMANDER_ZILYANA]: 1,
+			[EMonster.KRIL_TSUTSAROTH]: 1,
+			[EMonster.SPIRITUAL_MAGE]: 1
 		},
 		collectionLogReqs: resolveItems(['Astral rune', 'Dragonstone amulet']),
 		qp: 50
 	}
 };
 
-export const KandarinDiary: Diary = {
+const KandarinDiary: Diary = {
 	name: 'Kandarin',
 	id: DiaryID.Kandarin,
 	alias: ['kand'],
@@ -626,7 +614,7 @@ export const KandarinDiary: Diary = {
 		},
 		collectionLogReqs: resolveItems(['Bass', 'Maple shortbow', 'Limpwurt root', 'Coal']),
 		monsterScores: {
-			'Fire Giant': 1
+			[EMonster.FIRE_GIANT]: 1
 		},
 		minigameReqs: {
 			barb_assault: 1
@@ -655,7 +643,7 @@ export const KandarinDiary: Diary = {
 			"Seers' Village Rooftop Course": 1
 		},
 		monsterScores: {
-			'Mithril Dragon': 1
+			[EMonster.MITHRIL_DRAGON]: 1
 		}
 	},
 	elite: {
@@ -684,7 +672,7 @@ export const KandarinDiary: Diary = {
 	}
 };
 
-export const KaramjaDiary: Diary = {
+const KaramjaDiary: Diary = {
 	name: 'Karamja',
 	id: DiaryID.Karamja,
 	alias: ['ramja', 'ram', 'karam', 'kar'],
@@ -697,7 +685,7 @@ export const KaramjaDiary: Diary = {
 		},
 		collectionLogReqs: resolveItems(['Gold ore']),
 		monsterScores: {
-			Jogre: 1
+			[EMonster.JOGRE]: 1
 		}
 	},
 	medium: {
@@ -732,7 +720,7 @@ export const KaramjaDiary: Diary = {
 		},
 		collectionLogReqs: resolveItems(['Nature rune', 'Cooked karambwan']),
 		monsterScores: {
-			'Steel Dragon': 1
+			[EMonster.STEEL_DRAGON]: 1
 		}
 	},
 	elite: {
@@ -747,7 +735,7 @@ export const KaramjaDiary: Diary = {
 	}
 };
 
-export const KourendKebosDiary: Diary = {
+const KourendKebosDiary: Diary = {
 	name: 'Kourend & Kebos',
 	id: DiaryID.KourendKebos,
 	alias: ['kebos', 'kouren', 'kourend', 'kk', 'kek'],
@@ -795,8 +783,8 @@ export const KourendKebosDiary: Diary = {
 		},
 		collectionLogReqs: resolveItems(['Adamantite bar']),
 		monsterScores: {
-			Wyrm: 1,
-			'Lizardman Shaman': 1
+			[EMonster.WYRM]: 1,
+			[EMonster.LIZARDMAN_SHAMAN]: 1
 		}
 	},
 	elite: {
@@ -816,14 +804,14 @@ export const KourendKebosDiary: Diary = {
 		},
 		collectionLogReqs: resolveItems(['Blood rune', 'Redwood logs', 'Dark totem', 'Raw anglerfish']),
 		monsterScores: {
-			Hydra: 1
+			[EMonster.HYDRA]: 1
 		},
 		minigameReqs: {
 			raids: 1
 		}
 	}
 };
-export const LumbridgeDraynorDiary: Diary = {
+const LumbridgeDraynorDiary: Diary = {
 	name: 'Lumbridge & Draynor',
 	id: DiaryID.LumbridgeDraynor,
 	alias: ['lumb', 'draynor', 'lumbridge', 'led'],
@@ -896,7 +884,7 @@ export const LumbridgeDraynorDiary: Diary = {
 	}
 };
 
-export const MorytaniaDiary: Diary = {
+const MorytaniaDiary: Diary = {
 	name: 'Morytania',
 	id: DiaryID.Morytania,
 	alias: ['mory', 'swamp'],
@@ -910,9 +898,9 @@ export const MorytaniaDiary: Diary = {
 			slayer: 15
 		},
 		monsterScores: {
-			Banshee: 1,
-			Ghoul: 1,
-			Werewolf: 1
+			[EMonster.BANSHEE]: 1,
+			[EMonster.GHOUL]: 1,
+			[EMonster.WEREWOLF]: 1
 		}
 	},
 	medium: {
@@ -952,7 +940,7 @@ export const MorytaniaDiary: Diary = {
 		},
 		collectionLogReqs: resolveItems(['Watermelon', 'Mahogany logs', 'Mithril ore', 'Mushroom']),
 		monsterScores: {
-			'Cave Horror': 1
+			[EMonster.CAVE_HORROR]: 1
 		}
 	},
 	elite: {
@@ -971,7 +959,7 @@ export const MorytaniaDiary: Diary = {
 		},
 		collectionLogReqs: resolveItems(['Raw shark', "Black d'hide body"]),
 		monsterScores: {
-			'Abyssal Demon': 1
+			[EMonster.ABYSSAL_DEMON]: 1
 		}
 	}
 };
@@ -1044,7 +1032,7 @@ const VarrockDiary: Diary = {
 	}
 };
 
-export const WildernessDiary: Diary = {
+const WildernessDiary: Diary = {
 	name: 'Wilderness',
 	id: DiaryID.Wilderness,
 	alias: ['wild', 'wildy'],
@@ -1058,8 +1046,8 @@ export const WildernessDiary: Diary = {
 		},
 		collectionLogReqs: resolveItems(["Red spiders' eggs", 'Iron ore']),
 		monsterScores: {
-			Mammoth: 1,
-			'Earth Warrior': 1
+			[EMonster.MAMMOTH]: 1,
+			[EMonster.EARTH_WARRIOR]: 1
 		}
 	},
 	medium: {
@@ -1076,9 +1064,9 @@ export const WildernessDiary: Diary = {
 		},
 		collectionLogReqs: resolveItems(['Mithril ore', 'Yew logs']),
 		monsterScores: {
-			'Green dragon': 1,
-			Ankou: 1,
-			Bloodveld: 1
+			[EMonster.GREEN_DRAGON]: 1,
+			[EMonster.ANKOU]: 1,
+			[EMonster.BLOODVELD]: 1
 		}
 	},
 	hard: {
@@ -1094,11 +1082,11 @@ export const WildernessDiary: Diary = {
 		},
 		collectionLogReqs: resolveItems(['Black salamander', 'Adamant scimitar']),
 		monsterScores: {
-			'Chaos Elemental': 1,
-			'Crazy Archaeologist': 1,
-			'Chaos Fanatic': 1,
-			Scorpia: 1,
-			'Spiritual Warrior': 1
+			[EMonster.CHAOS_ELEMENTAL]: 1,
+			[EMonster.CRAZY_ARCHAEOLOGIST]: 1,
+			[EMonster.CHAOS_FANATIC]: 1,
+			[EMonster.SCORPIA]: 1,
+			[EMonster.SPIRITUAL_WARRIOR]: 1
 		}
 	},
 	elite: {
@@ -1119,14 +1107,14 @@ export const WildernessDiary: Diary = {
 		},
 		collectionLogReqs: resolveItems(['Rune scimitar', 'Raw dark crab', 'Dark crab', 'Magic logs']),
 		monsterScores: {
-			Callisto: 1,
-			Venenatis: 1,
-			"Vet'ion": 1
+			[EMonster.CALLISTO]: 1,
+			[EMonster.VENENATIS]: 1,
+			[EMonster.VETION]: 1
 		}
 	}
 };
 
-export const diariesObject = {
+const diariesObject = {
 	ArdougneDiary,
 	DesertDiary,
 	FaladorDiary,

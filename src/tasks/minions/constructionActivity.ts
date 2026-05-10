@@ -6,12 +6,12 @@ import type { ConstructionActivityTaskOptions } from '@/lib/types/minions.js';
 export const constructionTask: MinionTask = {
 	type: 'Construction',
 	async run(data: ConstructionActivityTaskOptions, { user, handleTripFinish }) {
-		const { objectID, quantity, channelID, duration } = data;
+		const { objectID, quantity, channelId, duration } = data;
 
 		const object = Construction.constructables.find(object => object.id === objectID)!;
 		const xpReceived = quantity * object.xp;
 		let bonusXP = 0;
-		const outfitMultiplier = Construction.util.calcConBonusXP(user.gear.skilling);
+		const outfitMultiplier = Construction.util.calcConBonusXP(user.gear.skilling.raw());
 		if (outfitMultiplier > 0) {
 			bonusXP = calcPercentOfNum(outfitMultiplier, xpReceived);
 		}
@@ -27,6 +27,6 @@ export const constructionTask: MinionTask = {
 			str += `\nYou received ${bonusXP.toLocaleString()} bonus XP from your Carpenter's outfit.`;
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, null);
+		handleTripFinish({ user, channelId, message: str, data });
 	}
 };

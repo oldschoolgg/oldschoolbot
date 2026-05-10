@@ -2,7 +2,7 @@ import { RareDropTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-export const WarpedTerrorbirdTable = new LootTable()
+export const WarpedTerrorbirdTable: LootTable = new LootTable()
 	.tertiary(512, 'Clue scroll (hard)')
 	.tertiary(320, 'Warped sceptre (uncharged)')
 	.every('Bones')
@@ -28,7 +28,7 @@ export const WarpedTerrorbirdTable = new LootTable()
 	.add('Adamantite ore', [3, 5], 2)
 	.add(RareDropTable, 1, 3);
 
-export const WarpedTerrorbird = new SimpleMonster({
+export const WarpedTerrorbird: SimpleMonster = new SimpleMonster({
 	id: 12_491,
 	name: 'Warped Terrorbird',
 	table: WarpedTerrorbirdTable,

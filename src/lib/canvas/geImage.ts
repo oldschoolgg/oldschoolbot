@@ -1,13 +1,15 @@
 import { calcPercentOfNum, calcWhatPercent, toTitleCase } from '@oldschoolgg/toolkit';
-import type { GEListing, GETransaction } from '@prisma/client';
 import { Items } from 'oldschooljs';
-import type { Canvas } from 'skia-canvas';
 
+import type { GEListing, GETransaction } from '@/prisma/main.js';
+import { CanvasModule } from '@/lib/canvas/CanvasModule.js';
 import { CanvasSpritesheet } from '@/lib/canvas/CanvasSpritesheet.js';
+import type { Canvas } from '@/lib/canvas/canvasUtil.js';
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 import type { GEListingWithTransactions } from '@/mahoji/commands/ge.js';
 
 class GeImageGeneratorSingleton {
+	public ready = false;
 	public geInterface: Canvas | null = null;
 	public geSlotLocked: Canvas | null = null;
 	public geSlotOpen: Canvas | null = null;
@@ -25,6 +27,7 @@ class GeImageGeneratorSingleton {
 		this.geSlotLocked = geSpritesheet.getSprite('ge_slot_locked');
 		this.geSlotOpen = geSpritesheet.getSprite('ge_slot_open');
 		this.geProgressShadow = geSpritesheet.getSprite('ge_progress_shadow');
+		this.ready = true;
 	}
 
 	async getSlotImage(
@@ -99,10 +102,10 @@ class GeImageGeneratorSingleton {
 
 		const maxWidth = progressShadowImage.width;
 		ctx.fillStyle = OSRSCanvas.COLORS.ORANGE;
-		let percentFullfilled = calcWhatPercent(listing.quantity_remaining, listing.total_quantity);
-		if (listing.type === 'Sell') {
-			percentFullfilled = 100 - percentFullfilled;
-		}
+		const percentFullfilled = calcWhatPercent(
+			listing.total_quantity - listing.quantity_remaining,
+			listing.total_quantity
+		);
 		const progressWidth = calcPercentOfNum(percentFullfilled, maxWidth);
 		if (percentFullfilled === 100) {
 			ctx.fillStyle = OSRSCanvas.COLORS.DARK_GREEN;
@@ -124,6 +127,10 @@ class GeImageGeneratorSingleton {
 			sellTransactions: GETransaction[];
 		})[];
 	}): Promise<Buffer> {
+		await CanvasModule.ensureInit();
+		if (!this.ready) {
+			await this.init();
+		}
 		let { slotsUsed, maxSlots, page, activeListings } = opts;
 		const canvas = new OSRSCanvas({ width: this.geInterface!.width, height: this.geInterface!.height });
 		canvas.ctx.drawImage(this.geInterface!, 0, 0, canvas.width, canvas.height);

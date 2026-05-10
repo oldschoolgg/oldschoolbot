@@ -1,7 +1,7 @@
 import { partition, stringMatches } from '@oldschoolgg/toolkit';
-import type { StashUnit } from '@prisma/client';
 import { Bank, ItemGroups, Items } from 'oldschooljs';
 
+import type { StashUnit } from '@/prisma/main.js';
 import type { IStashUnit, StashUnitTier } from '@/lib/clues/stashUnits.js';
 import { allStashUnitsFlat, allStashUnitTiers } from '@/lib/clues/stashUnits.js';
 import { assert } from '@/lib/util/logError.js';
@@ -69,7 +69,7 @@ Contains: ${unit.builtUnit.items_contained.map(i => Items.itemNameFromId(i)).joi
 			};
 		}
 		return {
-			files: [{ attachment: Buffer.from(str), name: 'stashunits.txt' }]
+			files: [{ buffer: Buffer.from(str), name: 'stashunits.txt' }]
 		};
 	}
 
@@ -180,7 +180,7 @@ export async function stashUnitFillAllCommand(user: MUser): CommandResponse {
 	);
 	assert(result.length === toFill.length);
 
-	const { file } = await makeBankImage({ bank: costBank, title: 'Items Removed For Stash Units' });
+	const file = await makeBankImage({ bank: costBank, title: 'Items Removed For Stash Units' });
 
 	return { files: [file], content: `You filled ${result.length} STASH units, with these items.` };
 }

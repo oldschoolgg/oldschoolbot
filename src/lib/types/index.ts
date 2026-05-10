@@ -1,13 +1,10 @@
 import type { SkillNameType } from '@/lib/skilling/types.js';
 
-export interface ItemBank {
-	[key: string]: number;
-}
-
 export interface MakePartyOptions {
 	maxSize: number;
 	minSize: number;
 	leader: MUser;
+	interaction: MInteraction;
 	message: string;
 	ironmanAllowed: boolean;
 	usersAllowed?: string[];
@@ -20,3 +17,10 @@ export type Skills = Partial<{
 
 export type SkillRequirements = Skills & { combat?: number };
 export type SkillsRequired = Required<Skills>;
+
+interface JsonArray extends Array<PrismaCompatibleJsonValue> {}
+
+export type PrismaCompatibleJsonObject = {
+	[Key in string]?: PrismaCompatibleJsonValue;
+};
+export type PrismaCompatibleJsonValue = string | number | boolean | PrismaCompatibleJsonObject | JsonArray | null;

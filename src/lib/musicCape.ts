@@ -1,7 +1,7 @@
 import { objectEntries, partition } from '@oldschoolgg/toolkit';
-import { activity_type_enum } from '@prisma/client';
 import { Bank, EMonster, ItemGroups, Items, Monsters, resolveItems } from 'oldschooljs';
 
+import { activity_type_enum } from '@/prisma/main/enums.js';
 import { DEPRECATED_ACTIVITY_TYPES } from '@/lib/constants.js';
 import { RandomEvents } from '@/lib/randomEvents.js';
 import { type MinigameName, Minigames } from '@/lib/settings/minigames.js';
@@ -56,7 +56,7 @@ export const musicCapeRequirements = new Requirements()
 			[EMonster.MIMIC]: 1,
 			[Monsters.Hespori.id]: 1,
 			[Monsters.Bryophyta.id]: 1,
-			[Monsters.TzTokJad.id]: 1,
+			[EMonster.TZTOKJAD]: 1,
 			[Monsters.Skotizo.id]: 1,
 			[Monsters.GeneralGraardor.id]: 1,
 			[Monsters.CommanderZilyana.id]: 1,
@@ -99,7 +99,14 @@ export const musicCapeRequirements = new Requirements()
 	})
 	.add({
 		name: 'Runecraft all runes at least once',
-		has: ({ uniqueRunesCrafted }) => {
+		has: async ({ user }) => {
+			const uniqueRunesCrafted = (
+				await prisma.$queryRaw<{ rune_id: string }[]>`SELECT DISTINCT(data->>'runeID') AS rune_id
+FROM activity
+WHERE user_id = ${BigInt(user.id)}
+AND type = 'Runecraft'
+AND data->>'runeID' IS NOT NULL;`
+			).map(i => Number(i.rune_id));
 			const runesToCheck = resolveItems([
 				'Mind rune',
 				'Air rune',
@@ -128,7 +135,13 @@ export const musicCapeRequirements = new Requirements()
 	})
 	.add({
 		name: 'One of Every Activity',
-		has: ({ uniqueActivitiesDone }) => {
+		has: async ({ user }) => {
+			const uniqueActivitiesDone: activity_type_enum[] = (
+				await prisma.$queryRaw<{ type: activity_type_enum }[]>`SELECT DISTINCT(type)
+FROM activity
+WHERE user_id = ${BigInt(user.id)}
+GROUP BY type;`
+			).map(i => i.type);
 			const typesNotRequiredForMusicCape: activity_type_enum[] = [
 				...DEPRECATED_ACTIVITY_TYPES,
 				activity_type_enum.GroupMonsterKilling,

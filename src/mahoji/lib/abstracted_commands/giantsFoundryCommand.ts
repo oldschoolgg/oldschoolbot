@@ -5,6 +5,7 @@ import { type GiantsFoundryBank, TOTAL_GIANT_WEAPONS } from '@/lib/giantsFoundry
 import { trackLoot } from '@/lib/lootTrack.js';
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import type { GiantsFoundryActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export const giantsFoundryAlloys = [
 	{
@@ -150,7 +151,7 @@ export async function giantsFoundryStartCommand(
 	user: MUser,
 	name: string,
 	quantity: number | undefined,
-	channelID: string
+	channelId: string
 ) {
 	let timePerSection = Time.Minute * 0.84;
 	const userSmithingLevel = user.skillsAsLevels.smithing;
@@ -185,7 +186,7 @@ export async function giantsFoundryStartCommand(
 	const boosts = [];
 	timePerSection *= (100 - setBonus) / 100;
 	boosts.push(`${setBonus}% faster for Smiths' Uniform item/items`);
-	const maxTripLength = user.calcMaxTripLength('GiantsFoundry');
+	const maxTripLength = await user.calcMaxTripLength('GiantsFoundry');
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / (alloy.sections * timePerSection));
 	}
@@ -225,15 +226,13 @@ export async function giantsFoundryStartCommand(
 		userID: user.id,
 		duration,
 		type: 'GiantsFoundry',
-		channelID,
+		channelId,
 		minigameID: 'giants_foundry',
 		alloyID: alloy.id,
 		metalScore: alloy.metalScore
 	});
 
-	return `${user.minionName} is now doing ${quantity}x Giants' Foundry! It will take ${formatDuration(
-		duration
-	)} to finish. **Boosts:** ${boosts.join(', ')}\nYour minion used up ${totalCost}`;
+	return `${user.minionName} is now doing ${quantity}x Giants' Foundry! It will take ${formatTripDuration(user, duration)} to finish. **Boosts:** ${boosts.join(', ')}\nYour minion used up ${totalCost}`;
 }
 
 export async function giantsFoundryShopCommand(
@@ -278,11 +277,12 @@ export async function giantsFoundryShopCommand(
 		itemsToAdd: new Bank(shopItem.output).multiply(quantity)
 	});
 
-	const { foundry_reputation: newRep } = await user.statsUpdate({
+	await user.statsUpdate({
 		foundry_reputation: {
 			decrement: cost
 		}
 	});
+	const newRep = await user.fetchUserStat('foundry_reputation');
 
 	return `You successfully bought **${quantity.toLocaleString()}x ${shopItem.name}** for ${(shopItem.cost * quantity).toLocaleString()} Foundry Reputation.\nYou now have ${newRep} Foundry Reputation left.`;
 }

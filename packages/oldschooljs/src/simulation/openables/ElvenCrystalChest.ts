@@ -2,7 +2,7 @@ import LootTable, { itemTupleToTable } from '@/structures/LootTable.js';
 import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
 
 /* Dragonstone armour roll */
-const DragonStoneArmorTable = new LootTable()
+const DragonStoneArmorTable: LootTable = new LootTable()
 	.add('Dragonstone full helm', 1, 1)
 	.add('Dragonstone platebody', 1, 1)
 	.add('Dragonstone platelegs', 1, 1)
@@ -10,27 +10,27 @@ const DragonStoneArmorTable = new LootTable()
 	.add('Dragonstone boots', 1, 1);
 
 /* Key half roll */
-const coinsKeyHalfTable = new LootTable()
+const coinsKeyHalfTable: LootTable = new LootTable()
 	.every('Uncut dragonstone')
 	.every('Coins', [10_000, 15_000])
 	.add('Tooth half of key', 1, 1)
 	.add('Loop half of key', 1, 1);
 
 /* Rune armor roll */
-const runeArmorTable = new LootTable()
+const runeArmorTable: LootTable = new LootTable()
 	.every('Uncut dragonstone')
 	.every('Crystal shard', [7, 9])
 	.add('Rune platelegs', 1, 1)
 	.add('Rune plateskirt', 1, 1);
 
 /* Dragon items roll */
-const dragonItemTable = new LootTable()
+const dragonItemTable: LootTable = new LootTable()
 	.every('Uncut dragonstone')
 	.add('Dragon platelegs', 1, 1)
 	.add('Dragon plateskirt', 1, 1)
 	.add('Shield left half', 1, 1);
 
-const ElvenCrystalChestTable = new LootTable()
+const ElvenCrystalChestTable: LootTable = new LootTable()
 	.oneIn(10_000, 'Uncut onyx')
 	.oneIn(500, DragonStoneArmorTable)
 	.add(coinsKeyHalfTable, 1, 64)
@@ -123,7 +123,7 @@ const ElvenCrystalChestTable = new LootTable()
 	)
 	.add(dragonItemTable, 1, 3);
 
-export default new SimpleOpenable({
+export const ElvenCrystalChest: SimpleOpenable = new SimpleOpenable({
 	id: 23_951,
 	name: 'Elven crystal chest',
 	aliases: ['elven crystal chest', 'elven chest', 'enhanced', 'enhanced crystal chest', 'elven chest', 'elven'],

@@ -1,5 +1,5 @@
 import { cleanString, evalMathExpression, notEmpty, stringMatches } from '@oldschoolgg/toolkit';
-import { Bank, type Item, Items, itemNameMap } from 'oldschooljs';
+import { Bank, type Item, Items } from 'oldschooljs';
 
 import { filterableTypes } from '@/lib/data/filterables.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
@@ -21,7 +21,7 @@ export function parseQuantityAndItem(str = '', inputBank?: Bank): [Item[], numbe
 
 	let [potentialQty, ...potentialName] = split.length === 1 ? ['', [split[0]]] : split;
 
-	const lazyItemGet = Items.get(potentialName.join(' ')) ?? Items.get(Number(potentialName.join(' ')));
+	const lazyItemGet = Items.getItem(potentialName.join(' ')) ?? Items.get(Number(potentialName.join(' ')));
 	if (str.includes('#') && lazyItemGet && inputBank) {
 		potentialQty = potentialQty.replace('#', inputBank.amount(lazyItemGet.id).toString());
 	}
@@ -40,7 +40,7 @@ export function parseQuantityAndItem(str = '', inputBank?: Bank): [Item[], numbe
 	} else {
 		osItems = Array.from(
 			Items.filter(
-				i => itemNameMap.get(cleanString(parsedName)) === i.id || stringMatches(i.name, parsedName)
+				i => Items.itemNameMap.get(cleanString(parsedName)) === i.id || stringMatches(i.name, parsedName)
 			).values()
 		);
 	}

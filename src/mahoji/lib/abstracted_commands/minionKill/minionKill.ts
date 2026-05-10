@@ -1,14 +1,13 @@
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
-import type { InteractionReplyOptions } from 'discord.js';
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { Monsters } from 'oldschooljs';
 
 import { colosseumCommand } from '@/lib/colosseum.js';
 import type { PvMMethod } from '@/lib/constants.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
-import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 import type { MonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import findMonster from '@/lib/util/findMonster.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { generateDailyPeakIntervals } from '@/lib/util/peaks.js';
 import { newMinionKillCommand } from '@/mahoji/lib/abstracted_commands/minionKill/newMinionKill.js';
 import { nexCommand } from '@/mahoji/lib/abstracted_commands/nexCommand.js';
@@ -17,34 +16,35 @@ import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 import { temporossCommand } from '@/mahoji/lib/abstracted_commands/temporossCommand.js';
 import { wintertodtCommand } from '@/mahoji/lib/abstracted_commands/wintertodtCommand.js';
 import { zalcanoCommand } from '@/mahoji/lib/abstracted_commands/zalcanoCommand.js';
-import { hasMonsterRequirements } from '@/mahoji/mahojiSettings.js';
 
 const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:zulrah quantity:5`";
 
 export async function minionKillCommand(
 	user: MUser,
-	interaction: MInteraction,
-	channelID: string,
+	interaction: OSInteraction,
+	channelId: string,
 	name: string,
+	rng: RNGProvider,
 	inputQuantity: number | undefined,
 	method: PvMMethod | undefined,
 	wilderness: boolean | undefined,
 	solo: boolean | undefined,
 	onTask: boolean | undefined
-): Promise<string | InteractionReplyOptions> {
-	if (user.minionIsBusy) {
+): CommandResponse {
+	if (inputQuantity !== undefined && inputQuantity < 1) return 'Quantity must be greater than 0.';
+	if (await user.minionIsBusy()) {
 		return 'Your minion is busy.';
 	}
 	const { minionName } = user;
 
 	if (!name) return invalidMonsterMsg;
 
-	if (stringMatches(name, 'colosseum')) return colosseumCommand(user, channelID);
-	if (stringMatches(name, 'nex')) return nexCommand(interaction, user, channelID, solo);
-	if (stringMatches(name, 'zalcano')) return zalcanoCommand(user, channelID, inputQuantity);
-	if (stringMatches(name, 'tempoross')) return temporossCommand(user, channelID, inputQuantity);
-	if (name.toLowerCase().includes('nightmare')) return nightmareCommand(user, channelID, name, inputQuantity);
-	if (name.toLowerCase().includes('wintertodt')) return wintertodtCommand(user, channelID, inputQuantity);
+	if (stringMatches(name, 'colosseum')) return colosseumCommand(interaction);
+	if (stringMatches(name, 'nex')) return nexCommand(interaction, user, channelId, solo);
+	if (stringMatches(name, 'zalcano')) return zalcanoCommand(rng, user, channelId, inputQuantity);
+	if (stringMatches(name, 'tempoross')) return temporossCommand(user, channelId, inputQuantity);
+	if (name.toLowerCase().includes('nightmare')) return nightmareCommand(user, channelId, name, inputQuantity);
+	if (name.toLowerCase().includes('wintertodt')) return wintertodtCommand(user, channelId, inputQuantity);
 
 	let monster = findMonster(name);
 
@@ -57,16 +57,16 @@ export async function minionKillCommand(
 
 	if (!monster) return invalidMonsterMsg;
 
-	const [hasReqs, reason] = await hasMonsterRequirements(user, monster);
+	const [hasReqs, reason] = user.hasMonsterRequirements(monster);
 	if (!hasReqs) {
 		return typeof reason === 'string' ? reason : "You don't have the requirements to fight this monster";
 	}
 
-	const slayerInfo = await getUsersCurrentSlayerInfo(user.id);
+	const slayerInfo = await user.fetchSlayerInfo();
 
 	if (slayerInfo.assignedTask === null && onTask) return 'You are no longer on a slayer task for this monster!';
 
-	const stats: { pk_evasion_exp: number } = await user.fetchStats();
+	const pkEvasionExperience = await user.fetchUserStat('pk_evasion_exp');
 
 	const royalTitansGroupIDs = [Monsters.Branda.id, Monsters.Eldric.id, Monsters.RoyalTitans.id];
 
@@ -85,15 +85,16 @@ export async function minionKillCommand(
 		isTryingToUseWildy: wilderness ?? false,
 		monsterKC: kcForBonus,
 		inputPVMMethod: method,
-		maxTripLength: user.calcMaxTripLength('MonsterKilling'),
-		pkEvasionExperience: stats.pk_evasion_exp,
+		maxTripLength: await user.calcMaxTripLength('MonsterKilling'),
+		pkEvasionExperience,
 		poh: await getPOH(user.id),
 		inputQuantity,
 		combatOptions: user.combatOptions,
 		slayerUnlocks: user.user.slayer_unlocks,
 		favoriteFood: user.user.favorite_food,
 		bitfield: user.bitfield,
-		currentPeak: generateDailyPeakIntervals().currentPeak
+		currentPeak: generateDailyPeakIntervals().currentPeak,
+		rng
 	});
 
 	if (typeof result === 'string') {
@@ -135,7 +136,7 @@ export async function minionKillCommand(
 	await ActivityManager.startTrip<MonsterActivityTaskOptions>({
 		mi: monster.id,
 		userID: user.id,
-		channelID,
+		channelId,
 		q: result.quantity,
 		iQty: inputQuantity,
 		duration: result.duration,
@@ -151,7 +152,8 @@ export async function minionKillCommand(
 		attackStyles: result.attackStyles,
 		onTask: slayerInfo.assignedTask !== null
 	});
-	let response = `${minionName} is now killing ${result.quantity}x ${monster.name}, it'll take around ${formatDuration(
+	let response = `${minionName} is now killing ${result.quantity}x ${monster.name}, it'll take around ${formatTripDuration(
+		user,
 		result.duration
 	)} to finish. Attack styles used: ${result.attackStyles.join(', ')}.`;
 

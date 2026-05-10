@@ -1,5 +1,4 @@
 import { notEmpty, stringMatches } from '@oldschoolgg/toolkit';
-import { AttachmentBuilder } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { finishables } from '@/lib/finishables.js';
@@ -7,7 +6,7 @@ import { sorts } from '@/lib/sorts.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { Workers } from '@/lib/workers/index.js';
 
-export const finishCommand: OSBMahojiCommand = {
+export const finishCommand = defineCommand({
 	name: 'finish',
 	description: 'Simulate finishing a CL.',
 	options: [
@@ -16,7 +15,7 @@ export const finishCommand: OSBMahojiCommand = {
 			name: 'input',
 			description: 'The CL/thing you want to finish. (e.g. corp, pets, raids)',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return finishables
 					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({ name: i.name, value: i.name }));
@@ -29,7 +28,7 @@ export const finishCommand: OSBMahojiCommand = {
 			required: false
 		}
 	],
-	run: async ({ interaction, options }: CommandRunOptions<{ input: string; tertiaries?: boolean }>) => {
+	run: async ({ interaction, options }) => {
 		await interaction.defer();
 		const { input: finishable, tertiaries } = options;
 		const val = finishables.find(
@@ -59,19 +58,20 @@ export const finishCommand: OSBMahojiCommand = {
 			return {
 				content: `${result}
 ${finishStr.map(i => `**${i[0].name}:** ${i[1]} KC`).join('\n')}`,
-				files: [image.file, costImage?.file].filter(notEmpty)
+				files: [image, costImage].filter(notEmpty)
 			};
 		}
 
 		return {
 			content: `It took you ${kc.toLocaleString()} KC to finish the ${val.name} CL.`,
 			files: [
-				image.file,
-				new AttachmentBuilder(Buffer.from(finishStr.map(i => `${i[0].name}: ${i[1]} KC`).join('\n')), {
-					name: 'finish.txt'
-				}),
-				costImage?.file
+				image,
+				{
+					name: 'finish.txt',
+					buffer: Buffer.from(finishStr.map(i => `${i[0].name}: ${i[1]} KC`).join('\n'))
+				},
+				costImage
 			].filter(notEmpty)
 		};
 	}
-};
+});

@@ -1,10 +1,10 @@
-import { randomVariation } from '@oldschoolgg/rng';
-import { formatDuration, increaseNumByPercent, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
+import { increaseNumByPercent, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
 import { Items, itemID, resolveItems } from 'oldschooljs';
 
 import { determineWoodcuttingTime } from '@/lib/skilling/functions/determineWoodcuttingTime.js';
-import Woodcutting, { type TwitcherGloves } from '@/lib/skilling/skills/woodcutting/woodcutting.js';
+import Woodcutting from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import type { WoodcuttingActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 const axes = [
 	{
@@ -59,7 +59,7 @@ const axes = [
 	}
 ];
 
-export const chopCommand: OSBMahojiCommand = {
+export const chopCommand = defineCommand({
 	name: 'chop',
 	description: 'Chop logs using the Woodcutting skill.',
 	attributes: {
@@ -73,7 +73,7 @@ export const chopCommand: OSBMahojiCommand = {
 			name: 'name',
 			description: 'The tree you want to chop.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return Woodcutting.Logs.filter(i =>
 					!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 				).map(i => ({
@@ -87,7 +87,8 @@ export const chopCommand: OSBMahojiCommand = {
 			name: 'quantity',
 			description: 'The quantity of logs you want to chop (optional).',
 			required: false,
-			min_value: 1
+			min_value: 1,
+			max_value: 100_000
 		},
 		{
 			type: 'Boolean',
@@ -109,17 +110,7 @@ export const chopCommand: OSBMahojiCommand = {
 			choices: Woodcutting.twitchersGloves.map(i => ({ name: `${i} nest`, value: i }))
 		}
 	],
-	run: async ({
-		options,
-		user,
-		channelID
-	}: CommandRunOptions<{
-		name: string;
-		quantity?: number;
-		powerchop?: boolean;
-		forestry_events?: boolean;
-		twitchers_gloves?: TwitcherGloves;
-	}>) => {
+	run: async ({ options, user, channelId, rng }) => {
 		const log = Woodcutting.Logs.find(
 			log =>
 				stringMatches(log.name, options.name) ||
@@ -206,6 +197,8 @@ export const chopCommand: OSBMahojiCommand = {
 		}
 
 		// Calculate the time it takes to chop specific quantity or as many as possible
+		const maxTripLength = await user.calcMaxTripLength('Woodcutting');
+
 		const [timeToChop, newQuantity] = determineWoodcuttingTime({
 			quantity,
 			user,
@@ -213,18 +206,20 @@ export const chopCommand: OSBMahojiCommand = {
 			axeMultiplier,
 			powerchopping: powerchop,
 			forestry: forestry_events,
-			woodcuttingLvl: wcLvl
+			woodcuttingLvl: wcLvl,
+			maxTripLength,
+			rng
 		});
 
 		const duration = timeToChop;
 
-		const fakeDurationMin = quantity ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
-		const fakeDurationMax = quantity ? randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
+		const fakeDurationMin = quantity ? rng.randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
+		const fakeDurationMax = quantity ? rng.randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
 
 		await ActivityManager.startTrip<WoodcuttingActivityTaskOptions>({
 			logID: log.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity: newQuantity,
 			iQty: options.quantity ? options.quantity : undefined,
 			powerchopping: powerchop === true ? true : undefined,
@@ -240,8 +235,8 @@ export const chopCommand: OSBMahojiCommand = {
 			quantity ? `chopped ${newQuantity}x or gets tired` : 'is satisfied'
 		}, it'll take ${
 			quantity
-				? `between ${formatDuration(fakeDurationMin)} **and** ${formatDuration(fakeDurationMax)}`
-				: formatDuration(duration)
+				? `between ${formatTripDuration(user, fakeDurationMin)} **and** ${formatTripDuration(user, fakeDurationMax)}`
+				: formatTripDuration(user, duration)
 		} to finish.`;
 
 		if (boosts.length > 0) {
@@ -250,4 +245,4 @@ export const chopCommand: OSBMahojiCommand = {
 
 		return response;
 	}
-};
+});

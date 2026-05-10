@@ -1,11 +1,9 @@
 import path from 'node:path';
-import { AttachmentBuilder } from 'discord.js';
-import type { Image } from 'skia-canvas';
 
-import { createCanvas, loadAndCacheLocalImage, printWrappedText } from '@/lib/canvas/canvasUtil.js';
+import { type CanvasImage, createCanvas, loadImage, printWrappedText } from '@/lib/canvas/canvasUtil.js';
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 
-type HeadKey =
+export type HeadKey =
 	| 'mejJal'
 	| 'jane'
 	| 'santa'
@@ -74,12 +72,12 @@ const names: Record<HeadKey, string> = {
 	wurMuTheMonkey: 'Wur Mu the Monkey'
 };
 
-const imagePromiseCache = new Map<string, Promise<Image>>();
+const imagePromiseCache = new Map<string, Promise<CanvasImage>>();
 
-const loadOnce = (absPath: string): Promise<any> => {
+const loadOnce = (absPath: string): Promise<CanvasImage> => {
 	let p = imagePromiseCache.get(absPath);
 	if (!p) {
-		p = loadAndCacheLocalImage(absPath);
+		p = loadImage(absPath);
 		imagePromiseCache.set(absPath, p);
 	}
 	return p;
@@ -122,12 +120,13 @@ export async function newChatHeadImage({ content, head }: { content: string; hea
 	return scaledCanvas.toBuffer();
 }
 
-export default async function chatHeadImage({ content, head }: { content: string; head: HeadKey }) {
+export default async function chatHeadImage({
+	content,
+	head
+}: {
+	content: string;
+	head: HeadKey;
+}): Promise<SendableFile> {
 	const image = await newChatHeadImage({ content, head });
-	return new AttachmentBuilder(image);
-}
-
-export async function mahojiChatHead({ content, head }: { content: string; head: HeadKey }) {
-	const image = await newChatHeadImage({ content, head });
-	return { files: [{ attachment: image, name: 'image.jpg' }] };
+	return { name: 'chathead.png', buffer: image };
 }

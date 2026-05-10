@@ -80,7 +80,7 @@ describe('Bank', () => {
 	test('add item to bank', () => {
 		const bank = new Bank();
 
-		const item = Items.get('Twisted bow')!;
+		const item = Items.getItem('Twisted bow')!;
 		bank.add(item);
 
 		expect(bank.equals(new Bank().add('Twisted bow'))).toBeTruthy();
@@ -108,7 +108,7 @@ describe('Bank', () => {
 			Toolkit: 2
 		});
 		expect(bank.value()).toEqual(0);
-		const runePlatebody = Items.get('Rune platebody')!;
+		const runePlatebody = Items.getOrThrow('Rune platebody')!;
 		const bank2 = Bank.fromNameBank({
 			'Rune platebody': 10
 		});
@@ -123,7 +123,9 @@ describe('Bank', () => {
 		});
 		expect(runePlatebody.price).toBeGreaterThan(25_000);
 		expect(bank3.value()).toEqual(
-			runePlatebody.price! * 10 + Items.get('Rune platelegs')!.price! * 10 + Items.get('Rune boots')!.price! * 10
+			runePlatebody.price! * 10 +
+				Items.getOrThrow('Rune platelegs').price! * 10 +
+				Items.getOrThrow('Rune boots').price! * 10
 		);
 	});
 
@@ -199,20 +201,6 @@ describe('Bank', () => {
 		expect(bank.amount('Twisted bow')).toEqual(0);
 		bank.set('Twisted bow', 1);
 		expect(bank.amount('Twisted bow')).toEqual(1);
-	});
-
-	test('withSanitizedValues', () => {
-		const badBank: ItemBank = {
-			[-1]: 1,
-			1: Number.NaN,
-			2: Number.POSITIVE_INFINITY,
-			3: Number.NEGATIVE_INFINITY,
-			9: '',
-			5: 1
-		} as any as ItemBank;
-		const bank = Bank.withSanitizedValues(badBank);
-		expect(bank.length).toEqual(1);
-		expect(bank.amount(5)).toEqual(1);
 	});
 
 	function badBank() {
@@ -323,15 +311,6 @@ describe('Bank', () => {
 		bank.add(bankToAdd);
 		expect(bank.amount('Coal')).toEqual(150);
 		expect(bank.amount('Trout')).toEqual(150);
-		expect(bank.length).toEqual(2);
-	});
-
-	it('adding invalid name', () => {
-		const bank = new Bank().add('Coal', 100).add('Trout', 100);
-		const bankToAdd = {
-			Casdfoal: 50
-		};
-		expect(() => bank.add(bankToAdd)).not.toThrow();
 		expect(bank.length).toEqual(2);
 	});
 

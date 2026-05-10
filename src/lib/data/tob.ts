@@ -1,10 +1,9 @@
-import { randFloat, randInt, randomVariation } from '@oldschoolgg/rng';
+import type { GearStats } from '@oldschoolgg/gear';
 import { calcPercentOfNum, calcWhatPercent, reduceNumByPercent, round, Time } from '@oldschoolgg/toolkit';
 import { Bank, type Item, Items, resolveItems } from 'oldschooljs';
-import type { GearStats } from 'oldschooljs/gear';
 
 import { blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
-import { constructGearSetup, Gear } from '@/lib/structures/Gear.js';
+import { constructGearSetup, type Gear } from '@/lib/structures/Gear.js';
 
 interface TOBRoom {
 	name: string;
@@ -65,7 +64,8 @@ export function calculateTOBDeaths(
 		range: number;
 		mage: number;
 		total: number;
-	}
+	},
+	rng: RNGProvider
 ): TOBDeaths {
 	const deaths: number[] = [];
 	const wipeDeaths: number[] = [];
@@ -104,7 +104,7 @@ export function calculateTOBDeaths(
 		const wipeDeathChance = Math.min(98, (1 + room.difficultyRating / 10) * baseDeathChance);
 		const realDeathChance =
 			baseKC >= minionProfiencyKC ? wipeDeathChance / actualDeathReductionFactor : wipeDeathChance;
-		const roll = randFloat(0, 100);
+		const roll = rng.randFloat(0, 100);
 		if (roll < realDeathChance) {
 			deaths.push(i);
 		}
@@ -191,7 +191,6 @@ export const TOBMaxMageGear = constructGearSetup({
 	shield: 'Arcane spirit shield',
 	ring: 'Magus ring'
 });
-const maxMage = new Gear(TOBMaxMageGear);
 
 export const TOBMaxRangeGear = constructGearSetup({
 	head: 'Void ranger helm',
@@ -205,8 +204,6 @@ export const TOBMaxRangeGear = constructGearSetup({
 	ring: 'Venator ring',
 	ammo: 'Dragon arrow'
 });
-const maxRange = new Gear(TOBMaxRangeGear);
-maxRange.ammo!.quantity = 10_000;
 
 export const TOBMaxMeleeGear = constructGearSetup({
 	head: 'Torva full helm',
@@ -219,25 +216,24 @@ export const TOBMaxMeleeGear = constructGearSetup({
 	'2h': 'Scythe of vitur',
 	ring: 'Ultor ring'
 });
-const maxMelee = new Gear(TOBMaxMeleeGear);
 
 export function calculateTOBUserGearPercents(user: MUser) {
 	const melee = calcSetupPercent(
-		maxMelee.stats,
+		TOBMaxMeleeGear.stats,
 		user.gear.melee.stats,
 		'melee_strength',
 		['attack_stab', 'attack_slash', 'attack_crush', 'attack_ranged', 'attack_magic'],
 		true
 	);
 	const range = calcSetupPercent(
-		maxRange.stats,
+		TOBMaxRangeGear.stats,
 		user.gear.range.stats,
 		'ranged_strength',
 		['attack_stab', 'attack_slash', 'attack_crush', 'attack_magic'],
 		false
 	);
 	const mage = calcSetupPercent(
-		maxMage.stats,
+		TOBMaxMageGear.stats,
 		user.gear.mage.stats,
 		'magic_damage',
 		['attack_stab', 'attack_slash', 'attack_crush', 'attack_ranged'],
@@ -385,7 +381,7 @@ export function calcTOBBaseDuration({ team, hardMode }: { team: TobTeam[]; hardM
 		// Reduce time for gear
 		const gearPercents = calculateTOBUserGearPercents(u.user);
 		// Blowpipe
-		const darts = u.user.blowpipe.dartID!;
+		const darts = u.user.getBlowpipe().dartID!;
 		const dartItem = Items.getOrThrow(darts);
 		const dartIndex = blowpipeDarts.indexOf(dartItem);
 		let blowPipePercent = 0;
@@ -482,18 +478,28 @@ export function createTOBRaid({
 	team,
 	hardMode,
 	baseDuration,
-	disableVariation
+	disableVariation,
+	rng
 }: {
 	team: TobTeam[];
 	baseDuration: number;
 	hardMode: boolean;
 	disableVariation?: true;
+	rng: RNGProvider;
 }): { duration: number; parsedTeam: ParsedTeamMember[]; wipedRoom: TOBRoom | null; deathDuration: number | null } {
 	const parsedTeam: ParsedTeamMember[] = [];
 
 	for (const u of team) {
 		const gearPercents = calculateTOBUserGearPercents(u.user);
-		const deathChances = calculateTOBDeaths(u.kc, u.hardKC, u.attempts, u.hardAttempts, hardMode, gearPercents);
+		const deathChances = calculateTOBDeaths(
+			u.kc,
+			u.hardKC,
+			u.attempts,
+			u.hardAttempts,
+			hardMode,
+			gearPercents,
+			rng
+		);
 		parsedTeam.push({
 			kc: u.kc,
 			hardKC: u.hardKC,
@@ -504,7 +510,7 @@ export function createTOBRaid({
 		});
 	}
 
-	const duration = Math.floor(randomVariation(baseDuration, 5));
+	const duration = Math.floor(rng.randomVariation(baseDuration, 5));
 
 	let wipedRoom: TOBRoom | null = null;
 	let deathDuration: number | null = 0;
@@ -514,7 +520,10 @@ export function createTOBRaid({
 		if (parsedTeam.every(member => member.wipeDeaths.includes(i))) {
 			wipedRoom = room;
 			deathDuration += Math.floor(
-				calcPercentOfNum(disableVariation ? room.timeWeighting / 2 : randInt(1, room.timeWeighting), duration)
+				calcPercentOfNum(
+					disableVariation ? room.timeWeighting / 2 : rng.randInt(1, room.timeWeighting),
+					duration
+				)
 			);
 			break;
 		} else {

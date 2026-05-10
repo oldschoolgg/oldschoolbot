@@ -1,5 +1,5 @@
+import { bold } from '@oldschoolgg/discord';
 import { stringMatches } from '@oldschoolgg/toolkit';
-import { bold } from 'discord.js';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
 import Buyables from '@/lib/data/buyables/buyables.js';
@@ -19,8 +19,9 @@ const allBuyablesAutocomplete = [
 	{ name: 'Fossil Island Notes' }
 ];
 
-export const buyCommand: OSBMahojiCommand = {
+export const buyCommand = defineCommand({
 	name: 'buy',
+	flags: ['REQUIRES_LOCK'],
 	description: 'Allows you to purchase items.',
 	options: [
 		{
@@ -28,7 +29,7 @@ export const buyCommand: OSBMahojiCommand = {
 			name: 'name',
 			description: 'The item you want to buy.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return allBuyablesAutocomplete
 					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({ name: i.name, value: i.name }));
@@ -41,21 +42,15 @@ export const buyCommand: OSBMahojiCommand = {
 			required: false
 		}
 	],
-	run: async ({
-		options,
-		userID,
-		interaction,
-		channelID
-	}: CommandRunOptions<{ name: string; quantity?: string }>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user, interaction, channelId }) => {
 		const { name } = options;
 		let quantity: number | null = mahojiParseNumber({ input: options.quantity, min: 1 });
 
 		if (stringMatches(name, 'kitten')) {
-			return buyKitten(user);
+			return buyKitten(interaction);
 		}
 		if (stringMatches(name, 'Fossil Island Notes')) {
-			return buyFossilIslandNotes(user, interaction, quantity ?? 1);
+			return buyFossilIslandNotes(interaction, quantity ?? 1);
 		}
 
 		const tripBuyable = tripBuyables.find(
@@ -63,7 +58,7 @@ export const buyCommand: OSBMahojiCommand = {
 		);
 
 		if (tripBuyable) {
-			return buyingTripCommand(user, channelID.toString(), tripBuyable, quantity, interaction);
+			return buyingTripCommand(user, channelId.toString(), tripBuyable, quantity, interaction);
 		}
 		const buyable = Buyables.find(
 			item => stringMatches(name, item.name) || item.aliases?.some(alias => stringMatches(alias, name))
@@ -188,10 +183,11 @@ export const buyCommand: OSBMahojiCommand = {
 					cost_gp: totalCost.amount('Coins'),
 					cost_bank_excluding_gp: costBankExcludingGP,
 					loot_bank: outItems.toJSON()
-				}
+				},
+				select: { id: true }
 			})
 		]);
 
 		return `You purchased ${outItems}.`;
 	}
-};
+});

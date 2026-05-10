@@ -2,9 +2,10 @@ import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
-export async function roguesDenCommand(user: MUser, channelID: string) {
-	if (user.minionIsBusy) return `${user.minionName} is busy.`;
+export async function roguesDenCommand(user: MUser, channelId: string) {
+	if (await user.minionIsBusy()) return `${user.minionName} is busy.`;
 	if (user.skillsAsLevels.agility < 50 || user.skillsAsLevels.thieving < 50) {
 		return "To attempt the Rogues' Den maze you need 50 Agility and 50 Thieving.";
 	}
@@ -23,13 +24,13 @@ export async function roguesDenCommand(user: MUser, channelID: string) {
 
 	baseTime = reduceNumByPercent(baseTime, skillPercentage);
 
-	let quantity = Math.floor(user.calcMaxTripLength('RoguesDenMaze') / baseTime);
+	let quantity = Math.floor((await user.calcMaxTripLength('RoguesDenMaze')) / baseTime);
 
 	if (user.hasEquippedOrInBank('Stamina potion(4)')) {
 		baseTime = reduceNumByPercent(baseTime, 50);
 
 		const potionsInBank = user.bank.amount('Stamina potion(4)');
-		const maxPossibleLaps = Math.floor(user.calcMaxTripLength('RoguesDenMaze') / baseTime);
+		const maxPossibleLaps = Math.floor((await user.calcMaxTripLength('RoguesDenMaze')) / baseTime);
 
 		// do as many laps as possible with the current stamina potion supply
 		quantity = Math.min(potionsInBank * 4, maxPossibleLaps);
@@ -47,7 +48,7 @@ export async function roguesDenCommand(user: MUser, channelID: string) {
 
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		minigameID: 'rogues_den',
@@ -56,9 +57,7 @@ export async function roguesDenCommand(user: MUser, channelID: string) {
 
 	let str = `${
 		user.minionName
-	} is now off to complete the Rogues' Den maze ${quantity}x times, their trip will take ${formatDuration(
-		duration
-	)} (${formatDuration(baseTime)} per lap).`;
+	} is now off to complete the Rogues' Den maze ${quantity}x times, their trip will return in about ${formatTripDuration(user, duration)} (${formatDuration(baseTime)} per lap).`;
 
 	if (staminasToRemove.length > 0) {
 		str += ` Removed ${staminasToRemove} from your bank.`;

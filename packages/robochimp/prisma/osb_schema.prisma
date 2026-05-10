@@ -21,6 +21,7 @@ model Activity {
   type           activity_type_enum
   channel_id     BigInt?
   data           Json?              @db.JsonB
+  all_user_ids   BigInt[]           @default([])
   pinnedTrip     PinnedTrip[]
 
   @@index([user_id, finish_date])
@@ -135,6 +136,8 @@ model ClientStorage {
   ourania_loot                 Json     @default("{}") @db.Json
   colo_cost                    Json     @default("{}") @db.Json
   colo_loot                    Json     @default("{}") @db.Json
+  vt_cost                      Json     @default("{}") @db.Json
+  vt_loot                      Json     @default("{}") @db.Json
 
   grand_exchange_is_locked Boolean @default(false)
   grand_exchange_total_tax BigInt  @default(0)
@@ -418,8 +421,6 @@ model User {
   farmingPatches_flower     Json? @map("farmingPatches.flower") @db.Json
   farmingPatches_mushroom   Json? @map("farmingPatches.mushroom") @db.Json
   farmingPatches_belladonna Json? @map("farmingPatches.belladonna") @db.Json
-
-  cached_networth_value BigInt?
 
   username             String? @db.VarChar(32)
   username_with_badges String? @db.VarChar()
@@ -928,6 +929,8 @@ enum activity_type_enum {
   HalloweenEvent
   NightmareZone
   ShadesOfMorton
+  ShadesOfMortonSacredOil
+  ShadesOfMortonPyreLogs
   TombsOfAmascut
   UnderwaterAgilityThieving
   StrongholdOfSecurity
@@ -1113,14 +1116,6 @@ model GiftBox {
   items Json @default("{}") @db.Json
 
   @@map("gift_box")
-}
-
-model ItemMetadata {
-  id Int @id
-
-  name String?
-
-  @@map("item_metadata")
 }
 
 enum UserEventType {

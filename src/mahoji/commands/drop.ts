@@ -1,11 +1,11 @@
-import { ellipsize } from '@oldschoolgg/toolkit';
+import { Emoji, ellipsize } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
+import { filterOption } from '@/discord/index.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
-import { filterOption } from '@/lib/discord/index.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 
-export const dropCommand: OSBMahojiCommand = {
+export const dropCommand = defineCommand({
 	name: 'drop',
 	description: 'Drop items from your bank.',
 	attributes: {
@@ -26,11 +26,7 @@ export const dropCommand: OSBMahojiCommand = {
 			required: false
 		}
 	],
-	run: async ({
-		interaction,
-		options,
-		user
-	}: CommandRunOptions<{ items: string; filter?: string; search?: string }>) => {
+	run: async ({ interaction, options, user }) => {
 		if (!options.filter && !options.items && !options.search) {
 			return "You didn't provide any items, filter or search.";
 		}
@@ -71,7 +67,7 @@ export const dropCommand: OSBMahojiCommand = {
 		);
 		if (doubleCheckItems.length > 0) {
 			await interaction.confirmation(
-				`${user}, some of the items you are dropping are on your **favorites** or look valuable, are you *really* sure you want to drop them?\n**${doubleCheckItems
+				`${Emoji.Warning} ${user}, some of the items you are dropping are on your **favorites** or look valuable, are you *really* sure you want to drop them? ${Emoji.Warning}\n**${doubleCheckItems
 					.map(i => Items.itemNameFromId(i))
 					.join(', ')}**\n\nDropping: ${ellipsize(bank.toString(), 1000)}`
 			);
@@ -82,4 +78,4 @@ export const dropCommand: OSBMahojiCommand = {
 
 		return interaction.returnStringOrFile(`Dropped ${bank}.`);
 	}
-};
+});

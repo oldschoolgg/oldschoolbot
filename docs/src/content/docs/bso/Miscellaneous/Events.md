@@ -68,7 +68,7 @@ Note: The spooky gear and Eek are currently not able to be equipped and as such 
 
 ### Boosts
 
-You need only 4 scary items equipped for the max boost of 10 rolls. Be sure to equip a [Zak ](../custom-items/pets.md#miscellaneous-pets)if you have one to trick or treat for the max time possible. The easiest spooky items to find if you are unable to buy any items or are an iron is the skeleton set, which can be earned from killing skeletons with [[/k name\:skeleton]]
+You need only 4 scary items equipped for the max boost of 10 rolls. Be sure to equip a [Zak ](/bso/custom-items/pets#miscellaneous-pets)if you have one to trick or treat for the max time possible. The easiest spooky items to find if you are unable to buy any items or are an iron is the skeleton set, which can be earned from killing skeletons with [[/k name\:skeleton]]
 
 - Malygos/Ignecarus mask - 10% extra rolls
 - Warlock/Witch outfit (cloak, legs, top) - 10% extra rolls

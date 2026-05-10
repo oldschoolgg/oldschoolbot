@@ -1,17 +1,15 @@
+import { GearSetupTypes, GearStat } from '@oldschoolgg/gear';
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
-import { GearStat } from 'oldschooljs/gear';
-import { loadImage } from 'skia-canvas';
 
-import { canvasToBuffer, createCanvas } from '@/lib/canvas/canvasUtil.js';
+import { choicesOf, equippedItemOption, gearPresetOption, gearSetupOption, ownedItemOption } from '@/discord/index.js';
+import { canvasToBuffer, createCanvas, loadImage } from '@/lib/canvas/canvasUtil.js';
 import { BOT_TYPE } from '@/lib/constants.js';
 import { allPetIDs } from '@/lib/data/CollectionsExport.js';
-import { equippedItemOption, gearPresetOption, gearSetupOption, ownedItemOption } from '@/lib/discord/index.js';
 import { findBestGearSetups } from '@/lib/gear/functions/findBestGearSetups.js';
-import type { GearSetupType } from '@/lib/gear/types.js';
-import { GearSetupTypes } from '@/lib/gear/types.js';
 import { equipPet } from '@/lib/minions/functions/equipPet.js';
 import { unequipPet } from '@/lib/minions/functions/unequipPet.js';
+import { validateEquippedGear } from '@/lib/user/userUtils.js';
 import {
 	gearEquipCommand,
 	gearStatsCommand,
@@ -22,8 +20,9 @@ import {
 
 const gearValidationChecks = new Set();
 
-export const gearCommand: OSBMahojiCommand = {
+export const gearCommand = defineCommand({
 	name: 'gear',
+	flags: ['REQUIRES_LOCK'],
 	description: 'Manage, equip, unequip your gear.',
 	options: [
 		{
@@ -41,7 +40,7 @@ export const gearCommand: OSBMahojiCommand = {
 					description: 'A list of equippable items to equip.'
 				},
 				{
-					...ownedItemOption(item => Boolean(item.equipable_by_player) && Boolean(item.equipment)),
+					...ownedItemOption(item => Boolean(item.equipable) && Boolean(item.equipment)),
 					name: 'item',
 					description: 'The item you want to equip.'
 				},
@@ -62,7 +61,7 @@ export const gearCommand: OSBMahojiCommand = {
 					name: 'auto',
 					description: 'Automatically equip the best gear you have for a certain style.',
 					required: false,
-					choices: Object.values(GearStat).map(k => ({ name: k, value: k }))
+					choices: choicesOf(Object.values(GearStat))
 				}
 			]
 		},
@@ -76,7 +75,7 @@ export const gearCommand: OSBMahojiCommand = {
 					required: true
 				},
 				{
-					...equippedItemOption(),
+					...equippedItemOption,
 					name: 'item',
 					description: 'The item you want to unequip.',
 					required: false
@@ -112,7 +111,7 @@ export const gearCommand: OSBMahojiCommand = {
 					name: 'equip',
 					description: 'Equip a pet.',
 					required: false,
-					autocomplete: async (value, user) => {
+					autocomplete: async ({ value, user }: StringAutoComplete) => {
 						return allPetIDs
 							.filter(i => user.bank.has(i))
 							.map(i => Items.itemNameFromId(i)!)
@@ -161,14 +160,14 @@ export const gearCommand: OSBMahojiCommand = {
 					name: 'setup_one',
 					description: 'The setup you want to switch.',
 					required: true,
-					choices: GearSetupTypes.map(i => ({ name: toTitleCase(i), value: i }))
+					choices: choicesOf(GearSetupTypes)
 				},
 				{
 					type: 'String',
 					name: 'setup_two',
 					description: 'The setup you want to switch.',
 					required: true,
-					choices: GearSetupTypes.map(i => ({ name: toTitleCase(i), value: i }))
+					choices: choicesOf(GearSetupTypes)
 				}
 			]
 		},
@@ -182,31 +181,12 @@ export const gearCommand: OSBMahojiCommand = {
 					name: 'stat',
 					description: 'The stat to view the BiS items for.',
 					required: true,
-					choices: Object.values(GearStat).map(k => ({ name: k, value: k }))
+					choices: choicesOf(Object.values(GearStat))
 				}
 			]
 		}
 	],
-	run: async ({
-		options,
-		interaction,
-		user
-	}: CommandRunOptions<{
-		equip?: {
-			gear_setup: GearSetupType;
-			item?: string;
-			items?: string;
-			preset?: string;
-			quantity?: number;
-			auto?: string;
-		};
-		unequip?: { gear_setup: GearSetupType; item?: string; all?: boolean };
-		stats?: { gear_setup: string };
-		pet?: { equip?: string; unequip?: string };
-		view?: { setup: string; text_format?: boolean };
-		swap?: { setup_one: GearSetupType; setup_two: GearSetupType };
-		best_in_slot?: { stat: GearStat };
-	}>) => {
+	run: async ({ options, interaction, user }) => {
 		await interaction.defer();
 		if (options.best_in_slot?.stat) {
 			const res = findBestGearSetups({ stat: options.best_in_slot.stat, ignoreUnobtainable: BOT_TYPE === 'OSB' });
@@ -229,11 +209,11 @@ ${res
 			}`
 	)
 	.join('\n')}`,
-				files: [await canvasToBuffer(totalCanvas)]
+				files: [{ buffer: await canvasToBuffer(totalCanvas), name: 'best_in_slot.png' }]
 			};
 		}
 		if ((options.equip || options.unequip) && !gearValidationChecks.has(user.id)) {
-			const { itemsUnequippedAndRefunded } = await user.validateEquippedGear();
+			const { itemsUnequippedAndRefunded } = await validateEquippedGear(user);
 			if (itemsUnequippedAndRefunded.length > 0) {
 				return `You had some items equipped that you didn't have the requirements to use, so they were unequipped and refunded to your bank: ${itemsUnequippedAndRefunded}`;
 			}
@@ -241,7 +221,7 @@ ${res
 		if (options.equip) {
 			return gearEquipCommand({
 				interaction,
-				userID: user.id,
+				user,
 				setup: options.equip.gear_setup,
 				item: options.equip.item,
 				items: options.equip.items,
@@ -264,4 +244,4 @@ ${res
 
 		return 'Invalid command.';
 	}
-};
+});

@@ -1,19 +1,19 @@
-import type { Prisma } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
+import type { Prisma } from '@/prisma/main.js';
 import { tradePlayerItems } from '../../src/lib/util/tradePlayerItems.js';
 import { mockedId } from './util.js';
 
 describe('Transactionalized Trade Test', async () => {
-	async function createUserWithBank(_bank: Bank, userData: Partial<Prisma.UserCreateInput> = {}) {
+	async function createUserWithBank(username: string, _bank: Bank, userData: Partial<Prisma.UserCreateInput> = {}) {
 		const userId = mockedId();
 		const bank = _bank.clone();
 		const GP = bank.amount('Coins');
 		bank.remove('Coins', GP);
 
 		await global.prisma!.user.create({
-			data: { id: userId, GP, bank: bank.toJSON(), ...userData }
+			data: { id: userId, username, GP, bank: bank.toJSON(), ...userData }
 		});
 
 		return userId;
@@ -21,9 +21,9 @@ describe('Transactionalized Trade Test', async () => {
 
 	test('Test valid trade between Cyr and Magna...', async () => {
 		const startingBankCyr = new Bank().add('Coins', 10_000_000).add('Twisted bow', 2).add('Dragon arrow', 1000);
-		const cyr = await createUserWithBank(startingBankCyr);
+		const cyr = await createUserWithBank('Cyr', startingBankCyr);
 		const startingBankMagna = new Bank().add('Coins', 20_000_000).add('Cannonball', 10_000).add('Feather', 500);
-		const magna = await createUserWithBank(startingBankMagna);
+		const magna = await createUserWithBank('magna', startingBankMagna);
 
 		const uCyr = await mUserFetch(cyr);
 		const uMagna = await mUserFetch(magna);
@@ -50,9 +50,9 @@ describe('Transactionalized Trade Test', async () => {
 
 	test('One sided trade...', async () => {
 		const startingBankCyr = new Bank().add('Coins', 10_000_000).add('Twisted bow', 2).add('Dragon arrow', 1000);
-		const cyr = await createUserWithBank(startingBankCyr);
+		const cyr = await createUserWithBank('Cyr', startingBankCyr);
 		const startingBankMagna = new Bank().add('Coins', 20_000_000).add('Cannonball', 10_000).add('Feather', 500);
-		const magna = await createUserWithBank(startingBankMagna);
+		const magna = await createUserWithBank('magna', startingBankMagna);
 
 		const uCyr = await mUserFetch(cyr);
 		const uMagna = await mUserFetch(magna);
@@ -79,9 +79,9 @@ describe('Transactionalized Trade Test', async () => {
 
 	test('Other sided trade. no GP...', async () => {
 		const startingBankCyr = new Bank().add('Coins', 10_000_000).add('Twisted bow', 2).add('Dragon arrow', 1000);
-		const cyr = await createUserWithBank(startingBankCyr);
+		const cyr = await createUserWithBank('Cyr', startingBankCyr);
 		const startingBankMagna = new Bank().add('Coins', 20_000_000).add('Cannonball', 10_000).add('Feather', 500);
-		const magna = await createUserWithBank(startingBankMagna);
+		const magna = await createUserWithBank('magna', startingBankMagna);
 
 		const uCyr = await mUserFetch(cyr);
 		const uMagna = await mUserFetch(magna);
@@ -111,16 +111,16 @@ describe('Transactionalized Trade Test', async () => {
 			.add('Twisted bow', 2)
 			.add('Dragon arrow', 1000)
 			.freeze();
-		const cyr = await createUserWithBank(cyrStartingBank);
+		const cyr = await createUserWithBank('Cyr', cyrStartingBank);
 
 		const magnaStartingBank = new Bank()
 			.add('Coins', 20_000_000)
 			.add('Cannonball', 10_000)
 			.add('Feather', 500)
 			.freeze();
-		const magna = await createUserWithBank(magnaStartingBank);
+		const magna = await createUserWithBank('magna', magnaStartingBank);
 
-		const uCyr = await mUserFetch(cyr, { username: 'Cyr' });
+		const uCyr = await mUserFetch(cyr);
 		const uMagna = await mUserFetch(magna);
 
 		expect(uCyr.GP).toBe(1_000_000);
@@ -145,17 +145,17 @@ describe('Transactionalized Trade Test', async () => {
 			.add('Twisted bow', 2)
 			.add('Dragon arrow', 1000)
 			.freeze();
-		const cyr = await createUserWithBank(cyrStartingBank);
+		const cyr = await createUserWithBank('Cyr', cyrStartingBank);
 
 		const magnaStartingBank = new Bank()
 			.add('Coins', 20_000_000)
 			.add('Cannonball', 10_000)
 			.add('Feather', 500)
 			.freeze();
-		const magna = await createUserWithBank(magnaStartingBank);
+		const magna = await createUserWithBank('magna', magnaStartingBank);
 
 		const uCyr = await mUserFetch(cyr);
-		const uMagna = await mUserFetch(magna, { username: 'magna' });
+		const uMagna = await mUserFetch(magna);
 
 		const tradeFromCyr = new Bank().add('Coins', 1_000_000).add('Twisted bow', 1).freeze();
 		const tradeFromMagna = new Bank().add('Coins', 2_000_000).add('Feather', 5000).add('Cannonball', 2000).freeze();

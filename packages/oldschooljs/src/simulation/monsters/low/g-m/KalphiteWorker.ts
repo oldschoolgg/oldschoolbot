@@ -3,7 +3,7 @@ import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const KalphiteWorkerTable = new LootTable()
+const KalphiteWorkerTable: LootTable = new LootTable()
 	/* Weapons and armor */
 	.add('Iron sword', 1, 3)
 	.add('Steel dagger', 1, 3)
@@ -40,7 +40,7 @@ const KalphiteWorkerTable = new LootTable()
 	/* Tertiary */
 	.tertiary(250, 'Ensouled kalphite head');
 
-export default new SimpleMonster({
+export const KalphiteWorker: SimpleMonster = new SimpleMonster({
 	id: 955,
 	name: 'Kalphite Worker',
 	table: KalphiteWorkerTable,

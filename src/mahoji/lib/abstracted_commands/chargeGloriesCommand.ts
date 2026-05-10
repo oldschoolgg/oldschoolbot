@@ -1,13 +1,13 @@
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export const gloriesInventorySize = 26;
 const gloriesInventoryTime = Time.Minute * 2.2;
 
-export async function chargeGloriesCommand(user: MUser, channelID: string, quantity: number | undefined) {
+export async function chargeGloriesCommand(user: MUser, channelId: string, quantity: number | undefined) {
 	const userBank = user.bank;
 
 	const amountHas = userBank.amount('Amulet of glory');
@@ -15,14 +15,14 @@ export async function chargeGloriesCommand(user: MUser, channelID: string, quant
 		return `You don't have enough Amulets of glory to recharge. Your minion does trips of ${gloriesInventorySize}x glories.`;
 	}
 
-	const [hasDiary] = await userhasDiaryTier(user, WildernessDiary.elite);
+	const hasDiary = user.hasDiary('wilderness.elite');
 
 	let invDuration = gloriesInventoryTime;
 	if (hasDiary) {
 		invDuration /= 3;
 	}
 
-	const maxTripLength = user.calcMaxTripLength('GloryCharging');
+	const maxTripLength = await user.calcMaxTripLength('GloryCharging');
 
 	const max = Math.min(amountHas / gloriesInventorySize, Math.floor(maxTripLength / invDuration));
 	if (!quantity) {
@@ -46,7 +46,7 @@ export async function chargeGloriesCommand(user: MUser, channelID: string, quant
 
 	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		type: 'GloryCharging'
@@ -56,7 +56,8 @@ export async function chargeGloriesCommand(user: MUser, channelID: string, quant
 
 	return `${
 		user.minionName
-	} is now charging ${quantityGlories} Amulets of glory, doing ${gloriesInventorySize} glories in ${quantity} trips, it'll take around ${formatDuration(
+	} is now charging ${quantityGlories} Amulets of glory, doing ${gloriesInventorySize} glories in ${quantity} trips, it'll take around ${formatTripDuration(
+		user,
 		duration
 	)} to finish. Removed ${quantityGlories}x Amulet of glory from your bank.${
 		hasDiary ? ' 3x Boost for Wilderness Elite diary.' : ''

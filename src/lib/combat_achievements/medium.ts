@@ -126,6 +126,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		monster: 'Crazy Archaeologist',
 		desc: 'Kill the Crazy Archaeologist with only magical attacks.',
+		details: 'You must be training Magic.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
@@ -196,6 +197,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		monster: 'Deranged Archaeologist',
 		desc: 'Kill the Deranged Archaeologist with only magical attacks.',
+		details: 'You must be training Magic.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
@@ -292,6 +294,8 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		type: 'restriction',
 		monster: 'King Black Dragon',
 		desc: 'Kill the King Black Dragon with a stab weapon.',
+		details:
+			'You must be training melee and have a weapon equipped in melee gear with a positive stab attack bonus.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) => {
@@ -403,6 +407,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		type: 'restriction',
 		monster: 'Skotizo',
 		desc: 'Kill Skotizo with a demonbane weapon equipped.',
+		details: 'You must have a demonbane weapon equipped.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
@@ -552,6 +557,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill Amoxliatl using only glacial temotli as a weapon.',
 		type: 'restriction',
 		monster: 'Amoxliatl',
+		details: 'You must have a Glacial temotli equipped.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>

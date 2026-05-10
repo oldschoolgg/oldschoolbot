@@ -1,9 +1,9 @@
-import { globalConfig } from '../constants.js';
-import { patreonTask } from '../lib/patreon.js';
-import { detectMischief } from '../mischiefDetection.js';
-import { CHANNELS, patronLogWebhook } from '../util.js';
+import { globalConfig } from '@/constants.js';
+import { detectMischief } from '@/lib/mischiefDetection.js';
+import { patreonTask } from '@/lib/patreon.js';
+import { CHANNELS } from '@/util.js';
 
-export const toolsCommand: RoboChimpCommand = {
+export const toolsCommand = defineCommand({
 	name: 'tools',
 	description: 'RoboChimp tools.',
 	options: [
@@ -41,48 +41,26 @@ export const toolsCommand: RoboChimpCommand = {
 			name: 'debug_patreon',
 			description: 'debug_patreon'
 		}
-	] as const,
-	run: async ({
-		options,
-		user,
-		interaction,
-		client
-	}: CommandRunOptions<{
-		setgithubid?: { user: MahojiUserOption; github_username?: string };
-		detect_mischief?: {};
-		patreon_sync?: {};
-		debug_patreon?: {};
-	}>) => {
+	],
+	run: async ({ options, user, interaction }) => {
 		await interaction.defer();
-		if (!user.isMod()) return 'Ook';
 
-		if (options.debug_patreon) {
-			const res = await patreonTask.fetchPatrons();
-			return {
-				content: 'Debug',
-				files: [{ attachment: Buffer.from(JSON.stringify(res)), name: 'data.json' }]
-			};
-		}
+		// Support Staff+ Commands:
+		if (!user.isSupport()) return 'Ook';
 
-		if (options.detect_mischief) {
-			if (
-				globalConfig.isProduction &&
-				![CHANNELS.MODERATORS, CHANNELS.MODERATORS_OTHER].includes(interaction.channelId)
-			) {
-				return "You can't run this command in this channel.";
+		if (options.patreon_sync) {
+			const res = await patreonTask.run();
+			if (res) {
+				console.log(res.join('\n').slice(0, 1950));
 			}
-			const [osbResult, bsoResult] = await Promise.all([detectMischief('osb'), detectMischief('bso')]);
-			return {
-				content: "Here's the mischief reports!",
-				files: [
-					{ attachment: Buffer.from(osbResult), name: 'osb.txt' },
-					{ attachment: Buffer.from(bsoResult), name: 'bso.txt' }
-				]
-			};
+			return 'Done.';
 		}
+
+		if (!user.isMod()) return 'Ook';
+		// Mod+ Commands:
 
 		if (options.setgithubid) {
-			const githubSetUser = await client.fetchUser(options.setgithubid.user.user.id);
+			const githubSetUser = await globalClient.fetchRUser(options.setgithubid.user.user.id);
 			const { github_username } = options.setgithubid;
 
 			if (!github_username) {
@@ -114,15 +92,31 @@ export const toolsCommand: RoboChimpCommand = {
 			await patreonTask.syncGithub();
 			return `Set ${options.setgithubid.user.user.username}'s github ID to ${githubSetUser.githubId}, and synced their patron tier to: ${githubSetUser.perkTier}.`;
 		}
-
-		if (options.patreon_sync) {
-			const res = await patreonTask.run();
-			if (res) {
-				patronLogWebhook.send(res.join('\n').slice(0, 1950));
-			}
-			return 'Done.';
+		if (!user.isAdmin()) return 'Sorry, these are restricted to admins only';
+		if (options.debug_patreon) {
+			const res = await patreonTask.fetchPatrons();
+			return {
+				content: 'Debug',
+				files: [{ buffer: Buffer.from(JSON.stringify(res)), name: 'data.json' }]
+			};
 		}
 
+		if (options.detect_mischief) {
+			if (
+				globalConfig.isProduction &&
+				![CHANNELS.MODERATORS, CHANNELS.MODERATORS_OTHER].includes(interaction.channelId)
+			) {
+				return "You can't run this command in this channel.";
+			}
+			const [osbResult, bsoResult] = await Promise.all([detectMischief('osb'), detectMischief('bso')]);
+			return {
+				content: "Here's the mischief reports!",
+				files: [
+					{ buffer: Buffer.from(osbResult), name: 'osb.txt' },
+					{ buffer: Buffer.from(bsoResult), name: 'bso.txt' }
+				]
+			};
+		}
 		return 'Invalid command.';
 	}
-} as const;
+});

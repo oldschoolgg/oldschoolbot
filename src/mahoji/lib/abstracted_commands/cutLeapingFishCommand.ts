@@ -3,15 +3,16 @@ import { Bank } from 'oldschooljs';
 
 import { LeapingFish } from '@/lib/skilling/skills/cooking/leapingFish.js';
 import type { CutLeapingFishActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export async function cutLeapingFishCommand({
 	user,
-	channelID,
+	channelId,
 	name,
 	quantity
 }: {
 	user: MUser;
-	channelID: string;
+	channelId: string;
 	name: string;
 	quantity?: number;
 }) {
@@ -28,7 +29,7 @@ export async function cutLeapingFishCommand({
 
 	const timeToCutSingleItem = barbarianFish.tickRate * Time.Second * 0.6;
 
-	const maxTripLength = user.calcMaxTripLength('Cooking');
+	const maxTripLength = await user.calcMaxTripLength('Cooking');
 
 	if (!quantity) quantity = Math.floor(maxTripLength / timeToCutSingleItem);
 
@@ -63,7 +64,7 @@ export async function cutLeapingFishCommand({
 	await ActivityManager.startTrip<CutLeapingFishActivityTaskOptions>({
 		fishID: barbarianFish.item.id,
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		type: 'CutLeapingFish'
@@ -71,5 +72,5 @@ export async function cutLeapingFishCommand({
 
 	return `${user.minionName} is now cutting ${quantity}x ${
 		barbarianFish.item.name
-	}, it'll take around ${formatDuration(duration)} to finish.`;
+	}, it'll take around ${formatTripDuration(user, duration)} to finish.`;
 }

@@ -394,8 +394,8 @@ export class OSRSCanvas {
 
 		if (glow) {
 			this.drawGlowingBlur(
-				destX + this.itemSize.width / 2,
-				destY + this.itemSize.height / 2,
+				destX + itemIcon.width / 2,
+				destY + itemIcon.height / 2,
 				glow.radius,
 				glow.color,
 				glow.blur

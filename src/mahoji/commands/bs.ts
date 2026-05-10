@@ -1,9 +1,8 @@
 import { bankCommand } from '@/mahoji/commands/bank.js';
 
 const bankFormats = ['json', 'text_paged', 'text_full'] as const;
-type BankFormat = (typeof bankFormats)[number];
 
-export const bsCommand: OSBMahojiCommand = {
+export const bsCommand = defineCommand({
 	name: 'bs',
 	description: 'Search your minions bank.',
 	options: [
@@ -21,13 +20,8 @@ export const bsCommand: OSBMahojiCommand = {
 			choices: bankFormats.map(i => ({ name: i, value: i }))
 		}
 	],
-	run: async (
-		options: CommandRunOptions<{
-			search?: string;
-			format?: BankFormat;
-		}>
-	) => {
+	run: async options => {
 		const res = await bankCommand.run(options);
 		return res;
 	}
-};
+});

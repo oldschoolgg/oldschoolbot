@@ -3,7 +3,7 @@ import { RareDropTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const SkeletalWyvernTable = new LootTable()
+const SkeletalWyvernTable: LootTable = new LootTable()
 	.every('Wyvern bones')
 
 	/* Weapons and armour */
@@ -57,7 +57,7 @@ const SkeletalWyvernTable = new LootTable()
 	.tertiary(350, 'Clue scroll (elite)')
 	.tertiary(10_000, 'Draconic visage');
 
-export default new SimpleMonster({
+export const SkeletalWyvern: SimpleMonster = new SimpleMonster({
 	id: 465,
 	name: 'Skeletal Wyvern',
 	table: SkeletalWyvernTable,

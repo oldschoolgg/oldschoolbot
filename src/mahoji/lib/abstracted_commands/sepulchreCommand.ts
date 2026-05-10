@@ -11,11 +11,10 @@ import { AmethystBroadBolts, BroadArrows, BroadBolts } from '@/lib/skilling/skil
 import TippedBolts from '@/lib/skilling/skills/fletching/fletchables/tippedBolts.js';
 import TippedDragonBolts from '@/lib/skilling/skills/fletching/fletchables/tippedDragonBolts.js';
 import type { Fletchable } from '@/lib/skilling/types.js';
-import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
-import { hasSlayerUnlock } from '@/lib/slayer/slayerUtil.js';
 import type { SepulchreActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
-export async function sepulchreCommand(user: MUser, channelID: string, fletching?: number) {
+export async function sepulchreCommand(user: MUser, channelId: string, fletching?: number) {
 	const skills = user.skillsAsLevels;
 	const agilityLevel = skills.agility;
 	const thievingLevel = skills.thieving;
@@ -49,7 +48,7 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 		}
 	}
 
-	const maxLaps = Math.floor(user.calcMaxTripLength('Sepulchre') / lapLength);
+	const maxLaps = Math.floor((await user.calcMaxTripLength('Sepulchre')) / lapLength);
 	const tripLength = maxLaps * lapLength;
 
 	let fletchable: Fletchable | undefined;
@@ -68,10 +67,7 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 		}
 
 		if (fletchable.requiredSlayerUnlocks) {
-			const { success, errors } = hasSlayerUnlock(
-				user.user.slayer_unlocks as SlayerTaskUnlocksEnum[],
-				fletchable.requiredSlayerUnlocks
-			);
+			const { success, errors } = user.checkHasSlayerUnlocks(fletchable.requiredSlayerUnlocks);
 			if (!success) {
 				return `You don't have the required Slayer Unlocks to create this item.\n\nRequired: ${errors}`;
 			}
@@ -115,16 +111,14 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 		userID: user.id,
 		duration: tripLength,
 		type: 'Sepulchre',
-		channelID,
+		channelId,
 		minigameID: 'sepulchre',
 		fletch: fletchable ? { id: fletchable.id, qty: fletchingQuantity } : undefined
 	});
 
 	let str = `${user.minionName} is now doing ${maxLaps} laps of the Sepulchre, in each lap they are doing floors ${
 		completableFloors[0].number
-	}-${completableFloors[completableFloors.length - 1].number}, the trip will take ${formatDuration(
-		tripLength
-	)}, with each lap taking ${formatDuration(lapLength)}.`;
+	}-${completableFloors[completableFloors.length - 1].number}, the trip will return in about ${formatTripDuration(user, tripLength)}, with each lap taking ${formatDuration(lapLength)}.`;
 
 	if (fletchable && itemsNeeded) {
 		str += `\nYou are also now Fletching ${fletchingQuantity}${sets} ${fletchable.name}. Removed ${itemsNeeded} from your bank.`;

@@ -3,7 +3,7 @@ import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-export const SkeletonMageTable = new LootTable()
+export const SkeletonMageTable: LootTable = new LootTable()
 	.every('Ashes')
 
 	/* Weapons and armour */
@@ -34,7 +34,7 @@ export const SkeletonMageTable = new LootTable()
 	.tertiary(128, 'Clue scroll (medium)')
 	.tertiary(5000, 'Skeleton champion scroll');
 
-export default new SimpleMonster({
+export const SkeletonMage: SimpleMonster = new SimpleMonster({
 	id: 4319,
 	name: 'Skeleton Mage',
 	table: SkeletonMageTable,

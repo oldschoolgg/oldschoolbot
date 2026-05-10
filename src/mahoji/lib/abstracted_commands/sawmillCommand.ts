@@ -4,12 +4,13 @@ import { clamp } from 'remeda';
 
 import { Planks } from '@/lib/minions/data/planks.js';
 import type { SawmillActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export async function sawmillCommand(
 	user: MUser,
 	plankName: string | number,
 	quantity: number | undefined,
-	channelID: string
+	channelId: string
 ) {
 	const plank = Planks.find(
 		plank =>
@@ -35,7 +36,7 @@ export async function sawmillCommand(
 		boosts.push('10% for Woodcutting Guild unlocked');
 	}
 
-	const maxTripLength = user.calcMaxTripLength('Sawmill');
+	const maxTripLength = await user.calcMaxTripLength('Sawmill');
 
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timePerPlank);
@@ -79,12 +80,12 @@ export async function sawmillCommand(
 		plankID: plank?.outputItem,
 		plankQuantity: quantity,
 		userID: user.id,
-		channelID: channelID.toString()
+		channelId: channelId.toString()
 	});
 
 	let response = `${user.minionName} is now creating ${quantity} ${Items.itemNameFromId(plank.outputItem)}${
 		quantity > 1 ? 's' : ''
-	}. The Sawmill has charged you ${toKMB(cost)} GP. They'll come back in around ${formatDuration(duration)}.`;
+	}. The Sawmill has charged you ${toKMB(cost)} GP. They'll come back in around ${formatTripDuration(user, duration)}.`;
 
 	if (boosts.length > 0) {
 		response += `\n\n **Boosts:** ${boosts.join(', ')}.`;

@@ -1,8 +1,8 @@
-import { randomVariation } from '@oldschoolgg/rng';
 import { calcWhatPercent, formatDuration, reduceNumByPercent, Time, toTitleCase } from '@oldschoolgg/toolkit';
 
 import { BitField } from '@/lib/constants.js';
 import type { GauntletOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 const baseRequirements = {
@@ -37,8 +37,13 @@ const corruptedRequirements = {
 	ranged: 90
 };
 
-export async function gauntletCommand(user: MUser, channelID: string, type: 'corrupted' | 'normal' = 'normal') {
-	if (user.minionIsBusy) return `${user.minionName} is busy.`;
+export async function gauntletCommand(
+	rng: RNGProvider,
+	user: MUser,
+	channelId: string,
+	type: 'corrupted' | 'normal' = 'normal'
+) {
+	if (await user.minionIsBusy()) return `${user.minionName} is busy.`;
 	if (user.QP < 200) {
 		return 'You need at least 200 QP to do the Gauntlet.';
 	}
@@ -116,9 +121,9 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 	}
 
 	// Add a 5% variance to account for randomness of gauntlet
-	const gauntletLength = randomVariation(baseLength, 5);
+	const gauntletLength = rng.randomVariation(baseLength, 5);
 
-	const maxTripLength = user.calcMaxTripLength('Gauntlet');
+	const maxTripLength = await user.calcMaxTripLength('Gauntlet');
 
 	const quantity = Math.floor(maxTripLength / gauntletLength);
 	const duration = quantity * gauntletLength;
@@ -133,7 +138,7 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 
 	await ActivityManager.startTrip<GauntletOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		type: 'Gauntlet',
@@ -142,7 +147,7 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 
 	const boostsStr = boosts.length > 0 ? `**Boosts:** ${boosts.join(', ')}` : '';
 
-	return `${user.minionName} is now doing ${quantity}x ${readableName}. The trip will take ${formatDuration(duration)}.
+	return `${user.minionName} is now doing ${quantity}x ${readableName}. The trip will return in about ${formatTripDuration(user, duration)}.
 ${boostsStr}
 `;
 }

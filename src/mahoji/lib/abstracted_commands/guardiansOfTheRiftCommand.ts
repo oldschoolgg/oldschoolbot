@@ -1,5 +1,4 @@
-import { randomVariation } from '@oldschoolgg/rng';
-import { formatDuration, Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank, Items, itemID } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
@@ -7,10 +6,12 @@ import { pickaxes, varrockArmours } from '@/lib/skilling/functions/miningBoosts.
 import Runecraft from '@/lib/skilling/skills/runecraft.js';
 import type { GuardiansOfTheRiftActivityTaskOptions } from '@/lib/types/minions.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export async function guardiansOfTheRiftStartCommand(
+	rng: RNGProvider,
 	user: MUser,
-	channelID: string,
+	channelId: string,
 	combinationRunes: boolean | undefined
 ) {
 	const rcLevel = user.skillLevel('runecraft');
@@ -19,7 +20,7 @@ export async function guardiansOfTheRiftStartCommand(
 	}
 
 	const timePerGame = Time.Minute * 10;
-	const maxTripLength = user.calcMaxTripLength('GuardiansOfTheRift');
+	const maxTripLength = await user.calcMaxTripLength('GuardiansOfTheRift');
 	const quantity = Math.floor(maxTripLength / timePerGame);
 	const duration = quantity * timePerGame;
 	// Being reduced with ticks
@@ -166,8 +167,8 @@ export async function guardiansOfTheRiftStartCommand(
 	}
 
 	// 5.5 rolls, 120 is average mined essences, 14 is averge created guardians/barriers per game at max efficiency
-	minedFragments = Math.round(randomVariation(minedFragments, 10));
-	barrierAndGuardian = Math.round(randomVariation(barrierAndGuardian, 10));
+	minedFragments = Math.round(rng.randomVariation(minedFragments, 10));
+	barrierAndGuardian = Math.round(rng.randomVariation(barrierAndGuardian, 10));
 	rolls = Math.max(rolls, 1);
 
 	await ActivityManager.startTrip<GuardiansOfTheRiftActivityTaskOptions>({
@@ -175,7 +176,7 @@ export async function guardiansOfTheRiftStartCommand(
 		userID: user.id,
 		duration,
 		type: 'GuardiansOfTheRift',
-		channelID,
+		channelId,
 		minigameID: 'guardians_of_the_rift',
 		minedFragments,
 		barrierAndGuardian,
@@ -183,9 +184,7 @@ export async function guardiansOfTheRiftStartCommand(
 		combinationRunes
 	});
 
-	return `${user.minionName} is now doing ${quantity}x games of Guardians Of The Rift! It will take ${formatDuration(
-		duration
-	)} to finish. ${boosts.length > 0 ? `\n**Boosts:** ${boosts.join(', ')}.` : ''}${
+	return `${user.minionName} is now doing ${quantity}x games of Guardians Of The Rift! It will take ${formatTripDuration(user, duration)} to finish. ${boosts.length > 0 ? `\n**Boosts:** ${boosts.join(', ')}.` : ''}${
 		combinationRunes ? `\nYour minion also consumed ${removeRunesAndNecks}.` : ''
 	}`;
 }

@@ -55,7 +55,7 @@ const CaveKrakenTable = new LootTable({ limit: 400 })
 	.tertiary(100, 'Clue scroll (hard)')
 	.tertiary(1200, 'Clue scroll (elite)');
 
-export default new SimpleMonster({
+export const CaveKraken: SimpleMonster = new SimpleMonster({
 	id: 492,
 	name: 'Cave Kraken',
 	table: CaveKrakenTable,

@@ -42,7 +42,7 @@ const OborTable = new LootTable({ limit: 118 })
 		5
 	);
 
-export default new SimpleMonster({
+export const Obor: SimpleMonster = new SimpleMonster({
 	id: 7416,
 	name: 'Obor',
 	table: OborTable,

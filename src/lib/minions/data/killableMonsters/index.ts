@@ -1,6 +1,6 @@
+import { GearStat } from '@oldschoolgg/gear';
 import { stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, deepResolveItems, EMonster, itemID, Monsters, NIGHTMARES_HP, resolveItems } from 'oldschooljs';
-import { GearStat } from 'oldschooljs/gear';
 
 import { bossKillables } from '@/lib/minions/data/killableMonsters/bosses/index.js';
 import { camdozaalMonsters } from '@/lib/minions/data/killableMonsters/camdozaalMonsters.js';
@@ -370,6 +370,13 @@ export const NightmareMonster: KillableMonster = {
 
 export default killableMonsters;
 
+type EffectiveMonster = {
+	id: number;
+	name: string;
+	aliases: string[];
+	emoji?: string;
+};
+
 export const effectiveMonsters = [
 	...killableMonsters,
 	NightmareMonster,
@@ -392,7 +399,7 @@ export const effectiveMonsters = [
 		aliases: ['nex'],
 		id: EMonster.NEX
 	}
-];
+] satisfies EffectiveMonster[];
 
 export const allKillableMonsterIDs = new Set(effectiveMonsters.map(m => m.id));
 

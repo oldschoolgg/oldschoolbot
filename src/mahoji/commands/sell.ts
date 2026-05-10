@@ -1,10 +1,10 @@
 import { reduceNumByPercent } from '@oldschoolgg/toolkit';
-import type { Prisma } from '@prisma/client';
 import { Bank, type Item, itemID, MAX_INT_JAVA, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
-import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
-import { filterOption } from '@/lib/discord/index.js';
+import type { Prisma } from '@/prisma/main.js';
+import { filterOption } from '@/discord/index.js';
+import { CUSTOM_PRICE_CACHE } from '@/lib/cache.js';
 import { NestBoxesTable } from '@/lib/simulation/misc.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
@@ -34,8 +34,6 @@ const specialSoldItems = new Map([
 	[itemID('Ecumenical key'), 61_500]
 ]);
 
-export const CUSTOM_PRICE_CACHE = new Map<number, number>();
-
 export function sellPriceOfItem(item: Item, taxRate = 20): { price: number; basePrice: number } {
 	const cachePrice = CUSTOM_PRICE_CACHE.get(item.id);
 	if (!cachePrice && (item.price === undefined || !item.tradeable)) {
@@ -58,7 +56,7 @@ export function sellStorePriceOfItem(item: Item, qty: number): { price: number; 
 	return { price, basePrice };
 }
 
-export const sellCommand: OSBMahojiCommand = {
+export const sellCommand = defineCommand({
 	name: 'sell',
 	description: 'Sell items from your bank to the bot for GP.',
 	attributes: {
@@ -80,11 +78,7 @@ export const sellCommand: OSBMahojiCommand = {
 			required: false
 		}
 	],
-	run: async ({
-		user,
-		options,
-		interaction
-	}: CommandRunOptions<{ items: string; filter?: string; search?: string }>) => {
+	run: async ({ user, options, interaction }) => {
 		const bankToSell = parseBank({
 			inputBank: user.bank,
 			inputStr: options.items,
@@ -170,7 +164,9 @@ export const sellCommand: OSBMahojiCommand = {
 				itemsToRemove: seedsBank
 			});
 
-			await user.addItemsToCollectionLog(new Bank().add('Seed pack', quantity));
+			await user.addItemsToCollectionLog({
+				itemsToAdd: new Bank().add('Seed pack', quantity)
+			});
 
 			return `You exchanged ${seedsBank} and received: ${loot}.`;
 		}
@@ -229,8 +225,7 @@ export const sellCommand: OSBMahojiCommand = {
 		}
 
 		if (bankToSell.has('Ecumenical key')) {
-			const [hasWildyHard] = await userhasDiaryTier(user, WildernessDiary.hard);
-			if (!hasWildyHard) {
+			if (!user.hasDiary('wilderness.hard')) {
 				return 'You need to have completed the Wilderness Hard Diary to sell Ecumenical keys.';
 			}
 		}
@@ -294,4 +289,4 @@ export const sellCommand: OSBMahojiCommand = {
 			}.`
 		);
 	}
-};
+});

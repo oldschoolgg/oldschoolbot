@@ -1,21 +1,17 @@
-import { cryptoRng } from '@oldschoolgg/rng';
-import type { Activity, activity_type_enum, Prisma } from '@prisma/client';
+import { cryptoRng } from 'node-rng/crypto';
 
-import { modifyBusyCounter } from '@/lib/busyCounterCache.js';
+import type { Activity, activity_type_enum } from '@/prisma/main.js';
 import { globalConfig } from '@/lib/constants.js';
 import { onMinionActivityFinish } from '@/lib/events.js';
 import { allTasks } from '@/lib/Task.js';
+import type { PrismaCompatibleJsonObject } from '@/lib/types/index.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { isGroupActivity } from '@/lib/util.js';
 
 class SActivityManager {
-	private minionActivityCache: Map<string, ActivityTaskData> = new Map();
-
-	async cancelActivity(userID: string) {
+	async cancelActivity(userID: string): Promise<void> {
 		await prisma.activity.deleteMany({ where: { user_id: BigInt(userID), completed: false } });
-		this.minionActivityCacheDelete(userID);
 	}
 
 	async startTrip<T extends ActivityTaskData>(tripData: Omit<T, 'finishDate' | 'id'>) {
@@ -27,35 +23,23 @@ class SActivityManager {
 			throw new Error(`Activity ${activity.id} has no channel_id`);
 		}
 		return {
-			...(activity.data as Prisma.JsonObject),
+			...(activity.data as PrismaCompatibleJsonObject),
 			type: activity.type as activity_type_enum,
 			userID: activity.user_id.toString(),
-			channelID: activity.channel_id.toString(),
+			channelId: activity.channel_id.toString(),
 			duration: activity.duration,
 			finishDate: activity.finish_date.getTime(),
 			id: activity.id
 		} as ActivityTaskData;
 	}
 
-	syncActivityCache = async () => {
-		const tasks = await prisma.activity.findMany({ where: { completed: false } });
-		this.minionActivityCache.clear();
-		for (const task of tasks) {
-			this.activitySync(task);
-		}
-	};
-
-	activitySync(activity: Activity) {
-		const users: bigint[] | string[] = isGroupActivity(activity.data)
-			? ((activity.data as Prisma.JsonObject).users! as string[])
-			: [activity.user_id];
-		const convertedActivity = this.convertStoredActivityToFlatActivity(activity);
-		for (const user of users) {
-			this.minionActivityCache.set(user.toString(), convertedActivity);
-		}
-	}
-
-	async completeActivity(_activity: Activity) {
+	async completeActivity(_activity: Activity): Promise<void> {
+		Logging.logDebug(`Completing activity ${_activity.id} of type ${_activity.type}`, {
+			type: 'ACTIVITY',
+			activity_type: _activity.type,
+			data: _activity.data,
+			user_id: _activity.user_id
+		});
 		const activity = this.convertStoredActivityToFlatActivity(_activity);
 
 		if (_activity.completed) {
@@ -69,19 +53,25 @@ class SActivityManager {
 			return;
 		}
 
-		modifyBusyCounter(activity.userID, 1);
+		const user = await mUserFetch(activity.userID);
+
 		try {
-			await task.run(activity, { user: await mUserFetch(activity.userID), handleTripFinish, rng: cryptoRng });
+			await task.run(
+				{ ...activity, channelId: activity.channelId },
+				{
+					user,
+					handleTripFinish,
+					rng: cryptoRng
+				}
+			);
 		} catch (err) {
 			Logging.logError(err as Error);
 		} finally {
-			modifyBusyCounter(activity.userID, -1);
-			this.minionActivityCacheDelete(activity.userID);
 			await onMinionActivityFinish(activity);
 		}
 	}
 
-	async processPendingActivities() {
+	async processPendingActivities(): Promise<void> {
 		const activities: Activity[] = globalConfig.isProduction
 			? await prisma.$queryRaw`SELECT * FROM activity WHERE completed = false AND finish_date < NOW() LIMIT 5;`
 			: await prisma.$queryRaw`SELECT * FROM activity WHERE completed = false;`;
@@ -101,24 +91,63 @@ class SActivityManager {
 		}
 	}
 
-	minionActivityCacheDelete(userID: string) {
-		const entry = this.minionActivityCache.get(userID);
-		if (!entry) return;
-
-		const users: string[] = isGroupActivity(entry) ? entry.users : [entry.userID];
-		for (const u of users) {
-			this.minionActivityCache.delete(u);
-		}
+	async minionIsBusy(userID: string | string): Promise<boolean> {
+		const count = await prisma.activity.count({
+			where: {
+				OR: [
+					{
+						user_id: BigInt(userID)
+					},
+					{
+						all_user_ids: {
+							has: BigInt(userID)
+						}
+					}
+				],
+				completed: false
+			}
+		});
+		return count > 0;
 	}
 
-	minionIsBusy(userID: string | string): boolean {
-		const usersTask = this.getActivityOfUser(userID.toString());
-		return Boolean(usersTask);
+	async anyMinionIsBusy(userIDs: (string | MUser)[]): Promise<boolean> {
+		const count = await prisma.activity.count({
+			where: {
+				OR: [
+					{
+						user_id: {
+							in: userIDs.map(id => (typeof id === 'string' ? BigInt(id) : BigInt(id.id)))
+						}
+					},
+					{
+						all_user_ids: {
+							hasSome: userIDs.map(id => BigInt(typeof id === 'string' ? id : id.id))
+						}
+					}
+				],
+				completed: false
+			}
+		});
+		return count > 0;
 	}
 
-	getActivityOfUser(userID: string) {
-		const task = this.minionActivityCache.get(userID);
-		return task ?? null;
+	async getActivityOfUser(userID: string): Promise<ActivityTaskData | null> {
+		const task = await prisma.activity.findFirst({
+			where: {
+				completed: false,
+				OR: [
+					{
+						user_id: BigInt(userID)
+					},
+					{
+						all_user_ids: {
+							has: BigInt(userID)
+						}
+					}
+				]
+			}
+		});
+		return task ? this.convertStoredActivityToFlatActivity(task) : null;
 	}
 }
 

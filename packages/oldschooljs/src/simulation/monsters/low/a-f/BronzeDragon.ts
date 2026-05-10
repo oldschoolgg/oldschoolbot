@@ -2,7 +2,7 @@ import { GemTable, RareDropTable } from '@/simulation/subtables/RareDropTable.js
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const BronzeDragonTable = new LootTable()
+const BronzeDragonTable: LootTable = new LootTable()
 	.every('Dragon bones')
 	.every('Bronze bar', 5)
 
@@ -45,7 +45,7 @@ const BronzeDragonTable = new LootTable()
 	/* Tertiary */
 	.tertiary(128, 'Clue scroll (hard)');
 
-export default new SimpleMonster({
+export const BronzeDragon: SimpleMonster = new SimpleMonster({
 	id: 270,
 	name: 'Bronze Dragon',
 	table: BronzeDragonTable,

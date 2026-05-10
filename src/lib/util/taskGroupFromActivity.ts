@@ -1,5 +1,4 @@
-import type { activity_type_enum } from '@prisma/client';
-
+import type { activity_type_enum } from '@/prisma/main/enums.js';
 import { ActivityGroup } from '@/lib/constants.js';
 
 export function taskGroupFromActivity(type: activity_type_enum): ActivityGroup {
@@ -34,6 +33,7 @@ export function taskGroupFromActivity(type: activity_type_enum): ActivityGroup {
 		case 'Enchanting':
 		case 'Casting':
 		case 'GloryCharging':
+		case 'GloryUncharging':
 		case 'WealthCharging':
 		case 'Collecting':
 		case 'BlastFurnace':
@@ -45,6 +45,7 @@ export function taskGroupFromActivity(type: activity_type_enum): ActivityGroup {
 		case 'AnimatedArmour':
 		case 'Cyclops':
 		case 'Sepulchre':
+		case 'ValeTotems':
 		case 'Plunder':
 		case 'Zalcano':
 		case 'FishingTrawler':

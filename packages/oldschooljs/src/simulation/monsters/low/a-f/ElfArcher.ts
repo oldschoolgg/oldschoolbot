@@ -3,7 +3,7 @@ import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const ElfArcherTable = new LootTable()
+const ElfArcherTable: LootTable = new LootTable()
 	.every('Bones')
 
 	/* Weapons and armour */
@@ -41,7 +41,7 @@ const ElfArcherTable = new LootTable()
 	.tertiary(50, 'Ensouled elf head')
 	.tertiary(128, 'Clue scroll (hard)');
 
-export default new SimpleMonster({
+export const ElfArcher: SimpleMonster = new SimpleMonster({
 	id: 5295,
 	name: 'Elf Archer',
 	table: ElfArcherTable,

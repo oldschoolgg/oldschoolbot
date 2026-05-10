@@ -5,7 +5,8 @@
 		"outDir": "../dist",
 		"paths": {
 			"@/*": ["./*"]
-		}
+		},
+		"strictNullChecks": true
 	},
 	"include": ["."]
 }

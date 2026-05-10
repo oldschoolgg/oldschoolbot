@@ -1,7 +1,7 @@
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const TzHaarXilTable = new LootTable()
+const TzHaarXilTable: LootTable = new LootTable()
 	.oneIn(512, 'Toktz-xil-ul', [9, 29])
 	.oneIn(512, 'Toktz-xil-ak')
 	.oneIn(512, 'Toktz-xil-ek')
@@ -12,7 +12,7 @@ const TzHaarXilTable = new LootTable()
 	.add('Uncut ruby', 2)
 	.add('Uncut diamond');
 
-export const TzHaarXil = new SimpleMonster({
+export const TzHaarXil: SimpleMonster = new SimpleMonster({
 	id: 2168,
 	name: 'TzHaar-Xil',
 	table: TzHaarXilTable,

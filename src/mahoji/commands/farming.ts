@@ -1,11 +1,11 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
-import { AutoFarmFilterEnum, type CropUpgradeType } from '@prisma/client';
 
+import { AutoFarmFilterEnum } from '@/prisma/main/enums.js';
+import { choicesOf } from '@/discord/index.js';
 import TitheFarmBuyables from '@/lib/data/buyables/titheFarmBuyables.js';
 import { superCompostables } from '@/lib/data/filterables.js';
 import { autoFarm } from '@/lib/minions/functions/autoFarm.js';
 import { CompostTiers, Farming } from '@/lib/skilling/skills/farming/index.js';
-import type { ContractOption } from '@/lib/skilling/skills/farming/utils/types.js';
 import { ContractOptions } from '@/lib/skilling/skills/farming/utils/types.js';
 import {
 	compostBinCommand,
@@ -13,14 +13,18 @@ import {
 	harvestCommand
 } from '@/mahoji/lib/abstracted_commands/farmingCommand.js';
 import { farmingContractCommand } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
-import { titheFarmCommand, titheFarmShopCommand } from '@/mahoji/lib/abstracted_commands/titheFarmCommand.js';
+import {
+	titheFarmCommand,
+	titheFarmShopCommand,
+	titheFarmShopInfoCommand
+} from '@/mahoji/lib/abstracted_commands/titheFarmCommand.js';
 
 const autoFarmFilterTexts: Record<AutoFarmFilterEnum, string> = {
 	AllFarm: 'All crops will be farmed with the highest available seed',
 	Replant: 'Only planted crops will be replanted, using the same seed'
 };
 
-export const farmingCommand: OSBMahojiCommand = {
+export const farmingCommand = defineCommand({
 	name: 'farming',
 	description: 'Allows you to do Farming related things.',
 	options: [
@@ -41,10 +45,8 @@ export const farmingCommand: OSBMahojiCommand = {
 					name: 'plant_name',
 					description: 'The plant you want to plant.',
 					required: true,
-					autocomplete: async (value: string, user: MUser) => {
-						const mUser = await mUserFetch(user.id);
-						const farmingLevel = mUser.skillLevel('farming');
-						return Farming.Plants.filter(i => farmingLevel >= i.level)
+					autocomplete: async ({ value, user }: StringAutoComplete) => {
+						return Farming.Plants.filter(i => user.skillsAsLevels.farming >= i.level)
 							.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i.name, value: i.name }));
 					}
@@ -53,7 +55,8 @@ export const farmingCommand: OSBMahojiCommand = {
 					type: 'Integer',
 					name: 'quantity',
 					description: 'The quantity you want to plant.',
-					required: false
+					required: false,
+					min_value: 1
 				},
 				{
 					type: 'Boolean',
@@ -80,7 +83,7 @@ export const farmingCommand: OSBMahojiCommand = {
 					name: 'auto_farm_filter_data',
 					description: 'The auto farm filter you want to use by default. (default: AllFarm)',
 					required: true,
-					choices: Object.values(AutoFarmFilterEnum).map(i => ({ name: i, value: i }))
+					choices: choicesOf(Object.values(AutoFarmFilterEnum))
 				}
 			]
 		},
@@ -131,11 +134,24 @@ export const farmingCommand: OSBMahojiCommand = {
 					name: 'buy_reward',
 					description: 'Buy a Tithe Farm reward.',
 					required: false,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return TitheFarmBuyables.filter(i =>
 							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 						).map(i => ({ name: i.name, value: i.name }));
 					}
+				},
+				{
+					type: 'Integer',
+					name: 'quantity',
+					description: 'The quantity of this reward you want to buy.',
+					required: false,
+					min_value: 1
+				},
+				{
+					type: 'Boolean',
+					name: 'show_info',
+					description: 'Shows your Tithe Farm points and all reward costs.',
+					required: false
 				}
 			]
 		},
@@ -149,8 +165,8 @@ export const farmingCommand: OSBMahojiCommand = {
 					type: 'String',
 					name: 'plant_name',
 					description: 'The plant you want to put in the Compost Bins.',
-					required: false,
-					autocomplete: async (value: string) => {
+					required: true,
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return superCompostables
 							.filter(i => (!value ? true : i.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i, value: i }));
@@ -176,33 +192,17 @@ export const farmingCommand: OSBMahojiCommand = {
 					name: 'input',
 					description: 'The input you want to give.',
 					required: false,
-					choices: ContractOptions.map(i => ({ value: i, name: i }))
+					choices: choicesOf(ContractOptions)
 				}
 			]
 		}
 	],
-	run: async ({
-		user,
-		options,
-		interaction,
-		channelID
-	}: CommandRunOptions<{
-		check_patches?: {};
-		auto_farm?: {};
-		auto_farm_filter?: { auto_farm_filter_data: string };
-		default_compost?: { compost: CropUpgradeType };
-		always_pay?: {};
-		plant?: { plant_name: string; quantity?: number; pay?: boolean };
-		harvest?: { patch_name: string };
-		tithe_farm?: { buy_reward?: string };
-		compost_bin?: { plant_name: string; quantity?: number };
-		contract?: { input?: ContractOption };
-	}>) => {
+	run: async ({ user, options, interaction, channelId }) => {
 		await interaction.defer();
 		const { patchesDetailed } = Farming.getFarmingInfoFromUser(user);
 
 		if (options.auto_farm) {
-			return autoFarm(user, patchesDetailed, channelID);
+			return autoFarm(interaction, user, patchesDetailed);
 		}
 		if (options.always_pay) {
 			const isEnabled = user.user.minion_defaultPay;
@@ -234,11 +234,11 @@ export const farmingCommand: OSBMahojiCommand = {
 		}
 		if (options.plant) {
 			return farmingPlantCommand({
-				userID: user.id,
+				user,
+				interaction,
 				plantName: options.plant.plant_name,
 				quantity: options.plant.quantity ?? null,
 				autoFarmed: false,
-				channelID,
 				pay: Boolean(options.plant.pay)
 			});
 		}
@@ -246,14 +246,22 @@ export const farmingCommand: OSBMahojiCommand = {
 			return harvestCommand({
 				user: user,
 				seedType: options.harvest.patch_name,
-				channelID
+				interaction
 			});
 		}
 		if (options.tithe_farm) {
-			if (options.tithe_farm.buy_reward) {
-				return titheFarmShopCommand(interaction, user, options.tithe_farm.buy_reward);
+			if (options.tithe_farm.show_info) {
+				return titheFarmShopInfoCommand(user);
 			}
-			return titheFarmCommand(user, channelID);
+			if (options.tithe_farm.buy_reward) {
+				return titheFarmShopCommand(
+					interaction,
+					user,
+					options.tithe_farm.buy_reward,
+					options.tithe_farm.quantity
+				);
+			}
+			return titheFarmCommand(user, channelId);
 		}
 		if (options.compost_bin) {
 			return compostBinCommand(interaction, user, options.compost_bin.plant_name, options.compost_bin.quantity);
@@ -264,4 +272,4 @@ export const farmingCommand: OSBMahojiCommand = {
 
 		return Farming.userGrowingProgressStr(patchesDetailed);
 	}
-};
+});

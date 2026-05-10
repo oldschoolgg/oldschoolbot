@@ -42,7 +42,7 @@ export const buildCombatAchievementsResult = (
 
 	return {
 		content: result.length <= maxContentLength ? result : 'Result too large. Check the attached file for details.',
-		files: result.length > maxContentLength ? [{ attachment: Buffer.from(result), name: 'caBoss.txt' }] : undefined
+		files: result.length > maxContentLength ? [{ buffer: Buffer.from(result), name: 'caBoss.txt' }] : undefined
 	};
 };
 

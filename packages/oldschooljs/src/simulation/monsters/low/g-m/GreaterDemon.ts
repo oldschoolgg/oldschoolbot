@@ -2,7 +2,7 @@ import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const WildySlayerCaveTable = new LootTable()
+const WildySlayerCaveTable: LootTable = new LootTable()
 	.add('Blighted entangle sack', [1, 10], 12200)
 	.add('Blighted anglerfish', [1, 2], 9170)
 	.add('Blighted manta ray', [1, 2], 9170)
@@ -63,12 +63,12 @@ const GreaterDemonTable = new LootTable({ limit: 128 })
 	.tertiary(40, 'Ensouled demon head')
 	.tertiary(128, 'Clue scroll (hard)');
 
-const GreaterDemonWildyCaveTable = new LootTable()
+const GreaterDemonWildyCaveTable: LootTable = new LootTable()
 	.every(GreaterDemonTable)
 	.add(WildySlayerCaveTable, 1, 68)
 	.add(new LootTable(), 1, 32);
 
-export default new SimpleMonster({
+export const GreaterDemon: SimpleMonster = new SimpleMonster({
 	id: 2025,
 	name: 'Greater Demon',
 	table: GreaterDemonTable,

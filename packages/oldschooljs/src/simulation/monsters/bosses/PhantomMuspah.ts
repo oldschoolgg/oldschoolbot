@@ -3,7 +3,7 @@ import TreeHerbSeedTable from '@/simulation/subtables/TreeHerbSeedTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const UniquePhantomMuspahTable = new LootTable()
+const UniquePhantomMuspahTable: LootTable = new LootTable()
 	.add('Ancient essence', [540, 599], 60)
 	.add('Ancient essence', [885, 995], 23)
 	.add('Ancient essence', [1970, 2060], 10)
@@ -22,7 +22,7 @@ const MoreHerbs = new LootTable()
 	.add('Grimy dwarf weed', 6, 4)
 	.add('Grimy lantadyme', 6, 3);
 
-const NormalPhantomMuspahTable = new LootTable()
+const NormalPhantomMuspahTable: LootTable = new LootTable()
 	/* Weapons and armour */
 	.add('Rune kiteshield', 3, 10)
 	.add('Dragon plateskirt', 1, 5)
@@ -73,7 +73,7 @@ const NormalPhantomMuspahTable = new LootTable()
 	/* Rare drop table */
 	.add(RareDropTable, 1, 5);
 
-const TotalPhantomMuspahTable = new LootTable()
+const TotalPhantomMuspahTable: LootTable = new LootTable()
 	// If venator shard drops, delete other drops on that kill
 	.every(UniquePhantomMuspahTable, 1)
 	.every(new LootTable().add(NormalPhantomMuspahTable, 1, 7).add(FoodAndPotions, 1, 2), 1)
@@ -83,7 +83,7 @@ const TotalPhantomMuspahTable = new LootTable()
 	.tertiary(50, 'Clue scroll (elite)')
 	.tertiary(2500, 'Muphin');
 
-export default new SimpleMonster({
+export const PhantomMuspah: SimpleMonster = new SimpleMonster({
 	id: 12_077,
 	name: 'Phantom Muspah',
 	table: TotalPhantomMuspahTable,
