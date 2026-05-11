@@ -105,11 +105,14 @@ export class OldSchoolBotClient extends DiscordClient {
 	private calcShardHealth(status: WebSocketShardStatus, shardId: number) {
 		const stats = this.shardStats.get(shardId);
 		const avgLatency =
-			stats && stats.latencies.length > 0 ? Math.round(stats.latencies.reduce((sum, val) => sum + val, 0) / stats.latencies.length) : null;
+			stats && stats.latencies.length > 0
+				? Math.round(stats.latencies.reduce((sum, val) => sum + val, 0) / stats.latencies.length)
+				: null;
 		const lastLatency = stats?.latencies.at(-1) ?? null;
 		const staleHeartbeat = stats?.lastAckAt ? Date.now() - stats.lastAckAt > Time.Minute * 2 : true;
 		const isDead = status !== WebSocketShardStatus.Ready;
-		const isLagged = (avgLatency !== null && avgLatency >= 10_000) || (lastLatency !== null && lastLatency >= 15_000);
+		const isLagged =
+			(avgLatency !== null && avgLatency >= 10_000) || (lastLatency !== null && lastLatency >= 15_000);
 		const isUnhealthy = isDead || staleHeartbeat || isLagged;
 		return {
 			label: isDead ? 'dead' : isUnhealthy ? 'unhealthy' : 'healthy',
@@ -151,6 +154,18 @@ export class OldSchoolBotClient extends DiscordClient {
 			await strategy.restartShard(shardId);
 		}
 		return targetShardIds;
+	}
+
+	async restartShardByID(shardId: number) {
+		const strategy = (this.ws as any).strategy;
+		if (typeof strategy?.restartShard !== 'function') {
+			throw new Error('Shard restart strategy is unavailable.');
+		}
+		const report = await this.getShardStatusReport();
+		const exists = report.some(entry => entry.shardId === shardId);
+		if (!exists) return null;
+		await strategy.restartShard(shardId);
+		return shardId;
 	}
 
 	async upsertDiscordUser(user: APIUser) {

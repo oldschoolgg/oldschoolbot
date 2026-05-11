@@ -415,7 +415,7 @@ export const adminCommand = defineCommand({
 					options: [
 						{
 							type: 'String',
-							name: 'which',
+							name: 'group',
 							description: 'Which shards to reconnect.',
 							required: false,
 							choices: [
@@ -423,6 +423,13 @@ export const adminCommand = defineCommand({
 								{ name: 'all', value: 'all' },
 								{ name: 'dead', value: 'dead' }
 							]
+						},
+						{
+							type: 'Integer',
+							name: 'which',
+							description: 'Specific shard number from the latest shard_status output.',
+							required: false,
+							min_value: 0
 						}
 					]
 				}
@@ -827,11 +834,22 @@ ${META_CONSTANTS.RENDERED_STR}`
 				].join('\n');
 			}
 			if (shardRestart) {
-				const which = (shardRestart.which ?? 'unhealthy') as 'all' | 'dead' | 'unhealthy';
-				await interaction.confirmation(`Reconnect shards matching \`${which}\`?`);
-				const restarted = await globalClient.restartShards(which);
-				if (restarted.length === 0) return `No ${which} shards found.`;
-				return `Reconnected shards: ${restarted.join(', ')}`;
+				if (typeof shardRestart.which === 'number') {
+					await interaction.confirmation(`Reconnect shard \`${shardRestart.which}\`?`);
+					const restartedShardId = await globalClient.restartShardByID(shardRestart.which);
+					if (restartedShardId === null) {
+						return `Shard \`${shardRestart.which}\` was not found in the current shard status report.`;
+					}
+					return `Reconnected shard: ${restartedShardId}`;
+				}
+				if (shardRestart.group) {
+					const group = shardRestart.group as 'all' | 'dead' | 'unhealthy';
+					await interaction.confirmation(`Reconnect shards matching \`${group}\`?`);
+					const restarted = await globalClient.restartShards(group);
+					if (restarted.length === 0) return `No ${group} shards found.`;
+					return `Reconnected shards: ${restarted.join(', ')}`;
+				}
+				return 'You must specify either `which` (a shard number from `shard_status`) or `group`.';
 			}
 
 			return `Invalid System Command`;
