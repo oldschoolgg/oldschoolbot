@@ -806,30 +806,35 @@ ${META_CONSTANTS.RENDERED_STR}`
 			await bulkUpdateCommands();
 			return 'Done.';
 		}
+		if (options.system) {
+			const { shard_status: shardStatus, shard_restart: shardRestart } = options.system;
+			if (shardStatus) {
+				const report = await globalClient.getShardStatusReport();
+				const total = report.length;
+				const ready = report.filter(i => i.status === WebSocketShardStatus.Ready).length;
+				const unhealthy = report.filter(i => i.health.isUnhealthy).length;
+				const dead = report.filter(i => i.health.isDead).length;
+				return [
+					`Shards: ${total} total, ${ready} ready, ${unhealthy} unhealthy, ${dead} dead`,
+					...report.map(entry => {
+						const avg = entry.health.avgLatency === null ? '-' : `${entry.health.avgLatency}ms`;
+						const last = entry.health.lastLatency === null ? '-' : `${entry.health.lastLatency}ms`;
+						const lastAck = entry.stats?.lastAckAt
+							? `${formatDuration(Date.now() - entry.stats.lastAckAt)} ago`
+							: 'never';
+						return `Shard ${entry.shardId}: ${entry.health.label} | status=${entry.statusName} | avg=${avg} | last=${last} | ack=${lastAck}`;
+					})
+				].join('\n');
+			}
+			if (shardRestart) {
+				const which = (shardRestart.which ?? 'unhealthy') as 'all' | 'dead' | 'unhealthy';
+				await interaction.confirmation(`Reconnect shards matching \`${which}\`?`);
+				const restarted = await globalClient.restartShards(which);
+				if (restarted.length === 0) return `No ${which} shards found.`;
+				return `Reconnected shards: ${restarted.join(', ')}`;
+			}
 
-		if (options.system?.shard_status) {
-			const report = await globalClient.getShardStatusReport();
-			const total = report.length;
-			const ready = report.filter(i => i.status === WebSocketShardStatus.Ready).length;
-			const unhealthy = report.filter(i => i.health.isUnhealthy).length;
-			const dead = report.filter(i => i.health.isDead).length;
-			return [
-				`Shards: ${total} total, ${ready} ready, ${unhealthy} unhealthy, ${dead} dead`,
-				...report.map(entry => {
-					const avg = entry.health.avgLatency === null ? '-' : `${entry.health.avgLatency}ms`;
-					const last = entry.health.lastLatency === null ? '-' : `${entry.health.lastLatency}ms`;
-					const lastAck = entry.stats?.lastAckAt ? `${formatDuration(Date.now() - entry.stats.lastAckAt)} ago` : 'never';
-					return `Shard ${entry.shardId}: ${entry.health.label} | status=${entry.statusName} | avg=${avg} | last=${last} | ack=${lastAck}`;
-				})
-			].join('\n');
-		}
-
-		if (options.system?.shard_restart) {
-			const which = (options.system.shard_restart.which ?? 'unhealthy') as 'all' | 'dead' | 'unhealthy';
-			await interaction.confirmation(`Reconnect shards matching \`${which}\`?`);
-			const restarted = await globalClient.restartShards(which);
-			if (restarted.length === 0) return `No ${which} shards found.`;
-			return `Reconnected shards: ${restarted.join(', ')}`;
+			return `Invalid System Command`;
 		}
 
 		if (options.view) {
