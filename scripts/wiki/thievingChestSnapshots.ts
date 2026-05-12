@@ -9,9 +9,23 @@ function formatXp(xp: number): string {
 	return Number.isInteger(xp) ? xp.toString() : xp.toFixed(1);
 }
 
-function formatXpHr(xp: number, respawnTime: number): string {
-	const xpPerAttempt = xp * CHEST_SUCCESS_RATE;
-	const xpHr = calcPerHour(xpPerAttempt, respawnTime);
+function normaliseChance(chance: number): number {
+	return Math.max(0, Math.min(1, chance <= 1 ? chance : chance / 100));
+}
+
+function chestSuccessRate(chest: (typeof Thieving.stealables)[number]): number {
+	return chest.slope !== undefined && chest.intercept !== undefined
+		? normaliseChance(chest.slope * chest.level + chest.intercept)
+		: CHEST_SUCCESS_RATE;
+}
+
+function formatXpHr(chest: (typeof Thieving.stealables)[number]): string {
+	const successRate = chestSuccessRate(chest);
+	const missedAttemptsOnFailure =
+		chest.stunTime && chest.respawnTime ? Math.round(chest.stunTime / chest.respawnTime) : 0;
+	const xpPerAction = chest.xp * successRate;
+	const effectiveActionTime = chest.respawnTime! * (1 + (1 - successRate) * missedAttemptsOnFailure);
+	const xpHr = calcPerHour(xpPerAction, effectiveActionTime);
 	return Math.floor(xpHr).toLocaleString();
 }
 
@@ -30,7 +44,7 @@ function renderThievingChestTable() {
 			chest.name,
 			chest.level.toString(),
 			formatXp(chest.xp),
-			formatXpHr(chest.xp, chest.respawnTime),
+			formatXpHr(chest),
 			chest.prayerLevelRequired ? `${chest.prayerLevelRequired} Prayer required` : '-'
 		);
 	}

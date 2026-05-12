@@ -6,6 +6,7 @@ import { quests } from '@/lib/minions/data/quests.js';
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import { Thieving } from '@/lib/skilling/skills/thieving/index.js';
 import { type Stealable, stealables } from '@/lib/skilling/skills/thieving/stealables.js';
+import { calcLootXPChest } from '@/lib/skilling/skills/thieving/thievingUtils.js';
 import type { PickpocketActivityTaskOptions } from '@/lib/types/minions.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { calcLootXPPickpocketing } from '@/tasks/minions/pickpocketActivity.js';
@@ -177,10 +178,12 @@ export const stealCommand = defineCommand({
 
 			await ClientSettings.updateBankSetting('economyStats_thievingCost', foodRemoved);
 			str += ` Removed ${foodRemoved}.`;
-		} else {
+		} else if (stealable.type === 'stall') {
 			// Up to 5% fail chance, random
 			successfulQuantity = Math.floor((quantity * rng.randInt(95, 100)) / 100);
 			xpReceived = successfulQuantity * stealable.xp;
+		} else {
+			[successfulQuantity, xpReceived] = calcLootXPChest(user.skillsAsLevels.thieving, stealable, quantity, rng);
 
 			if (isRoguesCastleChest) {
 				const hasMediumDiary = user.hasDiary('wilderness.medium');
@@ -192,12 +195,18 @@ export const stealCommand = defineCommand({
 				const blightedRestoreAmount = user.bank.amount(blightedRestoreName);
 				const prayerPotionAmount = user.bank.amount(prayerPotionName);
 
-				if (blightedRestoreAmount >= potionsRequired) {
-					potionsToRemove.add(blightedRestoreName, potionsRequired);
-				} else if (prayerPotionAmount >= potionsRequired) {
-					potionsToRemove.add(prayerPotionName, potionsRequired);
+				const blightedRestoreQuantity = Math.min(blightedRestoreAmount, potionsRequired);
+				const remainingPotionsRequired = potionsRequired - blightedRestoreQuantity;
+
+				if (prayerPotionAmount >= remainingPotionsRequired) {
+					if (blightedRestoreQuantity > 0) {
+						potionsToRemove.add(blightedRestoreName, blightedRestoreQuantity);
+					}
+					if (remainingPotionsRequired > 0) {
+						potionsToRemove.add(prayerPotionName, remainingPotionsRequired);
+					}
 				} else {
-					return `You need at least ${potionsRequired}x ${blightedRestoreName} or ${prayerPotionName} to keep Protect from Melee active while stealing from ${stealable.name}.`;
+					return `You need at least ${potionsRequired} total ${blightedRestoreName} or ${prayerPotionName} to keep Protect from Melee active while stealing from ${stealable.name}.`;
 				}
 
 				if (!hasMediumDiary) {

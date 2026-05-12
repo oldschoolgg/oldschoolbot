@@ -38,6 +38,15 @@ describe('Steal Command', async () => {
 		expect(res).toContain("to keep Protect from Melee active while stealing from Rogues' Castle chest.");
 	});
 
+	it('should use blighted restores before prayer potions for Rogues Castle chest', async () => {
+		const user = await createTestUser(new Bank({ 'Blighted super restore(4)': 1, 'Prayer potion(4)': 100 }));
+		await user.update({ skills_thieving: convertLVLtoXP(99), skills_prayer: convertLVLtoXP(99) });
+		const res = await user.runCommand('steal', { name: "Rogues' Castle chest", quantity: 1000 });
+		expect(res).toContain("is now going to steal from a Rogues' Castle chest 1000x times");
+		expect(res).toContain('Blighted super restore(4)');
+		expect(res).toContain('Prayer potion(4)');
+	});
+
 	it('should allow pickpocketing NPCs', async () => {
 		const user = await createTestUser(new Bank({ Trout: 50 }));
 		await user.update({ skills_thieving: convertLVLtoXP(99) });
