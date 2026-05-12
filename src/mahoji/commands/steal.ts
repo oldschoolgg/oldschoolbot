@@ -1,5 +1,5 @@
 import { bold } from '@oldschoolgg/discord';
-import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { formatDuration, stringMatches, Time, UserError } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { quests } from '@/lib/minions/data/quests.js';
@@ -7,6 +7,7 @@ import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import { Thieving } from '@/lib/skilling/skills/thieving/index.js';
 import { type Stealable, stealables } from '@/lib/skilling/skills/thieving/stealables.js';
 import type { PickpocketActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { calcLootXPPickpocketing } from '@/tasks/minions/pickpocketActivity.js';
 
 export const stealCommand = defineCommand({
@@ -57,9 +58,8 @@ export const stealCommand = defineCommand({
 		}
 
 		if (stealable.qpRequired && user.QP < stealable.qpRequired) {
-			return `You need at least **${stealable.qpRequired}** QP to ${
-				stealable.type === 'pickpockable' ? 'pickpocket' : 'steal from'
-			} a ${stealable.name}.`;
+			return `You need at least **${stealable.qpRequired}** QP to ${stealable.type === 'pickpockable' ? 'pickpocket' : 'steal from'
+				} a ${stealable.name}.`;
 		}
 
 		if (stealable.requiredQuests) {
@@ -75,22 +75,19 @@ export const stealCommand = defineCommand({
 
 		if (stealable.fireCapeRequired) {
 			if (user.cl.amount('Fire cape') === 0) {
-				return `In order to ${
-					stealable.type === 'pickpockable' ? 'pickpocket this NPC' : 'steal from this stall'
-				}, you need a fire cape in your collection log.`;
+				return `In order to ${stealable.type === 'pickpockable' ? 'pickpocket this NPC' : 'steal from this stall'
+					}, you need a fire cape in your collection log.`;
 			}
 		}
 
 		if (user.skillsAsLevels.thieving < stealable.level) {
-			return `${user.minionName} needs ${stealable.level} Thieving to ${
-				stealable.type === 'pickpockable' ? 'pickpocket' : 'steal from'
-			} a ${stealable.name}.`;
+			return `${user.minionName} needs ${stealable.level} Thieving to ${stealable.type === 'pickpockable' ? 'pickpocket' : 'steal from'
+				} a ${stealable.name}.`;
 		}
 
 		if (stealable.prayerLevelRequired && user.skillsAsLevels.prayer < stealable.prayerLevelRequired) {
-			return `${user.minionName} needs ${stealable.prayerLevelRequired} Prayer to ${
-				stealable.type === 'pickpockable' ? 'pickpocket' : 'steal from'
-			} a ${stealable.name}.`;
+			return `${user.minionName} needs ${stealable.prayerLevelRequired} Prayer to ${stealable.type === 'pickpockable' ? 'pickpocket' : 'steal from'
+				} a ${stealable.name}.`;
 		}
 
 		const timeToTheft =
@@ -115,9 +112,8 @@ export const stealCommand = defineCommand({
 		if (duration > maxTripLength) {
 			return `${user.minionName} can't go on trips longer than ${formatDuration(
 				maxTripLength
-			)}, try a lower quantity. The highest amount of times you can ${
-				stealable.type === 'pickpockable' ? 'pickpocket' : 'steal from'
-			} a ${stealable.name} is ${Math.floor(maxTripLength / timeToTheft)}.`;
+			)}, try a lower quantity. The highest amount of times you can ${stealable.type === 'pickpockable' ? 'pickpocket' : 'steal from'
+				} a ${stealable.name} is ${Math.floor(maxTripLength / timeToTheft)}.`;
 		}
 
 		const boosts = [];
@@ -125,9 +121,8 @@ export const stealCommand = defineCommand({
 		let xpReceived = 0;
 		let damageTaken = 0;
 
-		let str = `${user.minionName} is now going to ${
-			stealable.type === 'pickpockable' ? 'pickpocket' : 'steal from'
-		} a ${stealable.name} ${quantity}x times, it'll take around ${formatDuration(duration)} to finish.`;
+		let str = `${user.minionName} is now going to ${stealable.type === 'pickpockable' ? 'pickpocket' : 'steal from'
+			} a ${stealable.name} ${quantity}x times, it'll take around ${formatTripDuration(user, duration)} to finish.`;
 
 		const isRoguesCastleChest = stealable.name === "Rogues' Castle chest";
 		const potionsToRemove = new Bank();
@@ -157,13 +152,22 @@ export const stealCommand = defineCommand({
 				);
 			}
 
-			const { foodRemoved } = await removeFoodFromUser({
-				user,
-				totalHealingNeeded: damageTaken,
-				healPerAction: Math.ceil(damageTaken / quantity),
-				activityName: 'Pickpocketing',
-				attackStylesUsed: []
-			});
+			let removeFoodResult: Awaited<ReturnType<typeof removeFoodFromUser>>;
+			try {
+				removeFoodResult = await removeFoodFromUser({
+					user,
+					totalHealingNeeded: damageTaken,
+					healPerAction: Math.ceil(damageTaken / quantity),
+					activityName: 'Pickpocketing',
+					attackStylesUsed: []
+				});
+			} catch (err: unknown) {
+				if (err instanceof UserError) {
+					return err.message;
+				}
+				throw err;
+			}
+			const foodRemoved = removeFoodResult.foodRemoved;
 
 			await ClientSettings.updateBankSetting('economyStats_thievingCost', foodRemoved);
 			str += ` Removed ${foodRemoved}.`;
