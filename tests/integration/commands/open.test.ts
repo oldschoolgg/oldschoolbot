@@ -48,6 +48,20 @@ describe('Open Command', async () => {
 		await user.openedBankMatch(new Bank().add('Reward casket (beginner)', 2));
 	});
 
+	test('Open until without quantity opens until bank limit', async () => {
+		mockMathRandom(0.1);
+		const user = await createTestUser();
+		await user.givePatronTier(2);
+		await user.addItemsToBank({ items: new Bank().add('Reward casket (beginner)', 10) });
+		await user.runCommand(openCommand, {
+			name: 'reward casket (beginner)',
+			open_until: 'Fire rune',
+			result_quantity: 1000
+		});
+		await user.bankAmountMatch('Reward casket (beginner)', 0);
+		await user.openedBankMatch(new Bank().add('Reward casket (beginner)', 10));
+	});
+
 	test('Open until rejects invalid item', async () => {
 		const user = await createTestUser();
 		await user.addItemsToBank({ items: new Bank().add('Reward casket (beginner)', 10) });
