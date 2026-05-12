@@ -32,13 +32,16 @@ function createUsernameWithBadges(user: Pick<User, 'username' | 'badges' | 'mini
 	return `${badges ? `${badges} ` : ''}${user.username}`;
 }
 
-export async function fetchUsernameAndCache(_id: string | bigint): Promise<string> {
+export async function fetchUsernameAndCache(
+	_id: string | bigint,
+	options: { refreshDiscordUser?: boolean } = {}
+): Promise<string> {
 	const id = _id.toString();
 
 	if (!isValidDiscordSnowflake(id)) {
 		throw new Error(`Invalid userID: ${id}`);
 	}
-	const cached = await Cache._getBadgedUsernameRaw(id);
+	const cached = options.refreshDiscordUser ? null : await Cache._getBadgedUsernameRaw(id);
 	if (cached) return cached;
 	let user = await prisma.user.upsert({
 		where: {
@@ -55,8 +58,8 @@ export async function fetchUsernameAndCache(_id: string | bigint): Promise<strin
 		update: {}
 	});
 
-	// If no username available, fetch it
-	if (!user?.username && !process.env.TEST) {
+	// If no username is available, or this is an explicit cache refresh, fetch it.
+	if ((!user?.username || options.refreshDiscordUser) && !process.env.TEST) {
 		const djsUser = await globalClient.fetchUser(id).catch(() => null);
 		if (djsUser) {
 			user = await prisma.user.update({
