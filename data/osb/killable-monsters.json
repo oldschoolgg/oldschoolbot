@@ -158,6 +158,7 @@
 		"respawn_time": 500,
 		"required_quests": [9],
 		"qp_required": 100,
+		"difficulty_rating": 4,
 		"death_props": {
 			"hardness": 0.2,
 			"steepness": 0.99
