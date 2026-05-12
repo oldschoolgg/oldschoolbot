@@ -412,7 +412,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monsters: [Monsters.Amoxliatl.id, Monsters.FrostNagua.id, Monsters.SulphurNagua.id],
 		slayerLevel: 48,
 		unlocked: true,
-		requiredQuests: [QuestID.TheHeartOfDarkness]
+		requiredQuests: [QuestID.PerilousMoons]
 	},
 	{
 		monster: Monsters.WarpedTerrorbird,
