@@ -799,7 +799,8 @@ export const testPotatoCommand = globalConfig.isProduction
 						await user.update({
 							gambling_lockout_expiry: null,
 							last_spawn_box_date: 0,
-							lastSpawnLamp: 0
+							lastSpawnLamp: 0,
+							last_item_contract_date: 0
 						});
 						await prisma.userStats.upsert({
 							where: {
@@ -813,7 +814,7 @@ export const testPotatoCommand = globalConfig.isProduction
 								user_id: BigInt(user.id)
 							}
 						});
-						return 'Reset all your daily/TOG cooldowns, gambling lockout.';
+						return 'Reset all your daily/TOG/item contract cooldowns, gambling lockout.';
 					}
 					if (thing === 'kc') {
 						await user.statsUpdate({
