@@ -124,6 +124,7 @@ export interface CookingActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Cooking';
 	cookableID: number;
 	quantity: number;
+	method?: 'KarambwanShopCookDrop';
 }
 
 export interface ConstructionActivityTaskOptions extends ActivityTaskOptions {

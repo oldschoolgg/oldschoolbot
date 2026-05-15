@@ -297,6 +297,14 @@ export const Cookables: Cookable[] = [
 	}
 ];
 
+export const KarambwanShopCookDropMethod = {
+	name: 'Karambwan Shop Cook + Drop',
+	aliases: ['karambwan shop', 'karambwan shop cook', 'karambwan shop cook drop', 'shop karambwan', 'shop karambwans'],
+	level: 92,
+	gpCost: 133,
+	quantityPerHour: 2450
+} as const;
+
 const Cooking = defineSkill({
 	aliases: ['cooking', 'cook'],
 	Cookables,

@@ -1,7 +1,7 @@
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
-import { Bank, itemID } from 'oldschooljs';
+import { Bank, EItem, itemID } from 'oldschooljs';
 
-import Cooking, { Cookables } from '@/lib/skilling/skills/cooking/cooking.js';
+import Cooking, { Cookables, KarambwanShopCookDropMethod } from '@/lib/skilling/skills/cooking/cooking.js';
 import ForestryRations from '@/lib/skilling/skills/cooking/forestersRations.js';
 import { LeapingFish } from '@/lib/skilling/skills/cooking/leapingFish.js';
 import type { CookingActivityTaskOptions } from '@/lib/types/minions.js';
@@ -26,6 +26,7 @@ export const cookCommand = defineCommand({
 			autocomplete: async ({ value }: StringAutoComplete) => {
 				return [
 					...Cookables.map(i => i.name),
+					KarambwanShopCookDropMethod.name,
 					...LeapingFish.map(i => i.item.name),
 					...ForestryRations.map(i => i.name)
 				]
@@ -67,16 +68,69 @@ export const cookCommand = defineCommand({
 			return forestersRationCommand({ user, channelId, name, quantity });
 		}
 
+		const isKarambwanShopCookDrop =
+			stringMatches(KarambwanShopCookDropMethod.name, name) ||
+			KarambwanShopCookDropMethod.aliases.some(alias => stringMatches(alias, name));
+
+		if (isKarambwanShopCookDrop) {
+			if (user.skillLevel('cooking') < KarambwanShopCookDropMethod.level) {
+				return `${user.minionName} needs ${KarambwanShopCookDropMethod.level} Cooking to do ${KarambwanShopCookDropMethod.name}.`;
+			}
+
+			const timeToCookSingleCookable = Time.Hour / KarambwanShopCookDropMethod.quantityPerHour;
+			const maxTripLength = await user.calcMaxTripLength('Cooking');
+			if (!quantity) {
+				quantity = Math.floor(maxTripLength / timeToCookSingleCookable);
+				quantity = Math.min(quantity, Math.floor(Number(user.GP) / KarambwanShopCookDropMethod.gpCost));
+			}
+			if (quantity < 1) {
+				return `You need at least ${KarambwanShopCookDropMethod.gpCost.toLocaleString()} GP to buy Raw karambwan.`;
+			}
+
+			const duration = quantity * timeToCookSingleCookable;
+			if (duration > maxTripLength) {
+				return `${user.minionName} can't go on trips longer than ${formatDuration(
+					maxTripLength
+				)} minutes, try a lower quantity. The highest amount of karambwans you can cook and drop is ${Math.floor(
+					maxTripLength / timeToCookSingleCookable
+				)}.`;
+			}
+
+			const totalCost = new Bank().add('Coins', quantity * KarambwanShopCookDropMethod.gpCost);
+			if (!user.owns(totalCost)) {
+				return `You need ${totalCost} to buy ${quantity.toLocaleString()}x Raw karambwan.`;
+			}
+
+			await user.removeItemsFromBank(totalCost);
+			await ClientSettings.updateBankSetting('buy_cost_bank', totalCost);
+
+			await ActivityManager.startTrip<CookingActivityTaskOptions>({
+				cookableID: EItem.COOKED_KARAMBWAN,
+				userID: user.id,
+				channelId,
+				quantity,
+				duration,
+				type: 'Cooking',
+				method: 'KarambwanShopCookDrop'
+			});
+
+			return `${user.minionName
+				} is now buying, cooking and dropping ${quantity.toLocaleString()}x karambwans, it'll take around ${formatTripDuration(
+					user,
+					duration
+				)} to finish. This cost ${totalCost}.`;
+		}
+
 		const cookable = Cooking.Cookables.find(
-			cookable =>
-				stringMatches(cookable.name, options.name) ||
-				cookable.alias?.some(alias => stringMatches(alias, options.name))
+			item =>
+				stringMatches(item.name, options.name) || item.alias?.some(alias => stringMatches(alias, options.name))
 		);
 
 		if (!cookable) {
-			return `Thats not a valid item to cook. Valid cookables are ${Cooking.Cookables.map(
-				cookable => cookable.name
-			).join(', ')}.`;
+			return `Thats not a valid item to cook. Valid cookables are ${[
+				KarambwanShopCookDropMethod.name,
+				...Cooking.Cookables.map(item => item.name)
+			].join(', ')}.`;
 		}
 
 		if (user.skillLevel('cooking') < cookable.level) {
