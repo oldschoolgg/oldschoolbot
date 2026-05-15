@@ -74,13 +74,23 @@ async function handleCoxXP(user: MUser, qty: number, isCm: boolean) {
 export const raidsTask: MinionTask = {
 	type: 'Raids',
 	async run(data: RaidsOptions, { handleTripFinish }) {
-		const { channelId, users, challengeMode, isFakeMass, maxSizeInput, duration, leader, quantity: _quantity, cc } =
-			data;
+		const {
+			channelId,
+			users,
+			challengeMode,
+			isFakeMass,
+			maxSizeInput,
+			duration,
+			leader,
+			quantity: _quantity,
+			cc
+		} = data;
 		const quantity = _quantity ?? 1;
 		const fetchedUsers = await Promise.all(users.map(async u => mUserFetch(u)));
 		// For fakemass, rehydrate the team to N copies of the leader so loot/points/deaths scale to a real team.
 		// After the quantity loop we restore allUsers to fetchedUsers so post-trip operations only touch the leader.
-		let allUsers: MUser[] = isFakeMass && maxSizeInput ? new Array(maxSizeInput).fill(fetchedUsers[0]) : fetchedUsers;
+		let allUsers: MUser[] =
+			isFakeMass && maxSizeInput ? new Array(maxSizeInput).fill(fetchedUsers[0]) : fetchedUsers;
 		const previousCLs = allUsers.map(i => i.cl.clone());
 
 		let totalPoints = 0;
