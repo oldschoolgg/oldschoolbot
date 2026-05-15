@@ -1003,6 +1003,7 @@ export const testPotatoCommand = globalConfig.isProduction
 							celestial_ring_charges: 10000,
 							scythe_of_vitur_charges: 10000,
 							venator_bow_charges: 10000,
+							dodgy_necklace_charges: 10000,
 							blowpipe: {
 								scales: 100000,
 								dartQuantity: 100000,

@@ -17,10 +17,23 @@ export async function degradeableItemsCommand(
 		return `Use \`/minion charge item: [${degradeableItems.map(i => i.item.name).join('|')}] amount:[1-100,000]\`
 ${degradeableItems
 	.map(i => {
-		const charges = user.user[i.settingsKey];
+		const charges =
+			i.settingsKey === 'dodgy_necklace_charges' &&
+			user.user.dodgy_necklace_charges === 0 &&
+			user.hasEquippedOrInBank('Dodgy necklace')
+				? 10
+				: user.user[i.settingsKey];
 		return `${i.item.name}: ${charges.toLocaleString()} charges`;
 	})
 	.join('\n')}`;
+	}
+
+	if (item.settingsKey === 'dodgy_necklace_charges') {
+		const charges =
+			user.user.dodgy_necklace_charges === 0 && user.hasEquippedOrInBank('Dodgy necklace')
+				? 10
+				: user.user.dodgy_necklace_charges;
+		return `Dodgy necklace charges are added when you enchant Opal necklaces. Your Dodgy necklaces currently have ${charges.toLocaleString()} charges.`;
 	}
 
 	const cost = item.chargeInput.cost.clone().multiply(number);

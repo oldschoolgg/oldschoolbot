@@ -13,12 +13,14 @@ export function calcLootXPPickpocketing(
 	quantity: number,
 	hasThievingCape: boolean,
 	hasDiary: boolean,
-	rng: { percentChance: (percent: number) => boolean }
-): [number, number, number, number] {
+	rng: { percentChance: (percent: number) => boolean },
+	dodgyNecklaceCharges = 0
+): [number, number, number, number, number] {
 	let xpReceived = 0;
 
 	let successful = 0;
 	let damageTaken = 0;
+	let dodgyNecklaceChargesUsed = 0;
 	// Pickpocketing takes 2 ticks
 	const timeToPickpocket = (npc.customTickRate ?? 2.05) * 0.6;
 	// For future Ardougne Diary and Thieving cape
@@ -29,6 +31,10 @@ export function calcLootXPPickpocketing(
 
 	for (let i = 0; i < quantity; i++) {
 		if (!rng.percentChance(chanceOfSuccess)) {
+			if (dodgyNecklaceChargesUsed < dodgyNecklaceCharges && rng.percentChance(25)) {
+				dodgyNecklaceChargesUsed++;
+				continue;
+			}
 			// The minion has just been stunned, and cant pickpocket for a few ticks, therefore
 			// they also miss out on the next few pickpockets depending on stun time. And take damage
 			damageTaken += npc.stunDamage!;
@@ -40,7 +46,7 @@ export function calcLootXPPickpocketing(
 		xpReceived += npc.xp;
 	}
 
-	return [successful, damageTaken, xpReceived, chanceOfSuccess];
+	return [successful, damageTaken, xpReceived, chanceOfSuccess, dodgyNecklaceChargesUsed];
 }
 
 export const pickpocketTask: MinionTask = {
@@ -111,7 +117,15 @@ export const pickpocketTask: MinionTask = {
 			obj.type === 'pickpockable' ? 'pickpocketing' : 'stealing'
 		} from ${obj.name} ${successfulQuantity}x times, due to failures you missed out on ${
 			quantity - successfulQuantity
-		}x ${obj.type === 'pickpockable' ? 'pickpockets' : 'steals'}. ${xpRes}`;
+		}x ${obj.type === 'pickpockable' ? 'pickpockets' : 'steals'}. ${xpRes}.`;
+
+		if (data.dodgyNecklaceChargesUsed && typeof data.dodgyNecklaceChargesRemaining === 'number') {
+			str += `\nYour Dodgy necklace prevented ${data.dodgyNecklaceChargesUsed} stun${
+				data.dodgyNecklaceChargesUsed === 1 ? '' : 's'
+			} and has ${data.dodgyNecklaceChargesRemaining.toLocaleString()} charge${
+				data.dodgyNecklaceChargesRemaining === 1 ? '' : 's'
+			} remaining.`;
+		}
 
 		str += `\n${
 			obj.type === 'pickpockable'

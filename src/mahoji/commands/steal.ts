@@ -1,6 +1,8 @@
 import { bold } from '@oldschoolgg/discord';
 import { formatDuration, stringMatches, UserError } from '@oldschoolgg/toolkit';
+import { Items } from 'oldschooljs';
 
+import { degradeItem } from '@/lib/degradeableItems.js';
 import { quests } from '@/lib/minions/data/quests.js';
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import { Thieving } from '@/lib/skilling/skills/thieving/index.js';
@@ -118,6 +120,9 @@ export const stealCommand = defineCommand({
 		let successfulQuantity = 0;
 		let xpReceived = 0;
 		let damageTaken = 0;
+		let dodgyNecklaceChargesUsed = 0;
+		let dodgyNecklaceChargesRemaining: number | undefined;
+		let dodgyNecklaceMessage = '';
 
 		let str = `${user.minionName} is now going to ${
 			stealable.type === 'pickpockable' ? 'pickpocket' : 'steal from'
@@ -129,17 +134,39 @@ export const stealCommand = defineCommand({
 				boosts.push('+10% chance of success from Ardougne Hard diary');
 			}
 
-			[successfulQuantity, damageTaken, xpReceived] = calcLootXPPickpocketing(
+			[successfulQuantity, damageTaken, xpReceived, , dodgyNecklaceChargesUsed] = calcLootXPPickpocketing(
 				user.skillsAsLevels.thieving,
 				stealable,
 				quantity,
 				user.hasEquipped(['Thieving cape', 'Thieving cape(t)']),
 				hasArdyHard,
-				rng
+				rng,
+				user.gear.skilling.hasEquipped('Dodgy necklace') && !stealable.blackjacking
+					? user.user.dodgy_necklace_charges || 10
+					: 0
 			);
 
 			if (user.hasEquipped(['Thieving cape', 'Thieving cape(t)'])) {
 				boosts.push('+10% chance of success from Thieving cape');
+			}
+
+			if (dodgyNecklaceChargesUsed > 0) {
+				if (user.user.dodgy_necklace_charges === 0) {
+					await user.update({ dodgy_necklace_charges: 10 });
+				}
+
+				const degradationResult = await degradeItem({
+					item: Items.getOrThrow('Dodgy necklace'),
+					chargesToDegrade: dodgyNecklaceChargesUsed,
+					user
+				});
+
+				boosts.push(`Dodgy necklace is helping you steal`);
+
+				if (degradationResult.userMessage.includes('ran out of charges')) {
+					dodgyNecklaceMessage = ' Your Dodgy necklace used its last charge and crumbled to dust';
+				}
+				dodgyNecklaceChargesRemaining = user.user.dodgy_necklace_charges;
 			}
 
 			if (Thieving.rogueOutfitPercentBonus(user) > 0) {
@@ -166,7 +193,7 @@ export const stealCommand = defineCommand({
 			const foodRemoved = removeFoodResult.foodRemoved;
 
 			await ClientSettings.updateBankSetting('economyStats_thievingCost', foodRemoved);
-			str += ` Removed ${foodRemoved}.`;
+			str += ` Removed ${foodRemoved}.${dodgyNecklaceMessage}`;
 		} else {
 			// Up to 5% fail chance, random
 			successfulQuantity = Math.floor((quantity * rng.randInt(95, 100)) / 100);
@@ -182,7 +209,9 @@ export const stealCommand = defineCommand({
 			type: 'Pickpocket',
 			damageTaken,
 			successfulQuantity,
-			xpReceived
+			xpReceived,
+			dodgyNecklaceChargesUsed,
+			dodgyNecklaceChargesRemaining
 		});
 
 		if (boosts.length > 0) {
