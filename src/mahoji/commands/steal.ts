@@ -123,6 +123,10 @@ export const stealCommand = defineCommand({
 		let dodgyNecklaceChargesUsed = 0;
 		let dodgyNecklaceChargesRemaining: number | undefined;
 		let dodgyNecklaceMessage = '';
+		const isUsingDodgyNecklace =
+			stealable.type === 'pickpockable' &&
+			user.gear.skilling.hasEquipped('Dodgy necklace') &&
+			!stealable.blackjacking;
 
 		let str = `${user.minionName} is now going to ${
 			stealable.type === 'pickpockable' ? 'pickpocket' : 'steal from'
@@ -141,32 +145,15 @@ export const stealCommand = defineCommand({
 				user.hasEquipped(['Thieving cape', 'Thieving cape(t)']),
 				hasArdyHard,
 				rng,
-				user.gear.skilling.hasEquipped('Dodgy necklace') && !stealable.blackjacking
-					? user.user.dodgy_necklace_charges || 10
-					: 0
+				isUsingDodgyNecklace ? user.user.dodgy_necklace_charges || 10 : 0
 			);
 
 			if (user.hasEquipped(['Thieving cape', 'Thieving cape(t)'])) {
 				boosts.push('+10% chance of success from Thieving cape');
 			}
 
-			if (dodgyNecklaceChargesUsed > 0) {
-				if (user.user.dodgy_necklace_charges === 0) {
-					await user.update({ dodgy_necklace_charges: 10 });
-				}
-
-				const degradationResult = await degradeItem({
-					item: Items.getOrThrow('Dodgy necklace'),
-					chargesToDegrade: dodgyNecklaceChargesUsed,
-					user
-				});
-
-				boosts.push(`Dodgy necklace is helping you steal`);
-
-				if (degradationResult.userMessage.includes('ran out of charges')) {
-					dodgyNecklaceMessage = ' Your Dodgy necklace used its last charge and crumbled to dust';
-				}
-				dodgyNecklaceChargesRemaining = user.user.dodgy_necklace_charges;
+			if (isUsingDodgyNecklace) {
+				boosts.push('Dodgy necklace equipped');
 			}
 
 			if (Thieving.rogueOutfitPercentBonus(user) > 0) {
@@ -191,6 +178,23 @@ export const stealCommand = defineCommand({
 				throw err;
 			}
 			const foodRemoved = removeFoodResult.foodRemoved;
+
+			if (dodgyNecklaceChargesUsed > 0) {
+				if (user.user.dodgy_necklace_charges === 0) {
+					await user.update({ dodgy_necklace_charges: 10 });
+				}
+
+				const degradationResult = await degradeItem({
+					item: Items.getOrThrow('Dodgy necklace'),
+					chargesToDegrade: dodgyNecklaceChargesUsed,
+					user
+				});
+
+				if (degradationResult.userMessage.includes('ran out of charges')) {
+					dodgyNecklaceMessage = ' Your Dodgy necklace used its last charge and crumbled to dust';
+				}
+				dodgyNecklaceChargesRemaining = user.user.dodgy_necklace_charges;
+			}
 
 			await ClientSettings.updateBankSetting('economyStats_thievingCost', foodRemoved);
 			str += ` Removed ${foodRemoved}.${dodgyNecklaceMessage}`;
