@@ -492,11 +492,14 @@ export async function calcCoxDuration(
 
 	const reductions: Record<string, number> = {};
 
-	// Track degradeable items:
+	// Track degradeable items (fakemass works properly with this code, it wont remove 5x charges):
 	const degradeableItems: { item: Item; user: MUser; chargesToDegrade: number }[] = [];
+	const uniqueUsers = new Map<string, true>();
 
 	for (const u of team) {
 		let userPercentChange = 0;
+		const isUserReal = !uniqueUsers.has(u.id);
+		uniqueUsers.set(u.id, true);
 
 		// Reduce time for gear
 		const { total } = calculateUserGearPercents(u);
@@ -520,7 +523,7 @@ export async function calcCoxDuration(
 						const canDegrade = checkUserCanUseDegradeableItem(testItem);
 						if (canDegrade.hasEnough) {
 							userPercentChange += item.boost;
-							degradeableItems.push(testItem);
+							if (isUserReal) degradeableItems.push(testItem);
 							break;
 						}
 					}

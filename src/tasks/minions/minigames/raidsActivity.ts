@@ -74,15 +74,25 @@ async function handleCoxXP(user: MUser, qty: number, isCm: boolean) {
 export const raidsTask: MinionTask = {
 	type: 'Raids',
 	async run(data: RaidsOptions, { handleTripFinish }) {
-		const { channelId, users, challengeMode, duration, leader, quantity: _quantity, cc } = data;
+		const { channelId, users, challengeMode, isFakeMass, maxSizeInput, duration, leader, quantity: _quantity, cc } =
+			data;
 		const quantity = _quantity ?? 1;
-		const allUsers = await Promise.all(users.map(async u => mUserFetch(u)));
+		const fetchedUsers = await Promise.all(users.map(async u => mUserFetch(u)));
+		// For fakemass, rehydrate the team to N copies of the leader so loot/points/deaths scale to a real team.
+		// After the quantity loop we restore allUsers to fetchedUsers so post-trip operations only touch the leader.
+		let allUsers: MUser[] = isFakeMass && maxSizeInput ? new Array(maxSizeInput).fill(fetchedUsers[0]) : fetchedUsers;
 		const previousCLs = allUsers.map(i => i.cl.clone());
 
 		let totalPoints = 0;
 		const raidResults = new Map<string, RaidResultUser>();
 		for (let x = 0; x < quantity; x++) {
 			const team = await createTeam(allUsers, challengeMode);
+			// Rename fake users so their loot/points/deaths are tracked separately from the leader.
+			if (isFakeMass) {
+				for (let i = 1; i < team.length; i++) {
+					team[i].id = `${i}`;
+				}
+			}
 			// Prevent getting multiple Ancient Tablets
 			for (const teamMate of team) {
 				if (raidResults.get(teamMate.id)?.gotAncientTablet) {
@@ -97,6 +107,12 @@ export const raidsTask: MinionTask = {
 				team
 			});
 			for (const [userID, userLoot] of Object.entries(raidLoot)) {
+				// Fake users only contribute to totalPoints; skip the per-user processing (no flappy/loot/etc).
+				if (isFakeMass && userID !== leader) {
+					const member = team.find(m => m.id === userID);
+					if (member) totalPoints += member.personalPoints;
+					continue;
+				}
 				let userData = raidResults.get(userID);
 				// Do all the one-time / per-user stuff:
 				if (!userData) {
@@ -149,6 +165,12 @@ export const raidsTask: MinionTask = {
 				userData.loot.add(userLoot);
 				raidResults.set(userID, userData);
 			}
+		}
+
+		// Restore allUsers to the real users (just the leader for fakemass) so that
+		// minigame KC increments, image rendering, and trackLoot only fire for the actual player.
+		if (isFakeMass) {
+			allUsers = fetchedUsers;
 		}
 
 		const minigameID = challengeMode ? 'raids_challenge_mode' : 'raids';
