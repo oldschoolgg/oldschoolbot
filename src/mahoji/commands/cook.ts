@@ -114,11 +114,12 @@ export const cookCommand = defineCommand({
 				method: 'KarambwanShopCookDrop'
 			});
 
-			return `${user.minionName
-				} is now buying, cooking and dropping ${quantity.toLocaleString()}x karambwans, it'll take around ${formatTripDuration(
-					user,
-					duration
-				)} to finish. This cost ${totalCost}.`;
+			return `${
+				user.minionName
+			} is now buying, cooking and dropping ${quantity.toLocaleString()}x karambwans, it'll take around ${formatTripDuration(
+				user,
+				duration
+			)} to finish. This cost ${totalCost}.`;
 		}
 
 		const cookable = Cooking.Cookables.find(
