@@ -36,23 +36,8 @@ export function getPerkTierCached(userId: string) {
 	}
 	return null;
 }
-export async function getUsersPerkTier({
-	user,
-	forceNoCache
-}: {
-	user: MUser;
-	forceNoCache?: boolean;
-}): Promise<PerkTier | 0> {
-	if (!forceNoCache) {
-		// We want a way to force a cache refresh
-		// Otherwise, we look for a cached tier:
-		const tierCacheEntry = perkTierHotCache.get(user.id);
-		// If it's not expired, return it:
-		if (tierCacheEntry && tierCacheEntry.expires > Date.now()) {
-			return tierCacheEntry.tier;
-		}
-	}
 
+export function getUserPerkTierFromBitfield(user: MUser): PerkTier | 0 {
 	const eligibleTiers = [];
 	if (user.isContributor() || user.isModOrAdmin()) {
 		eligibleTiers.push(PerkTier.Four);
@@ -82,18 +67,39 @@ export async function getUsersPerkTier({
 		eligibleTiers.push(PerkTier.Three);
 	}
 
+	if (
+		bitfield.includes(BitField.PatronTier1) ||
+		bitfield.includes(BitField.HasPermanentTierOne) ||
+		bitfield.includes(BitField.BothBotsMaxedFreeTierOnePerks)
+	) {
+		eligibleTiers.push(PerkTier.Two);
+	}
+
+	return Math.max(...eligibleTiers, 0);
+}
+
+export async function getUsersPerkTier({
+	user,
+	forceNoCache
+}: {
+	user: MUser;
+	forceNoCache?: boolean;
+}): Promise<PerkTier | 0> {
+	if (!forceNoCache) {
+		// We want a way to force a cache refresh
+		// Otherwise, we look for a cached tier:
+		const tierCacheEntry = perkTierHotCache.get(user.id);
+		// If it's not expired, return it:
+		if (tierCacheEntry && tierCacheEntry.expires > Date.now()) {
+			return tierCacheEntry.tier;
+		}
+	}
+
+	const eligibleTiers = [getUserPerkTierFromBitfield(user)];
+
 	const roboChimpCached = await Cache.getRoboChimpUser(user.id);
 	if (roboChimpCached) {
 		eligibleTiers.push(roboChimpCached.perk_tier);
-	}
-
-	// Why bother looking for the member if it doesn't help get a higher tier
-	if (
-		user.bitfield.includes(BitField.PatronTier1) ||
-		user.bitfield.includes(BitField.HasPermanentTierOne) ||
-		user.bitfield.includes(BitField.BothBotsMaxedFreeTierOnePerks)
-	) {
-		eligibleTiers.push(PerkTier.Two);
 	}
 	// Server boosting perk has been eliminated
 

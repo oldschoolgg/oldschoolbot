@@ -43,7 +43,7 @@ import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { RemoveFoodFromUserParams } from '@/lib/minions/functions/removeFoodFromUser.js';
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import type { AddXpParams, ClueBank, KillableMonster } from '@/lib/minions/types.js';
-import { getPerkTierCached, getUsersPerkTier } from '@/lib/perkTiers.js';
+import { getPerkTierCached, getUserPerkTierFromBitfield, getUsersPerkTier } from '@/lib/perkTiers.js';
 import { roboChimpUserFetchCached } from '@/lib/roboChimp.js';
 import { type MinigameName, type MinigameScore, Minigames } from '@/lib/settings/minigames.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
@@ -163,7 +163,7 @@ export class MUserClass extends BaseUser {
 	}
 
 	get perkTier() {
-		return getPerkTierCached(this.id) ?? 0;
+		return getPerkTierCached(this.id) ?? getUserPerkTierFromBitfield(this);
 	}
 	get perkTierIsCached(): boolean {
 		return getPerkTierCached(this.id) !== null;
