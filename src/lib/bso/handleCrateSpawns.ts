@@ -1,15 +1,13 @@
 import { reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { roll } from 'node-rng';
-import { Bank, Items, resolveItems } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
-const crateItem = Items.getOrThrow('Frozen crate (s8)');
+const crateItem = Items.getOrThrow('Summer crate (s9)');
 
-const xmasPets = resolveItems(['Smokey', 'Rudolph', 'Frosty', 'Grinchling', 'Shrimpy']);
-
-export function handleCrateSpawns(user: MUser, duration: number, messages?: string[]) {
-	if (1 > Math.abs(0)) return null;
+export function handleCrateSpawns(user: MUser, duration: number, kind: 'trip' | 'tame' = 'trip', _messages?: string[]) {
 	const accountAge = user.accountAgeInDays();
-	let dropratePerMinute = 50 * 60;
+	let dropratePerMinute = 8 * 60;
+	if (kind === 'tame') dropratePerMinute *= 2;
 	if (accountAge) {
 		if (accountAge < 31) return null;
 		if (user.isIronman) {
@@ -19,18 +17,12 @@ export function handleCrateSpawns(user: MUser, duration: number, messages?: stri
 	dropratePerMinute = Math.ceil(dropratePerMinute / 3);
 	dropratePerMinute = Math.ceil(dropratePerMinute / 2);
 
-	if (xmasPets.some(pet => user.usingPet(pet))) {
-		dropratePerMinute = Math.ceil(dropratePerMinute / 10);
-		if (messages) {
-			messages.push(`10x higher droprates for ${Items.itemNameFromId(user.user.minion_equippedPet!)}`);
-		}
-	}
-
 	if (user.isIronman) {
 		dropratePerMinute = Math.ceil(dropratePerMinute / 6);
 	}
 	const minutes = Math.floor(duration / Time.Minute);
 	const loot = new Bank();
+	console.log(`Chance per minute: ${dropratePerMinute}`);
 	for (let i = 0; i < minutes; i++) {
 		if (roll(dropratePerMinute)) {
 			loot.add(crateItem);

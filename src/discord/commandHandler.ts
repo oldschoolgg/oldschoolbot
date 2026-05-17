@@ -1,4 +1,5 @@
 import { type APIChatInputApplicationCommandInteraction, SpecialResponse } from '@oldschoolgg/discord';
+import { UserError } from '@oldschoolgg/toolkit';
 import { cryptoRng } from 'node-rng/crypto';
 
 import { convertAPIOptionsToCommandOptions } from '@/discord/index.js';
@@ -92,6 +93,7 @@ export async function rawCommandHandlerInner({
 			interaction,
 			context: { command: command.name, options: JSON.stringify(options) }
 		});
+		if (err instanceof UserError) return SpecialResponse.RespondedManually;
 		return {
 			content: `An error occurred while running this command.`
 		};
