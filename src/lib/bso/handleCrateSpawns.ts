@@ -1,4 +1,4 @@
-import { reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit';
 import { roll } from 'node-rng';
 import { Bank, Items } from 'oldschooljs';
 
@@ -11,15 +11,12 @@ export function handleCrateSpawns(user: MUser, duration: number, kind: 'trip' | 
 	if (accountAge) {
 		if (accountAge < 31) return null;
 		if (user.isIronman) {
-			dropratePerMinute = reduceNumByPercent(dropratePerMinute, 15);
+			dropratePerMinute = Math.ceil(dropratePerMinute / 3);
 		}
 	}
 	dropratePerMinute = Math.ceil(dropratePerMinute / 3);
 	dropratePerMinute = Math.ceil(dropratePerMinute / 2);
 
-	if (user.isIronman) {
-		dropratePerMinute = Math.ceil(dropratePerMinute / 6);
-	}
 	const minutes = Math.floor(duration / Time.Minute);
 	const loot = new Bank();
 	console.log(`Chance per minute: ${dropratePerMinute}`);
