@@ -14494,13 +14494,13 @@ setCustomItem(
 setCustomItem(
 	73_973,
 	'Summer partyhat',
-	'Santa hat',
+	'Blue partyhat',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	750_000
+	1_000_000
 );
 
 setCustomItem(
@@ -14565,7 +14565,7 @@ setCustomItem(
 
 setCustomItem(
 	73_979,
-	'Beachball buckler',
+	'Beachball shield',
 	'Bronze kiteshield',
 	{
 		customItemData: {
@@ -14577,7 +14577,7 @@ setCustomItem(
 
 setCustomItem(
 	73_980,
-	'Tropical coconut drink',
+	'Beach pina colada',
 	'Coal',
 	{
 		customItemData: {
@@ -14589,7 +14589,7 @@ setCustomItem(
 
 setCustomItem(
 	73_981,
-	'Whalefloat',
+	'Whale floaty',
 	'Coal',
 	{
 		customItemData: {

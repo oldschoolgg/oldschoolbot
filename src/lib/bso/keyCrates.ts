@@ -286,9 +286,9 @@ export const keyCrates: Crate[] = [
 					.add('Palm board shorts')
 					.add('Beach sandals')
 					.add('Shell necklace')
-					.add('Beachball buckler')
-					.add('Tropical coconut drink')
-					.add('Whalefloat'),
+					.add('Beachball shield')
+					.add('Beach pina colada')
+					.add('Whale floaty'),
 				1
 			)
 			.add(
