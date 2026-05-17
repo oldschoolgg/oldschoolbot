@@ -5,9 +5,8 @@ import { Bank, Items } from 'oldschooljs';
 const crateItem = Items.getOrThrow('Summer crate (s9)');
 
 export function handleCrateSpawns(user: MUser, duration: number, kind: 'trip' | 'tame' = 'trip', _messages?: string[]) {
-	if (1 > Math.abs(0)) return null;
 	const accountAge = user.accountAgeInDays();
-	let dropratePerMinute = 50 * 60;
+	let dropratePerMinute = 10 * 60;
 	if (kind === 'tame') dropratePerMinute *= 2;
 	if (accountAge) {
 		if (accountAge < 31) return null;
