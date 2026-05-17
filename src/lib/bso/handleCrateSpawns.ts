@@ -6,7 +6,7 @@ const crateItem = Items.getOrThrow('Summer crate (s9)');
 
 export function handleCrateSpawns(user: MUser, duration: number, kind: 'trip' | 'tame' = 'trip', _messages?: string[]) {
 	const accountAge = user.accountAgeInDays();
-	let dropratePerMinute = 10 * 60;
+	let dropratePerMinute = 2 * 60;
 	if (kind === 'tame') dropratePerMinute *= 2;
 	if (accountAge) {
 		if (accountAge < 31) return null;
