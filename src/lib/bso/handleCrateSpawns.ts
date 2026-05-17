@@ -6,7 +6,7 @@ const crateItem = Items.getOrThrow('Summer crate (s9)');
 
 export function handleCrateSpawns(user: MUser, duration: number, kind: 'trip' | 'tame' = 'trip', _messages?: string[]) {
 	const accountAge = user.accountAgeInDays();
-	let dropratePerMinute = 2 * 60;
+	let dropratePerMinute = 8 * 60;
 	if (kind === 'tame') dropratePerMinute *= 2;
 	if (accountAge) {
 		if (accountAge < 31) return null;
@@ -22,6 +22,7 @@ export function handleCrateSpawns(user: MUser, duration: number, kind: 'trip' | 
 	}
 	const minutes = Math.floor(duration / Time.Minute);
 	const loot = new Bank();
+	console.log(`Chance per minute: ${dropratePerMinute}`);
 	for (let i = 0; i < minutes; i++) {
 		if (roll(dropratePerMinute)) {
 			loot.add(crateItem);
