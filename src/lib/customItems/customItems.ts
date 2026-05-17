@@ -14455,6 +14455,150 @@ setCustomItem(
 	1_000_000
 );
 
+setCustomItem(
+	73_970,
+	'Summer crate (s9)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_971,
+	'Summer crate key (s9)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_972,
+	'Immitation Crab Hat',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	73_973,
+	'Summer partyhat',
+	'Santa hat',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	750_000
+);
+
+setCustomItem(
+	73_974,
+	'Coral bikini top',
+	'Bronze platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_975,
+	'Coral bikini bottom',
+	'Bronze platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_976,
+	'Palm board shorts',
+	'Bronze platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_977,
+	'Beach sandals',
+	'Bronze boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_978,
+	'Shell necklace',
+	'Amulet of strength',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_979,
+	'Beachball buckler',
+	'Bronze kiteshield',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_980,
+	'Tropical coconut drink',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	250_000
+);
+
+setCustomItem(
+	73_981,
+	'Whalefloat',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
 export const discontinuedItems = resolveItems([
 	'Turkey',
 	'Raw turkey',
