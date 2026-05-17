@@ -273,7 +273,7 @@ export const keyCrates: Crate[] = [
 	{
 		item: Items.getOrThrow('Summer crate (s9)'),
 		key: Items.getOrThrow('Summer crate key (s9)'),
-		keyCostGP: 20_666_666,
+		keyCostGP: 55_555_555,
 		table: new LootTable()
 			.tertiary(888, 'Immitation Crab Hat')
 			.tertiary(555, 'Summer partyhat')
