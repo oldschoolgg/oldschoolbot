@@ -4,6 +4,7 @@ import {
 	createTameTask,
 	getIgneTameKC,
 	igneArmors,
+	type Nursery,
 	type SeaMonkeySpell,
 	seaMonkeySpells,
 	seaMonkeyStaves,
@@ -65,6 +66,23 @@ import { getItemCostFromConsumables } from '@/mahoji/lib/abstracted_commands/min
 import { collectables } from '@/mahoji/lib/collectables.js';
 
 const tameImageSize = 96;
+
+function speciesNameForTame(tame: MTame) {
+	return tame.parentSpeciesIDs.length > 1 ? tame.hybridSpeciesName() : tame.species.name;
+}
+
+function tameCanUseAnySpecies(tame: MTame, speciesIDs: TameSpeciesID[]) {
+	return speciesIDs.some(speciesID => tame.canUseSpecies(speciesID));
+}
+
+function tameSpeciesForType(tame: MTame, type: TameType) {
+	return tameSpecies.find(species => tame.canUseSpecies(species.id) && species.type === type) ?? tame.species;
+}
+
+function tameIsBreeding(user: MUser, tameID: number) {
+	const nursery = user.user.nursery as Nursery;
+	return Boolean(nursery?.breeding?.parentTameIDs.includes(tameID));
+}
 
 async function tameAutocomplete({ value, user }: StringAutoComplete) {
 	const tames = await user.fetchTames();
@@ -439,7 +457,7 @@ export async function tameImage(user: MUser): CommandResponse {
 		ctx.textAlign = 'left';
 		drawText(
 			ctx,
-			`${t.id}. ${t.nickname ? `${t.nickname} (${species.name})` : species.name}`,
+			`${t.id}. ${t.nickname ? `${t.nickname} (${speciesNameForTame(t)})` : speciesNameForTame(t)}`,
 			(10 + 256) * x + 5,
 			(10 + 128) * y + 16
 		);
@@ -481,7 +499,7 @@ export async function tameImage(user: MUser): CommandResponse {
 		// Draw tame boosts
 		let prevWidth = 0;
 		let feedQty = 0;
-		for (const { item } of tameFeedableItems.filter(f => f.tameSpeciesCanBeFedThis.includes(species.id))) {
+		for (const { item } of tameFeedableItems.filter(f => tameCanUseAnySpecies(t, f.tameSpeciesCanBeFedThis))) {
 			if (t.hasBeenFed(item.id)) {
 				const itemImage = await OSRSCanvas.getItemImage({ itemID: item.id });
 				if (itemImage) {
@@ -649,6 +667,9 @@ async function cancelCommand(user: MUser) {
 	if (!tame) {
 		return 'You have no selected tame.';
 	}
+	if (tameIsBreeding(user, tame.id)) {
+		return `${tame} is currently in the breeding centre.`;
+	}
 
 	if (!activity) {
 		return `${tame} is not doing any activity, so there's nothing to cancel.`;
@@ -689,6 +710,9 @@ async function mergeCommand(user: MUser, interaction: MInteraction, tameID: numb
 	const { tame, activity, species } = await user.getTame();
 	if (activity) return 'Your tame is busy. Wait for it to be free to do this.';
 	if (!tame || !species) return "You don't have a selected tame. Select your tame first.";
+	if (tameIsBreeding(user, tame.id) || tameIsBreeding(user, toSelect.id)) {
+		return 'You cannot merge a tame that is currently in the breeding centre.';
+	}
 	if (tame.id === toSelect.id) return `You can't merge ${tame} with itself!`;
 	if (species.id !== toSelect.species.id) {
 		return "You can't merge two tames from two different species!";
@@ -761,6 +785,9 @@ async function feedCommand(interaction: MInteraction, user: MUser, str: string) 
 	if (!tame) {
 		return 'You have no selected tame.';
 	}
+	if (tameIsBreeding(user, tame.id)) {
+		return `${tame} is currently in the breeding centre.`;
+	}
 
 	const rawBank = parseStringBank(str);
 	const bankToAdd = new Bank();
@@ -772,7 +799,9 @@ async function feedCommand(interaction: MInteraction, user: MUser, str: string) 
 		bankToAdd.add(item.id, qtyToUse);
 	}
 
-	const thisTameSpecialFeedableItems = tameFeedableItems.filter(f => f.tameSpeciesCanBeFedThis.includes(species!.id));
+	const thisTameSpecialFeedableItems = tameFeedableItems.filter(f =>
+		tameCanUseAnySpecies(tame, f.tameSpeciesCanBeFedThis)
+	);
 
 	if (!str || bankToAdd.length === 0) {
 		const image = await makeBankImage({
@@ -834,7 +863,7 @@ Your tame will gain between (inclusively) ${levelRange[0]} and ${levelRange[1]} 
 	for (const { item, description, tameSpeciesCanBeFedThis } of thisTameSpecialFeedableItems) {
 		const similarItems = getSimilarItems(item.id);
 		if (similarItems.some(si => bankToAdd.has(si))) {
-			if (!tameSpeciesCanBeFedThis.includes(species!.id)) {
+			if (!tameCanUseAnySpecies(tame, tameSpeciesCanBeFedThis)) {
 				await interaction.confirmation(
 					`Feeding a '${item.name}' to your tame won't give it a perk, are you sure you want to?`
 				);
@@ -851,7 +880,7 @@ Note: Some items must be equipped to your tame, not fed. Check that you are feed
 
 	let egg = '';
 	for (const [eggBank, eggSpecies, eggGrowth, easterEgg] of feedingEasterEggs) {
-		if (species!.id === eggSpecies && bankToAdd.fits(eggBank) && eggGrowth.includes(tame.growthStage)) {
+		if (tame.canUseSpecies(eggSpecies) && bankToAdd.fits(eggBank) && eggGrowth.includes(tame.growthStage)) {
 			egg = ` ${easterEgg}`;
 		}
 	}
@@ -880,7 +909,10 @@ async function killCommand(user: MUser, channelId: string, str: string) {
 	if (!tame || !species) {
 		return 'You have no selected tame.';
 	}
-	if (species.type !== TameType.Combat) {
+	if (tameIsBreeding(user, tame.id)) {
+		return `${tame} is currently in the breeding centre.`;
+	}
+	if (!tame.canUseTameType(TameType.Combat)) {
 		return 'This tame species cannot do PvM.';
 	}
 	if (activity) {
@@ -901,7 +933,8 @@ async function killCommand(user: MUser, channelId: string, str: string) {
 		return "You haven't unlocked this monster.";
 	}
 	// Get the amount stronger than minimum, and set boost accordingly:
-	const [speciesMinCombat, speciesMaxCombat] = species.combatLevelRange;
+	const combatSpecies = tameSpeciesForType(tame, TameType.Combat);
+	const [speciesMinCombat, speciesMaxCombat] = combatSpecies.combatLevelRange;
 	// Example: If combat level is 80/100 with 70 min, give a 10% boost.
 	const combatLevelBoost = calcWhatPercent(tame.maxCombatLevel - speciesMinCombat, speciesMaxCombat);
 
@@ -1037,8 +1070,11 @@ async function collectCommand(user: MUser, channelId: string, str: string) {
 	if (!tame) {
 		return 'You have no selected tame.';
 	}
+	if (tameIsBreeding(user, tame.id)) {
+		return `${tame} is currently in the breeding centre.`;
+	}
 
-	if (tame.species.type !== TameType.Gatherer) {
+	if (!tame.canUseTameType(TameType.Gatherer)) {
 		return 'This tame species cannot collect items.';
 	}
 	if (activity) {
@@ -1051,7 +1087,8 @@ async function collectCommand(user: MUser, channelId: string, str: string) {
 			.join(', ')}.`;
 	}
 
-	const [min, max] = tame.species.gathererLevelRange;
+	const gathererSpecies = tameSpeciesForType(tame, TameType.Gatherer);
+	const [min, max] = gathererSpecies.gathererLevelRange;
 	const gathererLevelBoost = calcWhatPercent(tame.maxGathererLevel - min, max);
 
 	// Increase trip length based on minion growth:
@@ -1148,7 +1185,7 @@ async function monkeyMagicHandler(
 		return 'You have no selected tame.';
 	}
 
-	if (tame.species.id !== TameSpeciesID.Monkey) {
+	if (!tame.canUseSpecies(TameSpeciesID.Monkey)) {
 		return 'This tame species cannot do magic.';
 	}
 
@@ -1173,7 +1210,8 @@ async function monkeyMagicHandler(
 
 	let speed = spellOptions.timePerSpell;
 	const boosts = [];
-	const [min] = tame.species.gathererLevelRange;
+	const gathererSpecies = tameSpeciesForType(tame, TameType.Gatherer);
+	const [min] = gathererSpecies.gathererLevelRange;
 	const minBoost = exponentialPercentScale(min, 0.01);
 	const gathererLevelBoost = exponentialPercentScale(tame.maxGathererLevel, 0.01) - minBoost;
 	if (gathererLevelBoost > 0) {
@@ -1360,6 +1398,9 @@ async function selectCommand(user: MUser, tameID: number) {
 	if (!toSelect) {
 		return "Couldn't find a tame to select.";
 	}
+	if (tameIsBreeding(user, toSelect.id)) {
+		return `${toSelect} is currently in the breeding centre.`;
+	}
 	const { activity } = await user.getTame();
 	if (activity) {
 		return "You can't select a different tame, because your current one is busy.";
@@ -1417,16 +1458,16 @@ async function viewCommand(interaction: MInteraction, user: MUser, tameID: numbe
 	}
 
 	let content = `**Name:** ${tame.nickname ?? 'No name'}
-**Species:** ${species.name}
+**Species:** ${speciesNameForTame(tame)}
 **Shiny:** ${tame.speciesVariant === species.shinyVariant ? 'Yes' : 'No'}
 **Growth:** ${tame.growthPercentage}% ${tame.growthStage}
 **Hatch Date:** ${time(tame.hatchDate)} / ${time(tame.hatchDate, 'R')}
 **${toTitleCase(species.relevantLevelCategory)} Level:** ${tame.relevantLevel()}
 **Boosts:** ${tameFeedableItems
-		.filter(i => tame.hasBeenFed(i.item.id))
+		.filter(i => tame.hasBeenFed(i.item.id) && tameCanUseAnySpecies(tame, i.tameSpeciesCanBeFedThis))
 		.map(i => `${i.item.name} (${i.description})`)
 		.join(', ')}`;
-	if (species.id === TameSpeciesID.Igne) {
+	if (tame.canUseSpecies(TameSpeciesID.Igne)) {
 		const kcs = await getIgneTameKC(tame.tame);
 		content += `\n**KCs:** ${kcs.sortedTuple
 			.slice(0, 10)
@@ -1453,6 +1494,9 @@ async function statusCommand(user: MUser) {
 async function tameEquipCommand(user: MUser, itemName: string) {
 	const { tame, activity } = await user.getTame();
 	if (!tame) return "You don't have a tame selected.";
+	if (tameIsBreeding(user, tame.id)) {
+		return `${tame} is currently in the breeding centre.`;
+	}
 	if (activity) {
 		return "You can't equip something to your tame, because it is busy.";
 	}
@@ -1460,7 +1504,7 @@ async function tameEquipCommand(user: MUser, itemName: string) {
 	if (!item) return "That's not a valid item.";
 	const equippable = tameEquippables.find(i => i.item === item);
 	if (!equippable) return "That's not an item you can equip to a tame.";
-	if (!equippable.tameSpecies.includes(tame.species.id)) {
+	if (!tameCanUseAnySpecies(tame, equippable.tameSpecies)) {
 		return 'This item cannot be equipped to this tame species.';
 	}
 	const cost = new Bank().add(item.id);
@@ -1490,6 +1534,9 @@ async function tameEquipCommand(user: MUser, itemName: string) {
 async function tameUnequipCommand(user: MUser, itemName: string) {
 	const { tame, activity } = await user.getTame();
 	if (!tame) return "You don't have a tame selected.";
+	if (tameIsBreeding(user, tame.id)) {
+		return `${tame} is currently in the breeding centre.`;
+	}
 	if (activity) {
 		return "You can't unequip something to your tame, because it is busy.";
 	}
@@ -1497,7 +1544,7 @@ async function tameUnequipCommand(user: MUser, itemName: string) {
 	if (!item) return "That's not a valid item.";
 	const equippable = tameEquippables.find(i => i.item === item);
 	if (!equippable) return "That's not an item you can equip to a tame.";
-	if (!equippable.tameSpecies.includes(tame.species.id)) {
+	if (!tameCanUseAnySpecies(tame, equippable.tameSpecies)) {
 		return 'This item cannot be equipped to this tame species.';
 	}
 
@@ -1576,7 +1623,7 @@ async function tameClueCommand(user: MUser, channelId: string, inputName: string
 	if (!tame) {
 		return 'You have no selected tame.';
 	}
-	if (tame.species.id !== TameSpeciesID.Eagle) {
+	if (!tame.canUseSpecies(TameSpeciesID.Eagle)) {
 		return `Only Eagle tames can do clue scrolls, switch to a different tame: ${globalClient.mentionCommand(
 			'tames',
 			'select'
@@ -1964,7 +2011,10 @@ export const tamesCommand = defineCommand({
 			if (!tame || !species) {
 				return 'You have no selected tame.';
 			}
-			if (!tameActivity.allowedTames.includes(tame.species.id)) {
+			if (tameIsBreeding(user, tame.id)) {
+				return `${tame} is currently in the breeding centre.`;
+			}
+			if (!tameCanUseAnySpecies(tame, tameActivity.allowedTames)) {
 				return `Your selected tame species cannot do this activity, switch to a different tame: ${mentionCommand(
 					'tames',
 					'select'

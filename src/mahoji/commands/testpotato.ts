@@ -1,8 +1,11 @@
+import { generateNewTame } from '@/lib/bso/commands/nursery.js';
+import { tameSpecies } from '@/lib/bso/tames/tames.js';
+
 import { EmbedBuilder, userMention } from '@oldschoolgg/discord';
 import { noOp, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, convertLVLtoXP, ItemGroups, Items, itemID, MAX_INT_JAVA, resolveItems } from 'oldschooljs';
 
-import { xp_gains_skill_enum } from '@/prisma/main.js';
+import { tame_growth, xp_gains_skill_enum } from '@/prisma/main.js';
 import {
 	bitfieldCanUserManipulate,
 	changeBitFieldForUser,
@@ -380,6 +383,46 @@ export const testPotatoCommand = globalConfig.isProduction
 							type: 'String',
 							name: 'items',
 							description: 'Spawn many items at once using a bank string.'
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'spawntame',
+					description: 'Spawn a tame.',
+					options: [
+						{
+							type: 'String',
+							name: 'species',
+							description: 'The tame species to spawn.',
+							required: true,
+							choices: tameSpecies.map(species => ({ name: species.name, value: species.id.toString() }))
+						},
+						{
+							type: 'String',
+							name: 'growth',
+							description: 'The growth stage to spawn.',
+							required: false,
+							choices: Object.values(tame_growth).map(growth => ({ name: growth, value: growth }))
+						},
+						{
+							type: 'Boolean',
+							name: 'shiny',
+							description: 'Force this tame to be shiny.',
+							required: false
+						},
+						{
+							type: 'Boolean',
+							name: 'select',
+							description: 'Select this tame after spawning it.',
+							required: false
+						},
+						{
+							type: 'String',
+							name: 'hybrid_with',
+							description: 'Optional second species to make this a hybrid tame.',
+							required: false,
+							choices: tameSpecies.map(species => ({ name: species.name, value: species.id.toString() }))
 						}
 					]
 				},
@@ -1019,6 +1062,43 @@ export const testPotatoCommand = globalConfig.isProduction
 
 					await user.addItemsToBank({ items: bankToGive, collectionLog: Boolean(collectionlog) });
 					return `Spawned: ${bankToGive.toString().slice(0, 500)}.`;
+				}
+				if (options.spawntame) {
+					const species = tameSpecies.find(species => species.id === Number(options.spawntame?.species));
+					if (!species) return 'Invalid tame species.';
+					const hybridSpecies = options.spawntame.hybrid_with
+						? tameSpecies.find(species => species.id === Number(options.spawntame?.hybrid_with))
+						: null;
+					if (options.spawntame.hybrid_with && !hybridSpecies) return 'Invalid hybrid species.';
+					if (hybridSpecies?.id === species.id) return 'A hybrid tame needs two different species.';
+
+					const growthStage = options.spawntame.growth ?? tame_growth.adult;
+					const parentSpeciesIDs = hybridSpecies ? [species.id, hybridSpecies.id] : [];
+					const newTame = await generateNewTame(user, species);
+					const updatedTame = await prisma.tame.update({
+						where: {
+							id: newTame.id
+						},
+						data: {
+							parent_species_ids: parentSpeciesIDs,
+							growth_stage: growthStage,
+							growth_percent: growthStage === tame_growth.adult ? 0 : newTame.growth_percent,
+							species_variant: options.spawntame.shiny ? species.shinyVariant : species.variants[0],
+							max_combat_level: species.combatLevelRange[1],
+							max_artisan_level: species.artisanLevelRange[1],
+							max_gatherer_level: species.gathererLevelRange[1],
+							max_support_level: species.supportLevelRange[1],
+							nickname: hybridSpecies ? `${species.name}-${hybridSpecies.name} Hybrid` : newTame.nickname
+						}
+					});
+
+					if (options.spawntame.select ?? true) {
+						await user.update({
+							selected_tame: updatedTame.id
+						});
+					}
+
+					return `Spawned ${growthStage} ${hybridSpecies ? `${species.name}/${hybridSpecies.name} hybrid` : species.name} tame ${updatedTame.id}.`;
 				}
 
 				if (options.setmonsterkc) {

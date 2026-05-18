@@ -12064,8 +12064,7 @@
 		"buy_limit": 13000,
 		"price": 100000000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isSuperUntradeable": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -29143,6 +29142,24 @@
 		}
 	},
 	{
+		"id": 74012,
+		"name": "Magnabbit",
+		"members": true,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		},
+		"price": 1000000
+	},
+	{
+		"id": 74011,
+		"name": "Magnegg",
+		"members": true,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		},
+		"price": 1000000
+	},
+	{
 		"id": 73628,
 		"name": "Magpie pouch",
 		"tradeable": true,
@@ -36774,6 +36791,15 @@
 		"customItemData": {
 			"cantDropFromMysteryBoxes": true
 		}
+	},
+	{
+		"id": 73969,
+		"name": "Radiant Magnabbit",
+		"members": true,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		},
+		"price": 1000000
 	},
 	{
 		"id": 70044,
@@ -44794,6 +44820,22 @@
 		}
 	},
 	{
+		"id": 74013,
+		"name": "The whale card (fake)",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 1000000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true
+		}
+	},
+	{
 		"id": 50475,
 		"name": "Theatrical earrings (blue)",
 		"tradeable": true,
@@ -48864,6 +48906,21 @@
 		}
 	},
 	{
+		"id": 74010,
+		"name": "Wabbit eggs",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 1000000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
 		"id": 73390,
 		"name": "Waddles",
 		"members": true,
@@ -50688,8 +50745,7 @@
 		"members": true,
 		"customItemData": {
 			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true,
-			"isSuperUntradeable": true
+			"isDiscontinued": true
 		},
 		"price": 1000000
 	},
@@ -50699,8 +50755,7 @@
 		"members": true,
 		"customItemData": {
 			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true,
-			"isSuperUntradeable": true
+			"isDiscontinued": true
 		},
 		"price": 1000000
 	},

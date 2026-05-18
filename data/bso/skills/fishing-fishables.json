@@ -310,8 +310,8 @@
 				"id": 50001,
 				"level": 120,
 				"xp": 230,
-				"intercept": 0.02,
-				"slope": 0.0031
+				"intercept": 0.03,
+				"slope": 0.00465
 			}
 		],
 		"pet_chance": 129434,

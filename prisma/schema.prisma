@@ -742,6 +742,7 @@ model Tame {
   date               DateTime    @default(now()) @db.Timestamp(6)
   nickname           String?     @db.VarChar(64)
   species_id         Int
+  parent_species_ids Int[]       @default([])
   growth_stage       tame_growth
   growth_percent     Float       @default(0)
   max_combat_level   Int

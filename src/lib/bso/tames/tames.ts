@@ -442,6 +442,13 @@ export type Nursery = {
 	} | null;
 	eggsHatched: number;
 	hasFuel: boolean;
+	breeding?: {
+		parentTameIDs: [number, number];
+		parentSpeciesIDs: TameSpeciesID[];
+		startedAt: number;
+		finishAt: number;
+	} | null;
+	breedingCooldownUntil?: number | null;
 } | null;
 
 export enum TameType {
