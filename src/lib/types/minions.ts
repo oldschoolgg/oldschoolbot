@@ -28,7 +28,6 @@ export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
 		| 'AerialFishing'
 		| 'SoulWars'
 		| 'RoguesDenMaze'
-		| 'CastleWars'
 		| 'MageArena'
 		| 'MageTrainingArena'
 		| 'BlastFurnace'
@@ -424,6 +423,15 @@ export interface PlunderActivityTaskOptions extends MinigameActivityTaskOptions 
 	rooms: number[];
 }
 
+export interface ValeTotemsActivityTaskOptions extends MinigameActivityTaskOptions {
+	type: 'ValeTotems';
+	offerings: number;
+	fletchXp: number;
+	logId: number;
+	itemId: number;
+	staminaPot: boolean | undefined;
+}
+
 export interface ZalcanoActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Zalcano';
 	isMVP: boolean;
@@ -672,6 +680,7 @@ export type ActivityTaskData =
 	| NightmareActivityTaskOptions
 	| TitheFarmActivityTaskOptions
 	| SepulchreActivityTaskOptions
+	| ValeTotemsActivityTaskOptions
 	| GnomeRestaurantActivityTaskOptions
 	| SpecificQuestOptions
 	| ActivityTaskOptionsWithNoChanges

@@ -135,10 +135,14 @@ model ClientStorage {
   colo_loot                    Json     @default("{}") @db.Json
   doom_cost                    Json     @default("{}") @db.Json
   doom_loot                    Json     @default("{}") @db.Json
-  grand_exchange_is_locked     Boolean  @default(false)
-  grand_exchange_total_tax     BigInt   @default(0)
-  grand_exchange_tax_bank      BigInt   @default(0)
-  maxing_message               String   @default("Congratulations on maxing!")
+  vt_cost                      Json     @default("{}") @db.Json
+  vt_loot                      Json     @default("{}") @db.Json
+
+  grand_exchange_is_locked Boolean @default(false)
+  grand_exchange_total_tax BigInt  @default(0)
+  grand_exchange_tax_bank  BigInt  @default(0)
+
+  maxing_message String @default("Congratulations on maxing!")
 
   @@map("clientStorage")
 }
@@ -178,16 +182,18 @@ model GearPreset {
 }
 
 model Giveaway {
-  id            Int      @id
-  user_id       String   @db.VarChar(19)
-  start_date    DateTime @db.Timestamp(6)
-  finish_date   DateTime @db.Timestamp(6)
-  duration      Int
-  completed     Boolean
-  channel_id    String   @db.VarChar(19)
-  loot          Json     @db.Json
-  message_id    String   @db.VarChar(19)
-  reaction_id   String?  @db.VarChar(19)
+  id          Int      @id
+  user_id     String   @db.VarChar(19)
+  start_date  DateTime @db.Timestamp(6)
+  finish_date DateTime @db.Timestamp(6)
+  duration    Int
+  completed   Boolean
+  guild_id    String?  @db.VarChar(20)
+  channel_id  String   @db.VarChar(19)
+  loot        Json     @db.Json
+  message_id  String   @db.VarChar(19)
+  reaction_id String?  @db.VarChar(19)
+
   users_entered String[] @default([])
 
   @@index([completed, finish_date])
@@ -423,22 +429,6 @@ model XPGain {
   @@map("xp_gains")
 }
 
-model Metric {
-  timestamp          BigInt @id
-  eventLoopDelayMin  Float  @db.Real
-  eventLoopDelayMax  Float  @db.Real
-  eventLoopDelayMean Float  @db.Real
-  memorySizeTotal    BigInt
-  memorySizeUsed     BigInt
-  memorySizeExternal BigInt
-  memorySizeRSS      BigInt
-  cpuUser            Float  @db.Real
-  cpuSystem          Float  @db.Real
-  cpuPercent         Float  @db.Real
-
-  @@map("metrics")
-}
-
 model Minigame {
   id                      Int      @id @default(autoincrement())
   user_id                 String   @unique @db.VarChar(19)
@@ -540,29 +530,6 @@ model LastManStandingGame {
   kills    Int      @db.SmallInt
 
   @@map("lms_games")
-}
-
-model EconomyTransaction {
-  id             String                   @id @default(uuid()) @db.Uuid
-  date           DateTime                 @default(now())
-  sender         BigInt
-  recipient      BigInt
-  guild_id       BigInt?
-  type           economy_transaction_type
-  items_sent     Json?                    @default("{}") @db.Json
-  items_received Json?                    @default("{}") @db.Json
-
-  @@map("economy_transaction")
-}
-
-model StashUnit {
-  stash_id        Int
-  user_id         BigInt
-  items_contained Int[]   @default([])
-  has_built       Boolean
-
-  @@unique([stash_id, user_id])
-  @@map("stash_unit")
 }
 
 model UserStats {
@@ -953,6 +920,7 @@ enum XpGainSource {
   ScatteringAshes
   Zalcano
   Wintertodt
+  ValeTotems
   FishingTrawler
   Tempoross
   TearsOfGuthix
@@ -968,6 +936,22 @@ enum XpGainSource {
   MonsterKilling
 }
 
+model Metric {
+  timestamp          BigInt @id
+  eventLoopDelayMin  Float  @db.Real
+  eventLoopDelayMax  Float  @db.Real
+  eventLoopDelayMean Float  @db.Real
+  memorySizeTotal    BigInt
+  memorySizeUsed     BigInt
+  memorySizeExternal BigInt
+  memorySizeRSS      BigInt
+  cpuUser            Float  @db.Real
+  cpuSystem          Float  @db.Real
+  cpuPercent         Float  @db.Real
+
+  @@map("metrics")
+}
+
 enum loot_track_type {
   Monster
   Minigame
@@ -980,6 +964,31 @@ enum economy_transaction_type {
   duel
   gri
   gift
+}
+
+model EconomyTransaction {
+  id        String                   @id @default(uuid()) @db.Uuid
+  date      DateTime                 @default(now())
+  sender    BigInt
+  recipient BigInt
+  guild_id  BigInt?
+  type      economy_transaction_type
+
+  // From the perspective of the sender
+  items_sent     Json? @default("{}") @db.Json
+  items_received Json? @default("{}") @db.Json
+
+  @@map("economy_transaction")
+}
+
+model StashUnit {
+  stash_id        Int
+  user_id         BigInt
+  items_contained Int[]   @default([])
+  has_built       Boolean
+
+  @@unique([stash_id, user_id])
+  @@map("stash_unit")
 }
 
 enum CropUpgradeType {
@@ -1023,6 +1032,7 @@ enum activity_type_enum {
   Butler
   Nightmare
   Sepulchre
+  ValeTotems
   Plunder
   FishingTrawler
   Zalcano
@@ -1144,6 +1154,7 @@ enum UserEventType {
 }
 
 enum command_name_enum {
+  cache_refresh
   testpotato
   achievementdiary
   activities

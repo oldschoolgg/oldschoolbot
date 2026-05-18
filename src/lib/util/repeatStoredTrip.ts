@@ -72,6 +72,7 @@ import type {
 	TiaraRunecraftActivityTaskOptions,
 	TOAOptions,
 	UnderwaterAgilityThievingTaskOptions,
+	ValeTotemsActivityTaskOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions,
 	DoomTaskOptions
@@ -270,7 +271,9 @@ const tripHandlers: {
 	},
 	[activity_type_enum.CastleWars]: {
 		commandName: 'minigames',
-		args: () => ({ castle_wars: { start: {} } })
+		args: (data: MinigameActivityTaskOptionsWithNoChanges) => ({
+			castle_wars: { start: { quantity: data.quantity } }
+		})
 	},
 	[activity_type_enum.ChampionsChallenge]: {
 		commandName: 'activities',
@@ -657,6 +660,12 @@ const tripHandlers: {
 	[activity_type_enum.TroubleBrewing]: {
 		commandName: 'minigames',
 		args: () => ({ trouble_brewing: { start: {} } })
+	},
+	[activity_type_enum.ValeTotems]: {
+		commandName: 'minigames',
+		args: (data: ValeTotemsActivityTaskOptions) => {
+			return { vale_totems: { start: { item_to_fletch: data.itemId, stamina_pot: data.staminaPot } } };
+		}
 	},
 	[activity_type_enum.VolcanicMine]: {
 		commandName: 'minigames',
