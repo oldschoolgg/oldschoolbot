@@ -16,15 +16,3 @@ export const Yami = {
 		EItem.BARREL_OF_DEMONIC_TALLOW_FULL
 	]
 };
-
-export const DoomofMokhaiotl = {
-	name: 'Doom of Mokhaiotl',
-	items: [
-		EItem.DOM,
-		EItem.AVERNIC_TREADS,
-		EItem.EYE_OF_AYAK_UNCHARGED,
-		EItem.MOKHAIOTL_CLOTH,
-		EItem.MOKHAIOTL_WAYSTONE,
-		EItem.DEMON_TEAR
-	]
-};

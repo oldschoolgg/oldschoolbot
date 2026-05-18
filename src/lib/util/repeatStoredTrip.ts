@@ -73,7 +73,8 @@ import type {
 	TOAOptions,
 	UnderwaterAgilityThievingTaskOptions,
 	WoodcuttingActivityTaskOptions,
-	ZalcanoActivityTaskOptions
+	ZalcanoActivityTaskOptions,
+	DoomTaskOptions
 } from '@/lib/types/minions.js';
 import { giantsFoundryAlloys } from '@/mahoji/lib/abstracted_commands/giantsFoundryCommand.js';
 import puroOptions from '@/mahoji/lib/abstracted_commands/puroPuroCommand.js';
@@ -758,6 +759,12 @@ const tripHandlers: {
 		commandName: 'k',
 		args: () => ({
 			name: 'colosseum'
+		})
+	},
+	[activity_type_enum.DoomOfMokhaiotl]: {
+		commandName: 'delves',
+		args: (data: DoomTaskOptions) => ({
+			doom: { target_delve: data.targetDelve }
 		})
 	}
 } as const;

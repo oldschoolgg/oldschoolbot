@@ -144,6 +144,7 @@ import { NexNonUniqueTable, NexUniqueTable } from '@/lib/simulation/misc.js';
 import { allFarmingItems } from '@/lib/skilling/skills/farming/index.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { MUserStats } from '@/lib/structures/MUserStats.js';
+import { DoomDelveKCBank } from '@/lib/doomOfMokhaiotl.js';
 
 function kcProg(mon: Monster): FormatProgressFunction {
 	return ({ stats }) => `${stats.kcBank[mon.id] ?? 0} KC`;
@@ -264,9 +265,6 @@ export const allCollectionLogs: ICollection = {
 				items: derangedArchaeologistCL,
 				fmtProg: kcProg(Monsters.DerangedArchaeologist)
 			},
-			///	'Doom of Mokhaiotl': {
-			///		items: CollectionLog.DoomofMokhaiotl.items
-			///	},
 			'Dagannoth Kings': {
 				alias: ['dagannoth kings', 'kings', 'dagga', 'dks'],
 				kcActivity: {
@@ -1259,6 +1257,55 @@ export const allCollectionLogs: ICollection = {
 		}
 	}
 };
+
+export const DoomOfMokhaiotlCL = {
+	id: 14708,
+	name: 'Doom of Mokhaiotl',
+	aliases: ['doom', 'mokhaiotl', 'mokha', 'osto-ayak', 'ostayak'],
+				allItems: resolveItems([
+					'Mokhaiotl cloth',
+					'Eye of ayak (uncharged)',
+					'Avernic treads',
+					'Dom',
+					'Dragon med helm',
+					'Dragon platelegs',
+					'Mystic earth staff',
+					'Rune pickaxe',
+					'Death rune',
+					'Chaos rune',
+					'Earth rune',
+					'Fire rune',
+					'Cannonball',
+					'Onyx bolts',
+					'Coal',
+					'Gold ore',
+					'Runite ore',
+					'Celastrus seed',
+					'Ranarr seed',
+					'Spirit seed',
+					'Aether catalyst',
+					'Dragon dart tip',
+					'Raw shark',
+					'Shark lure',
+					'Sun-kissed bones',
+					'Tooth half of key (moon key)',
+					'Demon tear',
+					'Clue scroll (elite)'
+				]),
+				items: resolveItems([
+					'Mokhaiotl cloth',
+					'Eye of ayak (uncharged)',
+					'Avernic treads',
+					'Dom',
+				]),
+	fmtProg: (kcBank: DoomDelveKCBank) => {
+		const totalDelves = Array.from({ length: 30 }, (_, i) => kcBank.amount(i + 1)).reduce((a, b) => a + b, 0);
+		const deepDelves = Array.from({ length: 30 }, (_, i) => (i + 1 >= 8 ? kcBank.amount(i + 1) : 0)).reduce((a, b) => a + b, 0);
+
+		return [`Total Delves Clear: ${totalDelves}`, `Total Deep Delves Clear: ${deepDelves}`];
+	}
+};
+
 // Get all items, from all monsters and all CLs into a variable, for uses like mostdrops
 export const allDroppedItems = uniqueArr([
 	...Object.values(allCollectionLogs)

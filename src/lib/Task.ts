@@ -18,6 +18,7 @@ import { cookingTask } from '@/tasks/minions/cookingActivity.js';
 import { craftingTask } from '@/tasks/minions/craftingActivity.js';
 import { cutLeapingFishTask } from '@/tasks/minions/cutLeapingFishActivity.js';
 import { darkAltarTask } from '@/tasks/minions/darkAltarActivity.js';
+import { doomOfMokhaiotlTask } from '@/tasks/minions/doomOfMokhaiotlActivity.js';
 import { enchantingTask } from '@/tasks/minions/enchantingActivity.js';
 import { farmingTask } from '@/tasks/minions/farmingActivity.js';
 import { firemakingTask } from '@/tasks/minions/firemakingActivity.js';
@@ -213,6 +214,7 @@ export const allTasks: MinionTask[] = [
 	camdozaalFishingTask,
 	myNotesTask,
 	colosseumTask,
+	doomOfMokhaiotlTask,
 	CreateForestersRationsTask,
 	buyTask
 ];
