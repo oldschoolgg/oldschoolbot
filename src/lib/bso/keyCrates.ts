@@ -269,5 +269,37 @@ export const keyCrates: Crate[] = [
 				1,
 				100
 			)
+	},
+	{
+		item: Items.getOrThrow('Summer crate (s9)'),
+		key: Items.getOrThrow('Summer crate key (s9)'),
+		keyCostGP: 55_555_555,
+		table: new LootTable()
+			.tertiary(888, 'Immitation Crab Hat')
+			.tertiary(555, 'Summer partyhat')
+			.tertiary(25, 'Gorajan shards')
+			.tertiary(25, 'Paint box')
+			.add(
+				new LootTable()
+					.add('Coral bikini top')
+					.add('Coral bikini bottom')
+					.add('Palm board shorts')
+					.add('Beach sandals')
+					.add('Shell necklace')
+					.add('Beachball shield')
+					.add('Beach pina colada')
+					.add('Whale floaty'),
+				1
+			)
+			.add(
+				new LootTable()
+					.add('Cake')
+					.add('Purple sweets', [1, 3])
+					.add('Baguette', 1, 10)
+					.add('Kebab', 1, 10)
+					.add('Spinach roll', 1, 6),
+				1,
+				10
+			)
 	}
 ];

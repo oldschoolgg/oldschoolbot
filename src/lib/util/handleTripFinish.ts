@@ -328,7 +328,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Crate Spawns',
 		fn: async ({ data, messages, user }) => {
-			const crateRes = handleCrateSpawns(user, data.duration, messages);
+			const crateRes = handleCrateSpawns(user, data.duration, 'trip', messages);
 			if (crateRes && crateRes.length > 0) {
 				messages.push(bold(`You found ${crateRes}!`));
 				return {

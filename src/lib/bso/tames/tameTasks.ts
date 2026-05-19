@@ -46,7 +46,7 @@ export async function handleFinish({
 }) {
 	const results: string[] = [message];
 	const previousTameCl = tame.totalLoot.clone();
-	const crateRes = handleCrateSpawns(user, activity.duration);
+	const crateRes = handleCrateSpawns(user, activity.duration, 'tame');
 	if (crateRes !== null) lootToAdd.add(crateRes);
 
 	await prisma.tame.update({
