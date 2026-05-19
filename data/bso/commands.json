@@ -1,6 +1,6 @@
 {
-	"hash": "f6918774d9850789b290640b6594ab20",
-	"date": "2026-04-24T10:26:23.909Z",
+	"hash": "cb4038c65afedea428ee8fc8a491561b",
+	"date": "2026-05-14T19:08:20.226Z",
 	"data": [
 		{
 			"name": "activities",
@@ -429,7 +429,7 @@
 		{
 			"name": "nursery",
 			"desc": "Manage your tame nursery.",
-			"subOptions": ["add_egg", "build", "check", "fuel"]
+			"subOptions": ["add_egg", "breed", "build", "check", "fuel"]
 		},
 		{
 			"name": "offer",

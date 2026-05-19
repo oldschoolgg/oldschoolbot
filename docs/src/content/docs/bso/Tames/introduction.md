@@ -11,6 +11,7 @@ A tame is a special type of pet that isn't stored in your bank or equipped. You 
 - Dragon tame (PvM trips): see [Igne Tame](igne-tame)
 - Monkey tame (gathering): see [Monkey Tame](monkey-tame)
 - Eagle tame (clue scrolls): see [Eagle Tame](eagle-tame)
+- Hybrid tames: see [Tame Breeding and Hybrids](breeding-and-hybrids)
 
 ## Commands
 
@@ -27,6 +28,7 @@ A tame is a special type of pet that isn't stored in your bank or equipped. You 
 | [[/tames cancel]]                                        | Cancel tame’s trip           |
 | [[/tames equip item\:ItemName]]                          | Equip an Igne Claw or Armour |
 | [[/tames unequip item\:ItemName]]                        | Unequip Igne gear            |
+| [[/nursery breed parent_one\:TameOne parent_two\:TameTwo]] | Breed two adult tames        |
 | [[/cl name\:BossName type\:Tame (Tames Collection Log)]] | View tame’s collection log   |
 
 ## Hatching the Tame

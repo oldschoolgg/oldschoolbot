@@ -10963,6 +10963,10 @@
 				],
 				"counts": false
 			},
+			"easter_2026": {
+				"items": ["Magnabbit", "Magnegg", "Wabbit eggs"],
+				"counts": false
+			},
 			"thanksgiving_2021": {
 				"items": ["Burnt turkey", "Cornucopia", "Raw turkey", "Turkey", "Turkey drumstick"],
 				"counts": false
@@ -10985,6 +10989,7 @@
 					"Hoppy",
 					"Kuro",
 					"Leia",
+					"Magnabbit",
 					"Mini mortimer",
 					"Mini Pumpkinhead",
 					"Mumpkin",
@@ -10997,8 +11002,7 @@
 					"Snappy the Turtle",
 					"Tasty",
 					"Waddles",
-					"Wubbles",
-					"Wubufu"
+					"Wubbles"
 				],
 				"counts": false
 			},
@@ -11319,7 +11323,8 @@
 					"Golden cape shard",
 					"Golden partyhat",
 					"Golden shard",
-					"The whale card"
+					"The whale card",
+					"Wubufu"
 				],
 				"counts": false
 			},
@@ -11548,6 +11553,32 @@
 					"Purple sweets",
 					"Skippers",
 					"White beanie"
+				],
+				"counts": false,
+				"kc_activity": {},
+				"is_activity": true
+			},
+			"summer_crate_(s_9_)": {
+				"items": [
+					"Baguette",
+					"Beach pina colada",
+					"Beach sandals",
+					"Beachball shield",
+					"Cake",
+					"Coral bikini bottom",
+					"Coral bikini top",
+					"Gorajan shards",
+					"Immitation Crab Hat",
+					"Kebab",
+					"Paint box",
+					"Palm board shorts",
+					"Purple sweets",
+					"Shell necklace",
+					"Spinach roll",
+					"Summer crate (s9)",
+					"Summer crate key (s9)",
+					"Summer partyhat",
+					"Whale floaty"
 				],
 				"counts": false,
 				"kc_activity": {},

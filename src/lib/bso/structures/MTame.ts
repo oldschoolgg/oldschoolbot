@@ -3,6 +3,7 @@ import {
 	type Species,
 	TameSpeciesID,
 	type TameTaskOptions,
+	type TameType,
 	tameFeedableItems,
 	tameSpecies
 } from '@/lib/bso/tames/tames.js';
@@ -20,6 +21,7 @@ export class MTame {
 	id: number;
 	userID: string;
 	species: Species;
+	parentSpeciesIDs: TameSpeciesID[];
 	growthStage: tame_growth;
 	equippedArmor: Item | null;
 	equippedPrimary: Item | null;
@@ -46,6 +48,8 @@ export class MTame {
 		this.nickname = tame.nickname;
 		this.userID = tame.user_id;
 		this.species = tameSpecies.find(i => i.id === tame.species_id)!;
+		const parentSpeciesIDs = tame.parent_species_ids ?? [];
+		this.parentSpeciesIDs = parentSpeciesIDs.length > 0 ? (parentSpeciesIDs as TameSpeciesID[]) : [this.species.id];
 		this.growthStage = tame.growth_stage;
 		this.equippedArmor = tame.equipped_armor === null ? null : Items.getOrThrow(tame.equipped_armor);
 		this.equippedPrimary = tame.equipped_primary === null ? null : Items.getOrThrow(tame.equipped_primary);
@@ -78,15 +82,27 @@ export class MTame {
 	}
 
 	public isIgne() {
-		return this.species.id === TameSpeciesID.Igne;
+		return this.canUseSpecies(TameSpeciesID.Igne);
 	}
 
 	public isMonkey() {
-		return this.species.id === TameSpeciesID.Monkey;
+		return this.canUseSpecies(TameSpeciesID.Monkey);
 	}
 
 	public isEagle() {
-		return this.species.id === TameSpeciesID.Eagle;
+		return this.canUseSpecies(TameSpeciesID.Eagle);
+	}
+
+	public canUseSpecies(speciesID: TameSpeciesID) {
+		return this.parentSpeciesIDs.includes(speciesID);
+	}
+
+	public canUseTameType(type: TameType) {
+		return tameSpecies.some(species => this.canUseSpecies(species.id) && species.type === type);
+	}
+
+	public hybridSpeciesName() {
+		return this.parentSpeciesIDs.map(id => tameSpecies.find(species => species.id === id)!.name).join('/');
 	}
 
 	get isShiny(): boolean {
@@ -114,7 +130,7 @@ export class MTame {
 	}
 
 	toString() {
-		return `${this.nickname ?? this.species.name}`;
+		return `${this.nickname ?? this.hybridSpeciesName()}`;
 	}
 
 	relevantLevel(): number {
@@ -177,7 +193,7 @@ export class MTame {
 
 	isMaxedIgneTame() {
 		return (
-			this.species.id === TameSpeciesID.Igne &&
+			this.canUseSpecies(TameSpeciesID.Igne) &&
 			this.growthStage === 'adult' &&
 			this.equippedPrimary?.name === 'Gorajan igne claws' &&
 			this.equippedArmor?.name === 'Gorajan igne armor' &&

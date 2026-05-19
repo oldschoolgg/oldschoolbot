@@ -1,8 +1,9 @@
+import { MTame } from '@/lib/bso/structures/MTame.js';
 import { type Nursery, type Species, TameSpeciesID, tameSpecies } from '@/lib/bso/tames/tames.js';
 
-import { Events, formatDuration, gaussianRandom, reduceNumByPercent } from '@oldschoolgg/toolkit';
-import { MathRNG, randArrItem, roll } from 'node-rng';
-import { Bank, Items } from 'oldschooljs';
+import { Events, formatDuration, gaussianRandom, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { MathRNG, percentChance, randArrItem, roll } from 'node-rng';
+import { Bank, Items, toKMB } from 'oldschooljs';
 
 import { tame_growth } from '@/prisma/main.js';
 import { globalConfig } from '@/lib/constants.js';
@@ -61,6 +62,114 @@ export async function generateNewTame(user: MUser, species: Species) {
 	return tame;
 }
 
+const breedingDuration = Time.Day * 7;
+const breedingCooldown = Time.Day * 30;
+const minimumBreedingCooldownCost = 1_000_000_000;
+const maximumBreedingCooldownCost = 100_000_000_000;
+
+function getBreedingCooldownCost(cooldownUntil: number) {
+	const remaining = Math.max(0, cooldownUntil - Date.now());
+	const remainingFraction = Math.min(1, remaining / breedingCooldown);
+	return Math.ceil(
+		minimumBreedingCooldownCost * (maximumBreedingCooldownCost / minimumBreedingCooldownCost) ** remainingFraction
+	);
+}
+
+function makeHybridTameNickname(speciesIDs: TameSpeciesID[]) {
+	return `${speciesIDs.map(id => tameSpecies.find(species => species.id === id)!.name).join('-')} Hybrid`;
+}
+
+async function createHybridTame(
+	user: MUser,
+	parentIDs: [number, number],
+	parentSpeciesIDs: TameSpeciesID[]
+): Promise<
+	| { error: string }
+	| {
+			newTame: Awaited<ReturnType<typeof prisma.tame.create>>;
+			isShiny: boolean;
+			deaths: MTame[];
+			speciesName: string;
+	  }
+> {
+	const parents = await prisma.tame.findMany({
+		where: {
+			user_id: user.id,
+			id: {
+				in: parentIDs
+			}
+		}
+	});
+	if (parents.length !== 2) {
+		return { error: 'One of the parent tames could not be found, so the breeding failed.' };
+	}
+
+	const wrappedParents = parents.map(parent => new MTame(parent));
+	const primarySpecies = tameSpecies.find(species => species.id === parentSpeciesIDs[0])!;
+	const parentSpecies = parentSpeciesIDs.map(id => tameSpecies.find(species => species.id === id)!);
+	const shinyParents = wrappedParents.filter(parent => parent.isShiny).length;
+	const shinyChance =
+		shinyParents === 2
+			? 1
+			: shinyParents === 1
+				? Math.max(1, Math.floor(primarySpecies.shinyChance / 2))
+				: primarySpecies.shinyChance;
+	const isShiny = shinyParents === 2 || roll(shinyChance);
+	const parentFedItems = wrappedParents.reduce((bank, parent) => bank.add(parent.fedItems), new Bank());
+	const parentLoot = wrappedParents.reduce((bank, parent) => bank.add(parent.totalLoot), new Bank());
+	const parentCost = wrappedParents.reduce((bank, parent) => bank.add(parent.totalCost), new Bank());
+
+	const newTame = await prisma.tame.create({
+		data: {
+			user_id: user.id,
+			species_id: primarySpecies.id,
+			parent_species_ids: parentSpeciesIDs,
+			growth_stage: tame_growth.baby,
+			growth_percent: 0,
+			species_variant: isShiny ? primarySpecies.shinyVariant : randArrItem(primarySpecies.variants),
+			max_total_loot: parentLoot.toJSON(),
+			fed_items: parentFedItems.toJSON(),
+			total_cost: parentCost.toJSON(),
+			max_support_level: Math.max(...wrappedParents.map(parent => parent.maxSupportLevel)),
+			max_gatherer_level: Math.max(...wrappedParents.map(parent => parent.maxGathererLevel)),
+			max_artisan_level: Math.max(...wrappedParents.map(parent => parent.maxArtisanLevel)),
+			max_combat_level: Math.max(...wrappedParents.map(parent => parent.maxCombatLevel)),
+			nickname: makeHybridTameNickname(parentSpeciesIDs)
+		}
+	});
+
+	const deadParent = percentChance(75) ? randArrItem(wrappedParents) : null;
+	const deaths = deadParent ? [deadParent] : [];
+	for (const parent of deaths) {
+		await prisma.tameActivity.updateMany({
+			where: {
+				tame_id: parent.id
+			},
+			data: {
+				tame_id: newTame.id
+			}
+		});
+		await prisma.tame.delete({
+			where: {
+				id: parent.id
+			}
+		});
+	}
+
+	if (deaths.some(parent => parent.id === user.user.selected_tame)) {
+		await user.update({
+			selected_tame: newTame.id
+		});
+	}
+
+	return {
+		newTame,
+		isShiny,
+		deaths,
+		speciesName: parentSpecies.map(species => species.name).join('/')
+	};
+}
+
 async function view(user: MUser) {
 	const nursery = user.user.nursery as Nursery;
 	if (!nursery) {
@@ -68,6 +177,40 @@ async function view(user: MUser) {
 	}
 
 	const { egg } = nursery;
+	if (nursery.breeding) {
+		const timeRemaining = Math.max(0, nursery.breeding.finishAt - Date.now());
+		if (timeRemaining > 0 && globalConfig.isProduction) {
+			return `Your breeding centre is creating a mutated hybrid tame. It has ${formatDuration(
+				timeRemaining
+			)} remaining.`;
+		}
+
+		const res = await createHybridTame(
+			user,
+			nursery.breeding.parentTameIDs,
+			nursery.breeding.parentSpeciesIDs as TameSpeciesID[]
+		);
+		const newNursery: NonNullable<Nursery> = {
+			...nursery,
+			breeding: null
+		};
+		await user.update({
+			nursery: newNursery
+		});
+
+		if ('error' in res) return res.error;
+		if (res.isShiny) {
+			globalClient.emit(
+				Events.ServerNotification,
+				`**${user}** just bred a shiny ${res.speciesName} hybrid tame!`
+			);
+		}
+		const deathStr =
+			res.deaths.length === 0
+				? 'Both parents survived the exhaustion.'
+				: `${res.deaths[0]} (${res.deaths[0].id}) died from exhaustion.`;
+		return `Your breeding process finished! You now have a mutated ${res.speciesName} hybrid baby tame. ${deathStr}`;
+	}
 	if (!egg) {
 		return 'You have no egg in your nursery.';
 	}
@@ -205,6 +348,113 @@ async function addCommand(interaction: MInteraction, user: MUser, itemName: stri
 	return `You put a ${specie.name} Egg in your nursery.`;
 }
 
+async function breedAutocomplete({ value, user }: StringAutoComplete) {
+	const tames = await user.fetchTames();
+	return tames
+		.filter(tame => tame.growthStage === tame_growth.adult)
+		.map(tame => ({
+			name: `${tame} (${tame.hybridSpeciesName()}, Tame ${tame.id})`,
+			value: tame.id.toString()
+		}))
+		.filter(tame => (!value ? true : tame.name.toLowerCase().includes(value.toLowerCase())));
+}
+
+async function breedCommand(
+	interaction: MInteraction,
+	user: MUser,
+	parentOneID: number,
+	parentTwoID: number,
+	overrideCooldown: boolean
+): Promise<string> {
+	const nursery = user.user.nursery as Nursery | null;
+	if (!nursery) {
+		return "You don't have a nursery built yet! You can build one using `/nursery build`";
+	}
+	if (nursery.egg) {
+		return "Your nursery is already holding an egg. You can't use the breeding centre while an egg is incubating.";
+	}
+	if (nursery.breeding) {
+		return `Your breeding centre is already in use. It has ${formatDuration(
+			Math.max(0, nursery.breeding.finishAt - Date.now())
+		)} remaining.`;
+	}
+	const cooldownUntil = nursery.breedingCooldownUntil ?? 0;
+	if (cooldownUntil > Date.now()) {
+		const cost = new Bank().add('Coins', getBreedingCooldownCost(cooldownUntil));
+		if (!overrideCooldown) {
+			return `Your breeding centre is on cooldown for ${formatDuration(
+				cooldownUntil - Date.now()
+			)}. You can override it now for ${toKMB(cost.amount('Coins'))} GP.`;
+		}
+		if (!user.owns(cost)) {
+			return `You need ${cost} to override your breeding centre cooldown.`;
+		}
+		await interaction.confirmation(
+			`Are you sure you want to pay ${toKMB(cost.amount('Coins'))} GP to override your breeding centre cooldown?`
+		);
+		await user.removeItemsFromBank(cost);
+		await ClientSettings.updateBankSetting('tame_merging_cost', cost);
+	}
+
+	if (parentOneID === parentTwoID) {
+		return "You can't breed a tame with itself.";
+	}
+	const tames = await user.fetchTames();
+	const parentOne = tames.find(tame => tame.id === parentOneID);
+	const parentTwo = tames.find(tame => tame.id === parentTwoID);
+	if (!parentOne || !parentTwo) {
+		return "Couldn't find both parent tames.";
+	}
+	if (parentOne.growthStage !== tame_growth.adult || parentTwo.growthStage !== tame_growth.adult) {
+		return 'Both parent tames need to be adults.';
+	}
+	const busyParents = await prisma.tameActivity.count({
+		where: {
+			tame_id: {
+				in: [parentOne.id, parentTwo.id]
+			},
+			completed: false
+		}
+	});
+	if (busyParents > 0) {
+		return 'Both parent tames need to be idle before breeding.';
+	}
+	if (parentOne.equippedArmor || parentOne.equippedPrimary || parentTwo.equippedArmor || parentTwo.equippedPrimary) {
+		return 'Both parent tames must have all gear unequipped before breeding.';
+	}
+	const parentSpeciesIDs = [...new Set([...parentOne.parentSpeciesIDs, ...parentTwo.parentSpeciesIDs])];
+	if (parentSpeciesIDs.length < 2) {
+		return 'You need to breed two different tame species to create a mutated hybrid.';
+	}
+	if (parentSpeciesIDs.length > 2) {
+		return 'You can only breed two species into a hybrid.';
+	}
+
+	await interaction.confirmation(
+		`Are you sure you want to breed **${parentOne}** (Tame ${parentOne.id}) with **${parentTwo}** (Tame ${parentTwo.id})?\n\nThe process takes ${formatDuration(
+			breedingDuration
+		)}. When it finishes, there is a 75% chance one parent dies from exhaustion.`
+	);
+
+	const newNursery: NonNullable<Nursery> = {
+		...nursery,
+		breeding: {
+			parentTameIDs: [parentOne.id, parentTwo.id],
+			parentSpeciesIDs,
+			startedAt: Date.now(),
+			finishAt: Date.now() + breedingDuration
+		},
+		breedingCooldownUntil: Date.now() + breedingCooldown
+	};
+	await user.update({
+		nursery: newNursery
+	});
+
+	return `Your breeding centre is now breeding ${parentOne} with ${parentTwo}. Check back in ${formatDuration(
+		breedingDuration
+	)} to receive the mutated hybrid tame.`;
+}
+
 export const nurseryCommand = defineCommand({
 	name: 'nursery',
 	description: 'Manage your tame nursery.',
@@ -237,12 +487,48 @@ export const nurseryCommand = defineCommand({
 			type: 'Subcommand',
 			name: 'check',
 			description: 'Check your nursery, and to see if your egg has hatched.'
+		},
+		{
+			type: 'Subcommand',
+			name: 'breed',
+			description: 'Breed two different adult tame species into a mutated hybrid tame.',
+			options: [
+				{
+					type: 'String',
+					name: 'parent_one',
+					description: 'The first adult tame parent.',
+					required: true,
+					autocomplete: breedAutocomplete
+				},
+				{
+					type: 'String',
+					name: 'parent_two',
+					description: 'The second adult tame parent.',
+					required: true,
+					autocomplete: breedAutocomplete
+				},
+				{
+					type: 'Boolean',
+					name: 'override_cooldown',
+					description: 'Pay GP to override the breeding centre cooldown.',
+					required: false
+				}
+			]
 		}
 	],
 	run: async ({ user, options, interaction }) => {
 		if (options.build) return buildCommand(user);
 		if (options.fuel) return fuelCommand(interaction, user);
 		if (options.add_egg) return addCommand(interaction, user, options.add_egg.item);
+		if (options.breed) {
+			return breedCommand(
+				interaction,
+				user,
+				Number(options.breed.parent_one),
+				Number(options.breed.parent_two),
+				options.breed.override_cooldown ?? false
+			);
+		}
 		return view(user);
 	}
 });
