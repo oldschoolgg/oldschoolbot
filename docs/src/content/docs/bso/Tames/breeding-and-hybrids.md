@@ -32,7 +32,7 @@ You can override the cooldown with GP by using the `override_cooldown` option on
 
 ## Parent Exhaustion
 
-When breeding finishes, each parent has a **75% chance** to die from exhaustion.
+When breeding finishes, there is a **75% chance** that one randomly selected parent dies from exhaustion. Both parents cannot die from the same breeding result.
 
 If a parent dies:
 
@@ -40,7 +40,7 @@ If a parent dies:
 - Any activities tied to that parent are moved to the new hybrid tame.
 - If the deleted parent was your selected tame, the new hybrid becomes selected.
 
-If a parent survives, you keep both the parent and the new hybrid.
+If no parent dies, you keep both parents and the new hybrid. If one parent dies, you keep the surviving parent and the new hybrid.
 
 ## What Hybrids Inherit
 

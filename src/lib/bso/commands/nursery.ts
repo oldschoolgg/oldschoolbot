@@ -138,7 +138,8 @@ async function createHybridTame(
 		}
 	});
 
-	const deaths = wrappedParents.filter(() => percentChance(75));
+	const deadParent = percentChance(75) ? randArrItem(wrappedParents) : null;
+	const deaths = deadParent ? [deadParent] : [];
 	for (const parent of deaths) {
 		await prisma.tameActivity.updateMany({
 			where: {
@@ -207,7 +208,7 @@ async function view(user: MUser) {
 		const deathStr =
 			res.deaths.length === 0
 				? 'Both parents survived the exhaustion.'
-				: `${res.deaths.map(parent => `${parent} (${parent.id})`).join(' and ')} died from exhaustion.`;
+				: `${res.deaths[0]} (${res.deaths[0].id}) died from exhaustion.`;
 		return `Your breeding process finished! You now have a mutated ${res.speciesName} hybrid baby tame. ${deathStr}`;
 	}
 	if (!egg) {
@@ -432,7 +433,7 @@ async function breedCommand(
 	await interaction.confirmation(
 		`Are you sure you want to breed **${parentOne}** (Tame ${parentOne.id}) with **${parentTwo}** (Tame ${parentTwo.id})?\n\nThe process takes ${formatDuration(
 			breedingDuration
-		)}. When it finishes, each parent has a 75% chance to die from exhaustion.`
+		)}. When it finishes, there is a 75% chance one parent dies from exhaustion.`
 	);
 
 	const newNursery: NonNullable<Nursery> = {
