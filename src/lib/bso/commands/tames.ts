@@ -67,18 +67,26 @@ import { collectables } from '@/mahoji/lib/collectables.js';
 
 const tameImageSize = 96;
 const igneMonkeyHybridSpriteID = 4;
-const igneMonkeyHybridSpriteYOffset = 10;
+const eagleMonkeyHybridSpriteID = 5;
+const igneEagleHybridSpriteID = 6;
+const hybridTameSpriteYOffset = 10;
 
 function speciesNameForTame(tame: MTame) {
 	return tame.parentSpeciesIDs.length > 1 ? tame.hybridSpeciesName() : tame.species.name;
 }
 
 function spriteIDForTame(tame: MTame) {
-	return tame.parentSpeciesIDs.length > 1 &&
-		tame.canUseSpecies(TameSpeciesID.Igne) &&
-		tame.canUseSpecies(TameSpeciesID.Monkey)
-		? igneMonkeyHybridSpriteID
-		: tame.species.id;
+	if (tame.parentSpeciesIDs.length <= 1) return tame.species.id;
+	if (tame.canUseSpecies(TameSpeciesID.Igne) && tame.canUseSpecies(TameSpeciesID.Monkey)) {
+		return igneMonkeyHybridSpriteID;
+	}
+	if (tame.canUseSpecies(TameSpeciesID.Eagle) && tame.canUseSpecies(TameSpeciesID.Monkey)) {
+		return eagleMonkeyHybridSpriteID;
+	}
+	if (tame.canUseSpecies(TameSpeciesID.Igne) && tame.canUseSpecies(TameSpeciesID.Eagle)) {
+		return igneEagleHybridSpriteID;
+	}
+	return tame.species.id;
 }
 
 function tameCanUseAnySpecies(tame: MTame, speciesIDs: TameSpeciesID[]) {
@@ -305,6 +313,16 @@ async function initSprites() {
 			id: igneMonkeyHybridSpriteID,
 			name: 'Igne/Monkey',
 			variants: [1, 2, 3, 4]
+		},
+		{
+			id: eagleMonkeyHybridSpriteID,
+			name: 'Eagle/Monkey',
+			variants: [1, 2, 3, 4]
+		},
+		{
+			id: igneEagleHybridSpriteID,
+			name: 'Igne/Eagle',
+			variants: [1, 2, 3, 4]
 		}
 	];
 	sprites = {
@@ -466,12 +484,17 @@ export async function tameImage(user: MUser): CommandResponse {
 			})
 		);
 
+		const spriteID = spriteIDForTame(t);
 		const tameImage = imageReplacement
 			? await loadImage(imageReplacement.image)
 			: sprites
-					.tames!.find(spriteSheet => spriteSheet.id === spriteIDForTame(t))!
+					.tames!.find(spriteSheet => spriteSheet.id === spriteID)!
 					.sprites.find(f => f.type === t.speciesVariant)!.growthStage[t.growthStage];
-		const yOffset = spriteIDForTame(t) === igneMonkeyHybridSpriteID ? igneMonkeyHybridSpriteYOffset : 0;
+		const yOffset = [igneMonkeyHybridSpriteID, eagleMonkeyHybridSpriteID, igneEagleHybridSpriteID].includes(
+			spriteID
+		)
+			? hybridTameSpriteYOffset
+			: 0;
 
 		// Draw tame
 		ctx.drawImage(tameImage, tameX, tameY + yOffset, tameImageSize, tameImageSize);
@@ -577,8 +600,9 @@ export async function tameImage(user: MUser): CommandResponse {
 	const buffer = await canvasToBuffer(canvas);
 
 	return {
-		content: `${badgesStr}${user.usernameOrMention}, ${userTames.length > 1 ? 'here are your tames' : 'this is your tame'
-			}!`,
+		content: `${badgesStr}${user.usernameOrMention}, ${
+			userTames.length > 1 ? 'here are your tames' : 'this is your tame'
+		}!`,
 		files: [{ buffer, name: `${user.usernameOrMention}_tames.png` }]
 	};
 }
@@ -926,8 +950,9 @@ Note: Some items must be equipped to your tame, not fed. Check that you are feed
 		fed_items: tame.fedItems.add(bankToAdd).toJSON()
 	});
 
-	return `You fed \`${bankToAdd}\` to ${tame}.${newBoosts.length > 0 ? `\n\n${newBoosts.join('\n')}` : ''
-		}${specialStr}${egg}`;
+	return `You fed \`${bankToAdd}\` to ${tame}.${
+		newBoosts.length > 0 ? `\n\n${newBoosts.join('\n')}` : ''
+	}${specialStr}${egg}`;
 }
 
 async function killCommand(user: MUser, channelId: string, str: string) {
@@ -1075,8 +1100,9 @@ async function killCommand(user: MUser, channelId: string, str: string) {
 
 	if (typeof task === 'string') return task;
 
-	let reply = `${tame} is now killing ${quantity}x ${monster.name}${deathChance > 0 ? `, and has a ${deathChance.toFixed(2)}% chance of dying` : ''
-		}. The trip will take ${formatDuration(fakeDuration)}.\n\nRemoved ${foodRes.str}`;
+	let reply = `${tame} is now killing ${quantity}x ${monster.name}${
+		deathChance > 0 ? `, and has a ${deathChance.toFixed(2)}% chance of dying` : ''
+	}. The trip will take ${formatDuration(fakeDuration)}.\n\nRemoved ${foodRes.str}`;
 
 	if (boosts.length > 0) {
 		reply += `\n\n**Boosts:** ${boosts.join(', ')}.`;
@@ -1176,8 +1202,9 @@ async function collectCommand(user: MUser, channelId: string, str: string) {
 
 	if (typeof task === 'string') return task;
 
-	let reply = `${tame} is now collecting ${quantity * collectable.quantity}x ${collectable.item.name
-		}. The trip will take ${formatDuration(duration)}.`;
+	let reply = `${tame} is now collecting ${quantity * collectable.quantity}x ${
+		collectable.item.name
+	}. The trip will take ${formatDuration(duration)}.`;
 
 	if (boosts.length > 0) {
 		reply += `\n\n**Boosts:** ${boosts.join(', ')}.`;
@@ -1306,8 +1333,9 @@ async function monkeyMagicHandler(
 
 	if (typeof task === 'string') return task;
 
-	let reply = `${tame} is now casting the ${spellOptions.spell.name
-		} spell ${quantity}x times, removed ${finalCost} from your bank. The trip will take ${formatDuration(duration)}.`;
+	let reply = `${tame} is now casting the ${
+		spellOptions.spell.name
+	} spell ${quantity}x times, removed ${finalCost} from your bank. The trip will take ${formatDuration(duration)}.`;
 
 	if (boosts.length > 0) {
 		reply += `\n\n**Boosts:** ${boosts.join(', ')}.`;
@@ -1487,9 +1515,9 @@ async function viewCommand(interaction: MInteraction, user: MUser, tameID: numbe
 **Hatch Date:** ${time(tame.hatchDate)} / ${time(tame.hatchDate, 'R')}
 **${toTitleCase(species.relevantLevelCategory)} Level:** ${tame.relevantLevel()}
 **Boosts:** ${tameFeedableItems
-			.filter(i => tame.hasBeenFed(i.item.id) && tameCanUseAnySpecies(tame, i.tameSpeciesCanBeFedThis))
-			.map(i => `${i.item.name} (${i.description})`)
-			.join(', ')}`;
+		.filter(i => tame.hasBeenFed(i.item.id) && tameCanUseAnySpecies(tame, i.tameSpeciesCanBeFedThis))
+		.map(i => `${i.item.name} (${i.description})`)
+		.join(', ')}`;
 	if (tame.canUseSpecies(TameSpeciesID.Igne)) {
 		const kcs = await getIgneTameKC(tame.tame);
 		content += `\n**KCs:** ${kcs.sortedTuple
@@ -1803,7 +1831,7 @@ export const tamesCommand = defineCommand({
 								!value
 									? true
 									: i.name.toLowerCase().includes(value.toLowerCase()) ||
-									i.aliases.some(alias => stringMatches(alias, value))
+										i.aliases.some(alias => stringMatches(alias, value))
 							)
 							.map(i => ({ name: i.name, value: i.name }));
 					}
