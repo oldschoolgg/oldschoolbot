@@ -66,9 +66,185 @@ import { getItemCostFromConsumables } from '@/mahoji/lib/abstracted_commands/min
 import { collectables } from '@/mahoji/lib/collectables.js';
 
 const tameImageSize = 96;
+const hybridTameDrawSize = 96;
+const igneMonkeyHybridSpriteID = 4;
+
+interface SpriteRange {
+	start: number;
+	end: number;
+}
 
 function speciesNameForTame(tame: MTame) {
 	return tame.parentSpeciesIDs.length > 1 ? tame.hybridSpeciesName() : tame.species.name;
+}
+
+function spriteIDForTame(tame: MTame) {
+	return tame.parentSpeciesIDs.length > 1 &&
+		tame.canUseSpecies(TameSpeciesID.Igne) &&
+		tame.canUseSpecies(TameSpeciesID.Monkey)
+		? igneMonkeyHybridSpriteID
+		: tame.species.id;
+}
+
+function removeEdgeConnectedLightBackground(image: Canvas) {
+	const ctx = image.getContext('2d');
+	const width = image.width;
+	const height = image.height;
+	const imageData = ctx.getImageData(0, 0, width, height);
+	const { data } = imageData;
+	const visited = new Uint8Array(width * height);
+	const queue: number[] = [];
+
+	const shouldRemove = (pixelIndex: number) => {
+		const dataIndex = pixelIndex * 4;
+		const red = data[dataIndex];
+		const green = data[dataIndex + 1];
+		const blue = data[dataIndex + 2];
+		const lightest = Math.max(red, green, blue);
+		const darkest = Math.min(red, green, blue);
+		const spread = lightest - darkest;
+		return darkest > 238 || (darkest > 175 && spread < 70) || (darkest > 145 && spread < 40);
+	};
+
+	const enqueue = (pixelIndex: number) => {
+		if (visited[pixelIndex] || !shouldRemove(pixelIndex)) return;
+		visited[pixelIndex] = 1;
+		queue.push(pixelIndex);
+	};
+
+	for (let x = 0; x < width; x++) {
+		enqueue(x);
+		enqueue((height - 1) * width + x);
+	}
+	for (let y = 1; y < height - 1; y++) {
+		enqueue(y * width);
+		enqueue(y * width + width - 1);
+	}
+
+	for (let i = 0; i < queue.length; i++) {
+		const pixelIndex = queue[i];
+		const dataIndex = pixelIndex * 4;
+		data[dataIndex + 3] = 0;
+
+		const x = pixelIndex % width;
+		const y = Math.floor(pixelIndex / width);
+		if (x > 0) enqueue(pixelIndex - 1);
+		if (x < width - 1) enqueue(pixelIndex + 1);
+		if (y > 0) enqueue(pixelIndex - width);
+		if (y < height - 1) enqueue(pixelIndex + width);
+	}
+
+	ctx.putImageData(imageData, 0, 0);
+}
+
+function getVisibleBounds(image: Canvas) {
+	const ctx = image.getContext('2d');
+	const { data, width, height } = ctx.getImageData(0, 0, image.width, image.height);
+	let minX = width;
+	let minY = height;
+	let maxX = -1;
+	let maxY = -1;
+
+	for (let y = 0; y < height; y++) {
+		for (let x = 0; x < width; x++) {
+			if (data[(y * width + x) * 4 + 3] === 0) continue;
+			minX = Math.min(minX, x);
+			minY = Math.min(minY, y);
+			maxX = Math.max(maxX, x);
+			maxY = Math.max(maxY, y);
+		}
+	}
+
+	if (maxX === -1) {
+		return { x: 0, y: 0, width, height };
+	}
+
+	const padding = 2;
+	const x = Math.max(0, minX - padding);
+	const y = Math.max(0, minY - padding);
+	return {
+		x,
+		y,
+		width: Math.min(width - x, maxX - x + 1 + padding),
+		height: Math.min(height - y, maxY - y + 1 + padding)
+	};
+}
+
+function getVisibleRanges(image: Canvas, axis: 'x' | 'y', minimumVisiblePixels: number, maximumGap: number) {
+	const ctx = image.getContext('2d');
+	const { data, width, height } = ctx.getImageData(0, 0, image.width, image.height);
+	const counts = new Array(axis === 'x' ? width : height).fill(0);
+	for (let y = 0; y < height; y++) {
+		for (let x = 0; x < width; x++) {
+			if (data[(y * width + x) * 4 + 3] === 0) continue;
+			counts[axis === 'x' ? x : y]++;
+		}
+	}
+
+	const ranges: SpriteRange[] = [];
+	let start = -1;
+	let lastVisible = -1;
+	for (let i = 0; i < counts.length; i++) {
+		if (counts[i] < minimumVisiblePixels) continue;
+		if (start === -1) {
+			start = i;
+			lastVisible = i;
+			continue;
+		}
+		if (i - lastVisible <= maximumGap) {
+			lastVisible = i;
+			continue;
+		}
+		ranges.push({ start, end: lastVisible });
+		start = i;
+		lastVisible = i;
+	}
+	if (start !== -1) {
+		ranges.push({ start, end: lastVisible });
+	}
+
+	return ranges;
+}
+
+function getHybridTameSprite(
+	tameImage: Canvas | CanvasImage,
+	variant: number,
+	growthStageIndex: number,
+	columns: SpriteRange[],
+	rows: SpriteRange[]
+) {
+	const column = columns[variant - 1];
+	const row = rows[growthStageIndex];
+	if (!column) {
+		throw new Error(`Missing hybrid tame sprite column for variant ${variant}.`);
+	}
+	if (!row) {
+		throw new Error(`Missing hybrid tame sprite row for growth stage ${growthStageIndex}.`);
+	}
+	const cellWidth = column.end - column.start + 1;
+	const cellHeight = row.end - row.start + 1;
+	const cell = getClippedRegion(tameImage, column.start, row.start, cellWidth, cellHeight);
+	const bounds = getVisibleBounds(cell);
+
+	const canvas = createCanvas(tameImageSize, tameImageSize);
+	const ctx = canvas.getContext('2d');
+	ctx.imageSmoothingEnabled = false;
+	const scale = Math.min(hybridTameDrawSize / bounds.width, hybridTameDrawSize / bounds.height);
+	const drawWidth = Math.floor(bounds.width * scale);
+	const drawHeight = Math.floor(bounds.height * scale);
+	ctx.drawImage(
+		cell,
+		bounds.x,
+		bounds.y,
+		bounds.width,
+		bounds.height,
+		Math.floor((tameImageSize - drawWidth) / 2),
+		tameImageSize - drawHeight,
+		drawWidth,
+		drawHeight
+	);
+
+	return canvas;
 }
 
 function tameCanUseAnySpecies(tame: MTame, speciesIDs: TameSpeciesID[]) {
@@ -285,6 +461,18 @@ let sprites: {
 };
 async function initSprites() {
 	const tameSpriteBase = await loadImage(await readFile('./src/lib/resources/images/tames/tame_sprite.png'));
+	const spriteSources = [
+		...tameSpecies.map(value => ({
+			id: value.id,
+			name: value.name,
+			variants: [...value.variants, value.shinyVariant]
+		})),
+		{
+			id: igneMonkeyHybridSpriteID,
+			name: 'Igne/Monkey',
+			variants: [1, 2, 3, 4]
+		}
+	];
 	sprites = {
 		gearIconBg: await loadImage(await readFile('./src/lib/resources/images/gear_icon_bg.png')),
 		base: {
@@ -294,18 +482,61 @@ async function initSprites() {
 			shinyIcon: getClippedRegion(tameSpriteBase, 256, 0, 24, 24)
 		},
 		tames: await Promise.all(
-			tameSpecies.map(async value => {
+			spriteSources.map(async value => {
 				const tameImage = await loadImage(
 					await readFile(`./src/lib/resources/images/tames/${value.id}_sprite.png`)
 				);
-				const vars = [...value.variants];
-				if (value.shinyVariant) vars.push(value.shinyVariant);
+				const hybridSpriteSheet =
+					value.id === igneMonkeyHybridSpriteID
+						? getClippedRegion(tameImage, 0, 0, tameImage.width, tameImage.height)
+						: null;
+				if (hybridSpriteSheet) {
+					removeEdgeConnectedLightBackground(hybridSpriteSheet);
+				}
+				const hybridSpriteColumns = hybridSpriteSheet
+					? getVisibleRanges(hybridSpriteSheet, 'x', 8, 20).slice(0, 4)
+					: null;
+				const hybridSpriteRows = hybridSpriteSheet
+					? getVisibleRanges(hybridSpriteSheet, 'y', 8, 20).slice(0, 3)
+					: null;
 				return {
 					id: value.id,
 					name: value.name,
 					image: tameImage,
 					sprites: await Promise.all(
-						vars.map(async v => {
+						value.variants.map(async v => {
+							if (value.id === igneMonkeyHybridSpriteID) {
+								if (!hybridSpriteSheet || !hybridSpriteColumns || !hybridSpriteRows) {
+									throw new Error('Failed to initialise Igne/Monkey hybrid tame sprites.');
+								}
+								return {
+									type: v,
+									growthStage: {
+										[tame_growth.baby]: getHybridTameSprite(
+											hybridSpriteSheet,
+											v,
+											0,
+											hybridSpriteColumns,
+											hybridSpriteRows
+										),
+										[tame_growth.juvenile]: getHybridTameSprite(
+											hybridSpriteSheet,
+											v,
+											1,
+											hybridSpriteColumns,
+											hybridSpriteRows
+										),
+										[tame_growth.adult]: getHybridTameSprite(
+											hybridSpriteSheet,
+											v,
+											2,
+											hybridSpriteColumns,
+											hybridSpriteRows
+										)
+									}
+								};
+							}
+
 							return {
 								type: v,
 								growthStage: {
@@ -339,7 +570,7 @@ async function initSprites() {
 		)
 	};
 }
-initSprites();
+const initSpritesPromise = initSprites();
 function fillTextXTimesInCtx(ctx: CanvasContext, text: string, x: number, y: number) {
 	const textPath = ctx.outlineText(text);
 	ctx.fill(textPath.offset(x, y));
@@ -356,6 +587,12 @@ function drawText(ctx: CanvasContext, text: string, x: number, y: number) {
 }
 
 export async function tameImage(user: MUser): CommandResponse {
+	await initSpritesPromise;
+	if (!bankImageTask.ready) {
+		await bankImageTask.init();
+		bankImageTask.ready = true;
+	}
+
 	const userTames = await user.fetchTames();
 	const perkTier = await user.fetchPerkTier();
 	userTames.sort(sortTames);
@@ -442,8 +679,9 @@ export async function tameImage(user: MUser): CommandResponse {
 
 		const tameImage = imageReplacement
 			? await loadImage(imageReplacement.image)
-			: sprites.tames!.find(t => t.id === species.id)!.sprites.find(f => f.type === t.speciesVariant)!
-					.growthStage[t.growthStage];
+			: sprites
+				.tames!.find(spriteSheet => spriteSheet.id === spriteIDForTame(t))!
+				.sprites.find(f => f.type === t.speciesVariant)!.growthStage[t.growthStage];
 
 		// Draw tame
 		ctx.drawImage(tameImage, tameX, tameY, tameImageSize, tameImageSize);
@@ -549,9 +787,8 @@ export async function tameImage(user: MUser): CommandResponse {
 	const buffer = await canvasToBuffer(canvas);
 
 	return {
-		content: `${badgesStr}${user.usernameOrMention}, ${
-			userTames.length > 1 ? 'here are your tames' : 'this is your tame'
-		}!`,
+		content: `${badgesStr}${user.usernameOrMention}, ${userTames.length > 1 ? 'here are your tames' : 'this is your tame'
+			}!`,
 		files: [{ buffer, name: `${user.usernameOrMention}_tames.png` }]
 	};
 }
@@ -899,9 +1136,8 @@ Note: Some items must be equipped to your tame, not fed. Check that you are feed
 		fed_items: tame.fedItems.add(bankToAdd).toJSON()
 	});
 
-	return `You fed \`${bankToAdd}\` to ${tame}.${
-		newBoosts.length > 0 ? `\n\n${newBoosts.join('\n')}` : ''
-	}${specialStr}${egg}`;
+	return `You fed \`${bankToAdd}\` to ${tame}.${newBoosts.length > 0 ? `\n\n${newBoosts.join('\n')}` : ''
+		}${specialStr}${egg}`;
 }
 
 async function killCommand(user: MUser, channelId: string, str: string) {
@@ -1049,9 +1285,8 @@ async function killCommand(user: MUser, channelId: string, str: string) {
 
 	if (typeof task === 'string') return task;
 
-	let reply = `${tame} is now killing ${quantity}x ${monster.name}${
-		deathChance > 0 ? `, and has a ${deathChance.toFixed(2)}% chance of dying` : ''
-	}. The trip will take ${formatDuration(fakeDuration)}.\n\nRemoved ${foodRes.str}`;
+	let reply = `${tame} is now killing ${quantity}x ${monster.name}${deathChance > 0 ? `, and has a ${deathChance.toFixed(2)}% chance of dying` : ''
+		}. The trip will take ${formatDuration(fakeDuration)}.\n\nRemoved ${foodRes.str}`;
 
 	if (boosts.length > 0) {
 		reply += `\n\n**Boosts:** ${boosts.join(', ')}.`;
@@ -1151,9 +1386,8 @@ async function collectCommand(user: MUser, channelId: string, str: string) {
 
 	if (typeof task === 'string') return task;
 
-	let reply = `${tame} is now collecting ${quantity * collectable.quantity}x ${
-		collectable.item.name
-	}. The trip will take ${formatDuration(duration)}.`;
+	let reply = `${tame} is now collecting ${quantity * collectable.quantity}x ${collectable.item.name
+		}. The trip will take ${formatDuration(duration)}.`;
 
 	if (boosts.length > 0) {
 		reply += `\n\n**Boosts:** ${boosts.join(', ')}.`;
@@ -1282,9 +1516,8 @@ async function monkeyMagicHandler(
 
 	if (typeof task === 'string') return task;
 
-	let reply = `${tame} is now casting the ${
-		spellOptions.spell.name
-	} spell ${quantity}x times, removed ${finalCost} from your bank. The trip will take ${formatDuration(duration)}.`;
+	let reply = `${tame} is now casting the ${spellOptions.spell.name
+		} spell ${quantity}x times, removed ${finalCost} from your bank. The trip will take ${formatDuration(duration)}.`;
 
 	if (boosts.length > 0) {
 		reply += `\n\n**Boosts:** ${boosts.join(', ')}.`;
@@ -1464,9 +1697,9 @@ async function viewCommand(interaction: MInteraction, user: MUser, tameID: numbe
 **Hatch Date:** ${time(tame.hatchDate)} / ${time(tame.hatchDate, 'R')}
 **${toTitleCase(species.relevantLevelCategory)} Level:** ${tame.relevantLevel()}
 **Boosts:** ${tameFeedableItems
-		.filter(i => tame.hasBeenFed(i.item.id) && tameCanUseAnySpecies(tame, i.tameSpeciesCanBeFedThis))
-		.map(i => `${i.item.name} (${i.description})`)
-		.join(', ')}`;
+			.filter(i => tame.hasBeenFed(i.item.id) && tameCanUseAnySpecies(tame, i.tameSpeciesCanBeFedThis))
+			.map(i => `${i.item.name} (${i.description})`)
+			.join(', ')}`;
 	if (tame.canUseSpecies(TameSpeciesID.Igne)) {
 		const kcs = await getIgneTameKC(tame.tame);
 		content += `\n**KCs:** ${kcs.sortedTuple
@@ -1780,7 +2013,7 @@ export const tamesCommand = defineCommand({
 								!value
 									? true
 									: i.name.toLowerCase().includes(value.toLowerCase()) ||
-										i.aliases.some(alias => stringMatches(alias, value))
+									i.aliases.some(alias => stringMatches(alias, value))
 							)
 							.map(i => ({ name: i.name, value: i.name }));
 					}
