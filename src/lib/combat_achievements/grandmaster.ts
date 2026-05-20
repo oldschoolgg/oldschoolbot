@@ -1322,16 +1322,16 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		}
 	},
 	{
-    id: 3111,
-    name: 'Duel of Mokhaiotl',
-    desc: 'Defeat the Doom of Mokhaiotl levels 1-8 whilst only damaging the boss with one-handed melee attacks.',
-    type: 'restriction',
-    monster: 'Doom of Mokhaiotl',
-    rng: {
-        chancePerKill: 10,
-        hasChance: (data: ActivityTaskData) =>
-            data.type === 'DoomOfMokhaiotl' && !data.diedAt && data.deepestDelveCompleted >= 8
-    }
+		id: 3111,
+		name: 'Duel of Mokhaiotl',
+		desc: 'Defeat the Doom of Mokhaiotl levels 1-8 whilst only damaging the boss with one-handed melee attacks.',
+		type: 'restriction',
+		monster: 'Doom of Mokhaiotl',
+		rng: {
+			chancePerKill: 10,
+			hasChance: (data: ActivityTaskData) =>
+				data.type === 'DoomOfMokhaiotl' && !data.diedAt && data.deepestDelveCompleted >= 8
+		}
 	},
 	{
 		id: 3112,
@@ -1406,5 +1406,5 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 			hasChance: (data: ActivityTaskData) =>
 				data.type === 'DoomOfMokhaiotl' && !data.diedAt && data.deepestDelveCompleted >= 8
 		}
-	},
+	}
 ];

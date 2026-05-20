@@ -1818,16 +1818,16 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		}
 	},
 	{
-    id: 2158,
-    name: 'Grub Patrol',
-    desc: 'Defeat the Doom of Mokhaiotl levels 1-8 without ever letting a grub be absorbed.',
-    type: 'mechanical',
-    monster: 'Doom of Mokhaiotl',
-    rng: {
-        chancePerKill: 15,
-        hasChance: (data: ActivityTaskData) =>
-            data.type === 'DoomOfMokhaiotl' && !data.diedAt && data.deepestDelveCompleted >= 8
-    }
+		id: 2158,
+		name: 'Grub Patrol',
+		desc: 'Defeat the Doom of Mokhaiotl levels 1-8 without ever letting a grub be absorbed.',
+		type: 'mechanical',
+		monster: 'Doom of Mokhaiotl',
+		rng: {
+			chancePerKill: 15,
+			hasChance: (data: ActivityTaskData) =>
+				data.type === 'DoomOfMokhaiotl' && !data.diedAt && data.deepestDelveCompleted >= 8
+		}
 	},
 	{
 		id: 2159,
@@ -1866,5 +1866,5 @@ export const masterCombatAchievements: CombatAchievement[] = [
 			name: 'Defeat the Doom of Mokhaiotl at delve level 8.',
 			has: ({ stats }) => Number(stats.userStats.doom_deepest_delve ?? 0) >= 8
 		})
-	},
+	}
 ];

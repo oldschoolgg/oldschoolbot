@@ -1802,11 +1802,11 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		}
 	},
 	{
-    id: 1155,
-    name: 'Doom Adept',
-    desc: 'Defeat the Doom of Mokhaiotl at delve level 3.',
-    type: 'kill_count',
-    monster: 'Doom of Mokhaiotl',
+		id: 1155,
+		name: 'Doom Adept',
+		desc: 'Defeat the Doom of Mokhaiotl at delve level 3.',
+		type: 'kill_count',
+		monster: 'Doom of Mokhaiotl',
 		requirements: new Requirements().add({
 			name: 'Defeat the Doom of Mokhaiotl at delve level 3.',
 			has: ({ stats }) => Number(stats.userStats.doom_deepest_delve ?? 0) >= 3
@@ -1835,8 +1835,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'Doom of Mokhaiotl',
 		rng: {
 			chancePerKill: 15,
-			hasChance: (data: ActivityTaskData) =>
-				data.type === 'DoomOfMokhaiotl' && !data.diedAt
+			hasChance: (data: ActivityTaskData) => data.type === 'DoomOfMokhaiotl' && !data.diedAt
 		}
-	},
+	}
 ];
