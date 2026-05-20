@@ -377,6 +377,7 @@ CREATE TABLE "users" (
     "serp_helm_charges" INTEGER NOT NULL DEFAULT 0,
     "blood_fury_charges" INTEGER NOT NULL DEFAULT 0,
     "tum_shadow_charges" INTEGER NOT NULL DEFAULT 0,
+    "ayak_charges" INTEGER NOT NULL DEFAULT 0,
     "blood_essence_charges" INTEGER NOT NULL DEFAULT 0,
     "trident_charges" INTEGER NOT NULL DEFAULT 0,
     "venator_bow_charges" INTEGER NOT NULL DEFAULT 0,

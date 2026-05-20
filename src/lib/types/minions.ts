@@ -510,8 +510,11 @@ export interface DoomTaskOptions extends ActivityTaskOptions {
 	diedAt: number | null;
 	loot: ItemBank | null;
 	fakeDuration: number;
-	kcBank: ItemBank;
 	stopOnUnique?: boolean;
+	deepDelvesEarned: number;
+	totalWavesCleared: number;
+	deepestDelveCompleted: number;
+	ayakChargesGained: number;
 }
 
 type UserID = string;

@@ -184,9 +184,9 @@ export const TOBMaxMageGear = constructGearSetup({
 	neck: 'Occult necklace',
 	body: 'Ancestral robe top',
 	cape: 'Imbued saradomin cape',
-	hands: 'Tormented bracelet',
+	hands: 'Confliction gauntlets',
 	legs: 'Ancestral robe bottom',
-	feet: 'Eternal boots',
+	feet: 'Avernic treads (max)',
 	weapon: 'Kodai wand',
 	shield: 'Arcane spirit shield',
 	ring: 'Magus ring'
@@ -199,7 +199,7 @@ export const TOBMaxRangeGear = constructGearSetup({
 	cape: "Ava's assembler",
 	hands: 'Void knight gloves',
 	legs: 'Elite void robe',
-	feet: 'Pegasian boots',
+	feet: 'Avernic treads (max)',
 	'2h': 'Twisted bow',
 	ring: 'Venator ring',
 	ammo: 'Dragon arrow'
@@ -212,7 +212,7 @@ export const TOBMaxMeleeGear = constructGearSetup({
 	cape: 'Infernal cape',
 	hands: 'Ferocious gloves',
 	legs: 'Torva platelegs',
-	feet: 'Primordial boots',
+	feet: 'Avernic treads (max)',
 	'2h': 'Scythe of vitur',
 	ring: 'Ultor ring'
 });

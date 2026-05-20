@@ -212,13 +212,21 @@ class CollectionLogTask {
 		canvas.drawBackgroundPattern();
 		canvas.drawBorder();
 
+		const fmtProgLines =
+			collectionLog.fmtProgResult && !collectionLog.completions
+				? Array.isArray(collectionLog.fmtProgResult)
+					? collectionLog.fmtProgResult
+					: [collectionLog.fmtProgResult]
+				: [];
+		const fmtProgExtraHeight = fmtProgLines.length > 0 ? (fmtProgLines.length - 1) * 12 : 0;
+
 		if (!fullSize) {
 			canvas.drawHollowSquare(10, 59, canvas.width - 20, boxHeight, sprite.oddListColor);
-			canvas.drawHollowSquare(leftDivisor, 59, rightArea, 47, sprite.oddListColor);
+			canvas.drawHollowSquare(leftDivisor, 59, rightArea, 47 + fmtProgExtraHeight, sprite.oddListColor);
 			canvas.drawHollowSquare(leftDivisor, 59, rightArea, boxHeight, sprite.oddListColor);
 		} else {
 			canvas.drawHollowSquare(10, 59, canvas.width - 20, boxHeight, sprite.oddListColor);
-			canvas.drawHollowSquare(10, 59, canvas.width - 20, 47, sprite.oddListColor);
+			canvas.drawHollowSquare(10, 59, canvas.width - 20, 47 + fmtProgExtraHeight, sprite.oddListColor);
 		}
 
 		// Draw Title
@@ -252,7 +260,7 @@ class CollectionLogTask {
 
 		// Draw items
 		ctx.save();
-		ctx.translate(!fullSize ? leftDivisor + 5 : 15, 110);
+		ctx.translate(!fullSize ? leftDivisor + 5 : 15, 110 + fmtProgExtraHeight);
 		let i = 0;
 		let y = 0;
 
@@ -377,6 +385,37 @@ class CollectionLogTask {
 					y: pixelLevel,
 					color: this.COLORS.WHITE
 				});
+			}
+		}
+
+		if (fmtProgLines.length > 0) {
+			let pixelLevel = 25;
+			for (const line of fmtProgLines) {
+				const colonIndex = line.indexOf(':');
+				if (colonIndex !== -1) {
+					const label = line.slice(0, colonIndex + 1) + ' ';
+					const value = line.slice(colonIndex + 1).trim();
+					canvas.drawText({
+						text: label,
+						x: 0,
+						y: pixelLevel,
+						color: this.COLORS.ORANGEY
+					});
+					canvas.drawText({
+						text: value,
+						x: canvas.measureTextWidth(label),
+						y: pixelLevel,
+						color: this.COLORS.WHITE
+					});
+				} else {
+					canvas.drawText({
+						text: line,
+						x: 0,
+						y: pixelLevel,
+						color: this.COLORS.ORANGEY
+					});
+				}
+				pixelLevel += 12;
 			}
 		}
 

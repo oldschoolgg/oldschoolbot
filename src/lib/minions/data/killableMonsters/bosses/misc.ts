@@ -93,7 +93,12 @@ export const miscBossKillables: KillableMonster[] = [
 		itemInBankBoosts: [
 			{
 				[itemID('Ranger boots')]: 2,
-				[itemID('Pegasian boots')]: 4
+				[itemID('Pegasian boots')]: 4,
+				[itemID('Avernic treads')]: 4,
+				[itemID('Avernic treads (pe)')]: 6,
+				[itemID('Avernic treads (pr)(pe)')]: 6,
+				[itemID('Avernic treads (pe)(et)')]: 6,
+				[itemID('Avernic treads (max)')]: 6
 			},
 			{
 				[itemID('Warped sceptre (uncharged)')]: 1,
@@ -101,7 +106,8 @@ export const miscBossKillables: KillableMonster[] = [
 				[itemID('Trident of the swamp')]: 3,
 				[itemID('Sanguinesti staff')]: 4,
 				[itemID('Harmonised nightmare staff')]: 5,
-				[itemID("Tumeken's shadow")]: 8
+				[itemID("Tumeken's shadow")]: 8,
+				[itemID('Eye of ayak')]: 10
 			},
 			{
 				[itemID('Barrows gloves')]: 3
@@ -267,8 +273,16 @@ export const miscBossKillables: KillableMonster[] = [
 				gearSetup: 'melee'
 			},
 			{
-				items: [{ boostPercent: 1, itemID: itemID('Primordial boots') }],
-				gearSetup: 'melee'
+				items: [
+					{ boostPercent: 2, itemID: itemID('Avernic treads (max)') },
+					{ boostPercent: 2, itemID: itemID('Avernic treads (pr)(et)') },
+					{ boostPercent: 2, itemID: itemID('Avernic treads (pr)(pe)') },
+					{ boostPercent: 2, itemID: itemID('Avernic treads (pr)') },
+					{ boostPercent: 1, itemID: itemID('Avernic treads') },
+					{ boostPercent: 1, itemID: itemID('Primordial boots') }
+				],
+				gearSetup: 'melee',
+				required: false
 			}
 		],
 		degradeableItemUsage: [
@@ -502,15 +516,32 @@ export const miscBossKillables: KillableMonster[] = [
 				gearSetup: 'range'
 			},
 			{
-				items: [{ boostPercent: 5, itemID: itemID('Tormented bracelet') }],
+				items: [
+					{ boostPercent: 5, itemID: itemID('Confliction gauntlets') },
+					{ boostPercent: 3, itemID: itemID('Tormented bracelet') }
+				],
 				gearSetup: 'mage'
 			},
 			{
-				items: [{ boostPercent: 3, itemID: itemID('Pegasian boots') }],
+				items: [
+					{ boostPercent: 5, itemID: itemID('Avernic treads (max)') },
+					{ boostPercent: 5, itemID: itemID('Avernic treads (pe)(et)') },
+					{ boostPercent: 5, itemID: itemID('Avernic treads (pr)(pe)') },
+					{ boostPercent: 5, itemID: itemID('Avernic treads (pe)') },
+					{ boostPercent: 3, itemID: itemID('Avernic treads') },
+					{ boostPercent: 3, itemID: itemID('Pegasian boots') }
+				],
 				gearSetup: 'range'
 			},
 			{
-				items: [{ boostPercent: 3, itemID: itemID('Eternal boots') }],
+				items: [
+					{ boostPercent: 5, itemID: itemID('Avernic treads (max)') },
+					{ boostPercent: 5, itemID: itemID('Avernic treads (pe)(et)') },
+					{ boostPercent: 5, itemID: itemID('Avernic treads (pr)(et)') },
+					{ boostPercent: 5, itemID: itemID('Avernic treads (et)') },
+					{ boostPercent: 3, itemID: itemID('Avernic treads') },
+					{ boostPercent: 3, itemID: itemID('Eternal boots') }
+				],
 				gearSetup: 'mage'
 			}
 		],
@@ -658,9 +689,16 @@ export const miscBossKillables: KillableMonster[] = [
 				required: true
 			},
 			{
-				items: resolveItems(['Primordial boots']).map(id => ({ boostPercent: 2, itemID: id })),
+				items: [
+					{ boostPercent: 3, itemID: itemID('Avernic treads (max)') },
+					{ boostPercent: 3, itemID: itemID('Avernic treads (pr)(et)') },
+					{ boostPercent: 3, itemID: itemID('Avernic treads (pr)(pe)') },
+					{ boostPercent: 3, itemID: itemID('Avernic treads (pr)') },
+					{ boostPercent: 2, itemID: itemID('Avernic treads') },
+					{ boostPercent: 2, itemID: itemID('Primordial boots') }
+				],
 				gearSetup: 'melee',
-				required: true
+				required: false
 			}
 		],
 		itemInBankBoosts: [
@@ -839,7 +877,14 @@ export const miscBossKillables: KillableMonster[] = [
 				required: false
 			},
 			{
-				items: resolveItems(['Primordial boots']).map(id => ({ boostPercent: 2, itemID: id })),
+				items: [
+					{ boostPercent: 7, itemID: itemID('Avernic treads (max)') },
+					{ boostPercent: 7, itemID: itemID('Avernic treads (pr)(et)') },
+					{ boostPercent: 7, itemID: itemID('Avernic treads (pr)(pe)') },
+					{ boostPercent: 7, itemID: itemID('Avernic treads (pr)') },
+					{ boostPercent: 5, itemID: itemID('Avernic treads') },
+					{ boostPercent: 5, itemID: itemID('Primordial boots') }
+				],
 				gearSetup: 'melee',
 				required: false
 			}
@@ -974,7 +1019,14 @@ export const miscBossKillables: KillableMonster[] = [
 				required: false
 			},
 			{
-				items: resolveItems(['Primordial boots']).map(id => ({ boostPercent: 5, itemID: id })),
+				items: [
+					{ boostPercent: 7, itemID: itemID('Avernic treads (max)') },
+					{ boostPercent: 7, itemID: itemID('Avernic treads (pr)(et)') },
+					{ boostPercent: 7, itemID: itemID('Avernic treads (pr)(pe)') },
+					{ boostPercent: 7, itemID: itemID('Avernic treads (pr)') },
+					{ boostPercent: 5, itemID: itemID('Avernic treads') },
+					{ boostPercent: 5, itemID: itemID('Primordial boots') }
+				],
 				gearSetup: 'melee',
 				required: false
 			}

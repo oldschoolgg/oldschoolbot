@@ -26,6 +26,7 @@ export interface IToReturnCollection {
 	leftList?: ILeftListStatus;
 	userItems: Bank;
 	counts: boolean;
+	fmtProgResult?: string | string[];
 }
 
 export type CollectionStatus = 'not_started' | 'started' | 'completed';
@@ -2231,7 +2232,14 @@ export const araxxorCL = resolveItems([
 
 export const amoxliatlCL = resolveItems(['Moxi', 'Glacial temotli', 'Pendant of ates (inert)', 'Frozen tear']);
 
-export const doomOfMokhaiotlCL = resolveItems(['Dom', 'Mokhaiotl cloth', 'Eye of ayak (uncharged)', 'Avernic treads']);
+export const doomOfMokhaiotlCL = resolveItems([
+	'Dom',
+	'Avernic treads',
+	'Eye of ayak (uncharged)',
+	'Mokhaiotl cloth',
+	'Mokhaiotl waystone',
+	'Demon tear'
+]);
 
 export const chompyHats = [
 	[Items.getOrThrow('Chompy bird hat (ogre bowman)'), 30],

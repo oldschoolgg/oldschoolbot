@@ -337,6 +337,24 @@ export const minionCommand = defineCommand({
 					name: 'amount',
 					description: 'The amount you want to charge',
 					required: false
+				},
+				{
+					type: 'String',
+					name: 'method',
+					description: 'The charging method to use (if the item supports multiple).',
+					required: false,
+					autocomplete: async ({ value }: StringAutoComplete) => {
+						const allMethods = new Map<string, string>();
+						for (const item of degradeableItems) {
+							allMethods.set('runes', 'Runes');
+							if (item.altChargeInput) {
+								allMethods.set(item.altChargeInput.name, item.altChargeInput.name);
+							}
+						}
+						return [...allMethods.entries()]
+							.map(([val, name]) => ({ name, value: val }))
+							.filter(m => !value || m.name.toLowerCase().includes(value.toLowerCase()));
+					}
 				}
 			]
 		},
@@ -537,7 +555,13 @@ export const minionCommand = defineCommand({
 		if (options.buy) return minionBuyCommand(user, Boolean(options.buy.ironman));
 		if (options.ironman) return ironmanCommand(user, interaction, Boolean(options.ironman.permanent));
 		if (options.charge) {
-			return degradeableItemsCommand(interaction, user, options.charge.item, options.charge.amount);
+			return degradeableItemsCommand(
+				interaction,
+				user,
+				options.charge.item,
+				options.charge.amount,
+				options.charge.method
+			);
 		}
 		if (options.daily) {
 			return dailyCommand(rng, interaction, user);

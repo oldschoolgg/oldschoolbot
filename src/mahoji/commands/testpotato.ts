@@ -998,6 +998,7 @@ export const testPotatoCommand = globalConfig.isProduction
 							serp_helm_charges: 10000,
 							blood_fury_charges: 10000,
 							tum_shadow_charges: 10000,
+							ayak_charges: 10000,
 							blood_essence_charges: 10000,
 							ash_sanctifier_charges: 10000,
 							celestial_ring_charges: 10000,

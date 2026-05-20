@@ -254,6 +254,26 @@
 			{
 				"items": [
 					{
+						"boost_percent": 7,
+						"item_id": 31097
+					},
+					{
+						"boost_percent": 7,
+						"item_id": 31095
+					},
+					{
+						"boost_percent": 7,
+						"item_id": 31094
+					},
+					{
+						"boost_percent": 7,
+						"item_id": 31091
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31088
+					},
+					{
 						"boost_percent": 5,
 						"item_id": 13239
 					}
@@ -513,12 +533,32 @@
 			{
 				"items": [
 					{
+						"boost_percent": 3,
+						"item_id": 31097
+					},
+					{
+						"boost_percent": 3,
+						"item_id": 31095
+					},
+					{
+						"boost_percent": 3,
+						"item_id": 31094
+					},
+					{
+						"boost_percent": 3,
+						"item_id": 31091
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 31088
+					},
+					{
 						"boost_percent": 2,
 						"item_id": 13239
 					}
 				],
 				"gear_setup": "melee",
-				"required": true
+				"required": false
 			}
 		],
 		"item_in_bank_boosts": [
@@ -971,7 +1011,8 @@
 				"1409": 5,
 				"24423": 7,
 				"27275": 10,
-				"28583": 6
+				"28583": 6,
+				"31113": 15
 			},
 			{
 				"24738": 7
@@ -2070,7 +2111,12 @@
 		"item_in_bank_boosts": [
 			{
 				"2577": 3,
-				"13237": 5
+				"13237": 5,
+				"31088": 5,
+				"31092": 7,
+				"31094": 7,
+				"31096": 7,
+				"31097": 7
 			},
 			{
 				"11785": 5,
@@ -2212,11 +2258,32 @@
 			{
 				"items": [
 					{
+						"boost_percent": 2,
+						"item_id": 31097
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 31095
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 31094
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 31091
+					},
+					{
+						"boost_percent": 1,
+						"item_id": 31088
+					},
+					{
 						"boost_percent": 1,
 						"item_id": 13239
 					}
 				],
-				"gear_setup": "melee"
+				"gear_setup": "melee",
+				"required": false
 			}
 		],
 		"degradeable_item_usage": [
@@ -2715,6 +2782,26 @@
 			{
 				"items": [
 					{
+						"boost_percent": 5,
+						"item_id": 31097
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31095
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31094
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31091
+					},
+					{
+						"boost_percent": 3,
+						"item_id": 31088
+					},
+					{
 						"boost_percent": 3,
 						"item_id": 13239
 					}
@@ -2821,6 +2908,26 @@
 			},
 			{
 				"items": [
+					{
+						"boost_percent": 5,
+						"item_id": 31097
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31095
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31094
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31091
+					},
+					{
+						"boost_percent": 3,
+						"item_id": 31088
+					},
 					{
 						"boost_percent": 3,
 						"item_id": 13239
@@ -4175,7 +4282,8 @@
 				"22323": 12,
 				"24423": 15,
 				"27275": 20,
-				"28583": 3
+				"28583": 3,
+				"31113": 25
 			},
 			{
 				"20724": 5
@@ -5022,6 +5130,10 @@
 				"items": [
 					{
 						"boost_percent": 5,
+						"item_id": 31106
+					},
+					{
+						"boost_percent": 3,
 						"item_id": 19544
 					}
 				],
@@ -5029,6 +5141,26 @@
 			},
 			{
 				"items": [
+					{
+						"boost_percent": 5,
+						"item_id": 31097
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31096
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31094
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31092
+					},
+					{
+						"boost_percent": 3,
+						"item_id": 31088
+					},
 					{
 						"boost_percent": 3,
 						"item_id": 13237
@@ -5038,6 +5170,26 @@
 			},
 			{
 				"items": [
+					{
+						"boost_percent": 5,
+						"item_id": 31097
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31096
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31095
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31093
+					},
+					{
+						"boost_percent": 3,
+						"item_id": 31088
+					},
 					{
 						"boost_percent": 3,
 						"item_id": 13235
@@ -7815,7 +7967,27 @@
 			{
 				"items": [
 					{
-						"boost_percent": 2,
+						"boost_percent": 7,
+						"item_id": 31097
+					},
+					{
+						"boost_percent": 7,
+						"item_id": 31095
+					},
+					{
+						"boost_percent": 7,
+						"item_id": 31094
+					},
+					{
+						"boost_percent": 7,
+						"item_id": 31091
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31088
+					},
+					{
+						"boost_percent": 5,
 						"item_id": 13239
 					}
 				],
@@ -7920,6 +8092,26 @@
 			},
 			{
 				"items": [
+					{
+						"boost_percent": 5,
+						"item_id": 31097
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31096
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31094
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31092
+					},
+					{
+						"boost_percent": 3,
+						"item_id": 31088
+					},
 					{
 						"boost_percent": 3,
 						"item_id": 13237
@@ -8048,6 +8240,26 @@
 			{
 				"items": [
 					{
+						"boost_percent": 5,
+						"item_id": 31097
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31096
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31094
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31092
+					},
+					{
+						"boost_percent": 3,
+						"item_id": 31088
+					},
+					{
 						"boost_percent": 3,
 						"item_id": 13237
 					}
@@ -8172,6 +8384,10 @@
 			{
 				"items": [
 					{
+						"boost_percent": 5,
+						"item_id": 31106
+					},
+					{
 						"boost_percent": 3,
 						"item_id": 19544
 					}
@@ -8180,6 +8396,26 @@
 			},
 			{
 				"items": [
+					{
+						"boost_percent": 5,
+						"item_id": 31097
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31096
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31095
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31093
+					},
+					{
+						"boost_percent": 3,
+						"item_id": 31088
+					},
 					{
 						"boost_percent": 3,
 						"item_id": 13235
@@ -8323,6 +8559,10 @@
 			{
 				"items": [
 					{
+						"boost_percent": 5,
+						"item_id": 31106
+					},
+					{
 						"boost_percent": 3,
 						"item_id": 19544
 					}
@@ -8331,6 +8571,26 @@
 			},
 			{
 				"items": [
+					{
+						"boost_percent": 5,
+						"item_id": 31097
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31096
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31095
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31093
+					},
+					{
+						"boost_percent": 3,
+						"item_id": 31088
+					},
 					{
 						"boost_percent": 3,
 						"item_id": 13235
@@ -8806,6 +9066,26 @@
 			{
 				"items": [
 					{
+						"boost_percent": 5,
+						"item_id": 31097
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31095
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31094
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31091
+					},
+					{
+						"boost_percent": 3,
+						"item_id": 31088
+					},
+					{
 						"boost_percent": 3,
 						"item_id": 13239
 					}
@@ -8917,6 +9197,26 @@
 			},
 			{
 				"items": [
+					{
+						"boost_percent": 5,
+						"item_id": 31097
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31095
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31094
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31091
+					},
+					{
+						"boost_percent": 3,
+						"item_id": 31088
+					},
 					{
 						"boost_percent": 3,
 						"item_id": 13239
@@ -9828,7 +10128,12 @@
 		"item_in_bank_boosts": [
 			{
 				"2577": 2,
-				"13237": 4
+				"13237": 4,
+				"31088": 4,
+				"31092": 6,
+				"31094": 6,
+				"31096": 6,
+				"31097": 6
 			},
 			{
 				"11907": 2,
@@ -9836,7 +10141,8 @@
 				"22323": 4,
 				"24423": 5,
 				"27275": 8,
-				"28583": 1
+				"28583": 1,
+				"31113": 10
 			},
 			{
 				"7462": 3

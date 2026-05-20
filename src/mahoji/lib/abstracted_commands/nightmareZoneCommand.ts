@@ -66,6 +66,26 @@ const itemBoosts = [
 	// Boots
 	[
 		{
+			item: Items.getOrThrow('Avernic treads (max)'),
+			boost: 7
+		},
+		{
+			item: Items.getOrThrow('Avernic treads (pr)(et)'),
+			boost: 7
+		},
+		{
+			item: Items.getOrThrow('Avernic treads (pr)(pe)'),
+			boost: 7
+		},
+		{
+			item: Items.getOrThrow('Avernic treads (pr)'),
+			boost: 7
+		},
+		{
+			item: Items.getOrThrow('Avernic treads'),
+			boost: 5
+		},
+		{
 			item: Items.getOrThrow('Primordial boots'),
 			boost: 5
 		},

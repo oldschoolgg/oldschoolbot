@@ -756,7 +756,7 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 			const data = currentTask as DoomTaskOptions;
 			const durationRemaining = data.finishDate - Date.now();
 
-			return `${name} is currently attempting the Doom of Mokhaiotl (targeting delve **${data.targetDelve}**), they will finish in ${formatDuration(durationRemaining)}.`;
+			return `${name} is currently attempting the Doom of Mokhaiotl (targeting delve **${data.targetDelve}**), they will finish in ${formatTripDuration(user, durationRemaining)}.`;
 		}
 		case 'HalloweenEvent': {
 			return `${name} is doing the Halloween event! The trip should take ${loneFormattedDuration}.`;
