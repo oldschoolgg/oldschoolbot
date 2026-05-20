@@ -1320,5 +1320,91 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 			chancePerKill: 100,
 			hasChance: isCertainMonsterTrip(Monsters.TheHueycoatl.id)
 		}
-	}
+	},
+	{
+    id: 3111,
+    name: 'Duel of Mokhaiotl',
+    desc: 'Defeat the Doom of Mokhaiotl levels 1-8 whilst only damaging the boss with one-handed melee attacks.',
+    type: 'restriction',
+    monster: 'Doom of Mokhaiotl',
+    rng: {
+        chancePerKill: 10,
+        hasChance: (data: ActivityTaskData) =>
+            data.type === 'DoomOfMokhaiotl' && !data.diedAt && data.deepestDelveCompleted >= 8
+    }
+	},
+	{
+		id: 3112,
+		name: 'Darkness Is Your Ally?',
+		desc: 'Defeat the Doom of Mokhaiotl levels 1-8 without equipping a demonbane weapon.',
+		type: 'restriction',
+		monster: 'Doom of Mokhaiotl',
+		rng: {
+			chancePerKill: 10,
+			hasChance: (data: ActivityTaskData) =>
+				data.type === 'DoomOfMokhaiotl' && !data.diedAt && data.deepestDelveCompleted >= 8
+		}
+	},
+	{
+		id: 3113,
+		name: 'Perfect Doom',
+		desc: 'Defeat the Doom of Mokhaiotl levels 1-8 without taking any damage from the boss, letting any grubs be absorbed, or stepping in acid blood.',
+		type: 'perfection',
+		monster: 'Doom of Mokhaiotl',
+		rng: {
+			chancePerKill: 15,
+			hasChance: (data: ActivityTaskData) =>
+				data.type === 'DoomOfMokhaiotl' && !data.diedAt && data.deepestDelveCompleted >= 8
+		}
+	},
+	{
+		id: 3114,
+		name: 'The Praying Mantis',
+		desc: 'Defeat the Doom of Mokhaiotl levels 1-8 without restoring your prayer points through any method.',
+		type: 'restriction',
+		monster: 'Doom of Mokhaiotl',
+		rng: {
+			chancePerKill: 10,
+			hasChance: (data: ActivityTaskData) =>
+				data.type === 'DoomOfMokhaiotl' && !data.diedAt && data.deepestDelveCompleted >= 8
+		}
+	},
+	{
+		id: 3115,
+		name: 'Doom Racer',
+		desc: 'Defeat the Doom of Mokhaiotl levels 1-8 in less than 7:15.',
+		type: 'speed',
+		monster: 'Doom of Mokhaiotl',
+		rng: {
+			chancePerKill: 10,
+			hasChance: (data: ActivityTaskData) =>
+				data.type === 'DoomOfMokhaiotl' &&
+				!data.diedAt &&
+				data.deepestDelveCompleted >= 8 &&
+				data.duration < Time.Minute * 9
+		}
+	},
+	{
+		id: 3116,
+		name: "It's Dark Down Here",
+		desc: 'Defeat the Doom of Mokhaiotl at delve level 16.',
+		type: 'stamina',
+		monster: 'Doom of Mokhaiotl',
+		requirements: new Requirements().add({
+			name: 'Defeat the Doom of Mokhaiotl at delve level 16.',
+			has: ({ stats }) => Number(stats.userStats.doom_deepest_delve ?? 0) >= 16
+		})
+	},
+	{
+		id: 3117,
+		name: 'Mopping up',
+		desc: 'Clear at least 8 acid splats in a single Volatile Earth special attack.',
+		type: 'mechanical',
+		monster: 'Doom of Mokhaiotl',
+		rng: {
+			chancePerKill: 10,
+			hasChance: (data: ActivityTaskData) =>
+				data.type === 'DoomOfMokhaiotl' && !data.diedAt && data.deepestDelveCompleted >= 8
+		}
+	},
 ];

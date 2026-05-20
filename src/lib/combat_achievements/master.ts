@@ -1816,5 +1816,55 @@ export const masterCombatAchievements: CombatAchievement[] = [
 			chancePerKill: 70,
 			hasChance: isCertainMonsterTrip(Monsters.TheHueycoatl.id)
 		}
-	}
+	},
+	{
+    id: 2158,
+    name: 'Grub Patrol',
+    desc: 'Defeat the Doom of Mokhaiotl levels 1-8 without ever letting a grub be absorbed.',
+    type: 'mechanical',
+    monster: 'Doom of Mokhaiotl',
+    rng: {
+        chancePerKill: 15,
+        hasChance: (data: ActivityTaskData) =>
+            data.type === 'DoomOfMokhaiotl' && !data.diedAt && data.deepestDelveCompleted >= 8
+    }
+	},
+	{
+		id: 2159,
+		name: 'Doom Chaser',
+		desc: 'Defeat the Doom of Mokhaiotl levels 1-8 in less than 10:00.',
+		type: 'speed',
+		monster: 'Doom of Mokhaiotl',
+		rng: {
+			chancePerKill: 15,
+			hasChance: (data: ActivityTaskData) =>
+				data.type === 'DoomOfMokhaiotl' &&
+				!data.diedAt &&
+				data.deepestDelveCompleted >= 8 &&
+				data.duration < Time.Minute * 10
+		}
+	},
+	{
+		id: 2160,
+		name: "Mine's Better",
+		desc: 'Defeat the Doom of Mokhaiotl levels 1-8 whilst always wearing a shield.',
+		type: 'restriction',
+		monster: 'Doom of Mokhaiotl',
+		rng: {
+			chancePerKill: 10,
+			hasChance: (data: ActivityTaskData) =>
+				data.type === 'DoomOfMokhaiotl' && !data.diedAt && data.deepestDelveCompleted >= 8
+		}
+	},
+	{
+		id: 2161,
+		name: 'Doom Veteran',
+		desc: 'Defeat the Doom of Mokhaiotl at delve level 8.',
+		type: 'kill_count',
+		monster: 'Doom of Mokhaiotl',
+		requirements: new Requirements().add({
+			name: 'Defeat the Doom of Mokhaiotl at delve level 8.',
+			has: ({ stats }) => Number(stats.userStats.doom_deepest_delve ?? 0) >= 8
+		})
+	},
 ];
