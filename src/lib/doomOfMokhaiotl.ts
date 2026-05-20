@@ -130,17 +130,14 @@ function calculateDeathChance(delve: number, deepDelves: number, totalDelves: nu
 }
 
 const ARROW_TIER_IDS: { mod: number; ids: number[] }[] = [
-	{ mod: -0.08, ids: resolveItems(['Dragon arrow', 'Dragon arrow(p)', 'Dragon arrow(p+)', 'Dragon arrow(p++)']) },
-	{
-		mod: -0.04,
-		ids: resolveItems(['Amethyst arrow', 'Amethyst arrow(p)', 'Amethyst arrow(p+)', 'Amethyst arrow(p++)'])
-	},
-	{ mod: 0.05, ids: resolveItems(['Rune arrow', 'Rune arrow(p)', 'Rune arrow(p+)', 'Rune arrow(p++)']) },
-	{ mod: 0.12, ids: resolveItems(['Adamant arrow', 'Adamant arrow(p)', 'Adamant arrow(p+)', 'Adamant arrow(p++)']) },
-	{ mod: 0.12, ids: resolveItems(['Mithril arrow', 'Mithril arrow(p)', 'Mithril arrow(p+)', 'Mithril arrow(p++)']) },
-	{ mod: 0.12, ids: resolveItems(['Steel arrow', 'Steel arrow(p)', 'Steel arrow(p+)', 'Steel arrow(p++)']) },
-	{ mod: 0.12, ids: resolveItems(['Iron arrow', 'Iron arrow(p)', 'Iron arrow(p+)', 'Iron arrow(p++)']) },
-	{ mod: 0.12, ids: resolveItems(['Bronze arrow', 'Bronze arrow(p)', 'Bronze arrow(p+)', 'Bronze arrow(p++)']) }
+	{ mod: -0.08, ids: resolveItems(['Dragon arrow']) },
+	{ mod: -0.04, ids: resolveItems(['Amethyst arrow']) },
+	{ mod: 0.05, ids: resolveItems(['Rune arrow']) },
+	{ mod: 0.12, ids: resolveItems(['Adamant arrow']) },
+	{ mod: 0.12, ids: resolveItems(['Mithril arrow']) },
+	{ mod: 0.12, ids: resolveItems(['Steel arrow']) },
+	{ mod: 0.12, ids: resolveItems(['Iron arrow']) },
+	{ mod: 0.12, ids: resolveItems(['Bronze arrow']) }
 ];
 
 function getArrowMod(arrowId: number | null): number {
