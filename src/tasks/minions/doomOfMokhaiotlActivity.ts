@@ -42,6 +42,21 @@ export const doomOfMokhaiotlTask: MinionTask = {
 
 		if (diedAt !== null) {
 			const kcSummary = buildKcSummary(newDeepest, newDeepDelves, newTotal);
+
+			const delvesCompleted = deepestDelveCompleted;
+			const refundRatio = Math.max(0, 1 - delvesCompleted / targetDelve);
+			if (refundRatio > 0) {
+				const refund = new Bank();
+				const delvesNotDone = targetDelve - delvesCompleted;
+				refund.add('Saradomin brew(4)', Math.floor((delvesNotDone / targetDelve) * 10));
+				refund.add('Super restore(4)', Math.floor((delvesNotDone / targetDelve) * 10));
+				refund.add('Divine ranging potion(4)', Math.floor(delvesNotDone / 5));
+				refund.add('Ranging potion(4)', Math.floor(delvesNotDone / 5));
+				if (refund.length > 0) {
+					await user.addItemsToBank({ items: refund, collectionLog: false });
+				}
+			}
+
 			return handleTripFinish({
 				user,
 				channelId,
