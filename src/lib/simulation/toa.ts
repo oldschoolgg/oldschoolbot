@@ -199,7 +199,7 @@ const primarySpecWeaponBoosts = [
 	['Dragon claws', 6]
 ] as const;
 
-const REQUIRED_RANGE_WEAPONS = resolveItems(['Twisted bow', 'Bow of faerdhinen (c)']);
+const REQUIRED_RANGE_WEAPONS = resolveItems(['Twisted bow', 'Bow of faerdhinen (c)', 'Chincannon']);
 const MELEE_REQUIRED_WEAPONS = resolveItems(['Zamorakian hasta', 'Ghrazi rapier', "Osmumten's fang"]);
 const MELEE_REQUIRED_ARMOR = resolveItems(['Fire cape', 'Infernal cape']);
 const BP_DARTS_NEEDED = 150;
@@ -262,7 +262,7 @@ const toaRequirements: {
 			const rangeAmmo = user.gear.range.get('ammo');
 			const rangeWeapon = user.gear.range.equippedWeapon();
 			const arrowsNeeded = BOW_ARROWS_NEEDED * quantity;
-			if (rangeWeapon?.id !== itemID('Bow of faerdhinen (c)')) {
+			if (rangeWeapon?.id !== itemID('Bow of faerdhinen (c)') && rangeWeapon?.id !== itemID('Chincannon')) {
 				if (!rangeAmmo || rangeAmmo.quantity < arrowsNeeded) {
 					return `Need ${arrowsNeeded} arrows equipped`;
 				}
@@ -1008,7 +1008,7 @@ async function calcTOAInput({
 	if (!rangeWeapon) {
 		throw new Error(`${user.logName} had no range weapon for TOA`);
 	}
-	if (rangeWeapon.id !== itemID('Bow of faerdhinen (c)')) {
+	if (rangeWeapon.id !== itemID('Bow of faerdhinen (c)') && rangeWeapon?.id !== itemID('Chincannon')) {
 		cost.add(user.gear.range.get('ammo')?.item, BOW_ARROWS_NEEDED * quantity);
 	}
 	if (user.gear.melee.hasEquipped('Amulet of blood fury')) {
