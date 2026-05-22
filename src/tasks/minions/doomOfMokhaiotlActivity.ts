@@ -18,7 +18,11 @@ export const doomOfMokhaiotlTask: MinionTask = {
 			deepDelvesEarned,
 			totalWavesCleared,
 			deepestDelveCompleted,
-			ayakChargesGained
+			ayakChargesGained,
+			brewsUsed,
+			restoresUsed,
+			divinesUsed,
+			rangingUsed
 		} = data;
 
 		const currentStats = await user.fetchStats();
@@ -47,11 +51,10 @@ export const doomOfMokhaiotlTask: MinionTask = {
 			const refundRatio = Math.max(0, 1 - delvesCompleted / targetDelve);
 			if (refundRatio > 0) {
 				const refund = new Bank();
-				const delvesNotDone = targetDelve - delvesCompleted;
-				refund.add('Saradomin brew(4)', Math.floor((delvesNotDone / targetDelve) * 10));
-				refund.add('Super restore(4)', Math.floor((delvesNotDone / targetDelve) * 10));
-				refund.add('Divine ranging potion(4)', Math.floor(delvesNotDone / 5));
-				refund.add('Ranging potion(4)', Math.floor(delvesNotDone / 5));
+				refund.add('Saradomin brew(4)', Math.floor(refundRatio * brewsUsed));
+				refund.add('Super restore(4)', Math.floor(refundRatio * restoresUsed));
+				refund.add('Divine ranging potion(4)', Math.floor(refundRatio * divinesUsed));
+				refund.add('Ranging potion(4)', Math.floor(refundRatio * rangingUsed));
 				if (refund.length > 0) {
 					await user.addItemsToBank({ items: refund, collectionLog: false });
 				}

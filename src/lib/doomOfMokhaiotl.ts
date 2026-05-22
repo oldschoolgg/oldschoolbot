@@ -472,6 +472,10 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 	const experienceFactor = Math.min(score / 1000, 1);
 	const brewsPerMinute = Math.max(0.2, 0.6 - experienceFactor * 0.3);
 	const restoresPerMinute = Math.max(0.3, 0.3 + experienceFactor * 0.3);
+	const brewsUsed = Math.min(10, Math.max(1, Math.ceil(fullDurationMinutes * brewsPerMinute)));
+	const restoresUsed = Math.min(10, Math.max(1, Math.ceil(fullDurationMinutes * restoresPerMinute)));
+	const divinesUsed = Math.min(10, Math.max(1, Math.ceil(targetDelve / 5)));
+	const rangingUsed = Math.min(10, Math.max(1, Math.ceil(targetDelve / 5)));
 
 	const cost = new Bank()
 		.add('Saradomin brew(4)', Math.min(10, Math.max(1, Math.ceil(fullDurationMinutes * brewsPerMinute))))
@@ -536,14 +540,22 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 	}
 
 	if (hasScythe) {
+		const chargesNeeded = Math.ceil(targetDelve * 3);
+		if (user.user.scythe_of_vitur_charges < chargesNeeded) {
+			return `You need at least ${chargesNeeded} Scythe of vitur charges for this trip.`;
+		}
 		await user.update({
-			scythe_of_vitur_charges: { decrement: Math.ceil(targetDelve * 3) }
+			scythe_of_vitur_charges: { decrement: chargesNeeded }
 		});
 	}
 
 	if (hasBloodFury) {
+		const chargesNeeded = Math.ceil(targetDelve * 3);
+		if (user.user.blood_fury_charges < chargesNeeded) {
+			return `You need at least ${chargesNeeded} Amulet of blood fury charges for this trip.`;
+		}
 		await user.update({
-			blood_fury_charges: { decrement: Math.ceil(targetDelve * 3) }
+			blood_fury_charges: { decrement: chargesNeeded }
 		});
 	}
 
@@ -569,7 +581,11 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 		deepDelvesEarned: res.deepDelvesEarned,
 		totalWavesCleared: res.totalWavesCleared,
 		deepestDelveCompleted: res.deepestDelveCompleted,
-		ayakChargesGained: res.ayakChargesGained
+		ayakChargesGained: res.ayakChargesGained,
+		brewsUsed,
+		restoresUsed,
+		divinesUsed,
+		rangingUsed
 	});
 
 	const boostLines: string[] = [];

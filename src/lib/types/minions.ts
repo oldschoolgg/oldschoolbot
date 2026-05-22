@@ -515,6 +515,10 @@ export interface DoomTaskOptions extends ActivityTaskOptions {
 	totalWavesCleared: number;
 	deepestDelveCompleted: number;
 	ayakChargesGained: number;
+	brewsUsed: number;
+	restoresUsed: number;
+	divinesUsed: number;
+	rangingUsed: number;
 }
 
 type UserID = string;
