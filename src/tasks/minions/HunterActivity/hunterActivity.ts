@@ -52,14 +52,15 @@ export const hunterTask: MinionTask = {
 
 		const experienceScore = await user.getCreatureScore(creature.id);
 
-		let [successfulQuantity, xpReceived] = calcLootXPHunting(
-			Math.min(Math.floor(currentLevel + (usingHuntPotion ? 2 : 0)), MAX_LEVEL),
+		let [successfulQuantity, xpReceived] = calcLootXPHunting({
+			currentLevel: Math.min(Math.floor(currentLevel + (usingHuntPotion ? 2 : 0)), MAX_LEVEL),
 			creature,
 			quantity,
 			usingStaminaPotion,
 			graceful,
-			experienceScore
-		);
+			experienceScore,
+			rng
+		});
 
 		if (crystalImpling) {
 			// Limit it to a max of 22 crystal implings per hour

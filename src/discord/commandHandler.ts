@@ -1,5 +1,6 @@
 import { type APIChatInputApplicationCommandInteraction, SpecialResponse } from '@oldschoolgg/discord';
-import { cryptoRng } from '@oldschoolgg/rng/crypto';
+import { UserError } from '@oldschoolgg/toolkit';
+import { cryptoRng } from 'node-rng/crypto';
 
 import { convertAPIOptionsToCommandOptions } from '@/discord/index.js';
 import { preCommand } from '@/discord/preCommand.js';
@@ -13,7 +14,7 @@ export async function rawCommandHandlerInner({
 	ignoreUserIsBusy,
 	rng
 }: {
-	interaction: MInteraction;
+	interaction: OSInteraction;
 	command: AnyCommand;
 	options: CommandOptions;
 	ignoreUserIsBusy?: true;
@@ -31,8 +32,7 @@ export async function rawCommandHandlerInner({
 			};
 		}
 	}
-	const user = await mUserFetch(interaction.userId);
-
+	const user = interaction.user;
 	RawSQL.updateUserLastCommandDate({ userId: interaction.userId }).catch(err => Logging.logError(err));
 
 	// TODO: remove later
@@ -88,6 +88,7 @@ export async function rawCommandHandlerInner({
 		return response;
 	} catch (err) {
 		if ((err as Error).message === SILENT_ERROR) return SpecialResponse.SilentErrorResponse;
+		if (err instanceof UserError) return SpecialResponse.RespondedManually;
 		Logging.logError({
 			err: err as Error,
 			interaction,
@@ -105,7 +106,7 @@ export async function rawCommandHandlerInner({
 
 export async function commandHandler(
 	rawInteraction: APIChatInputApplicationCommandInteraction,
-	interaction: MInteraction
+	interaction: OSInteraction
 ) {
 	const command = globalClient.allCommands.find(c => c.name === rawInteraction.data.name)!;
 	const options = convertAPIOptionsToCommandOptions({

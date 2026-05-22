@@ -1,7 +1,8 @@
 import { bold, dateFm, EmbedBuilder } from '@oldschoolgg/discord';
-import { MathRNG, roll } from '@oldschoolgg/rng';
 import type { IMessage } from '@oldschoolgg/schemas';
 import { Emoji, Events, getNextUTCReset, isFunction, Time } from '@oldschoolgg/toolkit';
+import { MathRNG, roll } from 'node-rng';
+import { cryptoRng } from 'node-rng/crypto';
 import { type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import type { command_name_enum } from '@/prisma/main/enums.js';
@@ -12,6 +13,7 @@ import { roboChimpSyncData } from '@/lib/roboChimp.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { minionStatsEmbed } from '@/lib/util/minionStatsEmbed.js';
+import { refreshUserCache } from '@/lib/util/refreshCache.js';
 import { minionStatusCommand } from '@/mahoji/lib/abstracted_commands/minionStatusCommand.js';
 
 const rareRolesSrc: [string, number, string][] = [
@@ -40,7 +42,7 @@ const rareRolesSrc: [string, number, string][] = [
 async function rareRoles(msg: IMessage) {
 	if (!globalConfig.isProduction) return;
 
-	if (msg.guild_id !== globalConfig.supportServerID) {
+	if (msg.guild_id !== globalConfig.supportServerID || !msg.guild_id) {
 		return;
 	}
 
@@ -48,12 +50,14 @@ async function rareRoles(msg: IMessage) {
 	if (Date.now() - lastMessage < Time.Second * 13) return;
 	RARE_ROLES_CACHE.set(msg.author_id, Date.now());
 
-	if (!roll(10) || !msg.guild_id) return;
+	if (!roll(10)) return;
 
 	for (const [roleID, chance, name] of rareRolesSrc) {
-		if (roll(chance / 10)) {
-			const member = await Cache.getMainServerMember(msg.author_id);
+		if (roll(Math.floor(chance / 10))) {
+			const member = await Cache.getMember({ guildId: msg.guild_id, userId: msg.author_id });
 			if (!member || member.roles.includes(roleID)) continue;
+			member.roles.push(roleID);
+			await Cache.setMember(member);
 			await globalClient.giveRole(msg.guild_id, msg.author_id, roleID);
 			await globalClient.reactToMsg({
 				channelId: msg.channel_id,
@@ -89,7 +93,7 @@ async function petMessages(msg: IMessage) {
 	if (Date.now() - lastMessage < 80_000) return;
 	CHAT_PET_COOLDOWN_CACHE.set(key, Date.now());
 
-	const pet = MathRNG.pick(pets);
+	const pet = MathRNG.pick(pets)!;
 	if (MathRNG.roll(Math.max(Math.min(pet.chance, 250_000), 1000))) {
 		Logging.logDebug(`${msg.author_id} triggered a pet message`);
 		const user = await mUserFetch(msg.author_id);
@@ -134,6 +138,8 @@ interface MentionCommandOptions {
 	user: MUser;
 	components: BaseSendableMessage['components'];
 	content: string;
+	rng: RNGProvider;
+	guildId?: string | null;
 }
 interface MentionCommand {
 	name: command_name_enum;
@@ -143,6 +149,18 @@ interface MentionCommand {
 }
 
 const mentionCommands: MentionCommand[] = [
+	{
+		name: 'cache_refresh',
+		aliases: ['refresh', 'cache'],
+		description: 'Updates your caches',
+		run: async ({ user, components, content, guildId }: MentionCommandOptions) => {
+			const result = await refreshUserCache({ user, guildId, possibleTarget: content });
+			return {
+				content: result,
+				components
+			};
+		}
+	},
 	{
 		name: 'bs',
 		aliases: ['bs'],
@@ -263,9 +281,9 @@ const mentionCommands: MentionCommand[] = [
 		name: 'stats',
 		aliases: ['s', 'stats'],
 		description: 'Shows your stats.',
-		run: async ({ user, components }: MentionCommandOptions) => {
+		run: async ({ user, components, rng }: MentionCommandOptions) => {
 			return {
-				embeds: [await minionStatsEmbed(user)],
+				embeds: [await minionStatsEmbed({ user, rng })],
 				components
 			};
 		}
@@ -302,14 +320,17 @@ export async function onMessage(msg: IMessage) {
 				args: msgContentWithoutCommand,
 				inhibited: false,
 				is_mention_command: true
-			}
+			},
+			select: { id: true }
 		});
 
 		try {
 			const response = await command.run({
 				user,
 				components: result.components,
-				content: msgContentWithoutCommand
+				content: msgContentWithoutCommand,
+				rng: cryptoRng,
+				guildId: msg.guild_id
 			});
 			await globalClient.replyToMessage(msg, response);
 		} catch (err) {

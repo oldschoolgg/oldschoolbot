@@ -1,4 +1,3 @@
-import { randFloat, randInt, roll } from '@oldschoolgg/rng';
 import { ECombatOption } from '@oldschoolgg/schemas';
 import { notEmpty, stringMatches } from '@oldschoolgg/toolkit';
 import { type Bank, EMonster, type Monster, Monsters, resolveItems } from 'oldschooljs';
@@ -104,12 +103,12 @@ export function calculateSlayerPoints(currentStreak: number, master: SlayerMaste
 	return basePoints;
 }
 
-function weightedPick(filteredTasks: AssignableSlayerTask[]) {
+function weightedPick(rng: RNGProvider, filteredTasks: AssignableSlayerTask[]) {
 	let totalweight = 0;
 	for (let i = 0; i < filteredTasks.length; i++) {
 		totalweight += filteredTasks[i].weight;
 	}
-	const randomWeight = randFloat(1, totalweight);
+	const randomWeight = rng.randFloat(1, totalweight);
 
 	let result = 0;
 	let weight = 0;
@@ -182,7 +181,7 @@ function userCanUseTask(user: MUser, task: AssignableSlayerTask, master: SlayerM
 	return true;
 }
 
-export async function assignNewSlayerTask(user: MUser, master: SlayerMaster) {
+export async function assignNewSlayerTask({ user, rng }: OSInteraction, master: SlayerMaster) {
 	// assignedTask is the task object, currentTask is the database row.
 	const baseTasks = [...master.tasks].filter(t => userCanUseTask(user, t, master, false));
 	let bossTask = false;
@@ -193,12 +192,12 @@ export async function assignNewSlayerTask(user: MUser, master: SlayerMaster) {
 			master.name.toLowerCase() === 'duradel' ||
 			master.name.toLowerCase() === 'nieve' ||
 			master.name.toLowerCase() === 'chaeldar') &&
-		roll(25)
+		rng.roll(25)
 	) {
 		bossTask = true;
 	}
 
-	if (user.hasSlayerUnlock(SlayerTaskUnlocksEnum.LikeABoss) && master.id === 8 && roll(25)) {
+	if (user.hasSlayerUnlock(SlayerTaskUnlocksEnum.LikeABoss) && master.id === 8 && rng.roll(25)) {
 		wildyBossTask = true;
 	}
 
@@ -207,19 +206,19 @@ export async function assignNewSlayerTask(user: MUser, master: SlayerMaster) {
 	if (bossTask) {
 		const baseBossTasks = bossTasks.filter(t => userCanUseTask(user, t, master, true));
 		if (baseBossTasks.length > 0) {
-			assignedTask = weightedPick(baseBossTasks);
+			assignedTask = weightedPick(rng, baseBossTasks);
 		}
 	}
 
 	if (wildyBossTask) {
 		const baseWildyBossTasks = wildernessBossTasks.filter(t => userCanUseTask(user, t, master, true));
 		if (baseWildyBossTasks.length > 0) {
-			assignedTask = weightedPick(baseWildyBossTasks);
+			assignedTask = weightedPick(rng, baseWildyBossTasks);
 		}
 	}
 
 	if (assignedTask === null) {
-		assignedTask = weightedPick(baseTasks);
+		assignedTask = weightedPick(rng, baseTasks);
 	}
 
 	let maxQuantity = assignedTask?.amount[1];
@@ -231,7 +230,7 @@ export async function assignNewSlayerTask(user: MUser, master: SlayerMaster) {
 		}
 	}
 
-	const quantity = randInt(assignedTask?.amount[0], maxQuantity);
+	const quantity = rng.randInt(assignedTask?.amount[0], maxQuantity);
 
 	// New user row must exist
 	await prisma.newUser.upsert({

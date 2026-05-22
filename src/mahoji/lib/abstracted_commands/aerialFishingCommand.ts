@@ -1,14 +1,22 @@
-import { randomVariation } from '@oldschoolgg/rng';
-import { formatDuration, Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit';
 
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
-export async function aerialFishingCommand(user: MUser, channelId: string) {
+export async function aerialFishingCommand({
+	user,
+	channelId,
+	rng
+}: {
+	user: MUser;
+	channelId: string;
+	rng: RNGProvider;
+}) {
 	if (user.skillsAsLevels.fishing < 43 || user.skillsAsLevels.hunter < 35) {
 		return 'You need at least level 35 Hunter and 43 Fishing to do Aerial fishing.';
 	}
 
-	const timePerFish = randomVariation(2, 7.5) * Time.Second;
+	const timePerFish = rng.randomVariation(2, 7.5) * Time.Second;
 	const quantity = Math.floor((await user.calcMaxTripLength('AerialFishing')) / timePerFish);
 	const duration = timePerFish * quantity;
 
@@ -20,5 +28,5 @@ export async function aerialFishingCommand(user: MUser, channelId: string) {
 		type: 'AerialFishing'
 	});
 
-	return `${user.minionName} is now doing Aerial fishing, it will take around ${formatDuration(duration)} to finish.`;
+	return `${user.minionName} is now doing Aerial fishing, it will take around ${formatTripDuration(user, duration)} to finish.`;
 }

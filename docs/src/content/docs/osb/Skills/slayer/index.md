@@ -12,12 +12,12 @@ If you are a Tier 1 patron or higher, you will see an **Auto Slay** button at th
 
 - **Get a new Slayer task or check your current task:**
   - [[/slayer new_task]] or [[/slayer new_task master\:Duradel]]
-  - You can set a Slayer master as your default using the save option so that you don't have to specify the name every time.  
+  - You can set a Slayer master as your default using the save option so that you don't have to specify the name every time.
     e.g. [[/slayer new_task master\:Duradel save\:True]]
 
 - **Automatically slay your task with guided settings:**
   - [[/slayer autoslay mode\:default]] / [[/slayer autoslay mode\:ehp]] / [[/slayer autoslay mode\:boss]] / [[/slayer autoslay mode\:low]]
-  - Optionally add **save:True** to set your default mode  
+  - Optionally add **save:True** to set your default mode
     Using [[/slayer autoslay]] will automatically use your default mode.
   - **Default**: Kills the monster you're assigned
   - **Lowest**: Kills the lowest combat level monster
@@ -45,14 +45,14 @@ If you are a Tier 1 patron or higher, you will see an **Auto Slay** button at th
   - With a black mask and [[crafting:55]], buy the required items from the bot, then [[/create item\:slayer helmet]]
 
 - **Use a Cannon in your task:**
-  - If you own a cannon and cannonballs, the cannon can be used at some Slayer tasks to speed them up at the cost of cannonballs. You can do this with the method option on the kill command:  
+  - If you own a cannon and cannonballs, the cannon can be used at some Slayer tasks to speed them up at the cost of cannonballs. You can do this with the method option on the kill command:
     e.g. [[/k name\:Dagannoth method\:cannon]]
   - You can buy a cannon using [[/buy name\:Dwarf multicannon]]
-  - In single combat: 16 cannonballs/min  
+  - In single combat: 16 cannonballs/min
     In multi combat: 50 cannonballs/min
 
 - **Barrage your task:**
-  - If you have sufficient runes and the required [[magic:94]], you can barrage tasks to speed them up at the cost of runes:  
+  - If you have sufficient runes and the required [[magic:94]], you can barrage tasks to speed them up at the cost of runes:
     e.g. [[/k name\:Warped jelly method\:barrage]]
   - Both barrage and burst use 16 casts/min. Rune costs are the same as in-game. Any item that provides unlimited water runes works, but must be equipped.
 
@@ -75,10 +75,10 @@ This table is based on XP gains and efficient blocks/skips at post-99 Slayer, bu
 
 **Duradel Block/Skip and Efficient Slayer XP/Hour Table**
 
-![image](../../../../../../public/images/slayer_duradel.png)
+[[slayer_duradel.webp]]
 
 The next table is based on using Konar at post-99 Slayer, providing slightly faster overall XP/hour with average points (excluding skips) if you have the Zeah Elite Diary.
 
-![image](../../../../../../public/images/slayer_konar.png)
+[[slayer_konar.webp]]
 
 _(Notes: Recommended to do Dark Beasts, re-lock Mithril Dragons, skip Adamant Dragons, and barrage Smoke Devils instead of cannoning)_

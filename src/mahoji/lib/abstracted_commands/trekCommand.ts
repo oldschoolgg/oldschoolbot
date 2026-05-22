@@ -1,5 +1,4 @@
 import { GearStat } from '@oldschoolgg/gear';
-import { percentChance, randInt } from '@oldschoolgg/rng';
 import { formatDuration, objectEntries, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 import { pick } from 'remeda';
@@ -9,6 +8,7 @@ import { difficulties, rewardTokens, trekBankBoosts } from '@/lib/minions/data/t
 import type { AddXpParams } from '@/lib/minions/types.js';
 import type { GearRequirement } from '@/lib/structures/Gear.js';
 import type { TempleTrekkingActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { readableStatName } from '@/lib/util/smallUtils.js';
 
 export async function trekCommand(user: MUser, channelId: string, difficulty: string, quantity: number | undefined) {
@@ -117,9 +117,7 @@ export async function trekCommand(user: MUser, channelId: string, difficulty: st
 		minigameID: 'temple_trekking'
 	});
 
-	let str = `${user.minionName} is now doing Temple Trekking ${quantity} times. The trip will take ${formatDuration(
-		duration
-	)}, with each trek taking ${formatDuration(tripTime)}.`;
+	let str = `${user.minionName} is now doing Temple Trekking ${quantity} times. The trip will return in about ${formatTripDuration(user, duration)}, with each trek taking ${formatDuration(tripTime)}.`;
 
 	if (boosts.length > 0) {
 		str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
@@ -129,6 +127,7 @@ export async function trekCommand(user: MUser, channelId: string, difficulty: st
 }
 
 export async function trekShop(
+	rng: RNGProvider,
 	user: MUser,
 	reward: string,
 	difficulty: string,
@@ -210,20 +209,20 @@ export async function trekShop(
 		switch (difficulty) {
 			case 'Easy':
 				inItems.addItem(rewardTokens.easy, 1);
-				outputTotal = randInt(specifiedItem.easyRange[0], specifiedItem.easyRange[1]);
+				outputTotal = rng.randInt(specifiedItem.easyRange[0], specifiedItem.easyRange[1]);
 				break;
 			case 'Medium':
 				inItems.addItem(rewardTokens.medium, 1);
-				outputTotal = randInt(specifiedItem.medRange[0], specifiedItem.medRange[1]);
+				outputTotal = rng.randInt(specifiedItem.medRange[0], specifiedItem.medRange[1]);
 				break;
 			case 'Hard':
 				inItems.addItem(rewardTokens.hard, 1);
-				outputTotal = randInt(specifiedItem.hardRange[0], specifiedItem.hardRange[1]);
+				outputTotal = rng.randInt(specifiedItem.hardRange[0], specifiedItem.hardRange[1]);
 				break;
 		}
 		if (specifiedItem.name === 'Herbs') {
 			outItems.add(
-				percentChance(50) ? 'Tarromin' : 'Harralander',
+				rng.percentChance(50) ? 'Tarromin' : 'Harralander',
 				Math.floor(reduceNumByPercent(outputTotal, 34))
 			);
 			outItems.add('Toadflax', Math.floor(reduceNumByPercent(outputTotal, 66)));

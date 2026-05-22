@@ -34,24 +34,13 @@ const dependencies: string[] = Object.keys(packageJson.dependencies)
 	.filter(dep => !external.includes(dep));
 
 export function createTsdownConfig(options: UserConfig = {}) {
-	return [
-		defineConfig({
-			...baseOptions,
-			outDir: 'dist/cjs',
-			format: 'cjs',
-			external,
-			noExternal: dependencies,
-			outExtensions: () => ({ js: '.cjs', json: '.json' }),
-			...options
-		}),
-		defineConfig({
-			...baseOptions,
-			external,
-			noExternal: dependencies,
-			outDir: 'dist/esm',
-			format: 'esm',
-			outExtensions: () => ({ js: '.mjs', json: '.json' }),
-			...options
-		})
-	];
+	return defineConfig({
+		...baseOptions,
+		external,
+		noExternal: dependencies,
+		outDir: 'dist/esm',
+		format: 'esm',
+		outExtensions: () => ({ js: '.mjs', json: '.json' }),
+		...options
+	});
 }
