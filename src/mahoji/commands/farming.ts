@@ -8,7 +8,7 @@ import { autoFarm } from '@/lib/minions/functions/autoFarm.js';
 import {
 	compostBinPlantNameAutoComplete,
 	farmingPlantNameAutoComplete,
-	titheFarmBuyRewardAutoComplete,
+	titheFarmBuyRewardAutoComplete
 } from '@/lib/skilling/skills/farming/autocompletes.js';
 import {
 	getPlantsForPatch,
