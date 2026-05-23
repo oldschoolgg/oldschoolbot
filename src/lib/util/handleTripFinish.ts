@@ -123,7 +123,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 		name: 'Partycrab event',
 		fn: async ({ data, messages, user, rng }) => {
 			const boostPets = [BSOItem.RADIANT_MAGNABBIT, BSOItem.OCTO, BSOItem.SMOKEY];
-			let perMinuteChance = clAdjustedDroprate(user, BSOItem.PARTYCRAB, 8000, 2);
+			let perMinuteChance = clAdjustedDroprate(user, BSOItem.PARTYCRAB, 15000, 2);
 
 			if (!user.cl.has(BSOItem.PARTYCRAB) && boostPets.includes(user.equippedPet?.id ?? -1)) {
 				perMinuteChance /= 10;
