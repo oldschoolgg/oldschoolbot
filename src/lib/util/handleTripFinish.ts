@@ -139,6 +139,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 				messages.push(
 					`\n🏄**While surfing on the beach, you caught a <:partycrab:1507689107806097541> Partycrab!! Far Out!**\n`
 				);
+				return { itemsToAddWithCL: new Bank().add(BSOItem.PARTYCRAB) };
 			}
 		}
 	},
