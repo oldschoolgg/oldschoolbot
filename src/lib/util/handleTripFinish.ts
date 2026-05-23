@@ -1,4 +1,5 @@
 import { BSOItem } from '@/lib/bso/BSOItem.js';
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 import { tearsOfGuthixIronmanReqs, tearsOfGuthixSkillReqs } from '@/lib/bso/commands/tearsOfGuthixCommand.js';
 import { handleCrateSpawns } from '@/lib/bso/handleCrateSpawns.js';
 import { gods } from '@/lib/bso/minigames/divineDominion.js';
@@ -122,7 +123,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 		name: 'Partycrab event',
 		fn: async ({ data, messages, user, rng }) => {
 			const boostPets = [BSOItem.RADIANT_MAGNABBIT, BSOItem.OCTO, BSOItem.SMOKEY];
-			let perMinuteChance = 8000;
+			let perMinuteChance = clAdjustedDroprate(user, BSOItem.PARTYCRAB, 8000, 2);
 
 			if (!user.cl.has(BSOItem.PARTYCRAB) && boostPets.includes(user.equippedPet?.id ?? -1)) {
 				perMinuteChance /= 10;
