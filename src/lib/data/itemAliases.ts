@@ -425,7 +425,7 @@ export interface CustomItemData {
 	cantDropFromMysteryBoxes?: boolean;
 	cantBeDropped?: true;
 	isDiscontinued?: true;
-	superTradeableButTradeableOnGE?: true;
+	superUntradeableButTradeableOnGE?: true;
 	isSecret?: true;
 	tags?: ('SUMMONING' | 'IN_UMB')[];
 }

@@ -137,7 +137,7 @@ class GrandExchangeSingleton {
 				{
 					has: () => true,
 					name: 'Base',
-					amount: 3
+					amount: 5
 				},
 				...[100, 250, 1000, 2000, 2500].map(num => ({
 					has: (user: MUser) => user.totalLevel >= num,
@@ -158,7 +158,17 @@ class GrandExchangeSingleton {
 				{
 					has: async (user: MUser) => (await user.fetchPerkTier()) >= PerkTier.Four,
 					name: 'Tier 3 Patron',
-					amount: 10
+					amount: 8
+				},
+				{
+					has: async (user: MUser) => (await user.fetchPerkTier()) >= PerkTier.Three,
+					name: 'Tier 2 Patron',
+					amount: 4
+				},
+				{
+					has: async (user: MUser) => (await user.fetchPerkTier()) >= PerkTier.Two,
+					name: 'Tier 1 Patron',
+					amount: 2
 				}
 			]
 		}

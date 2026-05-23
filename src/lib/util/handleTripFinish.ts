@@ -1,3 +1,4 @@
+import { BSOItem } from '@/lib/bso/BSOItem.js';
 import { tearsOfGuthixIronmanReqs, tearsOfGuthixSkillReqs } from '@/lib/bso/commands/tearsOfGuthixCommand.js';
 import { handleCrateSpawns } from '@/lib/bso/handleCrateSpawns.js';
 import { gods } from '@/lib/bso/minigames/divineDominion.js';
@@ -115,6 +116,30 @@ const tripFinishEffects: TripFinishEffect[] = [
 		name: 'Random Events',
 		fn: async ({ data, messages, user, rng }) => {
 			return triggerRandomEvent(user, data.type, data.duration, messages, rng);
+		}
+	},
+	{
+		name: 'Partycrab event',
+		fn: async ({ data, messages, user, rng }) => {
+			const boostPets = [BSOItem.RADIANT_MAGNABBIT, BSOItem.OCTO, BSOItem.SMOKEY];
+			let perMinuteChance = 8000;
+
+			if (!user.cl.has(BSOItem.PARTYCRAB) && boostPets.includes(user.equippedPet?.id ?? -1)) {
+				perMinuteChance /= 10;
+			}
+			perMinuteChance = Math.ceil(perMinuteChance);
+			let gotCrab = false;
+			for (let i = 0; i < data.duration / Time.Minute; i++) {
+				if (rng.roll(perMinuteChance)) {
+					gotCrab = true;
+					break;
+				}
+			}
+			if (gotCrab) {
+				messages.push(
+					`\n🏄**While surfing on the beach, you caught a <:partycrab:1507689107806097541> Partycrab!! Far Out!**\n`
+				);
+			}
 		}
 	},
 	{

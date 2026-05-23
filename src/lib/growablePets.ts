@@ -1,3 +1,5 @@
+import { BSOItem } from '@/lib/bso/BSOItem.js';
+
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, type Item, Items, resolveItems } from 'oldschooljs';
 
@@ -60,7 +62,7 @@ export const growablePets: GrowablePet[] = [
 		growthRate: (Time.Hour * 12) / Time.Minute,
 		stages: resolveItems(['Magnegg', 'Magnabbit']),
 		shinyChance: 50,
-		shinyVersion: Items.getOrThrow('Radiant Magnabbit').id,
+		shinyVersion: BSOItem.RADIANT_MAGNABBIT,
 		message: (item, shiny, _user) => {
 			return shiny
 				? `\n\n🐇.... You might want to pinch yourself because **YOU JUST GOT A SHINY MAGNA!!**`

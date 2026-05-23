@@ -113,7 +113,7 @@ setCustomItem(
 	{
 		tradeable: true,
 		tradeable_on_ge: true,
-		buy_limit: 75,
+		buy_limit: 250,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -127,7 +127,7 @@ setCustomItem(
 	{
 		tradeable: true,
 		tradeable_on_ge: true,
-		buy_limit: 50,
+		buy_limit: 250,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -141,7 +141,7 @@ setCustomItem(
 	{
 		tradeable: true,
 		tradeable_on_ge: true,
-		buy_limit: 50,
+		buy_limit: 100,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -155,7 +155,7 @@ setCustomItem(
 	{
 		tradeable: true,
 		tradeable_on_ge: true,
-		buy_limit: 5,
+		buy_limit: 50,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -169,7 +169,7 @@ setCustomItem(
 	{
 		tradeable: true,
 		tradeable_on_ge: true,
-		buy_limit: 2,
+		buy_limit: 25,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -13052,7 +13052,7 @@ setCustomItem(
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
 			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			superUntradeableButTradeableOnGE: true
 		}
 	},
 	500_000
@@ -13066,7 +13066,7 @@ setCustomItem(
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
 			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			superUntradeableButTradeableOnGE: true
 		}
 	},
 	500_000
@@ -13080,7 +13080,7 @@ setCustomItem(
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
 			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			superUntradeableButTradeableOnGE: true
 		}
 	},
 	500_000
@@ -14456,6 +14456,18 @@ setCustomItem(
 );
 
 setCustomItem(
+	73_968,
+	'Partycrab',
+	'Bronze full helm',
+	{
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+setCustomItem(
 	73_970,
 	'Summer crate (s9)',
 	'Coal',
@@ -14481,10 +14493,11 @@ setCustomItem(
 
 setCustomItem(
 	73_972,
-	'Immitation Crab Hat',
+	'Imitation Crab Hat',
 	'Bronze full helm',
 	{
 		customItemData: {
+			isDiscontinued: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -14497,6 +14510,7 @@ setCustomItem(
 	'Blue partyhat',
 	{
 		customItemData: {
+			isDiscontinued: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -14509,6 +14523,7 @@ setCustomItem(
 	'Bronze platebody',
 	{
 		customItemData: {
+			isDiscontinued: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -14521,6 +14536,7 @@ setCustomItem(
 	'Bronze platelegs',
 	{
 		customItemData: {
+			isDiscontinued: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -14533,6 +14549,7 @@ setCustomItem(
 	'Bronze platelegs',
 	{
 		customItemData: {
+			isDiscontinued: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -14545,6 +14562,7 @@ setCustomItem(
 	'Bronze boots',
 	{
 		customItemData: {
+			isDiscontinued: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -14557,6 +14575,7 @@ setCustomItem(
 	'Amulet of strength',
 	{
 		customItemData: {
+			isDiscontinued: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -14569,6 +14588,7 @@ setCustomItem(
 	'Bronze kiteshield',
 	{
 		customItemData: {
+			isDiscontinued: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -14581,6 +14601,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
+			isDiscontinued: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -14593,6 +14614,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
+			isDiscontinued: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},

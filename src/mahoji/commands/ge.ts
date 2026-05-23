@@ -103,7 +103,10 @@ export const geCommand = defineCommand({
 									select: {
 										item_id: true
 									},
-									take: 10
+									take: 10,
+									orderBy: {
+										created_at: 'desc'
+									}
 								})
 							).map(i => i.item_id);
 							return uniqueArr(tradesOfUser).map(itemID => ({

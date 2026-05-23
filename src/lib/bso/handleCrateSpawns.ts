@@ -19,7 +19,6 @@ export function handleCrateSpawns(user: MUser, duration: number, kind: 'trip' | 
 
 	const minutes = Math.floor(duration / Time.Minute);
 	const loot = new Bank();
-	console.log(`Chance per minute: ${dropratePerMinute}`);
 	for (let i = 0; i < minutes; i++) {
 		if (roll(dropratePerMinute)) {
 			loot.add(crateItem);

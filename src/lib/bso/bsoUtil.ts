@@ -27,10 +27,10 @@ export function isSuperUntradeable(item: number | Item) {
 
 export function isGEUntradeable(item: number | Item) {
 	const fullItem = typeof item === 'number' ? Items.get(item) : item;
-	if (!fullItem || !fullItem.customItemData || !fullItem.customItemData.superTradeableButTradeableOnGE) {
+	if (!fullItem || !fullItem.customItemData || !fullItem.customItemData.superUntradeableButTradeableOnGE) {
 		return isSuperUntradeable(item);
 	}
-	if (fullItem.customItemData.isSuperUntradeable && fullItem.customItemData.superTradeableButTradeableOnGE) {
+	if (fullItem.customItemData.isSuperUntradeable && fullItem.customItemData.superUntradeableButTradeableOnGE) {
 		return false;
 	}
 	return isSuperUntradeable(item);
@@ -45,9 +45,11 @@ export function clAdjustedDroprate(
 	const amountInCL = user instanceof Bank ? user.amount(item) : user.cl.amount(item);
 	if (amountInCL === 0) return Math.floor(baseRate);
 	let newRate = baseRate;
+	const ceilRate = Math.max(baseRate * 10, 2000);
+
 	for (let i = 0; i < amountInCL; i++) {
 		newRate *= increaseMultiplier;
-		if (newRate >= 1_000_000_000) break;
+		if (newRate >= ceilRate) return ceilRate;
 	}
 	return Math.floor(newRate);
 }
