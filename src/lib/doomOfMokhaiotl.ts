@@ -171,12 +171,12 @@ function calculateTripDuration(
 	arrowMod: number,
 	rng: RNGProvider
 ): number {
-	let totalBase = 0;
+    let totalBase = 0;
 	for (let d = 1; d <= targetDelve; d++) {
-		if (d <= 5) totalBase += 0.75 * Time.Minute;
-		else if (d <= 8) totalBase += 1.25 * Time.Minute;
-		else if (d <= 16) totalBase += 1.5 * Time.Minute;
-		else totalBase += 1.75 * Time.Minute;
+		if (d <= 5) totalBase += 1.3 * Time.Minute;
+		else if (d <= 8) totalBase += 1.85 * Time.Minute;
+		else if (d <= 16) totalBase += 3.2 * Time.Minute;
+		else totalBase += 3.8 * Time.Minute;
 	}
 
 	let weaponMod = 1.0;
@@ -523,8 +523,8 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 	}
 
 	if ((hasTbow || hasSBow) && equippedArrowId !== null) {
-		const arrowsPerDelve = hasTbow ? 35 : 45;
-		cost.add(equippedArrowId, Math.min(1050, Math.ceil(targetDelve * arrowsPerDelve)));
+		const arrowsPerDelve = hasTbow ? 15 : 20;
+		cost.add(equippedArrowId, Math.min(600, Math.ceil(targetDelve * arrowsPerDelve)));
 	}
 
 	if (hasZcb) cost.add('Ruby bolts (e)', Math.min(60, Math.ceil(targetDelve * 5)));
