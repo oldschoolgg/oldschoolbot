@@ -415,6 +415,7 @@ const source: [string, (string | number)[]][] = [
 	['Ring of suffering (i)', ['Ring of suffering (ri)']],
 	['Amulet of rancour', ['Amulet of rancour (s)']],
 	['Skull sceptre', ['Skull sceptre (i)']],
+	['Axe of the high sungod', ['Axe of the high sungod (xmas)']],
 
 	// Tame gear
 	['Abyssal jibwings', ['Abyssal jibwings (e)']],
