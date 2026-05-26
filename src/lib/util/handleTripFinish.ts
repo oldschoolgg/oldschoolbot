@@ -122,7 +122,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Partycrab event',
 		fn: async ({ data, messages, user, rng }) => {
-			const boostPets = [BSOItem.COB, BSOItem.FLAPPY];
+			const boostPets = [BSOItem.COB, BSOItem.FLAPPY, BSOItem.BLACK_SWAN];
 			let perMinuteChance = clAdjustedDroprate(user, BSOItem.PARTYCRAB, 15000, 2);
 
 			const getsBoost = async () => {
