@@ -186,7 +186,7 @@ export const ores = resolveItems([
 	'Dark animica'
 ]);
 
-const dcPetsExtras = resolveItems(['Black swan']);
+const dcPetsExtras = resolveItems(['Black swan', 'Radiant Magnabbit']);
 
 const bars = resolveItems([
 	'Bronze bar',

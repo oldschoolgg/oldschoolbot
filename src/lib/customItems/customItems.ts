@@ -8873,7 +8873,7 @@ setCustomItem(
 setCustomItem(
 	71_611,
 	'Cob cap',
-	'Bronze gloves',
+	'Bronze full helm',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
@@ -14425,7 +14425,8 @@ setCustomItem(
 	'Herbi',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isPet: true
 		}
 	},
 	1_000_000
@@ -14462,7 +14463,8 @@ setCustomItem(
 	{
 		customItemData: {
 			isSecret: true,
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isPet: true
 		}
 	},
 	1_000_000

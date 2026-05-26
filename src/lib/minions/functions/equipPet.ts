@@ -1,13 +1,11 @@
-import { BSOItem } from '@/lib/bso/BSOItem.js';
-
 import { Bank, Items } from 'oldschooljs';
+import type { Item } from 'oldschooljs/src/index.js';
 
 import { allPetIDs } from '@/lib/data/CollectionsExport.js';
 import { unequipPet } from '@/lib/minions/functions/unequipPet.js';
 
-export function isPet(itemId: number) {
-	const secretPets = [BSOItem.PARTYCRAB];
-	return allPetIDs.includes(itemId) || secretPets.includes(itemId);
+export function isPet(item: Item) {
+	return allPetIDs.includes(item.id) || item.customItemData?.isPet === true;
 }
 
 export async function equipPet(user: MUser, itemName: string) {
@@ -19,7 +17,7 @@ export async function equipPet(user: MUser, itemName: string) {
 		return "🐳 You thought Wubufu was a pet? Wow that's a really good knock off... You haven't been dragging that poor thing on the ground, have you?";
 	}
 
-	if (!isPet(petItem.id)) {
+	if (!isPet(petItem)) {
 		return "That's not a pet...";
 	}
 	if (!user.owns(cost)) {

@@ -426,6 +426,7 @@ export interface CustomItemData {
 	cantBeDropped?: true;
 	isDiscontinued?: true;
 	superUntradeableButTradeableOnGE?: true;
+	isPet?: true;
 	isSecret?: true;
 	tags?: ('SUMMONING' | 'IN_UMB')[];
 }

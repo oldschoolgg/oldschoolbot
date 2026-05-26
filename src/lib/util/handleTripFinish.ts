@@ -122,11 +122,31 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Partycrab event',
 		fn: async ({ data, messages, user, rng }) => {
-			const boostPets = [BSOItem.RADIANT_MAGNABBIT, BSOItem.OCTO, BSOItem.SMOKEY];
+			const boostPets = [BSOItem.COB, BSOItem.FLAPPY];
 			let perMinuteChance = clAdjustedDroprate(user, BSOItem.PARTYCRAB, 15000, 2);
 
-			if (!user.cl.has(BSOItem.PARTYCRAB) && boostPets.includes(user.equippedPet?.id ?? -1)) {
+			const getsBoost = async () => {
+				const { tame } = await user.getTame();
+				let boost = false;
+				if (boostPets.includes(user.equippedPet?.id ?? -1)) boost = true;
+				const boostItems = ['Cob cap'];
+				const boostFeeds = [
+					'Cob cup',
+					'Corn on the cob',
+					'Smokey bbq sauce',
+					'Smokey painting',
+					'Smokey egg',
+					'Smokey snowglobe',
+					'Flappy meal'
+				];
+				if (tame && boostFeeds.some(i => tame.fedItems.has(i))) boost = true;
+				if (user.hasEquipped(boostItems)) boost = true;
+				return boost;
+			};
+			let gotBoost = false;
+			if (!user.cl.has(BSOItem.PARTYCRAB) && (await getsBoost())) {
 				perMinuteChance /= 10;
+				gotBoost = true;
 			}
 			perMinuteChance = Math.ceil(perMinuteChance);
 			let gotCrab = false;
@@ -141,6 +161,8 @@ const tripFinishEffects: TripFinishEffect[] = [
 					`\n🏄**While surfing on the beach, you caught a <:partycrab:1507689107806097541> Partycrab!! Far Out!**\n`
 				);
 				return { itemsToAddWithCL: new Bank().add(BSOItem.PARTYCRAB) };
+			} else if (gotBoost) {
+				messages.push(`\n🌊**You played hookey and went surfing for a bit, but didn't get lucky.**\n`);
 			}
 		}
 	},
