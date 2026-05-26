@@ -150,7 +150,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 			}
 			perMinuteChance = Math.ceil(perMinuteChance);
 			let gotCrab = false;
-			for (let i = 0; i < data.duration / Time.Minute; i++) {
+			for (let i = 0; i < Math.floor(data.duration / Time.Minute); i++) {
 				if (rng.roll(perMinuteChance)) {
 					gotCrab = true;
 					break;
