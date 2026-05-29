@@ -40,6 +40,7 @@ import { parseStringBank } from '@/lib/util/parseStringBank.js';
 import { fetchBingosThatUserIsInvolvedIn } from '@/mahoji/commands/bingo.js';
 import { gearViewCommand } from '@/mahoji/lib/abstracted_commands/gearCommands.js';
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
+import { shades, shadesLogs } from '@/mahoji/lib/abstracted_commands/shadesOfMortonCommand.js';
 import { allUsableItems } from '@/mahoji/lib/abstracted_commands/useCommand.js';
 import { BingoManager } from '@/mahoji/lib/bingo/BingoManager.js';
 
@@ -289,6 +290,28 @@ const runePreset = new Bank()
 	.add('Smoke rune', MAX_INT_JAVA)
 	.add('Steam rune', MAX_INT_JAVA);
 
+const shadesPreset = new Bank().add('Olive oil(4)', 100_000).add('Sacred oil(4)', 100_000);
+for (const log of shadesLogs) {
+	shadesPreset.add(log.normalLog.id, 100_000);
+	shadesPreset.add(log.oiledLog.id, 100_000);
+}
+for (const shade of shades) {
+	shadesPreset.add(shade.item.id, 100_000);
+	if (shade.lowMetalKeys) {
+		for (const key of shade.lowMetalKeys.items) {
+			if (!shadesPreset.has(key)) shadesPreset.add(key, 100_000);
+		}
+	}
+	if (shade.highMetalKeys) {
+		for (const key of shade.highMetalKeys.items) {
+			if (!shadesPreset.has(key)) shadesPreset.add(key, 100_000);
+		}
+	}
+}
+for (const coffin of ['Bronze coffin', 'Steel coffin', 'Black coffin', 'Silver coffin', 'Gold coffin']) {
+	shadesPreset.add(coffin, 1);
+}
+
 const spawnPresets = [
 	['fishing', fishingPreset],
 	['openables', openablesBank],
@@ -300,7 +323,8 @@ const spawnPresets = [
 	['stashunits', allStashUnitItems],
 	['potions', potionsPreset],
 	['food', foodPreset],
-	['runes', runePreset]
+	['runes', runePreset],
+	['shades', shadesPreset]
 ] as const;
 
 const thingsToWipe = [
@@ -1073,7 +1097,7 @@ export const testPotatoCommand = globalConfig.isProduction
 					}
 
 					await user.addItemsToBank({ items: bankToGive, collectionLog: Boolean(collectionlog) });
-					return `Spawned: ${bankToGive.toString().slice(0, 500)}.`;
+					return `Spawned: ${bankToGive.toString().slice(0, 1800)}.`;
 				}
 
 				if (options.setmonsterkc) {
