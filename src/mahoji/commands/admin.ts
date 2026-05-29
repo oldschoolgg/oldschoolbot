@@ -1,3 +1,4 @@
+import { WebSocketShardStatus } from '@discordjs/ws';
 import { dateFm } from '@oldschoolgg/discord';
 import type { GearSetup } from '@oldschoolgg/gear';
 import {
@@ -398,6 +399,43 @@ export const adminCommand = defineCommand({
 			options: []
 		},
 		{
+			type: 'SubcommandGroup',
+			name: 'system',
+			description: 'System controls.',
+			options: [
+				{
+					type: 'Subcommand',
+					name: 'shard_status',
+					description: 'Show shard health and latency.'
+				},
+				{
+					type: 'Subcommand',
+					name: 'shard_restart',
+					description: 'Reconnect shards.',
+					options: [
+						{
+							type: 'String',
+							name: 'group',
+							description: 'Which shards to reconnect.',
+							required: false,
+							choices: [
+								{ name: 'unhealthy', value: 'unhealthy' },
+								{ name: 'all', value: 'all' },
+								{ name: 'dead', value: 'dead' }
+							]
+						},
+						{
+							type: 'Integer',
+							name: 'which',
+							description: 'Specific shard number from the latest shard_status output.',
+							required: false,
+							min_value: 0
+						}
+					]
+				}
+			]
+		},
+		{
 			type: 'Subcommand',
 			name: 'item_stats',
 			description: 'item stats',
@@ -774,6 +812,51 @@ ${META_CONSTANTS.RENDERED_STR}`
 		if (options.sync_commands) {
 			await bulkUpdateCommands();
 			return 'Done.';
+		}
+		if (options.system) {
+			const { shard_status: shardStatus, shard_restart: shardRestart } = options.system;
+			if (shardStatus) {
+				const statusEmojis = { ready: '🟢', unhealthy: '⚠️', dead: '🔴', failed: '☠️' };
+				const report = await globalClient.getShardStatusReport();
+				const total = report.length;
+				const ready = report.filter(i => i.status === WebSocketShardStatus.Ready).length;
+				const unhealthy = report.filter(i => i.health.isUnhealthy).length;
+				const dead = report.filter(i => i.health.isDead).length;
+				return [
+					`Shards: ${total} total, ${ready} ready, ${unhealthy} unhealthy, ${dead} dead`,
+					...report.map(entry => {
+						const avg = entry.health.avgLatency === null ? '-' : `${entry.health.avgLatency}ms`;
+						const last = entry.health.lastLatency === null ? '-' : `${entry.health.lastLatency}ms`;
+						const lastAck = entry.stats?.lastAckAt
+							? `${formatDuration(Date.now() - entry.stats.lastAckAt)} ago`
+							: 'never';
+						let emoji = statusEmojis.ready;
+						if (entry.health.isUnhealthy) emoji = statusEmojis.unhealthy;
+						if (entry.health.isDead) emoji = statusEmojis.dead;
+						return `${entry.shardId}: ${emoji} ${entry.health.label} | status=${entry.statusName} | avg=${avg} | last=${last} | ack=${lastAck}`;
+					})
+				].join('\n');
+			}
+			if (shardRestart) {
+				if (typeof shardRestart.which === 'number') {
+					await interaction.confirmation(`Reconnect shard \`${shardRestart.which}\`?`);
+					const restartedShardId = await globalClient.restartShardByID(shardRestart.which);
+					if (restartedShardId === null) {
+						return `Shard \`${shardRestart.which}\` was not found in the current shard status report.`;
+					}
+					return `Reconnected shard: ${restartedShardId}`;
+				}
+				if (shardRestart.group) {
+					const group = shardRestart.group as 'all' | 'dead' | 'unhealthy';
+					await interaction.confirmation(`Reconnect shards matching \`${group}\`?`);
+					const restarted = await globalClient.restartShards(group);
+					if (restarted.length === 0) return `No ${group} shards found.`;
+					return `Reconnected shards: ${restarted.join(', ')}`;
+				}
+				return 'You must specify either `which` (a shard number from `shard_status`) or `group`.';
+			}
+
+			return `Invalid System Command`;
 		}
 
 		if (options.view) {
