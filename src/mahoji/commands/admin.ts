@@ -1,5 +1,5 @@
 import { WebSocketShardStatus } from '@discordjs/ws';
-import { dateFm } from '@oldschoolgg/discord';
+import { dateFm, EmbedBuilder } from '@oldschoolgg/discord';
 import type { GearSetup } from '@oldschoolgg/gear';
 import {
 	calcPerHour,
@@ -86,6 +86,69 @@ async function getAllTradedItems(giveUniques = false) {
 	}
 
 	return total;
+}
+
+function formatShardAckAge(lastAckAt?: number) {
+	if (!lastAckAt) return 'never';
+	const diff = Date.now() - lastAckAt;
+	if (diff < Time.Day) {
+		return `${Math.max(0, Math.floor(diff / Time.Second))}s`;
+	}
+	return formatDuration(diff);
+}
+
+function buildShardStatusResponse(
+	report: Awaited<ReturnType<typeof globalClient.getShardStatusReport>>,
+	options: { minimal?: boolean; shard?: number }
+) {
+	const filteredReport =
+		typeof options.shard === 'number' ? report.filter(entry => entry.shardId === options.shard) : report;
+
+	if (typeof options.shard === 'number' && filteredReport.length === 0) {
+		return `Shard \`${options.shard}\` was not found in the current shard status report.`;
+	}
+
+	const statusEmojis = {
+		ready: '\u{1F7E2}',
+		unhealthy: '\u26A0\uFE0F',
+		dead: '\u{1F534}',
+		failed: '\u2620\uFE0F'
+	};
+	const total = report.length;
+	const ready = filteredReport.filter(i => i.status === WebSocketShardStatus.Ready).length;
+	const unhealthy = filteredReport.filter(i => i.health.isUnhealthy).length;
+	const dead = filteredReport.filter(i => i.health.isDead).length;
+	const overview = `Shards: ${total} total, ${ready} ready, ${unhealthy} unhealthy, ${dead} dead`;
+	const lines = filteredReport.map(entry => {
+		let emoji = statusEmojis.ready;
+		if (entry.health.isUnhealthy) emoji = statusEmojis.unhealthy;
+		if (entry.health.isDead) emoji = statusEmojis.dead;
+		if (options.minimal) {
+			return `${entry.shardId},${emoji},${entry.statusName}`;
+		}
+		const avg = entry.health.avgLatency === null ? '-' : `${entry.health.avgLatency}ms`;
+		const last = entry.health.lastLatency === null ? '-' : `${entry.health.lastLatency}ms`;
+		const lastAck = formatShardAckAge(entry.stats?.lastAckAt);
+		return `${entry.shardId}: ${emoji} ${entry.health.label} | ${entry.statusName} | avg=${avg} | last=${last} | ack=${lastAck}`;
+	});
+	const details = lines.join('\n');
+	const fullOutput = [overview, details].filter(Boolean).join('\n');
+
+	if (fullOutput.length <= 1800) {
+		return fullOutput;
+	}
+
+	if (fullOutput.length <= 4000) {
+		return {
+			content: overview,
+			embeds: [new EmbedBuilder().setDescription(details)]
+		};
+	}
+
+	return {
+		content: overview,
+		files: [{ buffer: Buffer.from(fullOutput), name: 'shard-status.txt' }]
+	};
 }
 
 const viewableThings: {
@@ -406,7 +469,22 @@ export const adminCommand = defineCommand({
 				{
 					type: 'Subcommand',
 					name: 'shard_status',
-					description: 'Show shard health and latency.'
+					description: 'Show shard health and latency.',
+					options: [
+						{
+							type: 'Integer',
+							name: 'shard',
+							description: 'Show only a specific shard.',
+							required: false,
+							min_value: 0
+						},
+						{
+							type: 'Boolean',
+							name: 'minimal',
+							description: 'Show a compact CSV-style shard list.',
+							required: false
+						}
+					]
 				},
 				{
 					type: 'Subcommand',
@@ -816,26 +894,11 @@ ${META_CONSTANTS.RENDERED_STR}`
 		if (options.system) {
 			const { shard_status: shardStatus, shard_restart: shardRestart } = options.system;
 			if (shardStatus) {
-				const statusEmojis = { ready: '🟢', unhealthy: '⚠️', dead: '🔴', failed: '☠️' };
 				const report = await globalClient.getShardStatusReport();
-				const total = report.length;
-				const ready = report.filter(i => i.status === WebSocketShardStatus.Ready).length;
-				const unhealthy = report.filter(i => i.health.isUnhealthy).length;
-				const dead = report.filter(i => i.health.isDead).length;
-				return [
-					`Shards: ${total} total, ${ready} ready, ${unhealthy} unhealthy, ${dead} dead`,
-					...report.map(entry => {
-						const avg = entry.health.avgLatency === null ? '-' : `${entry.health.avgLatency}ms`;
-						const last = entry.health.lastLatency === null ? '-' : `${entry.health.lastLatency}ms`;
-						const lastAck = entry.stats?.lastAckAt
-							? `${formatDuration(Date.now() - entry.stats.lastAckAt)} ago`
-							: 'never';
-						let emoji = statusEmojis.ready;
-						if (entry.health.isUnhealthy) emoji = statusEmojis.unhealthy;
-						if (entry.health.isDead) emoji = statusEmojis.dead;
-						return `${entry.shardId}: ${emoji} ${entry.health.label} | status=${entry.statusName} | avg=${avg} | last=${last} | ack=${lastAck}`;
-					})
-				].join('\n');
+				return buildShardStatusResponse(report, {
+					minimal: shardStatus.minimal,
+					shard: shardStatus.shard
+				});
 			}
 			if (shardRestart) {
 				if (typeof shardRestart.which === 'number') {
