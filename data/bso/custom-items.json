@@ -8133,34 +8133,39 @@
 	{
 		"id": 71611,
 		"name": "Cob cap",
-		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
 		"equipable": true,
-		"cost": 100,
-		"lowalch": 40,
-		"highalch": 60,
+		"cost": 44,
+		"lowalch": 17,
+		"highalch": 26,
+		"buy_limit": 125,
 		"equipment": {
-			"attack_stab": 2,
-			"attack_slash": 2,
-			"attack_crush": 2,
-			"attack_magic": 1,
-			"attack_ranged": 2,
-			"defence_stab": 2,
-			"defence_slash": 2,
-			"defence_crush": 2,
-			"defence_magic": 1,
-			"defence_ranged": 2,
-			"melee_strength": 2,
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": -6,
+			"attack_ranged": -3,
+			"defence_stab": 4,
+			"defence_slash": 5,
+			"defence_crush": 3,
+			"defence_magic": -1,
+			"defence_ranged": 4,
+			"melee_strength": 0,
 			"ranged_strength": 0,
 			"magic_damage": 0,
 			"prayer": 0,
-			"slot": "hands",
-			"requirements": null
+			"slot": "head",
+			"requirements": {
+				"defence": 1
+			}
 		},
+		"price": 10000,
 		"customItemData": {
 			"cantDropFromMysteryBoxes": true,
 			"isDiscontinued": true
-		},
-		"price": 10000
+		}
 	},
 	{
 		"id": 70204,
@@ -34121,7 +34126,8 @@
 		"price": 1000000,
 		"customItemData": {
 			"isSecret": true,
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isPet": true
 		}
 	},
 	{
@@ -37073,7 +37079,8 @@
 		"name": "Radiant Magnabbit",
 		"members": true,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isPet": true
 		},
 		"price": 1000000
 	},
