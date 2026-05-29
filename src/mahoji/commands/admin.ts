@@ -816,6 +816,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 		if (options.system) {
 			const { shard_status: shardStatus, shard_restart: shardRestart } = options.system;
 			if (shardStatus) {
+				const statusEmojis = { ready: '🟢', unhealthy: '⚠️', dead: '🔴', failed: '☠️' };
 				const report = await globalClient.getShardStatusReport();
 				const total = report.length;
 				const ready = report.filter(i => i.status === WebSocketShardStatus.Ready).length;
@@ -829,7 +830,10 @@ ${META_CONSTANTS.RENDERED_STR}`
 						const lastAck = entry.stats?.lastAckAt
 							? `${formatDuration(Date.now() - entry.stats.lastAckAt)} ago`
 							: 'never';
-						return `Shard ${entry.shardId}: ${entry.health.label} | status=${entry.statusName} | avg=${avg} | last=${last} | ack=${lastAck}`;
+						let emoji = statusEmojis.ready;
+						if (entry.health.isUnhealthy) emoji = statusEmojis.unhealthy;
+						if (entry.health.isDead) emoji = statusEmojis.dead;
+						return `${entry.shardId}: ${emoji} ${entry.health.label} | status=${entry.statusName} | avg=${avg} | last=${last} | ack=${lastAck}`;
 					})
 				].join('\n');
 			}
