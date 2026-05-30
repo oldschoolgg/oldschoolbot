@@ -438,6 +438,7 @@ model User {
   serp_helm_charges      Int @default(0)
   blood_fury_charges     Int @default(0)
   tum_shadow_charges     Int @default(0)
+  ayak_charges           Int @default(0)
   blood_essence_charges  Int @default(0)
   trident_charges        Int @default(0)
   venator_bow_charges    Int @default(0)
@@ -1570,6 +1571,7 @@ enum command_name_enum {
   decant
   defaultfarming
   defender
+  delves
   diary
   dice
   dicebank

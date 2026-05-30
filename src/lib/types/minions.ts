@@ -504,6 +504,23 @@ export interface ColoTaskOptions extends ActivityTaskOptions {
 	bloodFuryCharges: number;
 }
 
+export interface DoomTaskOptions extends ActivityTaskOptions {
+	type: 'DoomOfMokhaiotl';
+	targetDelve: number;
+	diedAt: number | null;
+	loot: ItemBank | null;
+	fakeDuration: number;
+	stopOnUnique?: boolean;
+	deepDelvesEarned: number;
+	totalWavesCleared: number;
+	deepestDelveCompleted: number;
+	ayakChargesGained: number;
+	brewsUsed: number;
+	restoresUsed: number;
+	divinesUsed: number;
+	rangingUsed: number;
+}
+
 type UserID = string;
 type Points = number;
 type RoomIDsDiedAt = number[];
@@ -682,4 +699,5 @@ export type ActivityTaskData =
 	| MinigameActivityTaskOptionsWithNoChanges
 	| CutLeapingFishActivityTaskOptions
 	| CreateForestersRationsActivityTaskOptions
-	| ColoTaskOptions;
+	| ColoTaskOptions
+	| DoomTaskOptions;

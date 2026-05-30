@@ -45,10 +45,9 @@
 		"@electric-sql/pglite": "^0.3.10",
 		"@oldschoolgg/collectionlog": "workspace:*",
 		"@oldschoolgg/discord": "workspace:*",
-		"node-rng": "^0.0.3",
+		"@oldschoolgg/gear": "workspace:*",
 		"@oldschoolgg/schemas": "workspace:*",
 		"@oldschoolgg/toolkit": "workspace:*",
-		"@oldschoolgg/gear": "workspace:*",
 		"@oldschoolgg/util": "workspace:*",
 		"@prisma/adapter-pg": "^6.19.0",
 		"@prisma/client": "^6.19.0",
@@ -62,6 +61,7 @@
 		"ioredis": "^5.9.3",
 		"lru-cache": "^11.2.6",
 		"luxon": "^3.7.2",
+		"node-rng": "^0.0.3",
 		"oldschooljs": "workspace:*",
 		"p-queue": "8.1.1",
 		"pg": "^8.16.3",
@@ -92,7 +92,7 @@
 		"tsdown": "0.20.3",
 		"tsx": "4.21.0",
 		"typescript": "^5.9.3",
-		"vitest": "4.0.18"
+		"vitest": "4.1.6"
 	},
 	"pnpm": {
 		"neverBuiltDependencies": []

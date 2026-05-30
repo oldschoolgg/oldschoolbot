@@ -44,6 +44,7 @@ import type {
 	CreateForestersRationsActivityTaskOptions,
 	CutLeapingFishActivityTaskOptions,
 	DarkAltarOptions,
+	DoomTaskOptions,
 	EnchantingActivityTaskOptions,
 	FarmingActivityTaskOptions,
 	FightCavesActivityTaskOptions,
@@ -750,6 +751,12 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 		}
 		case 'Colosseum': {
 			return `${name} is currently attempting the Colosseum, if they are successful, the trip should have about ${formattedDuration}.`;
+		}
+		case 'DoomOfMokhaiotl': {
+			const data = currentTask as DoomTaskOptions;
+			const durationRemaining = data.finishDate - Date.now();
+
+			return `${name} is currently attempting the Doom of Mokhaiotl (targeting delve **${data.targetDelve}**), they will finish in ${formatTripDuration(user, durationRemaining)}.`;
 		}
 		case 'HalloweenEvent': {
 			return `${name} is doing the Halloween event! The trip should take ${loneFormattedDuration}.`;

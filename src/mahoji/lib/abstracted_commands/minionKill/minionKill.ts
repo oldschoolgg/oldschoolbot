@@ -3,6 +3,7 @@ import { Monsters } from 'oldschooljs';
 
 import { colosseumCommand } from '@/lib/colosseum.js';
 import type { PvMMethod } from '@/lib/constants.js';
+import { doomCommand } from '@/lib/doomOfMokhaiotl.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
 import type { MonsterActivityTaskOptions } from '@/lib/types/minions.js';
@@ -40,6 +41,7 @@ export async function minionKillCommand(
 	if (!name) return invalidMonsterMsg;
 
 	if (stringMatches(name, 'colosseum')) return colosseumCommand(interaction);
+	if (stringMatches(name, 'doom')) return doomCommand(interaction, inputQuantity ?? 1);
 	if (stringMatches(name, 'nex')) return nexCommand(interaction, user, channelId, solo);
 	if (stringMatches(name, 'zalcano')) return zalcanoCommand(rng, user, channelId, inputQuantity);
 	if (stringMatches(name, 'tempoross')) return temporossCommand(user, channelId, inputQuantity);
