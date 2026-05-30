@@ -5488,6 +5488,35 @@
 		]
 	},
 	{
+		"name": "Summer crate (s9)",
+		"id": 73970,
+		"opened_item": "Summer crate (s9)",
+		"all_items": [
+			"Baguette",
+			"Beach pina colada",
+			"Beach sandals",
+			"Beachball shield",
+			"Cake",
+			"Coral bikini bottom",
+			"Coral bikini top",
+			"Gorajan shards",
+			"Immitation Crab Hat",
+			"Kebab",
+			"Paint box",
+			"Palm board shorts",
+			"Purple sweets",
+			"Shell necklace",
+			"Spinach roll",
+			"Summer partyhat",
+			"Whale floaty"
+		],
+		"extra_cost_per_open": {
+			"73971": 1
+		},
+		"exclude_from_open_all": true,
+		"smokey_applies": false
+	},
+	{
 		"name": "Supply crate (s1)",
 		"id": 71433,
 		"opened_item": "Supply crate (s1)",
