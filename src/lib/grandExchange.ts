@@ -312,11 +312,11 @@ class GrandExchangeSingleton {
 		if (user.isIronman) return { error: "You're an ironman." };
 		const item = Items.getItem(itemName);
 		if (!item || ['Coins'].includes(item.name)) {
-			return { error: 'Invalid item.' };
+			return { error: 'Cannot buy or sell coins.' };
 		}
 
 		if (isGEUntradeable(item.id)) {
-			return { error: 'Invalid item.' };
+			return { error: 'Item is not tradeable on the GE.' };
 		}
 
 		if (

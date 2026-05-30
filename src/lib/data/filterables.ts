@@ -2,6 +2,7 @@ import { BSOItemGroups } from '@/lib/bso/bsoItemGroups.js';
 import { discontinuedCustomPetsCL } from '@/lib/bso/collection-log/main.js';
 import { GrandmasterClueTable } from '@/lib/bso/grandmasterClue.js';
 import { PartyhatTable } from '@/lib/bso/holidayItems.js';
+import { keyCrates } from '@/lib/bso/keyCrates.js';
 import { gods } from '@/lib/bso/minigames/divineDominion.js';
 import { monkeyEatables } from '@/lib/bso/minigames/monkey-rumble/monkeyRumble.js';
 import { tmbTable, umbTable } from '@/lib/bso/openables/mysteryBoxes.js';
@@ -1024,6 +1025,11 @@ export const baseFilters: Filterable[] = [
 		name: 'Fruit',
 		aliases: ['fruit'],
 		items: () => monkeyEatables.map(i => i.item.id)
+	},
+	{
+		name: 'Seasonal Creates',
+		aliases: ['crates'],
+		items: () => keyCrates.flatMap(i => [i.item.id, i.key.id])
 	}
 ];
 

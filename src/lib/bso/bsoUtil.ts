@@ -27,12 +27,15 @@ export function isSuperUntradeable(item: number | Item) {
 
 export function isGEUntradeable(item: number | Item) {
 	const fullItem = typeof item === 'number' ? Items.get(item) : item;
-	if (!fullItem || !fullItem.customItemData || !fullItem.customItemData.superUntradeableButTradeableOnGE) {
-		return isSuperUntradeable(item);
+	if (!fullItem) return true;
+	if (fullItem.customItemData) {
+		const { dontTradeOnGE, superUntradeableButTradeableOnGE, isSuperUntradeable } = fullItem.customItemData;
+		// This order is important: use order as defined in the deconstruction.
+		if (dontTradeOnGE) return true;
+		if (superUntradeableButTradeableOnGE) return false;
+		if (isSuperUntradeable) return true;
 	}
-	if (fullItem.customItemData.isSuperUntradeable && fullItem.customItemData.superUntradeableButTradeableOnGE) {
-		return false;
-	}
+
 	return isSuperUntradeable(item);
 }
 

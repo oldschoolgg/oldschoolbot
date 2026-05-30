@@ -114,7 +114,7 @@ export const geCommand = defineCommand({
 								value: itemID.toString()
 							}));
 						}
-						const res = itemArr.filter(i => i.key.includes(value.toLowerCase()));
+						const res = itemArr.filter(i => i.key.includes(value.toLowerCase()) && !isGEUntradeable(i));
 						return res.map(i => ({ name: `${i.name}`, value: i.id.toString() }));
 					}
 				},

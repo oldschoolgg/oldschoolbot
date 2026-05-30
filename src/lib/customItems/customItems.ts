@@ -6810,6 +6810,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
+			dontTradeOnGE: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -7272,6 +7273,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
+			dontTradeOnGE: true,
 			cantDropFromMysteryBoxes: true,
 			cantBeSacrificed: true,
 			isDiscontinued: true
@@ -8486,6 +8488,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
+			dontTradeOnGE: true,
 			cantDropFromMysteryBoxes: true,
 			isDiscontinued: true
 		}
@@ -9790,6 +9793,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
+			dontTradeOnGE: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -11676,6 +11680,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
+			dontTradeOnGE: true,
 			cantDropFromMysteryBoxes: true,
 			isDiscontinued: true
 		}
@@ -12481,6 +12486,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
+			dontTradeOnGE: true,
 			cantDropFromMysteryBoxes: true,
 			cantBeSacrificed: true,
 			isDiscontinued: true
@@ -12882,6 +12888,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
+			dontTradeOnGE: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -13466,6 +13473,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
+			dontTradeOnGE: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -14487,6 +14495,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
+			dontTradeOnGE: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
