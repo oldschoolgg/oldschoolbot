@@ -115,6 +115,7 @@ function calcSuppliesUsedForSmithing(itemsSmithed: Bank) {
 export async function leaguesCheckUser(userID: string) {
 	const user = await mUserFetch(userID);
 	const roboChimpUser = await user.fetchRobochimpUser();
+	const completedTaskIDs = new Set(roboChimpUser.leagues_completed_tasks_ids);
 	const [
 		conStats,
 		poh,
@@ -223,6 +224,8 @@ export async function leaguesCheckUser(userID: string) {
 			const has = await task.has(args);
 			if (has) {
 				finishedIDs.push(task.id);
+			}
+			if (completedTaskIDs.has(task.id)) {
 				finished++;
 			}
 		}
@@ -239,7 +242,7 @@ export async function leaguesCheckUser(userID: string) {
 **Total Points:** ${roboChimpUser.leagues_points_total.toLocaleString()} (Rank ${ranking.pointsRanking})
 **Points Balance:** ${roboChimpUser.leagues_points_balance_osb.toLocaleString()} OSB / ${roboChimpUser.leagues_points_balance_bso.toLocaleString()} BSO
 ${resStr}`,
-		finished: [...finishedIDs, ...roboChimpUser.leagues_completed_tasks_ids]
+		finished: [...new Set([...finishedIDs, ...roboChimpUser.leagues_completed_tasks_ids])]
 	};
 }
 
