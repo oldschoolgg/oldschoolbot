@@ -168,7 +168,7 @@ export const nexTask: MinionTask = {
 					)}.\n\n${soloXP}`
 		);
 
-		if (!kcAmounts[userID]) {
+		if (kcAmounts[userID]) {
 			message.addBankImage({
 				bank: soloItemsAdded,
 				title: `Loot From ${quantity} ${NexMonster.name}:`,
