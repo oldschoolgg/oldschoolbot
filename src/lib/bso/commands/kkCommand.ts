@@ -13,6 +13,7 @@ import { Gear } from '@/lib/structures/Gear.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import type { BossActivityTaskOptions } from '@/lib/types/minions.js';
 import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 async function checkReqs(users: MUser[], monster: KillableMonster, quantity: number): Promise<string | undefined> {
 	// Check if every user has the requirements for this monster.
@@ -315,7 +316,8 @@ export async function kkCommand(
 		.map(u => u.usernameOrMention)
 		.join(', ')}) is now off to kill ${quantity}x ${KalphiteKingMonster.name}. Each kill takes ${formatDuration(
 		perKillTime
-	)} instead of ${formatDuration(KalphiteKingMonster.timeToFinish)} - the total trip will take ${formatDuration(
+	)} instead of ${formatDuration(KalphiteKingMonster.timeToFinish)} - the total trip will take ${formatTripDuration(
+		user,
 		duration
 	)}. ${foodString}`;
 

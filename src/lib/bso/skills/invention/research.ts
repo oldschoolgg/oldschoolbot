@@ -4,8 +4,10 @@ import { type Invention, Inventions, transactMaterialsFromUser } from '@/lib/bso
 import { isValidMaterialType } from '@/lib/bso/skills/invention/inventionUtil.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
-import { formatDuration, Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit';
 import { clamp } from 'remeda';
+
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export function inventionsCanUnlockFromResearch(user: MUser, researchedMaterial: MaterialType): Invention[] {
 	const inventionLevel = user.skillsAsLevels.invention;
@@ -75,5 +77,5 @@ export async function researchCommand({
 		quantity
 	});
 
-	return `${user.minionName} is now researching with ${cost}. The trip will take ${formatDuration(duration)}.`;
+	return `${user.minionName} is now researching with ${cost}. The trip will take ${formatTripDuration(user, duration)}.`;
 }

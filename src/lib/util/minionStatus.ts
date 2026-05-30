@@ -13,14 +13,7 @@ import type {
 import { fishingLocations } from '@/lib/bso/minigames/fishingContest.js';
 import { divinationEnergies, memoryHarvestTypes } from '@/lib/bso/skills/divination.js';
 
-import {
-	Emoji,
-	formatDuration,
-	formatOrdinal,
-	increaseNumByPercent,
-	reduceNumByPercent,
-	toTitleCase
-} from '@oldschoolgg/toolkit';
+import { Emoji, formatOrdinal, increaseNumByPercent, reduceNumByPercent, toTitleCase } from '@oldschoolgg/toolkit';
 import { MathRNG } from 'node-rng';
 import { Items } from 'oldschooljs';
 
@@ -727,33 +720,27 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 			}. ${formattedDuration}`;
 		}
 		case 'BaxtorianBathhouses': {
-			return `${name} is currently heating baths at the Baxtorian Bathhouses. The trip should take ${formatDuration(
-				durationRemaining
-			)}.`;
+			return `${name} is currently heating baths at the Baxtorian Bathhouses. The trip should take ${loneFormattedDuration}.`;
 		}
 		case 'Naxxus': {
 			const data = currentTask as ActivityTaskOptionsWithQuantity;
-			return `${name} is currently fighting ${data.quantity} Naxxus. The trip should take ${formatDuration(
-				durationRemaining
-			)}.`;
+			return `${name} is currently fighting ${data.quantity} Naxxus. The trip should take ${loneFormattedDuration}.`;
 		}
 		case 'Disassembling': {
 			const data = currentTask as DisassembleTaskOptions;
 			return `${name} is currently disassembling ${data.qty}x ${Items.itemNameFromId(
 				data.i
-			)}. The trip should take ${formatDuration(durationRemaining)}.`;
+			)}. The trip should take ${loneFormattedDuration}.`;
 		}
 		case 'Research': {
 			const data = currentTask as ResearchTaskOptions;
 			return `${name} is currently researching with '${
 				data.material
-			}' materials. The trip should take ${formatDuration(durationRemaining)}.`;
+			}' materials. The trip should take ${loneFormattedDuration}.`;
 		}
 		case 'Moktang': {
 			const data = currentTask as MoktangTaskOptions;
-			return `${name} is currently killing ${data.qty}x Moktang. The trip should take ${formatDuration(
-				durationRemaining
-			)}.`;
+			return `${name} is currently killing ${data.qty}x Moktang. The trip should take ${loneFormattedDuration}.`;
 		}
 		case 'ShootingStars': {
 			return `${name} is currently mining a Crashed Star. The trip should take ${formatTripDuration(
@@ -779,19 +766,19 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 			const data = currentTask as MinigameActivityTaskOptionsWithNoChanges;
 			return `${name} is currently doing ${
 				data.quantity
-			}x games of Fist of Guthix. The trip should take ${formatDuration(durationRemaining)}.`;
+			}x games of Fist of Guthix. The trip should take ${loneFormattedDuration}.`;
 		}
 		case 'StealingCreation': {
 			const data = currentTask as MinigameActivityTaskOptionsWithNoChanges;
 			return `${name} is currently doing ${
 				data.quantity
-			}x games of Stealing Creation. The trip should take ${formatDuration(durationRemaining)}.`;
+			}x games of Stealing Creation. The trip should take ${loneFormattedDuration}.`;
 		}
 		case 'TinkeringWorkshop': {
 			const data = currentTask as TinkeringWorkshopOptions;
 			return `${name} is currently doing ${data.quantity}x projects with ${
 				data.material
-			} materials in the Tinkering Workshop. The trip should take ${formatDuration(durationRemaining)}.`;
+			} materials in the Tinkering Workshop. The trip should take ${loneFormattedDuration}.`;
 		}
 		case 'NightmareZone': {
 			return `${name} is currently killing Monsters in the Nightmare Zone. The trip should take ${formatTripDuration(
@@ -844,20 +831,19 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 			)}.`;
 		}
 		case 'BalthazarsBigBonanza': {
-			return `${name} is currently performing at Balthazars Big Bonanza, the trip should take ${formatDuration(
-				durationRemaining
-			)}.`;
+			return `${name} is currently performing at Balthazars Big Bonanza, the trip should take ${loneFormattedDuration}.`;
 		}
 		case 'DepthsOfAtlantis': {
 			const data = currentTask as DOAOptions;
 			const durationRemainingNum = data.finishDate - data.duration + data.fakeDuration - Date.now();
 
-			return `${name} is currently attempting the Depths of Atlantis, if your team is successful and doesn't die, the trip should take ${formatDuration(
+			return `${name} is currently attempting the Depths of Atlantis, if your team is successful and doesn't die, the trip should take ${formatTripDuration(
+				user,
 				durationRemainingNum
 			)}.`;
 		}
 		case 'BirthdayCollectIngredients': {
-			return `${name} is currently collecting ingredients, the trip should take ${formatDuration(durationRemaining)}.`;
+			return `${name} is currently collecting ingredients, the trip should take ${loneFormattedDuration}.`;
 		}
 		case 'CombatRing': {
 			return `${name} is currently fighting in the Combat Ring! Only another ${loneFormattedDuration}!`;
@@ -869,30 +855,24 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 			}! The trip should be done in about ${loneFormattedDuration}.`;
 		}
 		case 'Mortimer':
-			return `${name} is currently fighting Maledict Mortimer! The trip should take ${formatDuration(
-				durationRemaining
-			)}.`;
+			return `${name} is currently fighting Maledict Mortimer! The trip should take ${loneFormattedDuration}.`;
 		case 'Colosseum': {
 			return `${name} is currently attempting the Colosseum, if they are successful, the trip should have about ${formattedDuration}.`;
 		}
 		case 'HalloweenEvent':
-			return `${name} is doing the Halloween event! The trip should take ${formatDuration(durationRemaining)}.`;
+			return `${name} is doing the Halloween event! The trip should take ${loneFormattedDuration}.`;
 		case 'GuthixianCache':
-			return `${name} is currently participating in a Guthixian cache. The trip should take ${formatDuration(
-				durationRemaining
-			)}.`;
+			return `${name} is currently participating in a Guthixian cache. The trip should take ${loneFormattedDuration}.`;
 		case 'MemoryHarvest': {
 			const data = currentTask as MemoryHarvestOptions;
 			const energy = divinationEnergies.find(e => e.item.id === data.e)!;
 			const method = memoryHarvestTypes.find(t => t.id === data.t)!;
 			return `${name} is currently harvesting ${energy.type} memories using ${
 				method.name
-			}. The trip should take ${formatDuration(durationRemaining)}.`;
+			}. The trip should take ${loneFormattedDuration}.`;
 		}
 		case 'TuraelsTrials': {
-			return `${name} is currently slaying monsters in Turaels Trials. The trip should take ${formatDuration(
-				durationRemaining
-			)}.`;
+			return `${name} is currently slaying monsters in Turaels Trials. The trip should take ${loneFormattedDuration}.`;
 		}
 
 		case 'BossEvent': {

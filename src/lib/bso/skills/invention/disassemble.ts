@@ -23,6 +23,7 @@ import { clamp } from 'remeda';
 
 import Skillcapes from '@/lib/skilling/skillcapes.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 const MASTER_CAPE_JUNK_REDUCTION = 5;
 
@@ -391,7 +392,7 @@ export async function disassembleCommand({
 
 	return `${user.minionName} is now disassembling ${result.quantity}x ${
 		item.name
-	}, the trip will take approximately ${formatDuration(result.duration)}
+	}, the trip will take approximately ${formatTripDuration(user, result.duration)}
 **Junk Chance:** ${result.junkChance.toFixed(2)}%
 ${result.messages.length > 0 ? `**Messages:** ${result.messages.join(', ')}` : ''}`;
 }
