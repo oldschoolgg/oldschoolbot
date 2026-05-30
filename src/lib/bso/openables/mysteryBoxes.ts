@@ -1,3 +1,4 @@
+import { BSOItem } from '@/lib/bso/BSOItem.js';
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 import { baseHolidayItems } from '@/lib/bso/holidayItems.js';
 import { cmbClothes } from '@/lib/bso/openables/cmb.js';
@@ -8,7 +9,6 @@ import { randArrItem, roll } from 'node-rng';
 import { Bank, Items, itemID, LootTable } from 'oldschooljs';
 
 import type { UnifiedOpenable } from '@/lib/openables.js';
-import {BSOItem} from "@/lib/bso/BSOItem.js";
 
 function makeOutputFromArrayOfItemIDs(fn: () => number, quantity: number) {
 	const loot = new Bank();
