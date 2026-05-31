@@ -1,3 +1,10 @@
+import {
+	canAffordInventionBoost,
+	InventionID,
+	inventionBoosts,
+	inventionItemBoost
+} from '@/lib/bso/skills/invention/inventions.js';
+
 import { bold } from '@oldschoolgg/discord';
 import type { GearStats } from '@oldschoolgg/gear';
 import {
@@ -199,7 +206,7 @@ const primarySpecWeaponBoosts = [
 	['Dragon claws', 6]
 ] as const;
 
-const REQUIRED_RANGE_WEAPONS = resolveItems(['Twisted bow', 'Bow of faerdhinen (c)']);
+const REQUIRED_RANGE_WEAPONS = resolveItems(['Twisted bow', 'Bow of faerdhinen (c)', 'Chincannon']);
 const MELEE_REQUIRED_WEAPONS = resolveItems(['Zamorakian hasta', 'Ghrazi rapier', "Osmumten's fang"]);
 const MELEE_REQUIRED_ARMOR = resolveItems(['Fire cape', 'Infernal cape']);
 const BP_DARTS_NEEDED = 150;
@@ -262,7 +269,7 @@ const toaRequirements: {
 			const rangeAmmo = user.gear.range.get('ammo');
 			const rangeWeapon = user.gear.range.equippedWeapon();
 			const arrowsNeeded = BOW_ARROWS_NEEDED * quantity;
-			if (rangeWeapon?.id !== itemID('Bow of faerdhinen (c)')) {
+			if (rangeWeapon?.id !== itemID('Bow of faerdhinen (c)') && rangeWeapon?.id !== itemID('Chincannon')) {
 				if (!rangeAmmo || rangeAmmo.quantity < arrowsNeeded) {
 					return `Need ${arrowsNeeded} arrows equipped`;
 				}
@@ -1008,7 +1015,7 @@ async function calcTOAInput({
 	if (!rangeWeapon) {
 		throw new Error(`${user.logName} had no range weapon for TOA`);
 	}
-	if (rangeWeapon.id !== itemID('Bow of faerdhinen (c)')) {
+	if (rangeWeapon.id !== itemID('Bow of faerdhinen (c)') && rangeWeapon?.id !== itemID('Chincannon')) {
 		cost.add(user.gear.range.get('ammo')?.item, BOW_ARROWS_NEEDED * quantity);
 	}
 	if (user.gear.melee.hasEquipped('Amulet of blood fury')) {
@@ -1187,21 +1194,41 @@ export async function toaStartCommand(
 			toaAttempts: (await i.fetchStats()).toa_attempts
 		}))
 	);
+
+	let chinCannonUser: MUser | null = null;
+	for (const u of users) {
+		if (u.hasEquipped('Chincannon')) {
+			chinCannonUser = u;
+			break;
+		}
+	}
+
+	const chinCannonUsed = chinCannonUser != null;
+
 	const baseDuration = createTOATeam({
 		team: toaSimUsers,
 		raidLevel,
 		quantity: 1,
-		rng
+		rng,
+		chinCannonUsed: chinCannonUsed
 	})[0].duration;
+
+	if (chinCannonUser) {
+		if (!canAffordInventionBoost(chinCannonUser, InventionID.ChinCannon, baseDuration).canAfford) {
+			return `${chinCannonUser.usernameOrMention} doesn't have enough materials to use the Chincannon for this trip.`;
+		}
+	}
+
 	const maxTripLength = Math.max(...(await Promise.all(users.map(i => i.calcMaxTripLength('TombsOfAmascut')))));
-	const maxQuantity = clamp(Math.floor(maxTripLength / baseDuration), { min: 1, max: 5 });
+	const maxQuantity = clamp(Math.floor(maxTripLength / baseDuration), { min: 1, max: 10 });
 	const quantity = clamp(quantityInput ?? maxQuantity, { min: 1, max: maxQuantity });
 
 	const toaSimResults = createTOATeam({
 		team: toaSimUsers,
 		raidLevel,
 		quantity,
-		rng
+		rng,
+		chinCannonUsed: chinCannonUsed
 	});
 	const { reductions, totalReduction, messages } = toaSimResults[0];
 
@@ -1258,6 +1285,17 @@ export async function toaStartCommand(
 					user: u
 				});
 			}
+			if (chinCannonUser === u) {
+				const res = await inventionItemBoost({
+					user,
+					inventionID: InventionID.ChinCannon,
+					duration: baseDuration
+				});
+				if (!res.success) {
+					throw new Error(`${u.id} did not have enough charges to use the Chincannon.`);
+				}
+				debugStr += ` ${inventionBoosts.chincannon.toaPercentReduction}% speed increase from the Chincannon of ${u.usernameOrMention} (${res.messages})\n`;
+			}
 			await u.statsBankUpdate('toa_cost', realCost);
 			const effectiveCost = realCost.clone();
 			totalCost.add(effectiveCost);
@@ -1311,7 +1349,8 @@ export async function toaStartCommand(
 		wipedRoom: toaSimResults.map(i => i.wipedRoom),
 		fakeDuration,
 		raidLevel,
-		quantity
+		quantity,
+		cc: chinCannonUser?.id
 	});
 
 	let str = `${partyOptions.leader.usernameOrMention}'s party (${formatList(
@@ -1368,13 +1407,15 @@ function createTOATeam({
 	disableVariation,
 	raidLevel,
 	quantity,
-	rng
+	rng,
+	chinCannonUsed
 }: {
 	raidLevel: RaidLevel;
 	team: { user: MUser; toaAttempts: number; minigameScores: Minigame }[];
 	disableVariation?: true;
 	quantity: number;
 	rng: RNGProvider;
+	chinCannonUsed: boolean;
 }) {
 	const arr = [];
 	const messages: string[] = [];
@@ -1530,6 +1571,9 @@ function createTOATeam({
 
 	duration = Math.floor(rng.randomVariation(duration, 1));
 
+	// add chincannon boost
+	if (chinCannonUsed) duration = reduceNumByPercent(duration, inventionBoosts.chincannon.toaPercentReduction);
+
 	for (let i = 0; i < quantity; i++) {
 		const usersWithPointsAndDeaths = parsedTeam.map(i => ({ ...i, ...i.calcPointsAndDeaths() }));
 
@@ -1562,6 +1606,9 @@ function createTOATeam({
 		if (wipedRoom !== null && !TOARooms.some(room => room.id === wipedRoom)) {
 			wipedRoom = null;
 		}
+
+		// add chincannon boost
+		if (chinCannonUsed) duration = reduceNumByPercent(duration, inventionBoosts.chincannon.toaPercentReduction);
 
 		results.push({
 			duration,
