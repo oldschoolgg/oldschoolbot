@@ -32,8 +32,6 @@ import {
 import { gnomeRestaurantCommand } from '@/mahoji/lib/abstracted_commands/gnomeRestaurantCommand.js';
 import { guardiansOfTheRiftStartCommand } from '@/mahoji/lib/abstracted_commands/guardiansOfTheRiftCommand.js';
 import { lmsCommand } from '@/mahoji/lib/abstracted_commands/lmsCommand.js';
-import { mageArena2Command } from '@/mahoji/lib/abstracted_commands/mageArena2Command.js';
-import { mageArenaCommand } from '@/mahoji/lib/abstracted_commands/mageArenaCommand.js';
 import {
 	mageTrainingArenaBuyables,
 	mageTrainingArenaBuyCommand,
@@ -351,32 +349,6 @@ export const minigamesCommand = defineCommand({
 					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a trip.'
-				}
-			]
-		},
-		/**
-		 *
-		 * Mage Arena
-		 *
-		 */
-		{
-			name: 'mage_arena',
-			description: 'The Mage Arena minigames.',
-			type: 'SubcommandGroup',
-			options: [
-				{
-					type: 'Subcommand',
-					name: 'start',
-					description: 'Start a trip.',
-					options: [
-						{
-							type: 'String',
-							name: 'version',
-							description: 'The Mage Arena version to complete.',
-							required: true,
-							choices: choicesOf(['Mage Arena I', 'Mage Arena II'])
-						}
-					]
 				}
 			]
 		},
@@ -1278,17 +1250,6 @@ export const minigamesCommand = defineCommand({
 		 *
 		 */
 		if (options.fishing_trawler?.start) return fishingTrawlerCommand(user, channelId);
-
-		/**
-		 *
-		 * Mage Arena
-		 *
-		 */
-		if (options.mage_arena?.start) {
-			return options.mage_arena.start.version === 'Mage Arena II'
-				? mageArena2Command(rng, user, channelId)
-				: mageArenaCommand(rng, user, channelId);
-		}
 
 		/**
 		 *
