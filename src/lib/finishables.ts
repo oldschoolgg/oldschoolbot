@@ -1,5 +1,4 @@
-import { stringMatches } from '@oldschoolgg/toolkit/util';
-import { notEmpty, randArrItem, roll } from 'e';
+import { notEmpty, stringMatches } from '@oldschoolgg/toolkit';
 import {
 	Bank,
 	BeginnerCasket,
@@ -9,18 +8,18 @@ import {
 	EliteMimicTable,
 	HardCasket,
 	ItemGroups,
+	Items,
+	itemID,
 	MasterCasket,
 	MasterMimicTable,
 	MediumCasket,
 	Monsters,
 	Nightmare,
-	itemID,
 	resolveItems
 } from 'oldschooljs';
 
-import { allCollectionLogsFlat } from './data/Collections';
+import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
 import {
-	NexCL,
 	chambersOfXericCL,
 	chambersOfXericNormalCL,
 	cluesBeginnerCL,
@@ -29,28 +28,29 @@ import {
 	cluesHardCL,
 	cluesMasterCL,
 	cluesMediumCL,
+	NexCL,
 	temporossCL,
+	theatreOfBLoodCL,
+	theatreOfBLoodNormalCL,
 	theGauntletCL,
 	theNightmareCL,
 	theNightmareNormalCL,
-	theatreOfBLoodCL,
-	theatreOfBLoodNormalCL,
 	wintertodtCL
-} from './data/CollectionsExport';
-import pets from './data/pets';
-import killableMonsters from './minions/data/killableMonsters';
-import { openShadeChest } from './shadesKeys';
-import { birdsNestID, treeSeedsNest } from './simulation/birdsNest';
-import { gauntlet } from './simulation/gauntlet';
-import { handleNexKills } from './simulation/nex';
-import { getTemporossLoot } from './simulation/tempoross';
-import { TheatreOfBlood } from './simulation/tob';
-import { WintertodtCrate } from './simulation/wintertodt';
-import getOSItem from './util/getOSItem';
+} from '@/lib/data/CollectionsExport.js';
+import pets from '@/lib/data/pets.js';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { openShadeChest } from '@/lib/shadesKeys.js';
+import { birdsNestID, treeSeedsNest } from '@/lib/simulation/birdsNest.js';
+import { gauntlet } from '@/lib/simulation/gauntlet.js';
+import { handleNexKills } from '@/lib/simulation/nex.js';
+import { getTemporossLoot } from '@/lib/simulation/tempoross.js';
+import { TheatreOfBlood } from '@/lib/simulation/tob.js';
+import { WintertodtCrate } from '@/lib/simulation/wintertodt.js';
 
 interface KillArgs {
 	accumulatedLoot: Bank;
 	totalRuns: number;
+	rng: RNGProvider;
 }
 
 interface Finishable {
@@ -92,7 +92,8 @@ export const finishables: Finishable[] = [
 		name: 'Theatre of Blood (Solo, Non-HM)',
 		aliases: ['tob', 'theatre of blood'],
 		cl: theatreOfBLoodNormalCL,
-		kill: () => new Bank(TheatreOfBlood.complete({ hardMode: false, team: [{ id: '1', deaths: [] }] }).loot['1']),
+		kill: ({ rng }) =>
+			new Bank(TheatreOfBlood.complete({ rng, hardMode: false, team: [{ id: '1', deaths: [] }] }).loot['1']),
 		tertiaryDrops: [
 			{ itemId: itemID('Sinhaza shroud tier 1'), kcNeeded: 100 },
 			{ itemId: itemID('Sinhaza shroud tier 2'), kcNeeded: 500 },
@@ -105,7 +106,8 @@ export const finishables: Finishable[] = [
 		name: 'Theatre of Blood (Solo, HM)',
 		aliases: ['tob hard', 'tob hard mode', 'tobhm'],
 		cl: theatreOfBLoodCL,
-		kill: () => new Bank(TheatreOfBlood.complete({ hardMode: true, team: [{ id: '1', deaths: [] }] }).loot['1']),
+		kill: ({ rng }) =>
+			new Bank(TheatreOfBlood.complete({ rng, hardMode: true, team: [{ id: '1', deaths: [] }] }).loot['1']),
 		tertiaryDrops: [
 			{ itemId: itemID('Sinhaza shroud tier 1'), kcNeeded: 100 },
 			{ itemId: itemID('Sinhaza shroud tier 2'), kcNeeded: 500 },
@@ -143,14 +145,14 @@ export const finishables: Finishable[] = [
 		name: 'Nex',
 		aliases: [],
 		cl: NexCL,
-		kill: () =>
-			handleNexKills({ quantity: 1, team: [{ id: '1', teamID: 1, contribution: 100, deaths: [] }] }).get('1')
+		kill: ({ rng }) =>
+			handleNexKills({ rng, quantity: 1, team: [{ id: '1', teamID: 1, contribution: 100, deaths: [] }] }).get('1')
 	},
 	{
 		name: 'Wintertodt (500pt crates, Max stats)',
 		cl: wintertodtCL,
 		aliases: ['todt', 'wintertodt', 'wt'],
-		kill: ({ accumulatedLoot }) =>
+		kill: ({ accumulatedLoot, rng }) =>
 			new Bank(
 				WintertodtCrate.open({
 					points: 500,
@@ -164,7 +166,8 @@ export const finishables: Finishable[] = [
 						crafting: 99,
 						farming: 99
 					},
-					firemakingXP: 1000
+					firemakingXP: 1000,
+					rng
 				})
 			)
 	},
@@ -208,8 +211,8 @@ export const finishables: Finishable[] = [
 		name: 'Elite Clue Scolls',
 		cl: cluesEliteCL,
 		aliases: ['elite clues', 'elite clue', 'elite clue scroll', 'elite clue scrolls'],
-		kill: () => {
-			if (roll(35)) {
+		kill: ({ rng }) => {
+			if (rng.roll(35)) {
 				return EliteMimicTable.roll().add(EliteCasket.roll());
 			}
 			return EliteCasket.roll();
@@ -219,8 +222,8 @@ export const finishables: Finishable[] = [
 		name: 'Master Clue Scolls',
 		cl: cluesMasterCL,
 		aliases: ['master clues', 'master clue', 'master clue scroll', 'master clue scrolls'],
-		kill: () => {
-			if (roll(15)) {
+		kill: ({ rng }) => {
+			if (rng.roll(15)) {
 				return MasterMimicTable.roll().add(MasterCasket.roll());
 			}
 			return MasterCasket.roll();
@@ -230,10 +233,10 @@ export const finishables: Finishable[] = [
 		name: 'Evil Chicken Outfit',
 		cl: ItemGroups.evilChickenOutfit,
 		aliases: ['evil chicken outfit'],
-		kill: () => {
+		kill: ({ rng }) => {
 			const loot = new Bank();
-			if (roll(300)) {
-				loot.add(randArrItem(ItemGroups.evilChickenOutfit));
+			if (rng.roll(300)) {
+				loot.add(rng.pick(ItemGroups.evilChickenOutfit)!);
 			} else {
 				loot.add(birdsNestID);
 				loot.add(treeSeedsNest.roll());
@@ -260,12 +263,18 @@ export const finishables: Finishable[] = [
 			'Bloody notes'
 		]),
 		aliases: ['shades of morton'],
-		kill: ({ accumulatedLoot, totalRuns }) => {
+		kill: ({ accumulatedLoot, totalRuns, rng }) => {
 			for (const tier of ['Bronze', 'Steel', 'Black', 'Silver', 'Gold'] as const) {
-				const key = getOSItem(`${tier} key red`);
-				const lock = getOSItem(`${tier} locks`);
+				const key = Items.getOrThrow(`${tier} key red`);
+				const lock = Items.getOrThrow(`${tier} locks`);
 				if (accumulatedLoot.has(lock.id) && tier !== 'Gold') continue;
-				return openShadeChest({ item: key, allItemsOwned: accumulatedLoot, qty: totalRuns }).bank;
+				return openShadeChest({
+					item: key,
+					allItemsOwned: accumulatedLoot,
+					qty: totalRuns,
+					rng,
+					hasEliteCA: true
+				}).bank;
 			}
 			throw new Error('Not possible!');
 		}
@@ -275,7 +284,7 @@ export const finishables: Finishable[] = [
 const monsterPairedCLs = Monsters.map(mon => {
 	const cl = allCollectionLogsFlat.find(c => stringMatches(c.name, mon.name));
 	if (!cl) return null;
-	if (!cl.items.every(id => mon.allItems.includes(id))) return null;
+	if (mon.allItems.some(id => !cl.items.has(id))) return null;
 	return {
 		name: mon.name,
 		aliases: mon.aliases,
@@ -289,7 +298,7 @@ for (const mon of monsterPairedCLs) {
 	finishables.push({
 		name: mon.name,
 		aliases: mon.aliases,
-		cl: mon.cl,
+		cl: Array.from(mon.cl),
 		kill: ({ accumulatedLoot }) => {
 			const cost = new Bank();
 			if (killableMonster?.healAmountNeeded) {
@@ -310,9 +319,9 @@ for (const pet of pets) {
 		name: `${pet.name} Pet`,
 		cl: [itemID(pet.name)],
 		maxAttempts: 1_000_000,
-		kill: () => {
+		kill: ({ rng }) => {
 			const bank = new Bank();
-			if (roll(pet.chance)) bank.add(itemID(pet.name));
+			if (rng.roll(pet.chance)) bank.add(itemID(pet.name));
 			return bank;
 		},
 		customResponse: kc => pet.formatFinish(kc)

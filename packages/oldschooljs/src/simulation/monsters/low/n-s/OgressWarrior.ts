@@ -1,9 +1,9 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import { GemTable } from '../../../subtables/RareDropTable';
-import { UncommonSeedDropTable } from '../../../subtables/index';
+import { UncommonSeedDropTable } from '@/simulation/subtables/index.js';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const OgressWarriorTable = new LootTable()
+const OgressWarriorTable: LootTable = new LootTable()
 	.every('Big bones')
 
 	/* Armour */
@@ -50,7 +50,7 @@ const OgressWarriorTable = new LootTable()
 	.tertiary(1200, 'Shaman mask')
 	.tertiary(5013, 'Curved bone');
 
-export default new SimpleMonster({
+export const OgressWarrior: SimpleMonster = new SimpleMonster({
 	id: 7990,
 	name: 'Ogress Warrior',
 	table: OgressWarriorTable,

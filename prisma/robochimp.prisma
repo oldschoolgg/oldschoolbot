@@ -1,7 +1,8 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["fullTextSearch"]
-  output          = "../node_modules/@prisma/robochimp"
+  provider        = "prisma-client"
+  runtime         = "nodejs"
+  previewFeatures = ["fullTextSearchPostgres"]
+  output          = "../src/prisma/clients/robochimp"
 }
 
 datasource db {
@@ -69,6 +70,8 @@ model User {
 
   tag Tag[]
 
+  secrets UserSecrets[]
+
   @@map("user")
 }
 
@@ -106,4 +109,33 @@ model UserGroup {
   users User[]
 
   @@map("user_group")
+}
+
+enum SecretType {
+  DISCORD_OAUTH
+}
+
+model UserSecrets {
+  type   SecretType
+  secret String
+
+  created_at DateTime? @default(now())
+  expires_at DateTime?
+
+  user_id BigInt
+  User    User   @relation(fields: [user_id], references: [id])
+
+  @@id([user_id, type])
+  @@map("user_secrets")
+}
+
+model DiscordUser {
+  id String @id @unique @db.VarChar(19)
+
+  username    String?  @db.Text()
+  global_name String?  @db.Text()
+  avatar      String?  @db.Text()
+  created_at  DateTime @db.Timestamp(6)
+
+  @@map("discord_user")
 }

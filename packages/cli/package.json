@@ -1,0 +1,23 @@
+{
+	"name": "cli",
+	"version": "0.0.0",
+	"type": "module",
+	"engines": {
+		"node": ">=20"
+	},
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsc --watch"
+	},
+	"files": [
+		"dist"
+	],
+	"dependencies": {
+		"ink": "^6.4.0",
+		"ink-spinner": "5.0.0",
+		"react": "19.2.0"
+	},
+	"devDependencies": {
+		"@types/react": "19.2.2"
+	}
+}

@@ -1,12 +1,12 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import { NotedHerbTable } from '../../../subtables/NotedHerbTable';
-import { GemTable } from '../../../subtables/RareDropTable';
-import RareSeedTable from '../../../subtables/RareSeedTable';
-import { UncommonSeedDropTable } from '../../../subtables/index';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
+import { UncommonSeedDropTable } from '@/simulation/subtables/index.js';
+import { NotedHerbTable } from '@/simulation/subtables/NotedHerbTable.js';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import RareSeedTable from '@/simulation/subtables/RareSeedTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-export const LobstrosityTable = new LootTable()
+export const LobstrosityTable: LootTable = new LootTable()
 	.every('Raw lobster')
 
 	/* Runes */
@@ -46,7 +46,7 @@ export const LobstrosityTable = new LootTable()
 	.tertiary(175, 'Unidentified large fossil')
 	.tertiary(700, 'Unidentified rare fossil');
 
-export default new SimpleMonster({
+export const Lobstrosity: SimpleMonster = new SimpleMonster({
 	id: 7796,
 	name: 'Lobstrosity',
 	table: LobstrosityTable,

@@ -1,8 +1,35 @@
-import { StoreBitfield } from '@oldschoolgg/toolkit/util';
+import { PerkTier, StoreBitfield } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { BitField, PerkTier } from '../../constants';
-import type { BankBackground } from '../types';
+import type { CanvasImage } from '@/lib/canvas/canvasUtil.js';
+import { BitField } from '@/lib/constants.js';
+import type { Skills } from '@/lib/types/index.js';
+
+export type BankBackground = {
+	image: CanvasImage | null;
+	id: number;
+	name: string;
+	available: boolean;
+	collectionLogItemsNeeded?: Bank;
+	perkTierNeeded?: PerkTier;
+	gpCost?: number;
+	itemCost?: Bank;
+	repeatImage?: CanvasImage | null;
+	bitfield?: BitField;
+	sacValueRequired?: number;
+	skillsNeeded?: Skills;
+	transparent?: true;
+	alternateImages?: { id: number }[];
+	storeBitField?: StoreBitfield;
+} & (
+	| {
+			hasPurple: true;
+			purpleImage: CanvasImage | null;
+	  }
+	| {
+			hasPurple?: null;
+	  }
+);
 
 const backgroundImages: BankBackground[] = [
 	{

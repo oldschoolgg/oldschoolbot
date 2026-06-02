@@ -1,8 +1,8 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import FixedAllotmentSeedTable from '../../../subtables/FixedAllotmentSeedTable';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import { GemTable } from '../../../subtables/RareDropTable';
+import FixedAllotmentSeedTable from '@/simulation/subtables/FixedAllotmentSeedTable.js';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const HillGiantTable = new LootTable({ limit: 128 })
 	.every('Big bones')
@@ -48,7 +48,7 @@ const HillGiantTable = new LootTable({ limit: 128 })
 	/* Gem drop table */
 	.add(GemTable, 1, 3);
 
-export default new SimpleMonster({
+export const HillGiant: SimpleMonster = new SimpleMonster({
 	id: 2098,
 	name: 'Hill Giant',
 	table: HillGiantTable,

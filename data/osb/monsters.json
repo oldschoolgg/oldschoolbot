@@ -1,6 +1,6 @@
 {
-	"hash": "5ae5cdbcf62f6f12b26280bf8ee45383",
-	"date": "2025-07-01T02:09:21.000Z",
+	"hash": "117af84ead8737c866ad5ecb2234ce21",
+	"date": "2026-05-09T10:48:36.665Z",
 	"data": [
 		{
 			"id": 2,
@@ -794,7 +794,11 @@
 			"is_wildy_multi": false,
 			"items_required": [],
 			"qp_required": 0,
-			"item_in_bank_boosts": [],
+			"item_in_bank_boosts": [
+				{
+					"Giantsoul amulet": 20
+				}
+			],
 			"can_barrage": false,
 			"can_chin": false,
 			"can_cannon": false,
@@ -1231,7 +1235,7 @@
 			"item_in_bank_boosts": [],
 			"can_barrage": false,
 			"can_chin": false,
-			"can_cannon": false,
+			"can_cannon": true,
 			"cannon_multi": false
 		},
 		{
@@ -1699,8 +1703,8 @@
 		{
 			"id": 12191,
 			"name": "Duke Sucellus",
-			"base_kill_time_ms": 306000,
-			"respawn_time_ms": 90000,
+			"base_kill_time_ms": 186000,
+			"respawn_time_ms": 30000,
 			"is_wildy": false,
 			"is_slayer_only": false,
 			"can_be_pked": false,
@@ -1825,6 +1829,22 @@
 			"qp_required": 0,
 			"item_in_bank_boosts": [],
 			"can_barrage": false,
+			"can_chin": false,
+			"can_cannon": true,
+			"cannon_multi": true
+		},
+		{
+			"id": 14704,
+			"name": "Elder custodian stalker",
+			"base_kill_time_ms": 65000,
+			"is_wildy": false,
+			"is_slayer_only": false,
+			"can_be_pked": false,
+			"is_wildy_multi": false,
+			"items_required": [],
+			"qp_required": 0,
+			"item_in_bank_boosts": [],
+			"can_barrage": true,
 			"can_chin": false,
 			"can_cannon": true,
 			"cannon_multi": true
@@ -2256,6 +2276,26 @@
 			"can_chin": false,
 			"can_cannon": true,
 			"cannon_multi": true
+		},
+		{
+			"id": 1834,
+			"name": "Gorak",
+			"base_kill_time_ms": 39200,
+			"is_wildy": false,
+			"is_slayer_only": false,
+			"can_be_pked": false,
+			"is_wildy_multi": false,
+			"items_required": [["Ring of wealth", "Ring of wealth (i)"]],
+			"qp_required": 30,
+			"item_in_bank_boosts": [
+				{
+					"Gem bag": 20
+				}
+			],
+			"can_barrage": false,
+			"can_chin": false,
+			"can_cannon": false,
+			"cannon_multi": false
 		},
 		{
 			"id": 2025,
@@ -2839,6 +2879,22 @@
 			"cannon_multi": false
 		},
 		{
+			"id": 14702,
+			"name": "Juvenile custodian stalker",
+			"base_kill_time_ms": 32000,
+			"is_wildy": false,
+			"is_slayer_only": false,
+			"can_be_pked": false,
+			"is_wildy_multi": false,
+			"items_required": [],
+			"qp_required": 0,
+			"item_in_bank_boosts": [],
+			"can_barrage": true,
+			"can_chin": false,
+			"can_cannon": true,
+			"cannon_multi": true
+		},
+		{
 			"id": 3129,
 			"name": "K'ril Tsutsaroth",
 			"base_kill_time_ms": 306000,
@@ -3371,6 +3427,22 @@
 			"cannon_multi": true
 		},
 		{
+			"id": 14703,
+			"name": "Mature custodian stalker",
+			"base_kill_time_ms": 48000,
+			"is_wildy": false,
+			"is_slayer_only": false,
+			"can_be_pked": false,
+			"is_wildy_multi": false,
+			"items_required": [],
+			"qp_required": 0,
+			"item_in_bank_boosts": [],
+			"can_barrage": true,
+			"can_chin": false,
+			"can_cannon": true,
+			"cannon_multi": true
+		},
+		{
 			"id": 10693,
 			"name": "Mind Golem",
 			"base_kill_time_ms": 18000,
@@ -3677,7 +3749,11 @@
 			"is_wildy_multi": false,
 			"items_required": [],
 			"qp_required": 0,
-			"item_in_bank_boosts": [],
+			"item_in_bank_boosts": [
+				{
+					"Giantsoul amulet": 20
+				}
+			],
 			"can_barrage": false,
 			"can_chin": false,
 			"can_cannon": false,
@@ -4535,6 +4611,84 @@
 			"cannon_multi": false
 		},
 		{
+			"id": 12596,
+			"name": "Royal Titans (Branda)",
+			"base_kill_time_ms": 150000,
+			"respawn_time_ms": 10000,
+			"is_wildy": false,
+			"is_slayer_only": false,
+			"can_be_pked": false,
+			"is_wildy_multi": false,
+			"items_required": [],
+			"qp_required": 0,
+			"item_in_bank_boosts": [
+				{
+					"Giantsoul amulet": 13
+				},
+				{
+					"Burning claws": 3,
+					"Dragon claws": 5,
+					"Zaryte crossbow": 6
+				}
+			],
+			"can_barrage": false,
+			"can_chin": false,
+			"can_cannon": false,
+			"cannon_multi": false
+		},
+		{
+			"id": 14147,
+			"name": "Royal Titans (Eldric)",
+			"base_kill_time_ms": 150000,
+			"respawn_time_ms": 10000,
+			"is_wildy": false,
+			"is_slayer_only": false,
+			"can_be_pked": false,
+			"is_wildy_multi": false,
+			"items_required": [],
+			"qp_required": 0,
+			"item_in_bank_boosts": [
+				{
+					"Giantsoul amulet": 13
+				},
+				{
+					"Burning claws": 3,
+					"Dragon claws": 5,
+					"Zaryte crossbow": 6
+				}
+			],
+			"can_barrage": false,
+			"can_chin": false,
+			"can_cannon": false,
+			"cannon_multi": false
+		},
+		{
+			"id": 14148,
+			"name": "Royal Titans (sacrifice)",
+			"base_kill_time_ms": 150000,
+			"respawn_time_ms": 10000,
+			"is_wildy": false,
+			"is_slayer_only": false,
+			"can_be_pked": false,
+			"is_wildy_multi": false,
+			"items_required": [],
+			"qp_required": 0,
+			"item_in_bank_boosts": [
+				{
+					"Giantsoul amulet": 13
+				},
+				{
+					"Burning claws": 3,
+					"Dragon claws": 5,
+					"Zaryte crossbow": 6
+				}
+			],
+			"can_barrage": false,
+			"can_chin": false,
+			"can_cannon": false,
+			"cannon_multi": false
+		},
+		{
 			"id": 8031,
 			"name": "Rune Dragon",
 			"base_kill_time_ms": 100000,
@@ -4553,7 +4707,7 @@
 		{
 			"id": 8713,
 			"name": "Sarachnis",
-			"base_kill_time_ms": 141000,
+			"base_kill_time_ms": 97800,
 			"is_wildy": false,
 			"is_slayer_only": false,
 			"can_be_pked": false,
@@ -4578,6 +4732,7 @@
 					"Masori chaps (f)": 3
 				},
 				{
+					"Aranea boots": 10,
 					"Ring of stone": 10
 				}
 			],
@@ -5217,7 +5372,7 @@
 		{
 			"id": 14009,
 			"name": "The Hueycoatl",
-			"base_kill_time_ms": 480000,
+			"base_kill_time_ms": 360000,
 			"respawn_time_ms": 2000,
 			"is_wildy": false,
 			"is_slayer_only": false,

@@ -1,7 +1,7 @@
-import { Time, sumArr } from 'e';
+import { sumArr, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import type { Skills } from '../../types';
+import type { Skills } from '@/lib/types/index.js';
 
 interface Quest {
 	id: QuestID;
@@ -26,11 +26,16 @@ export enum QuestID {
 	PerilousMoons = 6,
 	AtFirstLight = 7,
 	TwilightsPromise = 8,
-	TheHeartofDarkness = 9,
+	TheHeartOfDarkness = 9,
 	DeathOnTheIsle = 10,
 	MeatAndGreet = 11,
 	EthicallyAcquiredAntiquities = 12,
-	WhileGuthixSleeps = 13
+	WhileGuthixSleeps = 13,
+	TheCurseOfArrav = 14,
+	TheFinalDawn = 15,
+	'Scrambled!' = 16,
+	ShadowsOfCustodia = 17,
+	TutorialIsland = 18
 }
 
 export const quests: Quest[] = [
@@ -214,7 +219,7 @@ export const quests: Quest[] = [
 		}
 	},
 	{
-		id: QuestID.TheHeartofDarkness,
+		id: QuestID.TheHeartOfDarkness,
 		qp: 2,
 		name: 'The Heart of Darkness',
 		skillsRewards: {
@@ -324,6 +329,130 @@ export const quests: Quest[] = [
 				duration += Time.Minute * 20;
 			}
 			return duration;
+		}
+	},
+	{
+		id: QuestID.TheCurseOfArrav,
+		qp: 2,
+		name: 'The Curse of Arrav',
+		prerequisitesQuests: [QuestID.DefenderOfVarrock],
+		qpReq: 180,
+		skillReqs: {
+			mining: 64,
+			ranged: 62,
+			thieving: 62,
+			agility: 61,
+			strength: 58,
+			slayer: 37
+		},
+		skillsRewards: {
+			mining: 40000,
+			thieving: 40000,
+			agility: 40000
+		},
+		calcTime: (user: MUser) => {
+			let duration = Time.Minute * 20;
+			if (user.combatLevel < 105) {
+				duration += Time.Minute * 5;
+			}
+			return duration;
+		}
+	},
+	{
+		id: QuestID.TheFinalDawn,
+		qp: 3,
+		name: 'The Final Dawn',
+		prerequisitesQuests: [QuestID.PerilousMoons, QuestID.TheHeartOfDarkness],
+		skillReqs: {
+			thieving: 66,
+			runecraft: 52,
+			fletching: 52
+		},
+		skillsRewards: {
+			thieving: 55_000,
+			runecraft: 25_000,
+			fletching: 25_000
+		},
+		rewards: new Bank().add(30960).add('Arkan blade'),
+		calcTime: (user: MUser) => {
+			let duration = Time.Minute * 40;
+			if (user.combatLevel < 85) {
+				duration += Time.Minute * 10;
+			}
+			return duration;
+		}
+	},
+	{
+		id: QuestID['Scrambled!'],
+		qp: 1,
+		name: 'Scrambled!',
+		prerequisitesQuests: [QuestID.ChildrenOfTheSun],
+		skillReqs: {
+			construction: 38,
+			cooking: 36,
+			smithing: 35
+		},
+		skillsRewards: {
+			construction: 5000,
+			cooking: 5000,
+			smithing: 5000
+		},
+		rewards: new Bank().add('Humphrey dumphrey'),
+		calcTime: () => {
+			return Time.Minute * 10;
+		}
+	},
+	{
+		id: QuestID.ShadowsOfCustodia,
+		qp: 2,
+		name: 'Shadows of Custodia',
+		prerequisitesQuests: [QuestID.ChildrenOfTheSun],
+		skillReqs: {
+			slayer: 54,
+			fishing: 45,
+			construction: 41,
+			hunter: 36
+		},
+		skillsRewards: {
+			slayer: 10_000,
+			hunter: 4000,
+			fishing: 3000,
+			construction: 3000
+		},
+		calcTime: (user: MUser) => {
+			let duration = Time.Minute * 8;
+			if (user.combatLevel < 50) {
+				duration += Time.Minute * 2;
+			}
+			return duration;
+		}
+	},
+	{
+		id: QuestID.TutorialIsland,
+		qp: 1,
+		name: 'Tutorial Island',
+		rewards: new Bank()
+			.add('Bronze Axe')
+			.add('Bronze pickaxe')
+			.add('Tinderbox')
+			.add('Small fishing net')
+			.add('Shrimps', 2)
+			.add('Bronze dagger')
+			.add('Bronze sword')
+			.add('Wooden Shield')
+			.add('Shortbow')
+			.add('Bronze arrow', 25)
+			.add('Air rune', 25)
+			.add('Mind rune', 15)
+			.add('Bucket')
+			.add('Pot')
+			.add('Bread')
+			.add('Water rune', 6)
+			.add('Earth rune', 4)
+			.add('Body rune', 2)
+			.add(995, 25),
+		calcTime: () => {
+			return Time.Minute * 7;
 		}
 	}
 ];

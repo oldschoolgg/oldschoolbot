@@ -1,16 +1,19 @@
-import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { Time, calcPercentOfNum, randInt } from 'e';
-import { Bank, ItemGroups, Items, Monsters, itemID } from 'oldschooljs';
+import { stringSearch } from '@oldschoolgg/toolkit';
+import { Bank, Monsters } from 'oldschooljs';
 
-import Fishing from '../../lib/skilling/skills/fishing';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { FishingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import type { OSBMahojiCommand } from '../lib/util';
+import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
+import {
+	anglerItemsArr,
+	type SharkLureQuantity,
+	sharkLureQuantities
+} from '@/lib/skilling/skills/fishing/fishingUtil.js';
+import type { FishingActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
+import { bankToStrShortNames, formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
-export const fishCommand: OSBMahojiCommand = {
+const FEATHER_PACK_SIZE = 100;
+
+export const fishCommand = defineCommand({
 	name: 'fish',
 	description: 'Send your minion to fish fish.',
 	attributes: {
@@ -20,11 +23,11 @@ export const fishCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The thing you want to fish.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return Fishing.Fishes.filter(i =>
 					!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 				).map(i => ({
@@ -34,179 +37,152 @@ export const fishCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to fish (optional).',
 			required: false,
 			min_value: 1
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
-			name: 'flakes',
-			description: 'Use spirit flakes?',
+			type: 'Boolean',
+			name: 'powerfish',
+			description: 'Powerfish for higher XP/hour at the cost of banking any loot.',
 			required: false
+		},
+		{
+			type: 'Boolean',
+			name: 'spirit_flakes',
+			description: 'Use Spirit flakes for a 50% chance at extra fish.',
+			required: false
+		},
+		{
+			type: 'Integer',
+			name: 'shark_lure',
+			description: 'Use Shark lures (Sharks only).',
+			required: false,
+			choices: sharkLureQuantities.map(value => ({ name: value.toString(), value }))
 		}
 	],
-	run: async ({
-		options,
-		userID,
-		channelID
-	}: CommandRunOptions<{ name: string; quantity?: number; flakes?: boolean }>) => {
-		const user = await mUserFetch(userID);
-		const fish = Fishing.Fishes.find(
-			fish =>
-				stringMatches(fish.id, options.name) ||
-				stringMatches(fish.name, options.name) ||
-				fish.alias?.some(alias => stringMatches(alias, options.name))
+	run: async ({ options, user, channelId }) => {
+		const spot = Fishing.Fishes.find(
+			fish => stringSearch(fish.name, options.name) || fish.alias?.includes(options.name.toLowerCase())
 		);
-		if (!fish) return 'Thats not a valid fish to catch.';
-
-		if (user.skillLevel(SkillsEnum.Fishing) < fish.level) {
-			return `${user.minionName} needs ${fish.level} Fishing to fish ${fish.name}.`;
+		if (!spot) {
+			return 'Thats not a valid spot you can fish at.';
 		}
 
-		if (fish.qpRequired) {
-			if (user.QP < fish.qpRequired) {
-				return `You need ${fish.qpRequired} qp to catch those!`;
-			}
+		if (!spot.subfishes || spot.subfishes.length === 0) {
+			return `${spot.name} is not supported yet.`;
 		}
 
-		if (
-			fish.name === 'Barbarian fishing' &&
-			(user.skillLevel(SkillsEnum.Agility) < 15 || user.skillLevel(SkillsEnum.Strength) < 15)
-		) {
-			return 'You need at least 15 Agility and Strength to do Barbarian Fishing.';
+		if (spot.skillReqs && !user.hasSkillReqs(spot.skillReqs)) {
+			return `To fish ${spot.name}, you need ${formatSkillRequirements(spot.skillReqs)}.`;
 		}
 
-		if (fish.name === 'Infernal eel') {
+		const minimumFishingLevel = Math.min(...spot.subfishes.map(sub => sub.level ?? 1));
+		if (user.skillsAsLevels.fishing < minimumFishingLevel) {
+			return `${user.minionName} needs ${minimumFishingLevel} Fishing to fish ${spot.name}.`;
+		}
+
+		if (spot.qpRequired && user.QP < spot.qpRequired) {
+			return `You need ${spot.qpRequired} qp to catch those!`;
+		}
+
+		if (spot.name === 'Infernal eel') {
 			const jadKC = await user.getKC(Monsters.TzTokJad.id);
 			if (jadKC === 0) {
 				return 'You are not worthy JalYt. Before you can fish Infernal Eels, you need to have defeated the mighty TzTok-Jad!';
 			}
 		}
 
-		if (fish.name === 'Minnow' && ItemGroups.anglerOutfit.some(_piece => !user.hasEquippedOrInBank(_piece))) {
+		if (spot.name === 'Minnow' && anglerItemsArr.some(piece => !user.hasEquippedOrInBank(piece.id))) {
 			return 'You need to own the Angler Outfit to fish for Minnows.';
 		}
 
-		// If no quantity provided, set it to the max.
-		let scaledTimePerFish =
-			Time.Second * fish.timePerFish * (1 + (100 - user.skillLevel(SkillsEnum.Fishing)) / 100);
-
-		const boosts = [];
-		switch (fish.bait) {
-			case itemID('Fishing bait'):
-				if (fish.name === 'Infernal eel') {
-					scaledTimePerFish *= 1;
-				} else if (user.hasEquipped('Pearl fishing rod') && fish.name !== 'Infernal eel') {
-					scaledTimePerFish *= 0.95;
-					boosts.push('5% for Pearl fishing rod');
-				}
-				break;
-			case itemID('Feather'):
-				if (fish.name === 'Barbarian fishing' && user.hasEquipped('Pearl barbarian rod')) {
-					scaledTimePerFish *= 0.95;
-					boosts.push('5% for Pearl barbarian rod');
-				} else if (user.hasEquipped('Pearl fly fishing rod') && fish.name !== 'Barbarian fishing') {
-					scaledTimePerFish *= 0.95;
-					boosts.push('5% for Pearl fly fishing rod');
-				}
-				break;
-			default:
-				if (user.hasEquipped('Crystal harpoon')) {
-					scaledTimePerFish *= 0.95;
-					boosts.push('5% for Crystal harpoon');
-				}
-				break;
+		const maxTripLength = await user.calcMaxTripLength('Fishing');
+		const hasWildyEliteDiary = user.hasDiary('wilderness.elite');
+		const sharkLureQuantity = (options.shark_lure ?? 0) as SharkLureQuantity;
+		if (sharkLureQuantity > 0 && spot.name !== 'Shark') {
+			return 'Shark lures can only be used while fishing Sharks.';
 		}
 
-		if (fish.id === itemID('Minnow')) {
-			scaledTimePerFish *= Math.max(
-				0.83,
-				-0.000_541_351 * user.skillLevel(SkillsEnum.Fishing) ** 2 +
-					0.089_066_3 * user.skillLevel(SkillsEnum.Fishing) -
-					2.681_53
-			);
-		}
-
-		if (user.allItemsOwned.has('Fish sack barrel') || user.allItemsOwned.has('Fish barrel')) {
-			boosts.push(
-				`+9 trip minutes for having a ${
-					user.allItemsOwned.has('Fish sack barrel') ? 'Fish sack barrel' : 'Fish barrel'
-				}`
-			);
-		}
-
-		const maxTripLength = calcMaxTripLength(user, 'Fishing');
-
-		let { quantity, flakes } = options;
-		if (!quantity) {
-			quantity = Math.floor(maxTripLength / scaledTimePerFish);
-		}
-		let flakesQuantity: number | undefined;
-		const cost = new Bank();
-
-		if (flakes) {
-			if (!user.bank.has('Spirit flakes')) {
-				return 'You need to have at least one spirit flake!';
-			}
-
-			flakesQuantity = Math.min(user.bank.amount('Spirit flakes'), quantity);
-			boosts.push(`More fish from using ${flakesQuantity}x Spirit flakes`);
-			cost.add('Spirit flakes', flakesQuantity);
-		}
-
-		if (fish.bait) {
-			const baseCost = new Bank().add(fish.bait);
-
-			const maxCanDo = user.bank.fits(baseCost);
-			if (maxCanDo === 0) {
-				return `You need ${Items.itemNameFromId(fish.bait)} to fish ${fish.name}!`;
-			}
-			if (maxCanDo < quantity) {
-				quantity = maxCanDo;
-			}
-
-			cost.add(fish.bait, quantity);
-		}
-
-		if (cost.length > 0) {
-			// Remove the bait and/or spirit flakes from their bank.
-			await user.removeItemsFromBank(cost);
-		}
-
-		let duration = quantity * scaledTimePerFish;
-
-		if (duration > maxTripLength) {
-			return `${user.minionName} can't go on trips longer than ${formatDuration(
-				maxTripLength
-			)}, try a lower quantity. The highest amount of ${fish.name} you can fish is ${Math.floor(
-				maxTripLength / scaledTimePerFish
-			)}.`;
-		}
-
-		const tenPercent = Math.floor(calcPercentOfNum(10, duration));
-		duration += randInt(-tenPercent, tenPercent);
-
-		await addSubTaskToActivityTask<FishingActivityTaskOptions>({
-			fishID: fish.id,
-			userID: user.id,
-			channelID: channelID.toString(),
-			quantity,
-			iQty: options.quantity ? options.quantity : undefined,
-			duration,
-			type: 'Fishing',
-			flakesQuantity
+		const result = Fishing.util.calcFishingTripStart({
+			gearBank: user.gearBank,
+			fish: spot,
+			maxTripLength,
+			quantityInput: options.quantity,
+			wantsToUseFlakes: Boolean(options.spirit_flakes),
+			powerfish: Boolean(options.powerfish),
+			hasWildyEliteDiary,
+			sharkLureQuantity
 		});
 
-		let response = `${user.minionName} is now fishing ${quantity}x ${fish.name}, it'll take around ${formatDuration(
-			duration
-		)} to finish.`;
+		if (typeof result === 'string') {
+			return result;
+		}
 
-		if (boosts.length > 0) {
-			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
+		if (result.featherPacksToOpen && result.featherPacksToOpen > 0) {
+			const packsToOpen = result.featherPacksToOpen;
+			try {
+				await user.transactItems({
+					itemsToRemove: new Bank().add('Feather pack', packsToOpen),
+					itemsToAdd: new Bank().add('Feather', packsToOpen * FEATHER_PACK_SIZE)
+				});
+			} catch (err) {
+				if (err instanceof Error) {
+					return err.message;
+				}
+				throw err;
+			}
+		}
+
+		if (result.suppliesToRemove.length > 0) {
+			try {
+				await user.transactItems({ itemsToRemove: result.suppliesToRemove });
+			} catch (err) {
+				if (err instanceof Error) {
+					return err.message;
+				}
+				throw err;
+			}
+		}
+
+		await ActivityManager.startTrip<FishingActivityTaskOptions>({
+			fishID: spot.name,
+			userID: user.id,
+			channelId,
+			quantity: result.quantity,
+			qty: result.catches,
+			loot: result.loot,
+			flakesToRemove: result.flakesBeingUsed,
+			blessingExtra: result.blessingExtra,
+			flakeExtra: result.flakeExtra,
+			powerfish: result.isPowerfishing,
+			spiritFlakes: result.isUsingSpiritFlakes,
+			spiritFlakePreference: result.spiritFlakePreference,
+			sharkLureQuantity: result.sharkLureQuantity,
+			sharkLuresToConsume: result.sharkLuresToConsume,
+			sharkLurePreference: result.sharkLurePreference,
+			usedBarbarianCutEat: result.usedBarbarianCutEat,
+			extraCatchRolls: result.extraCatchRolls,
+			iQty: options.quantity ? options.quantity : undefined,
+			duration: result.duration,
+			type: 'Fishing'
+		});
+
+		let response = `${user.minionName} is now fishing ${spot.name}, it'll take around ${formatTripDuration(user, result.duration)} to finish.`;
+		if (result.suppliesToRemove.length > 0) {
+			response += `\n\n**Used Supplies:** ${bankToStrShortNames(result.suppliesToRemove)}.`;
+		}
+
+		if ((result.sharkLureQuantity ?? 0) > 0 && result.sharkLuresToConsume) {
+			response += `\n\nUsing ${result.sharkLureQuantity}x Shark lures per catch (${result.sharkLuresToConsume.toLocaleString()} total).`;
+		}
+
+		if (result.boosts.length > 0) {
+			response += `\n\n**Boosts:** ${result.boosts.join(', ')}.`;
 		}
 
 		return response;
 	}
-};
+});

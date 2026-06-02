@@ -1,10 +1,10 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit';
 import { Monsters } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import killableMonsters from '../../src/lib/minions/data/killableMonsters';
-import { getItemCostFromConsumables } from '../../src/mahoji/lib/abstracted_commands/minionKill/handleConsumables';
-import { makeGearBank } from './utils';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { getItemCostFromConsumables } from '../../src/mahoji/lib/abstracted_commands/minionKill/handleConsumables.js';
+import { makeGearBank } from './utils.js';
 
 describe('getItemCostFromConsumables', () => {
 	test('getItemCostFromConsumables', () => {
@@ -22,9 +22,9 @@ describe('getItemCostFromConsumables', () => {
 				maxTripLength: Time.Hour,
 				slayerKillsRemaining: null
 			});
-			expect(consumablesCost?.itemCost!.amount('Stamina potion(4)')).toEqual(1 * 5);
-			expect(consumablesCost?.itemCost!.amount('Ruby dragon bolts (e)')).toEqual(1 * 100);
-			expect(consumablesCost?.finalQuantity).toEqual(1);
+			expect(consumablesCost.itemCost!.amount('Stamina potion(4)')).toEqual(1 * 5);
+			expect(consumablesCost.itemCost!.amount('Ruby dragon bolts (e)')).toEqual(1 * 100);
+			expect(consumablesCost.finalQuantity).toEqual(1);
 		}
 
 		const skotizo = killableMonsters.find(m => m.name === 'Skotizo')!;
@@ -38,8 +38,8 @@ describe('getItemCostFromConsumables', () => {
 			maxTripLength: Time.Hour,
 			slayerKillsRemaining: null
 		});
-		expect(consumablesCost2?.itemCost!.amount('Dark totem')).toEqual(5);
-		expect(consumablesCost2?.finalQuantity).toEqual(5);
+		expect(consumablesCost2.itemCost!.amount('Dark totem')).toEqual(5);
+		expect(consumablesCost2.finalQuantity).toEqual(5);
 	});
 
 	test('Hydra costs should always have a anti-venom', () => {

@@ -14,7 +14,7 @@ There are several boosts available which apply to all runes except blood and sou
 
 - 5% for [[agility:60]] **OR** 10% for [[agility:90]]
 - 10% for Graceful (equipped in any setup)
-- 1% for [Ring of endurance](../agility/hallowed-sepulchre.md#ring-of-endurance) (works from bank but must be charged)
+- 1% for [Ring of endurance](../agility/hallowed-sepulchre#ring-of-endurance) (works from bank but must be charged)
 - 3% for Runecrafting cape
 - 3% for Ring of the elements **(Combination runes only)**
 
@@ -85,7 +85,7 @@ It's recommended to equip a staff in your skilling setup to provide infinite run
 
 ## Tiaras
 
-Crafting tiaras is a method of runecrafting training, albeit a very slow one. Tiaras don't have any use within the bot, except for being stored in [STASH units](../construction/stash-units.md). They can be created through the [[/runecraft]] command.
+Crafting tiaras is a method of runecrafting training, albeit a very slow one. Tiaras don't have any use within the bot, except for being stored in [STASH units](../construction/stash-units). They can be created through the [[/runecraft]] command.
 
 Tiaras don't have any level requirements for creating them. However, some tiaras including Cosmic, Death, Law & Wrath tiaras require 5, 10, 10 & 200 Quest Points respectively.
 
@@ -110,34 +110,34 @@ Blood runes and Soul runes can be crafted at the Dark Altar using [[/runecraft]]
 
 ## Fastest Route to 99:
 
-[[/runecraft rune\:Air Rune quantity\:103]] (until [[runecraft:6]])  
-[[/runecraft rune\:Mist Rune quantity\:76]] (until [[runecraft:10]])  
-[[/runecraft rune\:Dust Rune quantity\:75]] (until [[runecraft:13]])  
-[[/runecraft rune\:Mud Rune quantity\:61]] (until [[runecraft:15]])  
-[[/runecraft rune\:Smoke Rune quantity\:164]] (until [[runecraft:19]])  
-[[/runecraft rune\:Steam Rune quantity\:232]] (until [[runecraft:23]])  
+[[/runecraft rune\:Air Rune quantity\:103]] (until [[runecraft:6]])
+[[/runecraft rune\:Mist Rune quantity\:76]] (until [[runecraft:10]])
+[[/runecraft rune\:Dust Rune quantity\:75]] (until [[runecraft:13]])
+[[/runecraft rune\:Mud Rune quantity\:61]] (until [[runecraft:15]])
+[[/runecraft rune\:Smoke Rune quantity\:164]] (until [[runecraft:19]])
+[[/runecraft rune\:Steam Rune quantity\:232]] (until [[runecraft:23]])
 [[/runecraft rune\:Lava Rune]] (repeat until [[runecraft:99]])
 
-**Materials Needed:**  
-1,241,520 Pure essence and 1000–2000 Binding necklaces  
-1,240,800 Earth rune, 293 Water rune, and 315 Air rune  
-(Abyssal sire drops Binding necklaces in quantities of 25)  
+**Materials Needed:**
+1,241,520 Pure essence and 1000–2000 Binding necklaces
+1,240,800 Earth rune, 293 Water rune, and 315 Air rune
+(Abyssal sire drops Binding necklaces in quantities of 25)
 This assumes you have a staff providing infinite fire runes in your skilling setup.
 
-**For each lap of Lava runes:**  
-1 Earth talisman or 2 Astral rune + 7 Fire rune + 7 Water rune for Magic Imbue ([[magic:82]]),  
+**For each lap of Lava runes:**
+1 Earth talisman or 2 Astral rune + 7 Fire rune + 7 Water rune for Magic Imbue ([[magic:82]]),
 1–2 charges from Ring of dueling(8), and sometimes a dose of Stamina potion(4).
 
 ### Alternative Route to 99 (more profitable):
 
-[[/runecraft rune\:Air Rune quantity\:17]]  
-[[/runecraft rune\:Mind Rune quantity\:56]]  
-[[/runecraft rune\:Water Rune quantity\:97]]  
-[[/runecraft rune\:Earth Rune quantity\:176]]  
-[[/runecraft rune\:Fire Rune quantity\:338]]  
-[[/runecraft rune\:Body Rune quantity\:4368]]  
-[[/runecraft rune\:Astral Rune]] – to [[runecraft:77]]  
-[[/runecraft rune\:Blood Rune]] – to [[runecraft:90]] (or 99)  
+[[/runecraft rune\:Air Rune quantity\:17]]
+[[/runecraft rune\:Mind Rune quantity\:56]]
+[[/runecraft rune\:Water Rune quantity\:97]]
+[[/runecraft rune\:Earth Rune quantity\:176]]
+[[/runecraft rune\:Fire Rune quantity\:338]]
+[[/runecraft rune\:Body Rune quantity\:4368]]
+[[/runecraft rune\:Astral Rune]] – to [[runecraft:77]]
+[[/runecraft rune\:Blood Rune]] – to [[runecraft:90]] (or 99)
 [[/runecraft rune\:Soul Rune]] – to whatever; this is best XP/hr at the Dark Altar!
 
 **Materials Needed:** 170,382 Pure essence

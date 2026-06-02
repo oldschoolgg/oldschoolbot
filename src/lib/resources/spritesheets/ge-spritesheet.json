@@ -1,0 +1,10 @@
+{
+	"ge_interface": [0, 0, 484, 304],
+	"ge_slot_active": [0, 304, 115, 110],
+	"ge_slot_locked": [115, 304, 115, 110],
+	"ge_slot_open": [230, 304, 115, 110],
+	"ge_progress_shadow": [345, 304, 105, 13],
+	"ge_slot_collection": [345, 317, 100, 74],
+	"ge_buy_mini_icon": [445, 317, 20, 18],
+	"ge_sell_mini_icon": [445, 335, 20, 18]
+}

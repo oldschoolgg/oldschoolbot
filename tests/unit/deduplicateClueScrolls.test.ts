@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { deduplicateClueScrolls } from '../../src/lib/clues/clueUtils';
+import { deduplicateClueScrolls } from '../../src/lib/clues/clueUtils.js';
 
 describe('deduplicateClueScrolls', () => {
 	test('If getting 500 easy clues and have 1 in bank, loot should be reduced to 99', () => {

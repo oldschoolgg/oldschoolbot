@@ -1,6 +1,6 @@
-import LootTable from '../../structures/LootTable';
+import LootTable from '../../structures/LootTable.js';
 
-export const RareTable = new LootTable()
+export const RareTable: LootTable = new LootTable()
 	.add('Black 2h sword')
 	.add('Black platebody')
 	.add('Black longsword')
@@ -20,7 +20,7 @@ export const RareTable = new LootTable()
 	.add('Black warhammer')
 	.add('Black scimitar');
 
-export const SuccessfulUniqueTable = new LootTable()
+export const SuccessfulUniqueTable: LootTable = new LootTable()
 	.add('Mole slippers')
 	.add('Frog slippers')
 	.add('Bear feet')
@@ -37,9 +37,9 @@ export const SuccessfulUniqueTable = new LootTable()
 	.add('Rune scimitar ornament kit (saradomin)')
 	.add('Rune scimitar ornament kit (zamorak)');
 
-export const UniqueTable = new LootTable().add('Cabbage').add(SuccessfulUniqueTable);
+export const UniqueTable: LootTable = new LootTable().add('Cabbage').add(SuccessfulUniqueTable);
 
-export const StandardTable = new LootTable()
+export const StandardTable: LootTable = new LootTable()
 	.add('Shrimps', [5, 14])
 	.add('Herring', [5, 9])
 	.add('Sardine', [5, 12])
@@ -82,5 +82,5 @@ export const StandardTable = new LootTable()
 	.add('Shortbow')
 	.add(RareTable);
 
-export const BeginnerClueTable = new LootTable().add(StandardTable, 1, 11).add(UniqueTable, 1, 1);
-export const BeginnerCasket = new LootTable().add(BeginnerClueTable, [1, 3]);
+export const BeginnerClueTable: LootTable = new LootTable().add(StandardTable, 1, 11).add(UniqueTable, 1, 1);
+export const BeginnerCasket: LootTable = new LootTable().add(BeginnerClueTable, [1, 3]);

@@ -1,10 +1,10 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import { GemTable } from '../../../subtables/RareDropTable';
-import RareSeedTable from '../../../subtables/RareSeedTable';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import RareSeedTable from '@/simulation/subtables/RareSeedTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const IorwerthArcherTable = new LootTable()
+const IorwerthArcherTable: LootTable = new LootTable()
 	.every('Bones')
 
 	/* Weapons and armour */
@@ -47,7 +47,7 @@ const IorwerthArcherTable = new LootTable()
 	.tertiary(50, 'Ensouled elf head')
 	.tertiary(128, 'Clue scroll (hard)');
 
-export default new SimpleMonster({
+export const IorwerthArcher: SimpleMonster = new SimpleMonster({
 	id: 3428,
 	name: 'Iorwerth Archer',
 	table: IorwerthArcherTable,

@@ -1,22 +1,21 @@
-import { Time, notEmpty, objectEntries } from 'e';
+import { dateFm } from '@oldschoolgg/discord';
+import { Emoji, getNextUTCReset, notEmpty, objectEntries, Time } from '@oldschoolgg/toolkit';
 
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { formatSkillRequirements } from '../../../lib/util';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { minionIsBusy } from '../../../lib/util/minionIsBusy';
+import { CONSTANTS } from '@/lib/constants.js';
+import type { SkillNameType } from '@/lib/skilling/types.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
+import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 export const tearsOfGuthixSkillReqs = {
-	[SkillsEnum.Firemaking]: 49,
-	[SkillsEnum.Crafting]: 20,
-	[SkillsEnum.Mining]: 20
+	firemaking: 49,
+	crafting: 20,
+	mining: 20
 };
 export const tearsOfGuthixIronmanReqs = {
-	[SkillsEnum.Smithing]: 49,
-	[SkillsEnum.Thieving]: 36,
-	[SkillsEnum.Slayer]: 35
+	smithing: 49,
+	thieving: 36,
+	slayer: 35
 };
 
 function getTearsOfGuthixMissingIronmanMessage(user: MUser): string | null {
@@ -24,8 +23,8 @@ function getTearsOfGuthixMissingIronmanMessage(user: MUser): string | null {
 
 	const skills = user.skillsAsLevels;
 	let skillsMatch = 0;
-	for (const [skill, level] of Object.entries(tearsOfGuthixIronmanReqs)) {
-		if (skills[skill as SkillsEnum] >= level) skillsMatch++;
+	for (const [skill, level] of Object.entries(tearsOfGuthixIronmanReqs) as [SkillNameType, number][]) {
+		if (skills[skill] >= level) skillsMatch++;
 	}
 
 	if (skillsMatch === 0) {
@@ -49,19 +48,15 @@ function getTearsOfGuthixMissingSkillMessage(user: MUser): string | null {
 	return missing.length > 0 ? `You need the following requirements: ${missing}.` : null;
 }
 
-export async function tearsOfGuthixCommand(user: MUser, channelID: string) {
-	if (minionIsBusy(user.id)) return `${user.minionName} is busy.`;
-	const currentDate = Date.now();
-
-	const currentStats = await user.fetchStats({ last_tears_of_guthix_timestamp: true });
-
+export async function tearsOfGuthixCommand(user: MUser, channelId: string) {
+	if (await user.minionIsBusy()) return `${user.minionName} is busy.`;
+	const currentStats = await user.fetchStats();
 	const lastPlayedDate = Number(currentStats.last_tears_of_guthix_timestamp);
-	const difference = currentDate - lastPlayedDate;
+	const nextReset = getNextUTCReset(lastPlayedDate, CONSTANTS.TEARS_OF_GUTHIX_CD);
 
 	// If they have already claimed a ToG in the past 7days
-	if (difference < Time.Day * 7) {
-		const duration = formatDuration(Date.now() - (lastPlayedDate + Time.Day * 7));
-		return `**${Emoji.Snake} Juna says...** You can drink from the Tears of Guthix in ${duration}.`;
+	if (Date.now() < nextReset) {
+		return `**${Emoji.Snake} Juna says...** You can drink from the Tears of Guthix in ${dateFm(new Date(nextReset))}`;
 	}
 
 	// 43 QP for the quest
@@ -81,10 +76,10 @@ export async function tearsOfGuthixCommand(user: MUser, channelID: string) {
 
 	const duration = Math.min(Time.Minute * 2 + Time.Second * 0.6 * userQP, Time.Minute * 30);
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		minigameID: 'tears_of_guthix',
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity: 1,
 		duration,
 		type: 'TearsOfGuthix'
@@ -92,5 +87,5 @@ export async function tearsOfGuthixCommand(user: MUser, channelID: string) {
 
 	return `${
 		user.minionName
-	} is now off to visit Juna and drink from the Tears of Guthix, their trip will take ${formatDuration(duration)}.`;
+	} is now off to visit Juna and drink from the Tears of Guthix, their trip will return in about ${formatTripDuration(user, duration)}.`;
 }

@@ -18,7 +18,7 @@ Contributors are allowed to merge PRs/changes to the wiki without approval.
 
 ## Running the wiki locally
 
-1. Install the bot - see [setup guide](https://github.com/oldschoolgg/oldschoolbot/blob/master/SETUP.md)
+1. Install the bot - see [setup guide](https://github.com/oldschoolgg/oldschoolbot/blob/master/SETUP)
 2. `cd docs`
 3. `pnpm dev`
 
@@ -34,13 +34,31 @@ This section shows ways you can format things
 
 ### Items
 
+[[Twisted bow?raw]]
+
+[[28820]]
+
+Raw Image [[Orange?raw]]
+
 `[[Twisted bow]]`
 [[Twisted bow]]
 
 `[[Remy]]`
 [[Remy]]
 
-Items can appear in the middle of text [[Twisted bow]] Items can [[Coal]] appear in the middle of text Items can appear in the middle [[Egg]] of text
+Items can appear in the middle of text [[Twisted bow]] Items can [[Coal]] appear in the middle of text Items can appear in the middle [[Dwarven warhammer]] of text
+
+### Auto Page Links
+
+[[Nihiliz]]
+[[Marimbo's Monkey Rumble]]
+[[Depths of Atlantis]]
+[[Dungeoneering]]
+[[Emerged Zuk Inferno]]
+[[Vasa Magus]]
+
+Link to specific subheader:
+[[Vasa Magus#loot]]
 
 ### Discord Commands
 
@@ -132,3 +150,10 @@ These are here for debugging/testing purposes.
 A command mention [[/gear equip gear_setup\:Melee auto\:melee_strength]] in the middle of some text
 
 This is [Testing](/) [links](/) in the [middle](/) of some [text](/) test
+
+
+## Contributors
+
+[[DayV-git#small]]
+
+[[gc]]

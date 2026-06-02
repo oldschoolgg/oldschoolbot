@@ -1,20 +1,21 @@
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit';
 
-import { getMinigameEntity } from '../../../lib/settings/settings';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
-export async function castleWarsStartCommand(user: MUser, channelID: string) {
-	if (user.minionIsBusy) return `${user.minionName} is busy.`;
-	const gameLength = Time.Minute * 18;
-	const quantity = Math.floor(calcMaxTripLength(user, 'CastleWars') / gameLength);
+export async function castleWarsStartCommand(user: MUser, channelId: string, quantity?: number) {
+	if (await user.minionIsBusy()) return `${user.minionName} is busy.`;
+	const gameLength = Time.Minute * 20;
+	const userMaxGames = Math.floor((await user.calcMaxTripLength('CastleWars')) / gameLength);
+	if (!quantity || quantity > userMaxGames) {
+		quantity = userMaxGames;
+	}
+
 	const duration = quantity * gameLength;
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		duration,
 		type: 'CastleWars',
 		quantity,
@@ -23,11 +24,12 @@ export async function castleWarsStartCommand(user: MUser, channelID: string) {
 
 	return `${
 		user.minionName
-	} is now doing ${quantity} games of Castle Wars. The trip will take around ${formatDuration(duration)}.`;
+	} is now doing ${quantity} games of Castle Wars. The trip will return in about around ${formatTripDuration(user, duration)}.`;
 }
 export async function castleWarsStatsCommand(user: MUser) {
 	const { bank } = user;
-	const kc = await getMinigameEntity(user.id);
+	const kc = await user.fetchMinigameScore('castle_wars');
 	return `You have **${bank.amount('Castle wars ticket')}** Castle wars tickets.
-You have played ${kc.castle_wars} Castle Wars games.`;
+You have **${bank.amount('Castle wars supply crate')}** Castle wars supply crates.
+You have played ${kc} Castle Wars games.`;
 }

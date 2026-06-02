@@ -1,8 +1,8 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import { CaveHorrorPreTable } from '../low/a-f/CaveHorror';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
+import { CaveHorrorPreTable } from '../low/a-f/CaveHorror.js';
 
-const CaveAbominationTable = new LootTable()
+const CaveAbominationTable: LootTable = new LootTable()
 	.every('Big bones')
 	.every('Ensouled horror head')
 	.every(CaveHorrorPreTable, 3)
@@ -16,7 +16,7 @@ const CaveAbominationTable = new LootTable()
 	.tertiary(783, 'Eternal gem')
 	.tertiary(783, 'Imbued heart');
 
-export default new SimpleMonster({
+export const CaveAbomination: SimpleMonster = new SimpleMonster({
 	id: 7401,
 	name: 'Cave abomination',
 	table: CaveAbominationTable,

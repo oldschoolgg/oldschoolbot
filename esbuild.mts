@@ -1,54 +1,33 @@
-import path from 'node:path';
-import { build } from 'esbuild';
+import { type BuildOptions, build } from 'esbuild';
 
-const external = [
-	'skia-canvas',
-	'@prisma/robochimp',
-	'@prisma/client',
-	'bufferutil',
-	'oldschooljs',
-	'discord.js',
-	'node-fetch',
-	'piscina'
-];
-
-build({
-	entryPoints: ['src/index.ts'],
-	sourcemap: 'inline',
-	minify: true,
-	legalComments: 'none',
-	outdir: './dist',
-	logLevel: 'error',
+const baseBuildOptions: BuildOptions = {
 	bundle: true,
+	format: 'esm',
+	legalComments: 'none',
 	platform: 'node',
 	loader: {
 		'.node': 'file'
 	},
-	external,
-	alias: {
-		'@': path.resolve(import.meta.dirname, './src')
-	}
+	target: 'node24.8.0',
+	sourcemap: 'inline',
+	minify: false,
+	metafile: true,
+	packages: 'external'
+};
+
+build({
+	...baseBuildOptions,
+	entryPoints: ['src/index.ts'],
+	outdir: './dist'
 });
 
 // Workers
 build({
+	...baseBuildOptions,
 	entryPoints: [
 		'src/lib/workers/kill.worker.ts',
 		'src/lib/workers/finish.worker.ts',
 		'src/lib/workers/casket.worker.ts'
 	],
-	sourcemap: 'inline',
-	logLevel: 'error',
-	bundle: true,
-	minify: true,
-	legalComments: 'none',
-	outdir: './dist/lib/workers',
-	platform: 'node',
-	loader: {
-		'.node': 'file'
-	},
-	external,
-	alias: {
-		'@': path.resolve(import.meta.dirname, './src')
-	}
+	outdir: './dist/lib/workers'
 });

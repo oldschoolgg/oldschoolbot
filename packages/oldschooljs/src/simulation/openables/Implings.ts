@@ -1,12 +1,12 @@
-import LootTable from '../../structures/LootTable';
-import SimpleOpenable from '../../structures/SimpleOpenable';
-import { EasyClueTable } from '../clues/Easy';
-import { EliteClueTable } from '../clues/Elite';
-import { HardClueTable } from '../clues/Hard';
-import { MasterClueTable } from '../clues/Master';
-import { MediumClueTable } from '../clues/Medium';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
+import { EasyClueTable } from '../clues/Easy.js';
+import { EliteClueTable } from '../clues/Elite.js';
+import { HardClueTable } from '../clues/Hard.js';
+import { MasterClueTable } from '../clues/Master.js';
+import { MediumClueTable } from '../clues/Medium.js';
 
-export const BabyImpling = new SimpleOpenable({
+export const BabyImpling: SimpleOpenable = new SimpleOpenable({
 	id: 11_238,
 	name: 'Baby impling',
 	aliases: ['baby impling', 'baby imp', 'baby'],
@@ -35,7 +35,7 @@ export const BabyImpling = new SimpleOpenable({
 		.tertiary(100, 'Clue scroll (easy)')
 });
 
-export const YoungImpling = new SimpleOpenable({
+export const YoungImpling: SimpleOpenable = new SimpleOpenable({
 	id: 11_240,
 	name: 'Young impling',
 	aliases: ['young impling', 'young imp', 'young'],
@@ -63,7 +63,7 @@ export const YoungImpling = new SimpleOpenable({
 		.tertiary(50, 'Clue scroll (easy)')
 });
 
-export const GourmetImpling = new SimpleOpenable({
+export const GourmetImpling: SimpleOpenable = new SimpleOpenable({
 	id: 11_242,
 	name: 'Gourmet impling',
 	aliases: ['gourmet impling', 'gourmet imp', 'gourmet'],
@@ -90,7 +90,7 @@ export const GourmetImpling = new SimpleOpenable({
 		.tertiary(25, 'Clue scroll (easy)')
 });
 
-export const EarthImpling = new SimpleOpenable({
+export const EarthImpling: SimpleOpenable = new SimpleOpenable({
 	id: 11_244,
 	name: 'Earth impling',
 	aliases: ['earth impling', 'earth imp', 'earth'],
@@ -117,7 +117,7 @@ export const EarthImpling = new SimpleOpenable({
 		.tertiary(100, 'Clue scroll (medium)')
 });
 
-export const EssenceImpling = new SimpleOpenable({
+export const EssenceImpling: SimpleOpenable = new SimpleOpenable({
 	id: 11_246,
 	name: 'Essence impling',
 	aliases: ['essence impling', 'essence imp', 'essence'],
@@ -144,7 +144,7 @@ export const EssenceImpling = new SimpleOpenable({
 		.tertiary(50, 'Clue scroll (medium)')
 });
 
-export const EclecticImpling = new SimpleOpenable({
+export const EclecticImpling: SimpleOpenable = new SimpleOpenable({
 	id: 11_248,
 	name: 'Eclectic impling',
 	aliases: ['eclectic impling', 'eclectic imp', 'ecl', 'eclectic'],
@@ -171,7 +171,7 @@ export const EclecticImpling = new SimpleOpenable({
 		.tertiary(25, 'Clue scroll (medium)')
 });
 
-export const NatureImpling = new SimpleOpenable({
+export const NatureImpling: SimpleOpenable = new SimpleOpenable({
 	id: 11_250,
 	name: 'Nature impling',
 	aliases: ['nature impling', 'nature imp', 'nature'],
@@ -198,7 +198,7 @@ export const NatureImpling = new SimpleOpenable({
 		.tertiary(100, 'Clue scroll (hard)')
 });
 
-export const MagpieImpling = new SimpleOpenable({
+export const MagpieImpling: SimpleOpenable = new SimpleOpenable({
 	id: 11_252,
 	name: 'Magpie impling',
 	aliases: ['magpie impling', 'magpie imp', 'magpie'],
@@ -226,7 +226,7 @@ export const MagpieImpling = new SimpleOpenable({
 		.tertiary(50, 'Clue scroll (hard)')
 });
 
-export const NinjaImpling = new SimpleOpenable({
+export const NinjaImpling: SimpleOpenable = new SimpleOpenable({
 	id: 11_254,
 	name: 'Ninja impling',
 	aliases: ['ninja impling', 'ninja imp', 'ninja'],
@@ -253,14 +253,14 @@ export const NinjaImpling = new SimpleOpenable({
 		.tertiary(25, 'Clue scroll (hard)')
 });
 
-export const CrystalImpling = new SimpleOpenable({
+export const CrystalImpling: SimpleOpenable = new SimpleOpenable({
 	id: 23_768,
 	name: 'Crystal impling',
 	aliases: ['crystal impling', 'crystal imp', 'crystal'],
 	table: new LootTable()
 		.add('Amulet of power', [5, 7])
 		.add('Crystal acorn')
-		.add('Crystal shard', [5, 10])
+		.add('Crystal shard', [30, 40])
 		.add('Dragonstone amulet')
 		.add('Dragonstone', 2)
 		.add('Ruby bolt tips', [50, 125])
@@ -280,7 +280,7 @@ export const CrystalImpling = new SimpleOpenable({
 		.tertiary(128, 'Elven signet')
 });
 
-export const DragonImpling = new SimpleOpenable({
+export const DragonImpling: SimpleOpenable = new SimpleOpenable({
 	id: 11_256,
 	name: 'Dragon impling',
 	aliases: ['dragon impling', 'dragon imp', 'dimp', 'dragon'],
@@ -307,7 +307,7 @@ export const DragonImpling = new SimpleOpenable({
 		.tertiary(50, 'Clue scroll (elite)')
 });
 
-export const LuckyImpling = new SimpleOpenable({
+export const LuckyImpling: SimpleOpenable = new SimpleOpenable({
 	id: 19_732,
 	name: 'Lucky impling',
 	aliases: ['lucky impling', 'lucky imp', 'lucky', 'luckys'],
@@ -319,7 +319,7 @@ export const LuckyImpling = new SimpleOpenable({
 		.add(MasterClueTable)
 });
 
-export const Implings = [
+export const Implings: SimpleOpenable[] = [
 	BabyImpling,
 	YoungImpling,
 	GourmetImpling,

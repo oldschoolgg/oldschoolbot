@@ -1,8 +1,8 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import { GemTable } from '../../../subtables/RareDropTable';
-import RareSeedTable from '../../../subtables/RareSeedTable';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import RareSeedTable from '@/simulation/subtables/RareSeedTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const CaveKrakenTable = new LootTable({ limit: 400 })
 
@@ -55,7 +55,7 @@ const CaveKrakenTable = new LootTable({ limit: 400 })
 	.tertiary(100, 'Clue scroll (hard)')
 	.tertiary(1200, 'Clue scroll (elite)');
 
-export default new SimpleMonster({
+export const CaveKraken: SimpleMonster = new SimpleMonster({
 	id: 492,
 	name: 'Cave Kraken',
 	table: CaveKrakenTable,

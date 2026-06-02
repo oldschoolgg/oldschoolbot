@@ -1,5 +1,5 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const ReanimatedGoblin = new SimpleMonster({
 	id: 7018,
@@ -162,7 +162,7 @@ const ReanimatedDragon = new SimpleMonster({
 	aliases: ['reanimated dragon']
 });
 
-export const ReanimatedMonsters = {
+export const ReanimatedMonsters: Record<string, SimpleMonster> = {
 	ReanimatedGoblin,
 	ReanimatedMonkey,
 	ReanimatedImp,

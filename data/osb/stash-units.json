@@ -1,0 +1,819 @@
+{
+	"beginner": {
+		"tier": "Beginner",
+		"cost": {
+			"960": 2
+		},
+		"construction_level": 12,
+		"xp": 150,
+		"units": [
+			{
+				"id": 1,
+				"desc": "Gypsy Aris's tent",
+				"items": ["Gold necklace", "Gold ring"]
+			},
+			{
+				"id": 2,
+				"desc": "Bob's Brilliant Axes in Lumbridge",
+				"items": ["Bronze axe", "Leather boots"]
+			},
+			{
+				"id": 3,
+				"desc": "Iffie Nitter in Varrock",
+				"items": ["Chef's hat", "Red cape"]
+			}
+		]
+	},
+	"easy": {
+		"tier": "Easy",
+		"cost": {
+			"960": 2
+		},
+		"construction_level": 27,
+		"xp": 150,
+		"units": [
+			{
+				"id": 4,
+				"desc": "Near a shed in Lumbridge Swamp (entrance to Zanaris)",
+				"items": ["Bronze dagger", "Gold ring", "Iron full helm"]
+			},
+			{
+				"id": 5,
+				"desc": "Draynor Village market (next to a bench)",
+				"items": ["Iron kiteshield", "Steel longsword", "Studded chaps"]
+			},
+			{
+				"id": 6,
+				"desc": "Outside the Legends' Guild gates (east)",
+				"items": ["Emerald amulet", "Iron platelegs", "Oak longbow"]
+			},
+			{
+				"id": 7,
+				"desc": "Near the Entrana ferry in Port Sarim",
+				"items": ["Coif", "Sapphire necklace", "Steel plateskirt"]
+			},
+			{
+				"id": 8,
+				"desc": "Draynor Manor by the fountain (south)",
+				"items": ["Bronze full helm", "Iron platebody", "Studded chaps"]
+			},
+			{
+				"id": 9,
+				"desc": "Crossroads north of Draynor Village",
+				"items": ["Iron chainbody", "Longbow", "Sapphire ring"]
+			},
+			{
+				"id": 10,
+				"desc": "Varrock Palace Library (in the south-east corner)",
+				"items": ["Green robe top", "Ham robe", "Iron warhammer"]
+			},
+			{
+				"id": 11,
+				"desc": "Outside the Falador Party Room entrance",
+				"items": ["Iron plateskirt", "Steel full helm", "Steel platebody"]
+			},
+			{
+				"id": 12,
+				"desc": "Catherby beehive field",
+				"items": ["Desert shirt", "Green robe bottoms", "Steel axe"]
+			},
+			{
+				"id": 13,
+				"desc": "Road junction north of Rimmington",
+				"items": ["Cream robe top", "Green hat", "Leather chaps"]
+			},
+			{
+				"id": 14,
+				"desc": "Outside Keep Le Faye (west of the entrance, north of Legends' Guild)",
+				"items": ["Coif", "Iron platebody", "Leather gloves"]
+			},
+			{
+				"id": 15,
+				"desc": "Outside the Digsite Exam Centre (next to the urn)",
+				"items": ["Green boots", "Leather gloves", "White apron"]
+			},
+			{
+				"id": 16,
+				"desc": "Mubariz's room at the Emir's Arena (inside the ticket office, west of the arena)",
+				"items": ["Coif", "Iron chainbody", "Leather chaps"]
+			},
+			{
+				"id": 17,
+				"desc": "Near Herquin's Gems shop in Falador (outside)",
+				"items": ["Black platebody", "Iron kiteshield", "Mithril pickaxe"]
+			},
+			{
+				"id": 18,
+				"desc": "Aubury's shop in Varrock (inside)",
+				"items": ["Air tiara", "Staff of water"]
+			},
+			{
+				"id": 19,
+				"desc": "On the bridge to the Misthalin Wizards' Tower",
+				"items": ["Emerald ring", "Iron med helm", "White apron"]
+			},
+			{
+				"id": 20,
+				"desc": "Limestone mine (Silvarea mine, east of the Lumber Yard)",
+				"items": ["Bronze platelegs", "Steel med helm", "Steel pickaxe"]
+			},
+			{
+				"id": 21,
+				"desc": "Mudskipper Point (south-west of the fairy ring AIQ)",
+				"items": ["Black cape", "Leather chaps", "Steel mace"]
+			},
+			{
+				"id": 22,
+				"desc": "Al Kharid scorpion mine",
+				"items": ["Desert shirt", "Leather boots", "Leather gloves"]
+			},
+			{
+				"id": 23,
+				"desc": "Wheat field near the Lumbridge windmill",
+				"items": ["Blue robe top", "Oak shortbow", "Turquoise robe bottoms"]
+			},
+			{
+				"id": 24,
+				"desc": "Rimmington mine (centre)",
+				"items": ["Bronze spear", "Gold necklace", "Gold ring"]
+			},
+			{
+				"id": 25,
+				"desc": "Upstairs in Ardougne windmill",
+				"items": ["Blue robe top", "Ham robe", "Tiara"]
+			},
+			{
+				"id": 26,
+				"desc": "Taverley Stone Circle",
+				"items": ["Blue wizard hat", "Bronze 2h sword", "Ham boots"]
+			},
+			{
+				"id": 27,
+				"desc": "Near the parrots in Ardougne Zoo (near Parroty Pete)",
+				"items": ["Bronze platelegs", "Staff", "Studded body"]
+			},
+			{
+				"id": 28,
+				"desc": "Outside the Fishing Guild entrance",
+				"items": ["Bronze chainbody", "Emerald ring", "Sapphire amulet"]
+			},
+			{
+				"id": 29,
+				"desc": "Road junction south of Sinclair Mansion",
+				"items": ["Blue wizard robe", "Iron scimitar", "Leather cowl"]
+			},
+			{
+				"id": 30,
+				"desc": "Near the Sawmill operator's booth",
+				"items": ["Bronze axe", "Hardleather body", "Leather chaps"]
+			},
+			{
+				"id": 31,
+				"desc": "Outside Varrock Palace courtyard (next to the entrance)",
+				"items": ["Black axe", "Coif", "Ruby ring"]
+			},
+			{
+				"id": 32,
+				"desc": "South of the Grand Exchange",
+				"items": ["Body tiara", "Pink robe top", "Pink skirt"]
+			}
+		]
+	},
+	"medium": {
+		"tier": "Medium",
+		"cost": {
+			"8778": 2
+		},
+		"construction_level": 42,
+		"xp": 250,
+		"units": [
+			{
+				"id": 33,
+				"desc": "Centre of Canifis",
+				"items": ["Green robe top", "Iron 2h sword", "Mithril platelegs"]
+			},
+			{
+				"id": 34,
+				"desc": "East of Barbarian Village bridge",
+				"items": ["Mithril full helm", "Purple gloves", "Steel kiteshield"]
+			},
+			{
+				"id": 35,
+				"desc": "Castle Wars bank",
+				"items": [
+					"Mithril scimitar",
+					"Ruby amulet",
+					[
+						"Team-1 cape",
+						"Team-10 cape",
+						"Team-11 cape",
+						"Team-12 cape",
+						"Team-13 cape",
+						"Team-14 cape",
+						"Team-15 cape",
+						"Team-16 cape",
+						"Team-17 cape",
+						"Team-18 cape",
+						"Team-19 cape",
+						"Team-2 cape",
+						"Team-20 cape",
+						"Team-21 cape",
+						"Team-22 cape",
+						"Team-23 cape",
+						"Team-24 cape",
+						"Team-25 cape",
+						"Team-26 cape",
+						"Team-27 cape",
+						"Team-28 cape",
+						"Team-29 cape",
+						"Team-3 cape",
+						"Team-30 cape",
+						"Team-31 cape",
+						"Team-32 cape",
+						"Team-33 cape",
+						"Team-34 cape",
+						"Team-35 cape",
+						"Team-36 cape",
+						"Team-37 cape",
+						"Team-38 cape",
+						"Team-39 cape",
+						"Team-4 cape",
+						"Team-40 cape",
+						"Team-41 cape",
+						"Team-42 cape",
+						"Team-43 cape",
+						"Team-44 cape",
+						"Team-45 cape",
+						"Team-46 cape",
+						"Team-47 cape",
+						"Team-48 cape",
+						"Team-49 cape",
+						"Team-5 cape",
+						"Team-50 cape",
+						"Team-6 cape",
+						"Team-7 cape",
+						"Team-8 cape",
+						"Team-9 cape"
+					]
+				]
+			},
+			{
+				"id": 36,
+				"desc": "Gnome Stronghold balancing rope",
+				"items": ["Green d'hide chaps", "Ring of forging", "Steel kiteshield"]
+			},
+			{
+				"id": 37,
+				"desc": "Observatory",
+				"items": ["Green d'hide chaps", "Mithril chainbody", "Ruby amulet"]
+			},
+			{
+				"id": 38,
+				"desc": "Digsite",
+				"items": ["Green hat", "Iron pickaxe", "Snakeskin boots"]
+			},
+			{
+				"id": 40,
+				"desc": "Outside Catherby bank",
+				"items": ["Green d'hide chaps", "Iron med helm", "Maple longbow"]
+			},
+			{
+				"id": 41,
+				"desc": "Outside Harry's Fishing Shop in Catherby",
+				"items": ["Adamant sq shield", "Bone dagger", "Mithril platebody"]
+			},
+			{
+				"id": 42,
+				"desc": "North of Evil Dave's house in Edgeville",
+				"items": ["Brown apron", "Leather boots", "Leather gloves"]
+			},
+			{
+				"id": 43,
+				"desc": "Entrance of the Arceuus library",
+				"items": ["Adamant boots", "Adamant dagger", "Blue d'hide vambraces"]
+			},
+			{
+				"id": 44,
+				"desc": "North of Mount Karuulm",
+				"items": ["Adamant warhammer", "Mithril boots", "Ring of life"]
+			},
+			{
+				"id": 45,
+				"desc": "Mausoleum off the Morytania coast",
+				"items": ["Maple longbow", "Mithril plateskirt"]
+			},
+			{
+				"id": 46,
+				"desc": "South of the shrine in Tai Bwo Wannai Village",
+				"items": ["Green d'hide chaps", "Mithril med helm", "Ring of dueling(8)"]
+			},
+			{
+				"id": 47,
+				"desc": "Barbarian Outpost obstacle course (centre)",
+				"items": [
+					"Maple shortbow",
+					"Steel platebody",
+					[
+						"Team-1 cape",
+						"Team-10 cape",
+						"Team-11 cape",
+						"Team-12 cape",
+						"Team-13 cape",
+						"Team-14 cape",
+						"Team-15 cape",
+						"Team-16 cape",
+						"Team-17 cape",
+						"Team-18 cape",
+						"Team-19 cape",
+						"Team-2 cape",
+						"Team-20 cape",
+						"Team-21 cape",
+						"Team-22 cape",
+						"Team-23 cape",
+						"Team-24 cape",
+						"Team-25 cape",
+						"Team-26 cape",
+						"Team-27 cape",
+						"Team-28 cape",
+						"Team-29 cape",
+						"Team-3 cape",
+						"Team-30 cape",
+						"Team-31 cape",
+						"Team-32 cape",
+						"Team-33 cape",
+						"Team-34 cape",
+						"Team-35 cape",
+						"Team-36 cape",
+						"Team-37 cape",
+						"Team-38 cape",
+						"Team-39 cape",
+						"Team-4 cape",
+						"Team-40 cape",
+						"Team-41 cape",
+						"Team-42 cape",
+						"Team-43 cape",
+						"Team-44 cape",
+						"Team-45 cape",
+						"Team-46 cape",
+						"Team-47 cape",
+						"Team-48 cape",
+						"Team-49 cape",
+						"Team-5 cape",
+						"Team-50 cape",
+						"Team-6 cape",
+						"Team-7 cape",
+						"Team-8 cape",
+						"Team-9 cape"
+					]
+				]
+			},
+			{
+				"id": 48,
+				"desc": "Outside Yanille bank (by the entrance to the Wizards' Guild)",
+				"items": ["Adamant med helm", "Brown apron", "Snakeskin chaps"]
+			},
+			{
+				"id": 49,
+				"desc": "Ogre cage in the Ardougne Training Camp",
+				"items": ["Green d'hide body", "Green d'hide chaps", "Steel sq shield"]
+			},
+			{
+				"id": 50,
+				"desc": "Hickton's Archery Emporium",
+				"items": ["Blue boots", "Hardleather body", "Silver sickle"]
+			},
+			{
+				"id": 51,
+				"desc": "Lumbridge Swamp Caves",
+				"items": ["Amulet of power", "Bronze full helm", "Staff of air"]
+			},
+			{
+				"id": 52,
+				"desc": "Outside the Seers' Village courthouse",
+				"items": ["Adamant halberd", "Diamond ring", "Mystic robe bottom"]
+			},
+			{
+				"id": 53,
+				"desc": "TzHaar weapons store",
+				"items": ["Blue d'hide body", "Mystic gloves", "Steel longsword"]
+			},
+			{
+				"id": 54,
+				"desc": "North of the Shayzien Combat Ring",
+				"items": ["Adamant full helm", "Adamant platebody", "Adamant platelegs"]
+			},
+			{
+				"id": 55,
+				"desc": "Outside Draynor Village jail",
+				"items": ["Adamant plateskirt", "Adamant sword", "Sapphire amulet"]
+			}
+		]
+	},
+	"hard": {
+		"tier": "Hard",
+		"cost": {
+			"8780": 2
+		},
+		"construction_level": 55,
+		"xp": 400,
+		"units": [
+			{
+				"id": 56,
+				"desc": "Chaos Temple in the south-eastern Wilderness",
+				"items": ["Blue d'hide vambraces", "Iron platebody", "Rune platelegs"]
+			},
+			{
+				"id": 57,
+				"desc": "Top floor of the Lighthouse",
+				"items": ["Blue d'hide body", "Blue d'hide vambraces"]
+			},
+			{
+				"id": 58,
+				"desc": "Noterazzo's shop in the Wilderness",
+				"items": ["Adamant sq shield", "Blue d'hide vambraces", "Rune pickaxe"]
+			},
+			{
+				"id": 59,
+				"desc": "Mountain Camp goat enclosure",
+				"items": ["Blue d'hide chaps", "Fire battlestaff", "Rune full helm"]
+			},
+			{
+				"id": 60,
+				"desc": "Shilo Village bank",
+				"items": ["Bone spear", "Mystic hat", "Rune platebody"]
+			},
+			{
+				"id": 61,
+				"desc": "North-east corner of the Kharazi Jungle",
+				"items": [
+					[
+						"Ancient stole",
+						"Armadyl stole",
+						"Bandos stole",
+						"Guthix stole",
+						"Saradomin stole",
+						"Zamorak stole"
+					],
+					["Rune shield (h1)", "Rune shield (h2)", "Rune shield (h3)", "Rune shield (h4)", "Rune shield (h5)"]
+				]
+			},
+			{
+				"id": 62,
+				"desc": "In the middle of Jiggig",
+				"items": [
+					["Rune helm (h1)", "Rune helm (h2)", "Rune helm (h3)", "Rune helm (h4)", "Rune helm (h5)"],
+					"Rune platelegs",
+					"Rune spear"
+				]
+			},
+			{
+				"id": 63,
+				"desc": "Hosidius Mess (inside, north-east corner)",
+				"items": ["Amulet of strength", "Rune halberd", "Rune platebody"]
+			},
+			{
+				"id": 64,
+				"desc": "Fishing Guild bank",
+				"items": ["Blue d'hide chaps", "Elemental shield", "Rune warhammer"]
+			},
+			{
+				"id": 65,
+				"desc": "Outside the great pyramid of Sophanem",
+				"items": ["Adamant 2h sword", "Amulet of glory", "Ring of life"]
+			},
+			{
+				"id": 66,
+				"desc": "West side of the Karamja banana plantation",
+				"items": ["Amulet of power", "Diamond ring"]
+			},
+			{
+				"id": 67,
+				"desc": "Gnome Glider on White Wolf Mountain",
+				"items": ["Mithril platelegs", "Ring of life", "Rune axe"]
+			},
+			{
+				"id": 68,
+				"desc": "Inside the Digsite Exam Centre",
+				"items": ["Diamond bracelet", "Mystic fire staff", "Rune boots"]
+			},
+			{
+				"id": 69,
+				"desc": "Volcano in the north-eastern Wilderness",
+				"items": [
+					[
+						"Ancient crozier",
+						"Armadyl crozier",
+						"Bandos crozier",
+						"Guthix crozier",
+						"Saradomin crozier",
+						"Zamorak crozier"
+					],
+					[
+						"Black headband",
+						"Blue headband",
+						"Brown headband",
+						"Gold headband",
+						"Green headband",
+						"Pink headband",
+						"Red headband",
+						"White headband"
+					]
+				]
+			},
+			{
+				"id": 70,
+				"desc": "Agility Pyramid",
+				"items": [
+					"Mystic robe top",
+					["Rune shield (h1)", "Rune shield (h2)", "Rune shield (h3)", "Rune shield (h4)", "Rune shield (h5)"]
+				]
+			}
+		]
+	},
+	"elite": {
+		"tier": "Elite",
+		"cost": {
+			"8782": 2
+		},
+		"construction_level": 77,
+		"xp": 600,
+		"units": [
+			{
+				"id": 71,
+				"desc": "Chapel in West Ardougne (inside)",
+				"items": ["Dragon spear", "Red d'hide chaps"]
+			},
+			{
+				"id": 72,
+				"desc": "Near a ladder in the Wilderness Lava Maze",
+				"items": ["Black d'hide chaps", "Rolling pin", "Spotted cape"]
+			},
+			{
+				"id": 73,
+				"desc": "Warriors' Guild bank",
+				"items": ["Black salamander"]
+			},
+			{
+				"id": 74,
+				"desc": "South-east corner of the Fishing Platform",
+				"items": ["Amulet of glory", "Barrows gloves", "Dragon med helm"]
+			},
+			{
+				"id": 75,
+				"desc": "On top of Trollheim Mountain",
+				"items": ["Black d'hide vambraces", "Lava battlestaff", "Mind shield"]
+			},
+			{
+				"id": 76,
+				"desc": "Entrance of the cavern under the whirlpool",
+				"items": [
+					"Granite shield",
+					["Rune helm (h1)", "Rune helm (h2)", "Rune helm (h3)", "Rune helm (h4)", "Rune helm (h5)"],
+					"Splitbark body"
+				]
+			},
+			{
+				"id": 77,
+				"desc": "Shayzien War Tent",
+				"items": [
+					[
+						"Bob's black shirt",
+						"Bob's blue shirt",
+						"Bob's green shirt",
+						"Bob's purple shirt",
+						"Bob's red shirt"
+					],
+					"Mystic robe bottom",
+					"Rune kiteshield"
+				]
+			},
+			{
+				"id": 78,
+				"desc": "Near the gem stall in Ardougne Market",
+				"items": ["Castle wars bracelet(3)", "Dragonstone amulet", "Ring of forging"]
+			},
+			{
+				"id": 79,
+				"desc": "Near the Charcoal furnace south of Hosidius",
+				"items": ["Farmer's strawhat", "Pyromancer robe", "Shayzien body (5)"]
+			},
+			{
+				"id": 80,
+				"desc": "Near a runite rock in the Fremennik Isles",
+				"items": ["Dragonstone ring", "Proselyte hauberk", "Rune boots"]
+			},
+			{
+				"id": 81,
+				"desc": "Entrance of the cave of Damis",
+				"items": [
+					[
+						"Ancient mitre",
+						"Armadyl mitre",
+						"Bandos mitre",
+						"Guthix mitre",
+						"Saradomin mitre",
+						"Zamorak mitre"
+					],
+					"Climbing boots",
+					"Rune crossbow"
+				]
+			},
+			{
+				"id": 82,
+				"desc": "South-east corner of the Monastery",
+				"items": [
+					["Book of balance", "Book of darkness", "Book of law", "Book of war", "Holy book", "Unholy book"]
+				]
+			},
+			{
+				"id": 83,
+				"desc": "Outside the Slayer Tower gargoyle room",
+				"items": ["Combat bracelet", "Helm of neitiznot", "Seercull"]
+			},
+			{
+				"id": 84,
+				"desc": "Fountain of Heroes",
+				"items": ["Dragon boots", "Rune longsword", "Splitbark legs"]
+			},
+			{
+				"id": 85,
+				"desc": "Half-way down Trollweiss Mountain (Trollweiss flowers after sledding down)",
+				"items": ["Blue d'hide vambraces", "Dragon spear", "Rune plateskirt"]
+			},
+			{
+				"id": 86,
+				"desc": "Outside the Legends' Guild door (west of the fountain)",
+				"items": ["Amulet of glory", "Cape of legends", "Dragon battleaxe"]
+			},
+			{
+				"id": 87,
+				"desc": "Outside the bar by the Fight Arena",
+				"items": [
+					"Dragon necklace",
+					"Magic longbow",
+					[
+						"Pirate bandana (blue)",
+						"Pirate bandana (brown)",
+						"Pirate bandana (red)",
+						"Pirate bandana (white)"
+					]
+				]
+			}
+		]
+	},
+	"master": {
+		"tier": "Master",
+		"cost": {
+			"8782": 2,
+			"8784": 1
+		},
+		"construction_level": 88,
+		"xp": 1500,
+		"units": [
+			{
+				"id": 88,
+				"desc": "South-east corner of Lava Dragon Isle",
+				"items": ["Amulet of glory", "Brine sabre", "Dragon med helm", "Rune platebody", "Toktz-ket-xil"]
+			},
+			{
+				"id": 89,
+				"desc": "Barrows chest",
+				"items": [
+					["Ahrim's hood", "Dharok's helm", "Guthan's helm", "Karil's coif", "Torag's helm", "Verac's helm"],
+					[
+						"Ahrim's robeskirt",
+						"Dharok's platelegs",
+						"Guthan's chainskirt",
+						"Karil's leatherskirt",
+						"Torag's platelegs",
+						"Verac's plateskirt"
+					],
+					[
+						"Ahrim's robetop",
+						"Dharok's platebody",
+						"Guthan's platebody",
+						"Karil's leathertop",
+						"Torag's platebody",
+						"Verac's brassard"
+					],
+					[
+						"Ahrim's staff",
+						"Dharok's greataxe",
+						"Guthan's warspear",
+						"Karil's crossbow",
+						"Torag's hammers",
+						"Verac's flail"
+					]
+				]
+			},
+			{
+				"id": 90,
+				"desc": "On top of the Northern wall of Castle Drakan",
+				"items": [
+					[
+						"Black boater",
+						"Blue boater",
+						"Green boater",
+						"Orange boater",
+						"Pink boater",
+						"Purple boater",
+						"Red boater",
+						"White boater"
+					],
+					"Dragon sq shield",
+					"Splitbark body"
+				]
+			},
+			{
+				"id": 91,
+				"desc": "Soul Altar",
+				"items": ["Dragon pickaxe", "Helm of neitiznot", "Rune boots"]
+			},
+			{
+				"id": 92,
+				"desc": "Entrana Chapel",
+				"items": ["Black d'hide body", "Black d'hide chaps", "Black d'hide vambraces"]
+			},
+			{
+				"id": 93,
+				"desc": "Tent in Lord Iorwerth's encampment",
+				"items": ["Crystal bow"]
+			},
+			{
+				"id": 94,
+				"desc": "Centre of the Catacombs of Kourend",
+				"items": ["Amulet of the damned (full)", "Arclight"]
+			},
+			{
+				"id": 95,
+				"desc": "Outside K'ril Tsutsaroth's room",
+				"items": ["Shadow sword", "Zamorak full helm"]
+			},
+			{
+				"id": 96,
+				"desc": "Outside the Wilderness axe hut",
+				"items": ["Flared trousers"]
+			},
+			{
+				"id": 97,
+				"desc": "Death Altar (north-east corner)",
+				"items": ["Cape of legends", "Death tiara", "Ring of wealth"]
+			},
+			{
+				"id": 98,
+				"desc": "North-western corner of the Enchanted Valley",
+				"items": ["Dragon axe"]
+			},
+			{
+				"id": 99,
+				"desc": "Near the pier in Zul-Andra (next to a tree)",
+				"items": ["Bandos boots", "Dragon 2h sword", "Obsidian cape"]
+			},
+			{
+				"id": 100,
+				"desc": "Well of Voyage",
+				"items": ["Iban's staff", "Mystic robe bottom (dark)", "Mystic robe top (dark)"]
+			},
+			{
+				"id": 101,
+				"desc": "7th Chamber of Jalsavrah (Pyramid Plunder)",
+				"items": ["Menaphite purple hat", "Menaphite purple robe", "Menaphite purple top", "Pharaoh's sceptre"]
+			},
+			{
+				"id": 102,
+				"desc": "Warriors' Guild bank",
+				"items": ["Dragon battleaxe", "Dragon defender", "Slayer helmet"]
+			},
+			{
+				"id": 103,
+				"desc": "TzHaar gem store",
+				"items": ["Fire cape", "Toktz-xil-ul"]
+			},
+			{
+				"id": 104,
+				"desc": "Outside the Mudknuckles' hut",
+				"items": ["Bandos cloak", "Bandos godsword", "Bandos platebody"]
+			},
+			{
+				"id": 105,
+				"desc": "King Black Dragon's lair",
+				"items": ["Black d'hide body", "Black d'hide vambraces", "Black dragon mask"]
+			},
+			{
+				"id": 106,
+				"desc": "By the bear cage in Varrock Palace gardens",
+				"items": ["Zamorak godsword"]
+			},
+			{
+				"id": 107,
+				"desc": "Top floor of the Yanille Watchtower",
+				"items": ["Bullroarer", "Climbing boots", "Dragon chainbody", "Dragon plateskirt"]
+			},
+			{
+				"id": 108,
+				"desc": "Behind Miss Schism in Draynor Village",
+				"items": ["Abyssal whip", "Cape of legends", "Spined chaps"]
+			}
+		]
+	}
+}

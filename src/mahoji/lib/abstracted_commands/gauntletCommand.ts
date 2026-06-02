@@ -1,13 +1,9 @@
-import { formatDuration, randomVariation, toTitleCase } from '@oldschoolgg/toolkit/util';
-import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
+import { calcWhatPercent, formatDuration, reduceNumByPercent, Time, toTitleCase } from '@oldschoolgg/toolkit';
 
-import { formatSkillRequirements } from '@/lib/util';
-import { BitField } from '../../../lib/constants';
-import { getMinigameScore } from '../../../lib/settings/minigames';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { GauntletOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { BitField } from '@/lib/constants.js';
+import type { GauntletOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
+import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 const baseRequirements = {
 	cooking: 70,
@@ -20,7 +16,7 @@ const baseRequirements = {
 	herblore: 70,
 	construction: 70,
 	hunter: 70,
-	prayer: 77
+	prayer: 70
 };
 
 const standardRequirements = {
@@ -41,14 +37,19 @@ const corruptedRequirements = {
 	ranged: 90
 };
 
-export async function gauntletCommand(user: MUser, channelID: string, type: 'corrupted' | 'normal' = 'normal') {
-	if (user.minionIsBusy) return `${user.minionName} is busy.`;
+export async function gauntletCommand(
+	rng: RNGProvider,
+	user: MUser,
+	channelId: string,
+	type: 'corrupted' | 'normal' = 'normal'
+) {
+	if (await user.minionIsBusy()) return `${user.minionName} is busy.`;
 	if (user.QP < 200) {
 		return 'You need at least 200 QP to do the Gauntlet.';
 	}
 	const readableName = `${toTitleCase(type)} Gauntlet`;
 	const requiredSkills = type === 'corrupted' ? corruptedRequirements : standardRequirements;
-	const prayLevel = user.skillLevel(SkillsEnum.Prayer);
+	const prayLevel = user.skillsAsLevels.prayer;
 
 	if (!user.hasSkillReqs(requiredSkills)) {
 		return `You don't have the required stats to do the ${readableName}, you need: ${formatSkillRequirements(
@@ -56,10 +57,9 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 		)}.`;
 	}
 
-	const [corruptedKC, normalKC] = await Promise.all([
-		getMinigameScore(user.id, 'corrupted_gauntlet'),
-		getMinigameScore(user.id, 'gauntlet')
-	]);
+	const minigameScores = await user.fetchMinigames();
+	const corruptedKC = minigameScores.corrupted_gauntlet;
+	const normalKC = minigameScores.gauntlet;
 
 	if (type === 'corrupted' && normalKC < 50) {
 		return "You can't attempt the Corrupted Gauntlet, you have less than 50 normal Gauntlets completed - you would not stand a chance in the Corrupted Gauntlet!";
@@ -98,26 +98,32 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 		boosts.push(`${scoreBoost}% boost for ${type === 'corrupted' ? 'Corrupted ' : ''}Hunllef KC`);
 	}
 
-	if (user.bitfield.includes(BitField.HasArcaneScroll)) {
+	if (prayLevel >= 77 && user.bitfield.includes(BitField.HasArcaneScroll)) {
 		boosts.push('5% for Augury');
 		baseLength = reduceNumByPercent(baseLength, 5);
+	} else if (user.bitfield.includes(BitField.HasMysticVigourScroll)) {
+		boosts.push('3% for Mystic Vigour');
+		baseLength = reduceNumByPercent(baseLength, 3);
 	} else if (prayLevel >= 45) {
 		boosts.push('2% for Mystic Might');
 		baseLength = reduceNumByPercent(baseLength, 2);
 	}
 
-	if (user.bitfield.includes(BitField.HasDexScroll)) {
+	if (prayLevel >= 74 && user.bitfield.includes(BitField.HasDexScroll)) {
 		boosts.push('5% for Rigour');
 		baseLength = reduceNumByPercent(baseLength, 5);
+	} else if (user.bitfield.includes(BitField.HasDeadeyeScroll)) {
+		boosts.push('3% for Deadeye');
+		baseLength = reduceNumByPercent(baseLength, 3);
 	} else if (prayLevel >= 44) {
 		boosts.push('2% for Eagle Eye');
 		baseLength = reduceNumByPercent(baseLength, 2);
 	}
 
 	// Add a 5% variance to account for randomness of gauntlet
-	const gauntletLength = randomVariation(baseLength, 5);
+	const gauntletLength = rng.randomVariation(baseLength, 5);
 
-	const maxTripLength = calcMaxTripLength(user, 'Gauntlet');
+	const maxTripLength = await user.calcMaxTripLength('Gauntlet');
 
 	const quantity = Math.floor(maxTripLength / gauntletLength);
 	const duration = quantity * gauntletLength;
@@ -130,9 +136,9 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 		)}.`;
 	}
 
-	await addSubTaskToActivityTask<GauntletOptions>({
+	await ActivityManager.startTrip<GauntletOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity,
 		duration,
 		type: 'Gauntlet',
@@ -141,7 +147,7 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 
 	const boostsStr = boosts.length > 0 ? `**Boosts:** ${boosts.join(', ')}` : '';
 
-	return `${user.minionName} is now doing ${quantity}x ${readableName}. The trip will take ${formatDuration(duration)}.
+	return `${user.minionName} is now doing ${quantity}x ${readableName}. The trip will return in about ${formatTripDuration(user, duration)}.
 ${boostsStr}
 `;
 }

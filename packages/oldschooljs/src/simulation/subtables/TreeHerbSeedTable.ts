@@ -1,6 +1,6 @@
-import LootTable from '../../structures/LootTable';
+import LootTable from '@/structures/LootTable.js';
 
-const TreeHerbSeedTable = new LootTable()
+const TreeHerbSeedTable: LootTable = new LootTable()
 	.add('Ranarr seed', 1, 15)
 	.add('Snapdragon seed', 1, 14)
 	.add('Torstol seed', 1, 11)

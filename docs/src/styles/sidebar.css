@@ -1,0 +1,150 @@
+sl-sidebar-state-persist > ul > li:nth-child(2) > details > summary,
+sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary {
+	text-align: center;
+	justify-content: center;
+}
+
+sl-sidebar-state-persist > ul > li:nth-child(2) > details > summary > svg,
+sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary > svg {
+	display: none;
+}
+
+/* Make Getting-Started section look like its at top level */
+#starlight__sidebar > div > sl-sidebar-state-persist > ul > li:nth-child(1) > details > summary {
+	display: none;
+}
+
+#starlight__sidebar > div > sl-sidebar-state-persist > ul > li:nth-child(1) > details > ul {
+	padding: 0;
+}
+
+.sidebar {
+	summary,
+	a {
+		color: var(--sidebar-text-color);
+	}
+
+	summary:hover,
+	a:hover {
+		color: var(--selected-page-text);
+	}
+
+	[aria-current="page"] {
+		color: var(--selected-page-text);
+		background-color: var(--selected-page-bg);
+	}
+
+	.large {
+		color: var(--sidebar-header-text-color);
+	}
+}
+
+.sidebar {
+	font-weight: bold;
+}
+
+.sidebar ul li {
+	font-weight: normal;
+}
+
+#starlight__sidebar details > summary {
+	padding: 0.5rem 0;
+}
+
+.sidebar-content .top-level > li > details > summary {
+	padding: 0.625rem 0;
+}
+
+.sidebar-content .top-level > li > details > ul {
+	padding-inline-start: 0;
+	margin-block-end: 0.5rem;
+}
+
+.sidebar-content .top-level > li > details > ul > li {
+	border-inline-start: 0;
+	margin-inline-start: 0;
+	padding-block: 0;
+	padding-inline: 0;
+}
+
+.sidebar-content .top-level > li > details > ul > li > details > summary {
+	border-inline-start: 0;
+	margin-inline-start: 0;
+	padding: 0.5rem 0;
+}
+
+.sidebar-content .top-level li details ul li {
+	margin-inline: 0;
+	padding-inline-end: 0;
+	padding-inline-start: 0;
+	position: relative;
+}
+
+.sidebar-content .top-level li details ul li a {
+	padding-block: 0.4rem;
+	padding-inline-start: 0.75rem;
+	border-radius: 4px;
+}
+.sidebar-content .top-level li details ul li details {
+	padding-inline-start: 0.75rem;
+	border-radius: 4px;
+}
+
+.sidebar-content .top-level li details ul li details ul li a {
+	padding-block: 0.4rem;
+	border-radius: 4px;
+}
+
+.sidebar-content {
+	padding-inline-start: var(--sl-nav-pad-x);
+}
+
+.sidebar-content > .top-level > li > details > summary > div.group-label > span {
+	font-size: 1rem;
+}
+
+.sidebar-content > ul > li > details > ul > li > details > summary > svg {
+	color: #bbb;
+}
+
+.sidebar-content details > summary > svg {
+	transform: rotateZ(90deg);
+	transition: none;
+}
+
+.sidebar-content details[open] > summary > svg {
+	transform: rotateZ(270deg);
+}
+
+.right-sidebar-container {
+	width: var(--sl-sidebar-width);
+}
+
+.right-sidebar {
+	border-inline-start: none;
+}
+
+.right-sidebar-panel h2 {
+	font-size: 1rem;
+	margin-block-end: 1.5rem;
+}
+
+@media (min-width: 90rem) {
+	.right-sidebar-panel {
+		max-width: calc(var(--sl-sidebar-width) - var(--sl-nav-pad-x));
+		padding-inline-end: 0;
+		display: flex;
+	}
+
+	.right-sidebar-panel .sl-container {
+		max-width: calc(var(--sl-sidebar-width) - var(--sl-nav-pad-x));
+	}
+}
+
+button[aria-controls="starlight__sidebar"] svg {
+	transform: scale(1.5);
+}
+
+#starlight__sidebar .group-label {
+	text-transform: capitalize;
+}

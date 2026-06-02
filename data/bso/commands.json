@@ -1,6 +1,6 @@
 {
-	"hash": "3512d1ad16cd41c99d6e5073de62893c",
-	"date": "2025-07-01T02:28:48.192Z",
+	"hash": "e4c4edaee60ef3edd454d0e900c6564c",
+	"date": "2025-09-27T10:56:17.425Z",
 	"data": [
 		{
 			"name": "activities",
@@ -43,11 +43,6 @@
 			"name": "bingo",
 			"desc": "Bingo!",
 			"subOptions": ["create_bingo", "items", "leaderboard", "leave_team", "make_team", "manage_bingo", "view"]
-		},
-		{
-			"name": "bossrecords",
-			"desc": "Shows your OSRS boss records.",
-			"subOptions": []
 		},
 		{
 			"name": "bs",
@@ -176,16 +171,6 @@
 			"subOptions": []
 		},
 		{
-			"name": "fake",
-			"desc": "Generate fake images of getting loot.",
-			"subOptions": []
-		},
-		{
-			"name": "fakepm",
-			"desc": "Generate fake images of PMs.",
-			"subOptions": []
-		},
-		{
 			"name": "farming",
 			"desc": "Allows you to do Farming related things.",
 			"subOptions": [
@@ -287,12 +272,6 @@
 			"subOptions": []
 		},
 		{
-			"name": "kc",
-			"desc": "See your OSRS kc for a monster/boss.",
-			"examples": ["/kc name:General Graardor"],
-			"subOptions": []
-		},
-		{
 			"name": "kibble",
 			"desc": "Make kibble from herbs and crops.",
 			"examples": ["/kibble name:Simple kibble quantity:100"],
@@ -332,7 +311,10 @@
 				"movers",
 				"opens",
 				"sacrifice",
-				"skills"
+				"skills",
+				"tames_hatched",
+				"total_ic_donation_given",
+				"unique_ic_donation_given"
 			]
 		},
 		{

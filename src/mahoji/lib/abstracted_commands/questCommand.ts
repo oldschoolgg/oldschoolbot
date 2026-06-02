@@ -1,18 +1,15 @@
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time, sumArr } from 'e';
+import { sumArr, Time } from '@oldschoolgg/toolkit';
 
-import { MAX_GLOBAL_QP, MAX_QP, quests } from '../../../lib/minions/data/quests';
-import type { ActivityTaskOptionsWithNoChanges, SpecificQuestOptions } from '../../../lib/types/minions';
-import { hasSkillReqs } from '../../../lib/util';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { userHasGracefulEquipped } from '../../mahojiSettings';
+import { MAX_GLOBAL_QP, MAX_QP, quests } from '@/lib/minions/data/quests.js';
+import type { ActivityTaskOptionsWithNoChanges, SpecificQuestOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
+import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 
-export async function questCommand(user: MUser, channelID: string, name?: string) {
-	if (!user.user.minion_hasBought) {
+export async function questCommand(user: MUser, channelId: string, name?: string) {
+	if (!user.hasMinion) {
 		return 'You need a minion to do a questing trip';
 	}
-	if (minionIsBusy(user.id)) {
+	if (await user.minionIsBusy()) {
 		return 'Your minion must not be busy to do a questing trip';
 	}
 
@@ -58,17 +55,15 @@ export async function questCommand(user: MUser, channelID: string, name?: string
 
 		const duration = quest.calcTime(user);
 
-		await addSubTaskToActivityTask<SpecificQuestOptions>({
+		await ActivityManager.startTrip<SpecificQuestOptions>({
 			type: 'SpecificQuest',
 			duration,
 			userID: user.id,
-			channelID,
+			channelId,
 			questID: quest.id
 		});
 
-		return `${user.minionName} is now completing ${quest.name}, they'll finish in around ${formatDuration(
-			duration
-		)}.`;
+		return `${user.minionName} is now completing ${quest.name}, they'll finish in around ${formatTripDuration(user, duration)}.`;
 	}
 
 	const currentQP = user.QP;
@@ -88,20 +83,18 @@ export async function questCommand(user: MUser, channelID: string, name?: string
 
 	let duration = Time.Minute * 30;
 
-	if (userHasGracefulEquipped(user)) {
+	if (user.hasGracefulEquipped()) {
 		duration *= 0.9;
 		boosts.push('10% for Graceful');
 	}
 
-	await addSubTaskToActivityTask<ActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<ActivityTaskOptionsWithNoChanges>({
 		type: 'Questing',
 		duration,
 		userID: user.id,
-		channelID: channelID.toString()
+		channelId: channelId.toString()
 	});
-	let response = `${user.minionName} is now completing quests, they'll come back in around ${formatDuration(
-		duration
-	)}.`;
+	let response = `${user.minionName} is now completing quests, they'll come back in around ${formatTripDuration(user, duration)}.`;
 
 	if (boosts.length > 0) {
 		response += `\n\n**Boosts:** ${boosts.join(', ')}.`;

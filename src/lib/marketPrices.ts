@@ -1,11 +1,11 @@
-import { notEmpty } from 'e';
-import type { Bank } from 'oldschooljs';
+import { notEmpty } from '@oldschoolgg/toolkit';
+import { type Bank, Items } from 'oldschooljs';
 import { groupBy, mapValues, pickBy, sumBy, uniqueBy } from 'remeda';
 import { max, mean, medianSorted, min, quantileSorted } from 'simple-statistics';
 
-import { getItem } from './util/getOSItem';
+import { marketPricemap } from '@/lib/cache.js';
 
-interface MarketPriceData {
+export interface MarketPriceData {
 	totalSold: number;
 	transactionCount: number;
 	avgSalePrice: number;
@@ -18,9 +18,9 @@ interface MarketPriceData {
 	averagePriceLast100: number;
 }
 
-export const marketPricemap = new Map<number, MarketPriceData>();
-
 export const cacheGEPrices = async () => {
+	Logging.logDebug('Caching GE Prices');
+	const start = performance.now();
 	const transactionAge = new Date();
 	transactionAge.setDate(transactionAge.getDate() - 60);
 
@@ -96,6 +96,11 @@ export const cacheGEPrices = async () => {
 		};
 		marketPricemap.set(data.itemID, data);
 	});
+	const end = performance.now();
+	Logging.logPerf({
+		duration: end - start,
+		text: 'cacheGEPrices'
+	});
 };
 
 export function marketPriceOfBank(bank: Bank) {
@@ -108,7 +113,7 @@ export function marketPriceOfBank(bank: Bank) {
 }
 
 export function marketPriceOrBotPrice(itemID: number) {
-	const item = getItem(itemID);
+	const item = Items.get(itemID);
 	if (!item) return 0;
 	const data = marketPricemap.get(item.id);
 	if (data) {

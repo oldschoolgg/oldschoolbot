@@ -1,7 +1,7 @@
-import type { MonsterKillOptions } from '../../../meta/types';
-import type Bank from '../../../structures/Bank';
-import Monster from '../../../structures/Monster';
-import { Vardorvis } from './Vardorvis';
+import type { Bank } from '@/structures/Bank.js';
+import type { MonsterKillOptions } from '@/structures/Monster.js';
+import { Monster } from '@/structures/Monster.js';
+import { Vardorvis } from './Vardorvis.js';
 
 class AwakenedVardorvisSingleton extends Monster {
 	public kill(quantity = 1, options: MonsterKillOptions = {}): Bank {
@@ -9,7 +9,7 @@ class AwakenedVardorvisSingleton extends Monster {
 	}
 }
 
-export const AwakenedVardorvis = new AwakenedVardorvisSingleton({
+export const AwakenedVardorvis: AwakenedVardorvisSingleton = new AwakenedVardorvisSingleton({
 	id: 12_224,
 	name: 'Vardorvis (Awakened)',
 	aliases: ['vardorvis (awakened)']

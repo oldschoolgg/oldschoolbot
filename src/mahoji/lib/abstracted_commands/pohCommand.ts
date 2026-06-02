@@ -1,15 +1,11 @@
-import { stringMatches } from '@oldschoolgg/toolkit/util';
-import type { ChatInputCommandInteraction } from 'discord.js';
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
-import { formatSkillRequirements } from '@/lib/util/smallUtils';
-import { BitField } from '../../../lib/constants';
-import { GroupedPohObjects, PoHObjects, getPOHObject, itemsNotRefundable } from '../../../lib/poh';
-import { pohImageGenerator } from '../../../lib/pohImage';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import getOSItem from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { type PlayerOwnedHouse, Prisma } from '@/prisma/main.js';
+import { pohImageGenerator } from '@/lib/canvas/pohImage.js';
+import { BitField } from '@/lib/constants.js';
+import { GroupedPohObjects, getPOHObject, itemsNotRefundable, PoHObjects } from '@/lib/poh/index.js';
+import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 export const pohWallkits = [
 	{
@@ -24,18 +20,46 @@ export const pohWallkits = [
 	}
 ];
 
-export async function getPOH(userID: string) {
-	let poh = await prisma.playerOwnedHouse.findFirst({ where: { user_id: userID } });
-	if (poh === null) poh = await prisma.playerOwnedHouse.create({ data: { user_id: userID } });
-	return poh;
+export async function getPOH(userId: string): Promise<PlayerOwnedHouse> {
+	try {
+		const result = await prisma.playerOwnedHouse.upsert({
+			where: {
+				user_id: userId
+			},
+			create: {
+				user_id: userId
+			},
+			update: {}
+		});
+		return result;
+	} catch (err) {
+		// Ignore unique constraint errors, they already have a row
+		if (!(err instanceof Prisma.PrismaClientKnownRequestError) || err.code !== 'P2002') {
+			throw err;
+		}
+	}
+
+	// They definitely should have a row now
+	const result = await prisma.playerOwnedHouse.findFirstOrThrow({
+		where: {
+			user_id: userId
+		}
+	});
+
+	return result;
 }
-export async function makePOHImage(user: MUser, showSpaces = false) {
+export async function makePOHImage(
+	itx: OSInteraction,
+	{ showSpaces }: { showSpaces?: boolean } = {}
+): Promise<SendableFile> {
+	const { user, rng } = itx;
 	const poh = await getPOH(user.id);
-	const buffer = await pohImageGenerator.run(poh, showSpaces);
-	return { files: [{ attachment: buffer, name: 'image.jpg' }] };
+	const buffer = await pohImageGenerator.run({ poh, rng, showSpaces });
+	return { buffer: buffer, name: 'image.jpg' };
 }
 
-export async function pohWallkitCommand(user: MUser, input: string) {
+export async function pohWallkitCommand(itx: OSInteraction, input: string): Promise<SendableMessage> {
+	const { user } = itx;
 	const poh = await getPOH(user.id);
 	const currentWallkit = pohWallkits.find(i => i.imageID === poh.background_id)!;
 	const selectedKit = pohWallkits.find(i => stringMatches(i.name, input));
@@ -54,10 +78,12 @@ export async function pohWallkitCommand(user: MUser, input: string) {
 	const userBank = user.bank;
 	if (selectedKit.bitfield && !bitfield.includes(BitField.HasHosidiusWallkit)) {
 		if (selectedKit.imageID === 2 && userBank.has('Hosidius blueprints')) {
-			await user.removeItemsFromBank(new Bank().add('Hosidius blueprints'));
-			await user.update({
-				bitfield: {
-					push: selectedKit.bitfield
+			await user.transactItems({
+				itemsToRemove: new Bank().add('Hosidius blueprints'),
+				otherUpdates: {
+					bitfield: {
+						push: selectedKit.bitfield
+					}
 				}
 			});
 		} else {
@@ -72,14 +98,15 @@ export async function pohWallkitCommand(user: MUser, input: string) {
 			background_id: selectedKit.imageID
 		}
 	});
-	return makePOHImage(user);
+	return { files: [await makePOHImage(itx)] };
 }
 
-export async function pohBuildCommand(interaction: ChatInputCommandInteraction, user: MUser, name: string) {
+export async function pohBuildCommand(itx: OSInteraction, name: string) {
+	const { user } = itx;
 	const poh = await getPOH(user.id);
 
 	if (!name) {
-		return makePOHImage(user, true);
+		return { files: [await makePOHImage(itx)] };
 	}
 
 	const obj = PoHObjects.find(i => stringMatches(i.name, name));
@@ -87,7 +114,7 @@ export async function pohBuildCommand(interaction: ChatInputCommandInteraction, 
 		return "That's not a valid thing to build in your PoH.";
 	}
 
-	const level = user.skillLevel(SkillsEnum.Construction);
+	const level = user.skillsAsLevels.construction;
 	if (typeof obj.level === 'number') {
 		if (level < obj.level) {
 			return `You need level ${obj.level} Construction to build a ${obj.name} in your house.`;
@@ -115,9 +142,9 @@ export async function pohBuildCommand(interaction: ChatInputCommandInteraction, 
 		if (inPlace !== null) {
 			str += ` You will lose the ${getPOHObject(inPlace).name} that you currently have there.`;
 		}
-		await handleMahojiConfirmation(interaction, str);
+		await itx.confirmation(str);
 		await user.removeItemsFromBank(obj.itemCost);
-		updateBankSetting('construction_cost_bank', obj.itemCost);
+		await ClientSettings.updateBankSetting('construction_cost_bank', obj.itemCost);
 	}
 
 	let refunded: Bank | null = null;
@@ -147,22 +174,23 @@ export async function pohBuildCommand(interaction: ChatInputCommandInteraction, 
 	}
 
 	return {
-		...(await makePOHImage(user)),
+		files: [await makePOHImage(itx)],
 		content: str
 	};
 }
 
-export async function pohMountItemCommand(user: MUser, name: string) {
+export async function pohMountItemCommand(itx: OSInteraction, name: string) {
+	const { user } = itx;
 	const poh = await getPOH(user.id);
 	if (!name) {
-		return makePOHImage(user);
+		return { files: [await makePOHImage(itx)] };
 	}
 
 	if (poh.mounted_item === null) {
 		return 'You need to build a mount for the item first.';
 	}
 
-	const item = getOSItem(name);
+	const item = Items.getOrThrow(name);
 	if (['Magic stone', 'Coins'].includes(item.name)) {
 		return "You can't mount this item.";
 	}
@@ -190,14 +218,15 @@ export async function pohMountItemCommand(user: MUser, name: string) {
 	});
 
 	return {
-		...(await makePOHImage(user)),
+		files: [await makePOHImage(itx)],
 		content: `You mounted a ${item.name} in your house, using 2x Magic stone and 1x ${
 			item.name
 		} (given back when another item is mounted).${currItem ? ` Refunded 1x ${Items.itemNameFromId(currItem)}.` : ''}`
 	};
 }
 
-export async function pohDestroyCommand(user: MUser, name: string) {
+export async function pohDestroyCommand(itx: OSInteraction, name: string) {
+	const { user } = itx;
 	const obj = PoHObjects.find(i => stringMatches(i.name, name));
 	if (!obj) {
 		return "That's not a valid thing to build in your PoH.";
@@ -215,9 +244,9 @@ export async function pohDestroyCommand(user: MUser, name: string) {
 				[obj.slot]: null
 			}
 		});
-		await user.addItemsToBank({ items: { [inPlace!]: 1 }, collectionLog: false });
+		await user.addItemsToBank({ items: new Bank().add(inPlace!, 1), collectionLog: false });
 		return {
-			...(await makePOHImage(user)),
+			files: [await makePOHImage(itx)],
 			content: `You removed a ${obj.name} from your house, and were refunded 1x ${Items.itemNameFromId(inPlace!)}.`
 		};
 	}
@@ -243,21 +272,20 @@ export async function pohDestroyCommand(user: MUser, name: string) {
 		}
 	});
 
-	return { ...(await makePOHImage(user)), content: str };
+	return { files: [await makePOHImage(itx)], content: str };
 }
 
-export async function pohListItemsCommand() {
+export async function pohListItemsCommand(): Promise<SendableMessage> {
 	const textStr = [];
 
 	for (const [key, arr] of Object.entries(GroupedPohObjects)) {
 		textStr.push(`${key}: ${arr.map(i => i.name).join(', ')}`);
 	}
 
-	const attachment = Buffer.from(textStr.join('\n'));
+	const buffer = Buffer.from(textStr.join('\n'));
 
 	return {
 		content: 'Here are all the items you can build in your PoH.',
-
-		files: [{ attachment, name: 'Buildables.txt' }]
+		files: [{ buffer, name: 'Buildables.txt' }]
 	};
 }

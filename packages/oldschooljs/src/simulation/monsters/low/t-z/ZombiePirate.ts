@@ -1,7 +1,7 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-export const ZombiePirateTable = new LootTable()
+export const ZombiePirateTable: LootTable = new LootTable()
 	.every('Bones')
 
 	/* Pre-roll */
@@ -44,7 +44,7 @@ export const ZombiePirateTable = new LootTable()
 	/* Tertiary */
 	.tertiary(5000, 'Zombie champion scroll');
 
-export default new SimpleMonster({
+export const ZombiePirate: SimpleMonster = new SimpleMonster({
 	id: 13_489,
 	name: 'Zombie pirate',
 	table: ZombiePirateTable,

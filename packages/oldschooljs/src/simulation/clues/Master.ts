@@ -1,4 +1,4 @@
-import LootTable from '../../structures/LootTable';
+import LootTable from '../../structures/LootTable.js';
 import {
 	BlessingTable,
 	FirelighterTable,
@@ -6,39 +6,45 @@ import {
 	GiveHalfKeyTable,
 	PrayerPageTable,
 	TeleportScrollTable
-} from './General';
+} from './General.js';
 
-export const MasterGodSwordOrnTable = new LootTable()
+export const MasterGodSwordOrnTable: LootTable = new LootTable()
 	.add('Armadyl godsword ornament kit')
 	.add('Bandos godsword ornament kit')
 	.add('Zamorak godsword ornament kit')
 	.add('Saradomin godsword ornament kit');
 
-export const MasterSubAnkouOutfitTable = new LootTable()
+export const MasterSubAnkouOutfitTable: LootTable = new LootTable()
 	.add('Ankou mask')
 	.add('Ankou top')
 	.add("Ankou's leggings")
 	.add('Ankou gloves')
 	.add('Ankou socks');
 
-export const MasterAnkouOutfitTable = new LootTable().add('Coins', [15_000, 30_000], 2).add(MasterSubAnkouOutfitTable);
+export const MasterAnkouOutfitTable: LootTable = new LootTable()
+	.add('Coins', [15_000, 30_000], 2)
+	.add(MasterSubAnkouOutfitTable);
 
-export const MasterSubMummyOutfitTable = new LootTable()
+export const MasterSubMummyOutfitTable: LootTable = new LootTable()
 	.add("Mummy's head")
 	.add("Mummy's body")
 	.add("Mummy's legs")
 	.add("Mummy's hands")
 	.add("Mummy's feet");
 
-export const MasterMummyOutfitTable = new LootTable().add('Coins', [15_000, 30_000], 2).add(MasterSubMummyOutfitTable);
+export const MasterMummyOutfitTable: LootTable = new LootTable()
+	.add('Coins', [15_000, 30_000], 2)
+	.add(MasterSubMummyOutfitTable);
 
-export const MasterSubDragonOrnTable = new LootTable()
+export const MasterSubDragonOrnTable: LootTable = new LootTable()
 	.add('Dragon kiteshield ornament kit')
 	.add('Dragon platebody ornament kit', 1, 2);
 
-export const MasterDragonOrnTable = new LootTable().add('Coins', [15_000, 30_000], 9).add(MasterSubDragonOrnTable);
+export const MasterDragonOrnTable: LootTable = new LootTable()
+	.add('Coins', [15_000, 30_000], 9)
+	.add(MasterSubDragonOrnTable);
 
-export const Master3rdageTable = new LootTable()
+export const Master3rdageTable: LootTable = new LootTable()
 	.add('3rd age range coif')
 	.add('3rd age range top')
 	.add('3rd age range legs')
@@ -63,7 +69,7 @@ export const Master3rdageTable = new LootTable()
 	.add('3rd age pickaxe')
 	.add('3rd age axe');
 
-export const MasterMegaRareTable = new LootTable()
+export const MasterMegaRareTable: LootTable = new LootTable()
 	.add('Gilded scimitar')
 	.add('Bucket helm (g)')
 	.add('Gilded boots')
@@ -81,7 +87,7 @@ export const MasterMegaRareTable = new LootTable()
 	.add(Master3rdageTable)
 	.add(GildedTable);
 
-export const MasterRareTable = new LootTable()
+export const MasterRareTable: LootTable = new LootTable()
 	.add('Left eye patch')
 	.add('Bowl wig')
 	.add('Ale of the gods')
@@ -120,12 +126,12 @@ export const MasterRareTable = new LootTable()
 	.add(MasterMummyOutfitTable)
 	.add(MasterDragonOrnTable);
 
-export const MasterSeedTable = new LootTable()
+export const MasterSeedTable: LootTable = new LootTable()
 	.add('Magic seed', [1, 2])
 	.add('Yew seed', [1, 2])
 	.add('Palm tree seed', [1, 2]);
 
-export const MasterStandardTable = new LootTable()
+export const MasterStandardTable: LootTable = new LootTable()
 	.add('Coins', [20_000, 35_000])
 	.add('Manta ray', [15, 25])
 	.add('Nature rune', [100, 200])
@@ -155,6 +161,6 @@ export const MasterStandardTable = new LootTable()
 	.add(GiveHalfKeyTable)
 	.add(BlessingTable);
 
-export const MasterClueTable = new LootTable().add(MasterStandardTable, 1, 22).add(MasterRareTable, 1, 1);
+export const MasterClueTable: LootTable = new LootTable().add(MasterStandardTable, 1, 22).add(MasterRareTable, 1, 1);
 
-export const MasterCasket = new LootTable().add(MasterClueTable, [5, 7]).tertiary(1000, 'Bloodhound');
+export const MasterCasket: LootTable = new LootTable().add(MasterClueTable, [5, 7]).tertiary(1000, 'Bloodhound');

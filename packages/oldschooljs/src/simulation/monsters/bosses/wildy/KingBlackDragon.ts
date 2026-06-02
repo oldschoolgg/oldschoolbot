@@ -1,8 +1,8 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import RareDropTable, { GemTable } from '../../../subtables/RareDropTable';
+import { GemTable, RareDropTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const KingBlackDragonTable = new LootTable()
+const KingBlackDragonTable: LootTable = new LootTable()
 	.every('Dragon bones')
 	.every('Black dragonhide', 2)
 	.tertiary(450, 'Clue scroll (elite)')
@@ -42,7 +42,7 @@ const KingBlackDragonTable = new LootTable()
 	.add(RareDropTable, 1, 8)
 	.add(GemTable, 1, 2);
 
-export default new SimpleMonster({
+export const KingBlackDragon: SimpleMonster = new SimpleMonster({
 	id: 6502,
 	name: 'King Black Dragon',
 	table: KingBlackDragonTable,

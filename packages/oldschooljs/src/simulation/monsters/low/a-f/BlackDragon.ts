@@ -1,8 +1,8 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import RareDropTable, { GemTable } from '../../../subtables/RareDropTable';
+import { GemTable, RareDropTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const WildySlayerCaveTable = new LootTable()
+const WildySlayerCaveTable: LootTable = new LootTable()
 	.add('Blighted entangle sack', [1, 10], 8200)
 	.add('Blighted anglerfish', [1, 2], 6150)
 	.add('Blighted manta ray', [1, 2], 6150)
@@ -27,7 +27,7 @@ const WildySlayerCaveTable = new LootTable()
 	.add('Trouver parchment', 2, 41)
 	.add('Looting bag note', 1, 41);
 
-const BlackDragonTable = new LootTable()
+const BlackDragonTable: LootTable = new LootTable()
 	.every('Dragon bones')
 	.every('Black dragonhide')
 
@@ -68,12 +68,12 @@ const BlackDragonTable = new LootTable()
 	.tertiary(500, 'Clue scroll (elite)')
 	.tertiary(10_000, 'Draconic visage');
 
-const BlackDragonWildyCaveTable = new LootTable()
+const BlackDragonWildyCaveTable: LootTable = new LootTable()
 	.every(BlackDragonTable)
 	.add(WildySlayerCaveTable, 1, 91)
 	.add(new LootTable(), 1, 9);
 
-export default new SimpleMonster({
+export const BlackDragon: SimpleMonster = new SimpleMonster({
 	id: 252,
 	name: 'Black Dragon',
 	table: BlackDragonTable,

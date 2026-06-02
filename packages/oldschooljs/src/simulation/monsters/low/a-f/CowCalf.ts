@@ -1,13 +1,13 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-export const CowCalfTable = new LootTable()
+export const CowCalfTable: LootTable = new LootTable()
 	.every('Bones')
 	.every('Cowhide')
 	.every('Raw beef')
 	.tertiary(128, 'Clue scroll (beginner)');
 
-export default new SimpleMonster({
+export const CowCalf: SimpleMonster = new SimpleMonster({
 	id: 2792,
 	name: 'Cow calf',
 	table: CowCalfTable,

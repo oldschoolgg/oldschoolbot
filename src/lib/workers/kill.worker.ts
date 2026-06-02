@@ -1,12 +1,13 @@
-import '../data/itemAliases';
+import '../data/itemAliases.js';
 
-import { stringMatches } from '@oldschoolgg/toolkit/util';
-import { Bank, Misc, Monsters, calcDropRatesFromBank, resolveItems } from 'oldschooljs';
+import { stringMatches } from '@oldschoolgg/toolkit';
+import { MathRNG } from 'node-rng';
+import { Bank, calcDropRatesFromBank, Misc, Monsters, resolveItems } from 'oldschooljs';
 
-import type { KillWorkerArgs, KillWorkerReturn } from '.';
-import killableMonsters from '../minions/data/killableMonsters';
-import { handleNexKills } from '../simulation/nex';
-import { simulatedKillables } from '../simulation/simulatedKillables';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { handleNexKills } from '@/lib/simulation/nex.js';
+import { simulatedKillables } from '@/lib/simulation/simulatedKillables.js';
+import type { KillWorkerArgs, KillWorkerReturn } from '@/lib/workers/index.js';
 
 if (global.prisma) {
 	throw new Error('Prisma is loaded in the kill worker!');
@@ -82,7 +83,8 @@ export default async ({
 				{ id: '2', teamID: 2, contribution: 100, deaths: [] },
 				{ id: '3', teamID: 3, contribution: 100, deaths: [] },
 				{ id: '4', teamID: 4, contribution: 100, deaths: [] }
-			]
+			],
+			rng: MathRNG
 		});
 		return {
 			bank: loot.get('1').toJSON(),

@@ -1,24 +1,16 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { type CommandResponse, formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
-import { Time, calcPercentOfNum, percentChance, randInt, roll, sumArr } from 'e';
-import { Bank, type ItemBank, Items, Monsters, itemID } from 'oldschooljs';
+import { calcPercentOfNum, Emoji, formatDuration, sumArr, Time, UserError } from '@oldschoolgg/toolkit';
+import { Bank, EMonster, type ItemBank, Items, itemID } from 'oldschooljs';
 
-import type { ProjectileType } from '../../../lib/constants';
-import { BitField, projectiles } from '../../../lib/constants';
-import { getSimilarItems } from '../../../lib/data/similarItems';
-import { blowpipeDarts } from '../../../lib/minions/functions/blowpipeCommand';
-import type { BlowpipeData } from '../../../lib/minions/types';
-import { getMinigameScore } from '../../../lib/settings/minigames';
-import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
-import { PercentCounter } from '../../../lib/structures/PercentCounter';
-import type { Skills } from '../../../lib/types';
-import type { InfernoOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
-import getOSItem from '../../../lib/util/getOSItem';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
+import { BitField } from '@/lib/constants.js';
+import { getSimilarItems } from '@/lib/data/similarItems.js';
+import { type ProjectileType, projectiles } from '@/lib/gear/projectiles.js';
+import { blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
+import { PercentCounter } from '@/lib/structures/PercentCounter.js';
+import type { Skills } from '@/lib/types/index.js';
+import type { InfernoOptions } from '@/lib/types/minions.js';
 
-const minimumRangeItems = [
+const minimumRangeItems = Items.resolveFullItems([
 	'Amulet of fury',
 	"Karil's leathertop",
 	"Karil's leatherskirt",
@@ -26,12 +18,12 @@ const minimumRangeItems = [
 	'Twisted bow',
 	"Ava's assembler",
 	'Snakeskin boots'
-].map(getOSItem);
+]);
 
 const minimumRangeAttackStat = sumArr(minimumRangeItems.map(i => i.equipment!.attack_ranged));
 const minimumRangeMagicDefenceStat = sumArr(minimumRangeItems.map(i => i.equipment!.defence_magic)) - 10;
 
-const minimumMageItems = [
+const minimumMageItems = Items.resolveFullItems([
 	'Amulet of fury',
 	'Imbued guthix cape',
 	"Ahrim's robetop",
@@ -39,7 +31,7 @@ const minimumMageItems = [
 	'Barrows gloves',
 	'Splitbark boots',
 	'Ancient staff'
-].map(getOSItem);
+]);
 
 const minimumMageAttackStat = sumArr(minimumMageItems.map(i => i.equipment!.attack_magic));
 const minimumMageMagicDefenceStat = sumArr(minimumMageItems.map(i => i.equipment!.defence_magic)) - 10;
@@ -116,7 +108,7 @@ function baseDuration(_attempts: number) {
 async function timesMadeToZuk(userID: string) {
 	const timesMadeToZuk = Number(
 		(
-			await prisma.$queryRawUnsafe<any>(`SELECT COUNT(*)::int
+			await prisma.$queryRawUnsafe<{ count: bigint }[]>(`SELECT COUNT(*)::int
 FROM activity
 WHERE type = 'Inferno'
 AND user_id = ${userID}
@@ -127,22 +119,25 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 	return timesMadeToZuk;
 }
 
-async function infernoRun({
-	user,
-	attempts,
-	timesMadeToZuk
-}: {
-	user: MUser;
-	attempts: number;
-	timesMadeToZuk: number;
-}) {
+async function infernoRun(
+	rng: RNGProvider,
+	{
+		user,
+		attempts,
+		timesMadeToZuk
+	}: {
+		user: MUser;
+		attempts: number;
+		timesMadeToZuk: number;
+	}
+) {
 	const userBank = user.bank;
 
 	const duration = new PercentCounter(baseDuration(attempts), 'time');
 	const zukDeathChance = new PercentCounter(baseZukDeathChance(attempts), 'percent');
 	const preZukDeathChance = new PercentCounter(basePreZukDeathChance(attempts), 'percent');
 
-	const { sacrificed_bank: sacrificedBank } = await user.fetchStats({ sacrificed_bank: true });
+	const { sacrificed_bank: sacrificedBank } = await user.fetchStats();
 
 	if (!(sacrificedBank as ItemBank)[itemID('Fire cape')]) {
 		return 'To do the Inferno, you must have sacrificed a fire cape.';
@@ -187,7 +182,7 @@ async function infernoRun({
 			[rangeGear, 'range'],
 			[mageGear, 'mage']
 		] as const) {
-			if (!gear[key]) {
+			if (!gear.get(key)?.item) {
 				return `You have nothing in your ${key} slot in your ${name} setup.. are you crazy?`;
 			}
 		}
@@ -236,13 +231,13 @@ async function infernoRun({
 	preZukDeathChance.add(hasSuffering, -4, 'Ring of Suffering (i)');
 	zukDeathChance.add(hasSuffering, -4, 'Ring of Suffering (i)');
 
-	const blowpipeData = user.user.blowpipe as any as BlowpipeData;
+	const blowpipeData = user.getBlowpipe();
 	if (!userBank.has('Toxic blowpipe') || !blowpipeData.scales || !blowpipeData.dartID || !blowpipeData.dartQuantity) {
 		return 'You need a Toxic blowpipe (with darts and scales equipped) to do the Inferno. You also need Darts and Scales equipped in it.';
 	}
 
 	const darts = blowpipeData.dartID;
-	const dartItem = getOSItem(darts);
+	const dartItem = Items.getOrThrow(darts);
 	const dartIndex = blowpipeDarts.indexOf(dartItem);
 	const percent = dartIndex >= 3 ? dartIndex * 0.9 : -(4 * (4 - dartIndex));
 	if (dartIndex < 5) {
@@ -290,12 +285,12 @@ async function infernoRun({
 	duration.add(user.user.bitfield.includes(BitField.HasArcaneScroll), -4, 'Arc. Prayer scroll');
 
 	// Slayer
-	const score = await getMinigameScore(user.id, 'inferno');
-	const usersTask = await getUsersCurrentSlayerInfo(user.id);
+	const score = await user.fetchMinigameScore('inferno');
+	const usersTask = await user.fetchSlayerInfo();
 	const isOnTask =
 		usersTask.currentTask !== null &&
 		usersTask.currentTask !== undefined &&
-		usersTask.currentTask?.monster_id === Monsters.TzHaarKet.id &&
+		usersTask.currentTask?.monster_id === EMonster.TZHAARKET &&
 		score > 0 &&
 		usersTask.currentTask?.quantity_remaining === usersTask.currentTask?.quantity;
 
@@ -318,7 +313,7 @@ async function infernoRun({
 	 *
 	 *
 	 */
-	const projectile = rangeGear.ammo;
+	const projectile = rangeGear.get('ammo');
 	if (!projectile) {
 		return 'You have no projectiles equipped in your range setup.';
 	}
@@ -332,7 +327,10 @@ async function infernoRun({
 			.join(', ')}.`;
 	}
 
-	duration.value = randomVariation(duration.value, (randInt(1, 10) + randInt(1, 10) + randInt(1, 10)) / 3);
+	duration.value = rng.randomVariation(
+		duration.value,
+		(rng.randInt(1, 10) + rng.randInt(1, 10) + rng.randInt(1, 10)) / 3
+	);
 
 	const fakeDuration = Math.floor(duration.value);
 
@@ -348,13 +346,15 @@ async function infernoRun({
 	preZukDeathChance.value = Math.min(preZukDeathChance.value, 100);
 	zukDeathChance.value = Math.min(zukDeathChance.value, 100);
 
-	const diedPreZuk = percentChance(preZukDeathChance.value);
-	const diedZuk = percentChance(zukDeathChance.value);
+	const diedPreZuk = rng.percentChance(preZukDeathChance.value);
+	const diedZuk = rng.percentChance(zukDeathChance.value);
 	let deathTime: number | null = null;
 	if (diedPreZuk) {
-		deathTime = randInt(Time.Minute, calcPercentOfNum(90, duration.value));
+		deathTime = rng.randInt(Time.Minute, Math.floor(calcPercentOfNum(90, duration.value)));
 	} else if (diedZuk) {
-		deathTime = randInt(calcPercentOfNum(90, duration.value), duration.value);
+		const minDeathTime = Math.floor(calcPercentOfNum(90, duration.value));
+		const maxDeathTime = Math.max(minDeathTime, Math.floor(duration.value));
+		deathTime = rng.randInt(minDeathTime, maxDeathTime);
 	}
 
 	const realDuration = deathTime ?? duration.value;
@@ -379,10 +379,10 @@ async function infernoRun({
 	};
 }
 
-export async function infernoStatsCommand(user: MUser): CommandResponse {
+export async function infernoStatsCommand({ rng, user }: { rng: RNGProvider; user: MUser }): CommandResponse {
 	const [zukKC, { inferno_attempts: attempts }] = await Promise.all([
-		getMinigameScore(user.id, 'inferno'),
-		user.fetchStats({ inferno_attempts: true })
+		user.fetchMinigameScore('inferno'),
+		user.fetchStats()
 	]);
 
 	let str = 'You have never attempted the Inferno, I recommend you stay that way.';
@@ -396,7 +396,7 @@ export async function infernoStatsCommand(user: MUser): CommandResponse {
 	if (!zukKC) {
 		if (attempts && !numTimesMadeToZuk) {
 			str += ' You have never even made it to the final wave yet.';
-		} else if (roll(1000)) {
+		} else if (rng.roll(1000)) {
 			str += ` You made it to TzKal-Zuk ${numTimesMadeToZuk} times, but never killed him, maybe just buy the cape JalYt?`;
 		} else {
 			str += ` You made it to TzKal-Zuk ${numTimesMadeToZuk} times, but never killed him, sad. `;
@@ -407,7 +407,7 @@ export async function infernoStatsCommand(user: MUser): CommandResponse {
 		files: [
 			{
 				name: 'image.jpg',
-				attachment: await newChatHeadImage({
+				buffer: await newChatHeadImage({
 					content: str,
 					head: 'ketKeh'
 				})
@@ -416,14 +416,22 @@ export async function infernoStatsCommand(user: MUser): CommandResponse {
 	};
 }
 
-export async function infernoStartCommand(user: MUser, channelID: string): CommandResponse {
+export async function infernoStartCommand({
+	rng,
+	user,
+	channelId
+}: {
+	rng: RNGProvider;
+	user: MUser;
+	channelId: string;
+}): CommandResponse {
 	const usersRangeStats = user.gear.range.stats;
 	const [zukKC, { inferno_attempts: attempts }] = await Promise.all([
-		getMinigameScore(user.id, 'inferno'),
-		user.fetchStats({ inferno_attempts: true })
+		await user.fetchMinigameScore('inferno'),
+		user.fetchStats()
 	]);
 
-	const res = await infernoRun({
+	const res = await infernoRun(rng, {
 		user,
 		attempts,
 		timesMadeToZuk: await timesMadeToZuk(user.id)
@@ -434,7 +442,7 @@ export async function infernoStartCommand(user: MUser, channelID: string): Comma
 			files: [
 				{
 					name: 'image.jpg',
-					attachment: await newChatHeadImage({
+					buffer: await newChatHeadImage({
 						content: res,
 						head: 'ketKeh'
 					})
@@ -457,23 +465,16 @@ export async function infernoStartCommand(user: MUser, channelID: string): Comma
 	const realCost = new Bank();
 	try {
 		realCost.add((await user.specialRemoveItems(cost)).realCost);
-	} catch (err: any) {
-		return {
-			files: [
-				{
-					name: 'image.jpg',
-					attachment: await newChatHeadImage({
-						content: `${err.message}`,
-						head: 'ketKeh'
-					})
-				}
-			]
-		};
+	} catch (err: unknown) {
+		if (err instanceof UserError) {
+			return new MessageBuilder().addChatHeadImage('ketKeh', `${err.message}`);
+		}
+		throw err;
 	}
 
-	await addSubTaskToActivityTask<InfernoOptions>({
+	await ActivityManager.startTrip<InfernoOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		duration: realDuration,
 		type: 'Inferno',
 		zukDeathChance: zukDeathChance.value,
@@ -485,7 +486,7 @@ export async function infernoStartCommand(user: MUser, channelID: string): Comma
 		cost: realCost.toJSON()
 	});
 
-	updateBankSetting('inferno_cost', realCost);
+	await ClientSettings.updateBankSetting('inferno_cost', realCost);
 
 	return {
 		content: `
@@ -512,7 +513,7 @@ export async function infernoStartCommand(user: MUser, channelID: string): Comma
 		files: [
 			{
 				name: 'image.jpg',
-				attachment: await newChatHeadImage({
+				buffer: await newChatHeadImage({
 					content: "You're on your own now JalYt, you face certain death... Prepare to fight for your life.",
 					head: 'ketKeh'
 				})

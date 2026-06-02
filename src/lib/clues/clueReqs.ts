@@ -1,8 +1,8 @@
 import type { Bank } from 'oldschooljs';
 
-import type { Skills } from '../types';
-import type { ClueTier } from './clueTiers';
-import { allStashUnitTiers } from './stashUnits';
+import type { ClueTier } from '@/lib/clues/clueTiers.js';
+import { allStashUnitTiers } from '@/lib/clues/stashUnits.js';
+import type { Skills } from '@/lib/types/index.js';
 
 interface ClueReq {
 	itemCost?: Bank;

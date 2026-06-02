@@ -1,6 +1,6 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import { GemTable } from '../../../subtables/RareDropTable';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const SpiritualWarriorTable = new LootTable({ limit: 127 })
 
@@ -34,7 +34,7 @@ const SpiritualWarriorTable = new LootTable({ limit: 127 })
 	/* Tertiary */
 	.tertiary(128, 'Clue scroll (hard)');
 
-export default new SimpleMonster({
+export const SpiritualWarrior: SimpleMonster = new SimpleMonster({
 	id: 2210,
 	name: 'Spiritual Warrior',
 	table: SpiritualWarriorTable,

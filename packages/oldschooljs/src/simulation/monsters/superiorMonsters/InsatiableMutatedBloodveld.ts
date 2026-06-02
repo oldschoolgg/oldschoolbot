@@ -1,8 +1,8 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import { MutatedBloodveldPreTable } from '../low/g-m/MutatedBloodveld';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
+import { MutatedBloodveldPreTable } from '../low/g-m/MutatedBloodveld.js';
 
-const InsatiableMutatedBloodveldTable = new LootTable()
+const InsatiableMutatedBloodveldTable: LootTable = new LootTable()
 	.every('Vile ashes')
 	.every('Ensouled bloodveld head')
 	.every(MutatedBloodveldPreTable, 3)
@@ -14,7 +14,7 @@ const InsatiableMutatedBloodveldTable = new LootTable()
 	.tertiary(895, 'Eternal gem')
 	.tertiary(894, 'Imbued heart');
 
-export default new SimpleMonster({
+export const InsatiableMutatedBloodveld: SimpleMonster = new SimpleMonster({
 	id: 7398,
 	name: 'Insatiable mutated Bloodveld',
 	table: InsatiableMutatedBloodveldTable,
