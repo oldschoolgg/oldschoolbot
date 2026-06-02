@@ -356,35 +356,27 @@ export const minigamesCommand = defineCommand({
 		},
 		/**
 		 *
-		 * Mage Arena 1
+		 * Mage Arena
 		 *
 		 */
 		{
 			name: 'mage_arena',
-			description: 'The Mage Arena 1 minigame.',
+			description: 'The Mage Arena minigames.',
 			type: 'SubcommandGroup',
 			options: [
 				{
 					type: 'Subcommand',
 					name: 'start',
-					description: 'Start a trip.'
-				}
-			]
-		},
-		/**
-		 *
-		 * Mage Arena 2
-		 *
-		 */
-		{
-			name: 'mage_arena_2',
-			description: 'The Mage Arena 2 minigame.',
-			type: 'SubcommandGroup',
-			options: [
-				{
-					type: 'Subcommand',
-					name: 'start',
-					description: 'Start a trip.'
+					description: 'Start a trip.',
+					options: [
+						{
+							type: 'String',
+							name: 'version',
+							description: 'The Mage Arena version to complete.',
+							required: true,
+							choices: choicesOf(['Mage Arena I', 'Mage Arena II'])
+						}
+					]
 				}
 			]
 		},
@@ -1292,14 +1284,11 @@ export const minigamesCommand = defineCommand({
 		 * Mage Arena
 		 *
 		 */
-		if (options.mage_arena?.start) return mageArenaCommand(rng, user, channelId);
-
-		/**
-		 *
-		 * Mage Arena 2
-		 *
-		 */
-		if (options.mage_arena_2?.start) return mageArena2Command(rng, user, channelId);
+		if (options.mage_arena?.start) {
+			return options.mage_arena.start.version === 'Mage Arena II'
+				? mageArena2Command(rng, user, channelId)
+				: mageArenaCommand(rng, user, channelId);
+		}
 
 		/**
 		 *
