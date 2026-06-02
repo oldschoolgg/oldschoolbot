@@ -16,6 +16,7 @@ import { spiritAnglerOutfit } from '@/lib/data/CollectionsExport.js';
 import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '@/lib/data/cox.js';
 import { leaguesCreatables } from '@/lib/data/creatables/leagueCreatables.js';
 import { Eatables } from '@/lib/data/eatables.js';
+import { herbloreItems } from '@/lib/data/filterables.js';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '@/lib/data/tob.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import potions from '@/lib/minions/data/potions.js';
@@ -242,6 +243,10 @@ for (const food of Eatables.map(food => food.id)) {
 	foodPreset.addItem(food, 100_000);
 }
 
+const herblorePreset = new Bank();
+for (const item of herbloreItems) {
+	herblorePreset.add(item, 100_000);
+}
 const anglerOutfit = resolveItems(['Angler hat', 'Angler top', 'Angler waders', 'Angler boots']);
 const fishingPreset = new Bank()
 	.add('Fish sack barrel')
@@ -324,6 +329,7 @@ const spawnPresets = [
 	['potions', potionsPreset],
 	['food', foodPreset],
 	['runes', runePreset],
+	['herblore', herblorePreset],
 	['shades', shadesPreset]
 ] as const;
 

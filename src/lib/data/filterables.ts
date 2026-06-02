@@ -349,7 +349,7 @@ const allSecondaries = PotionsMixable.flatMap(item => item.inputItems.itemIDs).f
 );
 const secondaries = [...new Set(allSecondaries)];
 
-const herblore = resolveItems([...potions, ...herbs, ...unfPotions, ...secondaries]);
+export const herbloreItems = resolveItems([...potions, ...herbs, ...unfPotions, ...secondaries]);
 
 const bones = resolveItems([
 	'Bones',
@@ -812,7 +812,7 @@ export const baseFilters: Filterable[] = [
 	{
 		name: 'Herblore',
 		aliases: ['herblore'],
-		items: () => herblore
+		items: () => herbloreItems
 	},
 	{
 		name: 'Herbs',
