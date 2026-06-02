@@ -807,7 +807,9 @@ const itemsMustBeInSpritesheet: number[] = uniqueArr([
 	33359,
 	33362,
 	33365,
-	33368
+	33368,
+	33382,
+	33424
 ]);
 
 const bisGearItems = new Set<number>();

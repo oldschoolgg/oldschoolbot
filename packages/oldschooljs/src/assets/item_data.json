@@ -204434,5 +204434,20 @@
 		"tradeable_on_ge": true,
 		"equipable": false,
 		"cost": 25000
+	},
+	"33382": {
+		"name": "Immaculate mole skin",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false,
+		"highalch": 240,
+		"cost": 400
+	},
+	"33424": {
+		"name": "Mission totem",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"equipable": false
 	}
 }
