@@ -348,8 +348,9 @@ const allSecondaries = PotionsMixable.flatMap(item => item.inputItems.itemIDs).f
 	item => !potions.includes(item) && !unfPotions.includes(item) && !herbs.includes(item)
 );
 const secondaries = [...new Set(allSecondaries)];
+const MixologyPaste = resolveItems(['Mox paste', 'Aga paste', 'Lye paste']);
 
-export const herbloreItems = resolveItems([...potions, ...herbs, ...unfPotions, ...secondaries]);
+export const herbloreItems = resolveItems([...potions, ...herbs, ...unfPotions, ...secondaries, ...MixologyPaste]);
 
 const bones = resolveItems([
 	'Bones',
