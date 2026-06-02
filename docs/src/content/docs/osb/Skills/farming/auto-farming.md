@@ -30,6 +30,14 @@ Auto farming collects ready patches into a single Farming activity so you can ha
 - Each step is timestamped, so the harvesting order in the summary matches the real execution order.
 - If your minion is already busy the command will refuse to start.
 
+## Messages
+
+- The start response shows how many patch groups were scheduled, the return time, a **Patches:** list, and an **Items used:** section.
+- **Items used:** is grouped into compost, seeds/spores, coins, and other items so you can see the total cost without adding each patch line manually.
+- The completion response combines all completed steps into one summary with **XP gained:**, **Total loot:**, and **Patches farmed:**.
+- Farming, Woodcutting, and Herblore XP gains include XP/hr when those skills gained XP during the trip.
+- **Patches farmed:** lists the patch groups completed in execution order.
+
 ## Resource Handling
 
 - Seeds, compost, farmer payments, and tree removal fees are checked up-front.
@@ -49,5 +57,6 @@ Auto farming collects ready patches into a single Farming activity so you can ha
 
 - Keep your seed, compost, and protection stocks topped up so auto farming can plan the maximum number of patches per trip.
 - Use `Replant` when you want to maintain a static herb run and `AllFarm` when you prefer "always best available" crops.
-- If you have more ready patches than the trip length allows, queue a second auto farm trip once the first finishes.
+- If you have more ready patches than the trip length allows, click **Repeat Trip** once the first trip finishes to do the remaining patches.
+- If there are no farming actions available, auto farm can fall back to repeating your previous non-Farming trip when one is available.
 - Review [Patch Unlocks](README.md#patch-unlocks) to make sure you have unlocked every patch that auto farming can use.
