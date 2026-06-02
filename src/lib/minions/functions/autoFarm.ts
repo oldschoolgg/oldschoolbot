@@ -12,6 +12,7 @@ import {
 	resolveSeedForPatch
 } from '@/lib/skilling/skills/farming/autoFarm/preferences.js';
 import { plants } from '@/lib/skilling/skills/farming/index.js';
+import { formatFarmingBoosts, formatItemsUsed } from '@/lib/skilling/skills/farming/utils/farmingFormatters.js';
 import type { FarmingPatchName } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { IPatchData, IPatchDataDetailed } from '@/lib/skilling/skills/farming/utils/types.js';
 import type { Plant } from '@/lib/skilling/types.js';
@@ -47,17 +48,6 @@ interface BuildSummaryResult {
 	extraInfoLines: string[];
 }
 
-const compostLabels: Record<CropUpgradeType, string> = {
-	compost: 'Compost',
-	supercompost: 'Supercompost',
-	ultracompost: 'Ultracompost'
-};
-
-function formatCompostLabel(upgradeType: CropUpgradeType, quantity: number): string {
-	const label = compostLabels[upgradeType] ?? upgradeType;
-	return `${quantity.toLocaleString()}x ${label}`;
-}
-
 function shouldHideInfoLine(line: string): boolean {
 	const normalized = line.toLowerCase();
 	return (
@@ -68,32 +58,14 @@ function shouldHideInfoLine(line: string): boolean {
 }
 
 function buildSummaryForStep(index: number, step: PlannedAutoFarmStep): BuildSummaryResult {
-	const detailParts: string[] = [];
-	if (step.upgradeType) {
-		detailParts.push(formatCompostLabel(step.upgradeType, step.quantity));
-	}
-	if (step.plant.inputItems.length > 0) {
-		const seedCost = step.plant.inputItems.clone().multiply(step.quantity);
-		detailParts.push(seedCost.toString());
-	}
-	if (step.didPay && step.plant.protectionPayment) {
-		const paymentCost = step.plant.protectionPayment.clone().multiply(step.quantity);
-		detailParts.push(`${paymentCost}`);
-	}
-	if (step.treeChopFee > 0) {
-		detailParts.push(`Up to ${step.treeChopFee.toLocaleString()} GP to remove previous trees`);
-	}
-
-	let summaryLine = `${index + 1}. ${step.friendlyName}: ${step.quantity.toLocaleString()}x ${step.plant.name}`;
-	if (detailParts.length > 0) {
-		summaryLine += ` (${detailParts.join(' + ')})`;
-	}
-
 	const extraInfoLines = step.info
 		.filter(infoLine => !shouldHideInfoLine(infoLine))
 		.map(infoLine => `${step.friendlyName}: ${infoLine}`);
 
-	return { summaryLine, extraInfoLines };
+	return {
+		summaryLine: `${index + 1}. ${step.friendlyName}: ${step.quantity.toLocaleString()}x ${step.plant.name}`,
+		extraInfoLines
+	};
 }
 
 async function tryRepeatPreviousTrip({
@@ -431,10 +403,18 @@ export async function autoFarm(
 		infoDetails.push(...extraInfoLines);
 	});
 
-	let response = `${user.minionName} is now auto farming the following patches, the trip will return in about ${formatTripDuration(
+	const patchGroupCount = summaryLines.length;
+	let response = `${user.minionName} is now auto farming ${patchGroupCount.toLocaleString()} patch group${
+		patchGroupCount === 1 ? '' : 's'
+	}, the trip will return in about ${formatTripDuration(
 		user,
 		totalDuration
-	)}:\n${summaryLines.join('\n')}`;
+	)}:\n\n**Patches:**\n${summaryLines.join('\n')}`;
+
+	const itemsUsed = formatItemsUsed(totalCost);
+	if (itemsUsed.length > 0) {
+		response += `\n\n${itemsUsed}`;
+	}
 
 	if (infoDetails.length > 0) {
 		response += `
@@ -442,9 +422,7 @@ export async function autoFarm(
 ${infoDetails.join('\n')}`;
 	}
 
-	if (uniqueBoosts.length > 0) {
-		response += `\n\n**Boosts**: ${uniqueBoosts.join(', ')}`;
-	}
+	response += formatFarmingBoosts(uniqueBoosts, { label: '**Boosts**:', suffix: '' });
 	if (skippedDueToTripLength) {
 		response += `\n\nSome ready patches were skipped because the total trip length would exceed the maximum of ${formatDuration(
 			maxTripLength

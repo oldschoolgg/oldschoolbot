@@ -1,5 +1,9 @@
 import { Bank, toKMB } from 'oldschooljs';
 
+import {
+	formatAutoFarmSummarySteps,
+	formatFarmingBoosts
+} from '@/lib/skilling/skills/farming/utils/farmingFormatters.js';
 import type { AutoFarmSummary, FarmingActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { handleTripFinish as defaultHandleTripFinish } from '@/lib/util/handleTripFinish.js';
@@ -95,6 +99,9 @@ function buildCombinedAutoFarmMessage(user: MUser, summary: AutoFarmSummary): st
 		rawXPHr = Math.floor(rawXPHr / 1000) * 1000;
 		return Math.floor(rawXPHr);
 	};
+	const formatXPWithRate = (skillName: string, xp: number, duration: number): string => {
+		return `${skillName} ${xp.toLocaleString()} XP (${toKMB(calcXPPerHour(xp, duration))}/Hr)`;
+	};
 
 	const lines: string[] = [`${user}, ${user.minionName} finished auto farming your patches.`];
 
@@ -106,13 +113,13 @@ function buildCombinedAutoFarmMessage(user: MUser, summary: AutoFarmSummary): st
 		);
 	}
 	if (summary.totalWoodcuttingXP > 0) {
-		xpParts.push(`Woodcutting ${summary.totalWoodcuttingXP.toLocaleString()} XP`);
+		xpParts.push(formatXPWithRate('Woodcutting', summary.totalWoodcuttingXP, summary.totalDuration));
 	}
 	if (summary.totalHerbloreXP > 0) {
-		xpParts.push(`Herblore ${summary.totalHerbloreXP.toLocaleString()} XP`);
+		xpParts.push(formatXPWithRate('Herblore', summary.totalHerbloreXP, summary.totalDuration));
 	}
 	if (xpParts.length > 0) {
-		lines.push(`XP gained: ${xpParts.join(', ')}.`);
+		lines.push(`**XP gained:** ${xpParts.join(', ')}.`);
 	}
 
 	if (summary.contractsCompleted > 0) {
@@ -125,12 +132,16 @@ function buildCombinedAutoFarmMessage(user: MUser, summary: AutoFarmSummary): st
 		totalLoot.add('Weeds', summary.totalWeeds);
 	}
 	if (totalLoot.length > 0) {
-		lines.push(`Total loot: ${totalLoot}.`);
+		lines.push(`**Total loot:** ${totalLoot}.`);
 	}
 
-	if (summary.boosts.length > 0) {
-		lines.push(`Boosts: ${summary.boosts.join(', ')}.`);
+	const stepLines = formatAutoFarmSummarySteps(summary);
+	if (stepLines.length > 0) {
+		lines.push(...stepLines);
 	}
+
+	const boostLine = formatFarmingBoosts(summary.boosts, { prefix: '', label: '**Boosts:**' });
+	if (boostLine) lines.push(boostLine);
 
 	return lines.join('\n');
 }

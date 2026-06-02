@@ -328,9 +328,12 @@ describe('auto farm helpers', () => {
 		);
 
 		expect(typeof response).toBe('string');
-		expect(response).toContain('is now auto farming the following patches');
+		expect(response).toContain('is now auto farming 1 patch group');
+		expect(response).toContain('**Patches:**');
 		expect(response).toContain('4x Guam');
-		expect(response).toContain('4x Compost + 4x Guam seed');
+		expect(response).toContain('**Items used:**');
+		expect(response).toContain('**Compost:** 4x Compost.');
+		expect(response).toContain('**Seeds/spores:** 4x Guam seed.');
 
 		expect(transactSpy).toHaveBeenCalledTimes(1);
 		const [transactArg] = transactSpy.mock.calls[0];
@@ -386,9 +389,11 @@ describe('auto farm helpers', () => {
 
 		expect(typeof response).toBe('string');
 		expect(response).toContain('3x Oak tree');
-		expect(response).toContain('Up to 600 GP to remove previous trees');
-		expect(response).toContain('3x Supercompost');
-		expect(response).toContain('3x Supercompost + 3x Acorn');
+		expect(response).toContain('**Patches:**');
+		expect(response).toContain('**Items used:**');
+		expect(response).toContain('**Compost:** 3x Supercompost.');
+		expect(response).toContain('**Seeds/spores:** 3x Acorn.');
+		expect(response).toContain('**Coins:** 600x Coins.');
 
 		expect(transactSpy).toHaveBeenCalledTimes(1);
 		const [transactArg] = transactSpy.mock.calls[0];

@@ -8,6 +8,14 @@ import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
 import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements.js';
 import { BitField } from '@/lib/constants.js';
 import { Farming, type PatchTypes } from '@/lib/skilling/skills/farming/index.js';
+import {
+	farmingBoostMessages,
+	formatFarmingBoosts,
+	formatNoTreeRemovalPaymentNeeded,
+	formatTreeRemovalPayment,
+	formatTreeRemovalPrepaid,
+	formatTreeRemovalRefund
+} from '@/lib/skilling/skills/farming/utils/farmingFormatters.js';
 import { getFarmingKeyFromName } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import { assert } from '@/lib/util/logError.js';
@@ -86,6 +94,20 @@ interface HarvestLootResult {
 	rakeXp: number;
 }
 
+interface AwardHarvestXPResult {
+	bonusXP: number;
+	farmingXPAmount: number;
+	woodcuttingXPAmount: number;
+	xpMessages: Partial<Record<FarmingStepXPMessageSkill, string>>;
+	xpRes: string;
+	wcXP: string;
+}
+
+interface ContractCompletionResult {
+	completed: boolean;
+	message?: string;
+}
+
 function getCompostXp(upgradeType: CropUpgradeType | null): number {
 	if (upgradeType === 'compost') return 18;
 	if (upgradeType === 'supercompost') return 26;
@@ -106,12 +128,12 @@ function calculateEquipmentModifiers(user: MUser): {
 
 	if (user.hasEquippedOrInBank('Magic secateurs')) {
 		baseBonus += 0.1;
-		boosts.push('Magic secateurs: +10% crop yield');
+		boosts.push(farmingBoostMessages.magicSecateursYield);
 	}
 
 	if (user.hasEquippedOrInBank('Farming cape')) {
 		baseBonus += 0.05;
-		boosts.push('Farming cape: +5% crop yield');
+		boosts.push(farmingBoostMessages.farmingCapeYield);
 	}
 
 	const addFarmersBonus = (bonus: number, countPiece = true) => {
@@ -430,7 +452,7 @@ async function handleTreeRemoval(options: {
 	if (coinsOwedNow > 0) {
 		await user.removeItemsFromBank(new Bank().add('Coins', coinsOwedNow));
 		const savings = plannedFee > gpToCutTree ? plannedFee - gpToCutTree : 0;
-		const paymentMessage = `You did not have the woodcutting level required, so you paid a nearby farmer ${coinsOwedNow.toLocaleString()} GP to remove the previous trees.`;
+		const paymentMessage = formatTreeRemovalPayment(coinsOwedNow);
 		payStr =
 			savings > 0
 				? `*${paymentMessage} This was ${savings.toLocaleString()} GP less than you initially expected to pay.*`
@@ -439,11 +461,11 @@ async function handleTreeRemoval(options: {
 		const refund = Math.max(0, prePaid - gpToCutTree);
 		if (refund > 0) {
 			await user.addItemsToBank({ items: new Bank().add('Coins', refund) });
-			payStr = `*You had prepaid ${prePaid.toLocaleString()} GP to remove the previous trees, but only ${gpToCutTree.toLocaleString()} GP was needed, so ${refund.toLocaleString()} GP was refunded to you.*`;
+			payStr = `*${formatTreeRemovalRefund(prePaid, gpToCutTree, refund)}*`;
 		} else if (gpToCutTree > 0) {
-			payStr = `*You had already paid a nearby farmer ${Math.min(prePaid, gpToCutTree).toLocaleString()} GP to remove the previous trees.*`;
+			payStr = `*${formatTreeRemovalPrepaid(prePaid, gpToCutTree)}*`;
 		} else if (plannedFee > 0) {
-			payStr = `*No payment was needed to remove the previous trees.*`;
+			payStr = `*${formatNoTreeRemovalPaymentNeeded()}*`;
 		}
 	}
 
@@ -506,6 +528,208 @@ function calculateWoodcuttingOutcome(options: {
 	return { woodcuttingXp, woodcuttingLoot, woodcuttingOccurred: true };
 }
 
+async function createFarmedCropPid(options: {
+	user: MUser;
+	plant: FarmingPlant;
+	quantity: number;
+	currentDate: number;
+	autoFarmed: boolean;
+	payment: FarmingActivityTaskOptions['payment'];
+	upgradeType: CropUpgradeType | null;
+}): Promise<number> {
+	const { user, plant, quantity, currentDate, autoFarmed, payment, upgradeType } = options;
+	const inserted = await prisma.farmedCrop.create({
+		data: {
+			user_id: user.id,
+			date_planted: new Date(currentDate),
+			item_id: plant.id,
+			quantity_planted: quantity,
+			was_autofarmed: autoFarmed,
+			paid_for_protection: payment ?? false,
+			upgrade_type: upgradeType
+		}
+	});
+	return inserted.id;
+}
+
+async function awardHarvestXP(options: {
+	user: MUser;
+	duration: number;
+	plantXp: number;
+	harvestXp: number;
+	checkHealthXp: number;
+	rakeXp: number;
+	woodcuttingXp: number;
+	herbloreXp: number;
+	bonusXpMultiplier: number;
+}): Promise<AwardHarvestXPResult> {
+	const { user, duration, plantXp, harvestXp, checkHealthXp, rakeXp, woodcuttingXp, herbloreXp, bonusXpMultiplier } =
+		options;
+	const bonusXP = Math.floor((plantXp + harvestXp + checkHealthXp + rakeXp) * bonusXpMultiplier);
+	const farmingXPAmount = Math.floor(plantXp + harvestXp + checkHealthXp + rakeXp + bonusXP);
+	const woodcuttingXPAmount = Math.floor(woodcuttingXp);
+
+	const xpRes = await user.addXP({
+		skillName: 'farming',
+		duration,
+		amount: farmingXPAmount
+	});
+	const wcXP = await user.addXP({
+		skillName: 'woodcutting',
+		amount: woodcuttingXPAmount
+	});
+	await user.addXP({
+		skillName: 'herblore',
+		amount: Math.floor(herbloreXp),
+		source: 'CleaningHerbsWhileFarming'
+	});
+
+	const xpMessages: Partial<Record<FarmingStepXPMessageSkill, string>> = {};
+	if (xpRes.length > 0) {
+		xpMessages.farming = xpRes;
+	}
+	if (wcXP.length > 0) {
+		xpMessages.woodcutting = wcXP;
+	}
+
+	return { bonusXP, farmingXPAmount, woodcuttingXPAmount, xpMessages, xpRes, wcXP };
+}
+
+async function applySpecialFarmingLoot(options: {
+	user: MUser;
+	channelID: string;
+	data: FarmingActivityTaskOptions;
+	rng: RNGProvider;
+	loot: Bank;
+	infoStr: string[];
+	plantToHarvest: FarmingPlant;
+	patchType: PatchTypes.IPatchData;
+	alivePlants: number;
+	currentFarmingLevel: number;
+}): Promise<Bank> {
+	const { user, channelID, data, rng, infoStr, plantToHarvest, patchType, alivePlants, currentFarmingLevel } =
+		options;
+	let { loot } = options;
+
+	const { petDropRate } = skillingPetDropRate(user, 'farming', plantToHarvest.petChance);
+	if (plantToHarvest.seedType === 'hespori') {
+		// PGLite/local env can lack the PG helper used inside incrementKC, so don't let it kill the trip
+		try {
+			await user.incrementKC(Monsters.Hespori.id, patchType.lastQuantity);
+		} catch (err) {
+			console.warn(
+				`Failed to increment Hespori KC for user ${user.id} (likely missing PG function in local DB):`,
+				err
+			);
+		}
+
+		const hesporiLoot = Monsters.Hespori.kill(patchType.lastQuantity, {
+			farmingLevel: currentFarmingLevel
+		});
+
+		const fakeMonsterTaskOptions: MonsterActivityTaskOptions = {
+			mi: Monsters.Hespori.id,
+			q: patchType.lastQuantity,
+			type: 'MonsterKilling',
+			userID: user.id,
+			duration: data.duration,
+			finishDate: data.finishDate,
+			channelId: channelID,
+			id: data.id
+		};
+
+		await combatAchievementTripEffect({ user, messages: infoStr, data: fakeMonsterTaskOptions, rng });
+
+		// hespori farming replaces loot with monster loot
+		loot = hesporiLoot;
+	} else if (
+		patchType.patchPlanted &&
+		plantToHarvest.petChance &&
+		alivePlants > 0 &&
+		rng.roll(Math.max(1, Math.ceil(petDropRate / alivePlants)))
+	) {
+		loot.add('Tangleroot');
+	}
+
+	if (plantToHarvest.seedType === 'seaweed' && rng.roll(3)) {
+		loot.add('Seaweed spore', rng.randInt(1, 3));
+	}
+
+	// only non-hespori runs can roll hespori seeds
+	if (plantToHarvest.seedType !== 'hespori') {
+		let hesporiSeeds = 0;
+		for (let i = 0; i < alivePlants; i++) {
+			if (rng.roll(Math.max(1, Math.ceil(plantToHarvest.petChance / 500)))) {
+				hesporiSeeds++;
+			}
+		}
+		if (hesporiSeeds > 0) {
+			loot.add('Hespori seed', hesporiSeeds);
+		}
+	}
+
+	if (loot.has('Tangleroot')) {
+		globalClient.emit(
+			Events.ServerNotification,
+			`${Emoji.Farming} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a Tangleroot while farming ${patchType.lastPlanted} at level ${currentFarmingLevel} Farming!`
+		);
+	}
+
+	return loot;
+}
+
+async function completeFarmingContractIfEligible(options: {
+	user: MUser;
+	loot: Bank;
+	plantToHarvest: FarmingPlant;
+	alivePlants: number;
+}): Promise<ContractCompletionResult> {
+	const { user, loot, plantToHarvest, alivePlants } = options;
+	const { contract: currentContract } = user.farmingContract();
+	const { contractsCompleted } = currentContract;
+
+	const message = `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
+		contractsCompleted + 1
+	} farming contracts.`;
+	if (currentContract.hasContract && plantToHarvest.name === currentContract.plantToGrow && alivePlants > 0) {
+		const farmingContractUpdate: IFarmingContract = {
+			hasContract: false,
+			difficultyLevel: null,
+			plantToGrow: currentContract.plantToGrow,
+			plantTier: currentContract.plantTier,
+			contractsCompleted: contractsCompleted + 1
+		};
+
+		await user.updateFarmingContract(farmingContractUpdate);
+		loot.add('Seed pack');
+
+		return { completed: true, message };
+	}
+
+	return { completed: false };
+}
+
+async function persistHarvestResult(options: { user: MUser; loot: Bank; harvestedPid: number | null }): Promise<void> {
+	const { user, loot, harvestedPid } = options;
+
+	await ClientSettings.updateBankSetting('farming_loot_bank', loot);
+	await user.transactItems({
+		collectionLog: true,
+		itemsToAdd: loot
+	});
+	await user.statsBankUpdate('farming_harvest_loot_bank', loot);
+	if (harvestedPid) {
+		await prisma.farmedCrop.update({
+			where: {
+				id: harvestedPid
+			},
+			data: {
+				date_harvested: new Date()
+			}
+		});
+	}
+}
+
 export async function executeFarmingStep({
 	user,
 	channelID,
@@ -533,18 +757,15 @@ export async function executeFarmingStep({
 		if (plantingPid.value || !planting) {
 			return;
 		}
-		const inserted = await prisma.farmedCrop.create({
-			data: {
-				user_id: user.id,
-				date_planted: new Date(currentDate),
-				item_id: plant.id,
-				quantity_planted: quantity,
-				was_autofarmed: data.autoFarmed,
-				paid_for_protection: payment ?? false,
-				upgrade_type: upgradeType
-			}
+		plantingPid.value = await createFarmedCropPid({
+			user,
+			plant,
+			quantity,
+			currentDate,
+			autoFarmed: data.autoFarmed,
+			payment,
+			upgradeType: upgradeType ?? null
 		});
-		plantingPid.value = inserted.id;
 	};
 
 	if (!patchType.patchPlanted) {
@@ -615,32 +836,17 @@ export async function executeFarmingStep({
 		loot.add(woodcuttingOutcome.woodcuttingLoot);
 	}
 	const woodcuttingXp = woodcuttingOutcome.woodcuttingXp;
-	const bonusXP = Math.floor((plantXp + harvestXp + checkHealthXp + rakeXp) * bonusXpMultiplier);
-	const farmingXPAmount = Math.floor(plantXp + harvestXp + checkHealthXp + rakeXp + bonusXP);
-	const woodcuttingXPAmount = Math.floor(woodcuttingXp);
-
-	const xpRes = await user.addXP({
-		skillName: 'farming',
+	const { bonusXP, farmingXPAmount, woodcuttingXPAmount, xpMessages, xpRes, wcXP } = await awardHarvestXP({
+		user,
 		duration: data.duration,
-		amount: farmingXPAmount
+		plantXp,
+		harvestXp,
+		checkHealthXp,
+		rakeXp,
+		woodcuttingXp,
+		herbloreXp,
+		bonusXpMultiplier
 	});
-	const wcXP = await user.addXP({
-		skillName: 'woodcutting',
-		amount: woodcuttingXPAmount
-	});
-	await user.addXP({
-		skillName: 'herblore',
-		amount: Math.floor(herbloreXp),
-		source: 'CleaningHerbsWhileFarming'
-	});
-
-	const xpMessages: Partial<Record<FarmingStepXPMessageSkill, string>> = {};
-	if (xpRes.length > 0) {
-		xpMessages.farming = xpRes;
-	}
-	if (wcXP.length > 0) {
-		xpMessages.woodcutting = wcXP;
-	}
 
 	const infoStr: string[] = [];
 	const xpBreakdownParts = [
@@ -671,73 +877,23 @@ export async function executeFarmingStep({
 		);
 	}
 
-	if (boosts.length > 0) {
-		infoStr.push(`\n**Boosts:** ${boosts.join(', ')}.`);
+	const boostLine = formatFarmingBoosts(boosts, { prefix: '\n' });
+	if (boostLine) {
+		infoStr.push(boostLine);
 	}
 
-	const { petDropRate } = skillingPetDropRate(user, 'farming', plantToHarvest.petChance);
-	if (plantToHarvest.seedType === 'hespori') {
-		// PGLite/local env can lack the PG helper used inside incrementKC, so don't let it kill the trip
-		try {
-			await user.incrementKC(Monsters.Hespori.id, patchType.lastQuantity);
-		} catch (err) {
-			console.warn(
-				`Failed to increment Hespori KC for user ${user.id} (likely missing PG function in local DB):`,
-				err
-			);
-		}
-
-		const hesporiLoot = Monsters.Hespori.kill(patchType.lastQuantity, {
-			farmingLevel: currentFarmingLevel
-		});
-
-		const fakeMonsterTaskOptions: MonsterActivityTaskOptions = {
-			mi: Monsters.Hespori.id,
-			q: patchType.lastQuantity,
-			type: 'MonsterKilling',
-			userID: user.id,
-			duration: data.duration,
-			finishDate: data.finishDate,
-			channelId: channelID,
-			id: data.id
-		};
-
-		await combatAchievementTripEffect({ user, messages: infoStr, data: fakeMonsterTaskOptions, rng });
-
-		// hespori farming replaces loot with monster loot
-		loot = hesporiLoot;
-	} else if (
-		patchType.patchPlanted &&
-		plantToHarvest.petChance &&
-		alivePlants > 0 &&
-		rng.roll(Math.max(1, Math.ceil(petDropRate / alivePlants)))
-	) {
-		loot.add('Tangleroot');
-	}
-
-	if (plantToHarvest.seedType === 'seaweed' && rng.roll(3)) {
-		loot.add('Seaweed spore', rng.randInt(1, 3));
-	}
-
-	// only non-hespori runs can roll hespori seeds
-	if (plantToHarvest.seedType !== 'hespori') {
-		let hesporiSeeds = 0;
-		for (let i = 0; i < alivePlants; i++) {
-			if (rng.roll(Math.max(1, Math.ceil(plantToHarvest.petChance / 500)))) {
-				hesporiSeeds++;
-			}
-		}
-		if (hesporiSeeds > 0) {
-			loot.add('Hespori seed', hesporiSeeds);
-		}
-	}
-
-	if (loot.has('Tangleroot')) {
-		globalClient.emit(
-			Events.ServerNotification,
-			`${Emoji.Farming} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a Tangleroot while farming ${patchType.lastPlanted} at level ${currentFarmingLevel} Farming!`
-		);
-	}
+	loot = await applySpecialFarmingLoot({
+		user,
+		channelID,
+		data,
+		rng,
+		loot,
+		infoStr,
+		plantToHarvest,
+		patchType,
+		alivePlants,
+		currentFarmingLevel
+	});
 
 	let newPatch: PatchTypes.PatchData = {
 		lastPlanted: null,
@@ -765,28 +921,7 @@ export async function executeFarmingStep({
 		[getFarmingKeyFromName(plant.seedType)]: newPatch
 	});
 
-	const { contract: currentContract } = user.farmingContract();
-	const { contractsCompleted } = currentContract;
-
-	let janeMessage = false;
-	const contractCompletionMessage = `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
-		contractsCompleted + 1
-	} farming contracts.`;
-	if (currentContract.hasContract && plantToHarvest.name === currentContract.plantToGrow && alivePlants > 0) {
-		const farmingContractUpdate: IFarmingContract = {
-			hasContract: false,
-			difficultyLevel: null,
-			plantToGrow: currentContract.plantToGrow,
-			plantTier: currentContract.plantTier,
-			contractsCompleted: contractsCompleted + 1
-		};
-
-		await user.updateFarmingContract(farmingContractUpdate);
-
-		loot.add('Seed pack');
-
-		janeMessage = true;
-	}
+	const contractCompletion = await completeFarmingContractIfEligible({ user, loot, plantToHarvest, alivePlants });
 
 	if (loot.length > 0) {
 		infoStr.push(`\nYou received: ${loot}.`);
@@ -820,30 +955,15 @@ export async function executeFarmingStep({
 		},
 		xpMessages,
 		boosts: boosts.length > 0 ? [...boosts] : undefined,
-		contractCompleted: janeMessage,
-		attachmentMessage: janeMessage ? `Jane: ${contractCompletionMessage}` : undefined
+		contractCompleted: contractCompletion.completed,
+		attachmentMessage: contractCompletion.message ? `Jane: ${contractCompletion.message}` : undefined
 	};
 
-	await ClientSettings.updateBankSetting('farming_loot_bank', loot);
-	await user.transactItems({
-		collectionLog: true,
-		itemsToAdd: loot
-	});
-	await user.statsBankUpdate('farming_harvest_loot_bank', loot);
-	if (harvestedPid) {
-		await prisma.farmedCrop.update({
-			where: {
-				id: harvestedPid
-			},
-			data: {
-				date_harvested: new Date()
-			}
-		});
-	}
+	await persistHarvestResult({ user, loot, harvestedPid });
 
-	const attachment = janeMessage
+	const attachment = contractCompletion.message
 		? await chatHeadImage({
-				content: contractCompletionMessage,
+				content: contractCompletion.message,
 				head: 'jane'
 			})
 		: undefined;

@@ -3,6 +3,13 @@ import { Bank } from 'oldschooljs';
 
 import type { CropUpgradeType } from '@/prisma/main/enums.js';
 import { calcNumOfPatches } from '@/lib/skilling/skills/farming/utils/calcsFarming.js';
+import {
+	farmingBoostMessages,
+	formatCropProtectionPayment,
+	formatMissingCropProtectionPayment,
+	formatPatchTreatment,
+	formatTreeRemovalPreparation
+} from '@/lib/skilling/skills/farming/utils/farmingFormatters.js';
 import { findPlant } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { IPatchDataDetailed } from '@/lib/skilling/skills/farming/utils/types.js';
 import type { Plant } from '@/lib/skilling/types.js';
@@ -129,9 +136,7 @@ export async function prepareFarmingStep({
 
 	const cost = inputItems.reduce((bank, [seed, qty]) => bank.add(seed.id, qty * quantityToDo), new Bank());
 	if (treeChopCost > 0) {
-		infoStr.push(
-			`You may need to pay a nearby farmer up to ${treeChopCost} GP to remove the previous trees when harvesting.`
-		);
+		infoStr.push(formatTreeRemovalPreparation(treeChopCost));
 	}
 
 	if (!availableBank.has(cost)) {
@@ -145,9 +150,9 @@ export async function prepareFarmingStep({
 		if (availableBank.has(paymentCost)) {
 			cost.add(paymentCost);
 			didPay = true;
-			infoStr.push(`You are paying a nearby farmer ${paymentCost} to look after your patches.`);
+			infoStr.push(formatCropProtectionPayment(paymentCost));
 		} else {
-			infoStr.push('You did not have enough payment to automatically pay for crop protection.');
+			infoStr.push(formatMissingCropProtectionPayment());
 		}
 	}
 
@@ -155,7 +160,7 @@ export async function prepareFarmingStep({
 	if ((didPay && plant.canCompostAndPay) || (!didPay && plant.canCompostPatch && compostTier)) {
 		const compostCost = new Bank().add(compostTier, quantityToDo);
 		if (availableBank.has(compostCost)) {
-			infoStr.push(`You are treating your patches with ${compostCost}.`);
+			infoStr.push(formatPatchTreatment(compostCost));
 			cost.add(compostCost);
 			upgradeType = compostTier;
 		}
@@ -172,22 +177,22 @@ export async function prepareFarmingStep({
 	}
 
 	if (user.hasGracefulEquipped()) {
-		boostStr.push('10% time for Graceful');
+		boostStr.push(farmingBoostMessages.gracefulTime);
 		duration *= 0.9;
 	}
 
 	if (user.hasEquippedOrInBank('Ring of endurance')) {
-		boostStr.push('10% time for Ring of endurance');
+		boostStr.push(farmingBoostMessages.ringOfEnduranceTime);
 		duration *= 0.9;
 	}
 
 	if (user.hasDiary('ardougne.hard')) {
-		boostStr.push('4% time for Ardougne Hard diary');
+		boostStr.push(farmingBoostMessages.ardougneHardTime);
 		duration *= 0.96;
 	}
 
 	if (user.hasDiary('ardougne.elite')) {
-		boostStr.push('4% time for Ardougne Elite diary');
+		boostStr.push(farmingBoostMessages.ardougneEliteTime);
 		duration *= 0.96;
 	}
 

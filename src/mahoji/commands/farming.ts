@@ -336,13 +336,8 @@ export const farmingCommand = defineCommand({
 			return `${autoFarmFilter} filter is now enabled when autofarming: ${autoFarmFilterTexts[autoFarmFilter]}.`;
 		}
 		if (options.set_preferred) {
-			const preferenceMap = parsePreferredSeeds(
-				(user.user as unknown as { minion_farmingPreferredSeeds?: Record<string, unknown> })
-					.minion_farmingPreferredSeeds
-			);
-			let preferContractCurrent = Boolean(
-				(user.user as unknown as { minion_farmingPreferredContract?: boolean }).minion_farmingPreferredContract
-			);
+			const preferenceMap = parsePreferredSeeds(user.user.minion_farmingPreferredSeeds);
+			let preferContractCurrent = Boolean(user.user.minion_farmingPreferredContract);
 			const responses: string[] = [];
 			const patchNameInput = options.set_preferred.patch as FarmingPatchName | undefined;
 			const seedInput = options.set_preferred.seed ?? undefined;
@@ -357,7 +352,7 @@ export const farmingCommand = defineCommand({
 				if (preferContractInput !== preferContractCurrent) {
 					await user.update({
 						minion_farmingPreferredContract: preferContractInput
-					} as any);
+					});
 					preferContractCurrent = preferContractInput;
 				}
 				responses.push(`Contract priority is now ${preferContractInput ? 'enabled' : 'disabled'}.`);
@@ -367,7 +362,7 @@ export const farmingCommand = defineCommand({
 				preferenceMap.clear();
 				await user.update({
 					minion_farmingPreferredSeeds: serializePreferredSeeds(preferenceMap)
-				} as any);
+				});
 				responses.push('Cleared all saved per-patch seed preferences.');
 			}
 
@@ -408,7 +403,7 @@ export const farmingCommand = defineCommand({
 				preferenceMap.set(patchData.patchName, resolvedPreference);
 				await user.update({
 					minion_farmingPreferredSeeds: serializePreferredSeeds(preferenceMap)
-				} as any);
+				});
 
 				const summary = `${patchData.friendlyName} -> ${formatPreference(resolvedPreference)}`;
 				responses.push(summary);

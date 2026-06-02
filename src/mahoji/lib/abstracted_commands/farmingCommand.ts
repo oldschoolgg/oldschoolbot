@@ -6,6 +6,11 @@ import { superCompostables } from '@/lib/data/filterables.js';
 import { prepareFarmingStep, treeCheck } from '@/lib/minions/functions/farmingTripHelpers.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import { calcNumOfPatches } from '@/lib/skilling/skills/farming/utils/calcsFarming.js';
+import {
+	farmingBoostMessages,
+	formatFarmingBoosts,
+	pushFarmingCropYieldBoosts
+} from '@/lib/skilling/skills/farming/utils/farmingFormatters.js';
 import type { FarmingActivityTaskOptions } from '@/lib/types/minions.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
@@ -56,12 +61,12 @@ export async function harvestCommand({
 	let duration = patch.lastQuantity * (timePerPatchTravel + timePerPatchHarvest);
 
 	if (user.hasGracefulEquipped()) {
-		boostStr.push('10% time for Graceful');
+		boostStr.push(farmingBoostMessages.gracefulTime);
 		duration *= 0.9;
 	}
 
 	if (user.hasEquippedOrInBank(['Ring of endurance'])) {
-		boostStr.push('10% time for Ring of endurance');
+		boostStr.push(farmingBoostMessages.ringOfEnduranceTime);
 		duration *= 0.9;
 	}
 
@@ -73,18 +78,13 @@ export async function harvestCommand({
 		)}, try a lower quantity.`;
 	}
 
-	if (user.hasEquippedOrInBank(['Magic secateurs'])) {
-		boostStr.push('10% crop yield for Magic Secateurs');
-	}
-
-	if (user.hasEquippedOrInBank(['Farming cape'])) {
-		boostStr.push('5% crop yield for Farming Skillcape');
-	}
+	pushFarmingCropYieldBoosts(user, boostStr);
 
 	returnMessageStr = `${user.minionName} is now harvesting ${patch.lastQuantity}x ${storeHarvestablePlant}.
-It'll take around ${formatTripDuration(user, duration)} to finish.
-
-${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
+It'll take around ${formatTripDuration(user, duration)} to finish.${formatFarmingBoosts(boostStr, {
+		label: '**Boosts**:',
+		suffix: ''
+	})}`;
 
 	await ActivityManager.startTrip<FarmingActivityTaskOptions>({
 		plantsName: patch.lastPlanted,
@@ -193,12 +193,7 @@ export async function farmingPlantCommand({
 	if (!patchType.patchPlanted) {
 		infoStr.unshift(`${user.minionName} is now planting ${quantity}x ${plant.name}.`);
 	} else if (patchType.patchPlanted) {
-		if (user.hasEquippedOrInBank(['Magic secateurs'])) {
-			boostStr.push('10% crop yield for Magic Secateurs');
-		}
-		if (user.hasEquippedOrInBank(['Farming cape'])) {
-			boostStr.push('5% crop yield for Farming Skillcape');
-		}
+		pushFarmingCropYieldBoosts(user, boostStr);
 
 		infoStr.unshift(
 			`${user.minionName} is now harvesting ${patchType.lastQuantity}x ${patchType.lastPlanted}, and then planting ${quantity}x ${plant.name}.`
@@ -238,9 +233,10 @@ export async function farmingPlantCommand({
 	});
 
 	return `${infoStr.join(' ')}
-It'll take around ${formatTripDuration(user, duration)} to finish.
-
-${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
+It'll take around ${formatTripDuration(user, duration)} to finish.${formatFarmingBoosts(boostStr, {
+		label: '**Boosts**:',
+		suffix: ''
+	})}`;
 }
 
 export async function compostBinCommand(
