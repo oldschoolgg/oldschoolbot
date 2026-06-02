@@ -48,6 +48,14 @@ import {
 	mahoganyHomesPointsCommand
 } from '@/mahoji/lib/abstracted_commands/mahoganyHomesCommand.js';
 import {
+	MasteringMixologyBuyCommand,
+	MasteringMixologyContractStartCommand,
+	MasteringMixologyStatusCommand,
+	MixologyPasteCreationCommand,
+	masteringMixologyBuyables,
+	mixologyHerbs
+} from '@/mahoji/lib/abstracted_commands/masteringMixologyCommand.js';
+import {
 	nightmareZoneBuyables,
 	nightmareZoneImbueables,
 	nightmareZoneImbueCommand,
@@ -655,6 +663,98 @@ export const minigamesCommand = defineCommand({
 				}
 			]
 		},
+		/**
+		 *
+		 * Mastering Mixology
+		 *
+		 */
+		{
+			name: 'mastering_mixology',
+			description: 'The Mastering Mixology minigame.',
+			type: 'SubcommandGroup',
+			options: [
+				{
+					type: 'Subcommand',
+					name: 'create',
+					description: 'Choose a herb to use for creating mixology paste.',
+					options: [
+						{
+							type: 'String',
+							name: 'herb',
+							description: 'The herb you want to use for paste.',
+							required: true,
+							autocomplete: async ({ value, user }: StringAutoComplete) => {
+								return mixologyHerbs
+									.filter(h => (!value ? true : h.name.toLowerCase().includes(value.toLowerCase())))
+									.map(h => {
+										const qty = user.bank.amount(h.name);
+										return {
+											name: `${h.name}${qty > 0 ? ` (${qty}x Owned)` : ''}`,
+											value: h.name
+										};
+									})
+									.slice(0, 25);
+							}
+						},
+						{
+							type: 'Integer',
+							name: 'quantity',
+							description: 'How many herbs to use.',
+							required: false,
+							min_value: 1
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'start',
+					description: 'Start a mixology trip.',
+					options: [
+						{
+							type: 'Integer',
+							name: 'contracts',
+							description: 'How many contracts to do.',
+							required: false,
+							min_value: 1
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'buy',
+					description: 'Buy items with mixology points.',
+					options: [
+						{
+							type: 'String',
+							name: 'name',
+							required: true,
+							description: 'The item to buy.',
+							autocomplete: async ({ value }: StringAutoComplete) => {
+								return masteringMixologyBuyables
+									.filter(i =>
+										!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
+									)
+									.map(i => ({ name: i.item.name, value: i.item.name }));
+							}
+						},
+						{
+							type: 'Integer',
+							name: 'quantity',
+							description: 'Quantity.',
+							required: false,
+							min_value: 1,
+							max_value: 1000
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'status',
+					description: 'Show your mixology status.'
+				}
+			]
+		},
+
 		/**
 		 *
 		 * Tears of Guthix
@@ -1368,6 +1468,35 @@ export const minigamesCommand = defineCommand({
 			if (options.mahogany_homes.points) {
 				return mahoganyHomesPointsCommand(user);
 			}
+		}
+		/**
+		 *
+		 * Mastering Mixology
+		 *
+		 */
+		if (options.mastering_mixology?.create) {
+			return MixologyPasteCreationCommand(
+				user,
+				channelId,
+				options.mastering_mixology.create.herb,
+				options.mastering_mixology.create.quantity
+			);
+		}
+
+		if (options.mastering_mixology?.buy) {
+			return MasteringMixologyBuyCommand(
+				user,
+				options.mastering_mixology.buy.name,
+				options.mastering_mixology.buy.quantity
+			);
+		}
+
+		if (options.mastering_mixology?.start) {
+			return MasteringMixologyContractStartCommand(user, channelId, options.mastering_mixology.start.contracts);
+		}
+
+		if (options.mastering_mixology?.status) {
+			return MasteringMixologyStatusCommand(user);
 		}
 
 		/**
