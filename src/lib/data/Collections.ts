@@ -505,7 +505,8 @@ export const allCollectionLogs: ICollection = {
 				allItems: uniqueArr([
 					...Monsters.Branda.allItems,
 					...Monsters.Eldric.allItems,
-					...Monsters.RoyalTitans.allItems
+					...Monsters.RoyalTitans.allItems,
+					...resolveItems(['Deadeye prayer scroll', 'Mystic vigour prayer scroll'])
 				]),
 				fmtProg: ({ stats }) => [
 					`${stats.kcBank[Monsters.Branda.id] ?? 0} Branda KC`,
@@ -820,6 +821,7 @@ export const allCollectionLogs: ICollection = {
 			},
 			'Castle Wars': {
 				alias: ['cw', 'castle wars'],
+				allItems: resolveItems(['Castle wars ticket', 'Castle wars supply crate']),
 				items: castleWarsCL,
 				isActivity: true,
 				fmtProg: mgProg('castle_wars')

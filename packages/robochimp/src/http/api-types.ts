@@ -83,7 +83,7 @@ export type FullMinionData = {
 		combat_options: number[];
 	};
 
-	current_activity: {
+	current_activity?: {
 		name: string;
 		started_at: string;
 		finishes_at: string;
