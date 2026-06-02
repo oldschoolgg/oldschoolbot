@@ -34,10 +34,10 @@ import { NestBoxRing } from './NestBoxRing.js';
 import { NestBoxSeeds } from './NestBoxSeeds.js';
 import { OgreCoffin } from './OgreCoffin.js';
 import { GiantsFoundryOrePack, VolcanicMineOrePack } from './OrePack.js';
+import { AdeptPotionPack, ApprenticePotionPack, ExpertPotionPack } from './PotionPacks.js';
 import { SeedPackOpenable as SeedPack } from './SeedPack.js';
 import { SinisterChest } from './SinisterChest.js';
 import { ZombiePiratesLocker } from './ZombiePiratesLocker.js';
-import { AdeptPotionPack, ApprenticePotionPack, ExpertPotionPack } from './PotionPacks';
 
 export {
 	MysteryBox,

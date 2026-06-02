@@ -48,6 +48,10 @@ import { infernoTask } from '@/tasks/minions/minigames/infernoActivity.js';
 import { lmsTask } from '@/tasks/minions/minigames/lmsActivity.js';
 import { mageTrainingTask } from '@/tasks/minions/minigames/mageTrainingArenaActivity.js';
 import { mahoganyHomesTask } from '@/tasks/minions/minigames/mahoganyHomesActivity.js';
+import {
+	MasteringMixologyContractTask,
+	MixologyPasteCreationTask
+} from '@/tasks/minions/minigames/masteringMixologyActivity.js';
 import { nightmareTask } from '@/tasks/minions/minigames/nightmareActivity.js';
 import { nightmareZoneTask } from '@/tasks/minions/minigames/nightmareZoneActivity.js';
 import { pestControlTask } from '@/tasks/minions/minigames/pestControlActivity.js';
@@ -217,8 +221,8 @@ export const allTasks: MinionTask[] = [
 	colosseumTask,
 	CreateForestersRationsTask,
 	buyTask,
-	masteryMixologyContractTask,
-	mixologyPasteCreationTask
+	MasteringMixologyContractTask,
+	MixologyPasteCreationTask
 ];
 
 for (const a of Object.values(activity_type_enum)) {

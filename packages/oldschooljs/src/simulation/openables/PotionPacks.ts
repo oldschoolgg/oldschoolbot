@@ -1,5 +1,5 @@
 import LootTable from '../../structures/LootTable';
-import SimpleOpenable from '../../structures/SimpleOpenable';
+import { SimpleOpenable } from '../../structures/SimpleOpenable';
 
 const ApprenticePotionTable = new LootTable()
 	.add('Attack potion(3)', [2, 4], 11)
@@ -19,7 +19,7 @@ const ApprenticePotionTable = new LootTable()
 
 const ApprenticePotionPackTable = new LootTable().every(ApprenticePotionTable, 4);
 
-export const ApprenticePotionPack = new SimpleOpenable({
+export const ApprenticePotionPack: SimpleOpenable = new SimpleOpenable({
 	id: 29_971,
 	name: 'Apprentice potion pack',
 	aliases: ['apprentice potion pack'],
@@ -44,7 +44,7 @@ const AdeptPotionTable = new LootTable()
 
 const AdeptPotionPackTable = new LootTable().every(AdeptPotionTable, 4);
 
-export const AdeptPotionPack = new SimpleOpenable({
+export const AdeptPotionPack: SimpleOpenable = new SimpleOpenable({
 	id: 29_972,
 	name: 'Adept potion pack',
 	aliases: ['adept potion pack'],
@@ -69,7 +69,7 @@ const ExpertPotionTable = new LootTable()
 
 const ExpertPotionPackTable = new LootTable().every(ExpertPotionTable, 4);
 
-export const ExpertPotionPack = new SimpleOpenable({
+export const ExpertPotionPack: SimpleOpenable = new SimpleOpenable({
 	id: 29_973,
 	name: 'Expert potion pack',
 	aliases: ['expert potion pack'],

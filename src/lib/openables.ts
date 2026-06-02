@@ -1,6 +1,8 @@
 import type { IFarmingContract } from '@oldschoolgg/schemas';
 import { Emoji, Events, formatOrdinal } from '@oldschoolgg/toolkit';
 import {
+	AdeptPotionPack,
+	ApprenticePotionPack,
 	Bank,
 	BrimstoneChest,
 	BronzeHAMChest,
@@ -9,6 +11,7 @@ import {
 	EliteMimicTable,
 	ElvenCrystalChest,
 	EMonster,
+	ExpertPotionPack,
 	GiantEggSacFull,
 	GiantsFoundryOrePack,
 	GrubbyChest,
@@ -407,26 +410,26 @@ const osjsOpenables: UnifiedOpenable[] = [
 	{
 		name: 'Apprentice potion pack',
 		id: 29_971,
-		openedItem: getOSItem(29_971),
+		openedItem: Items.getOrThrow(29_971),
 		aliases: ['apprentice potion pack'],
-		output: Openables.ApprenticePotionPack.table,
-		allItems: Openables.ApprenticePotionPack.table.allItems
+		output: ApprenticePotionPack.table,
+		allItems: ApprenticePotionPack.table.allItems
 	},
 	{
 		name: 'Adept potion pack',
 		id: 29_972,
-		openedItem: getOSItem(29_972),
+		openedItem: Items.getOrThrow(29_972),
 		aliases: ['adept potion pack'],
-		output: Openables.AdeptPotionPack.table,
-		allItems: Openables.AdeptPotionPack.table.allItems
+		output: AdeptPotionPack.table,
+		allItems: AdeptPotionPack.table.allItems
 	},
 	{
 		name: 'Expert potion pack',
 		id: 29_973,
-		openedItem: getOSItem(29_973),
+		openedItem: Items.getOrThrow(29_973),
 		aliases: ['expert potion pack'],
-		output: Openables.ExpertPotionPack.table,
-		allItems: Openables.ExpertPotionPack.table.allItems
+		output: ExpertPotionPack.table,
+		allItems: ExpertPotionPack.table.allItems
 	},
 	{
 		name: 'Intricate pouch',

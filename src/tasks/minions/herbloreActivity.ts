@@ -1,4 +1,4 @@
-import { Bank, type Item } from 'oldschooljs';
+import { Bank, EItem, type Item } from 'oldschooljs';
 
 import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
 import type { HerbloreActivityTaskOptions } from '@/lib/types/minions.js';
@@ -84,7 +84,7 @@ export const herbloreTask: MinionTask = {
 				for (const [item, qty] of mixableItem.inputItems.items()) {
 					if (!isSecondary(item, mixableItem.item.name)) continue;
 					for (let q = 0; q < qty; q++) {
-						if (percentChance(10)) {
+						if (rng.percentChance(10)) {
 							savedItems.add(item, 1);
 						}
 					}
@@ -92,20 +92,19 @@ export const herbloreTask: MinionTask = {
 			}
 		}
 
-		const xpRes = await user.addXP({ skillName: SkillsEnum.Herblore, amount: xpReceived, duration });
+		const xpRes = await user.addXP({ skillName: 'herblore', amount: xpReceived, duration });
 		const loot = new Bank().add(mixableItem.item.id, outputQuantity).add(savedItems);
 
 		await user.transactItems({ collectionLog: true, itemsToAdd: loot });
 
 		const savedStr = savedItems.length > 0 ? ` Your prescription goggles saved ${savedItems}.` : '';
 
-		handleTripFinish(
+		handleTripFinish({
 			user,
-			channelID,
-			`${user}, ${user.minionName} finished making ${outputQuantity}x ${mixableItem.item.name}. ${xpRes}.${savedStr}`,
-			undefined,
+			channelId,
+			message: `${user}, ${user.minionName} finished making ${outputQuantity}x ${mixableItem.item.name}. ${xpRes}.${savedStr}`,
 			data,
 			loot
-		);
+		});
 	}
 };

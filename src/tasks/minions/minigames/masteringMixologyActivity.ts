@@ -1,19 +1,16 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
-import { incrementMinigameScore } from '../../../lib/settings/minigames';
-import { SkillsEnum } from '../../../lib/skilling/types';
+
 import type {
 	MasteringMixologyContractActivityTaskOptions,
 	MasteringMixologyContractCreatingTaskOptions
-} from '../../../lib/types/minions';
-import { randFloat } from '../../../lib/util';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+} from '../../../lib/types/minions.js';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish.js';
 import {
 	getMixologyContractDuration,
 	mixologyContracts,
 	mixologyHerbs
-} from '../../../mahoji/lib/abstracted_commands/masteringMixologyCommand';
+} from '../../../mahoji/lib/abstracted_commands/masteringMixologyCommand.js';
 
 export interface WeightedItem {
 	weight: number;
@@ -21,7 +18,7 @@ export interface WeightedItem {
 
 export function masteringMixologyWeightedRandom<T extends WeightedItem>(items: readonly T[]): T {
 	const total = items.reduce((sum, item) => sum + item.weight, 0);
-	let roll = randFloat(0, total);
+	let roll = Math.random() * total;
 	for (const item of items) {
 		if (roll < item.weight) return item;
 		roll -= item.weight;
@@ -32,7 +29,7 @@ export function masteringMixologyWeightedRandom<T extends WeightedItem>(items: r
 export const MixologyPasteCreationTask: MinionTask = {
 	type: 'MixologyPasteCreation',
 	async run(data: MasteringMixologyContractCreatingTaskOptions) {
-		const { userID, channelID, herbName, quantity, duration } = data;
+		const { userID, channelId, herbName, quantity, duration } = data;
 		const user = await mUserFetch(userID);
 
 		const herb = mixologyHerbs.find(h => h.name.toLowerCase() === herbName.toLowerCase());
@@ -52,7 +49,7 @@ export const MixologyPasteCreationTask: MinionTask = {
 
 		// Add Herblore XP for creating paste
 		await user.addXP({
-			skillName: SkillsEnum.Herblore,
+			skillName: 'herblore',
 			amount: totalXP,
 			duration,
 			source: 'MasteringMixology'
@@ -60,14 +57,14 @@ export const MixologyPasteCreationTask: MinionTask = {
 
 		const str = `${user.minionName} finished creating ${totalPaste}x ${pasteItemName} using ${quantity}x ${herb.name}. You gained ${totalXP} Herblore XP.`;
 
-		handleTripFinish(user, channelID, str, undefined, data, null);
+		handleTripFinish({ user, channelId, message: str, data });
 	}
 };
 
 export const MasteringMixologyContractTask: MinionTask = {
 	type: 'MasteringMixologyContract',
 	run: async (data: MasteringMixologyContractActivityTaskOptions) => {
-		const { userID, channelID, quantity } = data;
+		const { userID, channelId, quantity } = data;
 		const user = await mUserFetch(userID);
 		let completed = 0;
 		let totalXP = 0;
@@ -86,7 +83,7 @@ export const MasteringMixologyContractTask: MinionTask = {
 			Aga: 0
 		};
 
-		const currentLevel = user.skillLevel(SkillsEnum.Herblore);
+		const currentLevel = user.skillLevel('herblore');
 		for (let i = 0; i < quantity; i++) {
 			const currentBank = user.bank.clone();
 
@@ -112,7 +109,7 @@ export const MasteringMixologyContractTask: MinionTask = {
 			if (!user.owns(cost)) continue;
 
 			await user.removeItemsFromBank(cost);
-			await updateBankSetting('mastering_mixology_cost_bank', cost);
+			await ClientSettings.updateBankSetting('mastering_mixology_cost_bank', cost);
 
 			const contractXP = contract.xp;
 			const counts: Record<'Mox' | 'Lye' | 'Aga', number> = { Mox: 0, Lye: 0, Aga: 0 };
@@ -147,7 +144,7 @@ export const MasteringMixologyContractTask: MinionTask = {
 
 			actualDuration += contractDuration;
 
-			await incrementMinigameScore(userID, 'mastering_mixology', 1);
+			await user.incrementMinigameScore('mastering_mixology', 1);
 
 			totalXP += contractXP;
 			totalPoints += contractPoints;
@@ -155,14 +152,12 @@ export const MasteringMixologyContractTask: MinionTask = {
 		}
 
 		if (completed === 0) {
-			return handleTripFinish(
+			return handleTripFinish({
 				user,
-				channelID,
-				`${user.minionName} attempted to complete contracts but had insufficient paste.`,
-				undefined,
-				data,
-				null
-			);
+				channelId,
+				message: `${user.minionName} attempted to complete contracts but had insufficient paste.`,
+				data
+			});
 		}
 
 		const pasteSummary = Object.entries(pasteUsage)
@@ -171,7 +166,7 @@ export const MasteringMixologyContractTask: MinionTask = {
 			.join(', ');
 
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Herblore,
+			skillName: 'herblore',
 			amount: totalXP,
 			duration: actualDuration,
 			source: 'MasteringMixology'
@@ -192,6 +187,6 @@ export const MasteringMixologyContractTask: MinionTask = {
 			`**Paste Used:** ${pasteSummary}`
 		].join('\n');
 
-		return handleTripFinish(user, channelID, finalMsg, undefined, data, null);
+		return handleTripFinish({ user, channelId, message: finalMsg, data });
 	}
 };

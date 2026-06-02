@@ -54,7 +54,7 @@ import {
 	MixologyPasteCreationCommand,
 	masteringMixologyBuyables,
 	mixologyHerbs
-} from '../lib/abstracted_commands/masteringMixologyCommand';
+} from '@/mahoji/lib/abstracted_commands/masteringMixologyCommand.js';
 import {
 	nightmareZoneBuyables,
 	nightmareZoneImbueables,
@@ -679,26 +679,23 @@ export const minigamesCommand = defineCommand({
 		{
 			name: 'mastering_mixology',
 			description: 'The Mastering Mixology minigame.',
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'create',
 					description: 'Choose a herb to use for creating mixology paste.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'herb',
 							description: 'The herb you want to use for paste.',
 							required: true,
-							autocomplete: async (value, { id }) => {
-								const raw = await mahojiUsersSettingsFetch(id, { bank: true });
-								const bank = new Bank(raw.bank as ItemBank);
-
+							autocomplete: async ({ value, user }: StringAutoComplete) => {
 								return mixologyHerbs
 									.filter(h => (!value ? true : h.name.toLowerCase().includes(value.toLowerCase())))
 									.map(h => {
-										const qty = bank.amount(h.name);
+										const qty = user.bank.amount(h.name);
 										return {
 											name: `${h.name}${qty > 0 ? ` (${qty}x Owned)` : ''}`,
 											value: h.name
@@ -708,7 +705,7 @@ export const minigamesCommand = defineCommand({
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'quantity',
 							description: 'How many herbs to use.',
 							required: false,
@@ -717,12 +714,12 @@ export const minigamesCommand = defineCommand({
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a mixology trip.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'contracts',
 							description: 'How many contracts to do.',
 							required: false,
@@ -731,16 +728,16 @@ export const minigamesCommand = defineCommand({
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'buy',
 					description: 'Buy items with mixology points.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'name',
 							required: true,
 							description: 'The item to buy.',
-							autocomplete: async value => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return masteringMixologyBuyables
 									.filter(i =>
 										!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
@@ -749,7 +746,7 @@ export const minigamesCommand = defineCommand({
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'quantity',
 							description: 'Quantity.',
 							required: false,
@@ -759,7 +756,7 @@ export const minigamesCommand = defineCommand({
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'status',
 					description: 'Show your mixology status.'
 				}
@@ -1491,7 +1488,7 @@ export const minigamesCommand = defineCommand({
 		if (options.mastering_mixology?.create) {
 			return MixologyPasteCreationCommand(
 				user,
-				channelID,
+				channelId,
 				options.mastering_mixology.create.herb,
 				options.mastering_mixology.create.quantity
 			);
@@ -1506,7 +1503,7 @@ export const minigamesCommand = defineCommand({
 		}
 
 		if (options.mastering_mixology?.start) {
-			return MasteringMixologyContractStartCommand(user, channelID, options.mastering_mixology.start.contracts);
+			return MasteringMixologyContractStartCommand(user, channelId, options.mastering_mixology.start.contracts);
 		}
 
 		if (options.mastering_mixology?.status) {

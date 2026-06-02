@@ -1,18 +1,12 @@
-import { formatDuration, mentionCommand, stringMatches } from '@oldschoolgg/toolkit';
-import { Time } from 'e';
-import { Bank } from 'oldschooljs';
-import { QuestID } from '../../../lib/minions/data/quests';
-import { getMinigameScore } from '../../../lib/settings/minigames';
-import { SkillsEnum } from '../../../lib/skilling/types';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { Bank, Items } from 'oldschooljs';
+
+import { QuestID } from '../../../lib/minions/data/quests.js';
 import type {
 	MasteringMixologyContractActivityTaskOptions,
 	MasteringMixologyContractCreatingTaskOptions
-} from '../../../lib/types/minions';
-import { randFloat } from '../../../lib/util';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { getOSItem } from '../../../lib/util/getOSItem';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+} from '../../../lib/types/minions.js';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
 
 export interface MixologyHerb {
 	name: string;
@@ -49,12 +43,11 @@ export async function MixologyPasteCreationCommand(
 	herbName: string,
 	optionQuantity?: number
 ) {
-	const currentLevel = user.skillLevel(SkillsEnum.Herblore);
+	const currentLevel = user.skillLevel('herblore');
 	if (currentLevel < 60) return 'You need at least 60 Herblore to participate in the mixology.';
 
 	if (!user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
-		return `You need to complete the "Children of the Sun" quest before you can participate in the mixology. Send your minion to do the quest using: ${mentionCommand(
-			globalClient,
+		return `You need to complete the "Children of the Sun" quest before you can participate in the mixology. Send your minion to do the quest using: ${globalClient.mentionCommand(
 			'activities',
 			'quest'
 		)}.`;
@@ -70,7 +63,7 @@ export async function MixologyPasteCreationCommand(
 	}
 
 	const timeToMixOne = Time.Second * 0.72; //Based off 5,000 used per hour
-	const maxTripLength = calcMaxTripLength(user, 'MixologyPasteCreation');
+	const maxTripLength = await calcMaxTripLength(user, 'MixologyPasteCreation');
 	const maxByTime = Math.floor(maxTripLength / timeToMixOne);
 	const maxByItems = bankQty;
 
@@ -95,11 +88,11 @@ export async function MixologyPasteCreationCommand(
 	}
 
 	await user.removeItemsFromBank(cost);
-	await updateBankSetting('mastering_mixology_cost_bank', cost);
+	await ClientSettings.updateBankSetting('mastering_mixology_cost_bank', cost);
 
-	await addSubTaskToActivityTask<MasteringMixologyContractCreatingTaskOptions>({
+	await ActivityManager.startTrip<MasteringMixologyContractCreatingTaskOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId: channelID.toString(),
 		type: 'MixologyPasteCreation',
 		minigameID: 'mastering_mixology',
 		herbName: herb.name,
@@ -114,7 +107,7 @@ export async function MixologyPasteCreationCommand(
 
 export function getMixologyContractDuration(base: number): number {
 	const variance = 0.1;
-	const factor = 1 + (randFloat(0, 2) - 1) * variance;
+	const factor = 1 + (Math.random() * 2 - 1) * variance;
 	return base * factor;
 }
 
@@ -201,35 +194,35 @@ export const mixologyContracts: MixologyContract[] = [
 
 export const masteringMixologyBuyables = [
 	{
-		item: getOSItem('Apprentice potion pack'),
+		item: Items.getOrThrow('Apprentice potion pack'),
 		cost: { Mox: 420, Aga: 70, Lye: 30 },
 		requiredLevel: 60
 	},
 	{
-		item: getOSItem('Adept potion pack'),
+		item: Items.getOrThrow('Adept potion pack'),
 		cost: { Mox: 180, Aga: 440, Lye: 70 },
 		requiredLevel: 70
 	},
 	{
-		item: getOSItem('Expert potion pack'),
+		item: Items.getOrThrow('Expert potion pack'),
 		cost: { Mox: 410, Aga: 320, Lye: 480 },
 		requiredLevel: 85
 	},
 	{
-		item: getOSItem('Prescription goggles'),
+		item: Items.getOrThrow('Prescription goggles'),
 		cost: { Mox: 8600, Aga: 7000, Lye: 9350 }
 	},
-	{ item: getOSItem('Alchemist labcoat'), cost: { Mox: 2250, Aga: 2800, Lye: 3700 } },
-	{ item: getOSItem('Alchemist pants'), cost: { Mox: 2250, Aga: 2800, Lye: 3700 } },
-	{ item: getOSItem('Alchemist gloves'), cost: { Mox: 2250, Aga: 2800, Lye: 3700 } },
-	{ item: getOSItem('Reagent pouch'), cost: { Mox: 13800, Aga: 11200, Lye: 15100 } },
-	{ item: getOSItem('Potion storage'), cost: { Mox: 7750, Aga: 6300, Lye: 8950 } },
+	{ item: Items.getOrThrow('Alchemist labcoat'), cost: { Mox: 2250, Aga: 2800, Lye: 3700 } },
+	{ item: Items.getOrThrow('Alchemist pants'), cost: { Mox: 2250, Aga: 2800, Lye: 3700 } },
+	{ item: Items.getOrThrow('Alchemist gloves'), cost: { Mox: 2250, Aga: 2800, Lye: 3700 } },
+	{ item: Items.getOrThrow('Reagent pouch'), cost: { Mox: 13800, Aga: 11200, Lye: 15100 } },
+	{ item: Items.getOrThrow('Potion storage'), cost: { Mox: 7750, Aga: 6300, Lye: 8950 } },
 	{
-		item: getOSItem('Chugging barrel (disassembled)'),
+		item: Items.getOrThrow('Chugging barrel (disassembled)'),
 		cost: { Mox: 17250, Aga: 14000, Lye: 18600 }
 	},
-	{ item: getOSItem("Alchemist's amulet"), cost: { Mox: 6900, Aga: 5650, Lye: 7400 } },
-	{ item: getOSItem('Aldarium'), cost: { Mox: 80, Aga: 60, Lye: 90 } }
+	{ item: Items.getOrThrow("Alchemist's amulet"), cost: { Mox: 6900, Aga: 5650, Lye: 7400 } },
+	{ item: Items.getOrThrow('Aldarium'), cost: { Mox: 80, Aga: 60, Lye: 90 } }
 ];
 
 export async function MasteringMixologyBuyCommand(user: MUser, input = '', quantity = 1) {
@@ -243,7 +236,7 @@ export async function MasteringMixologyBuyCommand(user: MUser, input = '', quant
 			.join('\n')}.`;
 	}
 
-	const currentLevel = user.skillLevel(SkillsEnum.Herblore);
+	const currentLevel = user.skillLevel('herblore');
 	if (buyable.requiredLevel && currentLevel < buyable.requiredLevel) {
 		return `You need ${buyable.requiredLevel} Herblore to buy the ${buyable.item.name}.`;
 	}
@@ -272,19 +265,18 @@ export async function MasteringMixologyBuyCommand(user: MUser, input = '', quant
 	});
 
 	const loot = new Bank().add(buyable.item.id, quantity);
-	await transactItems({ userID: user.id, itemsToAdd: loot, collectionLog: true });
+	await user.transactItems({ itemsToAdd: loot, collectionLog: true });
 
 	return `Successfully purchased ${loot} for ${totalCost.Mox} Mox, ${totalCost.Aga} Aga and ${totalCost.Lye} Lye points.`;
 }
 
 export async function MasteringMixologyContractStartCommand(user: MUser, channelID: string, contracts?: number) {
-	const currentLevel = user.skillLevel(SkillsEnum.Herblore);
+	const currentLevel = user.skillLevel('herblore');
 
 	if (currentLevel < 60) return 'You need at least 60 Herblore to participate in the mixology.';
 
 	if (!user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
-		return `You need to complete the "Children of the Sun" quest before you can participate in the mixology. Send your minion to do the quest using: ${mentionCommand(
-			globalClient,
+		return `You need to complete the "Children of the Sun" quest before you can participate in the mixology. Send your minion to do the quest using: ${globalClient.mentionCommand(
 			'activities',
 			'quest'
 		)}.`;
@@ -303,8 +295,7 @@ export async function MasteringMixologyContractStartCommand(user: MUser, channel
 		);
 	}).length;
 	if (totalAvailable === 0) {
-		return `You're out of paste! Each contract requires 30 paste (3 batches of 10). \nCreate more using ${mentionCommand(
-			globalClient,
+		return `You're out of paste! Each contract requires 30 paste (3 batches of 10). \nCreate more using ${globalClient.mentionCommand(
 			'minigames',
 			'mastering_mixology',
 			'create'
@@ -312,7 +303,7 @@ export async function MasteringMixologyContractStartCommand(user: MUser, channel
 	}
 
 	const contractTime = Time.Hour / 343;
-	const maxTripLength = calcMaxTripLength(user, 'MasteringMixologyContract');
+	const maxTripLength = await calcMaxTripLength(user, 'MasteringMixologyContract');
 	const maxContracts = Math.floor(maxTripLength / (contractTime * 1.1));
 
 	if (!contracts) {
@@ -328,9 +319,9 @@ export async function MasteringMixologyContractStartCommand(user: MUser, channel
 	}
 	const duration = Math.round(totalDuration);
 
-	await addSubTaskToActivityTask<MasteringMixologyContractActivityTaskOptions>({
+	await ActivityManager.startTrip<MasteringMixologyContractActivityTaskOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId: channelID.toString(),
 		type: 'MasteringMixologyContract',
 		duration,
 		minigameID: 'mastering_mixology',
@@ -345,7 +336,7 @@ export async function MasteringMixologyStatusCommand(user: MUser) {
 	const moxPaste = user.bank.amount('Mox paste');
 	const agaPaste = user.bank.amount('Aga paste');
 	const lyePaste = user.bank.amount('Lye paste');
-	const kc = await getMinigameScore(user.id, 'mastering_mixology');
+	const kc = await user.fetchMinigameScore('mastering_mixology');
 
 	return `You have ${mixology_mox_points.toLocaleString()} Mox points, ${mixology_aga_points.toLocaleString()} Aga points and ${mixology_lye_points.toLocaleString()} Lye points.
 You have ${moxPaste.toLocaleString()}x Mox paste, ${agaPaste.toLocaleString()}x Aga paste and ${lyePaste.toLocaleString()}x Lye paste.
