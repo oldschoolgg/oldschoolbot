@@ -1,51 +1,9 @@
 [
 	{
-		"name": "Adept potion pack",
-		"id": 29972,
-		"opened_item": "Adept potion pack",
-		"all_items": [
-			"Agility potion(3)",
-			"Antifire potion(3)",
-			"Antipoison(3)",
-			"Combat potion(3)",
-			"Energy potion(3)",
-			"Hunter potion(3)",
-			"Prayer potion(3)",
-			"Prayer regeneration potion(3)",
-			"Restore potion(3)",
-			"Super attack(3)",
-			"Super defence(3)",
-			"Super energy(3)",
-			"Super strength(3)",
-			"Superantipoison(3)"
-		]
-	},
-	{
 		"name": "Amylase pack",
 		"id": 12641,
 		"opened_item": "Amylase pack",
 		"all_items": ["Amylase crystal"]
-	},
-	{
-		"name": "Apprentice potion pack",
-		"id": 29971,
-		"opened_item": "Apprentice potion pack",
-		"all_items": [
-			"Agility potion(3)",
-			"Antipoison(3)",
-			"Attack potion(3)",
-			"Combat potion(3)",
-			"Defence potion(3)",
-			"Energy potion(3)",
-			"Fishing potion(3)",
-			"Hunter potion(3)",
-			"Prayer potion(3)",
-			"Restore potion(3)",
-			"Strength potion(3)",
-			"Super attack(3)",
-			"Super strength(3)",
-			"Superantipoison(3)"
-		]
 	},
 	{
 		"name": "Baby impling",
@@ -900,27 +858,6 @@
 			"Soul rune",
 			"Steam rune",
 			"Water rune"
-		]
-	},
-	{
-		"name": "Expert potion pack",
-		"id": 29973,
-		"opened_item": "Expert potion pack",
-		"all_items": [
-			"Ancient brew(3)",
-			"Hunter potion(3)",
-			"Magic potion(3)",
-			"Prayer potion(3)",
-			"Prayer regeneration potion(3)",
-			"Ranging potion(3)",
-			"Saradomin brew(3)",
-			"Super attack(3)",
-			"Super defence(3)",
-			"Super energy(3)",
-			"Super restore(3)",
-			"Super strength(3)",
-			"Superantipoison(3)",
-			"Zamorak brew(3)"
 		]
 	},
 	{

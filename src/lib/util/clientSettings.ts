@@ -57,7 +57,6 @@ async function updateClientGPTrackSetting(
 type ClientBankKey =
 	| 'sold_items_bank'
 	| 'herblore_cost_bank'
-	| 'mastering_mixology_cost_bank'
 	| 'construction_cost_bank'
 	| 'farming_cost_bank'
 	| 'farming_loot_bank'
