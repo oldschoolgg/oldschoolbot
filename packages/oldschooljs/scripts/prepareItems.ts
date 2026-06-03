@@ -1,10 +1,11 @@
 import { readFileSync, writeFileSync } from 'node:fs';
-import { increaseNumByPercent, objectValues, reduceNumByPercent } from '@oldschoolgg/toolkit';
+import { increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { diff } from 'deep-object-diff';
 import deepMerge from 'deepmerge';
 import { clone } from 'remeda';
 
-import { EquipmentSlot, type Item } from '@/meta/item.js';
+import { EquipmentSlot } from '@oldschoolgg/gear';
+import type { Item } from '@/meta/item.js';
 import { Items } from '@/structures/Items.js';
 import { USELESS_ITEMS } from '@/structures/ItemsClass.js';
 import bsoItemsJson from '../../../data/bso/bso_items.json' with { type: 'json' };
@@ -492,9 +493,14 @@ export default async function prepareItems(): Promise<void> {
 		messages.push(`Name Changes:\n	${nameChanges.join('\n	')}`);
 	}
 
-	const deletedItems: Item[] = objectValues(previousItems)
-		.filter(i => !newItemJSON[i.id])
-		.filter(i => i !== null && i !== undefined);
+	const deletedItems: Item[] = Object.entries(previousItems)
+		.filter(([_id, item]) => item !== null && item !== undefined)
+		.filter(([id]) => !newItemJSON[Number(id)])
+		.map(([id, item]) => ({ id: Number(id), ...(item as Omit<Item, 'id'>) }));
+
+	for (const item of deletedItems) {
+		newItemJSON[item.id] = item;
+	}
 
 	messages.push(`
 New Items: ${moidLink(newItems.map(i => i.id))}
