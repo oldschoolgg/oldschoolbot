@@ -1,10 +1,10 @@
 import { readFileSync, writeFileSync } from 'node:fs';
+import { EquipmentSlot } from '@oldschoolgg/gear';
 import { increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { diff } from 'deep-object-diff';
 import deepMerge from 'deepmerge';
 import { clone } from 'remeda';
 
-import { EquipmentSlot } from '@oldschoolgg/gear';
 import type { Item } from '@/meta/item.js';
 import { Items } from '@/structures/Items.js';
 import { USELESS_ITEMS } from '@/structures/ItemsClass.js';
