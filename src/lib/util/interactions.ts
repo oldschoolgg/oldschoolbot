@@ -69,7 +69,8 @@ export function makeStartQuestButton(questID: QuestID) {
 	return new ButtonBuilder()
 		.setCustomId(`${InteractionID.Commands.StartQuest}_${questID}`)
 		.setLabel('Start Quest')
-		.setStyle(ButtonStyle.Secondary);
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji({ id: EmojiId.QuestIcon });
 }
 
 export function makeStartQuestResponse(content: string, questID: QuestID) {
