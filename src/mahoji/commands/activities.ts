@@ -527,7 +527,7 @@ export const activitiesCommand = defineCommand({
 		if (isBusy) return busyStr;
 
 		if (options.other) {
-			return otherActivitiesCommand(interaction, options.other.activity);
+			return otherActivitiesCommand({ interaction, type: options.other.activity, user, channelId, rng });
 		}
 		if (options.birdhouses?.action === 'harvest') {
 			return birdhouseHarvestCommand(user, channelId, options.birdhouses.birdhouse);
