@@ -6,6 +6,7 @@ import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import { Thieving } from '@/lib/skilling/skills/thieving/index.js';
 import { type Stealable, stealables } from '@/lib/skilling/skills/thieving/stealables.js';
 import type { PickpocketActivityTaskOptions } from '@/lib/types/minions.js';
+import { makeStartQuestResponse } from '@/lib/util/interactions.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { calcLootXPPickpocketing } from '@/tasks/minions/pickpocketActivity.js';
 
@@ -67,9 +68,12 @@ export const stealCommand = defineCommand({
 				quest => !user.user.finished_quest_ids.includes(quest)
 			);
 			if (incompleteQuest) {
-				return `You need to have completed the ${bold(
-					quests.find(i => i.id === incompleteQuest)!.name
-				)} quest to steal from ${stealable.name}.`;
+				return makeStartQuestResponse(
+					`You need to have completed the ${bold(
+						quests.find(i => i.id === incompleteQuest)!.name
+					)} quest to steal from ${stealable.name}.`,
+					incompleteQuest
+				);
 			}
 		}
 

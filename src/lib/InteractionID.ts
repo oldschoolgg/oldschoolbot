@@ -41,6 +41,7 @@ export const InteractionID = {
 		CheckPatches: 'CHECK_PATCHES',
 		ClaimDaily: 'CLAIM_DAILY',
 		DoShootingStar: 'DO_SHOOTING_STAR',
+		StartQuest: 'START_QUEST',
 		StartTearsOfGuthix: 'START_TOG',
 		NewSlayerTask: 'NEW_SLAYER_TASK',
 		DoBirdHouseRun: 'DO_BIRDHOUSE_RUN',
