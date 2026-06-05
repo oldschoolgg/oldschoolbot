@@ -48,7 +48,6 @@ import { GrandmasterClueTable } from '@/lib/bso/grandmasterClue.js';
 import { keyCrates } from '@/lib/bso/keyCrates.js';
 import { kibbleCL } from '@/lib/bso/kibble.js';
 import { AkumuLootTable } from '@/lib/bso/monsters/bosses/Akumu.js';
-import { YetiLootTable } from '@/lib/bso/monsters/demi-bosses/Yeti.js';
 import { Ignecarus } from '@/lib/bso/monsters/bosses/Ignecarus.js';
 import { KalphiteKingMonster, kalphiteKingLootTable } from '@/lib/bso/monsters/bosses/KalphiteKing.js';
 import { KingGoldemar } from '@/lib/bso/monsters/bosses/KingGoldemar.js';
@@ -57,6 +56,7 @@ import { Naxxus, NaxxusLootTableFinishable } from '@/lib/bso/monsters/bosses/Nax
 import { VasaMagus } from '@/lib/bso/monsters/bosses/VasaMagus.js';
 import { VenatrixLootTable } from '@/lib/bso/monsters/bosses/Venatrix.js';
 import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
+import { YetiLootTable } from '@/lib/bso/monsters/demi-bosses/Yeti.js';
 import { NexMonster, nexLootTable } from '@/lib/bso/monsters/nex.js';
 import { cmbClothes } from '@/lib/bso/openables/cmb.js';
 import { PaintBoxTable } from '@/lib/bso/paintColors.js';
