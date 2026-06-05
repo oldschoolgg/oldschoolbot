@@ -27,7 +27,8 @@ import {
 	treeBeardCL,
 	vasaMagusCL,
 	venatrixCL,
-	vladDrakanCL
+	vladDrakanCL,
+	yetiCL
 } from '@/lib/bso/collection-log/main.js';
 import {
 	balthazarsBigBonanzaCL,
@@ -47,6 +48,7 @@ import { GrandmasterClueTable } from '@/lib/bso/grandmasterClue.js';
 import { keyCrates } from '@/lib/bso/keyCrates.js';
 import { kibbleCL } from '@/lib/bso/kibble.js';
 import { AkumuLootTable } from '@/lib/bso/monsters/bosses/Akumu.js';
+import { YetiLootTable } from '@/lib/bso/monsters/demi-bosses/Yeti.js';
 import { Ignecarus } from '@/lib/bso/monsters/bosses/Ignecarus.js';
 import { KalphiteKingMonster, kalphiteKingLootTable } from '@/lib/bso/monsters/bosses/KalphiteKing.js';
 import { KingGoldemar } from '@/lib/bso/monsters/bosses/KingGoldemar.js';
@@ -783,6 +785,12 @@ export const allCollectionLogs: ICollection = {
 				allItems: AkumuLootTable.allItems,
 				items: akumuCL,
 				fmtProg: kcProg(BSOMonsters.Akumu.id)
+			},
+			Yeti: {
+				alias: ['yeti'],
+				allItems: YetiLootTable.allItems,
+				items: yetiCL,
+				fmtProg: kcProg(BSOMonsters.Yeti.id)
 			},
 			Venatrix: {
 				alias: ['venatrix'],
