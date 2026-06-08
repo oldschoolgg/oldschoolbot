@@ -3,11 +3,13 @@ import { vasaBISGear } from '@/lib/bso/commands/vasaCommand.js';
 import { VasaMagus } from '@/lib/bso/monsters/bosses/VasaMagus.js';
 import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
 
+import { ECombatOption } from '@oldschoolgg/schemas';
 import { Time } from '@oldschoolgg/toolkit';
-import { Bank, EMonster, type ItemBank, itemID, resolveItems } from 'oldschooljs';
+import { Bank, EMonster, type ItemBank, itemID, Monsters, resolveItems } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
 import { CombatCannonItemBank } from '@/lib/minions/data/combatConstants.js';
+import { QuestID } from '@/lib/minions/data/quests.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import { gearCommand } from '@/mahoji/commands/gear.js';
 import { mockClient } from '../util.js';
@@ -40,6 +42,24 @@ describe('BSO PVM', async () => {
 		const result = await user.kill(EMonster.ABYSSAL_DEMON, { method: 'barrage' });
 		expect(result.xpGained.magic).toBeGreaterThan(0);
 		expect(result.commandResult).toContain('Barrage');
+		expect(result.newKC).toBeGreaterThan(0);
+	});
+
+	it('ignores auto barrage for elder custodian stalker off task', async () => {
+		const user = await client.mockUser({
+			slayerLevel: 99,
+			bank: new Bank().add('Shark', 1000),
+			mageLevel: 99,
+			mageGear: resolveItems(['Ancient staff'])
+		});
+		await user.update({
+			combat_options: [ECombatOption.AlwaysIceBarrage],
+			finished_quest_ids: [QuestID.ShadowsOfCustodia]
+		});
+
+		const result = await user.kill(Monsters.ElderCustodianStalker.id as EMonster);
+		expect(result.commandResult).toContain('is now killing ');
+		expect(result.commandResult).not.toContain('Barrage');
 		expect(result.newKC).toBeGreaterThan(0);
 	});
 
