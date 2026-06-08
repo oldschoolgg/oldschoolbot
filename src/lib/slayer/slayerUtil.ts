@@ -60,7 +60,7 @@ export function determineCombatBoosts(params: DetermineBoostParams): PvMMethod[]
 	}
 
 	// check if the monster can be barraged
-	if (params.monster.canBarrage) {
+	if (params.monster.canBarrage && params.isOnTask) {
 		// check if the monster exists in catacombs
 		if (params.monster.existsInCatacombs) {
 			if (params.cbOpts.includes(ECombatOption.AlwaysIceBarrage)) {

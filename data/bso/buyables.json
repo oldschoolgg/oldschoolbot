@@ -4715,6 +4715,14 @@
 		}
 	},
 	{
+		"name": "Summer crate key (s9)",
+		"gp_cost": 55555555,
+		"ironman_price": 5555555,
+		"output_items": {
+			"73971": 1
+		}
+	},
+	{
 		"name": "Superior mining gloves",
 		"item_cost": {
 			"21341": 120
