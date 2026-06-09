@@ -1,6 +1,6 @@
 {
-	"hash": "79a1f061f0ab30ef6f7706210484cbd3",
-	"date": "2026-05-05T10:09:02.806Z",
+	"hash": "c3cf22c657cfa6cce5809c9f38dac7bf",
+	"date": "2026-06-02T16:20:50.151Z",
 	"data": [
 		{
 			"name": "activities",
@@ -282,6 +282,7 @@
 				"clues",
 				"combat_achievements",
 				"farming_contracts",
+				"giants_foundry",
 				"global",
 				"gp",
 				"hunter_catches",
@@ -343,8 +344,6 @@
 				"gnome_restaurant",
 				"gotr",
 				"lms",
-				"mage_arena",
-				"mage_arena_2",
 				"mage_training_arena",
 				"mahogany_homes",
 				"nmz",
@@ -449,7 +448,7 @@
 		{
 			"name": "rp",
 			"desc": "Admin tools second set",
-			"subOptions": ["player", "user_event"]
+			"subOptions": ["player", "roles", "user_event"]
 		},
 		{
 			"name": "runecraft",

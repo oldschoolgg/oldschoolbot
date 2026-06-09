@@ -4,6 +4,7 @@ import {
 	Bank,
 	BrimstoneChest,
 	BronzeHAMChest,
+	CastleWarsSupplyCrate,
 	EItem,
 	EliteMimicTable,
 	ElvenCrystalChest,
@@ -418,6 +419,16 @@ const osjsOpenables: UnifiedOpenable[] = [
 		aliases: ['zombie pirate key', 'zombie pirate locker', 'pirate locker'],
 		output: ZombiePiratesLocker.table,
 		allItems: ZombiePiratesLocker.table.allItems
+	},
+	{
+		name: 'Castle wars supply crate',
+		id: 30_690,
+		openedItem: Items.getOrThrow(30_690),
+		aliases: ['castle wars supply crate'],
+		output: async (args: OpenArgs): Promise<{ bank: Bank }> => ({
+			bank: CastleWarsSupplyCrate.open(args.quantity)
+		}),
+		allItems: CastleWarsSupplyCrate.table.allItems
 	}
 ];
 
@@ -535,6 +546,14 @@ export const allOpenables: UnifiedOpenable[] = [
 		aliases: ['frozen cache'],
 		output: FrozenCacheTable,
 		allItems: FrozenCacheTable.allItems
+	},
+	{
+		name: 'Olive oil pack',
+		id: itemID('Olive oil pack'),
+		openedItem: Items.getOrThrow('Olive oil pack'),
+		aliases: ['olive oil pack', 'olive oil'],
+		output: new LootTable().every('Olive oil(4)', 100),
+		allItems: resolveItems(['Olive oil(4)'])
 	},
 	{
 		name: 'Bale of flax',

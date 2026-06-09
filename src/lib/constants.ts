@@ -164,7 +164,8 @@ export enum BitField {
 	WikiContributor = 50,
 	UnlimitedGiveaways = 51,
 	ServerSupport = 52,
-	DisableMiscellaniaTopupButton = 53
+	DisabledPassiveImplings = 53,
+	DisableMiscellaniaTopupButton = 54
 }
 
 export interface IBitFieldData {
@@ -290,6 +291,11 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 	},
 	[BitField.DisableMiscellaniaTopupButton]: {
 		name: 'Disable Miscellania Top-up Button',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisabledPassiveImplings]: {
+		name: 'Disabled Passive Implings',
 		protected: false,
 		userConfigurable: true
 	},
