@@ -72,6 +72,7 @@ import { cyclopsTask } from '@/tasks/minions/minigames/warriorsGuild/cyclopsActi
 import { wintertodtTask } from '@/tasks/minions/minigames/wintertodtActivity.js';
 import { zalcanoTask } from '@/tasks/minions/minigames/zalcanoActivity.js';
 import { miningTask } from '@/tasks/minions/miningActivity.js';
+import { miscellaniaTopupTask } from '@/tasks/minions/miscellaniaTopupActivity.js';
 import { monsterTask } from '@/tasks/minions/monsterActivity.js';
 import { motherlodeMiningTask } from '@/tasks/minions/motherlodeMineActivity.js';
 import { myNotesTask } from '@/tasks/minions/myNotesActivity.js';
@@ -175,6 +176,7 @@ export const allTasks: MinionTask[] = [
 	groupoMonsterTask,
 	herbloreTask,
 	fletchingTask,
+	miscellaniaTopupTask,
 	miningTask,
 	motherlodeMiningTask,
 	runecraftTask,

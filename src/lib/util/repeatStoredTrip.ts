@@ -79,6 +79,19 @@ import type {
 import { giantsFoundryAlloys } from '@/mahoji/lib/abstracted_commands/giantsFoundryCommand.js';
 import puroOptions from '@/mahoji/lib/abstracted_commands/puroPuroCommand.js';
 
+const nonRepeatableActivityTypes = [
+	activity_type_enum.TearsOfGuthix,
+	activity_type_enum.ShootingStars,
+	activity_type_enum.BirthdayEvent,
+	activity_type_enum.BlastFurnace,
+	activity_type_enum.Easter,
+	activity_type_enum.TokkulShop,
+	activity_type_enum.MiscellaniaTopup,
+	activity_type_enum.Birdhouse,
+	activity_type_enum.StrongholdOfSecurity,
+	activity_type_enum.CombatRing
+] as const;
+
 const taskCanBeRepeated = (activity: Activity, user: MUser) => {
 	if (activity.type === activity_type_enum.ClueCompletion) {
 		const realActivity = ActivityManager.convertStoredActivityToFlatActivity(activity) as ClueActivityTaskOptions;
@@ -87,19 +100,7 @@ const taskCanBeRepeated = (activity: Activity, user: MUser) => {
 			user.owns(ClueTiers.find(clue => clue.id === realActivity.ci)!.scrollID)
 		);
 	}
-	return !(
-		[
-			activity_type_enum.TearsOfGuthix,
-			activity_type_enum.ShootingStars,
-			activity_type_enum.BirthdayEvent,
-			activity_type_enum.BlastFurnace,
-			activity_type_enum.Easter,
-			activity_type_enum.TokkulShop,
-			activity_type_enum.Birdhouse,
-			activity_type_enum.StrongholdOfSecurity,
-			activity_type_enum.CombatRing
-		] as activity_type_enum[]
-	).includes(activity.type);
+	return !(nonRepeatableActivityTypes as readonly activity_type_enum[]).includes(activity.type);
 };
 type ActivityMap = {
 	[K in ActivityTaskData as K['type']]: K;
@@ -110,7 +111,7 @@ type MockedCommandOptions = {
 };
 
 const tripHandlers: {
-	[K in keyof ActivityMap]: {
+	[K in keyof ActivityMap]?: {
 		commandName: string;
 		args: (data: ActivityMap[K]) => MockedCommandOptions;
 	};
@@ -772,6 +773,7 @@ const tripHandlers: {
 } as const;
 
 for (const type of objectValues(activity_type_enum)) {
+	if ((nonRepeatableActivityTypes as readonly activity_type_enum[]).includes(type)) continue;
 	if (!tripHandlers[type]) {
 		throw new Error(`Missing trip handler for ${type}`);
 	}
@@ -827,6 +829,7 @@ export async function repeatTrip(user: MUser, interaction: OSInteraction, activi
 		return { content: "Couldn't find any trip to repeat.", ephemeral: true };
 	}
 	const handler = tripHandlers[activity.type];
+	if (!handler) return { content: "Couldn't find a repeat handler for this trip.", ephemeral: true };
 	const args: ActivityTaskData = ActivityManager.convertStoredActivityToFlatActivity(activity);
 	let commandArgs: CommandOptions;
 	try {

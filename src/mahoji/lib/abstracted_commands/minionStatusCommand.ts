@@ -2,15 +2,17 @@ import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
 import { stripNonAlphanumeric, toTitleCase } from '@oldschoolgg/toolkit';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
-import { BitField } from '@/lib/constants.js';
+import { BitField, PerkTier } from '@/lib/constants.js';
 import { EmojiId } from '@/lib/data/emojis.js';
+import { advanceMiscellaniaState, type MiscellaniaState, normalizeMiscellaniaState } from '@/lib/miscellania/calc.js';
 import { roboChimpUserFetchCached } from '@/lib/roboChimp.js';
 import { minionBuyButton } from '@/lib/sharedComponents.js';
 import {
 	makeAutoContractButton,
 	makeAutoSlayButton,
 	makeBirdHouseTripButton,
-	makeClaimDailyButton
+	makeClaimDailyButton,
+	makeMiscellaniaTopupButton
 } from '@/lib/util/interactions.js';
 import { minionStatus } from '@/lib/util/minionStatus.js';
 import { makeRepeatTripButtons } from '@/lib/util/repeatStoredTrip.js';
@@ -58,12 +60,20 @@ export async function minionStatusCommand(
 	const currentActivity = await ActivityManager.getActivityOfUser(user.id);
 	const minionIsBusy = Boolean(currentActivity);
 	const birdhouseDetails = minionIsBusy ? { isReady: false } : user.fetchBirdhouseData();
-	const [roboChimpUser, gearPresetButtons, pinnedTripButtons, dailyIsReady] = await Promise.all([
-		roboChimpUserFetchCached(user.id),
-		minionIsBusy ? [] : fetchFavoriteGearPresets(user.id),
-		minionIsBusy ? [] : fetchPinnedTrips(user.id),
-		isUsersDailyReady(user)
-	]);
+	const [roboChimpUser, gearPresetButtons, pinnedTripButtons, dailyIsReady, perkTier, rawMiscellania] =
+		await Promise.all([
+			roboChimpUserFetchCached(user.id),
+			minionIsBusy ? [] : fetchFavoriteGearPresets(user.id),
+			minionIsBusy ? [] : fetchPinnedTrips(user.id),
+			isUsersDailyReady(user),
+			user.fetchPerkTier(),
+			minionIsBusy
+				? null
+				: prisma.user.findUnique({
+						where: { id: user.id },
+						select: { miscellania_state: true }
+					})
+		]);
 
 	if (!user.hasMinion) {
 		return {
@@ -112,6 +122,17 @@ export async function minionStatusCommand(
 		!user.bitfield.includes(BitField.DisableAutoFarmContractButton)
 	) {
 		buttons.push(makeAutoContractButton());
+	}
+
+	if (!minionIsBusy && perkTier >= PerkTier.Two && !user.bitfield.includes(BitField.DisableMiscellaniaTopupButton)) {
+		const now = Date.now();
+		const miscState = advanceMiscellaniaState(
+			normalizeMiscellaniaState((rawMiscellania?.miscellania_state as MiscellaniaState | null) ?? null, { now }),
+			now
+		);
+		if (miscState.favour < 100) {
+			buttons.push(makeMiscellaniaTopupButton());
+		}
 	}
 
 	if (!minionIsBusy) {

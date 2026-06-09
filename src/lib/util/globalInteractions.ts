@@ -480,6 +480,17 @@ async function globalButtonInteractionHandler({
 			});
 			return shootingStarsCommand({ rng, channelId: interaction.channelId, user, star: validStar });
 		}
+		case InteractionID.Commands.TopupMiscellania: {
+			return runCommand({
+				commandName: 'activities',
+				args: {
+					managing_miscellania: {
+						action: 'topup'
+					}
+				},
+				...options
+			});
+		}
 		case InteractionID.Commands.StartTearsOfGuthix: {
 			return runCommand({
 				commandName: 'minigames',

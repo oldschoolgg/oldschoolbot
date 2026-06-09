@@ -338,6 +338,7 @@ model User {
   bank_sort_weightings       Json               @default("{}") @db.Json
   gambling_lockout_expiry    DateTime?
   icon_pack_id               String?
+  miscellania_state          Json?              @db.JsonB
 
   // Skills
   skills_agility      BigInt @default(0) @map("skills.agility")
@@ -957,6 +958,7 @@ enum activity_type_enum {
   MyNotes
   Colosseum
   CreateForestersRations
+  MiscellaniaTopup
   Buy
 }
 
