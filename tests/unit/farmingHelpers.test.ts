@@ -33,6 +33,25 @@ import {
 import type { IPatchDataDetailed } from '@/lib/skilling/skills/farming/utils/types.js';
 import { mockMUser } from './userutil.js';
 
+function setFarmingPreferenceData(
+	user: MUser,
+	data: {
+		autoFarmFilter?: AutoFarmFilterEnum;
+		preferredSeeds?: unknown;
+	}
+) {
+	const writableUser = user.user as unknown as {
+		auto_farm_filter?: AutoFarmFilterEnum;
+		minion_farmingPreferredSeeds?: unknown;
+	};
+	if (data.autoFarmFilter) {
+		writableUser.auto_farm_filter = data.autoFarmFilter;
+	}
+	if (data.preferredSeeds) {
+		writableUser.minion_farmingPreferredSeeds = data.preferredSeeds;
+	}
+}
+
 describe('farming helpers', () => {
 	afterEach(() => {
 		getFarmingInfoFromUserMock.mockReset();
@@ -100,7 +119,7 @@ describe('farming helpers', () => {
 			bank: new Bank().add('Guam seed', 10),
 			skills_farming: convertLVLtoXP(10)
 		});
-		user.user.auto_farm_filter = AutoFarmFilterEnum.AllFarm;
+		setFarmingPreferenceData(user, { autoFarmFilter: AutoFarmFilterEnum.AllFarm });
 		getFarmingInfoFromUserMock.mockReturnValueOnce({ patchesDetailed: [emptyHerbPatch] });
 
 		await expect(canShowAutoFarmButton(user)).resolves.toBe(true);
@@ -127,11 +146,13 @@ describe('farming helpers', () => {
 			skills_farming: convertLVLtoXP(10)
 		});
 
-		user.user.auto_farm_filter = AutoFarmFilterEnum.Replant;
+		setFarmingPreferenceData(user, { autoFarmFilter: AutoFarmFilterEnum.Replant });
 		expect(canShowAutoFarmButtonForPatches(user, [emptyHerbPatch])).toBe(false);
 
-		user.user.auto_farm_filter = AutoFarmFilterEnum.AllFarm;
-		user.user.minion_farmingPreferredSeeds = { herb: { type: 'empty' } };
+		setFarmingPreferenceData(user, {
+			autoFarmFilter: AutoFarmFilterEnum.AllFarm,
+			preferredSeeds: { herb: { type: 'empty' } }
+		});
 		expect(canShowAutoFarmButtonForPatches(user, [emptyHerbPatch])).toBe(false);
 	});
 
@@ -258,7 +279,7 @@ describe('farming helpers', () => {
 			bank: new Bank().add('Guam seed', 10),
 			skills_farming: convertLVLtoXP(10)
 		});
-		user.user.auto_farm_filter = AutoFarmFilterEnum.AllFarm;
+		setFarmingPreferenceData(user, { autoFarmFilter: AutoFarmFilterEnum.AllFarm });
 
 		const result = userGrowingProgressStr([emptyOnly], user);
 
