@@ -461,12 +461,12 @@ const tripHandlers: {
 		args: () => ({ lms: { start: {} } })
 	},
 	[activity_type_enum.MageArena]: {
-		commandName: 'minigames',
-		args: () => ({ mage_arena: { start: {} } })
+		commandName: 'activities',
+		args: () => ({ other: { activity: activity_type_enum.MageArena } })
 	},
 	[activity_type_enum.MageArena2]: {
-		commandName: 'minigames',
-		args: () => ({ mage_arena_2: { start: {} } })
+		commandName: 'activities',
+		args: () => ({ other: { activity: activity_type_enum.MageArena2 } })
 	},
 	[activity_type_enum.MageTrainingArena]: {
 		commandName: 'minigames',
