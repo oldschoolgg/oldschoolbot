@@ -8,7 +8,7 @@ Auto farming collects ready patches into a single Farming activity so you can ha
 
 - [[/farming auto_farm]] checks every patch you have unlocked, harvests ready planted patches, and plants/replants according to your filter and preferences.
 - The trip is planned as one continuous Farming activity whose duration equals the sum of each patch step (travel, harvest, replant). Your minion stays out for the full Farming trip length instead of returning after every patch.
-- You can also trigger auto farming from the button that appears on [[/farming check_patches]] when something is ready.
+- You can also trigger auto farming from the button that appears on [[/farming check_patches]] when something is ready, or when an empty patch can be planted by **AllFarm**.
 - The Auto Farm button can be disabled with [[/config user toggle name\:Disable Auto Farm Button]].
 
 ## Filters
@@ -20,6 +20,7 @@ Auto farming collects ready patches into a single Farming activity so you can ha
   - `seed` to force a specific seed for that patch type
   - `highest_available` to always choose best available for that patch
   - `empty` to skip that patch type entirely
+  - `reset_patch` with `patch` to clear one saved patch preference
   - `reset_all` to clear all saved per-patch preferences
 - `prefer_contract` prioritises your active farming contract crop when possible.
 - When `prefer_contract` is enabled and a valid contract crop is available, that contract patch is scheduled first in the auto-farm trip.

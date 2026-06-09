@@ -38,9 +38,11 @@ const autoFarmFilterTexts: Record<AutoFarmFilterEnum, string> = {
 	Replant: 'Only planted crops will be replanted, using the same seed'
 };
 
-function formatPreference(preference: FarmingSeedPreference | undefined): string {
+function formatPreference(preference: FarmingSeedPreference | undefined, autoFarmFilter: AutoFarmFilterEnum): string {
 	if (!preference) {
-		return 'not set (uses auto farm filter)';
+		return autoFarmFilter === AutoFarmFilterEnum.AllFarm
+			? 'not set (AllFarm: highest available)'
+			: 'not set (Replant: same crop only)';
 	}
 	if (preference.type === 'highest_available') {
 		return 'highest_available';
@@ -64,7 +66,9 @@ function buildPreferencesEmbed(
 		`Contract priority: ${preferContract ? 'enabled' : 'disabled'}.`
 	];
 	for (const patch of patchesDetailed) {
-		descriptionLines.push(`${patch.friendlyName} -> ${formatPreference(preferences.get(patch.patchName))}`);
+		descriptionLines.push(
+			`${patch.friendlyName} -> ${formatPreference(preferences.get(patch.patchName), autoFarmFilter)}`
+		);
 	}
 
 	return new EmbedBuilder().setTitle('Auto-farm preferences').setDescription(descriptionLines.join('\n'));
@@ -200,6 +204,12 @@ export const farmingCommand = defineCommand({
 					type: 'Boolean',
 					name: 'reset_all',
 					description: 'Clear all saved per-patch seed preferences.',
+					required: false
+				},
+				{
+					type: 'Boolean',
+					name: 'reset_patch',
+					description: 'Clear the saved seed preference for the selected patch.',
 					required: false
 				}
 			]
@@ -350,9 +360,16 @@ export const farmingCommand = defineCommand({
 			const seedInput = options.set_preferred.seed ?? undefined;
 			const preferContractInput = options.set_preferred.prefer_contract;
 			const resetAllInput = Boolean(options.set_preferred.reset_all);
+			const resetPatchInput = Boolean(options.set_preferred.reset_patch);
 
-			if (resetAllInput && (patchNameInput || seedInput)) {
-				return 'You cannot use reset_all with patch or seed options.';
+			if (resetAllInput && (patchNameInput || seedInput || resetPatchInput)) {
+				return 'You cannot use reset_all with patch, seed, or reset_patch options.';
+			}
+			if (resetPatchInput && seedInput) {
+				return 'You cannot use reset_patch with a seed option.';
+			}
+			if (resetPatchInput && !patchNameInput) {
+				return 'You must provide a patch when clearing one saved preference.';
 			}
 
 			if (typeof preferContractInput === 'boolean') {
@@ -373,7 +390,7 @@ export const farmingCommand = defineCommand({
 				responses.push('Cleared all saved per-patch seed preferences.');
 			}
 
-			if (!patchNameInput && !seedInput && !resetAllInput) {
+			if (!patchNameInput && !seedInput && !resetAllInput && !resetPatchInput) {
 				const embed = buildPreferencesEmbed(
 					patchesDetailed,
 					preferenceMap,
@@ -396,9 +413,26 @@ export const farmingCommand = defineCommand({
 					return 'Invalid patch.';
 				}
 
+				if (resetPatchInput) {
+					preferenceMap.delete(patchData.patchName);
+					await user.update({
+						minion_farmingPreferredSeeds: serializePreferredSeeds(preferenceMap)
+					});
+
+					responses.push(`Cleared saved preference for ${patchData.friendlyName}.`);
+					responses.push(
+						`${patchData.friendlyName} -> ${formatPreference(
+							preferenceMap.get(patchData.patchName),
+							autoFarmFilter
+						)}`
+					);
+					return responses.join('\n');
+				}
+
 				if (!seedInput) {
 					const summary = `${patchData.friendlyName} -> ${formatPreference(
-						preferenceMap.get(patchData.patchName)
+						preferenceMap.get(patchData.patchName),
+						autoFarmFilter
 					)}`;
 					if (responses.length > 0) {
 						responses.push(summary);
@@ -417,7 +451,7 @@ export const farmingCommand = defineCommand({
 					minion_farmingPreferredSeeds: serializePreferredSeeds(preferenceMap)
 				});
 
-				const summary = `${patchData.friendlyName} -> ${formatPreference(resolvedPreference)}`;
+				const summary = `${patchData.friendlyName} -> ${formatPreference(resolvedPreference, autoFarmFilter)}`;
 				responses.push(summary);
 				return responses.join('\n');
 			}

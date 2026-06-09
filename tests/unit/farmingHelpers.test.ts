@@ -1,3 +1,4 @@
+import { Bank, convertLVLtoXP } from 'oldschooljs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 const getFarmingInfoFromUserMock = vi.fn();
@@ -17,10 +18,12 @@ vi.mock('@/lib/skilling/skills/farming/utils/getFarmingInfo.js', () => ({
 
 import './setup.js';
 
+import { AutoFarmFilterEnum } from '@/prisma/main/enums.js';
 import { BitField } from '@/lib/constants.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import {
 	canShowAutoFarmButton,
+	canShowAutoFarmButtonForPatches,
 	findPlant,
 	getFarmingKeyFromName,
 	hasAnyReadyPatch,
@@ -76,6 +79,60 @@ describe('farming helpers', () => {
 		getFarmingInfoFromUserMock.mockReturnValueOnce({ patchesDetailed: [{ ready: null } as IPatchDataDetailed] });
 		const resultWithoutReady = await canShowAutoFarmButton(mockMUser());
 		expect(resultWithoutReady).toBe(false);
+	});
+
+	it('shows the auto farm button when AllFarm can plant an empty patch', async () => {
+		const emptyHerbPatch: IPatchDataDetailed = {
+			lastPlanted: null,
+			patchPlanted: false,
+			plantTime: Date.now(),
+			lastQuantity: 0,
+			lastUpgradeType: null,
+			lastPayment: false,
+			ready: null,
+			readyIn: null,
+			readyAt: null,
+			patchName: 'herb',
+			friendlyName: 'Empty herb patch',
+			plant: null
+		};
+		const user = mockMUser({
+			bank: new Bank().add('Guam seed', 10),
+			skills_farming: convertLVLtoXP(10)
+		});
+		user.user.auto_farm_filter = AutoFarmFilterEnum.AllFarm;
+		getFarmingInfoFromUserMock.mockReturnValueOnce({ patchesDetailed: [emptyHerbPatch] });
+
+		await expect(canShowAutoFarmButton(user)).resolves.toBe(true);
+		expect(canShowAutoFarmButtonForPatches(user, [emptyHerbPatch])).toBe(true);
+	});
+
+	it('does not show the auto farm button for empty patches skipped by filter or preference', () => {
+		const emptyHerbPatch: IPatchDataDetailed = {
+			lastPlanted: null,
+			patchPlanted: false,
+			plantTime: Date.now(),
+			lastQuantity: 0,
+			lastUpgradeType: null,
+			lastPayment: false,
+			ready: null,
+			readyIn: null,
+			readyAt: null,
+			patchName: 'herb',
+			friendlyName: 'Empty herb patch',
+			plant: null
+		};
+		const user = mockMUser({
+			bank: new Bank().add('Guam seed', 10),
+			skills_farming: convertLVLtoXP(10)
+		});
+
+		user.user.auto_farm_filter = AutoFarmFilterEnum.Replant;
+		expect(canShowAutoFarmButtonForPatches(user, [emptyHerbPatch])).toBe(false);
+
+		user.user.auto_farm_filter = AutoFarmFilterEnum.AllFarm;
+		user.user.minion_farmingPreferredSeeds = { herb: { type: 'empty' } };
+		expect(canShowAutoFarmButtonForPatches(user, [emptyHerbPatch])).toBe(false);
 	});
 
 	it('userGrowingProgressStr includes all patch states and auto farm button', () => {
@@ -153,7 +210,7 @@ describe('farming helpers', () => {
 		expect(normalized.components).toHaveLength(0);
 	});
 
-	it('userGrowingProgressStr omits the auto farm button when nothing is ready', () => {
+	it('userGrowingProgressStr omits the auto farm button when nothing is ready and no user is provided', () => {
 		const emptyOnly: IPatchDataDetailed = {
 			lastPlanted: null,
 			patchPlanted: false,
@@ -179,6 +236,40 @@ describe('farming helpers', () => {
 					: { content: '', components: [] as unknown[] };
 
 		expect(normalized.components).toHaveLength(0);
+		expect(normalized.content).toContain('Nothing planted');
+	});
+
+	it('userGrowingProgressStr includes the auto farm button when an empty patch can be planted', () => {
+		const emptyOnly: IPatchDataDetailed = {
+			lastPlanted: null,
+			patchPlanted: false,
+			plantTime: Date.now(),
+			lastQuantity: 0,
+			lastUpgradeType: null,
+			lastPayment: false,
+			ready: null,
+			readyIn: null,
+			readyAt: null,
+			patchName: 'herb',
+			friendlyName: 'Empty patch',
+			plant: null
+		};
+		const user = mockMUser({
+			bank: new Bank().add('Guam seed', 10),
+			skills_farming: convertLVLtoXP(10)
+		});
+		user.user.auto_farm_filter = AutoFarmFilterEnum.AllFarm;
+
+		const result = userGrowingProgressStr([emptyOnly], user);
+
+		const normalized =
+			typeof result === 'string'
+				? { content: result, components: [] as unknown[] }
+				: 'content' in result
+					? { content: result.content, components: result.components ?? [] }
+					: { content: '', components: [] as unknown[] };
+
+		expect(normalized.components).toHaveLength(1);
 		expect(normalized.content).toContain('Nothing planted');
 	});
 });

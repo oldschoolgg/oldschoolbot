@@ -431,7 +431,7 @@ ${infoDetails.join('\n')}`;
 			skippedPatches.length > 0
 				? `Skipped due to trip length: ${skippedPatches.join(', ')}.`
 				: 'Some ready patches were skipped.';
-		response += `\n\n${skippedPatchStr} The maximum trip length is ${formatDuration(maxTripLength)}.`;
+		response += `\n\n${skippedPatchStr} Your maximum trip length is ${formatDuration(maxTripLength)}.`;
 	}
 
 	return response;
