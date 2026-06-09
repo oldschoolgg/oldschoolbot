@@ -7,6 +7,7 @@ import {
 	miniID,
 	removeFromArr,
 	stringMatches,
+	stringSearch,
 	Time,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
@@ -683,7 +684,7 @@ export const configCommand = defineCommand({
 									.filter(i => {
 										if ((!i.userConfigurable || i.protected) && !user.isAdmin()) return false;
 										if (!value) return true;
-										return stringMatches(i.name, value);
+										return stringSearch(value, i.name);
 									})
 									.map(i => ({
 										name: `${i.name} (Currently ${bitfield.includes(i.bit) ? 'On' : 'Off'})`,
