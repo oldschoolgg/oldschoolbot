@@ -142,6 +142,7 @@ describe('Managing Miscellania Command', () => {
 		});
 		const state = stateRes.miscellania_state as unknown as MiscellaniaState;
 		expect(state.resourcePoints).toEqual(0);
+		expect(state.coffer).toEqual(7_500_000);
 		expect(state.cofferAtLastClaim).toEqual(state.coffer);
 	});
 

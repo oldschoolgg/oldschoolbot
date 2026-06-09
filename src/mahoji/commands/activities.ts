@@ -777,6 +777,7 @@ Can afford now: ${user.GP >= gpCostToClaim ? 'yes' : 'no'}`;
 						return `You need ${latestGpCostToClaim.toLocaleString()} GP to claim your Miscellania resources.`;
 					}
 					const claimedPoints = latestState.resourcePoints;
+					const cofferAfterPayment = latestState.coffer + latestGpCostToClaim;
 					const loot = generateMiscellaniaLoot({
 						resourcePoints: claimedPoints,
 						primaryArea,
@@ -787,10 +788,11 @@ Can afford now: ${user.GP >= gpCostToClaim ? 'yes' : 'no'}`;
 						...latestState,
 						primaryArea,
 						secondaryArea,
+						coffer: cofferAfterPayment,
 						resourcePoints: 0,
 						lastClaimedAt: claimNow,
 						lastUpdatedAt: claimNow,
-						cofferAtLastClaim: latestState.coffer,
+						cofferAtLastClaim: cofferAfterPayment,
 						introShown: true
 					};
 					const { previousCL } = await lockedUser.transactItems({
@@ -833,7 +835,7 @@ Can afford now: ${user.GP >= gpCostToClaim ? 'yes' : 'no'}`;
 					const content = addIntroLocked(
 						`You claimed Miscellania resources from ${latestClaimDays} day${
 							latestClaimDays === 1 ? '' : 's'
-						}. Spent ${latestGpCostToClaim.toLocaleString()} GP. Coffer is now ${latestState.coffer.toLocaleString()} and favour is ${latestState.favour.toFixed(
+						}. Spent ${latestGpCostToClaim.toLocaleString()} GP. Coffer is now ${cofferAfterPayment.toLocaleString()} and favour is ${latestState.favour.toFixed(
 							1
 						)}%.`
 					);
