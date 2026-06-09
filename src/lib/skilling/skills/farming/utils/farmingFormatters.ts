@@ -113,6 +113,9 @@ export function formatAutoFarmSummarySteps(summary: AutoFarmSummary): string[] {
 		return [];
 	}
 
-	const patchTypes = summary.steps.map(step => capitaliseFirst(step.patchType.replace(/_/g, ' ')));
+	const patchTypes = summary.steps.map(
+		step =>
+			`${capitaliseFirst(step.patchType.replace(/_/g, ' '))}: ${step.quantity.toLocaleString()}x ${step.plantsName}`
+	);
 	return [`**Patches farmed:** ${patchTypes.join(', ')}.`];
 }

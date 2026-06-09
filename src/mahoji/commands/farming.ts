@@ -8,6 +8,7 @@ import { autoFarm } from '@/lib/minions/functions/autoFarm.js';
 import {
 	compostBinPlantNameAutoComplete,
 	farmingPlantNameAutoComplete,
+	farmingPreferredSeedAutoComplete,
 	titheFarmBuyRewardAutoComplete
 } from '@/lib/skilling/skills/farming/autocompletes.js';
 import {
@@ -55,9 +56,13 @@ function formatPreference(preference: FarmingSeedPreference | undefined): string
 function buildPreferencesEmbed(
 	patchesDetailed: ReturnType<typeof Farming.getFarmingInfoFromUser>['patchesDetailed'],
 	preferences: Map<FarmingPatchName, FarmingSeedPreference>,
-	preferContract: boolean
+	preferContract: boolean,
+	autoFarmFilter: AutoFarmFilterEnum
 ): EmbedBuilder {
-	const descriptionLines: string[] = [`Contract priority: ${preferContract ? 'enabled' : 'disabled'}.`];
+	const descriptionLines: string[] = [
+		`Filter: ${autoFarmFilter}.`,
+		`Contract priority: ${preferContract ? 'enabled' : 'disabled'}.`
+	];
 	for (const patch of patchesDetailed) {
 		descriptionLines.push(`${patch.friendlyName} -> ${formatPreference(preferences.get(patch.patchName))}`);
 	}
@@ -182,7 +187,8 @@ export const farmingCommand = defineCommand({
 					type: 'String',
 					name: 'seed',
 					description: "Preferred seed (item name, 'highest_available', or 'empty').",
-					required: false
+					required: false,
+					autocomplete: farmingPreferredSeedAutoComplete
 				},
 				{
 					type: 'Boolean',
@@ -338,6 +344,7 @@ export const farmingCommand = defineCommand({
 		if (options.set_preferred) {
 			const preferenceMap = parsePreferredSeeds(user.user.minion_farmingPreferredSeeds);
 			let preferContractCurrent = Boolean(user.user.minion_farmingPreferredContract);
+			const autoFarmFilter = user.autoFarmFilter ?? AutoFarmFilterEnum.AllFarm;
 			const responses: string[] = [];
 			const patchNameInput = options.set_preferred.patch as FarmingPatchName | undefined;
 			const seedInput = options.set_preferred.seed ?? undefined;
@@ -367,7 +374,12 @@ export const farmingCommand = defineCommand({
 			}
 
 			if (!patchNameInput && !seedInput && !resetAllInput) {
-				const embed = buildPreferencesEmbed(patchesDetailed, preferenceMap, preferContractCurrent);
+				const embed = buildPreferencesEmbed(
+					patchesDetailed,
+					preferenceMap,
+					preferContractCurrent,
+					autoFarmFilter
+				);
 				if (responses.length > 0) {
 					return { content: responses.join('\n'), embeds: [embed] };
 				}

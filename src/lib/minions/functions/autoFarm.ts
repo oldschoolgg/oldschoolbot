@@ -139,6 +139,7 @@ export async function autoFarm(
 	const totalCost = new Bank();
 	const remainingBank = baseBank.clone();
 	let skippedDueToTripLength = false;
+	const skippedPatchNamesDueToTripLength = new Set<string>();
 
 	const hasPreferenceInfluence = preferContract || preferredSeeds.size > 0;
 	let errorString =
@@ -252,6 +253,7 @@ export async function autoFarm(
 			}
 			if (totalDuration + duration > maxTripLength) {
 				skippedDueToTripLength = true;
+				skippedPatchNamesDueToTripLength.add(patch.friendlyName);
 				continue;
 			}
 			const patchData = patches[patch.patchName];
@@ -424,9 +426,12 @@ ${infoDetails.join('\n')}`;
 
 	response += formatFarmingBoosts(uniqueBoosts, { label: '**Boosts**:', suffix: '' });
 	if (skippedDueToTripLength) {
-		response += `\n\nSome ready patches were skipped because the total trip length would exceed the maximum of ${formatDuration(
-			maxTripLength
-		)}.`;
+		const skippedPatches = [...skippedPatchNamesDueToTripLength];
+		const skippedPatchStr =
+			skippedPatches.length > 0
+				? `Skipped due to trip length: ${skippedPatches.join(', ')}.`
+				: 'Some ready patches were skipped.';
+		response += `\n\n${skippedPatchStr} The maximum trip length is ${formatDuration(maxTripLength)}.`;
 	}
 
 	return response;

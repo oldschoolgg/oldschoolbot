@@ -6,6 +6,7 @@ import './setup.js';
 import {
 	compostBinPlantNameAutoComplete,
 	farmingPlantNameAutoComplete,
+	farmingPreferredSeedAutoComplete,
 	titheFarmBuyRewardAutoComplete
 } from '@/lib/skilling/skills/farming/autocompletes.js';
 import { mockMUser } from './userutil.js';
@@ -53,5 +54,29 @@ describe('farming autocompletes', () => {
 		expect(partial).toContainEqual({ name: 'Pineapple', value: 'Pineapple' });
 		expect(empty.length).toBeGreaterThan(partial.length);
 		expect(none).toEqual([]);
+	});
+
+	it('farmingPreferredSeedAutoComplete includes special options and filters by selected patch', async () => {
+		const results = await farmingPreferredSeedAutoComplete({
+			value: 'guam',
+			rawOptions: [
+				{
+					name: 'set_preferred',
+					options: [
+						{ name: 'patch', value: 'herb' },
+						{ name: 'seed', value: 'guam', focused: true }
+					]
+				}
+			]
+		} as any);
+
+		expect(results).toContainEqual({ name: 'Guam seed (Guam)', value: 'Guam seed' });
+		expect(results.some(option => option.name.includes('Oak'))).toBe(false);
+
+		const specialOptions = await farmingPreferredSeedAutoComplete({ value: '', rawOptions: [] } as any);
+		expect(specialOptions.slice(0, 2)).toEqual([
+			{ name: 'highest_available', value: 'highest_available' },
+			{ name: 'empty', value: 'empty' }
+		]);
 	});
 });

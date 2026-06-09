@@ -350,6 +350,67 @@ describe('auto farm helpers', () => {
 		expect(addSubTaskToActivityTask).toHaveBeenCalledTimes(1);
 	});
 
+	it('autoFarm names patch groups skipped due to trip length', async () => {
+		const treeEmptyPatch: IPatchData = {
+			lastPlanted: null,
+			patchPlanted: false,
+			plantTime: Date.now(),
+			lastQuantity: 0,
+			lastUpgradeType: null,
+			lastPayment: false
+		};
+		const treeEmptyPatchDetailed: IPatchDataDetailed = {
+			...treeEmptyPatch,
+			ready: null,
+			readyIn: null,
+			readyAt: null,
+			patchName: treePlant.seedType,
+			friendlyName: 'Tree patch',
+			plant: null
+		};
+		const bank = new Bank().add('Guam seed', 4).add('Acorn', 5).add('Compost', 9);
+		const user = mockMUser({
+			bank,
+			skills_farming: convertLVLtoXP(50)
+		});
+		const mutableUser = user.user as MutableUser;
+		mutableUser.auto_farm_filter = AutoFarmFilterEnum.AllFarm;
+		mutableUser.minion_defaultCompostToUse = CropUpgradeType.compost;
+
+		const transactResult = {
+			newUser: user,
+			itemsAdded: new Bank(),
+			itemsRemoved: new Bank(),
+			newBank: user.bank.clone(),
+			newCL: user.cl.clone(),
+			previousCL: new Bank(),
+			clLootBank: null
+		} satisfies Awaited<ReturnType<typeof user.transactItems>>;
+		vi.spyOn(user, 'transactItems').mockResolvedValue(transactResult);
+		vi.spyOn(user, 'statsBankUpdate').mockResolvedValue(undefined);
+		vi.spyOn(global.ClientSettings, 'updateBankSetting').mockResolvedValue();
+
+		calcMaxTripLengthSpy.mockReturnValue(150 * 1000);
+
+		const response = await autoFarm(
+			user,
+			[herbPatchDetailed, treeEmptyPatchDetailed],
+			{
+				[herbPlant.seedType]: herbPatch,
+				[treePlant.seedType]: treeEmptyPatch
+			} as Record<FarmingPatchName, IPatchData>,
+			baseInteraction as MInteraction
+		);
+
+		expect(typeof response).toBe('string');
+		expect(response).toContain('Skipped due to trip length: Tree patch.');
+		expect(addSubTaskToActivityTask).toHaveBeenCalledTimes(1);
+		const queuedTask = (addSubTaskToActivityTask as unknown as MockInstance).mock.calls[0]?.[0] as
+			| FarmingActivityTaskOptions
+			| undefined;
+		expect(queuedTask?.patchName).toBe(herbPlant.seedType);
+	});
+
 	it('autoFarm replant respects last quantity, costs, and timing', async () => {
 		const bank = new Bank().add('Acorn', 5).add('Supercompost', 5).add('Tomatoes(5)', 5).add('Coins', 10_000);
 		const user = mockMUser({

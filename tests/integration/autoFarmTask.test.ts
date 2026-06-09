@@ -242,7 +242,7 @@ describe('farming task auto farm sequencing', () => {
 		expect(messageContent).toContain('Seed pack');
 		expect(messageContent).toContain('Watermelon');
 		expect(messageContent).toContain('Woodcutting 100 XP (3k/Hr)');
-		expect(messageContent).toContain('**Patches farmed:** Patches, Patches.');
+		expect(messageContent).toContain('**Patches farmed:** Patches: 6x Guam seed, Patches: 8x Watermelon.');
 		expect(messageContent).toContain('**Boosts:** Graceful.');
 
 		const finalLoot = finalCall?.loot;

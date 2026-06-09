@@ -9,6 +9,7 @@ Auto farming collects ready patches into a single Farming activity so you can ha
 - [[/farming auto_farm]] checks every patch you have unlocked, harvests ready planted patches, and plants/replants according to your filter and preferences.
 - The trip is planned as one continuous Farming activity whose duration equals the sum of each patch step (travel, harvest, replant). Your minion stays out for the full Farming trip length instead of returning after every patch.
 - You can also trigger auto farming from the button that appears on [[/farming check_patches]] when something is ready.
+- The Auto Farm button can be disabled with [[/config user toggle name\:Disable Auto Farm Button]].
 
 ## Filters
 
@@ -26,7 +27,7 @@ Auto farming collects ready patches into a single Farming activity so you can ha
 
 ## Trip Planning
 
-- Auto farming respects your maximum Farming trip length (see [[/minion activities]]). Steps that would exceed the limit are skipped and reported in the chat response.
+- Auto farming respects your maximum Farming trip length (see [[/minion activities]]). Steps that would exceed the limit are skipped and named in the chat response.
 - Each step is timestamped, so the harvesting order in the summary matches the real execution order.
 - If your minion is already busy the command will refuse to start.
 
@@ -36,7 +37,7 @@ Auto farming collects ready patches into a single Farming activity so you can ha
 - **Items used:** is grouped into compost, seeds/spores, coins, and other items so you can see the total cost without adding each patch line manually.
 - The completion response combines all completed steps into one summary with **XP gained:**, **Total loot:**, and **Patches farmed:**.
 - Farming, Woodcutting, and Herblore XP gains include XP/hr when those skills gained XP during the trip.
-- **Patches farmed:** lists the patch groups completed in execution order.
+- **Patches farmed:** lists the patch groups completed in execution order, including the crop and quantity for each patch group.
 
 ## Resource Handling
 
