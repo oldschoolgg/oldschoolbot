@@ -1160,7 +1160,7 @@ export const testPotatoCommand = globalConfig.isProduction
 					);
 
 					await user.update(updates);
-					return userGrowingProgressStr((await getFarmingInfoFromUser(user)).patchesDetailed);
+					return userGrowingProgressStr((await getFarmingInfoFromUser(user)).patchesDetailed, user);
 				}
 
 				if (options.setslayertask) {

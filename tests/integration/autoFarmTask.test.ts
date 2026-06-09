@@ -62,7 +62,8 @@ describe('farming task auto farm sequencing', () => {
 
 		const summaries = [
 			{
-				planted: { itemName: 'Guam seed', quantity: 4 },
+				planted: { itemName: 'Guam seed', quantity: 6 },
+				harvested: { itemName: 'Guam', quantity: 4, alive: 4, died: 0 },
 				duration: Time.Minute,
 				xp: {
 					totalFarming: 100,
@@ -227,6 +228,10 @@ describe('farming task auto farm sequencing', () => {
 
 		expect(nextTaskArgs?.autoFarmSummary?.steps).toHaveLength(1);
 		expect(nextTaskArgs?.autoFarmSummary?.totalXP).toBe(100);
+		expect(nextTaskArgs?.autoFarmSummary?.steps[0]).toMatchObject({
+			plantsName: 'Guam seed',
+			quantity: 6
+		});
 
 		const finalCall = handleTripFinishSpy.mock.calls[0]?.[0] as
 			| { message?: string | { content?: string }; loot?: Bank | null }

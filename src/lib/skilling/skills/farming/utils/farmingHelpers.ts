@@ -1,6 +1,7 @@
 import { type ButtonBuilder, dateFm } from '@oldschoolgg/discord';
 import { Emoji, stringMatches } from '@oldschoolgg/toolkit';
 
+import { BitField } from '@/lib/constants.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { IPatchData, IPatchDataDetailed } from '@/lib/skilling/skills/farming/utils/types.js';
 import { makeAutoFarmButton } from '@/lib/util/interactions.js';
@@ -38,7 +39,7 @@ export async function canShowAutoFarmButton(user: MUser): Promise<boolean> {
 	return hasAnyReadyPatch(info.patchesDetailed);
 }
 
-export function userGrowingProgressStr(patchesDetailed: IPatchDataDetailed[]): SendableMessage {
+export function userGrowingProgressStr(patchesDetailed: IPatchDataDetailed[], user?: MUser): SendableMessage {
 	let str = '';
 	for (const patch of patchesDetailed.filter(i => i.ready === true)) {
 		str += `${Emoji.Tick} **${patch.friendlyName}**: ${patch.lastQuantity} ${patch.lastPlanted} are ready to be harvested!\n`;
@@ -52,7 +53,7 @@ export function userGrowingProgressStr(patchesDetailed: IPatchDataDetailed[]): S
 	str += `${Emoji.RedX} **Nothing planted:** ${formatList(notReady.map(i => i.friendlyName))}.`;
 
 	const buttons: ButtonBuilder[] = [];
-	if (hasAnyReadyPatch(patchesDetailed)) {
+	if (hasAnyReadyPatch(patchesDetailed) && !user?.bitfield.includes(BitField.DisableAutoFarmButton)) {
 		buttons.push(makeAutoFarmButton());
 	}
 

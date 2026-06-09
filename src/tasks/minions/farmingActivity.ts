@@ -58,7 +58,7 @@ function updateAutoFarmSummary({
 	}
 
 	const stepQuantity =
-		stepSummary?.harvested?.quantity ?? stepSummary?.planted?.quantity ?? data.quantity ?? baseSummary.steps.length;
+		stepSummary?.planted?.quantity ?? stepSummary?.harvested?.quantity ?? data.quantity ?? baseSummary.steps.length;
 	const plantsName =
 		stepSummary?.planted?.itemName ?? stepSummary?.harvested?.itemName ?? data.plantsName ?? 'Unknown plant';
 

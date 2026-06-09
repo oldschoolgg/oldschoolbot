@@ -452,6 +452,6 @@ export const farmingCommand = defineCommand({
 			return farmingContractCommand(user, options.contract.input);
 		}
 
-		return Farming.userGrowingProgressStr(patchesDetailed);
+		return Farming.userGrowingProgressStr(patchesDetailed, user);
 	}
 });

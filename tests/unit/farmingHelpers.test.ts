@@ -17,6 +17,7 @@ vi.mock('@/lib/skilling/skills/farming/utils/getFarmingInfo.js', () => ({
 
 import './setup.js';
 
+import { BitField } from '@/lib/constants.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import {
 	canShowAutoFarmButton,
@@ -107,7 +108,7 @@ describe('farming helpers', () => {
 			friendlyName: 'Empty patch'
 		};
 
-		const result = userGrowingProgressStr([basePatch, growingPatch, emptyPatch]);
+		const result = userGrowingProgressStr([basePatch, growingPatch, emptyPatch], mockMUser());
 
 		const normalized =
 			typeof result === 'string'
@@ -121,6 +122,35 @@ describe('farming helpers', () => {
 		expect(normalized.content).toContain('Nothing planted');
 		expect(normalized.components).toHaveLength(1);
 		expect((normalized.components?.[0] as any).data?.custom_id).toBeDefined();
+	});
+
+	it('userGrowingProgressStr respects the disabled auto farm button bitfield', () => {
+		const readyPatch: IPatchDataDetailed = {
+			lastPlanted: 'Guam',
+			patchPlanted: true,
+			plantTime: Date.now(),
+			lastQuantity: 5,
+			lastUpgradeType: null,
+			lastPayment: false,
+			ready: true,
+			readyIn: 0,
+			readyAt: new Date('2020-01-01T00:00:00Z'),
+			patchName: 'herb',
+			friendlyName: 'Ready patch',
+			plant: null
+		};
+
+		const result = userGrowingProgressStr([readyPatch], mockMUser({ bitfield: [BitField.DisableAutoFarmButton] }));
+
+		const normalized =
+			typeof result === 'string'
+				? { content: result, components: [] as unknown[] }
+				: 'content' in result
+					? { content: result.content, components: result.components ?? [] }
+					: { content: '', components: [] as unknown[] };
+
+		expect(normalized.content).toContain('Ready patch');
+		expect(normalized.components).toHaveLength(0);
 	});
 
 	it('userGrowingProgressStr omits the auto farm button when nothing is ready', () => {
