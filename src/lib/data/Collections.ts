@@ -120,6 +120,7 @@ import {
 	tormentedDemonCL,
 	troubleBrewingCL,
 	tzHaarCL,
+	valeTotemsCL,
 	vardorvisCL,
 	venenatisCL,
 	vetionCL,
@@ -501,6 +502,12 @@ export const allCollectionLogs: ICollection = {
 					'Fire element staff crown',
 					'Desiccated page'
 				]),
+				allItems: uniqueArr([
+					...Monsters.Branda.allItems,
+					...Monsters.Eldric.allItems,
+					...Monsters.RoyalTitans.allItems,
+					...resolveItems(['Deadeye prayer scroll', 'Mystic vigour prayer scroll'])
+				]),
 				fmtProg: ({ stats }) => [
 					`${stats.kcBank[Monsters.Branda.id] ?? 0} Branda KC`,
 					`${stats.kcBank[Monsters.Eldric.id] ?? 0} Eldric KC`,
@@ -814,6 +821,7 @@ export const allCollectionLogs: ICollection = {
 			},
 			'Castle Wars': {
 				alias: ['cw', 'castle wars'],
+				allItems: resolveItems(['Castle wars ticket', 'Castle wars supply crate']),
 				items: castleWarsCL,
 				isActivity: true,
 				fmtProg: mgProg('castle_wars')
@@ -942,9 +950,12 @@ export const allCollectionLogs: ICollection = {
 				isActivity: true,
 				fmtProg: mgProg('trouble_brewing')
 			},
-			///	'Vale Totems': {
-			///		items: CollectionLog.ValeTotems.items
-			///	},
+			'Vale Totems': {
+				alias: ['vt', 'vale', 'totems', 'vale totems'],
+				items: valeTotemsCL,
+				isActivity: true,
+				fmtProg: mgProg('vale_totems')
+			},
 			'Volcanic Mine': {
 				items: volcanicMineCL,
 				alias: ['vm', 'vmine', 'volcanic'],

@@ -89,6 +89,16 @@ export async function roboChimpSyncData(user: MUser, newCL?: Bank) {
 	return newUser;
 }
 
+export async function roboChimpUserFetchCached(userID: string): Promise<RobochimpUser> {
+	const rateCheck = await Cache.tryRatelimit(userID, 'delay_robochimp_fetch');
+	if (!rateCheck.success) {
+		// Ratelimit success means we can re-fetch
+		const cachedUser = await Cache.getRoboChimpUser(userID);
+		if (cachedUser) return cachedUser;
+	}
+	return await roboChimpUserFetch(userID);
+}
+
 export async function roboChimpUserFetch(userID: string): Promise<RobochimpUser> {
 	const userId = BigInt(userID);
 	try {
@@ -101,6 +111,7 @@ export async function roboChimpUserFetch(userID: string): Promise<RobochimpUser>
 			},
 			update: {}
 		});
+		await Cache.setRoboChimpUser(userID, result);
 		return result;
 	} catch (err) {
 		// Ignore unique constraint errors, they already have a row
@@ -116,6 +127,7 @@ export async function roboChimpUserFetch(userID: string): Promise<RobochimpUser>
 		}
 	});
 
+	await Cache.setRoboChimpUser(userID, result);
 	return result;
 }
 

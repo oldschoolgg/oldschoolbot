@@ -38,6 +38,14 @@ export function makeRepeatTripButton() {
 		.setEmoji({ name: '🔁' });
 }
 
+export function makeAutoRummageToggleButton() {
+	return new ButtonBuilder()
+		.setCustomId(InteractionID.Commands.ToggleAutoRummage)
+		.setLabel('Toggle Auto Rummage')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji({ name: '♻️' });
+}
+
 export function makeTearsOfGuthixButton() {
 	return new ButtonBuilder()
 		.setCustomId(InteractionID.Commands.StartTearsOfGuthix)

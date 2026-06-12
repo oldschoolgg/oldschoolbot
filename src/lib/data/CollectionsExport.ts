@@ -1342,6 +1342,13 @@ export const troubleBrewingCL = resolveItems([
 	'Red rum (trouble brewing)',
 	'Blue rum (trouble brewing)'
 ]);
+export const valeTotemsCL = resolveItems([
+	'Bow string spool',
+	'Ent branch',
+	'Fletching knife',
+	'Greenman mask',
+	'Vale offerings'
+]);
 export const volcanicMineCL = resolveItems([
 	'Ash covered tome',
 	'Large water container',
@@ -1418,9 +1425,9 @@ export const allPetsCL = resolveItems([
 	'Nid',
 	'Huberte',
 	'Moxi',
-	'Bran',
-	'Yami',
-	'Dom'
+	'Bran'
+	// 'Yami', // Currently unobtainable.
+	// 'Dom' // Currently unobtainable.
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',
@@ -1700,7 +1707,7 @@ export const slayerCL = resolveItems([
 	'Glacial temotli',
 	'Pendant of ates (inert)',
 	'Frozen tear',
-	EItem.EARTHBOUND_TECPATL,
+	// EItem.EARTHBOUND_TECPATL, // Currently unobtainable.
 	EItem.ANTLER_GUARD,
 	EItem.ALCHEMISTS_SIGNET,
 	EItem.BROKEN_ANTLER

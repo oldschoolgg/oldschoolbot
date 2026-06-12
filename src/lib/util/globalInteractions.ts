@@ -8,6 +8,7 @@ import { giveawayCache } from '@/lib/cache.js';
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import { BitField } from '@/lib/constants.js';
 import { InteractionID } from '@/lib/InteractionID.js';
+import { toggleAutoRummage } from '@/lib/minions/data/valeTotems.js';
 import { type RunCommandArgs, runCommand } from '@/lib/settings/settings.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import { updateGiveawayMessage } from '@/lib/util/giveaway.js';
@@ -249,6 +250,8 @@ async function globalButtonInteractionHandler({
 	if (id.startsWith('PTR_')) return handlePinnedTripRepeat(user, id, interaction);
 
 	if (id.startsWith('ge_')) return handleGEButton(user, id);
+
+	if (id === InteractionID.Commands.ToggleAutoRummage) return toggleAutoRummage(user);
 
 	if (await user.getIsLocked()) {
 		return { content: 'You cannot use a command right now.', ephemeral: true };

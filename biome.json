@@ -1,5 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.3.8/schema.json",
+	"$schema": "https://biomejs.dev/schemas/2.4.4/schema.json",
 	"assist": {
 		"actions": {
 			"source": {
@@ -69,6 +69,7 @@
 				"noExplicitAny": "warn",
 				"noAssignInExpressions": "warn",
 				"noAsyncPromiseExecutor": "off",
+				"noImportCycles": "warn",
 				"noConfusingVoidType": "off",
 				"noFocusedTests": "off",
 				"noArrayIndexKey": "off",
@@ -101,7 +102,6 @@
 			},
 			"nursery": {
 				"noFloatingPromises": "warn",
-				"noImportCycles": "warn",
 				"noShadow": "warn",
 				"noMisusedPromises": "warn"
 			}

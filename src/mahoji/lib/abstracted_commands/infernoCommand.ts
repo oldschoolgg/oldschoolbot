@@ -350,9 +350,11 @@ async function infernoRun(
 	const diedZuk = rng.percentChance(zukDeathChance.value);
 	let deathTime: number | null = null;
 	if (diedPreZuk) {
-		deathTime = rng.randInt(Time.Minute, calcPercentOfNum(90, duration.value));
+		deathTime = rng.randInt(Time.Minute, Math.floor(calcPercentOfNum(90, duration.value)));
 	} else if (diedZuk) {
-		deathTime = rng.randInt(calcPercentOfNum(90, duration.value), duration.value);
+		const minDeathTime = Math.floor(calcPercentOfNum(90, duration.value));
+		const maxDeathTime = Math.max(minDeathTime, Math.floor(duration.value));
+		deathTime = rng.randInt(minDeathTime, maxDeathTime);
 	}
 
 	const realDuration = deathTime ?? duration.value;
