@@ -110,11 +110,8 @@ export async function minionKillCommand(
 		return updateResult;
 	}
 
-	if (updateResult.message.length > 0) result.messages.push(updateResult.message);
-
-	if (updateResult.totalCost.length > 0) {
-		result.messages.push(`Removing items: ${updateResult.totalCost}`);
-	}
+	const totalCostExcludingFood = updateResult.totalCost.clone();
+	if (result.food) totalCostExcludingFood.remove(result.food.itemCost);
 
 	if (result.updateBank.itemCostBank.length > 0) {
 		await ClientSettings.updateBankSetting('economyStats_PVMCost', result.updateBank.itemCostBank);
@@ -157,8 +154,24 @@ export async function minionKillCommand(
 		result.duration
 	)} to finish. Attack styles used: ${result.attackStyles.join(', ')}.`;
 
+	const messageLines: string[] = [];
 	if (result.messages.length > 0) {
-		response += `\n\n${result.messages.join(', ')}`;
+		messageLines.push(`**Boosts:** ${result.messages.join(', ')}`);
+	}
+	if (result.updateBank.chargeBank.length() > 0 && updateResult.message.length > 0) {
+		messageLines.push(`**Charges:** ${updateResult.message}`);
+	}
+	if (result.pkMessages.length > 0) {
+		messageLines.push(`**PK:** ${result.pkMessages.join(', ')}`);
+	}
+	if (result.food) {
+		messageLines.push(`**Food:** ${result.food.message}`);
+	}
+	if (totalCostExcludingFood.length > 0) {
+		messageLines.push(`**Item Cost:** ${totalCostExcludingFood}`);
+	}
+	if (messageLines.length > 0) {
+		response += `\n\n${messageLines.join('\n')}`;
 	}
 
 	return response;

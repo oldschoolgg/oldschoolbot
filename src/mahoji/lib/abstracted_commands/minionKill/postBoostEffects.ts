@@ -17,7 +17,15 @@ const noFoodBoost = Math.floor(Math.max(...Eatables.map(eatable => eatable.pvmBo
 // Runs after we know the quantity/duration/etc
 type PostBoostEffectReturn = Pick<
 	BoostResult,
-	'percentageReduction' | 'percentageIncrease' | 'message' | 'charges' | 'changes' | 'itemCost'
+	| 'percentageReduction'
+	| 'percentageIncrease'
+	| 'message'
+	| 'pkMessage'
+	| 'food'
+	| 'charges'
+	| 'changes'
+	| 'itemCost'
+	| 'confirmation'
 >;
 export type PostBoostEffect = {
 	description: string;
@@ -38,7 +46,7 @@ export const postBoostEffects: PostBoostEffect[] = [
 					message: `${noFoodBoost}% for no food`
 				};
 			}
-			const [healAmountNeeded] = calculateMonsterFoodRaw(gearBank, monster);
+			const [healAmountNeeded, foodInfo] = calculateMonsterFoodRaw(gearBank, monster);
 
 			let gearToCheck: GearSetupType = convertAttackStyleToGearSetup(monster.attackStyleToUse);
 			if (isInWilderness) gearToCheck = 'wildy';
@@ -95,7 +103,14 @@ export const postBoostEffects: PostBoostEffect[] = [
 			}
 
 			results.push({
-				itemCost: foodRemoveResult.foodToRemove
+				food: {
+					message: [
+						foodInfo,
+						...foodRemoveResult.reductions,
+						`Removed ${foodRemoveResult.foodToRemove}`
+					].join(', '),
+					itemCost: foodRemoveResult.foodToRemove
+				}
 			});
 			return results;
 		}
@@ -165,7 +180,7 @@ export const postBoostEffects: PostBoostEffect[] = [
 			}
 
 			return {
-				message: messages.join(', '),
+				pkMessage: messages.join(', '),
 				confirmation: confirmationString,
 				itemCost: antiPKSupplies,
 				changes: {

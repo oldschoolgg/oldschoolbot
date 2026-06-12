@@ -243,6 +243,28 @@ describe('PVM', async () => {
 		expect(result.commandResult).toContain('15.00% for stats');
 	});
 
+	it('should show PK messages separately from boosts', async () => {
+		const user = await client.mockUser({
+			bank: new Bank()
+				.add('Saradomin brew(4)', 10)
+				.add('Super restore(4)', 10)
+				.add('Cooked karambwan', 10)
+				.add('Revenant cave teleport', 10),
+			maxed: true
+		});
+		await user.equip('wildy', resolveItems(['Abyssal bludgeon']));
+		const result = await user.runCmdAndTrip(minionKCommand, {
+			name: 'revenant imp',
+			quantity: 1,
+			wilderness: true
+		});
+
+		expect(result.commandResult).toContain('**Boosts:**');
+		expect(result.commandResult).toContain('**PK:**');
+		expect(result.commandResult).toContain('potential pkers');
+		expect(result.commandResult).not.toContain('**Boosts:** Your minion brought some supplies');
+	});
+
 	it('should only use 1 skotizo totem', async () => {
 		const user = await client.mockUser({
 			bank: new Bank().add('Dark totem', 100),

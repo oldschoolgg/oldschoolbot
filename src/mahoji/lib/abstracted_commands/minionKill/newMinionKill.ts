@@ -24,6 +24,7 @@ import {
 } from '@/mahoji/lib/abstracted_commands/minionKill/postBoostEffects.js';
 import {
 	CombatMethodOptionsSchema,
+	FoodResultSchema,
 	speedCalculations
 } from '@/mahoji/lib/abstracted_commands/minionKill/timeAndSpeed.js';
 
@@ -35,6 +36,8 @@ const newMinionKillReturnSchema = z.object({
 	attackStyles: z.array(z.enum(['attack', 'strength', 'defence', 'magic', 'ranged'])),
 	currentTaskOptions: CombatMethodOptionsSchema,
 	messages: z.array(z.string()),
+	pkMessages: z.array(z.string()),
+	food: FoodResultSchema.optional(),
 	updateBank: z.instanceof(UpdateBank)
 });
 
@@ -245,8 +248,13 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 				duration = increaseNumByPercent(duration, boostResult.percentageIncrease);
 			}
 			if (boostResult.charges) speedDurationResult.updateBank.chargeBank.add(boostResult.charges);
+			if (boostResult.food) {
+				speedDurationResult.updateBank.itemCostBank.add(boostResult.food.itemCost);
+				speedDurationResult.food = boostResult.food;
+			}
 			if (boostResult.itemCost) speedDurationResult.updateBank.itemCostBank.add(boostResult.itemCost);
 			if (boostResult.message) speedDurationResult.messages.push(boostResult.message);
+			if (boostResult.pkMessage) speedDurationResult.pkMessages.push(boostResult.pkMessage);
 		}
 	}
 	duration = Math.ceil(duration);
@@ -262,6 +270,8 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 		attackStyles,
 		currentTaskOptions: speedDurationResult.currentTaskOptions,
 		messages: speedDurationResult.messages,
+		pkMessages: speedDurationResult.pkMessages,
+		food: speedDurationResult.food,
 		updateBank: speedDurationResult.updateBank
 	});
 

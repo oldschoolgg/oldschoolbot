@@ -61,6 +61,11 @@ export type BoostResult = {
 	percentageIncrease?: number;
 	percentageReduction?: number;
 	message?: string;
+	pkMessage?: string;
+	food?: {
+		message: string;
+		itemCost: Bank;
+	};
 	consumables?: Consumable[];
 	itemCost?: Bank;
 	charges?: ChargeBank;

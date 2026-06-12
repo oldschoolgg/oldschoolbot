@@ -385,11 +385,10 @@ export async function degradeItem({
 	await user.update({
 		[degItem.settingsKey]: newCharges
 	});
-	const chargesAfter = user.user[degItem.settingsKey];
-	assert(typeof chargesAfter === 'number' && chargesAfter > 0);
+	assert(newCharges > 0);
 	return {
 		chargesToDegrade: chargesToDegrade,
-		userMessage: `Your ${item.name} degraded by ${chargesToDegrade} charges`
+		userMessage: `Your ${item.name} degraded by ${chargesToDegrade} charges, it has ${newCharges.toLocaleString()} charges remaining.`
 	};
 }
 
