@@ -2,6 +2,7 @@ import type { GearSetupType, PrimaryGearSetupType } from '@oldschoolgg/gear';
 import { MathRNG } from 'node-rng';
 import { Bank, type Item, Items, itemID, type Monster } from 'oldschooljs';
 
+import { BitField } from '@/lib/constants.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 import type { ChargeBank } from '@/lib/structures/Bank.js';
 import type { DegradeableItemColumns } from '@/lib/user/userTypes.js';
@@ -386,9 +387,12 @@ export async function degradeItem({
 		[degItem.settingsKey]: newCharges
 	});
 	assert(newCharges > 0);
+	const chargeMessage = `Your ${item.name} degraded by ${chargesToDegrade} charges`;
 	return {
 		chargesToDegrade: chargesToDegrade,
-		userMessage: `Your ${item.name} degraded by ${chargesToDegrade} charges, it has ${newCharges.toLocaleString()} charges remaining.`
+		userMessage: user.bitfield.includes(BitField.ShowDetailedInfo)
+			? `${chargeMessage}, it has ${newCharges.toLocaleString()} charges remaining.`
+			: chargeMessage
 	};
 }
 

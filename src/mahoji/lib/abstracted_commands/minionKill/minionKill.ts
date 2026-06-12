@@ -2,7 +2,7 @@ import { stringMatches } from '@oldschoolgg/toolkit';
 import { Monsters } from 'oldschooljs';
 
 import { colosseumCommand } from '@/lib/colosseum.js';
-import type { PvMMethod } from '@/lib/constants.js';
+import { BitField, type PvMMethod } from '@/lib/constants.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
 import type { MonsterActivityTaskOptions } from '@/lib/types/minions.js';
@@ -48,8 +48,8 @@ export async function minionKillCommand(
 
 	let monster = findMonster(name);
 
-	const matchedRevenantMonster = revenantMonsters.find(monster =>
-		monster.aliases.some(alias => stringMatches(alias, name))
+	const matchedRevenantMonster = revenantMonsters.find(revenantMonster =>
+		revenantMonster.aliases.some(alias => stringMatches(alias, name))
 	);
 	if (matchedRevenantMonster) {
 		monster = matchedRevenantMonster;
@@ -154,24 +154,33 @@ export async function minionKillCommand(
 		result.duration
 	)} to finish. Attack styles used: ${result.attackStyles.join(', ')}.`;
 
-	const messageLines: string[] = [];
-	if (result.messages.length > 0) {
-		messageLines.push(`**Boosts:** ${result.messages.join(', ')}`);
-	}
-	if (result.updateBank.chargeBank.length() > 0 && updateResult.message.length > 0) {
-		messageLines.push(`**Charges:** ${updateResult.message}`);
-	}
-	if (result.pkMessages.length > 0) {
-		messageLines.push(`**PK:** ${result.pkMessages.join(', ')}`);
-	}
-	if (result.food) {
-		messageLines.push(`**Food:** ${result.food.message}`);
-	}
-	if (totalCostExcludingFood.length > 0) {
-		messageLines.push(`**Item Cost:** ${totalCostExcludingFood}`);
-	}
-	if (messageLines.length > 0) {
-		response += `\n\n${messageLines.join('\n')}`;
+	if (user.bitfield.includes(BitField.ShowDetailedInfo)) {
+		const messageLines: string[] = [];
+		if (result.messages.length > 0) {
+			messageLines.push(`**Boosts:** ${result.messages.join(', ')}`);
+		}
+		if (result.updateBank.chargeBank.length() > 0 && updateResult.message.length > 0) {
+			messageLines.push(`**Charges:** ${updateResult.message}`);
+		}
+		if (result.pkMessages.length > 0) {
+			messageLines.push(`**PK:** ${result.pkMessages.join(', ')}`);
+		}
+		if (result.food) {
+			messageLines.push(`**Food:** ${result.food.message}`);
+		}
+		if (totalCostExcludingFood.length > 0) {
+			messageLines.push(`**Item Cost:** ${totalCostExcludingFood}`);
+		}
+		if (messageLines.length > 0) {
+			response += `\n\n${messageLines.join('\n')}`;
+		}
+	} else {
+		const messageLines = [...result.messages];
+		if (updateResult.message.length > 0) messageLines.push(updateResult.message);
+		if (updateResult.totalCost.length > 0) messageLines.push(`Removing items: ${updateResult.totalCost}`);
+		if (messageLines.length > 0) {
+			response += `\n\n${messageLines.join(', ')}`;
+		}
 	}
 
 	return response;
