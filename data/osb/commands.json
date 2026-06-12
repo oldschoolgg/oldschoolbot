@@ -1,6 +1,6 @@
 {
-	"hash": "c3cf22c657cfa6cce5809c9f38dac7bf",
-	"date": "2026-06-02T16:20:50.151Z",
+	"hash": "3969fbf88fce600ecdba168a648933ab",
+	"date": "2026-06-12T08:36:18.497Z",
 	"data": [
 		{
 			"name": "activities",
@@ -77,7 +77,7 @@
 		},
 		{
 			"name": "casket",
-			"desc": "Simulate opening lots of clues caskets.",
+			"desc": "Simulate opening lots of clue caskets.",
 			"subOptions": []
 		},
 		{
@@ -194,7 +194,7 @@
 		{
 			"name": "fletch",
 			"desc": "Fletch items with the Fletching skill.",
-			"examples": ["/craft name:Onyx necklace"],
+			"examples": ["/fletch name:Yew longbow"],
 			"subOptions": []
 		},
 		{

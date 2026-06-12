@@ -1,0 +1,99 @@
+---
+import bsoCommandsJson from '../../../data/bso/commands.json';
+import osbCommandsJson from '../../../data/osb/commands.json';
+import { CommandsExplorer } from './CommandsExplorer';
+
+type CommandEntry = {
+	name: string;
+	desc?: string;
+	subOptions?: string[];
+	examples?: string[];
+};
+
+type CommandsJson = {
+	date?: string;
+	data: CommandEntry[];
+};
+
+type CommandNode = {
+	name: string;
+	path: string;
+	description: string;
+	options: never[];
+	subcommands: CommandNode[];
+	examples?: string[];
+};
+
+const bsoCommands = bsoCommandsJson as CommandsJson;
+const osbCommands = osbCommandsJson as CommandsJson;
+const HIDDEN_COMMANDS = new Set(['admin', 'testpotato', 'rp']);
+const osbCommandsByName = new Map(osbCommands.data.map(command => [command.name, command]));
+const osbCommandNames = new Set(osbCommandsByName.keys());
+
+const bsoOnlyCommands = bsoCommands.data
+	.filter(command => !HIDDEN_COMMANDS.has(command.name))
+	.filter(command => !osbCommandNames.has(command.name))
+	.sort((a, b) => a.name.localeCompare(b.name));
+
+const sharedCommandsWithExtraSubcommands = bsoCommands.data
+	.filter(command => !HIDDEN_COMMANDS.has(command.name))
+	.map(command => {
+		const osbCommand = osbCommandsByName.get(command.name);
+		if (!osbCommand) return null;
+		const osbSubOptions = new Set(osbCommand.subOptions ?? []);
+		const bsoOnlySubOptions = (command.subOptions ?? []).filter(subOption => !osbSubOptions.has(subOption));
+		if (bsoOnlySubOptions.length === 0) return null;
+		return {
+			name: command.name,
+			desc: command.desc,
+			subOptions: bsoOnlySubOptions.sort((a, b) => a.localeCompare(b))
+		};
+	})
+	.filter((entry): entry is { name: string; desc?: string; subOptions: string[] } => Boolean(entry))
+	.sort((a, b) => a.name.localeCompare(b.name));
+
+function normalizeDescription(desc?: string): string {
+	return desc && desc.trim().length > 0 ? desc : 'No description available yet.';
+}
+
+function toSubcommandNode(parentName: string, subName: string): CommandNode {
+	return {
+		name: subName,
+		path: `${parentName} ${subName}`,
+		description: 'BSO-only subcommand.',
+		options: [],
+		subcommands: []
+	};
+}
+
+function toCommandNode(command: CommandEntry): CommandNode {
+	return {
+		name: command.name,
+		path: command.name,
+		description: normalizeDescription(command.desc),
+		examples: command.examples?.length ? command.examples : undefined,
+		options: [],
+		subcommands: (command.subOptions ?? []).map(subOption => toSubcommandNode(command.name, subOption))
+	};
+}
+
+const bsoOnlyNodes = bsoOnlyCommands.map(toCommandNode);
+const sharedExtraNodes = sharedCommandsWithExtraSubcommands.map(command =>
+	toCommandNode({
+		name: command.name,
+		desc: `${normalizeDescription(command.desc)} (showing BSO-only subcommands)`,
+		subOptions: command.subOptions
+	})
+);
+const allNodes = [...bsoOnlyNodes, ...sharedExtraNodes].sort((a, b) => a.name.localeCompare(b.name));
+const totalCommands = allNodes.length;
+---
+
+<CommandsExplorer
+	client:load
+	nodes={allNodes}
+	introText="This page lists BSO custom commands and BSO-only subcommands for shared commands."
+	totalLabel="Total BSO command entries"
+	totalCommands={totalCommands}
+	generatedAt={bsoCommands.date}
+/>

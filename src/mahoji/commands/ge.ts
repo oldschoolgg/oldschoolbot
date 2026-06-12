@@ -87,7 +87,7 @@ export const geCommand = defineCommand({
 				{
 					type: 'String',
 					name: 'item',
-					description: 'The item you want to pick.',
+					description: 'The item you want to buy.',
 					required: true,
 					autocomplete: async ({ value, userId }: StringAutoComplete) => {
 						if (!value) {

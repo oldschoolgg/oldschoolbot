@@ -139,3 +139,156 @@
 	text-align: center;
 	white-space: nowrap;
 }
+
+/* Commands explorer */
+[data-commands-root] .commands-controls {
+	display: grid;
+	gap: 0.8rem;
+	margin-bottom: 1rem;
+}
+
+[data-commands-root] .commands-control-row {
+	display: grid;
+	gap: 0.35rem;
+}
+
+[data-commands-root] .commands-input-row {
+	display: flex;
+	gap: 0.5rem;
+	align-items: center;
+}
+
+[data-commands-root] .commands-input,
+[data-commands-root] .commands-select {
+	width: 100%;
+	border: 1px solid var(--sl-color-gray-5);
+	border-radius: 0.5rem;
+}
+
+[data-commands-root] .commands-clear {
+	margin: 0;
+	white-space: nowrap;
+	border: 1px solid var(--sl-color-gray-5);
+	border-radius: 0.5rem;
+}
+
+[data-commands-root] [data-command-node] {
+	margin: 1rem 0;
+}
+
+[data-commands-root] .command-card {
+	border: 1px solid var(--sl-color-gray-5);
+	border-radius: 0.75rem;
+	background: color-mix(in srgb, var(--sl-color-bg) 88%, var(--sl-color-gray-6));
+}
+
+[data-commands-root] .command-card-top {
+	border-left: 4px solid var(--sl-color-accent);
+}
+
+[data-commands-root] .command-card-sub {
+	margin-left: 0.75rem;
+	border-color: var(--sl-color-gray-6);
+	background: color-mix(in srgb, var(--sl-color-bg) 92%, var(--sl-color-gray-7));
+}
+
+[data-commands-root] .command-header {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 0.75rem;
+	width: 100%;
+	padding: 1rem;
+}
+
+[data-commands-root] .command-header-text {
+	min-width: 0;
+}
+
+[data-commands-root] .command-header-text h2,
+[data-commands-root] .command-header-text h3,
+[data-commands-root] .command-header-text h4,
+[data-commands-root] .command-header-text h5,
+[data-commands-root] .command-header-text h6 {
+	margin: 0;
+}
+
+[data-commands-root] .command-heading-copy.discord_command_copy {
+	background: transparent;
+	color: inherit;
+	padding: 0;
+	margin: 0;
+	border-radius: 0;
+	font: inherit;
+	font-weight: inherit;
+	line-height: inherit;
+	text-decoration: none;
+}
+
+[data-commands-root] .command-heading-copy.discord_command_copy:hover {
+	background: transparent;
+	color: var(--sl-color-text-accent);
+	text-decoration: underline;
+}
+
+[data-commands-root] .command-heading-copy.discord_command_copy.copied {
+	color: var(--sl-color-text-accent);
+}
+
+[data-commands-root] .command-description {
+	margin: 0.35rem 0 0;
+	white-space: normal;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+[data-commands-root] .command-detail-hint {
+	margin: 0.35rem 0 0;
+	font-size: 0.8rem;
+	color: var(--sl-color-text-accent);
+}
+
+[data-commands-root] .command-toggle-pill {
+	margin: 0;
+	align-self: center;
+	font-size: 0.75rem;
+	padding: 0.25rem 0.55rem;
+	border-radius: 999px;
+	border: 1px solid var(--sl-color-gray-5);
+	background: color-mix(in srgb, var(--sl-color-bg) 82%, var(--sl-color-gray-6));
+	white-space: nowrap;
+}
+
+[data-commands-root] [data-command-details] {
+	padding: 0.95rem 1rem 1rem;
+	border-top: 1px solid var(--sl-color-gray-6);
+}
+
+[data-commands-root] .command-options-table tbody tr:nth-child(even) {
+	background: color-mix(in srgb, var(--sl-color-bg) 86%, var(--sl-color-gray-6));
+}
+
+[data-commands-root] .command-options-table td {
+	vertical-align: top;
+}
+
+[data-commands-root] .command-choice-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.3rem;
+}
+
+[data-commands-root] .command-choice {
+	display: inline-block;
+}
+
+@media (max-width: 40rem) {
+	[data-commands-root] .commands-input-row {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	[data-commands-root] .command-card-sub {
+		margin-left: 0.4rem;
+	}
+}

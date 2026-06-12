@@ -12,7 +12,7 @@ export const cluesCommand = defineCommand({
 		{
 			type: 'String',
 			name: 'rsn',
-			description: 'Your runescape username.',
+			description: 'Your RuneScape username.',
 			required: true
 		}
 	],

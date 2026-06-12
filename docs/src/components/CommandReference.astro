@@ -1,0 +1,21 @@
+---
+import { getEntry } from 'astro:content';
+import { CommandsExplorer } from './CommandsExplorer';
+
+const commandsEntry = await getEntry('generated', 'commands');
+if (!commandsEntry) {
+	throw new Error('Missing generated commands data at docs/src/content/generated/commands.json');
+}
+
+const commandsDoc = commandsEntry.data;
+const totalCommands = commandsDoc.commands.length;
+---
+
+<CommandsExplorer
+	client:load
+	nodes={commandsDoc.commands}
+	introText="This page is generated from slash command definitions."
+	totalLabel="Total top-level commands"
+	totalCommands={totalCommands}
+	generatedAt={commandsDoc.generatedAt}
+/>

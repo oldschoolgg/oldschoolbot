@@ -90,7 +90,7 @@ export const minionKCommand = defineCommand({
 		{
 			type: 'Boolean',
 			name: 'solo',
-			description: 'Solo (if its a group boss)',
+			description: "Solo (if it's a group boss)",
 			required: false
 		}
 	],
