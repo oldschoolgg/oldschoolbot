@@ -1,4 +1,5 @@
-﻿import { execSync } from 'node:child_process';
+﻿import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import ts from 'typescript';
@@ -58,7 +59,7 @@ type CommandNode = {
 };
 
 type CommandsDoc = {
-	generatedAt: string;
+	generatedAt?: string;
 	version?: string;
 	commands: CommandNode[];
 };
@@ -377,6 +378,10 @@ function getPropertyName(name: ts.PropertyName): string | undefined {
 	if (ts.isStringLiteral(name)) return name.text;
 	if (ts.isNumericLiteral(name)) return name.text;
 	return undefined;
+}
+
+function parseNumericLiteral(node: ts.NumericLiteral): number {
+	return Number(node.text.replace(/_/gu, ''));
 }
 
 type ParsedChoices = {
@@ -739,11 +744,11 @@ function parseCommandOption(filePath: string, node: ts.Expression): CommandOptio
 		) {
 			option.required = value.kind === ts.SyntaxKind.TrueKeyword;
 		}
-		if ((key === 'min' || key === 'minValue') && ts.isNumericLiteral(value)) {
-			option.min = Number(value.text);
+		if ((key === 'min' || key === 'minValue' || key === 'min_value') && ts.isNumericLiteral(value)) {
+			option.min = parseNumericLiteral(value);
 		}
-		if ((key === 'max' || key === 'maxValue') && ts.isNumericLiteral(value)) {
-			option.max = Number(value.text);
+		if ((key === 'max' || key === 'maxValue' || key === 'max_value') && ts.isNumericLiteral(value)) {
+			option.max = parseNumericLiteral(value);
 		}
 		if (key === 'choices') {
 			const parsedChoices = parseChoices(filePath, value);
@@ -912,14 +917,8 @@ function buildCommandNode(command: CommandDefinition): CommandNode {
 	};
 }
 
-function getVersion(): string | undefined {
-	try {
-		return execSync('git rev-parse --short HEAD', { cwd: ROOT, stdio: ['ignore', 'pipe', 'ignore'] })
-			.toString()
-			.trim();
-	} catch {
-		return undefined;
-	}
+function getCommandsVersion(commands: CommandNode[]): string {
+	return createHash('sha1').update(JSON.stringify(commands)).digest('hex').slice(0, 10);
 }
 
 export function buildCommandsDocDataFromDir(commandsDir = COMMANDS_DIR): CommandsDoc {
@@ -933,19 +932,31 @@ export function buildCommandsDocDataFromDir(commandsDir = COMMANDS_DIR): Command
 		.flatMap(filePath => parseCommandFile(filePath))
 		.filter(command => command.name)
 		.filter(command => !HIDDEN_COMMANDS.has(command.name ?? ''))
-		.sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''));
+		.sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''))
+		.map(buildCommandNode);
 
 	return {
-		generatedAt: new Date().toISOString(),
-		version: getVersion(),
-		commands: commands.map(buildCommandNode)
+		version: getCommandsVersion(commands),
+		commands
 	};
 }
 
 export function generateCommandsDoc(outputFile = OUTPUT_FILE, commandsDir = COMMANDS_DIR): CommandsDoc {
 	const doc = buildCommandsDocDataFromDir(commandsDir);
 	mkdirSync(path.dirname(outputFile), { recursive: true });
-	writeFileSync(outputFile, `${JSON.stringify(doc, null, 2)}\n`);
+	writeFileSync(outputFile, `${JSON.stringify(doc, null, '\t')}\n`);
+	const relativeOutputFile = path.relative(ROOT, outputFile).replace(/\\/gu, '/');
+	if (process.platform === 'win32') {
+		execFileSync('cmd.exe', ['/d', '/c', `pnpm exec biome format --write ${relativeOutputFile}`], {
+			cwd: ROOT,
+			stdio: 'ignore'
+		});
+	} else {
+		execFileSync('pnpm', ['exec', 'biome', 'format', '--write', relativeOutputFile], {
+			cwd: ROOT,
+			stdio: 'ignore'
+		});
+	}
 	return doc;
 }
 

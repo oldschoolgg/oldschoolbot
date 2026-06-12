@@ -1,6 +1,5 @@
 {
-	"generatedAt": "2026-02-20T09:54:39.953Z",
-	"version": "2ff0ca4cf5",
+	"version": "e87a4d2640",
 	"commands": [
 		{
 			"name": "activities",
@@ -39,7 +38,8 @@
 							"name": "quantity",
 							"description": "The quantity of planks to make.",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1
 						}
 					],
 					"subcommands": []
@@ -80,7 +80,8 @@
 							"name": "quantity",
 							"description": "The quantity (optional).",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1
 						}
 					],
 					"subcommands": []
@@ -100,7 +101,8 @@
 							"name": "quantity",
 							"description": "The quantity to do (optional).",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1
 						}
 					],
 					"subcommands": []
@@ -120,7 +122,8 @@
 							"name": "quantity",
 							"description": "The quantity of collecting trips.",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1
 						},
 						{
 							"name": "no_stams",
@@ -160,7 +163,9 @@
 							"name": "dose",
 							"description": "The dosage to decant them to. (default 4)",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1,
+							"max": 4
 						}
 					],
 					"subcommands": []
@@ -168,29 +173,38 @@
 				{
 					"name": "charge",
 					"path": "activities charge",
-					"description": "Charge glories, or rings of wealth.",
+					"description": "Charge/uncharge glories, or charge rings of wealth.",
 					"options": [
 						{
 							"name": "item",
-							"description": "The item you want to charge",
+							"description": "The jewellery you want to charge or uncharage",
 							"type": "string",
 							"required": true,
 							"choices": [
 								{
-									"name": "Amulet of glory",
+									"name": "Charge Amulet of glory",
 									"value": "glory"
 								},
 								{
-									"name": "Ring of wealth",
+									"name": "Charge Ring of wealth",
 									"value": "wealth"
+								},
+								{
+									"name": "Uncharge Glory's manually in a trip",
+									"value": "glory_uncharge"
+								},
+								{
+									"name": "Uncharge Glory's (Instant via GE for 5000 gp/ea)",
+									"value": "glory_exchange"
 								}
 							]
 						},
 						{
 							"name": "quantity",
-							"description": "The amount of inventories you want to charge.  (optional)",
+							"description": "The amount to do. (optional)",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1
 						}
 					],
 					"subcommands": []
@@ -278,7 +292,8 @@
 							"name": "quantity",
 							"description": "The quantity to enchant.",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1
 						}
 					],
 					"subcommands": []
@@ -298,7 +313,8 @@
 							"name": "quantity",
 							"description": "The quantity to bury.",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1
 						}
 					],
 					"subcommands": []
@@ -318,7 +334,8 @@
 							"name": "quantity",
 							"description": "The quantity to scatter.",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1
 						}
 					],
 					"subcommands": []
@@ -358,7 +375,8 @@
 							"name": "quantity",
 							"description": "The quantity to alch.",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1
 						}
 					],
 					"subcommands": []
@@ -378,7 +396,8 @@
 							"name": "quantity",
 							"description": "The quantity to cast (Optional).",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1
 						}
 					],
 					"subcommands": []
@@ -398,7 +417,8 @@
 							"name": "minutes",
 							"description": "How many minutes to do (optional).",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1
 						},
 						{
 							"name": "no_stams",
@@ -418,7 +438,8 @@
 							"name": "minutes",
 							"description": "How many minutes to do (optional).",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1
 						},
 						{
 							"name": "no_stams",
@@ -726,7 +747,9 @@
 							"name": "duration_days",
 							"description": "The duration of the bingo in days.",
 							"type": "integer",
-							"required": true
+							"required": true,
+							"min": 1,
+							"max": 31
 						},
 						{
 							"name": "start_date_unix_seconds",
@@ -738,13 +761,16 @@
 							"name": "ticket_price",
 							"description": "The ticket price.",
 							"type": "integer",
-							"required": true
+							"required": true,
+							"min": 1
 						},
 						{
 							"name": "team_size",
 							"description": "The team size.",
 							"type": "integer",
-							"required": true
+							"required": true,
+							"min": 1,
+							"max": 5
 						},
 						{
 							"name": "notifications_channel_id",
@@ -800,7 +826,8 @@
 							"name": "add_extra_gp",
 							"description": "Add extra gp to the prize.",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1000000
 						},
 						{
 							"name": "trophy_handout",
@@ -920,7 +947,8 @@
 					"name": "quantity",
 					"description": "The quantity you want to build (defaults to max).",
 					"type": "integer",
-					"required": false
+					"required": false,
+					"min": 1
 				}
 			],
 			"subcommands": []
@@ -995,7 +1023,9 @@
 					"name": "quantity",
 					"description": "The quantity you want to open.",
 					"type": "integer",
-					"required": true
+					"required": true,
+					"min": 1,
+					"max": 300000
 				}
 			],
 			"subcommands": []
@@ -1031,7 +1061,9 @@
 					"name": "quantity",
 					"description": "The quantity of logs you want to chop (optional).",
 					"type": "integer",
-					"required": false
+					"required": false,
+					"min": 1,
+					"max": 100000
 				},
 				{
 					"name": "powerchop",
@@ -1123,7 +1155,8 @@
 					"name": "quantity",
 					"description": "The quantity of clues you want to complete (optional).",
 					"type": "integer",
-					"required": false
+					"required": false,
+					"min": 1
 				},
 				{
 					"name": "implings",
@@ -1589,7 +1622,8 @@
 					"name": "quantity",
 					"description": "The quantity you want to cook (optional).",
 					"type": "integer",
-					"required": false
+					"required": false,
+					"min": 1
 				}
 			],
 			"subcommands": []
@@ -1610,7 +1644,8 @@
 					"name": "quantity",
 					"description": "The quantity you want to craft (optional).",
 					"type": "integer",
-					"required": false
+					"required": false,
+					"min": 1
 				}
 			],
 			"subcommands": []
@@ -1630,7 +1665,9 @@
 					"name": "quantity",
 					"description": "The amount you want to create.",
 					"type": "integer",
-					"required": false
+					"required": false,
+					"min": 1,
+					"max": 1000000000
 				},
 				{
 					"name": "showall",
@@ -1692,13 +1729,17 @@
 					"name": "drop_rate",
 					"description": "The droprate, e.g: 1000 for 1 in 1000.",
 					"type": "integer",
-					"required": true
+					"required": true,
+					"min": 1,
+					"max": 1000000000
 				},
 				{
 					"name": "rolls",
 					"description": "How many rolls you had at this drop.",
 					"type": "integer",
-					"required": true
+					"required": true,
+					"min": 1,
+					"max": 1000000000
 				}
 			],
 			"subcommands": []
@@ -1771,7 +1812,8 @@
 							"name": "quantity",
 							"description": "The quantity you want to plant.",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1
 						},
 						{
 							"name": "pay",
@@ -1848,6 +1890,19 @@
 							"description": "Buy a Tithe Farm reward.",
 							"type": "string",
 							"required": false
+						},
+						{
+							"name": "quantity",
+							"description": "The quantity of this reward you want to buy.",
+							"type": "integer",
+							"required": false,
+							"min": 1
+						},
+						{
+							"name": "show_info",
+							"description": "Shows your Tithe Farm points and all reward costs.",
+							"type": "boolean",
+							"required": false
 						}
 					],
 					"subcommands": []
@@ -1867,7 +1922,8 @@
 							"name": "quantity",
 							"description": "The quantity you want to put in.",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1
 						}
 					],
 					"subcommands": []
@@ -1942,12 +1998,25 @@
 					"name": "quantity",
 					"description": "The quantity you want to fish (optional).",
 					"type": "integer",
+					"required": false,
+					"min": 1
+				},
+				{
+					"name": "powerfish",
+					"description": "Powerfish for higher XP/hour at the cost of banking any loot.",
+					"type": "boolean",
 					"required": false
 				},
 				{
-					"name": "flakes",
-					"description": "Use spirit flakes?",
+					"name": "spirit_flakes",
+					"description": "Use Spirit flakes for a 50% chance at extra fish.",
 					"type": "boolean",
+					"required": false
+				},
+				{
+					"name": "shark_lure",
+					"description": "Use Shark lures (Sharks only).",
+					"type": "integer",
 					"required": false
 				}
 			],
@@ -1969,7 +2038,8 @@
 					"name": "quantity",
 					"description": "The quantity you want to fletch (optional).",
 					"type": "integer",
-					"required": false
+					"required": false,
+					"min": 1
 				}
 			],
 			"subcommands": []
@@ -2189,7 +2259,9 @@
 							"name": "page",
 							"description": "The page you want to view.",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1,
+							"max": 10
 						}
 					],
 					"subcommands": []
@@ -2284,7 +2356,8 @@
 							"name": "quantity",
 							"description": "The quantity you want to equip (optional).",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1
 						},
 						{
 							"name": "auto",
@@ -2666,7 +2739,8 @@
 					"name": "quantity",
 					"description": "The quantity you want to hunt (optional).",
 					"type": "integer",
-					"required": false
+					"required": false,
+					"min": 1
 				},
 				{
 					"name": "hunter_potion",
@@ -2706,7 +2780,8 @@
 					"name": "quantity",
 					"description": "The amount you want to kill.",
 					"type": "integer",
-					"required": false
+					"required": false,
+					"min": 0
 				},
 				{
 					"name": "method",
@@ -2793,7 +2868,8 @@
 					"name": "quantity",
 					"description": "The quantity you want to simulate.",
 					"type": "integer",
-					"required": true
+					"required": true,
+					"min": 1
 				},
 				{
 					"name": "catacombs",
@@ -2860,7 +2936,8 @@
 					"name": "quantity",
 					"description": "The quantity of laps you want to do (optional).",
 					"type": "integer",
-					"required": false
+					"required": false,
+					"min": 1
 				},
 				{
 					"name": "alch",
@@ -3137,6 +3214,26 @@
 					"description": "Check the mastery leaderboard.",
 					"options": [],
 					"subcommands": []
+				},
+				{
+					"name": "giants_foundry",
+					"path": "lb giants_foundry",
+					"description": "Check the Giant's Foundry unique weapons leaderboard.",
+					"options": [
+						{
+							"name": "total_weapons",
+							"description": "Sort by total weapons made instead.",
+							"type": "boolean",
+							"required": false
+						},
+						{
+							"name": "ironmen_only",
+							"description": "Only include ironmen.",
+							"type": "boolean",
+							"required": false
+						}
+					],
+					"subcommands": []
 				}
 			]
 		},
@@ -3156,7 +3253,8 @@
 					"name": "quantity",
 					"description": "The quantity you want to burn (optional).",
 					"type": "integer",
-					"required": false
+					"required": false,
+					"min": 1
 				}
 			],
 			"subcommands": []
@@ -3257,7 +3355,9 @@
 					"name": "quantity",
 					"description": "The quantity you want to mine (optional).",
 					"type": "integer",
-					"required": false
+					"required": false,
+					"min": 1,
+					"max": 100000
 				},
 				{
 					"name": "powermine",
@@ -3296,7 +3396,9 @@
 							"name": "quantity",
 							"description": "Quantity.",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1,
+							"max": 1000
 						}
 					],
 					"subcommands": []
@@ -3323,7 +3425,8 @@
 							"name": "quantity",
 							"description": "The amount of gambles to do.",
 							"type": "integer",
-							"required": true
+							"required": true,
+							"min": 1
 						}
 					],
 					"subcommands": []
@@ -3346,7 +3449,15 @@
 					"name": "start",
 					"path": "minigames castle_wars start",
 					"description": "Start a trip.",
-					"options": [],
+					"options": [
+						{
+							"name": "quantity",
+							"description": "The amount of games to do.",
+							"type": "integer",
+							"required": false,
+							"min": 1
+						}
+					],
 					"subcommands": []
 				},
 				{
@@ -3378,7 +3489,9 @@
 							"name": "quantity",
 							"description": "Quantity.",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1,
+							"max": 1000
 						}
 					],
 					"subcommands": []
@@ -3456,7 +3569,9 @@
 							"name": "amount",
 							"description": "The amount of points you want to spend.",
 							"type": "integer",
-							"required": true
+							"required": true,
+							"min": 1,
+							"max": 1000
 						}
 					],
 					"subcommands": []
@@ -3478,20 +3593,6 @@
 				{
 					"name": "start",
 					"path": "minigames fishing_trawler start",
-					"description": "Start a trip.",
-					"options": [],
-					"subcommands": []
-				},
-				{
-					"name": "start",
-					"path": "minigames mage_arena start",
-					"description": "Start a trip.",
-					"options": [],
-					"subcommands": []
-				},
-				{
-					"name": "start",
-					"path": "minigames mage_arena_2 start",
 					"description": "Start a trip.",
 					"options": [],
 					"subcommands": []
@@ -3532,7 +3633,9 @@
 							"name": "quantity",
 							"description": "Amount of treks.",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1,
+							"max": 1000
 						}
 					],
 					"subcommands": []
@@ -3572,7 +3675,9 @@
 							"name": "quantity",
 							"description": "Quantity",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1,
+							"max": 1000
 						}
 					],
 					"subcommands": []
@@ -3662,7 +3767,9 @@
 							"name": "quantity",
 							"description": "Quantity.",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1,
+							"max": 1000
 						}
 					],
 					"subcommands": []
@@ -3724,7 +3831,8 @@
 							"name": "quantity",
 							"description": "Quantity.",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1
 						}
 					],
 					"subcommands": []
@@ -3752,7 +3860,8 @@
 							"name": "quantity",
 							"description": "The amount of games to do.",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1
 						}
 					],
 					"subcommands": []
@@ -3772,7 +3881,8 @@
 							"name": "quantity",
 							"description": "Quantity.",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1
 						}
 					],
 					"subcommands": []
@@ -3793,7 +3903,8 @@
 							"name": "quantity",
 							"description": "Amount of brimhaven agility course laps you want to do.",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1
 						}
 					],
 					"subcommands": []
@@ -3813,7 +3924,8 @@
 							"name": "quantity",
 							"description": "Quantity.",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1
 						}
 					],
 					"subcommands": []
@@ -3876,7 +3988,8 @@
 							"name": "quantity",
 							"description": "The amount of weapons to make.",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1
 						}
 					],
 					"subcommands": []
@@ -3896,7 +4009,8 @@
 							"name": "quantity",
 							"description": "Quantity.",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1
 						}
 					],
 					"subcommands": []
@@ -3961,7 +4075,8 @@
 							"name": "quantity",
 							"description": "Quantity.",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1
 						}
 					],
 					"subcommands": []
@@ -3990,7 +4105,7 @@
 				{
 					"name": "start",
 					"path": "minigames shades_of_morton start",
-					"description": "Start a trip.",
+					"description": "Start a cremation trip.",
 					"options": [
 						{
 							"name": "shade",
@@ -4000,9 +4115,120 @@
 						},
 						{
 							"name": "logs",
-							"description": "The logs you want to use.",
+							"description": "The pyre logs you want to use.",
 							"type": "string",
 							"required": true
+						}
+					],
+					"subcommands": []
+				},
+				{
+					"name": "sacred_oil",
+					"path": "minigames shades_of_morton sacred_oil",
+					"description": "Sanctify Olive oil(4) into Sacred oil(4) at the Mort'ton temple (400/hr).",
+					"options": [],
+					"subcommands": []
+				},
+				{
+					"name": "create_pyre_logs",
+					"path": "minigames shades_of_morton create_pyre_logs",
+					"description": "Apply Sacred oil(4) to logs to make pyre logs (1400/hr, 20 FM xp each).",
+					"options": [
+						{
+							"name": "logs",
+							"description": "The logs you want to apply sacred oil to.",
+							"type": "string",
+							"required": true
+						},
+						{
+							"name": "quantity",
+							"description": "How many logs to oil.",
+							"type": "integer",
+							"required": false,
+							"min": 1
+						}
+					],
+					"subcommands": []
+				},
+				{
+					"name": "start",
+					"path": "minigames vale_totems start",
+					"description": "Start a trip.",
+					"options": [
+						{
+							"name": "item_to_fletch",
+							"description": "Item to fletch during minigame.",
+							"type": "string",
+							"required": true
+						},
+						{
+							"name": "stamina_pot",
+							"description": "Whether to use Stamina Potion for trip.",
+							"type": "boolean",
+							"required": false
+						}
+					],
+					"subcommands": []
+				},
+				{
+					"name": "buy",
+					"path": "minigames vale_totems buy",
+					"description": "Buy Vale Totem minigame reward.",
+					"options": [
+						{
+							"name": "item",
+							"description": "Item to buy using research points.",
+							"type": "string",
+							"required": false
+						},
+						{
+							"name": "quantity",
+							"description": "Quantity.",
+							"type": "integer",
+							"required": false,
+							"min": 1
+						}
+					],
+					"subcommands": []
+				},
+				{
+					"name": "sell",
+					"path": "minigames vale_totems sell",
+					"description": "Sell Vale Totem minigame reward.",
+					"options": [
+						{
+							"name": "item",
+							"description": "Item to sell using research points.",
+							"type": "string",
+							"required": true
+						},
+						{
+							"name": "quantity",
+							"description": "Quantity.",
+							"type": "integer",
+							"required": false,
+							"min": 1
+						}
+					],
+					"subcommands": []
+				},
+				{
+					"name": "rummage",
+					"path": "minigames vale_totems rummage",
+					"description": "Rummage Vale offerings.",
+					"options": [
+						{
+							"name": "quantity",
+							"description": "Quantity.",
+							"type": "integer",
+							"required": false,
+							"min": 1
+						},
+						{
+							"name": "all",
+							"description": "Rummage all offerings.",
+							"type": "boolean",
+							"required": false
 						}
 					],
 					"subcommands": []
@@ -4112,7 +4338,9 @@
 							"name": "quantity",
 							"description": "The quantity you want to use.",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1,
+							"max": 100000
 						}
 					],
 					"subcommands": []
@@ -4289,7 +4517,8 @@
 							"name": "quantity",
 							"description": "The quantity of darts/scales to add",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1
 						}
 					],
 					"subcommands": []
@@ -4333,7 +4562,8 @@
 					"name": "quantity",
 					"description": "The quantity you want to mix (optional).",
 					"type": "integer",
-					"required": false
+					"required": false,
+					"min": 1
 				},
 				{
 					"name": "wesley",
@@ -4366,7 +4596,8 @@
 					"name": "quantity",
 					"description": "The quantity you want to offer (optional).",
 					"type": "integer",
-					"required": false
+					"required": false,
+					"min": 1
 				}
 			],
 			"subcommands": []
@@ -4386,7 +4617,9 @@
 					"name": "quantity",
 					"description": "The quantity you want to open (defaults to one).",
 					"type": "integer",
-					"required": false
+					"required": false,
+					"min": 1,
+					"max": 100000
 				},
 				{
 					"name": "open_until",
@@ -4398,7 +4631,9 @@
 					"name": "result_quantity",
 					"description": "The number of the target item you want to obtain before stopping.",
 					"type": "integer",
-					"required": false
+					"required": false,
+					"min": 1,
+					"max": 1000
 				}
 			],
 			"subcommands": []
@@ -4585,13 +4820,16 @@
 							"name": "max_team_size",
 							"description": "Choose a max size for your team.",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1
 						},
 						{
 							"name": "quantity",
 							"description": "The quantity to do.",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1,
+							"max": 10
 						}
 					],
 					"subcommands": []
@@ -4631,13 +4869,16 @@
 							"name": "max_team_size",
 							"description": "Choose a max size for your team.",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1
 						},
 						{
 							"name": "quantity",
 							"description": "The quantity to do.",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1,
+							"max": 10
 						}
 					],
 					"subcommands": []
@@ -4684,13 +4925,17 @@
 							"name": "max_team_size",
 							"description": "Choose a max size for your team.",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1,
+							"max": 8
 						},
 						{
 							"name": "quantity",
 							"description": "The quantity to do.",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1,
+							"max": 5
 						}
 					],
 					"subcommands": []
@@ -4727,7 +4972,9 @@
 					"name": "limit",
 					"description": "The upper limit of the roll. Defaults to 10.",
 					"type": "integer",
-					"required": false
+					"required": false,
+					"min": 1,
+					"max": 1000000000
 				}
 			],
 			"subcommands": []
@@ -4748,7 +4995,9 @@
 					"name": "quantity",
 					"description": "The amount of runes/tiaras you want to craft.",
 					"type": "integer",
-					"required": false
+					"required": false,
+					"min": 1,
+					"max": 1000000000
 				},
 				{
 					"name": "usestams",
@@ -4841,19 +5090,23 @@
 							"name": "quantity",
 							"description": "The amount of raids to simulate.",
 							"type": "integer",
-							"required": true
+							"required": true,
+							"min": 1
 						},
 						{
 							"name": "points",
 							"description": "How many points to have (default 25k).",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1,
+							"max": 1000000
 						},
 						{
 							"name": "team_size",
 							"description": "The size of your team (default 4).",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1
 						},
 						{
 							"name": "challenge_mode",
@@ -4873,7 +5126,9 @@
 							"name": "quantity",
 							"description": "The amount of rolls.",
 							"type": "integer",
-							"required": true
+							"required": true,
+							"min": 1,
+							"max": 100
 						}
 					],
 					"subcommands": []
@@ -5044,7 +5299,8 @@
 							"name": "quantity",
 							"description": "The quantity to purchase, if applicable.",
 							"type": "integer",
-							"required": false
+							"required": false,
+							"min": 1
 						}
 					],
 					"subcommands": []
@@ -5123,7 +5379,9 @@
 					"name": "quantity",
 					"description": "The quantity you want to smelt.",
 					"type": "integer",
-					"required": false
+					"required": false,
+					"min": 1,
+					"max": 100000
 				},
 				{
 					"name": "blast_furnace",
@@ -5150,7 +5408,8 @@
 					"name": "quantity",
 					"description": "The quantity you want to smith (optional).",
 					"type": "integer",
-					"required": false
+					"required": false,
+					"min": 1
 				}
 			],
 			"subcommands": []
@@ -5197,7 +5456,8 @@
 					"name": "quantity",
 					"description": "The quantity (defaults to max).",
 					"type": "integer",
-					"required": false
+					"required": false,
+					"min": 1
 				}
 			],
 			"subcommands": []
@@ -5224,7 +5484,8 @@
 							"name": "quantity",
 							"description": "The quantity you want to purchase.",
 							"type": "integer",
-							"required": true
+							"required": true,
+							"min": 1
 						}
 					],
 					"subcommands": []
@@ -5244,7 +5505,8 @@
 							"name": "quantity",
 							"description": "The quantity you want to sell.",
 							"type": "integer",
-							"required": true
+							"required": true,
+							"min": 1
 						}
 					],
 					"subcommands": []

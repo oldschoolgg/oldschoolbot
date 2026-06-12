@@ -79,4 +79,20 @@ describe('renderCommandsDoc JSON generator', () => {
 			rmSync(dir, { recursive: true, force: true });
 		}
 	});
+
+	it('parses snake_case numeric option limits', () => {
+		const dir = mkdtempSync(path.join(tmpdir(), 'osb-commands-'));
+		try {
+			writeFileSync(
+				path.join(dir, 'limits.ts'),
+				"export const c = defineCommand({ name: 'limits', options: [{ type: 'Integer', name: 'quantity', description: 'Quantity', min_value: 1, max_value: 300_000 }] });\n"
+			);
+
+			const doc = buildCommandsDocDataFromDir(dir);
+			expect(doc.commands[0].options[0].min).toBe(1);
+			expect(doc.commands[0].options[0].max).toBe(300_000);
+		} finally {
+			rmSync(dir, { recursive: true, force: true });
+		}
+	});
 });

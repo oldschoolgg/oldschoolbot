@@ -44,7 +44,7 @@ export const collections = {
 	generated: defineCollection({
 		type: 'data',
 		schema: z.object({
-			generatedAt: z.string(),
+			generatedAt: z.string().optional(),
 			version: z.string().optional(),
 			commands: z.array(commandNodeSchema)
 		})
