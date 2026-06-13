@@ -14,7 +14,7 @@ import type {
 import { kibbles } from '@/lib/bso/kibble.js';
 import { divinationEnergies, memoryHarvestTypes } from '@/lib/bso/skills/divination.js';
 
-import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
+import { ButtonBuilder, ButtonStyle, idToUnixTs } from '@oldschoolgg/discord';
 import { objectValues, Time } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
@@ -22,6 +22,7 @@ import { activity_type_enum } from '@/prisma/main/enums.js';
 import type { Activity } from '@/prisma/main.js';
 import type { PvMMethod } from '@/lib/constants.js';
 import { findTripBuyable } from '@/lib/data/buyables/tripBuyables.js';
+import { InteractionID } from '@/lib/InteractionID.js';
 import { SlayerActivityConstants } from '@/lib/minions/data/combatConstants.js';
 import { autocompleteMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { runCommand } from '@/lib/settings/settings.js';
@@ -1016,7 +1017,7 @@ export async function makeRepeatTripButtons(user: MUser) {
 		buttons.push(
 			new ButtonBuilder()
 				.setLabel(`Repeat ${trip.type}`)
-				.setCustomId(`REPEAT_TRIP_${trip.type}`)
+				.setCustomId(`${InteractionID.Commands.RepeatTrip}_${trip.type}`)
 				.setStyle(ButtonStyle.Secondary)
 		);
 	}
@@ -1028,7 +1029,7 @@ export async function repeatTrip(user: MUser, interaction: OSInteraction, activi
 		return { content: "Couldn't find any trip to repeat.", ephemeral: true };
 	}
 	const handler = tripHandlers[activity.type];
-	const args: ActivityTaskData = ActivityManager.convertStoredActivityToFlatActivity(activity);
+	const args: ActivityTaskData = ActivityManager.convertStoredActivityToFlatActivity(activity, interaction);
 	let commandArgs: CommandOptions;
 	try {
 		commandArgs = handler.args(args as any) as CommandOptions;
@@ -1038,13 +1039,15 @@ export async function repeatTrip(user: MUser, interaction: OSInteraction, activi
 		}
 		throw err;
 	}
+	const continueDeltaMillis = interaction.createdTimestamp - idToUnixTs(interaction.messageId);
+
 	return runCommand({
 		commandName: handler.commandName,
 		isContinue: true,
 		args: commandArgs,
 		interaction,
 		user,
-		continueDeltaMillis: 0
+		continueDeltaMillis
 		// TODO: continueDeltaMillis: interaction.createdAt.getTime() - (interaction.message?.createdTimestamp ?? 0)
 	});
 }

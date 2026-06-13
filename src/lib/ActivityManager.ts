@@ -3,6 +3,7 @@ import { cryptoRng } from 'node-rng/crypto';
 import type { Activity, activity_type_enum } from '@/prisma/main.js';
 import { globalConfig } from '@/lib/constants.js';
 import { onMinionActivityFinish } from '@/lib/events.js';
+import type { OSInteraction } from '@/lib/structures/OSInteraction.js';
 import { allTasks } from '@/lib/Task.js';
 import type { PrismaCompatibleJsonObject } from '@/lib/types/index.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
@@ -18,15 +19,17 @@ class SActivityManager {
 		return addSubTaskToActivityTask(tripData);
 	}
 
-	convertStoredActivityToFlatActivity(activity: Activity): ActivityTaskData {
-		if (!activity.channel_id) {
+	convertStoredActivityToFlatActivity(activity: Activity, interaction?: OSInteraction): ActivityTaskData {
+		const channelId = activity.channel_id?.toString() ?? interaction?.channelId?.toString() ?? null;
+		if (!channelId) {
 			throw new Error(`Activity ${activity.id} has no channel_id`);
 		}
+
 		return {
 			...(activity.data as PrismaCompatibleJsonObject),
 			type: activity.type as activity_type_enum,
 			userID: activity.user_id.toString(),
-			channelId: activity.channel_id.toString(),
+			channelId,
 			duration: activity.duration,
 			finishDate: activity.finish_date.getTime(),
 			id: activity.id
@@ -48,7 +51,7 @@ class SActivityManager {
 		}
 
 		const task = allTasks.find(i => i.type === activity.type)!;
-		if (!task) {
+		if (!task && 1) {
 			Logging.logError(new Error('Missing task'));
 			return;
 		}

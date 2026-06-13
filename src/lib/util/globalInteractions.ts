@@ -246,7 +246,7 @@ async function globalButtonInteractionHandler({
 	}
 
 	const user = interaction.user;
-	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, id, interaction);
+	if (id.includes(InteractionID.Commands.RepeatTrip)) return repeatTripHandler(user, id, interaction);
 
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
 	if (id.includes('DONATE_IC')) return ItemContracts.donateICHandler(interaction);

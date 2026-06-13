@@ -22,7 +22,6 @@ export function handleCrateSpawns(user: MUser, duration: number, kind: 'trip' | 
 	if (Date.now() > rateIncreaseStart) {
 		const hoursSinceBoostStart = (Date.now() - rateIncreaseStart) / Time.Hour;
 		nerf += hoursSinceBoostStart * 0.25;
-
 	}
 	dropratePerMinute *= nerf;
 	dropratePerMinute = Math.ceil(dropratePerMinute);
