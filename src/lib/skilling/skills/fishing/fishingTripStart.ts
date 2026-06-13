@@ -1,3 +1,4 @@
+import { BSOItem } from '@/lib/bso/BSOItem.js';
 import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 
 import { Time } from '@oldschoolgg/toolkit';
@@ -365,6 +366,22 @@ export async function calcFishingTripStart({
 	if (gearBank.usingPet('Shelldon')) {
 		tripSpeedMultiplier *= 2;
 		boosts.push('2x faster for Shelldon');
+	}
+	const hasOldCrabCageEquipped = gearBank.hasEquipped(BSOItem.OLD_CRAB_CAGE);
+	const hasPatriciaEquipped = gearBank.usingPet('Patricia');
+	const isPatriciaLobsterBoost = fish.name === 'Lobster' && hasPatriciaEquipped && hasOldCrabCageEquipped;
+
+	if (hasOldCrabCageEquipped) {
+		maxTripLength += Time.Minute * 5;
+		boosts.push('+5 minutes for Old crab cage');
+		if (!isPatriciaLobsterBoost) {
+			tripSpeedMultiplier *= speedMultiplierFromPercentReduction(20);
+			boosts.push('20% faster for Old crab cage');
+		}
+	}
+	if (isPatriciaLobsterBoost) {
+		tripSpeedMultiplier *= 3;
+		boosts.push('3x faster for Patricia and Old crab cage while fishing Lobster');
 	}
 
 	if (gearBank.hasEquippedOrInBank('Shark tooth necklace')) {

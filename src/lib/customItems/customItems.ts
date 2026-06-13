@@ -14470,9 +14470,33 @@ setCustomItem(
 	'Bronze full helm',
 	{
 		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isPet: true
+		}
+	},
+	1_000_000
+);
+setCustomItem(
+	73_982,
+	'Patricia',
+	'Bronze full helm',
+	{
+		customItemData: {
 			isSecret: true,
 			cantDropFromMysteryBoxes: true,
 			isPet: true
+		}
+	},
+	1_000_000
+);
+setCustomItem(
+	73_983,
+	'Old crab cage',
+	'Bronze kiteshield',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	1_000_000

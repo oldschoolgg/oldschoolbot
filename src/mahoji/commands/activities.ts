@@ -7,8 +7,10 @@ import birdhouses from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
 import { Castables } from '@/lib/skilling/skills/magic/castables.js';
 import { Enchantables } from '@/lib/skilling/skills/magic/enchantables.js';
 import Prayer from '@/lib/skilling/skills/prayer.js';
+import type { BeachCombingMethod } from '@/lib/types/minions.js';
 import { aerialFishingCommand } from '@/mahoji/lib/abstracted_commands/aerialFishingCommand.js';
 import { alchCommand } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
+import { beachCombingCommand } from '@/mahoji/lib/abstracted_commands/beachCombingCommand.js';
 import { birdhouseCheckCommand, birdhouseHarvestCommand } from '@/mahoji/lib/abstracted_commands/birdhousesCommand.js';
 import { buryCommand } from '@/mahoji/lib/abstracted_commands/buryCommand.js';
 import { butlerCommand } from '@/mahoji/lib/abstracted_commands/butlerCommand.js';
@@ -95,6 +97,23 @@ export const activitiesCommand = defineCommand({
 			type: 'Subcommand',
 			name: 'my_notes',
 			description: 'Send your minion to rummage skeletons for Ancient pages.'
+		},
+		{
+			type: 'Subcommand',
+			name: 'beach_combing',
+			description: 'Send your minion to spend some time on the shoreline.',
+			options: [
+				{
+					type: 'String',
+					name: 'focus',
+					description: 'What your minion should focus on while at the beach.',
+					required: true,
+					choices: ['Surfing', 'BeachCombing', 'BuildSandcastles', 'PickupTrash'].map(i => ({
+						name: i,
+						value: i
+					}))
+				}
+			]
 		},
 		{
 			type: 'Subcommand',
@@ -572,6 +591,9 @@ export const activitiesCommand = defineCommand({
 		}
 		if (options.my_notes) {
 			return myNotesCommand(user, channelId);
+		}
+		if (options.beach_combing) {
+			return beachCombingCommand(user, channelId, options.beach_combing.focus as BeachCombingMethod);
 		}
 		if (options.warriors_guild) {
 			return warriorsGuildCommand(

@@ -318,6 +318,10 @@ const tripHandlers: {
 		commandName: 'activities',
 		args: () => ({ my_notes: {} })
 	},
+	[activity_type_enum.BeachCombing]: {
+		commandName: 'activities',
+		args: data => ({ beach_combing: { focus: data.method } })
+	},
 	[activity_type_enum.Collecting]: {
 		commandName: 'activities',
 		args: (data: CollectingOptions) => ({

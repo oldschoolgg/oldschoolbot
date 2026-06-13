@@ -1,3 +1,5 @@
+import { BSOItem } from '@/lib/bso/BSOItem.js';
+
 import { Emoji, Events } from '@oldschoolgg/toolkit';
 import { EItem } from 'oldschooljs';
 
@@ -102,6 +104,33 @@ export const fishingTask: MinionTask = {
 				quantity: result.totalCatchRolls,
 				perCatchRate
 			});
+		}
+
+		const minutes = Math.floor(data.duration / (1000 * 60));
+		if (user.usingPet(BSOItem.PATRICIA)) {
+			const userAlreadyHasCrabCage =
+				user.allItemsOwned.has(BSOItem.OLD_CRAB_CAGE) || user.cl.has(BSOItem.OLD_CRAB_CAGE);
+			if (!userAlreadyHasCrabCage) {
+				for (let i = 0; i < minutes; i++) {
+					if (rng.roll(100)) {
+						result.updateBank.itemLootBank.add(BSOItem.OLD_CRAB_CAGE);
+						result.messages.push('Patricia tugged something rusted from the shallows: an Old crab cage.');
+						break;
+					}
+				}
+			}
+
+			if (fish.name === 'Lobster' && user.hasEquipped(BSOItem.OLD_CRAB_CAGE) && !user.cl.has(BSOItem.PARTYCRAB)) {
+				for (let i = 0; i < minutes; i++) {
+					if (rng.roll(24 * 60)) {
+						result.updateBank.itemLootBank.add(BSOItem.PARTYCRAB);
+						result.messages.push(
+							'<:partycrab:1507689107806097541> The old crab cage rattled, and a Partycrab climbed out like it had been waiting years for this moment.'
+						);
+						break;
+					}
+				}
+			}
 		}
 
 		const updateResult = await result.updateBank.transact(user);

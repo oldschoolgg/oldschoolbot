@@ -1,5 +1,3 @@
-import { BSOItem } from '@/lib/bso/BSOItem.js';
-import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 import { tearsOfGuthixIronmanReqs, tearsOfGuthixSkillReqs } from '@/lib/bso/commands/tearsOfGuthixCommand.js';
 import { handleCrateSpawns } from '@/lib/bso/handleCrateSpawns.js';
 import { gods } from '@/lib/bso/minigames/divineDominion.js';
@@ -117,61 +115,6 @@ const tripFinishEffects: TripFinishEffect[] = [
 		name: 'Random Events',
 		fn: async ({ data, messages, user, rng }) => {
 			return triggerRandomEvent(user, data.type, data.duration, messages, rng);
-		}
-	},
-	{
-		name: 'Partycrab event',
-		fn: async ({ data, messages, user, rng }) => {
-			const boostPets = [BSOItem.COB, BSOItem.FLAPPY, BSOItem.BLACK_SWAN];
-			let perMinuteChance = clAdjustedDroprate(user, BSOItem.PARTYCRAB, 15000, 2);
-
-			const getsBoost = async () => {
-				const { tame } = await user.getTame();
-				let boost = 1;
-				if (boostPets.includes(user.equippedPet?.id ?? -1)) boost = 10;
-				const boostItems = ['Cob cap'];
-				const boostFeeds = [
-					'Cob cup',
-					'Corn on the cob',
-					'Smokey bbq sauce',
-					'Smokey painting',
-					'Smokey egg',
-					'Smokey snowglobe',
-					'Flappy meal'
-				];
-				if (user.hasEquipped(['Angler boots', 'Angler hat', 'Angler top', 'Angler waders'], true)) boost = 5;
-				if (
-					user.hasEquipped(
-						['Spirit angler boots', 'Spirit angler waders', 'Spirit angler top', 'Spirit angler headband'],
-						true
-					)
-				) {
-					boost = 10;
-				}
-				if (tame && boostFeeds.some(i => tame.fedItems.has(i))) boost = 10;
-				if (user.hasEquipped(boostItems)) boost = 10;
-				return boost;
-			};
-			const boost = await getsBoost();
-			if (!user.cl.has(BSOItem.PARTYCRAB) && boost > 1) {
-				perMinuteChance /= boost;
-			}
-			perMinuteChance = Math.ceil(perMinuteChance);
-			let gotCrab = false;
-			for (let i = 0; i < Math.floor(data.duration / Time.Minute); i++) {
-				if (rng.roll(perMinuteChance)) {
-					gotCrab = true;
-					break;
-				}
-			}
-			if (gotCrab) {
-				messages.push(
-					`\n🏄**While surfing on the beach, you caught a <:partycrab:1507689107806097541> Partycrab!! Far Out!**\n`
-				);
-				return { itemsToAddWithCL: new Bank().add(BSOItem.PARTYCRAB) };
-			} else if (boost > 1) {
-				messages.push(`\n🌊**You played hookey and went surfing for a bit, but didn't get lucky.**\n`);
-			}
 		}
 	},
 	{
@@ -385,6 +328,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Crate Spawns',
 		fn: async ({ data, messages, user }) => {
+			if (data.type === activity_type_enum.BeachCombing) return;
 			const crateRes = handleCrateSpawns(user, data.duration, 'trip', messages);
 			if (crateRes && crateRes.length > 0) {
 				messages.push(bold(`You found ${crateRes}!`));
