@@ -13,6 +13,7 @@ export async function rawCommandHandlerInner({
 	options,
 	ignoreUserIsBusy,
 	rng,
+	isContinue,
 	continueDeltaMs
 }: {
 	interaction: OSInteraction;
@@ -20,6 +21,7 @@ export async function rawCommandHandlerInner({
 	options: CommandOptions;
 	ignoreUserIsBusy?: true;
 	rng: RNGProvider;
+	isContinue?: boolean;
 	continueDeltaMs?: number | null;
 }): CommandResponse {
 	// Permissions
@@ -60,6 +62,7 @@ export async function rawCommandHandlerInner({
 			interaction,
 			options,
 			user,
+			isContinue,
 			continueDeltaMs
 		});
 		if (inhibitedResponse) {

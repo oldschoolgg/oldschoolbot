@@ -30,7 +30,9 @@ export async function runCommand({
 	commandName,
 	args,
 	interaction,
-	ignoreUserIsBusy
+	ignoreUserIsBusy,
+	isContinue,
+	continueDeltaMillis = null
 }: RunCommandArgs): CommandResponse {
 	const command = globalClient.allCommands.find(c => c.name === commandName)!;
 
@@ -39,7 +41,9 @@ export async function runCommand({
 		command,
 		options: args,
 		ignoreUserIsBusy,
-		rng: cryptoRng
+		rng: cryptoRng,
+		isContinue,
+		continueDeltaMs: continueDeltaMillis
 	});
 	return response;
 }
