@@ -1,8 +1,10 @@
+import { BSOItem } from '@/lib/bso/BSOItem.js';
+
 import { Time } from '@oldschoolgg/toolkit';
 import { roll } from 'node-rng';
 import { Bank, Items } from 'oldschooljs';
 
-const crateItem = Items.getOrThrow('Summer crate (s9)');
+const crateItem = Items.getOrThrow(BSOItem.SUMMER_CRATE_S9);
 
 export function handleCrateSpawns(user: MUser, duration: number, kind: 'trip' | 'tame' = 'trip', _messages?: string[]) {
 	const accountAge = user.accountAgeInDays();

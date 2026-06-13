@@ -273,13 +273,12 @@ export const keyCrates: Crate[] = [
 			)
 	},
 	{
-		item: Items.getOrThrow('Summer crate (s9)'),
-		key: Items.getOrThrow('Summer crate key (s9)'),
+		item: Items.getOrThrow(BSOItem.SUMMER_CRATE_S9),
+		key: Items.getOrThrow(BSOItem.SUMMER_CRATE_KEY_S9),
 		keyCostGP: 55_555_555,
 		table: new LootTable()
 			.tertiary(888, BSOItem.IMITATION_CRABHAT)
 			.tertiary(555, BSOItem.SUMMER_PARTYHAT)
-			.tertiary(25, BSOItem.GORAJAN_SHARDS)
 			.tertiary(25, BSOItem.PAINT_BOX)
 			.add(
 				new LootTable()
@@ -301,7 +300,17 @@ export const keyCrates: Crate[] = [
 					.add('Kebab', 1, 10)
 					.add('Spinach roll', 1, 6),
 				1,
-				10
+				15
+			)
+			.add(
+				new LootTable()
+					.add('Clue scroll (elite)', 1, 10)
+					.add('Clue scroll (master)', 1, 5)
+					.add('Clue scroll (grandmaster)', 1, 2)
+					.add('Elder scroll piece', 1, 1)
+					.tertiary(50, 'Clue scroll (elder)'),
+				1,
+				5
 			)
 	}
 ];
