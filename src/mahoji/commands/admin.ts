@@ -722,7 +722,7 @@ export const adminCommand = defineCommand({
 							.filter(bf => {
 								if (bf[1].protected && !user.isAdmin()) return false;
 								if (!value) return true;
-								return stringMatches(bf[1].name, value);
+								return cleanString(bf[1].name).includes(cleanString(value));
 							})
 							.map(i => ({ name: i[1].name, value: i[0] }));
 					}
