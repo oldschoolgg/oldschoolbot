@@ -120,7 +120,15 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Loot Doubling',
 		fn: async ({ data, messages, user, loot }) => {
-			const cantBeDoubled = ['GroupMonsterKilling', 'KingGoldemar', 'Ignecarus', 'Inferno', 'Alching', 'Agility'];
+			const cantBeDoubled = [
+				'GroupMonsterKilling',
+				'KingGoldemar',
+				'Ignecarus',
+				'Inferno',
+				'Alching',
+				'Agility',
+				'BeachCombing'
+			];
 			if (!loot || data.cantBeDoubled || cantBeDoubled.includes(data.type) || data.duration < Time.Minute * 20) {
 				return;
 			}

@@ -55,8 +55,7 @@ export async function beachCombingCommand(user: MUser, channelId: string, focus:
 		channelId,
 		duration,
 		type: 'BeachCombing',
-		method: focus,
-		cantBeDoubled: true
+		method: focus
 	});
 
 	const focusLine = {
