@@ -39,7 +39,7 @@ export async function beachCombingCommand(user: MUser, channelId: string, focus:
 	const summerPiecesEquipped = countSummerCratePiecesEquipped(user);
 	const bonusDuration = summerPiecesEquipped * Time.Minute * 5;
 	const duration = baseMaxTripLength + bonusDuration;
-	const hasPatriciaAndCage = user.usingPet(BSOItem.PATRICIA) && user.hasEquipped(BSOItem.OLD_CRAB_CAGE);
+	const hasPatriciaAndCage = user.usingPet('Patricia') && user.hasEquipped(BSOItem.OLD_CRAB_CAGE);
 
 	await ActivityManager.startTrip<BeachCombingActivityTaskOptions>({
 		userID: user.id,

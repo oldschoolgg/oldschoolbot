@@ -25,15 +25,11 @@ export function handleCrateSpawns(user: MUser, duration: number, kind: 'trip' | 
 		const hoursSinceBoostStart = (Date.now() - rateIncreaseStart) / Time.Hour / 10;
 		nerf += hoursSinceBoostStart * 0.1;
 	}
-	console.log(`Nerf: ${nerf}`);
-	console.log(`Pre-Nerf Rate: ${dropratePerMinute}`);
 	dropratePerMinute *= nerf;
 	dropratePerMinute = Math.ceil(dropratePerMinute);
 
-	console.log(`Rate: ${dropratePerMinute}`);
-
 	const minutes = Math.floor(duration / Time.Minute);
-	console.log(`Minutes: ${minutes}`);
+
 	const loot = new Bank();
 	for (let i = 0; i < minutes; i++) {
 		if (roll(dropratePerMinute)) {

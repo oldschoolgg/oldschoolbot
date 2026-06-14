@@ -64,6 +64,25 @@ function flip(rng: RNGProvider = MathRNG) {
 	return rng.roll(2);
 }
 
+async function getBuriedTreasureChance() {
+	const clientStorage = await prisma.clientStorage.findFirst({
+		where: { id: globalConfig.clientID },
+		select: { buried_treasure_winners: true }
+	});
+	const buriedTreasureWinners = (clientStorage?.buried_treasure_winners ?? {}) as Record<string, ItemBank>;
+
+	const totalPrizes = Object.values(buriedTreasureWinners).reduce(
+		(total, winnerBank) => total + Object.values(winnerBank).reduce((bankTotal, qty) => bankTotal + qty, 0),
+		0
+	);
+
+	let chance = 1000;
+	for (let i = 0; i < totalPrizes; i++) {
+		chance *= 1.1;
+	}
+	return Math.ceil(chance);
+}
+
 async function rollBuriedTreasurePrize(userID: string, rng: RNGProvider = MathRNG) {
 	return prisma.$transaction(async tx => {
 		const clientStorage = await tx.clientStorage.findFirst({
@@ -115,7 +134,7 @@ export const beachCombingTask: MinionTask = {
 		let crateDurationMultiplier = hasCageBonus ? 1.15 : 1;
 		if (hasPatricia) {
 			discoveries.push(
-				`${BEACH_COMBING_PET.emoji} ${BEACH_COMBING_PET.name} spent the trip turning over shells, stones, and anything else that caught her eye.`
+				`${BEACH_COMBING_PET.emoji} ${BEACH_COMBING_PET.name} spent the trip turning over shells, stones, and anything else that caught her eye.\n`
 			);
 			crateDurationMultiplier *= 1.2;
 		}
@@ -152,9 +171,10 @@ export const beachCombingTask: MinionTask = {
 				if (salvagedLootQty > 0) damagedLoot.add(brokenSummerCrate.roll(salvagedLootQty, { rng }));
 				discoveries.push(
 					hasCageBonus
-						? `🐚 Your old crab cage helped snag ${damagedCrateQty} from the surf, but they broke open on the way back. You managed to salvage ${damagedLoot}.`
-						: `🌊 You dug up ${damagedCrateQty} crates, but ${damagedCrateQty === 1 ? '' : 'each time'} a wave hit you right as you found it. You managed to salvage ${damagedLoot}.`
+						? `🐚 Your old crab cage helped snag ${damagedCrateQty} crate${damagedCrateQty === 1 ? '' : 's'} from the surf, but they broke open on the way back. You managed to salvage ${damagedLoot}.`
+						: `🌊 You dug up ${damagedCrateQty} crate${damagedCrateQty === 1 ? '' : 's'}, but ${damagedCrateQty === 1 ? '' : 'each time'} a wave hit you right as you found it. You managed to salvage ${damagedLoot}.`
 				);
+				loot.add(damagedLoot);
 			}
 		}
 
@@ -184,8 +204,9 @@ export const beachCombingTask: MinionTask = {
 				break;
 			}
 		}
+		const buriedTreasureChance = await getBuriedTreasureChance();
 		for (let i = 0; i < minutes; i++) {
-			if (!rng.roll(1000)) continue;
+			if (!rng.roll(buriedTreasureChance)) continue;
 			const buriedTreasureItem = await rollBuriedTreasurePrize(user.id, rng);
 			if (buriedTreasureItem === null) break;
 			discoveries.push(

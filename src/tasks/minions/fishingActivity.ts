@@ -1,6 +1,6 @@
 import { BSOItem } from '@/lib/bso/BSOItem.js';
 
-import { Emoji, Events } from '@oldschoolgg/toolkit';
+import { Emoji, Events, Time } from '@oldschoolgg/toolkit';
 import { EItem } from 'oldschooljs';
 
 import { QuestID } from '@/lib/minions/data/quests.js';
@@ -106,15 +106,17 @@ export const fishingTask: MinionTask = {
 			});
 		}
 
-		const minutes = Math.floor(data.duration / (1000 * 60));
-		if (user.usingPet(BSOItem.PATRICIA)) {
+		const minutes = Math.floor(data.duration / Time.Minute);
+		if (user.usingPet('Patricia')) {
 			const userAlreadyHasCrabCage =
 				user.allItemsOwned.has(BSOItem.OLD_CRAB_CAGE) || user.cl.has(BSOItem.OLD_CRAB_CAGE);
 			if (!userAlreadyHasCrabCage) {
 				for (let i = 0; i < minutes; i++) {
 					if (rng.roll(100)) {
 						result.updateBank.itemLootBank.add(BSOItem.OLD_CRAB_CAGE);
-						result.messages.push('Patricia tugged something rusted from the shallows: an Old crab cage.');
+						result.messages.push(
+							'🦀 Patricia tugged something rusted from the shallows: an **Old crab cage**.'
+						);
 						break;
 					}
 				}
@@ -179,7 +181,6 @@ export const fishingTask: MinionTask = {
 				`${Emoji.Fishing} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a Heron while fishing ${fish.name} at level ${user.skillsAsLevels.fishing} Fishing!`
 			);
 		}
-
 		return handleTripFinish(user, channelId, message, data, result.updateBank.itemLootBank);
 	}
 };

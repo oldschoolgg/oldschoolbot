@@ -363,13 +363,27 @@ export async function calcFishingTripStart({
 		boosts.push('**Powerfishing**');
 	}
 
-	if (gearBank.usingPet('Shelldon')) {
-		tripSpeedMultiplier *= 2;
-		boosts.push('2x faster for Shelldon');
-	}
 	const hasOldCrabCageEquipped = gearBank.hasEquipped(BSOItem.OLD_CRAB_CAGE);
 	const hasPatriciaEquipped = gearBank.usingPet('Patricia');
+	const hasShelldonEquipped = gearBank.usingPet('Shelldon');
 	const isPatriciaLobsterBoost = fish.name === 'Lobster' && hasPatriciaEquipped && hasOldCrabCageEquipped;
+
+	if (hasPatriciaEquipped) {
+		if (isPatriciaLobsterBoost) {
+			tripSpeedMultiplier *= 3;
+			boosts.push(
+				'<:starfish:1515651612918677564> 3x faster for Patricia and Old crab cage while fishing Lobster'
+			);
+		} else {
+			tripSpeedMultiplier *= 2.15;
+			boosts.push(
+				'<:starfish:1515651612918677564> Patricia is your new best friend! You two become an expert fishing pair!'
+			);
+		}
+	} else if (hasShelldonEquipped) {
+		tripSpeedMultiplier *= 2;
+		boosts.push('<:shelldon:748496988407988244> Shelldon helps you fish!');
+	}
 
 	if (hasOldCrabCageEquipped) {
 		maxTripLength += Time.Minute * 5;
@@ -378,10 +392,6 @@ export async function calcFishingTripStart({
 			tripSpeedMultiplier *= speedMultiplierFromPercentReduction(20);
 			boosts.push('20% faster for Old crab cage');
 		}
-	}
-	if (isPatriciaLobsterBoost) {
-		tripSpeedMultiplier *= 3;
-		boosts.push('3x faster for Patricia and Old crab cage while fishing Lobster');
 	}
 
 	if (gearBank.hasEquippedOrInBank('Shark tooth necklace')) {
