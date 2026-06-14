@@ -73,9 +73,9 @@ const brokenSummerCrate = new LootTable()
 			.add('Clue scroll (master)', 1, 5)
 			.add('Clue scroll (grandmaster)', 1, 2)
 			.add('Elder scroll piece', 1, 1)
-			.tertiary(50, 'Clue scroll (elder)'),
+			.tertiary(120, 'Clue scroll (elder)'),
 		1,
-		30
+		20
 	);
 
 function flip(rng: RNGProvider = MathRNG) {
