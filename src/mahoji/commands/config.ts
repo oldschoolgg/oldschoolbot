@@ -3,6 +3,7 @@ import { Inventions } from '@/lib/bso/skills/invention/inventions.js';
 import { bold, EmbedBuilder, inlineCode } from '@oldschoolgg/discord';
 import { ECombatOption, type IGuild } from '@oldschoolgg/schemas';
 import {
+	cleanString,
 	formatDuration,
 	hexToDecimal,
 	isValidHexColor,
@@ -659,7 +660,7 @@ export const configCommand = defineCommand({
 									.filter(i => {
 										if ((!i.userConfigurable || i.protected) && !user.isAdmin()) return false;
 										if (!value) return true;
-										return stringMatches(i.name, value);
+										return cleanString(i.name).includes(cleanString(value));
 									})
 									.map(i => ({
 										name: `${i.name} (Currently ${bitfield.includes(i.bit) ? 'On' : 'Off'})`,

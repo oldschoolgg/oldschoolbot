@@ -1,11 +1,11 @@
 import { sumArr } from '@oldschoolgg/util';
-import { MathRNG, randFloat, roll } from 'node-rng';
+import { MathRNG, type RNGProvider } from 'node-rng';
 
 import { EItem } from '@/EItem.js';
 import { Bank, type ItemBank, type LootBank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
 import Minigame from '@/structures/Minigame.js';
-import SimpleTable from '@/structures/SimpleTable.js';
+import { SimpleTable } from '@/structures/SimpleTable.js';
 import { resolveNameBank } from '@/util/bank.js';
 import { Time } from '@/util/smallUtils.js';
 import { JSONClone } from '@/util/util.js';
@@ -40,6 +40,10 @@ export interface ChambersOfXericOptions {
 	 * The members of the raid team, can be only 1 person.
 	 */
 	team: TeamMember[];
+	/**
+	 * The RNGProvider object to enable testing RNG related code.
+	 */
+	rng?: RNGProvider;
 }
 
 const itemScales = resolveNameBank({
@@ -163,24 +167,24 @@ export class ChambersOfXericClass extends Minigame {
 		return completionTime <= Time.Hour + Time.Minute * 20;
 	}
 
-	public rollLootFromChances(chances: number[]): Bank {
+	public rollLootFromChances(chances: number[], rng: RNGProvider = MathRNG): Bank {
 		let rolls = 0;
 
 		for (const chance of chances) {
-			if (randFloat(0, 100) < chance) {
+			if (rng.randFloat(0, 100) < chance) {
 				rolls++;
 			}
 		}
 
-		return CoXUniqueTable.roll(rolls);
+		return CoXUniqueTable.roll(rolls, { rng });
 	}
 
 	// We're rolling 2 non-unique loots based off a number of personal points.
-	public rollNonUniqueLoot(personalPoints: number): ItemBank {
+	public rollNonUniqueLoot(personalPoints: number, rng: RNGProvider = MathRNG): ItemBank {
 		// First, pick which items we will be giving them, without giving a duplicate.
 		const items: number[] = [];
 		while (items.length < 2) {
-			const rolledItem = NonUniqueTable.roll();
+			const rolledItem = NonUniqueTable.roll(rng);
 			if (!items.includes(rolledItem)) items.push(rolledItem);
 		}
 
@@ -191,7 +195,7 @@ export class ChambersOfXericClass extends Minigame {
 			[items[1]]: Math.max(1, Math.floor(personalPoints / itemScales[items[1]]))
 		};
 
-		if (roll(12)) {
+		if (rng.roll(12)) {
 			loot[EItem.CLUE_SCROLL_ELITE] = 1;
 		}
 
@@ -199,6 +203,8 @@ export class ChambersOfXericClass extends Minigame {
 	}
 
 	public complete(_options: ChambersOfXericOptions): LootBank {
+		const rng = _options.rng ?? MathRNG;
+		delete _options.rng;
 		const options = JSONClone(_options);
 
 		// Will only check for elligibility for dust if timeToComplete given, and challengeMode = true.
@@ -220,7 +226,7 @@ export class ChambersOfXericClass extends Minigame {
 		const teamPoints = sumArr(options.team.map(val => val.personalPoints));
 
 		const dropChances = this.determineUniqueChancesFromTeamPoints(teamPoints);
-		const uniqueLoot = this.rollLootFromChances(dropChances);
+		const uniqueLoot = this.rollLootFromChances(dropChances, rng);
 
 		const lootResult: LootBank = {};
 
@@ -232,16 +238,16 @@ export class ChambersOfXericClass extends Minigame {
 			lootResult[teamMember.id] = new Bank();
 
 			// If the team and team member is eligible for dust, roll for this user.
-			if (eligibleForDust && teamMember.canReceiveDust && roll(400)) {
+			if (eligibleForDust && teamMember.canReceiveDust && rng.roll(400)) {
 				lootResult[teamMember.id].add('Metamorphic dust');
 			}
 
-			if (eligibleForDust && roll(75)) {
+			if (eligibleForDust && rng.roll(75)) {
 				lootResult[teamMember.id].add('Twisted ancestral colour kit');
 			}
 
 			// If the team member can receive an Ancient Tablet, roll for this user.
-			if (teamMember.canReceiveAncientTablet && roll(10)) {
+			if (teamMember.canReceiveAncientTablet && rng.roll(10)) {
 				lootResult[teamMember.id].add('Ancient tablet');
 			}
 
@@ -249,14 +255,14 @@ export class ChambersOfXericClass extends Minigame {
 			uniqueDeciderTable.add(teamMember.id, teamMember.personalPoints);
 		}
 
-		// For every unique item received, add it to someones loot.
+		// For every unique item received, add it to someone's loot.
 		while (uniqueLoot.length > 0) {
 			if (uniqueDeciderTable.table.length === 0) break;
-			const receipientID = uniqueDeciderTable.roll();
+			const receipientID = uniqueDeciderTable.roll(rng);
 			const uniqueItem = uniqueLoot.random()!;
 			lootResult[receipientID].add(uniqueItem.id, 1);
 			uniqueLoot.remove(uniqueItem.id, 1);
-			if (roll(53)) {
+			if (rng.roll(53)) {
 				lootResult[receipientID].add('Olmlet');
 			}
 			uniqueDeciderTable.delete(receipientID);
@@ -278,7 +284,7 @@ export class ChambersOfXericClass extends Minigame {
 
 		const onyxChance = options.team.length * 70;
 		for (const bank of MathRNG.shuffle(Object.values(lootResult))) {
-			if (roll(onyxChance)) {
+			if (rng.roll(onyxChance)) {
 				bank.add('Onyx');
 				break;
 			}

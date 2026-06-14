@@ -1,6 +1,6 @@
 import { BSOItem } from '@/lib/bso/BSOItem.js';
 
-import { Time } from '@oldschoolgg/toolkit';
+import { reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { roll } from 'node-rng';
 import { Bank, Items } from 'oldschooljs';
 
@@ -13,22 +13,27 @@ export function handleCrateSpawns(user: MUser, duration: number, kind: 'trip' | 
 	if (accountAge) {
 		if (accountAge < 31) return null;
 		if (user.isIronman) {
-			dropratePerMinute = Math.ceil(dropratePerMinute / 3);
+			dropratePerMinute = reduceNumByPercent(dropratePerMinute, 35);
 		}
 	}
 	dropratePerMinute = Math.ceil(dropratePerMinute / 3);
 	dropratePerMinute = Math.ceil(dropratePerMinute / 2);
 
 	const rateIncreaseStart = Date.UTC(2026, 5, 7, 0, 0, 0);
-	let nerf = 10;
+	let nerf = 1;
 	if (Date.now() > rateIncreaseStart) {
-		const hoursSinceBoostStart = (Date.now() - rateIncreaseStart) / Time.Hour;
-		nerf += hoursSinceBoostStart * 0.25;
+		const hoursSinceBoostStart = (Date.now() - rateIncreaseStart) / Time.Hour / 10;
+		nerf += hoursSinceBoostStart * 0.1;
 	}
+	console.log(`Nerf: ${nerf}`);
+	console.log(`Pre-Nerf Rate: ${dropratePerMinute}`);
 	dropratePerMinute *= nerf;
 	dropratePerMinute = Math.ceil(dropratePerMinute);
 
+	console.log(`Rate: ${dropratePerMinute}`);
+
 	const minutes = Math.floor(duration / Time.Minute);
+	console.log(`Minutes: ${minutes}`);
 	const loot = new Bank();
 	for (let i = 0; i < minutes; i++) {
 		if (roll(dropratePerMinute)) {

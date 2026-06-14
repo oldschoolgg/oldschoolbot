@@ -1,11 +1,11 @@
-import { randInt } from 'node-rng';
+import { MathRNG, type RNGProvider } from 'node-rng';
 
 export interface SimpleTableItem<T> {
 	item: T;
 	weight: number;
 }
 
-export default class SimpleTable<T> {
+export class SimpleTable<T> {
 	public length: number;
 	public table: SimpleTableItem<T>[];
 	public totalWeight: number;
@@ -31,7 +31,7 @@ export default class SimpleTable<T> {
 	public delete(item: T): this {
 		const tableItem = this.table.find(_tableItem => _tableItem.item === item);
 		if (!tableItem) {
-			throw `${item} doesn't exist in this SimpleTable.`;
+			throw new Error(`${item} doesn't exist in this SimpleTable.`);
 		}
 
 		this.length -= 1;
@@ -42,9 +42,9 @@ export default class SimpleTable<T> {
 		return this;
 	}
 
-	public roll(): SimpleTableItem<T>['item'] {
+	public roll(rng: RNGProvider = MathRNG): SimpleTableItem<T>['item'] {
 		// Random number between 1 and the total weighting
-		const randomWeight = randInt(1, this.totalWeight);
+		const randomWeight = rng.randInt(1, this.totalWeight);
 
 		// The index of the item that will be used.
 		let result = -1;
@@ -61,5 +61,11 @@ export default class SimpleTable<T> {
 		}
 
 		return this.table[result].item;
+	}
+
+	public rollOrThrow(rng: RNGProvider = MathRNG): SimpleTableItem<T>['item'] {
+		const result = this.roll(rng);
+		if (result === null) throw new Error('Received null from SimpleTable, but expect not-null.');
+		return result;
 	}
 }

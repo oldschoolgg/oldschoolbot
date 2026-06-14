@@ -3,7 +3,7 @@ import { percentChance, randInt, roll } from 'node-rng';
 
 import { Bank, type LootBank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
-import SimpleTable from '@/structures/SimpleTable.js';
+import { SimpleTable } from '@/structures/SimpleTable.js';
 import { resolveNameBank } from '@/util/bank.js';
 
 export interface TeamMember {

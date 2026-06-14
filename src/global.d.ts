@@ -1,5 +1,3 @@
-type MUserInstance = MUser;
-
 declare module 'oldschooljs' {
 	interface ItemRequirements {
 		dungeoneering: number;
@@ -14,6 +12,7 @@ declare global {
 	export var mUserFetch: typeof import('./lib/user/MUser.js').srcMUserFetch;
 
 	export type RNGProvider = import('node-rng').RNGProvider;
+	export var MathRNG: typeof import('node-rng').MathRNG;
 	export type MInteraction = import('@oldschoolgg/discord').MInteraction;
 	export type OSInteraction = import('./lib/structures/OSInteraction.js').OSInteraction;
 

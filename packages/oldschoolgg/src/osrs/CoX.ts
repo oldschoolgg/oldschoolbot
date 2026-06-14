@@ -1,5 +1,6 @@
-import { SimpleTable, sumArr, Time } from '@oldschoolgg/toolkit';
-import { MathRNG, randFloat, roll } from 'node-rng';
+import { sumArr, Time } from '@oldschoolgg/toolkit';
+import { MathRNG, type RNGProvider } from 'node-rng';
+import { SimpleTable } from 'oldschooljs';
 
 import { Bank, type ItemBank, Items, type LootBank, LootTable } from '@/osrs/index.js';
 
@@ -14,6 +15,7 @@ interface ChambersOfXericOptions {
 	challengeMode?: boolean;
 	timeToComplete?: number;
 	team: TeamMember[];
+	rng?: RNGProvider;
 }
 
 const itemScales = new Map<number, number>();
@@ -120,22 +122,22 @@ export class ChambersOfXericClass {
 		return completionTime <= Time.Hour + Time.Minute * 20;
 	}
 
-	public rollLootFromChances(chances: number[]): Bank {
+	public rollLootFromChances(chances: number[], rng: RNGProvider = MathRNG): Bank {
 		let rolls = 0;
 
 		for (const chance of chances) {
-			if (randFloat(0, 100) < chance) {
+			if (rng.randFloat(0, 100) < chance) {
 				rolls++;
 			}
 		}
 
-		return CoXUniqueTable.roll(rolls);
+		return CoXUniqueTable.roll(rolls, { rng });
 	}
 
-	public rollNonUniqueLoot(personalPoints: number): ItemBank {
+	public rollNonUniqueLoot(personalPoints: number, rng: RNGProvider = MathRNG): ItemBank {
 		const items: number[] = [];
 		while (items.length < 2) {
-			const rolledItem = NonUniqueTable.roll()!;
+			const rolledItem = NonUniqueTable.roll(rng)!;
 			if (!items.includes(rolledItem)) items.push(rolledItem);
 		}
 		const x = itemScales.get(items[0])!;
@@ -145,7 +147,7 @@ export class ChambersOfXericClass {
 			[items[1]]: Math.max(1, Math.floor(personalPoints / y))
 		};
 
-		if (roll(12)) {
+		if (rng.roll(12)) {
 			loot[12073] = 1;
 		}
 
@@ -153,6 +155,8 @@ export class ChambersOfXericClass {
 	}
 
 	public complete(_options: ChambersOfXericOptions): LootBank {
+		const rng = _options.rng ?? MathRNG;
+		delete _options.rng;
 		const options = JSON.parse(JSON.stringify(_options)) as ChambersOfXericOptions;
 		const eligibleForDust =
 			typeof options.timeToComplete === 'number' &&
@@ -160,6 +164,9 @@ export class ChambersOfXericClass {
 			this.eligibleForDust(options.team.length, options.timeToComplete);
 
 		if (eligibleForDust) {
+			// If in challenge mode, and eligible for dust, 5000pts is added to
+			// each team member.
+			// https://oldschool.runescape.wiki/w/Chambers_of_Xeric/Challenge_Mode#Rewards
 			for (const member of options.team) {
 				member.personalPoints += 5000;
 			}
@@ -169,7 +176,7 @@ export class ChambersOfXericClass {
 		const teamPoints = sumArr(options.team.map(val => val.personalPoints));
 
 		const dropChances = this.determineUniqueChancesFromTeamPoints(teamPoints);
-		const uniqueLoot = this.rollLootFromChances(dropChances);
+		const uniqueLoot = this.rollLootFromChances(dropChances, rng);
 
 		const lootResult: LootBank = {};
 
@@ -181,16 +188,16 @@ export class ChambersOfXericClass {
 			lootResult[teamMember.id] = new Bank();
 
 			// If the team and team member is eligible for dust, roll for this user.
-			if (eligibleForDust && teamMember.canReceiveDust && roll(400)) {
+			if (eligibleForDust && teamMember.canReceiveDust && rng.roll(400)) {
 				lootResult[teamMember.id].add('Metamorphic dust');
 			}
 
-			if (eligibleForDust && roll(75)) {
+			if (eligibleForDust && rng.roll(75)) {
 				lootResult[teamMember.id].add('Twisted ancestral colour kit');
 			}
 
 			// If the team member can receive an Ancient Tablet, roll for this user.
-			if (teamMember.canReceiveAncientTablet && roll(10)) {
+			if (teamMember.canReceiveAncientTablet && rng.roll(10)) {
 				lootResult[teamMember.id].add('Ancient tablet');
 			}
 
@@ -198,20 +205,23 @@ export class ChambersOfXericClass {
 			uniqueDeciderTable.add(teamMember.id, teamMember.personalPoints);
 		}
 
-		// For every unique item received, add it to someones loot.
+		// For every unique item received, add it to someone's loot.
 		while (uniqueLoot.length > 0) {
 			if (uniqueDeciderTable.table.length === 0) break;
-			const receipientID = uniqueDeciderTable.roll()!;
+			const receipientID = uniqueDeciderTable.roll(rng);
 			const uniqueItem = uniqueLoot.random()!;
 			lootResult[receipientID].add(uniqueItem.id, 1);
 			uniqueLoot.remove(uniqueItem.id, 1);
-			if (roll(53)) {
+			if (rng.roll(53)) {
 				lootResult[receipientID].add('Olmlet');
 			}
 			uniqueDeciderTable.delete(receipientID);
 		}
 
+		// For everyone who didn't receive a unique, i.e wasn't removed from the
+		// unique decider table, give them a non-unique roll.
 		for (const leftOverRecipient of uniqueDeciderTable.table) {
+			// Find this member in the team, and get their points.
 			const pointsOfThisMember = options.team.find(
 				member => member.id === leftOverRecipient.item
 			)!.personalPoints;
@@ -224,7 +234,7 @@ export class ChambersOfXericClass {
 
 		const onyxChance = options.team.length * 70;
 		for (const bank of MathRNG.shuffle(Object.values(lootResult))) {
-			if (roll(onyxChance)) {
+			if (rng.roll(onyxChance)) {
 				bank.add('Onyx');
 				break;
 			}

@@ -1,29 +1,42 @@
-import { percentChance, roll } from 'node-rng';
+import { MathRNG, type RNGProvider } from 'node-rng';
+import { SimpleTable } from 'oldschooljs';
 
 import { Bank, LootTable } from '@/osrs/index.js';
-import { SimpleTable } from '@/osrs/SimpleTable.js';
 
-interface TeamMember {
+export interface TeamMember {
 	id: string;
+	/**
+	 * The rooms they died in.
+	 */
 	deaths: number[];
 }
 
-interface TheatreOfBloodOptions {
+export interface TheatreOfBloodOptions {
+	/**
+	 * Whether or not this raid is in Challenge Mode or not.
+	 */
 	hardMode: boolean;
+	/**
+	 * The members of the raid team, 1-5 people.
+	 */
 	team: TeamMember[];
+	/**
+	 * The RNG Provider
+	 */
+	rng?: RNGProvider;
 }
 
 interface ParsedMember extends TeamMember {
 	numDeaths: number;
 	points: number;
 }
-interface TOBRoom {
+export interface TOBRoom {
 	name: string;
 	difficultyRating: number;
 	timeWeighting: number;
 }
 
-const TOBRooms: TOBRoom[] = [
+export const TOBRooms: TOBRoom[] = [
 	{
 		name: 'Maiden',
 		difficultyRating: 1,
@@ -56,7 +69,7 @@ const TOBRooms: TOBRoom[] = [
 	}
 ];
 
-const ToBUniqueTable: LootTable = new LootTable()
+export const ToBUniqueTable: LootTable = new LootTable()
 	.add('Scythe of vitur (uncharged)')
 	.add('Ghrazi rapier', 1, 2)
 	.add('Sanguinesti staff (uncharged)', 1, 2)
@@ -112,13 +125,13 @@ const HardModeExtraTable: LootTable = new LootTable()
 	.tertiary(100, 'Holy ornament kit');
 
 export class TheatreOfBloodClass {
-	nonUniqueLoot(member: ParsedMember, isHardMode: boolean, deaths: number[]): Bank {
+	nonUniqueLoot(member: ParsedMember, isHardMode: boolean, deaths: number[], rng: RNGProvider = MathRNG): Bank {
 		if (deaths.length === TOBRooms.length) {
 			return new Bank().add('Cabbage');
 		}
 		const loot = new Bank();
 		for (let i = 0; i < 3; i++) {
-			loot.add(NonUniqueTable.roll());
+			loot.add(NonUniqueTable.roll(1, { rng }));
 		}
 
 		if (isHardMode) {
@@ -127,20 +140,20 @@ export class TheatreOfBloodClass {
 				loot.set(item.id, Math.ceil(loot.amount(item.id) * 1.15));
 			}
 			// Add HM Tertiary drops: dust / kits
-			loot.add(HardModeExtraTable.roll());
+			loot.add(HardModeExtraTable.roll(1, { rng }));
 		}
 		let petChance = isHardMode ? 500 : 650;
 		if (member.numDeaths > 0) {
 			petChance *= member.numDeaths;
 		}
-		if (roll(petChance)) {
+		if (rng.roll(petChance)) {
 			loot.add("Lil' zik");
 		}
 
 		return loot;
 	}
 
-	public uniqueDecide(team: ParsedMember[]): ParsedMember | null {
+	public uniqueDecide(team: ParsedMember[]): ParsedMember {
 		const table = new SimpleTable<ParsedMember>();
 		for (const member of team) {
 			table.add(member, member.points);
@@ -150,6 +163,7 @@ export class TheatreOfBloodClass {
 	}
 
 	public complete(options: TheatreOfBloodOptions) {
+		const rng = options.rng ?? MathRNG;
 		const maxPointsPerPerson = 22;
 		const penaltyForDeath = 4;
 		const maxPointsTeamCanGet = options.team.length * maxPointsPerPerson;
@@ -165,12 +179,14 @@ export class TheatreOfBloodClass {
 
 		const percentBaseChanceOfUnique = (options.hardMode ? 13 : 11) * (teamPoints / maxPointsTeamCanGet);
 
-		const purpleReceived = percentChance(percentBaseChanceOfUnique);
+		const purpleReceived = rng.percentChance(percentBaseChanceOfUnique);
 		const purpleRecipient = purpleReceived ? this.uniqueDecide(parsedTeam) : null;
 
 		for (const member of parsedTeam) {
 			if (member === purpleRecipient) {
-				return new Bank().add(options.hardMode ? HardModeUniqueTable.roll() : ToBUniqueTable.roll());
+				return new Bank().add(
+					options.hardMode ? HardModeUniqueTable.roll(1, { rng }) : ToBUniqueTable.roll(1, { rng })
+				);
 			} else {
 				return this.nonUniqueLoot(member, options.hardMode, member.deaths);
 			}
