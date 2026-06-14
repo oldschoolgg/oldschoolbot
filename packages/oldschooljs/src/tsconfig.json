@@ -8,5 +8,6 @@
 		},
 		"isolatedDeclarations": true
 	},
-	"include": ["."]
+	"include": ["**/*.ts", "**/*.tsx"],
+	"exclude": ["../dist", "../node_modules"]
 }

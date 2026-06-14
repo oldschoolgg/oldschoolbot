@@ -10,5 +10,6 @@
 		},
 		"isolatedModules": true
 	},
-	"include": ["src", "../../src/**/*"]
+	"include": ["src/**/*.ts", "src/**/*.tsx"],
+	"exclude": ["dist", "node_modules"]
 }
