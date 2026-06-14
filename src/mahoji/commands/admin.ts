@@ -244,6 +244,34 @@ const viewableThings: {
 	run: (clientSettings: ClientStorage) => Promise<Bank | SendableMessage>;
 }[] = [
 	{
+		name: 'Buried Treasure Bank',
+		run: async clientSettings => {
+			return {
+				files: [
+					await makeBankImage({
+						bank: new Bank(clientSettings.buried_treasure_bank as ItemBank),
+						title: 'Buried Treasure Bank'
+					})
+				]
+			};
+		}
+	},
+	{
+		name: 'Buried Treasure Winners',
+		run: async clientSettings => {
+			const winners = clientSettings.buried_treasure_winners as Record<string, ItemBank>;
+			const lines = Object.entries(winners).map(
+				([winnerId, treasureWon]) => `<@${winnerId}>: ${new Bank(treasureWon).toString()}`
+			);
+
+			return buildAdminOverviewResponse(
+				'**Buried Treasure Winners**',
+				lines.length === 0 ? 'No buried treasure winners yet.' : lines.join('\n'),
+				'buried-treasure-winners.txt'
+			);
+		}
+	},
+	{
 		name: 'ToB Cost',
 		run: async clientSettings => {
 			return new Bank(clientSettings.tob_cost as ItemBank);

@@ -24,29 +24,38 @@ const noLootClosers = [
 	'Plenty of sea breeze, very little actual treasure.'
 ];
 
-async function rollBuriedTreasurePrize() {
+async function rollBuriedTreasurePrize(userID: string) {
 	return prisma.$transaction(async tx => {
-		const clientStorage = await (tx as any).clientStorage.findFirst({
+		const clientStorage = await tx.clientStorage.findFirst({
 			where: { id: globalConfig.clientID },
-			select: { buried_treasure_bank: true }
+			select: { buried_treasure_bank: true, buried_treasure_winners: true }
 		});
-		const buriedTreasureBank = ((clientStorage?.buried_treasure_bank ?? {}) as ItemBank) ?? {};
+		const buriedTreasureBank = (clientStorage?.buried_treasure_bank ?? {}) as ItemBank;
+		if (Object.keys(buriedTreasureBank).length === 0) {
+			return null;
+		}
+
+		const buriedTreasureWinners = (clientStorage?.buried_treasure_winners ?? {}) as Record<string, ItemBank>;
 		const treasureLootTable = new SimpleTable<number>();
 
 		for (const [itemId, qty] of Object.entries(buriedTreasureBank)) {
-			const parsedQty = Number(qty);
-			if (parsedQty > 0) {
-				treasureLootTable.add(Number(itemId), parsedQty);
-			}
+			treasureLootTable.add(Number(itemId), qty);
 		}
 
 		const rolledItem = treasureLootTable.roll();
 		if (rolledItem === null) return null;
 
 		const updatedTreasureBank = new Bank(buriedTreasureBank).remove(rolledItem, 1);
-		await (tx as any).clientStorage.update({
+		const updatedWinnerBank = new Bank(buriedTreasureWinners[userID] ?? {}).add(rolledItem, 1);
+		await tx.clientStorage.update({
 			where: { id: globalConfig.clientID },
-			data: { buried_treasure_bank: updatedTreasureBank.toJSON() }
+			data: {
+				buried_treasure_bank: updatedTreasureBank.toJSON(),
+				buried_treasure_winners: {
+					...buriedTreasureWinners,
+					[userID]: updatedWinnerBank.toJSON()
+				}
+			}
 		});
 
 		return rolledItem;
@@ -106,7 +115,7 @@ export const beachCombingTask: MinionTask = {
 		let buriedTreasureFinds = 0;
 		for (let i = 0; i < minutes; i++) {
 			if (!roll(1000)) continue;
-			const buriedTreasureItem = await rollBuriedTreasurePrize();
+			const buriedTreasureItem = await rollBuriedTreasurePrize(user.id);
 			if (buriedTreasureItem === null) continue;
 			buriedTreasureFinds++;
 			loot.add(buriedTreasureItem);

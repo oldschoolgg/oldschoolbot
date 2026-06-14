@@ -187,6 +187,7 @@ model ClientStorage {
   clue_upgrader_loot         Json @default("{}") @db.Json
   portable_tanner_loot       Json @default("{}") @db.Json
   buried_treasure_bank       Json @default("{}") @db.JsonB
+  buried_treasure_winners    Json @default("{}") @db.JsonB
 
   last_bso_giveaways_ping  DateTime? @db.Timestamp(6)
   last_giveaway_doubleloot DateTime? @db.Timestamp(6)
