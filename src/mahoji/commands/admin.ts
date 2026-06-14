@@ -792,6 +792,24 @@ export const adminCommand = defineCommand({
 			]
 		},
 		{
+			type: 'Subcommand',
+			name: 'bury_in_sand',
+			description: 'Add items to the buried treasure bank',
+			options: [
+				{
+					type: 'String',
+					name: 'items',
+					description: 'The items to bury',
+					required: true
+				},
+				{
+					type: 'Boolean',
+					name: 'spawn',
+					description: "If true, don't remove the items from your bank first"
+				}
+			]
+		},
+		{
 			type: 'SubcommandGroup',
 			name: 'leagues',
 			description: 'Leagues RoboChimp repair and verification commands.',
@@ -1035,6 +1053,32 @@ ${META_CONSTANTS.RENDERED_STR}`
 
 			await user.addItemsToBank({ items, collectionLog: false });
 			return `Gave ${items} to ${user.mention}`;
+		}
+
+		if (options.bury_in_sand) {
+			const itemsToBury = parseBank({ inputStr: options.bury_in_sand.items, noDuplicateItems: true });
+			const shouldSpawn = Boolean(options.bury_in_sand.spawn);
+			await interaction.confirmation(`Are you sure you want to bury ${itemsToBury} in the sand?`);
+
+			if (!shouldSpawn) {
+				await adminUser.removeItemsFromBank(itemsToBury);
+			}
+
+			const settings = await ClientSettings.fetch({ buried_treasure_bank: true });
+			const updatedBuriedTreasureBank = new Bank(settings.buried_treasure_bank as ItemBank).add(itemsToBury);
+			await ClientSettings.update({
+				buried_treasure_bank: updatedBuriedTreasureBank.toJSON()
+			});
+
+			return {
+				content: `Buried ${itemsToBury} in the sand.`,
+				files: [
+					await makeBankImage({
+						bank: updatedBuriedTreasureBank,
+						title: 'Buried Treasure Bank'
+					})
+				]
+			};
 		}
 
 		if (options.leagues?.cleanup_duplicates) {

@@ -37,7 +37,10 @@ function countSummerCratePiecesEquipped(user: MUser) {
 export async function beachCombingCommand(user: MUser, channelId: string, focus: BeachCombingMethod) {
 	const baseMaxTripLength = await user.calcMaxTripLength('BeachCombing');
 	const summerPiecesEquipped = countSummerCratePiecesEquipped(user);
-	const bonusDuration = summerPiecesEquipped * Time.Minute * 5;
+	let bonusDuration = summerPiecesEquipped * Time.Minute * 5;
+	if (user.usingPet('Patricia')) {
+		bonusDuration += Time.Minute * 10;
+	}
 	const duration = baseMaxTripLength + bonusDuration;
 	const hasPatriciaAndCage = user.usingPet('Patricia') && user.hasEquipped(BSOItem.OLD_CRAB_CAGE);
 
@@ -61,6 +64,9 @@ export async function beachCombingCommand(user: MUser, channelId: string, focus:
 		user,
 		duration
 	)}.`;
+	if (user.usingPet('Patricia')) {
+		response += `<:starfish:1515651612918677564> Patricia gives you the encouragement needed to stay longer... You might get sun-burned.`;
+	}
 	if (summerPiecesEquipped > 0) {
 		response += ` Your Summer crate gear added ${summerPiecesEquipped * 5} extra minutes to the trip.`;
 	}
