@@ -23,6 +23,24 @@ const noLootClosers = [
 	'The beach kept its better secrets this time.',
 	'Plenty of sea breeze, very little actual treasure.'
 ];
+const junkTable = new LootTable()
+	.add('Coins', [1, 100], 3)
+	.add('Cannonball', 1, 1)
+	.add('Raw lobster', [3, 6], 3)
+	.add('Raw swordfish', [3, 6], 2)
+	.add('Raw shark', [2, 4], 1)
+	.add('Clue scroll (beginner)', [1, 2], 2)
+	.tertiary(
+		100,
+		new LootTable()
+			.add('Clue scroll (master)', 1, 1)
+			.add('Clue scroll (elite)', 1, 2)
+			.add('Clue scroll (hard)', 1, 5)
+			.add('Clue scroll (medium)', [1, 2], 20)
+			.add('Clue scroll (easy)', [1, 2], 25)
+			.tertiary(100, 'Clue scroll (grandmaster)', 1)
+	);
+
 const brokenSummerCrate = new LootTable()
 	.tertiary(2222, BSOItem.IMITATION_CRABHAT)
 	.tertiary(1111, BSOItem.SUMMER_PARTYHAT)
@@ -215,21 +233,6 @@ export const beachCombingTask: MinionTask = {
 			loot.add(buriedTreasureItem);
 		}
 
-		const { previousCL, itemsAdded } = await user.transactItems({
-			collectionLog: true,
-			itemsToAdd: loot
-		});
-
-		const image =
-			itemsAdded.length === 0
-				? undefined
-				: await makeBankImage({
-						bank: itemsAdded,
-						title: 'Beach Combing Finds:',
-						user,
-						previousCL
-					});
-
 		let intro = '';
 		let outro = '';
 		switch (method) {
@@ -255,13 +258,34 @@ export const beachCombingTask: MinionTask = {
 				break;
 		}
 
+		let junkQty = 1;
+		for (let i = 0; i < minutes; i++) {
+			if (rng.roll(10)) junkQty++;
+		}
+		const junkLoot = new Bank();
+		junkLoot.add(junkTable.roll(junkQty, { rng }));
+		loot.add(junkLoot);
 		let content = `${user}, ${intro}\n\n${user.minionName} finished beach combing for ${minutes} minutes with a focus on ${method}.`;
 		if (discoveries.length > 0) {
 			content += `\n\n${discoveries.join('\n')}`;
+			content += `\n\n${outro} You also found this junk: ${junkLoot}.`;
+		} else {
+			content += `\n\n${outro} ${randArrItem(noLootClosers)}. You didn't go away totally empty handed, you did find ${junkLoot}.`;
 		}
-		if (itemsAdded.length === 0) {
-			content += `\n\n${outro} ${randArrItem(noLootClosers)}`;
-		}
+		const { previousCL, itemsAdded } = await user.transactItems({
+			collectionLog: true,
+			itemsToAdd: loot
+		});
+
+		const image =
+			itemsAdded.length === 0
+				? undefined
+				: await makeBankImage({
+						bank: itemsAdded,
+						title: 'Beach Combing Finds:',
+						user,
+						previousCL
+					});
 
 		return handleTripFinish({
 			user,
