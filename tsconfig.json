@@ -1,0 +1,18 @@
+{
+	"extends": "./tsconfig.base.json",
+	"include": ["src/**/*.ts", "src/**/*.tsx", "tests/**/*.ts"],
+	"exclude": [".git", "node_modules", "dist", "logs"],
+	"references": [
+		{ "path": "./packages/cli" },
+		{ "path": "./packages/collectionlog/src" },
+		{ "path": "./packages/discord/src" },
+		{ "path": "./packages/gear/src" },
+		{ "path": "./packages/oldschoolgg" },
+		{ "path": "./packages/oldschooljs/src" },
+		{ "path": "./packages/robochimp/src" },
+		{ "path": "./packages/schemas/src" },
+		{ "path": "./packages/test-dashboard" },
+		{ "path": "./packages/toolkit/src" },
+		{ "path": "./packages/util/src" }
+	]
+}
