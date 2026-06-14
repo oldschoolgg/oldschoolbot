@@ -65,25 +65,27 @@ export async function beachCombingCommand(user: MUser, channelId: string, focus:
 		PickupTrash: 'They will clean the shoreline and salvage anything interesting in the process.'
 	}[focus];
 
-	let response = `${user.minionName} is now beach combing and will wash back in around ${formatTripDuration(
-		user,
-		duration
-	)}.`;
+	const responses: string[] = [];
+	responses.push(
+		`${user.minionName} is now beach combing and will wash back in around ${formatTripDuration(user, duration)}.`
+	);
 	if (user.usingPet('Patricia')) {
-		response += `<:starfish:1515651612918677564> Patricia gives you the encouragement needed to stay longer... You might get sun-burned.`;
+		responses.push(
+			`<:starfish:1515651612918677564> Patricia gives you the encouragement needed to stay longer... You might get sun-burned.`
+		);
 	}
 	if (user.usingPet('Shelldon')) {
-		response += `<:shelldon:748496988407988244> You're getting sunburned because Shelldon forgot the sun scream.... Apparently not a typo?`;
+		responses.push(`<:shelldon:748496988407988244> You're getting sunburned because Shelldon forgot the sun scream.... Apparently not a typo?`);
 	}
 	if (user.usingPet('Partycrab')) {
-		response += `<:partycrab:1507689107806097541> You stay out so long partying with your Partycrab that you forgot what day it is and wound up in a port I call Aransas`;
+		responses.push(`<:partycrab:1507689107806097541> You stay out so long partying with your Partycrab that you forgot what day it is and wound up in a port I call Aransas`);
 	}
 	if (summerPiecesEquipped > 0) {
-		response += ` Your Summer crate gear added ${summerPiecesEquipped * 5} extra minutes to the trip.`;
+		responses.push(`Your Summer crate gear added ${summerPiecesEquipped * 5} extra minutes to the trip.`);
 	}
-	response += ` ${focusLine}`;
+	responses.push(` ${focusLine}`);
 	if (hasPatriciaAndCage && !user.cl.has(BSOItem.PARTYCRAB)) {
-		response += ` Patricia taps the old crab cage against the sand, but this shoreline isn't where that answer lives.`;
+		responses.push(`Patricia taps the old crab cage against the sand, but this shoreline isn't where that answer lives.`);
 	}
-	return response;
+	return responses.join(', ');
 }
