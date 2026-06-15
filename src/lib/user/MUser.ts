@@ -42,6 +42,7 @@ import { MUTEX_CACHE } from '@/lib/cache.js';
 import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
+import { BitField, BOT_TYPE } from '@/lib/constants.js';
 import { bossCLItems } from '@/lib/data/Collections.js';
 import { avasDevices } from '@/lib/data/CollectionsExport.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
@@ -176,7 +177,12 @@ export class MUserClass extends BaseUser {
 	}
 
 	get perkTier() {
-		return getPerkTierCached(this.id) ?? 0;
+		const cachedTier = getPerkTierCached(this.id) ?? 0;
+		if (cachedTier === 2 && BOT_TYPE === 'BSO') {
+			return this.bitfield.includes(BitField.HasPermanentTierOne) ? 3 : cachedTier;
+		} else {
+			return cachedTier;
+		}
 	}
 	get perkTierIsCached(): boolean {
 		return getPerkTierCached(this.id) !== null;
