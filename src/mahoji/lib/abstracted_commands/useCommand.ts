@@ -270,7 +270,7 @@ export const genericUsables: {
 		addToCL: true
 	},
 	{
-		items: [Items.getOrThrow('Mortar and pestle'), Items.getOrThrow('Purple sand dollar')],
+		items: [Items.getOrThrow('Pestle and mortar'), Items.getOrThrow('Purple sand dollar')],
 		cost: new Bank().add('Purple sand dollar'),
 		loot: new Bank().add('Purple dust'),
 		response: () => 'You grind the Purple sand dollar into a fine heap of shimmering Purple dust.',

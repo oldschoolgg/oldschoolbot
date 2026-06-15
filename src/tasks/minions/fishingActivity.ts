@@ -1,5 +1,5 @@
 import { BSOItem } from '@/lib/bso/BSOItem.js';
-import { convertMysteriousBottleToSeaWater } from '@/lib/bso/sunScream.js';
+import { convertMysteriousBottleToSeaWater } from '@/lib/bso/summerDays.js';
 
 import { Emoji, Events, Time } from '@oldschoolgg/toolkit';
 import { EItem } from 'oldschooljs';

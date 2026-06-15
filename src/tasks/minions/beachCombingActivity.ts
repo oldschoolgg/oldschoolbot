@@ -1,23 +1,14 @@
 import { BSOItem } from '@/lib/bso/BSOItem.js';
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 import { handleCrateSpawns } from '@/lib/bso/handleCrateSpawns.js';
-import { convertMysteriousBottleToSeaWater } from '@/lib/bso/sunScream.js';
+import { convertMysteriousBottleToSeaWater } from '@/lib/bso/summerDays.js';
 
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, LootTable, randArrItem, SimpleTable } from 'oldschooljs';
 
 import { globalConfig } from '@/lib/constants.js';
-import type { BeachCombingActivityTaskOptions } from '@/lib/types/minions.js';
+import type {BeachCombingActivityTaskOptions, BeachCombingMethod} from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-
-const BEACH_COMBING_PET = {
-	itemID: BSOItem.PATRICIA,
-	name: 'Patricia',
-	emoji: '<:starfish:1515651612918677564>',
-	baseRate: 6_000,
-	clIncreaseMultiplier: 2
-} as const;
-const SUMMER_CRATE_S9_EMOJI = '<:s9chest:1515787545970081843>';
 
 const noLootClosers = [
 	'Mostly driftwood. Mostly shells. Mostly sand in the shoes.',
@@ -83,7 +74,7 @@ function flip(rng: RNGProvider = MathRNG) {
 	return rng.roll(2);
 }
 
-async function getBuriedTreasureChance() {
+async function getBuriedTreasureChance(user: MUser, focus?: BeachCombingMethod) {
 	const clientStorage = await prisma.clientStorage.findFirst({
 		where: { id: globalConfig.clientID },
 		select: { buried_treasure_winners: true }
@@ -99,6 +90,12 @@ async function getBuriedTreasureChance() {
 	for (let i = 0; i < totalPrizes; i++) {
 		chance *= 1.1;
 	}
+	console.log(`Chance: ${chance}`);
+	const wonPrizes = buriedTreasureWinners[user.id] ?
+		Object.values(buriedTreasureWinners[user.id]).reduce((total, qty) => total + qty, 0)
+		: 0;
+	chance *= 2 ** wonPrizes;
+	console.log(`Won Prizes: ${wonPrizes}\t\tMutiplier: ${2 ** wonPrizes}\t\tFinal Chance: ${chance}`);
 	return Math.ceil(chance);
 }
 

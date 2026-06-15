@@ -2,7 +2,6 @@ import { BSOItem } from '@/lib/bso/BSOItem.js';
 
 import { EmbedBuilder } from '@oldschoolgg/discord';
 import { Time } from '@oldschoolgg/toolkit';
-import { Items } from 'oldschooljs';
 
 import type { BeachCombingActivityTaskOptions, BeachCombingMethod } from '@/lib/types/minions.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
@@ -16,23 +15,13 @@ const summerCrateRewardIDs = [
 	BSOItem.BEACH_SANDALS,
 	BSOItem.BEACHBALL_SHIELD,
 	BSOItem.BEACH_PINA_COLADA,
-	BSOItem.WHALE_FLOATY
+	BSOItem.WHALE_FLOATY,
+	BSOItem.PARTYCRAB,
+	BSOItem.PATRICIA
 ];
 
-const summerCrateWearables = new Set(
-	summerCrateRewardIDs.filter(itemID => Boolean(Items.getOrThrow(itemID).equipment))
-);
-
 function countSummerCratePiecesEquipped(user: MUser) {
-	const equippedPieces = new Set<number>();
-	for (const setup of Object.values(user.gear)) {
-		for (const itemID of setup.allItems(false)) {
-			if (summerCrateWearables.has(itemID)) {
-				equippedPieces.add(itemID);
-			}
-		}
-	}
-	return equippedPieces.size;
+	return summerCrateRewardIDs.filter(itemID => user.hasEquipped(itemID)).length;
 }
 
 export async function beachCombingCommand(user: MUser, channelId: string, focus: BeachCombingMethod) {
