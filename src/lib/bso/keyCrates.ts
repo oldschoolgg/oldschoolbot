@@ -282,6 +282,7 @@ export const keyCrates: Crate[] = [
 			.tertiary(25, BSOItem.PAINT_BOX)
 			.add(
 				new LootTable()
+					.add(BSOItem.SHELL_NECKLACE)
 					.add(BSOItem.CORAL_BIKINI_TOP)
 					.add(BSOItem.CORAL_BIKINI_BOTTOM)
 					.add(BSOItem.PALM_BOARD_SHORTS)

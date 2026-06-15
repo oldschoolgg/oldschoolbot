@@ -37,16 +37,7 @@ function countSummerCratePiecesEquipped(user: MUser) {
 export async function beachCombingCommand(user: MUser, channelId: string, focus: BeachCombingMethod) {
 	const baseMaxTripLength = await user.calcMaxTripLength('BeachCombing');
 	const summerPiecesEquipped = countSummerCratePiecesEquipped(user);
-	let bonusDuration = summerPiecesEquipped * Time.Minute * 5;
-	if (user.usingPet('Patricia')) {
-		bonusDuration += Time.Minute * 10;
-	}
-	if (user.usingPet('Shelldon')) {
-		bonusDuration += Time.Minute * 5;
-	}
-	if (user.usingPet('Partycrab')) {
-		bonusDuration += Time.Minute * 10;
-	}
+	const bonusDuration = summerPiecesEquipped * Time.Minute * 5;
 	const duration = baseMaxTripLength + bonusDuration;
 	const hasPatriciaAndCage = user.usingPet('Patricia') && user.hasEquipped(BSOItem.OLD_CRAB_CAGE);
 
@@ -75,17 +66,23 @@ export async function beachCombingCommand(user: MUser, channelId: string, focus:
 		);
 	}
 	if (user.usingPet('Shelldon')) {
-		responses.push(`<:shelldon:748496988407988244> You're getting sunburned because Shelldon forgot the sun scream.... Apparently not a typo?`);
+		responses.push(
+			`<:shelldon:748496988407988244> You're getting sunburned because Shelldon forgot the Sun scream.... Apparently not a typo?`
+		);
 	}
 	if (user.usingPet('Partycrab')) {
-		responses.push(`<:partycrab:1507689107806097541> You stay out so long partying with your Partycrab that you forgot what day it is and wound up in a port I call Aransas`);
+		responses.push(
+			`<:partycrab:1507689107806097541> You stay out so long partying with your Partycrab that you forgot what day it is and wound up in a port I call Aransas`
+		);
 	}
 	if (summerPiecesEquipped > 0) {
 		responses.push(`Your Summer crate gear added ${summerPiecesEquipped * 5} extra minutes to the trip.`);
 	}
 	responses.push(` ${focusLine}`);
 	if (hasPatriciaAndCage && !user.cl.has(BSOItem.PARTYCRAB)) {
-		responses.push(`Patricia taps the old crab cage against the sand, but this shoreline isn't where that answer lives.`);
+		responses.push(
+			`Patricia taps the old crab cage against the sand, but this shoreline isn't where that answer lives.`
+		);
 	}
 	return responses.join(', ');
 }

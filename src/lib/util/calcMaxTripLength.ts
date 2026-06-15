@@ -68,6 +68,30 @@ export async function calcMaxTripLength(user: MUser, activity?: activity_type_en
 			max *= 3;
 			break;
 		}
+		case 'Fishing': {
+			if (user.usingPet('Patricia')) {
+				max *= 1.75;
+			}
+			if (user.usingPet('Partycrab')) {
+				max *= 1.6;
+			}
+			if (user.usingPet('Shelldon')) {
+				max *= 1.25;
+			}
+			break;
+		}
+		case 'BeachCombing': {
+			if (user.usingPet('Patricia')) {
+				max *= 2;
+			}
+			if (user.usingPet('Partycrab')) {
+				max += Time.Minute * 30;
+			}
+			if (user.usingPet('Shelldon')) {
+				max += Time.Minute * 25;
+			}
+			break;
+		}
 		default: {
 			break;
 		}
