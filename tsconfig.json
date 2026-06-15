@@ -1,18 +1,16 @@
 {
 	"extends": "./tsconfig.base.json",
-	"include": ["src/**/*.ts", "src/**/*.tsx", "tests/**/*.ts"],
-	"exclude": [".git", "node_modules", "dist", "logs"],
+	"include": ["src/**/*.ts", "src/**/*.tsx"],
+	"exclude": [".git", "node_modules", "dist", "logs", "tests"],
 	"references": [
-		{ "path": "./packages/cli" },
-		{ "path": "./packages/collectionlog/src" },
-		{ "path": "./packages/discord/src" },
-		{ "path": "./packages/gear/src" },
-		{ "path": "./packages/oldschoolgg" },
-		{ "path": "./packages/oldschooljs/src" },
-		{ "path": "./packages/robochimp/src" },
-		{ "path": "./packages/schemas/src" },
-		{ "path": "./packages/test-dashboard" },
-		{ "path": "./packages/toolkit/src" },
-		{ "path": "./packages/util/src" }
+		{ "path": "./packages/collectionlog/tsconfig.json" },
+		{ "path": "./packages/discord/tsconfig.json" },
+		{ "path": "./packages/gear/tsconfig.json" },
+		{ "path": "./packages/oldschoolgg/tsconfig.json" },
+		{ "path": "./packages/oldschooljs/tsconfig.json" },
+		{ "path": "./packages/robochimp/tsconfig.json" },
+		{ "path": "./packages/schemas/tsconfig.json" },
+		{ "path": "./packages/toolkit/tsconfig.json" },
+		{ "path": "./packages/util/tsconfig.json" }
 	]
 }
