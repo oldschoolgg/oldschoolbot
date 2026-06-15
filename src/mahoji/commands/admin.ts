@@ -32,7 +32,7 @@ import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import { economy_transaction_type } from '@/prisma/main/enums.js';
 import type { ClientStorage } from '@/prisma/main.js';
-import { bulkUpdateCommands, itemOption } from '@/discord/index.js';
+import { bulkUpdateCommands, choicesOf, itemOption } from '@/discord/index.js';
 import {
 	bitfieldCanUserManipulate,
 	changeBitFieldForUser,
@@ -56,7 +56,7 @@ export const gifs = [
 
 const leaguesTaskNameByID = new Map(allLeagueTasks.map(task => [task.id, task.name] as const));
 
-function buildAdminOverviewResponse(overview: string, body: string, filename = 'admin-report.txt'): SendableMessage {
+function buildAdminOverviewResponse(overview: string, body: string, filename = 'admin-report.txt', blockMentions: boolean = false): SendableMessage {
 	const trimmedBody = body.trim();
 	if (trimmedBody.length === 0) {
 		return { content: overview };
@@ -74,7 +74,8 @@ function buildAdminOverviewResponse(overview: string, body: string, filename = '
 	}
 	return {
 		content: overview,
-		files: [{ name: filename, buffer: Buffer.from(combined) }]
+		files: [{ name: filename, buffer: Buffer.from(combined) }],
+		allowedMentions: blockMentions ? { parse: [] } : undefined
 	};
 }
 
@@ -239,10 +240,12 @@ async function getAllTradedItems(giveUniques = false) {
 	return total;
 }
 
-const viewableThings: {
+interface ViewableThing {
 	name: string;
-	run: (clientSettings: ClientStorage) => Promise<Bank | SendableMessage>;
-}[] = [
+	choices?: string[];
+	run: (clientSettings: ClientStorage, _choice?: String) => Promise<Bank | SendableMessage>;
+}
+const viewableThings: ViewableThing[] = [
 	{
 		name: 'Buried Treasure Bank',
 		run: async clientSettings => {
@@ -258,16 +261,20 @@ const viewableThings: {
 	},
 	{
 		name: 'Buried Treasure Winners',
-		run: async clientSettings => {
+		choices: ['private'],
+		run: async (clientSettings, choice) => {
+			const privateUsers = choice === 'private';
 			const winners = clientSettings.buried_treasure_winners as Record<string, ItemBank>;
 			const lines = Object.entries(winners).map(
-				([winnerId, treasureWon]) => `<@${winnerId}>: ${new Bank(treasureWon).toString()}`
+				([winnerId, treasureWon]) =>
+					`${privateUsers ? '\\@secret' : `<@${winnerId}>`}: ${new Bank(treasureWon).toString()}`
 			);
 
 			return buildAdminOverviewResponse(
 				'**Buried Treasure Winners**',
 				lines.length === 0 ? 'No buried treasure winners yet.' : lines.join('\n'),
-				'buried-treasure-winners.txt'
+				'buried-treasure-winners.txt',
+				privateUsers
 			);
 		}
 	},
@@ -764,6 +771,13 @@ export const adminCommand = defineCommand({
 					description: 'The thing',
 					required: true,
 					choices: viewableThings.map(i => ({ name: i.name, value: i.name }))
+				},
+				{
+					type: 'String',
+					name: 'choices',
+					description: 'The choices',
+					required: false,
+					choices: viewableThings.filter(thing => thing.choices).flatMap(thing => choicesOf(thing.choices!))
 				}
 			]
 		},
@@ -1032,7 +1046,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 			const thing = viewableThings.find(i => i.name === options.view?.thing);
 			if (!thing) return 'Invalid';
 			const clientSettings = await ClientSettings.fetch();
-			const res = await thing.run(clientSettings);
+			const res = await thing.run(clientSettings, options.view.choices);
 			if (!(res instanceof Bank)) return res;
 			return new MessageBuilder().addBankImage({
 				bank: res,
