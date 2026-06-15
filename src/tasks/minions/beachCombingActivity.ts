@@ -223,14 +223,15 @@ export const beachCombingTask: MinionTask = {
 			}
 		}
 		const buriedTreasureChance = await getBuriedTreasureChance();
+		const secretLoot = new Bank();
 		for (let i = 0; i < minutes; i++) {
 			if (!rng.roll(buriedTreasureChance)) continue;
 			const buriedTreasureItem = await rollBuriedTreasurePrize(user.id, rng);
 			if (buriedTreasureItem === null) break;
 			discoveries.push(
-				`🏴‍☠️A buried cache was pried loose from the shoreline stash...\n🤯**... You just found one of Cyr's Treasure Chests!!!**`
+				`#🏴‍☠️\n🤯 A buried cache was pried loose from the shoreline stash...\n**... You just found one of Cyr's Treasure Chests!!!**\nIt contains ${secretLoot}.\n`
 			);
-			loot.add(buriedTreasureItem);
+			secretLoot.add(buriedTreasureItem);
 		}
 
 		let intro = '';
@@ -295,6 +296,12 @@ export const beachCombingTask: MinionTask = {
 		} else {
 			content += `\n\n${outro} ${randArrItem(noLootClosers)}. You didn't go away totally empty handed, you did find ${junkLoot}.`;
 		}
+		const { itemsAdded: secretItemsAdded } = await user.transactItems({
+			itemsToAdd: secretLoot,
+			dontAddToTempCL: true,
+			collectionLog: false
+		});
+
 		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
@@ -304,10 +311,10 @@ export const beachCombingTask: MinionTask = {
 			itemsAdded.length === 0
 				? undefined
 				: await makeBankImage({
-						bank: itemsAdded,
+						bank: itemsAdded.add(secretItemsAdded),
 						title: 'Beach Combing Finds:',
 						user,
-						previousCL
+						previousCL: previousCL.add(secretItemsAdded)
 					});
 
 		return handleTripFinish({
