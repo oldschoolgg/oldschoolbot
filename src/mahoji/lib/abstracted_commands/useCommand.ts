@@ -248,6 +248,49 @@ export const genericUsables: {
 		addToCL: true
 	},
 	{
+		items: [Items.getOrThrow('Sun Scream'), Items.getOrThrow('Patricia')],
+		cost: new Bank().add('Sun Scream').add('Patricia'),
+		loot: new Bank().add('Shiny Patricia'),
+		response: () => 'You coat Patricia in Sun Scream, and she comes back with a glossy purple goth glow.',
+		addToCL: true
+	},
+	{
+		items: [Items.getOrThrow('Sun Scream'), Items.getOrThrow('Partycrab')],
+		cost: new Bank().add('Sun Scream').add('Partycrab'),
+		loot: new Bank().add('Shiny Partycrab'),
+		response: () => 'You rub Sun Scream onto Partycrab, and it struts away looking dramatically beach-goth.',
+		addToCL: true
+	},
+	{
+		items: [Items.getOrThrow('Sun Scream'), Items.getOrThrow('Dwarven warhammer')],
+		cost: new Bank().add('Sun Scream').add('Dwarven warhammer'),
+		loot: new Bank().add('Gothic Dwarven warhammer'),
+		response: () =>
+			'You polish the Dwarven warhammer with Sun Scream, leaving it with a dark purple, sea-salted finish.',
+		addToCL: true
+	},
+	{
+		items: [Items.getOrThrow('Mortar and pestle'), Items.getOrThrow('Purple sand dollar')],
+		cost: new Bank().add('Purple sand dollar'),
+		loot: new Bank().add('Purple dust'),
+		response: () => 'You grind the Purple sand dollar into a fine heap of shimmering Purple dust.',
+		addToCL: true
+	},
+	{
+		items: [Items.getOrThrow('Purple dust'), Items.getOrThrow('Bottle of sea water')],
+		cost: new Bank().add('Purple dust').add('Bottle of sea water'),
+		loot: new Bank().add('Sun Scream (unf)'),
+		response: () => 'You mix the Purple dust into the Bottle of sea water, creating a murky Sun Scream (unf).',
+		addToCL: true
+	},
+	{
+		items: [Items.getOrThrow('Sun Scream (unf)'), Items.getOrThrow('Black shell')],
+		cost: new Bank().add('Sun Scream (unf)').add('Black shell'),
+		loot: new Bank().add('Sun Scream'),
+		response: () => 'You crush the Black shell into the unfinished mixture, and it settles into a finished bottle of Sun Scream.',
+		addToCL: true
+	},
+	{
 		items: [Items.getOrThrow('Mithril seeds')],
 		cost: new Bank().add('Mithril seeds').freeze(),
 		loot: () => flowerTable.roll(),

@@ -1,4 +1,5 @@
 import { BSOItem } from '@/lib/bso/BSOItem.js';
+import { convertMysteriousBottleToSeaWater } from '@/lib/bso/sunScream.js';
 
 import { Emoji, Events, Time } from '@oldschoolgg/toolkit';
 import { EItem } from 'oldschooljs';
@@ -132,6 +133,26 @@ export const fishingTask: MinionTask = {
 						break;
 					}
 				}
+			}
+		}
+
+		if (user.hasEquipped(BSOItem.MYSTERIOUS_BOTTLE)) {
+			const mysteriousBottleChance = user.usingPet('Patricia')
+				? 500
+				: user.usingPet('Partycrab')
+					? 650
+					: user.usingPet('Shelldon')
+						? 750
+						: 1000;
+
+			for (let i = 0; i < minutes; i++) {
+				if (!rng.roll(mysteriousBottleChance)) continue;
+				if (await convertMysteriousBottleToSeaWater(user)) {
+					result.messages.push(
+						'🫙 A cold violet current swirled into your Mysterious bottle while fishing. It is now a **Bottle of sea water**'
+					);
+				}
+				break;
 			}
 		}
 

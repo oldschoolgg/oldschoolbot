@@ -1,6 +1,7 @@
 import { BSOItem } from '@/lib/bso/BSOItem.js';
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 import { handleCrateSpawns } from '@/lib/bso/handleCrateSpawns.js';
+import { convertMysteriousBottleToSeaWater } from '@/lib/bso/sunScream.js';
 
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, LootTable, randArrItem, SimpleTable } from 'oldschooljs';
@@ -232,6 +233,22 @@ export const beachCombingTask: MinionTask = {
 			discoveries.push(
 				`# 🏴‍☠️🏴‍☠️🏴‍☠️\n🤯 A buried cache was pried loose from the shoreline stash...  ---   **... You just found one of Cyr's Treasure Chests!!!**\nIt contains ${secretLoot}.\n`
 			);
+		}
+
+		if (user.hasEquipped(BSOItem.MYSTERIOUS_BOTTLE)) {
+			const mysteriousBottleChance =
+				method === 'Surfing' ? (hasPatricia ? 150 : 300) : hasPatricia ? 600 : 900;
+			for (let i = 0; i < minutes; i++) {
+				if (!rng.roll(mysteriousBottleChance)) continue;
+				if (await convertMysteriousBottleToSeaWater(user)) {
+					discoveries.push(
+						method === 'Surfing'
+							? `🌊 Your Mysterious bottle filled with foaming violet seawater while carving through the surf. It is now a **Bottle of sea water**.`
+							: `🫧 Your Mysterious bottle caught a strange dark-purple wash from the shoreline. It is now a **Bottle of sea water**.`
+					);
+				}
+				break;
+			}
 		}
 
 		let intro = '';

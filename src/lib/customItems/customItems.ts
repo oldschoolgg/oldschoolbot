@@ -14502,6 +14502,126 @@ setCustomItem(
 	1_000_000
 );
 setCustomItem(
+	73_984,
+	'Sun Scream',
+	'Coal',
+	{
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+setCustomItem(
+	73_985,
+	'Shiny Patricia',
+	'Bronze full helm',
+	{
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true,
+			dontTradeOnGE: true,
+			isPet: true
+		}
+	},
+	1_000_000
+);
+setCustomItem(
+	73_986,
+	'Shiny Partycrab',
+	'Bronze full helm',
+	{
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true,
+			dontTradeOnGE: true,
+			isPet: true
+		}
+	},
+	1_000_000
+);
+setCustomItem(
+	73_987,
+	'Gothic Dwarven warhammer',
+	'Dwarven warhammer',
+	{
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	1_000_000_000
+);
+setCustomItem(
+	73_988,
+	'Purple sand dollar',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	250_000
+);
+setCustomItem(
+	73_989,
+	'Black shell',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	250_000
+);
+setCustomItem(
+	73_990,
+	'Purple dust',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	250_000
+);
+setCustomItem(
+	73_991,
+	'Sun Scream (unf)',
+	'Coal',
+	{
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+setCustomItem(
+	73_992,
+	'Bottle of sea water',
+	'Bronze kiteshield',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	250_000
+);
+setCustomItem(
+	73_993,
+	'Mysterious bottle',
+	'Bronze kiteshield',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	250_000
+);
+setCustomItem(
 	73_970,
 	'Summer crate (s9)',
 	'Coal',
