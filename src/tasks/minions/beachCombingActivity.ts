@@ -228,10 +228,10 @@ export const beachCombingTask: MinionTask = {
 			if (!rng.roll(buriedTreasureChance)) continue;
 			const buriedTreasureItem = await rollBuriedTreasurePrize(user.id, rng);
 			if (buriedTreasureItem === null) break;
-			discoveries.push(
-				`#🏴‍☠️\n🤯 A buried cache was pried loose from the shoreline stash...\n**... You just found one of Cyr's Treasure Chests!!!**\nIt contains ${secretLoot}.\n`
-			);
 			secretLoot.add(buriedTreasureItem);
+			discoveries.push(
+				`# 🏴‍☠️🏴‍☠️🏴‍☠️\n🤯 A buried cache was pried loose from the shoreline stash...  ---   **... You just found one of Cyr's Treasure Chests!!!**\nIt contains ${secretLoot}.\n`
+			);
 		}
 
 		let intro = '';
