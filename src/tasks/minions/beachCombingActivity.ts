@@ -258,6 +258,29 @@ export const beachCombingTask: MinionTask = {
 				break;
 		}
 
+		let activityStr = 'Drowning';
+		switch (method) {
+			case 'Surfing':
+				activityStr = 'Surfing';
+				break;
+			case 'BeachCombing':
+				activityStr = 'Combing the sand for treasures';
+				break;
+			case 'PickupTrash':
+				activityStr = 'Beautifying the beach';
+				break;
+			case 'BuildSandcastles':
+				activityStr = 'Building sandcastles';
+				break;
+			default:
+				activityStr = 'Drowning';
+		}
+
+		if (hasPatricia && rng.roll(50))
+			discoveries.push(
+				`📜 You found and old note while ${activityStr} on the beach! It's tattered and damaged from weathering, but you can see it says something about fishing? There's a familiar symbol on the page, too... ${rng.roll(30) ? `${BEACH_COMBING_PET.emoji}` : `𓇼`}`
+			);
+
 		let junkQty = 1;
 		for (let i = 0; i < minutes; i++) {
 			if (rng.roll(10)) junkQty++;

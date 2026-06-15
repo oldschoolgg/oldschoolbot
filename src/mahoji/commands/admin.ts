@@ -56,7 +56,12 @@ export const gifs = [
 
 const leaguesTaskNameByID = new Map(allLeagueTasks.map(task => [task.id, task.name] as const));
 
-function buildAdminOverviewResponse(overview: string, body: string, filename = 'admin-report.txt', blockMentions: boolean = false): SendableMessage {
+function buildAdminOverviewResponse(
+	overview: string,
+	body: string,
+	filename = 'admin-report.txt',
+	blockMentions: boolean = false
+): SendableMessage {
 	const trimmedBody = body.trim();
 	if (trimmedBody.length === 0) {
 		return { content: overview };

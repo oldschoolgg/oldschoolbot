@@ -1,5 +1,6 @@
 import { BSOItem } from '@/lib/bso/BSOItem.js';
 
+import { EmbedBuilder } from '@oldschoolgg/discord';
 import { Time } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
@@ -84,5 +85,14 @@ export async function beachCombingCommand(user: MUser, channelId: string, focus:
 			`Patricia taps the old crab cage against the sand, but this shoreline isn't where that answer lives.`
 		);
 	}
-	return responses.join(', ');
+
+	const content = responses.shift();
+	const embed = new EmbedBuilder()
+		.setDescription(responses.join(', '))
+		.setImage('https://cdn.discordapp.com/attachments/851273567416483861/1515904314780942368/content.png');
+
+	return {
+		content,
+		embeds: [embed]
+	};
 }
