@@ -11,6 +11,6 @@
 		},
 		"isolatedDeclarations": true
 	},
-	"include": ["**/*.ts", "**/*.tsx"],
+	"include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.json"],
 	"exclude": ["dist", "node_modules", "test", "scripts"]
 }
