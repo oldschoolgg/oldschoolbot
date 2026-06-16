@@ -1,6 +1,7 @@
 import { BSOItem } from '@/lib/bso/BSOItem.js';
 
 import type { GearSetup, GearSetupType } from '@oldschoolgg/gear';
+import { Bank } from 'oldschooljs';
 
 import type { MUserClass } from '@/lib/user/MUser.js';
 
@@ -33,7 +34,7 @@ export async function convertMysteriousBottleToSeaWater(user: MUserClass): Promi
 	if (gearUpdates.length === 0) {
 		return false;
 	}
-
+	await user.addItemsToCollectionLog({ itemsToAdd: new Bank().add(BSOItem.BOTTLE_OF_SEA_WATER) });
 	await user.updateGear(gearUpdates);
 	return true;
 }

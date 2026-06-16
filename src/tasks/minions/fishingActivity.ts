@@ -107,22 +107,50 @@ export const fishingTask: MinionTask = {
 			});
 		}
 
+		let bottleRate = 500;
+		if (fish.name === 'Rocktail') bottleRate = 350;
+		if (fish.name === 'Manta ray') bottleRate = 250;
+		if (fish.name === 'Lobster') bottleRate = 150;
+		if (fish.name === 'Mackerel') bottleRate = 100;
+		if (fish.alias?.includes('herring')) bottleRate = 100;
+		if (user.usingPet('Patricia')) bottleRate = Math.floor(bottleRate * 0.5);
+		if (user.usingPet('Partycrab')) bottleRate = Math.floor(bottleRate * 0.7);
+
+		let crabCageRate = user.usingPet(BSOItem.PATRICIA) ? 100 : 250;
+		if (fish.name === 'Lobster') crabCageRate = Math.floor(crabCageRate * 0.5);
 		const minutes = Math.floor(data.duration / Time.Minute);
-		if (user.usingPet('Patricia')) {
-			const userAlreadyHasCrabCage =
-				user.allItemsOwned.has(BSOItem.OLD_CRAB_CAGE) || user.cl.has(BSOItem.OLD_CRAB_CAGE);
-			if (!userAlreadyHasCrabCage) {
-				for (let i = 0; i < minutes; i++) {
-					if (rng.roll(100)) {
-						result.updateBank.itemLootBank.add(BSOItem.OLD_CRAB_CAGE);
-						result.messages.push(
-							'🦀 Patricia tugged something rusted from the shallows: an **Old crab cage**.'
-						);
-						break;
-					}
+		const userAlreadyHasCrabCage = user.allItemsOwned.has(BSOItem.OLD_CRAB_CAGE);
+		if (fish.name === 'Lobster') crabCageRate = Math.floor(crabCageRate * 0.5);
+
+		let bottlesFound = 0;
+		for (let i = 0; i < minutes; i++) {
+			if (rng.roll(bottleRate)) {
+				bottlesFound++;
+			}
+		}
+		if (bottlesFound) {
+			result.updateBank.itemLootBank.add(BSOItem.MYSTERIOUS_BOTTLE, bottlesFound);
+			if (bottlesFound === 1) {
+				result.messages.push('🏝🍹You gently tug something from the shallows: a *Mysterious bottle!**.');
+			} else {
+				result.messages.push(
+					`🏝️🍹You got quite the haul! You drug ${bottlesFound}x *Mysterious bottles!** out of the ocean!.`
+				);
+			}
+		}
+
+		if (!userAlreadyHasCrabCage) {
+			for (let i = 0; i < minutes; i++) {
+				if (rng.roll(crabCageRate)) {
+					result.updateBank.itemLootBank.add(BSOItem.OLD_CRAB_CAGE);
+					result.messages.push(
+						'🦀 Patricia tugged something rusted from the shallows: an **Old crab cage**.'
+					);
+					break;
 				}
 			}
-
+		}
+		if (user.usingPet('Patricia')) {
 			if (fish.name === 'Lobster' && user.hasEquipped(BSOItem.OLD_CRAB_CAGE) && !user.cl.has(BSOItem.PARTYCRAB)) {
 				for (let i = 0; i < minutes; i++) {
 					if (rng.roll(24 * 60)) {

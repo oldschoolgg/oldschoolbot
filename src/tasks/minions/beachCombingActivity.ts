@@ -87,8 +87,6 @@ async function getBuriedTreasureChance(user: MUser) {
 	);
 	totalPrizes = Math.max(1, totalPrizes - 20);
 
-	console.log(`Total Prizes: ${totalPrizes}`);
-	console.log(buriedTreasureWinners);
 	const myPrizes = buriedTreasureWinners[user.id]
 		? Object.values(buriedTreasureWinners[user.id]).reduce((total, qty) => total + qty, 0)
 		: 0;
@@ -96,26 +94,8 @@ async function getBuriedTreasureChance(user: MUser) {
 	for (let i = 0; i < totalPrizes - myPrizes; i++) {
 		chance *= 1.05;
 	}
-	console.log(`Chance: ${chance}`);
 
-	for (let i = 1; i <= 5; i++) {
-		console.log(`${i} Items:`);
-		for (let j = 1.25; j <= 2.5; j += 0.25) {
-			const ijMultiplier = Number((j ** i).toFixed(2));
-			//const ijChance1k = 1000 * ijMultiplier;
-			const ijChance = Math.floor(chance * ijMultiplier);
-			console.log(`\t${j.toFixed(2)} => ${ijMultiplier}\t=> ${ijChance}`);
-
-			// console.log(
-			// 	`${i} Items, ${j} Scaling:\n` +
-			// 		// `\t1000 * ${ijMultiplier}\t =\t ${ijChance1k}\n` +
-			// 		`\t${chance.toFixed(2)} * ${ijMultiplier}\t =\t ${ijChance}\n`
-			// );
-		}
-	}
-
-	chance *= 1.25 ** myPrizes;
-	console.log(`Won Prizes: ${myPrizes}\t\tMutiplier: ${2 ** myPrizes}\t\tFinal Chance: ${chance}`);
+	chance *= 1.5 ** myPrizes;
 	return Math.ceil(chance);
 }
 
@@ -213,103 +193,122 @@ export const beachCombingTask: MinionTask = {
 				loot.add(damagedLoot);
 			}
 		}
-
 		const crateKeyLoot = new Bank();
-		for (let i = 0; i < minutes; i++) {
-			if (rng.roll(200)) {
-				crateKeyLoot.add(BSOItem.SUMMER_CRATE_KEY_S9);
-			}
-		}
+		let keyChance = 200;
+
 		if (crateKeyLoot.length > 0) {
 			discoveries.push(`${SUMMER_CRATE_S9_EMOJI} Your minion found ${crateKeyLoot} buried in the wet sand!`);
 		}
 		loot.add(crateKeyLoot);
 
-		const patriciaRate = clAdjustedDroprate(
+		let patriciaRate = clAdjustedDroprate(
 			user,
 			BEACH_COMBING_PET.itemID,
 			BEACH_COMBING_PET.baseRate,
 			BEACH_COMBING_PET.clIncreaseMultiplier
 		);
-		for (let i = 0; i < minutes; i++) {
-			if (rng.roll(patriciaRate)) {
-				loot.add(BEACH_COMBING_PET.itemID);
-				discoveries.push(
-					`${BEACH_COMBING_PET.emoji} A bright little starfish clung to the shoreline and decided ${BEACH_COMBING_PET.name} lives with you now.`
-				);
-				break;
-			}
-		}
-		const buriedTreasureChance = await getBuriedTreasureChance(user);
-		const secretLoot = new Bank();
-		for (let i = 0; i < minutes; i++) {
-			if (!rng.roll(buriedTreasureChance)) continue;
-			const buriedTreasureItem = await rollBuriedTreasurePrize(user.id, rng);
-			if (buriedTreasureItem === null) break;
-			secretLoot.add(buriedTreasureItem);
-			discoveries.push(
-				`# 🏴‍☠️🏴‍☠️🏴‍☠️\n🤯 A buried cache was pried loose from the shoreline stash...  ---   **... You just found one of Cyr's Treasure Chests!!!**\nIt contains ${secretLoot}.\n`
-			);
-		}
 
-		if (user.hasEquipped(BSOItem.MYSTERIOUS_BOTTLE)) {
-			const mysteriousBottleChance = method === 'Surfing' ? (hasPatricia ? 150 : 300) : hasPatricia ? 600 : 900;
-			for (let i = 0; i < minutes; i++) {
-				if (!rng.roll(mysteriousBottleChance)) continue;
-				if (await convertMysteriousBottleToSeaWater(user)) {
-					discoveries.push(
-						method === 'Surfing'
-							? `🌊 Your Mysterious bottle filled with foaming violet seawater while carving through the surf. It is now a **Bottle of sea water**.`
-							: `🫧 Your Mysterious bottle caught a strange dark-purple wash from the shoreline. It is now a **Bottle of sea water**.`
-					);
-				}
-				break;
-			}
-		}
-
+		const hasOldCrabCageEquipped = user.hasEquipped(BSOItem.OLD_CRAB_CAGE);
+		let bottleFindChance = 600;
+		let buriedTreasureChance = await getBuriedTreasureChance(user);
+		let mysteriousBottleChance = hasPatricia ? 600 : 900;
 		let intro = '';
 		let outro = '';
+		let activityStr = 'Drowning';
 		switch (method) {
 			case 'Surfing':
 				intro =
 					'Your minion spent the trip paddling after waves, wiping out dramatically, and occasionally noticing useful things in the foam.';
 				outro = 'Mostly saltwater, style penalties, and the occasional good find.';
+				activityStr = 'Surfing';
+				patriciaRate = Math.floor(0.5 * patriciaRate);
+				mysteriousBottleChance = hasPatricia ? 150 : 300;
+				buriedTreasureChance *= 2;
+				bottleFindChance = 400;
 				break;
 			case 'BeachCombing':
+				keyChance = 150;
 				intro =
 					'Your minion walked the tide line with intense focus, checking shells, kelp piles and every vaguely treasure-shaped lump.';
 				outro = 'A classic day of sand, shells and questionable optimism.';
+				activityStr = 'Combing the sand for treasures';
+				patriciaRate = Math.floor(0.9 * patriciaRate);
+				buriedTreasureChance = Math.floor(0.8 * buriedTreasureChance);
+				bottleFindChance = 500;
 				break;
 			case 'BuildSandcastles':
 				intro =
 					'Your minion built ambitious sandcastles, then immediately looted the surrounding moat for anything the sea had delivered.';
 				outro = 'The castles looked magnificent right up until the tide disagreed.';
+				activityStr = 'Building sandcastles';
+				patriciaRate = Math.floor(0.9 * patriciaRate);
+				buriedTreasureChance = Math.floor(0.7 * buriedTreasureChance);
 				break;
 			case 'PickupTrash':
 				intro =
 					'Your minion cleaned the shoreline, salvaged odd scraps and kept anything that looked less like rubbish and more like buried luck.';
 				outro = 'The beach looked cleaner, even if the loot stayed modest.';
-				break;
-		}
-
-		let activityStr = 'Drowning';
-		switch (method) {
-			case 'Surfing':
-				activityStr = 'Surfing';
-				break;
-			case 'BeachCombing':
-				activityStr = 'Combing the sand for treasures';
-				break;
-			case 'PickupTrash':
 				activityStr = 'Beautifying the beach';
+				patriciaRate = Math.floor(0.7 * patriciaRate);
+				buriedTreasureChance = Math.floor(0.8 * buriedTreasureChance);
+				bottleFindChance = 250;
 				break;
-			case 'BuildSandcastles':
-				activityStr = 'Building sandcastles';
-				break;
-			default:
-				activityStr = 'Drowning';
 		}
 
+		let convertedBottle = false;
+		let foundPatricia = false;
+		let foundTreasure = false;
+		const secretLoot = new Bank();
+
+		for (let i = 0; i < minutes; i++) {
+			if (!foundPatricia && rng.roll(patriciaRate)) {
+				loot.add(BEACH_COMBING_PET.itemID);
+				discoveries.push(
+					`${BEACH_COMBING_PET.emoji} A bright little starfish clung to the shoreline and decided ${BEACH_COMBING_PET.name} lives with you now.`
+				);
+				foundPatricia = true;
+			}
+			if (hasOldCrabCageEquipped) {
+				if (rng.roll(bottleFindChance)) {
+					discoveries.push(
+						`*Your Old crab cage seems to vibrate as you pull it up, it has found a Mysterious bottle!*`
+					);
+					if (bottleFindChance) {
+						loot.add(BSOItem.MYSTERIOUS_BOTTLE, 1);
+					}
+				}
+			}
+			if (!convertedBottle && user.hasEquipped(BSOItem.MYSTERIOUS_BOTTLE)) {
+				if (rng.roll(mysteriousBottleChance)) {
+					if (await convertMysteriousBottleToSeaWater(user)) {
+						convertedBottle = true;
+						discoveries.push(
+							method === 'Surfing'
+								? `🌊 Your Mysterious bottle filled with foaming violet seawater while carving through the surf. It is now a **Bottle of sea water**.`
+								: `🫧 Your Mysterious bottle caught a strange dark-purple wash from the shoreline. It is now a **Bottle of sea water**.`
+						);
+					}
+				}
+			}
+			if (!foundTreasure && rng.roll(buriedTreasureChance)) {
+				const buriedTreasureItem = await rollBuriedTreasurePrize(user.id, rng);
+				if (buriedTreasureItem === null) {
+					foundTreasure = true;
+					continue;
+				}
+				secretLoot.add(buriedTreasureItem);
+				discoveries.push(
+					`# 🏴‍☠️🏴‍☠️🏴‍☠️\n🤯 A buried cache was pried loose from the shoreline stash...  ---   **... You just found one of Cyr's Treasure Chests!!!**\nIt contains ${secretLoot}.\n`
+				);
+			}
+		}
+
+		for (let i = 0; i < minutes; i++) {
+			if (rng.roll(200)) {
+				crateKeyLoot.add(BSOItem.SUMMER_CRATE_KEY_S9);
+			}
+		}
+		for (let i = 0; i < minutes; i++) {}
 		if (hasPatricia && rng.roll(50))
 			discoveries.push(
 				`📜 You found and old note while ${activityStr} on the beach! It's tattered and damaged from weathering, but you can see it says something about fishing? There's a familiar symbol on the page, too... ${rng.roll(30) ? `${BEACH_COMBING_PET.emoji}` : `𓇼`}`
