@@ -8,8 +8,8 @@
 		}
 	},
 	"scripts": {
-		"build": "rimraf ./dist && tsc -p src --noEmit false",
-		"test:types": "tsc -p src --noEmit",
+		"build": "rimraf ./dist ./tsconfig.tsbuildinfo && tsc -p . --noEmit false",
+		"test:types": "tsc -p . --noEmit",
 		"test:unit": "vitest run"
 	},
 	"dependencies": {

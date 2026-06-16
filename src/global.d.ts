@@ -15,6 +15,7 @@ declare global {
 	export var MathRNG: typeof import('node-rng').MathRNG;
 	export type MInteraction = import('@oldschoolgg/discord').MInteraction;
 	export type OSInteraction = import('./lib/structures/OSInteraction.js').OSInteraction;
+	export var globalClient: import('./discord/OldSchoolBotClient.js').OldSchoolBotClient;
 
 	export type MahojiUserOption = import('./discord/index.js').MahojiUserOption;
 	export type AnyCommand = import('./discord/index.js').AnyCommand;

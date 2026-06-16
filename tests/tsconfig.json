@@ -1,6 +1,7 @@
 {
 	"extends": "../tsconfig.json",
-	"include": ["**/*.ts"],
+	"include": ["**/*.ts", "../src/global.d.ts"],
+	"exclude": ["../node_modules", "../dist"],
 	"compilerOptions": {
 		"noEmit": true,
 		"composite": false,
@@ -8,6 +9,5 @@
 		"paths": {
 			"@/*": ["src/*"]
 		}
-	},
-	"references": [{ "path": ".." }]
+	}
 }
