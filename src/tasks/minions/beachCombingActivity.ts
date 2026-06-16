@@ -38,22 +38,21 @@ const junkTable = new LootTable()
 			.tertiary(100, 'Clue scroll (grandmaster)', 1)
 	);
 
+export const beachOutfitTable = new LootTable()
+	.add(BSOItem.CORAL_BIKINI_TOP)
+	.add(BSOItem.CORAL_BIKINI_BOTTOM)
+	.add(BSOItem.PALM_BOARD_SHORTS)
+	.add(BSOItem.BEACH_SANDALS)
+	.add(BSOItem.BEACH_SANDALS)
+	.add(BSOItem.BEACHBALL_SHIELD)
+	.add(BSOItem.BEACH_PINA_COLADA)
+	.add(BSOItem.WHALE_FLOATY);
+
 const brokenSummerCrate = new LootTable()
 	.tertiary(2222, BSOItem.IMITATION_CRABHAT)
 	.tertiary(1111, BSOItem.SUMMER_PARTYHAT)
 	.tertiary(55, BSOItem.PAINT_BOX)
-	.add(
-		new LootTable()
-			.add(BSOItem.CORAL_BIKINI_TOP)
-			.add(BSOItem.CORAL_BIKINI_BOTTOM)
-			.add(BSOItem.PALM_BOARD_SHORTS)
-			.add(BSOItem.BEACH_SANDALS)
-			.add(BSOItem.BEACH_SANDALS)
-			.add(BSOItem.BEACHBALL_SHIELD)
-			.add(BSOItem.BEACH_PINA_COLADA)
-			.add(BSOItem.WHALE_FLOATY),
-		1
-	)
+	.add(beachOutfitTable)
 	.add(
 		new LootTable()
 			.add('Cake')

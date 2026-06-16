@@ -222,6 +222,7 @@ import { fletchingCL } from '@/lib/skilling/skills/fletching/fletchables/index.j
 import smithables from '@/lib/skilling/skills/smithing/smithables/index.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { MUserStats } from '@/lib/structures/MUserStats.js';
+import { beachOutfitTable } from '@/tasks/minions/beachCombingActivity.js';
 
 function kcProg(mon: Monster | number): FormatProgressFunction {
 	return ({ stats }) => `${stats.kcBank[typeof mon === 'number' ? mon : mon.id] ?? 0} KC`;
@@ -1991,6 +1992,27 @@ export const allCollectionLogs: ICollection = {
 					'Radiant magnabbit',
 					'Shiny Partycrab',
 					'Lydia'
+				]),
+				counts: false
+			},
+			'Summer 2026': {
+				alias: ['summer'],
+				items: resolveItems([
+					...beachOutfitTable.allItems,
+					'Summer Partyhat',
+					'Imitation crab hat',
+					'Partycrab',
+					'Patricia',
+					'Shining partycrab',
+					'Lydia',
+					'Old crab cage',
+					'Mysterious bottle',
+					'Bottle of sea water',
+					'Purple sand dollar',
+					'Black shell',
+					'Purple dust',
+					'Sun scream (unf)',
+					'Sun scream'
 				]),
 				counts: false
 			}
