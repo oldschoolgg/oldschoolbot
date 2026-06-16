@@ -3,8 +3,9 @@ import { addToDoubleLootTimer } from '@/lib/bso/doubleLoot.js';
 import { allDyes, dyedItems } from '@/lib/bso/dyedItems.js';
 import { mysteriousStepData } from '@/lib/bso/mysteryTrail.js';
 import { divinationEnergies } from '@/lib/bso/skills/divination.js';
+import { getLydiaQuote } from '@/lib/bso/summerDays.js';
 
-import { bold } from '@oldschoolgg/discord';
+import { bold, EmbedBuilder } from '@oldschoolgg/discord';
 import { notEmpty, objectEntries, Time } from '@oldschoolgg/toolkit';
 import { randArrItem, randInt } from 'node-rng';
 import { Bank, type Item, Items, resolveItems } from 'oldschooljs';
@@ -251,7 +252,18 @@ export const genericUsables: {
 		items: [Items.getOrThrow('Sun Scream'), Items.getOrThrow('Patricia')],
 		cost: new Bank().add('Sun Scream').add('Patricia'),
 		loot: new Bank().add('Lydia'),
-		response: () => 'You coat Patricia in Sun Scream, and she comes back as Lydia with a glossy purple goth glow.',
+		response: () => {
+			return {
+				content: '💀 You coat Patricia in Sun Scream...',
+				embeds: [
+					new EmbedBuilder()
+						.setDescription(getLydiaQuote())
+						.setImage(
+							'https://media.discordapp.net/attachments/851273567416483861/1516534890911240242/image.png'
+						)
+				]
+			};
+		},
 		addToCL: true
 	},
 	{

@@ -31,7 +31,7 @@ export type UsingPetOptions = {
 
 	/** If true, return the pet ID instead of a boolean. */
 	returnID?: boolean;
-}
+};
 
 export interface UsingPetFunction {
 	(pet: string | number, options: { ignoreSimilar?: boolean; returnID: true }): number | false;
