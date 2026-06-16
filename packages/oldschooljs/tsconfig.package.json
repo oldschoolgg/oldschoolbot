@@ -1,13 +1,15 @@
 {
 	"compilerOptions": {
 		"noEmit": true,
-		"rootDir": "./",
-		"outDir": "./dist",
+		"composite": true,
+		"rootDir": "src",
+		"outDir": "dist",
+		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./src/*"]
+			"@/*": ["src/*"]
 		},
 		"isolatedDeclarations": true
 	},
 	"include": ["**/*.ts", "**/*.tsx"],
-	"exclude": ["dist", "node_modules", "test"]
+	"exclude": ["dist", "node_modules", "test", "scripts"]
 }

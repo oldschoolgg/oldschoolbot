@@ -3,13 +3,14 @@
 	"compilerOptions": {
 		"composite": true,
 		"noEmit": true,
-		"rootDir": "./",
-		"outDir": "./dist",
+		"rootDir": "src",
+		"outDir": "dist",
+		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./src/*"]
+			"@/*": ["src/*"]
 		},
 		"isolatedDeclarations": true
 	},
 	"include": ["**/*.ts", "**/*.tsx"],
-	"exclude": ["dist", "node_modules", "test"]
+	"exclude": ["dist", "node_modules", "test", "scripts"]
 }

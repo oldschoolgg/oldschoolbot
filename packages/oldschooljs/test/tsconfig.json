@@ -1,6 +1,6 @@
 {
 	"extends": "../tsconfig.monorepo.json",
-	"include": ["**/*.ts"],
+	"include": ["**/*.ts", "**/*.tsx"],
 	"compilerOptions": {
 		"noEmit": true,
 		"composite": false,
