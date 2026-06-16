@@ -2003,7 +2003,7 @@ export const allCollectionLogs: ICollection = {
 					'Imitation crab hat',
 					'Partycrab',
 					'Patricia',
-					'Shining partycrab',
+					'Shiny partycrab',
 					'Lydia',
 					'Old crab cage',
 					'Mysterious bottle',
