@@ -320,7 +320,7 @@ const tripHandlers: {
 	},
 	[activity_type_enum.BeachCombing]: {
 		commandName: 'activities',
-		args: data => ({ beach_combing: { focus: data.method } })
+		args: data => ({ beach_combing: { focus: data.method, minutes: data.minutes } })
 	},
 	[activity_type_enum.Collecting]: {
 		commandName: 'activities',

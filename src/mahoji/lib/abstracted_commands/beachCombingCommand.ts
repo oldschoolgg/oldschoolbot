@@ -24,11 +24,13 @@ function countSummerCratePiecesEquipped(user: MUser) {
 	return summerCrateRewardIDs.filter(itemID => user.hasEquipped(itemID)).length;
 }
 
-export async function beachCombingCommand(user: MUser, channelId: string, focus: BeachCombingMethod) {
+export async function beachCombingCommand(user: MUser, channelId: string, focus: BeachCombingMethod, minutes?: number) {
 	const baseMaxTripLength = await user.calcMaxTripLength('BeachCombing');
 	const summerPiecesEquipped = countSummerCratePiecesEquipped(user);
 	const bonusDuration = summerPiecesEquipped * Time.Minute * 5;
-	const duration = baseMaxTripLength + bonusDuration;
+	let duration = baseMaxTripLength + bonusDuration;
+	if (minutes && minutes < 10) minutes = 10;
+	duration = Math.min(duration, minutes ? minutes * Time.Minute : duration);
 	const hasPatriciaAndCage = user.usingPet('Patricia') && user.hasEquipped(BSOItem.OLD_CRAB_CAGE);
 
 	await ActivityManager.startTrip<BeachCombingActivityTaskOptions>({
@@ -36,7 +38,8 @@ export async function beachCombingCommand(user: MUser, channelId: string, focus:
 		channelId,
 		duration,
 		type: 'BeachCombing',
-		method: focus
+		method: focus,
+		minutes
 	});
 
 	const focusLine = {

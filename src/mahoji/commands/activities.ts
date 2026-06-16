@@ -112,6 +112,13 @@ export const activitiesCommand = defineCommand({
 						name: i,
 						value: i
 					}))
+				},
+				{
+					type: 'Integer',
+					name: 'minutes',
+					description: 'The number of minutes to stay out.',
+					required: false,
+					min_value: 10
 				}
 			]
 		},
@@ -593,7 +600,12 @@ export const activitiesCommand = defineCommand({
 			return myNotesCommand(user, channelId);
 		}
 		if (options.beach_combing) {
-			return beachCombingCommand(user, channelId, options.beach_combing.focus as BeachCombingMethod);
+			return beachCombingCommand(
+				user,
+				channelId,
+				options.beach_combing.focus as BeachCombingMethod,
+				options.beach_combing.minutes
+			);
 		}
 		if (options.warriors_guild) {
 			return warriorsGuildCommand(

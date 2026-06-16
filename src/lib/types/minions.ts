@@ -57,6 +57,7 @@ export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
 
 export interface BeachCombingActivityTaskOptions extends ActivityTaskOptions {
 	type: 'BeachCombing';
+	minutes?: number;
 	method: BeachCombingMethod;
 }
 
