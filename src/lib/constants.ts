@@ -204,7 +204,8 @@ export enum BitField {
 	HasHalloweenWallkit = 234,
 	HasEarnedRiftGuardianFromStar = 235,
 	DisablePaints = 236,
-	LegitNewPlayer = 237
+	LegitNewPlayer = 237,
+	DisableGlowEffects = 238
 }
 
 export interface IBitFieldData {
@@ -483,6 +484,11 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 	},
 	[BitField.DisablePaints]: {
 		name: 'Disable item Paints',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisableGlowEffects]: {
+		name: 'Disable Glow Effects',
 		protected: false,
 		userConfigurable: true
 	},
