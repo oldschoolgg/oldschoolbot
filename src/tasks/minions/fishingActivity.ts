@@ -113,10 +113,11 @@ export const fishingTask: MinionTask = {
 		if (fish.name === 'Lobster') bottleRate = 150;
 		if (fish.name === 'Mackerel') bottleRate = 100;
 		if (fish.alias?.includes('herring')) bottleRate = 100;
-		if (user.usingPet('Patricia')) bottleRate = Math.floor(bottleRate * 0.5);
+		const hasPatriciaEquipped = user.usingPet('Patricia');
+		if (hasPatriciaEquipped) bottleRate = Math.floor(bottleRate * 0.5);
 		if (user.usingPet('Partycrab')) bottleRate = Math.floor(bottleRate * 0.7);
 
-		let crabCageRate = user.usingPet(BSOItem.PATRICIA) ? 100 : 250;
+		let crabCageRate = hasPatriciaEquipped ? 100 : 250;
 		if (fish.name === 'Lobster') crabCageRate = Math.floor(crabCageRate * 0.5);
 		const minutes = Math.floor(data.duration / Time.Minute);
 		const userAlreadyHasCrabCage = user.allItemsOwned.has(BSOItem.OLD_CRAB_CAGE);
@@ -144,13 +145,15 @@ export const fishingTask: MinionTask = {
 				if (rng.roll(crabCageRate)) {
 					result.updateBank.itemLootBank.add(BSOItem.OLD_CRAB_CAGE);
 					result.messages.push(
-						'🦀 Patricia tugged something rusted from the shallows: an **Old crab cage**.'
+						hasPatriciaEquipped
+							? '🦀 Patricia tugged something rusted from the shallows: an **Old crab cage**.'
+							: '🦀 A strange force helped you draw something rusted from the briny deep: an **Old crab cage**.'
 					);
 					break;
 				}
 			}
 		}
-		if (user.usingPet('Patricia')) {
+		if (hasPatriciaEquipped) {
 			if (fish.name === 'Lobster' && user.hasEquipped(BSOItem.OLD_CRAB_CAGE) && !user.cl.has(BSOItem.PARTYCRAB)) {
 				for (let i = 0; i < minutes; i++) {
 					if (rng.roll(24 * 60)) {
@@ -165,7 +168,7 @@ export const fishingTask: MinionTask = {
 		}
 
 		if (user.hasEquipped(BSOItem.MYSTERIOUS_BOTTLE)) {
-			const mysteriousBottleChance = user.usingPet('Patricia')
+			const mysteriousBottleChance = hasPatriciaEquipped
 				? 500
 				: user.usingPet('Partycrab')
 					? 650
