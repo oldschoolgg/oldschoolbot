@@ -1,13 +1,13 @@
 import { BSOItem } from '@/lib/bso/BSOItem.js';
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 import { handleCrateSpawns } from '@/lib/bso/handleCrateSpawns.js';
-import { convertMysteriousBottleToSeaWater } from '@/lib/bso/summerDays.js';
+import { BEACH_COMBING_PET, convertMysteriousBottleToSeaWater, SUMMER_CRATE_S9_EMOJI } from '@/lib/bso/summerDays.js';
 
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, LootTable, randArrItem, SimpleTable } from 'oldschooljs';
 
 import { globalConfig } from '@/lib/constants.js';
-import type {BeachCombingActivityTaskOptions, BeachCombingMethod} from '@/lib/types/minions.js';
+import type { BeachCombingActivityTaskOptions } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 const noLootClosers = [
@@ -74,28 +74,48 @@ function flip(rng: RNGProvider = MathRNG) {
 	return rng.roll(2);
 }
 
-async function getBuriedTreasureChance(user: MUser, focus?: BeachCombingMethod) {
+async function getBuriedTreasureChance(user: MUser) {
 	const clientStorage = await prisma.clientStorage.findFirst({
 		where: { id: globalConfig.clientID },
 		select: { buried_treasure_winners: true }
 	});
 	const buriedTreasureWinners = (clientStorage?.buried_treasure_winners ?? {}) as Record<string, ItemBank>;
 
-	const totalPrizes = Object.values(buriedTreasureWinners).reduce(
+	let totalPrizes = Object.values(buriedTreasureWinners).reduce(
 		(total, winnerBank) => total + Object.values(winnerBank).reduce((bankTotal, qty) => bankTotal + qty, 0),
 		0
 	);
+	totalPrizes = Math.max(1, totalPrizes - 20);
 
+	console.log(`Total Prizes: ${totalPrizes}`);
+	console.log(buriedTreasureWinners);
+	const myPrizes = buriedTreasureWinners[user.id]
+		? Object.values(buriedTreasureWinners[user.id]).reduce((total, qty) => total + qty, 0)
+		: 0;
 	let chance = 1000;
-	for (let i = 0; i < totalPrizes; i++) {
-		chance *= 1.1;
+	for (let i = 0; i < totalPrizes - myPrizes; i++) {
+		chance *= 1.05;
 	}
 	console.log(`Chance: ${chance}`);
-	const wonPrizes = buriedTreasureWinners[user.id] ?
-		Object.values(buriedTreasureWinners[user.id]).reduce((total, qty) => total + qty, 0)
-		: 0;
-	chance *= 2 ** wonPrizes;
-	console.log(`Won Prizes: ${wonPrizes}\t\tMutiplier: ${2 ** wonPrizes}\t\tFinal Chance: ${chance}`);
+
+	for (let i = 1; i <= 5; i++) {
+		console.log(`${i} Items:`);
+		for (let j = 1.25; j <= 2.5; j += 0.25) {
+			const ijMultiplier = Number((j ** i).toFixed(2));
+			//const ijChance1k = 1000 * ijMultiplier;
+			const ijChance = Math.floor(chance * ijMultiplier);
+			console.log(`\t${j.toFixed(2)} => ${ijMultiplier}\t=> ${ijChance}`);
+
+			// console.log(
+			// 	`${i} Items, ${j} Scaling:\n` +
+			// 		// `\t1000 * ${ijMultiplier}\t =\t ${ijChance1k}\n` +
+			// 		`\t${chance.toFixed(2)} * ${ijMultiplier}\t =\t ${ijChance}\n`
+			// );
+		}
+	}
+
+	chance *= 1.25 ** myPrizes;
+	console.log(`Won Prizes: ${myPrizes}\t\tMutiplier: ${2 ** myPrizes}\t\tFinal Chance: ${chance}`);
 	return Math.ceil(chance);
 }
 
@@ -220,7 +240,7 @@ export const beachCombingTask: MinionTask = {
 				break;
 			}
 		}
-		const buriedTreasureChance = await getBuriedTreasureChance();
+		const buriedTreasureChance = await getBuriedTreasureChance(user);
 		const secretLoot = new Bank();
 		for (let i = 0; i < minutes; i++) {
 			if (!rng.roll(buriedTreasureChance)) continue;
@@ -233,8 +253,7 @@ export const beachCombingTask: MinionTask = {
 		}
 
 		if (user.hasEquipped(BSOItem.MYSTERIOUS_BOTTLE)) {
-			const mysteriousBottleChance =
-				method === 'Surfing' ? (hasPatricia ? 150 : 300) : hasPatricia ? 600 : 900;
+			const mysteriousBottleChance = method === 'Surfing' ? (hasPatricia ? 150 : 300) : hasPatricia ? 600 : 900;
 			for (let i = 0; i < minutes; i++) {
 				if (!rng.roll(mysteriousBottleChance)) continue;
 				if (await convertMysteriousBottleToSeaWater(user)) {

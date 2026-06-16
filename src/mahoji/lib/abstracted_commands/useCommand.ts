@@ -287,7 +287,8 @@ export const genericUsables: {
 		items: [Items.getOrThrow('Sun Scream (unf)'), Items.getOrThrow('Black shell')],
 		cost: new Bank().add('Sun Scream (unf)').add('Black shell'),
 		loot: new Bank().add('Sun Scream'),
-		response: () => 'You crush the Black shell into the unfinished mixture, and it settles into a finished bottle of Sun Scream.',
+		response: () =>
+			'You crush the Black shell into the unfinished mixture, and it settles into a finished bottle of Sun Scream.',
 		addToCL: true
 	},
 	{

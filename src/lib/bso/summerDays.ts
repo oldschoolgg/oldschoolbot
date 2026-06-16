@@ -1,6 +1,7 @@
+import { BSOItem } from '@/lib/bso/BSOItem.js';
+
 import type { GearSetup, GearSetupType } from '@oldschoolgg/gear';
 
-import { BSOItem } from '@/lib/bso/BSOItem.js';
 import type { MUserClass } from '@/lib/user/MUser.js';
 
 export const BEACH_COMBING_PET = {
