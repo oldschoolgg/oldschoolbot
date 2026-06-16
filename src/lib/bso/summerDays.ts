@@ -1,7 +1,7 @@
 import { BSOItem } from '@/lib/bso/BSOItem.js';
 
 import type { GearSetup, GearSetupType } from '@oldschoolgg/gear';
-import { Bank } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
 import type { MUserClass } from '@/lib/user/MUser.js';
 
@@ -14,6 +14,11 @@ export const BEACH_COMBING_PET = {
 } as const;
 
 export const SUMMER_CRATE_S9_EMOJI = '<:s9chest:1515787545970081843>';
+
+export function getEclipsePetName(user: MUserClass): string {
+	const equippedPetID = user.usingPet(BEACH_COMBING_PET.itemID, { returnID: true });
+	return equippedPetID ? Items.getOrThrow(equippedPetID).name : BEACH_COMBING_PET.name;
+}
 
 export async function convertMysteriousBottleToSeaWater(user: MUserClass): Promise<boolean> {
 	const gearUpdates: { setup: GearSetupType; gear: GearSetup }[] = [];

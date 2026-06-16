@@ -1,5 +1,5 @@
 import { BSOItem } from '@/lib/bso/BSOItem.js';
-import { convertMysteriousBottleToSeaWater } from '@/lib/bso/summerDays.js';
+import { convertMysteriousBottleToSeaWater, getEclipsePetName } from '@/lib/bso/summerDays.js';
 
 import { Emoji, Events, Time } from '@oldschoolgg/toolkit';
 import { EItem } from 'oldschooljs';
@@ -114,6 +114,7 @@ export const fishingTask: MinionTask = {
 		if (fish.name === 'Mackerel') bottleRate = 100;
 		if (fish.alias?.includes('herring')) bottleRate = 100;
 		const hasPatriciaEquipped = user.usingPet('Patricia');
+		const eclipsePetName = hasPatriciaEquipped ? getEclipsePetName(user) : 'Patricia';
 		if (hasPatriciaEquipped) bottleRate = Math.floor(bottleRate * 0.5);
 		if (user.usingPet('Partycrab')) bottleRate = Math.floor(bottleRate * 0.7);
 
@@ -146,7 +147,7 @@ export const fishingTask: MinionTask = {
 					result.updateBank.itemLootBank.add(BSOItem.OLD_CRAB_CAGE);
 					result.messages.push(
 						hasPatriciaEquipped
-							? '🦀 Patricia tugged something rusted from the shallows: an **Old crab cage**.'
+							? `🦀 ${eclipsePetName} tugged something rusted from the shallows: an **Old crab cage**.`
 							: '🦀 A strange force helped you draw something rusted from the briny deep: an **Old crab cage**.'
 					);
 					break;

@@ -364,7 +364,9 @@ export async function calcFishingTripStart({
 	}
 
 	const hasOldCrabCageEquipped = gearBank.hasEquipped(BSOItem.OLD_CRAB_CAGE);
-	const hasPatriciaEquipped = gearBank.usingPet('Patricia');
+	const patriciaPetID = gearBank.usingPet('Patricia', { returnID: true });
+	const hasPatriciaEquipped = Boolean(patriciaPetID);
+	const eclipsePetName = patriciaPetID ? Items.getOrThrow(patriciaPetID).name : 'Patricia';
 	const hasShelldonEquipped = gearBank.usingPet('Shelldon');
 	const isPatriciaLobsterBoost = fish.name === 'Lobster' && hasPatriciaEquipped && hasOldCrabCageEquipped;
 
@@ -372,12 +374,12 @@ export async function calcFishingTripStart({
 		if (isPatriciaLobsterBoost) {
 			tripSpeedMultiplier *= 3;
 			boosts.push(
-				'<:starfish:1515651612918677564> 3x faster for Patricia and Old crab cage while fishing Lobster'
+				`<:starfish:1515651612918677564> 3x faster for ${eclipsePetName} and Old crab cage while fishing Lobster`
 			);
 		} else {
 			tripSpeedMultiplier *= 2.15;
 			boosts.push(
-				'<:starfish:1515651612918677564> Patricia is your new best friend! You two become an expert fishing pair!'
+				`<:starfish:1515651612918677564> ${eclipsePetName} is your new best friend! You two become an expert fishing pair!`
 			);
 		}
 	} else if (hasShelldonEquipped) {

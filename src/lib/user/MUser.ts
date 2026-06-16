@@ -1,3 +1,4 @@
+import { type UsingPetFunction, usingPet } from '@/lib/bso/bsoUtil.js';
 import type { GodFavourBank, GodName } from '@/lib/bso/minigames/divineDominion.js';
 import { mysteriousStepData, mysteriousTrailTracks } from '@/lib/bso/mysteryTrail.js';
 import type { IMaterialBank } from '@/lib/bso/skills/invention/index.js';
@@ -24,7 +25,7 @@ import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { Mutex } from 'async-mutex';
 import { randArrItem, SeedableRNG } from 'node-rng';
 import { cryptoRng } from 'node-rng/crypto';
-import { Bank, EMonster, type Item, type ItemBank, Items, itemID } from 'oldschooljs';
+import { Bank, EMonster, type Item, type ItemBank, Items } from 'oldschooljs';
 import { clone } from 'remeda';
 
 import type {
@@ -1192,10 +1193,8 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 		return 1;
 	}
 
-	usingPet(name: string | number) {
-		if (typeof name === 'number') return this.user.minion_equippedPet === name;
-		return this.user.minion_equippedPet === itemID(name);
-	}
+	usingPet: UsingPetFunction = ((pet, options) =>
+		usingPet(this.user.minion_equippedPet, pet, options)) as UsingPetFunction;
 }
 
 export async function srcMUserFetch(userID: string, updates?: Prisma.UserUpdateInput) {

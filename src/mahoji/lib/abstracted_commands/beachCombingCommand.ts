@@ -1,4 +1,5 @@
 import { BSOItem } from '@/lib/bso/BSOItem.js';
+import { getEclipsePetName } from '@/lib/bso/summerDays.js';
 
 import { EmbedBuilder } from '@oldschoolgg/discord';
 import { Time } from '@oldschoolgg/toolkit';
@@ -31,7 +32,9 @@ export async function beachCombingCommand(user: MUser, channelId: string, focus:
 	let duration = baseMaxTripLength + bonusDuration;
 	if (minutes && minutes < 10) minutes = 10;
 	duration = Math.min(duration, minutes ? minutes * Time.Minute : duration);
-	const hasPatriciaAndCage = user.usingPet('Patricia') && user.hasEquipped(BSOItem.OLD_CRAB_CAGE);
+	const hasPatricia = user.usingPet('Patricia');
+	const eclipsePetName = hasPatricia ? getEclipsePetName(user) : 'Patricia';
+	const hasPatriciaAndCage = hasPatricia && user.hasEquipped(BSOItem.OLD_CRAB_CAGE);
 
 	await ActivityManager.startTrip<BeachCombingActivityTaskOptions>({
 		userID: user.id,
@@ -53,9 +56,9 @@ export async function beachCombingCommand(user: MUser, channelId: string, focus:
 	responses.push(
 		`${user.minionName} is now beach combing and will wash back in around ${formatTripDuration(user, duration)}.`
 	);
-	if (user.usingPet('Patricia')) {
+	if (hasPatricia) {
 		responses.push(
-			`<:starfish:1515651612918677564> Patricia gives you the encouragement needed to stay longer... You might get sun-burned.`
+			`<:starfish:1515651612918677564> ${eclipsePetName} gives you the encouragement needed to stay longer... You might get sun-burned.`
 		);
 	}
 	if (user.usingPet('Shelldon')) {
@@ -74,7 +77,7 @@ export async function beachCombingCommand(user: MUser, channelId: string, focus:
 	responses.push(` ${focusLine}`);
 	if (hasPatriciaAndCage && !user.cl.has(BSOItem.PARTYCRAB)) {
 		responses.push(
-			`Patricia taps the old crab cage against the sand, but this shoreline isn't where that answer lives.`
+			`${eclipsePetName} taps the old crab cage against the sand, but this shoreline isn't where that answer lives.`
 		);
 	}
 

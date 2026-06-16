@@ -14515,7 +14515,7 @@ setCustomItem(
 );
 setCustomItem(
 	73_985,
-	'Shiny Patricia',
+	'Lydia',
 	'Bronze full helm',
 	{
 		customItemData: {

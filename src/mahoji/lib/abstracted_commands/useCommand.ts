@@ -250,8 +250,8 @@ export const genericUsables: {
 	{
 		items: [Items.getOrThrow('Sun Scream'), Items.getOrThrow('Patricia')],
 		cost: new Bank().add('Sun Scream').add('Patricia'),
-		loot: new Bank().add('Shiny Patricia'),
-		response: () => 'You coat Patricia in Sun Scream, and she comes back with a glossy purple goth glow.',
+		loot: new Bank().add('Lydia'),
+		response: () => 'You coat Patricia in Sun Scream, and she comes back as Lydia with a glossy purple goth glow.',
 		addToCL: true
 	},
 	{

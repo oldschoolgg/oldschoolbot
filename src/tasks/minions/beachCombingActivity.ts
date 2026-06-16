@@ -1,7 +1,12 @@
 import { BSOItem } from '@/lib/bso/BSOItem.js';
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 import { handleCrateSpawns } from '@/lib/bso/handleCrateSpawns.js';
-import { BEACH_COMBING_PET, convertMysteriousBottleToSeaWater, SUMMER_CRATE_S9_EMOJI } from '@/lib/bso/summerDays.js';
+import {
+	BEACH_COMBING_PET,
+	convertMysteriousBottleToSeaWater,
+	getEclipsePetName,
+	SUMMER_CRATE_S9_EMOJI
+} from '@/lib/bso/summerDays.js';
 
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, LootTable, randArrItem, SimpleTable } from 'oldschooljs';
@@ -147,10 +152,11 @@ export const beachCombingTask: MinionTask = {
 
 		const hasCageBonus = user.hasEquipped(BSOItem.OLD_CRAB_CAGE);
 		const hasPatricia = user.usingPet(BEACH_COMBING_PET.itemID);
+		const eclipsePetName = hasPatricia ? getEclipsePetName(user) : BEACH_COMBING_PET.name;
 		let crateDurationMultiplier = hasCageBonus ? 1.15 : 1;
 		if (hasPatricia) {
 			discoveries.push(
-				`${BEACH_COMBING_PET.emoji} ${BEACH_COMBING_PET.name} spent the trip turning over shells, stones, and anything else that caught her eye.\n`
+				`${BEACH_COMBING_PET.emoji} ${eclipsePetName} spent the trip turning over shells, stones, and anything else that caught her eye.\n`
 			);
 			crateDurationMultiplier *= 1.2;
 		}
