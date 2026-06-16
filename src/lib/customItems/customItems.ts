@@ -14482,7 +14482,6 @@ setCustomItem(
 	'Bronze full helm',
 	{
 		customItemData: {
-			isSecret: true,
 			cantDropFromMysteryBoxes: true,
 			isPet: true
 		}
@@ -14507,7 +14506,6 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			isSecret: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -14519,8 +14517,8 @@ setCustomItem(
 	'Bronze full helm',
 	{
 		customItemData: {
-			isSecret: true,
 			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
 			dontTradeOnGE: true,
 			isPet: true
 		}
@@ -14533,8 +14531,8 @@ setCustomItem(
 	'Bronze full helm',
 	{
 		customItemData: {
-			isSecret: true,
 			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
 			dontTradeOnGE: true,
 			isPet: true
 		}
@@ -14593,7 +14591,6 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			isSecret: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},

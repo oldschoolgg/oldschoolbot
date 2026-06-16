@@ -1987,7 +1987,10 @@ export const allCollectionLogs: ICollection = {
 					'Golden partyhat',
 					'Black swan',
 					'Wubufu',
-					'The whale card'
+					'The whale card',
+					'Radiant magnabbit',
+					'Shiny Partycrab',
+					'Lydia'
 				]),
 				counts: false
 			}
