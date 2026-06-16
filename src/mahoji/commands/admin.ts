@@ -791,7 +791,12 @@ export const adminCommand = defineCommand({
 					name: 'thing',
 					description: 'The thing',
 					required: true,
-					choices: viewableThings.map(i => ({ name: i.name, value: i.name }))
+					autocomplete: async ({ value }: StringAutoComplete) => {
+						return viewableThings
+							.filter(thing => (!value ? true : thing.name.toLowerCase().includes(value.toLowerCase())))
+							.slice(0, 25)
+							.map(thing => ({ name: thing.name, value: thing.name }));
+					}
 				},
 				{
 					type: 'String',
