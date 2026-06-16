@@ -628,11 +628,11 @@ export const testPotatoCommand = globalConfig.isProduction
 						{
 							type: 'String',
 							name: 'patch_name',
-							description: 'The patches you want to harvest.',
+							description: 'The patches you want to force grow.',
 							required: true,
 							choices: [
-								{ name: 'Birdhouses', value: 'birdhouses' },
 								{ name: 'All patches', value: 'all' },
+								{ name: 'Birdhouses', value: 'birdhouses' },
 								...farmingPatchNames.map(i => ({ name: i, value: i }))
 							]
 						}
@@ -1160,7 +1160,7 @@ export const testPotatoCommand = globalConfig.isProduction
 					);
 
 					await user.update(updates);
-					return userGrowingProgressStr((await getFarmingInfoFromUser(user)).patchesDetailed);
+					return userGrowingProgressStr((await getFarmingInfoFromUser(user)).patchesDetailed, user);
 				}
 
 				if (options.setslayertask) {

@@ -28,7 +28,7 @@ const hopsPlants: Plant[] = [
 		defaultNumOfPatches: 4,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -62,7 +62,7 @@ const hopsPlants: Plant[] = [
 		defaultNumOfPatches: 4,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -96,7 +96,7 @@ const hopsPlants: Plant[] = [
 		defaultNumOfPatches: 4,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -130,7 +130,7 @@ const hopsPlants: Plant[] = [
 		defaultNumOfPatches: 4,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -164,7 +164,7 @@ const hopsPlants: Plant[] = [
 		defaultNumOfPatches: 4,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -198,7 +198,7 @@ const hopsPlants: Plant[] = [
 		defaultNumOfPatches: 4,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -232,7 +232,7 @@ const hopsPlants: Plant[] = [
 		defaultNumOfPatches: 4,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
