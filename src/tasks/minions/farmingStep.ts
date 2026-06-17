@@ -862,7 +862,7 @@ export async function executeFarmingStep({
 			? xpBreakdownParts.join(', ').replace(/, ([^,]*)$/, ', and $1')
 			: xpBreakdownParts[0];
 	infoStr.push(
-		`${plantingStr}harvesting ${patchType.lastQuantity}x ${plantToHarvest.name}.${payStr}\n\nYou received ${xpBreakdown}. In total: ${xpRes}. ${
+		`${user}, ${plantingStr}harvesting ${patchType.lastQuantity}x ${plantToHarvest.name}.${payStr}\n\nYou received ${xpBreakdown}. In total: ${xpRes}. ${
 			woodcuttingOutcome.woodcuttingOccurred ? wcXP : ''
 		}`
 	);

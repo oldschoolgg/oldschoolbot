@@ -85,6 +85,7 @@ describe('farmingStep tree fee handling', () => {
 		});
 
 		expect(result).not.toBeNull();
+		expect(result?.message).toContain(`${user}`);
 		expect(removeItemsFromBankSpy).not.toHaveBeenCalled();
 		expect(addItemsToBankSpy).toHaveBeenCalledTimes(1);
 		const refundArg = addItemsToBankSpy.mock.calls[0]?.[0] as { items: Bank } | undefined;
