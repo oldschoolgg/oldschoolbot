@@ -17,11 +17,13 @@ import { formatTripDuration } from '@/lib/util/minionUtils.js';
 export async function harvestCommand({
 	user,
 	seedType,
-	interaction
+	interaction,
+	channelId = interaction.channelId
 }: {
 	user: MUser;
 	seedType: string;
 	interaction: MInteraction;
+	channelId?: string;
 }) {
 	if (await user.minionIsBusy()) {
 		return 'Your minion must not be busy to use this command.';
@@ -90,7 +92,7 @@ It'll take around ${formatTripDuration(user, duration)} to finish.${formatFarmin
 		plantsName: patch.lastPlanted,
 		patchType: patches[patch.patchName],
 		userID: user.id,
-		channelId: interaction.channelId,
+		channelId,
 		upgradeType,
 		duration,
 		quantity: patch.lastQuantity,
@@ -106,6 +108,7 @@ It'll take around ${formatTripDuration(user, duration)} to finish.${formatFarmin
 export async function farmingPlantCommand({
 	user,
 	interaction,
+	channelId = interaction.channelId,
 	plantName,
 	quantity,
 	autoFarmed,
@@ -113,6 +116,7 @@ export async function farmingPlantCommand({
 }: {
 	user: MUser;
 	interaction: MInteraction;
+	channelId?: string;
 	plantName: string;
 	quantity: number | null;
 	autoFarmed: boolean;
@@ -218,7 +222,7 @@ export async function farmingPlantCommand({
 		plantsName: plant.name,
 		patchType: patches[plant.seedType],
 		userID: user.id,
-		channelId: interaction.channelId,
+		channelId,
 		quantity,
 		upgradeType,
 		payment: didPay,

@@ -464,6 +464,7 @@ export const farmingCommand = defineCommand({
 			return farmingPlantCommand({
 				user,
 				interaction,
+				channelId,
 				plantName: options.plant.plant_name,
 				quantity: options.plant.quantity ?? null,
 				autoFarmed: false,
@@ -474,7 +475,8 @@ export const farmingCommand = defineCommand({
 			return harvestCommand({
 				user: user,
 				seedType: options.harvest.patch_name,
-				interaction
+				interaction,
+				channelId
 			});
 		}
 		if (options.tithe_farm) {
