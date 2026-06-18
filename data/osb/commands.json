@@ -1,6 +1,6 @@
 {
-	"hash": "c3cf22c657cfa6cce5809c9f38dac7bf",
-	"date": "2026-06-02T16:20:50.151Z",
+	"hash": "4adfea88669c8929e25c50c45d38ca91",
+	"date": "2026-06-09T08:23:51.005Z",
 	"data": [
 		{
 			"name": "activities",
@@ -177,6 +177,7 @@
 				"default_compost",
 				"harvest",
 				"plant",
+				"set_preferred",
 				"tithe_farm"
 			]
 		},
