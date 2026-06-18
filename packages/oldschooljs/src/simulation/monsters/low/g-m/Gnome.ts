@@ -2,11 +2,12 @@ import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
 const GnomeTable = new LootTable({ limit: 128 })
-	.add('King worm', 1, 55)
-	.add('Coins', [1, 300], 30)
-	.add('Swamp toad', 1, 28)
+	.add('Arrow shaft', [2, 4], 56)
+	.add('Coins', 300, 30)
+	.add('Swamp toad', 1, 24)
 	.add('Gold ore', 1, 8)
 	.add('Earth rune', 1, 5)
+	.add('King worm', 1, 3)
 	.add('Fire orb', 1, 2)
 	.tertiary(150, 'Clue scroll (medium)');
 
