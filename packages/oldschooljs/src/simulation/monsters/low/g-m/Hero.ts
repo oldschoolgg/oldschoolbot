@@ -9,7 +9,7 @@ const HeroTable = new LootTable({ limit: 128 })
 	.add('Fire orb', 2)
 	.add('Diamond', 1)
 	.add('Gold ore', 1)
-	.tertiary(1_400, 'Clue scroll (elite)')
+	.tertiary(1_400, 'Clue scroll (elite)');
 
 export const Hero: SimpleMonster = new SimpleMonster({
 	id: 3295,
