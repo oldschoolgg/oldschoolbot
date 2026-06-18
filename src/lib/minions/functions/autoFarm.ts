@@ -21,7 +21,6 @@ import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { fetchRepeatTrips, repeatTrip } from '@/lib/util/repeatStoredTrip.js';
-import { harvestCommand } from '@/mahoji/lib/abstracted_commands/farmingCommand.js';
 import { prepareFarmingStep } from './farmingTripHelpers.js';
 
 interface PlannedAutoFarmStep {
@@ -150,10 +149,6 @@ export async function autoFarm(
 	if (hasPreferenceInfluence) {
 		errorString = "There's no Farming actions available for your saved preferences.";
 	}
-	const canHarvestOnly =
-		autoFarmFilter === AutoFarmFilterEnum.AllFarm && !hasPreferenceInfluence
-			? patchesDetailed.find(patch => patch.ready === true)
-			: null;
 
 	let firstPrepareError: string | null = null;
 
@@ -298,10 +293,6 @@ export async function autoFarm(
 	}
 
 	if (plannedSteps.length === 0) {
-		if (canHarvestOnly) {
-			return harvestCommand({ user, interaction, seedType: canHarvestOnly.patchName });
-		}
-
 		if (firstPrepareError !== null) {
 			return firstPrepareError;
 		}
