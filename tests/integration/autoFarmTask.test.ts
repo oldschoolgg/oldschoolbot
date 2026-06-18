@@ -12,6 +12,10 @@ import { farmingTask } from '../../src/tasks/minions/farmingActivity.js';
 import * as farmingStepModule from '../../src/tasks/minions/farmingStep.js';
 import { createTestUser, mockClient } from './util.js';
 
+vi.mock('../../src/lib/util/makeBankImage.js', () => ({
+	makeBankImage: vi.fn(async () => ({ name: 'bank.png', buffer: Buffer.from('bank') }))
+}));
+
 describe('farming task auto farm sequencing', () => {
 	beforeEach(async () => {
 		await mockClient();
@@ -234,16 +238,17 @@ describe('farming task auto farm sequencing', () => {
 		});
 
 		const finalCall = handleTripFinishSpy.mock.calls[0]?.[0] as
-			| { message?: string | { content?: string }; loot?: Bank | null }
+			| { message?: string | { content?: string; files?: SendableFile[] }; loot?: Bank | null }
 			| undefined;
 		const messageContent =
 			typeof finalCall?.message === 'string' ? finalCall.message : (finalCall?.message?.content ?? '');
 
-		expect(messageContent).toContain('Seed pack');
-		expect(messageContent).toContain('Watermelon');
+		expect(messageContent).not.toContain('Seed pack');
 		expect(messageContent).toContain('Woodcutting 100 XP (3k/Hr)');
-		expect(messageContent).toContain('**Patches farmed:** Patches: 6x Guam seed, Patches: 8x Watermelon.');
+		expect(messageContent).not.toContain('**Total loot:**');
+		expect(messageContent).not.toContain('**Patches farmed:**');
 		expect(messageContent).toContain('**Boosts:** Graceful.');
+		expect(typeof finalCall?.message === 'string' ? [] : finalCall?.message?.files).toHaveLength(1);
 
 		const finalLoot = finalCall?.loot;
 		expect(finalLoot?.has('Seed pack')).toBe(true);

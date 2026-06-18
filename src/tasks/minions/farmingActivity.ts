@@ -1,12 +1,10 @@
 import { Bank, toKMB } from 'oldschooljs';
 
-import {
-	formatAutoFarmSummarySteps,
-	formatFarmingBoosts
-} from '@/lib/skilling/skills/farming/utils/farmingFormatters.js';
+import { formatFarmingBoosts } from '@/lib/skilling/skills/farming/utils/farmingFormatters.js';
 import type { AutoFarmSummary, FarmingActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { handleTripFinish as defaultHandleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { executeFarmingStep, type FarmingStepSummary } from './farmingStep.js';
 
 function getPatchLabel(data: FarmingActivityTaskOptions): string {
@@ -131,14 +129,6 @@ function buildCombinedAutoFarmMessage(user: MUser, summary: AutoFarmSummary): st
 	if (summary.totalWeeds > 0 && totalLoot.amount('Weeds') === 0) {
 		totalLoot.add('Weeds', summary.totalWeeds);
 	}
-	if (totalLoot.length > 0) {
-		lines.push(`**Total loot:** ${totalLoot}.`);
-	}
-
-	const stepLines = formatAutoFarmSummarySteps(summary);
-	if (stepLines.length > 0) {
-		lines.push(...stepLines);
-	}
 
 	const boostLine = formatFarmingBoosts(summary.boosts, { prefix: '', label: '**Boosts:**' });
 	if (boostLine) lines.push(boostLine);
@@ -225,7 +215,14 @@ export const farmingTask: MinionTask = {
 			shouldRenderCombinedSummary && updatedSummary!.attachmentMessages.length > 0
 				? `${content}\n\n${updatedSummary!.attachmentMessages.join('\n\n')}`
 				: content;
-		const message = result.attachment ? { content: finalContent, files: [result.attachment] } : finalContent;
+		const files: SendableFile[] = [];
+		if (result.attachment) {
+			files.push(result.attachment);
+		}
+		if (shouldRenderCombinedSummary && totalLoot && totalLoot.length > 0) {
+			files.push(await makeBankImage({ bank: totalLoot, title: 'Loot From Auto Farming', user }));
+		}
+		const message = files.length > 0 ? { content: finalContent, files } : finalContent;
 		const tripFinishData = shouldRenderCombinedSummary
 			? ({ ...data, duration: updatedSummary!.totalDuration } satisfies FarmingActivityTaskOptions)
 			: data;
