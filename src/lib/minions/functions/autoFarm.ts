@@ -3,7 +3,7 @@ import { allFarm, replant } from '@/lib/minions/functions/autoFarmFilters.js';
 import { plants } from '@/lib/skilling/skills/farming/index.js';
 import type { IPatchDataDetailed } from '@/lib/skilling/skills/farming/utils/types.js';
 import type { Plant } from '@/lib/skilling/types.js';
-import { farmingPlantCommand } from '@/mahoji/lib/abstracted_commands/farmingCommand.js';
+import { farmingPlantCommand, harvestCommand } from '@/mahoji/lib/abstracted_commands/farmingCommand.js';
 
 export async function autoFarm(interaction: MInteraction, user: MUser, patchesDetailed: IPatchDataDetailed[]) {
 	if (await user.minionIsBusy()) {
@@ -13,7 +13,7 @@ export async function autoFarm(interaction: MInteraction, user: MUser, patchesDe
 	const farmingLevel = user.skillsAsLevels.farming;
 	let toPlant: Plant | undefined;
 	let canPlant: Plant | undefined;
-	let canHarvest: Plant | undefined;
+	let canHarvest: IPatchDataDetailed | undefined;
 	let eligible: Plant[] = [];
 	let errorString = '';
 	let { autoFarmFilter } = user;
@@ -39,7 +39,7 @@ export async function autoFarm(interaction: MInteraction, user: MUser, patchesDe
 		.sort((a, b) => b.level - a.level);
 
 	if (autoFarmFilter === AutoFarmFilterEnum.AllFarm) {
-		canHarvest = eligible.find(p => patchesDetailed.find(_p => _p.patchName === p.seedType)?.ready);
+		canHarvest = patchesDetailed.find(p => p.ready === true);
 		errorString = "There's no Farming crops that you have the requirements to plant, and nothing to harvest.";
 	}
 	if (autoFarmFilter === AutoFarmFilterEnum.Replant) {
@@ -52,8 +52,15 @@ export async function autoFarm(interaction: MInteraction, user: MUser, patchesDe
 		if (patchData.ready === false) return false;
 		return true;
 	});
-	toPlant = canPlant ?? canHarvest;
+	toPlant = canPlant;
 	if (!toPlant) {
+		if (canHarvest) {
+			return harvestCommand({
+				user,
+				interaction,
+				seedType: canHarvest.patchName
+			});
+		}
 		return errorString;
 	}
 
