@@ -198,8 +198,8 @@ export const beachCombingTask: MinionTask = {
 				loot.add(damagedLoot);
 			}
 		}
+		const hasOldCrabCageEquipped = user.hasEquipped(BSOItem.OLD_CRAB_CAGE);
 		const crateKeyLoot = new Bank();
-		let keyChance = 200;
 
 		let patriciaRate = clAdjustedDroprate(
 			user,
@@ -208,68 +208,98 @@ export const beachCombingTask: MinionTask = {
 			BEACH_COMBING_PET.clIncreaseMultiplier
 		);
 
-		const hasOldCrabCageEquipped = user.hasEquipped(BSOItem.OLD_CRAB_CAGE);
-		let bottleFindChance = 10 * 60;
+		let keyChance = 200;
+		let bottleFindChance = 600; // 10 hour base
 		let buriedTreasureChance = await getBuriedTreasureChance(user);
-		let convertBottleChance = hasPatricia ? 300 : 500;
+		let convertBottleChance = 500;
 		let purpleSandDollarChance = 12 * 60;
 		let blackShellChance = purpleSandDollarChance;
 		let intro = '';
 		let outro = '';
-		let activityStr = 'Drowning';
+		let activityStr = 'Drowning'; // Should never happen
 		switch (method) {
 			case 'Surfing':
 				intro =
 					'Your minion spent the trip paddling after waves, wiping out dramatically, and occasionally noticing useful things in the foam.';
 				outro = 'Mostly saltwater, style penalties, and the occasional good find.';
 				activityStr = 'Surfing';
-				patriciaRate = Math.floor(0.5 * patriciaRate);
-				convertBottleChance = hasPatricia ? 150 : 300;
+				patriciaRate *= 0.5;
+				convertBottleChance *= 0.65;
 				buriedTreasureChance *= 2;
-				bottleFindChance = 400;
-				purpleSandDollarChance = Math.floor(purpleSandDollarChance * 0.5);
-				blackShellChance = Math.floor(blackShellChance * 1.5);
+				bottleFindChance *= 0.75;
+				purpleSandDollarChance *= 0.5;
+				blackShellChance *= 1.5;
 				break;
 			case 'BeachCombing':
-				keyChance = 150;
+				keyChance *= 0.75;
 				intro =
 					'Your minion walked the tide line with intense focus, checking shells, kelp piles and every vaguely treasure-shaped lump.';
 				outro = 'A classic day of sand, shells and questionable optimism.';
 				activityStr = 'Combing the sand for treasures';
-				patriciaRate = Math.floor(0.9 * patriciaRate);
-				buriedTreasureChance = Math.floor(0.8 * buriedTreasureChance);
-				bottleFindChance = 500;
-				purpleSandDollarChance = Math.floor(purpleSandDollarChance * 1);
-				blackShellChance = Math.floor(blackShellChance * 1);
+				patriciaRate *= 0.9;
+				buriedTreasureChance *= 0.8;
+				bottleFindChance *= 0.8;
 				break;
 			case 'BuildSandcastles':
 				intro =
 					'Your minion built ambitious sandcastles, then immediately looted the surrounding moat for anything the sea had delivered.';
 				outro = 'The castles looked magnificent right up until the tide disagreed.';
 				activityStr = 'Building sandcastles';
-				patriciaRate = Math.floor(0.9 * patriciaRate);
-				buriedTreasureChance = Math.floor(0.7 * buriedTreasureChance);
-				purpleSandDollarChance = Math.floor(purpleSandDollarChance * 1.5);
-				blackShellChance = Math.floor(blackShellChance * 0.5);
+				patriciaRate *= 0.9;
+				buriedTreasureChance *= 0.7;
+				purpleSandDollarChance *= 1.5;
+				blackShellChance *= 0.5;
 				break;
 			case 'PickupTrash':
 				intro =
 					'Your minion cleaned the shoreline, salvaged odd scraps and kept anything that looked less like rubbish and more like buried luck.';
 				outro = 'The beach looked cleaner, even if the loot stayed modest.';
 				activityStr = 'Beautifying the beach';
-				patriciaRate = Math.floor(0.7 * patriciaRate);
-				buriedTreasureChance = Math.floor(0.8 * buriedTreasureChance);
-				bottleFindChance = 250;
-				purpleSandDollarChance = Math.floor(purpleSandDollarChance * 1);
-				blackShellChance = Math.floor(blackShellChance * 1);
+				patriciaRate *= 0.7;
+				buriedTreasureChance *= 0.8;
+				bottleFindChance *= 0.6;
 				break;
 		}
 
+		if (user.usingPet(BSOItem.PATRICIA)) {
+			bottleFindChance *= 0.5;
+			blackShellChance *= 0.5;
+			purpleSandDollarChance *= 0.5;
+			convertBottleChance *= 0.5;
+			keyChance *= 0.8;
+			buriedTreasureChance *= 0.8;
+		} else if(user.usingPet(BSOItem.PARTYCRAB)) {
+			bottleFindChance *= 0.7;
+			blackShellChance *= 0.7;
+			purpleSandDollarChance *= 0.7;
+			convertBottleChance *= 0.7;
+			keyChance *= 0.8;
+			buriedTreasureChance *= 0.9;
+			patriciaRate *= 0.9;
+		} else if (user.usingPet(BSOItem.SHELLDON)) {
+			bottleFindChance *= 0.7;
+			blackShellChance *= 0.7;
+			purpleSandDollarChance *= 0.7;
+			convertBottleChance *= 0.7;
+			keyChance *= 0.8;
+			buriedTreasureChance *= 0.9;
+			if (! user.cl.has(BSOItem.PATRICIA)) patriciaRate *= 0.5;
+		}
+
+		blackShellChance = Math.floor(blackShellChance );
+		purpleSandDollarChance = Math.floor(purpleSandDollarChance );
+		bottleFindChance = Math.floor(bottleFindChance );
+		convertBottleChance = Math.floor(convertBottleChance );
+		buriedTreasureChance = Math.floor(buriedTreasureChance);
+		patriciaRate = Math.floor(patriciaRate);
+		keyChance = Math.floor(keyChance);
+
 		let convertedBottle = false;
 		let foundPatricia = false;
-		let foundTreasure = false;
+		let noMoreTreasure = false;
 		let purpleSandDollarsFound = 0;
 		let blackShellsFound = 0;
+		let bottleFound = false;
 		const secretLoot = new Bank();
 
 		for (let i = 0; i < minutes; i++) {
@@ -282,11 +312,12 @@ export const beachCombingTask: MinionTask = {
 			}
 			if (hasOldCrabCageEquipped) {
 				if (rng.roll(bottleFindChance)) {
-					discoveries.push(
-						`🪸 *Your Old crab cage seems to vibrate as you pull it up, it has found a Mysterious bottle!*`
-					);
-					if (bottleFindChance) {
-						loot.add(BSOItem.MYSTERIOUS_BOTTLE, 1);
+					loot.add(BSOItem.MYSTERIOUS_BOTTLE, 1);
+					if (!bottleFound) {
+						discoveries.push(
+							`🪸 *Your Old crab cage seems to vibrate as you pull it up, it has found a Mysterious bottle!*`
+						);
+						bottleFound = true;
 					}
 				}
 			}
@@ -308,10 +339,13 @@ export const beachCombingTask: MinionTask = {
 			if (rng.roll(blackShellChance)) {
 				blackShellsFound++;
 			}
-			if (!foundTreasure && rng.roll(buriedTreasureChance)) {
+			if (rng.roll(keyChance)) {
+				crateKeyLoot.add(BSOItem.SUMMER_CRATE_KEY_S9);
+			}
+			if (!noMoreTreasure && rng.roll(buriedTreasureChance)) {
 				const buriedTreasureItem = await rollBuriedTreasurePrize(user.id, rng);
 				if (buriedTreasureItem === null) {
-					foundTreasure = true;
+					noMoreTreasure = true;
 					continue;
 				}
 				secretLoot.add(buriedTreasureItem);
@@ -333,11 +367,6 @@ export const beachCombingTask: MinionTask = {
 			);
 		}
 
-		for (let i = 0; i < minutes; i++) {
-			if (rng.roll(keyChance)) {
-				crateKeyLoot.add(BSOItem.SUMMER_CRATE_KEY_S9);
-			}
-		}
 		if (crateKeyLoot.length > 0) {
 			discoveries.push(`${SUMMER_CRATE_S9_EMOJI} Your minion found ${crateKeyLoot} buried in the wet sand!`);
 		}

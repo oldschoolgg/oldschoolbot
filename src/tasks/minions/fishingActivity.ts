@@ -122,7 +122,6 @@ export const fishingTask: MinionTask = {
 		if (fish.name === 'Lobster') crabCageRate = Math.floor(crabCageRate * 0.5);
 		const minutes = Math.floor(data.duration / Time.Minute);
 		const userAlreadyHasCrabCage = user.allItemsOwned.has(BSOItem.OLD_CRAB_CAGE);
-		if (fish.name === 'Lobster') crabCageRate = Math.floor(crabCageRate * 0.5);
 
 		let bottlesFound = 0;
 		for (let i = 0; i < minutes; i++) {
