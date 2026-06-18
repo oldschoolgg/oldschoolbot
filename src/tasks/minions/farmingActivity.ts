@@ -152,7 +152,7 @@ export const farmingTask: MinionTask = {
 			await handleTripFinish({
 				user,
 				channelId,
-				message: `${user.minionName} finished farming, but could not complete all follow-up actions.`,
+				message: `${user}, ${user.minionName} finished farming, but could not complete all follow-up actions.`,
 				data,
 				loot: null
 			});
