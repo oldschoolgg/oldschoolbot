@@ -18,6 +18,8 @@ import { wintertodtCommand } from '@/mahoji/lib/abstracted_commands/wintertodtCo
 import { zalcanoCommand } from '@/mahoji/lib/abstracted_commands/zalcanoCommand.js';
 
 const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:zulrah quantity:5`";
+const staleSlayerTaskMsg =
+	'You are no longer on a Slayer task for this monster. Use Auto Slay for your current task, or run `/k` manually if you want to kill it off-task.';
 
 export async function minionKillCommand(
 	user: MUser,
@@ -64,7 +66,9 @@ export async function minionKillCommand(
 
 	const slayerInfo = await user.fetchSlayerInfo();
 
-	if (slayerInfo.assignedTask === null && onTask) return 'You are no longer on a slayer task for this monster!';
+	if (onTask && !slayerInfo.assignedTask?.monsters.includes(monster.id)) {
+		return staleSlayerTaskMsg;
+	}
 
 	const pkEvasionExperience = await user.fetchUserStat('pk_evasion_exp');
 

@@ -789,7 +789,9 @@ export async function executeFarmingStep({
 	assert(Boolean(plantToHarvest));
 
 	const alivePlants = calculateAlivePlants(rng, plantToHarvest, patchType, survivalModifiers);
-	const plantingStr = planting ? `Your minion planted ${quantity}x ${plant.name}. ` : '';
+	const actionStr = planting
+		? `Your minion harvested ${patchType.lastQuantity}x ${plantToHarvest.name} and planted ${quantity}x ${plant.name}.`
+		: `Your minion harvested ${patchType.lastQuantity}x ${plantToHarvest.name}.`;
 	const plantXp = planting ? quantity * (plant.plantXp + compostXp) : 0;
 	const checkHealthXp = alivePlants * plantToHarvest.checkXp;
 
@@ -821,7 +823,7 @@ export async function executeFarmingStep({
 	}
 	if (treeRemovalResult.abortMessage) {
 		return {
-			message: treeRemovalResult.abortMessage,
+			message: `${user}, ${treeRemovalResult.abortMessage}`,
 			loot: null,
 			stopChain: true
 		};
@@ -862,7 +864,7 @@ export async function executeFarmingStep({
 			? xpBreakdownParts.join(', ').replace(/, ([^,]*)$/, ', and $1')
 			: xpBreakdownParts[0];
 	infoStr.push(
-		`${user}, ${plantingStr}harvesting ${patchType.lastQuantity}x ${plantToHarvest.name}.${payStr}\n\nYou received ${xpBreakdown}. In total: ${xpRes}. ${
+		`${user}, ${actionStr}${payStr}\n\nYou received ${xpBreakdown}. In total: ${xpRes}. ${
 			woodcuttingOutcome.woodcuttingOccurred ? wcXP : ''
 		}`
 	);
