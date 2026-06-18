@@ -1,9 +1,9 @@
-import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
+import { ButtonBuilder, ButtonStyle, SpecialResponse } from '@oldschoolgg/discord';
 import { Emoji, formatDuration } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { CropUpgradeType } from '@/prisma/main/enums.js';
-import { AutoFarmFilterEnum } from '@/prisma/main/enums.js';
+import { AutoFarmFilterEnum, activity_type_enum } from '@/prisma/main/enums.js';
 import { InteractionID } from '@/lib/InteractionID.js';
 import { allFarm, replant } from '@/lib/minions/functions/autoFarmFilters.js';
 import {
@@ -20,6 +20,7 @@ import type { AutoFarmStepData, FarmingActivityTaskOptions } from '@/lib/types/m
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
+import { fetchRepeatTrips, repeatTrip } from '@/lib/util/repeatStoredTrip.js';
 import { harvestCommand } from '@/mahoji/lib/abstracted_commands/farmingCommand.js';
 import { prepareFarmingStep } from './farmingTripHelpers.js';
 
@@ -66,6 +67,38 @@ function buildSummaryForStep(index: number, step: PlannedAutoFarmStep): BuildSum
 		summaryLine: `${index + 1}. ${step.friendlyName}: ${step.quantity.toLocaleString()}x ${step.plant.name}`,
 		extraInfoLines
 	};
+}
+
+async function tryRepeatPreviousTrip({
+	user,
+	interaction,
+	errorString
+}: {
+	user: MUser;
+	interaction: MInteraction;
+	errorString: string;
+}): Promise<CommandResponse | null> {
+	try {
+		const repeatableTrips = await fetchRepeatTrips(user);
+		const fallbackTrip = repeatableTrips.find(trip => trip.type !== activity_type_enum.Farming);
+		if (!fallbackTrip) {
+			return null;
+		}
+		const response = await repeatTrip(user, interaction as OSInteraction, fallbackTrip);
+		if (response === SpecialResponse.SilentErrorResponse || response === SpecialResponse.PaginatedMessageResponse) {
+			return response;
+		}
+		if (typeof response === 'string') {
+			return `${errorString}\n\n${response}`;
+		}
+		if (response && typeof response === 'object' && 'content' in response && typeof response.content === 'string') {
+			return { ...response, content: `${errorString}\n\n${response.content}` };
+		}
+		return response;
+	} catch (err) {
+		Logging.logError(err as Error);
+		return null;
+	}
 }
 
 export async function autoFarm(
@@ -282,6 +315,11 @@ export async function autoFarm(
 		const components: ButtonBuilder[] = [checkPatchesButton];
 
 		const noCropsResponse = new MessageBuilder().setContent(errorString).addComponents(components);
+
+		const repeated = await tryRepeatPreviousTrip({ user, interaction, errorString });
+		if (repeated !== null) {
+			return repeated;
+		}
 
 		return noCropsResponse;
 	}
