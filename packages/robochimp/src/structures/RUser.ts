@@ -1,6 +1,7 @@
 import { userMention } from '@oldschoolgg/discord';
 import { RedisKeys } from '@oldschoolgg/util';
 import type { Prisma, User } from '@prisma/robochimp';
+import type { ItemBank } from 'oldschooljs';
 
 import { redis } from '@/lib/redis.js';
 import { Bits, type PatronTier, tiers } from '@/util.js';
@@ -121,6 +122,14 @@ export class RUser {
 
 	get bsoMastery(): number {
 		return this._user.bso_mastery ?? 0;
+	}
+
+	get osbPrizeBank(): ItemBank {
+		return (this._user.osb_prize_bank as ItemBank | null) ?? {};
+	}
+
+	get bsoPrizeBank(): ItemBank {
+		return (this._user.bso_prize_bank as ItemBank | null) ?? {};
 	}
 
 	globalMastery(): number {

@@ -1,4 +1,11 @@
-import { type APIApplication, type APIUser, DiscordClient, type DiscordClientOptions } from '@oldschoolgg/discord';
+import {
+	type APIApplication,
+	type APIUser,
+	DiscordClient,
+	type DiscordClientOptions,
+	type GatewayMessageCreateDispatchData
+} from '@oldschoolgg/discord';
+import { Time } from '@oldschoolgg/toolkit';
 import { RedisKeys } from '@oldschoolgg/util';
 import type { DiscordUser } from '@prisma/robochimp';
 import { DiscordSnowflake } from '@sapphire/snowflake';
@@ -61,6 +68,53 @@ export class RoboChimpBotClient extends DiscordClient {
 
 	mentionCommand(name: string, subCommand?: string, subSubCommand?: string) {
 		return mentionCommand(name, subCommand, subSubCommand);
+	}
+
+	async awaitMessages({
+		channelId,
+		max = 1,
+		time = Time.Second * 30,
+		errors = [],
+		filter = () => true
+	}: {
+		channelId: string;
+		max?: number;
+		time?: number;
+		errors?: string[];
+		filter?: (msg: GatewayMessageCreateDispatchData) => boolean;
+	}): Promise<GatewayMessageCreateDispatchData[]> {
+		return new Promise((resolve, reject) => {
+			const collected: GatewayMessageCreateDispatchData[] = [];
+			let timeoutId: NodeJS.Timeout;
+
+			const messageHandler = (msg: GatewayMessageCreateDispatchData) => {
+				if (msg.channel_id !== channelId) return;
+				if (!filter(msg)) return;
+
+				collected.push(msg);
+
+				if (collected.length >= max) {
+					cleanup();
+					resolve(collected);
+				}
+			};
+
+			const cleanup = () => {
+				this.off('rawMessageCreate', messageHandler);
+				if (timeoutId) clearTimeout(timeoutId);
+			};
+
+			timeoutId = setTimeout(() => {
+				cleanup();
+				if (errors.includes('time')) {
+					reject(new Error('Time limit exceeded'));
+				} else {
+					resolve(collected);
+				}
+			}, time);
+
+			this.on('rawMessageCreate', messageHandler);
+		});
 	}
 
 	async handleReadyEvent({ application }: { application: APIApplication }) {

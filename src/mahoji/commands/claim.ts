@@ -1,7 +1,7 @@
 import { CollectionLog } from '@oldschoolgg/collectionlog';
 import { dateFm } from '@oldschoolgg/discord';
 import { stringMatches } from '@oldschoolgg/toolkit';
-import { Bank, Items } from 'oldschooljs';
+import { Bank, type ItemBank, Items } from 'oldschooljs';
 
 import { BitField, BOT_TYPE, BSO_MAX_TOTAL_LEVEL, Channel } from '@/lib/constants.js';
 import { calcCLDetails } from '@/lib/data/Collections.js';
@@ -10,6 +10,43 @@ import { getReclaimableItemsOfUser } from '@/lib/reclaimableItems.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 
 const claimables = [
+	{
+		name: 'Robochimp BSO Prize Bank',
+		hasRequirement: async (user: MUser): Promise<true | string> => {
+			const roboChimpUser = await roboChimpUserFetch(user.id);
+			const prizeBank = new Bank((roboChimpUser.osb_prize_bank as ItemBank | null) ?? {});
+			if (prizeBank.length === 0) {
+				return 'You have nothing in your Robochimp OSB Prize Bank.';
+			}
+			return true;
+		},
+		action: async (user: MUser, interaction: MInteraction) => {
+			const roboChimpUser = await roboChimpUserFetch(user.id);
+			const prizeBank = new Bank((roboChimpUser.osb_prize_bank as ItemBank | null) ?? {});
+			if (prizeBank.length === 0) {
+				return 'You have nothing in your Robochimp OSB Prize Bank.';
+			}
+			await interaction.confirmation(
+				`Your Robochimp OSB Prize Bank contains: ${prizeBank.toString()}\n\nDo you want to claim it?`
+			);
+			await roboChimpClient.user.update({
+				where: {
+					id: BigInt(user.id)
+				},
+				data: {
+					osb_prize_bank: {}
+				}
+			});
+			await user.transactItems({ itemsToAdd: prizeBank, collectionLog: false });
+			return new MessageBuilder()
+				.setContent(`Claimed your Robochimp OSB Prize Bank: ${prizeBank}.`)
+				.addBankImage({
+					bank: prizeBank,
+					title: 'Robochimp OSB Prize Bank Claimed',
+					user
+				});
+		}
+	},
 	{
 		name: 'Free T1 Perks',
 		hasRequirement: async (user: MUser): Promise<true | string> => {
@@ -125,7 +162,7 @@ export const claimCommand = defineCommand({
 			}
 		}
 	],
-	run: async ({ options, user }) => {
+	run: async ({ options, user, interaction }) => {
 		const claimable = claimables.find(i => stringMatches(i.name, options.name));
 		if (!claimable) {
 			const reclaimableData = await getReclaimableItemsOfUser(user);
@@ -152,7 +189,7 @@ ${dateFm(new Date(rawData.date))}`;
 			}
 		}
 
-		const result = await claimable.action(user);
+		const result = await claimable.action(user, interaction);
 		return result;
 	}
 });
