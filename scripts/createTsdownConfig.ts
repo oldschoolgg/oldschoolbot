@@ -1,8 +1,8 @@
 import { readFileSync } from 'node:fs';
-import { relative, resolve as resolveDir } from 'node:path';
+import { resolve as resolveDir } from 'node:path';
 import { defineConfig, type UserConfig } from 'tsdown';
 
-const tsconfigPath = relative(import.meta.dirname, resolveDir(process.cwd(), 'src', 'tsconfig.json'));
+const tsconfigPath = resolveDir(process.cwd(), 'tsconfig.json');
 
 const baseOptions: UserConfig = {
 	clean: true,
