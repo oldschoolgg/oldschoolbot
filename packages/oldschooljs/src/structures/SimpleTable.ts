@@ -17,6 +17,10 @@ export class SimpleTable<T> {
 	}
 
 	public add(item: T, weight = 1): this {
+		if (!Number.isFinite(weight) || weight < 0) {
+			throw new Error(`Invalid weight ${weight} in SimpleTable.`);
+		}
+
 		this.length += 1;
 		this.totalWeight += weight;
 
@@ -42,25 +46,27 @@ export class SimpleTable<T> {
 		return this;
 	}
 
-	public roll(rng: RNGProvider = MathRNG): SimpleTableItem<T>['item'] {
-		// Random number between 1 and the total weighting
-		const randomWeight = rng.randInt(1, this.totalWeight);
+	public roll(rng: RNGProvider = MathRNG): SimpleTableItem<T>['item'] | null {
+		if (this.table.length === 0 || this.totalWeight <= 0) return null;
 
-		// The index of the item that will be used.
-		let result = -1;
+		// Random number between 0 and the total weighting.
+		const randomWeight = rng.randFloat(0, this.totalWeight);
+
 		let weight = 0;
+		let lastRollableItem: SimpleTableItem<T> | null = null;
 
 		for (let i = 0; i < this.table.length; i++) {
 			const item = this.table[i];
+			if (item.weight <= 0) continue;
 
 			weight += item.weight;
-			if (randomWeight <= weight) {
-				result = i;
-				break;
+			lastRollableItem = item;
+			if (randomWeight < weight) {
+				return item.item;
 			}
 		}
 
-		return this.table[result].item;
+		return lastRollableItem?.item ?? null;
 	}
 
 	public rollOrThrow(rng: RNGProvider = MathRNG): SimpleTableItem<T>['item'] {

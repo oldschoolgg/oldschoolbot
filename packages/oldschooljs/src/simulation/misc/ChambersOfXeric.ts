@@ -184,7 +184,7 @@ export class ChambersOfXericClass extends Minigame {
 		// First, pick which items we will be giving them, without giving a duplicate.
 		const items: number[] = [];
 		while (items.length < 2) {
-			const rolledItem = NonUniqueTable.roll(rng);
+			const rolledItem = NonUniqueTable.rollOrThrow(rng);
 			if (!items.includes(rolledItem)) items.push(rolledItem);
 		}
 
@@ -258,7 +258,7 @@ export class ChambersOfXericClass extends Minigame {
 		// For every unique item received, add it to someone's loot.
 		while (uniqueLoot.length > 0) {
 			if (uniqueDeciderTable.table.length === 0) break;
-			const receipientID = uniqueDeciderTable.roll(rng);
+			const receipientID = uniqueDeciderTable.rollOrThrow(rng);
 			const uniqueItem = uniqueLoot.random()!;
 			lootResult[receipientID].add(uniqueItem.id, 1);
 			uniqueLoot.remove(uniqueItem.id, 1);

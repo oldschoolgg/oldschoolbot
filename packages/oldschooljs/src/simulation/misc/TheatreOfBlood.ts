@@ -162,7 +162,7 @@ export class TheatreOfBloodClass {
 			table.add(member, member.points);
 		}
 
-		return table.roll();
+		return table.rollOrThrow();
 	}
 
 	public complete(_options: TheatreOfBloodOptions): {

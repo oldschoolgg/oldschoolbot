@@ -66,7 +66,7 @@ class ZalcanoClass {
 	allItems: number[] = [...tertiaryTable.allItems, ...NonUniqueTable.table.map(i => i.item)];
 
 	public rollNonUniqueLoot(perfPercent: number, isMVP: boolean): [number, number] {
-		const item = NonUniqueTable.roll();
+		const item = NonUniqueTable.rollOrThrow();
 
 		const [range] = nonUniqueItemRanges[item];
 		// If the quantity range of the item is 50-100, we
