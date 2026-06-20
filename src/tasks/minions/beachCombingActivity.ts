@@ -3,6 +3,7 @@ import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 import { handleCrateSpawns } from '@/lib/bso/handleCrateSpawns.js';
 import {
 	BEACH_COMBING_PET,
+	beachOutfitTable,
 	convertMysteriousBottleToSeaWater,
 	getEclipsePetName,
 	SUMMER_CRATE_S9_EMOJI
@@ -37,16 +38,6 @@ const junkTable = new LootTable()
 			.add('Clue scroll (easy)', [1, 2], 25)
 			.tertiary(100, 'Clue scroll (grandmaster)', 1)
 	);
-
-export const beachOutfitTable = new LootTable()
-	.add(BSOItem.CORAL_BIKINI_TOP)
-	.add(BSOItem.CORAL_BIKINI_BOTTOM)
-	.add(BSOItem.PALM_BOARD_SHORTS)
-	.add(BSOItem.BEACH_SANDALS)
-	.add(BSOItem.BEACH_SANDALS)
-	.add(BSOItem.BEACHBALL_SHIELD)
-	.add(BSOItem.BEACH_PINA_COLADA)
-	.add(BSOItem.WHALE_FLOATY);
 
 const brokenSummerCrate = new LootTable()
 	.tertiary(2222, BSOItem.IMITATION_CRABHAT)
@@ -268,7 +259,7 @@ export const beachCombingTask: MinionTask = {
 			convertBottleChance *= 0.5;
 			keyChance *= 0.8;
 			buriedTreasureChance *= 0.8;
-		} else if(user.usingPet(BSOItem.PARTYCRAB)) {
+		} else if (user.usingPet(BSOItem.PARTYCRAB)) {
 			bottleFindChance *= 0.7;
 			blackShellChance *= 0.7;
 			purpleSandDollarChance *= 0.7;
@@ -283,13 +274,13 @@ export const beachCombingTask: MinionTask = {
 			convertBottleChance *= 0.7;
 			keyChance *= 0.8;
 			buriedTreasureChance *= 0.9;
-			if (! user.cl.has(BSOItem.PATRICIA)) patriciaRate *= 0.5;
+			if (!user.cl.has(BSOItem.PATRICIA)) patriciaRate *= 0.5;
 		}
 
-		blackShellChance = Math.floor(blackShellChance );
-		purpleSandDollarChance = Math.floor(purpleSandDollarChance );
-		bottleFindChance = Math.floor(bottleFindChance );
-		convertBottleChance = Math.floor(convertBottleChance );
+		blackShellChance = Math.floor(blackShellChance);
+		purpleSandDollarChance = Math.floor(purpleSandDollarChance);
+		bottleFindChance = Math.floor(bottleFindChance);
+		convertBottleChance = Math.floor(convertBottleChance);
 		buriedTreasureChance = Math.floor(buriedTreasureChance);
 		patriciaRate = Math.floor(patriciaRate);
 		keyChance = Math.floor(keyChance);

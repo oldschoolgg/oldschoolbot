@@ -62,6 +62,7 @@ import { pumpkinHeadUniqueTable } from '@/lib/bso/pumpkinHead.js';
 import { divinationEnergies, portents } from '@/lib/bso/skills/divination.js';
 import { inventionCL } from '@/lib/bso/skills/invention/inventions.js';
 import { slayerMasksHelmsCL } from '@/lib/bso/skills/slayer/slayerMaskHelms.js';
+import { beachOutfitTable } from '@/lib/bso/summerDays.js';
 import { getAllIgneTameKCs, tameKillableMonsters } from '@/lib/bso/tames/tames.js';
 
 import { calcWhatPercent, notEmpty, stringMatches, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
@@ -222,7 +223,6 @@ import { fletchingCL } from '@/lib/skilling/skills/fletching/fletchables/index.j
 import smithables from '@/lib/skilling/skills/smithing/smithables/index.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { MUserStats } from '@/lib/structures/MUserStats.js';
-import { beachOutfitTable } from '@/tasks/minions/beachCombingActivity.js';
 
 function kcProg(mon: Monster | number): FormatProgressFunction {
 	return ({ stats }) => `${stats.kcBank[typeof mon === 'number' ? mon : mon.id] ?? 0} KC`;

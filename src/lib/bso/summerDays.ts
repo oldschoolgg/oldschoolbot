@@ -2,9 +2,19 @@ import { BSOItem } from '@/lib/bso/BSOItem.js';
 
 import type { GearSetup, GearSetupType } from '@oldschoolgg/gear';
 import { randArrItem } from 'node-rng';
-import { Bank, Items } from 'oldschooljs';
+import { Bank, Items, LootTable } from 'oldschooljs';
 
 import type { MUserClass } from '@/lib/user/MUser.js';
+
+export const beachOutfitTable = new LootTable()
+	.add(BSOItem.CORAL_BIKINI_TOP)
+	.add(BSOItem.CORAL_BIKINI_BOTTOM)
+	.add(BSOItem.PALM_BOARD_SHORTS)
+	.add(BSOItem.BEACH_SANDALS)
+	.add(BSOItem.BEACH_SANDALS)
+	.add(BSOItem.BEACHBALL_SHIELD)
+	.add(BSOItem.BEACH_PINA_COLADA)
+	.add(BSOItem.WHALE_FLOATY);
 
 export const BEACH_COMBING_PET = {
 	itemID: BSOItem.PATRICIA,
