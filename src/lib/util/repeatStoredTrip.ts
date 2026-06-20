@@ -7,6 +7,7 @@ import type { Activity } from '@/prisma/main.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import type { PvMMethod } from '@/lib/constants.js';
 import { findTripBuyable } from '@/lib/data/buyables/tripBuyables.js';
+import { InteractionID } from '@/lib/InteractionID.js';
 import { SlayerActivityConstants } from '@/lib/minions/data/combatConstants.js';
 import { autocompleteMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { runCommand } from '@/lib/settings/settings.js';
@@ -79,7 +80,11 @@ import type {
 import { giantsFoundryAlloys } from '@/mahoji/lib/abstracted_commands/giantsFoundryCommand.js';
 import puroOptions from '@/mahoji/lib/abstracted_commands/puroPuroCommand.js';
 
-const taskCanBeRepeated = (activity: Activity, user: MUser) => {
+const taskCanBeRepeated = (activity: Activity, user: MUser, taskIndex: number) => {
+	const data = ActivityManager.convertStoredActivityToFlatActivity(activity);
+	if (data.type === activity_type_enum.Farming) {
+		return (taskIndex === 0 && data.autoFarmed);
+	}
 	if (activity.type === activity_type_enum.ClueCompletion) {
 		const realActivity = ActivityManager.convertStoredActivityToFlatActivity(activity) as ClueActivityTaskOptions;
 		return (
@@ -107,9 +112,6 @@ async function canRepeatSlayerMonsterTrip(user: MUser, data: ActivityTaskData): 
 	const { assignedTask } = await user.fetchSlayerInfo();
 	return Boolean(assignedTask?.monsters.includes(data.mi));
 }
-
-const slayerRepeatError =
-	'You are no longer on a Slayer task for this monster. Use Auto Slay for your current task, or run `/k` manually if you want to kill it off-task.';
 
 type ActivityMap = {
 	[K in ActivityTaskData as K['type']]: K;
@@ -801,20 +803,33 @@ export async function fetchRepeatTrips(user: MUser): Promise<Activity[]> {
 		take: 20
 	});
 	const filtered: Activity[] = [];
+	let tripIndex = 0;
 	for (const trip of res) {
-		if (!taskCanBeRepeated(trip, user)) continue;
-		const data = ActivityManager.convertStoredActivityToFlatActivity(trip);
-		if (!(await canRepeatSlayerMonsterTrip(user, data))) continue;
-		if (data.type === activity_type_enum.Farming) {
-			if (!data.autoFarmed) {
-				continue;
-			}
-		}
+		if (!taskCanBeRepeated(trip, user, tripIndex)) continue;
 		if (!filtered.some(i => i.type === trip.type)) {
 			filtered.push(trip);
 		}
+		tripIndex++;
 	}
 	return filtered;
+}
+
+async function getRepeatableAlternatives(user: MUser, skippedActivity: Activity, limit: number) {
+	const trips = await fetchRepeatTrips(user);
+	const alternatives: Activity[] = [];
+	for (const trip of trips) {
+		if (trip.type === skippedActivity.type) continue;
+		alternatives.push(trip);
+		if (alternatives.length >= limit) break;
+	}
+	return alternatives;
+}
+
+function makeRepeatTripButtonForActivity(activity: Activity) {
+	return new ButtonBuilder()
+		.setLabel(`Repeat ${activity.type}`)
+		.setCustomId(`REPEAT_TRIP_${activity.type}`)
+		.setStyle(ButtonStyle.Secondary);
 }
 
 export async function makeRepeatTripButtons(user: MUser) {
@@ -823,24 +838,34 @@ export async function makeRepeatTripButtons(user: MUser) {
 
 	const buttons: ButtonBuilder[] = [];
 	for (const trip of trips.slice(0, limit)) {
-		buttons.push(
-			new ButtonBuilder()
-				.setLabel(`Repeat ${trip.type}`)
-				.setCustomId(`REPEAT_TRIP_${trip.type}`)
-				.setStyle(ButtonStyle.Secondary)
-		);
+		buttons.push(makeRepeatTripButtonForActivity(trip));
 	}
 	return buttons;
 }
 
-export async function repeatTrip(user: MUser, interaction: OSInteraction, activity: Activity): CommandResponse {
+export async function repeatTrip(
+	user: MUser,
+	interaction: OSInteraction,
+	activity: Activity
+): CommandResponse {
 	if (!activity || !activity.data || !activity.type) {
 		return { content: "Couldn't find any trip to repeat.", ephemeral: true };
 	}
 	const handler = tripHandlers[activity.type];
 	const args: ActivityTaskData = ActivityManager.convertStoredActivityToFlatActivity(activity);
 	if (!(await canRepeatSlayerMonsterTrip(user, args))) {
-		return { content: slayerRepeatError, ephemeral: true };
+		const alternatives = await getRepeatableAlternatives(user, activity, 2);
+		return {
+			content: 'Your slayer task has ended, what would you like to do?',
+			ephemeral: true,
+			components: [
+				new ButtonBuilder()
+					.setLabel('Get a new task')
+					.setCustomId(InteractionID.Commands.NewSlayerTask)
+					.setStyle(ButtonStyle.Secondary),
+				...alternatives.map(makeRepeatTripButtonForActivity)
+			]
+		};
 	}
 	let commandArgs: CommandOptions;
 	try {

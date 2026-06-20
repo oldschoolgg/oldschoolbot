@@ -17,6 +17,7 @@ import { autoSlayCommand } from '@/mahoji/lib/abstracted_commands/autoSlayComman
 import { cancelGEListingCommand } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
 import { autoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
 import { shootingStarsCommand } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
+import { slayerNewTaskCommand } from '@/mahoji/lib/abstracted_commands/slayerTaskCommand.js';
 
 async function giveawayButtonHandler(user: MUser, customID: string, interaction: OSInteraction): CommandResponse {
 	const split = customID.split('_');
@@ -437,11 +438,7 @@ async function globalButtonInteractionHandler({
 			});
 		}
 		case InteractionID.Commands.NewSlayerTask: {
-			return runCommand({
-				commandName: 'slayer',
-				args: { new_task: {} },
-				...options
-			});
+			return slayerNewTaskCommand({ user, interaction, showButtons: true });
 		}
 		case InteractionID.Commands.DoShootingStar: {
 			const validStar = await prisma.shootingStars.findFirst({
