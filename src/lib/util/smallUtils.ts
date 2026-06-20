@@ -144,7 +144,7 @@ export function perHourChance(
 export function patronMsg(tierNeeded: number) {
 	return `You need to be a Tier ${
 		tierNeeded - 1
-	} Patron to use this command. You can become a patron to support the bot here: <https://www.patreon.com/oldschoolbot>`;
+	} Patron to use this command. You can become a patron to support the bot here: <https://www.patreon.com/OldschoolCyr>`;
 }
 
 export function isValidBitField(bit: number): bit is BitField {
