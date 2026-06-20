@@ -165,6 +165,10 @@ export enum BitField {
 	WikiContributor = 50,
 	UnlimitedGiveaways = 51,
 	ServerSupport = 52,
+	DisabledPassiveImplings = 53,
+	DisableAutoFarmButton = 54,
+	DisableBankWeights = 55,
+	DisableBankFavorites = 56,
 
 	OriginalCyrSupporter = 199,
 	HasGivenBirthdayPack = 200,
@@ -205,7 +209,6 @@ export enum BitField {
 	HasHalloweenWallkit = 234,
 	HasEarnedRiftGuardianFromStar = 235,
 	DisablePaints = 236,
-	LegitNewPlayer = 237,
 	DisableGlowEffects = 238
 }
 
@@ -279,6 +282,12 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 		name: 'Free T1 Perks for Maxed in OSB/BSO',
 		protected: false,
 		userConfigurable: false
+	},
+	[BitField.DisableBankWeights]: { name: 'Disable Bank Weight Sorting', protected: false, userConfigurable: true },
+	[BitField.DisableBankFavorites]: {
+		name: 'Disable Bank Favorite Sort Priority',
+		protected: false,
+		userConfigurable: true
 	},
 
 	[BitField.HasFlickeringBoon]: {
@@ -395,6 +404,11 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 		protected: false,
 		userConfigurable: true
 	},
+	[BitField.DisableAutoFarmButton]: {
+		name: 'Disable Auto Farm Button',
+		protected: false,
+		userConfigurable: true
+	},
 	[BitField.NoItemContractDonations]: {
 		name: 'Disable Item Contract donations',
 		protected: false,
@@ -445,6 +459,11 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 		protected: false,
 		userConfigurable: true
 	},
+	[BitField.DisabledPassiveImplings]: {
+		name: 'Disabled Passive Implings',
+		protected: false,
+		userConfigurable: true
+	},
 
 	[BitField.HasDeadeyeScroll]: { name: 'Deadeye Scroll Used', protected: false, userConfigurable: false },
 	[BitField.HasMysticVigourScroll]: { name: 'Mystic Vigour Scroll Used', protected: false, userConfigurable: false },
@@ -492,11 +511,6 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 		name: 'Disable Glow Effects',
 		protected: false,
 		userConfigurable: true
-	},
-	[BitField.LegitNewPlayer]: {
-		name: 'Legit New Player',
-		protected: false,
-		userConfigurable: false
 	}
 } as const;
 

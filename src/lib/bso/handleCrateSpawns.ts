@@ -12,7 +12,7 @@ export function handleCrateSpawns(user: MUser, duration: number, kind: 'trip' | 
 	const accountAge = user.accountAgeInDays();
 	let dropratePerMinute = 8 * 60;
 	if (kind === 'tame') dropratePerMinute *= 2;
-	if (!user.isIronman && !user.bitfield.includes(BitField.LegitNewPlayer) && accountAge !== null) {
+	if (!user.isIronman && !user.bitfield.includes(BitField.BypassAgeRestriction) && accountAge !== null) {
 		if (accountAge < 31) return null;
 	}
 	if (user.isIronman) {

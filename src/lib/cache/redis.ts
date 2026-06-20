@@ -281,7 +281,7 @@ class CacheManager {
 
 	async _getBadgedUsernameRaw(userId: string): Promise<string | null> {
 		const fullKey = BotKeys.User.BadgedUsername(userId);
-		let ttl = await this.client.pttl(fullKey);
+		const ttl = await this.client.pttl(fullKey);
 		if (ttl < 0) {
 			await this.client.del(fullKey);
 			return null;
