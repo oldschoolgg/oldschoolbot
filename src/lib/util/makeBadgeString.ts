@@ -12,7 +12,7 @@ export function makeBadgeString(
 		rawBadges.push(Emoji.Ironman);
 	}
 	if (isOriginalCyrSupporter) {
-		rawBadges.unshift('<:seer:924198628191531030>');
+		rawBadges.unshift(Emoji.Seer);
 	}
 	return rawBadges.join(' ').trim();
 }

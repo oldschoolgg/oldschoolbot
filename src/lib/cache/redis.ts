@@ -280,14 +280,20 @@ class CacheManager {
 	}
 
 	async _getBadgedUsernameRaw(userId: string): Promise<string | null> {
-		return this.client.get(BotKeys.User.BadgedUsername(userId));
+		const fullKey = BotKeys.User.BadgedUsername(userId);
+		let ttl = await this.client.pttl(fullKey);
+		if (ttl < 0) {
+			await this.client.del(fullKey);
+			return null;
+		}
+		return this.client.get(fullKey);
 	}
 
-	async getBadgedUsername(userId: string) {
+	async getBadgedUsername(userId: string, refresh: boolean = false): Promise<string> {
 		if (!isValidDiscordSnowflake(userId)) {
 			throw new Error(`Invalid userID: ${userId}`);
 		}
-		return fetchUsernameAndCache(userId);
+		return fetchUsernameAndCache(userId, refresh);
 	}
 
 	async getBadgedUsernames(userIds: string[]): Promise<string[]> {
@@ -297,6 +303,7 @@ class CacheManager {
 
 	async setBadgedUsername(userId: string, badgedUsername: string): Promise<void> {
 		await this.client.set(BotKeys.User.BadgedUsername(userId), badgedUsername);
+		await this.client.pexpire(BotKeys.User.BadgedUsername(userId), 60 * 10 * 1000);
 	}
 
 	public async fullKeyRatelimitCheck({

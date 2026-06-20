@@ -29,7 +29,8 @@ export async function refreshUserCache({
 	await Promise.all([
 		refreshUser.fetchPerkTier({ forceNoCache: true }),
 		updateGuildMember(refreshUser.id),
-		roboChimpUserFetch(refreshUser.id)
+		roboChimpUserFetch(refreshUser.id),
+		Cache.getBadgedUsername(refreshUser.id, true)
 	]);
 	user.updateProperties();
 	return `${refreshUser}'s Caches updated successfully!`;
