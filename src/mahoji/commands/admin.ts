@@ -1030,7 +1030,11 @@ export const adminCommand = defineCommand({
 			const user = await mUserFetch(options.bitfield.user.user.id);
 			const bit = getBitFieldData(bitInput);
 			const action: 'add' | 'remove' = bitOpts.add ? 'add' : 'remove';
-			if (!bit) return listBitFields(adminUser);
+			if (!bit)
+				return {
+					content: 'List of Bitfields',
+					embeds: [new EmbedBuilder().setDescription(listBitFields(adminUser))]
+				};
 			const canManipulate = bitfieldCanUserManipulate({ user: adminUser, bit, target: user });
 			if (canManipulate !== true) return canManipulate;
 			return changeBitFieldForUser(user, bit.bit, action);
