@@ -123,6 +123,12 @@ async function repeatTripHandler(user: MUser, id: string, interaction: OSInterac
 	if (trips.length === 0) {
 		return { content: "Couldn't find a trip to repeat.", ephemeral: true };
 	}
+	if (id === InteractionID.Commands.RepeatAnyway) {
+		return repeatTrip(user, interaction, trips[0]);
+	}
+	if (id === InteractionID.Commands.RepeatTrip) {
+		return repeatTrip(user, interaction, trips[0], { showSlayerTaskIntervention: true });
+	}
 	const split = id.split('_');
 	const matchingActivity = trips.find(i => i.type === split[2]);
 	if (!matchingActivity) {
@@ -244,7 +250,9 @@ async function globalButtonInteractionHandler({
 	}
 
 	const user = interaction.user;
-	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, id, interaction);
+	if (id === InteractionID.Commands.RepeatAnyway || id.includes('REPEAT_TRIP')) {
+		return repeatTripHandler(user, id, interaction);
+	}
 
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
 	if (id.startsWith('GPE_')) return handleGearPresetEquip(user, id, interaction);

@@ -83,7 +83,7 @@ import puroOptions from '@/mahoji/lib/abstracted_commands/puroPuroCommand.js';
 const taskCanBeRepeated = (activity: Activity, user: MUser, taskIndex: number) => {
 	const data = ActivityManager.convertStoredActivityToFlatActivity(activity);
 	if (data.type === activity_type_enum.Farming) {
-		return (taskIndex === 0 && data.autoFarmed);
+		return taskIndex === 0 && data.autoFarmed;
 	}
 	if (activity.type === activity_type_enum.ClueCompletion) {
 		const realActivity = ActivityManager.convertStoredActivityToFlatActivity(activity) as ClueActivityTaskOptions;
@@ -842,30 +842,42 @@ export async function makeRepeatTripButtons(user: MUser) {
 	}
 	return buttons;
 }
+async function makeSlayerTaskFinishedButtons(user: MUser, activity: Activity) {
+	const alternatives = await getRepeatableAlternatives(user, activity, 2);
+	return {
+		content: 'Your slayer task has ended, what would you like to do?',
+		ephemeral: true,
+		components: [
+			new ButtonBuilder()
+				.setLabel('Get a new task')
+				.setCustomId(InteractionID.Commands.NewSlayerTask)
+				.setStyle(ButtonStyle.Secondary),
+			new ButtonBuilder()
+				.setLabel('Repeat anyway')
+				.setCustomId(InteractionID.Commands.RepeatAnyway)
+				.setStyle(ButtonStyle.Secondary),
+			...alternatives.map(makeRepeatTripButtonForActivity)
+		]
+	};
+}
 
 export async function repeatTrip(
 	user: MUser,
 	interaction: OSInteraction,
-	activity: Activity
+	activity: Activity,
+	options?: { showSlayerTaskIntervention?: boolean }
 ): CommandResponse {
 	if (!activity || !activity.data || !activity.type) {
 		return { content: "Couldn't find any trip to repeat.", ephemeral: true };
 	}
 	const handler = tripHandlers[activity.type];
 	const args: ActivityTaskData = ActivityManager.convertStoredActivityToFlatActivity(activity);
-	if (!(await canRepeatSlayerMonsterTrip(user, args))) {
-		const alternatives = await getRepeatableAlternatives(user, activity, 2);
-		return {
-			content: 'Your slayer task has ended, what would you like to do?',
-			ephemeral: true,
-			components: [
-				new ButtonBuilder()
-					.setLabel('Get a new task')
-					.setCustomId(InteractionID.Commands.NewSlayerTask)
-					.setStyle(ButtonStyle.Secondary),
-				...alternatives.map(makeRepeatTripButtonForActivity)
-			]
-		};
+	if (
+		activity.type === activity_type_enum.MonsterKilling &&
+		options?.showSlayerTaskIntervention &&
+		!(await canRepeatSlayerMonsterTrip(user, args))
+	) {
+		await makeSlayerTaskFinishedButtons(user, activity);
 	}
 	let commandArgs: CommandOptions;
 	try {
