@@ -1,5 +1,13 @@
 {
 	"compilerOptions": {
+		"composite": true,
+		"rootDir": "src",
+		"outDir": "dist",
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["src/*"]
+		},
+		"isolatedDeclarations": true,
 		"allowSyntheticDefaultImports": true,
 		"alwaysStrict": true,
 		"declaration": true,
@@ -32,5 +40,7 @@
 		"skipDefaultLibCheck": true,
 		"skipLibCheck": true,
 		"types": ["node"]
-	}
+	},
+	"include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.json"],
+	"exclude": ["dist", "node_modules", "test", "scripts"]
 }
