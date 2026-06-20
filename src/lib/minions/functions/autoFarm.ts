@@ -340,13 +340,11 @@ export async function autoFarm(
 		return errorString;
 	}
 
-	const [, ...remainingSteps] = autoFarmPlan;
-
 	const channelId = interaction.channelId;
 	const firstTask = {
 		userID: user.id,
 		type: 'Farming',
-		duration: firstStep.duration,
+		duration: totalDuration,
 		channelId,
 		plantsName: firstStep.plantsName,
 		patchType: firstStep.patchType,
@@ -358,7 +356,7 @@ export async function autoFarm(
 		planting: firstStep.planting,
 		autoFarmed: true,
 		autoFarmCombined: autoFarmPlan.length > 1,
-		autoFarmPlan: remainingSteps,
+		autoFarmPlan,
 		currentDate: firstStep.currentDate,
 		patchName: firstStep.patchName
 	} satisfies Omit<FarmingActivityTaskOptions, 'finishDate' | 'id'>;

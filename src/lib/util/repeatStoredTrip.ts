@@ -1,4 +1,10 @@
-import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
+import {
+	ButtonBuilder,
+	type ButtonMInteraction,
+	ButtonStyle,
+	interactionButtonPrompt,
+	SpecialResponse
+} from '@oldschoolgg/discord';
 import { objectValues, Time } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
@@ -7,7 +13,6 @@ import type { Activity } from '@/prisma/main.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import type { PvMMethod } from '@/lib/constants.js';
 import { findTripBuyable } from '@/lib/data/buyables/tripBuyables.js';
-import { InteractionID } from '@/lib/InteractionID.js';
 import { SlayerActivityConstants } from '@/lib/minions/data/combatConstants.js';
 import { autocompleteMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { runCommand } from '@/lib/settings/settings.js';
@@ -79,6 +84,7 @@ import type {
 } from '@/lib/types/minions.js';
 import { giantsFoundryAlloys } from '@/mahoji/lib/abstracted_commands/giantsFoundryCommand.js';
 import puroOptions from '@/mahoji/lib/abstracted_commands/puroPuroCommand.js';
+import { slayerNewTaskCommand } from '@/mahoji/lib/abstracted_commands/slayerTaskCommand.js';
 
 const taskCanBeRepeated = (activity: Activity, user: MUser, taskIndex: number) => {
 	const data = ActivityManager.convertStoredActivityToFlatActivity(activity);
@@ -841,30 +847,108 @@ export async function makeRepeatTripButtons(user: MUser) {
 	}
 	return buttons;
 }
-async function makeSlayerTaskFinishedButtons(user: MUser, activity: Activity) {
+const SlayerTaskFinishedPromptID = {
+	NewTask: 'DYN_SLAYER_TASK_FINISHED_NEW_TASK',
+	RepeatAnyway: 'DYN_SLAYER_TASK_FINISHED_REPEAT_ANYWAY',
+	RepeatAlternativePrefix: 'DYN_SLAYER_TASK_FINISHED_REPEAT_ACTIVITY_'
+} as const;
+
+function makeSlayerTaskFinishedRepeatButton(activity: Activity) {
+	return new ButtonBuilder()
+		.setLabel(`Repeat ${activity.type}`)
+		.setCustomId(`${SlayerTaskFinishedPromptID.RepeatAlternativePrefix}${activity.id.toString()}`)
+		.setStyle(ButtonStyle.Secondary);
+}
+
+async function replyToCollectedButton(interaction: OSInteraction, response: Awaited<CommandResponse>) {
+	if (
+		response === SpecialResponse.PaginatedMessageResponse ||
+		response === SpecialResponse.SilentErrorResponse ||
+		response === SpecialResponse.RespondedManually
+	) {
+		return;
+	}
+	await interaction.reply(response);
+}
+
+function toOSInteraction(
+	buttonInteraction: ButtonMInteraction,
+	sourceInteraction: OSInteraction,
+	user: MUser
+): OSInteraction {
+	const osInteraction = buttonInteraction as unknown as OSInteraction;
+	osInteraction.user = user;
+	Object.defineProperty(osInteraction, 'rng', {
+		value: sourceInteraction.rng,
+		configurable: true
+	});
+	return osInteraction;
+}
+
+async function handleSlayerTaskFinishedPrompt(
+	user: MUser,
+	interaction: OSInteraction,
+	activity: Activity,
+	timeout: number
+): Promise<SpecialResponse.RespondedManually> {
 	const alternatives = await getRepeatableAlternatives(user, activity, 2);
-	return {
+	const selectedInteraction = await interactionButtonPrompt({
+		interaction,
 		content: 'Your slayer task has ended, what would you like to do?',
 		ephemeral: true,
-		components: [
+		timeout,
+		users: [user.id],
+		buttons: [
 			new ButtonBuilder()
 				.setLabel('Get a new task')
-				.setCustomId(InteractionID.Commands.NewSlayerTask)
+				.setCustomId(SlayerTaskFinishedPromptID.NewTask)
 				.setStyle(ButtonStyle.Secondary),
 			new ButtonBuilder()
 				.setLabel('Repeat anyway')
-				.setCustomId(InteractionID.Commands.RepeatAnyway)
+				.setCustomId(SlayerTaskFinishedPromptID.RepeatAnyway)
 				.setStyle(ButtonStyle.Secondary),
-			...alternatives.map(makeRepeatTripButtonForActivity)
-		]
-	};
+			...alternatives.map(makeSlayerTaskFinishedRepeatButton)
+		],
+		timeoutContent: 'Your slayer task prompt timed out.'
+	});
+
+	if (!selectedInteraction?.customId) {
+		return SpecialResponse.RespondedManually;
+	}
+	const actionInteraction = toOSInteraction(selectedInteraction, interaction, user);
+
+	if (selectedInteraction.customId === SlayerTaskFinishedPromptID.NewTask) {
+		const response = await slayerNewTaskCommand({ user, interaction: actionInteraction, showButtons: true });
+		await replyToCollectedButton(actionInteraction, response);
+		return SpecialResponse.RespondedManually;
+	}
+
+	if (selectedInteraction.customId === SlayerTaskFinishedPromptID.RepeatAnyway) {
+		const response = await repeatTrip(user, actionInteraction, activity);
+		await replyToCollectedButton(actionInteraction, response);
+		return SpecialResponse.RespondedManually;
+	}
+
+	const selectedActivityID = selectedInteraction.customId.replace(
+		SlayerTaskFinishedPromptID.RepeatAlternativePrefix,
+		''
+	);
+	const selectedActivity = alternatives.find(alternative => alternative.id.toString() === selectedActivityID);
+	if (!selectedActivity) {
+		await actionInteraction.reply({ content: "Couldn't find that trip to repeat.", ephemeral: true });
+		return SpecialResponse.RespondedManually;
+	}
+
+	const response = await repeatTrip(user, actionInteraction, selectedActivity);
+	await replyToCollectedButton(actionInteraction, response);
+	return SpecialResponse.RespondedManually;
 }
 
 export async function repeatTrip(
 	user: MUser,
 	interaction: OSInteraction,
 	activity: Activity,
-	options?: { showSlayerTaskIntervention?: boolean }
+	options?: { showSlayerTaskIntervention?: boolean; slayerTaskInterventionTimeout?: number }
 ): CommandResponse {
 	if (!activity || !activity.data || !activity.type) {
 		return { content: "Couldn't find any trip to repeat.", ephemeral: true };
@@ -877,7 +961,12 @@ export async function repeatTrip(
 		options?.showSlayerTaskIntervention &&
 		!(await canRepeatSlayerMonsterTrip(user, args))
 	) {
-		return makeSlayerTaskFinishedButtons(user, activity);
+		return handleSlayerTaskFinishedPrompt(
+			user,
+			interaction,
+			activity,
+			options.slayerTaskInterventionTimeout ?? 15_000
+		);
 	}
 	let commandArgs: CommandOptions;
 	try {

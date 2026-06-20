@@ -364,9 +364,7 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 				((data.autoFarmPlan && data.autoFarmPlan.length > 0) || data.autoFarmSummary);
 
 			if (isCombinedAutoFarm) {
-				const remainingPlanDuration =
-					data.autoFarmPlan?.reduce((acc, step) => acc + (step.duration ?? 0), 0) ?? 0;
-				const totalRemaining = Math.max(0, durationRemaining + remainingPlanDuration);
+				const totalRemaining = Math.max(0, durationRemaining);
 				const formattedCombinedDuration = `${formatTripDuration(user, totalRemaining)} remaining.`;
 				const currentStep = plants?.name ? ` Current step: ${plants.name} (${data.quantity}x).` : '';
 				return `${name} is currently auto-farming multiple patches. Estimated time remaining: ${formattedCombinedDuration}${currentStep} Your ${Emoji.Farming} Farming level is ${user.skillsAsLevels.farming}.`;
