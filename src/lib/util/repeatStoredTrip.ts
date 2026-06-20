@@ -515,8 +515,7 @@ const tripHandlers: {
 				name: autocompleteMonsters.find(i => i.id === data.mi)?.name ?? data.mi.toString(),
 				quantity: data.iQty,
 				method,
-				wilderness: data.isInWilderness,
-				onTask: data.onTask
+				wilderness: data.isInWilderness
 			};
 		}
 	},
@@ -800,7 +799,7 @@ export async function fetchRepeatTrips(user: MUser): Promise<Activity[]> {
 		orderBy: {
 			id: 'desc'
 		},
-		take: 20
+		take: 30
 	});
 	const filtered: Activity[] = [];
 	let tripIndex = 0;
@@ -872,12 +871,13 @@ export async function repeatTrip(
 	}
 	const handler = tripHandlers[activity.type];
 	const args: ActivityTaskData = ActivityManager.convertStoredActivityToFlatActivity(activity);
+
 	if (
 		activity.type === activity_type_enum.MonsterKilling &&
 		options?.showSlayerTaskIntervention &&
 		!(await canRepeatSlayerMonsterTrip(user, args))
 	) {
-		await makeSlayerTaskFinishedButtons(user, activity);
+		return makeSlayerTaskFinishedButtons(user, activity);
 	}
 	let commandArgs: CommandOptions;
 	try {
