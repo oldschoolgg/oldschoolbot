@@ -31,5 +31,6 @@ export async function refreshUserCache({
 		updateGuildMember(refreshUser.id),
 		roboChimpUserFetch(refreshUser.id)
 	]);
+	user.updateProperties();
 	return `${refreshUser}'s Caches updated successfully!`;
 }

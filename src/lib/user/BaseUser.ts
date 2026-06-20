@@ -138,9 +138,13 @@ export class BaseUser {
 		this.skillsAsLevels = this.getSkills(true);
 
 		this.paintedItems = new Map((this.user.painted_items_tuple as [number, number][]) ?? []);
-		this.badgesString = makeBadgeString(this.user.badges, this.isIronman);
-
 		this.bitfield = this.user.bitfield as readonly BitField[];
+		this.badgesString = makeBadgeString(
+			this.user.badges,
+			this.isIronman,
+			this.bitfield.includes(BitField.OriginalCyrSupporter)
+		);
+
 		this.iconPackId = (this.user.icon_pack_id as IconPackID) ?? null;
 	}
 
