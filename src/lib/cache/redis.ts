@@ -342,6 +342,10 @@ class CacheManager {
 		await this.setExpiringString(RedisKeys.Discord.Username(userId), username);
 	}
 
+	async resetUsername(userId: string) {
+		await this.client.del(RedisKeys.Discord.Username(userId));
+		await this.client.del(BotKeys.User.BadgedUsername(userId));
+	}
 	async getBadgedUsername(userId: string): Promise<string> {
 		if (!isValidDiscordSnowflake(userId)) {
 			throw new Error(`Invalid userID: ${userId}`);
