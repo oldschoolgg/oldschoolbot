@@ -808,13 +808,13 @@ export async function fetchRepeatTrips(user: MUser): Promise<Activity[]> {
 		take: 30
 	});
 	const filtered: Activity[] = [];
-	let tripIndex = 0;
+	let tripIndex = -1;
 	for (const trip of res) {
+		tripIndex++;
 		if (!taskCanBeRepeated(trip, user, tripIndex)) continue;
 		if (!filtered.some(i => i.type === trip.type)) {
 			filtered.push(trip);
 		}
-		tripIndex++;
 	}
 	return filtered;
 }
