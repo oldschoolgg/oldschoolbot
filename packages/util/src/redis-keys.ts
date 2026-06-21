@@ -28,6 +28,7 @@ export const RedisKeys = {
 		Member: (guildId: string, userId: string): string => `discord:guild:${guildId}:member:${userId}`,
 		Role: (guildId: string, roleId: string): string => `discord:guild:${guildId}:role:${roleId}`,
 		Emoji: (guildId: string, emojiId: string): string => `discord:guild:${guildId}:emoji:${emojiId}`,
-		Username: (id: string): string => `discord:user:${id.toString()}:username`
+		Username: (id: string): string => `discord:user:${id.toString()}:username`,
+		UserFetchesTotal: 'discord:user_fetches:total'
 	}
 } as const;
