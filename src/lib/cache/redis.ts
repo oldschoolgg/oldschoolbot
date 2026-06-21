@@ -10,14 +10,14 @@ import {
 	ZMember,
 	ZRole
 } from '@oldschoolgg/schemas';
-import { Time } from '@oldschoolgg/toolkit';
+import { cleanUsername, Time } from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake, MockedRedis, RedisKeys } from '@oldschoolgg/util';
 import { Redis } from 'ioredis';
 
 import type { Guild, Prisma } from '@/prisma/main.js';
-import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
+import { BitField, BOT_TYPE, globalConfig } from '@/lib/constants.js';
 import type { RobochimpUser } from '@/lib/roboChimp.js';
-import { fetchUsernameAndCache } from '@/lib/util.js';
+import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
 
 type LockStatus = 'locked' | 'unlocked';
 
@@ -279,14 +279,14 @@ class CacheManager {
 		await this.setString(BotKeys.User.LockStatus(userId), newStatus, 25);
 	}
 
-	async _getBadgedUsernameRaw(userId: string): Promise<string | null> {
-		const fullKey = BotKeys.User.BadgedUsername(userId);
+	private async getExpiringString(fullKey: string): Promise<string | null> {
 		const ttl = await this.client.pttl(fullKey);
-		if (ttl < 0) {
-			// Old key that doesn't expire. Let's set it to expire at a random interval, but not all at once, ie /lb
+		if (ttl === -2) {
+			return null;
+		}
+		if (ttl === -1) {
 			const delaySeconds = Math.random() * TTL.Hour;
-			if (delaySeconds < Time.Minute) {
-				// Delete now if under a minute
+			if (delaySeconds <= TTL.Minute) {
 				await this.client.del(fullKey);
 				return null;
 			}
@@ -295,20 +295,84 @@ class CacheManager {
 		return this.client.get(fullKey);
 	}
 
-	async getBadgedUsername(userId: string, refresh: boolean = false): Promise<string> {
+	private async setExpiringString(fullKey: string, value: string): Promise<void> {
+		const jitterSeconds = Math.floor(Math.random() * TTL.Hour * 2) - TTL.Hour;
+		await this.setString(fullKey, value, TTL.Day + jitterSeconds);
+	}
+
+	async getUsername(userId: string): Promise<string> {
 		if (!isValidDiscordSnowflake(userId)) {
 			throw new Error(`Invalid userID: ${userId}`);
 		}
-		return fetchUsernameAndCache(userId, refresh);
+
+		const cached = await this.getExpiringString(RedisKeys.Discord.Username(userId));
+		if (cached) return cached;
+
+		let username: string | null = null;
+		const djsUser = await globalClient.fetchUser(userId).catch(() => null);
+		if (djsUser?.username) {
+			username = cleanUsername(djsUser.username);
+		}
+
+		const user = await prisma.user.upsert({
+			where: {
+				id: userId
+			},
+			create: {
+				id: userId,
+				username: username ?? undefined
+			},
+			update: username
+				? {
+						username
+					}
+				: {},
+			select: {
+				username: true
+			}
+		});
+
+		if (!user.username) return 'Unknown';
+
+		await this.setUsername(userId, user.username);
+		return user.username;
+	}
+
+	async setUsername(userId: string, username: string): Promise<void> {
+		await this.setExpiringString(RedisKeys.Discord.Username(userId), username);
+	}
+
+	async getBadgedUsername(userId: string): Promise<string> {
+		if (!isValidDiscordSnowflake(userId)) {
+			throw new Error(`Invalid userID: ${userId}`);
+		}
+		const key = BotKeys.User.BadgedUsername(userId);
+		const cached = await this.getExpiringString(key);
+		if (cached) return cached;
+
+		const username = await this.getUsername(userId);
+		const user = await prisma.user.findUnique({
+			where: {
+				id: userId
+			},
+			select: {
+				badges: true,
+				bitfield: true,
+				minion_ironman: true
+			}
+		});
+		const badgesString = user
+			? makeBadgeString(user.badges, user.minion_ironman, user.bitfield.includes(BitField.OriginalCyrSupporter))
+			: '';
+		const badgedUsername = `${badgesString} ${username}`.trim();
+		if (username !== 'Unknown') {
+			await this.setExpiringString(key, badgedUsername);
+		}
+		return badgedUsername;
 	}
 
 	async getBadgedUsernames(userIds: string[]): Promise<string[]> {
-		return await Promise.all(userIds.map(id => this.getBadgedUsername(id)));
-	}
-
-	async setBadgedUsername(userId: string, badgedUsername: string): Promise<void> {
-		await this.client.set(BotKeys.User.BadgedUsername(userId), badgedUsername);
-		await this.client.pexpire(BotKeys.User.BadgedUsername(userId), 60 * 10 * 1000);
+		return Promise.all(userIds.map(id => this.getBadgedUsername(id)));
 	}
 
 	public async fullKeyRatelimitCheck({

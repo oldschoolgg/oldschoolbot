@@ -672,7 +672,7 @@ async function dryStreakCommand(sourceName: string, itemName: string, ironmanOnl
 		await Promise.all(
 			result.map(
 				async ({ id, KC }) =>
-					`${(await Cache.getBadgedUsername(id)) as string}: ${Number.parseInt(KC, 10).toLocaleString()}`
+					`${await Cache.getBadgedUsername(id)}: ${Number.parseInt(KC, 10).toLocaleString()}`
 			)
 		)
 	).join('\n')}`;
