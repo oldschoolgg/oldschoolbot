@@ -1,4 +1,7 @@
-import { Emoji, Events } from '@oldschoolgg/toolkit';
+import { BSOItem } from '@/lib/bso/BSOItem.js';
+import { convertMysteriousBottleToSeaWater, getEclipsePetName } from '@/lib/bso/summerDays.js';
+
+import { Emoji, Events, Time } from '@oldschoolgg/toolkit';
 import { EItem } from 'oldschooljs';
 
 import { QuestID } from '@/lib/minions/data/quests.js';
@@ -104,6 +107,86 @@ export const fishingTask: MinionTask = {
 			});
 		}
 
+		let bottleRate = 500;
+		if (fish.name === 'Rocktail') bottleRate = 350;
+		if (fish.name === 'Manta ray') bottleRate = 250;
+		if (fish.name === 'Lobster') bottleRate = 150;
+		if (fish.name === 'Mackerel') bottleRate = 100;
+		if (fish.alias?.includes('herring')) bottleRate = 100;
+		const hasPatriciaEquipped = user.usingPet('Patricia');
+		const eclipsePetName = hasPatriciaEquipped ? getEclipsePetName(user) : 'Patricia';
+		if (hasPatriciaEquipped) bottleRate = Math.floor(bottleRate * 0.5);
+		if (user.usingPet('Partycrab')) bottleRate = Math.floor(bottleRate * 0.7);
+
+		let crabCageRate = hasPatriciaEquipped ? 100 : 250;
+		if (fish.name === 'Lobster') crabCageRate = Math.floor(crabCageRate * 0.5);
+		const minutes = Math.floor(data.duration / Time.Minute);
+		const userAlreadyHasCrabCage = user.allItemsOwned.has(BSOItem.OLD_CRAB_CAGE);
+
+		let bottlesFound = 0;
+		for (let i = 0; i < minutes; i++) {
+			if (rng.roll(bottleRate)) {
+				bottlesFound++;
+			}
+		}
+		if (bottlesFound) {
+			result.updateBank.itemLootBank.add(BSOItem.MYSTERIOUS_BOTTLE, bottlesFound);
+			if (bottlesFound === 1) {
+				result.messages.push('🏝🍹You gently tug something from the shallows: a *Mysterious bottle!**.');
+			} else {
+				result.messages.push(
+					`🏝️🍹You got quite the haul! You drug ${bottlesFound}x *Mysterious bottles!** out of the ocean!.`
+				);
+			}
+		}
+
+		if (!userAlreadyHasCrabCage) {
+			for (let i = 0; i < minutes; i++) {
+				if (rng.roll(crabCageRate)) {
+					result.updateBank.itemLootBank.add(BSOItem.OLD_CRAB_CAGE);
+					result.messages.push(
+						hasPatriciaEquipped
+							? `🦀 ${eclipsePetName} tugged something rusted from the shallows: an **Old crab cage**.`
+							: '🦀 A strange force helped you draw something rusted from the briny deep: an **Old crab cage**.'
+					);
+					break;
+				}
+			}
+		}
+		if (hasPatriciaEquipped) {
+			if (fish.name === 'Lobster' && user.hasEquipped(BSOItem.OLD_CRAB_CAGE) && !user.cl.has(BSOItem.PARTYCRAB)) {
+				for (let i = 0; i < minutes; i++) {
+					if (rng.roll(24 * 60)) {
+						result.updateBank.itemLootBank.add(BSOItem.PARTYCRAB);
+						result.messages.push(
+							'<:partycrab:1507689107806097541> The old crab cage rattled, and a Partycrab climbed out like it had been waiting years for this moment.'
+						);
+						break;
+					}
+				}
+			}
+		}
+
+		if (user.hasEquipped(BSOItem.MYSTERIOUS_BOTTLE)) {
+			const mysteriousBottleChance = hasPatriciaEquipped
+				? 500
+				: user.usingPet('Partycrab')
+					? 650
+					: user.usingPet('Shelldon')
+						? 750
+						: 1000;
+
+			for (let i = 0; i < minutes; i++) {
+				if (!rng.roll(mysteriousBottleChance)) continue;
+				if (await convertMysteriousBottleToSeaWater(user)) {
+					result.messages.push(
+						'🫙 A cold violet current swirled into your Mysterious bottle while fishing. It is now a **Bottle of sea water**'
+					);
+				}
+				break;
+			}
+		}
+
 		const updateResult = await result.updateBank.transact(user);
 		if (typeof updateResult === 'string') {
 			throw new Error(`Fishing trip update bank failed: ${updateResult}`);
@@ -150,7 +233,6 @@ export const fishingTask: MinionTask = {
 				`${Emoji.Fishing} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a Heron while fishing ${fish.name} at level ${user.skillsAsLevels.fishing} Fishing!`
 			);
 		}
-
 		return handleTripFinish(user, channelId, message, data, result.updateBank.itemLootBank);
 	}
 };

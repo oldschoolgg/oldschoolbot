@@ -42,6 +42,7 @@ for (const [fontFamily, fontPath] of Object.entries(fonts)) {
 export class OSRSCanvas {
 	public static LOCAL_ICON_CACHE = new Map<number, CanvasImage>();
 	public static ITEM_ICON_CACHE_DIR = path.resolve('icon_cache');
+	public static ITEM_BSO_ICON_DIR = path.resolve('src/lib/resources/images/bso_icons');
 	public static Fonts = Fonts;
 	public static COLORS = {
 		ORANGE: '#FF981F',
@@ -342,7 +343,10 @@ export class OSRSCanvas {
 	private static async loadLocalIcon(itemID: number): Promise<Image> {
 		const cached = OSRSCanvas.LOCAL_ICON_CACHE.get(itemID);
 		if (cached) return cached;
-		const onDisk = await readFile(path.join(OSRSCanvas.ITEM_ICON_CACHE_DIR, `${itemID}.png`)).catch(() => null);
+		let onDisk = await readFile(path.join(OSRSCanvas.ITEM_ICON_CACHE_DIR, `${itemID}.png`)).catch(() => null);
+		// BSO only: Check if the image is in the bso_icons folder
+		if (!onDisk)
+			onDisk = await readFile(path.join(OSRSCanvas.ITEM_BSO_ICON_DIR, `${itemID}.png`)).catch(() => null);
 		if (onDisk) {
 			const image = await loadImage(onDisk);
 			OSRSCanvas.LOCAL_ICON_CACHE.set(itemID, image);

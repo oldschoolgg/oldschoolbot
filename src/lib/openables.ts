@@ -617,6 +617,12 @@ export const allOpenables: UnifiedOpenable[] = [
 for (const openable of allOpenables) {
 	openable.aliases.push(openable.openedItem.name);
 	openable.aliases.push(openable.id.toString());
+	for (const [alias, iId] of Items.itemNameMap.entries()) {
+		if (iId === openable.id) {
+			openable.aliases.push(alias);
+		}
+	}
+	openable.aliases = [...new Set(openable.aliases)];
 }
 
 export const allOpenablesIDs = new Set(allOpenables.map(i => i.id));

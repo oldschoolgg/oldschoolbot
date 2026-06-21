@@ -12,13 +12,17 @@ export async function rawCommandHandlerInner({
 	command,
 	options,
 	ignoreUserIsBusy,
-	rng
+	rng,
+	isContinue,
+	continueDeltaMs
 }: {
 	interaction: OSInteraction;
 	command: AnyCommand;
 	options: CommandOptions;
 	ignoreUserIsBusy?: true;
 	rng: RNGProvider;
+	isContinue?: boolean;
+	continueDeltaMs?: number | null;
 }): CommandResponse {
 	// Permissions
 	if (command.requiredPermissions) {
@@ -40,7 +44,7 @@ export async function rawCommandHandlerInner({
 		user.syncCompletedAchievementDiaries().catch(err => Logging.logError(err));
 	}
 
-	const shouldIgnoreBusy = ignoreUserIsBusy || busyImmuneCommands.includes(command.name);
+	const shouldIgnoreBusy = user.isAdmin() || ignoreUserIsBusy || busyImmuneCommands.includes(command.name);
 
 	if (!shouldIgnoreBusy && (await user.getIsLocked())) {
 		return {
@@ -57,7 +61,9 @@ export async function rawCommandHandlerInner({
 			command,
 			interaction,
 			options,
-			user
+			user,
+			isContinue,
+			continueDeltaMs
 		});
 		if (inhibitedResponse) {
 			return {

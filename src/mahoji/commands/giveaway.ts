@@ -102,6 +102,13 @@ export const giveawayCommand = defineCommand({
 	run: async ({ options, user, guildId, interaction, channelId, user: apiUser, rng }): CommandResponse => {
 		if (user.isIronman) return 'You cannot do giveaways!';
 
+		let maxGiveaways = 10;
+		const cyrFan = user.bitfield.includes(BitField.OriginalCyrSupporter);
+		if (cyrFan) {
+			if (user.perkTier >= 2) maxGiveaways += 5 * (user.perkTier - 1);
+		} else {
+			if (user.perkTier >= 3) maxGiveaways += 5 * (user.perkTier - 2);
+		}
 		if (options.start) {
 			const existingGiveaways = await prisma.giveaway.findMany({
 				where: {
@@ -109,8 +116,8 @@ export const giveawayCommand = defineCommand({
 					completed: false
 				}
 			});
-			if (existingGiveaways.length >= 10 && !userHasUnlimitedGiveaways(user)) {
-				return 'You cannot have more than 10 giveaways active at a time.';
+			if (existingGiveaways.length >= maxGiveaways && !userHasUnlimitedGiveaways(user)) {
+				return `You cannot have more than ${cyrFan ? Emoji.Seer : ''} ${maxGiveaways} giveaways active at a time.`;
 			}
 
 			if (!guildId && !interaction.guildId) {

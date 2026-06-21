@@ -29,7 +29,7 @@ export default async ({
 	if (simulatedKillable) {
 		if (quantity > limit) {
 			return {
-				error: `The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit by up to 1 million by becoming a patron at <https://www.patreon.com/oldschoolbot>`
+				error: `The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit by up to 1 million by becoming a patron at <https://www.patreon.com/OldschoolCyr>`
 			};
 		}
 		return {
@@ -45,7 +45,7 @@ export default async ({
 		}
 		if (quantity > limit) {
 			return {
-				error: `The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit by up to 1 million by becoming a patron at <https://www.patreon.com/oldschoolbot>`
+				error: `The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit by up to 1 million by becoming a patron at <https://www.patreon.com/OldschoolCyr>`
 			};
 		}
 

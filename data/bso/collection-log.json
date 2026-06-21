@@ -11557,6 +11557,31 @@
 				"counts": false,
 				"kc_activity": {},
 				"is_activity": true
+			},
+			"summer_crate_(s_9_)": {
+				"items": [
+					"Baguette",
+					"Beach pina colada",
+					"Beach sandals",
+					"Beachball shield",
+					"Cake",
+					"Coral bikini bottom",
+					"Coral bikini top",
+					"Gorajan shards",
+					"Imitation Crab Hat",
+					"Kebab",
+					"Paint box",
+					"Palm board shorts",
+					"Purple sweets",
+					"Spinach roll",
+					"Summer crate (s9)",
+					"Summer crate key (s9)",
+					"Summer partyhat",
+					"Whale floaty"
+				],
+				"counts": false,
+				"kc_activity": {},
+				"is_activity": true
 			}
 		}
 	}

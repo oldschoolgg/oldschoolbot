@@ -120,7 +120,15 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Loot Doubling',
 		fn: async ({ data, messages, user, loot }) => {
-			const cantBeDoubled = ['GroupMonsterKilling', 'KingGoldemar', 'Ignecarus', 'Inferno', 'Alching', 'Agility'];
+			const cantBeDoubled = [
+				'GroupMonsterKilling',
+				'KingGoldemar',
+				'Ignecarus',
+				'Inferno',
+				'Alching',
+				'Agility',
+				'BeachCombing'
+			];
 			if (!loot || data.cantBeDoubled || cantBeDoubled.includes(data.type) || data.duration < Time.Minute * 20) {
 				return;
 			}
@@ -328,6 +336,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Crate Spawns',
 		fn: async ({ data, messages, user }) => {
+			if (data.type === activity_type_enum.BeachCombing) return;
 			const crateRes = handleCrateSpawns(user, data.duration, 'trip', messages);
 			if (crateRes && crateRes.length > 0) {
 				messages.push(bold(`You found ${crateRes}!`));

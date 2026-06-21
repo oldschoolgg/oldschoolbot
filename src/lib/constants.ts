@@ -165,7 +165,12 @@ export enum BitField {
 	WikiContributor = 50,
 	UnlimitedGiveaways = 51,
 	ServerSupport = 52,
+	DisabledPassiveImplings = 53,
+	DisableAutoFarmButton = 54,
+	DisableBankWeights = 55,
+	DisableBankFavorites = 56,
 
+	OriginalCyrSupporter = 199,
 	HasGivenBirthdayPack = 200,
 	HasPermanentSpawnLamp = 201,
 	HasScrollOfFarming = 202,
@@ -204,7 +209,7 @@ export enum BitField {
 	HasHalloweenWallkit = 234,
 	HasEarnedRiftGuardianFromStar = 235,
 	DisablePaints = 236,
-	LegitNewPlayer = 237
+	DisableGlowEffects = 238
 }
 
 export interface IBitFieldData {
@@ -259,7 +264,7 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 	[BitField.UsedSirenicTablet]: { name: 'Used Sirenic Tablet', protected: false, userConfigurable: false },
 	[BitField.UsedStrangledTablet]: { name: 'Used Strangled Tablet', protected: false, userConfigurable: false },
 	[BitField.SelfGamblingLocked]: { name: 'Self Gambling Lock', protected: false, userConfigurable: true },
-
+	[BitField.OriginalCyrSupporter]: { name: "One of Cyr's first Patrons", protected: false, userConfigurable: false },
 	[BitField.HasGivenBirthdayPack]: { name: 'Has Given Birthday Pack', protected: false, userConfigurable: false },
 	[BitField.BypassAgeRestriction]: { name: 'Bypassed Age Restriction', protected: false, userConfigurable: false },
 	[BitField.HasPermanentEventBackgrounds]: {
@@ -277,6 +282,12 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 		name: 'Free T1 Perks for Maxed in OSB/BSO',
 		protected: false,
 		userConfigurable: false
+	},
+	[BitField.DisableBankWeights]: { name: 'Disable Bank Weight Sorting', protected: false, userConfigurable: true },
+	[BitField.DisableBankFavorites]: {
+		name: 'Disable Bank Favorite Sort Priority',
+		protected: false,
+		userConfigurable: true
 	},
 
 	[BitField.HasFlickeringBoon]: {
@@ -393,6 +404,11 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 		protected: false,
 		userConfigurable: true
 	},
+	[BitField.DisableAutoFarmButton]: {
+		name: 'Disable Auto Farm Button',
+		protected: false,
+		userConfigurable: true
+	},
 	[BitField.NoItemContractDonations]: {
 		name: 'Disable Item Contract donations',
 		protected: false,
@@ -443,6 +459,11 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 		protected: false,
 		userConfigurable: true
 	},
+	[BitField.DisabledPassiveImplings]: {
+		name: 'Disabled Passive Implings',
+		protected: false,
+		userConfigurable: true
+	},
 
 	[BitField.HasDeadeyeScroll]: { name: 'Deadeye Scroll Used', protected: false, userConfigurable: false },
 	[BitField.HasMysticVigourScroll]: { name: 'Mystic Vigour Scroll Used', protected: false, userConfigurable: false },
@@ -486,10 +507,10 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 		protected: false,
 		userConfigurable: true
 	},
-	[BitField.LegitNewPlayer]: {
-		name: 'Legit New Player',
+	[BitField.DisableGlowEffects]: {
+		name: 'Disable Glow Effects',
 		protected: false,
-		userConfigurable: false
+		userConfigurable: true
 	}
 } as const;
 
@@ -510,7 +531,8 @@ export const BadgesEnum = {
 	Slayer: 13,
 	TopGiveawayer: 14,
 	Farmer: 15,
-	Hacktoberfest: 16
+	Hacktoberfest: 16,
+	CyrEarlySupporter: 17
 } as const;
 
 export const badges: { [key: number]: string } = {
@@ -530,7 +552,8 @@ export const badges: { [key: number]: string } = {
 	[BadgesEnum.Slayer]: Emoji.Slayer,
 	[BadgesEnum.TopGiveawayer]: Emoji.SantaHat,
 	[BadgesEnum.Farmer]: Emoji.Farming,
-	[BadgesEnum.Hacktoberfest]: '<:hacktoberfest:1304259875634942082>'
+	[BadgesEnum.Hacktoberfest]: '<:hacktoberfest:1304259875634942082>',
+	[BadgesEnum.CyrEarlySupporter]: Emoji.Seer
 };
 
 export const MAX_XP = BOT_TYPE === 'OSB' ? 200_000_000 : 5_000_000_000;

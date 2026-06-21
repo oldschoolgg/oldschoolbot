@@ -3,17 +3,24 @@ import { calcPercentOfNum, calcWhatPercent, PerkTier, Time } from '@oldschoolgg/
 import type { activity_type_enum } from '@/prisma/main.js';
 import { BitField } from '@/lib/constants.js';
 
-export function patronMaxTripBonus(perkTier: PerkTier | 0) {
-	if (perkTier === PerkTier.Two) return Time.Minute * 3;
-	else if (perkTier === PerkTier.Three) return Time.Minute * 6;
-	else if (perkTier >= PerkTier.Four) return Time.Minute * 10;
+export function patronMaxTripBonus(perkTier: PerkTier | 0, cyrSupporter: boolean = false) {
+	if (cyrSupporter) {
+		if (perkTier === PerkTier.One) return Time.Minute * 3;
+		else if (perkTier === PerkTier.Two) return Time.Minute * 6;
+		else if (perkTier === PerkTier.Three) return Time.Minute * 10;
+		else if (perkTier >= PerkTier.Four) return Time.Minute * 15;
+	} else {
+		if (perkTier === PerkTier.Two) return Time.Minute * 3;
+		else if (perkTier === PerkTier.Three) return Time.Minute * 6;
+		else if (perkTier >= PerkTier.Four) return Time.Minute * 10;
+	}
 	return 0;
 }
 
 export async function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
 	const perkTier = await user.fetchPerkTier();
 	let max = Time.Minute * 30;
-	max += patronMaxTripBonus(perkTier);
+	max += patronMaxTripBonus(perkTier, user.bitfield.includes(BitField.OriginalCyrSupporter));
 
 	const hasMasterHPCape = user.hasEquipped('Hitpoints master cape');
 	let masterHPCapeBoost = 0;
@@ -66,6 +73,30 @@ export async function calcMaxTripLength(user: MUser, activity?: activity_type_en
 		}
 		case 'NightmareZone': {
 			max *= 3;
+			break;
+		}
+		case 'Fishing': {
+			if (user.usingPet('Patricia')) {
+				max *= 1.75;
+			}
+			if (user.usingPet('Partycrab')) {
+				max *= 1.6;
+			}
+			if (user.usingPet('Shelldon')) {
+				max *= 1.25;
+			}
+			break;
+		}
+		case 'BeachCombing': {
+			if (user.usingPet('Patricia')) {
+				max *= 2;
+			}
+			if (user.usingPet('Partycrab')) {
+				max += Time.Minute * 30;
+			}
+			if (user.usingPet('Shelldon')) {
+				max += Time.Minute * 25;
+			}
 			break;
 		}
 		default: {

@@ -3,8 +3,8 @@ import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
 import { NEX_UNIQUE_DROPRATE, NexMonster } from '@/lib/bso/monsters/nex.js';
 import { getNexGearStats } from '@/lib/bso/util/getNexGearStats.js';
 
-import { calcWhatPercent, Emoji, noOp, SimpleTable } from '@oldschoolgg/toolkit';
-import { Bank } from 'oldschooljs';
+import { calcWhatPercent, Emoji, noOp } from '@oldschoolgg/toolkit';
+import { Bank, SimpleTable } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
@@ -168,7 +168,7 @@ export const nexTask: MinionTask = {
 					)}.\n\n${soloXP}`
 		);
 
-		if (!kcAmounts[userID]) {
+		if (kcAmounts[userID]) {
 			message.addBankImage({
 				bank: soloItemsAdded,
 				title: `Loot From ${quantity} ${NexMonster.name}:`,

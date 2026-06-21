@@ -1,3 +1,4 @@
+import type { APIUser } from '@oldschoolgg/discord';
 import type { IChannel, IMember } from '@oldschoolgg/schemas';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import type { RNGProvider } from 'node-rng';
@@ -54,6 +55,22 @@ export class TestClient extends AsyncEventEmitter<any> implements AsyncDisposabl
 
 	async fetchChannel() {
 		return mockChannel(this.rng);
+	}
+
+	async fetchUser(userId: string): Promise<APIUser> {
+		const user = await global.prisma!.user.findUnique({
+			where: {
+				id: userId
+			},
+			select: {
+				username: true
+			}
+		});
+		return {
+			id: userId,
+			username: user?.username ?? 'TestUser',
+			bot: false
+		} as APIUser;
 	}
 
 	async editMessage() {

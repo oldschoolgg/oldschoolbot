@@ -17,7 +17,6 @@ import { Gear } from '@/lib/structures/Gear.js';
 import type { SkillsRequired } from '@/lib/types/index.js';
 import type { ActivityTaskData, MonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import { MUserClass } from '@/lib/user/MUser.js';
-import { fetchUsernameAndCache } from '@/lib/util.js';
 import { minionKCommand } from '@/mahoji/commands/k.js';
 import { giveMaxStats } from '@/mahoji/commands/testpotato.js';
 import { ironmanCommand } from '@/mahoji/lib/abstracted_commands/ironmanCommand.js';
@@ -414,6 +413,8 @@ export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.User
 		})
 	]);
 
-	await fetchUsernameAndCache(id);
+	if (user.username) {
+		await Cache.setUsername(id, user.username);
+	}
 	return new TestUser(user);
 }

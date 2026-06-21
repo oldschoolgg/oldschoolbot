@@ -3,6 +3,7 @@ import { Inventions } from '@/lib/bso/skills/invention/inventions.js';
 import { bold, EmbedBuilder, inlineCode } from '@oldschoolgg/discord';
 import { ECombatOption, type IGuild } from '@oldschoolgg/schemas';
 import {
+	cleanString,
 	formatDuration,
 	hexToDecimal,
 	isValidHexColor,
@@ -20,7 +21,7 @@ import { choicesOf, itemOption } from '@/discord/index.js';
 import { CanvasModule } from '@/lib/canvas/CanvasModule.js';
 import { gearImages } from '@/lib/canvas/gearImageData.js';
 import { ItemIconPacks } from '@/lib/canvas/iconPacks.js';
-import { BitField, BitFieldData, PerkTier } from '@/lib/constants.js';
+import { BitField, BitFieldData } from '@/lib/constants.js';
 import { Eatables } from '@/lib/data/eatables.js';
 import { CombatOptionsArray } from '@/lib/minions/data/combatConstants.js';
 import { birdhouseSeeds } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
@@ -28,7 +29,7 @@ import { autoslayChoices, slayerMasterChoices } from '@/lib/slayer/constants.js'
 import { setDefaultAutoslay, setDefaultSlayerMaster } from '@/lib/slayer/slayerUtil.js';
 import { BankSortMethods, isValidBankSortMethod } from '@/lib/sorts.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
-import { isValidNickname, patronMsg } from '@/lib/util/smallUtils.js';
+import { isValidNickname } from '@/lib/util/smallUtils.js';
 import { toggleBitfield } from '@/lib/util.js';
 
 type ExtendedBitFieldDataa = (typeof BitFieldData)[BitField] & {
@@ -285,11 +286,6 @@ async function bankSortConfig(
 ): CommandResponse {
 	const currentMethod = user.user.bank_sort_method;
 	const currentWeightingBank = new Bank(user.user.bank_sort_weightings as ItemBank);
-
-	const perkTier = await user.fetchPerkTier();
-	if (perkTier < PerkTier.Two) {
-		return patronMsg(PerkTier.Two);
-	}
 
 	if (!sortMethod && !addWeightingBank && !removeWeightingBank && !resetWeightingBank) {
 		const sortStr = currentMethod
@@ -659,7 +655,7 @@ export const configCommand = defineCommand({
 									.filter(i => {
 										if ((!i.userConfigurable || i.protected) && !user.isAdmin()) return false;
 										if (!value) return true;
-										return stringMatches(i.name, value);
+										return cleanString(i.name).includes(cleanString(value));
 									})
 									.map(i => ({
 										name: `${i.name} (Currently ${bitfield.includes(i.bit) ? 'On' : 'Off'})`,
