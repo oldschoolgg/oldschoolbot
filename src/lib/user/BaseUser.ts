@@ -72,6 +72,7 @@ export class BaseUser {
 	private _bankLazy: Bank | null = null;
 	private _clLazy: Bank | null = null;
 	private _gearLazy: UserFullGearSetup | null = null;
+	private _username: string | null = null;
 
 	paintedItems!: Map<number, number>;
 
@@ -134,6 +135,7 @@ export class BaseUser {
 		this._bankLazy = null;
 		this._clLazy = null;
 		this._gearLazy = null;
+		this._username = this.user.username ? cleanUsername(this.user.username) : 'Unknown';
 		this.skillsAsXP = this.getSkills(false);
 		this.skillsAsLevels = this.getSkills(true);
 
@@ -216,7 +218,10 @@ export class BaseUser {
 	}
 
 	get username() {
-		return cleanUsername(this.user.username ?? 'Unknown');
+		return this._username ?? 'Unknown';
+	}
+	set username(user: string) {
+		this._username = user;
 	}
 
 	get usernameOrMention() {

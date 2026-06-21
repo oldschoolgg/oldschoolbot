@@ -1201,7 +1201,7 @@ export async function srcMUserFetch(userID: string, updates?: Prisma.UserUpdateI
 	if (!isValidDiscordSnowflake(userID)) {
 		throw new Error(`Invalid userID: ${userID}`);
 	}
-	let user =
+	const user =
 		updates !== undefined
 			? await prisma.user.upsert({
 					create: {
@@ -1217,11 +1217,7 @@ export async function srcMUserFetch(userID: string, updates?: Prisma.UserUpdateI
 	if (!user) {
 		return srcMUserFetch(userID, {});
 	}
-	const username = await Cache.getUsername(user.id);
-	user = {
-		...user,
-		username
-	};
+	user.username = await Cache.getUsername(user.id);
 	return new MUserClass(user);
 }
 
