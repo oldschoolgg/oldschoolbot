@@ -51,6 +51,61 @@ type DiscordUserFetchQueueStats = {
 	queuedUserIds: string[];
 };
 
+type StoredDiscordUserFetchQueueStats = Omit<
+	DiscordUserFetchQueueStats,
+	'lastQueuedAt' | 'lastStartedAt' | 'lastCompletedAt' | 'lastFailedAt'
+> & {
+	lastQueuedAt: string | null;
+	lastStartedAt: string | null;
+	lastCompletedAt: string | null;
+	lastFailedAt: string | null;
+};
+
+type DiscordUserFetchQueueStatsFields = Record<keyof StoredDiscordUserFetchQueueStats, string>;
+
+function createDefaultDiscordUserFetchQueueStats(): DiscordUserFetchQueueStats {
+	return {
+		queued: 0,
+		running: 0,
+		totalQueued: 0,
+		totalStarted: 0,
+		totalCompleted: 0,
+		totalFailed: 0,
+		totalFetchRequests: 0,
+		dedupeSkips: 0,
+		currentUserId: null,
+		lastQueuedAt: null,
+		lastStartedAt: null,
+		lastCompletedAt: null,
+		lastFailedAt: null,
+		lastError: null,
+		queuedUserIds: []
+	};
+}
+
+function parseNullableDate(value: string | Date | null | undefined): Date | null {
+	if (!value) return null;
+	if (value instanceof Date) return value;
+	const date = new Date(value);
+	return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function parseStatsNumber(value: string | number | null | undefined): number {
+	const number = Number(value);
+	return Number.isFinite(number) ? number : 0;
+}
+
+function parseQueuedUserIds(value: string | string[] | null | undefined): string[] {
+	if (Array.isArray(value)) return value;
+	if (!value) return [];
+	try {
+		const parsed = JSON.parse(value) as unknown;
+		return Array.isArray(parsed) ? parsed.filter((userId): userId is string => typeof userId === 'string') : [];
+	} catch {
+		return [];
+	}
+}
+
 type RatelimitType =
 	| 'random_events'
 	| 'global_buttons'
@@ -76,25 +131,14 @@ type GuildUpdateInput = Partial<IGuild> & {
 
 class CacheManager {
 	private client: Redis;
+	private discordUserFetchQueueStatsInit: Promise<void>;
 	private discordUserFetchQueue = new PQueue({
 		concurrency: 1,
 		intervalCap: 1,
 		interval: Time.Second
 	});
 	private queuedDiscordUserFetches = new Set<string>();
-	private discordUserFetchQueueStats = {
-		totalQueued: 0,
-		totalStarted: 0,
-		totalCompleted: 0,
-		totalFailed: 0,
-		dedupeSkips: 0,
-		currentUserId: null as string | null,
-		lastQueuedAt: null as Date | null,
-		lastStartedAt: null as Date | null,
-		lastCompletedAt: null as Date | null,
-		lastFailedAt: null as Date | null,
-		lastError: null as string | null
-	};
+	private discordUserFetchQueueStats = createDefaultDiscordUserFetchQueueStats();
 
 	constructor() {
 		if (globalConfig.isProduction) {
@@ -111,6 +155,7 @@ class CacheManager {
 				this.client = new MockedRedis() as any as Redis;
 			}
 		}
+		this.discordUserFetchQueueStatsInit = this.initializeDiscordUserFetchQueueStats();
 	}
 
 	private async setString(key: string, value: string, ttlSeconds: number) {
@@ -338,90 +383,199 @@ class CacheManager {
 		await this.setString(fullKey, value, TTL.Day + jitterSeconds);
 	}
 
-	private queueDiscordUserFetch(userId: string): void {
+	private getDiscordUserFetchQueueStatsSnapshot(): DiscordUserFetchQueueStats {
+		return {
+			...this.discordUserFetchQueueStats,
+			queued: this.discordUserFetchQueue.size,
+			running: this.discordUserFetchQueue.pending,
+			queuedUserIds: [...this.queuedDiscordUserFetches]
+		};
+	}
+
+	private serializeDiscordUserFetchQueueStats(): StoredDiscordUserFetchQueueStats {
+		const stats = this.getDiscordUserFetchQueueStatsSnapshot();
+		return {
+			...stats,
+			lastQueuedAt: stats.lastQueuedAt?.toISOString() ?? null,
+			lastStartedAt: stats.lastStartedAt?.toISOString() ?? null,
+			lastCompletedAt: stats.lastCompletedAt?.toISOString() ?? null,
+			lastFailedAt: stats.lastFailedAt?.toISOString() ?? null
+		};
+	}
+
+	private serializeDiscordUserFetchQueueStatsFields(): DiscordUserFetchQueueStatsFields {
+		const stats = this.serializeDiscordUserFetchQueueStats();
+		return {
+			queued: stats.queued.toString(),
+			running: stats.running.toString(),
+			totalQueued: stats.totalQueued.toString(),
+			totalStarted: stats.totalStarted.toString(),
+			totalCompleted: stats.totalCompleted.toString(),
+			totalFailed: stats.totalFailed.toString(),
+			totalFetchRequests: stats.totalFetchRequests.toString(),
+			dedupeSkips: stats.dedupeSkips.toString(),
+			currentUserId: stats.currentUserId ?? '',
+			lastQueuedAt: stats.lastQueuedAt ?? '',
+			lastStartedAt: stats.lastStartedAt ?? '',
+			lastCompletedAt: stats.lastCompletedAt ?? '',
+			lastFailedAt: stats.lastFailedAt ?? '',
+			lastError: stats.lastError ?? '',
+			queuedUserIds: JSON.stringify(stats.queuedUserIds)
+		};
+	}
+
+	private async persistDiscordUserFetchQueueStats(): Promise<void> {
+		await this.client.hset(RedisKeys.Discord.UserFetchQueueStats, this.serializeDiscordUserFetchQueueStatsFields());
+	}
+
+	private parseDiscordUserFetchQueueStatsFields(
+		fields: Partial<DiscordUserFetchQueueStatsFields>
+	): Partial<DiscordUserFetchQueueStats> {
+		return {
+			queued: parseStatsNumber(fields.queued),
+			running: parseStatsNumber(fields.running),
+			totalQueued: parseStatsNumber(fields.totalQueued),
+			totalStarted: parseStatsNumber(fields.totalStarted),
+			totalCompleted: parseStatsNumber(fields.totalCompleted),
+			totalFailed: parseStatsNumber(fields.totalFailed),
+			totalFetchRequests: parseStatsNumber(fields.totalFetchRequests),
+			dedupeSkips: parseStatsNumber(fields.dedupeSkips),
+			currentUserId: fields.currentUserId || null,
+			lastQueuedAt: parseNullableDate(fields.lastQueuedAt),
+			lastStartedAt: parseNullableDate(fields.lastStartedAt),
+			lastCompletedAt: parseNullableDate(fields.lastCompletedAt),
+			lastFailedAt: parseNullableDate(fields.lastFailedAt),
+			lastError: fields.lastError || null,
+			queuedUserIds: parseQueuedUserIds(fields.queuedUserIds)
+		};
+	}
+
+	private async fetchDiscordUserFetchQueueStatsFields(): Promise<Partial<DiscordUserFetchQueueStats>> {
+		try {
+			const fields = await this.client.hgetall(RedisKeys.Discord.UserFetchQueueStats);
+			return this.parseDiscordUserFetchQueueStatsFields(fields as Partial<DiscordUserFetchQueueStatsFields>);
+		} catch (err) {
+			if (!(err instanceof Error) || !err.message.includes('WRONGTYPE')) {
+				throw err;
+			}
+
+			const legacyJson = await this.getString(RedisKeys.Discord.UserFetchQueueStats).catch(() => null);
+			await this.client.del(RedisKeys.Discord.UserFetchQueueStats);
+			if (!legacyJson) return {};
+
+			try {
+				const legacy = JSON.parse(legacyJson) as Partial<StoredDiscordUserFetchQueueStats>;
+				return {
+					...legacy,
+					lastQueuedAt: parseNullableDate(legacy.lastQueuedAt),
+					lastStartedAt: parseNullableDate(legacy.lastStartedAt),
+					lastCompletedAt: parseNullableDate(legacy.lastCompletedAt),
+					lastFailedAt: parseNullableDate(legacy.lastFailedAt),
+					queuedUserIds: parseQueuedUserIds(legacy.queuedUserIds)
+				};
+			} catch {
+				return {};
+			}
+		}
+	}
+
+	private async initializeDiscordUserFetchQueueStats(): Promise<void> {
+		const stored = await this.fetchDiscordUserFetchQueueStatsFields();
+		this.discordUserFetchQueueStats = {
+			...createDefaultDiscordUserFetchQueueStats(),
+			...stored,
+			queued: 0,
+			running: 0,
+			currentUserId: null,
+			lastQueuedAt: parseNullableDate(stored.lastQueuedAt),
+			lastStartedAt: parseNullableDate(stored.lastStartedAt),
+			lastCompletedAt: parseNullableDate(stored.lastCompletedAt),
+			lastFailedAt: parseNullableDate(stored.lastFailedAt),
+			queuedUserIds: []
+		};
+		await this.persistDiscordUserFetchQueueStats();
+	}
+
+	private async queueDiscordUserFetch(userId: string): Promise<void> {
+		await this.discordUserFetchQueueStatsInit;
 		if (this.queuedDiscordUserFetches.has(userId)) {
 			this.discordUserFetchQueueStats.dedupeSkips++;
+			await this.persistDiscordUserFetchQueueStats();
 			return;
 		}
 
 		this.queuedDiscordUserFetches.add(userId);
 		this.discordUserFetchQueueStats.totalQueued++;
 		this.discordUserFetchQueueStats.lastQueuedAt = new Date();
-		void this.discordUserFetchQueue
-			.add(async () => {
-				this.discordUserFetchQueueStats.totalStarted++;
-				this.discordUserFetchQueueStats.currentUserId = userId;
-				this.discordUserFetchQueueStats.lastStartedAt = new Date();
+		const task = this.discordUserFetchQueue.add(async () => {
+			await this.discordUserFetchQueueStatsInit;
+			this.discordUserFetchQueueStats.totalStarted++;
+			this.discordUserFetchQueueStats.currentUserId = userId;
+			this.discordUserFetchQueueStats.lastStartedAt = new Date();
+			await this.persistDiscordUserFetchQueueStats();
 
-				try {
-					await this.client.incr(RedisKeys.Discord.UserFetchesTotal);
-					const djsUser = await globalClient.fetchUser(userId).catch(() => null);
-					const username = djsUser?.username ? cleanUsername(djsUser.username) : null;
+			try {
+				this.discordUserFetchQueueStats.totalFetchRequests++;
+				await this.persistDiscordUserFetchQueueStats();
+				const djsUser = await globalClient.fetchUser(userId).catch(() => null);
+				const username = djsUser?.username ? cleanUsername(djsUser.username) : null;
 
-					await prisma.user.upsert({
-						where: {
-							id: userId
-						},
-						create: {
-							id: userId,
-							username: username ?? undefined
-						},
-						update: username
-							? {
-									username
-								}
-							: {},
-						select: {
-							id: true
-						}
-					});
-
-					if (username) {
-						await this.setUsername(userId, username);
-						await this.client.del(BotKeys.User.BadgedUsername(userId));
+				await prisma.user.upsert({
+					where: {
+						id: userId
+					},
+					create: {
+						id: userId,
+						username: username ?? undefined
+					},
+					update: username
+						? {
+								username
+							}
+						: {},
+					select: {
+						id: true
 					}
+				});
 
-					this.discordUserFetchQueueStats.totalCompleted++;
-					this.discordUserFetchQueueStats.lastCompletedAt = new Date();
-				} catch (err) {
-					this.discordUserFetchQueueStats.totalFailed++;
-					this.discordUserFetchQueueStats.lastFailedAt = new Date();
-					this.discordUserFetchQueueStats.lastError = (err as Error).message;
-					throw err;
-				} finally {
-					this.queuedDiscordUserFetches.delete(userId);
-					if (this.discordUserFetchQueueStats.currentUserId === userId) {
-						this.discordUserFetchQueueStats.currentUserId = null;
-					}
+				if (username) {
+					await this.setUsername(userId, username);
+					await this.client.del(BotKeys.User.BadgedUsername(userId));
 				}
-			})
+
+				this.discordUserFetchQueueStats.totalCompleted++;
+				this.discordUserFetchQueueStats.lastCompletedAt = new Date();
+				await this.persistDiscordUserFetchQueueStats();
+			} catch (err) {
+				this.discordUserFetchQueueStats.totalFailed++;
+				this.discordUserFetchQueueStats.lastFailedAt = new Date();
+				this.discordUserFetchQueueStats.lastError = (err as Error).message;
+				await this.persistDiscordUserFetchQueueStats();
+				throw err;
+			} finally {
+				this.queuedDiscordUserFetches.delete(userId);
+				if (this.discordUserFetchQueueStats.currentUserId === userId) {
+					this.discordUserFetchQueueStats.currentUserId = null;
+				}
+				await this.persistDiscordUserFetchQueueStats();
+			}
+		});
+		await this.persistDiscordUserFetchQueueStats();
+		void task
 			.catch(err => {
 				Logging.logError(err as Error, {
 					source: 'discord_user_fetch_queue',
 					user_id: userId
 				});
+			})
+			.finally(() => {
+				void this.persistDiscordUserFetchQueueStats();
 			});
 	}
 
 	async getDiscordUserFetchQueueStats(): Promise<DiscordUserFetchQueueStats> {
-		const totalFetchRequests = Number(await this.client.get(RedisKeys.Discord.UserFetchesTotal)) || 0;
-		return {
-			queued: this.discordUserFetchQueue.size,
-			running: this.discordUserFetchQueue.pending,
-			totalFetchRequests,
-			totalQueued: this.discordUserFetchQueueStats.totalQueued,
-			totalStarted: this.discordUserFetchQueueStats.totalStarted,
-			totalCompleted: this.discordUserFetchQueueStats.totalCompleted,
-			totalFailed: this.discordUserFetchQueueStats.totalFailed,
-			dedupeSkips: this.discordUserFetchQueueStats.dedupeSkips,
-			currentUserId: this.discordUserFetchQueueStats.currentUserId,
-			lastQueuedAt: this.discordUserFetchQueueStats.lastQueuedAt,
-			lastStartedAt: this.discordUserFetchQueueStats.lastStartedAt,
-			lastCompletedAt: this.discordUserFetchQueueStats.lastCompletedAt,
-			lastFailedAt: this.discordUserFetchQueueStats.lastFailedAt,
-			lastError: this.discordUserFetchQueueStats.lastError,
-			queuedUserIds: [...this.queuedDiscordUserFetches]
-		};
+		await this.discordUserFetchQueueStatsInit;
+		return this.getDiscordUserFetchQueueStatsSnapshot();
 	}
 
 	async getUsername(userId: string): Promise<string> {
@@ -432,7 +586,7 @@ class CacheManager {
 		const cached = await this.getExpiringString(RedisKeys.Discord.Username(userId));
 		if (cached) return cached;
 
-		this.queueDiscordUserFetch(userId);
+		await this.queueDiscordUserFetch(userId);
 		const user = await prisma.user.findFirst({
 			where: {
 				id: userId
