@@ -221,6 +221,7 @@ export const geCommand = defineCommand({
 				{
 					...itemOption(item => Boolean(item.tradeable_on_ge)),
 					name: 'item',
+					required: true,
 					description: 'The item to view.'
 				}
 			]
@@ -366,26 +367,25 @@ The next buy limit reset is at: ${dateFm(GrandExchange.getInterval().end)}, it r
 		}
 
 		if (options.view) {
-			if (options.view.item) {
-				const item = Items.getItem(options.view.item);
-				if (!item) return 'Invalid item.';
-				if (!itemIsTradeable(item.id)) return 'That item is not tradeable on the Grand Exchange.';
-				const priceData = marketPricemap.get(item.id);
-				let baseMessage = `**${item.name}**
+			const item = Items.getItem(options.view.item);
+			if (!item) return 'Invalid item.';
+			if (!itemIsTradeable(item.id)) return 'That item is not tradeable on the Grand Exchange.';
+			const priceData = marketPricemap.get(item.id);
+			let baseMessage = `**${item.name}**
 **Buy Limit Per 4 hours:** ${GrandExchange.getItemBuyLimit(item).toLocaleString()}`;
-				if (priceData) {
-					baseMessage += `
+			if (priceData) {
+				baseMessage += `
 **Market Price:** ${toKMB(priceData.guidePrice)} (${priceData.guidePrice.toLocaleString()}) GP.
 **Recent Price:** ${toKMB(priceData.averagePriceLast100)} (${priceData.averagePriceLast100.toLocaleString()}) GP.
 
 `;
-				}
-				if ((await user.fetchPerkTier()) < PerkTier.Four) {
-					return baseMessage;
-				}
-				let result = await prisma.$queryRawUnsafe<
-					{ total_quantity_bought: number; average_price_per_item_before_tax: number; week: Date }[]
-				>(`SELECT
+			}
+			if ((await user.fetchPerkTier()) < PerkTier.Four) {
+				return baseMessage;
+			}
+			let result = await prisma.$queryRawUnsafe<
+				{ total_quantity_bought: number; average_price_per_item_before_tax: number; week: Date }[]
+			>(`SELECT
   DATE_TRUNC('week', sellTransactions.created_at) AS week,
   AVG(sellTransactions.price_per_item_before_tax) AS average_price_per_item_before_tax,
   SUM(sellTransactions.quantity_bought)::int AS total_quantity_bought
@@ -404,22 +404,21 @@ GROUP BY
 ORDER BY
   week ASC;
 `);
-				if (result.length < 1) return baseMessage;
-				if (result[0].average_price_per_item_before_tax <= 1_000_000) {
-					result = result.filter(i => i.total_quantity_bought > 1);
-				}
-				const buffer = await createChart({
-					title: `Price History for ${item.name}`,
-					format: 'kmb',
-					values: result.map(i => [new Date(i.week).toDateString(), i.average_price_per_item_before_tax]),
-					type: 'line'
-				});
-
-				return {
-					content: baseMessage,
-					files: [{ name: 'chart.png', buffer }]
-				};
+			if (result.length < 1) return baseMessage;
+			if (result[0].average_price_per_item_before_tax <= 1_000_000) {
+				result = result.filter(i => i.total_quantity_bought > 1);
 			}
+			const buffer = await createChart({
+				title: `Price History for ${item.name}`,
+				format: 'kmb',
+				values: result.map(i => [new Date(i.week).toDateString(), i.average_price_per_item_before_tax]),
+				type: 'line'
+			});
+
+			return {
+				content: baseMessage,
+				files: [{ name: 'chart.png', buffer }]
+			};
 		}
 
 		if (GrandExchange.locked) {

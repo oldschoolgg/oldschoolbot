@@ -80,7 +80,7 @@ async function getBuriedTreasureChance(user: MUser) {
 		(total, winnerBank) => total + Object.values(winnerBank).reduce((bankTotal, qty) => bankTotal + qty, 0),
 		0
 	);
-	totalPrizes = Math.max(1, totalPrizes - 20);
+	totalPrizes = Math.max(1, totalPrizes - 50);
 
 	const myPrizes = buriedTreasureWinners[user.id]
 		? Object.values(buriedTreasureWinners[user.id]).reduce((total, qty) => total + qty, 0)
@@ -90,7 +90,7 @@ async function getBuriedTreasureChance(user: MUser) {
 		chance *= 1.05;
 	}
 
-	chance *= 1.5 ** myPrizes;
+	chance *= 1.3 ** myPrizes;
 	return Math.ceil(chance);
 }
 

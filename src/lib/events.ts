@@ -8,7 +8,7 @@ import { bold, dateFm, EmbedBuilder, time } from '@oldschoolgg/discord';
 import type { IMessage } from '@oldschoolgg/schemas';
 import { Emoji, getNextUTCReset, isFunction, type PerkTier, Time } from '@oldschoolgg/toolkit';
 import { cryptoRng } from 'node-rng/crypto';
-import { type ItemBank, Items, toKMB } from 'oldschooljs';
+import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import type { command_name_enum } from '@/prisma/main.js';
 import { mentionCommand } from '@/discord/utils.js';
@@ -111,6 +111,26 @@ interface MentionCommand {
 }
 
 const mentionCommands: MentionCommand[] = [
+	{
+		name: 'buried_treasure',
+		aliases: ['buried_treasure', 'treasure'],
+		description: 'Searches for buried treasure.',
+		run: async () => {
+			const clientSettings = await ClientSettings.fetch({ buried_treasure_bank: true });
+			if (!clientSettings) {
+				return 'Things went poorly...';
+			}
+
+			return {
+				files: [
+					await makeBankImage({
+						bank: new Bank(clientSettings.buried_treasure_bank as ItemBank),
+						title: 'Buried Treasure Bank'
+					})
+				]
+			};
+		}
+	},
 	{
 		name: 'cache_refresh',
 		aliases: ['refresh', 'cache'],

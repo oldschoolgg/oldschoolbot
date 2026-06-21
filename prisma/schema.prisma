@@ -1538,6 +1538,7 @@ model UserCounter {
 
 enum command_name_enum {
   cache_refresh
+  buried_treasure
   testpotato
   achievementdiary
   activities
