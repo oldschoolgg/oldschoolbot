@@ -285,7 +285,7 @@ class CacheManager {
 			return null;
 		}
 		if (ttl === -1) {
-			const delaySeconds = Math.random() * TTL.Hour;
+			const delaySeconds = Math.floor(Math.random() * TTL.Hour);
 			if (delaySeconds <= TTL.Minute) {
 				await this.client.del(fullKey);
 				return null;
