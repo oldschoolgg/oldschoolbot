@@ -21,7 +21,7 @@ import { choicesOf, itemOption } from '@/discord/index.js';
 import { CanvasModule } from '@/lib/canvas/CanvasModule.js';
 import { gearImages } from '@/lib/canvas/gearImageData.js';
 import { ItemIconPacks } from '@/lib/canvas/iconPacks.js';
-import { BitField, BitFieldData, PerkTier } from '@/lib/constants.js';
+import { BitField, BitFieldData } from '@/lib/constants.js';
 import { Eatables } from '@/lib/data/eatables.js';
 import { CombatOptionsArray } from '@/lib/minions/data/combatConstants.js';
 import { birdhouseSeeds } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
@@ -286,11 +286,6 @@ async function bankSortConfig(
 ): CommandResponse {
 	const currentMethod = user.user.bank_sort_method;
 	const currentWeightingBank = new Bank(user.user.bank_sort_weightings as ItemBank);
-
-	const perkTier = await user.fetchPerkTier();
-	if (perkTier < PerkTier.Two) {
-		return patronMsg(PerkTier.Two);
-	}
 
 	if (!sortMethod && !addWeightingBank && !removeWeightingBank && !resetWeightingBank) {
 		const sortStr = currentMethod

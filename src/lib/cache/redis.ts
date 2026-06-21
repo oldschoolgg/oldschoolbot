@@ -283,8 +283,14 @@ class CacheManager {
 		const fullKey = BotKeys.User.BadgedUsername(userId);
 		const ttl = await this.client.pttl(fullKey);
 		if (ttl < 0) {
-			await this.client.del(fullKey);
-			return null;
+			// Old key that doesn't expire. Let's set it to expire at a random interval, but not all at once, ie /lb
+			const delaySeconds = Math.random() * TTL.Hour;
+			if (delaySeconds < Time.Minute) {
+				// Delete now if under a minute
+				await this.client.del(fullKey);
+				return null;
+			}
+			await this.client.pexpire(fullKey, delaySeconds * 1000);
 		}
 		return this.client.get(fullKey);
 	}
@@ -297,8 +303,7 @@ class CacheManager {
 	}
 
 	async getBadgedUsernames(userIds: string[]): Promise<string[]> {
-		const result = await Promise.all(userIds.map(id => this.getBadgedUsername(id)));
-		return result;
+		return await Promise.all(userIds.map(id => this.getBadgedUsername(id)));
 	}
 
 	async setBadgedUsername(userId: string, badgedUsername: string): Promise<void> {
