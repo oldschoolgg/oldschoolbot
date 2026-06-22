@@ -18,6 +18,20 @@ function meleeOnly(skills: AttackStyles[]): AttackStyles[] {
 	return skills;
 }
 
+function rangeOnly(skills: AttackStyles[]): AttackStyles[] {
+	if (skills.some(skill => skill === 'magic') || !skills.includes('ranged')) {
+		return ['ranged'];
+	}
+	return skills;
+}
+
+function mageOnly(skills: AttackStyles[]): AttackStyles[] {
+	if (skills.some(skill => skill === 'ranged') || !skills.includes('magic')) {
+		return ['magic'];
+	}
+	return skills;
+}
+
 export function resolveAttackStyles({
 	monster,
 	boostMethod,
@@ -30,6 +44,13 @@ export function resolveAttackStyles({
 	if (monster?.id === EBSOMonster.NAXXUS) {
 		return ['attack', 'strength', 'defence', 'magic'];
 	}
+
+	if (monster?.setupsUsed?.length === 1) {
+		if (monster.setupsUsed[0] === 'melee') return meleeOnly(inputAttackStyle);
+		if (monster.setupsUsed[0] === 'range') return rangeOnly(inputAttackStyle);
+		if (monster.setupsUsed[0] === 'mage') return mageOnly(inputAttackStyle);
+	}
+
 	// The styles chosen by this user to use.
 	let attackStyles = inputAttackStyle ?? [];
 

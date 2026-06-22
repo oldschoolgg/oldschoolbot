@@ -1,4 +1,3 @@
-import { BSOItem } from '@/lib/bso/BSOItem.js';
 import { bsoShortNameMap } from '@/lib/bso/bsoShortNameMap.js';
 
 import { existsSync } from 'node:fs';
@@ -6,7 +5,6 @@ import * as fs from 'node:fs/promises';
 import { cleanString, generateHexColorForCashStack, sumArr, UserError } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, itemID, toKMB } from 'oldschooljs';
 import { chunk } from 'remeda';
-import type { Image } from 'skia-canvas';
 
 import { CanvasModule } from '@/lib/canvas/CanvasModule.js';
 import {
@@ -18,7 +16,7 @@ import {
 	loadImage
 } from '@/lib/canvas/canvasUtil.js';
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
-import { BitField } from '@/lib/constants.js';
+import { BitField, PerkTier } from '@/lib/constants.js';
 import { allCLItems } from '@/lib/data/Collections.js';
 import { filterableTypes } from '@/lib/data/filterables.js';
 import { marketPriceOfBank, marketPriceOrBotPrice } from '@/lib/marketPrices.js';
@@ -197,6 +195,8 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Yew logs'), 'Yew'],
 	[i('Magic logs'), 'Magic'],
 	[i('Redwood logs'), 'Redwood'],
+	[i('Verdant logs'), 'Verdant'],
+	[i('Ancient verdant logs'), 'Ancient'],
 	...XPLamps.map(lamp => [lamp.itemID, toKMB(lamp.amount)] as const),
 
 	// Uncharged
@@ -237,16 +237,6 @@ class BankImageTask {
 	public treeImage!: CanvasImage;
 	public ready: boolean = false;
 
-	public redEffect: Image | null = null;
-	public bananaEffect: Image | null = null;
-	public whiteEffect: Image | null = null;
-	public wubblesEffect: Image | null = null;
-	public easterEffect: Image | null = null;
-	public radiantEffect: Image | null = null;
-	public octoBubblesEffect: Image | null = null;
-
-	public effects: Map<number, Image> = new Map();
-
 	async init() {
 		await CanvasModule.waitTillReady();
 		const colors: Record<BGSpriteName, string> = {
@@ -254,32 +244,6 @@ class BankImageTask {
 			dark: '#393939',
 			transparent: 'rgba(0,0,0,0)'
 		};
-
-		//Prepare to glow once more!
-		this.redEffect = await loadImage(await fs.readFile('./src/lib/resources/images/red-glow.png'));
-		this.bananaEffect = await loadImage(await fs.readFile('./src/lib/resources/images/banana-glow.png'));
-		this.whiteEffect = await loadImage(await fs.readFile('./src/lib/resources/images/white-glow.png'));
-		this.easterEffect = await loadImage(await fs.readFile('./src/lib/resources/images/easter-glow.png'));
-		this.radiantEffect = await loadImage(await fs.readFile('./src/lib/resources/images/shiny-glow.png'));
-		this.wubblesEffect = await loadImage(await fs.readFile('./src/lib/resources/images/wubbles-glow.png'));
-		this.octoBubblesEffect = await loadImage(await fs.readFile('./src/lib/resources/images/octo-bubbles.png'));
-		const coolItemEffects: [number, Image][] = [
-			[itemID('Radiant Magnabbit'), this.redEffect!],
-			[itemID('Monkey egg'), this.bananaEffect!],
-			[itemID('Dragon egg'), this.redEffect!],
-			[itemID('Eagle egg'), this.easterEffect],
-			[itemID('Hoppy'), this.easterEffect],
-			[itemID('Wubbles'), this.wubblesEffect!],
-			[itemID('Seer'), this.whiteEffect!],
-			[itemID('Octo'), this.octoBubblesEffect!],
-			[BSOItem.LYDIA, this.radiantEffect!],
-			[BSOItem.SHINY_PARTYCRAB, this.radiantEffect!]
-		];
-
-		for (const [itemId, itemEffect] of coolItemEffects) {
-			this.effects.set(itemId, itemEffect);
-		}
-
 		// Init bank sprites
 		const basePath = './src/lib/resources/images/bank_backgrounds/spritesheet/';
 		const files = await fs.readdir(basePath);
@@ -406,8 +370,6 @@ class BankImageTask {
 				}
 			}
 
-			const effect = user?.bitfield.includes(BitField.DisableGlowEffects) ? undefined : this.effects.get(item.id);
-
 			await c.drawItemIDSprite({
 				itemID: item.id,
 				x: xLoc,
@@ -416,8 +378,7 @@ class BankImageTask {
 				quantity,
 				textColor: isNewCLItem ? OSRSCanvas.COLORS.PURPLE : undefined,
 				user,
-				override_show_paints: paintOverride,
-				effect
+				override_show_paints: paintOverride
 			});
 
 			let bottomItemText: string | number | null = null;
@@ -500,11 +461,10 @@ class BankImageTask {
 		let items = bank.items();
 
 		// Sorting
-		const useWeightings = !(user?.user.bitfield.includes(BitField.DisableBankWeights) ?? false);
-		const useFavorites = !(user?.user.bitfield.includes(BitField.DisableBankFavorites) ?? false);
-		const favorites = useFavorites ? user?.user.favoriteItems : undefined;
-		const weightings = useWeightings ? (user?.user.bank_sort_weightings as ItemBank) : undefined;
-		const defaultSort: BankSortMethod = user?.bankSortMethod ?? 'value';
+		const favorites = user?.user.favoriteItems;
+		const weightings = user?.user.bank_sort_weightings as ItemBank;
+		const perkTier = user ? await user.fetchPerkTier() : 0;
+		const defaultSort: BankSortMethod = perkTier < PerkTier.Two ? 'value' : (user?.bankSortMethod ?? 'value');
 		const sortInput = flags.get('sort');
 		const sort = sortInput ? (BankSortMethods.find(s => s === sortInput) ?? defaultSort) : defaultSort;
 
@@ -521,7 +481,7 @@ class BankImageTask {
 			});
 		}
 
-		if (weightings && Object.keys(weightings).length > 0) {
+		if (perkTier >= PerkTier.Two && weightings && Object.keys(weightings).length > 0) {
 			items.sort((a, b) => {
 				const aWeight = weightings[a[0].id];
 				const bWeight = weightings[b[0].id];

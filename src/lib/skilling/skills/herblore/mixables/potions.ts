@@ -509,6 +509,24 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
+		item: Items.getOrThrow('Brimstone elixir'),
+		aliases: ['brimstone elixir', 'brimstone'],
+		level: 115,
+		xp: 330,
+		outputMultiple: 3,
+		inputItems: new Bank({
+			'Extended anti-venom+(4)': 1,
+			'Heat res. restore': 1,
+			'Heat res. brew': 1,
+			'Diluted brimstone': 1,
+			'Primordial scales': 5,
+			Korulsi: 1,
+			Ignilace: 1
+		}),
+		tickRate: 2,
+		bankTimePerPotion: 0.5
+	},
+	{
 		item: Items.getOrThrow("Dragon's fury"),
 		aliases: ['dragons fury'],
 		level: 120,

@@ -107,7 +107,7 @@ describe('Dwarven Blessing', () => {
 		expect(res).not.toBeNull();
 		expect(res).toMatchObject({
 			percentageReduction: 25,
-			message: '25% boost from Dwarven blessing'
+			message: '25% boost from Dwarven blessing & Amulet of zealots'
 		});
 		expect(res?.itemCost.amount(EItem.PRAYER_POTION4)).toEqual(EXPECTED_POTS_PER_HOUR);
 	});

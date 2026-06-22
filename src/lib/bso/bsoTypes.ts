@@ -115,8 +115,40 @@ interface StoredBossUser extends Omit<BossUser, 'user' | 'itemsToRemove'> {
 	itemsToRemove: ItemBank;
 }
 
+export interface BrimstoneDistilleryTaskOptions extends MinigameActivityTaskOptions {
+	type: 'BrimstoneDistillery';
+	quantity: number;
+	recipe: string;
+	rarityUpgradeTier?: 0 | 1 | 2 | 3 | 4 | 5;
+	hasFullGraceful?: boolean;
+	maxQuantity: number;
+}
+
+export interface ConstructionContractsTaskOptions extends MinigameActivityTaskOptions {
+	type: 'ConstructionContracts';
+	quantity: number;
+	recipe: string;
+	rarityUpgradeTier?: 0 | 1 | 2 | 3 | 4 | 5;
+	hasFullGraceful?: boolean;
+}
+
+export interface ArchonOptions extends NewBossOptions {
+	type: 'Archon';
+	tier: 1 | 2 | 3;
+	isSolo: boolean;
+	quantity: number;
+	bossUsers: StoredBossUser[];
+	bossID: number;
+	contribution: number;
+	gearScore: number;
+}
+
+export interface ArchonEventOptions extends ActivityTaskOptions {
+	type: 'ArchonEvent';
+}
+
 export interface NewBossOptions extends ActivityTaskOptions {
-	type: 'VasaMagus' | 'Ignecarus' | 'KingGoldemar' | 'BossEvent';
+	type: 'VasaMagus' | 'Ignecarus' | 'KingGoldemar' | 'BossEvent' | 'BurningDominion' | 'Archon';
 	users: string[];
 	quantity: number;
 	bossUsers: StoredBossUser[];
@@ -139,4 +171,8 @@ export type BSOActivityTaskData =
 	| FishingContestOptions
 	| TinkeringWorkshopOptions
 	| NewBossOptions
-	| NexTaskOptions;
+	| BrimstoneDistilleryTaskOptions
+	| ConstructionContractsTaskOptions
+	| NexTaskOptions
+	| ArchonOptions
+	| ArchonEventOptions;

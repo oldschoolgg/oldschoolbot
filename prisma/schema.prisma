@@ -134,8 +134,6 @@ model ClientStorage {
   ourania_loot                 Json     @default("{}") @db.Json
   colo_cost                    Json     @default("{}") @db.Json
   colo_loot                    Json     @default("{}") @db.Json
-  vt_cost                      Json     @default("{}") @db.Json
-  vt_loot                      Json     @default("{}") @db.Json
 
   grand_exchange_is_locked Boolean @default(false)
   grand_exchange_total_tax BigInt  @default(0)
@@ -149,6 +147,8 @@ model ClientStorage {
   gp_pet                  BigInt @default(0)
   ignecarus_cost          Json   @default("{}") @db.Json
   ignecarus_loot          Json   @default("{}") @db.Json
+  dominion_cost           Json   @default("{}") @db.Json
+  dominion_loot           Json   @default("{}") @db.Json
   kibble_cost             Json   @default("{}") @db.Json
   mr_cost                 Json   @default("{}") @db.Json
   mr_loot                 Json   @default("{}") @db.Json
@@ -186,8 +186,6 @@ model ClientStorage {
   invention_prizes_remaining Json @default("{}") @db.Json
   clue_upgrader_loot         Json @default("{}") @db.Json
   portable_tanner_loot       Json @default("{}") @db.Json
-  buried_treasure_bank       Json @default("{}") @db.JsonB
-  buried_treasure_winners    Json @default("{}") @db.JsonB
 
   last_bso_giveaways_ping  DateTime? @db.Timestamp(6)
   last_giveaway_doubleloot DateTime? @db.Timestamp(6)
@@ -256,7 +254,6 @@ model Giveaway {
   finish_date DateTime @db.Timestamp(6)
   duration    Int
   completed   Boolean
-  guild_id    String?  @db.VarChar(20)
   channel_id  String   @db.VarChar(19)
   loot        Json     @db.Json
   message_id  String   @db.VarChar(19)
@@ -473,6 +470,7 @@ model User {
   item_contract_streak     Int      @default(0)
   item_contract_bank       Json     @default("{}") @db.Json
   void_staff_charges       Int      @default(0)
+  prismare_ring_charges    Int      @default(0)
 
   last_patron_double_time_trigger DateTime? @db.Timestamp(6)
   lottery_input                   Json      @default("{}") @db.Json
@@ -491,9 +489,12 @@ model User {
 
   bso_mystery_trail_current_step_id Int?
 
-  magic_words_guessed String[] @default([])
-
   store_bitfield Int[] @default([])
+
+  island_upgrades      Json @default("{}") @db.Json
+  island_contributions Json @default("{}")
+  distillery_stats     Json @default("{}")
+  construction_stats   Json @default("{}")
 
   farmingPatches_herb       Json? @map("farmingPatches.herb") @db.Json
   farmingPatches_fruit_tree Json? @map("farmingPatches.fruit tree") @db.Json
@@ -595,7 +596,6 @@ enum XpGainSource {
   ScatteringAshes
   Zalcano
   Wintertodt
-  ValeTotems
   FishingTrawler
   Tempoross
   TearsOfGuthix
@@ -612,6 +612,11 @@ enum XpGainSource {
   ForestryEvents
   TuraelsTrials
   MonsterKilling
+  GemstoneFishing
+  AncientMycology
+  ArchaicMining
+  BrimstoneDistillery
+  ConstructionContracts
 }
 
 model XPGain {
@@ -651,7 +656,6 @@ model Minigame {
   wintertodt              Int    @default(0)
   tempoross               Int    @default(0)
   sepulchre               Int    @default(0)
-  vale_totems             Int    @default(0)
   fishing_trawler         Int    @default(0)
   barb_assault            Int    @default(0)
   pyramid_plunder         Int    @default(0)
@@ -699,6 +703,8 @@ model Minigame {
   depths_of_atlantis_cm    Int @default(0)
   guthixian_cache          Int @default(0)
   turaels_trials           Int @default(0)
+  brimstone_distillery     Int @default(0)
+  construction_contracts   Int @default(0)
 
   new_user NewUser?
 
@@ -920,8 +926,6 @@ model UserStats {
   clue_upgrader_bank     Json @default("{}") @db.Json
   ic_cost_bank           Json @default("{}") @db.Json
   ic_loot_bank           Json @default("{}") @db.Json
-  wild_degen_cost_bank   Json @default("{}") @db.Json
-  wild_degen_loot_bank   Json @default("{}") @db.Json
 
   loot_from_zippy_bank Json @default("{}") @db.Json
   peky_loot_bank       Json @default("{}") @db.Json
@@ -980,7 +984,6 @@ model UserStats {
   firecapes_sacrificed             Int  @default(0)
   tithe_farms_completed            Int  @default(0)
   tithe_farm_points                Int  @default(0)
-  vale_research_points             Int  @default(0)
   pest_control_points              Int  @default(0)
   inferno_attempts                 Int  @default(0)
   infernal_cape_sacrifices         Int  @default(0)
@@ -1181,7 +1184,6 @@ enum activity_type_enum {
   Butler
   Nightmare
   Sepulchre
-  ValeTotems
   Plunder
   FishingTrawler
   Zalcano
@@ -1190,7 +1192,6 @@ enum activity_type_enum {
   Enchanting
   Casting
   GloryCharging
-  GloryUncharging
   WealthCharging
   BarbarianAssault
   AgilityArena
@@ -1254,8 +1255,6 @@ enum activity_type_enum {
   HalloweenEvent
   NightmareZone
   ShadesOfMorton
-  ShadesOfMortonSacredOil
-  ShadesOfMortonPyreLogs
   TombsOfAmascut
   BalthazarsBigBonanza
   UnderwaterAgilityThieving
@@ -1276,7 +1275,14 @@ enum activity_type_enum {
   CreateForestersRations
   SnoozeSpellActive
   Buy
-  BeachCombing
+  GemstoneFishing
+  AncientMycology
+  ArchaicMining
+  BurningDominion
+  BrimstoneDistillery
+  ConstructionContracts
+  ArchonEvent
+  Archon
 }
 
 enum xp_gains_skill_enum {
@@ -1537,8 +1543,6 @@ model UserCounter {
 }
 
 enum command_name_enum {
-  cache_refresh
-  buried_treasure
   testpotato
   achievementdiary
   activities
@@ -1647,7 +1651,6 @@ enum command_name_enum {
   fish
   fishingtrawler
   fletch
-  fool
   gamble
   gauntlet
   ge
@@ -1844,6 +1847,8 @@ enum command_name_enum {
   spawnlamp
   testershop
   vasa
+  gemstonefish
+  islandupgrade
 }
 
 enum TableBankType {
@@ -1884,6 +1889,18 @@ model HalloweenEvent {
   items_waiting_for_pickup Json      @default("{}") @db.Json
 
   @@map("halloween_event")
+}
+
+model ArchonEvent {
+  id            Int      @id @default(autoincrement())
+  created_at    DateTime @default(now()) @db.Timestamp(6)
+  user_id       String   @db.VarChar(19)
+  tier          Int
+  expires_at    DateTime @db.Timestamp(6)
+  has_been_done Boolean  @default(false)
+
+  @@index([user_id, has_been_done, expires_at])
+  @@map("archon_event")
 }
 
 enum JsonBankType {

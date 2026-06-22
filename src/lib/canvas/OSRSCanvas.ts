@@ -42,7 +42,6 @@ for (const [fontFamily, fontPath] of Object.entries(fonts)) {
 export class OSRSCanvas {
 	public static LOCAL_ICON_CACHE = new Map<number, CanvasImage>();
 	public static ITEM_ICON_CACHE_DIR = path.resolve('icon_cache');
-	public static ITEM_BSO_ICON_DIR = path.resolve('src/lib/resources/images/bso_icons');
 	public static Fonts = Fonts;
 	public static COLORS = {
 		ORANGE: '#FF981F',
@@ -373,10 +372,7 @@ export class OSRSCanvas {
 	private static async loadLocalIcon(itemID: number): Promise<Image> {
 		const cached = OSRSCanvas.LOCAL_ICON_CACHE.get(itemID);
 		if (cached) return cached;
-		let onDisk = await readFile(path.join(OSRSCanvas.ITEM_ICON_CACHE_DIR, `${itemID}.png`)).catch(() => null);
-		// BSO only: Check if the image is in the bso_icons folder
-		if (!onDisk)
-			onDisk = await readFile(path.join(OSRSCanvas.ITEM_BSO_ICON_DIR, `${itemID}.png`)).catch(() => null);
+		const onDisk = await readFile(path.join(OSRSCanvas.ITEM_ICON_CACHE_DIR, `${itemID}.png`)).catch(() => null);
 		if (onDisk) {
 			const image = await loadImage(onDisk);
 			OSRSCanvas.LOCAL_ICON_CACHE.set(itemID, image);
@@ -402,8 +398,7 @@ export class OSRSCanvas {
 		textColor,
 		glow,
 		user,
-		override_show_paints: show_paints,
-		effect
+		override_show_paints: show_paints
 	}: {
 		itemID: number;
 		x: number;
@@ -419,7 +414,6 @@ export class OSRSCanvas {
 		};
 		user?: MUser | null | undefined;
 		override_show_paints?: boolean | undefined;
-		effect?: Image | undefined;
 	}) {
 		const itemIcon: Image | Canvas = await OSRSCanvas.getItemImage({ itemID, iconPackId });
 		const destX = Math.floor(x + (this.itemSize.width - itemIcon.width) / 2);
@@ -427,7 +421,7 @@ export class OSRSCanvas {
 		let customImage: Image | null = null;
 
 		if (user && show_paints !== false) {
-			if (show_paints === true || !(user.bitfield?.includes(BitField.DisablePaints) ?? false)) {
+			if (show_paints === true || !user.bitfield.includes(BitField.DisablePaints)) {
 				customImage = await applyCustomItemEffects(user, itemID);
 			}
 		}
@@ -444,13 +438,6 @@ export class OSRSCanvas {
 			itemIcon.height
 		] as const;
 
-		if (effect) {
-			const centerX = destX + itemIcon.width / 2;
-			const centerY = destY + itemIcon.height / 2;
-			const effectX = centerX - effect.width / 2;
-			const effectY = centerY - effect.height / 2;
-			this.ctx.drawImage(effect, effectX, effectY, effect.width, effect.height);
-		}
 		glow = handleSlayerMaskGlow({ itemID, user, glow });
 
 		if (glow) {

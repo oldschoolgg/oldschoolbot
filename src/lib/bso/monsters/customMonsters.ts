@@ -12,6 +12,7 @@ import { Yeti } from '@/lib/bso/monsters/demi-bosses/Yeti.js';
 import { CockroachSoldier, EliteBlackKnight } from '@/lib/bso/monsters/misc.js';
 import { resourceDungeonMonsters } from '@/lib/bso/monsters/resourceDungeons.js';
 import { SunMoonMonsters } from '@/lib/bso/monsters/SunMoon.js';
+import { VerdantIslandMonsters } from '@/lib/bso/monsters/VerdantIsland.js';
 
 export const BSOMonsters = {
 	Treebeard,
@@ -28,7 +29,8 @@ export const BSOMonsters = {
 	Akumu,
 	Venatrix,
 	...resourceDungeonMonsters,
-	...SunMoonMonsters
+	...SunMoonMonsters,
+	...VerdantIslandMonsters
 };
 
 export const BSOMonstersMap = new Map<number, (typeof BSOMonsters)[keyof typeof BSOMonsters]>();
