@@ -121,7 +121,6 @@ export async function minionKillCommand(
 		favoriteFood: user.user.favorite_food,
 		bitfield: user.bitfield,
 		disabledInventions: user.user.disabled_inventions,
-		currentPeak: generateDailyPeakIntervals().currentPeak
 		currentPeak: generateDailyPeakIntervals().currentPeak,
 		islandUpgrades: (user.user.island_upgrades as IslandUpgradeTiers) ?? defaultIslandUpgrades
 	});

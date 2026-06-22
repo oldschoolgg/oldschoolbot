@@ -1,0 +1,31 @@
+{
+	"name": "@oldschoolgg/rng",
+	"version": "0.0.1",
+	"private": true,
+	"type": "module",
+	"exports": {
+		".": {
+			"import": {
+				"types": "./dist/esm/index.d.mts",
+				"default": "./dist/esm/index.mjs"
+			},
+			"require": {
+				"types": "./dist/cjs/index.d.cts",
+				"default": "./dist/cjs/index.cjs"
+			}
+		},
+		"./crypto": {
+			"import": {
+				"types": "./dist/esm/crypto.d.mts",
+				"default": "./dist/esm/crypto.mjs"
+			},
+			"require": {
+				"types": "./dist/cjs/crypto.d.cts",
+				"default": "./dist/cjs/crypto.cjs"
+			}
+		}
+	},
+	"dependencies": {
+		"node-rng": "^0.0.3"
+	}
+}
