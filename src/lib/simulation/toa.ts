@@ -537,7 +537,7 @@ const HigherTOAUniqueTable = new LootTable()
 	.add('Masori chaps', 1, 3)
 	.add("Tumeken's shadow (uncharged)", 1, 2);
 
-function uniqueLootRoll(raidLevel: RaidLevel) {
+function uniqueLootRoll(rng: RNGProvider, raidLevel: RaidLevel) {
 	const uniqueTable = raidLevel >= 305 ? HigherTOAUniqueTable : TOAUniqueTable;
 	const [item] = uniqueTable.roll().items()[0];
 
