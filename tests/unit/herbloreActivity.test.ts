@@ -75,11 +75,12 @@ describe('herbloreTask amulet of chemistry behaviour', () => {
 		// Prevent side effects from trip finish (discord sends etc.)
 		const handleTripFinishSpy = vi
 			.spyOn(handleTripFinishModule, 'handleTripFinish')
-			.mockImplementation(async () => {});
+			.mockImplementation(async () => { });
 
 		globalAny.mUserFetch = vi.fn().mockResolvedValue(user);
+		const taskData = defaultTaskData();
 
-		await herbloreTask.run(defaultTaskData(), {
+		await herbloreTask.run(taskData, {
 			user,
 			handleTripFinish: handleTripFinishModule.handleTripFinish,
 			rng
@@ -97,13 +98,16 @@ describe('herbloreTask amulet of chemistry behaviour', () => {
 		expect(transactCall.itemsToAdd.amount(attackPotion4.id)).toBe(2);
 		expect(transactCall.itemsToAdd.amount(attackPotion3.id)).toBe(1);
 
-		expect(handleTripFinishSpy).toHaveBeenCalledWith(
-			user,
-			'456',
-			`${user}, ${user.minionName} finished making 1x ${attackPotion3.name} and 2x ${attackPotion4.name}.\n\nYour Amulet of chemistry created 2 extra 4-dose potions and used 2 charges (3 left).\n\nxp result`,
-			expect.any(Object),
-			expect.any(Bank)
+		const handleTripFinishCall = handleTripFinishSpy.mock.calls[0];
+		expect(handleTripFinishCall[0]).toBe(user);
+		expect(handleTripFinishCall[1]).toBe('456');
+		expect(handleTripFinishCall[2]).toBe(
+			`${user}, ${user.minionName} finished making 1x ${attackPotion3.name} and 2x ${attackPotion4.name}.\nYour Amulet of chemistry created 2 extra 4-dose potions and used 2 charges (3 left).\nxp result`
 		);
+		expect(handleTripFinishCall[3]).toBe(taskData);
+		expect(handleTripFinishCall[4]).toBeInstanceOf(Bank);
+		expect(handleTripFinishCall[4]?.amount(attackPotion4.id)).toBe(2);
+		expect(handleTripFinishCall[4]?.amount(attackPotion3.id)).toBe(1);
 	});
 
 	test('skips amulet logic when it is not equipped', async () => {
@@ -129,7 +133,7 @@ describe('herbloreTask amulet of chemistry behaviour', () => {
 		const degradeSpy = vi.spyOn(degradeableItemsModule, 'degradeItem');
 
 		// Prevent side effects from trip finish (discord sends etc.)
-		vi.spyOn(handleTripFinishModule, 'handleTripFinish').mockImplementation(async () => {});
+		vi.spyOn(handleTripFinishModule, 'handleTripFinish').mockImplementation(async () => { });
 
 		globalAny.mUserFetch = vi.fn().mockResolvedValue(user);
 
@@ -175,7 +179,7 @@ describe('herbloreTask amulet of chemistry behaviour', () => {
 		const degradeSpy = vi.spyOn(degradeableItemsModule, 'degradeItem');
 
 		// Prevent side effects from trip finish (discord sends etc.)
-		vi.spyOn(handleTripFinishModule, 'handleTripFinish').mockImplementation(async () => {});
+		vi.spyOn(handleTripFinishModule, 'handleTripFinish').mockImplementation(async () => { });
 
 		globalAny.mUserFetch = vi.fn().mockResolvedValue(user);
 
@@ -219,7 +223,7 @@ describe('herbloreTask amulet of chemistry behaviour', () => {
 		const checkSpy = vi.spyOn(degradeableItemsModule, 'checkDegradeableItemCharges').mockResolvedValue(5);
 		const degradeSpy = vi.spyOn(degradeableItemsModule, 'degradeItem');
 
-		vi.spyOn(handleTripFinishModule, 'handleTripFinish').mockImplementation(async () => {});
+		vi.spyOn(handleTripFinishModule, 'handleTripFinish').mockImplementation(async () => { });
 
 		globalAny.mUserFetch = vi.fn().mockResolvedValue(user);
 
