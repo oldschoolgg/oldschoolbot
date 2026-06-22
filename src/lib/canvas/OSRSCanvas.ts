@@ -56,6 +56,7 @@ export class OSRSCanvas {
 		MAGENTA: '#ff00f2',
 		LIGHT_CHOCOLATE: '#494034'
 	};
+	private static tinyPixelYOffset: number | null = null;
 
 	public sprite: IBgSprite | null = null;
 	public ctx: CanvasContext;
@@ -116,9 +117,33 @@ export class OSRSCanvas {
 		return this.canvas;
 	}
 
+	private static getTinyPixelYOffset() {
+		if (OSRSCanvas.tinyPixelYOffset !== null) return OSRSCanvas.tinyPixelYOffset;
+
+		const baseline = 12;
+		const expectedFirstRow = 7;
+		const canvas = new SkiaCanvas(80, 24);
+		canvas.gpu = false;
+		const ctx = canvas.getContext('2d');
+		ctx.font = Fonts.TinyPixel;
+		ctx.fillStyle = '#fff';
+		ctx.fillText('BEGINNER', 2, baseline);
+
+		const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+		let firstRow = Number.POSITIVE_INFINITY;
+		for (let i = 0; i < imageData.data.length; i += 4) {
+			if (imageData.data[i + 3] === 0) continue;
+			firstRow = Math.min(firstRow, Math.floor(i / 4 / canvas.width));
+		}
+
+		const offset = Number.isFinite(firstRow) ? expectedFirstRow - firstRow : 0;
+		OSRSCanvas.tinyPixelYOffset = Math.abs(offset) <= 1 ? offset : 0;
+		return OSRSCanvas.tinyPixelYOffset;
+	}
+
 	private rawDrawText({ text, x, y, font }: { text: string; x: number; y: number; font: FontName }) {
 		if (font === 'TinyPixel') {
-			this.ctx.fillText(text, x, y);
+			this.ctx.fillText(text, x, y + OSRSCanvas.getTinyPixelYOffset());
 			return;
 		}
 
