@@ -11,6 +11,8 @@ import { mockMUser } from './userutil.js';
 const chemistryItem = Items.getOrThrow('Amulet of chemistry');
 const attackPotion3 = Items.getOrThrow('Attack potion (3)');
 const attackPotion4 = Items.getOrThrow('Attack potion (4)');
+const guthixRest3 = Items.getOrThrow('Guthix rest(3)');
+const guthixRest4 = Items.getOrThrow('Guthix rest(4)');
 
 const globalAny = globalThis as unknown as {
 	mUserFetch?: (...args: any[]) => Promise<any>;
@@ -71,7 +73,9 @@ describe('herbloreTask amulet of chemistry behaviour', () => {
 		});
 
 		// Prevent side effects from trip finish (discord sends etc.)
-		vi.spyOn(handleTripFinishModule, 'handleTripFinish').mockImplementation(async () => {});
+		const handleTripFinishSpy = vi
+			.spyOn(handleTripFinishModule, 'handleTripFinish')
+			.mockImplementation(async () => {});
 
 		globalAny.mUserFetch = vi.fn().mockResolvedValue(user);
 
@@ -92,6 +96,14 @@ describe('herbloreTask amulet of chemistry behaviour', () => {
 		expect(transactCall.itemsToAdd).toBeInstanceOf(Bank);
 		expect(transactCall.itemsToAdd.amount(attackPotion4.id)).toBe(2);
 		expect(transactCall.itemsToAdd.amount(attackPotion3.id)).toBe(1);
+
+		expect(handleTripFinishSpy).toHaveBeenCalledWith(
+			user,
+			'456',
+			`${user}, ${user.minionName} finished making 1x ${attackPotion3.name} and 2x ${attackPotion4.name}.\n\nYour Amulet of chemistry created 2 extra 4-dose potions and used 2 charges (3 left).\n\nxp result`,
+			expect.any(Object),
+			expect.any(Bank)
+		);
 	});
 
 	test('skips amulet logic when it is not equipped', async () => {
@@ -182,5 +194,47 @@ describe('herbloreTask amulet of chemistry behaviour', () => {
 		const transactCall = (transactSpy as unknown as Mock).mock.calls[0][0];
 		expect(transactCall.itemsToAdd.amount(attackPotion4.id)).toBe(0);
 		expect(transactCall.itemsToAdd.amount(attackPotion3.id)).toBe(3);
+	});
+
+	test('does not apply amulet of chemistry to Guthix rest', async () => {
+		const user = mockMUser({ id: '321' });
+		user.gear.skilling.equip(chemistryItem);
+		user.addXP = vi.fn().mockResolvedValue('xp result');
+
+		const transactSpy = vi.spyOn(user, 'transactItems').mockResolvedValue({
+			previousCL: new Bank(),
+			itemsAdded: new Bank(),
+			itemsRemoved: undefined,
+			newBank: new Bank(),
+			newCL: new Bank(),
+			newUser: user,
+			clLootBank: null
+		});
+
+		const percentSpy = vi.fn(() => true);
+		const rng = {
+			percentChance: percentSpy,
+			randInt: vi.fn()
+		} as unknown as RNGProvider;
+		const checkSpy = vi.spyOn(degradeableItemsModule, 'checkDegradeableItemCharges').mockResolvedValue(5);
+		const degradeSpy = vi.spyOn(degradeableItemsModule, 'degradeItem');
+
+		vi.spyOn(handleTripFinishModule, 'handleTripFinish').mockImplementation(async () => {});
+
+		globalAny.mUserFetch = vi.fn().mockResolvedValue(user);
+
+		await herbloreTask.run(defaultTaskData({ mixableID: guthixRest3.id }), {
+			user,
+			handleTripFinish: handleTripFinishModule.handleTripFinish,
+			rng
+		} as never);
+
+		expect(percentSpy).not.toHaveBeenCalled();
+		expect(checkSpy).not.toHaveBeenCalled();
+		expect(degradeSpy).not.toHaveBeenCalled();
+
+		const transactCall = (transactSpy as unknown as Mock).mock.calls[0][0];
+		expect(transactCall.itemsToAdd.amount(guthixRest4.id)).toBe(0);
+		expect(transactCall.itemsToAdd.amount(guthixRest3.id)).toBe(3);
 	});
 });

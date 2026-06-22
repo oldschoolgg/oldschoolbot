@@ -4,6 +4,8 @@ import { checkDegradeableItemCharges, degradeItem } from '@/lib/degradeableItems
 import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
 import type { HerbloreActivityTaskOptions } from '@/lib/types/minions.js';
 
+const chemistryExcludedMixableIDs = new Set([Items.getOrThrow('Guthix rest(3)').id]);
+
 interface ApplyChemistryArgs {
 	user: MUser;
 	mixableItem: { item: Item };
@@ -27,6 +29,7 @@ async function applyAmuletOfChemistry({
 }> {
 	if (zahur || wesley) return null;
 	if (!mixableItem.item.name.includes('(3)')) return null;
+	if (chemistryExcludedMixableIDs.has(mixableItem.item.id)) return null;
 
 	const chemistryItem = Items.getOrThrow('Amulet of chemistry');
 	if (!user.gear.skilling.hasEquipped(chemistryItem.id, false, false)) return null;
@@ -57,14 +60,22 @@ async function applyAmuletOfChemistry({
 			user
 		});
 
-		messages.push(`${fourDoseCount}x ${fourDoseItem.name} were made thanks to your Amulet of chemistry.`);
-
 		const used = degradeResult.chargesToDegrade ?? 0;
 		const remaining = degradeResult.chargesRemaining;
 
-		if (typeof used === 'number' && used > 0 && typeof remaining === 'number') {
+		if (typeof used === 'number' && typeof remaining === 'number') {
 			messages.push(
-				`Your Amulet of chemistry glows and loses ${used === 1 ? 'a charge' : `${used} charges`} (${remaining} left).`
+				`Your Amulet of chemistry created ${fourDoseCount} extra 4-dose ${
+					fourDoseCount === 1 ? 'potion' : 'potions'
+				} and used ${
+					used === 0 ? 'no charges' : used === 1 ? '1 charge' : `${used} charges`
+				} (${remaining.toLocaleString()} left).`
+			);
+		} else {
+			messages.push(
+				`Your Amulet of chemistry created ${fourDoseCount} extra 4-dose ${
+					fourDoseCount === 1 ? 'potion' : 'potions'
+				} and used its remaining charges.`
 			);
 		}
 
@@ -142,10 +153,10 @@ export const herbloreTask: MinionTask = {
 		}
 
 		if (chemistryMessages.length > 0) {
-			completionMessage = `${completionMessage} ${chemistryMessages.join(' ')}`;
+			completionMessage = `${completionMessage}\n${chemistryMessages.join(' ')}`;
 		}
 
-		completionMessage = `${completionMessage} ${xpRes}`;
+		completionMessage = `${completionMessage}\n${xpRes}`;
 
 		handleTripFinish(user, channelId, completionMessage, data, loot);
 	}
