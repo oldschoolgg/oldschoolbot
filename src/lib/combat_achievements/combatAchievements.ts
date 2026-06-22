@@ -177,7 +177,6 @@ export const combatAchievementTripEffect = async ({
 	if (data.type === 'Archon') return;
 
 	const dataCopy = clone(data);
-
 	let quantity = 1;
 	if ('q' in dataCopy) {
 		quantity = dataCopy.q;

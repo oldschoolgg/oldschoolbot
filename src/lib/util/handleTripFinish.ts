@@ -503,6 +503,12 @@ const tripFinishEffects: TripFinishEffect[] = [
 		}
 	},
 	{
+		name: 'Archon',
+		fn: async ({ user, data, components }) => {
+			await handleTriggerArchon(user, data, components);
+		}
+	},
+	{
 		name: 'Open Casket Button',
 		fn: async ({ loot, components }) => {
 			const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;

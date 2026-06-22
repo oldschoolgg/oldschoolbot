@@ -1213,6 +1213,7 @@ enum activity_type_enum {
   OuraniaDeliveryService
   DarkAltar
   Ignecarus
+  BurningDominion
   OuraniaAltar
   Trekking
   KibbleMaking

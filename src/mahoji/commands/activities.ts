@@ -713,6 +713,23 @@ export const activitiesCommand = defineCommand({
 			const { type, quantity } = options.archaic_mining;
 			return archaicMiningCommand(user, channelId, type as 'dragonbone' | 'crystalline', quantity);
 		}
+		if (options.gemstone_fishing) {
+			if (options.gemstone_fishing.action === 'breakdown') {
+				return gemscaleBreakdownCommand(
+					user,
+					options.gemstone_fishing.fish_type,
+					options.gemstone_fishing.quantity
+				);
+			}
+			return gemstoneFishingCommand(user, channelId, options.gemstone_fishing.quantity);
+		}
+		if (options.ancient_mycology) {
+			return ancientMycologyCommand(user, channelId, options.ancient_mycology.quantity);
+		}
+		if (options.archaic_mining) {
+			const { type, quantity } = options.archaic_mining;
+			return archaicMiningCommand(user, channelId, type as 'dragonbone' | 'crystalline', quantity);
+		}
 		if (options.collect) {
 			return collectCommand(
 				user,
