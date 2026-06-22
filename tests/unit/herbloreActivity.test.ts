@@ -98,7 +98,13 @@ describe('herbloreTask amulet of chemistry behaviour', () => {
 		expect(transactCall.itemsToAdd.amount(attackPotion4.id)).toBe(2);
 		expect(transactCall.itemsToAdd.amount(attackPotion3.id)).toBe(1);
 
-		const handleTripFinishCall = handleTripFinishSpy.mock.calls[0];
+		const handleTripFinishCall = handleTripFinishSpy.mock.calls[0] as unknown as [
+			typeof user,
+			string,
+			string,
+			HerbloreActivityTaskOptions,
+			Bank
+		];
 		expect(handleTripFinishCall[0]).toBe(user);
 		expect(handleTripFinishCall[1]).toBe('456');
 		expect(handleTripFinishCall[2]).toBe(
