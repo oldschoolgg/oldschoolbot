@@ -215,17 +215,18 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 		return data as APIWebhook[];
 	}
 
-	async sendWebhook(webhook: IWebhook, rawMessage: SendableMessage): Promise<void> {
+	async sendWebhook(webhook: IWebhook, rawMessage: SendableMessage): Promise<IMessage> {
 		const { files, message } = await this.sendableMsgToApiCreate(rawMessage);
 		const query = makeURLSearchParams({
 			wait: true
 		});
-		await this.rest.post(Routes.webhook(webhook.id, webhook.token), {
+		const res = await this.rest.post(Routes.webhook(webhook.id, webhook.token), {
 			body: message,
 			query,
 			files: files ?? undefined,
 			auth: false
 		});
+		return res as IMessage;
 	}
 
 	async sendMessage(channelId: string, rawMessage: SendableMessage): Promise<IMessage> {

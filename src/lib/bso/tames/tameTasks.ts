@@ -78,7 +78,7 @@ export async function handleFinish({
 			previousCL: previousTameCl
 		});
 
-	return globalClient.sendMessageOrWebhook(activity.channel_id, res);
+	await globalClient.sendMessageOrWebhook(activity.channel_id, res);
 }
 
 export const arbitraryTameActivities: ArbitraryTameActivity[] = [
@@ -89,7 +89,7 @@ export const arbitraryTameActivities: ArbitraryTameActivity[] = [
 		run: async ({ handleFinish, user, duration, tame, previousTameCL, activity }) => {
 			const quantity = Math.ceil(duration / (Time.Minute * 5));
 			const loot = getTemporossLoot(quantity, tame.maxGathererLevel + 15, previousTameCL);
-			handleFinish({
+			void handleFinish({
 				lootToAdd: loot,
 				message: `${user}, ${tame} finished defeating Tempoross ${quantity}x times.`,
 				user,
@@ -116,7 +116,7 @@ export const arbitraryTameActivities: ArbitraryTameActivity[] = [
 					})
 				);
 			}
-			handleFinish({
+			void handleFinish({
 				lootToAdd: loot,
 				message: `${user}, ${tame} finished defeating Wintertodt ${quantity}x times.`,
 				user,
@@ -376,7 +376,7 @@ export async function runTameTask(activity: TameActivity, tame: MTame) {
 			});
 			const act = arbitraryTameActivities.find(i => i.id === activityData.type)!;
 			await act.run({
-				handleFinish,
+				void handleFinish,
 				user,
 				tame,
 				duration: activity.duration,

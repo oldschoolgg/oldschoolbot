@@ -1,10 +1,11 @@
 import path from 'node:path';
 import process from 'node:process';
-
 import sharp from 'sharp';
 
 function usage(): never {
-	console.error('Usage: pnpm tsx --tsconfig scripts/tsconfig.json scripts/image-diff-box.ts <expected.png> <actual.png> [output.png]');
+	console.error(
+		'Usage: pnpm tsx --tsconfig scripts/tsconfig.json scripts/image-diff-box.ts <expected.png> <actual.png> [output.png]'
+	);
 	process.exit(1);
 }
 

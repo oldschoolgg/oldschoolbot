@@ -118,7 +118,9 @@ function logError(args: string | Error | RichErrorLogArgs, ctx?: LogContext): vo
 	const message = richArgs?.message ?? err.message;
 	const stack = richArgs?.stack ?? err.stack;
 
-	if (interaction) {
+	const unknownInteraction = 'code' in err && err.code === 10062;
+
+	if (!unknownInteraction && interaction) {
 		Logging.logDebug('UserError encountered, sending message to user.', {
 			error: err.message,
 			user_id: interaction.userId
