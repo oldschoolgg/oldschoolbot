@@ -8,6 +8,7 @@ import { giveawayCache } from '@/lib/cache.js';
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import { BitField } from '@/lib/constants.js';
 import { InteractionID } from '@/lib/InteractionID.js';
+import { toggleAutoRummage } from '@/lib/minions/data/valeTotems.js';
 import { type RunCommandArgs, runCommand } from '@/lib/settings/settings.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import { updateGiveawayMessage } from '@/lib/util/giveaway.js';
@@ -16,6 +17,7 @@ import { autoSlayCommand } from '@/mahoji/lib/abstracted_commands/autoSlayComman
 import { cancelGEListingCommand } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
 import { autoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
 import { shootingStarsCommand } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
+import { slayerNewTaskCommand } from '@/mahoji/lib/abstracted_commands/slayerTaskCommand.js';
 
 async function giveawayButtonHandler(user: MUser, customID: string, interaction: OSInteraction): CommandResponse {
 	const split = customID.split('_');
@@ -120,6 +122,12 @@ async function repeatTripHandler(user: MUser, id: string, interaction: OSInterac
 	const trips = await fetchRepeatTrips(user);
 	if (trips.length === 0) {
 		return { content: "Couldn't find a trip to repeat.", ephemeral: true };
+	}
+	if (id === InteractionID.Commands.RepeatAnyway) {
+		return repeatTrip(user, interaction, trips[0]);
+	}
+	if (id === InteractionID.Commands.RepeatTrip) {
+		return repeatTrip(user, interaction, trips[0], { showSlayerTaskIntervention: true });
 	}
 	const split = id.split('_');
 	const matchingActivity = trips.find(i => i.type === split[2]);
@@ -242,13 +250,17 @@ async function globalButtonInteractionHandler({
 	}
 
 	const user = interaction.user;
-	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, id, interaction);
+	if (id === InteractionID.Commands.RepeatAnyway || id.includes('REPEAT_TRIP')) {
+		return repeatTripHandler(user, id, interaction);
+	}
 
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
 	if (id.startsWith('GPE_')) return handleGearPresetEquip(user, id, interaction);
 	if (id.startsWith('PTR_')) return handlePinnedTripRepeat(user, id, interaction);
 
 	if (id.startsWith('ge_')) return handleGEButton(user, id);
+
+	if (id === InteractionID.Commands.ToggleAutoRummage) return toggleAutoRummage(user);
 
 	if (await user.getIsLocked()) {
 		return { content: 'You cannot use a command right now.', ephemeral: true };
@@ -434,11 +446,7 @@ async function globalButtonInteractionHandler({
 			});
 		}
 		case InteractionID.Commands.NewSlayerTask: {
-			return runCommand({
-				commandName: 'slayer',
-				args: { new_task: {} },
-				...options
-			});
+			return slayerNewTaskCommand({ user, interaction, showButtons: true });
 		}
 		case InteractionID.Commands.DoShootingStar: {
 			const validStar = await prisma.shootingStars.findFirst({

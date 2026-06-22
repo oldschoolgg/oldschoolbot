@@ -13,6 +13,7 @@ import { roboChimpSyncData } from '@/lib/roboChimp.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { minionStatsEmbed } from '@/lib/util/minionStatsEmbed.js';
+import { refreshUserCache } from '@/lib/util/refreshCache.js';
 import { minionStatusCommand } from '@/mahoji/lib/abstracted_commands/minionStatusCommand.js';
 
 const rareRolesSrc: [string, number, string][] = [
@@ -41,7 +42,7 @@ const rareRolesSrc: [string, number, string][] = [
 async function rareRoles(msg: IMessage) {
 	if (!globalConfig.isProduction) return;
 
-	if (msg.guild_id !== globalConfig.supportServerID) {
+	if (msg.guild_id !== globalConfig.supportServerID || !msg.guild_id) {
 		return;
 	}
 
@@ -49,12 +50,14 @@ async function rareRoles(msg: IMessage) {
 	if (Date.now() - lastMessage < Time.Second * 13) return;
 	RARE_ROLES_CACHE.set(msg.author_id, Date.now());
 
-	if (!roll(10) || !msg.guild_id) return;
+	if (!roll(10)) return;
 
 	for (const [roleID, chance, name] of rareRolesSrc) {
-		if (roll(chance / 10)) {
-			const member = await Cache.getMainServerMember(msg.author_id);
+		if (roll(Math.floor(chance / 10))) {
+			const member = await Cache.getMember({ guildId: msg.guild_id, userId: msg.author_id });
 			if (!member || member.roles.includes(roleID)) continue;
+			member.roles.push(roleID);
+			await Cache.setMember(member);
 			await globalClient.giveRole(msg.guild_id, msg.author_id, roleID);
 			await globalClient.reactToMsg({
 				channelId: msg.channel_id,
@@ -136,6 +139,7 @@ interface MentionCommandOptions {
 	components: BaseSendableMessage['components'];
 	content: string;
 	rng: RNGProvider;
+	guildId?: string | null;
 }
 interface MentionCommand {
 	name: command_name_enum;
@@ -145,6 +149,18 @@ interface MentionCommand {
 }
 
 const mentionCommands: MentionCommand[] = [
+	{
+		name: 'cache_refresh',
+		aliases: ['refresh', 'cache'],
+		description: 'Updates your caches',
+		run: async ({ user, components, content, guildId }: MentionCommandOptions) => {
+			const result = await refreshUserCache({ user, guildId, possibleTarget: content });
+			return {
+				content: result,
+				components
+			};
+		}
+	},
 	{
 		name: 'bs',
 		aliases: ['bs'],
@@ -313,7 +329,8 @@ export async function onMessage(msg: IMessage) {
 				user,
 				components: result.components,
 				content: msgContentWithoutCommand,
-				rng: cryptoRng
+				rng: cryptoRng,
+				guildId: msg.guild_id
 			});
 			await globalClient.replyToMessage(msg, response);
 		} catch (err) {

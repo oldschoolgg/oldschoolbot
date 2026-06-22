@@ -1,6 +1,6 @@
 {
-	"hash": "5e25d7b74928e1de271e1b26a18fce9c",
-	"date": "2026-02-27T17:11:10.770Z",
+	"hash": "117af84ead8737c866ad5ecb2234ce21",
+	"date": "2026-05-09T10:48:36.665Z",
 	"data": [
 		{
 			"id": 2,
@@ -1834,6 +1834,22 @@
 			"cannon_multi": true
 		},
 		{
+			"id": 14704,
+			"name": "Elder custodian stalker",
+			"base_kill_time_ms": 65000,
+			"is_wildy": false,
+			"is_slayer_only": false,
+			"can_be_pked": false,
+			"is_wildy_multi": false,
+			"items_required": [],
+			"qp_required": 0,
+			"item_in_bank_boosts": [],
+			"can_barrage": true,
+			"can_chin": false,
+			"can_cannon": true,
+			"cannon_multi": true
+		},
+		{
 			"id": 5295,
 			"name": "Elf Archer",
 			"base_kill_time_ms": 27000,
@@ -2863,6 +2879,22 @@
 			"cannon_multi": false
 		},
 		{
+			"id": 14702,
+			"name": "Juvenile custodian stalker",
+			"base_kill_time_ms": 32000,
+			"is_wildy": false,
+			"is_slayer_only": false,
+			"can_be_pked": false,
+			"is_wildy_multi": false,
+			"items_required": [],
+			"qp_required": 0,
+			"item_in_bank_boosts": [],
+			"can_barrage": true,
+			"can_chin": false,
+			"can_cannon": true,
+			"cannon_multi": true
+		},
+		{
 			"id": 3129,
 			"name": "K'ril Tsutsaroth",
 			"base_kill_time_ms": 306000,
@@ -3391,6 +3423,22 @@
 			],
 			"can_barrage": true,
 			"can_chin": true,
+			"can_cannon": true,
+			"cannon_multi": true
+		},
+		{
+			"id": 14703,
+			"name": "Mature custodian stalker",
+			"base_kill_time_ms": 48000,
+			"is_wildy": false,
+			"is_slayer_only": false,
+			"can_be_pked": false,
+			"is_wildy_multi": false,
+			"items_required": [],
+			"qp_required": 0,
+			"item_in_bank_boosts": [],
+			"can_barrage": true,
+			"can_chin": false,
 			"can_cannon": true,
 			"cannon_multi": true
 		},
@@ -4566,7 +4614,7 @@
 			"id": 12596,
 			"name": "Royal Titans (Branda)",
 			"base_kill_time_ms": 150000,
-			"respawn_time_ms": 500,
+			"respawn_time_ms": 10000,
 			"is_wildy": false,
 			"is_slayer_only": false,
 			"can_be_pked": false,
@@ -4592,7 +4640,7 @@
 			"id": 14147,
 			"name": "Royal Titans (Eldric)",
 			"base_kill_time_ms": 150000,
-			"respawn_time_ms": 500,
+			"respawn_time_ms": 10000,
 			"is_wildy": false,
 			"is_slayer_only": false,
 			"can_be_pked": false,
@@ -4618,7 +4666,7 @@
 			"id": 14148,
 			"name": "Royal Titans (sacrifice)",
 			"base_kill_time_ms": 150000,
-			"respawn_time_ms": 500,
+			"respawn_time_ms": 10000,
 			"is_wildy": false,
 			"is_slayer_only": false,
 			"can_be_pked": false,
