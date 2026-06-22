@@ -116,7 +116,12 @@ export class OSRSCanvas {
 		return this.canvas;
 	}
 
-	private rawDrawText({ text, x, y }: { text: string; x: number; y: number }) {
+	private rawDrawText({ text, x, y, font }: { text: string; x: number; y: number; font: FontName }) {
+		if (font === 'TinyPixel') {
+			this.ctx.fillText(text, x, y);
+			return;
+		}
+
 		const textPath = this.ctx.outlineText(text);
 		this.ctx.fill(textPath.offset(x, y));
 	}
@@ -178,11 +183,11 @@ export class OSRSCanvas {
 
 			// Draw shadow/outline
 			this.ctx.fillStyle = 'black';
-			this.rawDrawText({ text: textLine.trim(), x: lineX + 1, y: lineY + 1 });
+			this.rawDrawText({ text: textLine.trim(), x: lineX + 1, y: lineY + 1, font });
 
 			// Draw main text
 			this.ctx.fillStyle = color;
-			this.rawDrawText({ text: textLine.trim(), x: lineX, y: lineY });
+			this.rawDrawText({ text: textLine.trim(), x: lineX, y: lineY, font });
 		}
 	}
 
