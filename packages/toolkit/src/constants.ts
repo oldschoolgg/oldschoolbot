@@ -113,6 +113,7 @@ export enum Emoji {
 	Kuro = '<:kuro:1032277900579319888>',
 	Seer = '<:seer:924198628191531030>',
 	SOTWTrophy = '<:SOTWtrophy:842938096097820693>',
+	ClueScroll = '<:Clue_scroll:365003979840552960>',
 
 	DragonTrophy = '<:DragonTrophy:1152881074259624007>',
 	RuneTrophy = '<:RuneTrophy:1152881071445254164>',

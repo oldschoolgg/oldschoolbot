@@ -14527,7 +14527,7 @@ setCustomItem(
 );
 setCustomItem(
 	73_986,
-	'Shiny Partycrab',
+	'Mona',
 	'Bronze full helm',
 	{
 		customItemData: {
