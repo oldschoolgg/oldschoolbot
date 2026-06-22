@@ -75,7 +75,7 @@ describe('herbloreTask amulet of chemistry behaviour', () => {
 		// Prevent side effects from trip finish (discord sends etc.)
 		const handleTripFinishSpy = vi
 			.spyOn(handleTripFinishModule, 'handleTripFinish')
-			.mockImplementation(async () => { });
+			.mockImplementation(async () => {});
 
 		globalAny.mUserFetch = vi.fn().mockResolvedValue(user);
 		const taskData = defaultTaskData();
@@ -133,7 +133,7 @@ describe('herbloreTask amulet of chemistry behaviour', () => {
 		const degradeSpy = vi.spyOn(degradeableItemsModule, 'degradeItem');
 
 		// Prevent side effects from trip finish (discord sends etc.)
-		vi.spyOn(handleTripFinishModule, 'handleTripFinish').mockImplementation(async () => { });
+		vi.spyOn(handleTripFinishModule, 'handleTripFinish').mockImplementation(async () => {});
 
 		globalAny.mUserFetch = vi.fn().mockResolvedValue(user);
 
@@ -179,7 +179,7 @@ describe('herbloreTask amulet of chemistry behaviour', () => {
 		const degradeSpy = vi.spyOn(degradeableItemsModule, 'degradeItem');
 
 		// Prevent side effects from trip finish (discord sends etc.)
-		vi.spyOn(handleTripFinishModule, 'handleTripFinish').mockImplementation(async () => { });
+		vi.spyOn(handleTripFinishModule, 'handleTripFinish').mockImplementation(async () => {});
 
 		globalAny.mUserFetch = vi.fn().mockResolvedValue(user);
 
@@ -223,7 +223,7 @@ describe('herbloreTask amulet of chemistry behaviour', () => {
 		const checkSpy = vi.spyOn(degradeableItemsModule, 'checkDegradeableItemCharges').mockResolvedValue(5);
 		const degradeSpy = vi.spyOn(degradeableItemsModule, 'degradeItem');
 
-		vi.spyOn(handleTripFinishModule, 'handleTripFinish').mockImplementation(async () => { });
+		vi.spyOn(handleTripFinishModule, 'handleTripFinish').mockImplementation(async () => {});
 
 		globalAny.mUserFetch = vi.fn().mockResolvedValue(user);
 
