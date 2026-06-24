@@ -7,7 +7,7 @@ export async function getInfoStrOfUser(roboChimpUser: RUser) {
 	const djsUser = await globalClient.fetchUser(roboChimpUser.id.toString()).catch(() => null);
 
 	const linkedAccounts = await roboChimpUser.findGroup();
-	let tier = `Tier ${roboChimpUser.perkTier?.number ?? 'None'}`;
+	let tier = roboChimpUser.perkTierDisplay;
 
 	if (roboChimpUser.patreonId) {
 		tier += ' Patreon';

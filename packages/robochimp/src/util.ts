@@ -8,14 +8,28 @@ export enum Bits {
 	Contributor = 5,
 	BothBotsMaxedFreeTierOnePerks = 6,
 	HasPermanentTierOne = 7,
-	PatronTier1 = 8,
-	PatronTier2 = 9,
-	PatronTier3 = 10,
-	PatronTier4 = 11,
-	PatronTier5 = 12,
-	PatronTier6 = 13,
+	MagnaPatronTier1 = 8,
+	MagnaPatronTier2 = 9,
+	MagnaPatronTier3 = 10,
+	MagnaPatronTier4 = 11,
+	MagnaPatronTier5 = 12,
+	MagnaPatronTier6 = 13,
 	HasEverBeenPatron = 14,
-	SupportStaff = 15
+	SupportStaff = 15,
+	CyrPatronTier0 = 16,
+	CyrPatronTier1 = 17,
+	CyrPatronTier2 = 18,
+	CyrPatronTier3 = 19,
+	CyrPatronTier4 = 20,
+	CyrPatronTier5 = 21,
+	CyrPatronTier6 = 22,
+	CyrPatronTier7 = 23,
+	PatronTier1 = MagnaPatronTier1,
+	PatronTier2 = MagnaPatronTier2,
+	PatronTier3 = MagnaPatronTier3,
+	PatronTier4 = MagnaPatronTier4,
+	PatronTier5 = MagnaPatronTier5,
+	PatronTier6 = MagnaPatronTier6
 }
 type BitDescriptions = {
 	[K in Bits]: { description: string };
@@ -30,13 +44,21 @@ export const bitsDescriptions: BitDescriptions = {
 	[Bits.Contributor]: { description: 'Contributor' },
 	[Bits.BothBotsMaxedFreeTierOnePerks]: { description: 'Maxed patron perks for both bots' },
 	[Bits.HasPermanentTierOne]: { description: 'Has permanent Tier 1 perks' },
-	[Bits.PatronTier1]: { description: 'Tier 1 patron' },
-	[Bits.PatronTier2]: { description: 'Tier 2 patron' },
-	[Bits.PatronTier3]: { description: 'Tier 3 patron' },
-	[Bits.PatronTier4]: { description: 'Tier 4 patron' },
-	[Bits.PatronTier5]: { description: 'Tier 5 patron' },
-	[Bits.PatronTier6]: { description: 'Tier 6 patron' },
-	[Bits.HasEverBeenPatron]: { description: 'Has been a patron before' }
+	[Bits.MagnaPatronTier1]: { description: 'Magna Tier 1 patron' },
+	[Bits.MagnaPatronTier2]: { description: 'Magna Tier 2 patron' },
+	[Bits.MagnaPatronTier3]: { description: 'Magna Tier 3 patron' },
+	[Bits.MagnaPatronTier4]: { description: 'Magna Tier 4 patron' },
+	[Bits.MagnaPatronTier5]: { description: 'Magna Tier 5 patron' },
+	[Bits.MagnaPatronTier6]: { description: 'Magna Tier 6 patron' },
+	[Bits.HasEverBeenPatron]: { description: 'Has been a patron before' },
+	[Bits.CyrPatronTier0]: { description: 'Cyr Tier 0 patron' },
+	[Bits.CyrPatronTier1]: { description: 'Cyr Tier 1 patron' },
+	[Bits.CyrPatronTier2]: { description: 'Cyr Tier 2 patron' },
+	[Bits.CyrPatronTier3]: { description: 'Cyr Tier 3 patron' },
+	[Bits.CyrPatronTier4]: { description: 'Cyr Tier 4 patron' },
+	[Bits.CyrPatronTier5]: { description: 'Cyr Tier 5 patron' },
+	[Bits.CyrPatronTier6]: { description: 'Cyr Tier 6 patron' },
+	[Bits.CyrPatronTier7]: { description: 'Cyr Tier 7 patron' }
 };
 
 export const CHANNELS = {
@@ -49,7 +71,7 @@ export const CHANNELS = {
 	MODERATORS_COMMANDS: '1457789366330986608'
 };
 
-enum PatronTierID {
+enum MagnaPatronTierID {
 	One = '4608201',
 	Two = '4608226',
 	Three = '4720356',
@@ -58,20 +80,61 @@ enum PatronTierID {
 	Six = '8091554'
 }
 
+export type PaidTierSource = 'magna' | 'cyr';
+
 export interface PatronTier {
-	id: PatronTierID;
+	id?: string;
 	bit: Bits;
 	perkTier: PerkTier;
 	number: number;
+	source: PaidTierSource;
 }
 
-export const tiers: PatronTier[] = [
-	{ id: PatronTierID.Six, bit: Bits.PatronTier6, perkTier: PerkTier.Seven, number: 6 },
-	{ id: PatronTierID.Five, bit: Bits.PatronTier5, perkTier: PerkTier.Six, number: 5 },
-	{ id: PatronTierID.Four, bit: Bits.PatronTier4, perkTier: PerkTier.Five, number: 4 },
-	{ id: PatronTierID.Three, bit: Bits.PatronTier3, perkTier: PerkTier.Four, number: 3 },
-	{ id: PatronTierID.Two, bit: Bits.PatronTier2, perkTier: PerkTier.Three, number: 2 },
-	{ id: PatronTierID.One, bit: Bits.PatronTier1, perkTier: PerkTier.Two, number: 1 }
+export const magnaTiers: PatronTier[] = [
+	{ id: MagnaPatronTierID.Six, bit: Bits.MagnaPatronTier6, perkTier: PerkTier.Seven, number: 6, source: 'magna' },
+	{ id: MagnaPatronTierID.Five, bit: Bits.MagnaPatronTier5, perkTier: PerkTier.Six, number: 5, source: 'magna' },
+	{ id: MagnaPatronTierID.Four, bit: Bits.MagnaPatronTier4, perkTier: PerkTier.Five, number: 4, source: 'magna' },
+	{
+		id: MagnaPatronTierID.Three,
+		bit: Bits.MagnaPatronTier3,
+		perkTier: PerkTier.Four,
+		number: 3,
+		source: 'magna'
+	},
+	{ id: MagnaPatronTierID.Two, bit: Bits.MagnaPatronTier2, perkTier: PerkTier.Three, number: 2, source: 'magna' },
+	{ id: MagnaPatronTierID.One, bit: Bits.MagnaPatronTier1, perkTier: PerkTier.Two, number: 1, source: 'magna' }
 ];
 
-export const allPatronBits: Bits[] = tiers.map(t => t.bit);
+export const cyrTiers: PatronTier[] = [
+	{ bit: Bits.CyrPatronTier7, perkTier: PerkTier.Seven, number: 7, source: 'cyr' },
+	{ bit: Bits.CyrPatronTier6, perkTier: PerkTier.Seven, number: 6, source: 'cyr' },
+	{ bit: Bits.CyrPatronTier5, perkTier: PerkTier.Seven, number: 5, source: 'cyr' },
+	{ bit: Bits.CyrPatronTier4, perkTier: PerkTier.Six, number: 4, source: 'cyr' },
+	{ bit: Bits.CyrPatronTier3, perkTier: PerkTier.Five, number: 3, source: 'cyr' },
+	{ bit: Bits.CyrPatronTier2, perkTier: PerkTier.Four, number: 2, source: 'cyr' },
+	{ bit: Bits.CyrPatronTier1, perkTier: PerkTier.Three, number: 1, source: 'cyr' },
+	{ bit: Bits.CyrPatronTier0, perkTier: PerkTier.Two, number: 0, source: 'cyr' }
+];
+
+export const tiers: PatronTier[] = magnaTiers;
+export const paidTiers: PatronTier[] = [...magnaTiers, ...cyrTiers];
+export const allPatronBits: Bits[] = paidTiers.map(t => t.bit);
+
+export function getPatronTierLabel(tier: Pick<PatronTier, 'source' | 'number'>) {
+	return `${tier.source === 'cyr' ? 'Cyr' : 'Magna'} Tier ${tier.number}`;
+}
+
+export function getUserPaidTiers(bits: readonly number[]): PatronTier[] {
+	return paidTiers.filter(tier => bits.includes(tier.bit));
+}
+
+export function formatUserPaidTiers(bits: readonly number[]) {
+	const labels = getUserPaidTiers(bits)
+		.sort((a, b) => {
+			if (b.perkTier !== a.perkTier) return b.perkTier - a.perkTier;
+			if (a.source !== b.source) return a.source === 'cyr' ? -1 : 1;
+			return b.number - a.number;
+		})
+		.map(getPatronTierLabel);
+	return labels.length === 0 ? 'None' : labels.join(', ');
+}

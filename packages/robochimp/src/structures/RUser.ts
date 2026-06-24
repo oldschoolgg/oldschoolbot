@@ -3,7 +3,7 @@ import { RedisKeys } from '@oldschoolgg/util';
 import type { Prisma, User } from '@prisma/robochimp';
 
 import { redis } from '@/lib/redis.js';
-import { Bits, type PatronTier, tiers } from '@/util.js';
+import { Bits, formatUserPaidTiers, type PatronTier, tiers } from '@/util.js';
 
 export type RUserGroupUser = Pick<User, 'id' | 'bits' | 'perk_tier'>;
 
@@ -36,6 +36,14 @@ export class RUser {
 	get perkTier(): PatronTier | null {
 		const tier = tiers.find(t => t.perkTier === this.perkTierRaw);
 		return tier ?? null;
+	}
+
+	get perkTierDisplay(): string {
+		const paidTierDisplay = formatUserPaidTiers(this.bits);
+		if (paidTierDisplay !== 'None') {
+			return paidTierDisplay;
+		}
+		return this.perkTierRaw > 0 ? `Perk Tier ${this.perkTierRaw}` : 'None';
 	}
 
 	public isSupport(): boolean {

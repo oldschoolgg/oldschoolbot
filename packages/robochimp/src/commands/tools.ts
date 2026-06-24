@@ -4,7 +4,7 @@ import { patreonTask } from '@/lib/patreon.js';
 import { CHANNELS, tiers } from '@/util.js';
 
 const tierChoices = [...tiers].reverse().map(tier => ({
-	name: `Patron Tier ${tier.number} (perkTier ${tier.perkTier})`,
+	name: `Magna Tier ${tier.number} (perkTier ${tier.perkTier})`,
 	value: tier.perkTier.toString()
 }));
 
@@ -59,7 +59,7 @@ export const toolsCommand = defineCommand({
 				{
 					type: 'String',
 					name: 'tier',
-					description: 'The perk tier number, or choose a patron tier.',
+					description: 'The perk tier number.',
 					required: false,
 					autocomplete: async ({ value }: StringAutoComplete) => {
 						const normalizedValue = value?.toLowerCase() ?? '';
@@ -155,7 +155,7 @@ export const toolsCommand = defineCommand({
 			}
 
 			await patreonTask.changeTier(targetUser, tier);
-			return `Changed ${targetMention} to Patron Tier ${tier.number} (perkTier ${tier.perkTier}).`;
+			return `Changed ${targetMention} to Magna Tier ${tier.number} (perkTier ${tier.perkTier}).`;
 		}
 		if (options.debug_patreon) {
 			const res = await patreonTask.fetchPatrons();
