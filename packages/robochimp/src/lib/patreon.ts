@@ -128,6 +128,10 @@ async function onTierChange({
 				id: {
 					in: discordIDs
 				}
+			},
+			select: {
+				id: true,
+				badges: true
 			}
 		});
 
@@ -224,6 +228,10 @@ class PatreonTask {
 				id: {
 					in: userGroup.map(id => BigInt(id))
 				}
+			},
+			select: {
+				id: true,
+				bits: true
 			}
 		});
 
@@ -261,6 +269,10 @@ class PatreonTask {
 				id: {
 					in: userGroup.map(id => BigInt(id))
 				}
+			},
+			select: {
+				id: true,
+				bits: true
 			}
 		});
 
