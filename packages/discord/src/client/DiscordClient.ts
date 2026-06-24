@@ -412,7 +412,7 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 		const emojiRegex = /^(?:<|<(a))?:?(\w+:\d+)>?$/;
 		const matches = emojiId.match(emojiRegex);
 		if (matches) {
-			emojiId = `${matches[1] === 'a' ? 'a:' : '' }${matches[2]}`;
+			emojiId = `${matches[1] === 'a' ? 'a:' : ''}${matches[2]}`;
 		}
 
 		const route = Routes.channelMessageOwnReaction(channelId, messageId, encodeURIComponent(emojiId));

@@ -3,12 +3,10 @@ import { detectMischief } from '@/lib/mischiefDetection.js';
 import { patreonTask } from '@/lib/patreon.js';
 import { CHANNELS, tiers } from '@/util.js';
 
-const tierChoices = [...tiers]
-	.reverse()
-	.map(tier => ({
-		name: `Patron Tier ${tier.number} (perkTier ${tier.perkTier})`,
-		value: tier.perkTier.toString()
-	}));
+const tierChoices = [...tiers].reverse().map(tier => ({
+	name: `Patron Tier ${tier.number} (perkTier ${tier.perkTier})`,
+	value: tier.perkTier.toString()
+}));
 
 function availableTiersString() {
 	return tierChoices.map(tier => `${tier.name}: \`${tier.value}\``).join('\n');
