@@ -6,8 +6,8 @@ import {
 	type IslandUpgradeTiers
 } from '@/lib/bso/commands/islandUpgrades.js';
 
-import { randArrItem, roll } from '@oldschoolgg/rng';
 import { formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { randArrItem, roll } from 'node-rng';
 import { Bank, type Item, Items } from 'oldschooljs';
 
 import type { Skills } from '@/lib/types/index.js';

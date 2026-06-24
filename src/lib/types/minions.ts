@@ -9,6 +9,7 @@ import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
 import type { UnderwaterAgilityThievingTrainingSkill } from '@/lib/skilling/skills/agility.js';
 import type { IPatchData } from '@/lib/skilling/skills/farming/utils/types.js';
+import type { SharkLureQuantity } from '@/lib/skilling/skills/fishing/fishingUtil.js';
 import type { TwitcherGloves } from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import type { Peak } from '@/lib/util/peaks.js';
 
@@ -20,6 +21,8 @@ export interface ActivityTaskOptions {
 	channelId: string;
 	cantBeDoubled?: boolean;
 }
+
+export type BeachCombingMethod = 'Surfing' | 'BeachCombing' | 'BuildSandcastles' | 'PickupTrash';
 
 export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
 	type:
@@ -52,6 +55,12 @@ export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
 		| 'Revenants';
 }
 
+export interface BeachCombingActivityTaskOptions extends ActivityTaskOptions {
+	type: 'BeachCombing';
+	minutes?: number;
+	method: BeachCombingMethod;
+}
+
 export interface ActivityTaskOptionsWithQuantity extends ActivityTaskOptions {
 	type:
 		| 'VolcanicMine'
@@ -60,6 +69,7 @@ export interface ActivityTaskOptionsWithQuantity extends ActivityTaskOptions {
 		| 'DriftNet'
 		| 'WealthCharging'
 		| 'GloryCharging'
+		| 'GloryUncharging'
 		| 'AerialFishing'
 		| 'FishingTrawler'
 		| 'CamdozaalFishing'
@@ -170,9 +180,23 @@ export interface ClueActivityTaskOptions extends ActivityTaskOptions {
 
 export interface FishingActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Fishing';
-	fishID: number;
+	fishID: string;
 	quantity: number;
+	qty: number[];
+	loot?: number[];
+	extraCatchRolls?: number[];
+	flakesToRemove?: number;
 	flakesQuantity?: number;
+	powerfish?: boolean;
+	spiritFlakes?: boolean;
+	spiritFlakePreference?: boolean;
+	sharkLureQuantity?: SharkLureQuantity;
+	sharkLuresToConsume?: number;
+	sharkLurePreference?: SharkLureQuantity;
+	blessingExtra?: number;
+	blessingQuantity?: number;
+	flakeExtra?: number;
+	usedBarbarianCutEat?: boolean;
 	iQty?: number;
 }
 
@@ -441,6 +465,15 @@ export interface PlunderActivityTaskOptions extends MinigameActivityTaskOptions 
 	rooms: number[];
 }
 
+export interface ValeTotemsActivityTaskOptions extends MinigameActivityTaskOptions {
+	type: 'ValeTotems';
+	offerings: number;
+	fletchXp: number;
+	logId: number;
+	itemId: number;
+	staminaPot: boolean | undefined;
+}
+
 export interface ZalcanoActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Zalcano';
 	isMVP: boolean;
@@ -632,6 +665,18 @@ export interface ShadesOfMortonOptions extends MinigameActivityTaskOptions {
 	shadeID: string;
 	logID: number;
 }
+
+export interface ShadesOfMortonSacredOilOptions extends ActivityTaskOptions {
+	type: 'ShadesOfMortonSacredOil';
+	quantity: number;
+}
+
+export interface ShadesOfMortonPyreLogsOptions extends ActivityTaskOptions {
+	type: 'ShadesOfMortonPyreLogs';
+	quantity: number;
+	logID: number;
+}
+
 export interface SpecificQuestOptions extends ActivityTaskOptions {
 	type: 'SpecificQuest';
 	questID: number;
@@ -668,6 +713,8 @@ export type ActivityTaskData =
 	| GiantsFoundryActivityTaskOptions
 	| NightmareZoneActivityTaskOptions
 	| ShadesOfMortonOptions
+	| ShadesOfMortonSacredOilOptions
+	| ShadesOfMortonPyreLogsOptions
 	| UnderwaterAgilityThievingTaskOptions
 	| PickpocketActivityTaskOptions
 	| BuryingActivityTaskOptions
@@ -694,11 +741,13 @@ export type ActivityTaskData =
 	| NightmareActivityTaskOptions
 	| TitheFarmActivityTaskOptions
 	| SepulchreActivityTaskOptions
+	| ValeTotemsActivityTaskOptions
 	| GnomeRestaurantActivityTaskOptions
 	| SpecificQuestOptions
 	| ActivityTaskOptionsWithNoChanges
 	| TokkulShopOptions
 	| BuyActivityTaskOptions
+	| BeachCombingActivityTaskOptions
 	| BirdhouseActivityTaskOptions
 	| FightCavesActivityTaskOptions
 	| ActivityTaskOptionsWithQuantity

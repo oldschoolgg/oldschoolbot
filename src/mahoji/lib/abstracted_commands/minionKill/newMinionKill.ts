@@ -70,6 +70,7 @@ export interface MinionKillOptions {
 	pkEvasionExperience: number;
 	currentPeak: Peak;
 	disabledInventions: InventionID[];
+	rng: RNGProvider;
 }
 
 export function newMinionKillCommand(args: MinionKillOptions): string | MinionKillReturn {
@@ -258,7 +259,8 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 			relevantGearStat,
 			currentTaskOptions: speedDurationResult.currentTaskOptions,
 			addInvention: (invention: InventionID) => inventionsBeingUsed.push(invention),
-			killsRemaining
+			killsRemaining,
+			rng: args.rng
 		});
 		if (typeof result === 'string') return result;
 		if (!result) continue;

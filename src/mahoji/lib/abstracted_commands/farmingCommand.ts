@@ -1,5 +1,5 @@
-import { percentChance } from '@oldschoolgg/rng';
 import { formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { percentChance } from 'node-rng';
 import { Bank, type Item } from 'oldschooljs';
 
 import type { CropUpgradeType } from '@/prisma/main.js';
@@ -8,6 +8,7 @@ import { superCompostables } from '@/lib/data/filterables.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { Plant } from '@/lib/skilling/types.js';
 import type { FarmingActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 function treeCheck(plant: Plant, wcLevel: number, bal: number, quantity: number): string | null {
 	if (plant.needsChopForHarvest && plant.treeWoodcuttingLevel && wcLevel < plant.treeWoodcuttingLevel) {
@@ -95,7 +96,7 @@ export async function harvestCommand({
 	}
 
 	returnMessageStr = `${user.minionName} is now harvesting ${patch.lastQuantity}x ${storeHarvestablePlant}.
-It'll take around ${formatDuration(duration)} to finish.
+It'll take around ${formatTripDuration(user, duration)} to finish.
 
 ${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
 
@@ -333,7 +334,7 @@ export async function farmingPlantCommand({
 	});
 
 	return `${infoStr.join(' ')}
-It'll take around ${formatDuration(duration)} to finish.
+It'll take around ${formatTripDuration(user, duration)} to finish.
 
 ${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
 }

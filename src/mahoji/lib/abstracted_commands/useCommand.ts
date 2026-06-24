@@ -3,16 +3,33 @@ import { addToDoubleLootTimer } from '@/lib/bso/doubleLoot.js';
 import { allDyes, dyedItems } from '@/lib/bso/dyedItems.js';
 import { mysteriousStepData } from '@/lib/bso/mysteryTrail.js';
 import { divinationEnergies } from '@/lib/bso/skills/divination.js';
+import { getLydiaQuote } from '@/lib/bso/summerDays.js';
 
-import { bold } from '@oldschoolgg/discord';
-import { randArrItem, randInt } from '@oldschoolgg/rng';
+import { bold, EmbedBuilder } from '@oldschoolgg/discord';
 import { notEmpty, objectEntries, Time } from '@oldschoolgg/toolkit';
+import { randArrItem, randInt } from 'node-rng';
 import { Bank, type Item, Items, resolveItems } from 'oldschooljs';
 
 import { gearImages } from '@/lib/canvas/gearImageData.js';
 import { BitField } from '@/lib/constants.js';
 import { assert } from '@/lib/util/logError.js';
 import { flowerTable } from '@/mahoji/lib/abstracted_commands/hotColdCommand.js';
+
+const easterUseTrollItemIDs = new Set([Items.getOrThrow('Magnegg').id, Items.getOrThrow('Wabbit eggs').id]);
+const easterUseTrollMessages = [
+	'🥚 The egg refuses. It has standards.',
+	'🐇 You try that combo. Somewhere, a Wabbit files a complaint.',
+	'🤨 The Magnegg looks deeply unimpressed.',
+	'🥚 Nothing happens, except a faint sense of being judged.',
+	'🐰 The Wabbit eggs rustle mysteriously, then do absolutely nothing.',
+	'🫠 You were so preoccupied with whether you could, you never asked whether the egg cared.',
+	'🥚 The Magnegg emits a vibe best described as "no."',
+	'🐇 A distant bunny laughs at your crafting attempt.',
+	'🙄 The eggs decline to participate in whatever this is.',
+	'🥚 You tap the items together. The items remain unconvinced.',
+	'🐰 The Wabbit union will be hearing about this.',
+	'✨ For one brief moment, it almost seems like something might happen. It does not.'
+] as const;
 
 const messageInABottleMessages = [
 	"We are but a week from finishing our journey, yet the seas have claimed my dearest and only friend, Felris, a noble pup. He was loyal and uplifting, and warmed the heart on a cold day. The tragedy of his loss echoes in the lonely crash of the waves, a vivid reminder of a journey he couldn't complete. Alone, I endure, with only his memory as my companion.",
@@ -232,6 +249,61 @@ export const genericUsables: {
 		addToCL: true
 	},
 	{
+		items: [Items.getOrThrow('Sun Scream'), Items.getOrThrow('Patricia')],
+		cost: new Bank().add('Sun Scream').add('Patricia'),
+		loot: new Bank().add('Lydia'),
+		response: () => {
+			return {
+				content: '💀 You coat Patricia in Sun Scream...',
+				embeds: [
+					new EmbedBuilder()
+						.setDescription(getLydiaQuote())
+						.setImage(
+							'https://media.discordapp.net/attachments/851273567416483861/1516534890911240242/image.png'
+						)
+				]
+			};
+		},
+		addToCL: true
+	},
+	{
+		items: [Items.getOrThrow('Sun Scream'), Items.getOrThrow('Partycrab')],
+		cost: new Bank().add('Sun Scream').add('Partycrab'),
+		loot: new Bank().add('Shiny Partycrab'),
+		response: () => 'You rub Sun Scream onto Partycrab, and it struts away looking dramatically beach-goth.',
+		addToCL: true
+	},
+	{
+		items: [Items.getOrThrow('Sun Scream'), Items.getOrThrow('Dwarven warhammer')],
+		cost: new Bank().add('Sun Scream').add('Dwarven warhammer'),
+		loot: new Bank().add('Gothic Dwarven warhammer'),
+		response: () =>
+			'You polish the Dwarven warhammer with Sun Scream, leaving it with a dark purple, sea-salted finish.',
+		addToCL: true
+	},
+	{
+		items: [Items.getOrThrow('Pestle and mortar'), Items.getOrThrow('Purple sand dollar')],
+		cost: new Bank().add('Purple sand dollar'),
+		loot: new Bank().add('Purple dust'),
+		response: () => 'You grind the Purple sand dollar into a fine heap of shimmering Purple dust.',
+		addToCL: true
+	},
+	{
+		items: [Items.getOrThrow('Purple dust'), Items.getOrThrow('Bottle of sea water')],
+		cost: new Bank().add('Purple dust').add('Bottle of sea water'),
+		loot: new Bank().add('Sun Scream (unf)'),
+		response: () => 'You mix the Purple dust into the Bottle of sea water, creating a murky Sun Scream (unf).',
+		addToCL: true
+	},
+	{
+		items: [Items.getOrThrow('Sun Scream (unf)'), Items.getOrThrow('Black shell')],
+		cost: new Bank().add('Sun Scream (unf)').add('Black shell'),
+		loot: new Bank().add('Sun Scream'),
+		response: () =>
+			'You crush the Black shell into the unfinished mixture, and it settles into a finished bottle of Sun Scream.',
+		addToCL: true
+	},
+	{
 		items: [Items.getOrThrow('Mithril seeds')],
 		cost: new Bank().add('Mithril seeds').freeze(),
 		loot: () => flowerTable.roll(),
@@ -253,7 +325,9 @@ export const genericUsables: {
 			content: 'You open the bottle, reading the scroll inside, and then return it to the ocean...',
 			files: [
 				{
-					buffer: await scriptImageGenerator.generateScriptImage(randArrItem(messageInABottleMessages)),
+					buffer: await scriptImageGenerator.generateScriptImage(
+						randArrItem(messageInABottleMessages) ?? messageInABottleMessages[0]
+					),
 					name: 'image.png'
 				}
 			]
@@ -668,12 +742,15 @@ This looks like a treasure trail. ${minionMessage}`;
 
 export const allUsableItems = new Set(usables.map(i => i.items.map(i => i.id)).flat(2));
 
-export async function useCommand(user: MUser, _firstItem: string, _secondItem?: string) {
+export async function useCommand(user: MUser, _firstItem: string, _secondItem?: string): CommandResponse {
 	const firstItem = Items.getItem(_firstItem);
 	const secondItem = _secondItem === undefined ? null : Items.getItem(_secondItem);
 	if (!firstItem || (_secondItem !== undefined && !secondItem)) return "That's not a valid item.";
 	const items = [firstItem, secondItem].filter(notEmpty);
 	assert(items.length === 1 || items.length === 2);
+	if (items.some(item => easterUseTrollItemIDs.has(item.id))) {
+		return randArrItem(easterUseTrollMessages) ?? easterUseTrollMessages[0];
+	}
 
 	const { bank } = user;
 	const checkBank = new Bank();

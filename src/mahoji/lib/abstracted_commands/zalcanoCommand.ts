@@ -1,9 +1,9 @@
-import { percentChance } from '@oldschoolgg/rng';
 import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { EMonster } from 'oldschooljs';
 
 import { soteSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';
 import type { ZalcanoActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 function calcPerformance(kcLearned: number, skillPercentage: number) {
@@ -18,7 +18,7 @@ function calcPerformance(kcLearned: number, skillPercentage: number) {
 	return Math.min(100, basePerformance);
 }
 
-export async function zalcanoCommand(user: MUser, channelId: string, quantity?: number) {
+export async function zalcanoCommand(rng: RNGProvider, user: MUser, channelId: string, quantity?: number) {
 	const hasReqs = user.hasSkillReqs(soteSkillRequirements);
 	if (!hasReqs) {
 		return `To fight Zalcano, you need: ${formatSkillRequirements(soteSkillRequirements)}.`;
@@ -83,10 +83,8 @@ export async function zalcanoCommand(user: MUser, channelId: string, quantity?: 
 		duration,
 		type: 'Zalcano',
 		performance: calcPerformance(kcLearned, skillPercentage),
-		isMVP: percentChance(80)
+		isMVP: rng.percentChance(80)
 	});
 
-	return `${user.minionName} is now off to kill Zalcano ${quantity}x times, their trip will take ${formatDuration(
-		duration
-	)}. (${formatDuration(baseTime)} per kill). Removed ${foodRemoved}.\n\n**Boosts:** ${boosts.join(', ')}.`;
+	return `${user.minionName} is now off to kill Zalcano ${quantity}x times, their trip will return in about ${formatTripDuration(user, duration)}. (${formatDuration(baseTime)} per kill). Removed ${foodRemoved}.\n\n**Boosts:** ${boosts.join(', ')}.`;
 }

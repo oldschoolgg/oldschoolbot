@@ -46,6 +46,12 @@
 		]
 	},
 	{
+		"name": "Bale of flax",
+		"id": 31045,
+		"opened_item": "Bale of flax",
+		"all_items": ["Flax"]
+	},
+	{
 		"name": "Beach mystery box",
 		"id": 47521,
 		"opened_item": "Beach mystery box",
@@ -3223,7 +3229,6 @@
 			"Butch",
 			"Callisto cub",
 			"Chompy chick",
-			"Dom",
 			"Giant squirrel",
 			"Hellpuppy",
 			"Herbi",
@@ -3275,7 +3280,6 @@
 			"Vet'ion jr.",
 			"Vorki",
 			"Wisp",
-			"Yami",
 			"Youngllef"
 		],
 		"smokey_applies": true
@@ -5679,6 +5683,34 @@
 			"Tree wizards' journal",
 			"Willow logs"
 		]
+	},
+	{
+		"name": "Summer crate (s9)",
+		"id": 73970,
+		"opened_item": "Summer crate (s9)",
+		"all_items": [
+			"Baguette",
+			"Beach pina colada",
+			"Beach sandals",
+			"Beachball shield",
+			"Cake",
+			"Coral bikini bottom",
+			"Coral bikini top",
+			"Gorajan shards",
+			"Imitation Crab Hat",
+			"Kebab",
+			"Paint box",
+			"Palm board shorts",
+			"Purple sweets",
+			"Spinach roll",
+			"Summer partyhat",
+			"Whale floaty"
+		],
+		"extra_cost_per_open": {
+			"73971": 1
+		},
+		"exclude_from_open_all": true,
+		"smokey_applies": false
 	},
 	{
 		"name": "Supply crate (s1)",

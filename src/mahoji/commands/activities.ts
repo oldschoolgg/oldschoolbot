@@ -7,8 +7,10 @@ import birdhouses from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
 import { Castables } from '@/lib/skilling/skills/magic/castables.js';
 import { Enchantables } from '@/lib/skilling/skills/magic/enchantables.js';
 import Prayer from '@/lib/skilling/skills/prayer.js';
+import type { BeachCombingMethod } from '@/lib/types/minions.js';
 import { aerialFishingCommand } from '@/mahoji/lib/abstracted_commands/aerialFishingCommand.js';
 import { alchCommand } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
+import { beachCombingCommand } from '@/mahoji/lib/abstracted_commands/beachCombingCommand.js';
 import { birdhouseCheckCommand, birdhouseHarvestCommand } from '@/mahoji/lib/abstracted_commands/birdhousesCommand.js';
 import { buryCommand } from '@/mahoji/lib/abstracted_commands/buryCommand.js';
 import { butlerCommand } from '@/mahoji/lib/abstracted_commands/butlerCommand.js';
@@ -29,6 +31,7 @@ import puroOptions, { puroPuroStartCommand } from '@/mahoji/lib/abstracted_comma
 import { questCommand } from '@/mahoji/lib/abstracted_commands/questCommand.js';
 import { sawmillCommand } from '@/mahoji/lib/abstracted_commands/sawmillCommand.js';
 import { scatterCommand } from '@/mahoji/lib/abstracted_commands/scatterCommand.js';
+import { unchargeGloriesCommand } from '@/mahoji/lib/abstracted_commands/unchargeGloriesCommand.js';
 import { underwaterAgilityThievingCommand } from '@/mahoji/lib/abstracted_commands/underwaterCommand.js';
 import { warriorsGuildCommand } from '@/mahoji/lib/abstracted_commands/warriorsGuildCommand.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
@@ -98,6 +101,30 @@ export const activitiesCommand = defineCommand({
 			type: 'Subcommand',
 			name: 'my_notes',
 			description: 'Send your minion to rummage skeletons for Ancient pages.'
+		},
+		{
+			type: 'Subcommand',
+			name: 'beach_combing',
+			description: 'Send your minion to spend some time on the shoreline.',
+			options: [
+				{
+					type: 'String',
+					name: 'focus',
+					description: 'What your minion should focus on while at the beach.',
+					required: true,
+					choices: ['Surfing', 'BeachCombing', 'BuildSandcastles', 'PickupTrash'].map(i => ({
+						name: i,
+						value: i
+					}))
+				},
+				{
+					type: 'Integer',
+					name: 'minutes',
+					description: 'The number of minutes to stay out.',
+					required: false,
+					min_value: 10
+				}
+			]
 		},
 		{
 			type: 'Subcommand',
@@ -298,28 +325,36 @@ export const activitiesCommand = defineCommand({
 		{
 			type: 'Subcommand',
 			name: 'charge',
-			description: 'Charge glories, or rings of wealth.',
+			description: 'Charge/uncharge glories, or charge rings of wealth.',
 			options: [
 				{
 					type: 'String',
 					name: 'item',
-					description: 'The item you want to charge',
+					description: 'The jewellery you want to charge or uncharage',
 					required: true,
 					choices: [
 						{
-							name: 'Amulet of glory',
+							name: 'Charge Amulet of glory',
 							value: 'glory'
 						},
 						{
-							name: 'Ring of wealth',
+							name: 'Charge Ring of wealth',
 							value: 'wealth'
+						},
+						{
+							name: "Uncharge Glory's manually in a trip",
+							value: 'glory_uncharge'
+						},
+						{
+							name: "Uncharge Glory's (Instant via GE for 5000 gp/ea)",
+							value: 'glory_exchange'
 						}
 					]
 				},
 				{
 					type: 'Integer',
 					name: 'quantity',
-					description: 'The amount of inventories you want to charge.  (optional)',
+					description: 'The amount to do. (optional)',
 					required: false,
 					min_value: 1
 				}
@@ -597,12 +632,15 @@ export const activitiesCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ options, channelId, user, interaction }) => {
+	run: async ({ options, channelId, user, interaction, rng }) => {
 		// Minion can be busy
 		if (options.decant) {
 			return decantCommand(user, options.decant.potion_name, options.decant.dose);
 		}
-		if (options.inferno?.action === 'stats') return infernoStatsCommand(user);
+		if (options.charge?.item === 'glory_exchange') {
+			return unchargeGloriesCommand(user, channelId, options.charge.quantity, true);
+		}
+		if (options.inferno?.action === 'stats') return infernoStatsCommand({ rng, user });
 		if (options.birdhouses?.action === 'check') return birdhouseCheckCommand(user);
 
 		// Minion must be free
@@ -611,14 +649,13 @@ export const activitiesCommand = defineCommand({
 		if (isBusy) return busyStr;
 
 		if (options.other) {
-			return otherActivitiesCommand(options.other.activity, user, channelId);
+			return otherActivitiesCommand(interaction, options.other.activity);
 		}
 		if (options.birdhouses?.action === 'harvest') {
 			return birdhouseHarvestCommand(user, channelId, options.birdhouses.birdhouse);
 		}
-		if (options.inferno?.action === 'start') {
-			return infernoStartCommand(user, channelId, Boolean(options.inferno.emerged));
-		}
+		if (options.inferno?.action === 'start')
+			return infernoStartCommand({ rng, user, channelId, emerged: Boolean(options.inferno.emerged) });
 		if (options.plank_make?.action === 'sawmill') {
 			return sawmillCommand(
 				user,
@@ -632,13 +669,21 @@ export const activitiesCommand = defineCommand({
 			return butlerCommand(user, options.plank_make.type, options.plank_make.quantity, channelId);
 		}
 		if (options.chompy_hunt?.action === 'start') {
-			return chompyHuntCommand(user, channelId);
+			return chompyHuntCommand(interaction);
 		}
 		if (options.chompy_hunt?.action === 'claim') {
 			return chompyHuntClaimCommand(user);
 		}
 		if (options.my_notes) {
 			return myNotesCommand(user, channelId);
+		}
+		if (options.beach_combing) {
+			return beachCombingCommand(
+				user,
+				channelId,
+				options.beach_combing.focus as BeachCombingMethod,
+				options.beach_combing.minutes
+			);
 		}
 		if (options.warriors_guild) {
 			return warriorsGuildCommand(
@@ -649,7 +694,7 @@ export const activitiesCommand = defineCommand({
 			);
 		}
 		if (options.camdozaal) {
-			return camdozaalCommand(user, channelId, options.camdozaal.action, options.camdozaal.quantity);
+			return camdozaalCommand(rng, user, channelId, options.camdozaal.action, options.camdozaal.quantity);
 		}
 		if (options.gemstone_fishing) {
 			if (options.gemstone_fishing.action === 'breakdown') {
@@ -686,11 +731,14 @@ export const activitiesCommand = defineCommand({
 		if (options.charge?.item === 'wealth') {
 			return chargeWealthCommand(user, channelId, options.charge.quantity);
 		}
+		if (options.charge?.item === 'glory_uncharge') {
+			return unchargeGloriesCommand(user, channelId, options.charge.quantity, false);
+		}
 		if (options.fight_caves) {
-			return fightCavesCommand(user, channelId);
+			return fightCavesCommand({ rng, user, channelId });
 		}
 		if (options.aerial_fishing) {
-			return aerialFishingCommand(user, channelId);
+			return aerialFishingCommand({ rng, user, channelId });
 		}
 		if (options.enchant) {
 			return enchantCommand(user, channelId, options.enchant.name, options.enchant.quantity);
@@ -719,18 +767,18 @@ export const activitiesCommand = defineCommand({
 		}
 		if (options.underwater) {
 			if (options.underwater.agility_thieving) {
-				return underwaterAgilityThievingCommand(
+				return underwaterAgilityThievingCommand({
+					rng,
 					channelId,
 					user,
-					options.underwater.agility_thieving.training_skill,
-					options.underwater.agility_thieving.minutes,
-					options.underwater.agility_thieving.no_stams
-				);
+					trainingSkill: options.underwater.agility_thieving.training_skill,
+					minutes: options.underwater.agility_thieving.minutes,
+					noStams: options.underwater.agility_thieving.no_stams
+				});
 			}
 			if (options.underwater.drift_net_fishing) {
 				return driftNetCommand(
-					channelId,
-					user,
+					interaction,
 					options.underwater.drift_net_fishing.minutes,
 					options.underwater.drift_net_fishing.no_stams
 				);

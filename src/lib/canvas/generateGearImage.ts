@@ -47,6 +47,10 @@ const slotCoordinatesCompact: { [key in EquipmentSlot]: [number, number] } = {
 	[EquipmentSlot.Ring]: [84, 159]
 };
 
+function getItemEffect(itemID: number) {
+	return bankImageTask.effects.get(itemID);
+}
+
 function drawText({
 	canvas,
 	text,
@@ -324,6 +328,7 @@ export async function generateGearImage({
 			itemID: petID,
 			x: 178,
 			y: 190,
+			effect: getItemEffect(petID),
 			user
 		});
 	}
@@ -338,6 +343,7 @@ export async function generateGearImage({
 			x: x,
 			y: y,
 			quantity: item.quantity === 1 ? undefined : item.quantity,
+			effect: getItemEffect(item.item),
 			user
 		});
 	}
@@ -432,6 +438,7 @@ export async function generateAllGearImage({
 				x,
 				y,
 				quantity: item.quantity === 1 ? undefined : item.quantity,
+				effect: getItemEffect(item.item),
 				user
 			});
 		}
@@ -448,6 +455,7 @@ export async function generateAllGearImage({
 			itemID: equippedPet,
 			x: petX,
 			y: petY,
+			effect: getItemEffect(equippedPet),
 			user
 		});
 	}

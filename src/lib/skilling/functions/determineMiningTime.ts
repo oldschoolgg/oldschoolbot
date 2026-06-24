@@ -1,4 +1,3 @@
-import { percentChance } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
 
 import type { Ore } from '@/lib/skilling/types.js';
@@ -17,6 +16,7 @@ interface MiningTimeOptions {
 	miningLvl: number;
 	passedDuration?: number;
 	hasKaramjaMedium: boolean;
+	rng: RNGProvider;
 }
 
 export function determineMiningTime({
@@ -32,7 +32,8 @@ export function determineMiningTime({
 	passedDuration,
 	hasGlory,
 	maxTripLength,
-	hasKaramjaMedium
+	hasKaramjaMedium,
+	rng
 }: MiningTimeOptions): [number, number] {
 	let { intercept } = ore;
 	if (ore.name === 'Gem rock' && hasGlory) {
@@ -71,17 +72,17 @@ export function determineMiningTime({
 	}
 
 	while (timeElapsed < userMaxTripTicks) {
-		while (!percentChance(chanceOfSuccess)) {
+		while (!rng.percentChance(chanceOfSuccess)) {
 			timeElapsed += effectiveTicksBetween;
 		}
-		if (!percentChance(glovesRate)) {
+		if (!rng.percentChance(glovesRate)) {
 			timeElapsed += respawnTimeOrPick;
 		}
 		newQuantity++;
-		if (percentChance(miningCapeEffect)) {
+		if (rng.percentChance(miningCapeEffect)) {
 			newQuantity++;
 		}
-		if (percentChance(armourEffect)) {
+		if (rng.percentChance(armourEffect)) {
 			newQuantity++;
 		}
 		// Add 28th of banking time every quantity

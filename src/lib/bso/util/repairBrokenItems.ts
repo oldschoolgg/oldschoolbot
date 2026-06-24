@@ -1,9 +1,9 @@
 import { moidLink } from '@/lib/bso/bsoUtil.js';
 
 import { type GearSetup, GearSetupTypes } from '@oldschoolgg/gear';
-import { deepEqual, deepObjectDiff, notEmpty, uniqueArr } from '@oldschoolgg/toolkit';
+import { deepObjectDiff, notEmpty, uniqueArr } from '@oldschoolgg/toolkit';
 import { type ItemBank, Items } from 'oldschooljs';
-import { clone } from 'remeda';
+import { clone, isDeepEqual } from 'remeda';
 
 import type { GearSetupType, Prisma } from '@/prisma/main.js';
 import type { SafeUserUpdateInput } from '@/lib/user/update.js';
@@ -114,20 +114,20 @@ export async function repairBrokenItemsFromUser(mUser: MUser) {
 	if (brokenBank.length > 0) {
 		const changes: Prisma.UserUpdateArgs['data'] = {};
 
-		if (!deepEqual(currentValues.bank, newValues.bank)) {
+		if (!isDeepEqual(currentValues.bank, newValues.bank)) {
 			changes.bank = newValues.bank;
 		}
-		if (!deepEqual(currentValues.collectionLogBank, newValues.collectionLogBank)) {
+		if (!isDeepEqual(currentValues.collectionLogBank, newValues.collectionLogBank)) {
 			changes.collectionLogBank = newValues.collectionLogBank;
 		}
-		if (!deepEqual(currentValues.temp_cl, newValues.temp_cl)) {
+		if (!isDeepEqual(currentValues.temp_cl, newValues.temp_cl)) {
 			changes.temp_cl = newValues.temp_cl;
 		}
-		if (!deepEqual(currentValues.favoriteItems, newValues.favoriteItems)) {
+		if (!isDeepEqual(currentValues.favoriteItems, newValues.favoriteItems)) {
 			changes.favoriteItems = newValues.favoriteItems;
 		}
 		for (const setupType of GearSetupTypes) {
-			if (!deepEqual(currentValues[`gear_${setupType}`], newValues[`gear_${setupType}`])) {
+			if (!isDeepEqual(currentValues[`gear_${setupType}`], newValues[`gear_${setupType}`])) {
 				changes[`gear_${setupType}`] = newValues[`gear_${setupType}`] as any as Prisma.InputJsonValue;
 			}
 		}
@@ -159,7 +159,7 @@ New User: ${JSON.stringify(mUser.user)}
 			});
 		}
 
-		if (!deepEqual(currentValues.sacrificedBank, newValues.sacrificedBank)) {
+		if (!isDeepEqual(currentValues.sacrificedBank, newValues.sacrificedBank)) {
 			Logging.logDebug(
 				`${mUser.logName} repair bank sacrifice bank changes: ${JSON.stringify(deepObjectDiff(currentValues.sacrificedBank, newValues.sacrificedBank))}`
 			);

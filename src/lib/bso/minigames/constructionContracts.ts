@@ -6,8 +6,8 @@ import {
 	type IslandUpgradeTiers
 } from '@/lib/bso/commands/islandUpgrades.js';
 
-import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
 import { formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { randArrItem, randInt, roll } from 'node-rng';
 import { Bank, type Item, Items } from 'oldschooljs';
 
 import type { Skills } from '@/lib/types/index.js';
@@ -212,7 +212,9 @@ function generateMiddlingLoot(recipe: ContractRecipe, successfulContracts: numbe
 			const plankIngredients = recipe.ingredients.filter(ing => ing.item.name.toLowerCase().includes('plank'));
 			if (plankIngredients.length > 0) {
 				const returned = randArrItem(plankIngredients);
-				loot.add(returned.item.id, 1);
+				if (returned) {
+					loot.add(returned.item.id, 1);
+				}
 			}
 		}
 	}

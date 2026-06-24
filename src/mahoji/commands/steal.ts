@@ -1,5 +1,4 @@
 import { bold } from '@oldschoolgg/discord';
-import { randInt } from '@oldschoolgg/rng';
 import { formatDuration, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
 
 import { quests } from '@/lib/minions/data/quests.js';
@@ -7,6 +6,7 @@ import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import { Thieving } from '@/lib/skilling/skills/thieving/index.js';
 import { type Stealable, stealables } from '@/lib/skilling/skills/thieving/stealables.js';
 import type { PickpocketActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { calcLootXPPickpocketing } from '@/tasks/minions/pickpocketActivity.js';
 
 export const stealCommand = defineCommand({
@@ -42,7 +42,7 @@ export const stealCommand = defineCommand({
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelId }) => {
+	run: async ({ options, user, channelId, rng }) => {
 		const stealable: Stealable | undefined = stealables.find(
 			obj =>
 				stringMatches(obj.name, options.name) ||
@@ -131,7 +131,7 @@ export const stealCommand = defineCommand({
 
 		let str = `${user.minionName} is now going to ${
 			stealable.type === 'pickpockable' ? 'pickpocket' : 'steal from'
-		} a ${stealable.name} ${quantity}x times, it'll take around ${formatDuration(duration)} to finish.`;
+		} a ${stealable.name} ${quantity}x times, it'll take around ${formatTripDuration(user, duration)} to finish.`;
 
 		if (stealable.name === 'Black knight guard') {
 			const godFavour = await user.getGodFavour();
@@ -152,7 +152,8 @@ export const stealCommand = defineCommand({
 				quantity,
 				user.hasEquipped(['Thieving cape', 'Thieving cape(t)']),
 				hasArdyHard,
-				user.hasEquippedOrInBank(["Thieves' armband"])
+				user.hasEquippedOrInBank(["Thieves' armband"]),
+				rng
 			);
 
 			if (user.hasEquipped(['Thieving cape', 'Thieving cape(t)', 'Thieving master cape'])) {
@@ -180,7 +181,7 @@ export const stealCommand = defineCommand({
 			str += ` Removed ${foodRemoved}.`;
 		} else {
 			// Up to 5% fail chance, random
-			successfulQuantity = Math.floor((quantity * randInt(95, 100)) / 100);
+			successfulQuantity = Math.floor((quantity * rng.randInt(95, 100)) / 100);
 			xpReceived = successfulQuantity * stealable.xp;
 		}
 

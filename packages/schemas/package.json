@@ -8,8 +8,9 @@
 		}
 	},
 	"scripts": {
-		"build": "rimraf ./dist && tsc -p src --noEmit false",
-		"test": "pnpm tsc -p src --noEmit && vitest run --coverage"
+		"build": "rimraf ./dist ./tsconfig.tsbuildinfo && tsc -p . --noEmit false",
+		"test:types": "tsc -p . --noEmit",
+		"test:unit": "vitest run"
 	},
 	"dependencies": {
 		"zod": "^4.1.12",

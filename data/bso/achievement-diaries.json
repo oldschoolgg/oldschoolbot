@@ -244,7 +244,7 @@
 				"thieving": 13,
 				"woodcutting": 75
 			},
-			"qp": 5028,
+			"qp": 5035,
 			"collection_log_reqs": ["Air rune", "Saradomin brew(3)"]
 		}
 	},
@@ -611,7 +611,7 @@
 				"woodcutting": 75
 			},
 			"collection_log_reqs": ["Adamant platebody", "Magic logs", "Water rune"],
-			"qp": 5028
+			"qp": 5035
 		}
 	},
 	{

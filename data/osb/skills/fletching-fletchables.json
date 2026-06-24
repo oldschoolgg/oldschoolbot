@@ -122,6 +122,40 @@
 		"output_multiple": 15
 	},
 	{
+		"name": "Atlatl dart",
+		"id": 28991,
+		"level": 74,
+		"xp": 190,
+		"input_items": {
+			"30998": 20,
+			"31010": 20
+		},
+		"tick_rate": 2,
+		"output_multiple": 20
+	},
+	{
+		"name": "Atlatl dart shaft",
+		"id": 31004,
+		"level": 74,
+		"xp": 30,
+		"input_items": {
+			"31032": 1
+		},
+		"tick_rate": 3,
+		"output_multiple": 100
+	},
+	{
+		"name": "Atlatl dart tips",
+		"id": 30998,
+		"level": 74,
+		"xp": 10,
+		"input_items": {
+			"31086": 1
+		},
+		"tick_rate": 4,
+		"output_multiple": 100
+	},
+	{
 		"name": "Battlestaff",
 		"id": 1391,
 		"level": 40,
@@ -429,6 +463,18 @@
 			"314": 1
 		},
 		"tick_rate": 0.13
+	},
+	{
+		"name": "Headless atlatl dart",
+		"id": 31010,
+		"level": 74,
+		"xp": 20,
+		"input_items": {
+			"314": 20,
+			"31004": 20
+		},
+		"tick_rate": 2,
+		"output_multiple": 20
 	},
 	{
 		"name": "Heavy ballista",
@@ -1020,6 +1066,16 @@
 		},
 		"tick_rate": 2,
 		"output_multiple": 105
+	},
+	{
+		"name": "Redwood hiking staff",
+		"id": 31049,
+		"level": 90,
+		"xp": 10.5,
+		"input_items": {
+			"19669": 1
+		},
+		"tick_rate": 3
 	},
 	{
 		"name": "Redwood shield",

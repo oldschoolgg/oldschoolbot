@@ -1,6 +1,5 @@
 import { IVY_MAX_TRIP_LENGTH_BOOST } from '@/lib/bso/bsoConstants.js';
 
-import { percentChance } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
 import { EItem } from 'oldschooljs/EItem';
 
@@ -15,6 +14,7 @@ interface WoodcuttingTimeOptions {
 	forestry: boolean;
 	woodcuttingLvl: number;
 	maxTripLength: number;
+	rng: RNGProvider;
 }
 
 export function determineWoodcuttingTime({
@@ -25,7 +25,8 @@ export function determineWoodcuttingTime({
 	powerchopping,
 	forestry,
 	woodcuttingLvl,
-	maxTripLength
+	maxTripLength,
+	rng
 }: WoodcuttingTimeOptions): [number, number] {
 	let timeElapsed = 0;
 
@@ -59,11 +60,11 @@ export function determineWoodcuttingTime({
 
 	while (timeElapsed < userMaxTripTicks) {
 		// Keep rolling until log chopped
-		while (!percentChance(chanceOfSuccess)) {
+		while (!rng.percentChance(chanceOfSuccess)) {
 			timeElapsed += teakTick ? 1.5 : 4;
 		}
 		// Delay for depleting a tree
-		if (percentChance(log.depletionChance)) {
+		if (rng.percentChance(log.depletionChance)) {
 			timeElapsed += findNewTreeTime;
 		} else {
 			timeElapsed += teakTick ? 1.5 : 4;

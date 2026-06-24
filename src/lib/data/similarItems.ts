@@ -417,6 +417,9 @@ const source: [string, (string | number)[]][] = [
 	['Amulet of rancour', ['Amulet of rancour (s)']],
 	['Skull sceptre', ['Skull sceptre (i)']],
 
+	// Pets
+	['Patricia', ['Lydia']],
+
 	// Tame gear
 	['Abyssal jibwings', ['Abyssal jibwings (e)']],
 	['3rd age jibwings', ['3rd age jibwings (e)']],

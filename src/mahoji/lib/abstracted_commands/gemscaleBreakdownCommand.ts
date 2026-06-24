@@ -1,4 +1,4 @@
-import { randInt } from '@oldschoolgg/rng';
+import { randInt } from 'node-rng';
 import { Bank } from 'oldschooljs';
 
 import type { GemstoneFish } from '@/lib/skilling/skills/fishing/fishing.js';

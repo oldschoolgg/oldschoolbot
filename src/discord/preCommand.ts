@@ -7,6 +7,8 @@ interface PreCommandOptions {
 	user: MUser;
 	options: CommandOptions;
 	interaction: MInteraction;
+	isContinue?: boolean;
+	continueDeltaMs?: number | null;
 }
 
 export type InhibitorResult = {
@@ -16,7 +18,13 @@ export type InhibitorResult = {
 
 type PrecommandReturn = Promise<undefined | InhibitorResult>;
 
-export async function preCommand({ command, interaction, user }: PreCommandOptions): PrecommandReturn {
+export async function preCommand({
+	command,
+	interaction,
+	user,
+	isContinue,
+	continueDeltaMs
+}: PreCommandOptions): PrecommandReturn {
 	Logging.logDebug(`${user.logName} ran command: ${command.name}`);
 	const commandName: command_name_enum = command.name as command_name_enum;
 	if (!interaction.channelId) {
@@ -31,7 +39,9 @@ export async function preCommand({ command, interaction, user }: PreCommandOptio
 				command_name: commandName,
 				args: getInteractionOptionsForLog({ command: commandName, interaction }),
 				inhibited: false,
-				is_mention_command: false
+				is_mention_command: false,
+				is_continue: isContinue ?? false,
+				continue_delta_millis: continueDeltaMs ?? null
 			}
 		})
 		.catch(err => Logging.logError({ err, interaction }));

@@ -1,5 +1,5 @@
 import { spawnLampIsReady } from '@/lib/bso/commands/spawnBoxLampCommand.js';
-import { ItemContracts } from '@/lib/bso/itemContracts.js';
+import { ItemContracts, resetBrokenContracts } from '@/lib/bso/itemContracts.js';
 import { getUsersFishingContestDetails } from '@/lib/bso/minigames/fishingContest.js';
 import { shortTameTripDesc, tameLastFinishedActivity } from '@/lib/bso/tames/tameUtil.js';
 
@@ -10,7 +10,7 @@ import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { BitField, PerkTier } from '@/lib/constants.js';
 import { EmojiId } from '@/lib/data/emojis.js';
 import { InteractionID } from '@/lib/InteractionID.js';
-import { roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { roboChimpUserFetchCached } from '@/lib/roboChimp.js';
 import { minionBuyButton } from '@/lib/sharedComponents.js';
 import {
 	makeAutoContractButton,
@@ -72,7 +72,7 @@ export async function minionStatusCommand(
 	const minionIsBusy = Boolean(currentActivity);
 	const birdhouseDetails = minionIsBusy ? { isReady: false } : user.fetchBirdhouseData();
 	const [roboChimpUser, gearPresetButtons, pinnedTripButtons, fishingResult, dailyIsReady] = await Promise.all([
-		roboChimpUserFetch(user.id),
+		roboChimpUserFetchCached(user.id),
 		minionIsBusy ? [] : fetchFavoriteGearPresets(user.id),
 		minionIsBusy ? [] : fetchPinnedTrips(user.id),
 		getUsersFishingContestDetails(user),
@@ -180,8 +180,20 @@ export async function minionStatusCommand(
 	}
 
 	const icDetails = ItemContracts.getItemContractDetails(user);
-	if (perkTier >= PerkTier.Two && icDetails.currentItem && icDetails.owns) {
-		buttons.push(makeSendICButton(icDetails.currentItem.name));
+	if (icDetails !== null) {
+		if (perkTier >= PerkTier.Two && icDetails.currentItem && icDetails.owns) {
+			buttons.push(makeSendICButton(icDetails.currentItem.name));
+		}
+	} else {
+		await resetBrokenContracts(user);
+		buttons.push(
+			new ButtonBuilder()
+				.setCustomId('IC_DETAILS')
+				.setLabel('Broken IC Reset')
+				.setEmoji({ name: '🚨' })
+				.setStyle(ButtonStyle.Secondary)
+				.setDisabled(true)
+		);
 	}
 
 	if (roboChimpUser.leagues_points_total === 0) {

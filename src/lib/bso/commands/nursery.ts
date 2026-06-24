@@ -1,7 +1,7 @@
 import { type Nursery, type Species, TameSpeciesID, tameSpecies } from '@/lib/bso/tames/tames.js';
 
-import { MathRNG, randArrItem, roll } from '@oldschoolgg/rng';
 import { Events, formatDuration, gaussianRandom, reduceNumByPercent } from '@oldschoolgg/toolkit';
+import { MathRNG, randArrItem, roll } from 'node-rng';
 import { Bank, Items } from 'oldschooljs';
 
 import { tame_growth } from '@/prisma/main.js';

@@ -10,7 +10,7 @@ import { type GEListing, GEListingType, type GETransaction } from '@/prisma/main
 import { GE_SLOTS_CACHE, marketPricemap } from '@/lib/cache.js';
 import { BitField, globalConfig, PerkTier } from '@/lib/constants.js';
 import { isCustomItem } from '@/lib/customItems/util.js';
-import { type RobochimpUser, roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { type RobochimpUser, roboChimpUserFetchCached } from '@/lib/roboChimp.js';
 import { fetchTableBank, makeTransactFromTableBankQueries } from '@/lib/table-banks/tableBank.js';
 import { assert } from '@/lib/util/logError.js';
 
@@ -137,7 +137,7 @@ class GrandExchangeSingleton {
 				{
 					has: () => true,
 					name: 'Base',
-					amount: 3
+					amount: 5
 				},
 				...[100, 250, 1000, 2000, 2500].map(num => ({
 					has: (user: MUser) => user.totalLevel >= num,
@@ -158,7 +158,17 @@ class GrandExchangeSingleton {
 				{
 					has: async (user: MUser) => (await user.fetchPerkTier()) >= PerkTier.Four,
 					name: 'Tier 3 Patron',
-					amount: 10
+					amount: 8
+				},
+				{
+					has: async (user: MUser) => (await user.fetchPerkTier()) >= PerkTier.Three,
+					name: 'Tier 2 Patron',
+					amount: 4
+				},
+				{
+					has: async (user: MUser) => (await user.fetchPerkTier()) >= PerkTier.Two,
+					name: 'Tier 1 Patron',
+					amount: 2
 				}
 			]
 		}
@@ -180,7 +190,7 @@ class GrandExchangeSingleton {
 	): Promise<{ slots: number; doesntHaveNames: string[]; possibleExtra: number; maxPossible: number }> {
 		const cached = GE_SLOTS_CACHE.get(user.id);
 		if (cached) return cached;
-		const robochimpUser = await roboChimpUserFetch(user.id);
+		const robochimpUser = await roboChimpUserFetchCached(user.id);
 		let slots = 0;
 		const doesntHaveNames = [];
 		let possibleExtra = 0;
@@ -302,11 +312,11 @@ class GrandExchangeSingleton {
 		if (user.isIronman) return { error: "You're an ironman." };
 		const item = Items.getItem(itemName);
 		if (!item || ['Coins'].includes(item.name)) {
-			return { error: 'Invalid item.' };
+			return { error: 'Cannot buy or sell coins.' };
 		}
 
 		if (isGEUntradeable(item.id)) {
-			return { error: 'Invalid item.' };
+			return { error: 'Item is not tradeable on the GE.' };
 		}
 
 		if (
@@ -604,7 +614,8 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 					quantity_remaining: newBuyerListingQuantityRemaining,
 					fulfilled_at: newBuyerListingQuantityRemaining === 0 ? new Date() : null,
 					gp_refunded: buyerRefund
-				}
+				},
+				select: { id: true }
 			}),
 			prisma.gEListing.update({
 				where: {
@@ -613,7 +624,8 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 				data: {
 					quantity_remaining: newSellerListingQuantityRemaining,
 					fulfilled_at: newSellerListingQuantityRemaining === 0 ? new Date() : null
-				}
+				},
+				select: { id: true }
 			}),
 			prisma.clientStorage.update({
 				where: {

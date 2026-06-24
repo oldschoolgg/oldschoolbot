@@ -7,11 +7,12 @@ import {
 	tameSpecies
 } from '@/lib/bso/tames/tames.js';
 
-import { roll } from '@oldschoolgg/rng';
-import { formatDuration, round, Time } from '@oldschoolgg/toolkit';
+import { Emoji, formatDuration, round, Time } from '@oldschoolgg/toolkit';
+import { roll } from 'node-rng';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
 import { type Prisma, type Tame, tame_growth } from '@/prisma/main.js';
+import { BitField } from '@/lib/constants.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { patronMaxTripBonus } from '@/lib/util/calcMaxTripLength.js';
 
@@ -209,7 +210,7 @@ export class MTame {
 	}
 
 	async update(data: Prisma.TameUncheckedUpdateInput) {
-		Logging.logDebug(`Updating Tame[${this.id}] with data: ${JSON.stringify(data)}`);
+		// Logging.logDebug(`Updating Tame[${this.id}] with data: ${JSON.stringify(data)}`);
 		const newTame = await prisma.tame.update({
 			where: { id: this.id },
 			data
@@ -230,10 +231,12 @@ export class MTame {
 			messages.push('+35mins trip length (ate a Zak)');
 		}
 
-		const patronBonus = patronMaxTripBonus(await user.fetchPerkTier()) * 2;
+		const cyrBonus = user.bitfield.includes(BitField.OriginalCyrSupporter);
+		const cyrEmote = cyrBonus ? Emoji.Seer : '';
+		const patronBonus = patronMaxTripBonus(await user.fetchPerkTier(), cyrBonus) * 2;
 		if (patronBonus > 0) {
 			maxTripLength += patronBonus;
-			messages.push(`+${formatDuration(patronBonus, true)} trip length (Patron bonus)`);
+			messages.push(`+${formatDuration(patronBonus, true)} trip length (${cyrEmote} Patron bonus)`);
 		}
 
 		if (activity === 'Clues') {

@@ -13,12 +13,27 @@ import { allThirdAgeItems, runeAlchablesTable } from '@/lib/bso/tables/sharedTab
 import { LampTable } from '@/lib/bso/xpLamps.js';
 
 import { dateFm } from '@oldschoolgg/discord';
-import { randArrItem, roll } from '@oldschoolgg/rng';
 import { Emoji, formatDuration, formatOrdinal } from '@oldschoolgg/toolkit';
+import { randArrItem, roll } from 'node-rng';
 import { Bank, type ItemBank, Items, itemID, LootTable, resolveItems } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
 import { tradePlayerItems } from '@/lib/util/tradePlayerItems.js';
+import { unqueuedTransactItems } from '@/lib/util/transactItemsFromBank.js';
+import { userQueueFn } from '@/lib/util/userQueues.js';
+
+export interface ItemContractDetails {
+	totalContracts: number;
+	streak: number;
+	currentItem: any;
+	nextContractIsReady: boolean;
+	durationRemaining: number;
+	differenceFromLastContract: number;
+	owns: boolean | null;
+	canSkip: boolean;
+	lastDate: number;
+	infoStr: string;
+}
 
 const contractTable = new LootTable()
 	.every('Coins', [1_000_000, 3_500_000])
@@ -84,40 +99,56 @@ function pickItemContract(streak: number) {
 	return item;
 }
 
-function getItemContractDetails(mUser: MUser) {
+export async function resetBrokenContracts(user: MUser) {
+	await user.update({ current_item_contract: null });
+	return 'Sorry, your item contract was bugged, try again it should be fixed now.';
+}
+function getItemContractDetails(mUser: MUser): ItemContractDetails | null {
 	const currentDate = Date.now();
 	let lastDate = Number(mUser.user.last_item_contract_date);
 	if (lastDate === 0) lastDate = Date.now() - itemContractResetTime;
 	const difference = currentDate - lastDate;
 	const totalContracts = mUser.user.total_item_contracts;
 	const streak = mUser.user.item_contract_streak;
-	const currentItem = mUser.user.current_item_contract ? Items.getOrThrow(mUser.user.current_item_contract) : null;
-	const durationRemaining = Date.now() - (lastDate + itemContractResetTime);
-	const nextContractIsReady = difference >= itemContractResetTime;
-	const { bank } = mUser;
+	try {
+		const currentItem = mUser.user.current_item_contract
+			? Items.getOrThrow(mUser.user.current_item_contract)
+			: null;
+		const durationRemaining = Date.now() - (lastDate + itemContractResetTime);
+		const nextContractIsReady = difference >= itemContractResetTime;
+		const { bank } = mUser;
 
-	const owns = currentItem ? bank.has(currentItem.id) : null;
-	return {
-		totalContracts,
-		streak,
-		currentItem,
-		nextContractIsReady,
-		durationRemaining,
-		differenceFromLastContract: difference,
-		owns,
-		canSkip: difference < itemContractResetTime,
-		lastDate,
-		infoStr: `**Current Contract:** ${
-			currentItem ? `${currentItem.name} (ID: ${currentItem.id}) (You${owns ? '' : " don't"} own it)` : '*None*'
-		}
+		const owns = currentItem ? bank.has(currentItem.id) : null;
+		return {
+			totalContracts,
+			streak,
+			currentItem,
+			nextContractIsReady,
+			durationRemaining,
+			differenceFromLastContract: difference,
+			owns,
+			canSkip: difference < itemContractResetTime,
+			lastDate,
+			infoStr: `**Current Contract:** ${
+				currentItem
+					? `${currentItem.name} (ID: ${currentItem.id}) (You${owns ? '' : " don't"} own it)`
+					: '*None*'
+			}
 **Current Streak:** ${streak}
 **Total Contracts Completed:** ${totalContracts}
 ${!currentItem ? `**Next Contract:** ${nextContractIsReady ? 'Ready now.' : formatDuration(durationRemaining)}` : ''}`
-	};
+		};
+	} catch (e) {
+		return null;
+	}
 }
 
 async function skip(interaction: MInteraction, user: MUser) {
-	const { currentItem, differenceFromLastContract, streak, canSkip } = getItemContractDetails(user);
+	const details = getItemContractDetails(user);
+	if (details === null) {
+		return resetBrokenContracts(user);
+	}
+	const { currentItem, differenceFromLastContract, streak, canSkip } = details;
 	if (!currentItem) return "You don't have a contract to skip.";
 	if (canSkip) {
 		return `Your current contract is a ${currentItem.name} (ID:${
@@ -157,6 +188,8 @@ async function icDonateValidation(user: MUser, donator: MUser) {
 		return "That user doesn't want donations.";
 	}
 	const details = getItemContractDetails(user);
+	if (!details) return resetBrokenContracts(user);
+
 	if (!details.nextContractIsReady || !details.currentItem) {
 		return "That user's Item Contract isn't ready.";
 	}
@@ -203,11 +236,24 @@ async function donateICHandler(interaction: MInteraction): CommandResponse {
 	const { cost } = secondaryErrorStr;
 
 	try {
-		await tradePlayerItems(donator, user, cost);
+		const tradeResult = await tradePlayerItems(donator, user, cost);
+		if (!tradeResult.success) {
+			return { content: tradeResult.message };
+		}
 		await donator.statsBankUpdate('ic_donations_given_bank', cost);
 		await user.statsBankUpdate('ic_donations_received_bank', cost);
-		const handInResult = await handInContract(interaction, user);
+		const handInResult = await handInContract(interaction, user, { skipConfirmation: true });
 		const nextIcDetails = getItemContractDetails(user);
+		if (!nextIcDetails) {
+			Logging.logError(
+				`${new Date().toLocaleString()}: User ${user.id} was donated ${cost} from ${donator.id}. The NEW contract was a broken item. ID#: ${user.user.current_item_contract}`
+			);
+			await resetBrokenContracts(user);
+			return {
+				content:
+					'**Important**: This should NOT have happened. Please inform Cyr or Magna. We are resetting your contract so it should work anyway, but please tell us.'
+			};
+		}
 		return {
 			content: `${donator} donated ${cost} for ${user}'s Item Contract!
 
@@ -224,9 +270,16 @@ ${Emoji.ItemContract} Your next contract is: ${nextIcDetails.currentItem?.name} 
 	}
 }
 
-async function handInContract(interaction: MInteraction, user: MUser): Promise<string> {
-	const { nextContractIsReady, durationRemaining, currentItem, owns, streak, totalContracts } =
-		getItemContractDetails(user);
+async function handInContract(
+	interaction: MInteraction,
+	user: MUser,
+	options: { skipConfirmation?: boolean } = {}
+): Promise<string> {
+	const details = getItemContractDetails(user);
+	if (!details) {
+		return resetBrokenContracts(user);
+	}
+	const { nextContractIsReady, durationRemaining, currentItem, owns, streak } = details;
 
 	if (!nextContractIsReady) {
 		return `You have no item contract available at the moment. Come back in ${formatDuration(durationRemaining)}.`;
@@ -237,7 +290,7 @@ async function handInContract(interaction: MInteraction, user: MUser): Promise<s
 			current_item_contract: pickItemContract(streak),
 			last_item_contract_date: Date.now()
 		});
-		return handInContract(interaction, user);
+		return handInContract(interaction, user, options);
 	}
 
 	if (!owns) {
@@ -246,10 +299,58 @@ async function handInContract(interaction: MInteraction, user: MUser): Promise<s
 	const cost = new Bank().add(currentItem.id);
 	const newStreak = streak + 1;
 
-	await interaction.confirmation(
-		`Are you sure you want to hand in ${cost} for your ${formatOrdinal(newStreak)} Item Contract?`
-	);
+	if (!options.skipConfirmation) {
+		await interaction.confirmation(
+			`Are you sure you want to hand in ${cost} for your ${formatOrdinal(newStreak)} Item Contract?`
+		);
+	}
 
+	return userQueueFn(user.id, async () => {
+		await user.sync();
+		const freshDetails = getItemContractDetails(user);
+		if (!freshDetails) {
+			return resetBrokenContracts(user);
+		}
+
+		const {
+			nextContractIsReady: freshNextContractIsReady,
+			durationRemaining: freshDurationRemaining,
+			currentItem: freshCurrentItem,
+			owns: freshOwns,
+			streak: freshStreak,
+			totalContracts: freshTotalContracts
+		} = freshDetails;
+
+		if (!freshNextContractIsReady) {
+			return `You have no item contract available at the moment. Come back in ${formatDuration(
+				freshDurationRemaining
+			)}.`;
+		}
+
+		if (!freshCurrentItem) {
+			await user.update({
+				current_item_contract: pickItemContract(freshStreak),
+				last_item_contract_date: Date.now()
+			});
+			return 'You were given a new item contract.';
+		}
+
+		if (!freshOwns) {
+			return `Your current contract is a ${freshCurrentItem.name} (Id: ${freshCurrentItem.id}), go get one!`;
+		}
+
+		return finishContract(user, freshCurrentItem, freshStreak, freshTotalContracts);
+	});
+}
+
+async function finishContract(
+	user: MUser,
+	currentItem: ReturnType<typeof Items.getOrThrow>,
+	streak: number,
+	totalContracts: number
+) {
+	const cost = new Bank().add(currentItem.id);
+	const newStreak = streak + 1;
 	const loot = new Bank().add(contractTable.roll());
 	let gotBonus = '';
 	for (const [kc, rolls] of [
@@ -278,23 +379,26 @@ async function handInContract(interaction: MInteraction, user: MUser): Promise<s
 		loot.multiply(2);
 	}
 
-	await user.update({
-		last_item_contract_date: Date.now(),
-		total_item_contracts: {
-			increment: 1
-		},
-		current_item_contract: pickItemContract(newStreak),
-		item_contract_bank: new Bank()
-			.add(currentItem.id)
-			.add(user.user.item_contract_bank as ItemBank)
-			.toJSON(),
-		item_contract_streak: {
-			increment: 1
+	await unqueuedTransactItems({
+		user,
+		itemsToRemove: cost,
+		itemsToAdd: loot,
+		collectionLog: false,
+		otherUpdates: {
+			last_item_contract_date: Date.now(),
+			total_item_contracts: {
+				increment: 1
+			},
+			current_item_contract: pickItemContract(newStreak),
+			item_contract_bank: new Bank()
+				.add(currentItem.id)
+				.add(user.user.item_contract_bank as ItemBank)
+				.toJSON(),
+			item_contract_streak: {
+				increment: 1
+			}
 		}
 	});
-
-	await user.removeItemsFromBank(cost);
-	await user.addItemsToBank({ items: loot, collectionLog: false });
 
 	await Promise.all([
 		ClientSettings.updateBankSetting('item_contract_cost', cost),

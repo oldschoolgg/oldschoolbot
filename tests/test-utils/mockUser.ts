@@ -1,7 +1,7 @@
 import assert from 'node:assert';
-import { MathRNG } from '@oldschoolgg/rng';
-import { cryptoRng } from '@oldschoolgg/rng/crypto';
 import type { IUser } from '@oldschoolgg/schemas';
+import { MathRNG } from 'node-rng';
+import { cryptoRng } from 'node-rng/crypto';
 import { Bank, convertLVLtoXP, EItem, type EMonster, type ItemBank, Items, Monsters } from 'oldschooljs';
 import { clone } from 'remeda';
 import { expect } from 'vitest';
@@ -17,7 +17,6 @@ import { Gear } from '@/lib/structures/Gear.js';
 import type { SkillsRequired } from '@/lib/types/index.js';
 import type { ActivityTaskData, MonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import { MUserClass } from '@/lib/user/MUser.js';
-import { fetchUsernameAndCache } from '@/lib/util.js';
 import { minionKCommand } from '@/mahoji/commands/k.js';
 import { giveMaxStats } from '@/mahoji/commands/testpotato.js';
 import { ironmanCommand } from '@/mahoji/lib/abstracted_commands/ironmanCommand.js';
@@ -36,6 +35,15 @@ export class TestUser extends MUserClass {
 	async setBank(bank: Bank) {
 		// @ts-expect-error
 		await this.update({ bank: bank.toJSON() });
+		return this;
+	}
+
+	async givePatronTier(tier: number) {
+		await this.update({
+			bitfield: {
+				push: tier + 1
+			}
+		});
 		return this;
 	}
 
@@ -405,6 +413,8 @@ export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.User
 		})
 	]);
 
-	await fetchUsernameAndCache(id);
+	if (user.username) {
+		await Cache.setUsername(id, user.username);
+	}
 	return new TestUser(user);
 }

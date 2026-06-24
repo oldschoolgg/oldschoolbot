@@ -77,7 +77,13 @@ for (const a of Enchantables) {
 	totalBankToAdd.add(a.output);
 }
 for (const fish of Fishing.Fishes) {
-	ALL_OBTAINABLE_ITEMS.add(fish.id);
+	if (fish.subfishes) {
+		for (const subfish of fish.subfishes) {
+			ALL_OBTAINABLE_ITEMS.add(subfish.id);
+		}
+	} else if (fish.id) {
+		ALL_OBTAINABLE_ITEMS.add(fish.id);
+	}
 }
 for (const clue of ClueTiers) {
 	ALL_OBTAINABLE_ITEMS.add(clue.id);
@@ -89,6 +95,9 @@ for (const a of stealables) {
 	for (const item of a.table.allItems) ALL_OBTAINABLE_ITEMS.add(item);
 }
 for (const pet of growablePets) {
+	if (pet.shinyVersion) {
+		if (pet.shinyVersion === 73_969) continue;
+	}
 	for (const i of pet.stages) ALL_OBTAINABLE_ITEMS.add(i);
 }
 for (const i of Herblore.Mixables) {

@@ -16,8 +16,8 @@ import {
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 import MaterialLootTable from '@/lib/bso/skills/invention/MaterialLootTable.js';
 
-import { percentChance } from '@oldschoolgg/rng';
 import { calcPerHour, calcWhatPercent, formatDuration, reduceNumByPercent, Table, Time } from '@oldschoolgg/toolkit';
+import { percentChance } from 'node-rng';
 import { Bank, type Item, Items, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 

@@ -10,8 +10,8 @@ import {
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 
 import type { ButtonBuilder } from '@oldschoolgg/discord';
-import { randInt, roll } from '@oldschoolgg/rng';
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
+import { randInt, roll } from 'node-rng';
 import { Bank, itemID } from 'oldschooljs';
 
 import { ARCHON_SPAWN_CHANCE, COMBAT_TIER_XP } from '@/lib/constants.js';

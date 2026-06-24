@@ -9,7 +9,7 @@ const buttonSource = [
 	{
 		label: 'Patreon',
 		emoji: '679334888792391703',
-		url: 'https://www.patreon.com/oldschoolbot'
+		url: 'https://www.patreon.com/OldSchoolCyr'
 	},
 	{
 		label: 'Support Server',

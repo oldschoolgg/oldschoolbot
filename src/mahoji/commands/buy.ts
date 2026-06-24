@@ -50,10 +50,10 @@ export const buyCommand = defineCommand({
 		let quantity: number | null = mahojiParseNumber({ input: options.quantity, min: 1 });
 
 		if (stringMatches(name, 'kitten')) {
-			return buyKitten(user);
+			return buyKitten(interaction);
 		}
 		if (stringMatches(name, 'Fossil Island Notes')) {
-			return buyFossilIslandNotes(user, interaction, quantity ?? 1);
+			return buyFossilIslandNotes(interaction, quantity ?? 1);
 		}
 
 		const tripBuyable = tripBuyables.find(
@@ -128,7 +128,6 @@ export const buyCommand = defineCommand({
 				} to buy this, you only have ${kc} KC.`;
 			}
 		}
-
 		let gpCost = user.isIronman && buyable.ironmanPrice !== undefined ? buyable.ironmanPrice : buyable.gpCost;
 
 		if (buyable.name === Items.getOrThrow('Festive present').name) {
@@ -224,7 +223,8 @@ export const buyCommand = defineCommand({
 					cost_gp: totalCost.amount('Coins'),
 					cost_bank_excluding_gp: costBankExcludingGP,
 					loot_bank: outItems.toJSON()
-				}
+				},
+				select: { id: true }
 			})
 		]);
 

@@ -36,10 +36,7 @@ const vasaBosses = [
 	Malygos,
 	Treebeard,
 	SeaKraken,
-	...bossKillables
-		.map(b => b.id)
-		.map(id => Monsters.get(id)!)
-		.filter(mon => !awakenedMonsters.includes(mon.id))
+	...bossKillables.filter(mon => !awakenedMonsters.includes(mon.id))
 ];
 
 export const vasaTask: MinionTask = {
@@ -65,10 +62,20 @@ export const vasaTask: MinionTask = {
 			const mon = rng.pick(vasaBosses);
 			const qty = rng.randInt(1, 3);
 			lootOf[mon.name] = (lootOf[mon.name] ?? 0) + qty;
-			if ('table' in mon) {
-				loot.add(mon.table.roll(qty));
-			} else if ('kill' in mon && mon.kill) {
+			if ('kill' in mon && mon.kill) {
 				loot.add(mon.kill(qty, {}));
+			} else if ('table' in mon && mon.table && 'kill' in mon.table && mon.table.kill) {
+				const bossLoot = mon.table.kill(qty, {});
+				if ('specialLoot' in mon && mon.specialLoot) {
+					mon.specialLoot({
+						loot: bossLoot,
+						ownedItems: user.allItemsOwned,
+						quantity: qty,
+						cl: user.cl,
+						user
+					});
+				}
+				loot.add(bossLoot);
 			}
 		}
 

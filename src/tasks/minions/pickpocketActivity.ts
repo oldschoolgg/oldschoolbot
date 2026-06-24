@@ -3,7 +3,6 @@ import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/skills/divinatio
 import { clueUpgraderEffect } from '@/lib/bso/skills/invention/effects/clueUpgraderEffect.js';
 import { forcefullyUnequipItem } from '@/lib/bso/util/forcefullyUnequipItem.js';
 
-import { percentChance, randInt, roll } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
 import { Items, resolveItems } from 'oldschooljs';
 
@@ -28,7 +27,8 @@ export function calcLootXPPickpocketing(
 	quantity: number,
 	hasThievingCape: boolean,
 	hasDiary: boolean,
-	armband: boolean
+	armband: boolean,
+	rng: { percentChance: (percent: number) => boolean }
 ): [number, number, number, number] {
 	let xpReceived = 0;
 
@@ -47,7 +47,7 @@ export function calcLootXPPickpocketing(
 	}
 
 	for (let i = 0; i < quantity; i++) {
-		if (!percentChance(chanceOfSuccess)) {
+		if (!rng.percentChance(chanceOfSuccess)) {
 			// The minion has just been stunned, and cant pickpocket for a few ticks, therefore
 			// they also miss out on the next few pickpockets depending on stun time. And take damage
 			damageTaken += npc.stunDamage!;
@@ -64,7 +64,7 @@ export function calcLootXPPickpocketing(
 
 export const pickpocketTask: MinionTask = {
 	type: 'Pickpocket',
-	async run(data: PickpocketActivityTaskOptions, { user, handleTripFinish }) {
+	async run(data: PickpocketActivityTaskOptions, { user, handleTripFinish, rng }) {
 		const { monsterID, quantity, successfulQuantity, channelId, xpReceived, duration } = data;
 		const obj = stealables.find(_obj => _obj.id === monsterID)!;
 		let rogueOutfitBoostActivated = false;
@@ -83,7 +83,7 @@ export const pickpocketTask: MinionTask = {
 				// TODO: Remove Rocky from loot tables in oldschoolJS
 				if (lootItems.has('Rocky')) lootItems.remove('Rocky');
 
-				if (randInt(1, 100) <= roguesChance) {
+				if (rng.randInt(1, 100) <= roguesChance) {
 					rogueOutfitBoostActivated = true;
 					const doubledLoot = lootItems.multiply(2);
 					updateBank.itemLootBank.add(doubledLoot);
@@ -91,13 +91,13 @@ export const pickpocketTask: MinionTask = {
 					updateBank.itemLootBank.add(lootItems);
 				}
 
-				if (roll(petDropRate)) {
+				if (rng.roll(petDropRate)) {
 					updateBank.itemLootBank.add('Rocky');
 				}
 			}
 		} else if (obj.type === 'stall') {
 			for (let i = 0; i < successfulQuantity; i++) {
-				if (percentChance(obj.lootPercent!)) {
+				if (rng.percentChance(obj.lootPercent!)) {
 					updateBank.itemLootBank.add(obj.table.roll());
 				}
 			}
@@ -108,10 +108,15 @@ export const pickpocketTask: MinionTask = {
 		if (user.hasEquipped("Thieves' armband")) {
 			boosts.push('3x loot for Thieves armband');
 			updateBank.itemLootBank.multiply(3, notMultiplied);
-			await perHourChance(duration, 40, async () => {
-				await forcefullyUnequipItem(user, Items.getOrThrow("Thieves' armband"));
-				boosts.push('Your thieves armband broke!');
-			});
+			await perHourChance(
+				duration,
+				40,
+				async () => {
+					await forcefullyUnequipItem(user, Items.getOrThrow("Thieves' armband"));
+					boosts.push('Your thieves armband broke!');
+				},
+				rng
+			);
 		} else {
 			const { didCharge } = await chargePortentIfHasCharges({
 				user,
@@ -138,7 +143,7 @@ export const pickpocketTask: MinionTask = {
 		let gotWil = false;
 		if (duration >= MIN_LENGTH_FOR_PET) {
 			const minutes = duration / Time.Minute;
-			if (roll(Math.floor(4000 / minutes))) {
+			if (rng.roll(Math.floor(4000 / minutes))) {
 				updateBank.itemLootBank.add('Wilvus');
 				gotWil = true;
 			}

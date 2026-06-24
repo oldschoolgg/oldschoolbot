@@ -15,7 +15,8 @@ export const twTask: MinionTask = {
 		const loot = new Bank();
 		const effectiveBank = user.allItemsOwned.clone();
 		for (let i = 0; i < quantity; i++) {
-			const outfitPieceNotOwned = rng.pick(inventorOutfit.filter(p => !effectiveBank.has(p)));
+			const missingPieces = inventorOutfit.filter(p => !effectiveBank.has(p));
+			const outfitPieceNotOwned = missingPieces.length > 0 ? rng.pick(missingPieces) : null;
 			if (rng.roll(6)) {
 				loot.add(ClueTable.roll());
 			}

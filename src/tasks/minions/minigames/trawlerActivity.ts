@@ -1,7 +1,6 @@
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 
-import { roll } from '@oldschoolgg/rng';
-import { calcPercentOfNum } from '@oldschoolgg/toolkit';
+import { roll } from 'node-rng';
 import { Bank } from 'oldschooljs';
 
 import { fishingTrawlerLoot } from '@/lib/simulation/fishingTrawler.js';
@@ -11,7 +10,7 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const trawlerTask: MinionTask = {
 	type: 'FishingTrawler',
-	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
 		const { channelId, quantity } = data;
 		await user.incrementMinigameScore('fishing_trawler', quantity);
 
@@ -20,20 +19,22 @@ export const trawlerTask: MinionTask = {
 		let totalXP = 0;
 		const hasEliteArdy = user.hasDiary('ardougne.elite');
 		for (let i = 0; i < quantity; i++) {
-			const { loot: _loot, xp } = fishingTrawlerLoot(
-				user.skillsAsLevels.fishing,
-				hasEliteArdy,
-				loot.clone().add(user.allItemsOwned)
-			);
+			const { loot: _loot, xp } = fishingTrawlerLoot({
+				fishingLevel: user.skillsAsLevels.fishing,
+				hasEliteArd: hasEliteArdy,
+				bank: loot.clone().add(user.allItemsOwned),
+				rng
+			});
 			totalXP += xp;
 			loot.add(_loot);
 		}
 
-		const xpBonusPercent = Fishing.util.calcAnglerBoostPercent(user.gearBank);
-		if (xpBonusPercent > 0) {
-			const bonusXP = Math.ceil(calcPercentOfNum(xpBonusPercent, totalXP));
-			totalXP += bonusXP;
-		}
+		const { percent: xpBonusPercent, totalXP: totalXPWithAngler } = Fishing.util.calcAnglerBonusXP({
+			gearBank: user.gearBank,
+			xp: totalXP,
+			roundingMethod: 'ceil'
+		});
+		totalXP = totalXPWithAngler;
 
 		let str = `${user}, ${user.minionName} finished completing the Fishing Trawler ${quantity}x times.`;
 

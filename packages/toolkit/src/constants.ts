@@ -111,6 +111,7 @@ export enum Emoji {
 	Invention = '<:Invention:936219232146980874>',
 	BSO = '<:BSO:863823820435619890>',
 	Kuro = '<:kuro:1032277900579319888>',
+	Seer = '<:seer:924198628191531030>',
 	SOTWTrophy = '<:SOTWtrophy:842938096097820693>',
 
 	DragonTrophy = '<:DragonTrophy:1152881074259624007>',

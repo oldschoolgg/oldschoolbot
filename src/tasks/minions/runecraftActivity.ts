@@ -1,8 +1,8 @@
 import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 
-import { roll } from '@oldschoolgg/rng';
 import { increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { roll } from 'node-rng';
 import { Bank, EItem } from 'oldschooljs';
 
 import { bloodEssence, raimentBonus } from '@/lib/skilling/functions/calcsRunecrafting.js';
@@ -67,7 +67,7 @@ export const runecraftTask: MinionTask = {
 
 		let bonusBlood = 0;
 		if (runeID === EItem.BLOOD_RUNE) {
-			bonusBlood = await bloodEssence(user, essenceQuantity);
+			bonusBlood = await bloodEssence(rng, user, essenceQuantity);
 			runeQuantity += bonusBlood;
 		}
 

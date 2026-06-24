@@ -239,7 +239,7 @@ export const archaicMiningTask: MinionTask = {
 
 		const clueScrollChance = baseOre.clueScrollChance;
 		if (clueScrollChance) {
-			addSkillingClueToLoot(user, 'mining', quantity, clueScrollChance, loot);
+			addSkillingClueToLoot(rng, user, 'mining', quantity, clueScrollChance, loot);
 		}
 
 		const { petDropRate } = skillingPetDropRate(user, 'mining', baseOre.petChance);

@@ -10,8 +10,9 @@ import { RuneTable, WilvusTable, WoodTable } from '@/lib/bso/tables/seedTable.js
 import { DougTable, PekyTable } from '@/lib/bso/tables/sharedTables.js';
 
 import { type ButtonBuilder, bold } from '@oldschoolgg/discord';
-import { MathRNG, randArrItem, randInt, roll } from '@oldschoolgg/rng';
 import { getNextUTCReset, notEmpty, Time } from '@oldschoolgg/toolkit';
+import { MathRNG, randArrItem, randInt, roll } from 'node-rng';
+import { cryptoRng } from 'node-rng/crypto';
 import { Bank, EItem, itemID, toKMB } from 'oldschooljs';
 
 import { activity_type_enum } from '@/prisma/main.js';
@@ -27,6 +28,7 @@ import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { MUserClass } from '@/lib/user/MUser.js';
 import {
 	makeAutoContractButton,
+	makeAutoRummageToggleButton,
 	makeAutoSlayButton,
 	makeBirdHouseTripButton,
 	makeClaimDailyButton,
@@ -59,6 +61,7 @@ interface TripFinishEffectOptions {
 	lastDailyTimestamp: bigint | null;
 	lastTearsOfGuthixTimestamp: bigint | null;
 	perkTier: PerkTier | 0;
+	rng: RNGProvider;
 
 	// BSO
 	portents?: Awaited<ReturnType<typeof getAllPortentCharges>>;
@@ -67,6 +70,7 @@ interface TripFinishEffectOptions {
 type TripEffectReturn = {
 	itemsToAddWithCL?: Bank;
 	itemsToRemove?: Bank;
+	contentAppendix?: string;
 };
 
 export interface TripFinishEffect {
@@ -104,20 +108,28 @@ const tripFinishEffects: TripFinishEffect[] = [
 	},
 	{
 		name: 'Growable Pets',
-		fn: async ({ data, messages, user }) => {
-			await handleGrowablePetGrowth(user, data, messages);
+		fn: async args => {
+			await handleGrowablePetGrowth(args);
 		}
 	},
 	{
 		name: 'Random Events',
-		fn: async ({ data, messages, user }) => {
-			return triggerRandomEvent(user, data.type, data.duration, messages);
+		fn: async ({ data, messages, user, rng }) => {
+			return triggerRandomEvent(user, data.type, data.duration, messages, rng);
 		}
 	},
 	{
 		name: 'Loot Doubling',
 		fn: async ({ data, messages, user, loot }) => {
-			const cantBeDoubled = ['GroupMonsterKilling', 'KingGoldemar', 'Ignecarus', 'Inferno', 'Alching', 'Agility'];
+			const cantBeDoubled = [
+				'GroupMonsterKilling',
+				'KingGoldemar',
+				'Ignecarus',
+				'Inferno',
+				'Alching',
+				'Agility',
+				'BeachCombing'
+			];
 			if (!loot || data.cantBeDoubled || cantBeDoubled.includes(data.type) || data.duration < Time.Minute * 20) {
 				return;
 			}
@@ -325,7 +337,8 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Crate Spawns',
 		fn: async ({ data, messages, user }) => {
-			const crateRes = handleCrateSpawns(user, data.duration, messages);
+			if (data.type === activity_type_enum.BeachCombing) return;
+			const crateRes = handleCrateSpawns(user, data.duration, 'trip', messages);
 			if (crateRes && crateRes.length > 0) {
 				messages.push(bold(`You found ${crateRes}!`));
 				return {
@@ -404,7 +417,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 	},
 	{
 		name: 'Divine eggs',
-		fn: async ({ data, user, portents, messages }) => {
+		fn: async ({ data, user, portents, messages, rng }) => {
 			const skillingTypes: activity_type_enum[] = [
 				activity_type_enum.Fishing,
 				activity_type_enum.Mining,
@@ -421,9 +434,14 @@ const tripFinishEffects: TripFinishEffect[] = [
 			if (!charges) return;
 			let eggsReceived = 0;
 			for (let i = 0; i < fiveMinuteSegments; i++) {
-				perHourChance(Time.Minute * 5, 2, () => {
-					eggsReceived += 1;
-				});
+				perHourChance(
+					Time.Minute * 5,
+					2,
+					() => {
+						eggsReceived += 1;
+					},
+					rng
+				);
 			}
 			eggsReceived = Math.min(eggsReceived, charges);
 			if (eggsReceived === 0) return;
@@ -474,8 +492,8 @@ const tripFinishEffects: TripFinishEffect[] = [
 	},
 	{
 		name: 'Shooting Stars',
-		fn: async ({ user, data, components }) => {
-			await handleTriggerShootingStar(user, data, components);
+		fn: async ({ user, data, components, rng }) => {
+			await handleTriggerShootingStar({ user, data, components, rng });
 		}
 	},
 	{
@@ -567,6 +585,14 @@ const tripFinishEffects: TripFinishEffect[] = [
 		fn: async ({ components, loot }) => {
 			if (loot?.has('Seed pack')) {
 				components.push(makeOpenSeedPackButton());
+			}
+		}
+	},
+	{
+		name: 'Vale Offerings - Toggle Auto Rummage',
+		fn: async ({ components, data }) => {
+			if (data.type === 'ValeTotems') {
+				components.push(makeAutoRummageToggleButton());
 			}
 		}
 	},
@@ -677,6 +703,7 @@ export async function handleTripFinish(
 	const portents = await getAllPortentCharges(user);
 	const itemsToAddWithCL = new Bank();
 	const itemsToRemove = new Bank();
+	const contentAppendices: string[] = [];
 	for (const effect of tripFinishEffects) {
 		if (effect.requiredPerkTier && perkTier < effect.requiredPerkTier) continue;
 		const start = performance.now();
@@ -686,13 +713,15 @@ export async function handleTripFinish(
 			loot: loot ?? null,
 			components,
 			messages,
+			portents,
 			lastDailyTimestamp: last_daily_timestamp,
 			lastTearsOfGuthixTimestamp: last_tears_of_guthix_timestamp,
 			perkTier,
-			portents
+			rng: cryptoRng
 		});
 		if (res?.itemsToAddWithCL) itemsToAddWithCL.add(res.itemsToAddWithCL);
 		if (res?.itemsToRemove) itemsToRemove.add(res.itemsToRemove);
+		if (res?.contentAppendix) contentAppendices.push(res.contentAppendix);
 		const end = performance.now();
 		const duration = end - start;
 		Logging.logPerf({
@@ -705,7 +734,10 @@ export async function handleTripFinish(
 		await user.transactItems({ itemsToAdd: itemsToAddWithCL, collectionLog: true, itemsToRemove });
 	}
 
-	if (_messages) messages.push(..._messages);
+	if (contentAppendices.length > 0) {
+		message.addContent(contentAppendices.join(''));
+	}
+
 	if (messages.length > 0) {
 		message.addContent(`\n**Messages:** ${messages.join(', ')}`);
 	}
@@ -713,8 +745,6 @@ export async function handleTripFinish(
 	if (components.length > 0) {
 		message.addComponents(components);
 	}
-
-	handleTriggerShootingStar(user, data, components);
 
 	message.addAllowedUserMentions([user.id]);
 	if ('users' in data) {

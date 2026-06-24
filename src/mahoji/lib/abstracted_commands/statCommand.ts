@@ -1083,13 +1083,6 @@ GROUP BY "bankBackground";`);
 		}
 	},
 	{
-		name: 'Total Items Given For Item Contracts',
-		perkTierNeeded: PerkTier.Four,
-		run: async (_, stats) => {
-			return makeResponseForBank(new Bank(stats.ic_cost_bank as ItemBank), 'Item Contract Items Paid');
-		}
-	},
-	{
 		name: 'Total Loot From Item Contracts',
 		perkTierNeeded: PerkTier.Four,
 		run: async (_, stats) => {

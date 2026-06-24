@@ -55,13 +55,19 @@ export const openCommand = defineCommand({
 			}
 		},
 		{
+			type: 'Integer',
+			name: 'result_quantity',
+			description: 'The quantity of the result item to open until.',
+			required: false
+		},
+		{
 			type: 'Boolean',
 			name: 'disable_pets',
 			description: 'Disables octo & smokey when opening.',
 			required: false
 		}
 	],
-	run: async ({ user, options, interaction }) => {
+	run: async ({ user, options, interaction, rng }) => {
 		if (interaction) await interaction.defer();
 		if (!options.name) {
 			return `You have... ${truncateString(
@@ -69,13 +75,29 @@ export const openCommand = defineCommand({
 				1950
 			)}.`;
 		}
+
+		if (options.quantity !== undefined && (!Number.isInteger(options.quantity) || options.quantity < 1)) {
+			return 'The quantity must be a positive integer.';
+		}
+
 		options.quantity = clamp(options.quantity ?? 1, { min: 1, max: 100_000_000 });
+
 		if (options.open_until) {
-			return abstractedOpenUntilCommand(user, options.name, options.open_until, options.disable_pets);
+			return abstractedOpenUntilCommand(
+				rng,
+				user,
+				options.name,
+				options.open_until,
+				options.quantity,
+				options.result_quantity,
+				options.disable_pets
+			);
 		}
+
 		if (options.name.toLowerCase() === 'all') {
-			return abstractedOpenCommand(interaction, user, ['all'], 'auto', false);
+			return abstractedOpenCommand(rng, interaction, user, ['all'], 'auto', false);
 		}
-		return abstractedOpenCommand(interaction, user, [options.name], options.quantity, options.disable_pets);
+
+		return abstractedOpenCommand(rng, interaction, user, [options.name], options.quantity, options.disable_pets);
 	}
 });

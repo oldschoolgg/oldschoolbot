@@ -2,6 +2,7 @@ import { WebSocketShardEvents } from '@discordjs/ws';
 import {
 	type APIApplication,
 	type APIUser,
+	type BaseSendableMessage,
 	ButtonBuilder,
 	ButtonStyle,
 	ChannelType,
@@ -23,6 +24,69 @@ import { globalConfig } from '@/lib/constants.js';
 import { ReactEmoji } from '@/lib/data/emojis.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import { allCommandsDONTIMPORT } from '@/mahoji/commands/allCommands.js';
+
+const MAX_MESSAGE_LENGTH = 1950;
+
+function splitContentIntoMessages(content: string): string[] {
+	if (content.length <= MAX_MESSAGE_LENGTH) return [content];
+
+	const parts: string[] = [];
+	let remaining = content;
+	while (remaining.length > MAX_MESSAGE_LENGTH) {
+		let splitAt = -1;
+		for (let i = MAX_MESSAGE_LENGTH; i >= 0; i--) {
+			const char = remaining[i];
+			if (char === '\n' || char === ' ' || char === '\t') {
+				splitAt = i;
+				break;
+			}
+		}
+		if (splitAt <= 0) {
+			splitAt = MAX_MESSAGE_LENGTH;
+		}
+		parts.push(remaining.slice(0, splitAt).trimEnd());
+		remaining = remaining.slice(splitAt).trimStart();
+	}
+	if (remaining.length > 0) {
+		parts.push(remaining);
+	}
+	return parts;
+}
+
+async function resolveBotSendableMessage(rawMessage: SendableMessage): Promise<BaseSendableMessage> {
+	if (typeof rawMessage === 'string') {
+		return { content: rawMessage };
+	}
+	if ('build' in rawMessage) {
+		return resolveBotSendableMessage(await rawMessage.build());
+	}
+	return rawMessage;
+}
+
+function splitSendableMessage(rawMessage: BaseSendableMessage): BaseSendableMessage[] {
+	const content = rawMessage.content ?? '';
+	const contentParts = splitContentIntoMessages(content);
+	if (contentParts.length === 1) return [rawMessage];
+
+	return contentParts.map((part, index) => {
+		const isLast = index === contentParts.length - 1;
+		return {
+			content: part,
+			allowedMentions: rawMessage.allowedMentions,
+			...(isLast
+				? {
+						components: rawMessage.components,
+						embeds: rawMessage.embeds,
+						files: rawMessage.files,
+						ephemeral: rawMessage.ephemeral,
+						messageReference: rawMessage.messageReference,
+						threadId: rawMessage.threadId,
+						withResponse: rawMessage.withResponse
+					}
+				: {})
+		};
+	});
+}
 
 export class OldSchoolBotClient extends DiscordClient {
 	public isShuttingDown = false;
@@ -132,10 +196,23 @@ export class OldSchoolBotClient extends DiscordClient {
 	}
 
 	async sendMessageOrWebhook(channelId: string, rawMessage: SendableMessage): Promise<void> {
+		const message = await resolveBotSendableMessage(rawMessage);
+		const splitMessages = splitSendableMessage(message);
 		try {
-			await this.sendMessage(channelId, rawMessage);
+			await this.sendMessage(channelId, splitMessages[0]);
 		} catch {
-			await this.sendToWebhook(channelId, rawMessage);
+			for (const part of splitMessages) {
+				await this.sendToWebhook(channelId, part);
+			}
+			return;
+		}
+
+		for (const part of splitMessages.slice(1)) {
+			try {
+				await this.sendMessage(channelId, part);
+			} catch {
+				await this.sendToWebhook(channelId, part);
+			}
 		}
 	}
 

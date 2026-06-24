@@ -68,6 +68,7 @@ type PrismaNullableStringKeys =
 type PrismaBooleanKeys = 'minion_defaultPay' | 'minion_ironman' | 'minion_hasBought';
 
 type BSOUserUpdateInput = {
+	magic_words_guessed: string[];
 	painted_items_tuple: [number, number][];
 	nursery: Nursery;
 	selected_tame: number | null;

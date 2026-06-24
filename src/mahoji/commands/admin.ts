@@ -1,6 +1,20 @@
-import { dateFm } from '@oldschoolgg/discord';
+import {
+	allLeagueTasks,
+	analyzeLeaguesCompletedTaskIDs,
+	cleanupDuplicateLeaguesClaims,
+	getRobochimpUsersWithDuplicateLeaguesTasks,
+	type LeaguesCompletedTaskAnalysis,
+	type LeaguesTaskAuditUserResult,
+	previewValidateStoredLeaguesTasks,
+	previewVerifyLeaguesTasksForUser,
+	summarizeDuplicateClaimCleanup,
+	validateStoredLeaguesTasks,
+	verifyLeaguesTasksForUser
+} from '@/lib/bso/leagues/leagues.js';
+import { getLydiaQuote } from '@/lib/bso/summerDays.js';
+
+import { dateFm, EmbedBuilder } from '@oldschoolgg/discord';
 import type { GearSetup } from '@oldschoolgg/gear';
-import { randArrItem } from '@oldschoolgg/rng';
 import {
 	calcPerHour,
 	calcWhatPercent,
@@ -10,15 +24,22 @@ import {
 	notEmpty,
 	sleep,
 	stringMatches,
+	sumArr,
 	Time,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
 import { gracefulExit } from 'exit-hook';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
-import { type ClientStorage, economy_transaction_type } from '@/prisma/main.js';
-import { itemOption } from '@/discord/presetCommandOptions.js';
-import { bulkUpdateCommands } from '@/discord/utils.js';
+import { economy_transaction_type } from '@/prisma/main/enums.js';
+import type { ClientStorage } from '@/prisma/main.js';
+import { bulkUpdateCommands, choicesOf, itemOption } from '@/discord/index.js';
+import {
+	bitfieldCanUserManipulate,
+	changeBitFieldForUser,
+	getBitFieldData,
+	listBitFields
+} from '@/lib/bitFieldUtils.js';
 import { BadgesEnum, BitField, BitFieldData, badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { syncCustomPrices } from '@/lib/preStartup.js';
@@ -26,13 +47,155 @@ import { countUsersWithItemInCl } from '@/lib/rawSql.js';
 import { sorts } from '@/lib/sorts.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
-import { isValidBitField } from '@/lib/util/smallUtils.js';
+import { makeGiveawayButtons } from '@/mahoji/commands/giveaway.js';
 
 export const gifs = [
 	'https://tenor.com/view/angry-stab-monkey-knife-roof-gif-13841993',
 	'https://gfycat.com/serenegleamingfruitbat',
 	'https://tenor.com/view/monkey-monito-mask-gif-23036908'
 ];
+
+const leaguesTaskNameByID = new Map(allLeagueTasks.map(task => [task.id, task.name] as const));
+
+function buildAdminOverviewResponse(
+	overview: string,
+	body: string,
+	filename = 'admin-report.txt',
+	blockMentions: boolean = false
+): SendableMessage {
+	const trimmedBody = body.trim();
+	if (trimmedBody.length === 0) {
+		return { content: overview };
+	}
+
+	const combined = `${overview}\n${trimmedBody}`;
+	if (combined.length <= 1800) {
+		return { content: combined };
+	}
+	if (combined.length <= 4000) {
+		return {
+			content: overview,
+			embeds: [new EmbedBuilder().setDescription(trimmedBody)]
+		};
+	}
+	return {
+		content: overview,
+		files: [{ name: filename, buffer: Buffer.from(combined) }],
+		allowedMentions: blockMentions ? { parse: [] } : undefined
+	};
+}
+
+function formatLeaguesTaskList(taskIDs: number[]) {
+	if (taskIDs.length === 0) return 'None';
+
+	const taskCounts = new Map<number, number>();
+	const taskOrder: number[] = [];
+	for (const taskID of taskIDs) {
+		if (!taskCounts.has(taskID)) taskOrder.push(taskID);
+		taskCounts.set(taskID, (taskCounts.get(taskID) ?? 0) + 1);
+	}
+
+	return taskOrder
+		.map(taskID => {
+			const taskName = leaguesTaskNameByID.get(taskID) ?? `Unknown task ${taskID}`;
+			const count = taskCounts.get(taskID)!;
+			return count === 1 ? `- ${taskName}` : `- ${taskName} **x${count}**`;
+		})
+		.join('\n');
+}
+
+function formatLeaguesPointSnapshot(points: { osb: number; bso: number; total: number }) {
+	return `OSB ${points.osb.toLocaleString()}, BSO ${points.bso.toLocaleString()}, Total ${points.total.toLocaleString()}`;
+}
+
+function buildLeaguesTaskAuditBody(audit: LeaguesTaskAuditUserResult) {
+	const lines = [
+		`**User**: <@${audit.userID}> ${audit.userID}`,
+		`**Tasks before**: ${audit.beforeTaskCount.toLocaleString()}`,
+		`**Tasks after**: ${audit.afterTaskCount.toLocaleString()}`,
+		`**Removed tasks**:\n${formatLeaguesTaskList(audit.removedTaskIDs)}`,
+		`**Current points**: ${formatLeaguesPointSnapshot(audit.beforePoints)}`,
+		`**New points**: ${formatLeaguesPointSnapshot(audit.afterPoints)}`,
+		`**Balance delta**: ${audit.pointDelta >= 0 ? '+' : ''}${audit.pointDelta.toLocaleString()}`
+	];
+
+	if (audit.removedUnknownTaskIDs.length > 0) {
+		lines.push(`Unknown removed task IDs: ${audit.removedUnknownTaskIDs.join(', ')}`);
+	}
+
+	return lines.join('\n');
+}
+
+function buildLeaguesTaskAuditOverview(label: string, audit: LeaguesTaskAuditUserResult) {
+	return `${label}: ${audit.beforeTaskCount.toLocaleString()} -> ${audit.afterTaskCount.toLocaleString()} tasks | ${formatLeaguesPointSnapshot(audit.beforePoints)} -> ${formatLeaguesPointSnapshot(audit.afterPoints)}`;
+}
+
+function buildLeaguesTaskAuditBatchBody(audits: LeaguesTaskAuditUserResult[]) {
+	return audits.map(buildLeaguesTaskAuditBody).join('\n\n');
+}
+
+function sanitizeTSVCell(value: string | number) {
+	return value.toString().replaceAll('\t', ' ').replaceAll('\n', ' ').replaceAll('\r', ' ');
+}
+
+async function fetchUsernames(userIDs: string[]) {
+	const users = await prisma.user.findMany({
+		where: {
+			id: {
+				in: userIDs
+			}
+		},
+		select: {
+			id: true,
+			username: true
+		}
+	});
+
+	return new Map(users.map(user => [user.id, user.username ?? 'Unknown']));
+}
+
+async function buildCleanupDuplicatesTSV(
+	users: {
+		userID: string;
+		duplicateTaskIDsToRemove: number[];
+		pointsToRemove: number;
+		beforePoints: { total: number; osb: number; bso: number };
+	}[]
+) {
+	const usernames = await fetchUsernames(users.map(user => user.userID));
+	return [
+		'userID\tusername\tduplicateTasksIDs\tpointsToRemove\tcurrentTotal\tcurrentOsb\tcurrentBSO',
+		...users.map(user =>
+			[
+				sanitizeTSVCell(user.userID),
+				sanitizeTSVCell(usernames.get(user.userID) ?? 'Unknown'),
+				sanitizeTSVCell(user.duplicateTaskIDsToRemove.join(',')),
+				sanitizeTSVCell(user.pointsToRemove),
+				sanitizeTSVCell(user.beforePoints.total),
+				sanitizeTSVCell(user.beforePoints.osb),
+				sanitizeTSVCell(user.beforePoints.bso)
+			].join('\t')
+		)
+	].join('\n');
+}
+
+async function buildValidateTasksTSV(users: LeaguesTaskAuditUserResult[]) {
+	const usernames = await fetchUsernames(users.map(user => user.userID));
+	return [
+		'userID\tusername\tduplicateTasksIDs\tpointsToRemove\tcurrentTotal\tcurrentOsb\tcurrentBSO',
+		...users.map(user =>
+			[
+				sanitizeTSVCell(user.userID),
+				sanitizeTSVCell(usernames.get(user.userID) ?? 'Unknown'),
+				sanitizeTSVCell(user.removedTaskIDs.join(',')),
+				sanitizeTSVCell(user.beforePoints.total - user.afterPoints.total),
+				sanitizeTSVCell(user.beforePoints.total),
+				sanitizeTSVCell(user.beforePoints.osb),
+				sanitizeTSVCell(user.beforePoints.bso)
+			].join('\t')
+		)
+	].join('\n');
+}
 
 async function allEquippedPets() {
 	const pets = await prisma.$queryRawUnsafe<
@@ -83,10 +246,59 @@ async function getAllTradedItems(giveUniques = false) {
 	return total;
 }
 
-const viewableThings: {
+interface ViewableThing {
 	name: string;
-	run: (clientSettings: ClientStorage) => Promise<Bank | SendableMessage>;
-}[] = [
+	choices?: string[];
+	run: (clientSettings: ClientStorage, _choice?: String) => Promise<Bank | SendableMessage>;
+}
+const viewableThings: ViewableThing[] = [
+	{
+		name: 'Lydia Quote',
+		run: async () => {
+			return {
+				content: `You observe Patricia's transformation...`,
+				embeds: [
+					new EmbedBuilder()
+						.setDescription(getLydiaQuote())
+						.setImage(
+							'https://media.discordapp.net/attachments/851273567416483861/1516534890911240242/image.png'
+						)
+				]
+			};
+		}
+	},
+	{
+		name: 'Buried Treasure Bank',
+		run: async clientSettings => {
+			return {
+				files: [
+					await makeBankImage({
+						bank: new Bank(clientSettings.buried_treasure_bank as ItemBank),
+						title: 'Buried Treasure Bank'
+					})
+				]
+			};
+		}
+	},
+	{
+		name: 'Buried Treasure Winners',
+		choices: ['private'],
+		run: async (clientSettings, choice) => {
+			const privateUsers = choice === 'private';
+			const winners = clientSettings.buried_treasure_winners as Record<string, ItemBank>;
+			const lines = Object.entries(winners).map(
+				([winnerId, treasureWon]) =>
+					`${privateUsers ? '\\@secret' : `<@${winnerId}>`}: ${new Bank(treasureWon).toString()}`
+			);
+
+			return buildAdminOverviewResponse(
+				'**Buried Treasure Winners**',
+				lines.length === 0 ? 'No buried treasure winners yet.' : lines.join('\n'),
+				'buried-treasure-winners.txt',
+				privateUsers
+			);
+		}
+	},
 	{
 		name: 'ToB Cost',
 		run: async clientSettings => {
@@ -533,9 +745,13 @@ export const adminCommand = defineCommand({
 					name: 'add',
 					description: 'The bitfield to add',
 					required: false,
-					autocomplete: async ({ value }: StringAutoComplete) => {
+					autocomplete: async ({ value, user }: StringAutoComplete) => {
 						return Object.entries(BitFieldData)
-							.filter(bf => (!value ? true : bf[1].name.toLowerCase().includes(value.toLowerCase())))
+							.filter(bf => {
+								if (bf[1].protected && !user.isAdmin()) return false;
+								if (!value) return true;
+								return cleanString(bf[1].name).includes(cleanString(value));
+							})
 							.map(i => ({ name: i[1].name, value: i[0] }));
 					}
 				},
@@ -575,7 +791,19 @@ export const adminCommand = defineCommand({
 					name: 'thing',
 					description: 'The thing',
 					required: true,
-					choices: viewableThings.map(i => ({ name: i.name, value: i.name }))
+					autocomplete: async ({ value }: StringAutoComplete) => {
+						return viewableThings
+							.filter(thing => (!value ? true : thing.name.toLowerCase().includes(value.toLowerCase())))
+							.slice(0, 25)
+							.map(thing => ({ name: thing.name, value: thing.name }));
+					}
+				},
+				{
+					type: 'String',
+					name: 'choices',
+					description: 'The choices',
+					required: false,
+					choices: viewableThings.filter(thing => thing.choices).flatMap(thing => choicesOf(thing.choices!))
 				}
 			]
 		},
@@ -602,16 +830,88 @@ export const adminCommand = defineCommand({
 					description: 'The reason'
 				}
 			]
+		},
+		{
+			type: 'Subcommand',
+			name: 'bury_in_sand',
+			description: 'Add items to the buried treasure bank',
+			options: [
+				{
+					type: 'String',
+					name: 'items',
+					description: 'The items to bury',
+					required: true
+				},
+				{
+					type: 'Boolean',
+					name: 'spawn',
+					description: "If true, don't remove the items from your bank first"
+				}
+			]
+		},
+		{
+			type: 'SubcommandGroup',
+			name: 'leagues',
+			description: 'Leagues RoboChimp repair and verification commands.',
+			options: [
+				{
+					type: 'Subcommand',
+					name: 'cleanup_duplicates',
+					description: 'Remove duplicate leagues task claims and repair RoboChimp leagues points.',
+					options: [
+						{
+							type: 'Boolean',
+							name: 'full',
+							description: 'Return a tab-separated dataset of all affected users.'
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'validate_tasks',
+					description: 'Remove stored leagues task IDs that no longer exist and repair leagues points.',
+					options: [
+						{
+							type: 'Boolean',
+							name: 'full',
+							description: 'Return a tab-separated dataset of all affected users.'
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'verify_tasks',
+					description: 'Verify a users stored leagues tasks against their real current task completion.',
+					options: [
+						{
+							type: 'User',
+							name: 'user',
+							description: 'The user to verify.',
+							required: true
+						},
+						{
+							type: 'Boolean',
+							name: 'confirm',
+							description: 'Confirm the target user and apply the verified leagues changes.'
+						}
+					]
+				}
+			]
+		},
+		{
+			type: 'Subcommand',
+			name: 'fix_giveaways',
+			description: 'Re-add Join/Leave buttons to all active giveaways.'
 		}
 	],
-	run: async ({ options, userId, interaction, guildId }) => {
+	run: async ({ options, userId, interaction, guildId, rng }) => {
 		await interaction.defer();
 
 		const adminUser = await mUserFetch(userId);
 		const isAdmin = adminUser.isAdmin();
 		const isMod = isAdmin || adminUser.isMod();
 		if (!guildId || !isMod || (globalConfig.isProduction && guildId.toString() !== globalConfig.supportServerID)) {
-			return randArrItem(gifs);
+			return rng.pick(gifs);
 		}
 
 		/**
@@ -722,42 +1022,22 @@ export const adminCommand = defineCommand({
 		}
 
 		if (options.bitfield) {
-			const bitInput = options.bitfield.add ?? options.bitfield.remove;
+			const { bitfield: bitOpts } = options;
+			if (!bitOpts.add && !bitOpts.remove) {
+				return 'you must choose a valid bitfield from either add or remove';
+			}
+			const bitInput = bitOpts.add ?? bitOpts.remove!;
 			const user = await mUserFetch(options.bitfield.user.user.id);
-			const bitEntry = Object.entries(BitFieldData).find(i => i[0] === bitInput);
-			const action: 'add' | 'remove' = options.bitfield.add ? 'add' : 'remove';
-			if (!bitEntry) {
-				return Object.entries(BitFieldData)
-					.map(entry => `**${entry[0]}:** ${entry[1]?.name}`)
-					.join('\n');
-			}
-			const bit = Number.parseInt(bitEntry[0]);
-
-			if (!bit || !isValidBitField(bit) || [7, 8].includes(bit) || (action !== 'add' && action !== 'remove')) {
-				return 'Invalid bitfield.';
-			}
-
-			let newBits = [...user.bitfield];
-
-			if (action === 'add') {
-				if (newBits.includes(bit)) {
-					return "Already has this bit, so can't add.";
-				}
-				newBits.push(bit);
-			} else {
-				if (!newBits.includes(bit)) {
-					return "Doesn't have this bit, so can't remove.";
-				}
-				newBits = newBits.filter(i => i !== bit);
-			}
-
-			await user.update({
-				bitfield: uniqueArr(newBits)
-			});
-
-			return `${action === 'add' ? 'Added' : 'Removed'} '${(BitFieldData)[bit].name}' bit to ${
-				options.bitfield.user.user.username
-			}.`;
+			const bit = getBitFieldData(bitInput);
+			const action: 'add' | 'remove' = bitOpts.add ? 'add' : 'remove';
+			if (!bit)
+				return {
+					content: 'List of Bitfields',
+					embeds: [new EmbedBuilder().setDescription(listBitFields(adminUser))]
+				};
+			const canManipulate = bitfieldCanUserManipulate({ user: adminUser, bit, target: user });
+			if (canManipulate !== true) return canManipulate;
+			return changeBitFieldForUser(user, bit.bit, action);
 		}
 
 		if (options.shut_down) {
@@ -784,7 +1064,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 		 *
 		 */
 		if (!isAdmin) {
-			return randArrItem(gifs);
+			return rng.pick(gifs);
 		}
 
 		if (options.sync_commands) {
@@ -796,7 +1076,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 			const thing = viewableThings.find(i => i.name === options.view?.thing);
 			if (!thing) return 'Invalid';
 			const clientSettings = await ClientSettings.fetch();
-			const res = await thing.run(clientSettings);
+			const res = await thing.run(clientSettings, options.view.choices);
 			if (!(res instanceof Bank)) return res;
 			return new MessageBuilder().addBankImage({
 				bank: res,
@@ -817,6 +1097,193 @@ ${META_CONSTANTS.RENDERED_STR}`
 
 			await user.addItemsToBank({ items, collectionLog: false });
 			return `Gave ${items} to ${user.mention}`;
+		}
+
+		if (options.bury_in_sand) {
+			const itemsToBury = parseBank({ inputStr: options.bury_in_sand.items, noDuplicateItems: true });
+			const shouldSpawn = Boolean(options.bury_in_sand.spawn);
+			await interaction.confirmation(`Are you sure you want to bury ${itemsToBury} in the sand?`);
+
+			if (!shouldSpawn) {
+				await adminUser.removeItemsFromBank(itemsToBury);
+			}
+
+			const settings = await ClientSettings.fetch({ buried_treasure_bank: true });
+			const updatedBuriedTreasureBank = new Bank(settings.buried_treasure_bank as ItemBank).add(itemsToBury);
+			await ClientSettings.update({
+				buried_treasure_bank: updatedBuriedTreasureBank.toJSON()
+			});
+
+			return {
+				content: `Buried ${itemsToBury} in the sand.`,
+				files: [
+					await makeBankImage({
+						bank: updatedBuriedTreasureBank,
+						title: 'Buried Treasure Bank'
+					})
+				]
+			};
+		}
+
+		if (options.leagues?.cleanup_duplicates) {
+			const fullOutput = Boolean(options.leagues.cleanup_duplicates.full);
+			const usersToChange = await getRobochimpUsersWithDuplicateLeaguesTasks();
+			const userChanges = usersToChange.map(u => {
+				return {
+					userId: u.id.toString(),
+					...analyzeLeaguesCompletedTaskIDs(u.leagues_completed_tasks_ids)
+				} as LeaguesCompletedTaskAnalysis;
+			});
+			const preview = summarizeDuplicateClaimCleanup(userChanges);
+			if (preview.affectedUsers === 0) {
+				return 'No duplicate leagues task claims were found in RoboChimp.';
+			}
+
+			let confirmationMessage = `This will clean ${preview.affectedUsers.toLocaleString()} RoboChimp users, remove ${preview.duplicateEntriesRemoved.toLocaleString()} duplicate task entries, and deduct ${preview.pointsToRemove.toLocaleString()} from OSB balances, ${preview.pointsToRemove.toLocaleString()} from BSO balances, and ${preview.pointsToRemove.toLocaleString()} from total leagues points.`;
+			if (preview.unknownDuplicateTaskIDs.length > 0) {
+				confirmationMessage += ` Unknown duplicate task IDs with no point mapping: ${preview.unknownDuplicateTaskIDs.join(', ')}.`;
+			}
+			let fullData = '';
+			if (fullOutput) {
+				fullData = userChanges
+					.map(
+						u =>
+							`${u.userId ? `<@${u.userId}>` : 'unknown'}: ${u.duplicateEntriesRemoved} duplicate entries, ${u.pointsToRemove} points removed`
+					)
+					.join('\n');
+			}
+			if (fullData.length + confirmationMessage.length < 1950) confirmationMessage += '\n\n' + fullData;
+
+			await interaction.confirmation(confirmationMessage);
+
+			const result = await cleanupDuplicateLeaguesClaims();
+			if (result.affectedUsers === 0) {
+				return 'No duplicate leagues task claims were found in RoboChimp.';
+			}
+
+			let overview = `Leagues duplicate cleanup: ${result.affectedUsers.toLocaleString()} users | ${result.duplicateEntriesRemoved.toLocaleString()} duplicate entries removed | -${result.pointsToRemove.toLocaleString()} from OSB/BSO/Total`;
+			if (result.unknownDuplicateTaskIDs.length > 0) {
+				overview += ` | Unknown IDs: ${result.unknownDuplicateTaskIDs.join(', ')}`;
+			}
+			return buildAdminOverviewResponse(
+				overview,
+				fullOutput ? await buildCleanupDuplicatesTSV(result.users) : result.report,
+				'leagues-duplicate-cleanup.txt'
+			);
+		}
+
+		if (options.leagues?.validate_tasks) {
+			const fullOutput = Boolean(options.leagues.validate_tasks.full);
+			const preview = await previewValidateStoredLeaguesTasks();
+			if (preview.length === 0) {
+				return 'No users need leagues task validation.';
+			}
+
+			const totalRemovedTasks = sumArr(preview.map(user => user.removedTaskIDs.length));
+			const totalPointDelta = sumArr(preview.map(user => user.pointDelta));
+			let confirmationMsg = `This will validate ${preview.length.toLocaleString()} RoboChimp users, remove ${totalRemovedTasks.toLocaleString()} stored tasks that no longer exist, and apply a ${totalPointDelta >= 0 ? '+' : ''}${totalPointDelta.toLocaleString()} total balance delta across OSB/BSO leagues balances.`;
+			let rowData = '';
+			if (fullOutput) {
+				rowData = preview
+					.map(user => {
+						const removedTasks = user.removedTaskIDs.join(',');
+						const pointDelta = user.pointDelta;
+						return `<@${user.userID}>\t${removedTasks ? removedTasks : '-'}\t${pointDelta}`;
+					})
+					.join('\n');
+				if (rowData.length + confirmationMsg.length < 1950) {
+					confirmationMsg += '\n\n' + 'user\tremovedTasks\tpointDelta\n' + rowData;
+				}
+			}
+
+			await interaction.confirmation(confirmationMsg);
+
+			const result = await validateStoredLeaguesTasks();
+			if (result.length === 0) {
+				return 'No users need leagues task validation.';
+			}
+
+			const totalRemoved = sumArr(result.map(user => user.removedTaskIDs.length));
+			const totalDelta = sumArr(result.map(user => user.pointDelta));
+			const overview = `Leagues task validation: ${result.length.toLocaleString()} users | ${totalRemoved.toLocaleString()} removed tasks | ${totalDelta >= 0 ? '+' : ''}${totalDelta.toLocaleString()} balance delta`;
+			return buildAdminOverviewResponse(
+				overview,
+				fullOutput ? await buildValidateTasksTSV(result) : buildLeaguesTaskAuditBatchBody(result),
+				'leagues-task-validation.txt'
+			);
+		}
+
+		if (options.leagues?.verify_tasks) {
+			const targetUserID = options.leagues.verify_tasks.user.user.id;
+			const shouldConfirmAndApply = Boolean(options.leagues.verify_tasks.confirm);
+			const preview = await previewVerifyLeaguesTasksForUser(targetUserID);
+			const overview = buildLeaguesTaskAuditOverview(`Leagues Task Verification for <@${targetUserID}>`, preview);
+			const body = buildLeaguesTaskAuditBody(preview);
+
+			if (!shouldConfirmAndApply) {
+				return buildAdminOverviewResponse(overview, body, `leagues-verify-${targetUserID}.txt`);
+			}
+
+			await interaction.confirmation({
+				content: `Confirm leagues verification target: <@${targetUserID}> (${targetUserID})`,
+				ephemeral: true
+			});
+
+			if (!preview.changed) {
+				return buildAdminOverviewResponse(overview, body, `leagues-verify-${targetUserID}.txt`);
+			}
+
+			const result =
+				(await verifyLeaguesTasksForUser(targetUserID)) ??
+				(await previewVerifyLeaguesTasksForUser(targetUserID));
+			return buildAdminOverviewResponse(
+				buildLeaguesTaskAuditOverview(
+					`Leagues Validation Result for <@${targetUserID}> ${targetUserID}`,
+					result
+				),
+				buildLeaguesTaskAuditBody(result),
+				`leagues-verify-${targetUserID}.txt`
+			);
+		}
+
+		if (options.fix_giveaways) {
+			const giveaways = await prisma.giveaway.findMany({
+				where: {
+					completed: false
+				},
+				select: {
+					id: true,
+					channel_id: true,
+					message_id: true
+				}
+			});
+			let fixed = 0;
+			let failed = 0;
+			const errors: string[] = [];
+
+			for (const giveaway of giveaways) {
+				try {
+					await globalClient.editMessage(giveaway.channel_id, giveaway.message_id, {
+						components: makeGiveawayButtons(giveaway.id)
+					});
+					fixed++;
+				} catch (err) {
+					failed++;
+					errors.push(`${giveaway.id}: ${(err as Error).message}`);
+					Logging.logError(err as Error, {
+						command: 'admin_fix_giveaways',
+						giveaway_id: giveaway.id,
+						channel_id: giveaway.channel_id,
+						message_id: giveaway.message_id
+					});
+				}
+			}
+
+			let response = `Processed ${giveaways.length} active giveaways. Fixed ${fixed}. Failed ${failed}.`;
+			if (errors.length > 0) {
+				response += `\n\nFirst errors:\n${errors.slice(0, 10).join('\n')}`;
+			}
+			return response;
 		}
 
 		if (options.item_stats) {

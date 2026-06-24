@@ -492,10 +492,10 @@ model User {
 
   store_bitfield Int[]
 
-  island_upgrades           Json @default("{}") @db.Json
-  island_contributions      Json @default("{}")
-  distillery_stats          Json @default("{}")
-  construction_stats        Json @default("{}")
+  island_upgrades      Json @default("{}") @db.Json
+  island_contributions Json @default("{}")
+  distillery_stats     Json @default("{}")
+  construction_stats   Json @default("{}")
 
   farmingPatches_herb       Json? @map("farmingPatches.herb") @db.Json
   farmingPatches_fruit_tree Json? @map("farmingPatches.fruit tree") @db.Json
@@ -706,7 +706,6 @@ model Minigame {
   turaels_trials           Int @default(0)
   brimstone_distillery     Int @default(0)
   construction_contracts   Int @default(0)
-
 
   new_user NewUser?
 
@@ -1252,6 +1251,8 @@ enum activity_type_enum {
   HalloweenEvent
   NightmareZone
   ShadesOfMorton
+  ShadesOfMortonSacredOil
+  ShadesOfMortonPyreLogs
   TombsOfAmascut
   BalthazarsBigBonanza
   UnderwaterAgilityThieving
@@ -1271,6 +1272,8 @@ enum activity_type_enum {
   Colosseum
   CreateForestersRations
   SnoozeSpellActive
+  Buy
+  BeachCombing
   Archon
 }
 

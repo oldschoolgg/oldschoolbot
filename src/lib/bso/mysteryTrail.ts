@@ -1,3 +1,4 @@
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, Items, itemID, Monsters, resolveItems } from 'oldschooljs';
 
 import creatures from '@/lib/skilling/skills/hunter/creatures/index.js';
@@ -32,6 +33,11 @@ const finalStep = {
 		return false;
 	}
 };
+
+function matchesFish(fishID: string | number, itemName: string): boolean {
+	if (typeof fishID === 'number') return fishID === itemID(itemName);
+	return stringMatches(fishID, itemName);
+}
 
 export const mysteriousStepData = {
 	1: {
@@ -205,7 +211,7 @@ export const mysteriousTrailTracks: Track[] = [
 			{
 				hint: 'Amidst the blue, an orange clue.',
 				didPass: (data: ActivityTaskData) => {
-					if (data.type === 'Fishing' && data.fishID === itemID('Raw lobster')) {
+					if (data.type === 'Fishing' && matchesFish(data.fishID, 'Raw lobster')) {
 						return true;
 					}
 
@@ -283,7 +289,12 @@ export const mysteriousTrailTracks: Track[] = [
 			{
 				hint: "Where water bends and warriors stride, a village lives with primal pride, cast into its' shallow tide.",
 				didPass: (data: ActivityTaskData) => {
-					return data.type === 'Fishing' && resolveItems(['Raw trout', 'Raw salmon']).includes(data.fishID);
+					return (
+						data.type === 'Fishing' &&
+						(resolveItems(['Raw trout', 'Raw salmon']).includes(Number(data.fishID)) ||
+							stringMatches(String(data.fishID), 'Raw trout') ||
+							stringMatches(String(data.fishID), 'Raw salmon'))
+					);
 				}
 			},
 			{
@@ -295,7 +306,7 @@ export const mysteriousTrailTracks: Track[] = [
 			{
 				hint: 'Amidst the blue, an orange clue.',
 				didPass: (data: ActivityTaskData) => {
-					if (data.type === 'Fishing' && data.fishID === itemID('Raw lobster')) {
+					if (data.type === 'Fishing' && matchesFish(data.fishID, 'Raw lobster')) {
 						return true;
 					}
 

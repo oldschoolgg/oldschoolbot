@@ -23,7 +23,12 @@ function del(pattern: string) {
 }
 
 const root = process.cwd();
-const fileGlobsToDelete = ['**/dist', '**/node_modules', '**/*.tsbuildinfo', '**/.db'];
+const fileGlobsToDelete = ['**/dist', 'src/prisma/clients/**', '**/*.tsbuildinfo', '**/.db'];
+const shouldCleanNodeModules = process.argv.includes('--full');
+
+if (shouldCleanNodeModules) {
+	fileGlobsToDelete.push('**/node_modules');
+}
 
 for (const pattern of fileGlobsToDelete) {
 	console.log(styleText(['italic'], `Deleting all files matching: ${pattern}...`));
@@ -79,7 +84,7 @@ function printDebug(entries: DebugEntry[]) {
 }
 
 console.log(`\n${printDebug(debugData).trim()}
-
+${shouldCleanNodeModules ? '' : styleText(['yellow'], '[node_modules not deleted, use --full to delete]')}
 ${styleText(['bold'], 'Next Steps:')}
 pnpm install
 pnpm gen`);

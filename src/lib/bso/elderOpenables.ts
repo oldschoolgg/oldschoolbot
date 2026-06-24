@@ -1,6 +1,6 @@
 import { LampTable } from '@/lib/bso/xpLamps.js';
 
-import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
+import { randArrItem, randInt, roll } from 'node-rng';
 import { Bank, LootTable, resolveItems } from 'oldschooljs';
 
 import { AllBarrows, BattlestaffTable, runeAlchablesTable, StaffOrbTable } from './tables/sharedTables.js';

@@ -1,5 +1,5 @@
-import { randomVariation } from '@oldschoolgg/rng';
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
+import { randomVariation } from 'node-rng';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 

@@ -3,8 +3,8 @@ import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
 import { KalphiteKingMonster } from '@/lib/bso/monsters/bosses/KalphiteKing.js';
 import { getKalphiteKingGearStats } from '@/lib/bso/util/getKalphiteKingGearStats.js';
 
-import { calcWhatPercent, Emoji, noOp, SimpleTable } from '@oldschoolgg/toolkit';
-import { Bank } from 'oldschooljs';
+import { calcWhatPercent, Emoji, noOp } from '@oldschoolgg/toolkit';
+import { Bank, SimpleTable } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
 import announceLoot from '@/lib/minions/functions/announceLoot.js';

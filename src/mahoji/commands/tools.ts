@@ -6,7 +6,6 @@ import { repairBrokenItemsFromUser } from '@/lib/bso/util/repairBrokenItems.js';
 
 import { EmbedBuilder, userMention } from '@oldschoolgg/discord';
 import { formatDuration, PerkTier, stringMatches, stringSearch, Time } from '@oldschoolgg/toolkit';
-import { asyncGzip } from '@oldschoolgg/toolkit/node';
 import { Bank, type Item, type ItemBank, ItemGroups, Items, resolveItems, ToBUniqueTable } from 'oldschooljs';
 
 import type { Activity } from '@/prisma/main.js';
@@ -23,7 +22,7 @@ import { Minigames } from '@/lib/settings/minigames.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
 import { isGroupActivity, isNexActivity, isRaidsActivity, isTOBOrTOAActivity } from '@/lib/util/activityTypeCheck.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { parseStaticTimeInterval, patronMsg, staticTimeIntervals } from '@/lib/util/smallUtils.js';
+import { asyncGzip, parseStaticTimeInterval, patronMsg, staticTimeIntervals } from '@/lib/util/smallUtils.js';
 import {
 	stashUnitBuildAllCommand,
 	stashUnitFillAllCommand,
@@ -673,7 +672,7 @@ async function dryStreakCommand(sourceName: string, itemName: string, ironmanOnl
 		await Promise.all(
 			result.map(
 				async ({ id, KC }) =>
-					`${(await Cache.getBadgedUsername(id)) as string}: ${Number.parseInt(KC, 10).toLocaleString()}`
+					`${await Cache.getBadgedUsername(id)}: ${Number.parseInt(KC, 10).toLocaleString()}`
 			)
 		)
 	).join('\n')}`;

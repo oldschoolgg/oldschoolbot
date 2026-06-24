@@ -107,21 +107,22 @@ export const pohCommand = defineCommand({
 	],
 	run: async ({ options, user, interaction }) => {
 		if (!user.hasMinion) return "You don't own a minion yet, so you have no PoH!";
+
 		if (options.view) {
-			return { files: [await makePOHImage(user, options.view.build_mode)] };
+			return { files: [await makePOHImage(interaction, { showSpaces: options.view.build_mode })] };
 		}
 		if (options.wallkit) {
-			return pohWallkitCommand(user, options.wallkit.name);
+			return pohWallkitCommand(interaction, options.wallkit.name);
 		}
 		if (await user.minionIsBusy()) return 'You cannot interact with your PoH, because your minion is busy.';
 		if (options.build) {
-			return pohBuildCommand(interaction, user, options.build.name);
+			return pohBuildCommand(interaction, options.build.name);
 		}
 		if (options.destroy) {
-			return pohDestroyCommand(user, options.destroy.name);
+			return pohDestroyCommand(interaction, options.destroy.name);
 		}
 		if (options.mount_item) {
-			return pohMountItemCommand(user, options.mount_item.name);
+			return pohMountItemCommand(interaction, options.mount_item.name);
 		}
 		if (options.items) {
 			return pohListItemsCommand();

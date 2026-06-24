@@ -3,7 +3,7 @@ import { Bank, type ItemBank } from 'oldschooljs';
 import type { ClientStorage, Prisma } from '@/prisma/main.js';
 import { globalConfig } from '@/lib/constants.js';
 
-async function mahojiClientSettingsFetch(select: Prisma.ClientStorageSelect = { id: true }) {
+async function mahojiClientSettingsFetch(select?: Prisma.ClientStorageSelect) {
 	const clientSettings = await prisma.clientStorage.findFirst({
 		where: {
 			id: globalConfig.clientID
@@ -152,7 +152,9 @@ type OSBClientBankKey =
 	| 'toa_loot'
 	| 'ourania_loot'
 	| 'colo_cost'
-	| 'colo_loot';
+	| 'colo_loot'
+	| 'vt_cost'
+	| 'vt_loot';
 
 export type ClientBankKey = OSBClientBankKey | BSOClientBankKey;
 

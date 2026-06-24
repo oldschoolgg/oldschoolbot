@@ -134,6 +134,8 @@ model ClientStorage {
   ourania_loot                 Json     @default("{}") @db.Json
   colo_cost                    Json     @default("{}") @db.Json
   colo_loot                    Json     @default("{}") @db.Json
+  vt_cost                      Json     @default("{}") @db.Json
+  vt_loot                      Json     @default("{}") @db.Json
 
   grand_exchange_is_locked Boolean @default(false)
   grand_exchange_total_tax BigInt  @default(0)
@@ -186,6 +188,8 @@ model ClientStorage {
   invention_prizes_remaining Json @default("{}") @db.Json
   clue_upgrader_loot         Json @default("{}") @db.Json
   portable_tanner_loot       Json @default("{}") @db.Json
+  buried_treasure_bank       Json @default("{}") @db.JsonB
+  buried_treasure_winners    Json @default("{}") @db.JsonB
 
   last_bso_giveaways_ping  DateTime? @db.Timestamp(6)
   last_giveaway_doubleloot DateTime? @db.Timestamp(6)
@@ -254,6 +258,7 @@ model Giveaway {
   finish_date DateTime @db.Timestamp(6)
   duration    Int
   completed   Boolean
+  guild_id    String?  @db.VarChar(20)
   channel_id  String   @db.VarChar(19)
   loot        Json     @db.Json
   message_id  String   @db.VarChar(19)
@@ -489,6 +494,8 @@ model User {
 
   bso_mystery_trail_current_step_id Int?
 
+  magic_words_guessed String[] @default([])
+
   store_bitfield Int[] @default([])
 
   island_upgrades      Json @default("{}") @db.Json
@@ -596,6 +603,7 @@ enum XpGainSource {
   ScatteringAshes
   Zalcano
   Wintertodt
+  ValeTotems
   FishingTrawler
   Tempoross
   TearsOfGuthix
@@ -603,6 +611,9 @@ enum XpGainSource {
   PuroPuro
   MahoganyHomes
   AerialFishing
+  GemstoneFishing
+  AncientMycology
+  ArchaicMining
   CleaningHerbsWhileFarming
   CamdozaalMining
   CamdozaalSmithing
@@ -612,9 +623,6 @@ enum XpGainSource {
   ForestryEvents
   TuraelsTrials
   MonsterKilling
-  GemstoneFishing
-  AncientMycology
-  ArchaicMining
   BrimstoneDistillery
   ConstructionContracts
 }
@@ -656,6 +664,7 @@ model Minigame {
   wintertodt              Int    @default(0)
   tempoross               Int    @default(0)
   sepulchre               Int    @default(0)
+  vale_totems             Int    @default(0)
   fishing_trawler         Int    @default(0)
   barb_assault            Int    @default(0)
   pyramid_plunder         Int    @default(0)
@@ -926,6 +935,8 @@ model UserStats {
   clue_upgrader_bank     Json @default("{}") @db.Json
   ic_cost_bank           Json @default("{}") @db.Json
   ic_loot_bank           Json @default("{}") @db.Json
+  wild_degen_cost_bank   Json @default("{}") @db.Json
+  wild_degen_loot_bank   Json @default("{}") @db.Json
 
   loot_from_zippy_bank Json @default("{}") @db.Json
   peky_loot_bank       Json @default("{}") @db.Json
@@ -984,6 +995,7 @@ model UserStats {
   firecapes_sacrificed             Int  @default(0)
   tithe_farms_completed            Int  @default(0)
   tithe_farm_points                Int  @default(0)
+  vale_research_points             Int  @default(0)
   pest_control_points              Int  @default(0)
   inferno_attempts                 Int  @default(0)
   infernal_cape_sacrifices         Int  @default(0)
@@ -1184,6 +1196,7 @@ enum activity_type_enum {
   Butler
   Nightmare
   Sepulchre
+  ValeTotems
   Plunder
   FishingTrawler
   Zalcano
@@ -1192,11 +1205,15 @@ enum activity_type_enum {
   Enchanting
   Casting
   GloryCharging
+  GloryUncharging
   WealthCharging
   BarbarianAssault
   AgilityArena
   ChampionsChallenge
   AerialFishing
+  GemstoneFishing
+  AncientMycology
+  ArchaicMining
   DriftNet
   MahoganyHomes
   Nex
@@ -1220,6 +1237,7 @@ enum activity_type_enum {
   OuraniaDeliveryService
   DarkAltar
   Ignecarus
+  BurningDominion
   OuraniaAltar
   Trekking
   KibbleMaking
@@ -1241,11 +1259,14 @@ enum activity_type_enum {
   PuroPuro
   Easter
   BaxtorianBathhouses
+  BrimstoneDistillery
+  ConstructionContracts
   Naxxus
   Disassembling
   Research
   Moktang
   ShootingStars
+  ArchonEvent
   FistOfGuthix
   StealingCreation
   HalloweenMiniMinigame
@@ -1255,6 +1276,8 @@ enum activity_type_enum {
   HalloweenEvent
   NightmareZone
   ShadesOfMorton
+  ShadesOfMortonSacredOil
+  ShadesOfMortonPyreLogs
   TombsOfAmascut
   BalthazarsBigBonanza
   UnderwaterAgilityThieving
@@ -1275,13 +1298,7 @@ enum activity_type_enum {
   CreateForestersRations
   SnoozeSpellActive
   Buy
-  GemstoneFishing
-  AncientMycology
-  ArchaicMining
-  BurningDominion
-  BrimstoneDistillery
-  ConstructionContracts
-  ArchonEvent
+  BeachCombing
   Archon
 }
 
@@ -1543,11 +1560,14 @@ model UserCounter {
 }
 
 enum command_name_enum {
+  cache_refresh
+  buried_treasure
   testpotato
   achievementdiary
   activities
   admin
   aerialfish
+  gemstonefish
   agilityarena
   alch
   amrod
@@ -1651,6 +1671,7 @@ enum command_name_enum {
   fish
   fishingtrawler
   fletch
+  fool
   gamble
   gauntlet
   ge
@@ -1677,6 +1698,7 @@ enum command_name_enum {
   invite
   ironman
   is
+  islandupgrade
   itemtrivia
   jmodcomments
   jmodtweets
@@ -1847,8 +1869,6 @@ enum command_name_enum {
   spawnlamp
   testershop
   vasa
-  gemstonefish
-  islandupgrade
 }
 
 enum TableBankType {

@@ -104,6 +104,12 @@ export const Eatables: readonly Eatable[] = [
 		raw: null
 	},
 	{
+		name: 'Rainbow fish',
+		id: itemID('Rainbow fish'),
+		healAmount: 11,
+		raw: null
+	},
+	{
 		name: 'Cake',
 		id: itemID('Cake'),
 		healAmount: 12,

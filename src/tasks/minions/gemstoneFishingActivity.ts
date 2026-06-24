@@ -75,7 +75,7 @@ export const gemstoneFishingTask: MinionTask = {
 		}
 
 		const clueScrollChance = juvenileGemscale.clueScrollChance!;
-		addSkillingClueToLoot(user, 'fishing', quantity, clueScrollChance, loot);
+		addSkillingClueToLoot(rng, user, 'fishing', quantity, clueScrollChance, loot);
 
 		const { petDropRate } = skillingPetDropRate(user, 'fishing', juvenileGemscale.petChance!);
 		if (rng.roll(Math.ceil(petDropRate / quantity))) {

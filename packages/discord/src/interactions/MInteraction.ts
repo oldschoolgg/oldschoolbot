@@ -20,14 +20,14 @@ import { BaseInteraction } from './BaseInteraction.js';
 import { interactionConfirmation } from './confirmation.js';
 import { PaginatedMessage, type PaginatedMessageOptions } from './PaginatedMessage.js';
 
-type AnyInteraction = IChatInputCommandInteraction | IButtonInteraction;
+export type AnyInteraction = IChatInputCommandInteraction | IButtonInteraction;
 type RawFor<T> = T extends IButtonInteraction
 	? APIMessageComponentInteraction
 	: T extends IChatInputCommandInteraction
 		? APIChatInputApplicationCommandInteraction
 		: never;
 
-type InputItx<T extends AnyInteraction> = {
+export type InputItx<T extends AnyInteraction> = {
 	interaction: T;
 	rawInteraction: RawFor<T>;
 	client: DiscordClient;

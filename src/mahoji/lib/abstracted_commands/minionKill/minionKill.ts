@@ -7,7 +7,7 @@ import { naxxusCommand } from '@/lib/bso/commands/naxxusCommand.js';
 import { vasaCommand } from '@/lib/bso/commands/vasaCommand.js';
 import { handleDTD } from '@/lib/bso/handleDTD.js';
 
-import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Monsters } from 'oldschooljs';
 
 import { colosseumCommand } from '@/lib/colosseum.js';
@@ -16,6 +16,7 @@ import { trackLoot } from '@/lib/lootTrack.js';
 import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
 import type { MonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import findMonster from '@/lib/util/findMonster.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { generateDailyPeakIntervals } from '@/lib/util/peaks.js';
 import { newMinionKillCommand } from '@/mahoji/lib/abstracted_commands/minionKill/newMinionKill.js';
 import { nexCommand } from '@/mahoji/lib/abstracted_commands/nexCommand.js';
@@ -29,9 +30,10 @@ const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:
 
 export async function minionKillCommand(
 	user: MUser,
-	interaction: MInteraction,
+	interaction: OSInteraction,
 	channelId: string,
 	name: string,
+	rng: RNGProvider,
 	inputQuantity: number | undefined,
 	method: PvMMethod | undefined,
 	wilderness: boolean | undefined,
@@ -49,8 +51,8 @@ export async function minionKillCommand(
 	if (user.usingPet('Ishi')) {
 		name = 'Ogress Warrior';
 	}
-	if (stringMatches(name, 'colosseum')) return colosseumCommand(user, channelId, inputQuantity);
-	if (stringMatches(name, 'zalcano')) return zalcanoCommand(user, channelId, inputQuantity);
+	if (stringMatches(name, 'colosseum')) return colosseumCommand(interaction, inputQuantity);
+	if (stringMatches(name, 'zalcano')) return zalcanoCommand(rng, user, channelId, inputQuantity);
 	if (stringMatches(name, 'tempoross')) return temporossCommand(user, channelId, inputQuantity);
 	if (name.toLowerCase().includes('nightmare')) return nightmareCommand(user, channelId, name, inputQuantity);
 	if (name.toLowerCase().includes('wintertodt')) return wintertodtCommand(user, channelId);
@@ -68,7 +70,6 @@ export async function minionKillCommand(
 	if (['vasa', 'vasa magus'].some(i => name.toLowerCase().includes(i))) {
 		return vasaCommand(interaction, user, channelId, inputQuantity);
 	}
-
 	if (['burning dominion', 'dominion', 'burning'].some(i => name.toLowerCase().includes(i))) {
 		return 'Orym and Orrodil cannot be fought alone! You need a team to challenge the Burning Dominion. Use `/mass monster: Burning Dominion` instead.';
 	}
@@ -122,7 +123,8 @@ export async function minionKillCommand(
 		bitfield: user.bitfield,
 		disabledInventions: user.user.disabled_inventions,
 		currentPeak: generateDailyPeakIntervals().currentPeak,
-		islandUpgrades: (user.user.island_upgrades as IslandUpgradeTiers) ?? defaultIslandUpgrades
+		islandUpgrades: (user.user.island_upgrades as IslandUpgradeTiers) ?? defaultIslandUpgrades,
+		rng
 	});
 
 	if (typeof result === 'string') {
@@ -186,7 +188,7 @@ export async function minionKillCommand(
 		onTask: slayerInfo.assignedTask !== null
 	});
 
-	let response = `${minionName} is now killing ${result.quantity}x ${monster.name}, ${dtdResult ? `using a <:deathtouched_dart:822674661967265843> **Deathtouched dart**, it'll take around ${formatDuration(Time.Second * 5)}` : `It'll take around ${formatDuration(result.duration)} to finish`}. Attack styles used: ${result.attackStyles.join(', ')}.`;
+	let response = `${minionName} is now killing ${result.quantity}x ${monster.name}, ${dtdResult ? `using a <:deathtouched_dart:822674661967265843> **Deathtouched dart**, it'll take around ${formatTripDuration(user, Time.Second * 5)}` : `It'll take around ${formatTripDuration(user, result.duration)} to finish`}. Attack styles used: ${result.attackStyles.join(', ')}.`;
 
 	if (result.messages.length > 0) {
 		response += `\n\n${result.messages.join(', ')}`;

@@ -27,8 +27,8 @@ import { memoryHarvestResult, totalTimePerRound } from '@/lib/bso/tasks/memoryHa
 import { calculateTuraelsTrialsResult } from '@/lib/bso/tasks/turaelsTrialsActivity.js';
 
 import { bold } from '@oldschoolgg/discord';
-import { MathRNG } from '@oldschoolgg/rng';
 import { calcPerHour, formatDuration, increaseNumByPercent, sumArr, Time } from '@oldschoolgg/toolkit';
+import { MathRNG } from 'node-rng';
 import { Bank, convertBankToPerHourStats, convertLVLtoXP, Items, itemID, toKMB } from 'oldschooljs';
 import { unique } from 'remeda';
 
@@ -355,7 +355,8 @@ ${zygomiteFarmingSource
 									invincible: true,
 									noRandomness: true,
 									graceful: true,
-									experienceScore: 10
+									experienceScore: 10,
+									rng: MathRNG
 								});
 								results += [
 									creature.name,
@@ -509,7 +510,8 @@ ${zygomiteFarmingSource
 										strengthLevel: 120,
 										maxTripLength: duration,
 										hasKaramjaMedium: true,
-										hasDT2Quest: true
+										hasDT2Quest: true,
+										rng: MathRNG
 									});
 									if (typeof result === 'string') continue;
 									const spiritOre = stoneSpirits.find(t => t.ore.id === ore.id);

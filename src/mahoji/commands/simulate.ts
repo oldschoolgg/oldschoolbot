@@ -1,5 +1,5 @@
-import { randInt, roll } from '@oldschoolgg/rng';
 import { formatDuration, PerkTier } from '@oldschoolgg/toolkit';
+import { MathRNG, randInt, roll } from 'node-rng';
 import { averageBank, Bank, ChambersOfXeric, toKMB } from 'oldschooljs';
 
 import { ColosseumWaveBank, startColosseumRun } from '@/lib/colosseum.js';
@@ -60,7 +60,8 @@ function simulateColosseumRuns(samples = 100) {
 				hasSungodAxe: true,
 				hasGora: true,
 				hasBHook: true,
-				hasBulwark: true
+				hasBulwark: true,
+				rng: MathRNG
 			});
 			totalDuration += result.realDuration;
 			kcBank.add(result.addedWaveKCBank);
@@ -97,7 +98,7 @@ function simulateColosseumRuns(samples = 100) {
 async function coxCommand(user: MUser, quantity: number, cm = false, points = 25_000, teamSize = 4): CommandResponse {
 	const limit = await determineCoxLimit(user);
 	if (quantity > limit) {
-		return `The quantity provided is over your limit of ${limit}. You can increase your limit up to 2000 by becoming a patron: <https://patreon.com/oldschoolbot>`;
+		return `The quantity provided is over your limit of ${limit}. You can increase your limit up to 2000 by becoming a patron: <https://patreon.com/OldschoolCyr>`;
 	}
 
 	const team = [

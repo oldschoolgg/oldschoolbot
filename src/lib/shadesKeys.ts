@@ -1,5 +1,4 @@
-import { roll } from '@oldschoolgg/rng';
-import { Bank, type Item, ItemGroups, Items, LootTable, resolveItems } from 'oldschooljs';
+import { Bank, type Item, ItemGroups, Items, itemID, LootTable, resolveItems } from 'oldschooljs';
 
 import type { UnifiedOpenable } from '@/lib/openables.js';
 
@@ -153,6 +152,7 @@ const SilverChest = new LootTable({ limit: 154 })
 	.add('Magic logs', [5, 10], 2)
 	.add('Coins', [1, 2326]);
 
+// Elite clue is handled manually below to support CA rate improvement
 const GoldChest = new LootTable({ limit: 143 })
 	.every('Swamp paste', [40, 70])
 	.tertiary(61, 'Gold locks')
@@ -193,8 +193,10 @@ const GoldChest = new LootTable({ limit: 143 })
 	.add('Dragonstone ring', 1, 3)
 	.add('Redwood logs', [5, 14], 2)
 	.add('Dragonstone', 1, 2)
-	.add('Clue scroll (elite)', 1, 1)
 	.add('Coins', [1, 3160]);
+
+const ELITE_CLUE_RATE = 139;
+const ELITE_CLUE_RATE_WITH_CA = 132;
 
 const chests = [
 	{
@@ -236,27 +238,43 @@ const chests = [
 	}
 ] as const;
 
-export function openShadeChest({ item, qty, allItemsOwned }: { allItemsOwned: Bank; item: Item; qty: number }) {
+export function openShadeChest({
+	item,
+	qty,
+	allItemsOwned,
+	rng,
+	hasEliteCA
+}: {
+	allItemsOwned: Bank;
+	item: Item;
+	qty: number;
+	rng: RNGProvider;
+	hasEliteCA: boolean;
+}) {
 	const chest = chests.find(i => i.items.includes(item.id));
 	if (!chest) throw new Error(`No chest found for item ${item.name}.`);
 	const loot = new Bank();
 	const effectiveOwnedItems = allItemsOwned.clone();
 
+	const eliteClueRate = hasEliteCA ? ELITE_CLUE_RATE_WITH_CA : ELITE_CLUE_RATE;
+
 	for (let i = 0; i < qty; i++) {
 		const thisLoot = chest.table.roll();
-		if (!effectiveOwnedItems.has('Flamtaer bag') && roll(2)) {
+		if (!effectiveOwnedItems.has('Flamtaer bag') && rng.roll(2)) {
 			thisLoot.add('Flamtaer bag');
 		}
 
 		if (chest.name === 'Gold chest') {
 			const unownedPieces = ItemGroups.zealOutfit.filter(i => !effectiveOwnedItems.has(i));
-			if (unownedPieces.length > 0 && roll(128)) {
+			if (unownedPieces.length > 0 && rng.roll(128)) {
 				thisLoot.add(unownedPieces[0]);
+			}
+			if (rng.roll(eliteClueRate)) {
+				thisLoot.add('Clue scroll (elite)');
 			}
 		}
 
 		loot.add(thisLoot);
-
 		effectiveOwnedItems.add(thisLoot);
 	}
 	return { bank: loot };
@@ -276,9 +294,14 @@ for (const chest of chests) {
 				openShadeChest({
 					item: args.self.openedItem,
 					allItemsOwned: args.user.allItemsOwned,
-					qty: args.quantity
+					qty: args.quantity,
+					rng: args.rng,
+					hasEliteCA: args.user.hasCompletedCATier('elite')
 				}),
-			allItems: chest.table.allItems
+			allItems:
+				chest.name === 'Gold chest'
+					? [...chest.table.allItems, itemID('Clue scroll (elite)')]
+					: chest.table.allItems
 		});
 	}
 }

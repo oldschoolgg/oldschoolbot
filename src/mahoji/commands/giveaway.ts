@@ -8,7 +8,7 @@ import { chunk } from 'remeda';
 
 import type { Giveaway } from '@/prisma/main.js';
 import { giveawayCache } from '@/lib/cache.js';
-import { patronFeatures } from '@/lib/constants.js';
+import { BitField, patronFeatures } from '@/lib/constants.js';
 import { EmojiId } from '@/lib/data/emojis.js';
 import { baseFilters, filterableTypes } from '@/lib/data/filterables.js';
 import { marketPriceOfBank } from '@/lib/marketPrices.js';
@@ -17,7 +17,11 @@ import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 
-function makeGiveawayButtons(giveawayID: number) {
+function userHasUnlimitedGiveaways(user: MUser) {
+	return user.isTrusted() || user.bitfield.includes(BitField.UnlimitedGiveaways);
+}
+
+export function makeGiveawayButtons(giveawayID: number) {
 	return [
 		new ButtonBuilder()
 			.setCustomId(`GIVEAWAY_ENTER_${giveawayID}`)
@@ -41,7 +45,7 @@ function makeGiveawayRepeatButton(giveawayID: number) {
 export const giveawayCommand = defineCommand({
 	name: 'giveaway',
 	flags: ['REQUIRES_LOCK'],
-	description: 'Giveaway items from your ban to other players.',
+	description: 'Giveaway items from your bank to other players.',
 	attributes: {
 		requiresMinion: true,
 		examples: ['/giveaway items:10 trout, 5 coal time:1h']
@@ -98,6 +102,13 @@ export const giveawayCommand = defineCommand({
 	run: async ({ options, user, guildId, interaction, channelId, user: apiUser, rng }): CommandResponse => {
 		if (user.isIronman) return 'You cannot do giveaways!';
 
+		let maxGiveaways = 10;
+		const cyrFan = user.bitfield.includes(BitField.OriginalCyrSupporter);
+		if (cyrFan) {
+			if (user.perkTier >= 2) maxGiveaways += 5 * (user.perkTier - 1);
+		} else {
+			if (user.perkTier >= 3) maxGiveaways += 5 * (user.perkTier - 2);
+		}
 		if (options.start) {
 			const existingGiveaways = await prisma.giveaway.findMany({
 				where: {
@@ -105,13 +116,14 @@ export const giveawayCommand = defineCommand({
 					completed: false
 				}
 			});
-			if (existingGiveaways.length >= 10 && !user.isModOrAdmin()) {
-				return 'You cannot have more than 10 giveaways active at a time.';
+			if (existingGiveaways.length >= maxGiveaways && !userHasUnlimitedGiveaways(user)) {
+				return `You cannot have more than ${cyrFan ? Emoji.Seer : ''} ${maxGiveaways} giveaways active at a time.`;
 			}
 
-			if (!guildId) {
+			if (!guildId && !interaction.guildId) {
 				return 'You cannot make a giveaway outside a server.';
 			}
+			const guild_id = guildId ?? interaction.guildId ?? undefined;
 
 			const bank = parseBank({
 				inputStr: options.start.items,
@@ -183,6 +195,7 @@ export const giveawayCommand = defineCommand({
 				const giveaway = await prisma.giveaway.create({
 					data: {
 						id: giveawayID,
+						guild_id,
 						channel_id: channelId.toString(),
 						start_date: new Date(),
 						finish_date: duration.fromNow,
@@ -214,13 +227,10 @@ export const giveawayCommand = defineCommand({
 			if (!guildId) {
 				return 'You cannot list giveaways outside a server.';
 			}
-			const textChannelsOfThisServer = await globalClient.fetchChannelsOfGuild(guildId);
 
 			const giveaways = await prisma.giveaway.findMany({
 				where: {
-					channel_id: {
-						in: textChannelsOfThisServer.map(i => i.id)
-					},
+					guild_id: guildId,
 					completed: false
 				},
 				orderBy: {

@@ -46,6 +46,7 @@ export const InteractionID = {
 		StartTearsOfGuthix: 'START_TOG',
 		NewSlayerTask: 'NEW_SLAYER_TASK',
 		DoBirdHouseRun: 'DO_BIRDHOUSE_RUN',
+		ToggleAutoRummage: 'TOGGLE_AUTO_RUMMAGE',
 		// Farming
 		FarmingContractEasier: 'FARMING_CONTRACT_EASIER',
 		AutoFarmingContract: 'AUTO_FARMING_CONTRACT',
@@ -64,6 +65,7 @@ export const InteractionID = {
 		RepeatTameTrip: 'REPEAT_TAME_TRIP',
 		SpawnLamp: 'SPAWN_LAMP',
 		SendItemContract: 'ITEM_CONTRACT_SEND',
-		DoFishingContest: 'DO_FISHING_CONTEST'
+		DoFishingContest: 'DO_FISHING_CONTEST',
+		WhaleTrade: 'WHALE_TRADE'
 	}
 } as const;

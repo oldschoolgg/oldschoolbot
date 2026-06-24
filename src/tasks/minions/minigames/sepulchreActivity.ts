@@ -29,7 +29,7 @@ export const sepulchreTask: MinionTask = {
 				const numCoffinsToOpen = 1;
 				numCoffinsOpened += numCoffinsToOpen;
 				for (let i = 0; i < numCoffinsToOpen; i++) {
-					loot.add(openCoffin(floor.number, user));
+					loot.add(openCoffin(rng, floor.number, user));
 				}
 				agilityXP += floor.xp;
 				thievingXP = 200 * numCoffinsOpened;

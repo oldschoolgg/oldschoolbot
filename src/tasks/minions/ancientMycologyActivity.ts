@@ -108,7 +108,7 @@ export const ancientMycologyTask: MinionTask = {
 		const clueScrollChance = verdantLogs.clueScrollChance;
 		if (clueScrollChance) {
 			const strungRabbitFoot = user.hasEquipped('Strung rabbit foot');
-			addSkillingClueToLoot(user, 'woodcutting', quantity, clueScrollChance, loot, false, strungRabbitFoot);
+			addSkillingClueToLoot(rng, user, 'woodcutting', quantity, clueScrollChance, loot, false, strungRabbitFoot);
 
 			if (strungRabbitFoot) {
 				str +=

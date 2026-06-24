@@ -48,7 +48,8 @@ const USER_DEFAULTS = {
 	unlocked_gear_templates: [],
 	unlocked_blueprints: [],
 	disabled_inventions: [],
-	disabled_portent_ids: []
+	disabled_portent_ids: [],
+	magic_words_guessed: []
 } satisfies Partial<User>;
 
 function alchPrice(bank: Bank, item: Item, tripLength: number, agility?: boolean) {
@@ -72,6 +73,7 @@ export class BaseUser {
 	private _bankLazy: Bank | null = null;
 	private _clLazy: Bank | null = null;
 	private _gearLazy: UserFullGearSetup | null = null;
+	private _username: string | null = null;
 
 	paintedItems!: Map<number, number>;
 
@@ -92,6 +94,10 @@ export class BaseUser {
 			pet: this.user.minion_equippedPet,
 			island_upgrades: (this.user.island_upgrades as IslandUpgradeTiers) ?? defaultIslandUpgrades
 		});
+	}
+
+	public get magicWordsGuessed(): string[] {
+		return this.user.magic_words_guessed ?? [];
 	}
 
 	public get bank(): Bank {
@@ -131,13 +137,18 @@ export class BaseUser {
 		this._bankLazy = null;
 		this._clLazy = null;
 		this._gearLazy = null;
+		this._username = this.user.username ? cleanUsername(this.user.username) : 'Unknown';
 		this.skillsAsXP = this.getSkills(false);
 		this.skillsAsLevels = this.getSkills(true);
 
 		this.paintedItems = new Map((this.user.painted_items_tuple as [number, number][]) ?? []);
-		this.badgesString = makeBadgeString(this.user.badges, this.isIronman);
-
 		this.bitfield = this.user.bitfield as readonly BitField[];
+		this.badgesString = makeBadgeString(
+			this.user.badges,
+			this.isIronman,
+			this.bitfield.includes(BitField.OriginalCyrSupporter)
+		);
+
 		this.iconPackId = (this.user.icon_pack_id as IconPackID) ?? null;
 	}
 
@@ -209,7 +220,10 @@ export class BaseUser {
 	}
 
 	get username() {
-		return cleanUsername(this.user.username ?? 'Unknown');
+		return this._username ?? 'Unknown';
+	}
+	set username(user: string) {
+		this._username = user;
 	}
 
 	get usernameOrMention() {
@@ -371,15 +385,28 @@ export class BaseUser {
 	modifyBusy(type: 'lock' | 'unlock', reason: string): void {
 		modifyUserBusy({ type, reason, userID: this.id });
 	}
-
+	isSupport(): boolean {
+		return this.bitfield.includes(BitField.ServerSupport);
+	}
+	isTrusted(): boolean {
+		return this.isWikiContrib() || this.isStaff();
+	}
+	isStaff(): boolean {
+		return this.isModOrAdmin() || this.isSupport() || this.isContributor();
+	}
+	isWikiContrib(): boolean {
+		return this.bitfield.includes(BitField.WikiContributor);
+	}
 	isMod(): boolean {
-		return this.bitfield.includes(BitField.isModerator);
+		return this.bitfield.includes(BitField.Moderator);
+	}
+	isContributor(): boolean {
+		return this.bitfield.includes(BitField.Contributor);
 	}
 
 	isAdmin(): boolean {
 		return globalConfig.adminUserIDs.includes(this.id);
 	}
-
 	isModOrAdmin(): boolean {
 		return this.isAdmin() || this.isMod();
 	}

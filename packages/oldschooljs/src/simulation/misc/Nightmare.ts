@@ -1,9 +1,9 @@
-import { percentChance, randInt, roll } from '@oldschoolgg/rng';
 import { calcPercentOfNum, calcWhatPercent } from '@oldschoolgg/util';
+import { percentChance, randInt, roll } from 'node-rng';
 
 import { Bank, type LootBank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
-import SimpleTable from '@/structures/SimpleTable.js';
+import { SimpleTable } from '@/structures/SimpleTable.js';
 import { resolveNameBank } from '@/util/bank.js';
 
 export interface TeamMember {
@@ -146,7 +146,7 @@ class NightmareClass {
 		const [table, ranges] = isPhosani
 			? [PhosaniNonUniqueTable, phosaniNonUniqueItemRanges]
 			: [NonUniqueTable, nonUniqueItemRanges];
-		const item = table.roll();
+		const item = table.rollOrThrow();
 
 		const [range] = ranges[item];
 
@@ -184,11 +184,11 @@ class NightmareClass {
 
 		if (options.isPhosani) {
 			if (roll(143)) {
-				lootResult[options.team[0].id].add(GearTable.roll());
+				lootResult[options.team[0].id].add(GearTable.rollOrThrow());
 			}
 
 			if (roll(533)) {
-				lootResult[options.team[0].id].add(OrbTable.roll());
+				lootResult[options.team[0].id].add(OrbTable.rollOrThrow());
 			}
 		} else {
 			// Construct a weighted table, where the weighting is the percent of the total HP that the team member has damaged,
@@ -201,25 +201,25 @@ class NightmareClass {
 			}
 
 			function giveWeightedDrop(item: string): void {
-				const recipient = WeightedUniqueTable.roll();
+				const recipient = WeightedUniqueTable.rollOrThrow();
 				lootResult[recipient].add(item);
 			}
 
 			if (roll(84)) {
-				giveWeightedDrop(GearTable.roll());
+				giveWeightedDrop(GearTable.rollOrThrow());
 			}
 
 			if (roll(320)) {
-				giveWeightedDrop(OrbTable.roll());
+				giveWeightedDrop(OrbTable.rollOrThrow());
 			}
 
 			const secondRollChance = Math.min(75, parsedTeam.length - 5);
 			if (secondRollChance > 0 && percentChance(secondRollChance)) {
 				if (roll(320)) {
-					giveWeightedDrop(OrbTable.roll());
+					giveWeightedDrop(OrbTable.rollOrThrow());
 				}
 				if (roll(84)) {
-					giveWeightedDrop(GearTable.roll());
+					giveWeightedDrop(GearTable.rollOrThrow());
 				}
 			}
 		}

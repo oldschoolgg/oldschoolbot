@@ -1108,17 +1108,6 @@
 				],
 				"items": ["Steel ring"]
 			},
-			"doom_of_mokhaiotl": {
-				"unobtainable": true,
-				"items": [
-					"Avernic treads",
-					"Demon tear",
-					"Dom",
-					"Eye of ayak (uncharged)",
-					"Mokhaiotl cloth",
-					"Mokhaiotl waystone"
-				]
-			},
 			"dagannoth_kings": {
 				"kc_activity": {
 					"default": ["Dagannoth Supreme", "Dagannoth Rex", "Dagannoth Prime"],
@@ -2862,22 +2851,6 @@
 					"Wintertoad"
 				]
 			},
-			"yami": {
-				"unobtainable": true,
-				"items": [
-					"Barrel of demonic tallow (full)",
-					"Chasm teleport scroll",
-					"Dossier",
-					"Forgotten lockbox",
-					"Oathplate chest",
-					"Oathplate helm",
-					"Oathplate legs",
-					"Oathplate shards",
-					"Rite of vile transference",
-					"Soulflame horn",
-					"Yami"
-				]
-			},
 			"zalcano": {
 				"items": ["Crystal tool seed", "Smolcano", "Uncut onyx", "Zalcano shard"]
 			},
@@ -4078,7 +4051,6 @@
 					"Drake's claw",
 					"Drake's tooth",
 					"Dust battlestaff",
-					"Earthbound tecpatl",
 					"Eternal gem",
 					"Flippers",
 					"Frozen tear",
@@ -7218,24 +7190,6 @@
 					"Ring of nature"
 				],
 				"is_activity": true
-			},
-			"scroll_cases": {
-				"unobtainable": true,
-				"items": [
-					"Major beginner scroll case",
-					"Major easy scroll case",
-					"Major elite scroll case",
-					"Major hard scroll case",
-					"Major master scroll case",
-					"Major medium scroll case",
-					"Mimic scroll case",
-					"Minor beginner scroll case",
-					"Minor easy scroll case",
-					"Minor elite scroll case",
-					"Minor hard scroll case",
-					"Minor master scroll case",
-					"Minor medium scroll case"
-				]
 			}
 		}
 	},
@@ -7523,18 +7477,6 @@
 				],
 				"is_activity": true
 			},
-			"mastering_mixology": {
-				"unobtainable": true,
-				"items": [
-					"Alchemist gloves",
-					"Alchemist labcoat",
-					"Alchemist pants",
-					"Alchemist's amulet",
-					"Chugging barrel (disassembled)",
-					"Prescription goggles",
-					"Reagent pouch"
-				]
-			},
 			"pest_control": {
 				"items": [
 					"Elite void robe",
@@ -7637,8 +7579,8 @@
 				"is_activity": true
 			},
 			"vale_totems": {
-				"unobtainable": true,
-				"items": ["Bow string spool", "Ent branch", "Fletching knife", "Greenman mask"]
+				"items": ["Bow string spool", "Ent branch", "Fletching knife", "Greenman mask", "Vale offerings"],
+				"is_activity": true
 			},
 			"volcanic_mine": {
 				"items": [
@@ -8097,17 +8039,6 @@
 					"Zenyte shard"
 				]
 			},
-			"hunter_guild": {
-				"unobtainable": true,
-				"items": [
-					"Guild hunter boots",
-					"Guild hunter headwear",
-					"Guild hunter legs",
-					"Guild hunter top",
-					"Huntsman's kit",
-					"Quetzin"
-				]
-			},
 			"monkey_backpacks": {
 				"kc_activity": {},
 				"items": [
@@ -8416,6 +8347,7 @@
 					"Manta ray",
 					"Monkfish",
 					"Pike",
+					"Rainbow fish",
 					"Rocktail",
 					"Salmon",
 					"Sardine",
@@ -9051,6 +8983,9 @@
 					"Amethyst dart",
 					"Amethyst javelin",
 					"Arrow shaft",
+					"Atlatl dart",
+					"Atlatl dart shaft",
+					"Atlatl dart tips",
 					"Battlestaff",
 					"Blurite crossbow",
 					"Blurite crossbow (u)",
@@ -9082,6 +9017,7 @@
 					"Emerald dragon bolts",
 					"Flighted ogre arrow",
 					"Headless arrow",
+					"Headless atlatl dart",
 					"Heavy ballista",
 					"Hellfire arrow",
 					"Hellfire bow",
@@ -9136,6 +9072,7 @@
 					"Pearl bolt tips",
 					"Pearl bolts",
 					"Pearl dragon bolts",
+					"Redwood hiking staff",
 					"Redwood shield",
 					"Ruby bolt tips",
 					"Ruby bolts",
@@ -9316,7 +9253,6 @@
 					"Butch",
 					"Callisto cub",
 					"Chompy chick",
-					"Dom",
 					"Giant squirrel",
 					"Hellpuppy",
 					"Herbi",
@@ -9367,7 +9303,6 @@
 					"Vet'ion jr.",
 					"Vorki",
 					"Wisp",
-					"Yami",
 					"Youngllef"
 				]
 			},
@@ -11538,6 +11473,10 @@
 				],
 				"counts": false
 			},
+			"easter_2026": {
+				"items": ["Magnabbit", "Magnegg", "Wabbit eggs"],
+				"counts": false
+			},
 			"thanksgiving_2021": {
 				"items": ["Burnt turkey", "Cornucopia", "Raw turkey", "Turkey", "Turkey drumstick"],
 				"counts": false
@@ -11560,6 +11499,7 @@
 					"Hoppy",
 					"Kuro",
 					"Leia",
+					"Magnabbit",
 					"Mini mortimer",
 					"Mini Pumpkinhead",
 					"Mumpkin",
@@ -11571,7 +11511,8 @@
 					"Smokey",
 					"Snappy the Turtle",
 					"Tasty",
-					"Waddles"
+					"Waddles",
+					"Wubbles"
 				],
 				"counts": false
 			},
@@ -11886,7 +11827,15 @@
 				]
 			},
 			"miscelleanous_(discontinued)": {
-				"items": ["Black swan", "Golden cape", "Golden cape shard", "Golden partyhat", "Golden shard"],
+				"items": [
+					"Black swan",
+					"Golden cape",
+					"Golden cape shard",
+					"Golden partyhat",
+					"Golden shard",
+					"The whale card",
+					"Wubufu"
+				],
 				"counts": false
 			},
 			"supply_crate_(s_1_)": {
@@ -12114,6 +12063,31 @@
 					"Purple sweets",
 					"Skippers",
 					"White beanie"
+				],
+				"counts": false,
+				"kc_activity": {},
+				"is_activity": true
+			},
+			"summer_crate_(s_9_)": {
+				"items": [
+					"Baguette",
+					"Beach pina colada",
+					"Beach sandals",
+					"Beachball shield",
+					"Cake",
+					"Coral bikini bottom",
+					"Coral bikini top",
+					"Gorajan shards",
+					"Imitation Crab Hat",
+					"Kebab",
+					"Paint box",
+					"Palm board shorts",
+					"Purple sweets",
+					"Spinach roll",
+					"Summer crate (s9)",
+					"Summer crate key (s9)",
+					"Summer partyhat",
+					"Whale floaty"
 				],
 				"counts": false,
 				"kc_activity": {},

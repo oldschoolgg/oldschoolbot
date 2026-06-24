@@ -7,7 +7,8 @@ import { allIronmanMbTables, allMbTables } from '@/lib/bso/openables/mysteryBoxe
 import { bold, dateFm, EmbedBuilder, time } from '@oldschoolgg/discord';
 import type { IMessage } from '@oldschoolgg/schemas';
 import { Emoji, getNextUTCReset, isFunction, type PerkTier, Time } from '@oldschoolgg/toolkit';
-import { type ItemBank, Items, toKMB } from 'oldschooljs';
+import { cryptoRng } from 'node-rng/crypto';
+import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import type { command_name_enum } from '@/prisma/main.js';
 import { mentionCommand } from '@/discord/utils.js';
@@ -18,6 +19,7 @@ import { roboChimpSyncData } from '@/lib/roboChimp.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { minionStatsEmbed } from '@/lib/util/minionStatsEmbed.js';
+import { refreshUserCache } from '@/lib/util/refreshCache.js';
 import { PATRON_DOUBLE_LOOT_COOLDOWN } from '@/mahoji/commands/tools.js';
 import { minionStatusCommand } from '@/mahoji/lib/abstracted_commands/minionStatusCommand.js';
 
@@ -98,6 +100,8 @@ interface MentionCommandOptions {
 	user: MUser;
 	components: BaseSendableMessage['components'];
 	content: string;
+	rng: RNGProvider;
+	guildId?: string | null;
 }
 interface MentionCommand {
 	name: command_name_enum;
@@ -107,6 +111,38 @@ interface MentionCommand {
 }
 
 const mentionCommands: MentionCommand[] = [
+	{
+		name: 'buried_treasure',
+		aliases: ['buried_treasure', 'treasure'],
+		description: 'Searches for buried treasure.',
+		run: async () => {
+			const clientSettings = await ClientSettings.fetch({ buried_treasure_bank: true });
+			if (!clientSettings) {
+				return 'Things went poorly...';
+			}
+
+			return {
+				files: [
+					await makeBankImage({
+						bank: new Bank(clientSettings.buried_treasure_bank as ItemBank),
+						title: 'Buried Treasure Bank'
+					})
+				]
+			};
+		}
+	},
+	{
+		name: 'cache_refresh',
+		aliases: ['refresh', 'cache'],
+		description: 'Updates your caches',
+		run: async ({ user, components, content, guildId }: MentionCommandOptions) => {
+			const result = await refreshUserCache({ user, guildId, possibleTarget: content });
+			return {
+				content: result,
+				components
+			};
+		}
+	},
 	{
 		name: 'bs',
 		aliases: ['bs'],
@@ -246,9 +282,9 @@ const mentionCommands: MentionCommand[] = [
 		name: 'stats',
 		aliases: ['s', 'stats'],
 		description: 'Shows your stats.',
-		run: async ({ user, components }: MentionCommandOptions) => {
+		run: async ({ user, components, rng }: MentionCommandOptions) => {
 			return {
-				embeds: [await minionStatsEmbed(user)],
+				embeds: [await minionStatsEmbed({ user, rng })],
 				components
 			};
 		}
@@ -283,14 +319,17 @@ export async function onMessage(msg: IMessage) {
 				args: msgContentWithoutCommand,
 				inhibited: false,
 				is_mention_command: true
-			}
+			},
+			select: { id: true }
 		});
 
 		try {
 			const response = await command.run({
 				user,
 				components: result.components,
-				content: msgContentWithoutCommand
+				content: msgContentWithoutCommand,
+				rng: cryptoRng,
+				guildId: msg.guild_id
 			});
 			await globalClient.replyToMessage(msg, response);
 		} catch (err) {
