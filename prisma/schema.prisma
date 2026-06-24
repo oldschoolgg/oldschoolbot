@@ -1948,6 +1948,7 @@ model ShootingStars {
 
 enum SystemLogsType {
   ERROR
+  USER_ERROR
   DEBUG
 }
 
