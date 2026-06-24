@@ -24,6 +24,9 @@ export interface ItemRequirements {
 	hunter: number;
 	construction: number;
 	combat: number;
+	dungeoneering: number;
+	divination: number;
+	invention: number;
 }
 
 /**

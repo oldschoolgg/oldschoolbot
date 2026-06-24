@@ -3672,6 +3672,14 @@
 		}
 	},
 	{
+		"name": "Pestle and mortar",
+		"gp_cost": 10000,
+		"ironman_price": 128,
+		"output_items": {
+			"233": 1
+		}
+	},
+	{
 		"name": "Pet rock",
 		"gp_cost": 500000,
 		"qp_required": 60,
@@ -4015,6 +4023,13 @@
 			"70019": 1
 		},
 		"gp_cost": 1000000
+	},
+	{
+		"name": "Rake",
+		"gp_cost": 10,
+		"output_items": {
+			"5341": 1
+		}
 	},
 	{
 		"name": "Ram skull helm",
@@ -4481,6 +4496,13 @@
 		},
 		"item_cost": {
 			"4067": 75
+		}
+	},
+	{
+		"name": "Saw",
+		"gp_cost": 13,
+		"output_items": {
+			"8794": 1
 		}
 	},
 	{

@@ -1509,6 +1509,8 @@ export const aerialFishingCL = resolveItems([
 	'Fish sack',
 	...ItemGroups.anglerOutfit
 ]);
+export const distilleryCL = resolveItems(['Diluted brimstone', 'Sedryn']);
+export const concontractsCL = resolveItems(['Bamyr']);
 export const allPetsCL = resolveItems([
 	'Abyssal orphan',
 	'Ikkle hydra',
@@ -2392,6 +2394,7 @@ export const LMSBuyables: LMSBuyable[] = [
 ];
 
 export const shootingStarsCL = resolveItems(['Celestial ring (uncharged)', 'Star fragment']);
+export const archonCL = resolveItems(['Prismare ring (u)', 'Empyrean shards', "Archon's ichor"]);
 export const skillingMiscCL = resolveItems([
 	'Prospector helmet',
 	'Prospector jacket',

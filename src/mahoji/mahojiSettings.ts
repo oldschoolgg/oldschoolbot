@@ -25,6 +25,8 @@ export function mahojiParseNumber({
 
 export function resolveAvailableItemBoosts(gearBank: GearBank, monster: KillableMonster): Bank {
 	const boosts = new Bank();
+
+	// Handle itemInBankBoosts (items in bank or equipped)
 	if (monster.itemInBankBoosts) {
 		for (const boostSet of monster.itemInBankBoosts) {
 			let highestBoostAmount = 0;
@@ -47,6 +49,7 @@ export function resolveAvailableItemBoosts(gearBank: GearBank, monster: Killable
 			}
 		}
 	}
+
 	return boosts;
 }
 

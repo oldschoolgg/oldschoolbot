@@ -31,16 +31,16 @@ const bisMageGear = new Gear({
 });
 
 const bisMeleeGear = new Gear({
-	head: 'Gorajan warrior helmet',
-	body: 'Gorajan warrior top',
-	legs: 'Gorajan warrior legs',
-	hands: 'Gorajan warrior gloves',
-	feet: 'Gorajan warrior boots',
+	head: 'Empyrean greathelm',
+	body: 'Empyrean greatplate',
+	legs: 'Empyrean greatgreaves',
+	hands: 'Empyrean greatgauntlets',
+	feet: 'Empyrean greatsabaton',
 	neck: "Brawler's hook necklace",
 	cape: 'TzKal cape',
 	weapon: 'Drygore rapier',
 	shield: 'Offhand spidergore rapier',
-	ring: 'Ignis ring(i)'
+	ring: 'Searcrown band'
 });
 
 const itemBoosts: {
@@ -67,6 +67,11 @@ const itemBoosts: {
 		item: Items.getOrThrow('Vasa cloak'),
 		boost: 5,
 		setup: 'mage'
+	},
+	{
+		item: Items.getOrThrow('Searcrown band'),
+		boost: 4,
+		setup: 'melee'
 	},
 	{
 		item: Items.getOrThrow('Ignis ring(i)'),
