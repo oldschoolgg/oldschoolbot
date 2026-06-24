@@ -408,12 +408,20 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 		messageId: string;
 		emojiId: string;
 	}): Promise<void> {
-		// Handle format like: :SkyStare:718251514899988488
-		if (emojiId.includes(':')) {
-			emojiId = emojiId.split(':').slice(-1)[0];
+		// Handle wide variety of formats like: :SkyStare:718251514899988488
+		const emojiRegex = /^(?:<|<(a))?:?(\w+:\d+)>?$/;
+		const matches = emojiId.match(emojiRegex);
+		if (matches) {
+			emojiId = `${matches[1] === 'a' ? 'a:' : '' }${matches[2]}`;
 		}
+
 		const route = Routes.channelMessageOwnReaction(channelId, messageId, encodeURIComponent(emojiId));
-		await this.rest.put(route);
+		try {
+			await this.rest.put(route);
+		} catch (err) {
+			console.log(`Emoji React Error: Emoji ID: ${emojiId}\nroute\n${route}\nError: ${err}`);
+			throw err;
+		}
 	}
 
 	apiInteractionParse(itx: APIInteraction): Promise<MInteraction | undefined> {
