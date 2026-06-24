@@ -1,7 +1,7 @@
 import { createHmac } from 'node:crypto';
 import { notEmpty, PerkTier, Time, uniqueArr } from '@oldschoolgg/toolkit';
 
-import { RUser } from '@/structures/RUser.js';
+import { fetchRUserGroupUsers, RUser } from '@/structures/RUser.js';
 import { globalConfig } from '../constants.js';
 import { allPatronBits, Bits, type PatronTier, tiers } from '../util.js';
 import type { OSBPrismaClient } from './prisma.js';
@@ -307,7 +307,7 @@ class PatreonTask {
 				where: { github_id: Number(sponsor.githubID) }
 			});
 			if (!userWithThisGithubID) continue;
-			const rUser = new RUser(userWithThisGithubID);
+			const rUser = new RUser(userWithThisGithubID, await fetchRUserGroupUsers(userWithThisGithubID));
 			if (rUser.perkTierRaw < PerkTier.Two) continue;
 			const freeT3 = [Bits.Moderator, Bits.Admin, Bits.WikiContributor].some(bit => rUser.bits.includes(bit));
 			if (freeT3 && rUser.perkTierRaw <= PerkTier.Four) continue;

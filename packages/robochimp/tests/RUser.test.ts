@@ -1,6 +1,8 @@
 import { PerkTier } from '@oldschoolgg/toolkit';
+import type { User } from '@prisma/robochimp';
 import { describe, expect, test } from 'vitest';
 
+import { RUser } from '@/structures/RUser.js';
 import { Bits } from '@/util.js';
 import { mockUser } from './util.js';
 
@@ -27,6 +29,24 @@ describe('RUser', async () => {
 		expect(user.perkTier).not.toBe(null);
 		expect(user.perkTier?.perkTier).toBe(4);
 		expect(user.perkTier?.bit).toBe(Bits.PatronTier3);
+	});
+
+	test('aggregates linked user bits and highest perk tier', async () => {
+		const rawUser = {
+			id: 1n,
+			bits: [Bits.PatronTier1],
+			perk_tier: PerkTier.Two,
+			user_group_id: 'group-id'
+		} as User;
+		const user = new RUser(rawUser, [
+			{ id: 1n, bits: [Bits.PatronTier1, Bits.Trusted], perk_tier: PerkTier.Two },
+			{ id: 2n, bits: [Bits.PatronTier3, Bits.Trusted], perk_tier: PerkTier.Four }
+		]);
+
+		expect(user.perkTierRaw).toBe(PerkTier.Four);
+		expect(user.perkTier?.bit).toBe(Bits.PatronTier3);
+		expect(user.bits).toEqual([Bits.PatronTier1, Bits.Trusted, Bits.PatronTier3]);
+		expect(await user.findGroup()).toEqual(['1', '2']);
 	});
 
 	test('globalMastery', async () => {

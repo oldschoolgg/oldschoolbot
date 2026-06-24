@@ -3,6 +3,10 @@ import { UserError } from '@oldschoolgg/toolkit';
 import { cancelUsersListings } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
 
 export async function migrateUser(_source: string | MUser, _dest: string | MUser): Promise<string | true> {
+	const deletedUserId = '456226577798135808';
+	if (_source === deletedUserId || _dest === deletedUserId) {
+		throw new UserError(`This is not a real user ID, it's the BS user ID that discord replaces deleted user's with, sorry. You need the real user ID to find your data.`);
+	}
 	const sourceUser = typeof _source === 'string' ? await mUserFetch(_source) : _source;
 	const destUser = typeof _dest === 'string' ? await mUserFetch(_dest) : _dest;
 
