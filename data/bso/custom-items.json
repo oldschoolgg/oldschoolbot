@@ -3612,6 +3612,7 @@
 		"buy_limit": 13000,
 		"price": 100000,
 		"customItemData": {
+			"dontTradeOnGE": true,
 			"cantDropFromMysteryBoxes": true,
 			"cantBeSacrificed": true,
 			"isDiscontinued": true
@@ -3629,6 +3630,7 @@
 		"buy_limit": 13000,
 		"price": 100000,
 		"customItemData": {
+			"dontTradeOnGE": true,
 			"cantDropFromMysteryBoxes": true,
 			"cantBeSacrificed": true,
 			"isDiscontinued": true
@@ -3957,6 +3959,21 @@
 			}
 		},
 		"price": 500,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 73989,
+		"name": "Black shell",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 250000,
 		"customItemData": {
 			"cantDropFromMysteryBoxes": true
 		}
@@ -5015,6 +5032,42 @@
 		"highalch": 27,
 		"buy_limit": 13000,
 		"price": 1,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 73992,
+		"name": "Bottle of sea water",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"equipable": true,
+		"cost": 68,
+		"lowalch": 27,
+		"highalch": 40,
+		"buy_limit": 125,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": -8,
+			"attack_ranged": -3,
+			"defence_stab": 5,
+			"defence_slash": 7,
+			"defence_crush": 6,
+			"defence_magic": -1,
+			"defence_ranged": 6,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "shield",
+			"requirements": {
+				"defence": 1
+			}
+		},
+		"price": 250000,
 		"customItemData": {
 			"cantDropFromMysteryBoxes": true
 		}
@@ -15793,6 +15846,7 @@
 		"buy_limit": 13000,
 		"price": 1,
 		"customItemData": {
+			"dontTradeOnGE": true,
 			"cantDropFromMysteryBoxes": true,
 			"isDiscontinued": true
 		}
@@ -18320,6 +18374,7 @@
 		"buy_limit": 13000,
 		"price": 1,
 		"customItemData": {
+			"dontTradeOnGE": true,
 			"cantDropFromMysteryBoxes": true
 		}
 	},
@@ -19998,6 +20053,7 @@
 		"buy_limit": 13000,
 		"price": 500000,
 		"customItemData": {
+			"dontTradeOnGE": true,
 			"cantDropFromMysteryBoxes": true
 		}
 	},
@@ -23812,6 +23868,50 @@
 			"isSuperUntradeable": true,
 			"cantBeSacrificed": true,
 			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 73987,
+		"name": "Gothic Dwarven warhammer",
+		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"equipable": true,
+		"cost": 120000,
+		"lowalch": 48000,
+		"highalch": 72000,
+		"buy_limit": 8,
+		"equipment": {
+			"attack_stab": -4,
+			"attack_slash": -4,
+			"attack_crush": 95,
+			"attack_magic": -4,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 85,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "weapon",
+			"requirements": {
+				"attack": 60,
+				"strength": 99
+			}
+		},
+		"weapon": {
+			"attack_speed": 6,
+			"weapon_type": "blunt"
+		},
+		"price": 1000000000,
+		"customItemData": {
+			"isSecret": true,
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true
 		}
 	},
 	{
@@ -29153,6 +29253,45 @@
 		"price": 1000
 	},
 	{
+		"id": 73985,
+		"name": "Lydia",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"equipable": true,
+		"cost": 44,
+		"lowalch": 17,
+		"highalch": 26,
+		"buy_limit": 125,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": -6,
+			"attack_ranged": -3,
+			"defence_stab": 4,
+			"defence_slash": 5,
+			"defence_crush": 3,
+			"defence_magic": -1,
+			"defence_ranged": 4,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "head",
+			"requirements": {
+				"defence": 1
+			}
+		},
+		"price": 1000000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true,
+			"dontTradeOnGE": true,
+			"isPet": true
+		}
+	},
+	{
 		"id": 70177,
 		"name": "M'eye hat",
 		"tradeable": true,
@@ -31400,6 +31539,42 @@
 		"price": 1000
 	},
 	{
+		"id": 73993,
+		"name": "Mysterious bottle",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"equipable": true,
+		"cost": 68,
+		"lowalch": 27,
+		"highalch": 40,
+		"buy_limit": 125,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": -8,
+			"attack_ranged": -3,
+			"defence_stab": 5,
+			"defence_slash": 7,
+			"defence_crush": 6,
+			"defence_magic": -1,
+			"defence_ranged": 6,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "shield",
+			"requirements": {
+				"defence": 1
+			}
+		},
+		"price": 250000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
 		"id": 71565,
 		"name": "Mysterious clue (1)",
 		"tradeable": true,
@@ -33577,6 +33752,43 @@
 		"price": 10000
 	},
 	{
+		"id": 73983,
+		"name": "Old crab cage",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"equipable": true,
+		"cost": 68,
+		"lowalch": 27,
+		"highalch": 40,
+		"buy_limit": 125,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": -8,
+			"attack_ranged": -3,
+			"defence_stab": 5,
+			"defence_slash": 7,
+			"defence_crush": 6,
+			"defence_magic": -1,
+			"defence_ranged": 6,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "shield",
+			"requirements": {
+				"defence": 1
+			}
+		},
+		"price": 1000000,
+		"customItemData": {
+			"isSuperUntradeable": true,
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
 		"id": 122002,
 		"name": "Olof's gold",
 		"tradeable": true,
@@ -34125,7 +34337,43 @@
 		},
 		"price": 1000000,
 		"customItemData": {
-			"isSecret": true,
+			"cantDropFromMysteryBoxes": true,
+			"isPet": true
+		}
+	},
+	{
+		"id": 73982,
+		"name": "Patricia",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"equipable": true,
+		"cost": 44,
+		"lowalch": 17,
+		"highalch": 26,
+		"buy_limit": 125,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": -6,
+			"attack_ranged": -3,
+			"defence_stab": 4,
+			"defence_slash": 5,
+			"defence_crush": 3,
+			"defence_magic": -1,
+			"defence_ranged": 4,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "head",
+			"requirements": {
+				"defence": 1
+			}
+		},
+		"price": 1000000,
+		"customItemData": {
 			"cantDropFromMysteryBoxes": true,
 			"isPet": true
 		}
@@ -36531,6 +36779,21 @@
 		}
 	},
 	{
+		"id": 73990,
+		"name": "Purple dust",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 250000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
 		"id": 52618,
 		"name": "Purple flower crown",
 		"equipable": true,
@@ -36588,6 +36851,21 @@
 			}
 		},
 		"price": 100000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 73988,
+		"name": "Purple sand dollar",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 250000,
 		"customItemData": {
 			"cantDropFromMysteryBoxes": true
 		}
@@ -40367,6 +40645,45 @@
 		}
 	},
 	{
+		"id": 73986,
+		"name": "Shiny Partycrab",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"equipable": true,
+		"cost": 44,
+		"lowalch": 17,
+		"highalch": 26,
+		"buy_limit": 125,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": -6,
+			"attack_ranged": -3,
+			"defence_stab": 4,
+			"defence_slash": 5,
+			"defence_crush": 3,
+			"defence_magic": -1,
+			"defence_ranged": 4,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "head",
+			"requirements": {
+				"defence": 1
+			}
+		},
+		"price": 1000000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true,
+			"dontTradeOnGE": true,
+			"isPet": true
+		}
+	},
+	{
 		"id": 70369,
 		"name": "Shirt (female, green)",
 		"tradeable": true,
@@ -41176,6 +41493,7 @@
 		"buy_limit": 13000,
 		"price": 500000,
 		"customItemData": {
+			"dontTradeOnGE": true,
 			"cantDropFromMysteryBoxes": true
 		}
 	},
@@ -43620,6 +43938,7 @@
 		"buy_limit": 13000,
 		"price": 100000,
 		"customItemData": {
+			"dontTradeOnGE": true,
 			"cantDropFromMysteryBoxes": true,
 			"isDiscontinued": true
 		}
@@ -44359,6 +44678,7 @@
 		"buy_limit": 13000,
 		"price": 500000,
 		"customItemData": {
+			"dontTradeOnGE": true,
 			"cantDropFromMysteryBoxes": true
 		}
 	},
@@ -44467,6 +44787,36 @@
 		"price": 1,
 		"customItemData": {
 			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	{
+		"id": 73984,
+		"name": "Sun Scream",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 1000000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 73991,
+		"name": "Sun Scream (unf)",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 500000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -44708,6 +45058,7 @@
 		"buy_limit": 13000,
 		"price": 100000,
 		"customItemData": {
+			"dontTradeOnGE": true,
 			"cantDropFromMysteryBoxes": true
 		}
 	},
