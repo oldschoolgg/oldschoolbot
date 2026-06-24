@@ -4,8 +4,9 @@ import SonicBoomDefault from 'sonic-boom';
 const { SonicBoom } = SonicBoomDefault;
 
 import path from 'node:path';
-import {isObject, isPlainObject, UserError} from '@oldschoolgg/toolkit';
+import { isPlainObject, UserError } from '@oldschoolgg/toolkit';
 
+import type { SystemLogsType } from '@/prisma/clients/main/enums.js';
 import { BOT_TYPE_LOWERCASE, globalConfig } from '@/lib/constants.js';
 
 const LOG_FOLDER = globalConfig.isProduction ? '../logs/' : './logs/';
@@ -96,23 +97,16 @@ function logError(args: string | Error | RichErrorLogArgs, ctx?: LogContext): vo
 	const interaction = isRichError(args) ? args.interaction : undefined;
 	const richArgs = isRichError(args) ? args : undefined;
 
-	const err = toError(
-		typeof args === 'string'
-			? args
-			: args instanceof Error
-				? args
-				: args.err,
-	);
+	const err = toError(typeof args === 'string' ? args : args instanceof Error ? args : args.err);
 
-
-
-	if (err instanceof Error && err.message === 'SILENT_ERROR') return;
+	if (err.message === 'SILENT_ERROR') return;
 
 	// If DiscordAPIError #10008, that means someone deleted the message, we don't need to log this.
 	if (err instanceof DiscordAPIError && err.code === 10_008) {
 		return;
 	}
 
+	const type: SystemLogsType = err instanceof UserError ? 'USER_ERROR' : 'ERROR';
 	let context = richArgs?.context ?? {};
 	if (ctx) context = { ...context, ...ctx };
 	const message = richArgs?.message ?? err.message;
@@ -126,42 +120,40 @@ function logError(args: string | Error | RichErrorLogArgs, ctx?: LogContext): vo
 			user_id: interaction.userId
 		});
 		if (!interaction.replied) {
-			void interaction.reply({content: err.message});
+			void interaction.reply({ content: err.message });
 		} else {
-			void interaction.followUp({content: err.message});
+			void interaction.followUp({ content: err.message });
 		}
 		return;
 	}
 
-	const metaInfo: AnyContextObj = { ...context };
 	if ('requestBody' in err) {
 		if (err.requestBody.files) {
-			metaInfo.requestBody.files = err.requestBody.files.map(file => ({ name: file.name} );
+			context.requestBody.files = err.requestBody.files.map(file => ({ name: file.name }));
 		}
-	}
-	if (err?.requestBody?.json) {
-		err.requestBody.json = String(err.requestBody.json).slice(0, 4000);
+		if (err.requestBody.json) {
+			context.requestBody.json = String(err.requestBody.json).slice(0, 10_000);
+		}
 	}
 
 	if (!globalConfig.isProduction) {
 		console.error(err);
 	}
 
-	const message = typeof args === 'string' ? args :
-		'message' in args ? args.message : undefined;
 	const rawObj: AnyContextObj = {
 		message,
-		stack: err.stack,
-		error: err.message ?? err.stack,
+		stack,
 		time: new Date().toISOString()
 	};
-	if (metaInfo && Object.keys(metaInfo).length > 0) {
-		rawObj.info = metaInfo;
+	if (Object.keys(context).length > 0) {
+		rawObj.info = context;
 	}
 	prisma.systemLogs
 		.create({
 			data: {
-				type: 'ERROR',
+				type,
+				msg: message,
+				stack,
 				data: rawObj as any
 			}
 		})

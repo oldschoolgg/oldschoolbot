@@ -78,7 +78,7 @@ export async function handleFinish({
 			previousCL: previousTameCl
 		});
 
-	await globalClient.sendMessageOrWebhook(activity.channel_id, res);
+	return globalClient.sendMessageOrWebhook(activity.channel_id, res);
 }
 
 export const arbitraryTameActivities: ArbitraryTameActivity[] = [
@@ -376,7 +376,7 @@ export async function runTameTask(activity: TameActivity, tame: MTame) {
 			});
 			const act = arbitraryTameActivities.find(i => i.id === activityData.type)!;
 			await act.run({
-				void handleFinish,
+				handleFinish,
 				user,
 				tame,
 				duration: activity.duration,

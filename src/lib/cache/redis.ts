@@ -376,9 +376,9 @@ class CacheManager {
 							id: userId,
 							username: username
 						},
-						update:  {
-									username
-								},
+						update: {
+							username
+						},
 						select: {
 							id: true
 						}

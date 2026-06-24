@@ -533,7 +533,7 @@ export const BadgesEnum = {
 	Farmer: 15,
 	Hacktoberfest: 16,
 	CyrEarlySupporter: 17,
-	TopClueHunter: 18,
+	TopClueHunter: 18
 } as const;
 
 export const badges: { [key: number]: string } = {

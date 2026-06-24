@@ -108,7 +108,7 @@ export async function rawCommandHandlerInner({
 				options: JSON.stringify(options)
 			}
 		});
-		if (err instanceof UserError) return { content: `👻 ${err.message}` };
+		if (err instanceof UserError) return SpecialResponse.RespondedManually;
 		return {
 			content: `An error occurred while running this command.`
 		};
