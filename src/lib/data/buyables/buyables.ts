@@ -234,8 +234,7 @@ const constructionBuyables: Buyable[] = [
 	},
 	{
 		name: 'Saw',
-		gpCost: 13,
-		ironmanPrice: 13
+		gpCost: 13
 	}
 ];
 

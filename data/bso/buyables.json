@@ -4501,7 +4501,6 @@
 	{
 		"name": "Saw",
 		"gp_cost": 13,
-		"ironman_price": 13,
 		"output_items": {
 			"8794": 1
 		}
