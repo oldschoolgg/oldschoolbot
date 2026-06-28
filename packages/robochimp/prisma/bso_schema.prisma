@@ -11,7 +11,7 @@ datasource db {
 }
 
 model Activity {
-  id             Int                @id @unique @default(autoincrement())
+  id             Int                @id @default(autoincrement())
   user_id        BigInt
   start_date     DateTime           @db.Timestamp(6)
   finish_date    DateTime           @db.Timestamp(6)
@@ -21,13 +21,10 @@ model Activity {
   type           activity_type_enum
   channel_id     BigInt?
   data           Json?              @db.JsonB
-  all_user_ids   BigInt[]           @default([])
   pinnedTrip     PinnedTrip[]
+  all_user_ids   BigInt[]           @default([])
 
-  @@index([user_id, finish_date])
-  @@index([completed])
-  @@index([user_id, type])
-  @@index([finish_date])
+  @@index([user_id, completed, finish_date])
   @@map("activity")
 }
 
@@ -137,6 +134,8 @@ model ClientStorage {
   ourania_loot                 Json     @default("{}") @db.Json
   colo_cost                    Json     @default("{}") @db.Json
   colo_loot                    Json     @default("{}") @db.Json
+  vt_cost                      Json     @default("{}") @db.Json
+  vt_loot                      Json     @default("{}") @db.Json
 
   grand_exchange_is_locked Boolean @default(false)
   grand_exchange_total_tax BigInt  @default(0)
@@ -187,6 +186,8 @@ model ClientStorage {
   invention_prizes_remaining Json @default("{}") @db.Json
   clue_upgrader_loot         Json @default("{}") @db.Json
   portable_tanner_loot       Json @default("{}") @db.Json
+  buried_treasure_bank       Json @default("{}") @db.JsonB
+  buried_treasure_winners    Json @default("{}") @db.JsonB
 
   last_bso_giveaways_ping  DateTime? @db.Timestamp(6)
   last_giveaway_doubleloot DateTime? @db.Timestamp(6)
@@ -241,7 +242,6 @@ model GearPreset {
   ammo       Int?
   ammo_qty   Int?
 
-  emoji_id       String?        @db.VarChar(19)
   times_equipped Int            @default(0)
   pinned_setup   GearSetupType?
 
@@ -256,6 +256,7 @@ model Giveaway {
   finish_date DateTime @db.Timestamp(6)
   duration    Int
   completed   Boolean
+  guild_id    String?  @db.VarChar(20)
   channel_id  String   @db.VarChar(19)
   loot        Json     @db.Json
   message_id  String   @db.VarChar(19)
@@ -335,6 +336,7 @@ enum bank_sort_method_enum {
   alch
   name
   quantity
+  market
 }
 
 model User {
@@ -365,8 +367,6 @@ model User {
   last_temp_cl_reset     DateTime? @db.Timestamp(6)
   minion_equippedPet     Int?      @map("minion.equippedPet")
   minion_farmingContract Json?     @map("minion.farmingContract") @db.Json
-  minion_farmingPreferredContract Boolean @default(false) @map("minion.farmingPreferredContract")
-  minion_farmingPreferredSeeds Json?   @map("minion.farmingPreferredSeeds") @db.Json
   minion_birdhouseTraps  Json?     @map("minion.birdhouseTraps") @db.Json
   finished_quest_ids     Int[]     @default([])
 
@@ -385,7 +385,7 @@ model User {
   favorite_bh_seeds          Int[]              @default([])
   minion_defaultPay          Boolean            @default(false) @map("minion.defaultPay")
   minion_icon                String?            @map("minion.icon")
-  minion_name                String?            @map("minion.name")
+  minion_name                String?            @map("minion.name") @db.Text()
   bank_bg_hex                String?
   bankBackground             Int                @default(1)
   attack_style               String[]           @default([])
@@ -467,6 +467,7 @@ model User {
   last_item_contract_date  BigInt   @default(0)
   current_item_contract    Int?
   lastSpawnLamp            BigInt   @default(1)
+  last_spawn_box_date      BigInt?
   lastGivenBoxx            BigInt   @default(1)
   dungeoneering_tokens     Int      @default(0)
   item_contract_streak     Int      @default(0)
@@ -490,7 +491,9 @@ model User {
 
   bso_mystery_trail_current_step_id Int?
 
-  store_bitfield Int[]
+  magic_words_guessed String[] @default([])
+
+  store_bitfield Int[] @default([])
 
   farmingPatches_herb       Json? @map("farmingPatches.herb") @db.Json
   farmingPatches_fruit_tree Json? @map("farmingPatches.fruit tree") @db.Json
@@ -512,8 +515,8 @@ model User {
   farmingPatches_mushroom   Json? @map("farmingPatches.mushroom") @db.Json
   farmingPatches_belladonna Json? @map("farmingPatches.belladonna") @db.Json
 
-  username             String? @db.VarChar(32)
-  username_with_badges String? @db.VarChar()
+  username             String? @db.Text()
+  username_with_badges String? @db.Text()
 
   geListings        GEListing[]
   bingo_participant BingoParticipant[]
@@ -524,14 +527,15 @@ model User {
 
   skills_divination                BigInt    @default(0) @map("skills.divination")
   guthixian_cache_boosts_available Int       @default(0)
-  disabled_portent_ids             Int[]
+  disabled_portent_ids             Int[]     @default([])
   portent                          Portent[]
 
   smokey_lottery_tickets          Json?     @db.Json
   grinchions_caught               Int       @default(0)
   last_giveaway_ticket_given_date DateTime? @db.Timestamp(6)
 
-  cl_array Int[] @default([])
+  cl_array                      Int[]    @default([])
+  completed_achievement_diaries String[] @default([])
 
   @@index([id, last_command_date])
   @@map("users")
@@ -560,7 +564,6 @@ model ReclaimableItem {
   quantity    Int
 
   @@id([user_id, key])
-  @@unique([user_id, key])
   @@map("reclaimable_item")
 }
 
@@ -592,6 +595,7 @@ enum XpGainSource {
   ScatteringAshes
   Zalcano
   Wintertodt
+  ValeTotems
   FishingTrawler
   Tempoross
   TearsOfGuthix
@@ -647,6 +651,7 @@ model Minigame {
   wintertodt              Int    @default(0)
   tempoross               Int    @default(0)
   sepulchre               Int    @default(0)
+  vale_totems             Int    @default(0)
   fishing_trawler         Int    @default(0)
   barb_assault            Int    @default(0)
   pyramid_plunder         Int    @default(0)
@@ -831,6 +836,15 @@ model EconomyItem {
   @@map("economy_item")
 }
 
+model EconomyItemBanks {
+  id   Int      @id @default(autoincrement())
+  date DateTime @default(now())
+
+  bank Json @db.JsonB
+
+  @@map("economy_item_banks")
+}
+
 model LastManStandingGame {
   id       Int      @id @default(autoincrement())
   user_id  BigInt
@@ -906,6 +920,8 @@ model UserStats {
   clue_upgrader_bank     Json @default("{}") @db.Json
   ic_cost_bank           Json @default("{}") @db.Json
   ic_loot_bank           Json @default("{}") @db.Json
+  wild_degen_cost_bank   Json @default("{}") @db.Json
+  wild_degen_loot_bank   Json @default("{}") @db.Json
 
   loot_from_zippy_bank Json @default("{}") @db.Json
   peky_loot_bank       Json @default("{}") @db.Json
@@ -964,6 +980,7 @@ model UserStats {
   firecapes_sacrificed             Int  @default(0)
   tithe_farms_completed            Int  @default(0)
   tithe_farm_points                Int  @default(0)
+  vale_research_points             Int  @default(0)
   pest_control_points              Int  @default(0)
   inferno_attempts                 Int  @default(0)
   infernal_cape_sacrifices         Int  @default(0)
@@ -1042,6 +1059,8 @@ model UserStats {
 
   quivers_sacrificed Int @default(0)
 
+  recently_killed_monsters Int[] @default([])
+
   @@map("user_stats")
 }
 
@@ -1069,6 +1088,7 @@ model FarmedCrop {
   was_autofarmed      Boolean
   paid_for_protection Boolean
 
+  @@index([user_id, date_planted])
   @@map("farmed_crop")
 }
 
@@ -1161,6 +1181,7 @@ enum activity_type_enum {
   Butler
   Nightmare
   Sepulchre
+  ValeTotems
   Plunder
   FishingTrawler
   Zalcano
@@ -1169,6 +1190,7 @@ enum activity_type_enum {
   Enchanting
   Casting
   GloryCharging
+  GloryUncharging
   WealthCharging
   BarbarianAssault
   AgilityArena
@@ -1253,6 +1275,8 @@ enum activity_type_enum {
   Colosseum
   CreateForestersRations
   SnoozeSpellActive
+  Buy
+  BeachCombing
 }
 
 enum xp_gains_skill_enum {
@@ -1301,7 +1325,7 @@ enum GEListingType {
 }
 
 model GEListing {
-  id   Int           @id @unique @default(autoincrement())
+  id   Int           @id @default(autoincrement())
   type GEListingType
 
   userfacing_id String
@@ -1322,12 +1346,12 @@ model GEListing {
   buyTransactions  GETransaction[] @relation("buy_transactions")
   sellTransactions GETransaction[] @relation("sell_transactions")
 
-  @@index([created_at])
+  @@index([type, cancelled_at, fulfilled_at, user_id, item_id, asking_price_per_item, created_at])
   @@map("ge_listing")
 }
 
 model GETransaction {
-  id Int @id @unique @default(autoincrement())
+  id Int @id @default(autoincrement())
 
   created_at DateTime @default(now())
 
@@ -1357,7 +1381,7 @@ model GEBank {
 }
 
 model Bingo {
-  id Int @id @unique @default(autoincrement())
+  id Int @id @default(autoincrement())
 
   creator    User   @relation(fields: [creator_id], references: [id])
   creator_id String @db.VarChar(19)
@@ -1387,7 +1411,7 @@ model Bingo {
 }
 
 model BingoTeam {
-  id Int @id @unique @default(autoincrement())
+  id Int @id @default(autoincrement())
 
   bingo    Bingo @relation(fields: [bingo_id], references: [id])
   bingo_id Int
@@ -1425,7 +1449,7 @@ model GiftBox {
   id         String        @id
   created_at DateTime      @default(now()) @db.Timestamp(6)
   status     GiftBoxStatus
-  name       String?
+  name       String?       @db.Text()
 
   creator_id String? @db.VarChar(19)
   creator    User?   @relation("gift_boxes_created", fields: [creator_id], references: [id])
@@ -1482,13 +1506,24 @@ model Badges {
   @@map("badges")
 }
 
-model CollectionLogSlot {
-  group_name String
-  item_id    Int
+model CLCategory {
+  name        String           @id
+  total_items Int
+  items       CLCategoryItem[]
+  counts      Boolean
 
-  @@id([group_name, item_id])
-  @@unique([group_name, item_id])
-  @@map("collection_log_slot")
+  @@map("categories")
+}
+
+model CLCategoryItem {
+  category_name String
+  item_id       Int
+
+  category CLCategory @relation(fields: [category_name], references: [name], onDelete: Cascade)
+
+  @@id([category_name, item_id])
+  @@index([item_id])
+  @@map("category_items")
 }
 
 model UserCounter {
@@ -1502,6 +1537,8 @@ model UserCounter {
 }
 
 enum command_name_enum {
+  cache_refresh
+  buried_treasure
   testpotato
   achievementdiary
   activities
@@ -1610,6 +1647,7 @@ enum command_name_enum {
   fish
   fishingtrawler
   fletch
+  fool
   gamble
   gauntlet
   ge
@@ -1806,4 +1844,145 @@ enum command_name_enum {
   spawnlamp
   testershop
   vasa
+}
+
+enum TableBankType {
+  Bank
+  CollectionLog
+}
+
+model TableBank {
+  id      Int           @id @default(autoincrement())
+  user_id String
+  type    TableBankType
+
+  items TableBankItem[]
+
+  @@unique([user_id, type])
+  @@map("table_bank")
+}
+
+model TableBankItem {
+  bank_id  Int
+  item_id  Int
+  quantity BigInt @db.BigInt
+
+  bank TableBank @relation(fields: [bank_id], references: [id], onDelete: Cascade)
+
+  @@id([bank_id, item_id])
+  @@map("table_bank_item")
+}
+
+model HalloweenEvent {
+  user_id    String   @id @db.VarChar(19)
+  created_at DateTime @default(now()) @db.Timestamp(6)
+
+  candy_in_bowl            Int       @default(0)
+  trick_or_treaters_seen   Int       @default(0)
+  total_candy_deposited    Int       @default(0)
+  last_trick_or_treat      DateTime? @db.Timestamp(6)
+  items_waiting_for_pickup Json      @default("{}") @db.Json
+
+  @@map("halloween_event")
+}
+
+enum JsonBankType {
+  Bank
+  CollectionLog
+  HunterCreaturesCaught
+  MonsterKCs
+  AgilityLapsCounts
+  SacrificedItems
+  OpenedItems
+
+  ToBCost
+  ToBLoot
+  ToACost
+  ToALoot
+  ToARaidLevels
+  ColoCost
+  ColoLoot
+  ColoKC
+  BuyCommandCost
+  BuyCommandLoot
+  CreateCommandCost
+  CreateCommandLoot
+  ShadesOfMortonCost
+  GiantFoundryCost
+  GiantFoundryLoot
+
+  FarmingCost
+  FarmingLoot
+  HerbsCleanedWhileFarming
+
+  RandomEventCompletions
+  ForestryEventsCompletions
+  PuroPuroImplingsCaught
+  PassiveImplingsCaught
+  BirdEggsOffered
+  ScatteredAshes
+}
+
+model JsonBank {
+  id      Int          @id @default(autoincrement())
+  user_id String
+  type    JsonBankType
+
+  bank Json @db.JsonB
+
+  @@unique([user_id, type])
+  @@map("json_bank")
+}
+
+model ShootingStars {
+  id Int @id @default(autoincrement())
+
+  user_id        String
+  size           Int
+  expires_at     DateTime
+  has_been_mined Boolean  @default(false)
+
+  @@index([user_id, expires_at])
+  @@map("shooting_stars")
+}
+
+enum SystemLogsType {
+  ERROR
+  DEBUG
+}
+
+model SystemLogs {
+  id Int @id @default(autoincrement())
+
+  date DateTime @default(now())
+
+  type  SystemLogsType
+  msg   String?
+  stack String?
+  data  Json           @default("{}") @db.JsonB
+
+  @@map("system_logs")
+}
+
+enum UserLogType {
+  CLICK_BUTTON
+  CANCEL_TRIP
+}
+
+model UserLog {
+  id Int @id @default(autoincrement())
+
+  user_id    BigInt
+  channel_id BigInt?
+  guild_id   BigInt?
+  message_id BigInt?
+
+  date DateTime @default(now())
+
+  type UserLogType
+
+  data Json @db.JsonB
+
+  @@index([user_id, date])
+  @@map("user_logs")
 }

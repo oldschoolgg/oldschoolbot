@@ -1,7 +1,16 @@
 import { globalConfig } from '@/constants.js';
 import { detectMischief } from '@/lib/mischiefDetection.js';
 import { patreonTask } from '@/lib/patreon.js';
-import { CHANNELS } from '@/util.js';
+import { CHANNELS, tiers } from '@/util.js';
+
+const tierChoices = [...tiers].reverse().map(tier => ({
+	name: `Magna Tier ${tier.number} (perkTier ${tier.perkTier})`,
+	value: tier.perkTier.toString()
+}));
+
+function availableTiersString() {
+	return tierChoices.map(tier => `${tier.name}: \`${tier.value}\``).join('\n');
+}
 
 export const toolsCommand = defineCommand({
 	name: 'tools',
@@ -35,6 +44,39 @@ export const toolsCommand = defineCommand({
 			type: 'Subcommand',
 			name: 'patreon_sync',
 			description: 'Patreon sync'
+		},
+		{
+			type: 'Subcommand',
+			name: 'change_tier',
+			description: 'Change or remove patron perks for a user group.',
+			options: [
+				{
+					type: 'User',
+					name: 'user',
+					description: 'The user',
+					required: true
+				},
+				{
+					type: 'String',
+					name: 'tier',
+					description: 'The perk tier number.',
+					required: false,
+					autocomplete: async ({ value }: StringAutoComplete) => {
+						const normalizedValue = value?.toLowerCase() ?? '';
+						return tierChoices.filter(tier =>
+							normalizedValue
+								? `${tier.name} ${tier.value}`.toLowerCase().includes(normalizedValue)
+								: true
+						);
+					}
+				},
+				{
+					type: 'Boolean',
+					name: 'remove',
+					description: 'Remove patron perks instead of changing tier.',
+					required: false
+				}
+			]
 		},
 		{
 			type: 'Subcommand',
@@ -93,6 +135,28 @@ export const toolsCommand = defineCommand({
 			return `Set ${options.setgithubid.user.user.username}'s github ID to ${githubSetUser.githubId}, and synced their patron tier to: ${githubSetUser.perkTier}.`;
 		}
 		if (!user.isAdmin()) return 'Sorry, these are restricted to admins only';
+		if (options.change_tier) {
+			const targetUser = await globalClient.fetchRUser(options.change_tier.user.user.id);
+			const targetMention = targetUser.mention;
+
+			if (options.change_tier.remove) {
+				await patreonTask.removePerks(targetUser, `Admin command by ${user.id}`);
+				return `Removed patron perks from ${targetMention}.`;
+			}
+
+			if (!options.change_tier.tier) {
+				return `Pick a tier, or enter its perk tier number:\n${availableTiersString()}`;
+			}
+
+			const perkTier = Number(options.change_tier.tier);
+			const tier = Number.isInteger(perkTier) ? tiers.find(t => t.perkTier === perkTier) : null;
+			if (!tier) {
+				return `Invalid perk tier: \`${options.change_tier.tier}\`.\nAvailable tiers:\n${availableTiersString()}`;
+			}
+
+			await patreonTask.changeTier(targetUser, tier);
+			return `Changed ${targetMention} to Magna Tier ${tier.number} (perkTier ${tier.perkTier}).`;
+		}
 		if (options.debug_patreon) {
 			const res = await patreonTask.fetchPatrons();
 			return {
