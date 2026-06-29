@@ -118,7 +118,6 @@ export const tickers: {
 		name: 'hourly_tob_learner_mass',
 		timer: null,
 		interval: Time.Minute,
-		productionOnly: true,
 		cb: async () => {
 			await maybeStartScheduledTobMass();
 		}
