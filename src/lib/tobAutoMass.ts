@@ -8,19 +8,19 @@ import { TOB_FAKE_MASS_PURPLE_KC_CUTOFF } from '@/lib/data/tob.js';
 import { InteractionID } from '@/lib/InteractionID.js';
 import { checkTOBUser, startTheatreOfBloodTrip } from '@/mahoji/lib/abstracted_commands/tobCommand.js';
 
-const AUTO_TOB_MASS_TIMEOUT = Time.Minute * 5;
+const AUTO_TOB_MASS_TIMEOUT = Time.Minute * 1;
 const AUTO_TOB_MASS_MAX_REAL_USERS = 4;
 const AUTO_TOB_MASS_TARGET = globalConfig.isProduction
 	? {
-		guildId: '342983479501389826',
-		channelId: '926750772081872956',
-		interval: Time.Hour
-	}
+			guildId: '342983479501389826',
+			channelId: '926750772081872956',
+			interval: Time.Hour
+		}
 	: {
-		guildId: '940758552425955348',
-		channelId: '1521092178955337871',
-		interval: Time.Minute * 5
-	};
+			guildId: '940758552425955348',
+			channelId: '1521092178955337871',
+			interval: Time.Minute * 5
+		};
 let lastAutoTobMassPeriod: number | null = null;
 
 function getRows() {
