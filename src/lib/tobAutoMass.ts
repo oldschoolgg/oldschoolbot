@@ -8,7 +8,7 @@ import { TOB_FAKE_MASS_PURPLE_KC_CUTOFF } from '@/lib/data/tob.js';
 import { InteractionID } from '@/lib/InteractionID.js';
 import { checkTOBUser, startTheatreOfBloodTrip } from '@/mahoji/lib/abstracted_commands/tobCommand.js';
 
-const AUTO_TOB_MASS_TIMEOUT = Time.Minute * 1;
+const AUTO_TOB_MASS_TIMEOUT = Time.Minute * 5;
 const AUTO_TOB_MASS_MAX_REAL_USERS = 4;
 const AUTO_TOB_MASS_TARGET = globalConfig.isProduction
 	? {
