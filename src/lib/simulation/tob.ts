@@ -21,6 +21,7 @@ interface TheatreOfBloodOptions {
 	 * The members of the raid team, 1-5 people.
 	 */
 	team: readonly TeamMember[];
+	uniqueEligibleUserIDs?: readonly string[];
 	rng: RNGProvider;
 }
 
@@ -132,7 +133,7 @@ class TheatreOfBloodClass {
 		return table.roll();
 	}
 
-	public complete({ team, rng, hardMode }: TheatreOfBloodOptions) {
+	public complete({ team, rng, hardMode, uniqueEligibleUserIDs }: TheatreOfBloodOptions) {
 		assert(team.length >= 1 || team.length <= 5, 'TOB team must have 1-5 members');
 
 		const maxPointsPerPerson = 22;
@@ -153,8 +154,12 @@ class TheatreOfBloodClass {
 
 		const percentBaseChanceOfUnique = (hardMode ? 13 : 11) * (teamPoints / maxPointsTeamCanGet);
 
-		const purpleReceived = rng.percentChance(percentBaseChanceOfUnique);
-		const purpleRecipient = purpleReceived ? this.uniqueDecide(parsedTeam) : null;
+		const eligibleTeam =
+			uniqueEligibleUserIDs === undefined
+				? parsedTeam
+				: parsedTeam.filter(member => uniqueEligibleUserIDs.includes(member.id));
+		const purpleReceived = eligibleTeam.length > 0 && rng.percentChance(percentBaseChanceOfUnique);
+		const purpleRecipient = purpleReceived ? this.uniqueDecide(eligibleTeam) : null;
 
 		const lootResult: LootBank = {};
 
