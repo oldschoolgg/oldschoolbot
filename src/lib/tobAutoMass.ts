@@ -3,24 +3,18 @@ import { Time } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
 import { MathRNG } from 'node-rng';
 
-import { globalConfig } from '@/lib/constants.js';
 import { TOB_FAKE_MASS_PURPLE_KC_CUTOFF } from '@/lib/data/tob.js';
 import { InteractionID } from '@/lib/InteractionID.js';
 import { checkTOBUser, startTheatreOfBloodTrip } from '@/mahoji/lib/abstracted_commands/tobCommand.js';
 
-const AUTO_TOB_MASS_TIMEOUT = Time.Minute * 1;
+const AUTO_TOB_MASS_TIMEOUT = Time.Minute * 5;
 const AUTO_TOB_MASS_MAX_REAL_USERS = 4;
-const AUTO_TOB_MASS_TARGET = globalConfig.isProduction
-	? {
-			guildId: '342983479501389826',
-			channelId: '926750772081872956',
-			interval: Time.Hour
-		}
-	: {
-			guildId: '940758552425955348',
-			channelId: '1521092178955337871',
-			interval: Time.Minute * 5
-		};
+const AUTO_TOB_MASS_TARGET = {
+	guildId: '342983479501389826',
+	channelId: '926750772081872956',
+	interval: Time.Hour
+};
+const TOB_ROLE_ID = '924538465494904842';
 let lastAutoTobMassPeriod: number | null = null;
 
 function getRows() {
@@ -36,7 +30,9 @@ async function getMessageContent(usersWhoJoined: string[], startedAt: number) {
 			? 'None yet'
 			: (await Promise.all(usersWhoJoined.map(u => Cache.getBadgedUsername(u)))).join(', ');
 
-	return `A maxed fake ToB host is running a learner Theatre of Blood mass. Use the buttons below to join or leave.
+	return `<@&${TOB_ROLE_ID}>
+
+A maxed fake ToB host is running a learner Theatre of Blood mass. Use the buttons below to join or leave.
 
 **Users Joined:** ${joined}
 
@@ -58,14 +54,14 @@ export async function maybeStartScheduledTobMass() {
 	const message = await globalClient.sendMessage(channelId, {
 		content: await getMessageContent(usersWhoJoined, startedAt),
 		components: getRows(),
-		allowedMentions: { users: [] }
+		allowedMentions: { roles: [TOB_ROLE_ID], users: [] }
 	});
 
 	const updateMessage = async (components = getRows()) => {
 		await globalClient.editMessage(channelId, message.id, {
 			content: await getMessageContent(usersWhoJoined, startedAt),
 			components,
-			allowedMentions: { users: [] }
+			allowedMentions: { roles: [], users: [] }
 		});
 	};
 
