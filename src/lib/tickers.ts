@@ -11,6 +11,7 @@ import { collectMetrics } from '@/lib/metrics.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { FarmingPatchName, FarmingPatchSettingsKey } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { IPatchData } from '@/lib/skilling/skills/farming/utils/types.js';
+import { maybeStartScheduledTobMass } from '@/lib/tobAutoMass.js';
 import { MUserClass } from '@/lib/user/MUser.js';
 import { handleGiveawayCompletion } from '@/lib/util/giveaway.js';
 
@@ -111,6 +112,15 @@ export const tickers: {
 		interval: globalConfig.isProduction ? Time.Second * 5 : 500,
 		cb: async () => {
 			await ActivityManager.processPendingActivities();
+		}
+	},
+	{
+		name: 'hourly_tob_learner_mass',
+		timer: null,
+		interval: Time.Minute,
+		productionOnly: true,
+		cb: async () => {
+			await maybeStartScheduledTobMass();
 		}
 	},
 	{
