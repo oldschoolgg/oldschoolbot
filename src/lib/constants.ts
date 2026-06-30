@@ -164,7 +164,8 @@ export enum BitField {
 	WikiContributor = 50,
 	UnlimitedGiveaways = 51,
 	ServerSupport = 52,
-	DisabledPassiveImplings = 53
+	DisabledPassiveImplings = 53,
+	DisableAutoFarmButton = 54
 }
 
 export interface IBitFieldData {
@@ -250,6 +251,11 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 	},
 	[BitField.DisableAutoSlayButton]: {
 		name: 'Disable Auto Slay Button',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisableAutoFarmButton]: {
+		name: 'Disable Auto Farm Button',
 		protected: false,
 		userConfigurable: true
 	},

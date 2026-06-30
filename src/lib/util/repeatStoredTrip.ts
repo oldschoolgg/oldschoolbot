@@ -1,4 +1,10 @@
-import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
+import {
+	ButtonBuilder,
+	type ButtonMInteraction,
+	ButtonStyle,
+	interactionButtonPrompt,
+	SpecialResponse
+} from '@oldschoolgg/discord';
 import { objectValues, Time } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
@@ -78,8 +84,13 @@ import type {
 } from '@/lib/types/minions.js';
 import { giantsFoundryAlloys } from '@/mahoji/lib/abstracted_commands/giantsFoundryCommand.js';
 import puroOptions from '@/mahoji/lib/abstracted_commands/puroPuroCommand.js';
+import { slayerNewTaskCommand } from '@/mahoji/lib/abstracted_commands/slayerTaskCommand.js';
 
-const taskCanBeRepeated = (activity: Activity, user: MUser) => {
+const taskCanBeRepeated = (activity: Activity, user: MUser, taskIndex: number) => {
+	const data = ActivityManager.convertStoredActivityToFlatActivity(activity);
+	if (data.type === activity_type_enum.Farming) {
+		return taskIndex === 0 && data.autoFarmed;
+	}
 	if (activity.type === activity_type_enum.ClueCompletion) {
 		const realActivity = ActivityManager.convertStoredActivityToFlatActivity(activity) as ClueActivityTaskOptions;
 		return (
@@ -101,6 +112,13 @@ const taskCanBeRepeated = (activity: Activity, user: MUser) => {
 		] as activity_type_enum[]
 	).includes(activity.type);
 };
+
+async function canRepeatSlayerMonsterTrip(user: MUser, data: ActivityTaskData): Promise<boolean> {
+	if (data.type !== activity_type_enum.MonsterKilling || !data.onTask) return true;
+	const { assignedTask } = await user.fetchSlayerInfo();
+	return Boolean(assignedTask?.monsters.includes(data.mi));
+}
+
 type ActivityMap = {
 	[K in ActivityTaskData as K['type']]: K;
 };
@@ -503,8 +521,7 @@ const tripHandlers: {
 				name: autocompleteMonsters.find(i => i.id === data.mi)?.name ?? data.mi.toString(),
 				quantity: data.iQty,
 				method,
-				wilderness: data.isInWilderness,
-				onTask: data.onTask
+				wilderness: data.isInWilderness
 			};
 		}
 	},
@@ -788,22 +805,36 @@ export async function fetchRepeatTrips(user: MUser): Promise<Activity[]> {
 		orderBy: {
 			id: 'desc'
 		},
-		take: 20
+		take: 30
 	});
 	const filtered: Activity[] = [];
+	let tripIndex = -1;
 	for (const trip of res) {
-		if (!taskCanBeRepeated(trip, user)) continue;
-		const data = ActivityManager.convertStoredActivityToFlatActivity(trip);
-		if (data.type === activity_type_enum.Farming) {
-			if (!data.autoFarmed) {
-				continue;
-			}
-		}
+		tripIndex++;
+		if (!taskCanBeRepeated(trip, user, tripIndex)) continue;
 		if (!filtered.some(i => i.type === trip.type)) {
 			filtered.push(trip);
 		}
 	}
 	return filtered;
+}
+
+async function getRepeatableAlternatives(user: MUser, skippedActivity: Activity, limit: number) {
+	const trips = await fetchRepeatTrips(user);
+	const alternatives: Activity[] = [];
+	for (const trip of trips) {
+		if (trip.type === skippedActivity.type) continue;
+		alternatives.push(trip);
+		if (alternatives.length >= limit) break;
+	}
+	return alternatives;
+}
+
+function makeRepeatTripButtonForActivity(activity: Activity) {
+	return new ButtonBuilder()
+		.setLabel(`Repeat ${activity.type}`)
+		.setCustomId(`REPEAT_TRIP_${activity.type}`)
+		.setStyle(ButtonStyle.Secondary);
 }
 
 export async function makeRepeatTripButtons(user: MUser) {
@@ -812,22 +843,131 @@ export async function makeRepeatTripButtons(user: MUser) {
 
 	const buttons: ButtonBuilder[] = [];
 	for (const trip of trips.slice(0, limit)) {
-		buttons.push(
-			new ButtonBuilder()
-				.setLabel(`Repeat ${trip.type}`)
-				.setCustomId(`REPEAT_TRIP_${trip.type}`)
-				.setStyle(ButtonStyle.Secondary)
-		);
+		buttons.push(makeRepeatTripButtonForActivity(trip));
 	}
 	return buttons;
 }
+const SlayerTaskFinishedPromptID = {
+	NewTask: 'DYN_SLAYER_TASK_FINISHED_NEW_TASK',
+	RepeatAnyway: 'DYN_SLAYER_TASK_FINISHED_REPEAT_ANYWAY',
+	RepeatAlternativePrefix: 'DYN_SLAYER_TASK_FINISHED_REPEAT_ACTIVITY_'
+} as const;
 
-export async function repeatTrip(user: MUser, interaction: OSInteraction, activity: Activity): CommandResponse {
+function makeSlayerTaskFinishedRepeatButton(activity: Activity) {
+	return new ButtonBuilder()
+		.setLabel(`Repeat ${activity.type}`)
+		.setCustomId(`${SlayerTaskFinishedPromptID.RepeatAlternativePrefix}${activity.id.toString()}`)
+		.setStyle(ButtonStyle.Secondary);
+}
+
+async function replyToCollectedButton(interaction: OSInteraction, response: Awaited<CommandResponse>) {
+	if (
+		response === SpecialResponse.PaginatedMessageResponse ||
+		response === SpecialResponse.SilentErrorResponse ||
+		response === SpecialResponse.RespondedManually
+	) {
+		return;
+	}
+	await interaction.reply(response);
+}
+
+function toOSInteraction(
+	buttonInteraction: ButtonMInteraction,
+	sourceInteraction: OSInteraction,
+	user: MUser
+): OSInteraction {
+	const osInteraction = buttonInteraction as unknown as OSInteraction;
+	osInteraction.user = user;
+	Object.defineProperty(osInteraction, 'rng', {
+		value: sourceInteraction.rng,
+		configurable: true
+	});
+	return osInteraction;
+}
+
+async function handleSlayerTaskFinishedPrompt(
+	user: MUser,
+	interaction: OSInteraction,
+	activity: Activity,
+	timeout: number
+): Promise<SpecialResponse.RespondedManually> {
+	const alternatives = await getRepeatableAlternatives(user, activity, 2);
+	const selectedInteraction = await interactionButtonPrompt({
+		interaction,
+		content: 'Your slayer task has ended, what would you like to do?',
+		ephemeral: true,
+		timeout,
+		users: [user.id],
+		buttons: [
+			new ButtonBuilder()
+				.setLabel('Get a new task')
+				.setCustomId(SlayerTaskFinishedPromptID.NewTask)
+				.setStyle(ButtonStyle.Secondary),
+			new ButtonBuilder()
+				.setLabel('Repeat anyway')
+				.setCustomId(SlayerTaskFinishedPromptID.RepeatAnyway)
+				.setStyle(ButtonStyle.Secondary),
+			...alternatives.map(makeSlayerTaskFinishedRepeatButton)
+		],
+		timeoutContent: 'Your slayer task prompt timed out.'
+	});
+
+	if (!selectedInteraction?.customId) {
+		return SpecialResponse.RespondedManually;
+	}
+	const actionInteraction = toOSInteraction(selectedInteraction, interaction, user);
+
+	if (selectedInteraction.customId === SlayerTaskFinishedPromptID.NewTask) {
+		const response = await slayerNewTaskCommand({ user, interaction: actionInteraction, showButtons: true });
+		await replyToCollectedButton(actionInteraction, response);
+		return SpecialResponse.RespondedManually;
+	}
+
+	if (selectedInteraction.customId === SlayerTaskFinishedPromptID.RepeatAnyway) {
+		const response = await repeatTrip(user, actionInteraction, activity);
+		await replyToCollectedButton(actionInteraction, response);
+		return SpecialResponse.RespondedManually;
+	}
+
+	const selectedActivityID = selectedInteraction.customId.replace(
+		SlayerTaskFinishedPromptID.RepeatAlternativePrefix,
+		''
+	);
+	const selectedActivity = alternatives.find(alternative => alternative.id.toString() === selectedActivityID);
+	if (!selectedActivity) {
+		await actionInteraction.reply({ content: "Couldn't find that trip to repeat.", ephemeral: true });
+		return SpecialResponse.RespondedManually;
+	}
+
+	const response = await repeatTrip(user, actionInteraction, selectedActivity);
+	await replyToCollectedButton(actionInteraction, response);
+	return SpecialResponse.RespondedManually;
+}
+
+export async function repeatTrip(
+	user: MUser,
+	interaction: OSInteraction,
+	activity: Activity,
+	options?: { showSlayerTaskIntervention?: boolean; slayerTaskInterventionTimeout?: number }
+): CommandResponse {
 	if (!activity || !activity.data || !activity.type) {
 		return { content: "Couldn't find any trip to repeat.", ephemeral: true };
 	}
 	const handler = tripHandlers[activity.type];
 	const args: ActivityTaskData = ActivityManager.convertStoredActivityToFlatActivity(activity);
+
+	if (
+		activity.type === activity_type_enum.MonsterKilling &&
+		options?.showSlayerTaskIntervention &&
+		!(await canRepeatSlayerMonsterTrip(user, args))
+	) {
+		return handleSlayerTaskFinishedPrompt(
+			user,
+			interaction,
+			activity,
+			options.slayerTaskInterventionTimeout ?? 15_000
+		);
+	}
 	let commandArgs: CommandOptions;
 	try {
 		commandArgs = handler.args(args as any) as CommandOptions;
