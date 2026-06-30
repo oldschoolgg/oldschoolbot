@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:16-alpine
+    image: postgres:16.14-bookworm
     command: >
       -c max_connections=1000
       -c fsync=off
