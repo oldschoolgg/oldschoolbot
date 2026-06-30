@@ -1,4 +1,3 @@
-import { DiscordAPIError } from '@discordjs/rest';
 import { WebSocketShardEvents } from '@discordjs/ws';
 import {
 	type APIApplication,
@@ -16,7 +15,6 @@ import {
 import type { IChannel, IMessage, IUserLog, IWebhook } from '@oldschoolgg/schemas';
 import { Time } from '@oldschoolgg/toolkit';
 import { DiscordSnowflake } from '@sapphire/snowflake';
-import type { APIWebhook } from 'discord-api-types/v10';
 import { omit } from 'remeda';
 
 import { makeParty } from '@/discord/interaction/makeParty.js';
@@ -161,90 +159,32 @@ export class OldSchoolBotClient extends DiscordClient {
 	}
 
 	private async deleteWebhook(channelId: string): Promise<void> {
-		await Promise.all([
-			Cache.clearWebhook(channelId),
-			prisma.webhook.deleteMany({ where: { channel_id: channelId } })
-		]);
+		await Promise.all([Cache.clearWebhook(channelId), prisma.webhook.delete({ where: { channel_id: channelId } })]);
 	}
 
 	private async getChannelWebhook(channelId: string): Promise<IWebhook | null> {
 		const cachedWebhook = await Cache.getWebhook(channelId);
 		if (cachedWebhook) return cachedWebhook;
-		const storedWebhook = await prisma.webhook.findUnique({ where: { channel_id: channelId } });
-		if (!storedWebhook) return null;
-		const webhook: IWebhook = {
-			id: storedWebhook.webhook_id,
-			token: storedWebhook.webhook_token,
+		const existingWebhooks = await globalClient.fetchWebhooks(channelId);
+		if (existingWebhooks.length === 0) return null;
+		const existingWebhook = existingWebhooks[0];
+		const existingWebhookFmt: IWebhook = {
+			id: existingWebhook.id,
+			token: existingWebhook.token!,
 			channel_id: channelId
 		};
-		await Cache.setWebhook(webhook);
-		return webhook;
-	}
-
-	private async botCanCreateWebhooks(channelId: string): Promise<boolean> {
-		const botId = this.application?.bot?.id;
-		if (!botId) return false;
-		const channel = await Cache.getChannel(channelId);
-		if (!channel.guild_id) return false;
-		const botMember = await Cache.getMember({ guildId: channel.guild_id, userId: botId });
-		return Boolean(
-			botMember?.permissions.includes('MANAGE_WEBHOOKS') || botMember?.permissions.includes('ADMINISTRATOR')
-		);
-	}
-
-	private formatWebhook(channelId: string, webhook: APIWebhook): IWebhook | null {
-		if (!webhook.token) return null;
-		return {
-			id: webhook.id,
-			token: webhook.token,
-			channel_id: channelId
-		};
-	}
-
-	private async storeWebhook(webhook: IWebhook): Promise<void> {
-		await Promise.all([
-			Cache.setWebhook(webhook),
-			prisma.webhook.upsert({
-				where: { channel_id: webhook.channel_id },
-				create: {
-					channel_id: webhook.channel_id,
-					webhook_id: webhook.id,
-					webhook_token: webhook.token
-				},
-				update: {
-					webhook_id: webhook.id,
-					webhook_token: webhook.token
-				}
-			})
-		]);
-	}
-
-	private async getOrCreateChannelWebhook(channelId: string): Promise<IWebhook | null> {
-		const existingWebhook = await this.getChannelWebhook(channelId);
-		if (existingWebhook) return existingWebhook;
-		if (!(await this.botCanCreateWebhooks(channelId))) return null;
-		const createdWebhook = this.formatWebhook(channelId, await this.createWebhook(channelId));
-		if (!createdWebhook) return null;
-		await this.storeWebhook(createdWebhook);
-		return createdWebhook;
-	}
-
-	private isInvalidWebhookError(err: unknown): boolean {
-		return (
-			(err instanceof DiscordAPIError && err.code === 10_015) ||
-			(err instanceof Error &&
-				(err.message?.includes('Unknown Webhook') || err.message?.includes('Invalid Webhook Token')))
-		);
+		await Cache.setWebhook(existingWebhookFmt);
+		return existingWebhookFmt;
 	}
 
 	private async sendToWebhook(channelId: string, data: SendableMessage): Promise<IMessage | null> {
 		try {
-			const webhook = await this.getOrCreateChannelWebhook(channelId);
+			const webhook = await this.getChannelWebhook(channelId);
 			if (!webhook) return null;
 			return globalClient.sendWebhook(webhook, data);
 		} catch (_err: unknown) {
 			const err = _err as Error;
-			if (this.isInvalidWebhookError(err)) {
+			if (err.message?.includes('Unknown Webhook')) {
 				Logging.logDebug(`Deleting unknown webhook in ${channelId}`);
 				await this.deleteWebhook(channelId);
 			} else {
@@ -258,18 +198,21 @@ export class OldSchoolBotClient extends DiscordClient {
 		const message = await resolveBotSendableMessage(rawMessage);
 		const splitMessages = splitSendableMessage(message);
 		let firstResponse: IMessage | null = null;
-
-		for (const part of splitMessages) {
-			const webhookResponse = await this.sendToWebhook(channelId, part);
-			if (webhookResponse) {
-				firstResponse ??= webhookResponse;
-				continue;
+		try {
+			firstResponse = await this.sendMessage(channelId, splitMessages[0]);
+		} catch {
+			for (const part of splitMessages) {
+				const response = await this.sendToWebhook(channelId, part);
+				firstResponse ??= response;
 			}
+			return firstResponse;
+		}
+
+		for (const part of splitMessages.slice(1)) {
 			try {
-				const messageResponse = await this.sendMessage(channelId, part);
-				firstResponse ??= messageResponse;
+				await this.sendMessage(channelId, part);
 			} catch {
-				// Preserve the previous behavior of swallowing send failures in this fallback wrapper.
+				await this.sendToWebhook(channelId, part);
 			}
 		}
 		return firstResponse;
