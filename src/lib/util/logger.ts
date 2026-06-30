@@ -128,6 +128,7 @@ function logError(args: string | Error | RichErrorLogArgs, ctx?: LogContext): vo
 	}
 
 	if ('requestBody' in err) {
+		context.requestBody = {};
 		if (err.requestBody.files) {
 			context.requestBody.files = err.requestBody.files.map(file => ({ name: file.name }));
 		}
