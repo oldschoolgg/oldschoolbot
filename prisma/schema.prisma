@@ -1579,3 +1579,18 @@ model UserLog {
   @@index([user_id, date])
   @@map("user_logs")
 }
+
+model Notification {
+  id              Int @id @default(autoincrement())
+
+  user_id         String @db.VarChar(19)
+  user            User   @relation(fields: [user_id], references: [id], onDelete: Cascade )
+  message         String
+  reminded_count  Int @default(0)
+  next_reminder   DateTime?
+  mention         Boolean @default(false)
+  reply           Boolean @default(true)
+  ephermeral      Boolean @default(false)
+  on_return       Boolean @default(false)
+  meta_data       Json? @db.JsonB
+}

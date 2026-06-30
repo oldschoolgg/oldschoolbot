@@ -3,24 +3,41 @@ import { LRUCache } from 'lru-cache';
 
 import { BitField, PerkTier } from '@/lib/constants.js';
 
+export const RobochimpBitfieldEnum = {
+	MagnaTier1: 8,
+	MagnaTier2: 9,
+	MagnaTier3: 10,
+	MagnaTier4: 11,
+	MagnaTier5: 12,
+	MagnaTier6: 13,
+	CyrTier0: 16,
+	CyrTier1: 17,
+	CyrTier2: 18,
+	CyrTier3: 19,
+	CyrTier4: 20,
+	CyrTier5: 21,
+	CyrTier6: 22,
+	CyrTier7: 23
+}
+
 const CYR_TIER_BITS = [
-	{ bit: 23, number: 7 },
-	{ bit: 22, number: 6 },
-	{ bit: 21, number: 5 },
-	{ bit: 20, number: 4 },
-	{ bit: 19, number: 3 },
-	{ bit: 18, number: 2 },
-	{ bit: 17, number: 1 },
-	{ bit: 16, number: 0 }
+	{ bit: RobochimpBitfieldEnum.CyrTier7, number: 7 },
+	{ bit: RobochimpBitfieldEnum.CyrTier6, number: 6 },
+	{ bit: RobochimpBitfieldEnum.CyrTier5, number: 5 },
+	{ bit: RobochimpBitfieldEnum.CyrTier4, number: 4 },
+	{ bit: RobochimpBitfieldEnum.CyrTier3, number: 3 },
+	{ bit: RobochimpBitfieldEnum.CyrTier2, number: 2 },
+	{ bit: RobochimpBitfieldEnum.CyrTier1, number: 1 },
+	{ bit: RobochimpBitfieldEnum.CyrTier0, number: 0 }
 ] as const;
 
 const MAGNA_TIER_BITS = [
-	{ bit: 13, number: 6 },
-	{ bit: 12, number: 5 },
-	{ bit: 11, number: 4 },
-	{ bit: 10, number: 3 },
-	{ bit: 9, number: 2 },
-	{ bit: 8, number: 1 }
+	{ bit: RobochimpBitfieldEnum.MagnaTier6, number: 6 },
+	{ bit: RobochimpBitfieldEnum.MagnaTier5, number: 5 },
+	{ bit: RobochimpBitfieldEnum.MagnaTier4, number: 4 },
+	{ bit: RobochimpBitfieldEnum.MagnaTier3, number: 3 },
+	{ bit: RobochimpBitfieldEnum.MagnaTier2, number: 2 },
+	{ bit: RobochimpBitfieldEnum.MagnaTier1, number: 1 }
 ] as const;
 
 const ROBOCHIMP_PAID_BITS = new Set([...CYR_TIER_BITS, ...MAGNA_TIER_BITS].map(tier => tier.bit));
@@ -131,9 +148,9 @@ export async function getUsersPerkTier({
 
 	// Why bother looking for the member if it doesn't help get a higher tier
 	if (
-		user.bitfield.includes(BitField.PatronTier1) ||
-		user.bitfield.includes(BitField.HasPermanentTierOne) ||
-		user.bitfield.includes(BitField.BothBotsMaxedFreeTierOnePerks)
+		bitfield.includes(BitField.PatronTier1) ||
+		bitfield.includes(BitField.HasPermanentTierOne) ||
+		bitfield.includes(BitField.BothBotsMaxedFreeTierOnePerks)
 	) {
 		eligibleTiers.push(PerkTier.Two);
 	}
