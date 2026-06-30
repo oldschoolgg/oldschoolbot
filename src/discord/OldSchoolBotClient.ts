@@ -12,7 +12,7 @@ import {
 	type GatewayMessageCreateDispatchData,
 	Routes
 } from '@oldschoolgg/discord';
-import type { IChannel, IUserLog, IWebhook } from '@oldschoolgg/schemas';
+import type { IChannel, IMessage, IUserLog, IWebhook } from '@oldschoolgg/schemas';
 import { Time } from '@oldschoolgg/toolkit';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { omit } from 'remeda';
@@ -177,12 +177,11 @@ export class OldSchoolBotClient extends DiscordClient {
 		return existingWebhookFmt;
 	}
 
-	private async sendToWebhook(channelId: string, data: SendableMessage): Promise<{ success: boolean }> {
+	private async sendToWebhook(channelId: string, data: SendableMessage): Promise<IMessage | null> {
 		try {
 			const webhook = await this.getChannelWebhook(channelId);
-			if (!webhook) return { success: false };
-			await globalClient.sendWebhook(webhook, data);
-			return { success: true };
+			if (!webhook) return null;
+			return globalClient.sendWebhook(webhook, data);
 		} catch (_err: unknown) {
 			const err = _err as Error;
 			if (err.message?.includes('Unknown Webhook')) {
@@ -191,20 +190,22 @@ export class OldSchoolBotClient extends DiscordClient {
 			} else {
 				Logging.logError(err);
 			}
-			return { success: false };
+			return null;
 		}
 	}
 
-	async sendMessageOrWebhook(channelId: string, rawMessage: SendableMessage): Promise<void> {
+	async sendMessageOrWebhook(channelId: string, rawMessage: SendableMessage): Promise<IMessage | null> {
 		const message = await resolveBotSendableMessage(rawMessage);
 		const splitMessages = splitSendableMessage(message);
+		let firstResponse: IMessage | null = null;
 		try {
-			await this.sendMessage(channelId, splitMessages[0]);
+			firstResponse = await this.sendMessage(channelId, splitMessages[0]);
 		} catch {
 			for (const part of splitMessages) {
-				await this.sendToWebhook(channelId, part);
+				const response = await this.sendToWebhook(channelId, part);
+				firstResponse ??= response;
 			}
-			return;
+			return firstResponse;
 		}
 
 		for (const part of splitMessages.slice(1)) {
@@ -214,6 +215,7 @@ export class OldSchoolBotClient extends DiscordClient {
 				await this.sendToWebhook(channelId, part);
 			}
 		}
+		return firstResponse;
 	}
 
 	async channelIsSendable(channelId: IChannel | string): Promise<boolean> {

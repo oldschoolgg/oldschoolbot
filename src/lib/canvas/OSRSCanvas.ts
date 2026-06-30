@@ -76,7 +76,7 @@ export class OSRSCanvas {
 		sprite,
 		iconPackId
 	}: { width: number; height: number; sprite?: IBgSprite | undefined | null; iconPackId?: IconPackID | null }) {
-		this.canvas = new SkiaCanvas(width, height);
+		this.canvas = new SkiaCanvas(width, height, { textContrast: 1, textGamma: 1 });
 		this.canvas.gpu = false;
 		this.ctx = this.canvas.getContext('2d');
 		this.ctx.imageSmoothingEnabled = false;

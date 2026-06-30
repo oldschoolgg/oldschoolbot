@@ -273,7 +273,7 @@ class BankImageTask {
 			[itemID('Seer'), this.whiteEffect!],
 			[itemID('Octo'), this.octoBubblesEffect!],
 			[BSOItem.LYDIA, this.radiantEffect!],
-			[BSOItem.SHINY_PARTYCRAB, this.radiantEffect!]
+			[BSOItem.MONA, this.radiantEffect!]
 		];
 
 		for (const [itemId, itemEffect] of coolItemEffects) {

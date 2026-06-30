@@ -39,7 +39,9 @@ RUN pnpm run monorepo:build
 FROM base AS build-run
 WORKDIR /usr/src/app
 COPY --from=build /usr/src/app /usr/src/app
-CMD pnpm prisma db push --schema='./prisma/robochimp.prisma' > /dev/null 2>&1 & \
-    pnpm prisma db push --schema='./prisma/schema.prisma' > /dev/null 2>&1 & \
+CMD psql -U postgres -c "CREATE DATABASE integration_test" && \
+    psql -U postgres -c "CREATE DATABASE robochimp_integration_test" && \
+    pnpm prisma db push --schema='./prisma/robochimp.prisma' && \
+    pnpm prisma db push --schema='./prisma/schema.prisma' && \
     wait && \
     NODE_NO_WARNINGS=1 pnpm vitest run --config vitest.integration.config.mts

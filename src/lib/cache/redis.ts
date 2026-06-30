@@ -13,8 +13,15 @@ import {
 import { cleanUsername, Time } from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake, MockedRedis, RedisKeys } from '@oldschoolgg/util';
 import { Redis } from 'ioredis';
+import PQueue from 'p-queue';
 
 import type { Guild, Prisma } from '@/prisma/main.js';
+import {
+	defaultUserQueueStats,
+	type FetchUserQueueStats,
+	loadFetchQueueStats,
+	updateFetchQueue
+} from '@/lib/cache/fetchQueueStats.js';
 import { BitField, BOT_TYPE, globalConfig } from '@/lib/constants.js';
 import type { RobochimpUser } from '@/lib/roboChimp.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
@@ -57,6 +64,14 @@ type GuildUpdateInput = Partial<IGuild> & {
 
 class CacheManager {
 	private client: Redis;
+	private discordUserFetchQueueStatsInit: Promise<void>;
+	private discordUserFetchQueue = new PQueue({
+		concurrency: 1,
+		intervalCap: 1,
+		interval: Time.Second
+	});
+	private queuedDiscordUserFetches = new Set<string>();
+	private discordUserFetchQueueStats = defaultUserQueueStats();
 
 	constructor() {
 		if (globalConfig.isProduction) {
@@ -73,6 +88,7 @@ class CacheManager {
 				this.client = new MockedRedis() as any as Redis;
 			}
 		}
+		this.discordUserFetchQueueStatsInit = this.initializeDiscordUserFetchQueueStats();
 	}
 
 	private async setString(key: string, value: string, ttlSeconds: number) {
@@ -300,6 +316,114 @@ class CacheManager {
 		await this.setString(fullKey, value, TTL.Day + jitterSeconds);
 	}
 
+	private getDiscordUserFetchQueueStatsSnapshot(): FetchUserQueueStats {
+		return {
+			...this.discordUserFetchQueueStats,
+			queued: this.discordUserFetchQueue.size,
+			running: this.discordUserFetchQueue.pending,
+			queuedUserIds: [...this.queuedDiscordUserFetches]
+		};
+	}
+
+	private async updateDiscordUserFetchQueueStats(updates: Partial<FetchUserQueueStats> = {}): Promise<void> {
+		await updateFetchQueue(this.client, this.discordUserFetchQueueStats, {
+			queued: this.discordUserFetchQueue.size,
+			running: this.discordUserFetchQueue.pending,
+			currentUserId: this.discordUserFetchQueueStats.currentUserId,
+			queuedUserIds: [...this.queuedDiscordUserFetches],
+			...updates
+		});
+	}
+
+	private async initializeDiscordUserFetchQueueStats(): Promise<void> {
+		this.discordUserFetchQueueStats = await loadFetchQueueStats(this.client);
+		await this.updateDiscordUserFetchQueueStats({ queued: 0, running: 0, currentUserId: null, queuedUserIds: [] });
+	}
+
+	private async queueDiscordUserFetch(userId: string): Promise<void> {
+		await this.discordUserFetchQueueStatsInit;
+		if (this.queuedDiscordUserFetches.has(userId)) {
+			await this.updateDiscordUserFetchQueueStats({
+				dedupeSkips: this.discordUserFetchQueueStats.dedupeSkips + 1
+			});
+			return;
+		}
+
+		this.queuedDiscordUserFetches.add(userId);
+		await this.updateDiscordUserFetchQueueStats({
+			totalQueued: this.discordUserFetchQueueStats.totalQueued + 1,
+			lastQueuedAt: new Date()
+		});
+		const task = this.discordUserFetchQueue.add(async () => {
+			await this.discordUserFetchQueueStatsInit;
+			await this.updateDiscordUserFetchQueueStats({
+				totalStarted: this.discordUserFetchQueueStats.totalStarted + 1,
+				totalFetchRequests: this.discordUserFetchQueueStats.totalFetchRequests + 1,
+				currentUserId: userId,
+				lastStartedAt: new Date()
+			});
+
+			try {
+				const djsUser = await globalClient.fetchUser(userId).catch(() => null);
+				const username = djsUser?.username ? cleanUsername(djsUser.username) : null;
+
+				if (username) {
+					await prisma.user.upsert({
+						where: {
+							id: userId
+						},
+						create: {
+							id: userId,
+							username: username
+						},
+						update: {
+							username
+						},
+						select: {
+							id: true
+						}
+					});
+
+					await this.setUsername(userId, username);
+					await this.client.del(BotKeys.User.BadgedUsername(userId));
+				}
+
+				await this.updateDiscordUserFetchQueueStats({
+					totalCompleted: this.discordUserFetchQueueStats.totalCompleted + 1,
+					lastCompletedAt: new Date()
+				});
+			} catch (err) {
+				await this.updateDiscordUserFetchQueueStats({
+					totalFailed: this.discordUserFetchQueueStats.totalFailed + 1,
+					lastFailedAt: new Date(),
+					lastError: (err as Error).message
+				});
+				throw err;
+			} finally {
+				this.queuedDiscordUserFetches.delete(userId);
+				await this.updateDiscordUserFetchQueueStats({
+					currentUserId: this.discordUserFetchQueueStats.currentUserId === userId ? null : undefined
+				});
+			}
+		});
+		await this.updateDiscordUserFetchQueueStats();
+		void task
+			.catch(err => {
+				Logging.logError(err as Error, {
+					source: 'discord_user_fetch_queue',
+					user_id: userId
+				});
+			})
+			.finally(() => {
+				void this.updateDiscordUserFetchQueueStats();
+			});
+	}
+
+	async getDiscordUserFetchQueueStats(): Promise<FetchUserQueueStats> {
+		await this.discordUserFetchQueueStatsInit;
+		return this.getDiscordUserFetchQueueStatsSnapshot();
+	}
+
 	async getUsername(userId: string): Promise<string> {
 		if (!isValidDiscordSnowflake(userId)) {
 			throw new Error(`Invalid userID: ${userId}`);
@@ -308,31 +432,17 @@ class CacheManager {
 		const cached = await this.getExpiringString(RedisKeys.Discord.Username(userId));
 		if (cached) return cached;
 
-		let username: string | null = null;
-		const djsUser = await globalClient.fetchUser(userId).catch(() => null);
-		if (djsUser?.username) {
-			username = cleanUsername(djsUser.username);
-		}
-
-		const user = await prisma.user.upsert({
+		await this.queueDiscordUserFetch(userId);
+		const user = await prisma.user.findFirst({
 			where: {
 				id: userId
 			},
-			create: {
-				id: userId,
-				username: username ?? undefined
-			},
-			update: username
-				? {
-						username
-					}
-				: {},
 			select: {
 				username: true
 			}
 		});
 
-		if (!user.username) return 'Unknown';
+		if (!user?.username) return 'Unknown';
 
 		await this.setUsername(userId, user.username);
 		return user.username;

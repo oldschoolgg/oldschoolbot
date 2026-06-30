@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:16-alpine
+    image: postgres:16.14-bookworm
     command: >
       -c max_connections=1000
       -c fsync=off
@@ -50,6 +50,6 @@ services:
         condition: service_healthy
     environment:
       ROBOCHIMP_DATABASE_URL: postgresql://postgres:postgres@db:5435/robochimp_integration_test?connection_limit=10&pool_timeout=0&schema=public
-      DATABASE_URL: postgresql://postgres:postgres@db:5435/osb_integration_test?connection_limit=10&pool_timeout=0&schema=public
+      DATABASE_URL: postgresql://postgres:postgres@db:5435/integration_test?connection_limit=10&pool_timeout=0&schema=public
       REDIS_HOST: redis
       REDIS_PORT: 6379

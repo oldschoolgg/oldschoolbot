@@ -132,10 +132,10 @@ export const fishingTask: MinionTask = {
 		if (bottlesFound) {
 			result.updateBank.itemLootBank.add(BSOItem.MYSTERIOUS_BOTTLE, bottlesFound);
 			if (bottlesFound === 1) {
-				result.messages.push('🏝🍹You gently tug something from the shallows: a *Mysterious bottle!**.');
+				result.messages.push('🏝🍹You gently tug something from the shallows: a **Mysterious bottle!**.');
 			} else {
 				result.messages.push(
-					`🏝️🍹You got quite the haul! You drug ${bottlesFound}x *Mysterious bottles!** out of the ocean!.`
+					`🏝️🍹You got quite the haul! You drug ${bottlesFound}x **Mysterious bottles** out of the ocean!.`
 				);
 			}
 		}

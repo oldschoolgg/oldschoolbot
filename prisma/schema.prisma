@@ -1948,6 +1948,8 @@ model ShootingStars {
 
 enum SystemLogsType {
   ERROR
+  USER_ERROR
+  DEBUG
 }
 
 model SystemLogs {
@@ -1955,8 +1957,10 @@ model SystemLogs {
 
   date DateTime @default(now())
 
-  type SystemLogsType
-  data Json           @db.JsonB
+  type  SystemLogsType
+  msg   String?
+  stack String?
+  data  Json           @default("{}") @db.JsonB
 
   @@map("system_logs")
 }

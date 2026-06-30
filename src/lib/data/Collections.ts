@@ -1990,7 +1990,7 @@ export const allCollectionLogs: ICollection = {
 					'Wubufu',
 					'The whale card',
 					'Radiant magnabbit',
-					'Shiny Partycrab',
+					'Mona',
 					'Lydia'
 				]),
 				counts: false
@@ -2003,7 +2003,7 @@ export const allCollectionLogs: ICollection = {
 					'Imitation crab hat',
 					'Partycrab',
 					'Patricia',
-					'Shiny partycrab',
+					'Mona',
 					'Lydia',
 					'Old crab cage',
 					'Mysterious bottle',

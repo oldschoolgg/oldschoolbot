@@ -47,6 +47,7 @@ import { countUsersWithItemInCl } from '@/lib/rawSql.js';
 import { sorts } from '@/lib/sorts.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
+import { safeMessage } from '@/lib/util/smallUtils.js';
 import { makeGiveawayButtons } from '@/mahoji/commands/giveaway.js';
 
 export const gifs = [
@@ -56,34 +57,6 @@ export const gifs = [
 ];
 
 const leaguesTaskNameByID = new Map(allLeagueTasks.map(task => [task.id, task.name] as const));
-
-function buildAdminOverviewResponse(
-	overview: string,
-	body: string,
-	filename = 'admin-report.txt',
-	blockMentions: boolean = false
-): SendableMessage {
-	const trimmedBody = body.trim();
-	if (trimmedBody.length === 0) {
-		return { content: overview };
-	}
-
-	const combined = `${overview}\n${trimmedBody}`;
-	if (combined.length <= 1800) {
-		return { content: combined };
-	}
-	if (combined.length <= 4000) {
-		return {
-			content: overview,
-			embeds: [new EmbedBuilder().setDescription(trimmedBody)]
-		};
-	}
-	return {
-		content: overview,
-		files: [{ name: filename, buffer: Buffer.from(combined) }],
-		allowedMentions: blockMentions ? { parse: [] } : undefined
-	};
-}
 
 function formatLeaguesTaskList(taskIDs: number[]) {
 	if (taskIDs.length === 0) return 'None';
@@ -253,6 +226,41 @@ interface ViewableThing {
 }
 const viewableThings: ViewableThing[] = [
 	{
+		name: 'Discord Username Fetch Queue',
+		run: async () => {
+			const stats = await Cache.getDiscordUserFetchQueueStats();
+			const formatDate = (date: Date | null) => (date ? dateFm(date) : 'Never');
+			const queuedUserIds =
+				stats.queuedUserIds.length > 0
+					? stats.queuedUserIds
+							.slice(0, 20)
+							.map(userId => `- ${userId}${userId === stats.currentUserId ? ' (running)' : ''}`)
+							.join('\n')
+					: 'None';
+
+			return {
+				content: `**Discord Username Fetch Queue**
+Queued now: ${stats.queued.toLocaleString()}
+Running now: ${stats.running.toLocaleString()}
+Current user ID: ${stats.currentUserId ?? 'None'}
+Total Discord fetch requests sent: ${stats.totalFetchRequests.toLocaleString()}
+Total queued: ${stats.totalQueued.toLocaleString()}
+Total started: ${stats.totalStarted.toLocaleString()}
+Total completed: ${stats.totalCompleted.toLocaleString()}
+Total failed: ${stats.totalFailed.toLocaleString()}
+Total deduped queue requests: ${stats.dedupeSkips.toLocaleString()}
+Last queued: ${formatDate(stats.lastQueuedAt)}
+Last started: ${formatDate(stats.lastStartedAt)}
+Last completed: ${formatDate(stats.lastCompletedAt)}
+Last failed: ${formatDate(stats.lastFailedAt)}
+Last error: ${stats.lastError ?? 'None'}
+
+Queued user IDs:
+${queuedUserIds}`
+			};
+		}
+	},
+	{
 		name: 'Lydia Quote',
 		run: async () => {
 			return {
@@ -291,9 +299,8 @@ const viewableThings: ViewableThing[] = [
 					`${privateUsers ? '\\@secret' : `<@${winnerId}>`}: ${new Bank(treasureWon).toString()}`
 			);
 
-			return buildAdminOverviewResponse(
-				'**Buried Treasure Winners**',
-				lines.length === 0 ? 'No buried treasure winners yet.' : lines.join('\n'),
+			return safeMessage(
+				`**Buried Treasure Winners**\n${lines.length === 0 ? 'No buried treasure winners yet.' : lines.join('\n')}`,
 				'buried-treasure-winners.txt',
 				privateUsers
 			);
@@ -1152,7 +1159,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 					)
 					.join('\n');
 			}
-			if (fullData.length + confirmationMessage.length < 1950) confirmationMessage += '\n\n' + fullData;
+			if (fullData.length + confirmationMessage.length < 1950) confirmationMessage += `\n\n${fullData}`;
 
 			await interaction.confirmation(confirmationMessage);
 
@@ -1165,9 +1172,8 @@ ${META_CONSTANTS.RENDERED_STR}`
 			if (result.unknownDuplicateTaskIDs.length > 0) {
 				overview += ` | Unknown IDs: ${result.unknownDuplicateTaskIDs.join(', ')}`;
 			}
-			return buildAdminOverviewResponse(
-				overview,
-				fullOutput ? await buildCleanupDuplicatesTSV(result.users) : result.report,
+			return safeMessage(
+				`${overview}\n${fullOutput ? await buildCleanupDuplicatesTSV(result.users) : result.report}`,
 				'leagues-duplicate-cleanup.txt'
 			);
 		}
@@ -1192,7 +1198,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 					})
 					.join('\n');
 				if (rowData.length + confirmationMsg.length < 1950) {
-					confirmationMsg += '\n\n' + 'user\tremovedTasks\tpointDelta\n' + rowData;
+					confirmationMsg += `\n\nuser\tremovedTasks\tpointDelta\n${rowData}`;
 				}
 			}
 
@@ -1206,9 +1212,8 @@ ${META_CONSTANTS.RENDERED_STR}`
 			const totalRemoved = sumArr(result.map(user => user.removedTaskIDs.length));
 			const totalDelta = sumArr(result.map(user => user.pointDelta));
 			const overview = `Leagues task validation: ${result.length.toLocaleString()} users | ${totalRemoved.toLocaleString()} removed tasks | ${totalDelta >= 0 ? '+' : ''}${totalDelta.toLocaleString()} balance delta`;
-			return buildAdminOverviewResponse(
-				overview,
-				fullOutput ? await buildValidateTasksTSV(result) : buildLeaguesTaskAuditBatchBody(result),
+			return safeMessage(
+				`${overview}\n${fullOutput ? await buildValidateTasksTSV(result) : buildLeaguesTaskAuditBatchBody(result)}`,
 				'leagues-task-validation.txt'
 			);
 		}
@@ -1221,7 +1226,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 			const body = buildLeaguesTaskAuditBody(preview);
 
 			if (!shouldConfirmAndApply) {
-				return buildAdminOverviewResponse(overview, body, `leagues-verify-${targetUserID}.txt`);
+				return safeMessage(`${overview}\n${body}`, `leagues-verify-${targetUserID}.txt`);
 			}
 
 			await interaction.confirmation({
@@ -1230,18 +1235,17 @@ ${META_CONSTANTS.RENDERED_STR}`
 			});
 
 			if (!preview.changed) {
-				return buildAdminOverviewResponse(overview, body, `leagues-verify-${targetUserID}.txt`);
+				return safeMessage(`${overview}\n${body}`, `leagues-verify-${targetUserID}.txt`);
 			}
 
 			const result =
 				(await verifyLeaguesTasksForUser(targetUserID)) ??
 				(await previewVerifyLeaguesTasksForUser(targetUserID));
-			return buildAdminOverviewResponse(
-				buildLeaguesTaskAuditOverview(
+			return safeMessage(
+				`${buildLeaguesTaskAuditOverview(
 					`Leagues Validation Result for <@${targetUserID}> ${targetUserID}`,
 					result
-				),
-				buildLeaguesTaskAuditBody(result),
+				)}\n${buildLeaguesTaskAuditBody(result)}`,
 				`leagues-verify-${targetUserID}.txt`
 			);
 		}

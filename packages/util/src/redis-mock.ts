@@ -11,6 +11,7 @@ type MockPipeline = {
 export class MockedRedis {
 	private store = new Map<string, string>();
 	private counters = new Map<string, number>();
+	private hashes = new Map<string, Record<string, string>>();
 	private expirations = new Map<string, number>(); // epoch ms
 
 	async set(key: string, value: string, exFlag?: 'EX', ttl?: number): Promise<'OK'> {
@@ -33,11 +34,37 @@ export class MockedRedis {
 	async del(key: string): Promise<number> {
 		this.purgeIfExpired(key);
 
-		const existed = this.store.has(key) || this.counters.has(key);
+		const existed = this.store.has(key) || this.counters.has(key) || this.hashes.has(key);
 		this.store.delete(key);
 		this.counters.delete(key);
+		this.hashes.delete(key);
 		this.expirations.delete(key);
 		return existed ? 1 : 0;
+	}
+
+	async hset(key: string, fields: Record<string, string | number | null | undefined>): Promise<number>;
+	async hset(key: string, field: string, value: string | number | null | undefined): Promise<number>;
+	async hset(
+		key: string,
+		fieldsOrField: Record<string, string | number | null | undefined> | string,
+		value?: string | number | null | undefined
+	): Promise<number> {
+		this.purgeIfExpired(key);
+
+		const fields = typeof fieldsOrField === 'string' ? { [fieldsOrField]: value } : fieldsOrField;
+		const hash = this.hashes.get(key) ?? {};
+		let added = 0;
+		for (const [field, fieldValue] of Object.entries(fields)) {
+			if (!(field in hash)) added++;
+			hash[field] = String(fieldValue ?? '');
+		}
+		this.hashes.set(key, hash);
+		return added;
+	}
+
+	async hgetall(key: string): Promise<Record<string, string>> {
+		this.purgeIfExpired(key);
+		return { ...(this.hashes.get(key) ?? {}) };
 	}
 
 	async incr(key: string): Promise<number> {
@@ -53,7 +80,7 @@ export class MockedRedis {
 	async expire(key: string, seconds: number): Promise<number> {
 		this.purgeIfExpired(key);
 
-		if (!this.store.has(key) && !this.counters.has(key)) return 0;
+		if (!this.store.has(key) && !this.counters.has(key) && !this.hashes.has(key)) return 0;
 		this.expirations.set(key, Date.now() + seconds * 1000);
 		return 1;
 	}
@@ -61,7 +88,7 @@ export class MockedRedis {
 	async pexpire(key: string, milliseconds: number): Promise<number> {
 		this.purgeIfExpired(key);
 
-		if (!this.store.has(key) && !this.counters.has(key)) return 0;
+		if (!this.store.has(key) && !this.counters.has(key) && !this.hashes.has(key)) return 0;
 		this.expirations.set(key, Date.now() + milliseconds);
 		return 1;
 	}
@@ -69,7 +96,7 @@ export class MockedRedis {
 	async ttlHelper(key: string): Promise<number> {
 		this.purgeIfExpired(key);
 
-		if (!this.store.has(key) && !this.counters.has(key)) return -2;
+		if (!this.store.has(key) && !this.counters.has(key) && !this.hashes.has(key)) return -2;
 
 		const expiresAt = this.expirations.get(key);
 		if (expiresAt === undefined) return -1;
@@ -97,6 +124,7 @@ export class MockedRedis {
 			this.expirations.delete(key);
 			this.store.delete(key);
 			this.counters.delete(key);
+			this.hashes.delete(key);
 		}
 	}
 
@@ -177,6 +205,7 @@ export class MockedRedis {
 	async quit(): Promise<'OK'> {
 		this.store.clear();
 		this.counters.clear();
+		this.hashes.clear();
 		this.expirations.clear();
 		return 'OK';
 	}

@@ -94,10 +94,19 @@ export async function rawCommandHandlerInner({
 		return response;
 	} catch (err) {
 		if ((err as Error).message === SILENT_ERROR) return SpecialResponse.SilentErrorResponse;
+		const date = new Date();
 		Logging.logError({
 			err: err as Error,
-			interaction,
-			context: { command: command.name, options: JSON.stringify(options) }
+			context: {
+				type: 'COMMAND_ERROR',
+				user_id: interaction.userId,
+				command_name: command.name,
+				channel_id: interaction.channelId,
+				guild_id: interaction.guildId,
+				datetime: date.toISOString(),
+				timestamp: date.getTime(),
+				options: JSON.stringify(options)
+			}
 		});
 		if (err instanceof UserError) return SpecialResponse.RespondedManually;
 		return {
