@@ -940,8 +940,7 @@ async function exists(path: string) {
 		return false;
 	}
 }
-const iconBaseUrl = 'https://cdn.oldschool.gg/icons/items/';
-//const iconBaseUrl = 'https://chisel.weirdgloop.org/static/img/osrs-sprite/'; // Fallback in case some are missing from magna's server.
+const iconBaseUrls = ['https://cdn.oldschool.gg/icons/items/', 'https://chisel.weirdgloop.org/static/img/osrs-sprite/'];
 const allOsbIconDir = './tmp/icons';
 
 async function main() {
@@ -960,11 +959,21 @@ async function main() {
 		const imgName = `${allOsbIconDir}/${item}.png`;
 		if (!(await exists(imgName))) {
 			console.log(`Missing ${imgName}. Downloading...`);
-			const dlResult = await downloadFile(`${iconBaseUrl}${item}.png`, imgName);
-			if (!dlResult.status) {
+			const errors: string[] = [];
+			for (const iconBaseUrl of iconBaseUrls) {
+				const dlResult = await downloadFile(`${iconBaseUrl}${item}.png`, imgName);
+				if (dlResult.status) {
+					errors.length = 0;
+					break;
+				}
+				errors.push(`${iconBaseUrl}${item}.png ${dlResult.msg}`);
+			}
+			if (errors.length > 0) {
 				isMissing = true;
 				missingItems.push(item);
-				console.log(`Error downloading ${iconBaseUrl}${item}.png ${dlResult.msg}`);
+				for (const error of errors) {
+					console.log(`Error downloading ${error}`);
+				}
 			}
 		}
 	}
