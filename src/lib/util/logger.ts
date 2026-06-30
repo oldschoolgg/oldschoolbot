@@ -128,13 +128,14 @@ function logError(args: string | Error | RichErrorLogArgs, ctx?: LogContext): vo
 	}
 
 	if ('requestBody' in err) {
-		context.requestBody = {};
+		const requestBody: Record<string, unknown> = {};
 		if (err.requestBody.files) {
-			context.requestBody.files = err.requestBody.files.map(file => ({ name: file.name }));
+			requestBody.files = err.requestBody.files.map(file => ({ name: file.name }));
 		}
 		if (err.requestBody.json) {
-			context.requestBody.json = String(err.requestBody.json).slice(0, 10_000);
+			requestBody.json = String(err.requestBody.json).slice(0, 10_000);
 		}
+		context.requestBody = requestBody;
 	}
 
 	if (!globalConfig.isProduction) {
