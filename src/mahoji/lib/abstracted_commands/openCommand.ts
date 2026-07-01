@@ -121,11 +121,13 @@ async function finalizeOpening({
 	const newOpenableScores = await addToOpenablesScores(user, kcBank);
 	await user.transactItems({ itemsToRemove: cost });
 
-	const { previousCL } = await user.transactItems({
+	const { itemsAdded, previousCL } = await user.transactItems({
 		itemsToAdd: loot,
 		collectionLog: true,
 		filterLoot: false
 	});
+	const generatedAutoSellDropMessages = user.consumeAutoSellDropMessages();
+	const autoSellDropMessages = user.bitfield.includes(BitField.ShowDetailedInfo) ? generatedAutoSellDropMessages : [];
 
 	if (loot.has('Coins')) {
 		await ClientSettings.updateClientGPTrackSetting('gp_open', loot.amount('Coins'));
@@ -140,11 +142,16 @@ async function finalizeOpening({
 
 	const response = new MessageBuilder()
 		.setContent(
-			`You have now opened a total of ${openedStr}
-${messages.join(', ')}`.trim()
+			[
+				`You have now opened a total of ${openedStr}
+${messages.join(', ')}`.trim(),
+				...autoSellDropMessages
+			]
+				.filter(Boolean)
+				.join('\n')
 		)
 		.addBankImage({
-			bank: loot,
+			bank: itemsAdded,
 			title:
 				openables.length === 1
 					? `Loot from ${cost.amount(openables[0].openedItem.id)}x ${openables[0].name}`

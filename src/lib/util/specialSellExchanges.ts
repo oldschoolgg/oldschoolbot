@@ -8,6 +8,7 @@ export interface SpecialSellExchange {
 	itemsToAdd: Bank;
 	collectionLog: boolean;
 	extraCollectionLogItems?: Bank;
+	autoSellMessage?: string;
 	confirmationMessage?: (user: MUser) => string;
 	successMessage: string;
 }
@@ -94,6 +95,7 @@ export function getSpecialSellExchange(bankToSell: Bank): SpecialSellExchange | 
 			itemsToAdd: loot,
 			collectionLog: true,
 			extraCollectionLogItems: new Bank().add(EItem.SEED_PACK, quantity),
+			autoSellMessage: `${quantity.toLocaleString()}x Tier 5 seed pack loot`,
 			confirmationMessage: user =>
 				`${user}, please confirm you want to trade ${seedsBank} for Tier 5 seed pack loot.`,
 			successMessage: `You exchanged ${seedsBank} and received: ${loot}.`

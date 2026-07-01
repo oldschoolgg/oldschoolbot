@@ -331,11 +331,16 @@ export async function handleTripFinish(
 	}
 
 	if (_messages) messages.push(..._messages);
+	const generatedAutoSellDropMessages = user.consumeAutoSellDropMessages();
+	const autoSellDropMessages = user.bitfield.includes(BitField.ShowDetailedInfo) ? generatedAutoSellDropMessages : [];
 	if (messages.length > 0) {
 		message.addContent(`\n**Messages:** ${messages.join(', ')}`);
 	}
 
 	message.addContent(displayCluesAndPets(user, loot));
+	if (autoSellDropMessages.length > 0) {
+		message.addContent(`\n\n${autoSellDropMessages.join('\n')}`);
+	}
 
 	if (components.length > 0) {
 		message.addComponents(components);

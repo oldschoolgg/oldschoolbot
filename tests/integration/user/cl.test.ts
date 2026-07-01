@@ -154,7 +154,11 @@ describe('updateCL()', () => {
 		expect(user.cl.amount(EItem.ABYSSAL_WHIP)).toBe(1);
 		expect(user.bank.has(EItem.ABYSSAL_WHIP)).toBe(false);
 		expect(user.GP).toBe(expectedGP);
-		expect(itemsAdded.equals(new Bank().add(EItem.COINS, expectedGP))).toBe(true);
+		expect(itemsAdded.length).toBe(0);
+		const messages = user.consumeAutoSellDropMessages();
+		expect(messages).toHaveLength(1);
+		expect(messages[0]).toContain('Abyssal whip');
+		expect(messages[0]).toContain(`${expectedGP.toLocaleString()} GP`);
 	});
 
 	it('auto-exchanges configured mole parts through the special sell path', async () => {
@@ -171,8 +175,9 @@ describe('updateCL()', () => {
 
 		expect(user.cl.amount(EItem.MOLE_CLAW)).toBe(1);
 		expect(user.bank.has(EItem.MOLE_CLAW)).toBe(false);
-		expect(itemsAdded.length).toBeGreaterThan(0);
-		expect(user.bank.has(itemsAdded)).toBe(true);
+		expect(itemsAdded.length).toBe(0);
+		expect(user.bank.length).toBeGreaterThan(0);
+		expect(user.consumeAutoSellDropMessages()[0]).toContain('automatically sold for');
 	});
 
 	it('auto-exchanges configured spirit seeds through the special sell path', async () => {
@@ -190,8 +195,11 @@ describe('updateCL()', () => {
 		expect(user.cl.amount(EItem.SPIRIT_SEED)).toBeGreaterThanOrEqual(1);
 		expect(user.cl.amount(EItem.SEED_PACK)).toBe(1);
 		expect(user.bank.has(EItem.SPIRIT_SEED)).toBe(false);
-		expect(itemsAdded.length).toBeGreaterThan(0);
-		expect(user.bank.has(itemsAdded)).toBe(true);
+		expect(itemsAdded.length).toBe(0);
+		expect(user.bank.length).toBeGreaterThan(0);
+		const messages = user.consumeAutoSellDropMessages();
+		expect(messages.some(message => message.includes('Spirit seed'))).toBe(true);
+		expect(messages.some(message => message.includes('Tier 5 seed pack loot'))).toBe(true);
 	});
 
 	it('auto-drops configured items after adding them to CL for T3+ users', async () => {
@@ -209,6 +217,7 @@ describe('updateCL()', () => {
 		expect(user.cl.amount(EItem.ABYSSAL_WHIP)).toBe(1);
 		expect(user.bank.has(EItem.ABYSSAL_WHIP)).toBe(false);
 		expect(itemsAdded.length).toBe(0);
+		expect(user.consumeAutoSellDropMessages()[0]).toContain('automatically dropped');
 	});
 
 	it('does not auto-sell/drop for users below T3', async () => {

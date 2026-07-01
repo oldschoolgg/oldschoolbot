@@ -25,6 +25,27 @@ export interface TransactItemsArgs {
 }
 
 const autoSellTaxRatePercent = 25;
+const maxAutoSellDropMessageBankSize = 12;
+
+function formatAutoSellDropBank(bank: Bank) {
+	if (bank.length <= maxAutoSellDropMessageBankSize) return bank.toString();
+	const [firstItem, quantity] = bank.items()[0];
+	return `${new Bank().add(firstItem.id, quantity)}, and ${bank.length - 1} other items`;
+}
+
+function formatAutoSellDropMessage(itemsReceived: Bank, action: 'sold' | 'dropped', received?: Bank | number | string) {
+	const outcome =
+		action === 'sold'
+			? `sold for ${
+					received instanceof Bank
+						? formatAutoSellDropBank(received)
+						: typeof received === 'string'
+							? received
+							: `${received!.toLocaleString()} GP`
+				}`
+			: 'dropped';
+	return `You received ${formatAutoSellDropBank(itemsReceived)}. It was automatically ${outcome}.`;
+}
 
 function calcAutoSellBank(user: MUser, bankToSell: Bank) {
 	const soldBank = new Bank();
@@ -107,20 +128,25 @@ async function unqueuedTransactItems({
 	}
 
 	let gpUpdate: { increment: number } | undefined;
+	let gpAddedFromLoot = 0;
+	let itemsAdded = new Bank();
 	if (itemsToAdd) {
 		const coinsInLoot = itemsToAdd.amount('Coins');
 		if (coinsInLoot > 0) {
+			gpAddedFromLoot = coinsInLoot;
 			gpUpdate = {
 				increment: coinsInLoot
 			};
 			itemsToAdd.remove('Coins', itemsToAdd.amount('Coins'));
 		}
+		itemsAdded = itemsToAdd.clone();
 	}
 
 	let autoSoldBank = new Bank();
 	let autoDroppedBank = new Bank();
 	let autoSellGPReceived = 0;
 	let autoSellData: Prisma.BotItemSellCreateManyInput[] = [];
+	const autoSellDropMessages: string[] = [];
 
 	if (itemsToAdd && itemsToAdd.length > 0 && (await user.fetchPerkTier()) >= PerkTier.Four) {
 		const autoSellPreference = new Bank(user.user.auto_sell_bank as ItemBank);
@@ -134,6 +160,14 @@ async function unqueuedTransactItems({
 				if (!specialExchange) break;
 				itemsToAdd.remove(specialExchange.itemsToRemove);
 				itemsToAdd.add(specialExchange.itemsToAdd);
+				itemsAdded.remove(specialExchange.itemsToRemove);
+				autoSellDropMessages.push(
+					formatAutoSellDropMessage(
+						specialExchange.itemsToRemove,
+						'sold',
+						specialExchange.autoSellMessage ?? specialExchange.itemsToAdd
+					)
+				);
 				if (specialExchange.collectionLog) clItemsAdded.add(specialExchange.itemsToAdd);
 				if (specialExchange.extraCollectionLogItems) clItemsAdded.add(specialExchange.extraCollectionLogItems);
 			}
@@ -147,6 +181,8 @@ async function unqueuedTransactItems({
 			autoSellData = sellResult.botItemSellData;
 			if (autoSoldBank.length > 0) {
 				itemsToAdd.remove(autoSoldBank);
+				itemsAdded.remove(autoSoldBank);
+				autoSellDropMessages.push(formatAutoSellDropMessage(autoSoldBank, 'sold', autoSellGPReceived));
 				if (gpUpdate) gpUpdate.increment += autoSellGPReceived;
 				else gpUpdate = { increment: autoSellGPReceived };
 			}
@@ -154,7 +190,11 @@ async function unqueuedTransactItems({
 
 		if (autoDropPreference.length > 0) {
 			autoDroppedBank = itemsToAdd.filter(item => autoDropPreference.has(item.id));
-			if (autoDroppedBank.length > 0) itemsToAdd.remove(autoDroppedBank);
+			if (autoDroppedBank.length > 0) {
+				itemsToAdd.remove(autoDroppedBank);
+				itemsAdded.remove(autoDroppedBank);
+				autoSellDropMessages.push(formatAutoSellDropMessage(autoDroppedBank, 'dropped'));
+			}
 		}
 	}
 
@@ -209,10 +249,7 @@ async function unqueuedTransactItems({
 	} as const;
 	const newUser = await user.rawUpdate({ data: updateData, gearUpdates });
 
-	const itemsAdded = new Bank(itemsToAdd);
-	if (itemsAdded && gpUpdate && gpUpdate.increment > 0) {
-		itemsAdded.add('Coins', gpUpdate.increment);
-	}
+	if (gpAddedFromLoot > 0) itemsAdded.add('Coins', gpAddedFromLoot);
 
 	const itemsRemoved = new Bank(itemsToRemove);
 	if (itemsRemoved && gpUpdate && gpUpdate.increment < 0) {
@@ -252,6 +289,7 @@ async function unqueuedTransactItems({
 		sideEffects.push(ClientSettings.updateBankSetting('dropped_items', autoDroppedBank));
 	}
 	if (sideEffects.length > 0) await Promise.all(sideEffects);
+	if (autoSellDropMessages.length > 0) user.addAutoSellDropMessages(autoSellDropMessages);
 
 	return {
 		previousCL,

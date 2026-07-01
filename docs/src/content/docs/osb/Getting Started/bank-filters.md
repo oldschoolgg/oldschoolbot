@@ -42,6 +42,7 @@ Tier 3+ patrons can set items to be automatically sold or dropped whenever they 
 
 - Auto-sell uses the same behaviour as [[/sell]], including special exchanges such as mole parts into nest boxes and spirit seeds into Tier 5 seed pack loot.
 - Auto-drop permanently removes the configured item instead of keeping it in your bank.
+- When `Show Detailed Info` is toggled on, automatically sold or dropped items are shown in trip/open messages with what they were sold for or that they were dropped, rather than being mixed into the normal trip loot.
 - When an item can be added to your collection log, it is added to the collection log before auto-sell or auto-drop is applied.
 - Adding an item to auto-sell removes it from auto-drop, and adding an item to auto-drop removes it from auto-sell.
 
