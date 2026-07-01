@@ -16,16 +16,11 @@ async function handleAutocomplete(
 	if (data.type === ApplicationCommandOptionType.SubcommandGroup) {
 		const group = command.options.find(c => c.name === data.name);
 		if (group?.type !== 'SubcommandGroup') return [];
-		const subCommandOption =
-			data.options?.find(opt => 'focused' in opt && opt.focused === true) ?? data.options?.[0];
-		if (!subCommandOption) return [];
-		const subCommand = group.options?.find(c => c.name === subCommandOption.name && c.type === 'Subcommand');
-		if (!subCommand || !subCommandOption.options || subCommand.type !== 'Subcommand') {
+		const subCommand = group.options?.find(c => c.name === data.options?.[0].name && c.type === 'Subcommand');
+		if (!subCommand || !data.options || !data.options[0] || subCommand.type !== 'Subcommand') {
 			return [];
 		}
-		const focusedOption =
-			subCommandOption.options.find(opt => 'focused' in opt && opt.focused === true) ??
-			subCommandOption.options[0];
+		const focusedOption = data.options[0].options?.find(t => t.focused);
 		if (!focusedOption) return [];
 		const subSubCommand = subCommand.options?.find(o => o.name === focusedOption.name);
 		return handleAutocomplete(user, guildId, command, [focusedOption], subSubCommand, rawOptions);
