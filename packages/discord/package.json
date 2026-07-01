@@ -8,8 +8,9 @@
 		}
 	},
 	"scripts": {
-		"build": "rimraf ./dist && tsc -p src --noEmit false",
-		"test": "pnpm tsc -p src --noEmit && vitest run --config vitest.unit.config.mts"
+		"build": "rimraf ./dist ./tsconfig.tsbuildinfo && tsc -p . --noEmit false",
+		"test:types": "concurrently \"tsc -p . --noEmit\" \"tsc -p tests\"",
+		"test:unit": "vitest run --config vitest.unit.config.mts"
 	},
 	"dependencies": {
 		"@discordjs/builders": "1.13.1",

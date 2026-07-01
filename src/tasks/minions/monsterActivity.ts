@@ -82,10 +82,12 @@ function getSlayerContext({
 
 	let effectiveSlayed = quantitySlayed;
 
-	// TODO: is this even right? it looks wrong
+	// If the task is NOT Zammy, you get 2 per Zammy kill
+	// (Not on Zammy task but Killing Kril means must be a greater demons task)
 	if (monsterID === EMonster.KRIL_TSUTSAROTH && slayerTaskMonsterID !== Monsters.KrilTsutsaroth.id) {
 		effectiveSlayed = quantitySlayed * 2;
 	} else if (monsterID === EMonster.KREEARRA && slayerTaskMonsterID !== Monsters.Kreearra.id) {
+		// 4 Aviansies
 		effectiveSlayed = quantitySlayed * 4;
 	} else if (
 		monsterID === EMonster.GROTESQUE_GUARDIANS &&
@@ -329,7 +331,7 @@ export function doMonsterTrip(data: newOptions) {
 	const loot = wiped ? new Bank() : monster.table.kill(finalQuantity, killOptions);
 	if (!wiped) {
 		if (monster.specialLoot) {
-			monster.specialLoot({ loot, ownedItems: gearBank.bank, quantity: finalQuantity, cl: data.cl });
+			monster.specialLoot({ loot, ownedItems: gearBank.bank, quantity: finalQuantity, cl: data.cl, bitfield });
 		}
 		if (
 			monster.name.toLowerCase() === 'unicorn' &&

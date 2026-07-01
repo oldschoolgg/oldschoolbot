@@ -30,12 +30,28 @@ export function makeAutoContractButton() {
 		.setEmoji({ id: EmojiId.Seedpack });
 }
 
+export function makeAutoFarmButton() {
+	return new ButtonBuilder()
+		.setCustomId(InteractionID.Commands.AutoFarm)
+		.setLabel('Auto Farm')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji({ id: EmojiId.Farming });
+}
+
 export function makeRepeatTripButton() {
 	return new ButtonBuilder()
 		.setCustomId(InteractionID.Commands.RepeatTrip)
 		.setLabel('Repeat Trip')
 		.setStyle(ButtonStyle.Secondary)
 		.setEmoji({ name: '🔁' });
+}
+
+export function makeAutoRummageToggleButton() {
+	return new ButtonBuilder()
+		.setCustomId(InteractionID.Commands.ToggleAutoRummage)
+		.setLabel('Toggle Auto Rummage')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji({ name: '♻️' });
 }
 
 export function makeTearsOfGuthixButton() {

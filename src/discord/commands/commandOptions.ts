@@ -20,6 +20,7 @@ export type BaseAutoCompleteOptions = {
 	guildId: string | null;
 	options?: IAutoCompleteInteractionOption[];
 	focused?: IAutoCompleteInteractionOption;
+	rawOptions?: IAutoCompleteInteractionOption[];
 };
 
 export type NumberAutoComplete = BaseAutoCompleteOptions & {

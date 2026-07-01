@@ -220,6 +220,7 @@ Based on G.E data, we should have received ${data.totalTax} tax`;
 		);
 
 		const bank = await GrandExchange.fetchOwnedBank();
+		expect(bank.toString()).toEqual('No items');
 		expect(bank.length).toEqual(0);
 
 		const data = await GrandExchange.fetchData();

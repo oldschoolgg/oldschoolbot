@@ -8,7 +8,8 @@ async function handleAutocomplete(
 	guildId: string | null,
 	command: AnyCommand | undefined,
 	autocompleteData: IAutoCompleteInteractionOption[],
-	option?: CommandOption
+	option?: CommandOption,
+	rawOptions = autocompleteData
 ): Promise<APIApplicationCommandOptionChoice[]> {
 	if (!command || !autocompleteData) return [];
 	const data = autocompleteData.find(i => 'focused' in i && i.focused === true) ?? autocompleteData[0];
@@ -22,22 +23,22 @@ async function handleAutocomplete(
 		if (!subCommand || !subCommandOption.options || subCommand.type !== 'Subcommand') {
 			return [];
 		}
-		const subSubCommandOption =
+		const focusedOption =
 			subCommandOption.options.find(opt => 'focused' in opt && opt.focused === true) ??
 			subCommandOption.options[0];
-		if (!subSubCommandOption) return [];
-		const subSubCommand = subCommand.options?.find(o => o.name === subSubCommandOption.name);
-		return handleAutocomplete(user, guildId, command, subCommandOption.options, subSubCommand);
+		if (!focusedOption) return [];
+		const subSubCommand = subCommand.options?.find(o => o.name === focusedOption.name);
+		return handleAutocomplete(user, guildId, command, [focusedOption], subSubCommand, rawOptions);
 	}
 	if (data.type === ApplicationCommandOptionType.Subcommand) {
 		if (!data.options || !data.options[0]) return [];
 		const subCommand = command.options.find(c => c.name === data.name);
 		if (subCommand?.type !== 'Subcommand') return [];
-		const optionFocused = data.options.find(o => ('focused' in o ? Boolean(o.focused) : false)) ?? data.options[0];
-		const subOption = subCommand.options?.find(c => c.name === optionFocused.name);
+		const focusedOption = data.options.find(o => ('focused' in o ? Boolean(o.focused) : false)) ?? data.options[0];
+		const subOption = subCommand.options?.find(c => c.name === focusedOption.name);
 		if (!subOption) return [];
 
-		return handleAutocomplete(user, guildId, command, data.options, subOption);
+		return handleAutocomplete(user, guildId, command, [focusedOption], subOption, rawOptions);
 	}
 
 	const optionBeingAutocompleted = option ?? command.options.find(o => o.name === data.name);
@@ -52,8 +53,9 @@ async function handleAutocomplete(
 			user,
 			userId: user.id,
 			guildId,
-			options: autocompleteData,
-			focused: data
+			options: rawOptions,
+			focused: data,
+			rawOptions
 		});
 		return autocompleteResult.slice(0, 25).map(i => ({
 			name: i.name,

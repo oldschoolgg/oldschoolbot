@@ -1,4 +1,10 @@
-import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
+import {
+	ButtonBuilder,
+	type ButtonMInteraction,
+	ButtonStyle,
+	interactionButtonPrompt,
+	SpecialResponse
+} from '@oldschoolgg/discord';
 import { objectValues, Time } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
@@ -11,7 +17,11 @@ import { SlayerActivityConstants } from '@/lib/minions/data/combatConstants.js';
 import { autocompleteMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { runCommand } from '@/lib/settings/settings.js';
 import { courses } from '@/lib/skilling/skills/agility.js';
-import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
+import {
+	ensureValidStoredFishingTripIdentifier,
+	FISHING_REWORK_MESSAGE,
+	FishingStoredTripError
+} from '@/lib/skilling/skills/fishing/fishingRework.js';
 import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
 import type {
 	ActivityTaskData,
@@ -60,6 +70,7 @@ import type {
 	ScatteringActivityTaskOptions,
 	SepulchreActivityTaskOptions,
 	ShadesOfMortonOptions,
+	ShadesOfMortonPyreLogsOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	TempleTrekkingActivityTaskOptions,
@@ -67,13 +78,19 @@ import type {
 	TiaraRunecraftActivityTaskOptions,
 	TOAOptions,
 	UnderwaterAgilityThievingTaskOptions,
+	ValeTotemsActivityTaskOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '@/lib/types/minions.js';
 import { giantsFoundryAlloys } from '@/mahoji/lib/abstracted_commands/giantsFoundryCommand.js';
 import puroOptions from '@/mahoji/lib/abstracted_commands/puroPuroCommand.js';
+import { slayerNewTaskCommand } from '@/mahoji/lib/abstracted_commands/slayerTaskCommand.js';
 
-const taskCanBeRepeated = (activity: Activity, user: MUser) => {
+const taskCanBeRepeated = (activity: Activity, user: MUser, taskIndex: number) => {
+	const data = ActivityManager.convertStoredActivityToFlatActivity(activity);
+	if (data.type === activity_type_enum.Farming) {
+		return taskIndex === 0 && data.autoFarmed;
+	}
 	if (activity.type === activity_type_enum.ClueCompletion) {
 		const realActivity = ActivityManager.convertStoredActivityToFlatActivity(activity) as ClueActivityTaskOptions;
 		return (
@@ -95,6 +112,13 @@ const taskCanBeRepeated = (activity: Activity, user: MUser) => {
 		] as activity_type_enum[]
 	).includes(activity.type);
 };
+
+async function canRepeatSlayerMonsterTrip(user: MUser, data: ActivityTaskData): Promise<boolean> {
+	if (data.type !== activity_type_enum.MonsterKilling || !data.onTask) return true;
+	const { assignedTask } = await user.fetchSlayerInfo();
+	return Boolean(assignedTask?.monsters.includes(data.mi));
+}
+
 type ActivityMap = {
 	[K in ActivityTaskData as K['type']]: K;
 };
@@ -264,7 +288,9 @@ const tripHandlers: {
 	},
 	[activity_type_enum.CastleWars]: {
 		commandName: 'minigames',
-		args: () => ({ castle_wars: { start: {} } })
+		args: (data: MinigameActivityTaskOptionsWithNoChanges) => ({
+			castle_wars: { start: { quantity: data.quantity } }
+		})
 	},
 	[activity_type_enum.ChampionsChallenge]: {
 		commandName: 'activities',
@@ -370,11 +396,14 @@ const tripHandlers: {
 	[activity_type_enum.Fishing]: {
 		commandName: 'fish',
 		args: (data: FishingActivityTaskOptions) => {
-			const fish = Fishing.Fishes.find(f => f.id === (data.fishID as number));
+			const fish = ensureValidStoredFishingTripIdentifier(data);
+
 			return {
-				name: fish ? fish.name : Items.itemNameFromId(data.fishID),
+				name: fish.name,
 				quantity: data.iQty,
-				flakes: data.flakesQuantity !== undefined
+				powerfish: data.powerfish ?? false,
+				spirit_flakes: data.spiritFlakePreference ?? data.spiritFlakes ?? false,
+				shark_lure: data.sharkLurePreference ?? data.sharkLureQuantity ?? 0
 			};
 		}
 	},
@@ -393,6 +422,12 @@ const tripHandlers: {
 	[activity_type_enum.GloryCharging]: {
 		commandName: 'activities',
 		args: (data: ActivityTaskOptionsWithQuantity) => ({ charge: { item: 'glory', quantity: data.quantity } })
+	},
+	[activity_type_enum.GloryUncharging]: {
+		commandName: 'activities',
+		args: (data: ActivityTaskOptionsWithQuantity) => ({
+			charge: { item: 'glory_uncharge', quantity: data.quantity }
+		})
 	},
 	[activity_type_enum.GnomeRestaurant]: {
 		commandName: 'minigames',
@@ -444,12 +479,12 @@ const tripHandlers: {
 		args: () => ({ lms: { start: {} } })
 	},
 	[activity_type_enum.MageArena]: {
-		commandName: 'minigames',
-		args: () => ({ mage_arena: { start: {} } })
+		commandName: 'activities',
+		args: () => ({ other: { activity: activity_type_enum.MageArena } })
 	},
 	[activity_type_enum.MageArena2]: {
-		commandName: 'minigames',
-		args: () => ({ mage_arena_2: { start: {} } })
+		commandName: 'activities',
+		args: () => ({ other: { activity: activity_type_enum.MageArena2 } })
 	},
 	[activity_type_enum.MageTrainingArena]: {
 		commandName: 'minigames',
@@ -486,8 +521,7 @@ const tripHandlers: {
 				name: autocompleteMonsters.find(i => i.id === data.mi)?.name ?? data.mi.toString(),
 				quantity: data.iQty,
 				method,
-				wilderness: data.isInWilderness,
-				onTask: data.onTask
+				wilderness: data.isInWilderness
 			};
 		}
 	},
@@ -643,6 +677,12 @@ const tripHandlers: {
 		commandName: 'minigames',
 		args: () => ({ trouble_brewing: { start: {} } })
 	},
+	[activity_type_enum.ValeTotems]: {
+		commandName: 'minigames',
+		args: (data: ValeTotemsActivityTaskOptions) => {
+			return { vale_totems: { start: { item_to_fletch: data.itemId, stamina_pot: data.staminaPot } } };
+		}
+	},
 	[activity_type_enum.VolcanicMine]: {
 		commandName: 'minigames',
 		args: (data: ActivityTaskOptionsWithQuantity) => ({ volcanic_mine: { start: { quantity: data.quantity } } })
@@ -691,6 +731,18 @@ const tripHandlers: {
 			shades_of_morton: {
 				start: { shade: data.shadeID, logs: Items.itemNameFromId(data.logID) }
 			}
+		})
+	},
+	[activity_type_enum.ShadesOfMortonSacredOil]: {
+		commandName: 'minigames',
+		args: () => ({
+			shades_of_morton: { sacred_oil: {} }
+		})
+	},
+	[activity_type_enum.ShadesOfMortonPyreLogs]: {
+		commandName: 'minigames',
+		args: (data: ShadesOfMortonPyreLogsOptions) => ({
+			shades_of_morton: { create_pyre_logs: { logs: Items.itemNameFromId(data.logID) } }
 		})
 	},
 	[activity_type_enum.TombsOfAmascut]: {
@@ -753,22 +805,36 @@ export async function fetchRepeatTrips(user: MUser): Promise<Activity[]> {
 		orderBy: {
 			id: 'desc'
 		},
-		take: 20
+		take: 30
 	});
 	const filtered: Activity[] = [];
+	let tripIndex = -1;
 	for (const trip of res) {
-		if (!taskCanBeRepeated(trip, user)) continue;
-		const data = ActivityManager.convertStoredActivityToFlatActivity(trip);
-		if (data.type === activity_type_enum.Farming) {
-			if (!data.autoFarmed) {
-				continue;
-			}
-		}
+		tripIndex++;
+		if (!taskCanBeRepeated(trip, user, tripIndex)) continue;
 		if (!filtered.some(i => i.type === trip.type)) {
 			filtered.push(trip);
 		}
 	}
 	return filtered;
+}
+
+async function getRepeatableAlternatives(user: MUser, skippedActivity: Activity, limit: number) {
+	const trips = await fetchRepeatTrips(user);
+	const alternatives: Activity[] = [];
+	for (const trip of trips) {
+		if (trip.type === skippedActivity.type) continue;
+		alternatives.push(trip);
+		if (alternatives.length >= limit) break;
+	}
+	return alternatives;
+}
+
+function makeRepeatTripButtonForActivity(activity: Activity) {
+	return new ButtonBuilder()
+		.setLabel(`Repeat ${activity.type}`)
+		.setCustomId(`REPEAT_TRIP_${activity.type}`)
+		.setStyle(ButtonStyle.Secondary);
 }
 
 export async function makeRepeatTripButtons(user: MUser) {
@@ -777,26 +843,144 @@ export async function makeRepeatTripButtons(user: MUser) {
 
 	const buttons: ButtonBuilder[] = [];
 	for (const trip of trips.slice(0, limit)) {
-		buttons.push(
-			new ButtonBuilder()
-				.setLabel(`Repeat ${trip.type}`)
-				.setCustomId(`REPEAT_TRIP_${trip.type}`)
-				.setStyle(ButtonStyle.Secondary)
-		);
+		buttons.push(makeRepeatTripButtonForActivity(trip));
 	}
 	return buttons;
 }
+const SlayerTaskFinishedPromptID = {
+	NewTask: 'DYN_SLAYER_TASK_FINISHED_NEW_TASK',
+	RepeatAnyway: 'DYN_SLAYER_TASK_FINISHED_REPEAT_ANYWAY',
+	RepeatAlternativePrefix: 'DYN_SLAYER_TASK_FINISHED_REPEAT_ACTIVITY_'
+} as const;
 
-export async function repeatTrip(user: MUser, interaction: OSInteraction, activity: Activity): CommandResponse {
+function makeSlayerTaskFinishedRepeatButton(activity: Activity) {
+	return new ButtonBuilder()
+		.setLabel(`Repeat ${activity.type}`)
+		.setCustomId(`${SlayerTaskFinishedPromptID.RepeatAlternativePrefix}${activity.id.toString()}`)
+		.setStyle(ButtonStyle.Secondary);
+}
+
+async function replyToCollectedButton(interaction: OSInteraction, response: Awaited<CommandResponse>) {
+	if (
+		response === SpecialResponse.PaginatedMessageResponse ||
+		response === SpecialResponse.SilentErrorResponse ||
+		response === SpecialResponse.RespondedManually
+	) {
+		return;
+	}
+	await interaction.reply(response);
+}
+
+function toOSInteraction(
+	buttonInteraction: ButtonMInteraction,
+	sourceInteraction: OSInteraction,
+	user: MUser
+): OSInteraction {
+	const osInteraction = buttonInteraction as unknown as OSInteraction;
+	osInteraction.user = user;
+	Object.defineProperty(osInteraction, 'rng', {
+		value: sourceInteraction.rng,
+		configurable: true
+	});
+	return osInteraction;
+}
+
+async function handleSlayerTaskFinishedPrompt(
+	user: MUser,
+	interaction: OSInteraction,
+	activity: Activity,
+	timeout: number
+): Promise<SpecialResponse.RespondedManually> {
+	const alternatives = await getRepeatableAlternatives(user, activity, 2);
+	const selectedInteraction = await interactionButtonPrompt({
+		interaction,
+		content: 'Your slayer task has ended, what would you like to do?',
+		ephemeral: true,
+		timeout,
+		users: [user.id],
+		buttons: [
+			new ButtonBuilder()
+				.setLabel('Get a new task')
+				.setCustomId(SlayerTaskFinishedPromptID.NewTask)
+				.setStyle(ButtonStyle.Secondary),
+			new ButtonBuilder()
+				.setLabel('Repeat anyway')
+				.setCustomId(SlayerTaskFinishedPromptID.RepeatAnyway)
+				.setStyle(ButtonStyle.Secondary),
+			...alternatives.map(makeSlayerTaskFinishedRepeatButton)
+		],
+		timeoutContent: 'Your slayer task prompt timed out.'
+	});
+
+	if (!selectedInteraction?.customId) {
+		return SpecialResponse.RespondedManually;
+	}
+	const actionInteraction = toOSInteraction(selectedInteraction, interaction, user);
+
+	if (selectedInteraction.customId === SlayerTaskFinishedPromptID.NewTask) {
+		const response = await slayerNewTaskCommand({ user, interaction: actionInteraction, showButtons: true });
+		await replyToCollectedButton(actionInteraction, response);
+		return SpecialResponse.RespondedManually;
+	}
+
+	if (selectedInteraction.customId === SlayerTaskFinishedPromptID.RepeatAnyway) {
+		const response = await repeatTrip(user, actionInteraction, activity);
+		await replyToCollectedButton(actionInteraction, response);
+		return SpecialResponse.RespondedManually;
+	}
+
+	const selectedActivityID = selectedInteraction.customId.replace(
+		SlayerTaskFinishedPromptID.RepeatAlternativePrefix,
+		''
+	);
+	const selectedActivity = alternatives.find(alternative => alternative.id.toString() === selectedActivityID);
+	if (!selectedActivity) {
+		await actionInteraction.reply({ content: "Couldn't find that trip to repeat.", ephemeral: true });
+		return SpecialResponse.RespondedManually;
+	}
+
+	const response = await repeatTrip(user, actionInteraction, selectedActivity);
+	await replyToCollectedButton(actionInteraction, response);
+	return SpecialResponse.RespondedManually;
+}
+
+export async function repeatTrip(
+	user: MUser,
+	interaction: OSInteraction,
+	activity: Activity,
+	options?: { showSlayerTaskIntervention?: boolean; slayerTaskInterventionTimeout?: number }
+): CommandResponse {
 	if (!activity || !activity.data || !activity.type) {
 		return { content: "Couldn't find any trip to repeat.", ephemeral: true };
 	}
 	const handler = tripHandlers[activity.type];
 	const args: ActivityTaskData = ActivityManager.convertStoredActivityToFlatActivity(activity);
+
+	if (
+		activity.type === activity_type_enum.MonsterKilling &&
+		options?.showSlayerTaskIntervention &&
+		!(await canRepeatSlayerMonsterTrip(user, args))
+	) {
+		return handleSlayerTaskFinishedPrompt(
+			user,
+			interaction,
+			activity,
+			options.slayerTaskInterventionTimeout ?? 15_000
+		);
+	}
+	let commandArgs: CommandOptions;
+	try {
+		commandArgs = handler.args(args as any) as CommandOptions;
+	} catch (err) {
+		if (err instanceof FishingStoredTripError) {
+			return { content: FISHING_REWORK_MESSAGE, ephemeral: true };
+		}
+		throw err;
+	}
 	return runCommand({
 		commandName: handler.commandName,
 		isContinue: true,
-		args: handler.args(args as any) as CommandOptions,
+		args: commandArgs,
 		interaction,
 		user,
 		continueDeltaMillis: 0

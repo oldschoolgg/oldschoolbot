@@ -1,4 +1,5 @@
 import { notEmpty, removeFromArr, stringMatches } from '@oldschoolgg/toolkit';
+import { MathRNG } from 'node-rng';
 import { EItem, type Monster, Monsters } from 'oldschooljs';
 
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
@@ -117,7 +118,7 @@ export async function slayerNewTaskCommand({
 	showButtons,
 	rng
 }: {
-	rng: RNGProvider;
+	rng?: RNGProvider;
 	user: MUser;
 	interaction: OSInteraction;
 	extraContent?: string;
@@ -125,6 +126,7 @@ export async function slayerNewTaskCommand({
 	saveDefaultSlayerMaster?: boolean;
 	showButtons?: boolean;
 }): CommandResponse {
+	if (!rng) rng = MathRNG;
 	const { currentTask } = await user.fetchSlayerInfo();
 	const { slayer_remember_master: rememberedSlayerMaster } = user.user;
 

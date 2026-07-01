@@ -1,6 +1,6 @@
 import { makeURLSearchParams, REST } from '@discordjs/rest';
 import { CompressionMethod, WebSocketManager, WebSocketShardEvents, WorkerShardingStrategy } from '@discordjs/ws';
-import type { IChannel, IInteraction, IMember, IMessage, IRole, IWebhook } from '@oldschoolgg/schemas';
+import type { IChannel, IInteraction, IMember, IMessage, IRichMember, IRole, IWebhook } from '@oldschoolgg/schemas';
 import { uniqueArr } from '@oldschoolgg/util';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
@@ -64,7 +64,8 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 		initialPresence,
 		isProduction,
 		mainServerId,
-		userUsernameFetcher
+		userUsernameFetcher,
+		buildStrategy
 	}: DiscordClientOptions) {
 		super();
 		this.isProduction = isProduction;
@@ -75,7 +76,7 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 			rest: this.rest,
 			token: token,
 			intents: new BitField(intents).bitfield,
-			buildStrategy: manager => new WorkerShardingStrategy(manager, { shardsPerWorker: 4 }),
+			buildStrategy: buildStrategy ?? (manager => new WorkerShardingStrategy(manager, { shardsPerWorker: 4 })),
 			initialPresence: {
 				since: Date.now() - process.uptime() * 1000,
 				activities: [initialPresence.activity],
@@ -323,7 +324,7 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 		return res as APIEmoji | null;
 	}
 
-	async fetchMainServerMember(userId: string): Promise<null | IMember> {
+	async fetchMainServerMember(userId: string): Promise<null | IRichMember> {
 		try {
 			const m = await this.fetchMember({ guildId: this.mainServerId, userId });
 			return m;
@@ -337,7 +338,7 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 		return res as APIUser;
 	}
 
-	async fetchMember({ guildId, userId }: { guildId: string; userId: string }): Promise<IMember> {
+	async fetchMember({ guildId, userId }: { guildId: string; userId: string }): Promise<IRichMember> {
 		const rawApiMember = (await this.rest.get(Routes.guildMember(guildId, userId))) as APIGuildMember | null;
 		if (!rawApiMember) throw new Error(`No member found for ${userId} in ${guildId}`);
 		const roles: IRole[] = (await this.fetchRolesOfGuild(guildId)).filter(_r => rawApiMember.roles.includes(_r.id));
@@ -347,6 +348,7 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 			user_id: rawApiMember.user.id,
 			guild_id: guildId,
 			roles: rawApiMember.roles,
+			roles_detailed: roles,
 			permissions
 		};
 	}

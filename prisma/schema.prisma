@@ -133,6 +133,8 @@ model ClientStorage {
   ourania_loot                 Json     @default("{}") @db.Json
   colo_cost                    Json     @default("{}") @db.Json
   colo_loot                    Json     @default("{}") @db.Json
+  vt_cost                      Json     @default("{}") @db.Json
+  vt_loot                      Json     @default("{}") @db.Json
 
   grand_exchange_is_locked Boolean @default(false)
   grand_exchange_total_tax BigInt  @default(0)
@@ -199,6 +201,7 @@ model Giveaway {
   finish_date DateTime @db.Timestamp(6)
   duration    Int
   completed   Boolean
+  guild_id    String?  @db.VarChar(20)
   channel_id  String   @db.VarChar(19)
   loot        Json     @db.Json
   message_id  String   @db.VarChar(19)
@@ -292,23 +295,25 @@ model User {
 
   sacrificedValue BigInt @default(0)
 
-  GP                     BigInt    @default(0)
-  QP                     Int       @default(0)
-  bank                   Json      @default("{}") @db.Json
-  collectionLogBank      Json      @default("{}") @db.JsonB
-  blowpipe               Json      @default("{\"scales\":0,\"dartID\":null,\"dartQuantity\":0}") @db.Json
-  slayer_unlocks         Int[]     @default([]) @map("slayer.unlocks")
-  slayer_blocked_ids     Int[]     @default([]) @map("slayer.blocked_ids")
-  slayer_last_task       Int       @default(0) @map("slayer.last_task")
-  slayer_skip_settings   Json?     @default("{}") @map("slayer_skip_settings")
-  badges                 Int[]     @default([])
-  bitfield               Int[]     @default([])
-  temp_cl                Json      @default("{}") @db.Json
-  last_temp_cl_reset     DateTime? @db.Timestamp(6)
-  minion_equippedPet     Int?      @map("minion.equippedPet")
-  minion_farmingContract Json?     @map("minion.farmingContract") @db.Json
-  minion_birdhouseTraps  Json?     @map("minion.birdhouseTraps") @db.Json
-  finished_quest_ids     Int[]     @default([])
+  GP                              BigInt    @default(0)
+  QP                              Int       @default(0)
+  bank                            Json      @default("{}") @db.Json
+  collectionLogBank               Json      @default("{}") @db.JsonB
+  blowpipe                        Json      @default("{\"scales\":0,\"dartID\":null,\"dartQuantity\":0}") @db.Json
+  slayer_unlocks                  Int[]     @default([]) @map("slayer.unlocks")
+  slayer_blocked_ids              Int[]     @default([]) @map("slayer.blocked_ids")
+  slayer_last_task                Int       @default(0) @map("slayer.last_task")
+  slayer_skip_settings            Json?     @default("{}") @map("slayer_skip_settings")
+  badges                          Int[]     @default([])
+  bitfield                        Int[]     @default([])
+  temp_cl                         Json      @default("{}") @db.Json
+  last_temp_cl_reset              DateTime? @db.Timestamp(6)
+  minion_equippedPet              Int?      @map("minion.equippedPet")
+  minion_farmingContract          Json?     @map("minion.farmingContract") @db.Json
+  minion_farmingPreferredContract Boolean   @default(false) @map("minion.farmingPreferredContract")
+  minion_farmingPreferredSeeds    Json?     @map("minion.farmingPreferredSeeds") @db.Json
+  minion_birdhouseTraps           Json?     @map("minion.birdhouseTraps") @db.Json
+  finished_quest_ids              Int[]     @default([])
 
   // Relations
   farmedCrops    FarmedCrop[]
@@ -478,6 +483,7 @@ enum XpGainSource {
   ScatteringAshes
   Zalcano
   Wintertodt
+  ValeTotems
   FishingTrawler
   Tempoross
   TearsOfGuthix
@@ -530,6 +536,7 @@ model Minigame {
   wintertodt              Int    @default(0)
   tempoross               Int    @default(0)
   sepulchre               Int    @default(0)
+  vale_totems             Int    @default(0)
   fishing_trawler         Int    @default(0)
   barb_assault            Int    @default(0)
   pyramid_plunder         Int    @default(0)
@@ -723,6 +730,7 @@ model UserStats {
   firecapes_sacrificed     Int @default(0)
   tithe_farms_completed    Int @default(0)
   tithe_farm_points        Int @default(0)
+  vale_research_points     Int @default(0)
   pest_control_points      Int @default(0)
   inferno_attempts         Int @default(0)
   infernal_cape_sacrifices Int @default(0)
@@ -886,6 +894,7 @@ enum activity_type_enum {
   Butler
   Nightmare
   Sepulchre
+  ValeTotems
   Plunder
   FishingTrawler
   Zalcano
@@ -894,6 +903,7 @@ enum activity_type_enum {
   Enchanting
   Casting
   GloryCharging
+  GloryUncharging
   WealthCharging
   BarbarianAssault
   AgilityArena
@@ -938,6 +948,8 @@ enum activity_type_enum {
   HalloweenEvent
   NightmareZone
   ShadesOfMorton
+  ShadesOfMortonSacredOil
+  ShadesOfMortonPyreLogs
   TombsOfAmascut
   UnderwaterAgilityThieving
   StrongholdOfSecurity
@@ -1175,6 +1187,7 @@ model CLCategoryItem {
 }
 
 enum command_name_enum {
+  cache_refresh
   testpotato
   achievementdiary
   activities
