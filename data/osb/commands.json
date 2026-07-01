@@ -1,6 +1,6 @@
 {
-	"hash": "4adfea88669c8929e25c50c45d38ca91",
-	"date": "2026-06-09T08:23:51.005Z",
+	"hash": "9378b386d0fc52f8be64e4a515052987",
+	"date": "2026-07-01T06:56:50.674Z",
 	"data": [
 		{
 			"name": "activities",
@@ -480,7 +480,7 @@
 		{
 			"name": "slayer",
 			"desc": "Slayer skill commands",
-			"subOptions": ["autoslay", "manage", "new_task", "rewards", "status"]
+			"subOptions": ["auto_skip_buffer", "autoslay", "manage", "new_task", "rewards", "skip_list", "status"]
 		},
 		{
 			"name": "smelt",

@@ -62,7 +62,7 @@ describe('Slayer Tasks', async () => {
 	});
 
 	test('Assignable task checks and skip list validation', async () => {
-		const user = await createTestUser(undefined, { bitfield: [BitField.IsPatronTier1] });
+		const user = await createTestUser(undefined, { bitfield: [BitField.PatronTier1] });
 		await user.max();
 		await user.update({ slayer_unlocks: [] });
 		const duradel = slayerMasters.find(m => m.name === 'Duradel')!;
