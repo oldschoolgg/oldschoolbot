@@ -435,7 +435,8 @@ model User {
   cl_array                      Int[]    @default([])
   completed_achievement_diaries String[] @default([])
 
-  gear_template Int? @db.SmallInt
+  gear_template Int?           @db.SmallInt
+  notifications Notification[]
 
   @@index([id, last_command_date])
   @@map("users")
@@ -1544,6 +1545,8 @@ model ShootingStars {
 
 enum SystemLogsType {
   ERROR
+  USER_ERROR
+  DEBUG
 }
 
 model SystemLogs {
@@ -1551,8 +1554,10 @@ model SystemLogs {
 
   date DateTime @default(now())
 
-  type SystemLogsType
-  data Json           @db.JsonB
+  type  SystemLogsType
+  msg   String?
+  stack String?
+  data  Json           @default("{}") @db.JsonB
 
   @@map("system_logs")
 }
@@ -1581,16 +1586,16 @@ model UserLog {
 }
 
 model Notification {
-  id              Int @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
-  user_id         String @db.VarChar(19)
-  user            User   @relation(fields: [user_id], references: [id], onDelete: Cascade )
-  message         String
-  reminded_count  Int @default(0)
-  next_reminder   DateTime?
-  mention         Boolean @default(false)
-  reply           Boolean @default(true)
-  ephermeral      Boolean @default(false)
-  on_return       Boolean @default(false)
-  meta_data       Json? @db.JsonB
+  user_id        String    @db.VarChar(19)
+  user           User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  message        String
+  reminded_count Int       @default(0)
+  next_reminder  DateTime?
+  mention        Boolean   @default(false)
+  reply          Boolean   @default(true)
+  ephermeral     Boolean   @default(false)
+  on_return      Boolean   @default(false)
+  meta_data      Json?     @db.JsonB
 }
