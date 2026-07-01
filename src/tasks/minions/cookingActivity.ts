@@ -1,4 +1,4 @@
-import { Bank } from 'oldschooljs';
+import { Bank, EItem } from 'oldschooljs';
 
 import { calcBurntCookables } from '@/lib/skilling/functions/calcBurntCookables.js';
 import Cooking from '@/lib/skilling/skills/cooking/cooking.js';
@@ -7,9 +7,33 @@ import type { CookingActivityTaskOptions } from '@/lib/types/minions.js';
 export const cookingTask: MinionTask = {
 	type: 'Cooking',
 	async run(data: CookingActivityTaskOptions, { user, handleTripFinish, rng }) {
-		const { cookableID, quantity, channelId, duration } = data;
+		const { cookableID, quantity, channelId, duration, method } = data;
 
-		const cookable = Cooking.Cookables.find(cookable => cookable.id === cookableID)!;
+		const cookable = Cooking.Cookables.find(item => item.id === cookableID)!;
+
+		if (method === 'KarambwanShopCookDrop') {
+			const rawKarambwans = new Bank().add(EItem.RAW_KARAMBWAN, quantity);
+			const cookedKarambwans = new Bank().add(EItem.COOKED_KARAMBWAN, quantity);
+			const xpReceived = quantity * cookable.xp;
+
+			const xpRes = await user.addXP({
+				skillName: 'cooking',
+				amount: xpReceived,
+				duration
+			});
+
+			await Promise.all([
+				ClientSettings.updateBankSetting('buy_loot_bank', rawKarambwans),
+				ClientSettings.updateBankSetting('dropped_items', cookedKarambwans),
+				user.addItemsToCollectionLog({ itemsToAdd: rawKarambwans.clone().add(cookedKarambwans) })
+			]);
+
+			const str = `${user}, ${user.minionName} finished buying, cooking and dropping ${quantity.toLocaleString()}x karambwans. ${xpRes}\nYou received: nothing, as the cooked karambwans were dropped.`;
+			const loot = new Bank();
+
+			handleTripFinish({ user, channelId, message: str, data, loot });
+			return;
+		}
 
 		let burnedAmount = 0;
 		let stopBurningLvl = 0;

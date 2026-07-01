@@ -145,7 +145,13 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 		case 'Cooking': {
 			const data = currentTask as CookingActivityTaskOptions;
 
-			const cookable = Cooking.Cookables.find(cookable => cookable.id === data.cookableID);
+			if (data.method === 'KarambwanShopCookDrop') {
+				return `${name} is currently buying, cooking and dropping ${data.quantity}x karambwans. ${formattedDuration} Your ${
+					Emoji.Cooking
+				} Cooking level is ${user.skillsAsLevels.cooking}`;
+			}
+
+			const cookable = Cooking.Cookables.find(item => item.id === data.cookableID);
 
 			return `${name} is currently cooking ${data.quantity}x ${cookable?.name}. ${formattedDuration} Your ${
 				Emoji.Cooking

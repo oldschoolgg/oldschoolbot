@@ -317,7 +317,10 @@ const tripHandlers: {
 	[activity_type_enum.Cooking]: {
 		commandName: 'cook',
 		args: (data: CookingActivityTaskOptions) => ({
-			name: Items.itemNameFromId(data.cookableID),
+			name:
+				data.method === 'KarambwanShopCookDrop'
+					? 'Karambwan Shop Cook + Drop'
+					: Items.itemNameFromId(data.cookableID),
 			quantity: data.quantity
 		})
 	},
