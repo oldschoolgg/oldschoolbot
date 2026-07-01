@@ -225,6 +225,19 @@ export const degradeableItems: DegradeableItem[] = [
 		unchargedItem: Items.getOrThrow('Venator bow (uncharged)'),
 		convertOnCharge: true,
 		emoji: ''
+	},
+	{
+		item: Items.getOrThrow('Dodgy necklace'),
+		settingsKey: 'dodgy_necklace_charges',
+		itemsToRefundOnBreak: new Bank().freeze(),
+		refundVariants: [],
+		setup: 'skilling',
+		aliases: ['dodgy', 'dodgy neck'],
+		chargeInput: {
+			cost: new Bank().freeze(),
+			charges: 10
+		},
+		emoji: ''
 	}
 ];
 
