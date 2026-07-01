@@ -10,7 +10,7 @@ import {
 	Time,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
-import { Bank, type ItemBank, Items } from 'oldschooljs';
+import { Bank, EItem, type ItemBank, Items } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import type { activity_type_enum } from '@/prisma/main/enums.js';
@@ -25,7 +25,9 @@ import { autoslayChoices, slayerMasterChoices } from '@/lib/slayer/constants.js'
 import { setDefaultAutoslay, setDefaultSlayerMaster } from '@/lib/slayer/slayerUtil.js';
 import { BankSortMethods, isValidBankSortMethod } from '@/lib/sorts.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
+import { sellPriceOfItem, sellStorePriceOfItem, specialSoldItems } from '@/lib/util/sellPrices.js';
 import { isValidNickname, patronMsg } from '@/lib/util/smallUtils.js';
+import { specialSellExchangeItemIDs } from '@/lib/util/specialSellExchanges.js';
 import { toggleBitfield } from '@/lib/util.js';
 
 type ExtendedBitFieldDataa = (typeof BitFieldData)[BitField] & {
@@ -270,6 +272,87 @@ async function favBhSeedsConfig(
 		currentFavorites.length === 0 ? 'None' : currentFavorites.map(i => Items.itemNameFromId(i)).join(', ')
 	}.`;
 	return currentItems;
+}
+
+type AutoSellDropAction = 'list' | 'add_sell' | 'add_drop' | 'remove' | 'reset';
+
+function autoSellDropStatus(user: MUser, sellBank: Bank, dropBank: Bank) {
+	const sellStr = sellBank.length === 0 ? 'None' : sellBank.toString();
+	const dropStr = dropBank.length === 0 ? 'None' : dropBank.toString();
+	return `${user}, your auto sell/drop preferences are:\n**Auto-sell:** ${sellStr}\n**Auto-drop:** ${dropStr}`;
+}
+
+async function autoSellDropConfig(user: MUser, action: AutoSellDropAction = 'list', input?: string) {
+	const perkTier = await user.fetchPerkTier();
+	if (perkTier < PerkTier.Four) {
+		return patronMsg(PerkTier.Four);
+	}
+
+	const sellBank = new Bank(user.user.auto_sell_bank as ItemBank);
+	const dropBank = new Bank(user.user.auto_drop_bank as ItemBank);
+
+	if (action === 'list') {
+		return autoSellDropStatus(user, sellBank, dropBank);
+	}
+
+	if (action === 'reset') {
+		await user.update({
+			auto_sell_bank: {},
+			auto_drop_bank: {}
+		});
+		return 'Reset your auto sell/drop preferences.';
+	}
+
+	if (!input) return 'You need to provide some items.';
+
+	const parsedBank = parseBank({
+		inputStr: input,
+		noDuplicateItems: true,
+		maxSize: 70
+	}).filter(i => i.id !== EItem.COINS);
+	if (parsedBank.length === 0) return 'No valid non-coin items were given.';
+
+	const preferenceBank = new Bank();
+	for (const [item] of parsedBank.items()) {
+		preferenceBank.add(item.id);
+	}
+
+	if (action === 'remove') {
+		sellBank.remove(preferenceBank);
+		dropBank.remove(preferenceBank);
+		await user.update({
+			auto_sell_bank: sellBank.toJSON(),
+			auto_drop_bank: dropBank.toJSON()
+		});
+		return autoSellDropStatus(user, sellBank, dropBank);
+	}
+
+	if (action === 'add_sell') {
+		const sellableBank = preferenceBank.filter(item => {
+			if (specialSellExchangeItemIDs.has(item.id)) return true;
+			if (item.id === EItem.ECUMENICAL_KEY && !user.hasDiary('wilderness.hard')) return false;
+			if (specialSoldItems.has(item.id)) return true;
+			const { price } = user.isIronman ? sellStorePriceOfItem(item, 1) : sellPriceOfItem(item, 25);
+			return price > 0;
+		});
+		if (sellableBank.length === 0) return 'None of those items can be sold for GP.';
+
+		dropBank.remove(sellableBank);
+		sellBank.add(sellableBank);
+		await user.update({
+			auto_sell_bank: sellBank.toJSON(),
+			auto_drop_bank: dropBank.toJSON()
+		});
+		return autoSellDropStatus(user, sellBank, dropBank);
+	}
+
+	dropBank.add(preferenceBank);
+	sellBank.remove(preferenceBank);
+	await user.update({
+		auto_sell_bank: sellBank.toJSON(),
+		auto_drop_bank: dropBank.toJSON()
+	});
+	return autoSellDropStatus(user, sellBank, dropBank);
 }
 
 async function bankSortConfig(
@@ -925,6 +1008,32 @@ export const configCommand = defineCommand({
 				},
 				{
 					type: 'Subcommand',
+					name: 'auto_sell_drop',
+					description: 'Manage items to auto-sell or auto-drop when added to your bank.',
+					options: [
+						{
+							type: 'String',
+							name: 'action',
+							description: 'The action you want to perform.',
+							required: true,
+							choices: [
+								{ name: 'List', value: 'list' },
+								{ name: 'Add Auto-sell', value: 'add_sell' },
+								{ name: 'Add Auto-drop', value: 'add_drop' },
+								{ name: 'Remove', value: 'remove' },
+								{ name: 'Reset', value: 'reset' }
+							]
+						},
+						{
+							type: 'String',
+							name: 'items',
+							description: "The items to add or remove, e.g. 'trout, coal'.",
+							required: false
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
 					name: 'slayer',
 					description: 'Manage your Slayer options',
 					options: [
@@ -1050,6 +1159,7 @@ LIMIT 20;
 				favorite_food,
 				favorite_items,
 				favorite_bh_seeds,
+				auto_sell_drop,
 				slayer,
 				pin_trip,
 				icon_pack
@@ -1122,6 +1232,9 @@ LIMIT 20;
 					favorite_bh_seeds.remove,
 					Boolean(favorite_bh_seeds.reset)
 				);
+			}
+			if (auto_sell_drop) {
+				return autoSellDropConfig(user, auto_sell_drop.action as AutoSellDropAction, auto_sell_drop.items);
 			}
 			if (slayer) {
 				if (slayer.autoslay) {

@@ -329,6 +329,8 @@ model User {
   favorite_alchables         Int[]              @default([])
   favorite_food              Int[]              @default([])
   favorite_bh_seeds          Int[]              @default([])
+  auto_sell_bank             Json               @default("{}") @db.Json
+  auto_drop_bank             Json               @default("{}") @db.Json
   minion_defaultPay          Boolean            @default(false) @map("minion.defaultPay")
   minion_icon                String?            @map("minion.icon")
   minion_name                String?            @map("minion.name")

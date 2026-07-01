@@ -14,15 +14,7 @@ import { cryptoRng } from 'node-rng/crypto';
 import { Bank, EMonster, type Item, type ItemBank, Items } from 'oldschooljs';
 import { clone } from 'remeda';
 
-import type {
-	activity_type_enum,
-	GearSetupType,
-	Minigame,
-	Prisma,
-	User,
-	UserStats,
-	XpGainSource
-} from '@/prisma/main.js';
+import type { activity_type_enum, GearSetupType, Minigame, Prisma, UserStats, XpGainSource } from '@/prisma/main.js';
 import { addXP } from '@/lib/addXP.js';
 import { MUTEX_CACHE } from '@/lib/cache.js';
 import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage.js';
@@ -72,8 +64,16 @@ import type { JsonKeys } from '@/lib/util.js';
 import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 
 export class MUserClass extends BaseUser {
-	constructor(user: User) {
-		super(user);
+	private autoSellDropMessages: string[] = [];
+
+	addAutoSellDropMessages(messages: string[]) {
+		this.autoSellDropMessages.push(...messages);
+	}
+
+	consumeAutoSellDropMessages() {
+		const messages = [...this.autoSellDropMessages];
+		this.autoSellDropMessages = [];
+		return messages;
 	}
 
 	getGearUpdateData(gearUpdates: GearWithSetupType[]) {
