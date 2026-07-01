@@ -47,8 +47,8 @@ export async function minionKillCommand(
 
 	let monster = findMonster(name);
 
-	const matchedRevenantMonster = revenantMonsters.find(monster =>
-		monster.aliases.some(alias => stringMatches(alias, name))
+	const matchedRevenantMonster = revenantMonsters.find(revenantMonster =>
+		revenantMonster.aliases.some(alias => stringMatches(alias, name))
 	);
 	if (matchedRevenantMonster) {
 		monster = matchedRevenantMonster;
@@ -74,6 +74,7 @@ export async function minionKillCommand(
 		kcForBonus = kcs.BRANDA + kcs.ELDRIC + kcs.ROYAL_TITANS;
 	}
 
+	const maxTripLength = await user.calcMaxTripLength('MonsterKilling');
 	const result = newMinionKillCommand({
 		gearBank: user.gearBank,
 		attackStyles: user.getAttackStyles(),
@@ -82,7 +83,7 @@ export async function minionKillCommand(
 		isTryingToUseWildy: wilderness ?? false,
 		monsterKC: kcForBonus,
 		inputPVMMethod: method,
-		maxTripLength: await user.calcMaxTripLength('MonsterKilling'),
+		maxTripLength: monster.id === Monsters.PriffRabbit.id ? maxTripLength * 2 : maxTripLength,
 		pkEvasionExperience,
 		poh: await getPOH(user.id),
 		inputQuantity,

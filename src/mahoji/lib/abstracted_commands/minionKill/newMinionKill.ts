@@ -201,6 +201,14 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 
 		const projectilesNeeded = usingBowfa ? 0 : monster.projectileUsage.calculateQuantity({ quantity });
 		if (rangeCheck.ammo) {
+			if (
+				monster.projectileUsage.requiredItems &&
+				!monster.projectileUsage.requiredItems.includes(rangeCheck.ammo.item)
+			) {
+				return `You need ${monster.projectileUsage.requiredItems
+					.map(id => Items.itemNameFromId(id))
+					.join(' or ')} equipped as your range ammo to kill ${monster.name}.`;
+			}
 			speedDurationResult.updateBank.itemCostBank.add(rangeCheck.ammo.item, projectilesNeeded);
 			if (projectilesNeeded > rangeCheck.ammo.quantity) {
 				return `You need ${projectilesNeeded.toLocaleString()}x ${Items.itemNameFromId(

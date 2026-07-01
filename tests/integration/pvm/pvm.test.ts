@@ -92,6 +92,34 @@ describe('PVM', async () => {
 		expect(user.bank.amount('Anti-venom+(4)')).toEqual(0);
 	});
 
+	it('should start Rabbit trips when requirements are met', async () => {
+		const user = await client.mockUser({
+			bank: new Bank().add('Anglerfish', 1000).add('Ruby dragon bolts (e)', 1000).add('Stamina potion(4)', 50),
+			QP: 300,
+			rangeGear: resolveItems([
+				'Zaryte crossbow',
+				'Masori body (f)',
+				'Masori chaps (f)',
+				'Masori mask (f)',
+				'Zaryte vambraces',
+				'Pegasian boots',
+				'Necklace of anguish'
+			])
+		});
+		await user.max();
+		await user.setAttackStyle(['ranged']);
+		expect(await user.runCommand(minionKCommand, { name: 'Rabbit', quantity: 1 })).toContain(
+			"Your range gear isn't right: You have no ammo equipped."
+		);
+		const rangeGear = user.gear.range;
+		rangeGear.equip('Ruby dragon bolts (e)', 1000);
+		await user.updateGear([{ setup: 'range', gear: rangeGear.raw() }]);
+		const result = await user.kill(EMonster.RABBIT, { quantity: 5 });
+		expect(result.commandResult).toContain('is now killing 1x Rabbit');
+		expect(user.bank.amount('Stamina potion(4)')).toEqual(45);
+		expect(user.gear.range.get('ammo')!.quantity).toEqual(900);
+	});
+
 	it('shouldnt let you barrage bloodvelds', async () => {
 		const user = await client.mockUser({
 			slayerLevel: 70,
