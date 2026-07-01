@@ -215,11 +215,8 @@ function findStringOptionValue(
 }
 
 // Autocomplete that can “see” the other selected options:
-export async function slayerMonsterAutocomplete({
-	value,
-	options
-}: StringAutoComplete & { options?: IAutoCompleteInteractionOption[] }) {
-	const masterInput = findStringOptionValue(options, 'master');
+export async function slayerMonsterAutocomplete({ value, rawOptions }: StringAutoComplete) {
+	const masterInput = findStringOptionValue(rawOptions, 'master');
 
 	if (masterInput) {
 		const master = resolveSlayerMaster(masterInput);

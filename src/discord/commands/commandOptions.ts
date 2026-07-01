@@ -18,8 +18,6 @@ export type BaseAutoCompleteOptions = {
 	userId: string;
 	user: MUser;
 	guildId: string | null;
-	options?: IAutoCompleteInteractionOption[];
-	focused?: IAutoCompleteInteractionOption;
 	rawOptions?: IAutoCompleteInteractionOption[];
 };
 

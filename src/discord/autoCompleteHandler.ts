@@ -53,8 +53,6 @@ async function handleAutocomplete(
 			user,
 			userId: user.id,
 			guildId,
-			options: rawOptions,
-			focused: data,
 			rawOptions
 		});
 		return autocompleteResult.slice(0, 25).map(i => ({
