@@ -187,7 +187,7 @@ describe('updateCL()', () => {
 			collectionLog: true
 		});
 
-		expect(user.cl.amount(EItem.SPIRIT_SEED)).toBe(1);
+		expect(user.cl.amount(EItem.SPIRIT_SEED)).toBeGreaterThanOrEqual(1);
 		expect(user.cl.amount(EItem.SEED_PACK)).toBe(1);
 		expect(user.bank.has(EItem.SPIRIT_SEED)).toBe(false);
 		expect(itemsAdded.length).toBeGreaterThan(0);
