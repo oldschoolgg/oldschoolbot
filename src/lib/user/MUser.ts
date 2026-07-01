@@ -1,3 +1,4 @@
+import { type UsingPetFunction, usingPet } from '@/lib/bso/bsoUtil.js';
 import type { GodFavourBank, GodName } from '@/lib/bso/minigames/divineDominion.js';
 import { mysteriousStepData, mysteriousTrailTracks } from '@/lib/bso/mysteryTrail.js';
 import type { IMaterialBank } from '@/lib/bso/skills/invention/index.js';
@@ -24,7 +25,7 @@ import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { Mutex } from 'async-mutex';
 import { randArrItem, SeedableRNG } from 'node-rng';
 import { cryptoRng } from 'node-rng/crypto';
-import { Bank, EMonster, type Item, type ItemBank, Items, itemID } from 'oldschooljs';
+import { Bank, EMonster, type Item, type ItemBank, Items } from 'oldschooljs';
 import { clone } from 'remeda';
 
 import type {
@@ -42,6 +43,7 @@ import { MUTEX_CACHE } from '@/lib/cache.js';
 import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
+import { BitField, BOT_TYPE } from '@/lib/constants.js';
 import { bossCLItems } from '@/lib/data/Collections.js';
 import { avasDevices } from '@/lib/data/CollectionsExport.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
@@ -176,7 +178,12 @@ export class MUserClass extends BaseUser {
 	}
 
 	get perkTier() {
-		return getPerkTierCached(this.id) ?? 0;
+		const cachedTier = getPerkTierCached(this.id) ?? 0;
+		if (cachedTier === 2 && BOT_TYPE === 'BSO') {
+			return this.bitfield.includes(BitField.HasPermanentTierOne) ? 3 : cachedTier;
+		} else {
+			return cachedTier;
+		}
 	}
 	get perkTierIsCached(): boolean {
 		return getPerkTierCached(this.id) !== null;
@@ -1186,10 +1193,8 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 		return 1;
 	}
 
-	usingPet(name: string | number) {
-		if (typeof name === 'number') return this.user.minion_equippedPet === name;
-		return this.user.minion_equippedPet === itemID(name);
-	}
+	usingPet: UsingPetFunction = ((pet, options) =>
+		usingPet(this.user.minion_equippedPet, pet, options)) as UsingPetFunction;
 }
 
 export async function srcMUserFetch(userID: string, updates?: Prisma.UserUpdateInput) {
@@ -1212,6 +1217,7 @@ export async function srcMUserFetch(userID: string, updates?: Prisma.UserUpdateI
 	if (!user) {
 		return srcMUserFetch(userID, {});
 	}
+	user.username = await Cache.getUsername(user.id);
 	return new MUserClass(user);
 }
 

@@ -60,7 +60,7 @@ interface KillArgs {
 	rng: RNGProvider;
 }
 
-interface Finishable {
+export interface Finishable {
 	name: string;
 	aliases?: string[];
 	cl: number[];

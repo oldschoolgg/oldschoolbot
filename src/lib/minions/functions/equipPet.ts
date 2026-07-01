@@ -1,7 +1,12 @@
 import { Bank, Items } from 'oldschooljs';
+import type { Item } from 'oldschooljs/src/index.js';
 
 import { allPetIDs } from '@/lib/data/CollectionsExport.js';
 import { unequipPet } from '@/lib/minions/functions/unequipPet.js';
+
+export function isPet(item: Item) {
+	return allPetIDs.includes(item.id) || item.customItemData?.isPet === true;
+}
 
 export async function equipPet(user: MUser, itemName: string) {
 	const petItem = Items.getItem(itemName);
@@ -12,8 +17,11 @@ export async function equipPet(user: MUser, itemName: string) {
 		return "🐳 You thought Wubufu was a pet? Wow that's a really good knock off... You haven't been dragging that poor thing on the ground, have you?";
 	}
 
-	if (!allPetIDs.includes(petItem.id) || !user.owns(cost)) {
-		return "That's not a pet, or you do not own this pet.";
+	if (!isPet(petItem)) {
+		return "That's not a pet...";
+	}
+	if (!user.owns(cost)) {
+		return "You can't be serious? Are you sure that's a pet? Are you even sure you have it?";
 	}
 
 	let unequipMsg = '';

@@ -3,8 +3,9 @@ import { addToDoubleLootTimer } from '@/lib/bso/doubleLoot.js';
 import { allDyes, dyedItems } from '@/lib/bso/dyedItems.js';
 import { mysteriousStepData } from '@/lib/bso/mysteryTrail.js';
 import { divinationEnergies } from '@/lib/bso/skills/divination.js';
+import { getLydiaQuote } from '@/lib/bso/summerDays.js';
 
-import { bold } from '@oldschoolgg/discord';
+import { bold, EmbedBuilder } from '@oldschoolgg/discord';
 import { notEmpty, objectEntries, Time } from '@oldschoolgg/toolkit';
 import { randArrItem, randInt } from 'node-rng';
 import { Bank, type Item, Items, resolveItems } from 'oldschooljs';
@@ -245,6 +246,61 @@ export const genericUsables: {
 		cost: new Bank().add('Celebratory cake with candle'),
 		loot: new Bank().add('Burnt celebratory cake'),
 		response: () => 'You try to get Klik to light the candle... but he burnt the cake..',
+		addToCL: true
+	},
+	{
+		items: [Items.getOrThrow('Sun Scream'), Items.getOrThrow('Patricia')],
+		cost: new Bank().add('Sun Scream').add('Patricia'),
+		loot: new Bank().add('Lydia'),
+		response: () => {
+			return {
+				content: '💀 You coat Patricia in Sun Scream...',
+				embeds: [
+					new EmbedBuilder()
+						.setDescription(getLydiaQuote())
+						.setImage(
+							'https://media.discordapp.net/attachments/851273567416483861/1516534890911240242/image.png'
+						)
+				]
+			};
+		},
+		addToCL: true
+	},
+	{
+		items: [Items.getOrThrow('Sun Scream'), Items.getOrThrow('Partycrab')],
+		cost: new Bank().add('Sun Scream').add('Partycrab'),
+		loot: new Bank().add('Shiny Partycrab'),
+		response: () => 'You rub Sun Scream onto Partycrab, and it struts away looking dramatically beach-goth.',
+		addToCL: true
+	},
+	{
+		items: [Items.getOrThrow('Sun Scream'), Items.getOrThrow('Dwarven warhammer')],
+		cost: new Bank().add('Sun Scream').add('Dwarven warhammer'),
+		loot: new Bank().add('Gothic Dwarven warhammer'),
+		response: () =>
+			'You polish the Dwarven warhammer with Sun Scream, leaving it with a dark purple, sea-salted finish.',
+		addToCL: true
+	},
+	{
+		items: [Items.getOrThrow('Pestle and mortar'), Items.getOrThrow('Purple sand dollar')],
+		cost: new Bank().add('Purple sand dollar'),
+		loot: new Bank().add('Purple dust'),
+		response: () => 'You grind the Purple sand dollar into a fine heap of shimmering Purple dust.',
+		addToCL: true
+	},
+	{
+		items: [Items.getOrThrow('Purple dust'), Items.getOrThrow('Bottle of sea water')],
+		cost: new Bank().add('Purple dust').add('Bottle of sea water'),
+		loot: new Bank().add('Sun Scream (unf)'),
+		response: () => 'You mix the Purple dust into the Bottle of sea water, creating a murky Sun Scream (unf).',
+		addToCL: true
+	},
+	{
+		items: [Items.getOrThrow('Sun Scream (unf)'), Items.getOrThrow('Black shell')],
+		cost: new Bank().add('Sun Scream (unf)').add('Black shell'),
+		loot: new Bank().add('Sun Scream'),
+		response: () =>
+			'You crush the Black shell into the unfinished mixture, and it settles into a finished bottle of Sun Scream.',
 		addToCL: true
 	},
 	{

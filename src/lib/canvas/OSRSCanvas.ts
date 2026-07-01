@@ -42,6 +42,7 @@ for (const [fontFamily, fontPath] of Object.entries(fonts)) {
 export class OSRSCanvas {
 	public static LOCAL_ICON_CACHE = new Map<number, CanvasImage>();
 	public static ITEM_ICON_CACHE_DIR = path.resolve('icon_cache');
+	public static ITEM_BSO_ICON_DIR = path.resolve('src/lib/resources/images/bso_icons');
 	public static Fonts = Fonts;
 	public static COLORS = {
 		ORANGE: '#FF981F',
@@ -55,6 +56,7 @@ export class OSRSCanvas {
 		MAGENTA: '#ff00f2',
 		LIGHT_CHOCOLATE: '#494034'
 	};
+	private static tinyPixelYOffset: number | null = null;
 
 	public sprite: IBgSprite | null = null;
 	public ctx: CanvasContext;
@@ -115,7 +117,36 @@ export class OSRSCanvas {
 		return this.canvas;
 	}
 
-	private rawDrawText({ text, x, y }: { text: string; x: number; y: number }) {
+	private static getTinyPixelYOffset() {
+		if (OSRSCanvas.tinyPixelYOffset !== null) return OSRSCanvas.tinyPixelYOffset;
+
+		const baseline = 12;
+		const expectedFirstRow = 7;
+		const canvas = new SkiaCanvas(80, 24);
+		canvas.gpu = false;
+		const ctx = canvas.getContext('2d');
+		ctx.font = Fonts.TinyPixel;
+		ctx.fillStyle = '#fff';
+		ctx.fillText('BEGINNER', 2, baseline);
+
+		const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+		let firstRow = Number.POSITIVE_INFINITY;
+		for (let i = 0; i < imageData.data.length; i += 4) {
+			if (imageData.data[i + 3] === 0) continue;
+			firstRow = Math.min(firstRow, Math.floor(i / 4 / canvas.width));
+		}
+
+		const offset = Number.isFinite(firstRow) ? expectedFirstRow - firstRow : 0;
+		OSRSCanvas.tinyPixelYOffset = Math.abs(offset) <= 1 ? offset : 0;
+		return OSRSCanvas.tinyPixelYOffset;
+	}
+
+	private rawDrawText({ text, x, y, font }: { text: string; x: number; y: number; font: FontName }) {
+		if (font === 'TinyPixel') {
+			this.ctx.fillText(text, x, y + OSRSCanvas.getTinyPixelYOffset());
+			return;
+		}
+
 		const textPath = this.ctx.outlineText(text);
 		this.ctx.fill(textPath.offset(x, y));
 	}
@@ -177,11 +208,11 @@ export class OSRSCanvas {
 
 			// Draw shadow/outline
 			this.ctx.fillStyle = 'black';
-			this.rawDrawText({ text: textLine.trim(), x: lineX + 1, y: lineY + 1 });
+			this.rawDrawText({ text: textLine.trim(), x: lineX + 1, y: lineY + 1, font });
 
 			// Draw main text
 			this.ctx.fillStyle = color;
-			this.rawDrawText({ text: textLine.trim(), x: lineX, y: lineY });
+			this.rawDrawText({ text: textLine.trim(), x: lineX, y: lineY, font });
 		}
 	}
 
@@ -342,7 +373,10 @@ export class OSRSCanvas {
 	private static async loadLocalIcon(itemID: number): Promise<Image> {
 		const cached = OSRSCanvas.LOCAL_ICON_CACHE.get(itemID);
 		if (cached) return cached;
-		const onDisk = await readFile(path.join(OSRSCanvas.ITEM_ICON_CACHE_DIR, `${itemID}.png`)).catch(() => null);
+		let onDisk = await readFile(path.join(OSRSCanvas.ITEM_ICON_CACHE_DIR, `${itemID}.png`)).catch(() => null);
+		// BSO only: Check if the image is in the bso_icons folder
+		if (!onDisk)
+			onDisk = await readFile(path.join(OSRSCanvas.ITEM_BSO_ICON_DIR, `${itemID}.png`)).catch(() => null);
 		if (onDisk) {
 			const image = await loadImage(onDisk);
 			OSRSCanvas.LOCAL_ICON_CACHE.set(itemID, image);

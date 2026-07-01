@@ -37,8 +37,11 @@ export function setCustomItem(id: number, name: string, baseItem: string, newIte
 			}
 		});
 	}
-	if (newItemData?.customItemData?.superTradeableButTradeableOnGE && !newItemData.customItemData.isSuperUntradeable) {
-		throw new Error('Tried to add a custom item with superTradeableButTradeableOnGE, but not isSuperUntradeable');
+	if (
+		newItemData?.customItemData?.superUntradeableButTradeableOnGE &&
+		!newItemData.customItemData.isSuperUntradeable
+	) {
+		throw new Error('Tried to add a custom item with superUntradeableButTradeableOnGE, but not isSuperUntradeable');
 	}
 
 	const data: Item = deepMerge({ ...Items.getOrThrow(baseItem) }, { ...newItemData, name, id }) as Item;

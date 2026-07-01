@@ -62,6 +62,7 @@ import { pumpkinHeadUniqueTable } from '@/lib/bso/pumpkinHead.js';
 import { divinationEnergies, portents } from '@/lib/bso/skills/divination.js';
 import { inventionCL } from '@/lib/bso/skills/invention/inventions.js';
 import { slayerMasksHelmsCL } from '@/lib/bso/skills/slayer/slayerMaskHelms.js';
+import { beachOutfitTable } from '@/lib/bso/summerDays.js';
 import { getAllIgneTameKCs, tameKillableMonsters } from '@/lib/bso/tames/tames.js';
 
 import { calcWhatPercent, notEmpty, stringMatches, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
@@ -1987,7 +1988,31 @@ export const allCollectionLogs: ICollection = {
 					'Golden partyhat',
 					'Black swan',
 					'Wubufu',
-					'The whale card'
+					'The whale card',
+					'Radiant magnabbit',
+					'Shiny Partycrab',
+					'Lydia'
+				]),
+				counts: false
+			},
+			'Summer 2026': {
+				alias: ['summer'],
+				items: resolveItems([
+					...beachOutfitTable.allItems,
+					'Summer Partyhat',
+					'Imitation crab hat',
+					'Partycrab',
+					'Patricia',
+					'Shiny partycrab',
+					'Lydia',
+					'Old crab cage',
+					'Mysterious bottle',
+					'Bottle of sea water',
+					'Purple sand dollar',
+					'Black shell',
+					'Purple dust',
+					'Sun scream (unf)',
+					'Sun scream'
 				]),
 				counts: false
 			}

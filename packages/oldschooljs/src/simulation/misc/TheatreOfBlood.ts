@@ -1,9 +1,9 @@
 import { sumArr } from '@oldschoolgg/util';
-import { percentChance, roll } from 'node-rng';
+import { MathRNG, type RNGProvider } from 'node-rng';
 
 import { Bank, type LootBank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
-import SimpleTable from '@/structures/SimpleTable.js';
+import { SimpleTable } from '@/structures/SimpleTable.js';
 import { JSONClone } from '@/util/util.js';
 
 export interface TeamMember {
@@ -23,6 +23,10 @@ export interface TheatreOfBloodOptions {
 	 * The members of the raid team, 1-5 people.
 	 */
 	team: TeamMember[];
+	/**
+	 * The RNG Provider
+	 */
+	rng?: RNGProvider;
 }
 
 interface ParsedMember extends TeamMember {
@@ -124,13 +128,13 @@ const HardModeExtraTable: LootTable = new LootTable()
 	.tertiary(100, 'Holy ornament kit');
 
 export class TheatreOfBloodClass {
-	nonUniqueLoot(member: ParsedMember, isHardMode: boolean, deaths: number[]): Bank {
+	nonUniqueLoot(member: ParsedMember, isHardMode: boolean, deaths: number[], rng: RNGProvider = MathRNG): Bank {
 		if (deaths.length === TOBRooms.length) {
 			return new Bank().add('Cabbage');
 		}
 		const loot = new Bank();
 		for (let i = 0; i < 3; i++) {
-			loot.add(NonUniqueTable.roll());
+			loot.add(NonUniqueTable.roll(1, { rng }));
 		}
 
 		if (isHardMode) {
@@ -139,13 +143,13 @@ export class TheatreOfBloodClass {
 				loot.set(item.id, Math.ceil(loot.amount(item.id) * 1.15));
 			}
 			// Add HM Tertiary drops: dust / kits
-			loot.add(HardModeExtraTable.roll());
+			loot.add(HardModeExtraTable.roll(1, { rng }));
 		}
 		let petChance = isHardMode ? 500 : 650;
 		if (member.numDeaths > 0) {
 			petChance *= member.numDeaths;
 		}
-		if (roll(petChance)) {
+		if (rng.roll(petChance)) {
 			loot.add("Lil' zik");
 		}
 
@@ -158,7 +162,7 @@ export class TheatreOfBloodClass {
 			table.add(member, member.points);
 		}
 
-		return table.roll();
+		return table.rollOrThrow();
 	}
 
 	public complete(_options: TheatreOfBloodOptions): {
@@ -167,6 +171,8 @@ export class TheatreOfBloodClass {
 		totalDeaths: number;
 		teamPoints: number;
 	} {
+		const rng = _options.rng ?? MathRNG;
+		delete _options.rng;
 		const options = JSONClone(_options);
 		if (options.team.length < 2 || options.team.length > 4) {
 			throw new Error('Only team sizes of 2-4 are supported in ToB');
@@ -189,7 +195,7 @@ export class TheatreOfBloodClass {
 
 		const percentBaseChanceOfUnique = (options.hardMode ? 13 : 11) * (teamPoints / maxPointsTeamCanGet);
 
-		const purpleReceived = percentChance(percentBaseChanceOfUnique);
+		const purpleReceived = rng.percentChance(percentBaseChanceOfUnique);
 		const purpleRecipient = purpleReceived ? this.uniqueDecide(parsedTeam) : null;
 
 		const lootResult: LootBank = {};
@@ -197,7 +203,7 @@ export class TheatreOfBloodClass {
 		for (const member of parsedTeam) {
 			if (member === purpleRecipient) {
 				lootResult[member.id] = new Bank().add(
-					options.hardMode ? HardModeUniqueTable.roll() : ToBUniqueTable.roll()
+					options.hardMode ? HardModeUniqueTable.roll(1, { rng }) : ToBUniqueTable.roll(1, { rng })
 				);
 			} else {
 				lootResult[member.id] = this.nonUniqueLoot(member, options.hardMode, member.deaths);

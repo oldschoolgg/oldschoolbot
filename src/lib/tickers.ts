@@ -70,7 +70,7 @@ export const tickers: {
 	},
 	{
 		name: 'minion_activities',
-		startupWait: Time.Second * 10,
+		startupWait: globalConfig.isProduction ? Time.Second * 10 : 4,
 		timer: null,
 		interval: globalConfig.isProduction ? Time.Second * 5 : 500,
 		cb: async () => {

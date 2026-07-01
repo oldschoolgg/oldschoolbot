@@ -1,3 +1,4 @@
+import { BSOItem } from '@/lib/bso/BSOItem.js';
 import { bsoShortNameMap } from '@/lib/bso/bsoShortNameMap.js';
 
 import { existsSync } from 'node:fs';
@@ -17,7 +18,7 @@ import {
 	loadImage
 } from '@/lib/canvas/canvasUtil.js';
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
-import { BitField, PerkTier } from '@/lib/constants.js';
+import { BitField } from '@/lib/constants.js';
 import { allCLItems } from '@/lib/data/Collections.js';
 import { filterableTypes } from '@/lib/data/filterables.js';
 import { marketPriceOfBank, marketPriceOrBotPrice } from '@/lib/marketPrices.js';
@@ -241,6 +242,7 @@ class BankImageTask {
 	public whiteEffect: Image | null = null;
 	public wubblesEffect: Image | null = null;
 	public easterEffect: Image | null = null;
+	public radiantEffect: Image | null = null;
 	public octoBubblesEffect: Image | null = null;
 
 	public effects: Map<number, Image> = new Map();
@@ -258,6 +260,7 @@ class BankImageTask {
 		this.bananaEffect = await loadImage(await fs.readFile('./src/lib/resources/images/banana-glow.png'));
 		this.whiteEffect = await loadImage(await fs.readFile('./src/lib/resources/images/white-glow.png'));
 		this.easterEffect = await loadImage(await fs.readFile('./src/lib/resources/images/easter-glow.png'));
+		this.radiantEffect = await loadImage(await fs.readFile('./src/lib/resources/images/shiny-glow.png'));
 		this.wubblesEffect = await loadImage(await fs.readFile('./src/lib/resources/images/wubbles-glow.png'));
 		this.octoBubblesEffect = await loadImage(await fs.readFile('./src/lib/resources/images/octo-bubbles.png'));
 		const coolItemEffects: [number, Image][] = [
@@ -268,7 +271,9 @@ class BankImageTask {
 			[itemID('Hoppy'), this.easterEffect],
 			[itemID('Wubbles'), this.wubblesEffect!],
 			[itemID('Seer'), this.whiteEffect!],
-			[itemID('Octo'), this.octoBubblesEffect!]
+			[itemID('Octo'), this.octoBubblesEffect!],
+			[BSOItem.LYDIA, this.radiantEffect!],
+			[BSOItem.SHINY_PARTYCRAB, this.radiantEffect!]
 		];
 
 		for (const [itemId, itemEffect] of coolItemEffects) {
@@ -401,7 +406,7 @@ class BankImageTask {
 				}
 			}
 
-			const effect = this.effects.get(item.id);
+			const effect = user?.bitfield.includes(BitField.DisableGlowEffects) ? undefined : this.effects.get(item.id);
 
 			await c.drawItemIDSprite({
 				itemID: item.id,
@@ -495,10 +500,11 @@ class BankImageTask {
 		let items = bank.items();
 
 		// Sorting
-		const favorites = user?.user.favoriteItems;
-		const weightings = user?.user.bank_sort_weightings as ItemBank;
-		const perkTier = user ? await user.fetchPerkTier() : 0;
-		const defaultSort: BankSortMethod = perkTier < PerkTier.Two ? 'value' : (user?.bankSortMethod ?? 'value');
+		const useWeightings = !(user?.user.bitfield.includes(BitField.DisableBankWeights) ?? false);
+		const useFavorites = !(user?.user.bitfield.includes(BitField.DisableBankFavorites) ?? false);
+		const favorites = useFavorites ? user?.user.favoriteItems : undefined;
+		const weightings = useWeightings ? (user?.user.bank_sort_weightings as ItemBank) : undefined;
+		const defaultSort: BankSortMethod = user?.bankSortMethod ?? 'value';
 		const sortInput = flags.get('sort');
 		const sort = sortInput ? (BankSortMethods.find(s => s === sortInput) ?? defaultSort) : defaultSort;
 
@@ -515,7 +521,7 @@ class BankImageTask {
 			});
 		}
 
-		if (perkTier >= PerkTier.Two && weightings && Object.keys(weightings).length > 0) {
+		if (weightings && Object.keys(weightings).length > 0) {
 			items.sort((a, b) => {
 				const aWeight = weightings[a[0].id];
 				const bWeight = weightings[b[0].id];

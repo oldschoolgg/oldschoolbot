@@ -19,7 +19,7 @@ export interface TransactItemsArgs {
 	gearUpdates?: GearWithSetupType[];
 }
 
-async function unqueuedTransactItems({
+export async function unqueuedTransactItems({
 	user,
 	collectionLog,
 	dontAddToTempCL,

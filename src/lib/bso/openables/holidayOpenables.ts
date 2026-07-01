@@ -54,6 +54,15 @@ const ChristmasBoxTable = new LootTable()
 	.add('Christmas dye', 1, 3)
 	.add('Coal', 1, 2);
 
+const HalloweenCrackerTable = new LootTable()
+	.add('Zombie halloween mask')
+	.add('Bloody halloween mask')
+	.add('Monster in a backpack')
+	.add('Pumpkin parasol')
+	.add('Vampyric halloween mask')
+	.add('Zombie cow plushie')
+	.add('Deathtouched tart');
+
 export const holidayOpenables: UnifiedOpenable[] = [
 	{
 		name: 'Royal mystery box',
@@ -105,15 +114,8 @@ export const holidayOpenables: UnifiedOpenable[] = [
 		id: itemID('Halloween cracker'),
 		openedItem: Items.getOrThrow('Halloween cracker'),
 		aliases: ['halloween cracker'],
-		output: new LootTable()
-			.add('Zombie halloween mask')
-			.add('Bloody halloween mask')
-			.add('Monster in a backpack')
-			.add('Pumpkin parasol')
-			.add('Vampyric halloween mask')
-			.add('Zombie cow plushie')
-			.add('Deathtouched tart'),
-		allItems: [],
+		output: HalloweenCrackerTable,
+		allItems: HalloweenCrackerTable.allItems,
 		smokeyApplies: false
 	}
 ];

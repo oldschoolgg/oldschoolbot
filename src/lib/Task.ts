@@ -27,6 +27,7 @@ import { DEPRECATED_ACTIVITY_TYPES } from '@/lib/constants.js';
 import type { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { agilityTask } from '@/tasks/minions/agilityActivity.js';
 import { alchingTask } from '@/tasks/minions/alchingActivity.js';
+import { beachCombingTask } from '@/tasks/minions/beachCombingActivity.js';
 import { butlerTask } from '@/tasks/minions/butlerActivity.js';
 import { buyTask } from '@/tasks/minions/buyActivity.js';
 import { camdozaalFishingTask } from '@/tasks/minions/camdozaalActivity/camdozaalFishingActivity.js';
@@ -180,6 +181,7 @@ export const allTasks: MinionTask[] = [
 	offeringTask,
 	agilityTask,
 	alchingTask,
+	beachCombingTask,
 	castingTask,
 	clueTask,
 	collectingTask,

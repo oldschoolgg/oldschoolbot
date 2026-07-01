@@ -1,3 +1,5 @@
+import { BSOItem } from '@/lib/bso/BSOItem.js';
+
 import { type Item, Items, LootTable } from 'oldschooljs';
 
 interface Crate {
@@ -268,6 +270,48 @@ export const keyCrates: Crate[] = [
 					.add('Purple sweets', [1, 3]),
 				1,
 				100
+			)
+	},
+	{
+		item: Items.getOrThrow(BSOItem.SUMMER_CRATE_S9),
+		key: Items.getOrThrow(BSOItem.SUMMER_CRATE_KEY_S9),
+		keyCostGP: 55_555_555,
+		table: new LootTable()
+			.tertiary(888, BSOItem.IMITATION_CRABHAT)
+			.tertiary(555, BSOItem.SUMMER_PARTYHAT)
+			.tertiary(25, BSOItem.PAINT_BOX)
+			.add(
+				new LootTable()
+					.add(BSOItem.SHELL_NECKLACE)
+					.add(BSOItem.CORAL_BIKINI_TOP)
+					.add(BSOItem.CORAL_BIKINI_BOTTOM)
+					.add(BSOItem.PALM_BOARD_SHORTS)
+					.add(BSOItem.BEACH_SANDALS)
+					.add(BSOItem.BEACH_SANDALS)
+					.add(BSOItem.BEACHBALL_SHIELD)
+					.add(BSOItem.BEACH_PINA_COLADA)
+					.add(BSOItem.WHALE_FLOATY),
+				1
+			)
+			.add(
+				new LootTable()
+					.add('Cake')
+					.add('Purple sweets', [1, 3])
+					.add('Baguette', 1, 10)
+					.add('Kebab', 1, 10)
+					.add('Spinach roll', 1, 6),
+				1,
+				15
+			)
+			.add(
+				new LootTable()
+					.add('Clue scroll (elite)', 1, 10)
+					.add('Clue scroll (master)', 1, 5)
+					.add('Clue scroll (grandmaster)', 1, 2)
+					.add('Elder scroll piece', 1, 1)
+					.tertiary(80, 'Clue scroll (elder)'),
+				1,
+				5
 			)
 	}
 ];

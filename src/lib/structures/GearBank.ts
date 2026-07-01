@@ -1,6 +1,7 @@
+import { type UsingPetFunction, usingPet } from '@/lib/bso/bsoUtil.js';
 import type { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
-import { type Bank, convertXPtoLVL, Items, resolveItems } from 'oldschooljs';
+import { type Bank, convertXPtoLVL, resolveItems } from 'oldschooljs';
 
 import { MAX_LEVEL } from '@/lib/constants.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
@@ -54,9 +55,7 @@ export class GearBank {
 		this.skillsAsLevels = skillsAsLevels;
 	}
 
-	usingPet(pet: string): boolean {
-		return this.pet === Items.getItem(pet)?.id;
-	}
+	usingPet: UsingPetFunction = ((pet, options) => usingPet(this.pet, pet, options)) as UsingPetFunction;
 
 	wildyGearCheck(item: string | number, isWildy: boolean) {
 		if (isWildy) {

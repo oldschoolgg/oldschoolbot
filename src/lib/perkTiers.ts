@@ -1,7 +1,7 @@
 import { Time } from '@oldschoolgg/toolkit';
 import { LRUCache } from 'lru-cache';
 
-import { BitField, PerkTier } from '@/lib/constants.js';
+import { BitField, BOT_TYPE, PerkTier } from '@/lib/constants.js';
 import '@/lib/cache/redis.js';
 
 export const allPerkBitfields: BitField[] = [
@@ -94,7 +94,11 @@ export async function getUsersPerkTier({
 		user.bitfield.includes(BitField.HasPermanentTierOne) ||
 		user.bitfield.includes(BitField.BothBotsMaxedFreeTierOnePerks)
 	) {
-		eligibleTiers.push(PerkTier.Two);
+		if (BOT_TYPE === 'BSO' && user.bitfield.includes(BitField.HasPermanentTierOne)) {
+			eligibleTiers.push(PerkTier.Three);
+		} else {
+			eligibleTiers.push(PerkTier.Two);
+		}
 	}
 	// Server boosting perk has been eliminated
 

@@ -1,3 +1,4 @@
+import { BSOItem } from '@/lib/bso/BSOItem.js';
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 import { baseHolidayItems } from '@/lib/bso/holidayItems.js';
 import { cmbClothes } from '@/lib/bso/openables/cmb.js';
@@ -139,7 +140,7 @@ export const mysteryBoxOpenables: UnifiedOpenable[] = [
 		output: async ({ user, quantity, totalLeaguesPoints }) => ({
 			bank: getMysteryBoxItem(user, totalLeaguesPoints, true, quantity)
 		}),
-		allItems: [],
+		allItems: [...tmbTable, BSOItem.MR_E],
 		isMysteryBox: true,
 		smokeyApplies: true
 	},
@@ -151,7 +152,7 @@ export const mysteryBoxOpenables: UnifiedOpenable[] = [
 		output: async ({ user, quantity, totalLeaguesPoints }) => ({
 			bank: getMysteryBoxItem(user, totalLeaguesPoints, false, quantity)
 		}),
-		allItems: [],
+		allItems: [...umbTable, BSOItem.MR_E],
 		isMysteryBox: true,
 		smokeyApplies: true
 	},
@@ -161,7 +162,7 @@ export const mysteryBoxOpenables: UnifiedOpenable[] = [
 		openedItem: Items.getOrThrow('Equippable mystery box'),
 		aliases: ['equippable mystery box', 'emb'],
 		output: async ({ quantity }) => makeOutputFromArrayOfItemIDs(randomEquippable, quantity),
-		allItems: [],
+		allItems: [...embTable, BSOItem.MR_E],
 		isMysteryBox: true,
 		smokeyApplies: true
 	},
