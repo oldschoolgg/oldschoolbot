@@ -32,6 +32,8 @@ const USER_DEFAULTS = {
 	favorite_alchables: [],
 	favorite_food: [],
 	favorite_bh_seeds: [],
+	auto_sell_bank: {},
+	auto_drop_bank: {},
 	attack_style: [],
 	combat_options: [],
 	slayer_autoslay_options: [],

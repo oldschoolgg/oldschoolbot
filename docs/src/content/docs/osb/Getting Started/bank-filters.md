@@ -36,6 +36,15 @@ When searching your bank, you can use multiple options to find exactly what you'
 
 The following command is an example of a bank search for the term "rune" with many filters: [[/bank search\:rune flag\:show_names flag_extra\:wide]].
 
+### Auto Sell And Auto Drop
+
+Tier 3+ patrons can set items to be automatically sold or dropped whenever they are added to their bank. Manage these preferences with [[/config user auto_sell_drop]].
+
+- Auto-sell uses the same behaviour as [[/sell]], including special exchanges such as mole parts into nest boxes and spirit seeds into Tier 5 seed pack loot.
+- Auto-drop permanently removes the configured item instead of keeping it in your bank.
+- When an item can be added to your collection log, it is added to the collection log before auto-sell or auto-drop is applied.
+- Adding an item to auto-sell removes it from auto-drop, and adding an item to auto-drop removes it from auto-sell.
+
 ### Category Filters
 
 The following bank filters can be used with either of the bank search commands to display items of a specific category. Some examples include:

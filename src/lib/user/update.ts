@@ -50,7 +50,14 @@ type PrismaBigIntUpdateInput = bigint | number | { increment: bigint | number } 
 
 type PrismaBigIntKeys = 'premium_balance_expiry_date' | 'GP' | 'sacrificedValue' | `skills_${SkillNameType}`;
 
-type PrismaItemBankKeys = 'bank' | 'collectionLogBank' | 'bank_sort_weightings' | 'temp_cl' | 'pets';
+type PrismaItemBankKeys =
+	| 'bank'
+	| 'collectionLogBank'
+	| 'bank_sort_weightings'
+	| 'temp_cl'
+	| 'pets'
+	| 'auto_sell_bank'
+	| 'auto_drop_bank';
 
 type PrismaDateKeys = 'last_temp_cl_reset' | 'gambling_lockout_expiry' | 'minion_bought_date' | 'last_command_date';
 

@@ -1,10 +1,14 @@
-import { Bank, type ItemBank } from 'oldschooljs';
+import { Bank, EItem, type ItemBank } from 'oldschooljs';
 
+import type { Prisma } from '@/prisma/main.js';
 import { deduplicateClueScrolls } from '@/lib/clues/clueUtils.js';
+import { PerkTier } from '@/lib/constants.js';
 import { handleNewCLItems } from '@/lib/handleNewCLItems.js';
 import { filterLootReplace } from '@/lib/slayer/slayerUtil.js';
 import type { SafeUserUpdateInput } from '@/lib/user/update.js';
 import type { GearWithSetupType } from '@/lib/user/userTypes.js';
+import { sellPriceOfItem, sellStorePriceOfItem, specialSoldItems } from '@/lib/util/sellPrices.js';
+import { getSpecialSellExchange } from '@/lib/util/specialSellExchanges.js';
 import { userQueueFn } from '@/lib/util/userQueues.js';
 import { findBingosWithUserParticipating } from '@/mahoji/lib/bingo/BingoManager.js';
 
@@ -18,6 +22,39 @@ export interface TransactItemsArgs {
 	neverUpdateHistory?: boolean;
 	otherUpdates?: SafeUserUpdateInput;
 	gearUpdates?: GearWithSetupType[];
+}
+
+const autoSellTaxRatePercent = 25;
+
+function calcAutoSellBank(user: MUser, bankToSell: Bank) {
+	const soldBank = new Bank();
+	const botItemSellData: Prisma.BotItemSellCreateManyInput[] = [];
+	let gpReceived = 0;
+
+	for (const [item, qty] of bankToSell.items()) {
+		if (item.id === EItem.ECUMENICAL_KEY && !user.hasDiary('wilderness.hard')) continue;
+		const specialPrice = specialSoldItems.get(item.id);
+		const pricePerStack =
+			specialPrice !== undefined
+				? Math.floor(specialPrice * qty)
+				: Math.floor(
+						(user.isIronman
+							? sellStorePriceOfItem(item, qty).price
+							: sellPriceOfItem(item, autoSellTaxRatePercent).price) * qty
+					);
+		if (pricePerStack <= 0) continue;
+
+		soldBank.add(item.id, qty);
+		gpReceived += pricePerStack;
+		botItemSellData.push({
+			item_id: item.id,
+			quantity: qty,
+			gp_received: pricePerStack,
+			user_id: user.id
+		});
+	}
+
+	return { soldBank, gpReceived, botItemSellData };
 }
 
 async function unqueuedTransactItems({
@@ -51,8 +88,8 @@ async function unqueuedTransactItems({
 	const currentBank = new Bank(user.user.bank as ItemBank);
 	const previousCL = new Bank(user.user.collectionLogBank as ItemBank);
 
-	let clUpdates: Partial<Record<'temp_cl' | 'collectionLogBank', ItemBank>> = {};
 	let clLootBank: Bank | null = null;
+	const clItemsAdded = new Bank();
 	if (itemsToAdd) {
 		const errors = itemsToAdd.validate();
 		if (errors.length > 0) {
@@ -66,7 +103,7 @@ async function unqueuedTransactItems({
 		clLootBank = clLoot;
 		itemsToAdd = bankLoot;
 
-		clUpdates = collectionLog ? user.calculateAddItemsToCLUpdates({ items: clLoot, dontAddToTempCL }) : {};
+		if (collectionLog) clItemsAdded.add(clLoot);
 	}
 
 	let gpUpdate: { increment: number } | undefined;
@@ -77,6 +114,47 @@ async function unqueuedTransactItems({
 				increment: coinsInLoot
 			};
 			itemsToAdd.remove('Coins', itemsToAdd.amount('Coins'));
+		}
+	}
+
+	let autoSoldBank = new Bank();
+	let autoDroppedBank = new Bank();
+	let autoSellGPReceived = 0;
+	let autoSellData: Prisma.BotItemSellCreateManyInput[] = [];
+
+	if (itemsToAdd && itemsToAdd.length > 0 && (await user.fetchPerkTier()) >= PerkTier.Four) {
+		const autoSellPreference = new Bank(user.user.auto_sell_bank as ItemBank);
+		const autoDropPreference = new Bank(user.user.auto_drop_bank as ItemBank);
+
+		if (autoSellPreference.length > 0) {
+			for (let i = 0; i < 20; i++) {
+				const specialExchange = getSpecialSellExchange(
+					itemsToAdd.filter(item => autoSellPreference.has(item.id))
+				);
+				if (!specialExchange) break;
+				itemsToAdd.remove(specialExchange.itemsToRemove);
+				itemsToAdd.add(specialExchange.itemsToAdd);
+				if (specialExchange.collectionLog) clItemsAdded.add(specialExchange.itemsToAdd);
+				if (specialExchange.extraCollectionLogItems) clItemsAdded.add(specialExchange.extraCollectionLogItems);
+			}
+
+			const sellResult = calcAutoSellBank(
+				user,
+				itemsToAdd.filter(item => autoSellPreference.has(item.id))
+			);
+			autoSoldBank = sellResult.soldBank;
+			autoSellGPReceived = sellResult.gpReceived;
+			autoSellData = sellResult.botItemSellData;
+			if (autoSoldBank.length > 0) {
+				itemsToAdd.remove(autoSoldBank);
+				if (gpUpdate) gpUpdate.increment += autoSellGPReceived;
+				else gpUpdate = { increment: autoSellGPReceived };
+			}
+		}
+
+		if (autoDropPreference.length > 0) {
+			autoDroppedBank = itemsToAdd.filter(item => autoDropPreference.has(item.id));
+			if (autoDroppedBank.length > 0) itemsToAdd.remove(autoDroppedBank);
 		}
 	}
 
@@ -120,6 +198,9 @@ async function unqueuedTransactItems({
 
 	deduplicateClueScrolls(newBank);
 
+	const clUpdates: Partial<Record<'temp_cl' | 'collectionLogBank', ItemBank>> =
+		clItemsAdded.length > 0 ? user.calculateAddItemsToCLUpdates({ items: clItemsAdded, dontAddToTempCL }) : {};
+
 	const updateData = {
 		bank: newBank.toJSON(),
 		GP: gpUpdate,
@@ -140,18 +221,37 @@ async function unqueuedTransactItems({
 
 	const newCL = new Bank(newUser.user.collectionLogBank as ItemBank);
 
-	if (!dontAddToTempCL && collectionLog) {
+	if (!dontAddToTempCL && clItemsAdded.length > 0) {
 		const activeBingos = await findBingosWithUserParticipating(user.id);
 		for (const bingo of activeBingos) {
 			if (bingo.isActive()) {
-				bingo.handleNewItems(user.id, itemsAdded);
+				bingo.handleNewItems(user.id, clItemsAdded);
 			}
 		}
 	}
 
 	if (!neverUpdateHistory) {
-		await handleNewCLItems({ itemsAdded, user: user, previousCL, newCL });
+		await handleNewCLItems({ itemsAdded: clItemsAdded, user: user, previousCL, newCL });
 	}
+
+	const sideEffects: Promise<unknown>[] = [];
+	if (autoSoldBank.length > 0) {
+		sideEffects.push(
+			ClientSettings.updateClientGPTrackSetting('gp_sell', autoSellGPReceived),
+			ClientSettings.updateBankSetting('sold_items_bank', autoSoldBank),
+			user.statsBankUpdate('items_sold_bank', autoSoldBank),
+			user.statsUpdate({
+				sell_gp: {
+					increment: autoSellGPReceived
+				}
+			}),
+			prisma.botItemSell.createMany({ data: autoSellData })
+		);
+	}
+	if (autoDroppedBank.length > 0) {
+		sideEffects.push(ClientSettings.updateBankSetting('dropped_items', autoDroppedBank));
+	}
+	if (sideEffects.length > 0) await Promise.all(sideEffects);
 
 	return {
 		previousCL,

@@ -1,6 +1,7 @@
-import { Bank, EItem } from 'oldschooljs';
+import { Bank, EItem, Items } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
+import { sellPriceOfItem } from '@/lib/util/sellPrices.js';
 import { createTestUser } from '../util.js';
 
 describe('updateCL()', () => {
@@ -135,5 +136,95 @@ describe('updateCL()', () => {
 		expect(cl.length).toBe(3);
 
 		expect(cl.equals(user.cl)).toBe(true);
+	});
+
+	it('auto-sells configured items after adding them to CL for T3+ users', async () => {
+		const user = await createTestUser();
+		await user.givePatronTier(3);
+		await user.update({
+			auto_sell_bank: new Bank().add(EItem.ABYSSAL_WHIP).toJSON()
+		});
+
+		const { itemsAdded } = await user.transactItems({
+			itemsToAdd: new Bank().add(EItem.ABYSSAL_WHIP),
+			collectionLog: true
+		});
+
+		const expectedGP = Math.floor(sellPriceOfItem(Items.getOrThrow(EItem.ABYSSAL_WHIP), 25).price);
+		expect(user.cl.amount(EItem.ABYSSAL_WHIP)).toBe(1);
+		expect(user.bank.has(EItem.ABYSSAL_WHIP)).toBe(false);
+		expect(user.GP).toBe(expectedGP);
+		expect(itemsAdded.equals(new Bank().add(EItem.COINS, expectedGP))).toBe(true);
+	});
+
+	it('auto-exchanges configured mole parts through the special sell path', async () => {
+		const user = await createTestUser();
+		await user.givePatronTier(3);
+		await user.update({
+			auto_sell_bank: new Bank().add(EItem.MOLE_CLAW).toJSON()
+		});
+
+		const { itemsAdded } = await user.transactItems({
+			itemsToAdd: new Bank().add(EItem.MOLE_CLAW),
+			collectionLog: true
+		});
+
+		expect(user.cl.amount(EItem.MOLE_CLAW)).toBe(1);
+		expect(user.bank.has(EItem.MOLE_CLAW)).toBe(false);
+		expect(itemsAdded.length).toBeGreaterThan(0);
+		expect(user.bank.has(itemsAdded)).toBe(true);
+	});
+
+	it('auto-exchanges configured spirit seeds through the special sell path', async () => {
+		const user = await createTestUser();
+		await user.givePatronTier(3);
+		await user.update({
+			auto_sell_bank: new Bank().add(EItem.SPIRIT_SEED).toJSON()
+		});
+
+		const { itemsAdded } = await user.transactItems({
+			itemsToAdd: new Bank().add(EItem.SPIRIT_SEED),
+			collectionLog: true
+		});
+
+		expect(user.cl.amount(EItem.SPIRIT_SEED)).toBe(1);
+		expect(user.cl.amount(EItem.SEED_PACK)).toBe(1);
+		expect(user.bank.has(EItem.SPIRIT_SEED)).toBe(false);
+		expect(itemsAdded.length).toBeGreaterThan(0);
+		expect(user.bank.has(itemsAdded)).toBe(true);
+	});
+
+	it('auto-drops configured items after adding them to CL for T3+ users', async () => {
+		const user = await createTestUser();
+		await user.givePatronTier(3);
+		await user.update({
+			auto_drop_bank: new Bank().add(EItem.ABYSSAL_WHIP).toJSON()
+		});
+
+		const { itemsAdded } = await user.transactItems({
+			itemsToAdd: new Bank().add(EItem.ABYSSAL_WHIP),
+			collectionLog: true
+		});
+
+		expect(user.cl.amount(EItem.ABYSSAL_WHIP)).toBe(1);
+		expect(user.bank.has(EItem.ABYSSAL_WHIP)).toBe(false);
+		expect(itemsAdded.length).toBe(0);
+	});
+
+	it('does not auto-sell/drop for users below T3', async () => {
+		const user = await createTestUser();
+		await user.givePatronTier(2);
+		await user.update({
+			auto_sell_bank: new Bank().add(EItem.ABYSSAL_WHIP).toJSON(),
+			auto_drop_bank: new Bank().add(EItem.TROUT).toJSON()
+		});
+
+		await user.transactItems({
+			itemsToAdd: new Bank().add(EItem.ABYSSAL_WHIP).add(EItem.TROUT),
+			collectionLog: true
+		});
+
+		expect(user.cl.has(new Bank().add(EItem.ABYSSAL_WHIP).add(EItem.TROUT))).toBe(true);
+		expect(user.bank.has(new Bank().add(EItem.ABYSSAL_WHIP).add(EItem.TROUT))).toBe(true);
 	});
 });
