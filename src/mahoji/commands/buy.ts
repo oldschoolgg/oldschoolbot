@@ -6,6 +6,7 @@ import Buyables from '@/lib/data/buyables/buyables.js';
 import { tripBuyables } from '@/lib/data/buyables/tripBuyables.js';
 import { quests } from '@/lib/minions/data/quests.js';
 import { Minigames } from '@/lib/settings/minigames.js';
+import { makeStartQuestResponse } from '@/lib/util/interactions.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { buyFossilIslandNotes } from '@/mahoji/lib/abstracted_commands/buyFossilIslandNotes.js';
 import { buyingTripCommand } from '@/mahoji/lib/abstracted_commands/buyingTripCommand.js';
@@ -101,9 +102,12 @@ export const buyCommand = defineCommand({
 		if (buyable.requiredQuests) {
 			const incompleteQuest = buyable.requiredQuests.find(quest => !user.user.finished_quest_ids.includes(quest));
 			if (incompleteQuest) {
-				return `You need to have completed the ${bold(
-					quests.find(i => i.id === incompleteQuest)!.name
-				)} quest to buy the ${buyable.name}.`;
+				return makeStartQuestResponse(
+					`You need to have completed the ${bold(
+						quests.find(i => i.id === incompleteQuest)!.name
+					)} quest to buy the ${buyable.name}.`,
+					incompleteQuest
+				);
 			}
 		}
 
