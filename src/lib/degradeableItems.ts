@@ -130,6 +130,19 @@ export const degradeableItems: DegradeableItem[] = [
 		emoji: '<:Serpentine_helm:1068491236123619379>'
 	},
 	{
+		item: Items.getOrThrow('Amulet of chemistry'),
+		settingsKey: 'chemistry_amulet_charges',
+		itemsToRefundOnBreak: new Bank().freeze(),
+		refundVariants: [],
+		setup: 'skilling',
+		aliases: ['amulet of chemistry', 'chemistry'],
+		chargeInput: {
+			cost: new Bank().add('Amulet of chemistry').freeze(),
+			charges: 5
+		},
+		emoji: '🧪'
+	},
+	{
 		item: Items.getOrThrow('Amulet of blood fury'),
 		settingsKey: 'blood_fury_charges',
 		itemsToRefundOnBreak: new Bank().add('Amulet of fury').freeze(),
@@ -389,6 +402,7 @@ export async function degradeItem({
 	assert(typeof chargesAfter === 'number' && chargesAfter > 0);
 	return {
 		chargesToDegrade: chargesToDegrade,
+		chargesRemaining: chargesAfter,
 		userMessage: `Your ${item.name} degraded by ${chargesToDegrade} charges`
 	};
 }
