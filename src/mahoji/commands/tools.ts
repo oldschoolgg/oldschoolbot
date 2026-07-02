@@ -1,6 +1,6 @@
 import { EmbedBuilder } from '@oldschoolgg/discord';
 import { formatDuration, stringMatches, stringSearch } from '@oldschoolgg/toolkit';
-import { Bank, type Item, type ItemBank, ItemGroups, Items, resolveItems, ToBUniqueTable } from 'oldschooljs';
+import { Bank, EMonster, type Item, type ItemBank, ItemGroups, Items, resolveItems, ToBUniqueTable } from 'oldschooljs';
 
 import type { Activity } from '@/prisma/main.js';
 import { choicesOf, itemOption, monsterOption, skillOption } from '@/discord/index.js';
@@ -8,7 +8,13 @@ import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { allStashUnitsFlat } from '@/lib/clues/stashUnits.js';
 import { PerkTier } from '@/lib/constants.js';
 import { allCLItemsFiltered, allDroppedItems } from '@/lib/data/Collections.js';
-import { gnomeRestaurantCL, guardiansOfTheRiftCL, shadesOfMorttonCL } from '@/lib/data/CollectionsExport.js';
+import {
+	gnomeRestaurantCL,
+	guardiansOfTheRiftCL,
+	shadesOfMorttonCL,
+	theNightmareCL,
+	theNightmareNormalCL
+} from '@/lib/data/CollectionsExport.js';
 import pets from '@/lib/data/pets.js';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
 import { allOpenables, type UnifiedOpenable } from '@/lib/openables.js';
@@ -378,16 +384,7 @@ LIMIT 10;`);
 	},
 	{
 		name: 'Nightmare',
-		items: resolveItems([
-			"Inquisitor's mace",
-			"Inquisitor's great helm",
-			"Inquisitor's hauberk",
-			"Inquisitor's plateskirt",
-			'Nightmare staff',
-			'Eldritch orb',
-			'Volatile orb',
-			'Harmonised orb'
-		]),
+		items: theNightmareNormalCL,
 		run: async ({ item, ironmanOnly }) => {
 			const result = await prisma.$queryRawUnsafe<
 				{ id: string; val: number }[]
@@ -398,6 +395,25 @@ LIMIT 10;`);
 		   AND "monster_scores"->>'${NightmareMonster.id}' IS NOT NULL
 		   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
 		   ORDER BY ("monster_scores"->>'${NightmareMonster.id}')::int DESC
+		   LIMIT 10;`);
+			return result;
+		},
+
+		format: num => `${num.toLocaleString()} KC`
+	},
+	{
+		name: "Phosani's Nightmare",
+		items: theNightmareCL,
+		run: async ({ item, ironmanOnly }) => {
+			const result = await prisma.$queryRawUnsafe<
+				{ id: string; val: number }[]
+			>(`SELECT "id", ("monster_scores"->>'${EMonster.PHOSANI_NIGHTMARE}')::int AS val
+		   FROM users
+		   INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
+		   WHERE "collectionLogBank"->>'${item.id}' IS NULL
+		   AND "monster_scores"->>'${EMonster.PHOSANI_NIGHTMARE}' IS NOT NULL
+		   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
+		   ORDER BY ("monster_scores"->>'${EMonster.PHOSANI_NIGHTMARE}')::int DESC
 		   LIMIT 10;`);
 			return result;
 		},
