@@ -406,13 +406,14 @@ class PatreonTask {
 		return Promise.all(allUsers.map(u => this.validatePerks(u.id, tiers.find(t => t.number === 3)!, true)));
 	}
 
-	async run() {
+	async run(targetDiscordID?: string) {
 		if (!globalConfig.isProduction) {
 			console.log('Skipping patreon task run because not production');
 			return;
 		}
-		// Reset all users' perk tier to 0 if their group has inconsistent perk tiers.
-		await roboChimpClient.$queryRawUnsafe(`UPDATE "user"
+		// Full sync only: reset all users' perk tier to 0 if their group has inconsistent perk tiers.
+		if (!targetDiscordID) {
+			await roboChimpClient.$queryRawUnsafe(`UPDATE "user"
 SET perk_tier = 0
 WHERE user_group_id IN (
 SELECT u1.user_group_id
@@ -421,12 +422,26 @@ JOIN "user" u2 ON u1.user_group_id = u2.user_group_id
 WHERE u1.perk_tier <> u2.perk_tier
 AND u1.id <> u2.id
 );`);
-		await this.checkHasEverBeenPatron();
+			await this.checkHasEverBeenPatron();
+		}
 
 		const fetchedPatrons = await this.fetchPatrons();
 		const result = [];
+		const targetUser = targetDiscordID
+			? await roboChimpClient.user.findFirst({
+					where: { id: BigInt(targetDiscordID) }
+				})
+			: null;
 
 		for (const patron of fetchedPatrons) {
+			if (
+				targetDiscordID &&
+				patron.discordID !== targetDiscordID &&
+				!(targetUser?.patreon_id && targetUser.patreon_id === patron.patreonID)
+			) {
+				continue;
+			}
+
 			if (!patron.discordID) {
 				const backupUser = await roboChimpClient.user.findFirst({
 					where: {
@@ -434,6 +449,9 @@ AND u1.id <> u2.id
 					}
 				});
 				if (backupUser) {
+					if (targetDiscordID && backupUser.id.toString() !== targetDiscordID) {
+						continue;
+					}
 					result.push(
 						`Found a backup user for ${patron.patreonID}, setting their discord ID to ${backupUser.id}`
 					);
@@ -466,6 +484,7 @@ AND u1.id <> u2.id
 			// Only find the user if they don't already have the relevant perk tier.
 			const user = await globalClient.fetchRUser(patron.discordID);
 			if (!user) continue;
+			if (targetDiscordID && user.id.toString() !== targetDiscordID) continue;
 
 			const userIdentifier = `R[${user.id}]D[${patron.discordID}]P[${patron.patreonID}]`;
 
@@ -502,8 +521,10 @@ AND u1.id <> u2.id
 			await this.changeTier(user, tierTheyShouldHave);
 		}
 
-		result.push(await this.syncGithub());
-		result.push(await this.updateFreePerks());
+		if (!targetDiscordID) {
+			result.push(await this.syncGithub());
+			result.push(await this.updateFreePerks());
+		}
 		return result.flat(5).filter(notEmpty);
 	}
 

@@ -34,7 +34,15 @@ export const toolsCommand = defineCommand({
 		{
 			type: 'Subcommand',
 			name: 'patreon_sync',
-			description: 'Patreon sync'
+			description: 'Patreon sync',
+			options: [
+				{
+					type: 'User',
+					name: 'user',
+					description: 'Only sync this user',
+					required: false
+				}
+			]
 		},
 		{
 			type: 'Subcommand',
@@ -49,11 +57,12 @@ export const toolsCommand = defineCommand({
 		if (!user.isSupport()) return 'Ook';
 
 		if (options.patreon_sync) {
-			const res = await patreonTask.run();
+			const targetUserID = options.patreon_sync.user?.user.id;
+			const res = await patreonTask.run(targetUserID);
 			if (res) {
 				console.log(res.join('\n').slice(0, 1950));
 			}
-			return 'Done.';
+			return targetUserID ? `Done. Synced <@${targetUserID}>.` : 'Done.';
 		}
 
 		if (!user.isMod()) return 'Ook';
