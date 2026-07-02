@@ -2,6 +2,7 @@ import { calcPerHour } from '@oldschoolgg/toolkit';
 import { Bank, convertLVLtoXP, EItem, EMonster, itemID, Monsters, resolveItems } from 'oldschooljs';
 import { describe, expect, it, test } from 'vitest';
 
+import { BitField } from '@/lib/constants.js';
 import { CombatCannonItemBank } from '@/lib/minions/data/combatConstants.js';
 import { getPOHObject } from '@/lib/poh/index.js';
 import { Gear } from '@/lib/structures/Gear.js';
@@ -243,6 +244,41 @@ describe('PVM', async () => {
 		expect(result.commandResult).toContain('15.00% for stats');
 	});
 
+	it('should only show PK messages with detailed info enabled', async () => {
+		const user = await client.mockUser({
+			bank: new Bank()
+				.add('Saradomin brew(4)', 10)
+				.add('Super restore(4)', 10)
+				.add('Cooked karambwan', 10)
+				.add('Revenant cave teleport', 10),
+			maxed: true
+		});
+		await user.equip('wildy', resolveItems(['Abyssal bludgeon']));
+		const result = await user.runCmdAndTrip(minionKCommand, {
+			name: 'revenant imp',
+			quantity: 1,
+			wilderness: true
+		});
+
+		expect(result.commandResult).not.toContain('**Boosts:**');
+		expect(result.commandResult).not.toContain('**PK:**');
+		expect(result.commandResult).not.toContain('potential pkers');
+		expect(result.commandResult).not.toContain('**Boosts:** Your minion brought some supplies');
+		expect(result.commandResult).toContain('Removing items:');
+
+		await user.update({ bitfield: { push: BitField.ShowDetailedInfo } });
+		const detailedResult = await user.runCmdAndTrip(minionKCommand, {
+			name: 'revenant imp',
+			quantity: 1,
+			wilderness: true
+		});
+
+		expect(detailedResult.commandResult).toContain('**Boosts:**');
+		expect(detailedResult.commandResult).toContain('**PK:**');
+		expect(detailedResult.commandResult).toContain('potential pkers');
+		expect(detailedResult.commandResult).not.toContain('**Boosts:** Your minion brought some supplies');
+	});
+
 	it('should only use 1 skotizo totem', async () => {
 		const user = await client.mockUser({
 			bank: new Bank().add('Dark totem', 100),
@@ -409,6 +445,8 @@ describe('PVM', async () => {
 		const res = await user.kill(EMonster.ARAXXOR);
 		expect(res.commandResult).toContain('is now killing');
 		expect(res.commandResult).toContain('25% for Scythe of vitur');
+		expect(res.commandResult).toContain('Your Scythe of vitur degraded by');
+		expect(res.commandResult).not.toContain('charges remaining');
 		const perHourWithScythe = calcPerHour(res.activityResult!.q, res.activityResult!.duration);
 
 		expect(perHourWithScythe).toBeGreaterThan(perHourWithoutScythe);
