@@ -14780,6 +14780,7 @@ export const discontinuedItems = resolveItems([
 	'Turkey drumstick',
 	'Golden partyhat',
 	'Black swan',
+	'Frosty',
 	...customItems.filter(i => Items.get(i)?.customItemData?.isDiscontinued)
 ]);
 
