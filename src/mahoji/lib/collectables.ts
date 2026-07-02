@@ -141,5 +141,12 @@ export const collectables: Collectable[] = [
 		},
 		duration: 10 * Time.Minute,
 		qpRequired: 100
+	},
+	// Simulates hunting god bird eggs on W444 with a scouting cc
+	{
+		item: Items.getOrThrow('Bird nest (egg)'),
+		quantity: 4,
+		duration: 30 * Time.Minute,
+		qpRequired: 205
 	}
 ];
