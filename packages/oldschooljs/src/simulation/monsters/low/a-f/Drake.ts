@@ -4,6 +4,13 @@ import RareSeedTable from '@/simulation/subtables/RareSeedTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
+const DrakeSharkLureTable: LootTable = new LootTable().add('Shark lure', 8).add('Shark lure', 10).add('Shark lure', 12);
+
+const DrakeSharkTable: LootTable = new LootTable()
+	.add('Raw shark', [4, 6], 1.5)
+	.add(DrakeSharkLureTable, 1, 1.5)
+	.add('Raw anglerfish', [4, 6], 1);
+
 const DrakeNotedHerbTable: LootTable = new LootTable()
 	.add('Grimy avantoe', [1, 3], 10)
 	.add('Grimy kwuarm', [1, 3], 10)
@@ -44,11 +51,12 @@ export const DrakePreTable: LootTable = new LootTable()
 	.add('Rune arrow', [35, 65], 10)
 
 	/* Herbs */
-	.add(HerbDropTable, [1, 3], 5)
+	.add(HerbDropTable, 1, 10)
 	.add(DrakeNotedHerbTable, 1, 6)
 
 	/* Seeds */
 	.add(RareSeedTable, 1, 1)
+	.add(DrakeSharkTable, 1, 4)
 
 	/* Other */
 	.add('Coins', [1000, 2000], 4)
