@@ -182,7 +182,7 @@ export async function kkCommand(
 			msgs.push(`${percent}% boost for TzKal cape`);
 		}
 
-		if (user.owns('Axe of the high sungod')) {
+		if (user.hasEquippedOrInBank('Axe of the high sungod')) {
 			const percent = 10;
 			effectiveTime = reduceNumByPercent(effectiveTime, percent);
 			msgs.push(`${percent}% boost for Axe of the high sungod`);
