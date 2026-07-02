@@ -1,10 +1,12 @@
 import { bold } from '@oldschoolgg/discord';
-import { formatDuration, stringMatches, UserError } from '@oldschoolgg/toolkit';
+import { formatDuration, stringMatches, Time, UserError } from '@oldschoolgg/toolkit';
+import { Bank } from 'oldschooljs';
 
 import { quests } from '@/lib/minions/data/quests.js';
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import { Thieving } from '@/lib/skilling/skills/thieving/index.js';
 import { type Stealable, stealables } from '@/lib/skilling/skills/thieving/stealables.js';
+import { calcLootXPChest } from '@/lib/skilling/skills/thieving/thievingUtils.js';
 import type { PickpocketActivityTaskOptions } from '@/lib/types/minions.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { calcLootXPPickpocketing } from '@/tasks/minions/pickpocketActivity.js';
@@ -87,6 +89,12 @@ export const stealCommand = defineCommand({
 			} a ${stealable.name}.`;
 		}
 
+		if (stealable.prayerLevelRequired && user.skillsAsLevels.prayer < stealable.prayerLevelRequired) {
+			return `${user.minionName} needs ${stealable.prayerLevelRequired} Prayer to ${
+				stealable.type === 'pickpockable' ? 'pickpocket' : 'steal from'
+			} a ${stealable.name}.`;
+		}
+
 		const timeToTheft =
 			stealable.type === 'pickpockable' ? (stealable.customTickRate ?? 2) * 600 : stealable.respawnTime;
 
@@ -122,6 +130,9 @@ export const stealCommand = defineCommand({
 		let str = `${user.minionName} is now going to ${
 			stealable.type === 'pickpockable' ? 'pickpocket' : 'steal from'
 		} a ${stealable.name} ${quantity}x times, it'll take around ${formatTripDuration(user, duration)} to finish.`;
+
+		const isRoguesCastleChest = stealable.name === "Rogues' Castle chest";
+		const potionsToRemove = new Bank();
 
 		if (stealable.type === 'pickpockable') {
 			const hasArdyHard = user.hasDiary('ardougne.hard');
@@ -167,10 +178,54 @@ export const stealCommand = defineCommand({
 
 			await ClientSettings.updateBankSetting('economyStats_thievingCost', foodRemoved);
 			str += ` Removed ${foodRemoved}.`;
-		} else {
+		} else if (stealable.type === 'stall') {
 			// Up to 5% fail chance, random
 			successfulQuantity = Math.floor((quantity * rng.randInt(95, 100)) / 100);
 			xpReceived = successfulQuantity * stealable.xp;
+		} else {
+			[successfulQuantity, xpReceived] = calcLootXPChest(user.skillsAsLevels.thieving, stealable, quantity, rng);
+
+			if (isRoguesCastleChest) {
+				const hasMediumDiary = user.hasDiary('wilderness.medium');
+				const hasHardDiary = user.hasDiary('wilderness.hard');
+				const hourlyPotionRate = rng.randInt(5, 10);
+				const potionsRequired = Math.max(1, Math.ceil((duration / Time.Hour) * hourlyPotionRate));
+				const blightedRestoreName = 'Blighted super restore(4)';
+				const prayerPotionName = 'Prayer potion(4)';
+				const blightedRestoreAmount = user.bank.amount(blightedRestoreName);
+				const prayerPotionAmount = user.bank.amount(prayerPotionName);
+
+				const blightedRestoreQuantity = Math.min(blightedRestoreAmount, potionsRequired);
+				const remainingPotionsRequired = potionsRequired - blightedRestoreQuantity;
+
+				if (prayerPotionAmount >= remainingPotionsRequired) {
+					if (blightedRestoreQuantity > 0) {
+						potionsToRemove.add(blightedRestoreName, blightedRestoreQuantity);
+					}
+					if (remainingPotionsRequired > 0) {
+						potionsToRemove.add(prayerPotionName, remainingPotionsRequired);
+					}
+				} else {
+					return `You need at least ${potionsRequired} total ${blightedRestoreName} or ${prayerPotionName} to keep Protect from Melee active while stealing from ${stealable.name}.`;
+				}
+
+				if (!hasMediumDiary) {
+					boosts.push('-25% loot without Wilderness medium diary');
+				} else if (hasHardDiary) {
+					boosts.push('+25% loot with Wilderness hard diary');
+				} else {
+					boosts.push('Standard loot with Wilderness medium diary');
+				}
+
+				if (user.owns('Ring of wealth (i)')) {
+					boosts.push('Ring of wealth (i) increases hard clue chance');
+				}
+			}
+		}
+
+		if (potionsToRemove.length > 0) {
+			await user.removeItemsFromBank(potionsToRemove);
+			str += ` Removed ${potionsToRemove}.`;
 		}
 
 		await ActivityManager.startTrip<PickpocketActivityTaskOptions>({
