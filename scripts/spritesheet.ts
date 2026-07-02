@@ -716,7 +716,100 @@ const itemsMustBeInSpritesheet: number[] = uniqueArr([
 	32928,
 	32930,
 	32932,
-	32934
+	32934,
+	28552,
+	28553,
+	28554,
+	31347,
+	31351,
+	31353,
+	31355,
+	31357,
+	31359,
+	31361,
+	31371,
+	31373,
+	31375,
+	31377,
+	33002,
+	33004,
+	33005,
+	33006,
+	33007,
+	33008,
+	33009,
+	33012,
+	33015,
+	33018,
+	33044,
+	33063,
+	33065,
+	33066,
+	33080,
+	33082,
+	33084,
+	33086,
+	33099,
+	33101,
+	33106,
+	33109,
+	33112,
+	33115,
+	33117,
+	33118,
+	33120,
+	33124,
+	33126,
+	33133,
+	33144,
+	33145,
+	33146,
+	33221,
+	33227,
+	33229,
+	33231,
+	33233,
+	33235,
+	33237,
+	33243,
+	33245,
+	33247,
+	33249,
+	33251,
+	33253,
+	33260,
+	33263,
+	33266,
+	33269,
+	33272,
+	33275,
+	33278,
+	33281,
+	33284,
+	33287,
+	33290,
+	33293,
+	33296,
+	33299,
+	33302,
+	33305,
+	33308,
+	33311,
+	33332,
+	33335,
+	33345,
+	33347,
+	33349,
+	33351,
+	33353,
+	33355,
+	33357,
+	33359,
+	33362,
+	33365,
+	33368,
+	33382,
+	33424
 ]);
 
 const bisGearItems = new Set<number>();
@@ -847,8 +940,7 @@ async function exists(path: string) {
 		return false;
 	}
 }
-const iconBaseUrl = 'https://cdn.oldschool.gg/icons/items/';
-//const iconBaseUrl = 'https://chisel.weirdgloop.org/static/img/osrs-sprite/'; // Fallback in case some are missing from magna's server.
+const iconBaseUrls = ['https://cdn.oldschool.gg/icons/items/', 'https://chisel.weirdgloop.org/static/img/osrs-sprite/'];
 const allOsbIconDir = './tmp/icons';
 
 async function main() {
@@ -867,11 +959,21 @@ async function main() {
 		const imgName = `${allOsbIconDir}/${item}.png`;
 		if (!(await exists(imgName))) {
 			console.log(`Missing ${imgName}. Downloading...`);
-			const dlResult = await downloadFile(`${iconBaseUrl}${item}.png`, imgName);
-			if (!dlResult.status) {
+			const errors: string[] = [];
+			for (const iconBaseUrl of iconBaseUrls) {
+				const dlResult = await downloadFile(`${iconBaseUrl}${item}.png`, imgName);
+				if (dlResult.status) {
+					errors.length = 0;
+					break;
+				}
+				errors.push(`${iconBaseUrl}${item}.png ${dlResult.msg}`);
+			}
+			if (errors.length > 0) {
 				isMissing = true;
 				missingItems.push(item);
-				console.log(`Error downloading ${iconBaseUrl}${item}.png ${dlResult.msg}`);
+				for (const error of errors) {
+					console.log(`Error downloading ${error}`);
+				}
 			}
 		}
 	}

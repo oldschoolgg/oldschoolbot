@@ -6,7 +6,7 @@ export const ZWikiBucketItem = z.object({
 	examine: z.string(),
 	item_id: z.array(z.string()),
 	is_members_only: z.boolean().optional(),
-	weight: z.number(),
+	weight: z.number().optional(),
 	item_name: z.string(),
 	high_alchemy_value: z.number().optional(),
 	value: z.number().optional(),
