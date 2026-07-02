@@ -27,7 +27,22 @@ async function fetchMoidData() {
 	return { moidSource, moidSourceMap };
 }
 
-async function fetchItemWikiPage(itemId: number): Promise<Item | null> {
+function getVariantName(itemName: string, configName: string): string | null {
+	const itemConfigName = itemName.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+	const config = configName.toLowerCase();
+	if (config === itemConfigName) return `${itemName} (base)`;
+	if (!config.endsWith(`_${itemConfigName}`)) return null;
+
+	const variant = config
+		.slice(0, -itemConfigName.length - 1)
+		.split('_')
+		.filter(Boolean)
+		.map(word => `${word[0].toUpperCase()}${word.slice(1)}`)
+		.join(' ');
+	return variant.length > 0 ? `${itemName} (${variant})` : null;
+}
+
+async function fetchItemWikiPage(itemId: number, moidItem?: MoidSourceItem): Promise<Item | null> {
 	const params = [
 		'item_id',
 		'item_name',
@@ -54,12 +69,14 @@ async function fetchItemWikiPage(itemId: number): Promise<Item | null> {
 		.then(res => res.json())
 		.then((data: any) => data.query.pages.map((page: any) => page.revisions[0].content));
 	const asdf = wtf(rawPageContents[0]).json();
-	const itemFromInfoBox = convertWikiJSONToItem(asdf);
+	const itemFromInfoBox = convertWikiJSONToItem(asdf, itemId);
 	if (itemFromInfoBox === null) return null;
+	const variantName =
+		moidItem && rawPageContents[0].includes('|id1') ? getVariantName(dataFromBucket.item_name, moidItem.configName) : null;
 
 	const finalItem: Item = {
 		id: itemFromInfoBox.id,
-		name: itemFromInfoBox.name,
+		name: variantName ?? itemFromInfoBox.name,
 		members: dataFromBucket.is_members_only ? true : undefined,
 		tradeable: itemFromInfoBox.tradeable,
 		tradeable_on_ge: itemFromInfoBox.tradeable_on_ge,
@@ -76,7 +93,7 @@ async function main() {
 	const currentData = JSON.parse(await readFileSync('./src/assets/item_data.json', 'utf-8'));
 	const existingItemIDsMap = new Map(Object.keys(currentData).map(n => [Number(n), currentData[n]]));
 
-	const { moidSource } = await fetchMoidData();
+	const { moidSource, moidSourceMap } = await fetchMoidData();
 
 	const itemIdsToProcess: number[] = [];
 	for (const item of moidSource) {
@@ -113,7 +130,6 @@ async function main() {
 			continue;
 		if (USELESS_ITEMS.includes(item.id)) continue;
 		if (Items.has(item.id)) continue;
-		if (Items.getItem(item.name)) continue;
 		itemIdsToProcess.push(item.id);
 	}
 
@@ -123,7 +139,7 @@ async function main() {
 
 	for (let i = 0; i < itemIdsToProcess.length; i++) {
 		await sleep(555);
-		const newItem = await fetchItemWikiPage(itemIdsToProcess[i]);
+		const newItem = await fetchItemWikiPage(itemIdsToProcess[i], moidSourceMap.get(itemIdsToProcess[i]));
 		if (newItem === null) continue;
 		newData[itemIdsToProcess[i]] = newItem;
 		writeFileSync('./src/assets/item_data.json', JSON.stringify(newData, null, 4));
