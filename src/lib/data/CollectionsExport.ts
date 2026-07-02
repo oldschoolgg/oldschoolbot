@@ -611,11 +611,11 @@ export const cluesMediumCL = resolveItems([
 	"Green d'hide chaps (g)",
 	"Green d'hide chaps (t)",
 	'Saradomin mitre',
-	'Saradomin cloak',
+	10446, // Saradomin Cloak
 	'Guthix mitre',
 	'Guthix cloak',
 	'Zamorak mitre',
-	'Zamorak cloak',
+	10450, // Zamorak Cloak
 	'Ancient mitre',
 	'Ancient cloak',
 	'Ancient stole',
@@ -1983,9 +1983,9 @@ export const capesCL = resolveItems([
 	'Ancient cloak',
 	'Armadyl cloak',
 	'Bandos cloak',
-	'Saradomin cloak',
+	10446, // Saradomin Cloak
 	'Guthix cloak',
-	'Zamorak cloak',
+	10450, // Zamorak Cloak
 	'Spotted cape',
 	'Spottier cape',
 	"Xeric's guard",
