@@ -2,7 +2,7 @@ import { boxSpawnHandler } from '@/lib/bso/boxSpawns.js';
 import { giveBoxResetTime, itemContractResetTime, spawnLampResetTime } from '@/lib/bso/bsoConstants.js';
 import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
 import { getGuthixianCacheInterval, userHasDoneCurrentGuthixianCache } from '@/lib/bso/minigames/guthixianCache.js';
-import { allIronmanMbTables, allMbTables } from '@/lib/bso/openables/mysteryBoxes.js';
+import { allDisplayableMbTables, getMysteryBoxAbbreviationsForItem } from '@/lib/bso/openables/mysteryBoxes.js';
 
 import { bold, dateFm, EmbedBuilder, time } from '@oldschoolgg/discord';
 import type { IMessage } from '@oldschoolgg/schemas';
@@ -198,15 +198,19 @@ const mentionCommands: MentionCommand[] = [
 					if (((sacrificedBank as ItemBank)[item.id] ?? 0) > 0) icons.push(Emoji.Incinerator);
 
 					const price = toKMB(Math.floor(item.price ?? 0));
-					const searchMbTable = user.isIronman ? allIronmanMbTables : allMbTables;
-					let str = `${index + 1}. ${item.name} ID[${item.id}] Price[${price}] ${
-						searchMbTable.includes(item.id) ? Emoji.MysteryBox : ''
+					const mysteryBoxTypes = getMysteryBoxAbbreviationsForItem(item.id).map(type =>
+						type === 'IRON_PMB' ? `${Emoji.Ironman}PMB` : type
+					);
+					let itemStr = `${index + 1}. ${item.name} ID[${item.id}] Price[${price}] ${
+						allDisplayableMbTables.includes(item.id)
+							? `${Emoji.MysteryBox}${mysteryBoxTypes.length > 0 ? ` [${mysteryBoxTypes.join('/')}]` : ''}`
+							: ''
 					} ${icons.join(' ')}`;
 					if (gettedItem.id === item.id) {
-						str = bold(str);
+						itemStr = bold(itemStr);
 					}
 
-					return str;
+					return itemStr;
 				})
 				.join('\n')}`;
 
