@@ -6,9 +6,8 @@ import { QuestID } from '@/lib/minions/data/quests.js';
 import type { MoonKeyHalfCatchRate } from '@/lib/skilling/types.js';
 
 export function formatTripDuration(user: MUser, durationMs: number): string {
-	const showTimestamp = user.bitfield.includes(BitField.DisableDynamicTimestamp);
-
-	return formatDurationWithTimestamp(durationMs, user.perkTier, showTimestamp);
+	const disableShowTimestamp = user.bitfield.includes(BitField.DisableDynamicTimestamp);
+	return formatDurationWithTimestamp(durationMs, user.perkTier, disableShowTimestamp);
 }
 
 const MOON_KEY_ONE_IN_PER_MINUTE = 60;
