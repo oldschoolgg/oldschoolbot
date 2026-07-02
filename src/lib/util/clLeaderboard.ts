@@ -3,9 +3,23 @@ import { stringMatches } from '@oldschoolgg/toolkit';
 import { SQL } from '@/lib/rawSql.js';
 import { userEventsToMap } from '@/lib/util/userEvents.js';
 
+export type CLLeaderboardAccountFilter = 'all' | 'ironmen' | 'mains';
+
+function accountFilterToSQL(accountFilter: CLLeaderboardAccountFilter) {
+	switch (accountFilter) {
+		case 'ironmen':
+			return 'AND "u"."minion.ironman" = true';
+		case 'mains':
+			return 'AND "u"."minion.ironman" = false';
+		default:
+			return '';
+	}
+}
+
 export async function fetchMultipleCLLeaderboards(
 	leaderboards: {
 		ironmenOnly: boolean;
+		accountFilter?: CLLeaderboardAccountFilter;
 		items: Set<number>;
 		resultLimit: number;
 		clName: string;
@@ -30,12 +44,13 @@ export async function fetchMultipleCLLeaderboards(
 	});
 
 	const results = await prisma.$transaction([
-		...parsedLeaderboards.map(({ items, userEventMap, ironmenOnly, resultLimit }) => {
+		...parsedLeaderboards.map(({ items, userEventMap, ironmenOnly, accountFilter, resultLimit }) => {
 			const SQL_ITEMS = `ARRAY[${Array.from(items)
 				.map(i => `${i}`)
 				.join(', ')}]`;
 			const userIds = Array.from(userEventMap.keys());
 			const userIdsList = userIds.length > 0 ? userIds.map(i => `'${i}'`).join(', ') : 'NULL';
+			const accountFilterSQL = accountFilterToSQL(accountFilter ?? (ironmenOnly ? 'ironmen' : 'all'));
 
 			const query = `
 SELECT id, qty, full_name
@@ -43,8 +58,8 @@ FROM (
     	SELECT u.id, CARDINALITY(cl_array & ${SQL_ITEMS}) AS qty, ${SQL.SELECT_FULL_NAME}
     	FROM users u
 		${SQL.LEFT_JOIN_BADGES}
-    	WHERE (cl_array && ${SQL_ITEMS}
-		${ironmenOnly ? 'AND "u"."minion.ironman" = true' : ''}) ${userIds.length > 0 ? `OR u.id IN (${userIdsList})` : ''}
+		WHERE (cl_array && ${SQL_ITEMS}${userIds.length > 0 ? ` OR u.id IN (${userIdsList})` : ''})
+		${accountFilterSQL}
 		${SQL.GROUP_BY_U_ID}
 	) AS subquery
 ORDER BY qty DESC
@@ -87,18 +102,20 @@ LIMIT ${resultLimit};
 
 export async function fetchCLLeaderboard({
 	ironmenOnly,
+	accountFilter,
 	items,
 	resultLimit,
 	clName
 }: {
 	ironmenOnly: boolean;
+	accountFilter?: CLLeaderboardAccountFilter;
 	items: Set<number>;
 	resultLimit: number;
 	method?: 'cl_array';
 	clName: string;
 }) {
 	const start = performance.now();
-	const result = await fetchMultipleCLLeaderboards([{ ironmenOnly, items, resultLimit, clName }]);
+	const result = await fetchMultipleCLLeaderboards([{ ironmenOnly, accountFilter, items, resultLimit, clName }]);
 	const end = performance.now();
 	Logging.logPerf({
 		duration: end - start,
