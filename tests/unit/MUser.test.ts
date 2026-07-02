@@ -1,6 +1,7 @@
 import { Bank, convertLVLtoXP } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
+import { BitField, PerkTier } from '@/lib/constants.js';
 import { mockMUser } from './userutil.js';
 
 const testUser = mockMUser({
@@ -65,5 +66,16 @@ describe('MUser.test', () => {
 	test('cl', () => {
 		expect(testUser.cl.has('Coal')).toEqual(true);
 		expect(testUser.cl.length).toEqual(1);
+	});
+	test('perkTier derives from user bitfield when hot cache is cold', () => {
+		expect(mockMUser({ id: 'perk-tier-none' }).perkTier).toEqual(0);
+		expect(mockMUser({ id: 'perk-tier-t1', bitfield: [BitField.PatronTier1] }).perkTier).toEqual(PerkTier.Two);
+		expect(mockMUser({ id: 'perk-tier-t3', bitfield: [BitField.PatronTier3] }).perkTier).toEqual(PerkTier.Four);
+		expect(
+			mockMUser({
+				id: 'perk-tier-free-t1',
+				bitfield: [BitField.BothBotsMaxedFreeTierOnePerks]
+			}).perkTier
+		).toEqual(PerkTier.Two);
 	});
 });
