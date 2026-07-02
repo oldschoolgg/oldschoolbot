@@ -1,5 +1,5 @@
 import { MathRNG } from 'node-rng';
-import { Bank, EItem, LootTable } from 'oldschooljs';
+import { Bank, LootTable } from 'oldschooljs';
 
 import type { UserStats } from '@/prisma/clients/main/client.js';
 import { BitField } from '@/lib/constants.js';
@@ -126,40 +126,35 @@ const dirtyArrowTableLevel90Plus = new LootTable()
 
 const valeOfferingNests = new LootTable()
 	.every(birdsNestID)
-	.add(treeSeedsNest, 1, 66)
-	.add(ringNests, 1, 33)
-	.add(eggNest, 1, 1);
+	.add(treeSeedsNest, 1, 65)
+	.add(ringNests, 1, 32)
+	.add(eggNest, 1, 3);
 
 export const preRollTable = new LootTable()
 	.add('Bow string spool', 1, 5)
 	.add('Fletching knife', 1, 3)
 	.add('Greenman mask', 1, 2);
 
-const offeringsTable = (forestryKit: boolean) => {
-	const table = new LootTable()
-		.add('Dirty arrowtips', [26, 32], 161)
-		.add('Ent branch', 1, 130)
-		.add('Bale of flax', [5, 6], 100)
-		.add('Blessed bone shards', [70, 90], 70)
-		.add('Feather', [400, 500], 50)
-		.add('Yew roots', [3, 4], 14)
-		.add('Magic roots', [2, 3], 14)
-		.add('Willow roots', [3, 4], 10)
-		.add('Maple roots', [3, 4], 10);
+const offeringsTable = new LootTable()
+	.add('Dirty arrowtips', [26, 32], 80)
+	.add('Ent branch', 1, 65)
+	.add('Bale of flax', [5, 6], 50)
+	.add('Blessed bone shards', [70, 90], 35)
+	.add('Anima-infused bark', [70, 90], 25)
+	.add('Feather', [400, 500], 15)
+	.add('Magic roots', [2, 3], 7.2)
+	.add('Yew roots', [3, 4], 7.2)
+	.add('Maple roots', [3, 4], 4.8)
+	.add('Willow roots', [3, 4], 4.8);
 
-	if (forestryKit) table.add('Anima-infused bark', [70, 90], 50);
+// OSRS currently labels these as "Rare/Very rare" on wiki without exact rates.
+// Keep this approximation until official numeric rates are available.
+for (const [tier, rate] of clueTiers) {
+	offeringsTable.tertiary(rate, createClueNest(tier));
+}
 
-	clueTiers.forEach(([tier, rate]) => {
-		table.tertiary(rate, createClueNest(tier));
-	});
-
-	return table;
-};
-
-export function createRummageOfferingsTable(fletchLvl: number, forestryKit: boolean): LootTable {
+export function createRummageOfferingsTable(fletchLvl: number): LootTable {
 	const lootTable = new LootTable();
-
-	lootTable.add(offeringsTable(forestryKit));
 
 	const lootByLevel: [number, [LootTable, number]][] = [
 		[50, [OfferingsSeedTableLevelUnder50, 1]],
@@ -171,8 +166,9 @@ export function createRummageOfferingsTable(fletchLvl: number, forestryKit: bool
 
 	const [, [seedTable, nestQty]] = lootByLevel.find(([maxLvl]) => fletchLvl < maxLvl)!;
 
-	lootTable.add(seedTable, 1, 11);
-	lootTable.add(valeOfferingNests, nestQty, 5);
+	lootTable.add(offeringsTable, 1, 294);
+	lootTable.add(seedTable, 1, 55);
+	lootTable.add(valeOfferingNests, nestQty, 50);
 
 	return lootTable;
 }
@@ -198,10 +194,9 @@ export function claimValeOfferings(
 	rng: RNGProvider = MathRNG
 ): { loot: Bank; msg: string } {
 	const fletchingLvl = user.skillLevel('fletching');
-	const hasForestryKit = user.hasEquippedOrInBank(EItem.FORESTRY_KIT);
 
 	const loot = new Bank();
-	const lootTable = createRummageOfferingsTable(fletchingLvl, hasForestryKit);
+	const lootTable = createRummageOfferingsTable(fletchingLvl);
 	for (let i = 0; i < rewards; i++) {
 		if (rng.roll(100)) {
 			loot.add(preRollTable.roll());
