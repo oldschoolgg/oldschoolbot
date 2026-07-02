@@ -1,6 +1,7 @@
 import { type Item, Items, resolveItems } from 'oldschooljs';
 
 interface DyedItem {
+	name?: string;
 	baseItem: Item;
 	dyedVersions: { item: Item; dye: Item }[];
 }
@@ -623,6 +624,16 @@ export const dyedItems: DyedItem[] = [
 		dyedVersions: [
 			{
 				item: Items.getOrThrow('Deathly collector'),
+				dye: Items.getOrThrow('Spooky dye')
+			}
+		]
+	},
+	{
+		name: 'Deathly collector (i) (using Tidal collector (i))',
+		baseItem: Items.getOrThrow('Tidal collector (i)'),
+		dyedVersions: [
+			{
+				item: Items.getOrThrow('Deathly collector (i)'),
 				dye: Items.getOrThrow('Spooky dye')
 			}
 		]
