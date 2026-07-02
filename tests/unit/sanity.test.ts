@@ -86,9 +86,9 @@ describe('Sanity', () => {
 	});
 
 	test('rings', () => {
-		expect(Items.getOrThrow('Ultor ring')!.id).toEqual(25485);
-		expect(itemID('Ultor ring')).toEqual(25485);
-		expect(Items.itemNameFromId(25485)).toEqual('Ultor ring');
+		expect(Items.getOrThrow('Ultor ring')!.id).toEqual(28307);
+		expect(itemID('Ultor ring')).toEqual(28307);
+		expect(Items.itemNameFromId(28307)).toEqual('Ultor ring');
 		expect(Items.getOrThrow('Ultor ring')!.equipment?.slot).toEqual('ring');
 		expect(Items.getOrThrow('Ultor ring')!.equipment?.melee_strength).toEqual(12);
 	});

@@ -405,7 +405,7 @@
 					},
 					{
 						"boost_percent": 15,
-						"item_id": 25484
+						"item_id": 28338
 					},
 					{
 						"boost_percent": 10,
@@ -839,7 +839,7 @@
 				"items": [
 					{
 						"boost_percent": 3,
-						"item_id": 25487
+						"item_id": 28310
 					},
 					{
 						"boost_percent": 1,
@@ -1510,7 +1510,7 @@
 				"items": [
 					{
 						"boost_percent": 3,
-						"item_id": 25487
+						"item_id": 28310
 					},
 					{
 						"boost_percent": 1,
@@ -1702,7 +1702,7 @@
 				"items": [
 					{
 						"boost_percent": 7.5,
-						"item_id": 25485
+						"item_id": 28307
 					},
 					{
 						"boost_percent": 5.5,
@@ -2752,11 +2752,11 @@
 				"items": [
 					{
 						"boost_percent": 5,
-						"item_id": 25488
+						"item_id": 28316
 					},
 					{
 						"boost_percent": 3,
-						"item_id": 25485
+						"item_id": 28307
 					}
 				],
 				"gear_setup": "melee"
@@ -2859,11 +2859,11 @@
 				"items": [
 					{
 						"boost_percent": 5,
-						"item_id": 25488
+						"item_id": 28316
 					},
 					{
 						"boost_percent": 3,
-						"item_id": 25485
+						"item_id": 28307
 					}
 				],
 				"gear_setup": "melee"
@@ -6843,7 +6843,7 @@
 					},
 					{
 						"boost_percent": 12,
-						"item_id": 25484
+						"item_id": 28338
 					},
 					{
 						"boost_percent": 5,
@@ -7414,7 +7414,7 @@
 				"items": [
 					{
 						"boost_percent": 7.5,
-						"item_id": 25485
+						"item_id": 28307
 					},
 					{
 						"boost_percent": 5.5,
@@ -7715,7 +7715,7 @@
 					},
 					{
 						"boost_percent": 9,
-						"item_id": 25484
+						"item_id": 28338
 					},
 					{
 						"boost_percent": 8,
@@ -7970,7 +7970,7 @@
 				"items": [
 					{
 						"boost_percent": 5,
-						"item_id": 25487
+						"item_id": 28310
 					}
 				],
 				"gear_setup": "range"
@@ -8101,7 +8101,7 @@
 					},
 					{
 						"boost_percent": 5,
-						"item_id": 25487
+						"item_id": 28310
 					}
 				],
 				"gear_setup": "range"
@@ -8230,7 +8230,7 @@
 				"items": [
 					{
 						"boost_percent": 5,
-						"item_id": 25486
+						"item_id": 28313
 					},
 					{
 						"boost_percent": 5,
@@ -8381,7 +8381,7 @@
 				"items": [
 					{
 						"boost_percent": 5,
-						"item_id": 25486
+						"item_id": 28313
 					},
 					{
 						"boost_percent": 5,
@@ -8780,7 +8780,7 @@
 				"items": [
 					{
 						"boost_percent": 25,
-						"item_id": 25484
+						"item_id": 28338
 					}
 				],
 				"gear_setup": "melee"
@@ -8843,11 +8843,11 @@
 				"items": [
 					{
 						"boost_percent": 5,
-						"item_id": 25488
+						"item_id": 28316
 					},
 					{
 						"boost_percent": 5,
-						"item_id": 25485
+						"item_id": 28307
 					}
 				],
 				"gear_setup": "melee"
@@ -8955,11 +8955,11 @@
 				"items": [
 					{
 						"boost_percent": 5,
-						"item_id": 25488
+						"item_id": 28316
 					},
 					{
 						"boost_percent": 5,
-						"item_id": 25485
+						"item_id": 28307
 					}
 				],
 				"gear_setup": "melee"
@@ -9257,7 +9257,7 @@
 				"items": [
 					{
 						"boost_percent": 7.5,
-						"item_id": 25485
+						"item_id": 28307
 					},
 					{
 						"boost_percent": 5.5,
@@ -9454,7 +9454,7 @@
 				"items": [
 					{
 						"boost_percent": 7.5,
-						"item_id": 25485
+						"item_id": 28307
 					},
 					{
 						"boost_percent": 5.5,
