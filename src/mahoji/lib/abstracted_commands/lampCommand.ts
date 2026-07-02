@@ -115,6 +115,13 @@ export const XPLamps: IXPLamp[] = [
 		amount: 50_000,
 		name: 'Antique lamp (grandmaster ca)',
 		minimumLevel: 70
+	},
+	{
+		itemID: itemID(30960),
+		amount: 55_000,
+		name: 'Antique lamp (the final dawn)',
+		minimumLevel: 1,
+		allowedSkills: ['attack', 'strength', 'defence', 'hitpoints', 'ranged', 'magic']
 	}
 ];
 
@@ -255,8 +262,19 @@ export const Lampables: IXPObject[] = [
 	}
 ];
 
+function resolveLampableItem(itemToUse: string) {
+	const itemByName = Items.getItem(itemToUse);
+	if (itemByName) return itemByName;
+
+	const normalizedInput = itemToUse.trim().toLowerCase();
+	const namedLamp = XPLamps.find(lamp => lamp.name.toLowerCase() === normalizedInput);
+	if (namedLamp) return Items.get(namedLamp.itemID);
+
+	return null;
+}
+
 export async function lampCommand(user: MUser, itemToUse: string, skill: string, _quantity: number | undefined) {
-	const item = Items.getItem(itemToUse);
+	const item = resolveLampableItem(itemToUse);
 	if (!item) return "That's not a valid item.";
 
 	const xpObject = Lampables.find(x => x.items.includes(item.id));
