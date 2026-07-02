@@ -187,6 +187,7 @@ export const queenBlackDragonCL = resolveItems([
 
 export const akumuCL = resolveItems(['Mini akumu', 'Nightmarish ashes', 'Cursed onyx', 'Demon statuette']);
 export const venatrixCL = resolveItems(['Baby venatrix', 'Venatrix eggs', 'Venatrix webbing', 'Spiders leg bottom']);
+export const yetiCL = resolveItems(['Raw yeti meat', 'Yeti hide', 'Frostclaw cape', 'Cold heart', 'Penguin egg']);
 
 export const gorajanWarriorOutfit = resolveItems([
 	'Gorajan warrior helmet',
