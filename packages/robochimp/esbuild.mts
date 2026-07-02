@@ -1,3 +1,6 @@
+import { copyFileSync, mkdirSync } from 'node:fs';
+import { createRequire } from 'node:module';
+import { dirname, resolve } from 'node:path';
 import { type BuildOptions, build } from 'esbuild';
 
 const external = [
@@ -39,8 +42,20 @@ const baseBuildOptions: BuildOptions = {
 	metafile: true
 };
 
-build({
+await build({
 	...baseBuildOptions,
 	entryPoints: ['src/index.ts'],
 	outdir: './dist'
 });
+
+const distDir = resolve(process.cwd(), './dist');
+const require = createRequire(import.meta.url);
+const pgliteEntrypoint = require.resolve('@electric-sql/pglite');
+const pgliteDistDir = dirname(pgliteEntrypoint);
+
+for (const asset of ['pglite.data', 'pglite.wasm']) {
+	const src = resolve(pgliteDistDir, asset);
+	const dest = resolve(distDir, asset);
+	mkdirSync(dirname(dest), { recursive: true });
+	copyFileSync(src, dest);
+}
