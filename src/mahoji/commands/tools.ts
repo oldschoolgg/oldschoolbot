@@ -2,7 +2,7 @@ import { EmbedBuilder } from '@oldschoolgg/discord';
 import { formatDuration, stringMatches, stringSearch } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, ItemGroups, Items, resolveItems, ToBUniqueTable } from 'oldschooljs';
 
-import type { Activity } from '@/prisma/main.js';
+import { type Activity, Prisma } from '@/prisma/main.js';
 import { choicesOf, itemOption, monsterOption, skillOption } from '@/discord/index.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { allStashUnitsFlat } from '@/lib/clues/stashUnits.js';
@@ -10,6 +10,7 @@ import { PerkTier } from '@/lib/constants.js';
 import { allCLItemsFiltered, allDroppedItems } from '@/lib/data/Collections.js';
 import { gnomeRestaurantCL, guardiansOfTheRiftCL, shadesOfMorttonCL } from '@/lib/data/CollectionsExport.js';
 import pets from '@/lib/data/pets.js';
+import { doMenuWrapper } from '@/lib/menuWrapper.js';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
 import { allOpenables, type UnifiedOpenable } from '@/lib/openables.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
@@ -26,6 +27,8 @@ import {
 } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 
 const skillsVals = Object.values(Skills);
+const myPetsLeaderboardTypes = ['total', 'unique'] as const;
+type MyPetsLeaderboardType = (typeof myPetsLeaderboardTypes)[number];
 
 function dateDiff(first: number, second: number) {
 	return Math.round((second - first) / (1000 * 60 * 60 * 24));
@@ -95,6 +98,49 @@ ${whereInMassClause(id)};`)
 **First Activity:** ${firstActivity.type} ${firstActivityDate.toLocaleDateString('en-CA')}
 **Average Per Day:** ${formatDuration(perDay)}
 `;
+}
+
+async function myPetsLeaderboard(
+	interaction: MInteraction,
+	type: MyPetsLeaderboardType,
+	ironmanOnly: boolean
+): CommandResponse {
+	const petIDs = pets.map(pet => pet.id);
+	const rows = await prisma.$queryRaw<{ id: string; total_pets: number; unique_pets: number }[]>(Prisma.sql`
+		WITH pet_counts AS (
+			SELECT
+				u.id::text AS id,
+				SUM((pet.value)::int)::int AS total_pets,
+				COUNT(*)::int AS unique_pets
+			FROM users u
+			CROSS JOIN LATERAL jsonb_each_text(u.pets::jsonb) AS pet(key, value)
+			WHERE pet.key ~ '^[0-9]+$'
+				AND pet.key::int IN (${Prisma.join(petIDs)})
+				AND (pet.value)::int > 0
+				${ironmanOnly ? Prisma.sql`AND u."minion.ironman" = true` : Prisma.empty}
+			GROUP BY u.id
+		)
+		SELECT *
+		FROM pet_counts
+		ORDER BY
+			CASE WHEN ${type} = 'total' THEN total_pets ELSE unique_pets END DESC,
+			CASE WHEN ${type} = 'total' THEN unique_pets ELSE total_pets END DESC
+		LIMIT 100;
+	`);
+
+	return doMenuWrapper({
+		ironmanOnly,
+		interaction,
+		users: rows.map(row => ({
+			id: row.id,
+			score: type === 'total' ? row.total_pets : row.unique_pets,
+			totalPets: row.total_pets,
+			uniquePets: row.unique_pets
+		})),
+		title: type === 'total' ? 'Total Chat Pets Obtained Leaderboard' : 'Unique Chat Pets Leaderboard',
+		render: (row, username) =>
+			`**${username}:** ${row.totalPets.toLocaleString()} total (${row.uniquePets.toLocaleString()}/${pets.length} unique)`
+	});
 }
 
 async function clueGains(interval: string, tier?: string, ironmanOnly?: boolean) {
@@ -857,7 +903,25 @@ export const toolsCommand = defineCommand({
 				{
 					type: 'Subcommand',
 					name: 'mypets',
-					description: 'See the chat pets you have.'
+					description: 'See the chat pets you have.',
+					options: [
+						{
+							type: 'String',
+							name: 'leaderboard',
+							description: 'Show a chat pet leaderboard instead of your pets.',
+							required: false,
+							choices: [
+								{ name: 'Total Pets Obtained', value: 'total' },
+								{ name: 'Unique Pets', value: 'unique' }
+							]
+						},
+						{
+							type: 'Boolean',
+							name: 'ironmen_only',
+							description: 'Only include ironmen.',
+							required: false
+						}
+					]
 				},
 				{
 					type: 'Subcommand',
@@ -1016,6 +1080,13 @@ export const toolsCommand = defineCommand({
 		}
 		if (options.user) {
 			if (options.user.mypets) {
+				if (options.user.mypets.leaderboard) {
+					return myPetsLeaderboard(
+						interaction,
+						options.user.mypets.leaderboard,
+						Boolean(options.user.mypets.ironmen_only)
+					);
+				}
 				const { pets: usersRawPets } = await prisma.user.findFirstOrThrow({
 					where: { id: user.id },
 					select: { pets: true }
