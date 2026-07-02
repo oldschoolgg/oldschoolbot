@@ -102,13 +102,16 @@ function extractMainInfobox(sections: WikiItemJSON['sections']) {
 }
 
 function getInfoboxID(mainInfobox: Record<string, any>, itemID?: number): number | null {
-	if (mainInfobox.id?.number) return mainInfobox.id.number;
 	if (itemID) {
+		if (mainInfobox.id?.number === itemID || mainInfobox.id?.text?.split(/\D+/).includes(String(itemID))) {
+			return itemID;
+		}
 		for (const key of Object.keys(mainInfobox)) {
 			if (!/^id\d+$/.test(key)) continue;
 			if (mainInfobox[key]?.number === itemID) return itemID;
 		}
 	}
+	if (Number.isSafeInteger(mainInfobox.id?.number)) return mainInfobox.id.number;
 	return mainInfobox.id1?.number ?? null;
 }
 

@@ -16,6 +16,18 @@ async function fetchRes(url: string) {
 	});
 }
 
+async function writeItemData(filePath: string, data: Record<string, Item>) {
+	for (let i = 0; i < 5; i++) {
+		try {
+			writeFileSync(filePath, JSON.stringify(data, null, 4));
+			return;
+		} catch (err) {
+			if (i === 4) throw err;
+			await sleep(250);
+		}
+	}
+}
+
 async function fetchMoidData() {
 	const moidSource: MoidSourceItem[] = await fetchRes('https://chisel.weirdgloop.org/moid/data_files/itemsmin.js')
 		.then(res => res.text())
@@ -28,7 +40,10 @@ async function fetchMoidData() {
 }
 
 function getVariantName(itemName: string, configName: string): string | null {
-	const itemConfigName = itemName.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+	const itemConfigName = itemName
+		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, '_')
+		.replace(/^_+|_+$/g, '');
 	const config = configName.toLowerCase();
 	if (config === itemConfigName) return `${itemName} (base)`;
 	if (!config.endsWith(`_${itemConfigName}`)) return null;
@@ -37,9 +52,22 @@ function getVariantName(itemName: string, configName: string): string | null {
 		.slice(0, -itemConfigName.length - 1)
 		.split('_')
 		.filter(Boolean)
-		.map(word => `${word[0].toUpperCase()}${word.slice(1)}`)
 		.join(' ');
 	return variant.length > 0 ? `${itemName} (${variant})` : null;
+}
+
+function isKnownSameNameVariant(item: MoidSourceItem): boolean {
+	return (
+		item.name === 'Maggot egg' &&
+		[
+			'maggot_egg',
+			'sickly_maggot_egg',
+			'warm_maggot_egg',
+			'pulsating_maggot_egg',
+			'wriggling_maggot_egg',
+			'writhing_maggot_egg'
+		].includes(item.configName)
+	);
 }
 
 async function fetchItemWikiPage(itemId: number, moidItem?: MoidSourceItem): Promise<Item | null> {
@@ -72,7 +100,9 @@ async function fetchItemWikiPage(itemId: number, moidItem?: MoidSourceItem): Pro
 	const itemFromInfoBox = convertWikiJSONToItem(asdf, itemId);
 	if (itemFromInfoBox === null) return null;
 	const variantName =
-		moidItem && rawPageContents[0].includes('|id1') ? getVariantName(dataFromBucket.item_name, moidItem.configName) : null;
+		moidItem && rawPageContents[0].includes('|id1')
+			? getVariantName(dataFromBucket.item_name, moidItem.configName)
+			: null;
 
 	const finalItem: Item = {
 		id: itemFromInfoBox.id,
@@ -80,6 +110,7 @@ async function fetchItemWikiPage(itemId: number, moidItem?: MoidSourceItem): Pro
 		members: dataFromBucket.is_members_only ? true : undefined,
 		tradeable: itemFromInfoBox.tradeable,
 		tradeable_on_ge: itemFromInfoBox.tradeable_on_ge,
+		stackable: itemFromInfoBox.stackable,
 		equipable: itemFromInfoBox.equipable,
 		highalch: dataFromBucket.high_alchemy_value,
 		equipment: itemFromInfoBox.equipment,
@@ -95,42 +126,46 @@ async function main() {
 
 	const { moidSource, moidSourceMap } = await fetchMoidData();
 
-	const itemIdsToProcess: number[] = [];
-	for (const item of moidSource) {
-		if (item.id < 10_000) continue;
-		if (existingItemIDsMap.has(item.id)) continue;
-		if (item.name.trim().length === 0) continue;
-		if (item.name.toLowerCase() === 'null') continue;
+	const explicitItemIDs = process.argv.slice(2).map(Number).filter(Number.isInteger);
+	const itemIdsToProcess: number[] = explicitItemIDs;
+	if (itemIdsToProcess.length === 0) {
+		for (const item of moidSource) {
+			if (item.id < 10_000) continue;
+			if (existingItemIDsMap.has(item.id)) continue;
+			if (item.name.trim().length === 0) continue;
+			if (item.name.toLowerCase() === 'null') continue;
 
-		if (['_riddle', '_skillguide_'].some(suffix => item.configName.toLowerCase().includes(suffix))) continue;
-		if (
-			[
-				'placeholder_',
-				'lost_schematic_',
-				'beta_',
-				'br_',
-				'fake_',
-				'cert_',
-				'poh_',
-				'raids_storage',
-				'bas_puzzle_',
-				'con_contract_',
-				'slayerguide_',
-				'nzone_',
-				'pvpa_'
-			].some(suffix => item.configName.toLowerCase().startsWith(suffix))
-		)
-			continue;
-		if (['_worn', '_dummy'].some(suffix => item.configName.toLowerCase().endsWith(suffix))) continue;
-		if (
-			['clue scroll', 'challenge scroll', 'casket', 'puzzle box', 'armour set'].some(str =>
-				item.name.toLowerCase().includes(str)
+			if (['_riddle', '_skillguide_'].some(suffix => item.configName.toLowerCase().includes(suffix))) continue;
+			if (
+				[
+					'placeholder_',
+					'lost_schematic_',
+					'beta_',
+					'br_',
+					'fake_',
+					'cert_',
+					'poh_',
+					'raids_storage',
+					'bas_puzzle_',
+					'con_contract_',
+					'slayerguide_',
+					'nzone_',
+					'pvpa_'
+				].some(suffix => item.configName.toLowerCase().startsWith(suffix))
 			)
-		)
-			continue;
-		if (USELESS_ITEMS.includes(item.id)) continue;
-		if (Items.has(item.id)) continue;
-		itemIdsToProcess.push(item.id);
+				continue;
+			if (['_worn', '_dummy'].some(suffix => item.configName.toLowerCase().endsWith(suffix))) continue;
+			if (
+				['clue scroll', 'challenge scroll', 'casket', 'puzzle box', 'armour set'].some(str =>
+					item.name.toLowerCase().includes(str)
+				)
+			)
+				continue;
+			if (USELESS_ITEMS.includes(item.id)) continue;
+			if (Items.has(item.id)) continue;
+			if (!isKnownSameNameVariant(item) && Items.getItem(item.name)) continue;
+			itemIdsToProcess.push(item.id);
+		}
 	}
 
 	console.log(`Items to process: ${itemIdsToProcess.length}`);
@@ -142,7 +177,7 @@ async function main() {
 		const newItem = await fetchItemWikiPage(itemIdsToProcess[i], moidSourceMap.get(itemIdsToProcess[i]));
 		if (newItem === null) continue;
 		newData[itemIdsToProcess[i]] = newItem;
-		writeFileSync('./src/assets/item_data.json', JSON.stringify(newData, null, 4));
+		await writeItemData('./src/assets/item_data.json', newData);
 	}
 }
 

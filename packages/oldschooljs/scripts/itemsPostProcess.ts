@@ -57,5 +57,5 @@ for (const [id, newName] of Object.entries(itemRenames)) {
 
 const didChange = JSON.stringify(itemsCopy) !== JSON.stringify(items);
 if (didChange) {
-	writeFileSync('./src/assets/item_data.json', `${JSON.stringify(items, null, '\t')}\n`);
+	writeFileSync('./src/assets/item_data.json', `${JSON.stringify(items, null, 4)}\n`);
 }
