@@ -1504,6 +1504,10 @@
 		"similar_items": ["Osmumten's fang", "Osmumten's fang (or)"]
 	},
 	{
+		"main_item": "Patricia",
+		"similar_items": ["Lydia", "Patricia"]
+	},
+	{
 		"main_item": "Pernix body",
 		"similar_items": [
 			"Gorajan archer top",
