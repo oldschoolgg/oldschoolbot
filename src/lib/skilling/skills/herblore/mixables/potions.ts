@@ -417,6 +417,7 @@ const Potions: Mixable[] = [
 			'Super defence (4)': 1,
 			Torstol: 1
 		}),
+		alternatives: { Torstol: 'Torstol potion (unf)' },
 		tickRate: 2,
 		bankTimePerPotion: 0.5
 	},
@@ -448,6 +449,7 @@ const Potions: Mixable[] = [
 		level: 94,
 		xp: 125,
 		inputItems: new Bank({ 'Anti-venom (4)': 1, Torstol: 1 }),
+		alternatives: { Torstol: 'Torstol potion (unf)' },
 		tickRate: 2,
 		bankTimePerPotion: 0.3
 	},
