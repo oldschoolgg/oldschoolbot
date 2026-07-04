@@ -6,6 +6,7 @@ import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import aerialFishingCreatures from '@/lib/skilling/skills/hunter/aerialFishing.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 import { skillingPetDropRate } from '@/lib/util.js';
+import {calcRadasBlessingBoost} from "@/lib/skilling/skills/fishing/fishingUtil.js";
 
 export const aerialFishingTask: MinionTask = {
 	type: 'AerialFishing',
@@ -137,6 +138,16 @@ export const aerialFishingTask: MinionTask = {
 		str += `\n\nYou received: ${loot}.`;
 
 		if (loot.has('Golden tench')) {
+
+			const { blessingChance } = calcRadasBlessingBoost(user.gearBank);
+			if (blessingChance > 0) {
+				const goldenTenchQty = loot.amount('Golden tench');
+				for (let i = 0; i < goldenTenchQty; i++) {
+					if (rng.percentChance(blessingChance)) {
+						loot.add('Golden tench');
+					}
+				}
+			}
 			str += '\n\n**The cormorant has brought you a very strange tench.**';
 			globalClient.emit(
 				Events.ServerNotification,
