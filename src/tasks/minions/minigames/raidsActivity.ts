@@ -207,7 +207,7 @@ export const raidsTask: MinionTask = {
 			if (!user) continue;
 
 			const [xpResult, { itemsAdded }] = await Promise.all([
-				handleCoxXP(user, quantity, challengeMode),
+				(await handleCoxXP(user, quantity, challengeMode)).filter(msg => msg.trim().length > 0),
 				user.transactItems({
 					itemsToAdd: loot,
 					collectionLog: true
