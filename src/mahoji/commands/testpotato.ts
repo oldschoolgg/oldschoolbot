@@ -1007,9 +1007,9 @@ export const testPotatoCommand = globalConfig.isProduction
 					});
 
 					await user.updateGear([
-						{ setup: 'melee', gear: TOBMaxMeleeGear.raw() },
-						{ setup: 'range', gear: TOBMaxRangeGear.raw() },
-						{ setup: 'mage', gear: TOBMaxMageGear.raw() }
+						{ setup: 'melee', gear: COXMaxMeleeGear.raw() },
+						{ setup: 'range', gear: COXMaxRangeGear.raw() },
+						{ setup: 'mage', gear: COXMaxMageGear.raw() }
 					]);
 
 					await user.rawUpdate({
