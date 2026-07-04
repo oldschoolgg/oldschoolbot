@@ -331,8 +331,9 @@ export async function handleTripFinish(
 	}
 
 	if (_messages) messages.push(..._messages);
-	if (messages.length > 0) {
-		message.addContent(`\n**Messages:** ${messages.join(', ')}`);
+	const displayedMessages = messages.map(msg => msg.trim()).filter(msg => msg.length > 0);
+	if (displayedMessages.length > 0) {
+		message.addContent(`\n**Messages:** ${displayedMessages.join(', ')}`);
 	}
 
 	message.addContent(displayCluesAndPets(user, loot));
