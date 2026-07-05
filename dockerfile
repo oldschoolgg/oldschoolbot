@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     procps \
     curl \
     ca-certificates \
+    postgresql-client \
     && curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
     && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/* \
@@ -39,9 +40,8 @@ RUN pnpm run monorepo:build
 FROM base AS build-run
 WORKDIR /usr/src/app
 COPY --from=build /usr/src/app /usr/src/app
-CMD psql -U postgres -c "CREATE DATABASE integration_test" && \
-    psql -U postgres -c "CREATE DATABASE robochimp_integration_test" && \
-    pnpm prisma db push --schema='./prisma/robochimp.prisma' && \
+
+CMD pnpm prisma db push --schema='./prisma/robochimp.prisma' && \
     pnpm prisma db push --schema='./prisma/schema.prisma' && \
     wait && \
     NODE_NO_WARNINGS=1 pnpm vitest run --config vitest.integration.config.mts
