@@ -51,6 +51,7 @@ services:
       redis:
         condition: service_healthy
     environment:
+      NODE_OPTIONS: --max-old-space-size=2048
       ROBOCHIMP_DATABASE_URL: postgresql://postgres:postgres@db:5435/robochimp_integration_test?connection_limit=10&pool_timeout=0&schema=public
       DATABASE_URL: postgresql://postgres:postgres@db:5435/integration_test?connection_limit=10&pool_timeout=0&schema=public
       REDIS_HOST: redis

@@ -44,4 +44,5 @@ COPY --from=build /usr/src/app /usr/src/app
 CMD pnpm prisma db push --schema='./prisma/robochimp.prisma' && \
     pnpm prisma db push --schema='./prisma/schema.prisma' && \
     wait && \
-    NODE_NO_WARNINGS=1 pnpm vitest run --config vitest.integration.config.mts
+    NODE_NO_WARNINGS=1 \
+    pnpm vitest run --config vitest.integration.config.mts
