@@ -85,7 +85,7 @@ export const IndependenceDay2BoxTable = new LootTable()
 	.add('Sam')
 	.add('Alien green card')
 	.add('Stars and Stripeship')
-	.add('Liber beam');
+	.add('Liber-ray-tor');
 
 const spookyEpic = new LootTable().add('Spooky partyhat').add('Orange halloween mask');
 const spookyRare = new LootTable()

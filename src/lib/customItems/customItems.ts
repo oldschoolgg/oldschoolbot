@@ -1525,7 +1525,7 @@ setCustomItem(
 );
 setCustomItem(48_233, 'Alien green card', 'Coal', {}, 1_000_000);
 setCustomItem(48_234, 'Stars and Stripeship', 'Coal', {}, 1_000_000);
-setCustomItem(48_235, 'Liber beam', 'Coal', {}, 1_000_000);
+setCustomItem(48_235, 'Liber-ray-tor', 'Coal', {}, 1_000_000);
 
 setCustomItem(48_324, 'Blacksmith crate', 'Mystery box', { tradeable: true, tradeable_on_ge: true }, 100_000);
 
