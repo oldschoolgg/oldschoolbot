@@ -2920,6 +2920,16 @@
 			"add_to_cl": false
 		},
 		{
+			"items": ["Pestle and mortar", "Purple sand dollar"],
+			"cost": {
+				"73988": 1
+			},
+			"loot": {
+				"73990": 1
+			},
+			"add_to_cl": true
+		},
+		{
 			"items": ["Pumpkin", "Mumpkin"],
 			"cost": {
 				"1959": 1,
@@ -2937,6 +2947,17 @@
 			},
 			"loot": {
 				"73271": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Purple dust", "Bottle of sea water"],
+			"cost": {
+				"73990": 1,
+				"73992": 1
+			},
+			"loot": {
+				"73991": 1
 			},
 			"add_to_cl": true
 		},
@@ -2989,6 +3010,50 @@
 			},
 			"loot": {
 				"71921": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Sun Scream", "Patricia"],
+			"cost": {
+				"73982": 1,
+				"73984": 1
+			},
+			"loot": {
+				"73985": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Sun Scream", "Partycrab"],
+			"cost": {
+				"73968": 1,
+				"73984": 1
+			},
+			"loot": {
+				"73986": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Sun Scream", "Dwarven warhammer"],
+			"cost": {
+				"6741": 1,
+				"73984": 1
+			},
+			"loot": {
+				"73987": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Sun Scream (unf)", "Black shell"],
+			"cost": {
+				"73989": 1,
+				"73991": 1
+			},
+			"loot": {
+				"73984": 1
 			},
 			"add_to_cl": true
 		},
