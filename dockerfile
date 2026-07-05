@@ -41,8 +41,8 @@ FROM base AS build-run
 WORKDIR /usr/src/app
 COPY --from=build /usr/src/app /usr/src/app
 
-CMD pnpm prisma db push --schema='./prisma/robochimp.prisma' && \
-    pnpm prisma db push --schema='./prisma/schema.prisma' && \
+CMD pnpm prisma db push --schema='./prisma/robochimp.prisma' --force-reset --skip-generate && \
+    pnpm prisma db push --schema='./prisma/schema.prisma' --force-reset --skip-generate && \
     wait && \
     NODE_NO_WARNINGS=1 \
     pnpm vitest run --config vitest.integration.config.mts
