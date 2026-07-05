@@ -1508,6 +1508,25 @@ setCustomItem(48_228, 'Monkey dye', 'Egg', {}, 10_000_000);
 setCustomItem(48_229, 'Marimbo statue', 'Egg', {}, 10_000_000);
 setCustomItem(48_230, 'Big banana', 'Bronze kiteshield', {}, 100_000);
 
+/**
+ * Independence Day 2 Box
+ */
+setCustomItem(48_231, 'Independence Day 2 Box', 'Mystery box', {}, 1_000_000);
+setCustomItem(
+	48_232,
+	'Sam',
+	'Herbi',
+	{
+		customItemData: {
+			isPet: true
+		}
+	},
+	1_000_000
+);
+setCustomItem(48_233, 'Alien green card', 'Coal', {}, 1_000_000);
+setCustomItem(48_234, 'Stars and Stripeship', 'Coal', {}, 1_000_000);
+setCustomItem(48_235, 'Liber beam', 'Coal', {}, 1_000_000);
+
 setCustomItem(48_324, 'Blacksmith crate', 'Mystery box', { tradeable: true, tradeable_on_ge: true }, 100_000);
 
 setCustomItem(48_240, 'Ignecarus mask', 'Rune full helm', {}, 1_000_000);

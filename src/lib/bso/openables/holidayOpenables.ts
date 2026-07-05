@@ -1,6 +1,7 @@
 import {
 	BeachMysteryBoxTable,
 	IndependenceBoxTable,
+	IndependenceDay2BoxTable,
 	RoyalMysteryBoxTable,
 	spookyTable
 } from '@/lib/bso/openables/tables.js';
@@ -89,6 +90,15 @@ export const holidayOpenables: UnifiedOpenable[] = [
 		aliases: ['independence box'],
 		output: IndependenceBoxTable,
 		allItems: IndependenceBoxTable.allItems,
+		excludeFromOpenAll: true
+	},
+	{
+		name: 'Independence Day 2 Box',
+		id: itemID('Independence Day 2 Box'),
+		openedItem: Items.getOrThrow('Independence Day 2 Box'),
+		aliases: ['independence day 2 box', 'id2 box'],
+		output: IndependenceDay2BoxTable,
+		allItems: IndependenceDay2BoxTable.allItems,
 		excludeFromOpenAll: true
 	},
 	{

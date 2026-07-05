@@ -1740,6 +1740,18 @@
 		}
 	},
 	{
+		"id": 48233,
+		"name": "Alien green card",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 1000000
+	},
+	{
 		"id": 73641,
 		"name": "Albino rat pouch",
 		"tradeable": true,
@@ -26741,6 +26753,13 @@
 		"price": 6000
 	},
 	{
+		"id": 48231,
+		"name": "Independence Day 2 Box",
+		"tradeable_on_ge": true,
+		"tradeable": true,
+		"price": 1000000
+	},
+	{
 		"id": 70033,
 		"name": "Indigo afro",
 		"tradeable": true,
@@ -28452,6 +28471,18 @@
 		"customItemData": {
 			"cantDropFromMysteryBoxes": true
 		}
+	},
+	{
+		"id": 48235,
+		"name": "Liber beam",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 1000000
 	},
 	{
 		"id": 48213,
@@ -39015,6 +39046,15 @@
 		}
 	},
 	{
+		"id": 48232,
+		"name": "Sam",
+		"members": true,
+		"customItemData": {
+			"isPet": true
+		},
+		"price": 1000000
+	},
+	{
 		"id": 48214,
 		"name": "Sam's hat",
 		"tradeable": true,
@@ -44055,6 +44095,18 @@
 			"cantDropFromMysteryBoxes": true,
 			"isSuperUntradeable": true
 		}
+	},
+	{
+		"id": 48234,
+		"name": "Stars and Stripeship",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 1000000
 	},
 	{
 		"id": 70165,
