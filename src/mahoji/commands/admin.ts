@@ -226,41 +226,6 @@ interface ViewableThing {
 }
 const viewableThings: ViewableThing[] = [
 	{
-		name: 'Discord Username Fetch Queue',
-		run: async () => {
-			const stats = await Cache.getDiscordUserFetchQueueStats();
-			const formatDate = (date: Date | null) => (date ? dateFm(date) : 'Never');
-			const queuedUserIds =
-				stats.queuedUserIds.length > 0
-					? stats.queuedUserIds
-							.slice(0, 20)
-							.map(userId => `- ${userId}${userId === stats.currentUserId ? ' (running)' : ''}`)
-							.join('\n')
-					: 'None';
-
-			return {
-				content: `**Discord Username Fetch Queue**
-Queued now: ${stats.queued.toLocaleString()}
-Running now: ${stats.running.toLocaleString()}
-Current user ID: ${stats.currentUserId ?? 'None'}
-Total Discord fetch requests sent: ${stats.totalFetchRequests.toLocaleString()}
-Total queued: ${stats.totalQueued.toLocaleString()}
-Total started: ${stats.totalStarted.toLocaleString()}
-Total completed: ${stats.totalCompleted.toLocaleString()}
-Total failed: ${stats.totalFailed.toLocaleString()}
-Total deduped queue requests: ${stats.dedupeSkips.toLocaleString()}
-Last queued: ${formatDate(stats.lastQueuedAt)}
-Last started: ${formatDate(stats.lastStartedAt)}
-Last completed: ${formatDate(stats.lastCompletedAt)}
-Last failed: ${formatDate(stats.lastFailedAt)}
-Last error: ${stats.lastError ?? 'None'}
-
-Queued user IDs:
-${queuedUserIds}`
-			};
-		}
-	},
-	{
 		name: 'Lydia Quote',
 		run: async () => {
 			return {
