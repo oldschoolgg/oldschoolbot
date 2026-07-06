@@ -236,7 +236,18 @@ describe('BSO PVM', async () => {
 				items: '1000 hellfire arrow'
 			}
 		});
-		await global.prisma!.playerOwnedHouse.create({ data: { user_id: user.id, pool: 99_950 } });
+		await global.prisma!.playerOwnedHouse.upsert({
+			where: {
+				user_id: user.id
+			},
+			create: {
+				user_id: user.id,
+				pool: 99_950
+			},
+			update: {
+				pool: 99_950
+			}
+		});
 		await user.incrementKC(BSOMonsters.Malygos.id, 5000);
 		await user.setAttackStyle(['ranged']);
 		const result = await user.kill(BSOMonsters.Malygos.id, { wilderness: true });

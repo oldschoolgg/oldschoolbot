@@ -212,7 +212,10 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	try {
 		await prisma.$transaction(transactions);
 	} catch (err: unknown) {
+		if (!(err instanceof Error)) err = new Error(String(err));
+
 		Logging.logError(err as Error);
+		Logging.logError(err.stack);
 		throw new UserError('Error migrating user. Sorry about that!');
 	}
 

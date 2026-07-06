@@ -51,13 +51,13 @@ export function mockMathRandom(value: number) {
 }
 
 export async function promiseAllRandom<T>(tasks: (() => Promise<T>)[], maxJitterMs = 5): Promise<T[]> {
-	const results: T[] = [];
 	const shuffled = cryptoRng.shuffle(tasks);
-	for (const fn of shuffled) {
-		await sleep(Math.random() * maxJitterMs);
-		results.push(await fn());
-	}
-	return results;
+	return Promise.all(
+		shuffled.map(async fn => {
+			await sleep(Math.random() * maxJitterMs);
+			return fn();
+		})
+	);
 }
 
 export { mockClient, mockedId, createTestUser, mockUser, TestUser, TestClient };
