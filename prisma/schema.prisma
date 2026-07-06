@@ -1139,7 +1139,7 @@ model HistoricalData {
 
   comp_cape_percent_untrimmed Decimal? @db.Decimal(5, 2)
 
-  user User @relation(fields: [user_id], references: [id])
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@id([user_id, date])
   @@map("historical_data")
