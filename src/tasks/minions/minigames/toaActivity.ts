@@ -49,11 +49,29 @@ export const toaTask: MinionTask = {
 				})
 			)
 		);
+
+		let messages: string[] = [];
+
+		// construct a message for the failed attempts
+		let failedAttempts: number = 0;
+		for (let i = 0; i < quantity; i++) {
+			if (wipedRooms[i] !== null) {
+				failedAttempts++;
+			}
+		}
+
+		const failedAttemptsMessage: string = `Your team wiped in ${failedAttempts}/${quantity} of your Tombs of Amascut trips!`;
+
+		if (failedAttempts > 0) {
+			messages.push(failedAttemptsMessage);
+		}
+
+		// if all failed directly end here
 		if (wipedRooms.every(i => i !== null)) {
 			return handleTripFinish({
 				user: allUsers[0],
 				channelId,
-				message: `${allUsers.map(i => i.toString()).join(' ')} Your team wiped in the Tombs of Amascut!`,
+				message: `${allUsers.map(i => i.toString()).join(' ')}\n${failedAttemptsMessage}`,
 				data
 			});
 		}
@@ -69,8 +87,6 @@ export const toaTask: MinionTask = {
 				kc: await user.fetchMinigameScore('tombs_of_amascut')
 			});
 		}
-
-		let messages: string[] = [];
 
 		const itemsAddedTeamLoot = new TeamLoot();
 

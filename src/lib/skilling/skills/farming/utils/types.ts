@@ -5,6 +5,7 @@ import type { FarmingPatchName } from '@/lib/skilling/skills/farming/utils/farmi
 import type { getFarmingInfoFromUser } from '@/lib/skilling/skills/farming/utils/getFarmingInfo.js';
 import type { Plant } from '@/lib/skilling/types.js';
 
+export type { FarmingPatchName };
 export interface IPatchData {
 	lastPlanted: string | null;
 	patchPlanted: boolean; // false -> nothing planted, true -> something planted
@@ -35,3 +36,10 @@ export type DetailedFarmingContract = {
 	matchingPlantedCrop: IPatchDataDetailed | undefined;
 	farmingInfo: ReturnType<typeof getFarmingInfoFromUser>;
 };
+
+export type FarmingSeedPreference =
+	| { type: 'seed'; seedID: number }
+	| { type: 'highest_available' }
+	| { type: 'empty' };
+
+export type FarmingPreferredSeeds = Record<string, FarmingSeedPreference>;

@@ -1,6 +1,6 @@
 {
-	"hash": "b13cccd1bbe5e0be98a4dfea453f16a7",
-	"date": "2026-03-27T09:56:04.388Z",
+	"hash": "117af84ead8737c866ad5ecb2234ce21",
+	"date": "2026-05-09T10:48:36.665Z",
 	"data": [
 		{
 			"id": 2,
@@ -4614,7 +4614,7 @@
 			"id": 12596,
 			"name": "Royal Titans (Branda)",
 			"base_kill_time_ms": 150000,
-			"respawn_time_ms": 500,
+			"respawn_time_ms": 10000,
 			"is_wildy": false,
 			"is_slayer_only": false,
 			"can_be_pked": false,
@@ -4640,7 +4640,7 @@
 			"id": 14147,
 			"name": "Royal Titans (Eldric)",
 			"base_kill_time_ms": 150000,
-			"respawn_time_ms": 500,
+			"respawn_time_ms": 10000,
 			"is_wildy": false,
 			"is_slayer_only": false,
 			"can_be_pked": false,
@@ -4666,7 +4666,7 @@
 			"id": 14148,
 			"name": "Royal Titans (sacrifice)",
 			"base_kill_time_ms": 150000,
-			"respawn_time_ms": 500,
+			"respawn_time_ms": 10000,
 			"is_wildy": false,
 			"is_slayer_only": false,
 			"can_be_pked": false,

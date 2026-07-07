@@ -35,7 +35,7 @@ export class RUser {
 	}
 
 	public isSupport(): boolean {
-		return [Bits.Admin, Bits.Mod, Bits.SupportStaff].some(_bit => this.bits.includes(_bit));
+		return [Bits.Admin, Bits.Moderator, Bits.SupportStaff].some(_bit => this.bits.includes(_bit));
 	}
 
 	public isAdmin(): boolean {
@@ -43,11 +43,11 @@ export class RUser {
 	}
 
 	public isMod(): boolean {
-		return [Bits.Admin, Bits.Mod].some(_bit => this.bits.includes(_bit));
+		return [Bits.Admin, Bits.Moderator].some(_bit => this.bits.includes(_bit));
 	}
 
 	public isTrusted(): boolean {
-		return [Bits.Admin, Bits.Mod, Bits.Trusted].some(_bit => this.bits.includes(_bit));
+		return [Bits.Admin, Bits.Moderator, Bits.Trusted].some(_bit => this.bits.includes(_bit));
 	}
 
 	get testingPoints(): number {

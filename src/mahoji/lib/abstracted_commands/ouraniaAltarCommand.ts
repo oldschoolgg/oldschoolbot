@@ -41,8 +41,8 @@ export async function ouraniaAltarStartCommand({
 
 	if (inventorySize > 28) boosts.push(`+${inventorySize - 28} inv spaces from pouches`);
 
-	if (!user.hasGracefulEquipped() || !spellbookSwap) {
-		boosts.push(`${gracefulPenalty}% slower for no Graceful`);
+	if (!user.hasGracefulEquipped() && !spellbookSwap) {
+		boosts.push(`${gracefulPenalty}% slower without Graceful or Spellbook Swap`);
 		timePerTrip = increaseNumByPercent(timePerTrip, gracefulPenalty);
 	}
 

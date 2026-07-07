@@ -12,6 +12,10 @@ function escapeItemName(str: string) {
 
 const name = (id: number) => escapeItemName(Items.itemNameFromId(id)!);
 
+function getOSRSWikiPageName(monsterName: string) {
+	return monsterName.replace(/\s+\([^)]*\)$/, '');
+}
+
 export function renderMonstersMarkdown() {
 	const markdown = new Markdown();
 
@@ -21,8 +25,9 @@ export function renderMonstersMarkdown() {
 
 		const infoTab = new Tab().setTitle('Information').setContent(() => {
 			const md = new Markdown();
+			const wikiName = getOSRSWikiPageName(monster.name);
 			md.addLine(
-				`- You can view the drops for this monster on the osrs wiki: [${monster.name}](https://oldschool.runescape.wiki/w/${encodeURIComponent(monster.name)})`
+				`- You can view the drops for this monster on the osrs wiki: [${monster.name}](https://oldschool.runescape.wiki/w/${encodeURIComponent(wikiName)})`
 			);
 			md.addLine(`- You can send your minion to kill this monster using: [[/k name:${monster.name}]]`);
 			md.addLine(`- You can check your KC using: [[/minion kc name:${monster.name}]]`);

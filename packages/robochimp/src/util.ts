@@ -2,18 +2,18 @@ import { PerkTier } from '@oldschoolgg/toolkit';
 
 export enum Bits {
 	Admin = 1,
-	Mod = 2,
+	Moderator = 2,
 	Trusted = 3,
 	WikiContributor = 4,
-	IsContributor = 5,
-	BothBotsMaxedPatronPerks = 6,
+	Contributor = 5,
+	BothBotsMaxedFreeTierOnePerks = 6,
 	HasPermanentTierOne = 7,
-	IsPatronTier1 = 8,
-	IsPatronTier2 = 9,
-	IsPatronTier3 = 10,
-	IsPatronTier4 = 11,
-	IsPatronTier5 = 12,
-	IsPatronTier6 = 13,
+	PatronTier1 = 8,
+	PatronTier2 = 9,
+	PatronTier3 = 10,
+	PatronTier4 = 11,
+	PatronTier5 = 12,
+	PatronTier6 = 13,
 	HasEverBeenPatron = 14,
 	SupportStaff = 15
 }
@@ -23,19 +23,19 @@ type BitDescriptions = {
 
 export const bitsDescriptions: BitDescriptions = {
 	[Bits.Admin]: { description: 'Admin' },
-	[Bits.Mod]: { description: 'Moderator' },
+	[Bits.Moderator]: { description: 'Moderator' },
 	[Bits.SupportStaff]: { description: 'Support Staff' },
 	[Bits.Trusted]: { description: 'Trusted' },
 	[Bits.WikiContributor]: { description: 'Wiki Contributor' },
-	[Bits.IsContributor]: { description: 'Contributor' },
-	[Bits.BothBotsMaxedPatronPerks]: { description: 'Maxed patron perks for both bots' },
+	[Bits.Contributor]: { description: 'Contributor' },
+	[Bits.BothBotsMaxedFreeTierOnePerks]: { description: 'Maxed patron perks for both bots' },
 	[Bits.HasPermanentTierOne]: { description: 'Has permanent Tier 1 perks' },
-	[Bits.IsPatronTier1]: { description: 'Tier 1 patron' },
-	[Bits.IsPatronTier2]: { description: 'Tier 2 patron' },
-	[Bits.IsPatronTier3]: { description: 'Tier 3 patron' },
-	[Bits.IsPatronTier4]: { description: 'Tier 4 patron' },
-	[Bits.IsPatronTier5]: { description: 'Tier 5 patron' },
-	[Bits.IsPatronTier6]: { description: 'Tier 6 patron' },
+	[Bits.PatronTier1]: { description: 'Tier 1 patron' },
+	[Bits.PatronTier2]: { description: 'Tier 2 patron' },
+	[Bits.PatronTier3]: { description: 'Tier 3 patron' },
+	[Bits.PatronTier4]: { description: 'Tier 4 patron' },
+	[Bits.PatronTier5]: { description: 'Tier 5 patron' },
+	[Bits.PatronTier6]: { description: 'Tier 6 patron' },
 	[Bits.HasEverBeenPatron]: { description: 'Has been a patron before' }
 };
 
@@ -66,12 +66,12 @@ export interface PatronTier {
 }
 
 export const tiers: PatronTier[] = [
-	{ id: PatronTierID.Six, bit: Bits.IsPatronTier6, perkTier: PerkTier.Seven, number: 6 },
-	{ id: PatronTierID.Five, bit: Bits.IsPatronTier5, perkTier: PerkTier.Six, number: 5 },
-	{ id: PatronTierID.Four, bit: Bits.IsPatronTier4, perkTier: PerkTier.Five, number: 4 },
-	{ id: PatronTierID.Three, bit: Bits.IsPatronTier3, perkTier: PerkTier.Four, number: 3 },
-	{ id: PatronTierID.Two, bit: Bits.IsPatronTier2, perkTier: PerkTier.Three, number: 2 },
-	{ id: PatronTierID.One, bit: Bits.IsPatronTier1, perkTier: PerkTier.Two, number: 1 }
+	{ id: PatronTierID.Six, bit: Bits.PatronTier6, perkTier: PerkTier.Seven, number: 6 },
+	{ id: PatronTierID.Five, bit: Bits.PatronTier5, perkTier: PerkTier.Six, number: 5 },
+	{ id: PatronTierID.Four, bit: Bits.PatronTier4, perkTier: PerkTier.Five, number: 4 },
+	{ id: PatronTierID.Three, bit: Bits.PatronTier3, perkTier: PerkTier.Four, number: 3 },
+	{ id: PatronTierID.Two, bit: Bits.PatronTier2, perkTier: PerkTier.Three, number: 2 },
+	{ id: PatronTierID.One, bit: Bits.PatronTier1, perkTier: PerkTier.Two, number: 1 }
 ];
 
 export const allPatronBits: Bits[] = tiers.map(t => t.bit);

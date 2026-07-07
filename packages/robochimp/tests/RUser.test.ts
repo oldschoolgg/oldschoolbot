@@ -8,7 +8,7 @@ describe('RUser', async () => {
 	test('isMod', async () => {
 		const user = mockUser();
 		expect(user.isMod()).toBe(false);
-		await user.update({ bits: [Bits.Mod] });
+		await user.update({ bits: [Bits.Moderator] });
 		expect(user.isMod()).toBe(true);
 		await user.update({ bits: [Bits.Admin] });
 		expect(user.isMod()).toBe(true);
@@ -26,7 +26,7 @@ describe('RUser', async () => {
 		expect(user.perkTierRaw).toBe(4);
 		expect(user.perkTier).not.toBe(null);
 		expect(user.perkTier?.perkTier).toBe(4);
-		expect(user.perkTier?.bit).toBe(Bits.IsPatronTier3);
+		expect(user.perkTier?.bit).toBe(Bits.PatronTier3);
 	});
 
 	test('globalMastery', async () => {

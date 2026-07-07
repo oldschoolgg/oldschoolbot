@@ -32,8 +32,6 @@ import {
 import { gnomeRestaurantCommand } from '@/mahoji/lib/abstracted_commands/gnomeRestaurantCommand.js';
 import { guardiansOfTheRiftStartCommand } from '@/mahoji/lib/abstracted_commands/guardiansOfTheRiftCommand.js';
 import { lmsCommand } from '@/mahoji/lib/abstracted_commands/lmsCommand.js';
-import { mageArena2Command } from '@/mahoji/lib/abstracted_commands/mageArena2Command.js';
-import { mageArenaCommand } from '@/mahoji/lib/abstracted_commands/mageArenaCommand.js';
 import {
 	mageTrainingArenaBuyables,
 	mageTrainingArenaBuyCommand,
@@ -193,7 +191,16 @@ export const minigamesCommand = defineCommand({
 				{
 					type: 'Subcommand',
 					name: 'start',
-					description: 'Start a trip.'
+					description: 'Start a trip.',
+					options: [
+						{
+							type: 'Integer',
+							name: 'quantity',
+							description: 'The amount of games to do.',
+							required: false,
+							min_value: 1
+						}
+					]
 				}
 			]
 		},
@@ -336,40 +343,6 @@ export const minigamesCommand = defineCommand({
 		 */ {
 			name: 'fishing_trawler',
 			description: 'The Fishing Trawler minigame.',
-			type: 'SubcommandGroup',
-			options: [
-				{
-					type: 'Subcommand',
-					name: 'start',
-					description: 'Start a trip.'
-				}
-			]
-		},
-		/**
-		 *
-		 * Mage Arena 1
-		 *
-		 */
-		{
-			name: 'mage_arena',
-			description: 'The Mage Arena 1 minigame.',
-			type: 'SubcommandGroup',
-			options: [
-				{
-					type: 'Subcommand',
-					name: 'start',
-					description: 'Start a trip.'
-				}
-			]
-		},
-		/**
-		 *
-		 * Mage Arena 2
-		 *
-		 */
-		{
-			name: 'mage_arena_2',
-			description: 'The Mage Arena 2 minigame.',
 			type: 'SubcommandGroup',
 			options: [
 				{
@@ -1240,7 +1213,7 @@ export const minigamesCommand = defineCommand({
 			return castleWarsStatsCommand(user);
 		}
 		if (options.castle_wars?.start) {
-			return castleWarsStartCommand(user, channelId);
+			return castleWarsStartCommand(user, channelId, options.castle_wars.start.quantity);
 		}
 
 		/**
@@ -1277,20 +1250,6 @@ export const minigamesCommand = defineCommand({
 		 *
 		 */
 		if (options.fishing_trawler?.start) return fishingTrawlerCommand(user, channelId);
-
-		/**
-		 *
-		 * Mage Arena
-		 *
-		 */
-		if (options.mage_arena?.start) return mageArenaCommand(rng, user, channelId);
-
-		/**
-		 *
-		 * Mage Arena 2
-		 *
-		 */
-		if (options.mage_arena_2?.start) return mageArena2Command(rng, user, channelId);
 
 		/**
 		 *

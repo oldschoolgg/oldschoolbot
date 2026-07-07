@@ -9,6 +9,7 @@ import { GE_SLOTS_CACHE, marketPricemap } from '@/lib/cache.js';
 import { BitField, globalConfig, PerkTier } from '@/lib/constants.js';
 import { type RobochimpUser, roboChimpUserFetchCached } from '@/lib/roboChimp.js';
 import { fetchTableBank, makeTransactFromTableBankQueries } from '@/lib/table-banks/tableBank.js';
+import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { assert } from '@/lib/util/logError.js';
 
 export const generateGrandExchangeID = () => miniID(6).toLowerCase();
@@ -294,8 +295,10 @@ class GrandExchangeSingleton {
 		}
 		if (user.isIronman) return { error: "You're an ironman." };
 		const item = Items.getItem(itemName);
-		if (!item || !item.tradeable_on_ge || ['Coins'].includes(item.name)) {
-			return { error: 'Invalid item.' };
+		if (!item || !itemIsTradeable(item.id) || !item.tradeable_on_ge || ['Coins'].includes(item.name)) {
+			return {
+				error: "Hmm... That item is not tradeable on the Grand Exchange. It's possible it doesn't even exist, but if you think I'm writing a different message for every possibility think again."
+			};
 		}
 
 		if (

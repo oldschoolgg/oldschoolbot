@@ -64,7 +64,8 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 		initialPresence,
 		isProduction,
 		mainServerId,
-		userUsernameFetcher
+		userUsernameFetcher,
+		buildStrategy
 	}: DiscordClientOptions) {
 		super();
 		this.isProduction = isProduction;
@@ -75,7 +76,7 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 			rest: this.rest,
 			token: token,
 			intents: new BitField(intents).bitfield,
-			buildStrategy: manager => new WorkerShardingStrategy(manager, { shardsPerWorker: 4 }),
+			buildStrategy: buildStrategy ?? (manager => new WorkerShardingStrategy(manager, { shardsPerWorker: 4 })),
 			initialPresence: {
 				since: Date.now() - process.uptime() * 1000,
 				activities: [initialPresence.activity],

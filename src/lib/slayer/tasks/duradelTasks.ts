@@ -213,7 +213,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.FireGiant,
 		amount: [130, 200],
 		weight: 7,
-		monsters: [Monsters.FireGiant.id],
+		monsters: [Monsters.FireGiant.id, Monsters.Branda.id, Monsters.RoyalTitans.id],
 		combatLevel: 65,
 		unlocked: true
 	},

@@ -12,6 +12,11 @@ export const dragonHunterWeapons = [
 		item: Items.getOrThrow('Dragon hunter crossbow'),
 		attackStyle: 'range',
 		boost: 15
+	},
+	{
+		item: Items.getOrThrow('Dragon hunter wand'),
+		attackStyle: 'mage',
+		boost: 15
 	}
 ] as const;
 
