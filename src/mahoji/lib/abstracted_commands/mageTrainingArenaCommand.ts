@@ -1,7 +1,6 @@
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items, LootTable } from 'oldschooljs';
 
-import { getNewUser } from '@/lib/settings/settings.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
@@ -68,8 +67,8 @@ export async function mageTrainingArenaBuyCommand(user: MUser, input = '') {
 	}
 
 	const { item, cost, upgradesFrom } = buyable;
-	const newUser = await getNewUser(user.id);
-	const balance = newUser.pizazz_points;
+	const minigame = await user.fetchMinigames();
+	const balance = minigame.pizazz_points;
 
 	if (upgradesFrom && !user.owns(upgradesFrom.id)) {
 		return `To buy a ${item.name}, you need to upgrade to it with a ${upgradesFrom.name}, which you do not own.`;
@@ -83,9 +82,9 @@ export async function mageTrainingArenaBuyCommand(user: MUser, input = '') {
 		await user.removeItemsFromBank(new Bank().add(upgradesFrom.id));
 	}
 
-	await prisma.newUser.update({
+	await prisma.minigame.update({
 		where: {
-			id: user.id
+			user_id: user.id
 		},
 		data: {
 			pizazz_points: {
@@ -100,7 +99,7 @@ export async function mageTrainingArenaBuyCommand(user: MUser, input = '') {
 }
 
 export async function mageTrainingArenaPointsCommand(user: MUser) {
-	const parsedUser = await getNewUser(user.id);
+	const parsedUser = await user.fetchMinigames();
 
 	return `You have **${parsedUser.pizazz_points.toLocaleString()}** Pizazz points.
 **Pizazz Points Per Hour:** ${pizazzPointsPerHour}

@@ -352,15 +352,6 @@ export async function mockUser(
 	if (options.maxed) {
 		await user.max();
 	}
-	await prisma.newUser.upsert({
-		where: {
-			id: user.id
-		},
-		create: {
-			id: user.id
-		},
-		update: {}
-	});
 	return user;
 }
 

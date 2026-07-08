@@ -391,11 +391,11 @@ WHERE blowpipe iS NOT NULL and (blowpipe->>'dartQuantity')::int != 0;`),
 		name: 'Most Active',
 		run: async () => {
 			const res = await prisma.$queryRawUnsafe<{ num: number; username: string }[]>(`
-SELECT sum(duration)::int as num, "new_user"."username", user_id
+SELECT sum(duration)::int as num, "users"."username", user_id
 FROM activity
-INNER JOIN "new_users" "new_user" on "new_user"."id" = "activity"."user_id"::text
+INNER JOIN "users" on "users"."id" = "activity"."user_id"::text
 WHERE start_date > now() - interval '2 days'
-GROUP BY user_id, "new_user"."username"
+GROUP BY user_id, "users"."username"
 ORDER BY num DESC
 LIMIT 10;
 `);

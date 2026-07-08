@@ -280,18 +280,6 @@ model Guild {
   @@map("guilds")
 }
 
-model NewUser {
-  id            String @id @db.VarChar(19)
-  pizazz_points Int    @default(0)
-
-  // Relations
-  minigame_id  Int?         @unique
-  minigame     Minigame?    @relation(fields: [minigame_id], references: [id])
-  slayer_tasks SlayerTask[]
-
-  @@map("new_users")
-}
-
 model PlayerOwnedHouse {
   user_id            String @id @db.VarChar(19)
   background_id      Int    @default(1)
@@ -325,7 +313,7 @@ model SlayerTask {
   monster_id         Int
   skipped            Boolean
   user_id            String   @db.VarChar(19)
-  new_user           NewUser  @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: Cascade, map: "FK_43bf436cc70acda1752fb6e6006")
+  user               User     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: Cascade, map: "FK_43bf436cc70acda1752fb6e6006")
 
   @@index([user_id, quantity_remaining], map: "slayer_task_quantity_remaining")
   @@map("slayer_tasks")
@@ -375,6 +363,8 @@ model User {
   botItemSell    BotItemSell[]
   pinnedTrip     PinnedTrip[]
   historicalData HistoricalData[]
+  minigame       Minigame?
+  slayer_tasks   SlayerTask[]
 
   // Configs/Settings
   minion_defaultCompostToUse CropUpgradeType    @default(compost) @map("minion.defaultCompostToUse")
@@ -647,6 +637,7 @@ model Metric {
 model Minigame {
   id                      Int    @id @default(autoincrement())
   user_id                 String @unique @db.VarChar(19)
+  pizazz_points           Int    @default(0)
   tithe_farm              Int    @default(0)
   wintertodt              Int    @default(0)
   tempoross               Int    @default(0)
@@ -686,21 +677,20 @@ model Minigame {
   colosseum               Int    @default(0)
 
   // BSO
-  ourania_delivery_service Int @default(0)
-  monkey_rumble            Int @default(0)
-  emerged_inferno          Int @default(0)
-  fishing_contest          Int @default(0)
-  bax_baths                Int @default(0)
-  fist_of_guthix           Int @default(0)
-  stealing_creation        Int @default(0)
-  tinkering_workshop       Int @default(0)
-  balthazars_big_bonanza   Int @default(0)
-  depths_of_atlantis       Int @default(0)
-  depths_of_atlantis_cm    Int @default(0)
-  guthixian_cache          Int @default(0)
-  turaels_trials           Int @default(0)
-
-  new_user NewUser?
+  ourania_delivery_service Int  @default(0)
+  monkey_rumble            Int  @default(0)
+  emerged_inferno          Int  @default(0)
+  fishing_contest          Int  @default(0)
+  bax_baths                Int  @default(0)
+  fist_of_guthix           Int  @default(0)
+  stealing_creation        Int  @default(0)
+  tinkering_workshop       Int  @default(0)
+  balthazars_big_bonanza   Int  @default(0)
+  depths_of_atlantis       Int  @default(0)
+  depths_of_atlantis_cm    Int  @default(0)
+  guthixian_cache          Int  @default(0)
+  turaels_trials           Int  @default(0)
+  user                     User @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: Cascade, map: "FK_minigames_user_id_users_id")
 
   @@index([user_id])
   @@map("minigames")
