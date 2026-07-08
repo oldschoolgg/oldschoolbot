@@ -63,7 +63,9 @@ class CacheManager {
 			this.client = new Redis();
 		} else {
 			try {
-				const redis = new Redis({ host: process.env.REDIS_HOST, port: process.env.REDIS_PORT });
+				const host: string = process.env.REDIS_HOST ?? 'localhost';
+				const port: number = Number(process.env.REDIS_PORT ?? 6379);
+				const redis = new Redis({ host, port });
 				redis.on('error', () => {
 					redis.disconnect();
 					this.client = new MockedRedis() as any as Redis;
