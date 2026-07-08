@@ -28573,18 +28573,6 @@
 		}
 	},
 	{
-		"id": 48235,
-		"name": "Liber beam",
-		"tradeable": true,
-		"tradeable_on_ge": true,
-		"noteable": true,
-		"cost": 45,
-		"lowalch": 18,
-		"highalch": 27,
-		"buy_limit": 13000,
-		"price": 1000000
-	},
-	{
 		"id": 48213,
 		"name": "Liber tea",
 		"tradeable": true,
@@ -28620,6 +28608,18 @@
 			"weapon_type": "stab_sword"
 		},
 		"price": 6000
+	},
+	{
+		"id": 48235,
+		"name": "Liber-ray-tor",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 1000000
 	},
 	{
 		"id": 70034,

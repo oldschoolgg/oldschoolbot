@@ -169,6 +169,7 @@ export const Root: React.FC = () => {
 				setError(String(err));
 				setStatus('error');
 			} finally {
+				void Cache.close();
 				clearInterval(interval);
 			}
 		})();
