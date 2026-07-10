@@ -342,9 +342,8 @@ export async function onMessage(msg: IMessage) {
 		} catch (err) {
 			let errMsg = 'There was an error running that command.';
 			if (typeof err === 'string') errMsg = err;
-			else if (err instanceof Error) errMsg = err.message;
 			await globalClient.replyToMessage(msg, { content: errMsg });
-			Logging.logError(err as Error);
+			Logging.logError(err instanceof Error ? err : new Error(errMsg));
 		}
 		return;
 	}

@@ -1,7 +1,7 @@
 import { BitField, PerkTier } from '@/lib/constants.js';
 import '@/lib/cache/redis.js';
 
-import { roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { roboChimpUserFetchCached } from '@/lib/roboChimp.js';
 
 export const allPerkBitfields: BitField[] = [
 	BitField.PatronTier6,
@@ -55,7 +55,7 @@ export async function getUsersPerkTier({
 		eligibleTiers.push(PerkTier.Three);
 	}
 
-	const roboChimpUser = await roboChimpUserFetch(user.id);
+	const roboChimpUser = await roboChimpUserFetchCached(user.id);
 	eligibleTiers.push(roboChimpUser.perk_tier);
 
 	// Why bother looking for the member if it doesn't help get a higher tier

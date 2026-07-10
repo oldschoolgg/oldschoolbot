@@ -178,8 +178,7 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 	}
 
 	private async fetchCommands() {
-		const commands = (await this.rest.get(this.apiCommandsRoute())) as APIApplicationCommand[];
-		this.applicationCommands = commands;
+		this.applicationCommands = (await this.rest.get(this.apiCommandsRoute())) as APIApplicationCommand[];
 	}
 
 	async memberHasPermissions(member: IMember, perms: PermissionKey[]): Promise<boolean> {

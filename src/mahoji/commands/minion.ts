@@ -15,7 +15,7 @@ import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js'
 import { blowpipeCommand, blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
 import { degradeableItemsCommand } from '@/lib/minions/functions/degradeableItemsCommand.js';
 import { allPossibleStyles, trainCommand } from '@/lib/minions/functions/trainCommand.js';
-import { roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { roboChimpUserFetchCached } from '@/lib/roboChimp.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import creatures from '@/lib/skilling/skills/hunter/creatures/index.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
@@ -49,7 +49,7 @@ const patMessages = [
 
 export async function getUserInfo(user: MUser) {
 	await refreshUserCache({ user });
-	const roboChimpUser = await roboChimpUserFetch(user.id);
+	const roboChimpUser = await roboChimpUserFetchCached(user.id);
 	const leaguesRanking = await roboChimpClient.user.count({
 		where: {
 			leagues_points_total: {
@@ -84,7 +84,7 @@ export async function getUserInfo(user: MUser) {
 		2
 	);
 
-	const roboCache = await Cache.getRoboChimpUser(user.id);
+	const roboCache = await roboChimpUserFetchCached(user.id);
 	return {
 		...result,
 		everythingString: `${user.badgedUsername}[${user.id}]
