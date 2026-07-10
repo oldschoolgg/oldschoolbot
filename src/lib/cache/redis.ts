@@ -267,6 +267,22 @@ class CacheManager {
 		return this.getJson<RobochimpUser>(RedisKeys.RoboChimpUser(BigInt(userId)));
 	}
 
+	async setPerkTier(userId: string, tier: number): Promise<void> {
+		const ttlSeconds = TTL.Hour * 2 + Math.floor(Math.random() * TTL.Hour);
+		await this.setString(RedisKeys.Global.PerkTier(userId), tier.toString(), ttlSeconds);
+	}
+
+	async getPerkTier(userId: string): Promise<number | null> {
+		const cached = await this.getString(RedisKeys.Global.PerkTier(userId));
+		if (cached === null) return null;
+		const tier = Number(cached);
+		return Number.isInteger(tier) ? tier : null;
+	}
+
+	async resetPerkTier(userId: string): Promise<void> {
+		await this.client.del(RedisKeys.Global.PerkTier(userId));
+	}
+
 	// Users
 	async getUserLockStatus(userId: string): Promise<LockStatus> {
 		const status = await this.getString(BotKeys.User.LockStatus(userId));

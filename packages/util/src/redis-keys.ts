@@ -2,6 +2,9 @@ export const RedisKeys = {
 	BlacklistedUsers: 'blacklist:users',
 	BlacklistedGuilds: 'blacklist:guilds',
 	RoboChimpUser: (id: bigint): string => `robochimp:user:${id.toString()}`,
+	Global: {
+		PerkTier: (id: string): string => `global:user:${id.toString()}:perk_tier`
+	},
 	OSB: {
 		User: {
 			BadgedUsername: (id: string): string => `osb:user:${id.toString()}:badged_username`,

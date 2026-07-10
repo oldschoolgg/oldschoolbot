@@ -58,7 +58,7 @@ import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { RemoveFoodFromUserParams } from '@/lib/minions/functions/removeFoodFromUser.js';
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import type { AddXpParams, ClueBank, KillableMonster } from '@/lib/minions/types.js';
-import { getPerkTierCached, getUsersPerkTier } from '@/lib/perkTiers.js';
+import { getUsersPerkTier } from '@/lib/perkTiers.js';
 import { roboChimpUserFetchCached } from '@/lib/roboChimp.js';
 import { type MinigameName, type MinigameScore, Minigames } from '@/lib/settings/minigames.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
@@ -87,6 +87,8 @@ import type { JsonKeys } from '@/lib/util.js';
 import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 
 export class MUserClass extends BaseUser {
+	private _perkTier: PerkTier | 0 | null = null;
+
 	constructor(user: User) {
 		super(user);
 	}
@@ -178,19 +180,16 @@ export class MUserClass extends BaseUser {
 	}
 
 	get perkTier() {
-		const cachedTier = getPerkTierCached(this.id) ?? 0;
-		if (cachedTier === 2 && BOT_TYPE === 'BSO') {
-			return this.bitfield.includes(BitField.HasPermanentTierOne) ? 3 : cachedTier;
-		} else {
-			return cachedTier;
+		if (this._perkTier === 2 && BOT_TYPE === 'BSO') {
+			return this.bitfield.includes(BitField.HasPermanentTierOne) ? (3 as PerkTier) : this._perkTier;
 		}
-	}
-	get perkTierIsCached(): boolean {
-		return getPerkTierCached(this.id) !== null;
+		return this._perkTier ?? 0;
 	}
 
 	async fetchPerkTier({ forceNoCache }: { forceNoCache?: boolean } = {}): Promise<0 | PerkTier> {
-		return await getUsersPerkTier({ user: this, forceNoCache });
+		if (!forceNoCache && this._perkTier !== null) return this._perkTier;
+		this._perkTier = await getUsersPerkTier({ user: this, forceNoCache });
+		return this._perkTier;
 	}
 
 	hasMonsterRequirements(monster: KillableMonster) {

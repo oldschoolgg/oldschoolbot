@@ -1,8 +1,7 @@
-import { Time } from '@oldschoolgg/toolkit';
-import { LRUCache } from 'lru-cache';
-
-import { BitField, BOT_TYPE, PerkTier } from '@/lib/constants.js';
+import { BitField, PerkTier } from '@/lib/constants.js';
 import '@/lib/cache/redis.js';
+
+import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 
 export const allPerkBitfields: BitField[] = [
 	BitField.PatronTier6,
@@ -15,28 +14,6 @@ export const allPerkBitfields: BitField[] = [
 	BitField.BothBotsMaxedFreeTierOnePerks
 ];
 
-type PerkTierHotCacheEntry = {
-	tier: number;
-	expires: number;
-};
-const PerkTierHotTTL = Time.Hour * 2;
-
-const perkTierHotCache = new LRUCache<string, PerkTierHotCacheEntry>({
-	max: 10_000,
-	ttl: Time.Minute * 60,
-	updateAgeOnGet: false
-});
-
-function setHotCache(userId: string, tier: number) {
-	perkTierHotCache.set(userId, { tier, expires: Date.now() + PerkTierHotTTL });
-}
-export function getPerkTierCached(userId: string) {
-	const tierCacheEntry = perkTierHotCache.get(userId);
-	if (tierCacheEntry) {
-		return tierCacheEntry.tier;
-	}
-	return null;
-}
 export async function getUsersPerkTier({
 	user,
 	forceNoCache
@@ -45,13 +22,8 @@ export async function getUsersPerkTier({
 	forceNoCache?: boolean;
 }): Promise<PerkTier | 0> {
 	if (!forceNoCache) {
-		// We want a way to force a cache refresh
-		// Otherwise, we look for a cached tier:
-		const tierCacheEntry = perkTierHotCache.get(user.id);
-		// If it's not expired, return it:
-		if (tierCacheEntry && tierCacheEntry.expires > Date.now()) {
-			return tierCacheEntry.tier;
-		}
+		const cachedTier = await Cache.getPerkTier(user.id);
+		if (cachedTier !== null) return cachedTier as PerkTier | 0;
 	}
 
 	const eligibleTiers = [];
@@ -83,10 +55,8 @@ export async function getUsersPerkTier({
 		eligibleTiers.push(PerkTier.Three);
 	}
 
-	const roboChimpCached = await Cache.getRoboChimpUser(user.id);
-	if (roboChimpCached) {
-		eligibleTiers.push(roboChimpCached.perk_tier);
-	}
+	const roboChimpUser = await roboChimpUserFetch(user.id);
+	eligibleTiers.push(roboChimpUser.perk_tier);
 
 	// Why bother looking for the member if it doesn't help get a higher tier
 	if (
@@ -94,25 +64,25 @@ export async function getUsersPerkTier({
 		user.bitfield.includes(BitField.HasPermanentTierOne) ||
 		user.bitfield.includes(BitField.BothBotsMaxedFreeTierOnePerks)
 	) {
-		if (BOT_TYPE === 'BSO' && user.bitfield.includes(BitField.HasPermanentTierOne)) {
-			eligibleTiers.push(PerkTier.Three);
-		} else {
-			eligibleTiers.push(PerkTier.Two);
-		}
+		// Note: BSO Get's PerkTier.Three, but we handle that in MUser now
+		// TODO: Remove this in the future
+		// if (BOT_TYPE === 'BSO' && user.bitfield.includes(BitField.HasPermanentTierOne)) {
+		eligibleTiers.push(PerkTier.Two);
 	}
-	// Server boosting perk has been eliminated
 
+	// Server boosting perk has been eliminated
 	const tier = Math.max(...eligibleTiers, 0);
-	// If tier is higher than what robochimp thinks, smack that fool.
-	if (tier > (roboChimpCached?.perk_tier ?? 0)) {
-		await roboChimpClient.user.upsert({
+	// If tier is higher than what Robochimp thinks, update robochimp
+	if (tier > roboChimpUser.perk_tier) {
+		const updatedUser = await roboChimpClient.user.upsert({
 			where: {
 				id: BigInt(user.id)
 			},
 			update: { perk_tier: tier },
-			create: { id: BigInt(user.id) }
+			create: { id: BigInt(user.id), perk_tier: tier }
 		});
+		await Cache.setRoboChimpUser(user.id, updatedUser);
 	}
-	setHotCache(user.id, tier);
+	await Cache.setPerkTier(user.id, tier);
 	return tier;
 }

@@ -132,13 +132,14 @@ export class OldSchoolBotClient extends DiscordClient {
 			avatar: user.avatar,
 			created_at: new Date(DiscordSnowflake.timestampFrom(user.id))
 		} as const;
+		const { created_at, ...update } = data; // only write created_at one creation.
 		await roboChimpClient.discordUser
 			.upsert({
 				where: {
 					id: user.id
 				},
 				create: data,
-				update: data
+				update
 			})
 			.catch(err => Logging.logError(err));
 		DISCORD_USER_IDS_INSERTED_CACHE.add(user.id);
