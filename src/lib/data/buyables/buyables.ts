@@ -1101,7 +1101,7 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: 'Olive oil pack',
-		gpCost: 26_700
+		gpCost: 27_000
 	},
 	{
 		name: 'Keris partisan',
