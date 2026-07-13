@@ -10,7 +10,7 @@ import { getReclaimableItemsOfUser } from '@/lib/reclaimableItems.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 
 const independenceDay2Box = 'Independence Day 2 Box';
-const independenceDay2EndDate = new Date('2026-07-15T00:00:00.000Z');
+const independenceDay2EndDate = new Date('2026-07-20T00:00:00.000Z');;
 
 const claimables = [
 	{
@@ -22,7 +22,18 @@ const claimables = [
 			if (Date.now() >= independenceDay2EndDate.getTime()) {
 				return 'This event is no longer claimable.';
 			}
-			if (user.cl.has(independenceDay2Box)) {
+			let maxBoxes = 1;
+			const accountAge = user.accountAgeInDays();
+			if (!accountAge || accountAge < 30) {
+				return 'You must have an account age of at least 30 days to claim this. If you think this is an error, please find your earlier minion command date and have a mod set it for you.';
+			}
+
+			if (accountAge > 365 * 5) {
+				maxBoxes++;
+			}
+			const clPercent = calcCLDetails(user).percent;
+			if (clPercent > 90) maxBoxes++;
+			if (user.cl.amount(independenceDay2Box) >= maxBoxes) {
 				return 'You already claimed this.';
 			}
 			return true;
