@@ -17,10 +17,20 @@ function maxIndy2Boxes(user: MUser): number {
 
 	const clPercent = calcCLDetails(user).percent;
 	const accountAge = user.accountAgeInDays();
-	if (!accountAge || accountAge < 30) {
+	const legitTriggers = [
+		accountAge && accountAge >= 30,
+		user.totalLevel >= 300,
+		user.bitfield.includes(BitField.OriginalCyrSupporter),
+		user.bitfield.includes(BitField.BypassAgeRestriction),
+		user.perkTier >= 3
+	];
+	const authorized = legitTriggers.some(Boolean);
+
+	if (!authorized) {
 		return 0;
 	}
-	const fiveYearAccount = accountAge > 365 * 5;
+
+	const fiveYearAccount = accountAge && (accountAge > 365 * 5);
 	const ninetyPercentCl = clPercent >= 92;
 	if (fiveYearAccount) {
 		maxBoxes++;
@@ -44,7 +54,7 @@ const claimables = [
 
 			const maxBoxes = maxIndy2Boxes(user);
 			if (maxBoxes === 0) {
-				return `You need to be at least 30 days old to claim this. If you think this is a mistake, please ask a mod to fix your 'minion buy date'`;
+				return `You need to be at least 30 days old to claim this. If you think this is a mistake, please ask a mod to fix your 'minion buy date', or bypass the age restriction.`;
 			}
 			if (user.cl.amount(independenceDay2Box) >= maxBoxes) {
 				return `You already claimed ${new Bank().add(independenceDay2Box, maxBoxes).toString()}.`;
