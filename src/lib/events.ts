@@ -300,7 +300,7 @@ export async function onMessage(msg: IMessage) {
 
 	const statusRegex = new RegExp(`^(\\s*<@&?[0-9]+>)*\\s*<@${globalConfig.clientID}>\\s*(<@&?[0-9]+>\\s*)*$`);
 	const commandRegex = new RegExp(
-		`^(?:\\s*<@&?[0-9]+>)*\\s*<@${globalConfig.clientID}>\\s*(?:\\s*<@&?[0-9]+>\\s*)*(${commandList.join('|')})\\s*(.*)/$`
+		`^(?:\\s*<@&?[0-9]+>)*\\s*<@${globalConfig.clientID}>\\s*(?:\\s*<@&?[0-9]+>\\s*)*(${commandList.join('|')})\\s*(.*)$`
 	);
 	const commandMatch = content.match(commandRegex);
 	const statusMatch = content.match(statusRegex);
