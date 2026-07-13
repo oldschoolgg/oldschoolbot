@@ -10,7 +10,7 @@ import { getReclaimableItemsOfUser } from '@/lib/reclaimableItems.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 
 const independenceDay2Box = 'Independence Day 2 Box';
-const independenceDay2EndDate = new Date('2026-07-12T00:00:00.000Z');
+const independenceDay2EndDate = new Date('2026-07-15T00:00:00.000Z');
 
 const claimables = [
 	{

@@ -1,5 +1,24 @@
 BEGIN;
 
+delete from slayer_tasks stt where stt.user_id in (
+    SELECT st.user_id
+    FROM "slayer_tasks" st
+             LEFT JOIN "users" u ON u.id = st.user_id
+    WHERE u.id IS null
+);
+
+delete from new_users nuu where nuu.id in (
+    SELECT nu.id
+    FROM "new_users" nu
+             LEFT JOIN "users" u ON u.id = nu.id
+    WHERE u.id IS null
+);
+delete from minigames mm where mm.user_id in (
+    select m.user_id
+    FROM "minigames" m
+             LEFT JOIN "users" u ON u.id = m.user_id
+    WHERE u.id IS null
+);
 ALTER TABLE "minigames"
 	ADD COLUMN IF NOT EXISTS "pizazz_points" integer NOT NULL DEFAULT 0;
 
