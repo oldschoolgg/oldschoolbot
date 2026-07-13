@@ -472,6 +472,8 @@ setItemAlias(73_299, ['s8'], false);
 setItemAlias(73_300, ['s8 key'], false);
 setItemAlias(73_970, ['s9'], false);
 setItemAlias(73_971, ['s9 key'], false);
+setItemAlias(48_211, ['indy box', 'indy'], false);
+setItemAlias(48_231, ['indy2 box', 'indy2'], false);
 /**
  * END BSO Supply Crates
  */
