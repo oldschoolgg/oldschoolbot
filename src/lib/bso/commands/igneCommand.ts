@@ -27,7 +27,10 @@ export async function igneCommand(
 			slayer: 110
 		},
 		itemBoosts: [
+			['Dragonbane glaive', 20],
+			['Dragonbane aegis', 15],
 			['Drygore longsword', 15],
+			['Searcrown band', 12],
 			['Ignis ring(i)', 10],
 			['TzKal cape', 6],
 			["Brawler's hook necklace", 4]
@@ -43,9 +46,9 @@ export async function igneCommand(
 			hands: 'Dwarven gloves',
 			feet: 'Dwarven boots',
 			cape: 'TzKal cape',
-			ring: 'Ignis ring(i)',
-			weapon: 'Drygore longsword',
-			shield: 'Dragonfire shield',
+			ring: 'Searcrown band',
+			weapon: 'Dragonbane glaive',
+			shield: 'Dragonbane aegis',
 			neck: "Brawler's hook necklace"
 		}),
 		gearSetup: 'melee',

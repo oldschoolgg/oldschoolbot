@@ -11,7 +11,7 @@ datasource db {
 }
 
 model Activity {
-  id             Int                @id @default(autoincrement())
+  id             Int                @id @unique @default(autoincrement())
   user_id        BigInt
   start_date     DateTime           @db.Timestamp(6)
   finish_date    DateTime           @db.Timestamp(6)
@@ -150,6 +150,8 @@ model ClientStorage {
   gp_pet                  BigInt @default(0)
   ignecarus_cost          Json   @default("{}") @db.Json
   ignecarus_loot          Json   @default("{}") @db.Json
+  dominion_cost           Json   @default("{}") @db.Json
+  dominion_loot           Json   @default("{}") @db.Json
   kibble_cost             Json   @default("{}") @db.Json
   mr_cost                 Json   @default("{}") @db.Json
   mr_loot                 Json   @default("{}") @db.Json
@@ -243,6 +245,7 @@ model GearPreset {
   ammo       Int?
   ammo_qty   Int?
 
+  emoji_id       String?        @db.VarChar(19)
   times_equipped Int            @default(0)
   pinned_setup   GearSetupType?
 
@@ -460,6 +463,7 @@ model User {
   item_contract_streak     Int      @default(0)
   item_contract_bank       Json     @default("{}") @db.Json
   void_staff_charges       Int      @default(0)
+  prismare_ring_charges    Int      @default(0)
 
   last_patron_double_time_trigger DateTime? @db.Timestamp(6)
   lottery_input                   Json      @default("{}") @db.Json
@@ -481,6 +485,11 @@ model User {
   magic_words_guessed String[] @default([])
 
   store_bitfield Int[] @default([])
+
+  island_upgrades      Json @default("{}") @db.Json
+  island_contributions Json @default("{}")
+  distillery_stats     Json @default("{}")
+  construction_stats   Json @default("{}")
 
   farmingPatches_herb       Json? @map("farmingPatches.herb") @db.Json
   farmingPatches_fruit_tree Json? @map("farmingPatches.fruit tree") @db.Json
@@ -592,6 +601,9 @@ enum XpGainSource {
   PuroPuro
   MahoganyHomes
   AerialFishing
+  GemstoneFishing
+  AncientMycology
+  ArchaicMining
   CleaningHerbsWhileFarming
   CamdozaalMining
   CamdozaalSmithing
@@ -601,6 +613,8 @@ enum XpGainSource {
   ForestryEvents
   TuraelsTrials
   MonsterKilling
+  BrimstoneDistillery
+  ConstructionContracts
 }
 
 model XPGain {
@@ -689,6 +703,8 @@ model Minigame {
   guthixian_cache          Int @default(0)
   turaels_trials           Int @default(0)
   pizazz_points            Int @default(0)
+  brimstone_distillery     Int @default(0)
+  construction_contracts   Int @default(0)
 
   user User @relation(fields: [user_id], references: [id])
 
@@ -1186,6 +1202,9 @@ enum activity_type_enum {
   AgilityArena
   ChampionsChallenge
   AerialFishing
+  GemstoneFishing
+  AncientMycology
+  ArchaicMining
   DriftNet
   MahoganyHomes
   Nex
@@ -1209,6 +1228,7 @@ enum activity_type_enum {
   OuraniaDeliveryService
   DarkAltar
   Ignecarus
+  BurningDominion
   OuraniaAltar
   Trekking
   KibbleMaking
@@ -1230,11 +1250,14 @@ enum activity_type_enum {
   PuroPuro
   Easter
   BaxtorianBathhouses
+  BrimstoneDistillery
+  ConstructionContracts
   Naxxus
   Disassembling
   Research
   Moktang
   ShootingStars
+  ArchonEvent
   FistOfGuthix
   StealingCreation
   HalloweenMiniMinigame
@@ -1267,6 +1290,7 @@ enum activity_type_enum {
   SnoozeSpellActive
   Buy
   BeachCombing
+  Archon
 }
 
 enum xp_gains_skill_enum {
@@ -1534,6 +1558,7 @@ enum command_name_enum {
   activities
   admin
   aerialfish
+  gemstonefish
   agilityarena
   alch
   amrod
@@ -1664,6 +1689,7 @@ enum command_name_enum {
   invite
   ironman
   is
+  islandupgrade
   itemtrivia
   jmodcomments
   jmodtweets

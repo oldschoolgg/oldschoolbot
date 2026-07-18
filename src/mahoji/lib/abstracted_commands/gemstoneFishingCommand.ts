@@ -1,0 +1,63 @@
+import {
+	defaultMaintenanceTimestamps,
+	getGatheringSpeedBonus,
+	type IslandUpgradeTiers
+} from '@/lib/bso/commands/islandUpgrades.js';
+
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
+
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { getBestAvailableFish } from '@/tasks/minions/gemstoneFishingActivity.js';
+
+export async function gemstoneFishingCommand(user: MUser, channelId: string, quantity: number | undefined) {
+	const fishingLevel = user.skillsAsLevels.fishing;
+
+	if (fishingLevel < 20) {
+		return 'You need at least level 20 Fishing to catch Gemscales.';
+	}
+
+	const inputQuantity = quantity;
+
+	const bestFish = getBestAvailableFish(fishingLevel);
+
+	const maxTripLength = await user.calcMaxTripLength('GemstoneFishing');
+
+	const islandMaint = (user.user.island_upgrades as any)?.maintenance ?? defaultMaintenanceTimestamps;
+	const islandAssign = (user.user.island_upgrades as any)?.assignment ?? null;
+	const gatheringBonus = getGatheringSpeedBonus(
+		(user.user.island_upgrades ?? {}) as Partial<IslandUpgradeTiers>,
+		islandMaint,
+		islandAssign
+	);
+	const timePerFish = bestFish.timeToFish * Time.Second * (1 - gatheringBonus);
+
+	if (!quantity) {
+		quantity = Math.floor(maxTripLength / timePerFish);
+	}
+	const duration = timePerFish * quantity;
+
+	if (duration > maxTripLength) {
+		return `${user.minionName} can't go on trips longer than ${formatDuration(
+			maxTripLength
+		)}, try a lower quantity. The highest amount of Gemscales you can catch is ${Math.floor(
+			maxTripLength / timePerFish
+		)}.`;
+	}
+
+	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
+		userID: user.id,
+		channelId,
+		quantity,
+		iQty: inputQuantity,
+		duration,
+		type: 'GemstoneFishing'
+	});
+
+	const catchesPerHour = Math.floor(Time.Hour / timePerFish);
+	const xpPerHour = catchesPerHour * bestFish.xp;
+	const boostStr = gatheringBonus > 0 ? ` (${gatheringBonus * 100}% Expedition Outfitters boost applied)` : '';
+
+	return `${user.minionName} is now fishing for Gemscales, it will take around ${formatDuration(
+		duration
+	)} to finish. (${xpPerHour.toLocaleString()} XP/hr)${boostStr}`;
+}

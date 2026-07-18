@@ -8,6 +8,8 @@
 			"subOptions": [
 				"aerial_fishing",
 				"alch",
+				"ancient_mycology",
+				"archaic_mining",
 				"beach_combing",
 				"birdhouses",
 				"bury",
@@ -19,6 +21,7 @@
 				"decant",
 				"enchant",
 				"fight_caves",
+				"gemstone_fishing",
 				"inferno",
 				"my_notes",
 				"other",
@@ -56,6 +59,8 @@
 			"subOptions": [
 				"balthazars_big_bonanza",
 				"baxtorian_bathhouses",
+				"brimstone_distillery",
+				"construction_contracts",
 				"divine_dominion",
 				"fishing_contest",
 				"fist_of_guthix",
@@ -265,6 +270,21 @@
 			"name": "invite",
 			"desc": "Shows the invite link for the bot.",
 			"subOptions": []
+		},
+		{
+			"name": "islandupgrade",
+			"desc": "Upgrade your island camp facilities",
+			"subOptions": [
+				"assign",
+				"complete",
+				"contribute",
+				"gather",
+				"maintain",
+				"preview",
+				"summary",
+				"unassign",
+				"view"
+			]
 		},
 		{
 			"name": "k",
