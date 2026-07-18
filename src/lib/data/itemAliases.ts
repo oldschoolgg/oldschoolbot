@@ -470,8 +470,8 @@ setItemAlias(73_250, ['s7'], false);
 setItemAlias(73_251, ['s7 key'], false);
 setItemAlias(73_299, ['s8'], false);
 setItemAlias(73_300, ['s8 key'], false);
-setItemAlias(73_970, ['s9'], false);
-setItemAlias(73_971, ['s9 key'], false);
+//setItemAlias(73_970, ['s9'], false);
+//setItemAlias(73_971, ['s9 key'], false);
 /**
  * END BSO Supply Crates
  */

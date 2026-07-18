@@ -20,6 +20,7 @@ import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { migrateUser } from '@/lib/util/migrateUser.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
+import { refreshUserCache } from '@/lib/util/refreshCache.js';
 import { insertUserEvent } from '@/lib/util/userEvents.js';
 import { gifs } from '@/mahoji/commands/admin.js';
 import { getUserInfo } from '@/mahoji/commands/minion.js';
@@ -632,7 +633,14 @@ Date: ${dateFm(date)}`;
 		}
 
 		if (options.player?.view_user) {
-			const msg = '';
+			let msg = '';
+			if (options.player.view_user.refresh) {
+				msg = await refreshUserCache({
+					user: adminUser,
+					guildId: interaction.guildId,
+					possibleTarget: options.player.view_user.user.user.id
+				});
+			}
 			const userToView = await mUserFetch(options.player.view_user.user.user.id);
 			return msg + '\n' + (await getUserInfo(userToView)).everythingString;
 		}

@@ -311,6 +311,18 @@
 				"name": "Open a EMB"
 			},
 			{
+				"id": 109,
+				"name": "Open a gemstone bundle"
+			},
+			{
+				"id": 110,
+				"name": "Open a gemstone core"
+			},
+			{
+				"id": 108,
+				"name": "Open a gemstone satchel"
+			},
+			{
 				"id": 39,
 				"name": "Open a HMB"
 			},
@@ -325,6 +337,10 @@
 			{
 				"id": 36,
 				"name": "Open a UMB"
+			},
+			{
+				"id": 111,
+				"name": "Open an Elder cache"
 			},
 			{
 				"id": 96,
@@ -621,6 +637,22 @@
 				"name": "Finish the Abyssal Dragon (Malygos) CL"
 			},
 			{
+				"id": 3117,
+				"name": "Finish the Brimstone Distillery CL"
+			},
+			{
+				"id": 3118,
+				"name": "Finish the Construction Contracts CL"
+			},
+			{
+				"id": 3115,
+				"name": "Finish the Crystalline Sentinel CL"
+			},
+			{
+				"id": 3116,
+				"name": "Finish the Fungal Behemoth CL"
+			},
+			{
 				"id": 3070,
 				"name": "Finish the graceful CL"
 			},
@@ -639,6 +671,14 @@
 			{
 				"id": 3032,
 				"name": "Finish the Nex CL"
+			},
+			{
+				"id": 3114,
+				"name": "Finish the Orrodil CL"
+			},
+			{
+				"id": 3113,
+				"name": "Finish the Orym CL"
 			},
 			{
 				"id": 3071,
@@ -1159,12 +1199,36 @@
 				"name": "Construct 25,000 objects"
 			},
 			{
+				"id": 2174,
+				"name": "Create a Celestial pendant"
+			},
+			{
+				"id": 2172,
+				"name": "Create a Dragonbane aegis"
+			},
+			{
+				"id": 2171,
+				"name": "Create a Dragonbane glaive"
+			},
+			{
 				"id": 2141,
 				"name": "Create a mainhand and offhand Volcanic pickaxe"
 			},
 			{
 				"id": 2165,
 				"name": "Create a Mangobeak from scratch"
+			},
+			{
+				"id": 2175,
+				"name": "Create a Searcrown band"
+			},
+			{
+				"id": 2173,
+				"name": "Create a Vitrolic curse"
+			},
+			{
+				"id": 2176,
+				"name": "Create an Elderflame bow"
 			},
 			{
 				"id": 2055,
@@ -1269,6 +1333,10 @@
 			{
 				"id": 2108,
 				"name": "Fletch 5000 Dragon arrows"
+			},
+			{
+				"id": 2177,
+				"name": "Fletch 5000 Elderflame arrows"
 			},
 			{
 				"id": 2062,
@@ -1641,6 +1709,14 @@
 				"name": "Complete 500 slayer tasks"
 			},
 			{
+				"id": 4161,
+				"name": "Complete Construction Contracts 20 times"
+			},
+			{
+				"id": 4160,
+				"name": "Complete the Brimstone Distillery 20 times"
+			},
+			{
 				"id": 4021,
 				"name": "Complete the Inferno 30 Times"
 			},
@@ -1651,6 +1727,10 @@
 			{
 				"id": 4044,
 				"name": "Create a Dwarven warhammer from scratch"
+			},
+			{
+				"id": 4159,
+				"name": "Create an Empyrean great armor set"
 			},
 			{
 				"id": 4109,
@@ -1743,6 +1823,10 @@
 			{
 				"id": 4122,
 				"name": "Hatch a tame which is atleast level 90"
+			},
+			{
+				"id": 4162,
+				"name": "Max out all Verdant Island Camp upgrades"
 			},
 			{
 				"id": 4130,
@@ -2411,6 +2495,10 @@
 				"name": "Do a birdhouse trip"
 			},
 			{
+				"id": 1161,
+				"name": "Finish the Archon CL"
+			},
+			{
 				"id": 1117,
 				"name": "Finish the Treebeard CL"
 			},
@@ -2455,6 +2543,14 @@
 				"name": "Kill 25 unique monsters"
 			},
 			{
+				"id": 1157,
+				"name": "Kill a Crystalline Sentinel"
+			},
+			{
+				"id": 1158,
+				"name": "Kill a Fungal Behemoth"
+			},
+			{
 				"id": 1069,
 				"name": "Kill a Tormented Demon"
 			},
@@ -2465,6 +2561,14 @@
 			{
 				"id": 1082,
 				"name": "Kill Hespori 25 times"
+			},
+			{
+				"id": 1160,
+				"name": "Kill Orrodil"
+			},
+			{
+				"id": 1159,
+				"name": "Kill Orym"
 			},
 			{
 				"id": 1081,

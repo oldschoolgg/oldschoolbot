@@ -274,6 +274,11 @@ export async function assignNewSlayerTask({ user, rng }: { user: MUser; rng: RNG
 		messages.push('2x qty for Scroll of longevity');
 	}
 
+	await prisma.newUser.upsert({
+		where: { id: user.id },
+		create: { id: user.id },
+		update: {}
+	});
 	const currentTask = await prisma.slayerTask.create({
 		data: {
 			user_id: user.id,

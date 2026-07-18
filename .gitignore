@@ -46,6 +46,7 @@ wiki.xml
 test-bot-store-*.json
 
 .db
+diffs
 
 src/prisma/clients
 src/prisma/migrations
@@ -55,7 +56,6 @@ src/prisma/migrations
 .noai
 
 itx
-
 .claude
 
 diffs

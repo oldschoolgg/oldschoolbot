@@ -9,30 +9,7 @@ import { HolidayItems } from '@/lib/data/holidayItems.js';
 import { getReclaimableItemsOfUser } from '@/lib/reclaimableItems.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 
-const independenceDay2Box = 'Independence Day 2 Box';
-const independenceDay2EndDate = new Date('2026-07-15T00:00:00.000Z');
-
 const claimables = [
-	{
-		name: independenceDay2Box,
-		hasRequirement: async (user: MUser): Promise<true | string> => {
-			if (BOT_TYPE !== 'BSO') {
-				return 'This can only be claimed in BSO.';
-			}
-			if (Date.now() >= independenceDay2EndDate.getTime()) {
-				return 'This event is no longer claimable.';
-			}
-			if (user.cl.has(independenceDay2Box)) {
-				return 'You already claimed this.';
-			}
-			return true;
-		},
-		action: async (user: MUser) => {
-			const loot = new Bank().add(independenceDay2Box);
-			await user.addItemsToBank({ items: loot, collectionLog: true });
-			return `You claimed ${loot}.`;
-		}
-	},
 	{
 		name: 'Free T1 Perks',
 		hasRequirement: async (user: MUser): Promise<true | string> => {

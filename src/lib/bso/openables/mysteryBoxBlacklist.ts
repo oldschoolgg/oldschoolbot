@@ -8,7 +8,6 @@ import {
 	BirthdayPackTable,
 	GamblersBagTable,
 	IndependenceBoxTable,
-	IndependenceDay2BoxTable,
 	RoyalMysteryBoxTable
 } from '@/lib/bso/openables/tables.js';
 
@@ -224,7 +223,6 @@ export const mysteryBoxBlacklist = resolveItems([
 	...RoyalMysteryBoxTable.allItems,
 	...BeachMysteryBoxTable.allItems,
 	...IndependenceBoxTable.allItems,
-	...IndependenceDay2BoxTable.allItems,
 	...cmbClothes,
 	...theatreOfBloodHardUniques,
 	...theatreOfBloodNormalUniques,

@@ -8,5 +8,17 @@ export const bsoBurnables: Burnable[] = [
 		level: 99,
 		xp: 450,
 		inputLogs: itemID('Elder logs')
+	},
+	{
+		name: 'Verdant logs',
+		level: 99,
+		xp: 450,
+		inputLogs: itemID('Verdant logs')
+	},
+	{
+		name: 'Ancient verdant logs',
+		level: 110,
+		xp: 550,
+		inputLogs: itemID('Ancient verdant logs')
 	}
 ];

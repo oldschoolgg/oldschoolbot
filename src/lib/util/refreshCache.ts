@@ -27,10 +27,10 @@ export async function refreshUserCache({
 		if (guildId) await Cache.getMember({ guildId, userId, refreshCache: true, externalServer: true });
 	};
 	await Promise.all([
-		roboChimpUserFetch(refreshUser.id),
-		refreshUser.fetchPerkTier({ forceNoCache: true }),
 		Cache.resetUsername(refreshUser.id),
-		updateGuildMember(refreshUser.id)
+		refreshUser.fetchPerkTier({ forceNoCache: true }),
+		updateGuildMember(refreshUser.id),
+		roboChimpUserFetch(refreshUser.id)
 	]);
 	user.updateProperties();
 	return `${refreshUser}'s Caches updated successfully!`;

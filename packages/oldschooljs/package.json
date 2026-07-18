@@ -24,6 +24,8 @@
 	},
 	"dependencies": {
 		"deepmerge": "4.3.1",
+		"node-rng": "^0.0.3",
+		"pure-rand": "^6.1.0",
 		"@oldschoolgg/gear": "workspace:*",
 		"@oldschoolgg/util": "workspace:*"
 	},

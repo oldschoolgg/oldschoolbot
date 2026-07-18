@@ -7,8 +7,10 @@ import birdhouses from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
 import { Castables } from '@/lib/skilling/skills/magic/castables.js';
 import { Enchantables } from '@/lib/skilling/skills/magic/enchantables.js';
 import Prayer from '@/lib/skilling/skills/prayer.js';
+import type { BeachCombingMethod } from '@/lib/types/minions.js';
 import { aerialFishingCommand } from '@/mahoji/lib/abstracted_commands/aerialFishingCommand.js';
 import { alchCommand } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
+import { beachCombingCommand } from '@/mahoji/lib/abstracted_commands/beachCombingCommand.js';
 import { birdhouseCheckCommand, birdhouseHarvestCommand } from '@/mahoji/lib/abstracted_commands/birdhousesCommand.js';
 import { buryCommand } from '@/mahoji/lib/abstracted_commands/buryCommand.js';
 import { butlerCommand } from '@/mahoji/lib/abstracted_commands/butlerCommand.js';
@@ -33,7 +35,10 @@ import { unchargeGloriesCommand } from '@/mahoji/lib/abstracted_commands/uncharg
 import { underwaterAgilityThievingCommand } from '@/mahoji/lib/abstracted_commands/underwaterCommand.js';
 import { warriorsGuildCommand } from '@/mahoji/lib/abstracted_commands/warriorsGuildCommand.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
-import {EmbedBuilder} from "@oldschoolgg/discord";
+import { ancientMycologyCommand } from '../lib/abstracted_commands/ancientMycologyCommand.js';
+import { archaicMiningCommand } from '../lib/abstracted_commands/archaicMiningCommand.js';
+import { gemscaleBreakdownCommand } from '../lib/abstracted_commands/gemscaleBreakdownCommand.js';
+import { gemstoneFishingCommand } from '../lib/abstracted_commands/gemstoneFishingCommand.js';
 
 export const activitiesCommand = defineCommand({
 	name: 'activities',
@@ -158,6 +163,80 @@ export const activitiesCommand = defineCommand({
 					type: 'Integer',
 					name: 'quantity',
 					description: 'The quantity to do (optional).',
+					required: false,
+					min_value: 1
+				}
+			]
+		},
+		{
+			type: 'Subcommand',
+			name: 'gemstone_fishing',
+			description: 'Fish for gemstone fish, or break down gemscales into gemstones',
+			options: [
+				{
+					type: 'String',
+					name: 'action',
+					description: 'The action to perform.',
+					required: false,
+					choices: [
+						{ name: 'Fish', value: 'fish' },
+						{ name: 'Breakdown', value: 'breakdown' }
+					]
+				},
+				{
+					type: 'String',
+					name: 'fish_type',
+					description: 'The type of gemscale (Juvenile, Adolescent, Mature, Ancient, Elder) to break down.',
+					required: false
+				},
+				{
+					type: 'Integer',
+					name: 'quantity',
+					description: 'The quantity of fish to catch or break down (optional).',
+					required: false,
+					min_value: 1
+				}
+			]
+		},
+		{
+			type: 'Subcommand',
+			name: 'ancient_mycology',
+			description: 'Harvest Ancient Myconid growth',
+			options: [
+				{
+					type: 'Integer',
+					name: 'quantity',
+					description: 'The number of growths to harvest (optional).',
+					required: false,
+					min_value: 1
+				}
+			]
+		},
+		{
+			type: 'Subcommand',
+			name: 'archaic_mining',
+			description: 'Mine archaic ores',
+			options: [
+				{
+					type: 'String',
+					name: 'type',
+					description: 'The type of ore to mine',
+					required: true,
+					choices: [
+						{
+							name: 'Dragonbone',
+							value: 'dragonbone'
+						},
+						{
+							name: 'Crystalline',
+							value: 'crystalline'
+						}
+					]
+				},
+				{
+					type: 'Integer',
+					name: 'quantity',
+					description: 'The number of ores to mine (optional).',
 					required: false,
 					min_value: 1
 				}
@@ -599,15 +678,12 @@ export const activitiesCommand = defineCommand({
 			return myNotesCommand(user, channelId);
 		}
 		if (options.beach_combing) {
-			const content = 'This command is no longer available...';
-			const embed = new EmbedBuilder()
-				.setDescription('Please enjoy this AI generated good-bye!')
-				.setImage('https://cdn.discordapp.com/attachments/851273567416483861/1526174360979898398/image.png');
-
-			return {
-				content,
-				embeds: [embed]
-			};
+			return beachCombingCommand(
+				user,
+				channelId,
+				options.beach_combing.focus as BeachCombingMethod,
+				options.beach_combing.minutes
+			);
 		}
 		if (options.warriors_guild) {
 			return warriorsGuildCommand(
@@ -619,6 +695,40 @@ export const activitiesCommand = defineCommand({
 		}
 		if (options.camdozaal) {
 			return camdozaalCommand(rng, user, channelId, options.camdozaal.action, options.camdozaal.quantity);
+		}
+		if (options.gemstone_fishing) {
+			if (options.gemstone_fishing.action === 'breakdown') {
+				return gemscaleBreakdownCommand(
+					user,
+					options.gemstone_fishing.fish_type,
+					options.gemstone_fishing.quantity
+				);
+			}
+			return gemstoneFishingCommand(user, channelId, options.gemstone_fishing.quantity);
+		}
+		if (options.ancient_mycology) {
+			return ancientMycologyCommand(user, channelId, options.ancient_mycology.quantity);
+		}
+		if (options.archaic_mining) {
+			const { type, quantity } = options.archaic_mining;
+			return archaicMiningCommand(user, channelId, type as 'dragonbone' | 'crystalline', quantity);
+		}
+		if (options.gemstone_fishing) {
+			if (options.gemstone_fishing.action === 'breakdown') {
+				return gemscaleBreakdownCommand(
+					user,
+					options.gemstone_fishing.fish_type,
+					options.gemstone_fishing.quantity
+				);
+			}
+			return gemstoneFishingCommand(user, channelId, options.gemstone_fishing.quantity);
+		}
+		if (options.ancient_mycology) {
+			return ancientMycologyCommand(user, channelId, options.ancient_mycology.quantity);
+		}
+		if (options.archaic_mining) {
+			const { type, quantity } = options.archaic_mining;
+			return archaicMiningCommand(user, channelId, type as 'dragonbone' | 'crystalline', quantity);
 		}
 		if (options.collect) {
 			return collectCommand(

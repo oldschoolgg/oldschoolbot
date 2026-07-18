@@ -141,6 +141,12 @@ export const bones: Bone[] = [
 		level: 99,
 		xp: 250,
 		inputId: itemID('Royal dragon bones')
+	},
+	{
+		name: 'Primordial bones',
+		level: 105,
+		xp: 300,
+		inputId: itemID('Primordial bones')
 	}
 ];
 

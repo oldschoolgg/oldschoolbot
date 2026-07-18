@@ -127,8 +127,8 @@ const killableMonsters: KillableMonster[] = [
 			"Guthan's chainskirt",
 			"Guthan's helm",
 			"Guthan's warspear",
-			['Gorajan warrior top', 'Torva platebody', 'Bandos chestplate', "Torag's platebody"],
-			['Gorajan warrior legs', 'Torva platelegs', 'Bandos tassets', "Torag's platelegs"]
+			['Empyrean greathelm', 'Gorajan warrior top', 'Torva platebody', 'Bandos chestplate', "Torag's platebody"],
+			['Empyrean greatgreaves', 'Gorajan warrior legs', 'Torva platelegs', 'Bandos tassets', "Torag's platelegs"]
 		]),
 		qpRequired: 0,
 		itemInBankBoosts: [

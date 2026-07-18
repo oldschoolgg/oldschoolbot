@@ -143,9 +143,6 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 	await prisma.pinnedTrip.deleteMany({ where: { user_id: user.id } });
 	await prisma.farmedCrop.deleteMany({ where: { user_id: user.id } });
 	await prisma.portent.deleteMany({ where: { user_id: user.id } });
-	await prisma.minigame.deleteMany({ where: { user_id: user.id } });
-	await prisma.slayerTask.deleteMany({ where: { user_id: user.id } });
-
 	// Now we can delete the user
 	await prisma.user.deleteMany({
 		where: { id: user.id }
@@ -153,8 +150,11 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 	await prisma.user.create({
 		data: createOptions
 	});
+	await prisma.slayerTask.deleteMany({ where: { user_id: user.id } });
 	await prisma.playerOwnedHouse.deleteMany({ where: { user_id: user.id } });
+	await prisma.minigame.deleteMany({ where: { user_id: user.id } });
 	await prisma.xPGain.deleteMany({ where: { user_id: BigInt(user.id) } });
+	await prisma.newUser.deleteMany({ where: { id: user.id } });
 	await prisma.activity.deleteMany({ where: { user_id: BigInt(user.id) } });
 	await prisma.stashUnit.deleteMany({ where: { user_id: BigInt(user.id) } });
 	await prisma.userEvent.deleteMany({ where: { user_id: user.id } });

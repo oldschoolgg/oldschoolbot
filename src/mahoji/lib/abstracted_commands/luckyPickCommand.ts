@@ -1,4 +1,5 @@
 import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
+import { cryptoRng } from '@oldschoolgg/rng/crypto';
 import { Bank, toKMB } from 'oldschooljs';
 import { chunk } from 'remeda';
 
@@ -78,7 +79,7 @@ function getCurrentButtons({
 	);
 }
 
-function getButtons(rng: RNGProvider): ButtonInstance[] {
+function getButtons(): ButtonInstance[] {
 	const buttonsToShow = [
 		'0',
 		'0',
@@ -100,20 +101,16 @@ function getButtons(rng: RNGProvider): ButtonInstance[] {
 		'0'
 	];
 
-	buttonsToShow.push(rng.roll(10) ? '10x' : '0');
-	buttonsToShow.push(rng.roll(10) ? '5x' : '0');
-	return rng.shuffle(buttonsToShow.map(n => buttons.find(i => i.name === n)!)).map((item, index) => ({
+	buttonsToShow.push(cryptoRng.roll(10) ? '10x' : '0');
+	buttonsToShow.push(cryptoRng.roll(10) ? '5x' : '0');
+	return cryptoRng.shuffle(buttonsToShow.map(n => buttons.find(i => i.name === n)!)).map((item, index) => ({
 		...item,
 		picked: false,
 		id: `LP_${index}`
 	}));
 }
-export async function luckyPickCommand(
-	rng: RNGProvider,
-	user: MUser,
-	luckypickamount: string,
-	interaction: MInteraction
-) {
+
+export async function luckyPickCommand(user: MUser, luckypickamount: string, interaction: MInteraction) {
 	const amount = mahojiParseNumber({ input: luckypickamount, min: 1_000_000, max: 15_000_000_000 });
 
 	if (!amount) {
@@ -135,10 +132,10 @@ export async function luckyPickCommand(
 	}
 	await user.removeItemsFromBank(new Bank().add('Coins', amount));
 
-	const buttons = getButtons(rng);
+	const buttons = getButtons();
 	await interaction.reply({
 		content: `${user}, Pick *one* button!`,
-		components: getCurrentButtons({ showTrueNames: false, pickedButtonId: null, buttons: getButtons(rng) })
+		components: getCurrentButtons({ showTrueNames: false, pickedButtonId: null, buttons: getButtons() })
 	});
 
 	const selectionResult = await globalClient.pickStringWithButtons({

@@ -1,6 +1,6 @@
 {
-	"hash": "6f5c56c17102e1222323548f5fba0b44",
-	"date": "2026-04-24T10:26:23.917Z",
+	"hash": "2685e79430c02919601b7ecdc3e93dd4",
+	"date": "2026-03-06T11:40:06.844Z",
 	"data": [
 		{
 			"id": 2,
@@ -821,6 +821,23 @@
 			"cannon_multi": false
 		},
 		{
+			"id": 142006,
+			"name": "Burning Dominion",
+			"base_kill_time_ms": 600000,
+			"respawn_time_ms": 0,
+			"is_wildy": false,
+			"is_slayer_only": false,
+			"can_be_pked": false,
+			"is_wildy_multi": false,
+			"items_required": ["Combatant's cape"],
+			"qp_required": 2500,
+			"item_in_bank_boosts": [],
+			"can_barrage": false,
+			"can_chin": false,
+			"can_cannon": false,
+			"cannon_multi": false
+		},
+		{
 			"id": 6503,
 			"name": "Callisto",
 			"base_kill_time_ms": 420000,
@@ -1370,6 +1387,22 @@
 			"cannon_multi": false
 		},
 		{
+			"id": 142003,
+			"name": "Crystalline Sentinel",
+			"base_kill_time_ms": 420000,
+			"is_wildy": false,
+			"is_slayer_only": false,
+			"can_be_pked": false,
+			"is_wildy_multi": false,
+			"items_required": [],
+			"qp_required": 500,
+			"item_in_bank_boosts": [],
+			"can_barrage": false,
+			"can_chin": false,
+			"can_cannon": false,
+			"cannon_multi": false
+		},
+		{
 			"id": 2097,
 			"name": "Cyclops",
 			"base_kill_time_ms": 35000,
@@ -1469,8 +1502,20 @@
 				"Guthan's chainskirt",
 				"Guthan's helm",
 				"Guthan's warspear",
-				["Gorajan warrior top", "Torva platebody", "Bandos chestplate", "Torag's platebody"],
-				["Gorajan warrior legs", "Torva platelegs", "Bandos tassets", "Torag's platelegs"]
+				[
+					"Empyrean greathelm",
+					"Gorajan warrior top",
+					"Torva platebody",
+					"Bandos chestplate",
+					"Torag's platebody"
+				],
+				[
+					"Empyrean greatgreaves",
+					"Gorajan warrior legs",
+					"Torva platelegs",
+					"Bandos tassets",
+					"Torag's platelegs"
+				]
 			],
 			"qp_required": 0,
 			"item_in_bank_boosts": [
@@ -1883,20 +1928,20 @@
 			"cannon_multi": true
 		},
 		{
-			"id": 14704,
-			"name": "Elder custodian stalker",
-			"base_kill_time_ms": 65000,
+			"id": 142005,
+			"name": "Elder Mimic",
+			"base_kill_time_ms": 24000000,
 			"is_wildy": false,
 			"is_slayer_only": false,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
 			"items_required": [],
-			"qp_required": 0,
+			"qp_required": 1500,
 			"item_in_bank_boosts": [],
-			"can_barrage": true,
+			"can_barrage": false,
 			"can_chin": false,
-			"can_cannon": true,
-			"cannon_multi": true
+			"can_cannon": false,
+			"cannon_multi": false
 		},
 		{
 			"id": 5295,
@@ -2144,6 +2189,22 @@
 			"is_wildy_multi": false,
 			"items_required": [],
 			"qp_required": 0,
+			"item_in_bank_boosts": [],
+			"can_barrage": false,
+			"can_chin": false,
+			"can_cannon": false,
+			"cannon_multi": false
+		},
+		{
+			"id": 142004,
+			"name": "Fungal Behemoth",
+			"base_kill_time_ms": 540000,
+			"is_wildy": false,
+			"is_slayer_only": false,
+			"can_be_pked": false,
+			"is_wildy_multi": false,
+			"items_required": [],
+			"qp_required": 750,
 			"item_in_bank_boosts": [],
 			"can_barrage": false,
 			"can_chin": false,
@@ -2428,26 +2489,6 @@
 			"can_chin": false,
 			"can_cannon": true,
 			"cannon_multi": true
-		},
-		{
-			"id": 1834,
-			"name": "Gorak",
-			"base_kill_time_ms": 39200,
-			"is_wildy": false,
-			"is_slayer_only": false,
-			"can_be_pked": false,
-			"is_wildy_multi": false,
-			"items_required": [["Ring of wealth", "Ring of wealth (i)"]],
-			"qp_required": 30,
-			"item_in_bank_boosts": [
-				{
-					"Gem bag": 20
-				}
-			],
-			"can_barrage": false,
-			"can_chin": false,
-			"can_cannon": false,
-			"cannon_multi": false
 		},
 		{
 			"id": 2025,
@@ -3079,22 +3120,6 @@
 			"cannon_multi": false
 		},
 		{
-			"id": 14702,
-			"name": "Juvenile custodian stalker",
-			"base_kill_time_ms": 32000,
-			"is_wildy": false,
-			"is_slayer_only": false,
-			"can_be_pked": false,
-			"is_wildy_multi": false,
-			"items_required": [],
-			"qp_required": 0,
-			"item_in_bank_boosts": [],
-			"can_barrage": true,
-			"can_chin": false,
-			"can_cannon": true,
-			"cannon_multi": true
-		},
-		{
 			"id": 3129,
 			"name": "K'ril Tsutsaroth",
 			"base_kill_time_ms": 306000,
@@ -3672,22 +3697,6 @@
 			"cannon_multi": true
 		},
 		{
-			"id": 14703,
-			"name": "Mature custodian stalker",
-			"base_kill_time_ms": 48000,
-			"is_wildy": false,
-			"is_slayer_only": false,
-			"can_be_pked": false,
-			"is_wildy_multi": false,
-			"items_required": [],
-			"qp_required": 0,
-			"item_in_bank_boosts": [],
-			"can_barrage": true,
-			"can_chin": false,
-			"can_cannon": true,
-			"cannon_multi": true
-		},
-		{
 			"id": 10693,
 			"name": "Mind Golem",
 			"base_kill_time_ms": 18000,
@@ -4081,6 +4090,38 @@
 			"is_wildy_multi": false,
 			"items_required": [],
 			"qp_required": 0,
+			"item_in_bank_boosts": [],
+			"can_barrage": false,
+			"can_chin": false,
+			"can_cannon": false,
+			"cannon_multi": false
+		},
+		{
+			"id": 142002,
+			"name": "Orrodil",
+			"base_kill_time_ms": 2400000,
+			"is_wildy": false,
+			"is_slayer_only": false,
+			"can_be_pked": false,
+			"is_wildy_multi": false,
+			"items_required": ["Combatant's cape"],
+			"qp_required": 2500,
+			"item_in_bank_boosts": [],
+			"can_barrage": false,
+			"can_chin": false,
+			"can_cannon": false,
+			"cannon_multi": false
+		},
+		{
+			"id": 142001,
+			"name": "Orym",
+			"base_kill_time_ms": 2400000,
+			"is_wildy": false,
+			"is_slayer_only": false,
+			"can_be_pked": false,
+			"is_wildy_multi": false,
+			"items_required": ["Combatant's cape"],
+			"qp_required": 2500,
 			"item_in_bank_boosts": [],
 			"can_barrage": false,
 			"can_chin": false,

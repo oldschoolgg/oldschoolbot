@@ -269,7 +269,7 @@ export const genericUsables: {
 	{
 		items: [Items.getOrThrow('Sun Scream'), Items.getOrThrow('Partycrab')],
 		cost: new Bank().add('Sun Scream').add('Partycrab'),
-		loot: new Bank().add('Mona'),
+		loot: new Bank().add('Shiny Partycrab'),
 		response: () => 'You rub Sun Scream onto Partycrab, and it struts away looking dramatically beach-goth.',
 		addToCL: true
 	},
