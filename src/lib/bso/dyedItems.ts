@@ -259,6 +259,52 @@ const gorajan = [
 				dye: Items.getOrThrow('Oceanic dye')
 			}
 		]
+	},
+	//Archaic
+	{
+		baseItem: Items.getOrThrow('Empyrean greathelm'),
+		dyedVersions: [
+			{
+				item: Items.getOrThrow('Empyrean greathelm (Archaic)'),
+				dye: Items.getOrThrow("Archon's ichor")
+			}
+		]
+	},
+	{
+		baseItem: Items.getOrThrow('Empyrean greatplate'),
+		dyedVersions: [
+			{
+				item: Items.getOrThrow('Empyrean greatplate (Archaic)'),
+				dye: Items.getOrThrow("Archon's ichor")
+			}
+		]
+	},
+	{
+		baseItem: Items.getOrThrow('Empyrean greatgreaves'),
+		dyedVersions: [
+			{
+				item: Items.getOrThrow('Empyrean greatgreaves (Archaic)'),
+				dye: Items.getOrThrow("Archon's ichor")
+			}
+		]
+	},
+	{
+		baseItem: Items.getOrThrow('Empyrean greatsabaton'),
+		dyedVersions: [
+			{
+				item: Items.getOrThrow('Empyrean greatsabaton (Archaic)'),
+				dye: Items.getOrThrow("Archon's ichor")
+			}
+		]
+	},
+	{
+		baseItem: Items.getOrThrow('Empyrean greatgauntlets'),
+		dyedVersions: [
+			{
+				item: Items.getOrThrow('Empyrean greatgauntlets (Archaic)'),
+				dye: Items.getOrThrow("Archon's ichor")
+			}
+		]
 	}
 ];
 
@@ -651,6 +697,24 @@ export const dyedItems: DyedItem[] = [
 			{
 				item: Items.getOrThrow('Axe of the high sungod (xmas)'),
 				dye: Items.getOrThrow('Christmas dye')
+			}
+		]
+	},
+	{
+		baseItem: Items.getOrThrow('Searcrown band'),
+		dyedVersions: [
+			{
+				item: Items.getOrThrow('Searcrown band (archaic)'),
+				dye: Items.getOrThrow("Archon's ichor")
+			}
+		]
+	},
+	{
+		baseItem: Items.getOrThrow('Dragonbane aegis'),
+		dyedVersions: [
+			{
+				item: Items.getOrThrow('Dragonbane aegis (archaic)'),
+				dye: Items.getOrThrow("Archon's ichor")
 			}
 		]
 	}

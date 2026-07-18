@@ -47,7 +47,6 @@ import { countUsersWithItemInCl } from '@/lib/rawSql.js';
 import { sorts } from '@/lib/sorts.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
-import { safeMessage } from '@/lib/util/smallUtils.js';
 import { makeGiveawayButtons } from '@/mahoji/commands/giveaway.js';
 
 export const gifs = [
@@ -57,6 +56,34 @@ export const gifs = [
 ];
 
 const leaguesTaskNameByID = new Map(allLeagueTasks.map(task => [task.id, task.name] as const));
+
+function buildAdminOverviewResponse(
+	overview: string,
+	body: string,
+	filename = 'admin-report.txt',
+	blockMentions: boolean = false
+): SendableMessage {
+	const trimmedBody = body.trim();
+	if (trimmedBody.length === 0) {
+		return { content: overview };
+	}
+
+	const combined = `${overview}\n${trimmedBody}`;
+	if (combined.length <= 1800) {
+		return { content: combined };
+	}
+	if (combined.length <= 4000) {
+		return {
+			content: overview,
+			embeds: [new EmbedBuilder().setDescription(trimmedBody)]
+		};
+	}
+	return {
+		content: overview,
+		files: [{ name: filename, buffer: Buffer.from(combined) }],
+		allowedMentions: blockMentions ? { parse: [] } : undefined
+	};
+}
 
 function formatLeaguesTaskList(taskIDs: number[]) {
 	if (taskIDs.length === 0) return 'None';
@@ -264,8 +291,9 @@ const viewableThings: ViewableThing[] = [
 					`${privateUsers ? '\\@secret' : `<@${winnerId}>`}: ${new Bank(treasureWon).toString()}`
 			);
 
-			return safeMessage(
-				`**Buried Treasure Winners**\n${lines.length === 0 ? 'No buried treasure winners yet.' : lines.join('\n')}`,
+			return buildAdminOverviewResponse(
+				'**Buried Treasure Winners**',
+				lines.length === 0 ? 'No buried treasure winners yet.' : lines.join('\n'),
 				'buried-treasure-winners.txt',
 				privateUsers
 			);
@@ -391,11 +419,11 @@ WHERE blowpipe iS NOT NULL and (blowpipe->>'dartQuantity')::int != 0;`),
 		name: 'Most Active',
 		run: async () => {
 			const res = await prisma.$queryRawUnsafe<{ num: number; username: string }[]>(`
-SELECT sum(duration)::int as num, "users"."username", user_id
+SELECT sum(duration)::int as num, "new_user"."username", user_id
 FROM activity
-INNER JOIN "users" on "users"."id" = "activity"."user_id"::text
+INNER JOIN "new_users" "new_user" on "new_user"."id" = "activity"."user_id"::text
 WHERE start_date > now() - interval '2 days'
-GROUP BY user_id, "users"."username"
+GROUP BY user_id, "new_user"."username"
 ORDER BY num DESC
 LIMIT 10;
 `);
@@ -1124,7 +1152,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 					)
 					.join('\n');
 			}
-			if (fullData.length + confirmationMessage.length < 1950) confirmationMessage += `\n\n${fullData}`;
+			if (fullData.length + confirmationMessage.length < 1950) confirmationMessage += '\n\n' + fullData;
 
 			await interaction.confirmation(confirmationMessage);
 
@@ -1137,8 +1165,9 @@ ${META_CONSTANTS.RENDERED_STR}`
 			if (result.unknownDuplicateTaskIDs.length > 0) {
 				overview += ` | Unknown IDs: ${result.unknownDuplicateTaskIDs.join(', ')}`;
 			}
-			return safeMessage(
-				`${overview}\n${fullOutput ? await buildCleanupDuplicatesTSV(result.users) : result.report}`,
+			return buildAdminOverviewResponse(
+				overview,
+				fullOutput ? await buildCleanupDuplicatesTSV(result.users) : result.report,
 				'leagues-duplicate-cleanup.txt'
 			);
 		}
@@ -1163,7 +1192,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 					})
 					.join('\n');
 				if (rowData.length + confirmationMsg.length < 1950) {
-					confirmationMsg += `\n\nuser\tremovedTasks\tpointDelta\n${rowData}`;
+					confirmationMsg += '\n\n' + 'user\tremovedTasks\tpointDelta\n' + rowData;
 				}
 			}
 
@@ -1177,8 +1206,9 @@ ${META_CONSTANTS.RENDERED_STR}`
 			const totalRemoved = sumArr(result.map(user => user.removedTaskIDs.length));
 			const totalDelta = sumArr(result.map(user => user.pointDelta));
 			const overview = `Leagues task validation: ${result.length.toLocaleString()} users | ${totalRemoved.toLocaleString()} removed tasks | ${totalDelta >= 0 ? '+' : ''}${totalDelta.toLocaleString()} balance delta`;
-			return safeMessage(
-				`${overview}\n${fullOutput ? await buildValidateTasksTSV(result) : buildLeaguesTaskAuditBatchBody(result)}`,
+			return buildAdminOverviewResponse(
+				overview,
+				fullOutput ? await buildValidateTasksTSV(result) : buildLeaguesTaskAuditBatchBody(result),
 				'leagues-task-validation.txt'
 			);
 		}
@@ -1191,7 +1221,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 			const body = buildLeaguesTaskAuditBody(preview);
 
 			if (!shouldConfirmAndApply) {
-				return safeMessage(`${overview}\n${body}`, `leagues-verify-${targetUserID}.txt`);
+				return buildAdminOverviewResponse(overview, body, `leagues-verify-${targetUserID}.txt`);
 			}
 
 			await interaction.confirmation({
@@ -1200,17 +1230,18 @@ ${META_CONSTANTS.RENDERED_STR}`
 			});
 
 			if (!preview.changed) {
-				return safeMessage(`${overview}\n${body}`, `leagues-verify-${targetUserID}.txt`);
+				return buildAdminOverviewResponse(overview, body, `leagues-verify-${targetUserID}.txt`);
 			}
 
 			const result =
 				(await verifyLeaguesTasksForUser(targetUserID)) ??
 				(await previewVerifyLeaguesTasksForUser(targetUserID));
-			return safeMessage(
-				`${buildLeaguesTaskAuditOverview(
+			return buildAdminOverviewResponse(
+				buildLeaguesTaskAuditOverview(
 					`Leagues Validation Result for <@${targetUserID}> ${targetUserID}`,
 					result
-				)}\n${buildLeaguesTaskAuditBody(result)}`,
+				),
+				buildLeaguesTaskAuditBody(result),
 				`leagues-verify-${targetUserID}.txt`
 			);
 		}

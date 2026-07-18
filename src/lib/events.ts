@@ -24,6 +24,7 @@ import { PATRON_DOUBLE_LOOT_COOLDOWN } from '@/mahoji/commands/tools.js';
 import { minionStatusCommand } from '@/mahoji/lib/abstracted_commands/minionStatusCommand.js';
 
 const mentionText = `<@${globalConfig.clientID}>`;
+const mentionRegex = new RegExp(`^(\\s*<@&?[0-9]+>)*\\s*<@${globalConfig.clientID}>\\s*(<@&?[0-9]+>\\s*)*$`);
 
 interface CooldownFnParams {
 	user: MUser;
@@ -134,10 +135,11 @@ const mentionCommands: MentionCommand[] = [
 		name: 'cache_refresh',
 		aliases: ['refresh', 'cache'],
 		description: 'Updates your caches',
-		run: async ({ user, content, guildId }: MentionCommandOptions) => {
+		run: async ({ user, components, content, guildId }: MentionCommandOptions) => {
 			const result = await refreshUserCache({ user, guildId, possibleTarget: content });
 			return {
-				content: result
+				content: result,
+				components
 			};
 		}
 	},
@@ -289,22 +291,12 @@ const mentionCommands: MentionCommand[] = [
 	}
 ];
 
-const commandList = [...new Set(mentionCommands.flatMap(i => [i.name, ...i.aliases]))];
-
 export async function onMessage(msg: IMessage) {
 	if (!msg.content) return;
-	void boxSpawnHandler(msg);
+	boxSpawnHandler(msg);
 
 	const content = msg.content.trim();
 	if (!content.includes(mentionText)) return;
-
-	const statusRegex = new RegExp(`^(\\s*<@&?[0-9]+>)*\\s*<@${globalConfig.clientID}>\\s*(<@&?[0-9]+>\\s*)*$`);
-	const commandRegex = new RegExp(
-		`^(?:\\s*<@&?[0-9]+>)*\\s*<@${globalConfig.clientID}>\\s*(?:\\s*<@&?[0-9]+>\\s*)*(${commandList.join('|')})\\s*(.*)/$`
-	);
-	const commandMatch = content.match(commandRegex);
-	const statusMatch = content.match(statusRegex);
-	if (!commandMatch && !statusMatch) return;
 
 	const sendable = await globalClient.channelIsSendable(msg.channel_id);
 	if (!sendable) return;
@@ -312,18 +304,19 @@ export async function onMessage(msg: IMessage) {
 	const user = await mUserFetch(msg.author_id);
 	const result = await minionStatusCommand(user, msg.channel_id);
 
-	if (commandMatch) {
-		const command = mentionCommands.find(i => [i.name, ...i.aliases].includes(commandMatch[1].toLowerCase()));
-		if (!command) return 'This really should not happen...';
+	const command = mentionCommands.find(i =>
+		i.aliases.some(alias => msg.content.startsWith(`${mentionText} ${alias}`))
+	);
+	if (command) {
 		Logging.logDebug(`${msg.author_id} used the ${command.name} mention command`);
-		const args = commandMatch[2] ?? '';
+		const msgContentWithoutCommand = msg.content.split(' ').slice(2).join(' ');
 		await prisma.commandUsage.create({
 			data: {
 				user_id: BigInt(user.id),
 				channel_id: BigInt(msg.channel_id),
 				guild_id: msg.guild_id ? BigInt(msg.guild_id) : undefined,
 				command_name: command.name,
-				args,
+				args: msgContentWithoutCommand,
 				inhibited: false,
 				is_mention_command: true
 			},
@@ -334,7 +327,7 @@ export async function onMessage(msg: IMessage) {
 			const response = await command.run({
 				user,
 				components: result.components,
-				content: args,
+				content: msgContentWithoutCommand,
 				rng: cryptoRng,
 				guildId: msg.guild_id
 			});
@@ -342,18 +335,20 @@ export async function onMessage(msg: IMessage) {
 		} catch (err) {
 			let errMsg = 'There was an error running that command.';
 			if (typeof err === 'string') errMsg = err;
+			else if (err instanceof Error) errMsg = err.message;
 			await globalClient.replyToMessage(msg, { content: errMsg });
-			Logging.logError(err instanceof Error ? err : new Error(errMsg));
+			Logging.logError(err as Error);
 		}
 		return;
 	}
 
-	await globalClient.replyToMessage(msg, {
-		content: result.content,
-		components: result.components
-	});
-	Logging.logDebug(`${msg.author_id} used the status mention command`);
-	return;
+	if (content.match(mentionRegex)) {
+		await globalClient.replyToMessage(msg, {
+			content: result.content,
+			components: result.components
+		});
+		return;
+	}
 }
 
 export async function onMinionActivityFinish(activity: ActivityTaskData) {

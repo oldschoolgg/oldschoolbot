@@ -12,6 +12,8 @@ import {
 	baxBathSim,
 	baxtorianBathhousesStartCommand
 } from '@/lib/bso/minigames/baxtorianBathhouses.js';
+import { brimstoneDistilleryStartCommand, DistilleryRecipes } from '@/lib/bso/minigames/brimstoneDistillery.js';
+import { ContractRecipes, constructionContractsStartCommand } from '@/lib/bso/minigames/constructionContracts.js';
 import {
 	allGodlyItems,
 	divineDominionCheck,
@@ -309,6 +311,78 @@ export const bsoMinigamesCommand = defineCommand({
 					]
 				}
 			]
+		},
+		{
+			type: 'SubcommandGroup',
+			name: 'brimstone_distillery',
+			description: 'The Brimstone Distillery minigame.',
+			options: [
+				{
+					type: 'Subcommand',
+					name: 'start',
+					description: 'Begin a brimstone distillation.',
+					options: [
+						{
+							type: 'String',
+							name: 'recipe',
+							description: 'The recipe you want to distill.',
+							required: true,
+							autocomplete: async ({ value }: StringAutoComplete) => {
+								return DistilleryRecipes.filter(r =>
+									!value ? true : r.name.toLowerCase().includes(value.toLowerCase())
+								).map(r => ({ name: `${r.name} (${r.herbloreLevel} Herblore)`, value: r.name }));
+							}
+						},
+						{
+							type: 'Integer',
+							name: 'quantity',
+							description: 'How many distillations to do (leave blank for max).',
+							required: false,
+							min_value: 1
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'stats',
+					description: 'View your Brimstone Distillery stats and upgrades.',
+					options: []
+				}
+			]
+		},
+		{
+			type: 'SubcommandGroup',
+			name: 'construction_contracts',
+			description: 'The Construction Contracts minigame.',
+			options: [
+				{
+					type: 'Subcommand',
+					name: 'start',
+					description: 'Begin crafting construction contracts.',
+					options: [
+						{
+							type: 'String',
+							name: 'recipe',
+							description: 'The contract recipe you want to craft.',
+							required: true,
+							autocomplete: async ({ value }: StringAutoComplete) => {
+								return ContractRecipes.filter(r =>
+									!value ? true : r.name.toLowerCase().includes(value.toLowerCase())
+								).map(r => ({
+									name: `${r.name} (${r.constructionLevel} Construction)`,
+									value: r.name
+								}));
+							}
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'stats',
+					description: 'View your Construction Contracts stats and upgrades.',
+					options: []
+				}
+			]
 		}
 	],
 	run: async ({ options, user, channelId }) => {
@@ -331,6 +405,68 @@ export const bsoMinigamesCommand = defineCommand({
 		if (options.guthixian_cache?.stats) {
 			const boost = user.user.guthixian_cache_boosts_available;
 			return `You have ${boost} Guthixian cache boost${boost === 1 ? '' : 's'} available.`;
+		}
+		if (options.brimstone_distillery?.start) {
+			return brimstoneDistilleryStartCommand({
+				user,
+				channelId,
+				recipe: options.brimstone_distillery.start.recipe,
+				quantity: options.brimstone_distillery.start.quantity ?? undefined
+			});
+		}
+
+		if (options.brimstone_distillery?.stats) {
+			const score = await user.fetchMinigameScore('brimstone_distillery');
+			const stats = (user.user.distillery_stats ?? {}) as Record<string, number>;
+			const total = stats.totalDistillations ?? 0;
+			const failed = stats.totalFailed ?? 0;
+			const potions = stats.totalPotions ?? 0;
+			const successful = total - failed;
+
+			if (total === 0)
+				return `You have completed ${score} Brimstone Distillery trips but no stats have been recorded yet. Complete a trip to start tracking.`;
+
+			const avgPerAttempt = (potions / total).toFixed(2);
+			const avgPerSuccess = successful > 0 ? (potions / successful).toFixed(2) : 'N/A';
+			const failRate = ((failed / total) * 100).toFixed(1);
+
+			return [
+				`## Brimstone Distillery - ${score} trips completed`,
+				`**Total distillations:** ${total.toLocaleString()}`,
+				`**Potions produced:** ${potions.toLocaleString()}`,
+				`**Failed distillations:** ${failed.toLocaleString()} (${failRate}%)`,
+				`**Avg potions per attempt:** ${avgPerAttempt}`,
+				`**Avg potions per success:** ${avgPerSuccess}`
+			].join('\n');
+		}
+
+		if (options.construction_contracts?.start) {
+			return constructionContractsStartCommand({
+				user,
+				channelId,
+				recipe: options.construction_contracts.start.recipe
+			});
+		}
+
+		if (options.construction_contracts?.stats) {
+			const score = await user.fetchMinigameScore('construction_contracts');
+			const stats = (user.user.construction_stats ?? {}) as Record<string, number>;
+			const total = stats.totalContracts ?? 0;
+			const failed = stats.totalFailed ?? 0;
+			const successful = stats.totalSuccessful ?? 0;
+
+			if (total === 0)
+				return `You have completed ${score} Construction Contracts trips but no stats have been recorded yet. Complete a trip to start tracking.`;
+
+			const failRate = ((failed / total) * 100).toFixed(1);
+			const successRate = ((successful / total) * 100).toFixed(1);
+
+			return [
+				`## Construction Contracts - ${score} trips completed`,
+				`**Total contracts attempted:** ${total.toLocaleString()}`,
+				`**Successful:** ${successful.toLocaleString()} (${successRate}%)`,
+				`**Failed:** ${failed.toLocaleString()} (${failRate}%)`
+			].join('\n');
 		}
 
 		if (divine_dominion?.check) {

@@ -30,7 +30,11 @@ export const ORI_DISABLED_MONSTERS = [
 	'Nex',
 	'Moktang',
 	'Naxxus',
-	'Vasa Magus'
+	'Vasa Magus',
+	'Orym',
+	'Orrodil',
+	'Burning Dominion',
+	'Elder Mimic'
 ] as const;
 
 export const CHINCANNON_MESSAGES = [

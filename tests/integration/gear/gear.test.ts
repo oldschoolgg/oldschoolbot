@@ -38,6 +38,7 @@ describe('Gear', () => {
 		]);
 
 		await user.sync();
+		console.log(user.allItemsOwned.toString());
 		expect(user.allItemsOwned.amount(EGear.DRAGON_FULL_HELM)).toBe(1);
 		expect(user.allItemsOwned.amount(EGear.DRAGON_PLATEBODY)).toBe(1);
 		expect(user.allItemsOwned.amount(EGear.DRAGON_PLATELEGS)).toBe(1);

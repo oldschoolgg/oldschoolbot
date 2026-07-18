@@ -2,9 +2,6 @@ export const RedisKeys = {
 	BlacklistedUsers: 'blacklist:users',
 	BlacklistedGuilds: 'blacklist:guilds',
 	RoboChimpUser: (id: bigint): string => `robochimp:user:${id.toString()}`,
-	Global: {
-		PerkTier: (id: string): string => `global:user:${id.toString()}:perk_tier`
-	},
 	OSB: {
 		User: {
 			BadgedUsername: (id: string): string => `osb:user:${id.toString()}:badged_username`,
@@ -13,8 +10,7 @@ export const RedisKeys = {
 		},
 		GuildSettings: (id: string): string => `osb:guild:${id.toString()}:settings`,
 		DisabledCommands: 'osb:disabled_commands',
-		Webhook: (channelId: string): string => `osb:webhook:${channelId}`,
-		WebhookPermissions: (channelId: string): string => `osb:webhook_permissions:${channelId}`
+		Webhook: (channelId: string): string => `osb:webhook:${channelId}`
 	},
 	BSO: {
 		User: {
@@ -24,8 +20,7 @@ export const RedisKeys = {
 		},
 		GuildSettings: (id: string): string => `bso:guild:${id.toString()}:settings`,
 		DisabledCommands: 'bso:disabled_commands',
-		Webhook: (channelId: string): string => `bso:webhook:${channelId}`,
-		WebhookPermissions: (channelId: string): string => `bso:webhook_permissions:${channelId}`
+		Webhook: (channelId: string): string => `bso:webhook:${channelId}`
 	},
 	Discord: {
 		Channel: (id: string): string => `discord:channel:${id.toString()}`,

@@ -6,13 +6,14 @@ import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minio
 export async function fistOfGuthixCommand(user: MUser, channelId: string) {
 	if (await user.minionIsBusy()) return 'Your minion is busy.';
 
-	const gameTime = Time.Minute * 7.5;
+	const hasCelestialPendant = user.hasEquippedOrInBank('Celestial pendant');
+
+	const gameTime = Time.Minute * 7.5 * (hasCelestialPendant ? 0.9 : 1);
 	const quantity = Math.floor((await user.calcMaxTripLength('FistOfGuthix')) / gameTime);
 	const duration = randomVariation(quantity * gameTime, 5);
 
-	const str = `${
-		user.minionName
-	} is now off to do ${quantity} Fist of Guthix games. The total trip will take ${formatDuration(duration)}.`;
+	const boostStr = hasCelestialPendant ? ' (10% faster from Celestial pendant)' : '';
+	const str = `${user.minionName} is now off to do ${quantity} Fist of Guthix games. The total trip will take ${formatDuration(duration)}.${boostStr}`;
 
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,

@@ -19,7 +19,7 @@ function isUpdatingSnapshots() {
 	return [state.snapshotState?._updateSnapshot, state.snapshotState?.updateSnapshot].includes('all');
 }
 
-describe('Mona paint preview', () => {
+describe('Shiny Partycrab paint preview', () => {
 	test('matches the paint grid snapshot', async () => {
 		const preview = await renderPaintGrid({ item: Items.getOrThrow(73986) });
 

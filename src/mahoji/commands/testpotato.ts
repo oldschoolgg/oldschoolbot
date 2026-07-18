@@ -119,6 +119,7 @@ const thingsToReset = [
 			await prisma.giveaway.deleteMany({ where: { user_id: user.id } }).catch(noOp);
 			await prisma.lastManStandingGame.deleteMany({ where: { user_id: BigInt(user.id) } }).catch(noOp);
 			await prisma.minigame.deleteMany({ where: { user_id: user.id } }).catch(noOp);
+			await prisma.newUser.deleteMany({ where: { id: user.id } }).catch(noOp);
 			await prisma.playerOwnedHouse.deleteMany({ where: { user_id: user.id } }).catch(noOp);
 			await prisma.user.deleteMany({ where: { id: user.id } }).catch(noOp);
 			return 'Reset all your data.';
@@ -682,7 +683,7 @@ export const testPotatoCommand = globalConfig.isProduction
 						// @ts-expect-error
 						ephemeral
 					});
-					return interaction.makePaginatedMessage({
+					await interaction.makePaginatedMessage({
 						ephemeral: true,
 						pages: [
 							() => ({
@@ -715,6 +716,7 @@ export const testPotatoCommand = globalConfig.isProduction
 							})
 						]
 					});
+					return 'Done.';
 				}
 
 				if (options.bitfield) {
