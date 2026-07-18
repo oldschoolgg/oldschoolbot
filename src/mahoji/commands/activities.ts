@@ -1,3 +1,5 @@
+import { EmbedBuilder } from '@oldschoolgg/discord';
+
 import { ownedItemOption } from '@/discord/index.js';
 import { canvasToBuffer, loadImage } from '@/lib/canvas/canvasUtil.js';
 import { Planks } from '@/lib/minions/data/planks.js';

@@ -40759,15 +40759,6 @@
 		}
 	},
 	{
-		"id": 48232,
-		"name": "Sam",
-		"members": true,
-		"customItemData": {
-			"isPet": true
-		},
-		"price": 1000000
-	},
-	{
 		"id": 75011,
 		"name": "Sacrilegious flask",
 		"tradeable": false,
@@ -40782,6 +40773,15 @@
 			"cantDropFromMysteryBoxes": true,
 			"isSuperUntradeable": true
 		}
+	},
+	{
+		"id": 48232,
+		"name": "Sam",
+		"members": true,
+		"customItemData": {
+			"isPet": true
+		},
+		"price": 1000000
 	},
 	{
 		"id": 48214,
@@ -42250,45 +42250,6 @@
 		"price": 100,
 		"customItemData": {
 			"cantDropFromMysteryBoxes": true
-		}
-	},
-	{
-		"id": 73986,
-		"name": "Shiny Partycrab",
-		"tradeable": true,
-		"tradeable_on_ge": true,
-		"noteable": true,
-		"equipable": true,
-		"cost": 44,
-		"lowalch": 17,
-		"highalch": 26,
-		"buy_limit": 125,
-		"equipment": {
-			"attack_stab": 0,
-			"attack_slash": 0,
-			"attack_crush": 0,
-			"attack_magic": -6,
-			"attack_ranged": -3,
-			"defence_stab": 4,
-			"defence_slash": 5,
-			"defence_crush": 3,
-			"defence_magic": -1,
-			"defence_ranged": 4,
-			"melee_strength": 0,
-			"ranged_strength": 0,
-			"magic_damage": 0,
-			"prayer": 0,
-			"slot": "head",
-			"requirements": {
-				"defence": 1
-			}
-		},
-		"price": 1000000,
-		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isSuperUntradeable": true,
-			"dontTradeOnGE": true,
-			"isPet": true
 		}
 	},
 	{
@@ -45984,18 +45945,6 @@
 		}
 	},
 	{
-		"id": 48234,
-		"name": "Stars and Stripeship",
-		"tradeable": true,
-		"tradeable_on_ge": true,
-		"noteable": true,
-		"cost": 45,
-		"lowalch": 18,
-		"highalch": 27,
-		"buy_limit": 13000,
-		"price": 1000000
-	},
-	{
 		"id": 75052,
 		"name": "Starfire agate",
 		"tradeable": true,
@@ -46063,6 +46012,18 @@
 			"cantDropFromMysteryBoxes": true,
 			"isSuperUntradeable": true
 		}
+	},
+	{
+		"id": 48234,
+		"name": "Stars and Stripeship",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 1000000
 	},
 	{
 		"id": 70165,
