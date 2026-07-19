@@ -1,5 +1,5 @@
 import { calcPercentOfNum, ellipsize, reduceNumByPercent } from '@oldschoolgg/toolkit';
-import { Bank, type Item, itemID, MAX_INT_JAVA, toKMB } from 'oldschooljs';
+import { Bank, type Item, type ItemBank, itemID, MAX_INT_JAVA, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import type { Prisma } from '@/prisma/main.js';
@@ -36,9 +36,15 @@ const specialSoldItems = new Map([
 ]);
 
 const MAX_BANK_CONFIRMATION_LENGTH = 1600;
+const DEFAULT_SELL_MAX_SIZE = 50;
 
-function totalItemsInBank(bank: Bank): number {
-	return bank.items().reduce((total, [, qty]) => total + qty, 0);
+function totalDifferentItemsInBank(bank: Bank): number {
+	return bank.length;
+}
+
+function itemsExcludedFromSell(user: MUser): number[] {
+	const weightedItems = new Bank(user.user.bank_sort_weightings as ItemBank);
+	return [...user.user.favoriteItems, ...weightedItems.itemIDs];
 }
 
 function sellConfirmationMessage(user: MUser, bankToSell: Bank, totalValue: string): string {
@@ -49,7 +55,7 @@ function sellConfirmationMessage(user: MUser, bankToSell: Bank, totalValue: stri
 
 	return `${user}
 # ❗ **WARNING**
-**You are about to sell ${totalItemsInBank(bankToSell).toLocaleString()} total items, for ${totalValue}, are you sure?**
+**You are about to sell ${totalDifferentItemsInBank(bankToSell).toLocaleString()} different items, for ${totalValue}, are you sure?**
 Use \`/sell preview:true\` to see the full list before selling.
 
 Selling: ${ellipsize(bankToSellStr, MAX_BANK_CONFIRMATION_LENGTH)}`;
@@ -106,6 +112,12 @@ export const sellCommand = defineCommand({
 			name: 'preview',
 			description: 'Preview the items being sold as a text file.',
 			required: false
+		},
+		{
+			type: 'Boolean',
+			name: 'all',
+			description: 'Sell all matching items with no max limit.',
+			required: false
 		}
 	],
 	run: async ({ user, options, interaction }) => {
@@ -114,7 +126,8 @@ export const sellCommand = defineCommand({
 			inputStr: options.items,
 			filters: [options.filter],
 			search: options.search,
-			excludeItems: user.user.favoriteItems,
+			excludeItems: itemsExcludedFromSell(user),
+			maxSize: options.all === true ? undefined : DEFAULT_SELL_MAX_SIZE,
 			noDuplicateItems: true
 		});
 		if (bankToSell.length === 0) return 'No items provided.';
