@@ -35,7 +35,7 @@ const specialSoldItems = new Map([
 	[itemID('Ecumenical key'), 61_500]
 ]);
 
-const MAX_BANK_CONFIRMATION_LENGTH = 1800;
+const MAX_BANK_CONFIRMATION_LENGTH = 1600;
 
 function totalItemsInBank(bank: Bank): number {
 	return bank.items().reduce((total, [, qty]) => total + qty, 0);
