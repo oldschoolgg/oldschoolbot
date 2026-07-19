@@ -161,7 +161,10 @@ export class OldSchoolBotClient extends DiscordClient {
 	}
 
 	private async deleteWebhook(channelId: string): Promise<void> {
-		await Promise.all([Cache.clearWebhook(channelId), prisma.webhook.deleteMany({ where: { channel_id: channelId } })]);
+		await Promise.all([
+			Cache.clearWebhook(channelId),
+			prisma.webhook.deleteMany({ where: { channel_id: channelId } })
+		]);
 	}
 
 	private async getChannelWebhook(channelId: string): Promise<IWebhook | null> {

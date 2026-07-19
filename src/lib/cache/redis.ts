@@ -1,5 +1,6 @@
 import type { MegaDuckLocation } from '@/lib/bso/megaDuck.js';
 
+import { PermissionFlags } from '@oldschoolgg/discord';
 import {
 	type IChannel,
 	type IEmoji,
@@ -15,7 +16,6 @@ import {
 } from '@oldschoolgg/schemas';
 import { cleanUsername, Time } from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake, MockedRedis, RedisKeys } from '@oldschoolgg/util';
-import { PermissionFlags } from '@oldschoolgg/discord';
 import { Redis } from 'ioredis';
 
 import type { Guild, Prisma } from '@/prisma/main.js';

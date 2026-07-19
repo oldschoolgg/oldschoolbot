@@ -10,7 +10,7 @@ import { getReclaimableItemsOfUser } from '@/lib/reclaimableItems.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 
 const independenceDay2Box = 'Independence Day 2 Box';
-const independenceDay2EndDate = new Date('2026-07-20T00:00:00.000Z');;
+const independenceDay2EndDate = new Date('2026-07-20T00:00:00.000Z');
 
 function maxIndy2Boxes(user: MUser): number {
 	let maxBoxes = 1;
@@ -30,7 +30,7 @@ function maxIndy2Boxes(user: MUser): number {
 		return 0;
 	}
 
-	const fiveYearAccount = accountAge && (accountAge > 365 * 5);
+	const fiveYearAccount = accountAge && accountAge > 365 * 5;
 	const ninetyPercentCl = clPercent >= 92;
 	if (fiveYearAccount) {
 		maxBoxes++;

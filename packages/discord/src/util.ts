@@ -1,6 +1,5 @@
 import { readFile } from 'node:fs/promises';
 import { extname } from 'node:path';
-
 import { time } from '@discordjs/formatters';
 
 const DISCORD_EPOCH_MS = 1420070400000;
