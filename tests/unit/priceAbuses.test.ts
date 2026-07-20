@@ -1,5 +1,5 @@
 import { isFunction } from '@oldschoolgg/toolkit';
-import { Bank, Items, LootTable } from 'oldschooljs';
+import { type Bank, Items, LootTable } from 'oldschooljs';
 import { describe, test } from 'vitest';
 
 import Buyables from '../../src/lib/data/buyables/buyables.js';
