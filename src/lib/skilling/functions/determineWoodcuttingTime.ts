@@ -9,7 +9,7 @@ interface WoodcuttingTimeOptions {
 	log: Log;
 	axeMultiplier: number;
 	powerchopping: boolean;
-	forestry: boolean;
+	forestry: string;
 	woodcuttingLvl: number;
 	maxTripLength: number;
 	rng: RNGProvider;
@@ -34,7 +34,8 @@ export function determineWoodcuttingTime({
 	const { findNewTreeTime } = log;
 
 	let teakTick = false;
-	if (!forestry && woodcuttingLvl >= 92) {
+	
+	if (forestry === 'false' && woodcuttingLvl >= 92) {
 		if (log.id === EItem.TEAK_LOGS && farmingLvl >= 35) {
 			teakTick = true;
 		}
