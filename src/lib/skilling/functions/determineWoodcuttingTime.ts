@@ -34,7 +34,7 @@ export function determineWoodcuttingTime({
 	const { findNewTreeTime } = log;
 
 	let teakTick = false;
-	
+
 	if (forestry === 'false' && woodcuttingLvl >= 92) {
 		if (log.id === EItem.TEAK_LOGS && farmingLvl >= 35) {
 			teakTick = true;

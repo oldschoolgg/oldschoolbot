@@ -1,5 +1,12 @@
-import { Emoji, Events, increaseNumByPercent, objectEntries, perTimeUnitChance, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
-import { roll } from 'node-rng';
+import {
+	Emoji,
+	Events,
+	increaseNumByPercent,
+	objectEntries,
+	perTimeUnitChance,
+	reduceNumByPercent,
+	Time
+} from '@oldschoolgg/toolkit';
 import { Bank, EItem } from 'oldschooljs';
 
 import { MediumSeedPackTable } from '@/lib/data/seedPackTables.js';
@@ -41,7 +48,7 @@ async function handleForestry({
 	let strForestry = '';
 	const userWcLevel = user.skillsAsLevels.woodcutting;
 
-	const handleEvent = (event: typeof ForestryEvents[number]) => {
+	const handleEvent = (event: (typeof ForestryEvents)[number]) => {
 		let eventRounds = 0;
 		let eventInteraction = 0;
 
@@ -74,8 +81,7 @@ async function handleForestry({
 					eventInteraction += rng.randInt(12, 20);
 				}
 
-				loot.add('Strange fruit', rng.randInt(4, 8))
-					.add(MediumSeedPackTable.roll());
+				loot.add('Strange fruit', rng.randInt(4, 8)).add(MediumSeedPackTable.roll());
 
 				eventCounts[event.id]++;
 				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * 0.25 * eventInteraction * 3;
@@ -162,9 +168,7 @@ async function handleForestry({
 
 	// Normal forestry events
 	if (!forestryBlocked) {
-		const eventChance = forestry === 'ent_scouting'
-			? increaseNumByPercent(8, 40)
-			: 8;
+		const eventChance = forestry === 'ent_scouting' ? increaseNumByPercent(8, 40) : 8;
 
 		perTimeUnitChance(rng, duration, eventChance, Time.Minute, () => {
 			const event = ForestryEvents[rng.randInt(0, ForestryEvents.length - 1)];
