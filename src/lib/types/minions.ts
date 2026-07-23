@@ -8,7 +8,7 @@ import type { MinigameName } from '@/lib/settings/minigames.js';
 import type { UnderwaterAgilityThievingTrainingSkill } from '@/lib/skilling/skills/agility.js';
 import type { IPatchData } from '@/lib/skilling/skills/farming/utils/types.js';
 import type { SharkLureQuantity } from '@/lib/skilling/skills/fishing/fishingUtil.js';
-import type { ForestryEvents, TwitcherGloves } from '@/lib/skilling/skills/woodcutting/woodcutting.js';
+import type { ForestryType, TwitcherGloves } from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import type { Peak } from '@/lib/util/peaks.js';
 
 export interface ActivityTaskOptions {
@@ -222,7 +222,8 @@ export interface WoodcuttingActivityTaskOptions extends ActivityTaskOptions {
 	fakeDurationMax: number;
 	fakeDurationMin: number;
 	powerchopping?: boolean;
-	forestry?: ForestryEvents;
+	forestryBlocked: boolean;
+	forestry?: ForestryType;
 	twitchers?: TwitcherGloves;
 	logID: number;
 	quantity: number;

@@ -219,8 +219,8 @@ const logs: Log[] = [
 const twitchersGloves = ['egg', 'ring', 'seed', 'clue'] as const;
 export type TwitcherGloves = (typeof twitchersGloves)[number];
 
-const forestry_events = ['false', 'normal', 'egg_hunting'] as const;
-export type ForestryEvents = (typeof forestry_events)[number];
+const forestryType = ['false', 'normal', 'ent_scouting'] as const;
+export type ForestryType = (typeof forestryType)[number];
 
 const lumberjackItems: { [key: number]: number } = {
 	[itemID('Lumberjack hat')]: 0.4,
@@ -237,7 +237,7 @@ const Woodcutting = defineSkill({
 	name: 'Woodcutting',
 	lumberjackItems,
 	twitchersGloves,
-	forestry_events
+	forestryType
 });
 
 export default Woodcutting;
