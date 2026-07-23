@@ -49,7 +49,7 @@ const WorldLocationsChecker = [
 					resolveItems(['Teak logs', 'Mahogany logs']).includes(
 						(activity as WoodcuttingActivityTaskOptions).logID
 					) &&
-					(activity as WoodcuttingActivityTaskOptions).forestry !== 'false' 
+					(activity as WoodcuttingActivityTaskOptions).forestry !== 'false'
 				) {
 					return true;
 				}
