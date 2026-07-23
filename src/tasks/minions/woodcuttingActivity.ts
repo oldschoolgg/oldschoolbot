@@ -1,4 +1,4 @@
-import { Emoji, Events, increaseNumByPercent, objectEntries, perTimeUnitChance, Time } from '@oldschoolgg/toolkit';
+import { Emoji, Events, increaseNumByPercent, objectEntries, perTimeUnitChance, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { roll } from 'node-rng';
 import { Bank, EItem } from 'oldschooljs';
 
@@ -232,7 +232,13 @@ async function handleForestry({
 export const woodcuttingTask: MinionTask = {
 	type: 'Woodcutting',
 	async run(data: WoodcuttingActivityTaskOptions, { user, handleTripFinish, rng }) {
-		const { logID, quantity, channelId, duration, powerchopping, forestryBlocked, forestry, twitchers } = data;
+		let { logID, quantity, channelId, duration, powerchopping, forestryBlocked, forestry, twitchers } = data;
+
+		if (forestry === 'normal') {
+			quantity = Math.floor(reduceNumByPercent(quantity, 15));
+		} else if (forestry === 'ent_scouting') {
+			quantity = Math.floor(reduceNumByPercent(quantity, 30));
+		}
 
 		const userWcLevel = user.skillsAsLevels.woodcutting;
 		const log = Woodcutting.Logs.find(i => i.id === logID)!;

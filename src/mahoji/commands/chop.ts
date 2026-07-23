@@ -172,7 +172,9 @@ export const chopCommand = defineCommand({
 		if (forestry_events === 'normal') {
 			boosts.push('Participating in Forestry events. (-15% logs/xp)');
 		} else if (forestry_events === 'ent_scouting') {
-			boosts.push('Participating in Forestry events & ent scouting. (avg 8 ent events scouted per hour) (-40% normal events, -30% logs/xp)');
+			boosts.push(
+				'Participating in Forestry events & ent scouting. (avg 8 ent events scouted per hour) (-40% normal events, -30% logs/xp)'
+			);
 		}
 
 		// Default bronze axe, last in the array
