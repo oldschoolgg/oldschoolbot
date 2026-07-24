@@ -311,7 +311,7 @@ export const bsoMinigamesCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ options, user, channelId }) => {
+	run: async ({ interaction, options, user, channelId }) => {
 		const {
 			baxtorian_bathhouses,
 			monkey_rumble,
@@ -326,6 +326,7 @@ export const bsoMinigamesCommand = defineCommand({
 			return turaelsTrialsStartCommand(user, channelId, options.turaels_trials.start.method);
 		}
 		if (options.guthixian_cache?.join) {
+			await interaction.defer();
 			return joinGuthixianCache(user, channelId);
 		}
 		if (options.guthixian_cache?.stats) {
