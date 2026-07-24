@@ -211,7 +211,7 @@ export class OldSchoolBotClient extends DiscordClient {
 		try {
 			webhook = await this.getChannelWebhook(channelId);
 			if (!webhook) return null;
-			return globalClient.sendWebhook(webhook, data);
+			return await globalClient.sendWebhook(webhook, data);
 		} catch (_err: unknown) {
 			const err = _err as Error;
 			Logging.logError(err);
