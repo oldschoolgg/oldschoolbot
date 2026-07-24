@@ -49,10 +49,7 @@ function compressOptions(options: CommandOptions) {
 	return newOptions;
 }
 
-export function getInteractionOptionsForLog({ command, interaction }: { command: string; interaction: MInteraction }) {
-	if (['bank', 'bs'].includes(command)) {
-		return undefined;
-	}
+export function getInteractionOptionsForLog({ interaction }: { command: string; interaction: MInteraction }) {
 	if (interaction.rawInteraction.type !== InteractionType.ApplicationCommand) {
 		return undefined;
 	}
@@ -61,6 +58,5 @@ export function getInteractionOptionsForLog({ command, interaction }: { command:
 		options: interaction.rawInteraction.data.options ?? [],
 		resolvedObjects: interaction.rawInteraction.data.resolved
 	});
-	const compressed = compressOptions(options);
-	return compressed;
+	return compressOptions(options);
 }
