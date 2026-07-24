@@ -1,3 +1,4 @@
+import { bsoChallengeLeaderboard } from '@/lib/bso/leaderboards/boxSpawnsLb.js';
 import { bsoItemContractDonationGivenLb, bsoItemContractLb } from '@/lib/bso/leaderboards/itemContractsLb.js';
 import { bsoTamesHatchedLb } from '@/lib/bso/leaderboards/tamesHatchedLb.js';
 
@@ -922,6 +923,10 @@ export const leaderboardCommand = defineCommand({
 
 		if (options.inferno) {
 			return infernoLb(interaction);
+		}
+
+		if (options.challenges) {
+			return bsoChallengeLeaderboard(interaction);
 		}
 
 		if (options.sacrifice) {
