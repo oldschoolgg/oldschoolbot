@@ -28,7 +28,7 @@ export const raidCommand = defineCommand({
 							type: 'String',
 							name: 'type',
 							description: 'Choose whether you want to solo, mass, or fake mass.',
-							choices: choicesOf(['solo', 'mass']),
+							choices: choicesOf(['solo', 'mass', 'fakemass']),
 							required: true
 						},
 						{
