@@ -27,7 +27,8 @@ import {
 	treeBeardCL,
 	vasaMagusCL,
 	venatrixCL,
-	vladDrakanCL
+	vladDrakanCL,
+	yetiCL
 } from '@/lib/bso/collection-log/main.js';
 import {
 	balthazarsBigBonanzaCL,
@@ -55,6 +56,7 @@ import { Naxxus, NaxxusLootTableFinishable } from '@/lib/bso/monsters/bosses/Nax
 import { VasaMagus } from '@/lib/bso/monsters/bosses/VasaMagus.js';
 import { VenatrixLootTable } from '@/lib/bso/monsters/bosses/Venatrix.js';
 import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
+import { YetiLootTable } from '@/lib/bso/monsters/demi-bosses/Yeti.js';
 import { NexMonster, nexLootTable } from '@/lib/bso/monsters/nex.js';
 import { cmbClothes } from '@/lib/bso/openables/cmb.js';
 import { PaintBoxTable } from '@/lib/bso/paintColors.js';
@@ -784,6 +786,12 @@ export const allCollectionLogs: ICollection = {
 				allItems: AkumuLootTable.allItems,
 				items: akumuCL,
 				fmtProg: kcProg(BSOMonsters.Akumu.id)
+			},
+			Yeti: {
+				alias: ['yeti'],
+				allItems: YetiLootTable.allItems,
+				items: yetiCL,
+				fmtProg: kcProg(BSOMonsters.Yeti.id)
 			},
 			Venatrix: {
 				alias: ['venatrix'],
