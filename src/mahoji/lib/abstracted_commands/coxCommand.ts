@@ -255,6 +255,7 @@ export async function coxCommand(
 		leader: user.id,
 		users: users.map(u => u.id),
 		challengeMode: isChallengeMode,
+		maxSizeInput: maxSize,
 		quantity,
 		cc: chinCannonUser?.id
 	});
