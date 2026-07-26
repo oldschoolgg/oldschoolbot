@@ -3,7 +3,7 @@ import { notEmpty, PerkTier, uniqueArr } from '@oldschoolgg/toolkit';
 
 import type { RUser } from '@/structures/RUser.js';
 import { globalConfig } from '../constants.js';
-import { Bits, cyrTiers, magnaTiers, type PaidTierSource, type PatronTier, paidTiers } from '../util.js';
+import {Bits, cyrTiers, magnaTiers, type PaidTierSource, type PatronTier, paidTiers} from '../util.js';
 import type { OSBPrismaClient } from './prisma.js';
 
 const ROOT_FREE_TIER_BITS = new Set([12, 24]);
@@ -113,16 +113,17 @@ function getCyrTierConfigs(): PatronTier[] {
 }
 
 function getPatreonCampaignConfigs(): CampaignConfig[] {
-	const configs: CampaignConfig[] = [
-		{
-			source: 'magna',
-			token: globalConfig.patreonToken,
-			campaignID: globalConfig.patreonCampaignID,
-			webhookSecret: globalConfig.patreonWebhookSecret,
-			tiers: magnaTiers
-		}
-	];
+	const configs: CampaignConfig[] = [];
 
+	if (globalConfig.magnaPatreonToken && globalConfig.magnaPatreonCampaignID) {
+		configs.push({
+			source: 'magna',
+			token: globalConfig.magnaPatreonToken,
+			campaignID: globalConfig.magnaPatreonCampaignID,
+			webhookSecret: globalConfig.magnaPatreonWebhookSecret,
+			tiers: magnaTiers
+		});
+	}
 	if (globalConfig.cyrPatreonToken && globalConfig.cyrPatreonCampaignID) {
 		configs.push({
 			source: 'cyr',
@@ -157,6 +158,8 @@ function buildPatreonApiURL(campaignID: string) {
 }
 
 async function fetchSponsors() {
+	if (!globalConfig.githubToken) return [];
+
 	const { graphql } = await import('@octokit/graphql');
 	const graphqlWithAuth = graphql.defaults({
 		headers: {
@@ -366,6 +369,9 @@ class PatreonTask {
 		const entitlementsByUserID = new Map<string, PatronTier[]>();
 		const patreonIDsByUserID = new Map<string, string>();
 		const usersByPatreonID = new Map(users.filter(user => user.patreon_id).map(user => [user.patreon_id!, user]));
+		console.log('usersByPatreonID:');
+		console.log(JSON.stringify(usersByPatreonID, null, 2));
+		console.log(`--------------------------------------\n\n`);
 		const usersByGithubID = new Map(
 			users.filter(user => user.github_id !== null).map(user => [String(user.github_id), user])
 		);
@@ -373,6 +379,10 @@ class PatreonTask {
 
 		const addEntitlement = (userID: string, tier: PatronTier) => {
 			const existing = entitlementsByUserID.get(userID) ?? [];
+			console.log(`Adding ${tier.source} patron entitlement for ${userID} to ${existing.length} existing tiers.`);
+			console.log(JSON.stringify(existing, null, 2));
+			console.log(`Tier: ${JSON.stringify(tier, null, 2)}`);
+			console.log(`--------------------------------------\n\n`);
 			if (!existing.some(existingTier => existingTier.bit === tier.bit)) {
 				existing.push(tier);
 			}
@@ -389,10 +399,13 @@ class PatreonTask {
 				if (!discordID) {
 					discordID = usersByPatreonID.get(member.patreonID)?.id.toString();
 				}
+				console.log(`Found ${member.source} patron ${member.patreonID} with discordID ${discordID}`);
 				if (!discordID) {
 					messages.push(
 						`Unable to resolve ${member.source} patron ${member.patreonID} to a Discord account.`
 					);
+					console.log(`Unable to resolve ${member.source} patron ${member.patreonID} to a Discord account.`);
+					console.log(`Skipping ${member.source} patron ${member.patreonID}.\n--------------------------------------\n\n`);
 					continue;
 				}
 
@@ -400,6 +413,7 @@ class PatreonTask {
 				patreonIDsByUserID.set(discordID, member.patreonID);
 
 				if (!ensuredUserIDs.has(discordID)) {
+					console.log(`Ensuring user ${discordID} exists in database. ${member.patreonID ? `Patreon ID: ${member.patreonID}` : ''}`);
 					await roboChimpClient.user.upsert({
 						where: { id: BigInt(discordID) },
 						update: member.patreonID ? { patreon_id: member.patreonID } : {},
@@ -536,7 +550,16 @@ class PatreonTask {
 
 		const messages: string[] = [];
 		let roboUsers = await this.fetchRobochimpUsers();
+		console.log('About to get patreon data for all robochimp users:');
+		console.log(JSON.stringify(roboUsers, null, 2));
 		const { entitlementsByUserID, patreonIDsByUserID } = await this.collectPaidEntitlements(roboUsers, messages);
+
+		console.log(`Entitlements By User ID:`);
+		console.log(JSON.stringify(entitlementsByUserID));
+		console.log(`Patreon IDs By User ID:`);
+		console.log(JSON.stringify(patreonIDsByUserID));
+
+		// Fetch users after we've ensured all members are in the database.
 		roboUsers = await this.fetchRobochimpUsers();
 
 		const discordIDs = roboUsers.map(user => user.id.toString());
