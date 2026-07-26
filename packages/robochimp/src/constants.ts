@@ -47,7 +47,7 @@ export const globalConfig = globalConfigSchema.parse({
 	cyrPatreonCampaignID: process.env.CYR_PATREON_CAMPAIGN_ID,
 	botToken: process.env.BOT_TOKEN,
 	appID: process.env.APP_ID,
-	supportServerID: isProduction ? REAL_SUPPORT_SERVER_ID : TEST_SERVER_ID,
+	supportServerID: process.env.SUPPORT_SERVER_ID ?? (isProduction ? REAL_SUPPORT_SERVER_ID : TEST_SERVER_ID),
 	patreonWebhookSecret: process.env.PATREON_WEBHOOK_SECRET,
 	cyrPatreonWebhookSecret: process.env.CYR_PATREON_WEBHOOK_SECRET,
 	cyrPatreonTier0ID: process.env.CYR_PATREON_TIER_0_ID,

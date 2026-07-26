@@ -18,7 +18,7 @@ import { DiscordSnowflake } from '@sapphire/snowflake';
 import { omit } from 'remeda';
 
 import { makeParty } from '@/discord/interaction/makeParty.js';
-import { mentionCommand } from '@/discord/utils.js';
+import { mentionCommand, resolveSendable } from '@/discord/utils.js';
 import { DISCORD_USER_IDS_INSERTED_CACHE } from '@/lib/cache.js';
 import { globalConfig } from '@/lib/constants.js';
 import { ReactEmoji } from '@/lib/data/emojis.js';
@@ -332,7 +332,9 @@ export class OldSchoolBotClient extends DiscordClient {
 			return await globalClient.sendWebhook(webhook, data);
 		} catch (_err: unknown) {
 			const err = _err as Error;
-			Logging.logError(err);
+			const context = { channelId };
+			const msg = await resolveSendable(data);
+			Logging.logError(err, { context, msg });
 			if (webhook) {
 				await this.deleteWebhook(channelId);
 			}
@@ -350,7 +352,7 @@ export class OldSchoolBotClient extends DiscordClient {
 				lastMessage = webhookResponse;
 				continue;
 			}
-			lastMessage = await this.sendMessage(channelId, part).catch(() => null);
+			lastMessage = await this.sendMessage(channelId, part);
 		}
 		return lastMessage;
 	}

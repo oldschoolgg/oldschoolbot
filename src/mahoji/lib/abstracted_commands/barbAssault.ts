@@ -12,6 +12,7 @@ import {
 import { Bank, Items, itemID } from 'oldschooljs';
 import { clamp } from 'remeda';
 
+import { MessageBuilder } from '@/discord/MessageBuilder.js';
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';
 import { degradeItem } from '@/lib/degradeableItems.js';
 import { countUsersWithItemInCl } from '@/lib/rawSql.js';

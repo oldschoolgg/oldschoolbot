@@ -8,7 +8,7 @@ import { expect } from 'vitest';
 
 import type { GearSetupType, Prisma, User, UserStats } from '@/prisma/main.js';
 import { rawCommandHandlerInner } from '@/discord/commandHandler.js';
-import { MessageBuilderClass } from '@/discord/MessageBuilder.js';
+import { MessageBuilder } from '@/discord/MessageBuilder.js';
 import type { PvMMethod } from '@/lib/constants.js';
 import { BitField } from '@/lib/constants.js';
 import type { DegradeableItem } from '@/lib/degradeableItems.js';
@@ -246,7 +246,7 @@ export class TestUser extends MUserClass {
 			rng: MathRNG,
 			ignoreUserIsBusy: otherOptions.bypassBusy ? true : undefined
 		});
-		if (result instanceof MessageBuilderClass) {
+		if (result instanceof MessageBuilder) {
 			result = await result.build();
 		}
 		await this.sync();
