@@ -3,7 +3,7 @@ import { notEmpty, PerkTier, uniqueArr } from '@oldschoolgg/toolkit';
 
 import type { RUser } from '@/structures/RUser.js';
 import { globalConfig } from '../constants.js';
-import {Bits, cyrTiers, magnaTiers, type PaidTierSource, type PatronTier, paidTiers} from '../util.js';
+import { allPatronBits, Bits, cyrTiers, magnaTiers, type PaidTierSource, type PatronTier, paidTiers } from '../util.js';
 import type { OSBPrismaClient } from './prisma.js';
 
 const ROOT_FREE_TIER_BITS = new Set([12, 24]);
@@ -35,6 +35,12 @@ type RobochimpUserState = {
 	user_group_id: string | null;
 	github_id: number | null;
 	patreon_id: string | null;
+};
+
+type DesiredRobochimpUserState = RobochimpUserState & {
+	nextBits: number[];
+	nextPatreonID: string | null;
+	nextPerkTier: number;
 };
 
 type ExternalUserState = {
@@ -84,12 +90,17 @@ function normalizeBits({
 	return uniqueArr(nextBits);
 }
 
-function getGroupKey(user: Pick<RobochimpUserState, 'id' | 'user_group_id'>) {
-	return user.user_group_id ?? `solo:${user.id.toString()}`;
-}
-
 function getHighestTierFromBits(bits: readonly number[]) {
 	return paidTiers.filter(tier => bits.includes(tier.bit)).sort((a, b) => b.perkTier - a.perkTier)[0] ?? null;
+}
+
+function getPaidBits(bits: readonly number[]) {
+	return bits.filter(bit => allPatronBits.includes(bit));
+}
+
+function getPerkTierFromPaidBits(bits: readonly number[]) {
+	const highestPaidTier = getHighestTierFromBits(getPaidBits(bits));
+	return highestPaidTier?.perkTier ?? 0;
 }
 
 function getCyrTierConfigs(): PatronTier[] {
@@ -309,8 +320,19 @@ export function parseStrToTier(str: string) {
 class PatreonTask {
 	public enabled = globalConfig.isProduction;
 
-	private async fetchRobochimpUsers() {
+	private async fetchSyncUsers(extraUserIDs: readonly string[] = []) {
+		const extraIDs = extraUserIDs.map(id => BigInt(id));
 		return roboChimpClient.user.findMany({
+			where: {
+				OR: [
+					{ bits: { hasSome: allPatronBits } },
+					{ perk_tier: { gt: 0 } },
+					{ patreon_id: { not: null } },
+					{ github_id: { not: null } },
+					{ user_group_id: { not: null } },
+					...(extraIDs.length > 0 ? [{ id: { in: extraIDs } }] : [])
+				]
+			},
 			select: {
 				id: true,
 				bits: true,
@@ -321,6 +343,22 @@ class PatreonTask {
 			},
 			orderBy: {
 				id: 'asc'
+			}
+		});
+	}
+
+	private async fetchEntitlementLookupUsers() {
+		return roboChimpClient.user.findMany({
+			where: {
+				OR: [{ patreon_id: { not: null } }, { github_id: { not: null } }]
+			},
+			select: {
+				id: true,
+				bits: true,
+				perk_tier: true,
+				user_group_id: true,
+				github_id: true,
+				patreon_id: true
 			}
 		});
 	}
@@ -405,7 +443,9 @@ class PatreonTask {
 						`Unable to resolve ${member.source} patron ${member.patreonID} to a Discord account.`
 					);
 					console.log(`Unable to resolve ${member.source} patron ${member.patreonID} to a Discord account.`);
-					console.log(`Skipping ${member.source} patron ${member.patreonID}.\n--------------------------------------\n\n`);
+					console.log(
+						`Skipping ${member.source} patron ${member.patreonID}.\n--------------------------------------\n\n`
+					);
 					continue;
 				}
 
@@ -413,7 +453,9 @@ class PatreonTask {
 				patreonIDsByUserID.set(discordID, member.patreonID);
 
 				if (!ensuredUserIDs.has(discordID)) {
-					console.log(`Ensuring user ${discordID} exists in database. ${member.patreonID ? `Patreon ID: ${member.patreonID}` : ''}`);
+					console.log(
+						`Ensuring user ${discordID} exists in database. ${member.patreonID ? `Patreon ID: ${member.patreonID}` : ''}`
+					);
 					await roboChimpClient.user.upsert({
 						where: { id: BigInt(discordID) },
 						update: member.patreonID ? { patreon_id: member.patreonID } : {},
@@ -475,27 +517,37 @@ class PatreonTask {
 			}
 		});
 
-		const mainUserID = groupedUsers[0]?.id;
-		if (!mainUserID) return;
+		const targetUserID = user.id;
+		const desiredUsers = groupedUsers.map(groupedUser => ({
+			...groupedUser,
+			nextBits:
+				groupedUser.id === targetUserID
+					? normalizeBits({
+							bits: groupedUser.bits,
+							paidBits: [tier.bit],
+							markHasEverBeenPatron: true
+						})
+					: groupedUser.bits
+		}));
+		const groupPerkTier = Math.max(
+			...desiredUsers.map(groupedUser => getPerkTierFromPaidBits(groupedUser.nextBits)),
+			0
+		);
 
 		await roboChimpClient.$transaction(
-			groupedUsers.map(groupedUser =>
+			desiredUsers.map(groupedUser =>
 				roboChimpClient.user.update({
 					where: { id: groupedUser.id },
 					data: {
-						bits: normalizeBits({
-							bits: groupedUser.bits,
-							paidBits: groupedUser.id === mainUserID ? [tier.bit] : [],
-							markHasEverBeenPatron: true
-						}),
-						perk_tier: tier.perkTier
+						bits: groupedUser.nextBits,
+						perk_tier: groupPerkTier
 					}
 				})
 			)
 		);
 
 		await onTierChange({
-			newTier: tier.perkTier,
+			newTier: groupPerkTier,
 			oldTier: Math.max(...groupedUsers.map(groupedUser => groupedUser.perk_tier ?? 0), 0),
 			discordIDs: groupIDs,
 			isFirstTimePatron: groupedUsers.every(groupedUser => !groupedUser.bits.includes(Bits.HasEverBeenPatron))
@@ -518,24 +570,37 @@ class PatreonTask {
 			}
 		});
 
-		await roboChimpClient.$transaction(
-			groupedUsers.map(groupedUser =>
-				roboChimpClient.user.update({
-					where: { id: groupedUser.id },
-					data: {
-						bits: normalizeBits({
+		const targetUserID = user.id;
+		const desiredUsers = groupedUsers.map(groupedUser => ({
+			...groupedUser,
+			nextBits:
+				groupedUser.id === targetUserID
+					? normalizeBits({
 							bits: groupedUser.bits,
 							paidBits: [],
 							markHasEverBeenPatron: groupedUser.bits.includes(Bits.HasEverBeenPatron)
-						}),
-						perk_tier: 0
+						})
+					: groupedUser.bits
+		}));
+		const groupPerkTier = Math.max(
+			...desiredUsers.map(groupedUser => getPerkTierFromPaidBits(groupedUser.nextBits)),
+			0
+		);
+
+		await roboChimpClient.$transaction(
+			desiredUsers.map(groupedUser =>
+				roboChimpClient.user.update({
+					where: { id: groupedUser.id },
+					data: {
+						bits: groupedUser.nextBits,
+						perk_tier: groupPerkTier
 					}
 				})
 			)
 		);
 
 		await onTierChange({
-			newTier: 0,
+			newTier: groupPerkTier,
 			oldTier: Math.max(...groupedUsers.map(groupedUser => groupedUser.perk_tier ?? 0), 0),
 			discordIDs: groupIDs,
 			isFirstTimePatron: false
@@ -549,18 +614,18 @@ class PatreonTask {
 		}
 
 		const messages: string[] = [];
-		let roboUsers = await this.fetchRobochimpUsers();
-		console.log('About to get patreon data for all robochimp users:');
-		console.log(JSON.stringify(roboUsers, null, 2));
-		const { entitlementsByUserID, patreonIDsByUserID } = await this.collectPaidEntitlements(roboUsers, messages);
+		const lookupUsers = await this.fetchEntitlementLookupUsers();
+		console.log('About to get patreon data using robochimp users with linked accounts:');
+		console.log(JSON.stringify(lookupUsers, null, 2));
+		const { entitlementsByUserID, patreonIDsByUserID } = await this.collectPaidEntitlements(lookupUsers, messages);
 
 		console.log(`Entitlements By User ID:`);
 		console.log(JSON.stringify(entitlementsByUserID));
 		console.log(`Patreon IDs By User ID:`);
 		console.log(JSON.stringify(patreonIDsByUserID));
 
-		// Fetch users after we've ensured all members are in the database.
-		roboUsers = await this.fetchRobochimpUsers();
+		const entitledDiscordIDs = [...entitlementsByUserID.keys(), ...patreonIDsByUserID.keys()];
+		const roboUsers = await this.fetchSyncUsers(entitledDiscordIDs);
 
 		const discordIDs = roboUsers.map(user => user.id.toString());
 		const [osbUsers, bsoUsers] = await Promise.all([
@@ -576,13 +641,44 @@ class PatreonTask {
 
 		const osbUsersById = new Map(osbUsers.map(user => [user.id, user]));
 		const bsoUsersById = new Map(bsoUsers.map(user => [user.id, user]));
-		const usersByGroup = new Map<string, RobochimpUserState[]>();
+		const desiredUsers = new Map<string, DesiredRobochimpUserState>();
 
 		for (const user of roboUsers) {
-			const key = getGroupKey(user);
-			const groupUsers = usersByGroup.get(key) ?? [];
+			const discordID = user.id.toString();
+			const entitlements = entitlementsByUserID.get(discordID) ?? [];
+			const paidBits = uniqueArr(entitlements.map(entitlement => entitlement.bit));
+			const nextBits = normalizeBits({
+				bits: user.bits,
+				paidBits,
+				markHasEverBeenPatron: paidBits.length > 0 || user.bits.includes(Bits.HasEverBeenPatron)
+			});
+			const nextPerkTier = Math.max(
+				getFreePerkTier({ groupUsers: [user], osbUsersById, bsoUsersById }),
+				...entitlements.map(tier => tier.perkTier),
+				0
+			);
+
+			desiredUsers.set(discordID, {
+				...user,
+				nextBits,
+				nextPatreonID: patreonIDsByUserID.get(discordID) ?? user.patreon_id,
+				nextPerkTier
+			});
+		}
+
+		const usersByGroup = new Map<string, DesiredRobochimpUserState[]>();
+		for (const user of desiredUsers.values()) {
+			if (!user.user_group_id) continue;
+			const groupUsers = usersByGroup.get(user.user_group_id) ?? [];
 			groupUsers.push(user);
-			usersByGroup.set(key, groupUsers);
+			usersByGroup.set(user.user_group_id, groupUsers);
+		}
+
+		for (const groupUsers of usersByGroup.values()) {
+			const groupPerkTier = Math.max(...groupUsers.map(user => user.nextPerkTier), 0);
+			for (const user of groupUsers) {
+				user.nextPerkTier = groupPerkTier;
+			}
 		}
 
 		const updates = [];
@@ -593,69 +689,56 @@ class PatreonTask {
 			isFirstTimePatron: boolean;
 		}> = [];
 
-		for (const [, groupUsers] of usersByGroup) {
-			groupUsers.sort((a, b) => Number(a.id - b.id));
-			const mainUser = groupUsers[0];
-			const groupDiscordIDs = groupUsers.map(groupUser => groupUser.id.toString());
-			const groupEntitlements = uniqueArr(
-				groupDiscordIDs
-					.flatMap(userID => entitlementsByUserID.get(userID) ?? [])
-					.map(entitlement => entitlement.bit)
-			)
-				.map(bit => paidTiers.find(tier => tier.bit === bit))
-				.filter(notEmpty);
+		for (const user of desiredUsers.values()) {
+			if (user.user_group_id) continue;
+			const oldTier = user.perk_tier ?? 0;
+			if (oldTier === user.nextPerkTier) continue;
+			tierChanges.push({
+				oldTier,
+				newTier: user.nextPerkTier,
+				discordIDs: [user.id.toString()],
+				isFirstTimePatron: !user.bits.includes(Bits.HasEverBeenPatron)
+			});
+		}
 
-			const targetPaidBits = groupEntitlements.map(tier => tier.bit);
-			const targetPerkTier = Math.max(
-				getFreePerkTier({ groupUsers, osbUsersById, bsoUsersById }),
-				...groupEntitlements.map(tier => tier.perkTier),
-				0
-			);
-			const oldPerkTier = Math.max(...groupUsers.map(groupUser => groupUser.perk_tier ?? 0), 0);
-			const isFirstTimePatron = groupUsers.every(groupUser => !groupUser.bits.includes(Bits.HasEverBeenPatron));
+		for (const groupUsers of usersByGroup.values()) {
+			const oldTier = Math.max(...groupUsers.map(user => user.perk_tier ?? 0), 0);
+			const newTier = Math.max(...groupUsers.map(user => user.nextPerkTier), 0);
+			if (oldTier === newTier) continue;
+			tierChanges.push({
+				oldTier,
+				newTier,
+				discordIDs: groupUsers.map(user => user.id.toString()),
+				isFirstTimePatron: groupUsers.every(user => !user.bits.includes(Bits.HasEverBeenPatron))
+			});
+		}
 
-			for (const groupUser of groupUsers) {
-				const paidBits = groupUser.id === mainUser.id ? targetPaidBits : [];
-				const nextBits = normalizeBits({
-					bits: groupUser.bits,
-					paidBits,
-					markHasEverBeenPatron: targetPaidBits.length > 0 || groupUser.bits.includes(Bits.HasEverBeenPatron)
-				});
-				const nextPatreonID = patreonIDsByUserID.get(groupUser.id.toString()) ?? groupUser.patreon_id;
+		for (const user of desiredUsers.values()) {
+			const discordID = user.id.toString();
+			const paidBits = getPaidBits(user.nextBits);
+			const highestPaidTier = getHighestTierFromBits(paidBits);
+			const oldPerkTier = user.perk_tier ?? 0;
 
-				if (
-					nextBits.join(',') === groupUser.bits.join(',') &&
-					targetPerkTier === (groupUser.perk_tier ?? 0) &&
-					nextPatreonID === groupUser.patreon_id
-				) {
-					continue;
-				}
-
+			if (
+				user.nextBits.join(',') !== user.bits.join(',') ||
+				user.nextPerkTier !== oldPerkTier ||
+				user.nextPatreonID !== user.patreon_id
+			) {
 				updates.push(
 					roboChimpClient.user.update({
-						where: { id: groupUser.id },
+						where: { id: user.id },
 						data: {
-							bits: nextBits,
-							perk_tier: targetPerkTier,
-							patreon_id: nextPatreonID
+							bits: user.nextBits,
+							perk_tier: user.nextPerkTier,
+							patreon_id: user.nextPatreonID
 						}
 					})
 				);
 			}
 
-			if (oldPerkTier !== targetPerkTier) {
-				tierChanges.push({
-					oldTier: oldPerkTier,
-					newTier: targetPerkTier,
-					discordIDs: groupDiscordIDs,
-					isFirstTimePatron
-				});
-			}
-
-			if (targetPaidBits.length > 0 || oldPerkTier !== targetPerkTier) {
-				const highestPaidTier = getHighestTierFromBits(targetPaidBits);
+			if (paidBits.length > 0 || oldPerkTier !== user.nextPerkTier) {
 				messages.push(
-					`${mainUser.id}: ${highestPaidTier ? `${highestPaidTier.source} tier ${highestPaidTier.number}` : 'no paid tier'}, perk_tier ${targetPerkTier}`
+					`${discordID}: ${highestPaidTier ? `${highestPaidTier.source} tier ${highestPaidTier.number}` : 'no paid tier'}, perk_tier ${user.nextPerkTier}`
 				);
 			}
 		}
