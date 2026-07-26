@@ -1,4 +1,5 @@
-import type { ItemBank } from 'oldschooljs';
+import { cleanString, replaceWhitespaceAndUppercase } from '@oldschoolgg/toolkit';
+import { type ItemBank, Items } from 'oldschooljs';
 
 import { CUSTOM_PRICE_CACHE } from '@/lib/cache.js';
 import { syncCollectionLogSlotTable } from '@/lib/collection-log/databaseCl.js';
@@ -25,6 +26,16 @@ export async function syncCustomPrices() {
 	const clientData = await ClientSettings.fetch({ custom_prices: true });
 	for (const [key, value] of Object.entries(clientData.custom_prices as ItemBank)) {
 		CUSTOM_PRICE_CACHE.set(Number(key), Number(value));
+		try {
+			const item = Items.getOrThrow(Number(key));
+			item.price = Number(value);
+			Items.set(Number(key), item);
+			Items.itemNameMap.set(cleanString(item.name), item.id);
+			Items.itemNameMap.set(replaceWhitespaceAndUppercase(item.name), item.id);
+			Items.itemNameMap.set(item.name, item.id);
+		} catch (err) {
+			Logging.logError(err as Error, { msg: `Failed to get item for price for ${key}` });
+		}
 	}
 }
 
