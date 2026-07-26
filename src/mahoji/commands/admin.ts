@@ -874,22 +874,8 @@ export const adminCommand = defineCommand({
 ${META_CONSTANTS.RENDERED_STR}`
 				})
 				.catch(noOp);
-			await gracefulExit(0);
+			gracefulExit(0);
 			return 'Turning off...';
-		}
-
-		/**
-		 *
-		 * Admin Only Commands
-		 *
-		 */
-		if (!isAdmin) {
-			return rng.pick(gifs);
-		}
-
-		if (options.sync_commands) {
-			await bulkUpdateCommands();
-			return 'Done.';
 		}
 		if (options.system) {
 			const { shard_status: shardStatus, shard_restart: shardRestart } = options.system;
@@ -920,6 +906,20 @@ ${META_CONSTANTS.RENDERED_STR}`
 			}
 
 			return `Invalid System Command`;
+		}
+
+		/**
+		 *
+		 * Admin Only Commands
+		 *
+		 */
+		if (!isAdmin) {
+			return rng.pick(gifs);
+		}
+
+		if (options.sync_commands) {
+			await bulkUpdateCommands();
+			return 'Done.';
 		}
 
 		if (options.view) {
