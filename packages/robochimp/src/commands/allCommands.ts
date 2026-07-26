@@ -1,5 +1,6 @@
 import { blacklistCommand } from '@/commands/blacklist.js';
 import { linkCommand } from '@/commands/link.js';
+import { perksCommand } from '@/commands/perksCommand.js';
 import { pingableRolesCommand } from '@/commands/pingableroles.js';
 import { reactCommand } from '@/commands/react.js';
 import { tagCommand } from '@/commands/tag.js';
@@ -11,6 +12,7 @@ export const allCommands: AnyCommand[] = [
 	pingableRolesCommand,
 	reactCommand,
 	tagCommand,
+	perksCommand,
 	toolsCommand,
 	triviaCommand,
 	linkCommand

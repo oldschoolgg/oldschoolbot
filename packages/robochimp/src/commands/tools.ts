@@ -5,6 +5,13 @@ import { globalConfig } from '@/constants.js';
 import { type BotService, botServiceChoices, getBotShutdown, setBotShutdown } from '@/lib/botControl.js';
 import { detectMischief } from '@/lib/mischiefDetection.js';
 import { patreonTask } from '@/lib/patreon.js';
+import {
+	fetchPremiumTimeBalance,
+	formatPremiumTimeGrant,
+	grantPremiumTime,
+	validatePremiumTimeGrant,
+	validPremiumTimeTiers
+} from '@/lib/premiumTime.js';
 import type { RUser } from '@/structures/RUser.js';
 import { serviceManager } from '@/structures/ServiceManager.js';
 import { CHANNELS, tiers } from '@/util.js';
@@ -19,18 +26,9 @@ function availableTiersString() {
 }
 
 async function addPatreonTime(timeMs: number, tier: number, userToGive: RUser, interaction: MInteraction) {
-	if (![1, 2, 3, 4, 5, 6].includes(tier)) return 'Invalid input.';
-	if (timeMs < Time.Second || timeMs > Time.Year * 3) return 'Invalid input.';
+	if (!validatePremiumTimeGrant(timeMs, tier)) return 'Invalid input.';
 
-	const currentUser = await roboChimpClient.user.findUniqueOrThrow({
-		where: {
-			id: userToGive.id
-		},
-		select: {
-			premium_balance_tier: true,
-			premium_balance_expiry_date: true
-		}
-	});
+	const currentUser = await fetchPremiumTimeBalance(userToGive.id);
 	const currentBalanceTier = currentUser.premium_balance_tier;
 
 	if (currentBalanceTier !== null && currentBalanceTier !== tier) {
@@ -42,18 +40,10 @@ async function addPatreonTime(timeMs: number, tier: number, userToGive: RUser, i
 		`Are you sure you want to add ${formatDuration(timeMs)} of Tier ${tier} patron to ${userToGive.mention}?`
 	);
 
-	const currentBalanceTime =
-		currentUser.premium_balance_expiry_date === null ? null : Number(currentUser.premium_balance_expiry_date);
-	const newBalanceExpiryTime =
-		currentBalanceTime !== null && tier === currentBalanceTier ? currentBalanceTime + timeMs : Date.now() + timeMs;
+	const grant = await grantPremiumTime({ userID: userToGive.id, timeMs, tier });
 
-	await userToGive.update({
-		premium_balance_tier: tier,
-		premium_balance_expiry_date: newBalanceExpiryTime
-	});
-
-	return `Gave ${formatDuration(timeMs)} of Tier ${tier} patron to ${userToGive.mention}. They have ${formatDuration(
-		newBalanceExpiryTime - Date.now()
+	return `Gave ${formatPremiumTimeGrant(grant)} patron to ${userToGive.mention}. They have ${formatDuration(
+		grant.remainingTime
 	)} remaining.`;
 }
 
@@ -153,7 +143,7 @@ export const toolsCommand = defineCommand({
 							name: 'tier',
 							description: 'The tier to give.',
 							required: true,
-							choices: [1, 2, 3, 4, 5, 6].map(tier => ({ name: tier.toString(), value: tier }))
+							choices: validPremiumTimeTiers.map(tier => ({ name: tier.toString(), value: tier }))
 						},
 						{
 							type: 'String',
