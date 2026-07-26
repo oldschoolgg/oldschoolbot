@@ -177,7 +177,6 @@ After becoming an ironman:
 	await prisma.playerOwnedHouse.deleteMany({ where: { user_id: user.id } });
 	await prisma.minigame.deleteMany({ where: { user_id: user.id } });
 	await prisma.xPGain.deleteMany({ where: { user_id: BigInt(user.id) } });
-	await prisma.newUser.deleteMany({ where: { id: user.id } });
 	await prisma.activity.deleteMany({ where: { user_id: BigInt(user.id) } });
 	await prisma.stashUnit.deleteMany({ where: { user_id: BigInt(user.id) } });
 	await prisma.userEvent.deleteMany({ where: { user_id: user.id } });
