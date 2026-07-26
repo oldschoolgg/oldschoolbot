@@ -64,12 +64,7 @@ export const skillOption = defineOption({
 	name: 'skill',
 	description: 'The skill you want to select.',
 	required: false,
-	autocomplete: async ({ value }: StringAutoComplete) => {
-		return SkillsArray.filter(i => (!value ? true : stringSearch(i, value))).map(i => ({
-			name: toTitleCase(i),
-			value: i
-		}));
-	}
+	choices: SkillsArray.map(i => ({ name: toTitleCase(i), value: i }))
 });
 
 export const gearSetupOption = defineOption({
