@@ -1,97 +1,12 @@
 import { createHmac } from 'node:crypto';
-import { notEmpty, PerkTier, Time, uniqueArr } from '@oldschoolgg/toolkit';
+import { notEmpty, PerkTier, uniqueArr } from '@oldschoolgg/toolkit';
 
-import { RUser } from '@/structures/RUser.js';
+import type { RUser } from '@/structures/RUser.js';
 import { globalConfig } from '../constants.js';
-import { allPatronBits, Bits, type PatronTier, tiers } from '../util.js';
+import { Bits, cyrTiers, magnaTiers, type PaidTierSource, type PatronTier, paidTiers } from '../util.js';
 import type { OSBPrismaClient } from './prisma.js';
 
-function updateBitfield({ bits, patronBit }: { bits: number[]; patronBit: number }) {
-	const newBitfield = [...bits.filter(bit => !allPatronBits.includes(bit)), Bits.HasEverBeenPatron, patronBit];
-	return uniqueArr(newBitfield);
-}
-
-export function parseStrToTier(str: string) {
-	switch (str) {
-		case '$3 a month':
-			return PerkTier.Two;
-		case '$6 a month':
-			return PerkTier.Three;
-		case '$14 a month':
-			return PerkTier.Four;
-		case '$23 a month':
-			return PerkTier.Five;
-		case '$46 a month':
-			return PerkTier.Six;
-		case '$99 a month':
-			return PerkTier.Seven;
-		default:
-			return null;
-	}
-}
-
-interface Sponsor {
-	githubID: string;
-	githubName: string;
-	tier: PerkTier;
-	createdAt: Date;
-	private: boolean;
-}
-
-async function fetchSponsors() {
-	const { graphql } = await import('@octokit/graphql');
-	const graphqlWithAuth = graphql.defaults({
-		headers: {
-			authorization: `token ${globalConfig.githubToken}`
-		}
-	});
-
-	const res: any = await graphqlWithAuth(
-		`
-		{
-        viewer {
-          sponsorshipsAsMaintainer(includePrivate: true, first: 100) {
-            totalCount
-            pageInfo {
-              startCursor
-              hasPreviousPage
-              hasNextPage
-              endCursor
-            }
-            nodes {
-              id
-              privacyLevel
-              createdAt
-              tier {
-                name
-			  }
-              sponsorEntity {
-                ... on User {
-                  databaseId
-                  login
-                }
-              }
-            }
-          }
-          id
-        }
-      }
-
-
-      `
-	);
-	const data: Sponsor[] = res.viewer.sponsorshipsAsMaintainer.nodes
-		.map((node: any) => ({
-			githubID: node.sponsorEntity.databaseId,
-			githubName: node.sponsorEntity.login as string,
-			tier: parseStrToTier(node.tier.name),
-			createdAt: new Date(node.createdAt),
-			private: node.privacyLevel !== 'PUBLIC'
-		}))
-		.sort((a: any, b: any) => b.createdAt - a.createdAt);
-
-	return data;
-}
+const ROOT_FREE_TIER_BITS = new Set([12, 24]);
 
 const BadgesEnum = {
 	Developer: 0,
@@ -113,6 +28,170 @@ const BadgesEnum = {
 	Hacktoberfest: 16
 } as const;
 
+type RobochimpUserState = {
+	id: bigint;
+	bits: number[];
+	perk_tier: number;
+	user_group_id: string | null;
+	github_id: number | null;
+	patreon_id: string | null;
+};
+
+type ExternalUserState = {
+	id: string;
+	bitfield: number[];
+};
+
+type PatreonMember = {
+	source: PaidTierSource;
+	patreonID: string;
+	discordID?: string;
+	entitledTier: PatronTier | null;
+	patronStatus: string | null;
+};
+
+type Sponsor = {
+	githubID: string;
+	tier: PerkTier | null;
+};
+
+type CampaignConfig = {
+	source: PaidTierSource;
+	token: string;
+	campaignID: string;
+	webhookSecret?: string;
+	tiers: PatronTier[];
+};
+
+function removePaidBits(bits: readonly number[]) {
+	return bits.filter(bit => !paidTiers.some(tier => tier.bit === bit));
+}
+
+function normalizeBits({
+	bits,
+	paidBits,
+	markHasEverBeenPatron
+}: {
+	bits: readonly number[];
+	paidBits: readonly number[];
+	markHasEverBeenPatron: boolean;
+}) {
+	const nextBits = [...removePaidBits(bits)];
+	if (markHasEverBeenPatron && !nextBits.includes(Bits.HasEverBeenPatron)) {
+		nextBits.push(Bits.HasEverBeenPatron);
+	}
+	nextBits.push(...paidBits);
+	return uniqueArr(nextBits);
+}
+
+function getGroupKey(user: Pick<RobochimpUserState, 'id' | 'user_group_id'>) {
+	return user.user_group_id ?? `solo:${user.id.toString()}`;
+}
+
+function getHighestTierFromBits(bits: readonly number[]) {
+	return paidTiers.filter(tier => bits.includes(tier.bit)).sort((a, b) => b.perkTier - a.perkTier)[0] ?? null;
+}
+
+function getCyrTierConfigs(): PatronTier[] {
+	const tierIDMap = new Map<number, string | undefined>([
+		[0, globalConfig.cyrPatreonTier0ID],
+		[1, globalConfig.cyrPatreonTier1ID],
+		[2, globalConfig.cyrPatreonTier2ID],
+		[3, globalConfig.cyrPatreonTier3ID],
+		[4, globalConfig.cyrPatreonTier4ID],
+		[5, globalConfig.cyrPatreonTier5ID],
+		[6, globalConfig.cyrPatreonTier6ID],
+		[7, globalConfig.cyrPatreonTier7ID]
+	]);
+
+	return cyrTiers
+		.map(tier => {
+			const id = tierIDMap.get(tier.number);
+			return id ? { ...tier, id } : null;
+		})
+		.filter(notEmpty);
+}
+
+function getPatreonCampaignConfigs(): CampaignConfig[] {
+	const configs: CampaignConfig[] = [
+		{
+			source: 'magna',
+			token: globalConfig.patreonToken,
+			campaignID: globalConfig.patreonCampaignID,
+			webhookSecret: globalConfig.patreonWebhookSecret,
+			tiers: magnaTiers
+		}
+	];
+
+	if (globalConfig.cyrPatreonToken && globalConfig.cyrPatreonCampaignID) {
+		configs.push({
+			source: 'cyr',
+			token: globalConfig.cyrPatreonToken,
+			campaignID: globalConfig.cyrPatreonCampaignID,
+			webhookSecret: globalConfig.cyrPatreonWebhookSecret,
+			tiers: getCyrTierConfigs()
+		});
+	}
+
+	return configs;
+}
+
+function buildPatreonApiURL(campaignID: string) {
+	const url = new URL(`https://patreon.com/api/oauth2/v2/campaigns/${campaignID}/members`);
+	url.search = new URLSearchParams([
+		['include', ['user', 'currently_entitled_tiers'].join(',')],
+		[
+			'fields[member]',
+			[
+				'pledge_relationship_start',
+				'last_charge_date',
+				'last_charge_status',
+				'lifetime_support_cents',
+				'patron_status'
+			].join(',')
+		],
+		['fields[user]', ['social_connections'].join(',')],
+		['page[count]', '1000']
+	]).toString();
+	return url.toString();
+}
+
+async function fetchSponsors() {
+	const { graphql } = await import('@octokit/graphql');
+	const graphqlWithAuth = graphql.defaults({
+		headers: {
+			authorization: `token ${globalConfig.githubToken}`
+		}
+	});
+
+	const res: any = await graphqlWithAuth(
+		`
+		{
+			viewer {
+				sponsorshipsAsMaintainer(includePrivate: true, first: 100) {
+					nodes {
+						privacyLevel
+						tier {
+							name
+						}
+						sponsorEntity {
+							... on User {
+								databaseId
+							}
+						}
+					}
+				}
+			}
+		}
+		`
+	);
+
+	return res.viewer.sponsorshipsAsMaintainer.nodes.map((node: any) => ({
+		githubID: String(node.sponsorEntity.databaseId),
+		tier: parseStrToTier(node.tier.name)
+	})) as Sponsor[];
+}
+
 async function onTierChange({
 	newTier,
 	discordIDs
@@ -128,6 +207,10 @@ async function onTierChange({
 				id: {
 					in: discordIDs
 				}
+			},
+			select: {
+				id: true,
+				badges: true
 			}
 		});
 
@@ -162,83 +245,236 @@ async function onTierChange({
 			});
 		}
 	}
-	const cacheUsersUpdate = discordIDs.map(u => globalClient.fetchRUser(u));
-	await Promise.all(cacheUsersUpdate);
+
+	await Promise.all(discordIDs.map(u => globalClient.fetchRUser(u)));
 }
 
-interface Patron {
-	patreonID: string;
-	discordID?: string;
-	entitledTier: PatronTier;
-	lastChargeDate: string;
-	lastChargeStatus: string;
-	lifeTimeSupportCents: number;
-	patronStatus: string;
-	pledgeRelationshipStart: string;
+function getFreePerkTier({
+	groupUsers,
+	osbUsersById,
+	bsoUsersById
+}: {
+	groupUsers: RobochimpUserState[];
+	osbUsersById: Map<string, ExternalUserState>;
+	bsoUsersById: Map<string, ExternalUserState>;
+}) {
+	let freeTier = 0;
+
+	if (
+		groupUsers.some(user =>
+			[Bits.Admin, Bits.Moderator, Bits.WikiContributor, Bits.Contributor].some(bit => user.bits.includes(bit))
+		)
+	) {
+		freeTier = Math.max(freeTier, PerkTier.Four);
+	} else if (groupUsers.some(user => user.bits.includes(Bits.Trusted))) {
+		freeTier = Math.max(freeTier, PerkTier.Three);
+	}
+
+	if (
+		groupUsers.some(user => {
+			const id = user.id.toString();
+			return [osbUsersById.get(id), bsoUsersById.get(id)]
+				.filter(notEmpty)
+				.some(externalUser => externalUser.bitfield.some(bit => ROOT_FREE_TIER_BITS.has(bit)));
+		})
+	) {
+		freeTier = Math.max(freeTier, PerkTier.Two);
+	}
+
+	return freeTier;
 }
 
-const patreonApiURL = new URL(`https://patreon.com/api/oauth2/v2/campaigns/${globalConfig.patreonCampaignID}/members`);
-
-patreonApiURL.search = new URLSearchParams([
-	['include', ['user', 'currently_entitled_tiers'].join(',')],
-	[
-		'fields[member]',
-		[
-			'pledge_relationship_start',
-			'last_charge_date',
-			'last_charge_status',
-			'lifetime_support_cents',
-			'patron_status'
-		].join(',')
-	],
-	['fields[user]', ['social_connections'].join(',')],
-	['page[count]', '1000']
-]).toString();
+export function parseStrToTier(str: string) {
+	switch (str) {
+		case '$3 a month':
+			return PerkTier.Two;
+		case '$6 a month':
+			return PerkTier.Three;
+		case '$14 a month':
+			return PerkTier.Four;
+		case '$23 a month':
+			return PerkTier.Five;
+		case '$46 a month':
+			return PerkTier.Six;
+		case '$99 a month':
+			return PerkTier.Seven;
+		default:
+			return null;
+	}
+}
 
 class PatreonTask {
 	public enabled = globalConfig.isProduction;
 
-	async validatePerks(userID: bigint, shouldHave: PatronTier, allowHigher: boolean = false): Promise<string | null> {
-		const user = await globalClient.fetchRUser(userID);
-		if (!user) return null;
+	private async fetchRobochimpUsers() {
+		return roboChimpClient.user.findMany({
+			select: {
+				id: true,
+				bits: true,
+				perk_tier: true,
+				user_group_id: true,
+				github_id: true,
+				patreon_id: true
+			},
+			orderBy: {
+				id: 'asc'
+			}
+		});
+	}
 
-		const shouldChangeTier = allowHigher
-			? user.perkTierRaw < shouldHave.perkTier
-			: user.perkTierRaw !== shouldHave.perkTier;
-		if (shouldChangeTier) {
-			await this.changeTier(user, shouldHave);
-			return `Failed validation, wrong tier, changing to ${shouldHave} for ${userID}`;
+	private async fetchPatronsForCampaign(config: CampaignConfig, url?: string): Promise<PatreonMember[]> {
+		const members: PatreonMember[] = [];
+		const result: any = await fetch(url ?? buildPatreonApiURL(config.campaignID), {
+			headers: { Authorization: `Bearer ${config.token}` }
+		}).then(res => res.json());
+
+		if (result.errors) {
+			console.error(result.errors);
+			throw new Error(`Failed to fetch ${config.source} patrons.`);
 		}
-		return null;
+
+		const tierMap = new Map(config.tiers.filter(tier => tier.id).map(tier => [tier.id!, tier]));
+		for (const user of result.data) {
+			const socialConnections = result.included.find((i: any) => i.id === user.relationships.user.data.id)
+				?.attributes?.social_connections;
+			const entitledTier =
+				user.relationships.currently_entitled_tiers.data
+					.map((i: any) => tierMap.get(i.id))
+					.filter(notEmpty)
+					.sort((a: PatronTier, b: PatronTier) => b.perkTier - a.perkTier)[0] ?? null;
+
+			members.push({
+				source: config.source,
+				patreonID: user.relationships.user.data.id,
+				discordID: socialConnections?.discord?.user_id,
+				entitledTier,
+				patronStatus: user.attributes.patron_status
+			});
+		}
+
+		if (result.links?.next) {
+			members.push(...(await this.fetchPatronsForCampaign(config, result.links.next)));
+		}
+
+		return members;
+	}
+
+	private async collectPaidEntitlements(
+		users: RobochimpUserState[],
+		messages: string[]
+	): Promise<{ entitlementsByUserID: Map<string, PatronTier[]>; patreonIDsByUserID: Map<string, string> }> {
+		const entitlementsByUserID = new Map<string, PatronTier[]>();
+		const patreonIDsByUserID = new Map<string, string>();
+		const usersByPatreonID = new Map(users.filter(user => user.patreon_id).map(user => [user.patreon_id!, user]));
+		const usersByGithubID = new Map(
+			users.filter(user => user.github_id !== null).map(user => [String(user.github_id), user])
+		);
+		const ensuredUserIDs = new Set<string>();
+
+		const addEntitlement = (userID: string, tier: PatronTier) => {
+			const existing = entitlementsByUserID.get(userID) ?? [];
+			if (!existing.some(existingTier => existingTier.bit === tier.bit)) {
+				existing.push(tier);
+			}
+			entitlementsByUserID.set(userID, existing);
+		};
+
+		for (const campaign of getPatreonCampaignConfigs()) {
+			for (const member of await this.fetchPatronsForCampaign(campaign)) {
+				if (member.patronStatus !== 'active_patron' || !member.entitledTier) {
+					continue;
+				}
+
+				let discordID = member.discordID;
+				if (!discordID) {
+					discordID = usersByPatreonID.get(member.patreonID)?.id.toString();
+				}
+				if (!discordID) {
+					messages.push(
+						`Unable to resolve ${member.source} patron ${member.patreonID} to a Discord account.`
+					);
+					continue;
+				}
+
+				addEntitlement(discordID, member.entitledTier);
+				patreonIDsByUserID.set(discordID, member.patreonID);
+
+				if (!ensuredUserIDs.has(discordID)) {
+					await roboChimpClient.user.upsert({
+						where: { id: BigInt(discordID) },
+						update: member.patreonID ? { patreon_id: member.patreonID } : {},
+						create: {
+							id: BigInt(discordID),
+							patreon_id: member.patreonID
+						}
+					});
+					ensuredUserIDs.add(discordID);
+				}
+			}
+		}
+
+		for (const sponsor of await fetchSponsors()) {
+			if (!sponsor.tier) continue;
+			const user = usersByGithubID.get(sponsor.githubID);
+			if (!user) continue;
+			const tier = magnaTiers.find(candidate => candidate.perkTier === sponsor.tier);
+			if (!tier) continue;
+			addEntitlement(user.id.toString(), tier);
+		}
+
+		return { entitlementsByUserID, patreonIDsByUserID };
+	}
+
+	async fetchPatrons() {
+		return (
+			await Promise.all(getPatreonCampaignConfigs().map(config => this.fetchPatronsForCampaign(config)))
+		).flat();
+	}
+
+	async syncGithub() {
+		return this.run();
 	}
 
 	async changeTier(user: RUser, shouldHave: PatronTier | PerkTier | number) {
-		const tier = typeof shouldHave === 'number' ? tiers.find(t => t.perkTier === shouldHave) : shouldHave;
+		const tier =
+			typeof shouldHave === 'number'
+				? paidTiers.find(candidate => candidate.perkTier === shouldHave && candidate.source === 'magna')
+				: shouldHave;
 		if (!tier) {
 			throw new Error(`Invalid tier: ${shouldHave}`);
 		}
-		const userGroup = await user.findGroup();
 
+		const groupIDs = await user.findGroup();
 		const groupedUsers = await roboChimpClient.user.findMany({
 			where: {
 				id: {
-					in: userGroup.map(id => BigInt(id))
+					in: groupIDs.map(id => BigInt(id))
 				}
+			},
+			select: {
+				id: true,
+				bits: true,
+				perk_tier: true
+			},
+			orderBy: {
+				id: 'asc'
 			}
 		});
 
+		const mainUserID = groupedUsers[0]?.id;
+		if (!mainUserID) return;
+
 		await roboChimpClient.$transaction(
-			groupedUsers.map(u =>
+			groupedUsers.map(groupedUser =>
 				roboChimpClient.user.update({
-					where: {
-						id: u.id
-					},
+					where: { id: groupedUser.id },
 					data: {
-						bits: updateBitfield({ bits: u.bits, patronBit: tier.bit }),
+						bits: normalizeBits({
+							bits: groupedUser.bits,
+							paidBits: groupedUser.id === mainUserID ? [tier.bit] : [],
+							markHasEverBeenPatron: true
+						}),
 						perk_tier: tier.perkTier
-					},
-					select: {
-						bits: true
 					}
 				})
 			)
@@ -246,40 +482,39 @@ class PatreonTask {
 
 		await onTierChange({
 			newTier: tier.perkTier,
-			oldTier: user.perkTierRaw,
-			discordIDs: userGroup,
-			isFirstTimePatron: groupedUsers.every(u => !u.bits.includes(Bits.HasEverBeenPatron))
+			oldTier: Math.max(...groupedUsers.map(groupedUser => groupedUser.perk_tier ?? 0), 0),
+			discordIDs: groupIDs,
+			isFirstTimePatron: groupedUsers.every(groupedUser => !groupedUser.bits.includes(Bits.HasEverBeenPatron))
 		});
 	}
 
-	async removePerks(user: RUser, _reason: string) {
-		console.log(`Removing perks from ${user.id} because ${_reason}`);
-		const userGroup = await user.findGroup();
-
+	async removePerks(user: RUser, reason: string) {
+		console.log(`Removing perks from ${user.id} because ${reason}`);
+		const groupIDs = await user.findGroup();
 		const groupedUsers = await roboChimpClient.user.findMany({
 			where: {
 				id: {
-					in: userGroup.map(id => BigInt(id))
+					in: groupIDs.map(id => BigInt(id))
 				}
+			},
+			select: {
+				id: true,
+				bits: true,
+				perk_tier: true
 			}
 		});
 
-		// Remove patron bits from all grouped users
 		await roboChimpClient.$transaction(
-			groupedUsers.map(u =>
+			groupedUsers.map(groupedUser =>
 				roboChimpClient.user.update({
-					where: {
-						id: BigInt(u.id)
-					},
+					where: { id: groupedUser.id },
 					data: {
-						bits: uniqueArr([
-							...u.bits.filter(bit => !allPatronBits.includes(bit)),
-							Bits.HasEverBeenPatron
-						]),
+						bits: normalizeBits({
+							bits: groupedUser.bits,
+							paidBits: [],
+							markHasEverBeenPatron: groupedUser.bits.includes(Bits.HasEverBeenPatron)
+						}),
 						perk_tier: 0
-					},
-					select: {
-						id: true
 					}
 				})
 			)
@@ -287,123 +522,10 @@ class PatreonTask {
 
 		await onTierChange({
 			newTier: 0,
-			oldTier: user.perkTierRaw,
-			discordIDs: userGroup,
+			oldTier: Math.max(...groupedUsers.map(groupedUser => groupedUser.perk_tier ?? 0), 0),
+			discordIDs: groupIDs,
 			isFirstTimePatron: false
 		});
-	}
-
-	async syncGithub() {
-		if (!globalConfig.isProduction) {
-			console.log('Skipping patreon task run because not production');
-			return;
-		}
-		const messages = [];
-		const sponsors = await fetchSponsors();
-		for (const sponsor of sponsors) {
-			// TODO: Again this might be responsible for perks not being removed:
-			if (!sponsor.tier) continue;
-			const userWithThisGithubID = await roboChimpClient.user.findFirst({
-				where: { github_id: Number(sponsor.githubID) }
-			});
-			if (!userWithThisGithubID) continue;
-			const rUser = new RUser(userWithThisGithubID);
-			if (rUser.perkTierRaw < PerkTier.Two) continue;
-			const freeT3 = [Bits.Moderator, Bits.Admin, Bits.WikiContributor].some(bit => rUser.bits.includes(bit));
-			if (freeT3 && rUser.perkTierRaw <= PerkTier.Four) continue;
-			const res = await this.validatePerks(
-				userWithThisGithubID.id,
-				tiers.find(t => t.perkTier === sponsor.tier)!
-			);
-			if (res) {
-				messages.push(res);
-			}
-		}
-		return messages;
-	}
-
-	async checkHasEverBeenPatron() {
-		const patrons = await roboChimpClient.user.findMany({
-			where: {
-				OR: [
-					{
-						perk_tier: {
-							gt: 0
-						}
-					},
-					{
-						github_id: {
-							not: null
-						}
-					},
-					{
-						patreon_id: {
-							not: null
-						}
-					}
-				],
-				NOT: [
-					{
-						bits: {
-							has: Bits.HasEverBeenPatron
-						}
-					}
-				]
-			},
-			select: {
-				id: true
-			}
-		});
-		await roboChimpClient.user.updateMany({
-			where: {
-				id: {
-					in: patrons.map(p => p.id)
-				}
-			},
-			data: {
-				bits: {
-					push: Bits.HasEverBeenPatron
-				}
-			}
-		});
-	}
-
-	/**
-	 * Give T3 to mods/contributors and their alts.
-	 */
-	async updateFreePerks() {
-		const freeTierThree = await roboChimpClient.user.findMany({
-			where: {
-				OR: [Bits.Admin, Bits.Moderator, Bits.WikiContributor, Bits.Contributor].map(bit => ({
-					bits: { has: bit }
-				}))
-			},
-			select: {
-				id: true,
-				user_group_id: true
-			}
-		});
-
-		const allUsers = await roboChimpClient.user.findMany({
-			where: {
-				OR: [
-					...freeTierThree
-						.map(u => u.user_group_id)
-						.filter(notEmpty)
-						.map(u => ({ user_group_id: u })),
-					{
-						id: {
-							in: freeTierThree.map(u => u.id)
-						}
-					}
-				]
-			},
-			select: {
-				id: true
-			}
-		});
-
-		return Promise.all(allUsers.map(u => this.validatePerks(u.id, tiers.find(t => t.number === 3)!, true)));
 	}
 
 	async run() {
@@ -411,142 +533,119 @@ class PatreonTask {
 			console.log('Skipping patreon task run because not production');
 			return;
 		}
-		// Reset all users' perk tier to 0 if their group has inconsistent perk tiers.
-		await roboChimpClient.$queryRawUnsafe(`UPDATE "user"
-SET perk_tier = 0
-WHERE user_group_id IN (
-SELECT u1.user_group_id
-FROM "user" u1
-JOIN "user" u2 ON u1.user_group_id = u2.user_group_id
-WHERE u1.perk_tier <> u2.perk_tier
-AND u1.id <> u2.id
-);`);
-		await this.checkHasEverBeenPatron();
 
-		const fetchedPatrons = await this.fetchPatrons();
-		const result = [];
+		const messages: string[] = [];
+		let roboUsers = await this.fetchRobochimpUsers();
+		const { entitlementsByUserID, patreonIDsByUserID } = await this.collectPaidEntitlements(roboUsers, messages);
+		roboUsers = await this.fetchRobochimpUsers();
 
-		for (const patron of fetchedPatrons) {
-			if (!patron.discordID) {
-				const backupUser = await roboChimpClient.user.findFirst({
-					where: {
-						patreon_id: patron.patreonID
-					}
+		const discordIDs = roboUsers.map(user => user.id.toString());
+		const [osbUsers, bsoUsers] = await Promise.all([
+			osbClient.user.findMany({
+				where: { id: { in: discordIDs } },
+				select: { id: true, bitfield: true }
+			}),
+			bsoClient.user.findMany({
+				where: { id: { in: discordIDs } },
+				select: { id: true, bitfield: true }
+			})
+		]);
+
+		const osbUsersById = new Map(osbUsers.map(user => [user.id, user]));
+		const bsoUsersById = new Map(bsoUsers.map(user => [user.id, user]));
+		const usersByGroup = new Map<string, RobochimpUserState[]>();
+
+		for (const user of roboUsers) {
+			const key = getGroupKey(user);
+			const groupUsers = usersByGroup.get(key) ?? [];
+			groupUsers.push(user);
+			usersByGroup.set(key, groupUsers);
+		}
+
+		const updates = [];
+		const tierChanges: Array<{
+			oldTier: number;
+			newTier: number;
+			discordIDs: string[];
+			isFirstTimePatron: boolean;
+		}> = [];
+
+		for (const [, groupUsers] of usersByGroup) {
+			groupUsers.sort((a, b) => Number(a.id - b.id));
+			const mainUser = groupUsers[0];
+			const groupDiscordIDs = groupUsers.map(groupUser => groupUser.id.toString());
+			const groupEntitlements = uniqueArr(
+				groupDiscordIDs
+					.flatMap(userID => entitlementsByUserID.get(userID) ?? [])
+					.map(entitlement => entitlement.bit)
+			)
+				.map(bit => paidTiers.find(tier => tier.bit === bit))
+				.filter(notEmpty);
+
+			const targetPaidBits = groupEntitlements.map(tier => tier.bit);
+			const targetPerkTier = Math.max(
+				getFreePerkTier({ groupUsers, osbUsersById, bsoUsersById }),
+				...groupEntitlements.map(tier => tier.perkTier),
+				0
+			);
+			const oldPerkTier = Math.max(...groupUsers.map(groupUser => groupUser.perk_tier ?? 0), 0);
+			const isFirstTimePatron = groupUsers.every(groupUser => !groupUser.bits.includes(Bits.HasEverBeenPatron));
+
+			for (const groupUser of groupUsers) {
+				const paidBits = groupUser.id === mainUser.id ? targetPaidBits : [];
+				const nextBits = normalizeBits({
+					bits: groupUser.bits,
+					paidBits,
+					markHasEverBeenPatron: targetPaidBits.length > 0 || groupUser.bits.includes(Bits.HasEverBeenPatron)
 				});
-				if (backupUser) {
-					result.push(
-						`Found a backup user for ${patron.patreonID}, setting their discord ID to ${backupUser.id}`
-					);
-					patron.discordID = backupUser.id.toString();
-				} else {
+				const nextPatreonID = patreonIDsByUserID.get(groupUser.id.toString()) ?? groupUser.patreon_id;
+
+				if (
+					nextBits.join(',') === groupUser.bits.join(',') &&
+					targetPerkTier === (groupUser.perk_tier ?? 0) &&
+					nextPatreonID === groupUser.patreon_id
+				) {
 					continue;
 				}
+
+				updates.push(
+					roboChimpClient.user.update({
+						where: { id: groupUser.id },
+						data: {
+							bits: nextBits,
+							perk_tier: targetPerkTier,
+							patreon_id: nextPatreonID
+						}
+					})
+				);
 			}
 
-			// See if any duplicates are newer than this one:
-			const duplicateAccounts = fetchedPatrons.filter(
-				p => p.discordID === patron.discordID && p.patreonID !== patron.patreonID
-			);
-			// We do this in 2 steps to avoid creating new Date objects for every patron entry; only when needed.
-			// We're not trying to sort/find the newest. Only skipping older ones as we're processing all anyway.
-			const newerAccount = duplicateAccounts.find(
-				p => new Date(p.lastChargeDate).getTime() > new Date(patron.lastChargeDate).getTime()
-			);
-
-			if (newerAccount) {
-				continue;
-			}
-
-			const tierTheyShouldHave = patron.entitledTier;
-			if (!tierTheyShouldHave) {
-				// TODO: I feel like if they aren't entitled to a tier, we should remove it o_O
-				continue;
-			}
-
-			// Only find the user if they don't already have the relevant perk tier.
-			const user = await globalClient.fetchRUser(patron.discordID);
-			if (!user) continue;
-
-			const userIdentifier = `R[${user.id}]D[${patron.discordID}]P[${patron.patreonID}]`;
-
-			if (user.patreonId !== patron.patreonID) {
-				await roboChimpClient.user.update({
-					where: {
-						id: BigInt(patron.discordID)
-					},
-					data: {
-						patreon_id: patron.patreonID
-					}
+			if (oldPerkTier !== targetPerkTier) {
+				tierChanges.push({
+					oldTier: oldPerkTier,
+					newTier: targetPerkTier,
+					discordIDs: groupDiscordIDs,
+					isFirstTimePatron
 				});
 			}
-			const getFreeT3 = [Bits.Moderator, Bits.Admin, Bits.WikiContributor].some(bit => user.bits.includes(bit));
 
-			// If their last payment was more than a month ago, remove their status and continue.
-			if (
-				Date.now() - new Date(patron.lastChargeDate).getTime() > Time.Day * 33 &&
-				patron.patronStatus !== 'active_patron'
-			) {
-				if (user.perkTierRaw < PerkTier.Two) continue;
-				if (getFreeT3 && user.perkTierRaw <= PerkTier.Four) continue;
-				const str = `${userIdentifier} hasn't paid in over 1 month, so removing perks (T${user.perkTierRaw + 1}).`;
-				await this.removePerks(user, str);
-				continue;
+			if (targetPaidBits.length > 0 || oldPerkTier !== targetPerkTier) {
+				const highestPaidTier = getHighestTierFromBits(targetPaidBits);
+				messages.push(
+					`${mainUser.id}: ${highestPaidTier ? `${highestPaidTier.source} tier ${highestPaidTier.number}` : 'no paid tier'}, perk_tier ${targetPerkTier}`
+				);
 			}
-
-			// They already have the correct tier, so continue.
-			if (user.bits.includes(tierTheyShouldHave.bit) && user.perkTierRaw === tierTheyShouldHave.perkTier) {
-				continue;
-			}
-
-			result.push(`Giving ${userIdentifier} Tier ${tierTheyShouldHave.number}.`);
-			await this.changeTier(user, tierTheyShouldHave);
 		}
 
-		result.push(await this.syncGithub());
-		result.push(await this.updateFreePerks());
-		return result.flat(5).filter(notEmpty);
-	}
-
-	async fetchPatrons(url?: string): Promise<Patron[]> {
-		const users: Patron[] = [];
-		const result: any = await fetch(url ?? patreonApiURL.toString(), {
-			headers: { Authorization: `Bearer ${globalConfig.patreonToken}` }
-		}).then(res => res.json());
-
-		if (result.errors) {
-			console.error(result.errors);
-			throw 'Failed to fetch patrons.';
+		if (updates.length > 0) {
+			await roboChimpClient.$transaction(updates);
 		}
 
-		for (const user of result.data) {
-			const socialConnections = result.included.find((i: any) => i.id === user.relationships.user.data.id)
-				.attributes.social_connections;
-
-			const entitledTier = user.relationships.currently_entitled_tiers.data
-				.map((i: any) => i.id)
-				.map((t: string) => tiers.find(a => a.id === t))
-				.filter(notEmpty)[0];
-
-			const patron: Patron = {
-				patreonID: user.relationships.user.data.id,
-				discordID: socialConnections?.discord?.user_id,
-				entitledTier,
-				lastChargeDate: user.attributes.last_charge_date,
-				lastChargeStatus: user.attributes.last_charge_status,
-				lifeTimeSupportCents: user.attributes.lifetime_support_cents,
-				patronStatus: user.attributes.patron_status,
-				pledgeRelationshipStart: user.attributes.pledge_relationship_start
-			};
-
-			users.push(patron);
+		for (const tierChange of tierChanges) {
+			await onTierChange(tierChange);
 		}
 
-		// If theres another page, start recursively adding all the pages into the array.
-		if (result.links?.next) {
-			users.push(...(await this.fetchPatrons(result.links.next)));
-		}
-
-		return users;
+		return messages.filter(notEmpty);
 	}
 }
 
@@ -556,8 +655,15 @@ export function verifyPatreonSecret(body: string, signature?: string | string[])
 	if (!signature) {
 		return false;
 	}
-	const hmac = createHmac('md5', globalConfig.patreonWebhookSecret);
-	hmac.update(body);
-	const calculated = hmac.digest('hex');
-	return signature === calculated;
+
+	for (const campaign of getPatreonCampaignConfigs()) {
+		if (!campaign.webhookSecret) continue;
+		const hmac = createHmac('md5', campaign.webhookSecret);
+		hmac.update(body);
+		if (signature === hmac.digest('hex')) {
+			return true;
+		}
+	}
+
+	return false;
 }

@@ -12,6 +12,7 @@ import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js'
 import { blowpipeCommand, blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
 import { degradeableItemsCommand } from '@/lib/minions/functions/degradeableItemsCommand.js';
 import { allPossibleStyles, trainCommand } from '@/lib/minions/functions/trainCommand.js';
+import { getRoboChimpGroupPaidBits, getRoboChimpPaidTierDisplay } from '@/lib/perkTiers.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import creatures from '@/lib/skilling/skills/hunter/creatures/index.js';
@@ -82,11 +83,13 @@ export async function getUserInfo(user: MUser) {
 	);
 
 	const roboCache = await Cache.getRoboChimpUser(user.id);
+	const groupPaidBits = await getRoboChimpGroupPaidBits(user.id);
+	const perkTierDisplay = getRoboChimpPaidTierDisplay({ bits: groupPaidBits, perkTier: roboCache?.perk_tier });
 	return {
 		...result,
 		everythingString: `${user.badgedUsername}[${user.id}]
 **Current Trip:** ${taskText}
-**Perk Tier:** ${roboCache?.perk_tier ?? 'None'}
+**Perk Tier:** ${perkTierDisplay}
 **Blacklisted:** ${result.isBlacklisted}
 **Badges:** ${result.badges}
 **Ironman:** ${result.isIronman}

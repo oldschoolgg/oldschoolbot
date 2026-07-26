@@ -4,8 +4,9 @@ import SonicBoomDefault from 'sonic-boom';
 const { SonicBoom } = SonicBoomDefault;
 
 import path from 'node:path';
-import { isObject, UserError } from '@oldschoolgg/toolkit';
+import { isPlainObject, UserError } from '@oldschoolgg/toolkit';
 
+import type { SystemLogsType } from '@/prisma/clients/main/enums.js';
 import { BOT_TYPE_LOWERCASE, globalConfig } from '@/lib/constants.js';
 
 const LOG_FOLDER = globalConfig.isProduction ? '../logs/' : './logs/';
@@ -57,48 +58,84 @@ function logDebug(str: string, context: LogContext = {}) {
 	}
 }
 
-type AnyContextObj = Record<
-	string,
-	string | number | null | boolean | unknown | Record<string, string | number | null | boolean>
->;
+interface AnyContextObj {
+	type?: string;
+	[p: string]: unknown;
+}
 
 type RichErrorLogArgs = {
-	err: any;
+	err: unknown;
 	message?: string;
+	stack?: string;
 	interaction?: MInteraction;
 	context?: AnyContextObj;
 };
+
+function toError(value: unknown): Error {
+	if (value instanceof Error) {
+		return value;
+	}
+
+	if (typeof value === 'string') {
+		return new Error(value);
+	}
+
+	try {
+		return new Error(JSON.stringify(value));
+	} catch {
+		return new Error(String(value));
+	}
+}
 
 function logError(error: Error, context?: LogContext): void;
 function logError(errorMessage: string, context?: LogContext): void;
 function logError(args: RichErrorLogArgs): void;
 function logError(args: string | Error | RichErrorLogArgs, ctx?: LogContext): void {
-	const err = typeof args === 'string' ? new Error(args) : args instanceof Error ? args : args.err;
-	const interaction = isObject(args) && !(args instanceof Error) ? args.interaction : undefined;
-	const context = isObject(args) && !(args instanceof Error) ? args.context : ctx;
+	function isRichError(testVar: unknown): testVar is RichErrorLogArgs {
+		return isPlainObject(testVar) && 'err' in testVar;
+	}
+	const interaction = isRichError(args) ? args.interaction : undefined;
+	const richArgs = isRichError(args) ? args : undefined;
 
-	if (err instanceof Error && err.message === 'SILENT_ERROR') return;
+	const err = toError(typeof args === 'string' ? args : args instanceof Error ? args : args.err);
+
+	if (err.message === 'SILENT_ERROR') return;
 
 	// If DiscordAPIError #10008, that means someone deleted the message, we don't need to log this.
 	if (err instanceof DiscordAPIError && err.code === 10_008) {
 		return;
 	}
 
-	if (err instanceof UserError && interaction && !interaction.replied) {
+	const type: SystemLogsType = err instanceof UserError ? 'USER_ERROR' : 'ERROR';
+	let context = richArgs?.context ?? {};
+	if (ctx) context = { ...context, ...ctx };
+	const message = richArgs?.message ?? err.message;
+	const stack = richArgs?.stack ?? err.stack;
+
+	const unknownInteraction = 'code' in err && err.code === 10062;
+
+	if (!unknownInteraction && interaction) {
 		Logging.logDebug('UserError encountered, sending message to user.', {
 			error: err.message,
 			user_id: interaction.userId
 		});
-		interaction.reply({ content: err.message });
+		if (!interaction.replied) {
+			void interaction.reply({ content: err.message });
+		} else {
+			void interaction.followUp({ content: err.message });
+		}
 		return;
 	}
 
-	const metaInfo: AnyContextObj = { ...context };
-	if (err?.requestBody?.files) {
-		err.requestBody = [];
-	}
-	if (err?.requestBody?.json) {
-		err.requestBody.json = String(err.requestBody.json).slice(0, 500);
+	if ('requestBody' in err) {
+		const requestBody: Record<string, unknown> = {};
+		if (err.requestBody.files) {
+			requestBody.files = err.requestBody.files.map(file => ({ name: file.name }));
+		}
+		if (err.requestBody.json) {
+			requestBody.json = String(err.requestBody.json).slice(0, 10_000);
+		}
+		context.requestBody = requestBody;
 	}
 
 	if (!globalConfig.isProduction) {
@@ -106,18 +143,19 @@ function logError(args: string | Error | RichErrorLogArgs, ctx?: LogContext): vo
 	}
 
 	const rawObj: AnyContextObj = {
-		type: 'ERROR',
-		error: err.stack ?? err.message,
-		time: new Date().toISOString(),
-		message: isObject(args) && !(args instanceof Error) ? args.message : undefined
+		message,
+		stack,
+		time: new Date().toISOString()
 	};
-	if (metaInfo && Object.keys(metaInfo).length > 0) {
-		rawObj.info = metaInfo;
+	if (Object.keys(context).length > 0) {
+		rawObj.info = context;
 	}
 	prisma.systemLogs
 		.create({
 			data: {
-				type: 'ERROR',
+				type,
+				msg: message,
+				stack,
 				data: rawObj as any
 			}
 		})
