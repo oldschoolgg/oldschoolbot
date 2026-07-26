@@ -165,7 +165,9 @@ export enum BitField {
 	UnlimitedGiveaways = 51,
 	ServerSupport = 52,
 	DisabledPassiveImplings = 53,
-	DisableAutoFarmButton = 54
+	DisableAutoFarmButton = 54,
+
+	OriginalCyrSupporter = 199
 }
 
 export interface IBitFieldData {
@@ -202,6 +204,7 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 	[BitField.UsedSirenicTablet]: { name: 'Used Sirenic Tablet', protected: false, userConfigurable: false },
 	[BitField.UsedStrangledTablet]: { name: 'Used Strangled Tablet', protected: false, userConfigurable: false },
 	[BitField.SelfGamblingLocked]: { name: 'Self Gambling Lock', protected: false, userConfigurable: true },
+	[BitField.OriginalCyrSupporter]: { name: "One of Cyr's first Patrons", protected: false, userConfigurable: false },
 
 	[BitField.BypassAgeRestriction]: { name: 'Bypassed Age Restriction', protected: false, userConfigurable: false },
 	[BitField.HasPermanentEventBackgrounds]: {

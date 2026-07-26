@@ -1,6 +1,6 @@
 import { codeBlock, dateFm } from '@oldschoolgg/discord';
 import { type GearSetupType, GearSetupTypes } from '@oldschoolgg/gear';
-import { parseDuration, sumArr, Time, toTitleCase } from '@oldschoolgg/toolkit';
+import { sumArr, toTitleCase } from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Bank, type Item, type ItemBank } from 'oldschooljs';
@@ -13,7 +13,6 @@ import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { unEquipAllCommand } from '@/lib/minions/functions/unequipAllCommand.js';
 import { unequipPet } from '@/lib/minions/functions/unequipPet.js';
-import { premiumPatronTime } from '@/lib/premiumPatronTime.js';
 import { runRolesTask } from '@/lib/rolesTask.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
@@ -134,32 +133,6 @@ export const rpCommand = defineCommand({
 							name: 'text_format',
 							description: 'Do you want to see their gear in plaintext?',
 							required: false
-						}
-					]
-				},
-				{
-					type: 'Subcommand',
-					name: 'add_patron_time',
-					description: 'Give user temporary patron time.',
-					options: [
-						{
-							type: 'User',
-							name: 'user',
-							description: 'The user.',
-							required: true
-						},
-						{
-							type: 'Integer',
-							name: 'tier',
-							description: 'The tier to give.',
-							required: true,
-							choices: choicesOf([1, 2, 3, 4, 5, 6])
-						},
-						{
-							type: 'String',
-							name: 'time',
-							description: 'The time.',
-							required: true
 						}
 					]
 				},
@@ -550,15 +523,6 @@ Date: ${dateFm(date)}`;
 				content: `${userToCheck.usernameOrMention}'s gear setups`,
 				files: [{ buffer: gearImage, name: 'gear.png' }]
 			};
-		}
-
-		if (options.player?.add_patron_time) {
-			const { tier, time, user: userToGive } = options.player.add_patron_time;
-			if (![1, 2, 3, 4, 5, 6].includes(tier)) return 'Invalid input.';
-			const ms = parseDuration(time);
-			if (ms < Time.Second || ms > Time.Year * 3) return 'Invalid input.';
-			const res = await premiumPatronTime(ms, tier, await mUserFetch(userToGive.user.id), interaction);
-			return res;
 		}
 
 		// Unequip Items

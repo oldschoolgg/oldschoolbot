@@ -56,7 +56,8 @@ export function parseDuration(input: string): number {
 
 	let total = 0;
 	let consumedLength = 0;
-	const regex = /(\d+(?:\.\d+)?)\s*(milliseconds?|ms|seconds?|secs?|s|months?|mo|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w|years?|yrs?|y)/gy;
+	const regex =
+		/(\d+(?:\.\d+)?)\s*(milliseconds?|ms|seconds?|secs?|s|months?|mo|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w|years?|yrs?|y)/gy;
 
 	while (consumedLength < duration.length) {
 		regex.lastIndex = consumedLength;

@@ -96,8 +96,17 @@ export const giveawayCommand = defineCommand({
 			options: []
 		}
 	],
-	run: async ({ options, user, guildId, interaction, channelId, user: apiUser, rng }): CommandResponse => {
+	run: async ({ options, user, guildId, interaction, channelId, rng }): CommandResponse => {
 		if (user.isIronman) return 'You cannot do giveaways!';
+
+		let maxGiveaways = 10;
+		const cyrFan = user.bitfield.includes(BitField.OriginalCyrSupporter);
+		const perkTier = await user.fetchPerkTier();
+		if (cyrFan) {
+			if (perkTier >= 2) maxGiveaways += 5 * (perkTier - 1);
+		} else if (perkTier >= 3) {
+			maxGiveaways += 5 * (perkTier - 2);
+		}
 
 		if (options.start) {
 			const existingGiveaways = await prisma.giveaway.findMany({
@@ -106,8 +115,8 @@ export const giveawayCommand = defineCommand({
 					completed: false
 				}
 			});
-			if (existingGiveaways.length >= 10 && !userHasUnlimitedGiveaways(user)) {
-				return 'You cannot have more than 10 giveaways active at a time.';
+			if (existingGiveaways.length >= maxGiveaways && !userHasUnlimitedGiveaways(user)) {
+				return `You cannot have more than ${cyrFan ? Emoji.Seer : ''} ${maxGiveaways} giveaways active at a time.`;
 			}
 
 			if (!guildId && !interaction.guildId) {
@@ -161,7 +170,7 @@ export const giveawayCommand = defineCommand({
 				files: [
 					await makeBankImage({
 						bank,
-						title: `${apiUser?.username ?? user.username}'s Giveaway`
+						title: `${user?.username ?? user.username}'s Giveaway`
 					})
 				],
 				components: makeGiveawayButtons(giveawayID),

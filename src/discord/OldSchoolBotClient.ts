@@ -24,6 +24,7 @@ import { globalConfig } from '@/lib/constants.js';
 import { ReactEmoji } from '@/lib/data/emojis.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import { allCommandsDONTIMPORT } from '@/mahoji/commands/allCommands.js';
+import type { FetchedShardStatus } from './OSBWorkerShardingStrategy.js';
 
 const MAX_MESSAGE_LENGTH = 1950;
 
@@ -166,7 +167,17 @@ export class OldSchoolBotClient extends DiscordClient {
 		return entry;
 	}
 
-	private calcShardHealth(status: WebSocketShardStatus, shardId: number) {
+	private calcShardHealth(status: FetchedShardStatus, shardId: number) {
+		if (status === null) {
+			return {
+				label: 'failed',
+				isDead: true,
+				isUnhealthy: true,
+				avgLatency: Number.POSITIVE_INFINITY,
+				lastLatency: Number.POSITIVE_INFINITY,
+				staleHeartbeat: true
+			};
+		}
 		const stats = this.shardStats.get(shardId);
 		const avgLatency =
 			stats && stats.latencies.length > 0
@@ -189,13 +200,13 @@ export class OldSchoolBotClient extends DiscordClient {
 	}
 
 	async getShardStatusReport() {
-		const statuses = await this.ws.fetchStatus();
+		const statuses = (await this.ws.fetchStatus()) as Map<number, FetchedShardStatus>;
 		return [...statuses.entries()]
 			.sort((a, b) => a[0] - b[0])
 			.map(([shardId, status]) => ({
 				shardId,
 				status,
-				statusName: WebSocketShardStatus[status],
+				statusName: status === null ? 'Timed out' : WebSocketShardStatus[status],
 				health: this.calcShardHealth(status, shardId),
 				stats: this.shardStats.get(shardId)
 			}));

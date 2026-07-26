@@ -97,6 +97,12 @@ function formatShardAckAge(lastAckAt?: number) {
 	return formatDuration(diff);
 }
 
+function formatShardLatency(latency: number | null) {
+	if (latency === null) return '-';
+	if (!Number.isFinite(latency)) return 'timed out';
+	return `${latency}ms`;
+}
+
 function buildShardStatusResponse(
 	report: Awaited<ReturnType<typeof globalClient.getShardStatusReport>>,
 	options: { minimal?: boolean; shard?: number }
@@ -116,18 +122,20 @@ function buildShardStatusResponse(
 	};
 	const total = report.length;
 	const ready = filteredReport.filter(i => i.status === WebSocketShardStatus.Ready).length;
+	const failed = filteredReport.filter(i => i.health.label === 'failed').length;
 	const unhealthy = filteredReport.filter(i => i.health.isUnhealthy).length;
 	const dead = filteredReport.filter(i => i.health.isDead).length;
-	const overview = `Shards: ${total} total, ${ready} ready, ${unhealthy} unhealthy, ${dead} dead`;
+	const overview = `Shards: ${total} total, ${ready} ready, ${failed} failed, ${unhealthy} unhealthy, ${dead} dead`;
 	const lines = filteredReport.map(entry => {
 		let emoji = statusEmojis.ready;
 		if (entry.health.isUnhealthy) emoji = statusEmojis.unhealthy;
 		if (entry.health.isDead) emoji = statusEmojis.dead;
+		if (entry.health.label === 'failed') emoji = statusEmojis.failed;
 		if (options.minimal) {
 			return `${entry.shardId},${emoji},${entry.statusName}`;
 		}
-		const avg = entry.health.avgLatency === null ? '-' : `${entry.health.avgLatency}ms`;
-		const last = entry.health.lastLatency === null ? '-' : `${entry.health.lastLatency}ms`;
+		const avg = formatShardLatency(entry.health.avgLatency);
+		const last = formatShardLatency(entry.health.lastLatency);
 		const lastAck = formatShardAckAge(entry.stats?.lastAckAt);
 		return `${entry.shardId}: ${emoji} ${entry.health.label} | ${entry.statusName} | avg=${avg} | last=${last} | ack=${lastAck}`;
 	});
@@ -861,6 +869,7 @@ export const adminCommand = defineCommand({
 		}
 
 		if (options.shut_down) {
+			await ClientSettings.update({ shutdown: false });
 			globalClient.isShuttingDown = true;
 			const timer = Time.Second * 30;
 			await interaction.reply({

@@ -136,6 +136,7 @@ model ClientStorage {
   colo_loot                    Json     @default("{}") @db.Json
   vt_cost                      Json     @default("{}") @db.Json
   vt_loot                      Json     @default("{}") @db.Json
+  shutdown                     Boolean  @default(false)
 
   grand_exchange_is_locked Boolean @default(false)
   grand_exchange_total_tax BigInt  @default(0)
@@ -345,8 +346,6 @@ model User {
   minion_bought_date          DateTime? @db.Timestamp(6)
   minion_hasBought            Boolean   @default(false) @map("minion.hasBought")
   minion_ironman              Boolean   @default(false) @map("minion.ironman")
-  premium_balance_tier        Int?
-  premium_balance_expiry_date BigInt?
 
   RSN  String?
   pets Json    @default("{}") @db.Json
