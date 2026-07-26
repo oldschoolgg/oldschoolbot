@@ -78,7 +78,7 @@ export const degradeableItems: DegradeableItem[] = [
 		setup: 'mage',
 		aliases: ['sang', 'sang staff', 'sanguinesti staff', 'sanguinesti'],
 		chargeInput: {
-			cost: new Bank().add('Blood rune', 3).freeze(),
+			cost: new Bank().add('Blood rune', 2).freeze(),
 			charges: 1
 		},
 		unchargedItem: Items.getOrThrow('Sanguinesti staff (uncharged)'),
