@@ -375,6 +375,14 @@ export async function onMinionActivityFinish(activity: ActivityTaskData) {
 			await roboChimpSyncData(await mUserFetch(activity.userID));
 		}
 	} catch (err) {
-		Logging.logError(err as Error, { activity: JSON.stringify(activity) });
+		Logging.logError(err as Error, {
+			type: 'ACTIVITY_FINISH_ERROR',
+			user_id: activity.userID,
+			activity_type: activity.type,
+			activity_id: activity.id,
+			channel_id: activity.channelId,
+			guild_id: activity.channelId ? (await Cache.getChannel(activity.channelId))?.guild_id : undefined,
+			activity: JSON.stringify(activity)
+		});
 	}
 }

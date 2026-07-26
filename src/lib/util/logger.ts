@@ -108,6 +108,14 @@ function logError(args: string | Error | RichErrorLogArgs, ctx?: LogContext): vo
 
 	const type: SystemLogsType = err instanceof UserError ? 'USER_ERROR' : 'ERROR';
 	let context = richArgs?.context ?? {};
+	if (interaction) {
+		context = {
+			user_id: interaction.userId,
+			channel_id: interaction.channelId,
+			guild_id: interaction.guildId,
+			...context
+		};
+	}
 	if (ctx) context = { ...context, ...ctx };
 	const message = richArgs?.message ?? err.message;
 	const stack = richArgs?.stack ?? err.stack;
