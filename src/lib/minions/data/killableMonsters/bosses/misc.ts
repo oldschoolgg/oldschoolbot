@@ -1006,7 +1006,7 @@ export const miscBossKillables: KillableMonster[] = [
 			defence: 65,
 			hitpoints: 65
 		},
-		attackStyleToUse: GearStat.AttackSlash,
+		attackStyleToUse: GearStat.AttackCrush,
 		attackStylesUsed: [GearStat.AttackMagic],
 		defaultAttackStyles: ['attack'],
 		healAmountNeeded: 40 * 10,

@@ -101,9 +101,9 @@ async function petMessages(msg: IMessage) {
 		await globalClient.replyToMessage(
 			msg,
 			isNewPet
-				? `You have a funny feeling like you’re being followed. ${pet.emoji}
+				? `You have a funny feeling like you’re being followed. ${pet.emoji ?? `(${pet.name})`}
 Type \`/tools user mypets\` to see your pets.`
-				: `You have a funny feeling like they would have been followed. ${pet.emoji}`
+				: `You have a funny feeling like they would have been followed. ${pet.emoji ?? `(${pet.name})`}`
 		);
 	}
 }

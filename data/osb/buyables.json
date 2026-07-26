@@ -2991,6 +2991,14 @@
 		}
 	},
 	{
+		"name": "Pestle and mortar",
+		"gp_cost": 10000,
+		"ironman_price": 128,
+		"output_items": {
+			"233": 1
+		}
+	},
+	{
 		"name": "Pet rock",
 		"gp_cost": 500000,
 		"qp_required": 60,
