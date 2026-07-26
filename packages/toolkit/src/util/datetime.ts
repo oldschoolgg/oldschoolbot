@@ -6,8 +6,73 @@ export enum Time {
 	Minute = 1000 * 60,
 	Hour = 1000 * 60 * 60,
 	Day = 1000 * 60 * 60 * 24,
+	Week = 1000 * 60 * 60 * 24 * 7,
 	Month = 1000 * 60 * 60 * 24 * 30,
 	Year = 1000 * 60 * 60 * 24 * 365
+}
+
+const durationUnitMultipliers: Record<string, number> = {
+	ms: Time.Millisecond,
+	millisecond: Time.Millisecond,
+	milliseconds: Time.Millisecond,
+	s: Time.Second,
+	sec: Time.Second,
+	secs: Time.Second,
+	second: Time.Second,
+	seconds: Time.Second,
+	m: Time.Minute,
+	min: Time.Minute,
+	mins: Time.Minute,
+	minute: Time.Minute,
+	minutes: Time.Minute,
+	h: Time.Hour,
+	hr: Time.Hour,
+	hrs: Time.Hour,
+	hour: Time.Hour,
+	hours: Time.Hour,
+	d: Time.Day,
+	day: Time.Day,
+	days: Time.Day,
+	w: Time.Week,
+	week: Time.Week,
+	weeks: Time.Week,
+	mo: Time.Month,
+	month: Time.Month,
+	months: Time.Month,
+	y: Time.Year,
+	yr: Time.Year,
+	yrs: Time.Year,
+	year: Time.Year,
+	years: Time.Year
+};
+
+export function parseDuration(input: string): number {
+	const trimmed = input.trim().toLowerCase();
+	if (trimmed.length === 0) return 0;
+
+	const sign = trimmed.startsWith('-') ? -1 : 1;
+	const duration = sign === -1 ? trimmed.slice(1).trimStart() : trimmed;
+	if (duration.length === 0) return 0;
+
+	let total = 0;
+	let consumedLength = 0;
+	const regex = /(\d+(?:\.\d+)?)\s*(milliseconds?|ms|seconds?|secs?|s|months?|mo|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w|years?|yrs?|y)/gy;
+
+	while (consumedLength < duration.length) {
+		regex.lastIndex = consumedLength;
+		const match = regex.exec(duration);
+		if (!match) return 0;
+
+		const amount = Number(match[1]);
+		const multiplier = durationUnitMultipliers[match[2]];
+		if (!Number.isFinite(amount) || multiplier === undefined) return 0;
+
+		total += amount * multiplier;
+		consumedLength = regex.lastIndex;
+		while (duration[consumedLength] === ' ') consumedLength++;
+	}
+
+	return sign * total;
 }
 
 export function isAtleastThisOld(date: Date | number, expectedAgeInMS: number): boolean {

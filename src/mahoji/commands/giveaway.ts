@@ -1,6 +1,5 @@
 import { ButtonBuilder, ButtonStyle, EmbedBuilder, messageLink, time } from '@oldschoolgg/discord';
-import { Emoji, Time } from '@oldschoolgg/toolkit';
-import { Duration } from '@sapphire/time-utilities';
+import { Emoji, parseDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 import { chunk } from 'remeda';
 
@@ -140,11 +139,11 @@ export const giveawayCommand = defineCommand({
 				);
 			}
 
-			const duration = new Duration(options.start.duration);
-			const ms = duration.offset;
+			const ms = parseDuration(options.start.duration);
 			if (!ms || ms > Time.Day * 7 || ms < Time.Second * 5) {
 				return 'Your giveaway cannot last longer than 7 days, or be faster than 5 seconds.';
 			}
+			const finishDate = new Date(Date.now() + ms);
 
 			await user.sync();
 			if (!user.bankWithGP.has(bank)) {
@@ -158,7 +157,7 @@ export const giveawayCommand = defineCommand({
 			const giveawayID = rng.randInt(1, 500_000_000);
 
 			const message = await globalClient.sendMessage(channelId, {
-				content: generateGiveawayContent(user.id, duration.fromNow, []),
+				content: generateGiveawayContent(user.id, finishDate, []),
 				files: [
 					await makeBankImage({
 						bank,
@@ -185,11 +184,11 @@ export const giveawayCommand = defineCommand({
 						guild_id,
 						channel_id: channelId.toString(),
 						start_date: new Date(),
-						finish_date: duration.fromNow,
+						finish_date: finishDate,
 						completed: false,
 						loot: bank.toJSON(),
 						user_id: user.id,
-						duration: duration.offset,
+						duration: ms,
 						message_id: message.id,
 						users_entered: []
 					}

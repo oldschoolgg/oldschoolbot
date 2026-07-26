@@ -53,7 +53,6 @@
 		"@prisma/adapter-pg": "^6.19.0",
 		"@prisma/client": "^6.19.0",
 		"@sapphire/snowflake": "^3.5.3",
-		"@sapphire/time-utilities": "^1.6.0",
 		"@sapphire/timer-manager": "^1.0.2",
 		"async-mutex": "^0.5.0",
 		"bufferutil": "^4.1.0",

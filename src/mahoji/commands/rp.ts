@@ -1,9 +1,8 @@
 import { codeBlock, dateFm } from '@oldschoolgg/discord';
 import { type GearSetupType, GearSetupTypes } from '@oldschoolgg/gear';
-import { sumArr, Time, toTitleCase } from '@oldschoolgg/toolkit';
+import { parseDuration, sumArr, Time, toTitleCase } from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { DiscordSnowflake } from '@sapphire/snowflake';
-import { Duration } from '@sapphire/time-utilities';
 import { Bank, type Item, type ItemBank } from 'oldschooljs';
 
 import { UserEventType, xp_gains_skill_enum } from '@/prisma/main/enums.js';
@@ -555,9 +554,8 @@ Date: ${dateFm(date)}`;
 
 		if (options.player?.add_patron_time) {
 			const { tier, time, user: userToGive } = options.player.add_patron_time;
-			const duration = new Duration(time);
 			if (![1, 2, 3, 4, 5, 6].includes(tier)) return 'Invalid input.';
-			const ms = duration.offset;
+			const ms = parseDuration(time);
 			if (ms < Time.Second || ms > Time.Year * 3) return 'Invalid input.';
 			const res = await premiumPatronTime(ms, tier, await mUserFetch(userToGive.user.id), interaction);
 			return res;
