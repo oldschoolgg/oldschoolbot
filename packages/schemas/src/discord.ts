@@ -70,3 +70,15 @@ export const ZWebhook = z.object({
 	token: z.string()
 });
 export type IWebhook = z.infer<typeof ZWebhook>;
+
+export const ZCreateWebhook = z.object({
+	name: z.string().min(1).max(80),
+	avatar: z.string().nullable().optional()
+});
+export type ICreateWebhook = z.infer<typeof ZCreateWebhook>;
+
+export const ZWebhookPermissions = z.object({
+	channel_id: z.string(),
+	can_create_webhook: z.boolean()
+});
+export type IWebhookPermissions = z.infer<typeof ZWebhookPermissions>;

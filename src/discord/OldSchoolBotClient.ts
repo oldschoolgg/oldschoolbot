@@ -11,7 +11,7 @@ import {
 	type GatewayMessageCreateDispatchData,
 	Routes
 } from '@oldschoolgg/discord';
-import type { IChannel, IUserLog, IWebhook } from '@oldschoolgg/schemas';
+import type { IChannel, IMessage, IUserLog, IWebhook } from '@oldschoolgg/schemas';
 import { Time } from '@oldschoolgg/toolkit';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { omit } from 'remeda';
@@ -183,7 +183,7 @@ export class OldSchoolBotClient extends DiscordClient {
 					id: user.id
 				},
 				create: data,
-				update: data
+				update: omit(data, ['created_at'])
 			})
 			.catch(err => Logging.logError(err));
 		DISCORD_USER_IDS_INSERTED_CACHE.add(user.id);
@@ -204,48 +204,71 @@ export class OldSchoolBotClient extends DiscordClient {
 	}
 
 	private async deleteWebhook(channelId: string): Promise<void> {
-		await Promise.all([Cache.clearWebhook(channelId), prisma.webhook.delete({ where: { channel_id: channelId } })]);
+		await Promise.all([
+			Cache.clearWebhook(channelId),
+			prisma.webhook.deleteMany({ where: { channel_id: channelId } })
+		]);
 	}
 
 	private async getChannelWebhook(channelId: string): Promise<IWebhook | null> {
 		const cachedWebhook = await Cache.getWebhook(channelId);
 		if (cachedWebhook) return cachedWebhook;
-		const existingWebhooks = await globalClient.fetchWebhooks(channelId);
-		if (existingWebhooks.length === 0) return null;
-		const existingWebhook = existingWebhooks[0];
-		const existingWebhookFmt: IWebhook = {
-			id: existingWebhook.id,
-			token: existingWebhook.token!,
-			channel_id: channelId
-		};
-		await Cache.setWebhook(existingWebhookFmt);
-		return existingWebhookFmt;
+
+		const permissions = await Cache.getWebhookPermissions(channelId);
+		if (!permissions.can_create_webhook) return null;
+
+		let webhook: IWebhook;
+		try {
+			webhook = await this.createWebhook(channelId);
+		} catch (err) {
+			Logging.logError(err as Error);
+			await Cache.setWebhookPermissions({
+				channel_id: channelId,
+				can_create_webhook: false
+			});
+			return null;
+		}
+
+		await Promise.all([
+			Cache.setWebhook(webhook),
+			prisma.webhook.upsert({
+				where: {
+					channel_id: channelId
+				},
+				create: {
+					channel_id: channelId,
+					webhook_id: webhook.id,
+					webhook_token: webhook.token
+				},
+				update: {
+					webhook_id: webhook.id,
+					webhook_token: webhook.token
+				}
+			})
+		]);
+		return webhook;
 	}
 
-	private async sendToWebhook(channelId: string, data: SendableMessage): Promise<{ success: boolean }> {
+	private async sendToWebhook(channelId: string, data: SendableMessage): Promise<IMessage | null> {
+		let webhook: IWebhook | null = null;
 		try {
-			const webhook = await this.getChannelWebhook(channelId);
-			if (!webhook) return { success: false };
-			await globalClient.sendWebhook(webhook, data);
-			return { success: true };
+			webhook = await this.getChannelWebhook(channelId);
+			if (!webhook) return null;
+			return await globalClient.sendWebhook(webhook, data);
 		} catch (_err: unknown) {
 			const err = _err as Error;
-			if (err.message?.includes('Unknown Webhook')) {
-				Logging.logDebug(`Deleting unknown webhook in ${channelId}`);
+			Logging.logError(err);
+			if (webhook) {
 				await this.deleteWebhook(channelId);
-			} else {
-				Logging.logError(err);
 			}
-			return { success: false };
+			return null;
 		}
 	}
 
-	async sendMessageOrWebhook(channelId: string, rawMessage: SendableMessage): Promise<void> {
-		try {
-			await this.sendMessage(channelId, rawMessage);
-		} catch {
-			await this.sendToWebhook(channelId, rawMessage);
-		}
+	async sendMessageOrWebhook(channelId: string, rawMessage: SendableMessage): Promise<IMessage | null> {
+		const webhookResponse = await this.sendToWebhook(channelId, rawMessage);
+		if (webhookResponse) return webhookResponse;
+		return this.sendMessage(channelId, rawMessage).catch(() => null);
 	}
 
 	async channelIsSendable(channelId: IChannel | string): Promise<boolean> {
