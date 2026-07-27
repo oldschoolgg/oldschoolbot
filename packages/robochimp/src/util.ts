@@ -24,6 +24,7 @@ export enum Bits {
 	CyrPatronTier5 = 21,
 	CyrPatronTier6 = 22,
 	CyrPatronTier7 = 23,
+	CyrsOriginalPatrons = 24,
 	PatronTier1 = MagnaPatronTier1,
 	PatronTier2 = MagnaPatronTier2,
 	PatronTier3 = MagnaPatronTier3,
@@ -58,7 +59,8 @@ export const bitsDescriptions: BitDescriptions = {
 	[Bits.CyrPatronTier4]: { description: 'Cyr Tier 4 patron' },
 	[Bits.CyrPatronTier5]: { description: 'Cyr Tier 5 patron' },
 	[Bits.CyrPatronTier6]: { description: 'Cyr Tier 6 patron' },
-	[Bits.CyrPatronTier7]: { description: 'Cyr Tier 7 patron' }
+	[Bits.CyrPatronTier7]: { description: 'Cyr Tier 7 patron' },
+	[Bits.CyrsOriginalPatrons]: { description: "Cyr's original patron" }
 };
 
 export const CHANNELS = {

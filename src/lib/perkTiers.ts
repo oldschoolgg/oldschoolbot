@@ -17,7 +17,8 @@ export const RobochimpBitfieldEnum = {
 	CyrTier4: 20,
 	CyrTier5: 21,
 	CyrTier6: 22,
-	CyrTier7: 23
+	CyrTier7: 23,
+	CyrsOriginalPatrons: 24
 };
 
 const CYR_TIER_BITS = [

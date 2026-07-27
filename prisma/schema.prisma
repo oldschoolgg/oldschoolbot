@@ -559,7 +559,7 @@ model Minigame {
   colosseum               Int    @default(0)
   pizazz_points           Int    @default(0)
 
-  user                     User @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: Cascade, map: "FK_minigames_user_id_users_id")
+  user User @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: Cascade, map: "FK_minigames_user_id_users_id")
 
   @@index([user_id])
   @@map("minigames")

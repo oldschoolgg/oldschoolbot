@@ -49,6 +49,8 @@ type PatreonUserToUpsert = {
 	patreonID: string;
 };
 
+const ORIGINAL_CYR_PATRON_CUTOFF_UTC = Date.UTC(2026, 7, 16);
+
 type PatreonMember = {
 	source: PaidTierSource;
 	patreonID: string;
@@ -118,6 +120,10 @@ function addEntitlement(entitlementsByUserID: EntitledTiersByUserID, userID: str
 
 function intArraySql(values: readonly number[]) {
 	return values.length === 0 ? Prisma.sql`ARRAY[]::integer[]` : Prisma.sql`ARRAY[${Prisma.join(values)}]::integer[]`;
+}
+
+function canGrantOriginalCyrPatronBits() {
+	return Date.now() < ORIGINAL_CYR_PATRON_CUTOFF_UTC;
 }
 
 function getCyrTierConfigs(): PatronTier[] {
@@ -669,6 +675,13 @@ class PatreonTask {
 				paidBits,
 				markHasEverBeenPatron: paidBits.length > 0 || user.bits.includes(Bits.HasEverBeenPatron)
 			});
+			if (
+				canGrantOriginalCyrPatronBits() &&
+				entitlements.some(entitlement => entitlement.source === 'cyr') &&
+				!nextBits.includes(Bits.CyrsOriginalPatrons)
+			) {
+				nextBits.push(Bits.CyrsOriginalPatrons);
+			}
 			const nextPerkTier = Math.max(...entitlements.map(tier => tier.perkTier), 0);
 
 			desiredUsers.set(discordID, {
@@ -765,7 +778,7 @@ export function verifyPatreonSecret(body: string, signature?: string | string[])
 		return false;
 	}
 
-	for (const campaign of getPatreonCampaignConfigs()) {
+	for (const campaign of getPatreonCampaignConfigs('cyr')) {
 		if (!campaign.webhookSecret) continue;
 		const hmac = createHmac('md5', campaign.webhookSecret);
 		hmac.update(body);
