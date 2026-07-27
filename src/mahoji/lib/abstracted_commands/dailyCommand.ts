@@ -79,7 +79,7 @@ async function reward(rng: RNGProvider, user: MUser, triviaCorrect: boolean): Pr
 	if (triviaCorrect && rng.roll(13)) {
 		const pet = rng.pick(pets);
 		await user.giveBotMessagePet(pet);
-		dmStr += `\n**${pet.name}** pet! ${pet.emoji}`;
+		dmStr += `\n**${pet.name}** pet! ${pet.emoji ?? ''}`;
 	}
 
 	if (coinsToGive) {
