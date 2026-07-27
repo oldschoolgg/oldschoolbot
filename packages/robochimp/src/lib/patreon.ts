@@ -1,12 +1,11 @@
 import { createHmac } from 'node:crypto';
 import { notEmpty, PerkTier, uniqueArr } from '@oldschoolgg/toolkit';
+import { Prisma } from '@prisma/robochimp';
 
 import type { RUser } from '@/structures/RUser.js';
 import { globalConfig } from '../constants.js';
 import { allPatronBits, Bits, cyrTiers, magnaTiers, type PaidTierSource, type PatronTier, paidTiers } from '../util.js';
 import type { OSBPrismaClient } from './prisma.js';
-
-const ROOT_FREE_TIER_BITS = new Set([12, 24]);
 
 const BadgesEnum = {
 	Developer: 0,
@@ -43,9 +42,11 @@ type DesiredRobochimpUserState = RobochimpUserState & {
 	nextPerkTier: number;
 };
 
-type ExternalUserState = {
-	id: string;
-	bitfield: number[];
+type EntitledTiersByUserID = Record<string, PatronTier[]>;
+
+type PatreonUserToUpsert = {
+	discordID: string;
+	patreonID: string;
 };
 
 type PatreonMember = {
@@ -101,6 +102,22 @@ function getPaidBits(bits: readonly number[]) {
 function getPerkTierFromPaidBits(bits: readonly number[]) {
 	const highestPaidTier = getHighestTierFromBits(getPaidBits(bits));
 	return highestPaidTier?.perkTier ?? 0;
+}
+
+function sameNumberArray(a: readonly number[], b: readonly number[]) {
+	return a.length === b.length && a.every((value, index) => value === b[index]);
+}
+
+function addEntitlement(entitlementsByUserID: EntitledTiersByUserID, userID: string, tier: PatronTier) {
+	const existing = entitlementsByUserID[userID] ?? [];
+	if (!existing.some(existingTier => existingTier.bit === tier.bit)) {
+		existing.push(tier);
+	}
+	entitlementsByUserID[userID] = existing;
+}
+
+function intArraySql(values: readonly number[]) {
+	return values.length === 0 ? Prisma.sql`ARRAY[]::integer[]` : Prisma.sql`ARRAY[${Prisma.join(values)}]::integer[]`;
 }
 
 function getCyrTierConfigs(): PatronTier[] {
@@ -263,41 +280,6 @@ async function onTierChange({
 	await Promise.all(discordIDs.map(u => globalClient.fetchRUser(u)));
 }
 
-function getFreePerkTier({
-	groupUsers,
-	osbUsersById,
-	bsoUsersById
-}: {
-	groupUsers: RobochimpUserState[];
-	osbUsersById: Map<string, ExternalUserState>;
-	bsoUsersById: Map<string, ExternalUserState>;
-}) {
-	let freeTier = 0;
-
-	if (
-		groupUsers.some(user =>
-			[Bits.Admin, Bits.Moderator, Bits.WikiContributor, Bits.Contributor].some(bit => user.bits.includes(bit))
-		)
-	) {
-		freeTier = Math.max(freeTier, PerkTier.Four);
-	} else if (groupUsers.some(user => user.bits.includes(Bits.Trusted))) {
-		freeTier = Math.max(freeTier, PerkTier.Three);
-	}
-
-	if (
-		groupUsers.some(user => {
-			const id = user.id.toString();
-			return [osbUsersById.get(id), bsoUsersById.get(id)]
-				.filter(notEmpty)
-				.some(externalUser => externalUser.bitfield.some(bit => ROOT_FREE_TIER_BITS.has(bit)));
-		})
-	) {
-		freeTier = Math.max(freeTier, PerkTier.Two);
-	}
-
-	return freeTier;
-}
-
 export function parseStrToTier(str: string) {
 	switch (str) {
 		case '$3 a month':
@@ -320,16 +302,13 @@ export function parseStrToTier(str: string) {
 class PatreonTask {
 	public enabled = globalConfig.isProduction;
 
-	private async fetchSyncUsers(extraUserIDs: readonly string[] = []) {
+	private async fetchUsersToReconcile(extraUserIDs: readonly string[] = []) {
 		const extraIDs = extraUserIDs.map(id => BigInt(id));
-		return roboChimpClient.user.findMany({
+		const users = await roboChimpClient.user.findMany({
 			where: {
 				OR: [
 					{ bits: { hasSome: allPatronBits } },
 					{ perk_tier: { gt: 0 } },
-					{ patreon_id: { not: null } },
-					{ github_id: { not: null } },
-					{ user_group_id: { not: null } },
 					...(extraIDs.length > 0 ? [{ id: { in: extraIDs } }] : [])
 				]
 			},
@@ -345,9 +324,33 @@ class PatreonTask {
 				id: 'asc'
 			}
 		});
+
+		const groupIDs = uniqueArr(users.map(user => user.user_group_id).filter(notEmpty));
+		if (groupIDs.length === 0) return users;
+
+		const groupUsers = await roboChimpClient.user.findMany({
+			where: {
+				user_group_id: {
+					in: groupIDs
+				}
+			},
+			select: {
+				id: true,
+				bits: true,
+				perk_tier: true,
+				user_group_id: true,
+				github_id: true,
+				patreon_id: true
+			},
+			orderBy: {
+				id: 'asc'
+			}
+		});
+
+		return [...new Map([...users, ...groupUsers].map(user => [user.id.toString(), user])).values()];
 	}
 
-	private async fetchEntitlementLookupUsers() {
+	private async fetchLinkedUsers() {
 		return roboChimpClient.user.findMany({
 			where: {
 				OR: [{ patreon_id: { not: null } }, { github_id: { not: null } }]
@@ -403,29 +406,19 @@ class PatreonTask {
 	private async collectPaidEntitlements(
 		users: RobochimpUserState[],
 		messages: string[]
-	): Promise<{ entitlementsByUserID: Map<string, PatronTier[]>; patreonIDsByUserID: Map<string, string> }> {
-		const entitlementsByUserID = new Map<string, PatronTier[]>();
-		const patreonIDsByUserID = new Map<string, string>();
+	): Promise<{
+		entitlementsByUserID: EntitledTiersByUserID;
+		patreonIDsByUserID: Record<string, string>;
+		usersToUpsert: PatreonUserToUpsert[];
+	}> {
+		const entitlementsByUserID: EntitledTiersByUserID = {};
+		const patreonIDsByUserID: Record<string, string> = {};
+		const existingUserIDs = new Set(users.map(user => user.id.toString()));
 		const usersByPatreonID = new Map(users.filter(user => user.patreon_id).map(user => [user.patreon_id!, user]));
-		console.log('usersByPatreonID:');
-		console.log(JSON.stringify(usersByPatreonID, null, 2));
-		console.log(`--------------------------------------\n\n`);
 		const usersByGithubID = new Map(
 			users.filter(user => user.github_id !== null).map(user => [String(user.github_id), user])
 		);
-		const ensuredUserIDs = new Set<string>();
-
-		const addEntitlement = (userID: string, tier: PatronTier) => {
-			const existing = entitlementsByUserID.get(userID) ?? [];
-			console.log(`Adding ${tier.source} patron entitlement for ${userID} to ${existing.length} existing tiers.`);
-			console.log(JSON.stringify(existing, null, 2));
-			console.log(`Tier: ${JSON.stringify(tier, null, 2)}`);
-			console.log(`--------------------------------------\n\n`);
-			if (!existing.some(existingTier => existingTier.bit === tier.bit)) {
-				existing.push(tier);
-			}
-			entitlementsByUserID.set(userID, existing);
-		};
+		const usersToUpsert = new Map<string, PatreonUserToUpsert>();
 
 		for (const campaign of getPatreonCampaignConfigs()) {
 			for (const member of await this.fetchPatronsForCampaign(campaign)) {
@@ -437,34 +430,18 @@ class PatreonTask {
 				if (!discordID) {
 					discordID = usersByPatreonID.get(member.patreonID)?.id.toString();
 				}
-				console.log(`Found ${member.source} patron ${member.patreonID} with discordID ${discordID}`);
 				if (!discordID) {
 					messages.push(
 						`Unable to resolve ${member.source} patron ${member.patreonID} to a Discord account.`
 					);
-					console.log(`Unable to resolve ${member.source} patron ${member.patreonID} to a Discord account.`);
-					console.log(
-						`Skipping ${member.source} patron ${member.patreonID}.\n--------------------------------------\n\n`
-					);
 					continue;
 				}
 
-				addEntitlement(discordID, member.entitledTier);
-				patreonIDsByUserID.set(discordID, member.patreonID);
+				addEntitlement(entitlementsByUserID, discordID, member.entitledTier);
+				patreonIDsByUserID[discordID] = member.patreonID;
 
-				if (!ensuredUserIDs.has(discordID)) {
-					console.log(
-						`Ensuring user ${discordID} exists in database. ${member.patreonID ? `Patreon ID: ${member.patreonID}` : ''}`
-					);
-					await roboChimpClient.user.upsert({
-						where: { id: BigInt(discordID) },
-						update: member.patreonID ? { patreon_id: member.patreonID } : {},
-						create: {
-							id: BigInt(discordID),
-							patreon_id: member.patreonID
-						}
-					});
-					ensuredUserIDs.add(discordID);
+				if (!existingUserIDs.has(discordID)) {
+					usersToUpsert.set(discordID, { discordID, patreonID: member.patreonID });
 				}
 			}
 		}
@@ -475,10 +452,60 @@ class PatreonTask {
 			if (!user) continue;
 			const tier = magnaTiers.find(candidate => candidate.perkTier === sponsor.tier);
 			if (!tier) continue;
-			addEntitlement(user.id.toString(), tier);
+			addEntitlement(entitlementsByUserID, user.id.toString(), tier);
 		}
 
-		return { entitlementsByUserID, patreonIDsByUserID };
+		return { entitlementsByUserID, patreonIDsByUserID, usersToUpsert: [...usersToUpsert.values()] };
+	}
+
+	private async upsertPatreonUsers(usersToUpsert: readonly PatreonUserToUpsert[]) {
+		if (usersToUpsert.length === 0) return;
+		const values = Prisma.join(
+			usersToUpsert.map(
+				user => Prisma.sql`(
+					${BigInt(user.discordID)}::bigint,
+					ARRAY[${Bits.HasEverBeenPatron}]::integer[],
+					${user.patreonID}::text,
+					ARRAY[]::integer[],
+					ARRAY[]::integer[]
+				)`
+			)
+		);
+
+		await roboChimpClient.$executeRaw`
+			INSERT INTO public."user" AS existing (id, bits, patreon_id, store_bitfield, leagues_completed_tasks_ids)
+			VALUES ${values}
+			ON CONFLICT (id) DO UPDATE SET
+				patreon_id = EXCLUDED.patreon_id,
+				bits = CASE
+					WHEN existing.bits @> ARRAY[${Bits.HasEverBeenPatron}]::integer[] THEN existing.bits
+					ELSE existing.bits || ARRAY[${Bits.HasEverBeenPatron}]::integer[]
+				END
+		`;
+	}
+
+	private async updateUsersToMatchModel(users: readonly DesiredRobochimpUserState[]) {
+		if (users.length === 0) return;
+		const values = Prisma.join(
+			users.map(
+				user => Prisma.sql`(
+					${user.id}::bigint,
+					${intArraySql(user.nextBits)},
+					${user.nextPerkTier}::integer,
+					${user.nextPatreonID}::text
+				)`
+			)
+		);
+
+		await roboChimpClient.$executeRaw`
+			UPDATE public."user" AS u
+			SET
+				bits = desired.bits,
+				perk_tier = desired.perk_tier,
+				patreon_id = desired.patreon_id
+			FROM (VALUES ${values}) AS desired(id, bits, perk_tier, patreon_id)
+			WHERE u.id = desired.id
+		`;
 	}
 
 	async fetchPatrons() {
@@ -614,54 +641,40 @@ class PatreonTask {
 		}
 
 		const messages: string[] = [];
-		const lookupUsers = await this.fetchEntitlementLookupUsers();
-		console.log('About to get patreon data using robochimp users with linked accounts:');
-		console.log(JSON.stringify(lookupUsers, null, 2));
-		const { entitlementsByUserID, patreonIDsByUserID } = await this.collectPaidEntitlements(lookupUsers, messages);
+		const usersToReconcile = await this.fetchUsersToReconcile();
+		const linkedUsers = await this.fetchLinkedUsers();
+		const lookupUsers = [
+			...new Map([...usersToReconcile, ...linkedUsers].map(user => [user.id.toString(), user])).values()
+		];
+		const { entitlementsByUserID, patreonIDsByUserID, usersToUpsert } = await this.collectPaidEntitlements(
+			lookupUsers,
+			messages
+		);
 
-		console.log(`Entitlements By User ID:`);
-		console.log(JSON.stringify(entitlementsByUserID));
-		console.log(`Patreon IDs By User ID:`);
-		console.log(JSON.stringify(patreonIDsByUserID));
+		await this.upsertPatreonUsers(usersToUpsert);
 
-		const entitledDiscordIDs = [...entitlementsByUserID.keys(), ...patreonIDsByUserID.keys()];
-		const roboUsers = await this.fetchSyncUsers(entitledDiscordIDs);
-
-		const discordIDs = roboUsers.map(user => user.id.toString());
-		const [osbUsers, bsoUsers] = await Promise.all([
-			osbClient.user.findMany({
-				where: { id: { in: discordIDs } },
-				select: { id: true, bitfield: true }
-			}),
-			bsoClient.user.findMany({
-				where: { id: { in: discordIDs } },
-				select: { id: true, bitfield: true }
-			})
+		const entitledDiscordIDs = uniqueArr([
+			...Object.keys(entitlementsByUserID),
+			...Object.keys(patreonIDsByUserID)
 		]);
-
-		const osbUsersById = new Map(osbUsers.map(user => [user.id, user]));
-		const bsoUsersById = new Map(bsoUsers.map(user => [user.id, user]));
+		const roboUsers = await this.fetchUsersToReconcile(entitledDiscordIDs);
 		const desiredUsers = new Map<string, DesiredRobochimpUserState>();
 
 		for (const user of roboUsers) {
 			const discordID = user.id.toString();
-			const entitlements = entitlementsByUserID.get(discordID) ?? [];
+			const entitlements = entitlementsByUserID[discordID] ?? [];
 			const paidBits = uniqueArr(entitlements.map(entitlement => entitlement.bit));
 			const nextBits = normalizeBits({
 				bits: user.bits,
 				paidBits,
 				markHasEverBeenPatron: paidBits.length > 0 || user.bits.includes(Bits.HasEverBeenPatron)
 			});
-			const nextPerkTier = Math.max(
-				getFreePerkTier({ groupUsers: [user], osbUsersById, bsoUsersById }),
-				...entitlements.map(tier => tier.perkTier),
-				0
-			);
+			const nextPerkTier = Math.max(...entitlements.map(tier => tier.perkTier), 0);
 
 			desiredUsers.set(discordID, {
 				...user,
 				nextBits,
-				nextPatreonID: patreonIDsByUserID.get(discordID) ?? user.patreon_id,
+				nextPatreonID: patreonIDsByUserID[discordID] ?? user.patreon_id,
 				nextPerkTier
 			});
 		}
@@ -681,7 +694,6 @@ class PatreonTask {
 			}
 		}
 
-		const updates = [];
 		const tierChanges: Array<{
 			oldTier: number;
 			newTier: number;
@@ -713,6 +725,7 @@ class PatreonTask {
 			});
 		}
 
+		const usersToUpdate: DesiredRobochimpUserState[] = [];
 		for (const user of desiredUsers.values()) {
 			const discordID = user.id.toString();
 			const paidBits = getPaidBits(user.nextBits);
@@ -720,20 +733,11 @@ class PatreonTask {
 			const oldPerkTier = user.perk_tier ?? 0;
 
 			if (
-				user.nextBits.join(',') !== user.bits.join(',') ||
+				!sameNumberArray(user.nextBits, user.bits) ||
 				user.nextPerkTier !== oldPerkTier ||
 				user.nextPatreonID !== user.patreon_id
 			) {
-				updates.push(
-					roboChimpClient.user.update({
-						where: { id: user.id },
-						data: {
-							bits: user.nextBits,
-							perk_tier: user.nextPerkTier,
-							patreon_id: user.nextPatreonID
-						}
-					})
-				);
+				usersToUpdate.push(user);
 			}
 
 			if (paidBits.length > 0 || oldPerkTier !== user.nextPerkTier) {
@@ -743,13 +747,12 @@ class PatreonTask {
 			}
 		}
 
-		if (updates.length > 0) {
-			await roboChimpClient.$transaction(updates);
-		}
+		await this.updateUsersToMatchModel(usersToUpdate);
 
 		for (const tierChange of tierChanges) {
 			await onTierChange(tierChange);
 		}
+		await Promise.all(usersToUpdate.map(user => globalClient.fetchRUser(user.id)));
 
 		return messages.filter(notEmpty);
 	}

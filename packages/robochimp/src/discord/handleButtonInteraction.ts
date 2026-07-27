@@ -13,8 +13,8 @@ export async function handleButtonInteraction(interaction: ButtonMInteraction) {
 	});
 	if (!member) return;
 
-	if (id.startsWith('tools.stop_bot.cancel.')) {
-		const bot = id.replace('tools.stop_bot.cancel.', '');
+	if (id.startsWith('chimp.stop_bot.cancel.')) {
+		const bot = id.replace('chimp.stop_bot.cancel.', '');
 		if (!isBotService(bot)) return;
 		const user = await globalClient.fetchRUser(interaction.userId);
 		if (!user.isMod() && !user.isAdmin()) {

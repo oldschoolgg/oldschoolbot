@@ -1,10 +1,10 @@
 import { blacklistCommand } from '@/commands/blacklist.js';
+import { chimpCommand } from '@/commands/chimp.js';
 import { linkCommand } from '@/commands/link.js';
 import { perksCommand } from '@/commands/perksCommand.js';
 import { pingableRolesCommand } from '@/commands/pingableroles.js';
 import { reactCommand } from '@/commands/react.js';
 import { tagCommand } from '@/commands/tag.js';
-import { toolsCommand } from '@/commands/tools.js';
 import { triviaCommand } from '@/commands/trivia.js';
 
 export const allCommands: AnyCommand[] = [
@@ -13,7 +13,7 @@ export const allCommands: AnyCommand[] = [
 	reactCommand,
 	tagCommand,
 	perksCommand,
-	toolsCommand,
+	chimpCommand,
 	triviaCommand,
 	linkCommand
 ];
