@@ -1,6 +1,7 @@
 import PromiseQueue from 'p-queue';
 
-const userQueues: Map<string, PromiseQueue> = new Map();
+import { userQueues } from '@/lib/cache.js';
+
 function getUserUpdateQueue(userID: string) {
 	const currentQueue = userQueues.get(userID);
 	if (!currentQueue) {
@@ -18,7 +19,7 @@ export async function userQueueFn<T>(userID: string, fn: () => Promise<T>): Prom
 			return fn()
 				.then(resolve)
 				.catch(e => {
-					console.error(e);
+					Logging.logError(e);
 					reject(e);
 				});
 		});

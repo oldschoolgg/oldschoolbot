@@ -1,7 +1,7 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import { GemTable } from '../../../subtables/RareDropTable';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const ShadowWarriorTable = new LootTable({ limit: 128 })
 	/* Weapons and armour */
@@ -28,7 +28,7 @@ const ShadowWarriorTable = new LootTable({ limit: 128 })
 	/* Gem drop table */
 	.add(GemTable, 1, 8);
 
-export default new SimpleMonster({
+export const ShadowWarrior: SimpleMonster = new SimpleMonster({
 	id: 2853,
 	name: 'Shadow warrior',
 	table: ShadowWarriorTable,

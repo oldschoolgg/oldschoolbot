@@ -1,6 +1,6 @@
-import LootTable from '../../structures/LootTable';
+import LootTable from '@/structures/LootTable.js';
 
-const VariableAllotmentSeedTable = new LootTable()
+const VariableAllotmentSeedTable: LootTable = new LootTable()
 	.add('Potato seed', [1, 4], 64)
 	.add('Onion seed', [1, 3], 32)
 	.add('Cabbage seed', [1, 3], 16)

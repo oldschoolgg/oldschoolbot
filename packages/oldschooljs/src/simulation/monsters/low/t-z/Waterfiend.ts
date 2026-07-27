@@ -1,10 +1,10 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import { GemTable } from '../../../subtables/RareDropTable';
-import RareSeedTable from '../../../subtables/RareSeedTable';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import RareSeedTable from '@/simulation/subtables/RareSeedTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const WaterfiendTable = new LootTable()
+const WaterfiendTable: LootTable = new LootTable()
 	.every('Water rune')
 	.every('Fiendish ashes')
 
@@ -65,7 +65,7 @@ const WaterfiendTable = new LootTable()
 	.tertiary(24, 'Crystal shard')
 	.tertiary(128, 'Clue scroll (hard)');
 
-export default new SimpleMonster({
+export const Waterfiend: SimpleMonster = new SimpleMonster({
 	id: 2916,
 	name: 'Waterfiend',
 	table: WaterfiendTable,

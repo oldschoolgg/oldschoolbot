@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 
-import { Items } from '../';
+import { Items } from '@/structures/Items.js';
 
 test('Items Sanity Test', async () => {
 	const item27624 = Items.get(27_624)!;

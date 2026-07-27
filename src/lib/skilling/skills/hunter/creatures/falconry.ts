@@ -1,7 +1,7 @@
 import { LootTable } from 'oldschooljs';
 
-import type { Creature } from '../../../types';
-import { HunterTechniqueEnum } from '../../../types';
+import type { Creature } from '@/lib/skilling/types.js';
+import { HunterTechniqueEnum } from '@/lib/skilling/types.js';
 
 const falconryCreatures: Creature[] = [
 	{

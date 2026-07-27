@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { FloatBank } from '../../src/lib/structures/Bank';
+import { FloatBank } from '../../src/lib/structures/Bank.js';
 
 describe('Floatbank', () => {
 	test('multiply', () => {

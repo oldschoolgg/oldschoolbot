@@ -1,8 +1,8 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import { GemTable } from '../../../subtables/RareDropTable';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-export const IcefiendTable = new LootTable({ limit: 128 })
+export const IcefiendTable: LootTable = new LootTable({ limit: 128 })
 	.tertiary(128, 'Clue scroll (easy)')
 
 	/* Runes */
@@ -16,7 +16,7 @@ export const IcefiendTable = new LootTable({ limit: 128 })
 	/* Subtable */
 	.add(GemTable, 1, 3);
 
-export default new SimpleMonster({
+export const Icefiend: SimpleMonster = new SimpleMonster({
 	id: 3140,
 	name: 'Icefiend',
 	table: IcefiendTable,

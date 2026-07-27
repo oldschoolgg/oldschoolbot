@@ -1,8 +1,8 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import RareDropTable, { GemTable } from '../../../subtables/RareDropTable';
+import { GemTable, RareDropTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const ancientPageTable = new LootTable()
+const ancientPageTable: LootTable = new LootTable()
 	.add(11_341, 1, 1)
 	.add(11_342, 1, 1)
 	.add(11_343, 1, 1)
@@ -30,7 +30,7 @@ const ancientPageTable = new LootTable()
 	.add(11_365, 1, 1)
 	.add(11_366, 1, 1);
 
-const MithrilDragonTable = new LootTable()
+const MithrilDragonTable: LootTable = new LootTable()
 	.every('Dragon bones')
 	.every('Mithril bar', 3)
 
@@ -73,7 +73,7 @@ const MithrilDragonTable = new LootTable()
 	.tertiary(350, 'Clue scroll (elite)')
 	.tertiary(10_000, 'Draconic visage');
 
-export default new SimpleMonster({
+export const MithrilDragon: SimpleMonster = new SimpleMonster({
 	id: 2919,
 	name: 'Mithril Dragon',
 	table: MithrilDragonTable,

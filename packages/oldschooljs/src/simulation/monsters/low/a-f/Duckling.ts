@@ -1,9 +1,9 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-export const DucklingTable = new LootTable();
+export const DucklingTable: LootTable = new LootTable();
 
-export default new SimpleMonster({
+export const Duckling: SimpleMonster = new SimpleMonster({
 	id: 2001,
 	name: 'Duckling',
 	table: DucklingTable,

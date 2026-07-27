@@ -2,43 +2,40 @@
 title: "Fight Caves"
 ---
 
-## Overview
+You can challenge the Fight Caves and TzTok-Jad to receive a [[Fire cape]], [[Tokkul]], and the [[TzRek-Jad]] pet. Better ranged gear will reduce the time each attempt takes at a rate of roughly 1% per 5 ranged attack bonus, as will total TzTok-Jad kill count. You can equip your best ranged gear with the autoequip command [[/gear equip gear_setup\:Range auto\:attack_ranged]]. The number of total attempts you have made will determine your chances of killing TzTok-Jad when he is reached.
 
-You can challenge the Fight Caves and TzTok-Jad to receive a fire cape, tokkul, and the TzRek-Jad pet using the `+fightcaves` command. Better range gear will reduce the time each attempt takes at a rate of roughly 1% per 5 attack value, as will total Jad kc. \
-You can equip your best ranged gear with the autoequip command `+autoequip range attack ranged`\
-The number of total attempts you have made will determine your chances of killing Jad when he is reached.\
-You can make 4 dose potions from 3, 2, and 1 dose drops using the `+decant` command. Should you fail before the final wave, some of your potions will be refunded.
+You can make 4-dose potions from 3, 2, and 1-dose drops using the [[/activities decant]] command. Should you fail before the final wave, some of your potions will be refunded.
 
-## Requirements & Boosts
+Start the Fight Caves using [[/activities fight_caves]].
 
-- \+160 range bonus equipped to your range gear setup.
-- 43 prayer
-- 10x Prayer Potion (4), 4x Super Restore (4) and 6x Saradomin Brew (4) per attempt.
-- Saradomin Godsword equipped in melee gear setup will reduce your chances of dying before Jad by 4%.
+---
 
-If you have extra fire capes, you can gamble them for an additional roll at the TzRek-Jad pet using the `+capegamble` command.
+## Requirements
 
-Tokkul can be spent using the `+tokkulshop` command.
+- +160 ranged attack bonus equipped to your ranged gear setup
+- [[prayer:43]]
+- 10x [[Prayer potion(4)]], 4x [[Super restore(4)]], and 6x [[Saradomin brew(4)]] per attempt
 
-## Survival Chance
+---
 
-Your chance of survival during the fightcaves is calculated based on your number of attempts and whether or not you have a Saradomin Godsword equiped (in any gear setup).
+## Boosts
 
-The chance of survival is shown in the table below.
+- [[Twisted bow]]: 15% 
+- On a TzHaar slayer task with a [[Black mask (i)]]: 15% 
+- Total TzTok-Jad or TzKal-Zuk kills: up to 50%
+- Every 5 ranged attack bonus above the minimum: ~1%
 
-| Attempts | Survival (Without SGS) | Survival (With SGS) |
-| -------- | ---------------------- | ------------------- |
-| 0        | 0.9%                   | 0.9%                |
-| 1        | 0.9%                   | 0.9%                |
-| 2        | 23.4%                  | 24.4%               |
-| 3        | 37.7%                  | 39.4%               |
-| 4        | 48.9%                  | 51%                 |
-| 5        | 57%                    | 59.4%               |
-| 6        | 63.7%                  | 66.3%               |
-| 7        | 68.4%                  | 71.3%               |
-| 8        | 73.2%                  | 76.2%               |
-| 9        | 77.9%                  | 81.2%               |
-| 10       | 81.7%                  | 85.1%               |
-| 11       | 84.6%                  | 88.1%               |
-| 12       | 87.4%                  | 91.1%               |
-| 13       | 90.3%                  | 94.1%               |
+---
+
+## Death Chance
+
+The table below shows the **overall survival rate** for some example attempt counts, with and without a [[Saradomin godsword]] equipped, and with Inferno completion:
+
+| Attempts | Survival (No SGS) | Survival (With SGS) | Survival (With SGS & Inferno KC) |
+|----------|-------------------|---------------------|-----------------------------------|
+| 0 | 0.86% | 0.90% | 0.99% |
+| 5 | 57.00% | 59.40% | 72.60% |
+| 10 | 81.70% | 85.14% | 89.76% |
+| 15 | 90.25% | 94.05% | 94.05% |
+
+

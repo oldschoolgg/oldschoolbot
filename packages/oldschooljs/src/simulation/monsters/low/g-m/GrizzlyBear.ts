@@ -1,7 +1,7 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-export const GrizzlyBearTable = new LootTable()
+export const GrizzlyBearTable: LootTable = new LootTable()
 	.every('Bones')
 	.every('Bear fur')
 	.every('Raw bear meat')
@@ -10,7 +10,7 @@ export const GrizzlyBearTable = new LootTable()
 	.tertiary(25, 'Ensouled bear head', 1)
 	.tertiary(90, 'Clue scroll (beginner)', 1);
 
-export default new SimpleMonster({
+export const GrizzlyBear: SimpleMonster = new SimpleMonster({
 	id: 3423,
 	name: 'Grizzly bear',
 	table: GrizzlyBearTable,

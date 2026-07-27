@@ -26,7 +26,7 @@ const itemRenames = [
 ];
 
 async function renameItems() {
-	const itemData = JSON.parse(readFileSync('./src/data/items/item_data.json', 'utf-8'));
+	const itemData = JSON.parse(readFileSync('./src/assets/item_data.json', 'utf-8'));
 
 	for (const [id, newName] of itemRenames) {
 		if (!itemData[id]) {
@@ -41,7 +41,7 @@ async function renameItems() {
 		itemData[id].name = newName;
 	}
 
-	writeFileSync('./src/data/items/item_data.json', JSON.stringify(itemData, null, 2), 'utf-8');
+	writeFileSync('./src/assets/item_data.json', JSON.stringify(itemData, null, 2), 'utf-8');
 }
 
 renameItems();

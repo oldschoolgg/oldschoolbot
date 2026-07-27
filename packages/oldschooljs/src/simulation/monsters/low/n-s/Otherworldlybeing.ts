@@ -1,7 +1,7 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import { GemTable } from '../../../subtables/RareDropTable';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const OtherworldlybeingTable = new LootTable({ limit: 128 })
 	/* Runes */
@@ -24,7 +24,7 @@ const OtherworldlybeingTable = new LootTable({ limit: 128 })
 	/* Gem drop table */
 	.add(GemTable, 1, 3);
 
-export default new SimpleMonster({
+export const OtherworldlyBeing: SimpleMonster = new SimpleMonster({
 	id: 2843,
 	name: 'Otherworldly being',
 	table: OtherworldlybeingTable,

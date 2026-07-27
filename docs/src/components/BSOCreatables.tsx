@@ -1,7 +1,7 @@
+import _creatables from '@data/bso/creatables.json';
 import { useState } from 'preact/compat';
 import { groupBy } from 'remeda';
 
-import _creatables from '@data/bso/creatables.json';
 import { Accordion, AccordionItem } from './Accordion.js';
 
 const creatables = _creatables.data as {

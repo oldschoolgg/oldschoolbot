@@ -1,9 +1,9 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import { GemTable } from '../../../subtables/RareDropTable';
-import RareSeedTable from '../../../subtables/RareSeedTable';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import RareSeedTable from '@/simulation/subtables/RareSeedTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const DagannothTable = new LootTable()
+const DagannothTable: LootTable = new LootTable()
 	.every('Bones')
 
 	/* Weapons*/
@@ -49,7 +49,7 @@ const DagannothTable = new LootTable()
 	.tertiary(40, 'Ensouled dagannoth head')
 	.tertiary(128, 'Clue scroll (medium)');
 
-export default new SimpleMonster({
+export const Dagannoth: SimpleMonster = new SimpleMonster({
 	id: 3185,
 	name: 'Dagannoth',
 	table: DagannothTable,

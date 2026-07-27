@@ -1,14 +1,16 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import { itemTupleToTable } from '../../../../util';
-import RareDropTable from '../../../subtables/RareDropTable';
-import TreeHerbSeedTable from '../../../subtables/TreeHerbSeedTable';
+import { RareDropTable } from '@/simulation/subtables/RareDropTable.js';
+import TreeHerbSeedTable from '@/simulation/subtables/TreeHerbSeedTable.js';
+import LootTable, { itemTupleToTable } from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const AlchemicalHydraBrimstoneRingTable = new LootTable().add("Hydra's eye").add("Hydra's fang").add("Hydra's heart");
+const AlchemicalHydraBrimstoneRingTable: LootTable = new LootTable()
+	.add("Hydra's eye")
+	.add("Hydra's fang")
+	.add("Hydra's heart");
 
-const RuneArmourTable = new LootTable().every('Rune platebody').add('Rune platelegs').add('Rune plateskirt');
+const RuneArmourTable: LootTable = new LootTable().every('Rune platebody').add('Rune platelegs').add('Rune plateskirt');
 
-const NotedHerbsTable = new LootTable()
+const NotedHerbsTable: LootTable = new LootTable()
 	.add('Grimy avantoe', [10, 15], 4)
 	.add('Grimy kwuarm', [25, 30], 4)
 	.add('Grimy ranarr weed', [10, 15], 3)
@@ -18,7 +20,7 @@ const NotedHerbsTable = new LootTable()
 	.add('Grimy lantadyme', [25, 30], 2)
 	.add('Grimy torstol', [10, 15], 2);
 
-const NormalTable = new LootTable()
+const NormalTable: LootTable = new LootTable()
 	.every('Hydra bones')
 
 	/* Weapons and armour */
@@ -77,7 +79,7 @@ const NormalTable = new LootTable()
 	/* Rare drop table */
 	.add(RareDropTable, 1, 1);
 
-const NormalUniqueTable = new LootTable()
+const NormalUniqueTable: LootTable = new LootTable()
 	.every(NormalTable)
 	.oneIn(2000, 'Dragon thrownaxe', [500, 1000])
 	.oneIn(2000, 'Dragon knife', [500, 1000])
@@ -86,7 +88,7 @@ const NormalUniqueTable = new LootTable()
 	.oneIn(512, 'Hydra leather')
 	.oneIn(180, AlchemicalHydraBrimstoneRingTable);
 
-const AlchemicalHydraTable = new LootTable()
+const AlchemicalHydraTable: LootTable = new LootTable()
 	.every(NormalUniqueTable)
 	.every(NormalTable)
 
@@ -97,7 +99,7 @@ const AlchemicalHydraTable = new LootTable()
 	.tertiary(2000, 'Jar of chemicals')
 	.tertiary(3000, 'Ikkle hydra');
 
-export default new SimpleMonster({
+export const AlchemicalHydra: SimpleMonster = new SimpleMonster({
 	id: 8615,
 	name: 'Alchemical Hydra',
 	table: AlchemicalHydraTable,

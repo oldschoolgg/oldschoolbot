@@ -1,7 +1,7 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit';
 import { describe, expect, test } from 'vitest';
 
-import { PercentCounter } from '../../src/lib/structures/PercentCounter';
+import { PercentCounter } from '../../src/lib/structures/PercentCounter.js';
 
 describe('itemArg', () => {
 	test('not applying', async () => {

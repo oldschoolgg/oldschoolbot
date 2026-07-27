@@ -1,9 +1,9 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import { GemTable } from '../../../subtables/RareDropTable';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-export const BasiliskPreTable = new LootTable()
+export const BasiliskPreTable: LootTable = new LootTable()
 	/* Weapons and armour */
 	.add('Mithril axe', 1, 3)
 	.add('Steel battleaxe', 1, 3)
@@ -35,14 +35,14 @@ export const BasiliskPreTable = new LootTable()
 	/* RDT */
 	.add(GemTable, 1, 5);
 
-const BasiliskTable = new LootTable()
+const BasiliskTable: LootTable = new LootTable()
 	.every('Bones')
 	.every(BasiliskPreTable)
 
 	/* Tertiary */
 	.tertiary(2000, 'Basilisk head');
 
-export default new SimpleMonster({
+export const Basilisk: SimpleMonster = new SimpleMonster({
 	id: 417,
 	name: 'Basilisk',
 	table: BasiliskTable,

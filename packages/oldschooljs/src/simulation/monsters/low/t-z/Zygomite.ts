@@ -1,11 +1,11 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import CommonSeedDropTable from '../../../subtables/CommonSeedDropTable';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import RareDropTable from '../../../subtables/RareDropTable';
+import { CommonSeedDropTable } from '@/simulation/subtables/CommonSeedDropTable.js';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
+import { RareDropTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 // TODO: check back for wiki drop table update
-const ZygomiteTable = new LootTable()
+const ZygomiteTable: LootTable = new LootTable()
 	.every('Ashes')
 
 	/* Weapons and armour */
@@ -35,7 +35,7 @@ const ZygomiteTable = new LootTable()
 	/* RDT */
 	.add(RareDropTable, 1, 1);
 
-export default new SimpleMonster({
+export const Zygomite: SimpleMonster = new SimpleMonster({
 	id: 537,
 	name: 'Zygomite',
 	table: ZygomiteTable,

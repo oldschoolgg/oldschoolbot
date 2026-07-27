@@ -1,0 +1,69 @@
+---
+import { ClientRouter } from "astro:transitions";
+import Header from "../components/astro/Header";
+import "../styles/global.css";
+
+const defaultTitle = "Oldschool.gg";
+
+const defaultDescription =
+	"Old School Bot is a Old School RuneScape (OSRS) Discord Bot, Oldschool.gg is also the home of a Loot simulator, Clue simulator and other fun tools.";
+
+const defaultKeywords = [
+	"runescape bot",
+	"osrs bot",
+	"rs bot",
+	"discord",
+	"osrs",
+	"oldschool bot",
+];
+
+interface Props {
+	pageTitle?: string;
+	desc?: string;
+	keywords?: string[];
+	image?: string;
+	url?: string;
+}
+
+const { pageTitle, desc, keywords, image, url } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>
+			{pageTitle ? `${pageTitle} - Oldschool.gg` : defaultTitle}
+		</title>
+		<meta
+			name="og:title"
+			content={pageTitle ? `${pageTitle} - Oldschool.gg` : defaultTitle}
+		/>
+		<meta name="description" content={desc || defaultDescription} />
+		<meta name="og:description" content={desc || defaultDescription} />
+		<meta
+			name="keywords"
+			content={(keywords || defaultKeywords).join(", ")}
+		/>
+		<meta name="og:url" content={url || "https://www.oldschool.gg/"} />
+		<meta
+			name="og:image"
+			content={image || "https://www.oldschool.gg/logo.jpg"}
+		/>
+
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" href="/favicon.ico" />
+		<ClientRouter />
+	</head>
+	<body class="dark">
+		<Header client:visible />
+		<main class="z-10 relative">
+			{
+				pageTitle && (
+					<h2 class="text-center text-2xl mb-4">{pageTitle}</h2>
+				)
+			}
+			<slot />
+		</main>
+	</body>
+</html>

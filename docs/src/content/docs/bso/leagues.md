@@ -43,7 +43,7 @@ You buy them using [[/buy]]. For ornament kit items or similar, such as Trailbla
 
 ### Rewards in BSO
 
-- [Brain lee](custom-items/pets.md#no-perks), the Leagues pet, can be claimed at 40k points. The pet is untradeable and has no perk. It cannot be regained if you drop it or lose it.
+- [Brain lee](/bso/custom-items/pets/#meme-pets--no-perk-pets), the Leagues pet, can be claimed at 40k points. The pet is untradeable and has no perk. It cannot be regained if you drop it or lose it.
 - +1 minute max trip length can be claimed at 50k points. It's a permanent, global +1 minute max trip length extension to all trips.
 
 Neither of the above rewards deduct points from your point balance; they are simply unlocked for free. You'll automatically get them the next time you use [[/leagues claim]] if you have enough total points.

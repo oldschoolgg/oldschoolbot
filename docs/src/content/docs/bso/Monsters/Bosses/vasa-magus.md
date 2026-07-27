@@ -32,18 +32,18 @@ Use the best possible mage gear. Virtus is the best option besides Gorajan Occul
 
 - **Magus Scroll:**
 
-  - Imbue a Bryophyta Staff to double its chance of saving nature runes  
+  - Imbue a Bryophyta Staff to double its chance of saving nature runes
     → [[/create item\:bryophyta staff(i)]]
-  - Imbue an Ignis Ring to make the BiS melee ring  
+  - Imbue an Ignis Ring to make the BiS melee ring
     → [[/create item\:ignis ring (i)]]
-  - Imbue an Infernal Slayer Helmet (see [Emerged Zuk Inferno](../../minigames/emerged-zuk-inferno.md))  
+  - Imbue an Infernal Slayer Helmet (see [[Emerged Zuk Inferno]])
     → [[/create item\:infernal slayer helmet(i)]]
-  - Imbue a Spellbound Ring from [Naxxus](/bosses/naxxus)  
+  - Imbue a Spellbound Ring from [[Naxxus]]
     → [[/create item\:spellbound ring(i)]]
 
 - **Voidling:** Pet that alchs items from your favorite alchs list while on trips. Works faster with a Magic Master Cape.
 - **Tattered Robes of Vasa:** Used to craft a Vasa Cloak, the BiS mage cape
-  - Requires [[runecraft:105]], [[crafting:105]], 1 Imbued Mage Arena Cape, 1 Abyssal Cape, and 1 Tattered Robes of Vasa  
+  - Requires [[runecraft:105]], [[crafting:105]], 1 Imbued Mage Arena Cape, 1 Abyssal Cape, and 1 Tattered Robes of Vasa
     → [[/create item\:vasa cloak]]
 - **Magical Artifact:** Alchs for 50M
 - **Jar of Magic:** Has no use

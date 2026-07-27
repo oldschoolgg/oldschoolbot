@@ -11,7 +11,7 @@ Additionally, master capes have a perk that is related to the skill they corresp
 | Skill         | Perk                                                                                                                                                                                                                                                                    |
 | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Attack        | 15% boost to non-boss [[/k]] while training melee                                                                                                                                                                                                                       |
-| Strength      | 15% boost to [Mad Marimbo's Monkey Rumble](../../minigames/mad-marimbos-monkey-rumble/)                                                                                                                                                                                 |
+| Strength      | 15% boost to [[Marimbo's Monkey Rumble]]                                                                                                                                                                               |
 | Defence       | _(Perk not yet added)_                                                                                                                                                                                                                                                  |
 | Ranged        | Reduces arrow usage by 90%, 15% boost to non-boss [[/k]] when training ranged                                                                                                                                                                                           |
 | Prayer        | 40% fewer Prayer Potions consumed while using Dwarven Blessing                                                                                                                                                                                                          |
@@ -19,7 +19,7 @@ Additionally, master capes have a perk that is related to the skill they corresp
 | Runecrafting  | 2x boost to runecrafting and to the ODS minigame                                                                                                                                                                                                                        |
 | Construction  | Hatches Nursery Eggs at 2x speed                                                                                                                                                                                                                                        |
 | Invention     | 5% faster disassembly, 5% less junk chance, 5% materials saved                                                                                                                                                                                                          |
-| Hitpoints     | Extends general PvM, Wintertodt, Barbarian Assault, Hallowed Sepulchre, Soul Wars, and Pickpocketing trips' max length by 20%. Extends [bosses](../../bso-custom-killables/bosses/) and [Dungeoneering](../../skills/dungeoneering-training/) trips' max length by 10%. |
+| Hitpoints     | Extends general PvM, Wintertodt, Barbarian Assault, Hallowed Sepulchre, Soul Wars, and Pickpocketing trips' max length by 20%. Extends [bosses](../../bso-custom-killables/bosses/) and [[Dungeoneering]] trips' max length by 10%. |
 | Agility       | Acts as a full set of graceful                                                                                                                                                                                                                                          |
 | Herblore      | 10% extra products when mixing potions                                                                                                                                                                                                                                  |
 | Thieving      | 30% thieving boost                                                                                                                                                                                                                                                      |
@@ -50,7 +50,7 @@ There are 4 expert capes that you can buy once you have bought all required mast
 
 ## Master Quest Cape
 
-The Master Quest cape can be purchased with [[/buy name:Master quest cape]] for 1b gp once you have at least 5000 quest points. Owning this cape is required in order to buy a Completionist cape.
+The Master Quest cape can be purchased with [[/buy name\:Master quest cape]] for 1b gp once you have at least 5000 quest points. Owning this cape is required in order to buy a Completionist cape.
 
 ## Completionist Capes
 

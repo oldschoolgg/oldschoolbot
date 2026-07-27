@@ -4,10 +4,10 @@ title: "Fletching"
 
 ## Custom Content and Boosts
 
-- **Hellfire Bow** – Crafted using 1 [Dragon's fury](herblore.md#custom-items-and-content), Twisted bow, Zaryte bow, [Ignecarus dragonclaw](../bso-custom-killables/bosses/ignecarus.md#loot), and 3 Smouldering stones at [[fletching:110]]
+- **Hellfire Bow** – Crafted using 1 [Dragon's fury](herblore#custom-items-and-content), Twisted bow, Zaryte bow, [[Ignecarus dragonclaw]] and 3 Smouldering stones at [[fletching:110]]
 - **Hellfire Arrows** – Crafted using 1 Headless arrow + 1 Ignecarus Scale (1:1:5 ratio) at [[fletching:110]]
-- [**Scruffy**](/custom-items/pets) – 2× fletching speed
-- [**Dwarven Knife**](/custom-items/equippables#dwarven-equipment) – 2× fletching speed (stacks with Scruffy)
+- [**Scruffy**](/bso/custom-items/pets) – 2× fletching speed
+- [**Dwarven Knife**](/bso/custom-items/#dwarven-equipment) – 2× fletching speed (stacks with Scruffy)
 - **Elder Longbow (u)** – Fletched from Elder logs at [[fletching:105]]
 - **Elder Longbow** – Fletched using Elder Longbow (u) + Bowstring at [[fletching:105]]
 - **Fletcher's Skilling Outfit** – +3% bonus XP on [[/fletch]]

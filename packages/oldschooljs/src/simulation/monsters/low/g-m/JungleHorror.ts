@@ -1,9 +1,8 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import { itemTupleToTable } from '../../../../util';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import { GemTable } from '../../../subtables/RareDropTable';
-import VariableAllotmentSeedTable from '../../../subtables/VariableAllotmentSeedTable';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import VariableAllotmentSeedTable from '@/simulation/subtables/VariableAllotmentSeedTable.js';
+import LootTable, { itemTupleToTable } from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const JungleHorrorTable = new LootTable({ limit: 129 })
 	.every('Bones')
@@ -56,7 +55,7 @@ const JungleHorrorTable = new LootTable({ limit: 129 })
 	.tertiary(40, 'Ensouled horror head')
 	.tertiary(128, 'Clue scroll (medium)');
 
-export default new SimpleMonster({
+export const JungleHorror: SimpleMonster = new SimpleMonster({
 	id: 1042,
 	name: 'Jungle horror',
 	table: JungleHorrorTable,

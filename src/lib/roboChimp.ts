@@ -1,14 +1,13 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit/util';
-import type { TriviaQuestion, User } from '@prisma/robochimp';
-import { calcWhatPercent, round, sumArr } from 'e';
-import deepEqual from 'fast-deep-equal';
+import { calcWhatPercent, formatOrdinal, round, sumArr } from '@oldschoolgg/toolkit';
 import type { Bank } from 'oldschooljs';
+import { isDeepEqual } from 'remeda';
 
-import { BOT_TYPE, globalConfig, masteryKey } from './constants';
-import { getTotalCl } from './data/Collections';
-import { calculateMastery } from './mastery';
-import { cacheRoboChimpUser } from './perkTier';
-import { MUserStats } from './structures/MUserStats';
+import type { TriviaQuestion, User } from '@/prisma/clients/robochimp/client.js';
+import { BitField, BOT_TYPE, globalConfig, masteryKey } from '@/lib/constants.js';
+import { getTotalCl } from '@/lib/data/Collections.js';
+import { calculateMastery } from '@/lib/mastery.js';
+import { RobochimpBitfieldEnum } from '@/lib/perkTiers.js';
+import { MUserStats } from '@/lib/structures/MUserStats.js';
 
 export type RobochimpUser = User;
 
@@ -34,10 +33,26 @@ LIMIT 10;`;
 	return random;
 }
 
-const clKey: keyof User = 'osb_cl_percent';
-const levelKey: keyof User = 'osb_total_level';
+const clKey: keyof User = BOT_TYPE === 'OSB' ? 'osb_cl_percent' : 'bso_cl_percent';
+const levelKey: keyof User = BOT_TYPE === 'OSB' ? 'osb_total_level' : 'bso_total_level';
 const totalXPKey: keyof User = BOT_TYPE === 'OSB' ? 'osb_total_xp' : 'bso_total_xp';
 
+export async function syncOriginalCyrSupporterBit(user: MUser, roboChimpUser: RobochimpUser) {
+	if (!roboChimpUser.bits.includes(RobochimpBitfieldEnum.CyrsOriginalPatrons)) return;
+
+	if (user.bitfield.includes(BitField.OriginalCyrSupporter)) return;
+
+	await prisma.user.update({
+		where: {
+			id: user.id
+		},
+		data: {
+			bitfield: {
+				push: BitField.OriginalCyrSupporter
+			}
+		}
+	});
+}
 export async function roboChimpSyncData(user: MUser, newCL?: Bank) {
 	const id = BigInt(user.id);
 	const newCLArray: number[] = (newCL ?? user.cl).itemIDs;
@@ -84,28 +99,13 @@ export async function roboChimpSyncData(user: MUser, newCL?: Bank) {
 			...updateObj
 		}
 	});
-	cacheRoboChimpUser(newUser);
 
-	if (!deepEqual(newUser.store_bitfield, user.user.store_bitfield)) {
+	if (!isDeepEqual(newUser.store_bitfield, user.user.store_bitfield)) {
 		await user.update({ store_bitfield: newUser.store_bitfield });
 	}
+	await syncOriginalCyrSupporterBit(user, newUser);
+	await Cache.setRoboChimpUser(user.id, newUser);
 	return newUser;
-}
-
-export async function roboChimpUserFetch(userID: string): Promise<RobochimpUser> {
-	const result: RobochimpUser = await roboChimpClient.user.upsert({
-		where: {
-			id: BigInt(userID)
-		},
-		create: {
-			id: BigInt(userID)
-		},
-		update: {}
-	});
-
-	cacheRoboChimpUser(result);
-
-	return result;
 }
 
 export async function calculateOwnCLRanking(userID: string) {

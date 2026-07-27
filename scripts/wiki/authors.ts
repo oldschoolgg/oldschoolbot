@@ -38,7 +38,9 @@ export const authors: Author[] = [
 		avatar: 'https://cdn.oldschool.gg/avatars/badgehunter.webp'
 	},
 	{ gitIDs: ['code1100'], displayName: 'code1100', avatar: 'https://cdn.oldschool.gg/avatars/code1100.webp' },
-	{ gitIDs: ['JustDavyy'], displayName: 'JustDavyy', avatar: 'https://cdn.oldschool.gg/avatars/JustDavyy.webp' }
+	{ gitIDs: ['JustDavyy'], displayName: 'JustDavyy', avatar: 'https://cdn.oldschool.gg/avatars/JustDavyy.webp' },
+	{ gitIDs: ['chrisjeng', 'chris jeng'], displayName: 'Chris Jeng' },
+	{ gitIDs: ['twiceuponataco'], displayName: 'TwiceUponATaco' }
 ];
 
 export const authorsMap = new Map<string, Author>();

@@ -1,4 +1,6 @@
-import { LootTable, SkillsEnum } from 'oldschooljs';
+import { LootTable } from 'oldschooljs';
+
+import type { SkillNameType } from '@/lib/skilling/types.js';
 
 export const LeafTable = new LootTable()
 	.add('Leaves', 20)
@@ -11,53 +13,53 @@ export const LeafTable = new LootTable()
 interface ForestryEvent {
 	id: number;
 	name: string;
-	uniqueXP: SkillsEnum;
+	uniqueXP: SkillNameType;
 }
 
 export const ForestryEvents: ForestryEvent[] = [
 	{
 		id: 1,
 		name: 'Rising Roots',
-		uniqueXP: SkillsEnum.Woodcutting
+		uniqueXP: 'woodcutting'
 	},
 	{
 		id: 2,
 		name: 'Struggling Sapling',
-		uniqueXP: SkillsEnum.Farming
+		uniqueXP: 'farming'
 	},
 	{
 		id: 3,
 		name: 'Flowering Bush',
-		uniqueXP: SkillsEnum.Woodcutting
+		uniqueXP: 'woodcutting'
 	},
 	{
 		id: 4,
 		name: 'Woodcutting Leprechaun',
-		uniqueXP: SkillsEnum.Woodcutting
+		uniqueXP: 'woodcutting'
 	},
 	{
 		id: 5,
 		name: 'Beehive',
-		uniqueXP: SkillsEnum.Construction
+		uniqueXP: 'construction'
 	},
 	{
 		id: 6,
 		name: 'Friendly Ent',
-		uniqueXP: SkillsEnum.Fletching
+		uniqueXP: 'fletching'
 	},
 	{
 		id: 7,
 		name: 'Poachers',
-		uniqueXP: SkillsEnum.Hunter
+		uniqueXP: 'hunter'
 	},
 	{
 		id: 8,
 		name: 'Enchantment Ritual',
-		uniqueXP: SkillsEnum.Woodcutting
+		uniqueXP: 'woodcutting'
 	},
 	{
 		id: 9,
 		name: 'Pheasant Control',
-		uniqueXP: SkillsEnum.Thieving
+		uniqueXP: 'thieving'
 	}
 ];

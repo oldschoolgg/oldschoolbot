@@ -1,5 +1,5 @@
 import { itemID } from 'oldschooljs';
-interface Constructable {
+export interface Constructable {
 	id: number;
 	name: string;
 	input: [number, number];

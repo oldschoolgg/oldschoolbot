@@ -1,6 +1,9 @@
 import { beforeAll, describe, test } from 'vitest';
-import { LootTable, Monsters, SimpleMonster, itemTupleToTable } from '../';
-import { checkThreshold } from './testUtil';
+
+import { Monsters } from '@/simulation/monsters/index.js';
+import LootTable, { itemTupleToTable } from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
+import { checkThreshold } from './testUtil.js';
 
 describe('Monsters', () => {
 	const currentMonIDs = new Set();
@@ -23,7 +26,7 @@ describe('Monsters', () => {
 		.add(subSubTable);
 
 	beforeAll(async () => {
-		for (const monster of Monsters.values()) {
+		for (const monster of Monsters.values) {
 			if (!monster.aliases.some(alias => alias === monster.name.toLowerCase())) {
 				throw `${monster.name} should have its name as an alias.`;
 			}
@@ -84,7 +87,7 @@ describe('Monsters', () => {
 	});
 	test('Duplicate IDs', () => {
 		const ids: number[] = [];
-		for (const monster of Monsters.values()) {
+		for (const monster of Monsters.values) {
 			if (ids.includes(monster.id)) throw new Error(`${monster.id} is duplicated`);
 			ids.push(monster.id);
 		}

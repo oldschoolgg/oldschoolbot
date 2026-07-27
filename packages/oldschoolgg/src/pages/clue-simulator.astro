@@ -1,0 +1,12 @@
+---
+import { CluePage } from "@/components/pages/CluePage.js";
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout
+	pageTitle="Clue Simulator"
+	desc="Oldschool.gg's Clue Simulator lets you simulate opening clue caskets, to see what loot and items you would get, in a real image format."
+	keywords={["clue simulator", "clue", "medium", "casket"]}
+>
+	<CluePage client:only />
+</Layout>

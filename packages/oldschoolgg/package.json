@@ -1,0 +1,33 @@
+{
+	"name": "oldschoolgg",
+	"type": "module",
+	"version": "0.0.1",
+	"scripts": {
+		"start": "astro dev --port 5488 --host",
+		"build": "concurrently \"astro build\" \"tsc\"",
+		"preview": "astro preview",
+		"astro": "astro"
+	},
+	"dependencies": {
+		"@astrojs/react": "^4.4.2",
+		"@lucide/astro": "^0.555.0",
+		"@mantine/hooks": "^8.3.9",
+		"@oldschoolgg/util": "workspace:*",
+		"@tailwindcss/vite": "^4.1.17",
+		"@tanstack/react-table": "^8.21.3",
+		"astro": "5.17.3",
+		"lucide-react": "^0.555.0",
+		"oldschooljs": "workspace:*",
+		"react": "^19.2.0",
+		"react-dom": "^19.2.0",
+		"react-responsive-modal": "^7.1.0",
+		"tailwindcss": "^4.1.17",
+		"vite": "^6.4.1",
+		"wretch": "^3.0.5",
+		"zustand": "^5.0.9"
+	},
+	"devDependencies": {
+		"@types/react": "^19.2.6",
+		"@types/react-dom": "^19.2.3"
+	}
+}

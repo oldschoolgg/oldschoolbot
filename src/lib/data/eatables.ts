@@ -1,6 +1,6 @@
 import { itemID } from 'oldschooljs';
 
-import type { GearBank } from '../structures/GearBank';
+import type { GearBank } from '@/lib/structures/GearBank.js';
 
 interface Eatable {
 	name: string;
@@ -85,6 +85,11 @@ export const Eatables: readonly Eatable[] = [
 	{
 		name: 'Stew',
 		id: itemID('Stew'),
+		healAmount: 11
+	},
+	{
+		name: 'Rainbow fish',
+		id: itemID('Rainbow fish'),
 		healAmount: 11
 	},
 	{

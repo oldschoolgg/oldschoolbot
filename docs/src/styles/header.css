@@ -1,0 +1,35 @@
+.social-icons {
+	display: flex;
+	gap: 3px;
+}
+
+.social-icons::after {
+	display: none;
+}
+
+.social-icons .social-icon {
+	--size: 28px;
+	font-size: 1.7em;
+	height: var(--size) !important;
+	width: var(--size) !important;
+
+	background-color: transparent;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	margin: 0 4px;
+	padding: 0px;
+
+	cursor: pointer;
+
+	& > svg {
+		color: var(--sl-icon-color);
+		fill: var(--sl-icon-color);
+	}
+}
+
+.social-icons .social-icon svg {
+	color: var(--sl-icon-color);
+	fill: var(--sl-icon-color);
+}

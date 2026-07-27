@@ -1,8 +1,8 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import { makeRevTable } from '../../../../util';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
+import { makeRevTable } from '@/util/revs.js';
 
-export const RevenantImpTable = new LootTable()
+export const RevenantImpTable: LootTable = new LootTable()
 	.tertiary(5000, 'Imp champion scroll')
 	.every('Revenant ether', [1, 3])
 
@@ -42,7 +42,7 @@ export const RevenantImpTable = new LootTable()
 	.add('Death rune', [60, 100], 3)
 	.add('Blood rune', [60, 100], 3);
 
-export default new SimpleMonster({
+export const RevenantImp: SimpleMonster = new SimpleMonster({
 	id: 7881,
 	name: 'Revenant imp',
 	table: RevenantImpTable,

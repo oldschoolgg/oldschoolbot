@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import decantPotionFromBank from '../../../lib/minions/functions/decantPotionFromBank';
+import decantPotionFromBank from '@/lib/minions/functions/decantPotionFromBank.js';
 
 export async function decantCommand(user: MUser, itemName: string, dose = 4) {
 	if (![1, 2, 3, 4].includes(dose)) return 'Invalid dose number.';
@@ -12,8 +12,7 @@ export async function decantCommand(user: MUser, itemName: string, dose = 4) {
 		return `You don't own ${potionsToRemove}.`;
 	}
 
-	await transactItems({
-		userID: user.id,
+	await user.transactItems({
 		filterLoot: false,
 		itemsToRemove: potionsToRemove,
 		itemsToAdd: potionsToAdd

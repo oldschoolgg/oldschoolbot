@@ -1,0 +1,236 @@
+[
+	{
+		"level": 15,
+		"xp": 40,
+		"id": 321,
+		"name": "Anchovies",
+		"pet_chance": 435165,
+		"time_per_fish": 7,
+		"clue_scroll_chance": 870330
+	},
+	{
+		"level": 82,
+		"xp": 120,
+		"id": 13439,
+		"name": "Anglerfish",
+		"pet_chance": 78649,
+		"bait": 13431,
+		"qp_required": 40,
+		"time_per_fish": 18.75,
+		"clue_scroll_chance": 78649
+	},
+	{
+		"level": 48,
+		"xp": 130,
+		"id": 11328,
+		"name": "Barbarian fishing",
+		"pet_chance": 426954,
+		"bait": 314,
+		"time_per_fish": 3,
+		"clue_scroll_chance": 1280862
+	},
+	{
+		"level": 46,
+		"xp": 100,
+		"id": 363,
+		"name": "Bass",
+		"pet_chance": 382609,
+		"time_per_fish": 10.3,
+		"big_fish": 7989,
+		"big_fish_rate": 1000,
+		"clue_scroll_chance": 1147827
+	},
+	{
+		"level": 38,
+		"xp": 80,
+		"id": 5001,
+		"name": "Cave eel",
+		"time_per_fish": 12.6
+	},
+	{
+		"level": 23,
+		"xp": 45,
+		"id": 341,
+		"name": "Cod",
+		"pet_chance": 382609,
+		"time_per_fish": 5,
+		"clue_scroll_chance": 1147827
+	},
+	{
+		"level": 85,
+		"xp": 130,
+		"id": 11934,
+		"name": "Dark crab",
+		"pet_chance": 149434,
+		"bait": 11940,
+		"time_per_fish": 11.7,
+		"clue_scroll_chance": 149434
+	},
+	{
+		"level": 10,
+		"xp": 30,
+		"id": 345,
+		"name": "Herring",
+		"pet_chance": 528000,
+		"bait": 313,
+		"time_per_fish": 3.6,
+		"clue_scroll_chance": 1056000
+	},
+	{
+		"level": 80,
+		"xp": 95,
+		"id": 21293,
+		"name": "Infernal eel",
+		"pet_chance": 160000,
+		"bait": 313,
+		"time_per_fish": 12.4,
+		"clue_scroll_chance": 165000
+	},
+	{
+		"level": 65,
+		"xp": 50,
+		"id": 3142,
+		"name": "Karambwan",
+		"pet_chance": 170874,
+		"bait": 3150,
+		"time_per_fish": 4.5,
+		"clue_scroll_chance": 170874
+	},
+	{
+		"level": 5,
+		"xp": 20,
+		"id": 3150,
+		"name": "Karambwanji",
+		"pet_chance": 443697,
+		"qp_required": 15,
+		"time_per_fish": 3.6,
+		"clue_scroll_chance": 443697
+	},
+	{
+		"level": 40,
+		"xp": 90,
+		"id": 377,
+		"name": "Lobster",
+		"pet_chance": 116129,
+		"time_per_fish": 11,
+		"clue_scroll_chance": 116129
+	},
+	{
+		"level": 16,
+		"xp": 20,
+		"id": 353,
+		"name": "Mackerel",
+		"pet_chance": 382609,
+		"time_per_fish": 3.6,
+		"clue_scroll_chance": 1147827
+	},
+	{
+		"level": 82,
+		"xp": 26.1,
+		"id": 21356,
+		"name": "Minnow",
+		"pet_chance": 977778,
+		"qp_required": 1,
+		"time_per_fish": 2.14,
+		"clue_scroll_chance": 977778
+	},
+	{
+		"level": 62,
+		"xp": 120,
+		"id": 7944,
+		"name": "Monkfish",
+		"pet_chance": 138583,
+		"qp_required": 100,
+		"time_per_fish": 13.5,
+		"clue_scroll_chance": 138583
+	},
+	{
+		"level": 25,
+		"xp": 60,
+		"id": 349,
+		"name": "Pike",
+		"pet_chance": 305792,
+		"bait": 313,
+		"time_per_fish": 6,
+		"clue_scroll_chance": 305792
+	},
+	{
+		"level": 120,
+		"xp": 230,
+		"id": 50001,
+		"name": "Raw rocktail",
+		"pet_chance": 129434,
+		"time_per_fish": 7.7,
+		"clue_scroll_chance": 25434
+	},
+	{
+		"level": 30,
+		"xp": 70,
+		"id": 331,
+		"name": "Salmon",
+		"pet_chance": 461808,
+		"bait": 314,
+		"time_per_fish": 5.04,
+		"clue_scroll_chance": 923616
+	},
+	{
+		"level": 5,
+		"xp": 20,
+		"id": 327,
+		"name": "Sardine",
+		"pet_chance": 528000,
+		"bait": 313,
+		"time_per_fish": 3.6,
+		"clue_scroll_chance": 1056000
+	},
+	{
+		"level": 76,
+		"xp": 110,
+		"id": 383,
+		"name": "Shark",
+		"pet_chance": 82243,
+		"time_per_fish": 30,
+		"big_fish": 7993,
+		"big_fish_rate": 5000,
+		"clue_scroll_chance": 82243
+	},
+	{
+		"level": 1,
+		"xp": 10,
+		"id": 317,
+		"name": "Shrimps",
+		"pet_chance": 435165,
+		"time_per_fish": 3.6,
+		"clue_scroll_chance": 870330
+	},
+	{
+		"level": 50,
+		"xp": 100,
+		"id": 371,
+		"name": "Swordfish",
+		"pet_chance": 128885,
+		"time_per_fish": 11,
+		"big_fish": 7991,
+		"big_fish_rate": 2500,
+		"clue_scroll_chance": 257770
+	},
+	{
+		"level": 20,
+		"xp": 50,
+		"id": 335,
+		"name": "Trout",
+		"pet_chance": 461808,
+		"bait": 314,
+		"time_per_fish": 4.5,
+		"clue_scroll_chance": 923616
+	},
+	{
+		"level": 35,
+		"xp": 80,
+		"id": 359,
+		"name": "Tuna",
+		"pet_chance": 128885,
+		"time_per_fish": 9.6,
+		"clue_scroll_chance": 257770
+	}
+]

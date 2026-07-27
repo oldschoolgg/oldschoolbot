@@ -1,10 +1,10 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import { NotedHerbTable } from '../../../subtables/NotedHerbTable';
-import RareDropTable from '../../../subtables/RareDropTable';
-import TreeHerbSeedTable from '../../../subtables/TreeHerbSeedTable';
+import { NotedHerbTable } from '@/simulation/subtables/NotedHerbTable.js';
+import { RareDropTable } from '@/simulation/subtables/RareDropTable.js';
+import TreeHerbSeedTable from '@/simulation/subtables/TreeHerbSeedTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const UniqueTable = new LootTable()
+const UniqueTable: LootTable = new LootTable()
 	.add('Zenyte shard', 1, 5)
 	.add('Ballista limbs', 1, 3)
 	.add('Ballista spring', 1, 3)
@@ -53,7 +53,7 @@ const DemonicGorillaTable = new LootTable({ limit: 500 })
 	.tertiary(100, 'Clue scroll (hard)')
 	.tertiary(500, 'Clue scroll (elite)');
 
-export default new SimpleMonster({
+export const DemonicGorilla: SimpleMonster = new SimpleMonster({
 	id: 7144,
 	name: 'Demonic Gorilla',
 	table: DemonicGorillaTable,

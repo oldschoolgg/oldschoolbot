@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import type { PoHObject } from '..';
+import type { PoHObject } from '@/lib/poh/index.js';
 
 const cost = new Bank().add('Magic stone', 2);
 

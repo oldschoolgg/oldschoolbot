@@ -1,7 +1,7 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-export const InfernalMagePreTable = new LootTable()
+export const InfernalMagePreTable: LootTable = new LootTable()
 	/* Weapons and armour */
 	.oneIn(512, 'Mystic boots (dark)')
 	.oneIn(512, 'Mystic hat (dark)')
@@ -34,9 +34,9 @@ export const InfernalMagePreTable = new LootTable()
 	.add('Coins', 4, 8)
 	.add('Coins', 29, 3);
 
-const InfernalMageTable = new LootTable().every('Bones').every(InfernalMagePreTable);
+const InfernalMageTable: LootTable = new LootTable().every('Bones').every(InfernalMagePreTable);
 
-export default new SimpleMonster({
+export const InfernalMage: SimpleMonster = new SimpleMonster({
 	id: 447,
 	name: 'Infernal Mage',
 	table: InfernalMageTable,

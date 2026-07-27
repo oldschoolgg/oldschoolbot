@@ -1,8 +1,8 @@
-import { Time, calcWhatPercent, increaseNumByPercent } from 'e';
-import type { ItemBank } from '../meta/types';
-import Bank from '../structures/Bank';
-import Items from '../structures/Items';
-import itemID from './itemID';
+import { calcWhatPercent, increaseNumByPercent } from '@oldschoolgg/util';
+
+import { Bank, type ItemBank } from '@/structures/Bank.js';
+import { Items } from '@/structures/Items.js';
+import { Time } from '@/util/smallUtils.js';
 
 /**
  * Transforms a string-based bank to an ID-based bank
@@ -12,7 +12,7 @@ export function resolveNameBank<T>(nameBank: Record<string, T>): Record<string, 
 	const newBank: Record<string, T> = {};
 
 	for (const [name, val] of Object.entries(nameBank)) {
-		newBank[itemID(name)] = val;
+		newBank[Items.getId(name)] = val;
 	}
 
 	return newBank;
@@ -27,7 +27,7 @@ export function resolveBank(bank: Record<string, number>): ItemBank {
 
 	for (const [nameOrID, val] of Object.entries(bank)) {
 		const int = Number(nameOrID);
-		const id = Number.isNaN(int) ? itemID(nameOrID) : int;
+		const id = Number.isNaN(int) ? Items.getId(nameOrID) : int;
 		newBank[id] = val;
 	}
 
@@ -49,16 +49,7 @@ export function addItemToBank(bank: ItemBank, itemID: number, amountToAdd = 1): 
 	return newBank;
 }
 
-export function fasterResolveBank(bank: ItemBank) {
-	const firstKey = Object.keys(bank)[0];
-	if (!Number.isNaN(Number(firstKey))) {
-		return bank;
-	}
-
-	return resolveBank(bank);
-}
-
-export function increaseBankQuantitesByPercent(bank: Bank, percent: number, whitelist: number[] | null = null) {
+export function increaseBankQuantitesByPercent(bank: Bank, percent: number, whitelist: number[] | null = null): void {
 	for (const [item, qty] of bank.items()) {
 		if (whitelist !== null && !whitelist.includes(item.id)) continue;
 		const increased = Math.floor(increaseNumByPercent(qty, percent));
@@ -66,7 +57,7 @@ export function increaseBankQuantitesByPercent(bank: Bank, percent: number, whit
 	}
 }
 
-export function convertBankToPerHourStats(bank: Bank, time: number) {
+export function convertBankToPerHourStats(bank: Bank, time: number): string[] {
 	const result = [];
 	for (const [item, qty] of bank.items()) {
 		result.push(`${(qty / (time / Time.Hour)).toFixed(1)}/hr ${item.name}`);
@@ -74,7 +65,7 @@ export function convertBankToPerHourStats(bank: Bank, time: number) {
 	return result;
 }
 
-export function calcDropRatesFromBank(bank: Bank, iterations: number, uniques: number[]) {
+export function calcDropRatesFromBank(bank: Bank, iterations: number, uniques: number[]): string {
 	const result = [];
 	let uniquesReceived = 0;
 	for (const [item, qty] of bank.items().sort((a, b) => a[1] - b[1])) {
@@ -96,7 +87,7 @@ export function calcDropRatesFromBank(bank: Bank, iterations: number, uniques: n
 	return result.join(', ');
 }
 
-export function calcDropRatesFromBankWithoutUniques(bank: Bank, iterations: number) {
+export function calcDropRatesFromBankWithoutUniques(bank: Bank, iterations: number): string[] {
 	const results: string[] = [];
 	for (const [item, qty] of bank.items().sort((a, b) => a[1] - b[1])) {
 		const rate = Math.round(iterations / qty);
@@ -114,7 +105,7 @@ export function addBanks(banks: ItemBank[]): Bank {
 	return bank;
 }
 
-export function averageBank(bank: Bank, kc: number) {
+export function averageBank(bank: Bank, kc: number): Bank {
 	const newBank = new Bank();
 	for (const [item, qty] of bank.items()) {
 		newBank.add(item.id, Math.floor(qty / kc));
@@ -122,9 +113,9 @@ export function averageBank(bank: Bank, kc: number) {
 	return newBank;
 }
 
-export function generateRandomBank(size = 100, amountPerItem = 10000) {
+export function generateRandomBank(size = 100, amountPerItem = 10000): Bank {
 	const bank = new Bank();
-	for (let i = 0; i < size; i++) {
+	while (bank.length !== size) {
 		bank.add(Items.random().id, amountPerItem);
 	}
 	return bank;

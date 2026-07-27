@@ -1,22 +1,15 @@
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/discord-util';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { Time } from 'e';
-import { Bank, itemID } from 'oldschooljs';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { Bank, EItem, itemID } from 'oldschooljs';
 
-import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
-import Cooking, { Cookables } from '../../lib/skilling/skills/cooking/cooking';
-import ForestryRations from '../../lib/skilling/skills/cooking/forestersRations';
-import LeapingFish from '../../lib/skilling/skills/cooking/leapingFish';
-import type { CookingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { cutLeapingFishCommand } from '../lib/abstracted_commands/cutLeapingFishCommand';
-import { forestersRationCommand } from '../lib/abstracted_commands/forestersRationCommand';
-import type { OSBMahojiCommand } from '../lib/util';
+import Cooking, { Cookables, CookingMethodEnum, CookingMethods } from '@/lib/skilling/skills/cooking/cooking.js';
+import ForestryRations from '@/lib/skilling/skills/cooking/forestersRations.js';
+import { LeapingFish } from '@/lib/skilling/skills/cooking/leapingFish.js';
+import type { CookingActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
+import { cutLeapingFishCommand } from '@/mahoji/lib/abstracted_commands/cutLeapingFishCommand.js';
+import { forestersRationCommand } from '@/mahoji/lib/abstracted_commands/forestersRationCommand.js';
 
-export const cookCommand: OSBMahojiCommand = {
+export const cookCommand = defineCommand({
 	name: 'cook',
 	description: 'Cook things using the cooking skill.',
 	attributes: {
@@ -26,13 +19,14 @@ export const cookCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The thing you want to cook.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return [
 					...Cookables.map(i => i.name),
+					...CookingMethods.map(i => i.name),
 					...LeapingFish.map(i => i.item.name),
 					...ForestryRations.map(i => i.name)
 				]
@@ -44,15 +38,14 @@ export const cookCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to cook (optional).',
 			required: false,
 			min_value: 1
 		}
 	],
-	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user, channelId }) => {
 		let { quantity, name } = options;
 
 		const barbarianFish = LeapingFish.find(
@@ -63,7 +56,7 @@ export const cookCommand: OSBMahojiCommand = {
 		);
 
 		if (barbarianFish) {
-			return cutLeapingFishCommand({ user, channelID, name, quantity });
+			return cutLeapingFishCommand({ user, channelId, name, quantity });
 		}
 
 		const forestryFood = ForestryRations.find(
@@ -72,19 +65,73 @@ export const cookCommand: OSBMahojiCommand = {
 		);
 
 		if (forestryFood) {
-			return forestersRationCommand({ user, channelID, name, quantity });
+			return forestersRationCommand({ user, channelId, name, quantity });
+		}
+
+		const cookingMethod = CookingMethods.find(
+			method => stringMatches(method.name, name) || method.aliases.some(alias => stringMatches(alias, name))
+		);
+
+		if (cookingMethod?.type === CookingMethodEnum.KarambwanShop) {
+			if (user.skillLevel('cooking') < cookingMethod.level) {
+				return `${user.minionName} needs ${cookingMethod.level} Cooking to do ${cookingMethod.name}.`;
+			}
+
+			const timeToCookSingleCookable = Time.Hour / cookingMethod.quantityPerHour;
+			const maxTripLength = await user.calcMaxTripLength('Cooking');
+			if (!quantity) {
+				quantity = Math.floor(maxTripLength / timeToCookSingleCookable);
+				quantity = Math.min(quantity, Math.floor(Number(user.GP) / cookingMethod.gpCost));
+			}
+			if (quantity < 1) {
+				return `You need at least ${cookingMethod.gpCost.toLocaleString()} GP to buy Raw karambwan.`;
+			}
+
+			const duration = quantity * timeToCookSingleCookable;
+			if (duration > maxTripLength) {
+				return `${user.minionName} can't go on trips longer than ${formatDuration(
+					maxTripLength
+				)} minutes, try a lower quantity. The highest amount of karambwans you can cook and drop is ${Math.floor(
+					maxTripLength / timeToCookSingleCookable
+				)}.`;
+			}
+
+			const totalCost = new Bank().add('Coins', quantity * cookingMethod.gpCost);
+			if (!user.owns(totalCost)) {
+				return `You need ${totalCost} to buy ${quantity.toLocaleString()}x Raw karambwan.`;
+			}
+
+			await user.removeItemsFromBank(totalCost);
+			await ClientSettings.updateBankSetting('buy_cost_bank', totalCost);
+
+			await ActivityManager.startTrip<CookingActivityTaskOptions>({
+				cookableID: EItem.COOKED_KARAMBWAN,
+				userID: user.id,
+				channelId,
+				quantity,
+				duration,
+				type: 'Cooking',
+				method: cookingMethod.type
+			});
+
+			return `${
+				user.minionName
+			} is now buying, cooking and dropping ${quantity.toLocaleString()}x karambwans, it'll take around ${formatTripDuration(
+				user,
+				duration
+			)} to finish. This cost ${totalCost}.`;
 		}
 
 		const cookable = Cooking.Cookables.find(
-			cookable =>
-				stringMatches(cookable.name, options.name) ||
-				cookable.alias?.some(alias => stringMatches(alias, options.name))
+			item =>
+				stringMatches(item.name, options.name) || item.alias?.some(alias => stringMatches(alias, options.name))
 		);
 
 		if (!cookable) {
-			return `Thats not a valid item to cook. Valid cookables are ${Cooking.Cookables.map(
-				cookable => cookable.name
-			).join(', ')}.`;
+			return `Thats not a valid item to cook. Valid cookables are ${[
+				...CookingMethods.map(method => method.name),
+				...Cooking.Cookables.map(item => item.name)
+			].join(', ')}.`;
 		}
 
 		if (user.skillLevel('cooking') < cookable.level) {
@@ -93,8 +140,8 @@ export const cookCommand: OSBMahojiCommand = {
 
 		// These are just for notifying the user, they only take effect in the Activity.
 		const boosts = [];
-		const [hasEasyDiary] = await userhasDiaryTier(user, KourendKebosDiary.easy);
-		const [hasEliteDiary] = await userhasDiaryTier(user, KourendKebosDiary.elite);
+		const hasEasyDiary = user.hasDiary('kourend&kebos.easy');
+		const hasEliteDiary = user.hasDiary('kourend&kebos.elite');
 		if (hasEasyDiary) boosts.push('Using Hosidius Range');
 		if (hasEasyDiary && hasEliteDiary) boosts.push('Kourend Elite Diary');
 		const hasGaunts = user.hasEquipped('Cooking gauntlets');
@@ -116,7 +163,7 @@ export const cookCommand: OSBMahojiCommand = {
 		const userBank = user.bank;
 		const inputCost = new Bank(cookable.inputCookables);
 
-		const maxTripLength = calcMaxTripLength(user, 'Cooking');
+		const maxTripLength = await user.calcMaxTripLength('Cooking');
 
 		if (!quantity) {
 			quantity = Math.floor(maxTripLength / timeToCookSingleCookable);
@@ -142,17 +189,18 @@ export const cookCommand: OSBMahojiCommand = {
 
 		await user.removeItemsFromBank(totalCost);
 
-		await addSubTaskToActivityTask<CookingActivityTaskOptions>({
+		await ActivityManager.startTrip<CookingActivityTaskOptions>({
 			cookableID: cookable.id,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelId,
 			quantity,
 			duration,
 			type: 'Cooking'
 		});
 
-		return `${user.minionName} is now cooking ${quantity}x ${cookable.name}, it'll take around ${formatDuration(
+		return `${user.minionName} is now cooking ${quantity}x ${cookable.name}, it'll take around ${formatTripDuration(
+			user,
 			duration
 		)} to finish.${boosts.length > 0 ? `\n\nBoosts: ${boosts.join(', ')}` : ''}`;
 	}
-};
+});

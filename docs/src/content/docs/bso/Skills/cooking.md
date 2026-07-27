@@ -4,12 +4,12 @@ title: "Cooking"
 
 ## Custom Content and Boosts
 
-- [Remy](/custom-items/pets) – 2x cooking speed (1.5x on wines)
-- [Dwarven Gauntlets](../custom-items/equippables/#dwarven-tools) – 3x cooking speed  
+- [Remy](/bso/custom-items/pets) – 2x cooking speed (1.5x on wines)
+- [Dwarven Gauntlets](/bso/custom-items/#dwarven-equipment) – 3x cooking speed
   _(does not work with [[/kibble]]; does not work with wines; does not stack with Remy)_
 - Rocktail – Cooked from Raw Rocktail at [[cooking:120]]
 - Kibble – Used as bait when training Hunter
-- [Cooking Master Cape](../custom-items/equippables/#master-capes) – 5x cooking speed  
+- [Cooking Master Cape](/bso/custom-items/capes/#master-capes) – 5x cooking speed
   _(does not stack with other boosts; does not work with [[/kibble]]; does not work with wines)_
 
 ---

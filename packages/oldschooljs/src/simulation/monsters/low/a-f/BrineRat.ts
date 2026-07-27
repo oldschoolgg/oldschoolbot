@@ -1,5 +1,5 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const BrineRatTable = new LootTable({ limit: 128 })
 	.every('Bones')
@@ -39,7 +39,7 @@ const BrineRatTable = new LootTable({ limit: 128 })
 	/* Tertiary */
 	.tertiary(128, 'Clue scroll (medium)');
 
-export default new SimpleMonster({
+export const BrineRat: SimpleMonster = new SimpleMonster({
 	id: 4501,
 	name: 'Brine Rat',
 	table: BrineRatTable,

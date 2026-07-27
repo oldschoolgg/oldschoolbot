@@ -1,11 +1,9 @@
 import { writeFileSync } from 'node:fs';
-import fetch from 'node-fetch';
-
-import { Monsters } from '../src';
-import type { MonsterAttackType, MonsterAttribute, MonsterData, MonsterSlayerMaster } from '../src/meta/monsterData';
-
 import { omitBy } from 'remeda';
 import * as wtf from 'wtf_wikipedia';
+
+import type { MonsterAttackType, MonsterAttribute, MonsterData, MonsterSlayerMaster } from '@/meta/monsterData.js';
+import { Monsters } from '@/simulation/monsters/index.js';
 
 const monsterMap: { [key: string]: MonsterData } = {};
 
@@ -33,7 +31,6 @@ interface Monster {
 	slayer_masters: MonsterSlayerMaster[];
 	duplicate: boolean;
 	examine: string;
-	icon: any;
 	wiki_name: string;
 	wiki_url: string;
 	attack_level: number;
@@ -68,8 +65,6 @@ const transformData = (data: any): MonsterData => {
 		immunepoison,
 		immunevenom,
 		cat,
-		examine,
-		name,
 		slaylvl,
 		slayxp,
 		assignedby,
@@ -109,9 +104,6 @@ const transformData = (data: any): MonsterData => {
 		immuneToVenom: immunevenom?.toLowerCase() === 'yes',
 		attributes: attributes,
 		category: cat?.toLowerCase().split(', '),
-		examineText: examine,
-		wikiName: name,
-		wikiURL: `https://oldschool.runescape.wiki/w/${name.replace(/ /g, '_')}`,
 		attackLevel: Number(att ?? 0),
 		strengthLevel: Number(str ?? 0),
 		defenceLevel: Number(def ?? 0),
@@ -134,7 +126,7 @@ const transformData = (data: any): MonsterData => {
 		isSlayerMonster: !!slaylvl,
 		slayerLevelRequired: slaylvl,
 		slayerXP: slayxp,
-		assignableSlayerMasters: assignedby?.split(',').map(master => master.trim().toLowerCase())
+		assignableSlayerMasters: assignedby?.split(',').map((master: string) => master.trim().toLowerCase())
 	};
 };
 
@@ -147,7 +139,7 @@ export default async function prepareMonsters(): Promise<void> {
 			if (!response.ok) {
 				throw new Error(`Failed to fetch data: ${response.statusText}`);
 			}
-			return await response.json();
+			return (await response.json()) as { [key: string]: Monster };
 		} catch (error) {
 			console.error('Error fetching monsters data:', error);
 			throw error;
@@ -156,7 +148,7 @@ export default async function prepareMonsters(): Promise<void> {
 	const monIDs = new Set(Monsters.map(mon => mon.id));
 
 	for (const mon of Object.values(allMonsters).filter(mon => monIDs.has(mon.id))) {
-		// @ts-ignore ignore
+		// @ts-expect-error ignore
 		mon.drops = undefined;
 
 		const newMonster: MonsterData = {
@@ -172,9 +164,6 @@ export default async function prepareMonsters(): Promise<void> {
 			immuneToVenom: mon.immune_venom,
 			attributes: mon.attributes ?? [],
 			category: mon.category,
-			examineText: mon.examine,
-			wikiName: mon.wiki_name,
-			wikiURL: mon.wiki_url,
 
 			attackLevel: mon.attack_level,
 			strengthLevel: mon.strength_level,
@@ -229,13 +218,13 @@ export default async function prepareMonsters(): Promise<void> {
 			.flat(100)
 			.filter(s => s && Boolean(s.name) && (Boolean(s.examine) || Boolean(s.examine1)))
 			.map(s =>
-				omitBy(s, (value, key) =>
+				omitBy(s, (_value, key) =>
 					['version', 'image', 'release', 'examine', 'update'].some(str => key.startsWith(str))
 				)
 			);
 		for (let i = 0; i < sections.length; i++) {
 			const section = sections[i];
-			const allIDs: any[] = [];
+			const allIDs: string[] = [];
 			for (const [key, val] of Object.entries(section) as any[]) {
 				if (key.startsWith('id') && key.length !== 2) {
 					allIDs.push(val.text);
@@ -269,7 +258,7 @@ export default async function prepareMonsters(): Promise<void> {
 		.replace(/\]"/g, ']')
 		.replace(/\\"/g, '"');
 
-	writeFileSync('./src/data/monsters_data.json', `${lintedJSON}\n`);
+	writeFileSync('./src/assets/monsters_data.json', `${lintedJSON}\n`);
 
 	console.log('Prepared Monsters. Check any new monsters quickly to see that the data looks okay.');
 }

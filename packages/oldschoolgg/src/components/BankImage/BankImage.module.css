@@ -1,0 +1,15 @@
+.bank_container {
+	image-rendering: pixelated;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	align-content: center;
+}
+
+.bank_image_canvas {
+	-webkit-font-smoothing: none;
+	image-rendering: pixelated;
+	-ms-interpolation-mode: nearest-neighbor;
+}

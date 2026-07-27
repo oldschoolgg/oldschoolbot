@@ -1,6 +1,6 @@
 import { Bank, itemID } from 'oldschooljs';
 
-import type { Craftable } from '../../../types';
+import type { Craftable } from '@/lib/skilling/types.js';
 
 const Dragonhide: Craftable[] = [
 	{
@@ -151,7 +151,7 @@ const Dragonhide: Craftable[] = [
 	{
 		name: 'Hueycoatl hide body',
 		id: itemID('Hueycoatl hide body'),
-		level: 88,
+		level: 78,
 		xp: 285,
 		inputItems: new Bank().add('Hueycoatl hide', 3),
 		tickRate: 3.5
@@ -159,7 +159,7 @@ const Dragonhide: Craftable[] = [
 	{
 		name: 'Hueycoatl hide chaps',
 		id: itemID('Hueycoatl hide chaps'),
-		level: 87,
+		level: 77,
 		xp: 190,
 		inputItems: new Bank().add('Hueycoatl hide', 2),
 		tickRate: 3.5
@@ -167,7 +167,7 @@ const Dragonhide: Craftable[] = [
 	{
 		name: 'Hueycoatl hide coif',
 		id: itemID('Hueycoatl hide coif'),
-		level: 86,
+		level: 76,
 		xp: 190,
 		inputItems: new Bank().add('Hueycoatl hide', 2),
 		tickRate: 3.5
@@ -175,7 +175,7 @@ const Dragonhide: Craftable[] = [
 	{
 		name: 'Hueycoatl hide vambraces',
 		id: itemID('Hueycoatl hide vambraces'),
-		level: 86,
+		level: 76,
 		xp: 95,
 		inputItems: new Bank().add('Hueycoatl hide'),
 		tickRate: 3.5

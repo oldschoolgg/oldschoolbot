@@ -1,24 +1,17 @@
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import type { ChatInputCommandInteraction } from 'discord.js';
-import { objectEntries, randInt, reduceNumByPercent } from 'e';
+import { GearStat } from '@oldschoolgg/gear';
+import { formatDuration, objectEntries, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
+import { pick } from 'remeda';
 
-import { GearStat } from 'oldschooljs/gear';
-import TrekShopItems, { TrekExperience } from '../../../lib/data/buyables/trekBuyables';
-import { MorytaniaDiary, userhasDiaryTier } from '../../../lib/diaries';
-import { difficulties, rewardTokens, trekBankBoosts } from '../../../lib/minions/data/templeTrekking';
-import type { AddXpParams, GearRequirement } from '../../../lib/minions/types';
-import { getMinigameScore } from '../../../lib/settings/minigames';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { percentChance } from '../../../lib/util/rng';
-import { readableStatName } from '../../../lib/util/smallUtils';
-import { userHasGracefulEquipped } from '../../mahojiSettings';
+import TrekShopItems, { TrekExperience } from '@/lib/data/buyables/trekBuyables.js';
+import { difficulties, rewardTokens, trekBankBoosts } from '@/lib/minions/data/templeTrekking.js';
+import type { AddXpParams } from '@/lib/minions/types.js';
+import type { GearRequirement } from '@/lib/structures/Gear.js';
+import type { TempleTrekkingActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
+import { readableStatName } from '@/lib/util/smallUtils.js';
 
-export async function trekCommand(user: MUser, channelID: string, difficulty: string, quantity: number | undefined) {
+export async function trekCommand(user: MUser, channelId: string, difficulty: string, quantity: number | undefined) {
 	const tier = difficulties.find(item => stringMatches(item.difficulty, difficulty));
 	if (!tier) return 'that is not a valid difficulty';
 	const minLevel = tier.minCombat;
@@ -30,17 +23,9 @@ export async function trekCommand(user: MUser, channelID: string, difficulty: st
 			const gear = allGear[setup];
 			if (setup && requirements) {
 				let newRequirements: GearRequirement = requirements;
-				let maxMeleeStat: [string, number] = [GearStat.AttackCrush, -500];
-				objectEntries(gear.getStats()).map(
-					stat =>
-						(maxMeleeStat =
-							!stat[0].startsWith('defence') &&
-							stat[0] !== 'attack_magic' &&
-							stat[0] !== 'attack_ranged' &&
-							stat[1] > maxMeleeStat[1]
-								? stat
-								: maxMeleeStat)
-				);
+				const meleeStats = pick(gear.getStats(), ['attack_crush', 'attack_slash', 'attack_stab']);
+				const sorted = Array.from(objectEntries(meleeStats)).sort((a, b) => b[1] - a[1]);
+				const maxMeleeStat = sorted[0];
 
 				if (setup === 'melee') {
 					if (maxMeleeStat[0] !== GearStat.AttackCrush) newRequirements.attack_crush = undefined;
@@ -74,7 +59,7 @@ export async function trekCommand(user: MUser, channelID: string, difficulty: st
 	const boosts = [];
 
 	// Every 25 trips becomes 1% faster to a cap of 10%
-	const percentFaster = Math.min(Math.floor((await getMinigameScore(user.id, 'temple_trekking')) / 25), 10);
+	const percentFaster = Math.min(Math.floor((await user.fetchMinigameScore('temple_trekking')) / 25), 10);
 
 	boosts.push(`${percentFaster.toFixed(1)}% from completed treks`);
 
@@ -87,12 +72,12 @@ export async function trekCommand(user: MUser, channelID: string, difficulty: st
 		}
 	}
 
-	if (!userHasGracefulEquipped(user)) {
+	if (!user.hasGracefulEquipped()) {
 		boosts.push('-15% for not having graceful equipped anywhere');
 		tripTime *= 1.15;
 	}
 
-	const [hasMoryHard] = await userhasDiaryTier(user, MorytaniaDiary.hard);
+	const hasMoryHard = user.hasDiary('morytania.hard');
 
 	if (hasMoryHard) {
 		boosts.push('15% for Morytania hard diary');
@@ -112,7 +97,7 @@ export async function trekCommand(user: MUser, channelID: string, difficulty: st
 		tripTime *= flailBoost;
 	}
 
-	const maxTripLength = calcMaxTripLength(user, 'Trekking');
+	const maxTripLength = await user.calcMaxTripLength('Trekking');
 	const maxTrips = Math.floor(maxTripLength / tripTime);
 	if (quantity === undefined || quantity === null) {
 		quantity = maxTrips;
@@ -122,19 +107,17 @@ export async function trekCommand(user: MUser, channelID: string, difficulty: st
 
 	const duration = quantity * tripTime;
 
-	await addSubTaskToActivityTask<TempleTrekkingActivityTaskOptions>({
+	await ActivityManager.startTrip<TempleTrekkingActivityTaskOptions>({
 		difficulty,
 		quantity,
 		userID: user.id,
 		duration,
 		type: 'Trekking',
-		channelID: channelID.toString(),
+		channelId,
 		minigameID: 'temple_trekking'
 	});
 
-	let str = `${user.minionName} is now doing Temple Trekking ${quantity} times. The trip will take ${formatDuration(
-		duration
-	)}, with each trek taking ${formatDuration(tripTime)}.`;
+	let str = `${user.minionName} is now doing Temple Trekking ${quantity} times. The trip will return in about ${formatTripDuration(user, duration)}, with each trek taking ${formatDuration(tripTime)}.`;
 
 	if (boosts.length > 0) {
 		str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
@@ -144,11 +127,12 @@ export async function trekCommand(user: MUser, channelID: string, difficulty: st
 }
 
 export async function trekShop(
+	rng: RNGProvider,
 	user: MUser,
 	reward: string,
 	difficulty: string,
 	quantity: number | undefined,
-	interaction: ChatInputCommandInteraction
+	interaction: MInteraction
 ) {
 	const userBank = user.bank;
 	const specifiedItem = TrekShopItems.find(
@@ -178,43 +162,43 @@ export async function trekShop(
 	const inItems = new Bank();
 	const outXP: AddXpParams[] = [
 		{
-			skillName: SkillsEnum.Agility,
+			skillName: 'agility',
 			amount: 0,
 			minimal: true,
 			source: 'TempleTrekking'
 		},
 		{
-			skillName: SkillsEnum.Thieving,
+			skillName: 'thieving',
 			amount: 0,
 			minimal: true,
 			source: 'TempleTrekking'
 		},
 		{
-			skillName: SkillsEnum.Slayer,
+			skillName: 'slayer',
 			amount: 0,
 			minimal: true,
 			source: 'TempleTrekking'
 		},
 		{
-			skillName: SkillsEnum.Firemaking,
+			skillName: 'firemaking',
 			amount: 0,
 			minimal: true,
 			source: 'TempleTrekking'
 		},
 		{
-			skillName: SkillsEnum.Fishing,
+			skillName: 'fishing',
 			amount: 0,
 			minimal: true,
 			source: 'TempleTrekking'
 		},
 		{
-			skillName: SkillsEnum.Woodcutting,
+			skillName: 'woodcutting',
 			amount: 0,
 			minimal: true,
 			source: 'TempleTrekking'
 		},
 		{
-			skillName: SkillsEnum.Mining,
+			skillName: 'mining',
 			amount: 0,
 			minimal: true,
 			source: 'TempleTrekking'
@@ -225,20 +209,20 @@ export async function trekShop(
 		switch (difficulty) {
 			case 'Easy':
 				inItems.addItem(rewardTokens.easy, 1);
-				outputTotal = randInt(specifiedItem.easyRange[0], specifiedItem.easyRange[1]);
+				outputTotal = rng.randInt(specifiedItem.easyRange[0], specifiedItem.easyRange[1]);
 				break;
 			case 'Medium':
 				inItems.addItem(rewardTokens.medium, 1);
-				outputTotal = randInt(specifiedItem.medRange[0], specifiedItem.medRange[1]);
+				outputTotal = rng.randInt(specifiedItem.medRange[0], specifiedItem.medRange[1]);
 				break;
 			case 'Hard':
 				inItems.addItem(rewardTokens.hard, 1);
-				outputTotal = randInt(specifiedItem.hardRange[0], specifiedItem.hardRange[1]);
+				outputTotal = rng.randInt(specifiedItem.hardRange[0], specifiedItem.hardRange[1]);
 				break;
 		}
 		if (specifiedItem.name === 'Herbs') {
 			outItems.add(
-				percentChance(50) ? 'Tarromin' : 'Harralander',
+				rng.percentChance(50) ? 'Tarromin' : 'Harralander',
 				Math.floor(reduceNumByPercent(outputTotal, 34))
 			);
 			outItems.add('Toadflax', Math.floor(reduceNumByPercent(outputTotal, 66)));
@@ -257,8 +241,7 @@ export async function trekShop(
 		return "You don't have enough reward tokens for that.";
 	}
 
-	await handleMahojiConfirmation(
-		interaction,
+	await interaction.confirmation(
 		`${user}, please confirm that you want to use ${quantity} ${difficulty} reward tokens to buy sets of ${specifiedItem.name}.`
 	);
 

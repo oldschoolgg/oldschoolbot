@@ -1,7 +1,7 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import RareDropTable, { GemTable } from '../../../subtables/RareDropTable';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
+import { GemTable, RareDropTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const KalphiteGuardianTable = new LootTable({ limit: 128 })
 
@@ -42,7 +42,7 @@ const KalphiteGuardianTable = new LootTable({ limit: 128 })
 	/* Tertiary */
 	.tertiary(35, 'Ensouled kalphite head');
 
-export default new SimpleMonster({
+export const KalphiteGuardian: SimpleMonster = new SimpleMonster({
 	id: 959,
 	name: 'Kalphite Guardian',
 	table: KalphiteGuardianTable,

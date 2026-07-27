@@ -1,12 +1,9 @@
-import { randomVariation } from '@oldschoolgg/toolkit/util';
-import { Time, calcPercentOfNum, calcWhatPercent, randFloat, randInt, reduceNumByPercent, round } from 'e';
-import { Bank, type Item, resolveItems } from 'oldschooljs';
-import type { GearStats } from 'oldschooljs/gear';
+import type { GearStats } from '@oldschoolgg/gear';
+import { calcPercentOfNum, calcWhatPercent, reduceNumByPercent, round, Time } from '@oldschoolgg/toolkit';
+import { Bank, type Item, Items, resolveItems } from 'oldschooljs';
 
-import { blowpipeDarts } from '../minions/functions/blowpipeCommand';
-import { Gear, constructGearSetup } from '../structures/Gear';
-import getOSItem from '../util/getOSItem';
-import { logError } from '../util/logError';
+import { blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
+import { constructGearSetup, type Gear } from '@/lib/structures/Gear.js';
 
 interface TOBRoom {
 	name: string;
@@ -67,7 +64,8 @@ export function calculateTOBDeaths(
 		range: number;
 		mage: number;
 		total: number;
-	}
+	},
+	rng: RNGProvider
 ): TOBDeaths {
 	const deaths: number[] = [];
 	const wipeDeaths: number[] = [];
@@ -106,7 +104,7 @@ export function calculateTOBDeaths(
 		const wipeDeathChance = Math.min(98, (1 + room.difficultyRating / 10) * baseDeathChance);
 		const realDeathChance =
 			baseKC >= minionProfiencyKC ? wipeDeathChance / actualDeathReductionFactor : wipeDeathChance;
-		const roll = randFloat(0, 100);
+		const roll = rng.randFloat(0, 100);
 		if (roll < realDeathChance) {
 			deaths.push(i);
 		}
@@ -193,7 +191,6 @@ export const TOBMaxMageGear = constructGearSetup({
 	shield: 'Arcane spirit shield',
 	ring: 'Magus ring'
 });
-const maxMage = new Gear(TOBMaxMageGear);
 
 export const TOBMaxRangeGear = constructGearSetup({
 	head: 'Void ranger helm',
@@ -207,8 +204,6 @@ export const TOBMaxRangeGear = constructGearSetup({
 	ring: 'Venator ring',
 	ammo: 'Dragon arrow'
 });
-const maxRange = new Gear(TOBMaxRangeGear);
-maxRange.ammo!.quantity = 10_000;
 
 export const TOBMaxMeleeGear = constructGearSetup({
 	head: 'Torva full helm',
@@ -221,25 +216,24 @@ export const TOBMaxMeleeGear = constructGearSetup({
 	'2h': 'Scythe of vitur',
 	ring: 'Ultor ring'
 });
-const maxMelee = new Gear(TOBMaxMeleeGear);
 
 export function calculateTOBUserGearPercents(user: MUser) {
 	const melee = calcSetupPercent(
-		maxMelee.stats,
+		TOBMaxMeleeGear.stats,
 		user.gear.melee.stats,
 		'melee_strength',
 		['attack_stab', 'attack_slash', 'attack_crush', 'attack_ranged', 'attack_magic'],
 		true
 	);
 	const range = calcSetupPercent(
-		maxRange.stats,
+		TOBMaxRangeGear.stats,
 		user.gear.range.stats,
 		'ranged_strength',
 		['attack_stab', 'attack_slash', 'attack_crush', 'attack_magic'],
 		false
 	);
 	const mage = calcSetupPercent(
-		maxMage.stats,
+		TOBMaxMageGear.stats,
 		user.gear.mage.stats,
 		'magic_damage',
 		['attack_stab', 'attack_slash', 'attack_crush', 'attack_ranged'],
@@ -280,25 +274,25 @@ interface ItemBoost {
 const itemBoosts: ItemBoost[][] = [
 	[
 		{
-			item: getOSItem('Scythe of vitur'),
+			item: Items.getOrThrow('Scythe of vitur'),
 			boost: 15,
 			mustBeEquipped: true,
 			setup: 'melee'
 		},
 		{
-			item: getOSItem('Scythe of vitur (uncharged)'),
+			item: Items.getOrThrow('Scythe of vitur (uncharged)'),
 			boost: 6,
 			mustBeEquipped: true,
 			setup: 'melee'
 		},
 		{
-			item: getOSItem('Blade of saeldor (c)'),
+			item: Items.getOrThrow('Blade of saeldor (c)'),
 			boost: 6,
 			mustBeEquipped: true,
 			setup: 'melee'
 		},
 		{
-			item: getOSItem('Abyssal tentacle'),
+			item: Items.getOrThrow('Abyssal tentacle'),
 			boost: 5.5,
 			mustBeEquipped: true,
 			setup: 'melee'
@@ -306,7 +300,7 @@ const itemBoosts: ItemBoost[][] = [
 	],
 	[
 		{
-			item: getOSItem('Twisted bow'),
+			item: Items.getOrThrow('Twisted bow'),
 			boost: 4,
 			mustBeEquipped: true,
 			setup: 'range'
@@ -314,24 +308,24 @@ const itemBoosts: ItemBoost[][] = [
 	],
 	[
 		{
-			item: getOSItem('Dragon claws'),
+			item: Items.getOrThrow('Dragon claws'),
 			boost: 6,
 			mustBeEquipped: false
 		},
 		{
-			item: getOSItem('Crystal halberd'),
+			item: Items.getOrThrow('Crystal halberd'),
 			boost: 3,
 			mustBeEquipped: false
 		}
 	],
 	[
 		{
-			item: getOSItem('Dragon warhammer'),
+			item: Items.getOrThrow('Dragon warhammer'),
 			boost: 6,
 			mustBeEquipped: false
 		},
 		{
-			item: getOSItem('Bandos godsword'),
+			item: Items.getOrThrow('Bandos godsword'),
 			boost: 3,
 			mustBeEquipped: false
 		}
@@ -387,8 +381,8 @@ export function calcTOBBaseDuration({ team, hardMode }: { team: TobTeam[]; hardM
 		// Reduce time for gear
 		const gearPercents = calculateTOBUserGearPercents(u.user);
 		// Blowpipe
-		const darts = u.user.blowpipe.dartID!;
-		const dartItem = getOSItem(darts);
+		const darts = u.user.getBlowpipe().dartID!;
+		const dartItem = Items.getOrThrow(darts);
 		const dartIndex = blowpipeDarts.indexOf(dartItem);
 		let blowPipePercent = 0;
 		if (dartIndex >= 3) {
@@ -484,18 +478,28 @@ export function createTOBRaid({
 	team,
 	hardMode,
 	baseDuration,
-	disableVariation
+	disableVariation,
+	rng
 }: {
 	team: TobTeam[];
 	baseDuration: number;
 	hardMode: boolean;
 	disableVariation?: true;
+	rng: RNGProvider;
 }): { duration: number; parsedTeam: ParsedTeamMember[]; wipedRoom: TOBRoom | null; deathDuration: number | null } {
 	const parsedTeam: ParsedTeamMember[] = [];
 
 	for (const u of team) {
 		const gearPercents = calculateTOBUserGearPercents(u.user);
-		const deathChances = calculateTOBDeaths(u.kc, u.hardKC, u.attempts, u.hardAttempts, hardMode, gearPercents);
+		const deathChances = calculateTOBDeaths(
+			u.kc,
+			u.hardKC,
+			u.attempts,
+			u.hardAttempts,
+			hardMode,
+			gearPercents,
+			rng
+		);
 		parsedTeam.push({
 			kc: u.kc,
 			hardKC: u.hardKC,
@@ -506,7 +510,7 @@ export function createTOBRaid({
 		});
 	}
 
-	const duration = Math.floor(randomVariation(baseDuration, 5));
+	const duration = Math.floor(rng.randomVariation(baseDuration, 5));
 
 	let wipedRoom: TOBRoom | null = null;
 	let deathDuration: number | null = 0;
@@ -516,7 +520,10 @@ export function createTOBRaid({
 		if (parsedTeam.every(member => member.wipeDeaths.includes(i))) {
 			wipedRoom = room;
 			deathDuration += Math.floor(
-				calcPercentOfNum(disableVariation ? room.timeWeighting / 2 : randInt(1, room.timeWeighting), duration)
+				calcPercentOfNum(
+					disableVariation ? room.timeWeighting / 2 : rng.randInt(1, room.timeWeighting),
+					duration
+				)
 			);
 			break;
 		} else {
@@ -527,7 +534,7 @@ export function createTOBRaid({
 	if (!wipedRoom) deathDuration = null;
 
 	if (wipedRoom !== null && (!TOBRooms.includes(wipedRoom) || [-1].includes(TOBRooms.indexOf(wipedRoom)))) {
-		logError(new Error('Had non-existant wiped room for tob'), {
+		Logging.logError(new Error('Had non-existant wiped room for tob'), {
 			room: JSON.stringify(wipedRoom),
 			team: JSON.stringify(parsedTeam)
 		});

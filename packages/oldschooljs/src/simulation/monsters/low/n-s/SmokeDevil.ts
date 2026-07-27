@@ -1,11 +1,11 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import RareDropTable, { GemTable } from '../../../subtables/RareDropTable';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
+import { GemTable, RareDropTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const SmokeDevilHerbTable = new LootTable().add(HerbDropTable, 1, 2).add(HerbDropTable, 2, 1);
+const SmokeDevilHerbTable: LootTable = new LootTable().add(HerbDropTable, 1, 2).add(HerbDropTable, 2, 1);
 
-export const SmokeDevilPreTable = new LootTable({ limit: 128 })
+export const SmokeDevilPreTable: LootTable = new LootTable({ limit: 128 })
 	/* Weapons and armor */
 	.add('Adamant battleaxe', 1, 3)
 	.add('Rune dagger', 1, 3)
@@ -50,7 +50,7 @@ export const SmokeDevilPreTable = new LootTable({ limit: 128 })
 	.add(RareDropTable, 1, 4)
 	.add(GemTable, 1, 4);
 
-const SmokeDevilTable = new LootTable()
+const SmokeDevilTable: LootTable = new LootTable()
 	.every('Ashes')
 	.every(SmokeDevilPreTable)
 
@@ -58,7 +58,7 @@ const SmokeDevilTable = new LootTable()
 	.tertiary(128, 'Clue scroll (hard)')
 	.tertiary(750, 'Clue scroll (elite)');
 
-export default new SimpleMonster({
+export const SmokeDevil: SimpleMonster = new SimpleMonster({
 	id: 498,
 	name: 'Smoke Devil',
 	table: SmokeDevilTable,

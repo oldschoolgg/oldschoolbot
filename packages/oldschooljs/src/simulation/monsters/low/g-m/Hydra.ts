@@ -1,25 +1,25 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import { NotedHerbTable } from '../../../subtables/NotedHerbTable';
-import { GemTable } from '../../../subtables/RareDropTable';
-import RareSeedTable from '../../../subtables/RareSeedTable';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
+import { NotedHerbTable } from '@/simulation/subtables/NotedHerbTable.js';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import RareSeedTable from '@/simulation/subtables/RareSeedTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const HydraBrimstoneRingTable = new LootTable().add("Hydra's eye").add("Hydra's fang").add("Hydra's heart");
+const HydraBrimstoneRingTable: LootTable = new LootTable().add("Hydra's eye").add("Hydra's fang").add("Hydra's heart");
 
-const HydraOffTaskUniqueTable = new LootTable()
+const HydraOffTaskUniqueTable: LootTable = new LootTable()
 	.oneIn(10_000, 'Dragon thrownaxe', [200, 400])
 	.oneIn(10_000, 'Dragon knife', [200, 400])
 	.oneIn(5000, 'Hydra tail')
 	.oneIn(1800, HydraBrimstoneRingTable);
 
-const HydraOnTaskUniqueTable = new LootTable()
+const HydraOnTaskUniqueTable: LootTable = new LootTable()
 	.oneIn(2000, 'Dragon thrownaxe', [200, 400])
 	.oneIn(2000, 'Dragon knife', [200, 400])
 	.oneIn(1000, 'Hydra tail')
 	.oneIn(360, HydraBrimstoneRingTable);
 
-export const HydraPreTable = new LootTable()
+export const HydraPreTable: LootTable = new LootTable()
 	/* Weapons and armour */
 	.add('Fire battlestaff', 1, 5)
 	.add('Water battlestaff', 1, 5)
@@ -63,7 +63,7 @@ export const HydraPreTable = new LootTable()
 	/* Gem drop table */
 	.add(GemTable, 1, 5);
 
-const HydraTable = new LootTable()
+const HydraTable: LootTable = new LootTable()
 	.every('Hydra bones')
 	.every(HydraPreTable)
 
@@ -73,7 +73,7 @@ const HydraTable = new LootTable()
 	.tertiary(128, 'Clue scroll (hard)')
 	.tertiary(512, 'Clue scroll (elite)');
 
-const HydraOnTaskTable = new LootTable()
+const HydraOnTaskTable: LootTable = new LootTable()
 	.every('Hydra bones')
 	.every(HydraPreTable)
 
@@ -83,7 +83,7 @@ const HydraOnTaskTable = new LootTable()
 	.tertiary(128, 'Clue scroll (hard)')
 	.tertiary(512, 'Clue scroll (elite)');
 
-export default new SimpleMonster({
+export const Hydra: SimpleMonster = new SimpleMonster({
 	id: 8609,
 	name: 'Hydra',
 	table: HydraTable,

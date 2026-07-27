@@ -1,9 +1,9 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import { GemTable } from '../../../subtables/RareDropTable';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const WildySlayerCaveTable = new LootTable()
+const WildySlayerCaveTable: LootTable = new LootTable()
 	.add('Blighted entangle sack', [1, 10], 11500)
 	.add('Blighted anglerfish', [1, 2], 8620)
 	.add('Blighted manta ray', [1, 2], 8620)
@@ -28,7 +28,7 @@ const WildySlayerCaveTable = new LootTable()
 	.add('Trouver parchment', 2, 58)
 	.add('Looting bag note', 1, 58);
 
-const LesserDemonTable = new LootTable()
+const LesserDemonTable: LootTable = new LootTable()
 	.every('Vile ashes')
 
 	/* Weapons and armor*/
@@ -66,12 +66,12 @@ const LesserDemonTable = new LootTable()
 	.tertiary(50, 'Ensouled demon head')
 	.tertiary(5000, 'Lesser demon champion scroll');
 
-const LesserDemonWildyCaveTable = new LootTable()
+const LesserDemonWildyCaveTable: LootTable = new LootTable()
 	.every(LesserDemonTable)
 	.add(WildySlayerCaveTable, 1, 64)
 	.add(new LootTable(), 1, 36);
 
-export default new SimpleMonster({
+export const LesserDemon: SimpleMonster = new SimpleMonster({
 	id: 2005,
 	name: 'Lesser demon',
 	table: LesserDemonTable,

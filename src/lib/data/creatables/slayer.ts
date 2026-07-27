@@ -1,7 +1,7 @@
 import { Bank, toKMB } from 'oldschooljs';
 
-import { SlayerTaskUnlocksEnum } from '../../slayer/slayerUnlocks';
-import type { Createable } from '../createables';
+import type { Createable } from '@/lib/data/createables.js';
+import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 
 export const slayerCreatables: Createable[] = [
 	{

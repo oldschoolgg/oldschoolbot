@@ -1,17 +1,11 @@
-import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
-import { Time, calcWhatPercent, randInt, reduceNumByPercent } from 'e';
-import { Bank, SkillsEnum } from 'oldschooljs';
+import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { Bank } from 'oldschooljs';
 
-import { getPOHObject } from '../../../lib/poh';
-import { getMinigameScore } from '../../../lib/settings/minigames';
-import type { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userHasGracefulEquipped } from '../../mahojiSettings';
-import { getPOH } from './pohCommand';
+import { getPOHObject } from '@/lib/poh/index.js';
+import type { GnomeRestaurantActivityTaskOptions } from '@/lib/types/minions.js';
+import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 
-export async function gnomeRestaurantCommand(user: MUser, channelID: string) {
+export async function gnomeRestaurantCommand(rng: RNGProvider, user: MUser, channelId: string) {
 	let deliveryLength = Time.Minute * 7;
 
 	const itemsToRemove = new Bank();
@@ -23,19 +17,19 @@ export async function gnomeRestaurantCommand(user: MUser, channelID: string) {
 
 	const boosts = [];
 
-	const score = await getMinigameScore(user.id, 'gnome_restaurant');
+	const score = await user.fetchMinigameScore('gnome_restaurant');
 	const scoreBoost = Math.min(100, calcWhatPercent(score, 100)) / 5;
 	if (scoreBoost > 1) {
 		deliveryLength = reduceNumByPercent(deliveryLength, scoreBoost);
 		boosts.push(`${scoreBoost}% boost for experience in the minigame`);
 	}
 
-	if (userHasGracefulEquipped(user)) {
+	if (user.hasGracefulEquipped()) {
 		deliveryLength = reduceNumByPercent(deliveryLength, 25);
 		boosts.push('25% for Graceful');
 	}
 
-	if (user.skillLevel(SkillsEnum.Magic) >= 66) {
+	if (user.skillsAsLevels.magic >= 66) {
 		deliveryLength = reduceNumByPercent(deliveryLength, 25);
 		boosts.push('25% for 66 Magic (teleports)');
 	}
@@ -44,7 +38,7 @@ export async function gnomeRestaurantCommand(user: MUser, channelID: string) {
 	const hasOrnateJewelleryBox = poh.jewellery_box === getPOHObject('Ornate jewellery box').id;
 	const hasJewelleryBox = poh.jewellery_box !== null;
 	const { bank } = user;
-	switch (randInt(1, 3)) {
+	switch (rng.randInt(1, 3)) {
 		case 1: {
 			if (user.hasEquippedOrInBank('Amulet of eternal glory')) {
 				deliveryLength = reduceNumByPercent(deliveryLength, 20);
@@ -83,11 +77,12 @@ export async function gnomeRestaurantCommand(user: MUser, channelID: string) {
 		}
 	}
 
-	const quantity = Math.floor(calcMaxTripLength(user, 'GnomeRestaurant') / deliveryLength);
-	const duration = randomVariation(deliveryLength * quantity, 5);
+	const quantity = Math.floor((await user.calcMaxTripLength('GnomeRestaurant')) / deliveryLength);
+	const duration = rng.randomVariation(deliveryLength * quantity, 5);
 
-	if (user.skillLevel(SkillsEnum.Magic) >= 66) {
-		itemsToRemove.add('Law rune', Math.max(1, Math.floor(randInt(1, quantity * 1.5) / 2)));
+	if (user.skillsAsLevels.magic >= 66) {
+		const maxLawRunes = Math.max(1, Math.floor(quantity * 1.5));
+		itemsToRemove.add('Law rune', Math.max(1, Math.floor(rng.randInt(1, maxLawRunes) / 2)));
 	}
 
 	if (!user.owns(itemsToRemove)) {
@@ -96,10 +91,10 @@ export async function gnomeRestaurantCommand(user: MUser, channelID: string) {
 
 	await user.removeItemsFromBank(itemsToRemove);
 
-	await updateBankSetting('gnome_res_cost', itemsToRemove);
-	await addSubTaskToActivityTask<GnomeRestaurantActivityTaskOptions>({
+	await ClientSettings.updateBankSetting('gnome_res_cost', itemsToRemove);
+	await ActivityManager.startTrip<GnomeRestaurantActivityTaskOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		duration,
 		type: 'GnomeRestaurant',
 		quantity,

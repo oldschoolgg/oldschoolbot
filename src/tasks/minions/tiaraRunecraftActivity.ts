@@ -1,21 +1,18 @@
 import { Bank } from 'oldschooljs';
 
-import Runecraft from '../../lib/skilling/skills/runecraft';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { TiaraRunecraftActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import Runecraft from '@/lib/skilling/skills/runecraft.js';
+import type { TiaraRunecraftActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const tiaraRunecraftTask: MinionTask = {
 	type: 'TiaraRunecraft',
-	async run(data: TiaraRunecraftActivityTaskOptions) {
-		const { tiaraID, tiaraQuantity, userID, channelID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: TiaraRunecraftActivityTaskOptions, { user, handleTripFinish }) {
+		const { tiaraID, tiaraQuantity, channelId, duration } = data;
 
 		const tiara = Runecraft.Tiaras.find(_tiara => _tiara.id === tiaraID)!;
 
 		const xpReceived = tiaraQuantity * tiara.xp;
 		const xpRes = `\n${await user.addXP({
-			skillName: SkillsEnum.Runecraft,
+			skillName: 'runecraft',
 			amount: xpReceived,
 			duration
 		})}`;
@@ -27,12 +24,11 @@ export const tiaraRunecraftTask: MinionTask = {
 
 		str += `\n\nYou received: ${loot}.`;
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

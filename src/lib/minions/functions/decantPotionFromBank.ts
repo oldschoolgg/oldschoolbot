@@ -1,7 +1,7 @@
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import Potions from '../data/potions';
+import Potions from '@/lib/minions/data/potions.js';
 
 export default function decantPotionFromBank(
 	userBank: Bank,

@@ -4,8 +4,8 @@ title: "Invention"
 
 Invention is a skill where you disassemble items to get materials, and then use those materials to make inventions—items that provide boosts and perks. You need [[crafting:90]] to train Invention.
 
-Access Invention: [[/invention]]  
-Invention Minigame: [Tinkering Workshop](../../minigames/tinkering-workshop.md)
+Access Invention: [[/invention]]
+Invention Minigame: [Tinkering Workshop](../../minigames/tinkering-workshop)
 
 ---
 
@@ -131,3 +131,11 @@ Use cheap/easy to obtain items to train quickly to [[invention:99]] or [[inventi
 - Inventions work automatically from bank if passive
 - You can toggle inventions off temporarily
 - Use junk reduction capes and Dwarven Toolkit for maximum efficiency
+
+
+## Updated key inventions
+
+- **Quick trap**: 25% hunter speed boost, applies only to **Box Trapping** creatures.
+- **Webshooter**: 30% passive impling catch-rate boost and 20% hunter creature speed boost.
+- **Moonlight mutator**: mutates seeds from bank into zygomite spores (bank-based passive mutation system).
+- **Divine hand**: +30% divination memory harvest yield.

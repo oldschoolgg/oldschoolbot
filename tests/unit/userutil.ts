@@ -1,17 +1,17 @@
-import type { Prisma, User } from '@prisma/client';
-import { Bank, convertLVLtoXP } from 'oldschooljs';
+import type { GearSetup, PartialGearSetup } from '@oldschoolgg/gear';
+import { Bank, convertLVLtoXP, Items, LootTable, type SimpleMonster } from 'oldschooljs';
+import { isFunction, isObjectType } from 'remeda';
 
-import { MUserClass } from '../../src/lib/MUser';
-import type { BitField } from '../../src/lib/constants';
-import type { GearSetup } from '../../src/lib/gear/types';
-import { Gear } from '../../src/lib/structures/Gear';
-import { type PartialGearSetup, constructGearSetup } from '../../src/lib/structures/Gear';
+import type { Prisma, User } from '@/prisma/main.js';
+import { MUserClass } from '@/lib/user/MUser.js';
+import type { BitField } from '../../src/lib/constants.js';
+import { constructGearSetup, Gear } from '../../src/lib/structures/Gear.js';
 
 function filterGearSetup(gear: undefined | null | GearSetup | PartialGearSetup): GearSetup | undefined {
 	const filteredGear = !gear
 		? undefined
 		: typeof gear.ammo === 'undefined' || typeof gear.ammo === 'string'
-			? constructGearSetup(gear as PartialGearSetup)
+			? constructGearSetup(gear as PartialGearSetup).raw()
 			: (gear as GearSetup);
 	return filteredGear;
 }
@@ -23,6 +23,8 @@ export interface MockUserArgs {
 	meleeGear?: GearSetup | PartialGearSetup;
 	skills_agility?: number;
 	skills_attack?: number;
+	skills_farming?: number;
+	skills_woodcutting?: number;
 	skills_strength?: number;
 	skills_ranged?: number;
 	skills_magic?: number;
@@ -55,14 +57,14 @@ const mockUser = (overrides?: MockUserArgs): User => {
 		skills_fishing: overrides?.skills_fishing ?? 0,
 		skills_mining: 0,
 		skills_smithing: 0,
-		skills_woodcutting: 0,
+		skills_woodcutting: overrides?.skills_woodcutting ?? 0,
 		skills_firemaking: 0,
 		skills_runecraft: 0,
 		skills_crafting: 0,
 		skills_prayer: overrides?.skills_prayer ?? 0,
 		skills_fletching: 0,
 		skills_thieving: 0,
-		skills_farming: 0,
+		skills_farming: overrides?.skills_farming ?? 0,
 		skills_herblore: 0,
 		skills_hunter: 0,
 		skills_construction: 0,
@@ -80,7 +82,10 @@ const mockUser = (overrides?: MockUserArgs): User => {
 		sacrificedValue: 0,
 		id: overrides?.id ?? '',
 		monsterScores: {},
-		badges: []
+		badges: [],
+		minion_farmingContract: null,
+		minion_farmingPreferredContract: false,
+		minion_farmingPreferredSeeds: {}
 	} as unknown as User;
 
 	return r;
@@ -90,3 +95,51 @@ export const mockMUser = (overrides?: MockUserArgs) => {
 	const user = new MUserClass(mockUser(overrides));
 	return user;
 };
+
+export function serializeSnapshotItem(item: any) {
+	const result = item;
+	for (const [key, value] of Object.entries(result) as [string, any][]) {
+		// LootTable
+		if (value instanceof LootTable || (isObjectType(value) && 'cachedOptimizedTable' in value)) {
+			result[key] = (value as LootTable).allItems
+				.map(id => Items.itemNameFromId(id) ?? '???UNKNOWN???')
+				.sort((a, b) => a[0].localeCompare(b[0]));
+			result[key] = Array.from(new Set(result[key]));
+			continue;
+		}
+		// Bank
+		if (value instanceof Bank || (isObjectType(value) && 'frozen' in value)) {
+			result[key] = (value as Bank)
+				.items()
+				.sort((a, b) => a[0].name.localeCompare(b[0].name))
+				.map(i => [i[0].name, i[1]]);
+			continue;
+		}
+
+		// Monsters
+		if (
+			isObjectType(value) &&
+			'data' in value &&
+			'aliases' in value &&
+			'allItems' in value &&
+			'kill' in value &&
+			isFunction(value.kill)
+		) {
+			result[key] = (value as SimpleMonster).allItems
+				.map(id => Items.itemNameFromId(id) ?? '???UNKNOWN???')
+				.sort((a, b) => a.localeCompare(b));
+			continue;
+		}
+
+		// Items
+		if (
+			isObjectType(value) &&
+			'id' in value &&
+			'name' in value &&
+			('tradeable' in value || 'customItemData' in value)
+		) {
+			result[key] = value.name;
+		}
+	}
+	return result;
+}

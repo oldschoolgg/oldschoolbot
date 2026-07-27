@@ -1,9 +1,13 @@
 {
-	"extends": "../tsconfig.json",
+	"extends": "../tsconfig.monorepo.json",
+	"include": ["**/*.ts", "**/*.tsx"],
 	"compilerOptions": {
-		"sourceMap": false,
-		"types": ["node"],
-		"esModuleInterop": true,
-		"noEmit": true
-	}
+		"noEmit": true,
+		"composite": false,
+		"baseUrl": "..",
+		"paths": {
+			"@/*": ["src/*"]
+		}
+	},
+	"references": [{ "path": ".." }]
 }

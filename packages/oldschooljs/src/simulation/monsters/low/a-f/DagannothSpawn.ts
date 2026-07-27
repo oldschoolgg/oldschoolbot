@@ -1,8 +1,8 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import { GemTable } from '../../../subtables/RareDropTable';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const DagannothSpawnTable = new LootTable()
+const DagannothSpawnTable: LootTable = new LootTable()
 	.every('Bones')
 
 	/* Runes */
@@ -30,7 +30,7 @@ const DagannothSpawnTable = new LootTable()
 	/* Tertiary */
 	.tertiary(128, 'Clue scroll (easy)');
 
-export default new SimpleMonster({
+export const DagannothSpawn: SimpleMonster = new SimpleMonster({
 	id: 3184,
 	name: 'Dagannoth spawn',
 	table: DagannothSpawnTable,

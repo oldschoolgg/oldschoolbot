@@ -9,10 +9,10 @@ const manualChunks = {
 };
 type ManualChunks = Record<string, string[]>;
 
-function convertManualChunksToAdvancedChunks(manualChunks: ManualChunks) {
+function convertManualChunksToAdvancedChunks(_manualChunks: ManualChunks) {
 	return {
 		advancedChunks: {
-			groups: Object.entries(manualChunks).map(([name, modules]) => ({
+			groups: Object.entries(_manualChunks).map(([name, modules]) => ({
 				name,
 				test: (id: string) => modules.some(m => id.includes(m))
 			}))

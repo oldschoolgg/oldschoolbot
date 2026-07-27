@@ -1,7 +1,7 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import { GemTable } from '../../../subtables/RareDropTable';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const WerewolfTable = new LootTable({ limit: 512 })
 	.every('Wolf bones')
@@ -41,7 +41,7 @@ const WerewolfTable = new LootTable({ limit: 512 })
 	.tertiary(128, 'Clue scroll (easy)')
 	.tertiary(512, 'Clue scroll (medium)');
 
-export default new SimpleMonster({
+export const Werewolf: SimpleMonster = new SimpleMonster({
 	id: 2593,
 	name: 'Werewolf',
 	table: WerewolfTable,

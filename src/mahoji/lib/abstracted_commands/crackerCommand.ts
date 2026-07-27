@@ -1,10 +1,9 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import type { ChatInputCommandInteraction, User } from 'discord.js';
-import { shuffleArr } from 'e';
+import type { IUser } from '@oldschoolgg/schemas';
+import { Emoji } from '@oldschoolgg/toolkit';
+import { cryptoRng } from 'node-rng/crypto';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { addToOpenablesScores } from '../../mahojiSettings';
+import { addToOpenablesScores } from '@/mahoji/mahojiSettings.js';
 
 const HatTable = new LootTable()
 	.add('Red partyhat', 1, 32)
@@ -31,10 +30,10 @@ export async function crackerCommand({
 	interaction,
 	otherPersonAPIUser
 }: {
-	otherPersonAPIUser: User;
+	otherPersonAPIUser: IUser;
 	ownerID: string;
 	otherPersonID: string;
-	interaction: ChatInputCommandInteraction;
+	interaction: MInteraction;
 }) {
 	const otherPerson = await mUserFetch(otherPersonID);
 	const owner = await mUserFetch(ownerID);
@@ -46,15 +45,14 @@ export async function crackerCommand({
 		return "You don't have any Christmas crackers.";
 	}
 
-	await handleMahojiConfirmation(
-		interaction,
+	await interaction.confirmation(
 		`${Emoji.ChristmasCracker} Are you sure you want to use your cracker on them? Either person could get the partyhat! Please confirm if you understand and wish to use it.`
 	);
 
 	await owner.removeItemsFromBank(new Bank().add('Christmas cracker', 1));
 	const winnerLoot = HatTable.roll();
 	const loserLoot = JunkTable.roll();
-	const [winner, loser] = shuffleArr([otherPerson, owner]);
+	const [winner, loser] = cryptoRng.shuffle([otherPerson, owner]);
 	await winner.addItemsToBank({ items: winnerLoot, collectionLog: true });
 	await loser.addItemsToBank({ items: loserLoot, collectionLog: true });
 	await addToOpenablesScores(owner, new Bank().add('Christmas cracker', 1).freeze());

@@ -8,7 +8,7 @@ Congratulations! You have beaten enough monkeys to be rewarded with your very ow
 
 ## Hatching the Tame
 
-There are no specific requirements to hatch the monkey tame. See [Tames](./#hatching-the-tame) for more information on hatching it.
+There are no specific requirements to hatch the monkey tame. See [Tames](/bso/tames/introduction/#hatching-the-tame) for more information on hatching it.
 
 On hatching, there is a 1/60 chance that it could be a shiny monkey, which is increased to 1/58 with a Ring of luck equipped or in the bank.
 
@@ -16,11 +16,11 @@ On hatching, there is a 1/60 chance that it could be a shiny monkey, which is in
 
 Upon getting a Monkey Egg, you can put it in your nursery and hatch it. It will take 4.5 hours to hatch. Once hatched, it will grow over time from a baby → juvenile → adult.
 
-In order for the tame to grow, you have to send it out on collecting trips. Like the [[/collect blue dragon scale]] command, you can send your monkey tame off to collect items.
+In order for the tame to grow, you have to send it out on collecting trips. Like the '/collect blue dragon scale' command, you can send your monkey tame off to collect items.
 
 A baby monkey is equivalent to the collecting speed of a minion. An adult monkey can get over 3× faster with the two fed item boosts.
 
-For more information on tame commands see [Tames](./)
+For more information on tame commands see [Tames](/bso/tames/introduction/)
 
 ## Boosts
 
@@ -60,3 +60,15 @@ Tame spells are cast with [[/tames cast]]
 | Superglass Make | Per 3 casts: 3× Giant seaweed, 18× Bucket of sand, 10× Air rune, 6× Fire rune, 2× Astral rune                                               |
 
 Base cast times are: Tan Leather 0.5s, Spin Flax 0.8s, Superglass Make 3s and Plank Make 4s. Tier 3 staff and a fed Klik reduce these times further.
+
+
+## Casting mechanics and rates
+
+- Monkey casting requires a [[Seamonkey staff (t2)]] or better (all current spells are tier-2 spells).
+- Base cast times:
+  - Tan Leather: 0.5s
+  - Spin Flax: 0.8s
+  - Superglass/Superheat: 3s
+  - Plank Make: 4s
+- Staff t3 gives **12% faster** casting.
+- Feeding [[Klik]] gives **22% faster** casting.

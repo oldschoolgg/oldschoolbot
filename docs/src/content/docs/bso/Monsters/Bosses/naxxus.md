@@ -14,7 +14,7 @@ Naxxus is a **solo-only** boss that drops several mage gear upgrades.
 
 Naxxus is unique in that it calculates your gear score based on two setups. For this fight, you will need strong melee and magic gear. The BiS gear is as follows:
 
-You will also need [Enhanced Potions](../../skills/herblore.md#custom-content-and-boosts).
+You will also need [Enhanced Potions](/bso/skills/herblore#custom-content-and-boosts).
 
 ## Getting Started
 
@@ -36,4 +36,4 @@ The unique drops from Naxxus are untradeable (all four items listed below). Naxx
 - **Dark Crystal:** Used to [[/create item\:Void Staff (u)]], a chargeable BiS magic weapon that boosts CoX, Vasa, Sea Kraken, and Naxxus
 - **Tattered Tome:** Used to [[/create item\:Abyssal Tome]], a BiS magic tome that boosts Naxxus
 - **Spellbound Ring:** BiS magic ring that boosts Naxxus; can be imbued with a Magus Scroll to further increase stats
-- **Abyssal Gem:** Used to invent the [Abyssal Amulet](../../skills/invention/#inventions)
+- **Abyssal Gem:** Used to invent the [Abyssal Amulet](/bso/skills/invention/#inventions)

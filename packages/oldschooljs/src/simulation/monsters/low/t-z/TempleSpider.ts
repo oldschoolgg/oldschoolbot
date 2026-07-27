@@ -1,15 +1,15 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import { GemTable } from '../../../subtables/RareDropTable';
-import { UncommonSeedDropTable } from '../../../subtables/index';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
+import { UncommonSeedDropTable } from '@/simulation/subtables/index.js';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const TatteredPageTable = new LootTable()
+const TatteredPageTable: LootTable = new LootTable()
 	.add('Tattered moon page')
 	.add('Tattered sun page')
 	.add('Tattered temple page');
 
-export const TempleSpiderTable = new LootTable()
+export const TempleSpiderTable: LootTable = new LootTable()
 	/* Tertiary */
 	.tertiary(30, TatteredPageTable)
 	.tertiary(100, 'Grubby key')
@@ -48,7 +48,7 @@ export const TempleSpiderTable = new LootTable()
 	/* Gem drop table */
 	.add(GemTable, 1, 1);
 
-export default new SimpleMonster({
+export const TempleSpider: SimpleMonster = new SimpleMonster({
 	id: 8703,
 	name: 'Temple Spider',
 	table: TempleSpiderTable,

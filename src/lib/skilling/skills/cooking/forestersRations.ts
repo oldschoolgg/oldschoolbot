@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { Cookables } from './cooking';
+import { Cookables } from './cooking.js';
 
 export interface ForesterRation {
 	name: string;

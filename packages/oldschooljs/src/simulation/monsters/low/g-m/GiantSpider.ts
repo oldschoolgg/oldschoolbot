@@ -1,9 +1,9 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-export const GiantSpiderTable = new LootTable().tertiary(128, 'Clue scroll (beginner)');
+export const GiantSpiderTable: LootTable = new LootTable().tertiary(128, 'Clue scroll (beginner)');
 
-export default new SimpleMonster({
+export const GiantSpider: SimpleMonster = new SimpleMonster({
 	id: 2477,
 	name: 'Giant spider',
 	table: GiantSpiderTable,

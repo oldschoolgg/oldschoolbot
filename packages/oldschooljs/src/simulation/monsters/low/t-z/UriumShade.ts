@@ -1,9 +1,9 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-export const UriumShadeTable = new LootTable().every('Urium remains');
+export const UriumShadeTable: LootTable = new LootTable().every('Urium remains');
 
-export default new SimpleMonster({
+export const UriumShade: SimpleMonster = new SimpleMonster({
 	id: 10_589,
 	name: 'Urium Shade',
 	table: UriumShadeTable,

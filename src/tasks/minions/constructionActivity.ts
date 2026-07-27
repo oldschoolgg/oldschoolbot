@@ -1,25 +1,22 @@
-import { calcPercentOfNum } from 'e';
+import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 
-import Constructables from '../../lib/skilling/skills/construction/constructables';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { ConstructionActivityTaskOptions } from '../../lib/types/minions';
-import { calcConBonusXP } from '../../lib/util/calcConBonusXP';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { Construction } from '@/lib/skilling/skills/construction/index.js';
+import type { ConstructionActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const constructionTask: MinionTask = {
 	type: 'Construction',
-	async run(data: ConstructionActivityTaskOptions) {
-		const { objectID, quantity, userID, channelID, duration } = data;
-		const user = await mUserFetch(userID);
-		const object = Constructables.find(object => object.id === objectID)!;
+	async run(data: ConstructionActivityTaskOptions, { user, handleTripFinish }) {
+		const { objectID, quantity, channelId, duration } = data;
+
+		const object = Construction.constructables.find(object => object.id === objectID)!;
 		const xpReceived = quantity * object.xp;
 		let bonusXP = 0;
-		const outfitMultiplier = calcConBonusXP(user.gear.skilling);
+		const outfitMultiplier = Construction.util.calcConBonusXP(user.gear.skilling.raw());
 		if (outfitMultiplier > 0) {
 			bonusXP = calcPercentOfNum(outfitMultiplier, xpReceived);
 		}
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Construction,
+			skillName: 'construction',
 			amount: xpReceived + bonusXP,
 			duration
 		});
@@ -30,6 +27,6 @@ export const constructionTask: MinionTask = {
 			str += `\nYou received ${bonusXP.toLocaleString()} bonus XP from your Carpenter's outfit.`;
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, null);
+		handleTripFinish({ user, channelId, message: str, data });
 	}
 };

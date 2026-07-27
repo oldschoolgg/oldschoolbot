@@ -1,5 +1,6 @@
 import { expect, test } from 'vitest';
-import { SimpleTable } from '../src/structures';
+
+import { SimpleTable } from '../src/structures.js';
 
 test('SimpleTable', () => {
 	const table = new SimpleTable();

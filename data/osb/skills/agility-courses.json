@@ -1,0 +1,132 @@
+[
+	{
+		"id": 14,
+		"name": "Agility Pyramid",
+		"level": 30,
+		"lap_time": 125.1,
+		"pet_chance": 9901
+	},
+	{
+		"id": 3,
+		"name": "Al Kharid Rooftop Course",
+		"level": 20,
+		"xp": 216,
+		"marks_per_60": 8,
+		"lap_time": 64.2,
+		"pet_chance": 26648
+	},
+	{
+		"id": 6,
+		"name": "Ape Atoll Agility Course",
+		"level": 48,
+		"xp": 580,
+		"lap_time": 38,
+		"pet_chance": 37720,
+		"qp_required": 82
+	},
+	{
+		"id": 11,
+		"name": "Ardougne Rooftop Course",
+		"level": 90,
+		"xp": 889,
+		"marks_per_60": 22,
+		"lap_time": 45.6,
+		"pet_chance": 34440
+	},
+	{
+		"id": 5,
+		"name": "Canifis Rooftop Course",
+		"level": 40,
+		"xp": 240,
+		"marks_per_60": 19,
+		"lap_time": 43.8,
+		"pet_chance": 36842
+	},
+	{
+		"id": 15,
+		"name": "Colossal Wyrm Agility Course",
+		"level": 50,
+		"lap_time": 60,
+		"cant_fail": true,
+		"required_quests": [3]
+	},
+	{
+		"id": 2,
+		"name": "Draynor Village Rooftop Course",
+		"level": 1,
+		"xp": 120,
+		"marks_per_60": 12,
+		"lap_time": 43.2,
+		"pet_chance": 33005
+	},
+	{
+		"id": 7,
+		"name": "Falador Rooftop Course",
+		"level": 50,
+		"xp": 586,
+		"marks_per_60": 13,
+		"lap_time": 58.2,
+		"pet_chance": 26806
+	},
+	{
+		"id": 1,
+		"name": "Gnome Stronghold Agility Course",
+		"level": 1,
+		"xp": 110.5,
+		"lap_time": 34,
+		"pet_chance": 35609
+	},
+	{
+		"id": 12,
+		"name": "Penguin Agility Course",
+		"level": 30,
+		"xp": 540,
+		"lap_time": 65,
+		"pet_chance": 9979
+	},
+	{
+		"id": 9,
+		"name": "Pollnivneach Rooftop Course",
+		"level": 70,
+		"xp": 890,
+		"marks_per_60": 9,
+		"lap_time": 47.4,
+		"pet_chance": 33422
+	},
+	{
+		"id": 13,
+		"name": "Prifddinas Rooftop Course",
+		"level": 75,
+		"xp": 1340.6,
+		"lap_time": 74.2,
+		"pet_chance": 25146,
+		"qp_required": 205
+	},
+	{
+		"id": 10,
+		"name": "Rellekka Rooftop Course",
+		"level": 80,
+		"xp": 780,
+		"marks_per_60": 14,
+		"lap_time": 51,
+		"pet_chance": 31063
+	},
+	{
+		"id": 8,
+		"name": "Seers' Village Rooftop Course",
+		"level": 60,
+		"xp": 570,
+		"marks_per_60": 12,
+		"lap_time": 43.8,
+		"pet_chance": 35205
+	},
+	{
+		"id": 4,
+		"name": "Varrock Rooftop Course",
+		"level": 30,
+		"xp": 270,
+		"marks_per_60": 12,
+		"lap_time": 70,
+		"pet_chance": 24410
+	}
+]

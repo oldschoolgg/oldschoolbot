@@ -1,6 +1,6 @@
 import { Bank, itemID } from 'oldschooljs';
 
-import type { Plant } from '../../types';
+import type { Plant } from '@/lib/skilling/types.js';
 
 const hopsPlants: Plant[] = [
 	{
@@ -28,7 +28,7 @@ const hopsPlants: Plant[] = [
 		defaultNumOfPatches: 4,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -54,7 +54,7 @@ const hopsPlants: Plant[] = [
 		chance1: 154,
 		chance99: 183,
 		chanceOfDeath: 25,
-		protectionPayment: new Bank({ Marigolds: 1 }),
+		protectionPayment: new Bank({ Marigolds: 1 }).freeze(),
 		needsChopForHarvest: false,
 		fixedOutput: false,
 		givesLogs: false,
@@ -62,7 +62,7 @@ const hopsPlants: Plant[] = [
 		defaultNumOfPatches: 4,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -96,7 +96,7 @@ const hopsPlants: Plant[] = [
 		defaultNumOfPatches: 4,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -130,7 +130,7 @@ const hopsPlants: Plant[] = [
 		defaultNumOfPatches: 4,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -156,7 +156,7 @@ const hopsPlants: Plant[] = [
 		chance1: 154,
 		chance99: 183,
 		chanceOfDeath: 25,
-		protectionPayment: new Bank({ 'Tomatoes(5)': 200 }).freeze(),
+		protectionPayment: new Bank({ 'Tomatoes(5)': 1 }).freeze(),
 		needsChopForHarvest: false,
 		fixedOutput: false,
 		givesLogs: false,
@@ -164,7 +164,7 @@ const hopsPlants: Plant[] = [
 		defaultNumOfPatches: 4,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -198,7 +198,7 @@ const hopsPlants: Plant[] = [
 		defaultNumOfPatches: 4,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -232,7 +232,7 @@ const hopsPlants: Plant[] = [
 		defaultNumOfPatches: 4,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]

@@ -1,7 +1,7 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-export const ManiacalMonkeyTable = new LootTable()
+export const ManiacalMonkeyTable: LootTable = new LootTable()
 	.every('Small ninja monkey bones')
 
 	/* Weapons and armour */
@@ -20,7 +20,7 @@ export const ManiacalMonkeyTable = new LootTable()
 	.add('Adamant arrow(p++)', 1, 1)
 	.add('Rope', 1, 1);
 
-export default new SimpleMonster({
+export const ManiacalMonkey: SimpleMonster = new SimpleMonster({
 	id: 7118,
 	name: 'Maniacal monkey',
 	table: ManiacalMonkeyTable,

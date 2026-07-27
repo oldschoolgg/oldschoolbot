@@ -1,9 +1,9 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import { GemTable } from '../../../subtables/RareDropTable';
-import { UncommonSeedDropTable } from '../../../subtables/index';
+import { UncommonSeedDropTable } from '@/simulation/subtables/index.js';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-export const SkeletonFremennikTable = new LootTable()
+export const SkeletonFremennikTable: LootTable = new LootTable()
 	.every('Bones')
 	.tertiary(5000, 'Skeleton champion scroll')
 
@@ -38,7 +38,7 @@ export const SkeletonFremennikTable = new LootTable()
 	/* Gem drop table */
 	.add(GemTable);
 
-export default new SimpleMonster({
+export const SkeletonFremennik: SimpleMonster = new SimpleMonster({
 	id: 4498,
 	name: 'Skeleton fremennik',
 	table: SkeletonFremennikTable,

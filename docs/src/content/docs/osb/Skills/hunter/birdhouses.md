@@ -4,18 +4,18 @@ title: "Birdhouses"
 
 Birdhouses are a great way to collect bird nests, seeds, and rings. It is also the only method to collect bird eggs, which give a chance at pieces of the Evil Chicken outfit. All birdhouses take the same amount of time (50 minutes).
 
-If you are a tier 1 patron or higher (and your birdhouses are ready), you will see a **Birdhouse Run** button at the end of your trips. This can be enabled or disabled with:  
+If you are a tier 1 patron or higher (and your birdhouses are ready), you will see a **Birdhouse Run** button at the end of your trips. This can be enabled or disabled with:
 [[/config user toggle name\:Disable Birdhouse Run Button]]
 
 ## Commands
 
-If no birdhouses are in place, you can set them up with:  
+If no birdhouses are in place, you can set them up with:
 [[/activities birdhouses action\:Collect and Plant Birdhouses birdhouse\:]]
 
-To check if your birdhouses are ready:  
+To check if your birdhouses are ready:
 [[/activities birdhouses action\:Check Birdhouses]]
 
-To favorite a specific seed for your birdhouse runs:  
+To favorite a specific seed for your birdhouse runs:
 [[/config user favorite_bh_seeds]]
 
 ## Boosts
@@ -85,7 +85,7 @@ Nest types:
 - Ring nests – 32%
 - Seed nests – 65%
 
-Wearing a [Rabbit Foot Necklace](./#rabbit-foot-necklace) slightly increases egg and ring nest odds.
+Wearing a [Rabbit Foot Necklace](#rabbit-foot-necklace) slightly increases egg and ring nest odds.
 
 Clue scrolls are a tertiary drop:
 
@@ -94,12 +94,12 @@ Clue scrolls are a tertiary drop:
 
 ## Bird Eggs
 
-Offer bird eggs at the shrine for a 1/300 chance at each Evil Chicken outfit piece (no set order).  
-To offer:  
+Offer bird eggs at the shrine for a 1/300 chance at each Evil Chicken outfit piece (no set order).
+To offer:
 [[/offer name\:[colour] bird egg]]
 
 **Note:** You receive [[prayer:100]] XP per egg offered.
 
-Tracking was added on 23rd Oct 2022 to view how many eggs you've offered.  
-To view:  
+Tracking was added on 23rd Oct 2022 to view how many eggs you've offered.
+To view:
 [[/data name\:Bird Eggs Offered]]

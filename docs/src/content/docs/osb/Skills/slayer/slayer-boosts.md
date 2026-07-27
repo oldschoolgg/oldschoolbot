@@ -10,7 +10,7 @@ You can check the boosts for a specific monster and by how much by using the [[/
 
 You can find boosts for bosses under the [boss boosts page.](https://wiki.oldschool.gg/bosses/boosts-and-requirements)
 
-Certain foods give boosts to the trip time during PvM. See more information [here](../../getting-started/combat-skills.md#food-boosts).
+Certain foods give boosts to the trip time during PvM. See more information [here](../../getting-started/combat-skills#food-boosts).
 
 Cannon boosts a number of bosses by a variable amount, the same applies for bursting and barraging.
 
@@ -23,6 +23,7 @@ Cannon boosts a number of bosses by a variable amount, the same applies for burs
 | Blisterwood flail / Ivandis flail | Vyrewatch, Vyrewatch Sentinel, Feral vampyre, Vampyre juvinate                                                                                                                                    |
 | Dragon hunter crossbow            | Wyrm, Drake, All dragons - must be training ranged.                                                                                                                                               |
 | Dragon hunter lance               | Wyrm, Drake, All dragons - must be training melee.                                                                                                                                                |
+| Dragon hunter wand                | Wyrm, Drake, All dragons - must be training magic.                                                                                                                                                 |
 | Dragonbone necklace               | Dagannoth                                                                                                                                                                                         |
 | Kodai wand                        | Dust devil, Smoke devil, Ankou, Greater nechryael<br>Boosts any barrage or burst tasks, but must be equipped in mage setup. If doing wildy slayer, it must be equipped in wildy setup.            |
 | Leaf-bladed battleaxe             | Kurask, Turoth                                                                                                                                                                                    |

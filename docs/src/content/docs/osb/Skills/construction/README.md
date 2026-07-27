@@ -2,7 +2,7 @@
 title: "Construction"
 ---
 
-Construction in the bot has three distinct parts: [Training](./#training), [Mahogany Homes](mahogany-homes.md), and your [Player-owned House](mahogany-homes.md). Mahogany Homes requires planks and steel bars, and building things in your PoH requires planks as well as various mob drops or buyables.
+Construction in the bot has three distinct parts: [Training](#training), [Mahogany Homes](mahogany-homes), and your [Player-owned House](mahogany-homes). Mahogany Homes requires planks and steel bars, and building things in your PoH requires planks as well as various mob drops or buyables.
 
 You can also [[/offer name\:curved bone]] and [[/offer name\:long bone]] you get from PvM for construction XP after level [[construction:30]]. Fighting the Wintertodt also provides a small amount of construction XP.
 
@@ -18,9 +18,9 @@ You can also [[/offer name\:curved bone]] and [[/offer name\:long bone]] you get
 8. [[/build name\:Oak larder quantity\:220]]
 9. [[/build name\:Mahogany table]]
 
-**Materials Needed:**  
-94 Plank  
-2,030 Oak plank  
+**Materials Needed:**
+94 Plank
+2,030 Oak plank
 92,220 Mahogany plank
 
 ### Mahogany Homes

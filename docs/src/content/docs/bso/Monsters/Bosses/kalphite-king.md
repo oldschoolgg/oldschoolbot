@@ -10,7 +10,7 @@ You can kill Kalphite King using [[/k name\:Kalphite King (Mass)]] or [[/k name\
 
 ## Requirements
 
-- [Melee gear](kalphite-king.md#gear)
+- [Melee gear](kalphite-king#gear)
 - Saradomin brew(4), Super restore(4)
 - [[prayer:95]]
 - [[attack:90]] [[strength:90]] [[defence:90]]
@@ -30,7 +30,7 @@ Use the best melee gear you have.
 ## Loot
 
 - **Baby Kalphite King:** Pet with no perk
-- **Perfect Chitin:** Used to create [Axe handle](../demi-bosses/solis.md#loot)
+- **Perfect Chitin:** Used to create [[Axe handle]]
 - **Drygore weapons:** A set of six very powerful weapons used in many places
   - _Drygore Rapier + Offhand Drygore Rapier:_ Best-in-slot for CoX melee setup
   - _Drygore Mace + Offhand Drygore Mace:_ Best-in-slot at Kalphite King

@@ -1,0 +1,163 @@
+{
+	"attack_stab": [
+		"Gorajan warrior helmet",
+		"Amulet of rancour",
+		"TzKal cape",
+		"Gorajan warrior top",
+		"Gorajan warrior legs",
+		"Gorajan warrior boots",
+		"Barrows gloves (wrapped)",
+		"Ignis ring(i)",
+		"Corrupted halberd (perfected)"
+	],
+	"attack_slash": [
+		"Gorajan warrior helmet",
+		"Amulet of rancour",
+		"TzKal cape",
+		"Gorajan warrior top",
+		"Torva platelegs",
+		"Gorajan warrior boots",
+		"Barrows gloves (wrapped)",
+		"Bellator ring",
+		"Axe of the high sungod"
+	],
+	"attack_crush": [
+		"Dwarven full helm",
+		"Amulet of rancour",
+		"TzKal cape",
+		"Dwarven platebody",
+		"Dwarven platelegs",
+		"Dwarven boots",
+		"Barrows gloves (wrapped)",
+		"Tyrannical ring (i)",
+		"Infernal bulwark"
+	],
+	"attack_magic": [
+		"Gorajan occult helmet",
+		"Arcane blast necklace",
+		"Vasa cloak",
+		"Gorajan occult top",
+		"Gorajan occult legs",
+		"Gorajan occult boots",
+		"Gorajan occult gloves",
+		"Spellbound ring(i)",
+		"Void staff",
+		"Abyssal tome"
+	],
+	"attack_ranged": [
+		"Gorajan archer helmet",
+		"Farsight snapshot necklace",
+		"Tidal collector (i)",
+		"Bullet arrow",
+		"Masori body",
+		"Masori chaps",
+		"Gorajan archer boots",
+		"Barrows gloves (wrapped)",
+		"Ring of piercing (i)",
+		"Hellfire bow"
+	],
+	"defence_stab": [
+		"Torva full helm",
+		"Amulet of fury",
+		"TzKal cape",
+		"Torva platebody",
+		"Torva platelegs",
+		"Guardian boots",
+		"Torva gloves",
+		"Ignis ring(i)",
+		"Infernal bulwark"
+	],
+	"defence_slash": [
+		"Torva full helm",
+		"Amulet of fury",
+		"TzKal cape",
+		"Torva platebody",
+		"Torva platelegs",
+		"Guardian boots",
+		"Torva gloves",
+		"Ignis ring(i)",
+		"Infernal bulwark"
+	],
+	"defence_crush": [
+		"Dwarven full helm",
+		"Amulet of fury",
+		"TzKal cape",
+		"Dwarven platebody",
+		"Dwarven platelegs",
+		"Guardian boots",
+		"Torva gloves",
+		"Ignis ring(i)",
+		"Infernal bulwark"
+	],
+	"defence_magic": [
+		"Virtus mask",
+		"Amulet of fury",
+		"TzKal cape",
+		"Corrupted body (perfected)",
+		"Corrupted legs (perfected)",
+		"Virtus boots",
+		"Pernix gloves",
+		"Ignis ring(i)",
+		"Void staff",
+		"Abyssal tome"
+	],
+	"defence_ranged": [
+		"Virtus mask",
+		"Amulet of fury",
+		"TzKal cape",
+		"Torva platebody",
+		"Torva platelegs",
+		"Torva boots",
+		"Torva gloves",
+		"Ignis ring(i)",
+		"Infernal bulwark"
+	],
+	"melee_strength": [
+		"Sanguine torva full helm",
+		"Brawler's hook necklace",
+		"TzKal cape",
+		"Vesta's chainbody",
+		"Torva platelegs",
+		"Primordial boots",
+		"Ferocious gloves",
+		"Ignis ring(i)",
+		"Elder maul"
+	],
+	"ranged_strength": [
+		"Pernix cowl",
+		"Farsight snapshot necklace",
+		"Tidal collector (i)",
+		"Dragon javelin",
+		"Morrigan's leather body (bh)",
+		"Morrigan's leather chaps (bh)",
+		"Pernix boots",
+		"Pernix gloves",
+		"Ring of piercing (i)",
+		"Morrigan's javelin",
+		"Twisted buckler"
+	],
+	"magic_damage": [
+		"Virtus mask",
+		"Arcane blast necklace",
+		"Imbued saradomin max cape",
+		"Virtus robe top",
+		"Virtus robe legs",
+		"Virtus boots",
+		"Virtus gloves",
+		"Magus ring",
+		"Void staff",
+		"Elidinis' ward (f)"
+	],
+	"prayer": [
+		"Sunfire fanatic helm",
+		"Dragonbone necklace",
+		"TzKal cape",
+		"Dwarven blessing",
+		"Sunfire fanatic cuirass",
+		"Sunfire fanatic chausses",
+		"Devout boots",
+		"Holy wraps",
+		"Ring of the gods (i)",
+		"Hellfire bow"
+	]
+}

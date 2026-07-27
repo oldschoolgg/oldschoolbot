@@ -9,8 +9,8 @@ In most cases, reverting items is only necessary if you're aiming to:
 - Revert recoloured or transmogged pets
 - Convert Castle Wars items back into tickets
 
-To revert an item, use:  
-[[/create item\:revert]]  
+To revert an item, use:
+[[/create item\:revert]]
 Then select the item you want to revert into one of the following:
 
 - Components
@@ -55,8 +55,8 @@ You get back the ornament kit (or component) when reverting:
 
 ### Castle Wars Tickets
 
-Castle Wars items can be reverted into the full amount of tickets originally used.  
-See [Castle Wars](../minigames/castle-wars.md) for info on how to obtain and spend tickets.
+Castle Wars items can be reverted into the full amount of tickets originally used.
+See [Castle Wars](../minigames/castle-wars) for info on how to obtain and spend tickets.
 
 ### Special Case
 

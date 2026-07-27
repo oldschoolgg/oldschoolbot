@@ -1,8 +1,8 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import { DustDevilPreTable } from '../low/a-f/DustDevil';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
+import { DustDevilPreTable } from '../low/a-f/DustDevil.js';
 
-const ChokeDevilTable = new LootTable()
+const ChokeDevilTable: LootTable = new LootTable()
 	.every('Bones')
 	.every(DustDevilPreTable, 3)
 
@@ -12,7 +12,7 @@ const ChokeDevilTable = new LootTable()
 	.tertiary(678, 'Eternal gem')
 	.tertiary(679, 'Imbued heart');
 
-export default new SimpleMonster({
+export const ChokeDevil: SimpleMonster = new SimpleMonster({
 	id: 7404,
 	name: 'Choke devil',
 	table: ChokeDevilTable,

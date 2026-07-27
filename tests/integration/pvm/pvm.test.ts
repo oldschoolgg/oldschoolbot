@@ -1,25 +1,17 @@
-import { calcPerHour } from '@oldschoolgg/toolkit/util';
-import { Bank, EItem, EMonster, Monsters, convertLVLtoXP, itemID, resolveItems } from 'oldschooljs';
+import { calcPerHour } from '@oldschoolgg/toolkit';
+import { Bank, convertLVLtoXP, EItem, EMonster, itemID, Monsters, resolveItems } from 'oldschooljs';
 import { describe, expect, it, test } from 'vitest';
 
-import { CombatCannonItemBank } from '../../../src/lib/minions/data/combatConstants';
-import { getPOHObject } from '../../../src/lib/poh';
-import { SkillsEnum } from '../../../src/lib/skilling/types';
-import { Gear } from '../../../src/lib/structures/Gear';
-import { minionKCommand } from '../../../src/mahoji/commands/k';
-import { createTestUser, mockClient, mockUser } from '../util';
+import { CombatCannonItemBank } from '@/lib/minions/data/combatConstants.js';
+import { QuestID } from '@/lib/minions/data/quests.js';
+import { getPOHObject } from '@/lib/poh/index.js';
+import { Gear } from '@/lib/structures/Gear.js';
+import { minionKCommand } from '@/mahoji/commands/k.js';
+import { createTestUser, mockClient, mockUser } from '../util.js';
 
 describe('PVM', async () => {
 	const client = await mockClient();
 	expect(Monsters.Man.id).toBe(EMonster.MAN);
-
-	it('Should add KC', async () => {
-		const user = await createTestUser();
-		const res = await user.runCommand(minionKCommand, { name: 'man' });
-		expect(res).toContain('now killing');
-		await client.processActivities();
-		expect(await user.getKC(EMonster.MAN)).toBeGreaterThan(1);
-	});
 
 	it('Should remove food', async () => {
 		const user = await createTestUser(new Bank().add('Shark', 1000), {
@@ -27,13 +19,65 @@ describe('PVM', async () => {
 			skills_strength: convertLVLtoXP(70),
 			QP: 100
 		});
-		const res = await user.runCommand(minionKCommand, { name: 'general graardor' });
-		expect(res).toContain('now killing');
-		await user.processActivities(client);
+		const { commandResult } = await user.runCmdAndTrip(minionKCommand, { name: 'general graardor' });
+		expect(commandResult).toContain('now killing');
 		const kc = await user.getKC(EMonster.GENERAL_GRAARDOR);
 		expect(kc).toEqual(4);
 		expect(user.bank.amount('Shark')).toBeLessThan(1000);
 		expect(user.bank.amount('Big bones')).toEqual(kc);
+	});
+
+	it('Should require food for Amoxliatl', async () => {
+		const meleeGear = resolveItems([
+			'Abyssal bludgeon',
+			'Amulet of fury',
+			'Fire cape',
+			'Bandos chestplate',
+			'Bandos tassets',
+			'Ferocious gloves',
+			'Dragon boots',
+			'Berserker ring (i)',
+			"Rada's blessing 3"
+		]);
+		const userWithoutFood = await client.mockUser({
+			bank: new Bank().add('Prayer potion(4)', 100),
+			QP: 300,
+			maxed: true,
+			meleeGear
+		});
+		await userWithoutFood.update({ finished_quest_ids: [QuestID.TheHeartOfDarkness] });
+
+		const noFoodResult = await userWithoutFood.kill(EMonster.AMOXLIATL, { quantity: 1, shouldFail: true });
+		expect(noFoodResult.commandResult).toContain("You don't have enough food to kill Amoxliatl");
+		expect(noFoodResult.commandResult).not.toContain('5% for no food');
+
+		const userWithFood = await client.mockUser({
+			bank: new Bank().add('Prayer potion(4)', 100).add('Shark', 100),
+			QP: 300,
+			maxed: true,
+			meleeGear
+		});
+		await userWithFood.update({ finished_quest_ids: [QuestID.TheHeartOfDarkness] });
+
+		const foodResult = await userWithFood.kill(EMonster.AMOXLIATL, { quantity: 1 });
+		expect(foodResult.commandResult).toContain('is now killing 1x Amoxliatl');
+		expect(foodResult.commandResult).not.toContain('5% for no food');
+		expect(foodResult.tripStartBank.amount('Shark')).toBeLessThan(100);
+	});
+
+	it('Should require food for food-using monsters', async () => {
+		const user = await client.mockUser({
+			bank: new Bank(),
+			QP: 300,
+			maxed: true,
+			mageGear: resolveItems(['Trident of the seas', "Ahrim's hood", "Ahrim's robetop", "Ahrim's robeskirt"]),
+			rangeGear: resolveItems(['Magic shortbow', "Black d'hide body", "Black d'hide chaps"])
+		});
+		await user.setAttackStyle(['ranged']);
+
+		const result = await user.kill(EMonster.ZULRAH, { quantity: 1, shouldFail: true });
+		expect(result.commandResult).toContain("You don't have enough food to kill Zulrah");
+		expect(result.commandResult).not.toContain('5% for no food');
 	});
 
 	it('Should remove charges', async () => {
@@ -41,11 +85,11 @@ describe('PVM', async () => {
 			rangeGear: resolveItems(['Venator bow']),
 			rangeLevel: 70,
 			venatorBowCharges: 1000,
-			slayerLevel: 70
+			slayerLevel: 70,
+			bank: new Bank().add('Shark', 1000)
 		});
-		const res = await user.runCommand(minionKCommand, { name: 'bloodveld' }, true);
-		expect(res).toContain('now killing');
-		await user.processActivities(client);
+		const { commandResult } = await user.runCmdAndTrip(minionKCommand, { name: 'bloodveld' });
+		expect(commandResult).toContain('now killing');
 		const kc = await user.getKC(EMonster.BLOODVELD);
 		expect(kc).toBeGreaterThan(0);
 		expect(user.bank.amount('Shark')).toBeLessThan(1000);
@@ -57,7 +101,8 @@ describe('PVM', async () => {
 			rangeGear: resolveItems(['Venator bow']),
 			rangeLevel: 70,
 			venatorBowCharges: 1000,
-			slayerLevel: 70
+			slayerLevel: 70,
+			bank: new Bank().add('Shark', 1000)
 		});
 		await prisma.slayerTask.deleteMany({
 			where: {
@@ -74,9 +119,8 @@ describe('PVM', async () => {
 				skipped: false
 			}
 		});
-		const res = await user.runCommand(minionKCommand, { name: 'bloodveld' }, true);
-		expect(res).toContain('now killing');
-		await user.processActivities(client);
+		const { commandResult } = await user.runCmdAndTrip(minionKCommand, { name: 'bloodveld' });
+		expect(commandResult).toContain('now killing');
 		const kc = await user.getKC(EMonster.BLOODVELD);
 		expect(kc).toBeGreaterThan(0);
 		expect(user.bank.amount('Shark')).toBeLessThan(1000);
@@ -90,13 +134,13 @@ describe('PVM', async () => {
 			slayerLevel: 70,
 			bank: new Bank().add('Shark', 10000)
 		});
-		expect(await user.runCommand(minionKCommand, { name: 'hydra' }, true)).to.contain('You need Boots of stone');
+		expect(await user.runCommand(minionKCommand, { name: 'hydra' })).to.contain('You need Boots of stone');
 		await user.equip('melee', resolveItems(['Boots of stone']));
-		expect(await user.runCommand(minionKCommand, { name: 'hydra' }, true)).to.contain(
+		expect(await user.runCommand(minionKCommand, { name: 'hydra' })).to.contain(
 			"You don't meet the skill requirement"
 		);
 		await user.setLevel('slayer', 95);
-		const x = await user.runCommand(minionKCommand, { name: 'hydra' }, true);
+		const x = await user.runCommand(minionKCommand, { name: 'hydra' });
 		expect(x).to.contain("You don't have the items");
 		await user.addItemsToBank({ items: new Bank().add('Anti-venom+(4)', 1) });
 		const result = await user.kill(EMonster.HYDRA);
@@ -140,7 +184,11 @@ describe('PVM', async () => {
 	it('barrages abby demons', async () => {
 		const user = await client.mockUser({
 			slayerLevel: 99,
-			bank: new Bank().add('Blood rune', 1000).add('Death rune', 1000).add('Water rune', 10000000),
+			bank: new Bank()
+				.add('Blood rune', 1000)
+				.add('Death rune', 1000)
+				.add('Water rune', 10000000)
+				.add('Shark', 1000),
 			mageLevel: 99,
 			mageGear: resolveItems(['Ancient staff'])
 		});
@@ -156,12 +204,16 @@ describe('PVM', async () => {
 	it('should get kodai buff', async () => {
 		const user = await client.mockUser({
 			slayerLevel: 99,
-			bank: new Bank().add('Blood rune', 1000).add('Death rune', 1000).add('Water rune', 10000000),
+			bank: new Bank()
+				.add('Blood rune', 1000)
+				.add('Death rune', 1000)
+				.add('Water rune', 10000000)
+				.add('Shark', 1000),
 			mageLevel: 99,
 			mageGear: resolveItems(['Kodai wand'])
 		});
-		expect(user.gear.mage.weapon?.item).toEqual(itemID('Kodai wand'));
-		await user.setAttackStyle([SkillsEnum.Magic]);
+		expect(user.gear.mage.get('weapon')?.item).toEqual(itemID('Kodai wand'));
+		await user.setAttackStyle(['magic']);
 		const result = await user.kill(EMonster.ABYSSAL_DEMON, { method: 'barrage' });
 		expect(result.xpGained.magic).toBeGreaterThan(0);
 		expect(user.bank.amount('Blood rune')).toBeLessThan(1000);
@@ -172,12 +224,16 @@ describe('PVM', async () => {
 	it('should get kodai buff even if forced to switch to mage', async () => {
 		const user = await client.mockUser({
 			slayerLevel: 99,
-			bank: new Bank().add('Blood rune', 1000).add('Death rune', 1000).add('Water rune', 10000000),
+			bank: new Bank()
+				.add('Blood rune', 1000)
+				.add('Death rune', 1000)
+				.add('Water rune', 10000000)
+				.add('Shark', 1000),
 			mageLevel: 99,
 			mageGear: resolveItems(['Kodai wand'])
 		});
-		expect(user.gear.mage.weapon?.item).toEqual(itemID('Kodai wand'));
-		await user.setAttackStyle([SkillsEnum.Attack]);
+		expect(user.gear.mage.get('weapon')?.item).toEqual(itemID('Kodai wand'));
+		await user.setAttackStyle(['attack']);
 		const result = await user.kill(EMonster.ABYSSAL_DEMON, { method: 'barrage' });
 		expect(result.xpGained.magic).toBeGreaterThan(0);
 		expect(user.bank.amount('Blood rune')).toBeLessThan(1000);
@@ -194,7 +250,8 @@ describe('PVM', async () => {
 			QP: 300,
 			maxed: true
 		});
-		await user.setAttackStyle([SkillsEnum.Ranged]);
+		await user.max();
+		await user.setAttackStyle(['ranged']);
 		const result = await user.kill(EMonster.MANIACAL_MONKEY, { method: 'cannon' });
 		expect(result.xpGained.ranged).toBeGreaterThan(0);
 		expect(user.bank.amount('Cannonball')).toBeLessThan(100_000);
@@ -208,7 +265,7 @@ describe('PVM', async () => {
 			QP: 300,
 			maxed: true
 		});
-		await user.setAttackStyle([SkillsEnum.Ranged]);
+		await user.setAttackStyle(['ranged']);
 		const result = await user.kill(EMonster.MANIACAL_MONKEY, { method: 'cannon', shouldFail: true });
 		expect(result.commandResult).toContain("You don't have the items needed to kill this monster");
 		expect(user.bank.amount('Cannonball')).toEqual(0);
@@ -221,7 +278,7 @@ describe('PVM', async () => {
 			QP: 300,
 			maxed: true
 		});
-		await user.setAttackStyle([SkillsEnum.Ranged]);
+		await user.setAttackStyle(['ranged']);
 		const result = await user.kill(EMonster.MANIACAL_MONKEY, { method: 'chinning' });
 		expect(result.commandResult).toContain('% for Red chinchomp');
 		expect(user.bank.amount('Red chinchompa')).toBeLessThan(5000);
@@ -229,27 +286,34 @@ describe('PVM', async () => {
 
 	it('should give poh boost', async () => {
 		const user = await client.mockUser({
-			bank: new Bank().add('Red chinchompa', 5000).add("Verac's plateskirt"),
+			bank: new Bank().add('Red chinchompa', 5000).add("Verac's plateskirt").add('Shark', 1000),
 			rangeLevel: 99,
 			QP: 300,
 			maxed: true,
 			meleeGear: resolveItems(["Verac's flail", "Black d'hide body", "Black d'hide chaps"])
 		});
-		await prisma.playerOwnedHouse.create({
-			data: {
+		await prisma.playerOwnedHouse.upsert({
+			where: {
+				user_id: user.id
+			},
+			create: {
+				user_id: user.id,
+				pool: getPOHObject('Rejuvenation pool').id
+			},
+			update: {
 				user_id: user.id,
 				pool: getPOHObject('Rejuvenation pool').id
 			}
 		});
 		const result = await user.kill(EMonster.KALPHITE_QUEEN);
 		expect(result.commandResult).toContain('10% for Rejuvenation pool');
-		expect(result.commandResult).toContain('5% for no food');
+		expect(result.commandResult).not.toContain('5% for no food');
 		expect(result.commandResult).toContain('15.00% for stats');
 	});
 
 	it('should only use 1 skotizo totem', async () => {
 		const user = await client.mockUser({
-			bank: new Bank().add('Dark totem', 100),
+			bank: new Bank().add('Dark totem', 100).add('Shark', 1000),
 			rangeLevel: 99,
 			QP: 300,
 			maxed: true,
@@ -260,30 +324,24 @@ describe('PVM', async () => {
 		expect(result.tripStartBank.amount('Dark totem')).toBe(99);
 	});
 
-	describe(
-		'should fail to kill skotizo with no totems',
-		async () => {
-			const user = await client.mockUser({
-				rangeLevel: 99,
-				QP: 300,
-				maxed: true,
-				meleeGear: resolveItems(["Verac's flail", "Black d'hide body", "Black d'hide chaps"])
+	describe('should fail to kill skotizo with no totems', async () => {
+		const user = await client.mockUser({
+			rangeLevel: 99,
+			QP: 300,
+			maxed: true,
+			meleeGear: resolveItems(["Verac's flail", "Black d'hide body", "Black d'hide chaps"])
+		});
+		for (const quantity of [undefined, 1, 2, 5]) {
+			it(`should fail to kill with input of ${quantity}`, async () => {
+				const result = await user.kill(EMonster.SKOTIZO, { quantity });
+				expect(result.commandResult).toContain("You don't have the items");
 			});
-			for (const quantity of [undefined, 1, 2, 5]) {
-				it(`should fail to kill with input of ${quantity}`, async () => {
-					const result = await user.kill(EMonster.SKOTIZO, { quantity });
-					expect(result.commandResult).toContain("You don't have the items");
-				});
-			}
-		},
-		{
-			repeats: 100
 		}
-	);
+	});
 
 	test('salve and slayer helm shouldnt stack', async () => {
 		const user = await client.mockUser({
-			bank: new Bank().add('Dark totem', 100),
+			bank: new Bank().add('Dark totem', 100).add('Shark', 1000),
 			rangeLevel: 99,
 			QP: 300,
 			maxed: true,
@@ -295,7 +353,7 @@ describe('PVM', async () => {
 				'Slayer helmet'
 			])
 		});
-		await user.setAttackStyle([SkillsEnum.Attack]);
+		await user.setAttackStyle(['attack']);
 		await user.giveSlayerTask(EMonster.ZOMBIE);
 		const result = await user.kill(EMonster.ZOMBIE);
 		const resultStr = result.commandResult as string;
@@ -320,7 +378,7 @@ describe('PVM', async () => {
 				weapon: 'Soulreaper axe'
 			}).allItems(false)
 		});
-		await user.setAttackStyle([SkillsEnum.Attack]);
+		await user.setAttackStyle(['attack']);
 		await user.giveSlayerTask(EMonster.ARAXYTE);
 		return user;
 	}

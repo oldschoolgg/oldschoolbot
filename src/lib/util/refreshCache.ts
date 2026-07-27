@@ -1,0 +1,38 @@
+import { isValidDiscordSnowflake } from '@oldschoolgg/util';
+
+import { roboChimpSyncData } from '@/lib/roboChimp.js';
+import { getIdFromMention } from '@/lib/util.js';
+
+export async function refreshUserCache({
+	user,
+	guildId,
+	possibleTarget
+}: {
+	user: MUser;
+	guildId?: string | null;
+	possibleTarget?: string;
+}) {
+	let refreshUser = user;
+
+	if (possibleTarget) {
+		possibleTarget = getIdFromMention(possibleTarget);
+		if (user.isMod() || user.isAdmin()) {
+			if (!isValidDiscordSnowflake(possibleTarget)) return 'Invalid user ID.';
+			refreshUser = await mUserFetch(possibleTarget);
+			if (!refreshUser.hasMinion) return 'Target player does not have a minion.';
+		} else return 'Ook';
+	}
+
+	const updateGuildMember = async (userId: string) => {
+		if (guildId) await Cache.getMember({ guildId, userId, refreshCache: true, externalServer: true });
+	};
+	await Promise.all([
+		refreshUser.fetchPerkTier({ forceNoCache: true }),
+		Cache.resetUsername(refreshUser.id),
+		updateGuildMember(refreshUser.id),
+		Cache.getRoboChimpUser(refreshUser.id, true),
+		roboChimpSyncData(refreshUser)
+	]);
+
+	return `${refreshUser}'s Caches updated successfully!`;
+}

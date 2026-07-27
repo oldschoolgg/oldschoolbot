@@ -1,9 +1,9 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-export const AsynShadeTable = new LootTable().every('Asyn remains');
+export const AsynShadeTable: LootTable = new LootTable().every('Asyn remains');
 
-export default new SimpleMonster({
+export const AsynShade: SimpleMonster = new SimpleMonster({
 	id: 1284,
 	name: 'Asyn Shade',
 	table: AsynShadeTable,

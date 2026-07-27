@@ -1,10 +1,10 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import RareDropTable, { GemTable } from '../../subtables/RareDropTable';
-import RareSeedTable from '../../subtables/RareSeedTable';
-import TalismanTable from '../../subtables/TalismanTable';
+import { GemTable, RareDropTable } from '@/simulation/subtables/RareDropTable.js';
+import RareSeedTable from '@/simulation/subtables/RareSeedTable.js';
+import TalismanTable from '@/simulation/subtables/TalismanTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const DagannothPrimeTable = new LootTable()
+const DagannothPrimeTable: LootTable = new LootTable()
 	.every('Dagannoth bones')
 	.every('Dagannoth hide')
 	.tertiary(20, 'Ensouled dagannoth head')
@@ -52,7 +52,7 @@ const DagannothPrimeTable = new LootTable()
 	.add(GemTable, 1, 10)
 	.add(RareSeedTable, 1, 7);
 
-export default new SimpleMonster({
+export const DagannothPrime: SimpleMonster = new SimpleMonster({
 	id: 2266,
 	name: 'Dagannoth Prime',
 	table: DagannothPrimeTable,

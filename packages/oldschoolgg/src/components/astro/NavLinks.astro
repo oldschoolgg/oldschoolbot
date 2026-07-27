@@ -1,0 +1,94 @@
+---
+import ExternalLink from "@lucide/astro/icons/external-link";
+import ChevronDown from "@lucide/astro/icons/chevron-down";
+
+interface LinkChild {
+  label: string;
+  href: string;
+  color?: string;
+}
+
+interface Link {
+  label: string;
+  href?: string;
+  color?: string;
+  children?: LinkChild[];
+}
+
+interface Props {
+  mobile?: boolean;
+  links: Link[];
+}
+
+const { mobile = false, links } = Astro.props;
+
+const isExternalLink = (href: string) => {
+  return href.startsWith("http://") || href.startsWith("https://");
+};
+
+const getLinkAttrs = (href: string) => ({
+  target: isExternalLink(href) ? "_blank" : undefined,
+  rel: isExternalLink(href) ? "noopener noreferrer" : undefined,
+});
+---
+
+{
+  links.map((link) =>
+    link.children ? (
+      <div
+        class={mobile ? "mobile-dropdown" : "relative dropdown cursor-pointer"}
+        style={link.color ? `color: ${link.color}` : undefined}
+      >
+        <button
+          class={
+            mobile
+              ? "flex items-center justify-between w-full hover-link transition-all mobile-dropdown-trigger"
+              : "flex items-center gap-1 hover-link transition-all dropdown-trigger"
+          }
+        >
+          {mobile ? <span>{link.label}</span> : link.label}
+          <div
+            class={
+              mobile ? "mobile-dropdown-icon transition-transform" : undefined
+            }
+          >
+            <ChevronDown />
+          </div>
+        </button>
+        <div
+          class={
+            mobile
+              ? "hidden mobile-dropdown-menu pl-4 mt-2 flex-col gap-2"
+              : "absolute top-full left-0 mt-2 w-58 rounded-lg border-main bg-primary shadow-lg hidden dropdown-menu"
+          }
+        >
+          {link.children.map((child) => (
+            <a
+              href={child.href}
+              class={
+                mobile
+                  ? "flex items-center gap-2 py-2 hover-link transition-all"
+                  : "flex items-center gap-2 px-4 py-3 hover-link transition-all"
+              }
+              style={child.color ? `color: ${child.color}` : undefined}
+              {...getLinkAttrs(child.href)}
+            >
+              {child.label}
+              {isExternalLink(child.href) && <ExternalLink />}
+            </a>
+          ))}
+        </div>
+      </div>
+    ) : (
+      <a
+        href={link.href}
+        class="flex items-center gap-1.5 hover-link transition-all"
+        style={link.color ? `color: ${link.color}` : undefined}
+        {...getLinkAttrs(link.href!)}
+      >
+        {link.label}
+        {isExternalLink(link.href!) && <ExternalLink />}
+      </a>
+    ),
+  )
+}

@@ -1,26 +1,22 @@
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time, randFloat, reduceNumByPercent } from 'e';
+import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export async function driftNetCommand(
-	channelID: string,
-	user: MUser,
+	{ user, rng, channelId }: OSInteraction,
 	minutes: number | undefined,
 	noStams: boolean | undefined
 ) {
 	const userBank = user.bank;
-	const maxTripLength = calcMaxTripLength(user, 'DriftNet');
+	const maxTripLength = await user.calcMaxTripLength('DriftNet');
 
 	if (!minutes) {
 		minutes = Math.floor(maxTripLength / Time.Minute);
 	}
 
-	if (user.skillLevel(SkillsEnum.Fishing) < 47 || user.skillLevel(SkillsEnum.Hunter) < 44) {
+	if (user.skillsAsLevels.fishing < 47 || user.skillsAsLevels.hunter < 44) {
 		return 'You need at least level 44 Hunter and 47 Fishing to do Drift net fishing.';
 	}
 
@@ -48,7 +44,7 @@ export async function driftNetCommand(
 	const boosts = [];
 	const itemsToRemove = new Bank();
 	// Adjust numbers to end up with average 119 drift nets
-	let oneDriftNetTime = randFloat(78, 106) * Time.Second;
+	let oneDriftNetTime = rng.randFloat(78, 106) * Time.Second;
 
 	if (!user.hasEquipped('Flippers')) {
 		boosts.push('-50% boost for not wearing Flippers');
@@ -76,17 +72,18 @@ export async function driftNetCommand(
 		return `You need ${quantity}x Drift net for the whole trip, try a lower trip length or make/buy more Drift net.`;
 	}
 
-	await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
+	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity,
+		minutes,
 		duration,
 		type: 'DriftNet'
 	});
 
 	await user.removeItemsFromBank(itemsToRemove);
 
-	let str = `${user.minionName} is now doing Drift net fishing, it will take around ${formatDuration(duration)}.`;
+	let str = `${user.minionName} is now doing Drift net fishing, it will take around ${formatTripDuration(user, duration)}.`;
 
 	if (itemsToRemove.length > 0) {
 		str += ` Removed ${itemsToRemove} from your bank.`;

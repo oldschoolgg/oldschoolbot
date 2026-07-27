@@ -1,0 +1,47 @@
+---
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+import Item from "./Item.astro";
+const gearStatsAttack = [
+    "attack_stab",
+    "attack_slash",
+    "attack_crush",
+    "attack_magic",
+    "attack_ranged",
+];
+const gearStatsDefence = [
+    "defence_stab",
+    "defence_slash",
+    "defence_crush",
+    "defence_magic",
+    "defence_ranged",
+];
+const gearStatsOther = [
+    "melee_strength",
+    "ranged_strength",
+    "magic_damage",
+    "prayer",
+];
+
+const groups = [gearStatsAttack, gearStatsDefence, gearStatsOther];
+
+const { data } = Astro.props as { data: Record<string, string[]> };
+---
+
+{
+    groups.map((group) => (
+        <Tabs>
+            {group.map((s) => (
+                <TabItem
+                    label={s.replace("_", " ")}
+                    class:list={"flex flex-row"}
+                >
+                    {(data[s] || []).map((item) => (
+                        <div class="inline" style={{ zoom: 1.2 }}>
+                            <Item name={item} />
+                        </div>
+                    ))}
+                </TabItem>
+            ))}
+        </Tabs>
+    ))
+}

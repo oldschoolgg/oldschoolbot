@@ -1,14 +1,19 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import GWRareDropTable, { GWGemTable, ShardTable } from '../../subtables/GWRareDropTable';
+import GWRareDropTable, { GWGemTable, ShardTable } from '@/simulation/subtables/GWRareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const GeneralGraardorArmorTable = new LootTable().add('Bandos chestplate').add('Bandos tassets').add('Bandos boots');
+const GeneralGraardorArmorTable: LootTable = new LootTable()
+	.add('Bandos chestplate')
+	.add('Bandos tassets')
+	.add('Bandos boots');
 
-const MinionUniqueTable = new LootTable().add('Coins', [1400, 1500], 124).add(GeneralGraardorArmorTable, 1, 3);
+const MinionUniqueTable: LootTable = new LootTable()
+	.add('Coins', [1400, 1500], 124)
+	.add(GeneralGraardorArmorTable, 1, 3);
 
-const MinionShardTable = new LootTable().add('Coins', [1400, 1500], 9).add(ShardTable, 1, 3);
+const MinionShardTable: LootTable = new LootTable().add('Coins', [1400, 1500], 9).add(ShardTable, 1, 3);
 
-const MinionTable = new LootTable()
+const MinionTable: LootTable = new LootTable()
 	.every('Bones')
 	.add(MinionUniqueTable, 1, 1)
 	.add(MinionShardTable, 1, 1)
@@ -29,13 +34,13 @@ const StrongsackMinionTable = new LootTable({ limit: 6 }).every(MinionTable).add
 const SteelwillMinionTable = new LootTable({ limit: 6 }).every(MinionTable).add('Beer', 1, 1);
 const GrimspikeMinionTable = new LootTable({ limit: 6 }).every(MinionTable).add('Right eye patch', 1, 1);
 
-const UniqueTable = new LootTable()
+const UniqueTable: LootTable = new LootTable()
 	.add(GeneralGraardorArmorTable, 1, 4)
 	.add(ShardTable, 1, 2)
 	.add('Bandos hilt')
 	.add('Coins', [20_100, 20_600], 5);
 
-const GeneralGraardorTable = new LootTable()
+const GeneralGraardorTable: LootTable = new LootTable()
 	.every('Big bones')
 	.every(StrongsackMinionTable)
 	.every(SteelwillMinionTable)
@@ -65,7 +70,7 @@ const GeneralGraardorTable = new LootTable()
 	.add(GWRareDropTable, 1, 8)
 	.add(GWGemTable, 1, 2);
 
-export default new SimpleMonster({
+export const GeneralGraardor: SimpleMonster = new SimpleMonster({
 	id: 2215,
 	name: 'General Graardor',
 	table: GeneralGraardorTable,

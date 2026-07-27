@@ -1,6 +1,6 @@
 import { Bank, itemID } from 'oldschooljs';
 
-import type { Createable } from '../createables';
+import type { Createable } from '@/lib/data/createables.js';
 
 export const dragonFireShieldCreatables: Createable[] = [
 	// Uncharged
@@ -14,6 +14,18 @@ export const dragonFireShieldCreatables: Createable[] = [
 			'Uncharged dragonfire shield': 1
 		},
 		requiredSkills: { smithing: 90 }
+	},
+	{
+		name: 'Uncharged dragonfire shield (bypass stats)',
+		inputItems: {
+			[itemID('Draconic visage')]: 1,
+			[itemID('Anti-dragon shield')]: 1
+		},
+		outputItems: {
+			'Uncharged dragonfire shield': 1
+		},
+		GPCost: 1_250_000,
+		QPRequired: 34
 	},
 	{
 		name: 'Uncharged dragonfire ward',

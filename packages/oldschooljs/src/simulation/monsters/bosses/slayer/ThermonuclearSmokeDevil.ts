@@ -1,8 +1,8 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import { GemTable } from '../../../subtables/RareDropTable';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const ThermonuclearSmokeDevilTable = new LootTable()
+const ThermonuclearSmokeDevilTable: LootTable = new LootTable()
 	.every('Ashes')
 
 	/* Weapons and armor */
@@ -64,7 +64,7 @@ const ThermonuclearSmokeDevilTable = new LootTable()
 	.tertiary(2000, 'Jar of smoke')
 	.tertiary(3000, 'Pet smoke devil');
 
-export default new SimpleMonster({
+export const ThermonuclearSmokeDevil: SimpleMonster = new SimpleMonster({
 	id: 499,
 	name: 'Thermonuclear smoke devil',
 	table: ThermonuclearSmokeDevilTable,

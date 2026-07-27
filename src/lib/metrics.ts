@@ -1,7 +1,8 @@
 import type { CpuInfo } from 'node:os';
 import os from 'node:os';
 import { monitorEventLoopDelay } from 'node:perf_hooks';
-import type { Prisma } from '@prisma/client';
+
+import type { Prisma } from '@/prisma/main.js';
 
 const h = monitorEventLoopDelay();
 h.enable();
@@ -50,7 +51,7 @@ function getCPUMetrics() {
 	};
 }
 
-export async function collectMetrics() {
+export function collectMetrics() {
 	const metrics: Omit<Prisma.MetricCreateInput, 'timestamp'> = {
 		eventLoopDelayMin: h.min * 1e-6,
 		eventLoopDelayMax: h.max * 1e-6,

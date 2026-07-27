@@ -1,9 +1,9 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import { GemTable } from '../../../subtables/RareDropTable';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const WildySlayerCaveTable = new LootTable()
+const WildySlayerCaveTable: LootTable = new LootTable()
 	.add('Blighted entangle sack', [1, 10], 11500)
 	.add('Blighted anglerfish', [1, 2], 8620)
 	.add('Blighted manta ray', [1, 2], 8620)
@@ -28,7 +28,7 @@ const WildySlayerCaveTable = new LootTable()
 	.add('Trouver parchment', 2, 58)
 	.add('Looting bag note', 1, 58);
 
-export const DustDevilPreTable = new LootTable()
+export const DustDevilPreTable: LootTable = new LootTable()
 	/* Weapons and armour */
 	.add('Adamant axe', 1, 3)
 	.add('Rune dagger', 1, 2)
@@ -64,14 +64,14 @@ export const DustDevilPreTable = new LootTable()
 	/* RDT */
 	.add(GemTable, 1, 8);
 
-const DustDevilTable = new LootTable().every('Bones').every(DustDevilPreTable);
+const DustDevilTable: LootTable = new LootTable().every('Bones').every(DustDevilPreTable);
 
-const DustDevilWildyCaveTable = new LootTable()
+const DustDevilWildyCaveTable: LootTable = new LootTable()
 	.every(DustDevilTable)
 	.add(WildySlayerCaveTable, 1, 64)
 	.add(new LootTable(), 1, 36);
 
-export default new SimpleMonster({
+export const DustDevil: SimpleMonster = new SimpleMonster({
 	id: 423,
 	name: 'Dust Devil',
 	table: DustDevilTable,

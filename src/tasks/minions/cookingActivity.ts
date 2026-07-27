@@ -1,25 +1,45 @@
-import { Bank } from 'oldschooljs';
+import { Bank, EItem } from 'oldschooljs';
 
-import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
-import calcBurntCookables from '../../lib/skilling/functions/calcBurntCookables';
-import Cooking from '../../lib/skilling/skills/cooking/cooking';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { CookingActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { calcBurntCookables } from '@/lib/skilling/functions/calcBurntCookables.js';
+import Cooking, { CookingMethodEnum } from '@/lib/skilling/skills/cooking/cooking.js';
+import type { CookingActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const cookingTask: MinionTask = {
 	type: 'Cooking',
-	async run(data: CookingActivityTaskOptions) {
-		const { cookableID, quantity, userID, channelID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: CookingActivityTaskOptions, { user, handleTripFinish, rng }) {
+		const { cookableID, quantity, channelId, duration, method } = data;
 
-		const cookable = Cooking.Cookables.find(cookable => cookable.id === cookableID)!;
+		const cookable = Cooking.Cookables.find(item => item.id === cookableID)!;
+
+		if (method === CookingMethodEnum.KarambwanShop) {
+			const rawKarambwans = new Bank().add(EItem.RAW_KARAMBWAN, quantity);
+			const cookedKarambwans = new Bank().add(EItem.COOKED_KARAMBWAN, quantity);
+			const xpReceived = quantity * cookable.xp;
+
+			const xpRes = await user.addXP({
+				skillName: 'cooking',
+				amount: xpReceived,
+				duration
+			});
+
+			await Promise.all([
+				ClientSettings.updateBankSetting('buy_loot_bank', rawKarambwans),
+				ClientSettings.updateBankSetting('dropped_items', cookedKarambwans),
+				user.addItemsToCollectionLog({ itemsToAdd: rawKarambwans.clone().add(cookedKarambwans) })
+			]);
+
+			const str = `${user}, ${user.minionName} finished buying, cooking and dropping ${quantity.toLocaleString()}x karambwans. ${xpRes}\nYou received: nothing, as the cooked karambwans were dropped.`;
+			const loot = new Bank();
+
+			handleTripFinish({ user, channelId, message: str, data, loot });
+			return;
+		}
 
 		let burnedAmount = 0;
 		let stopBurningLvl = 0;
 
-		const [hasEasyDiary] = await userhasDiaryTier(user, KourendKebosDiary.easy);
-		const [hasEliteDiary] = await userhasDiaryTier(user, KourendKebosDiary.elite);
+		const hasEasyDiary = user.hasDiary('kourend&kebos.easy');
+		const hasEliteDiary = user.hasDiary('kourend&kebos.elite');
 		const hasGaunts = user.hasEquipped('Cooking gauntlets');
 
 		if (hasEasyDiary && cookable.burnKourendBonus) {
@@ -30,12 +50,17 @@ export const cookingTask: MinionTask = {
 			stopBurningLvl = cookable.stopBurnAt;
 		}
 
-		burnedAmount = calcBurntCookables(quantity, stopBurningLvl, user.skillLevel(SkillsEnum.Cooking));
+		burnedAmount = calcBurntCookables({
+			rng,
+			qtyCooking: quantity,
+			stopBurningLvl,
+			cookingLvl: user.skillsAsLevels.cooking
+		});
 
 		const xpReceived = (quantity - burnedAmount) * cookable.xp;
 
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Cooking,
+			skillName: 'cooking',
 			amount: xpReceived,
 			duration
 		});
@@ -52,12 +77,11 @@ export const cookingTask: MinionTask = {
 
 		str += `\nYou received: ${loot}.`;
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

@@ -1,51 +1,56 @@
-import { type CommandRunOptions, mentionCommand, stringMatches } from '@oldschoolgg/toolkit/util';
-import { type Prisma, xp_gains_skill_enum } from '@prisma/client';
-import { ApplicationCommandOptionType, MessageFlags, type User } from 'discord.js';
-import { Time, noOp, randArrItem, randInt } from 'e';
-import { Bank, Items, MAX_INT_JAVA, convertLVLtoXP, getItem, itemID, resolveItems } from 'oldschooljs';
+import { EmbedBuilder, userMention } from '@oldschoolgg/discord';
+import { noOp, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { Bank, convertLVLtoXP, ItemGroups, Items, itemID, MAX_INT_JAVA, resolveItems } from 'oldschooljs';
 
-import { testBotKvStore } from '@/testing/TestBotStore';
-import { mahojiUserSettingsUpdate } from '../../lib/MUser';
-import { allStashUnitTiers, allStashUnitsFlat } from '../../lib/clues/stashUnits';
-import { CombatAchievements } from '../../lib/combat_achievements/combatAchievements';
-import { globalConfig } from '../../lib/constants';
-import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '../../lib/data/cox';
-import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
-import { Eatables } from '../../lib/data/eatables';
-import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
-import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
-import potions from '../../lib/minions/data/potions';
-import { MAX_QP, quests } from '../../lib/minions/data/quests';
-import { allOpenables } from '../../lib/openables';
-import { Minigames } from '../../lib/settings/minigames';
-import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
-import Skills from '../../lib/skilling/skills';
-import Farming from '../../lib/skilling/skills/farming';
-import { slayerMasterChoices } from '../../lib/slayer/constants';
-import { slayerMasters } from '../../lib/slayer/slayerMasters';
-import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
-import { allSlayerMonsters } from '../../lib/slayer/tasks';
-import { Gear } from '../../lib/structures/Gear';
-import type { FarmingPatchName } from '../../lib/util/farmingHelpers';
-import { farmingPatchNames, getFarmingKeyFromName, userGrowingProgressStr } from '../../lib/util/farmingHelpers';
-import getOSItem from '../../lib/util/getOSItem';
-import { logError } from '../../lib/util/logError';
-import { parseStringBank } from '../../lib/util/parseStringBank';
-import { userEventToStr } from '../../lib/util/userEvents';
-import { gearViewCommand } from '../lib/abstracted_commands/gearCommands';
-import { getPOH } from '../lib/abstracted_commands/pohCommand';
-import { allUsableItems } from '../lib/abstracted_commands/useCommand';
-import { BingoManager } from '../lib/bingo/BingoManager';
-import type { OSBMahojiCommand } from '../lib/util';
-import { userStatsUpdate } from '../mahojiSettings';
-import { fetchBingosThatUserIsInvolvedIn } from './bingo';
+import { xp_gains_skill_enum } from '@/prisma/main.js';
+import {
+	bitfieldCanUserManipulate,
+	changeBitFieldForUser,
+	getBitFieldData,
+	listBitFields
+} from '@/lib/bitFieldUtils.js';
+import { allStashUnitsFlat, allStashUnitTiers } from '@/lib/clues/stashUnits.js';
+import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
+import { BitFieldData, globalConfig } from '@/lib/constants.js';
+import { spiritAnglerOutfit } from '@/lib/data/CollectionsExport.js';
+import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '@/lib/data/cox.js';
+import { leaguesCreatables } from '@/lib/data/creatables/leagueCreatables.js';
+import { Eatables } from '@/lib/data/eatables.js';
+import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '@/lib/data/tob.js';
+import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
+import potions from '@/lib/minions/data/potions.js';
+import { MAX_QP, quests } from '@/lib/minions/data/quests.js';
+import { allOpenables } from '@/lib/openables.js';
+import { Minigames } from '@/lib/settings/minigames.js';
+import { Farming } from '@/lib/skilling/skills/farming/index.js';
+import {
+	farmingPatchNames,
+	getFarmingKeyFromName,
+	userGrowingProgressStr
+} from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
+import { getFarmingInfoFromUser } from '@/lib/skilling/skills/farming/utils/getFarmingInfo.js';
+import { Skills } from '@/lib/skilling/skills/index.js';
+import { slayerMasterChoices } from '@/lib/slayer/constants.js';
+import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
+import { SlayerRewardsShop } from '@/lib/slayer/slayerUnlocks.js';
+import { allSlayerMonsters } from '@/lib/slayer/tasks/index.js';
+import { Gear } from '@/lib/structures/Gear.js';
+import type { SafeUserUpdateInput } from '@/lib/user/update.js';
+import { parseStringBank } from '@/lib/util/parseStringBank.js';
+import { fetchBingosThatUserIsInvolvedIn } from '@/mahoji/commands/bingo.js';
+import { gearViewCommand } from '@/mahoji/lib/abstracted_commands/gearCommands.js';
+import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
+import { shades, shadesLogs } from '@/mahoji/lib/abstracted_commands/shadesOfMortonCommand.js';
+import { allUsableItems } from '@/mahoji/lib/abstracted_commands/useCommand.js';
+import { BingoManager } from '@/mahoji/lib/bingo/BingoManager.js';
 
-export async function giveMaxStats(user: MUser) {
-	const updates: Prisma.UserUpdateArgs['data'] = {};
+export function getMaxUserValues(): SafeUserUpdateInput {
+	const updates: SafeUserUpdateInput = {};
 	for (const skill of Object.values(xp_gains_skill_enum)) {
 		updates[`skills_${skill}`] = convertLVLtoXP(99);
 	}
-	await user.update({
+	return {
+		minion_hasBought: true,
 		QP: MAX_QP,
 		slayer_points: 50_000,
 		nmz_points: 50_000,
@@ -53,12 +58,17 @@ export async function giveMaxStats(user: MUser) {
 		carpenter_points: 5_000_000,
 		zeal_tokens: 500_000,
 		lms_points: 500_000,
+		slayer_unlocks: SlayerRewardsShop.map(i => i.id),
 		...updates
-	});
+	};
+}
+
+export async function giveMaxStats(user: MUser) {
+	return user.update(getMaxUserValues());
 }
 
 const coloMelee = new Gear();
-for (const gear of resolveItems([
+for (const gear of Items.resolveItems([
 	'Torva full helm',
 	'Infernal cape',
 	'Amulet of blood fury',
@@ -68,11 +78,11 @@ for (const gear of resolveItems([
 	'Ultor ring',
 	'Scythe of vitur'
 ])) {
-	coloMelee.equip(getOSItem(gear));
+	coloMelee.equip(Items.getOrThrow(gear));
 }
 
 const coloRange = new Gear();
-for (const gear of resolveItems([
+for (const gear of Items.resolveItems([
 	"Dizana's quiver",
 	'Masori mask (f)',
 	'Necklace of anguish',
@@ -83,7 +93,7 @@ for (const gear of resolveItems([
 	'Dragon arrow',
 	'Twisted bow'
 ])) {
-	coloRange.equip(getOSItem(gear));
+	coloRange.equip(Items.getOrThrow(gear));
 }
 
 const gearPresets = [
@@ -118,7 +128,6 @@ const thingsToReset = [
 			await prisma.giveaway.deleteMany({ where: { user_id: user.id } }).catch(noOp);
 			await prisma.lastManStandingGame.deleteMany({ where: { user_id: BigInt(user.id) } }).catch(noOp);
 			await prisma.minigame.deleteMany({ where: { user_id: user.id } }).catch(noOp);
-			await prisma.newUser.deleteMany({ where: { id: user.id } }).catch(noOp);
 			await prisma.playerOwnedHouse.deleteMany({ where: { user_id: user.id } }).catch(noOp);
 			await prisma.user.deleteMany({ where: { id: user.id } }).catch(noOp);
 			return 'Reset all your data.';
@@ -127,13 +136,32 @@ const thingsToReset = [
 	{
 		name: 'Bank',
 		run: async (user: MUser) => {
-			await user.update({ bank: {} });
+			await prisma.user.update({
+				where: {
+					id: user.id
+				},
+				data: {
+					bank: {}
+				}
+			});
 			return 'Reset your bank.';
 		}
 	}
 ];
 
 async function setMinigameKC(user: MUser, _minigame: string, kc: number) {
+	if (_minigame.toLowerCase() === 'all') {
+		await prisma.minigame.update({
+			where: {
+				user_id: user.id
+			},
+			data: Object.fromEntries(Minigames.map(game => [game.column, kc]))
+		});
+		await user.statsUpdate({
+			tithe_farms_completed: kc
+		});
+		return `Set all ${Minigames.length} minigame KCs to ${kc}.`;
+	}
 	const minigame = Minigames.find(m => m.column === _minigame.toLowerCase());
 	if (!minigame) return 'No kc set because invalid minigame.';
 	await prisma.minigame.update({
@@ -144,10 +172,21 @@ async function setMinigameKC(user: MUser, _minigame: string, kc: number) {
 			[minigame.column]: kc
 		}
 	});
+	if (minigame.column === 'tithe_farm') {
+		await user.statsUpdate({
+			tithe_farms_completed: kc
+		});
+	}
 	return `Set your ${minigame.name} KC to ${kc}.`;
 }
 
 async function setXP(user: MUser, skillName: string, xp: number) {
+	if (skillName === 'all') {
+		await user.update(
+			Object.fromEntries(Object.values(xp_gains_skill_enum).map(enumSkill => [`skills_${enumSkill}`, xp]))
+		);
+		return `Set all ${Object.values(xp_gains_skill_enum).length} skills to ${xp} XP.`;
+	}
 	const skill = Object.values(Skills).find(c => c.id === skillName);
 	if (!skill) return 'No xp set because invalid skill.';
 	await user.update({
@@ -162,6 +201,7 @@ for (const i of allOpenables.values()) {
 
 const equippablesBank = new Bank();
 for (const i of Items.filter(i => Boolean(i.equipment) && Boolean(i.equipable)).values()) {
+	if (ItemGroups.allUnobtainableItems.includes(i.id)) continue;
 	equippablesBank.add(i.id);
 }
 
@@ -201,6 +241,32 @@ for (const food of Eatables.map(food => food.id)) {
 	foodPreset.addItem(food, 100_000);
 }
 
+const anglerOutfit = resolveItems(['Angler hat', 'Angler top', 'Angler waders', 'Angler boots']);
+const fishingPreset = new Bank()
+	.add('Fish sack barrel')
+	.add('Fish barrel')
+	.add("Rada's blessing 4")
+	.add('Shark lure', MAX_INT_JAVA)
+	.add('Feather', MAX_INT_JAVA)
+	.add('Fishing bait', MAX_INT_JAVA)
+	.add('Raw karambwanji', MAX_INT_JAVA)
+	.add('Fishing bait', MAX_INT_JAVA)
+	.add('Sandworms', MAX_INT_JAVA)
+	.add('Spirit flakes', MAX_INT_JAVA)
+	.add('Crystal shard', MAX_INT_JAVA)
+	.add('Stripy feather', MAX_INT_JAVA)
+	.add('Pearl fly fishing rod')
+	.add('Pearl fishing rod')
+	.add('Fly fishing rod')
+	.add('Fishing rod')
+	.add('Oily fishing rod')
+	.add('Crystal harpoon')
+	.add('Infernal harpoon')
+	.add('Dark fishing bait', MAX_INT_JAVA);
+for (const anglerPiece of [...spiritAnglerOutfit, ...anglerOutfit]) {
+	fishingPreset.add(anglerPiece);
+}
+
 const runePreset = new Bank()
 	.add('Air rune', MAX_INT_JAVA)
 	.add('Mind rune', MAX_INT_JAVA)
@@ -223,7 +289,30 @@ const runePreset = new Bank()
 	.add('Smoke rune', MAX_INT_JAVA)
 	.add('Steam rune', MAX_INT_JAVA);
 
+const shadesPreset = new Bank().add('Olive oil(4)', 100_000).add('Sacred oil(4)', 100_000);
+for (const log of shadesLogs) {
+	shadesPreset.add(log.normalLog.id, 100_000);
+	shadesPreset.add(log.oiledLog.id, 100_000);
+}
+for (const shade of shades) {
+	shadesPreset.add(shade.item.id, 100_000);
+	if (shade.lowMetalKeys) {
+		for (const key of shade.lowMetalKeys.items) {
+			if (!shadesPreset.has(key)) shadesPreset.add(key, 100_000);
+		}
+	}
+	if (shade.highMetalKeys) {
+		for (const key of shade.highMetalKeys.items) {
+			if (!shadesPreset.has(key)) shadesPreset.add(key, 100_000);
+		}
+	}
+}
+for (const coffin of ['Bronze coffin', 'Steel coffin', 'Black coffin', 'Silver coffin', 'Gold coffin']) {
+	shadesPreset.add(coffin, 1);
+}
+
 const spawnPresets = [
+	['fishing', fishingPreset],
 	['openables', openablesBank],
 	['random', new Bank()],
 	['equippables', equippablesBank],
@@ -233,52 +322,108 @@ const spawnPresets = [
 	['stashunits', allStashUnitItems],
 	['potions', potionsPreset],
 	['food', foodPreset],
-	['runes', runePreset]
+	['runes', runePreset],
+	['shades', shadesPreset]
 ] as const;
 
-const thingsToWipe = ['bank', 'combat_achievements', 'cl', 'quests', 'buypayout', 'kc'] as const;
+const thingsToWipe = [
+	'bank',
+	'combat_achievements',
+	'cl',
+	'quests',
+	'buypayout',
+	'kc',
+	'cooldowns',
+	'birdhouses',
+	'giveaways'
+] as const;
 
-export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduction
+export const testPotatoCommand = globalConfig.isProduction
 	? null
-	: {
+	: defineCommand({
 			name: 'testpotato',
 			description: 'Commands for making testing easier and faster.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'wipe',
-					description: 'Wipe/reset a part of your account.',
+					type: 'Subcommand',
+					name: 'party',
+					description: 'Test party'
+				},
+				{
+					type: 'Subcommand',
+					name: 'ping',
+					description: 'Test pinging',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
-							name: 'thing',
-							description: 'The thing you want to wipe.',
-							required: true,
-							choices: thingsToWipe.map(i => ({ name: i, value: i }))
+							type: 'Boolean',
+							name: 'should_ping',
+							description: 'should it ping or not',
+							required: true
 						}
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
+					name: 'confirmation',
+					description: 'Test confirmations',
+					options: [
+						{
+							type: 'Boolean',
+							name: 'ephemeral',
+							description: 'Only you can see the response (default false)',
+							required: false
+						},
+						{
+							type: 'User',
+							name: 'other_person',
+							description: 'Other person who must confirm too (optional',
+							required: false
+						},
+						{
+							type: 'User',
+							name: 'another_person',
+							description: 'Another person who must confirm too (optional',
+							required: false
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'wipe',
+					description: 'Wipe/reset a part of your account.',
+					options: [
+						{
+							type: 'String',
+							name: 'thing',
+							description: 'The thing you want to wipe.',
+							required: true,
+							autocomplete: async () => {
+								return thingsToWipe.map(i => ({ name: i, value: i }));
+							}
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
 					name: 'spawn',
 					description: 'Spawn stuff.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'preset',
 							description: 'Choose from some preset things to spawn.',
 							choices: spawnPresets.map(i => ({ name: i[0], value: i[0] }))
 						},
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'collectionlog',
 							description: 'Add these items to your collection log?'
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'item',
 							description: 'Spawn a specific item',
-							autocomplete: async value => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								if (!value)
 									return [{ name: 'Type something!', value: itemID('Twisted bow').toString() }];
 								return Items.filter(item => item.name.toLowerCase().includes(value.toLowerCase())).map(
@@ -290,26 +435,29 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'items',
 							description: 'Spawn many items at once using a bank string.'
 						}
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'setxp',
 					description: 'Set skill kc.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'skill',
 							description: 'The skill.',
 							required: true,
-							choices: Object.values(Skills).map(s => ({ name: s.name, value: s.id }))
+							choices: [
+								{ name: 'All skills', value: 'all' },
+								...Object.values(Skills).map(s => ({ name: s.name, value: s.id }))
+							]
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'xp',
 							description: 'The xp you want.',
 							required: true,
@@ -319,27 +467,37 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'setminigamekc',
 					description: 'Set minigame kc.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'minigame',
 							description: 'The minigame you want to set your KC for.',
 							required: true,
-							autocomplete: async value => {
-								return Minigames.filter(i => {
-									if (!value) return true;
-									return [i.name.toLowerCase(), i.aliases].some(i => i.includes(value.toLowerCase()));
-								}).map(i => ({
-									name: i.name,
-									value: i.column
-								}));
+							autocomplete: async ({ value }: StringAutoComplete) => {
+								return [
+									{ name: 'All minigames', value: 'all' },
+									...Minigames.filter(i => {
+										if (!value) return true;
+										return [i.name.toLowerCase(), i.aliases].some(alias =>
+											alias.includes(value.toLowerCase())
+										);
+									}).map(i => ({
+										name: i.name,
+										value: i.column
+									}))
+								].filter(i =>
+									!value
+										? true
+										: i.name.toLowerCase().includes(value.toLowerCase()) ||
+											i.value.includes(value.toLowerCase())
+								);
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'kc',
 							description: 'The minigame KC you want.',
 							required: true,
@@ -349,12 +507,12 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'reset',
 					description: 'Reset things',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'thing',
 							description: 'The thing to reset.',
 							required: true,
@@ -363,12 +521,12 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'gear',
 					description: 'Spawn and equip gear for a particular thing',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'thing',
 							description: 'The thing to spawn gear for.',
 							required: true,
@@ -377,75 +535,77 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'max',
 					description: 'Set all your stats to the maximum level, and get max QP.'
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'patron',
-					description: 'Set your patron perk level.',
+					type: 'Subcommand',
+					name: 'bitfield',
+					description: 'Manage your bitfields',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
-							name: 'tier',
-							description: 'The patron tier to give yourself.',
-							required: true,
-							choices: [
-								{
-									name: 'Non-patron',
-									value: '0'
-								},
-								{
-									name: 'Tier 1',
-									value: '1'
-								},
-								{
-									name: 'Tier 2',
-									value: '2'
-								},
-								{
-									name: 'Tier 3',
-									value: '3'
-								},
-								{
-									name: 'Tier 4',
-									value: '4'
-								},
-								{
-									name: 'Tier 5',
-									value: '5'
-								}
-							]
+							type: 'String',
+							name: 'add',
+							description: 'The bitfield to add',
+							required: false,
+							autocomplete: async ({ value }: StringAutoComplete) => {
+								return Object.entries(BitFieldData)
+									.filter(bf =>
+										!value ? true : bf[1].name.toLowerCase().includes(value.toLowerCase())
+									)
+									.map(i => ({ name: i[1].name, value: i[0] }));
+							}
+						},
+						{
+							type: 'String',
+							name: 'remove',
+							description: 'The bitfield to remove',
+							required: false,
+							autocomplete: async ({ value }: StringAutoComplete) => {
+								return Object.entries(BitFieldData)
+									.filter(bf =>
+										!value ? true : bf[1].name.toLowerCase().includes(value.toLowerCase())
+									)
+									.map(i => ({ name: i[1].name, value: i[0] }));
+							}
 						}
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'setmonsterkc',
 					description: 'Set monster kc.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'monster',
 							description: 'The monster you want to set your KC for.',
 							required: true,
-							autocomplete: async value => {
-								return effectiveMonsters
-									.filter(i => {
-										if (!value) return true;
-										return [i.name.toLowerCase(), i.aliases].some(i =>
-											i.includes(value.toLowerCase())
-										);
-									})
-									.map(i => ({
-										name: i.name,
-										value: i.name
-									}));
+							autocomplete: async ({ value }: StringAutoComplete) => {
+								return [
+									{ name: 'All monsters', value: 'all' },
+									...effectiveMonsters
+										.filter(i => {
+											if (!value) return true;
+											return [i.name.toLowerCase(), i.aliases].some(alias =>
+												alias.includes(value.toLowerCase())
+											);
+										})
+										.map(i => ({
+											name: i.name,
+											value: i.name
+										}))
+								].filter(i =>
+									!value
+										? true
+										: i.name.toLowerCase().includes(value.toLowerCase()) ||
+											i.value.toLowerCase().includes(value.toLowerCase())
+								);
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'kc',
 							description: 'The monster KC you want.',
 							required: true,
@@ -455,31 +615,35 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'irontoggle',
 					description: 'Toggle being an ironman on/off.'
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'forcegrow',
 					description: 'Force a plant to grow.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'patch_name',
-							description: 'The patches you want to harvest.',
+							description: 'The patches you want to force grow.',
 							required: true,
-							choices: farmingPatchNames.map(i => ({ name: i, value: i }))
+							choices: [
+								{ name: 'All patches', value: 'all' },
+								{ name: 'Birdhouses', value: 'birdhouses' },
+								...farmingPatchNames.map(i => ({ name: i, value: i }))
+							]
 						}
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'set',
 					description: 'Set something',
 					options: [
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'qp',
 							description: 'Set your quest points.',
 							required: false,
@@ -487,7 +651,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 							max_value: MAX_QP
 						},
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'all_ca_tasks',
 							description: 'Finish all CA tasks.',
 							required: false
@@ -495,26 +659,26 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'get_code',
 					description: 'Get your secret code for the test dashboard',
 					options: []
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'bingo_tools',
 					description: 'Bingo tools',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'start_bingo',
 							description: 'Make your bingo start now.',
 							required: true,
-							autocomplete: async (value: string, user: User) => {
-								const bingos = await fetchBingosThatUserIsInvolvedIn(user.id);
+							autocomplete: async ({ value, userId }: StringAutoComplete) => {
+								const bingos = await fetchBingosThatUserIsInvolvedIn(userId);
 								return bingos
 									.map(i => new BingoManager(i))
-									.filter(b => b.creatorID === user.id || b.organizers.includes(user.id))
+									.filter(b => b.creatorID === userId || b.organizers.includes(userId))
 									.filter(bingo => (!value ? true : bingo.id.toString() === value))
 									.map(bingo => ({ name: bingo.title, value: bingo.id.toString() }));
 							}
@@ -522,23 +686,23 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'setslayertask',
 					description: 'Set slayer task.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'master',
 							description: 'The master you wish to set your task.',
 							required: true,
 							choices: slayerMasterChoices
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'monster',
 							description: 'The monster you want to set your task as.',
 							required: true,
-							autocomplete: async value => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								const filteredMonsters = [...new Set(allSlayerMonsters)].filter(monster => {
 									if (!value) return true;
 									return [monster.name.toLowerCase(), ...monster.aliases].some(aliases =>
@@ -552,7 +716,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'quantity',
 							description: 'The task quantity you want to assign.',
 							required: false,
@@ -560,50 +724,93 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 							max_value: 1000
 						}
 					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'events',
-					description: 'See events',
-					options: []
 				}
 			],
-			run: async ({
-				options,
-				userID
-			}: CommandRunOptions<{
-				max?: {};
-				patron?: { tier: string };
-				gear?: { thing: string };
-				reset?: { thing: string };
-				setminigamekc?: { minigame: string; kc: number };
-				setxp?: { skill: string; xp: number };
-				spawn?: { preset?: string; collectionlog?: boolean; item?: string; items?: string };
-				setmonsterkc?: { monster: string; kc: string };
-				irontoggle?: {};
-				forcegrow?: { patch_name: FarmingPatchName };
-				wipe?: { thing: (typeof thingsToWipe)[number] };
-				set?: { qp?: number; all_ca_tasks?: boolean };
-				get_code?: {};
-				bingo_tools?: { start_bingo: string };
-				setslayertask?: { master: string; monster: string; quantity: number };
-				events?: {};
-			}>) => {
+			run: async ({ options, user, interaction, rng }) => {
 				if (globalConfig.isProduction) {
-					logError('Test command ran in production', { userID: userID.toString() });
+					Logging.logError('Test command ran in production', { userID: user.id });
 					return 'This will never happen...';
 				}
-				const user = await mUserFetch(userID.toString());
-				if (options.events) {
-					const events = await prisma.userEvent.findMany({
-						where: {
-							user_id: user.id
-						},
-						orderBy: {
-							date: 'desc'
-						}
+
+				if (options.party) {
+					const party = await globalClient.makeParty({
+						interaction,
+						maxSize: 5,
+						minSize: 2,
+						message: `Join the party!`,
+						leader: user,
+						ironmanAllowed: true
 					});
-					return events.map(userEventToStr).join('\n');
+					return `The party has now started with the following users: ${party.map(i => i.username).join(', ')}`;
+				}
+				if (options.ping) {
+					return {
+						content: `${userMention(user.id)} hi`,
+						allowedMentions: { users: options.ping.should_ping ? [user.id] : [] }
+					};
+				}
+				if (options.confirmation) {
+					const ephemeral = options.confirmation.ephemeral ?? false;
+					const users = [user.id];
+					if (options.confirmation.other_person) users.push(options.confirmation.other_person.user.id);
+					if (options.confirmation.another_person) users.push(options.confirmation.another_person.user.id);
+					if (ephemeral && users.length > 1) {
+						return 'You cannot have multiple people confirm on an ephemeral message.';
+					}
+					await interaction.confirmation({
+						content: `This is a normal confirmation. Users who must confirm: ${users.map(i => `<@${i}>`).join(', ')}`,
+						users,
+						// @ts-expect-error
+						ephemeral
+					});
+					return interaction.makePaginatedMessage({
+						ephemeral: true,
+						pages: [
+							() => ({
+								embeds: [
+									new EmbedBuilder()
+										.setTitle(`Page 1`)
+										.setImage(`https://cdn.oldschool.gg/monkey/${rng.randInt(1, 39)}.webp`)
+								]
+							}),
+							() => ({
+								embeds: [
+									new EmbedBuilder()
+										.setTitle(`Page 2`)
+										.setImage(`https://cdn.oldschool.gg/monkey/${rng.randInt(1, 39)}.webp`)
+								]
+							}),
+							() => ({
+								embeds: [
+									new EmbedBuilder()
+										.setTitle(`Page 3`)
+										.setImage(`https://cdn.oldschool.gg/monkey/${rng.randInt(1, 39)}.webp`)
+								]
+							}),
+							() => ({
+								embeds: [
+									new EmbedBuilder()
+										.setTitle(`Page 4`)
+										.setImage(`https://cdn.oldschool.gg/monkey/${rng.randInt(1, 39)}.webp`)
+								]
+							})
+						]
+					});
+				}
+
+				if (options.bitfield) {
+					if (!options.bitfield.add && !options.bitfield.remove) {
+						return 'you must choose a valid bitfield from either add or remove';
+					}
+					const aor = () => Boolean(options.bitfield!.add);
+
+					const bitInput = options.bitfield.add ?? options.bitfield.remove!;
+					const bit = getBitFieldData(bitInput);
+					const action: 'add' | 'remove' = aor() ? 'add' : 'remove';
+					if (!bit) return listBitFields(user);
+					const canManipulate = bitfieldCanUserManipulate({ user, bit });
+					if (canManipulate !== true) return canManipulate;
+					return changeBitFieldForUser(user, bit.bit, action);
 				}
 				if (options.bingo_tools) {
 					if (options.bingo_tools.start_bingo) {
@@ -624,68 +831,6 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 						});
 						return 'Your bingo start date has been set to this moment, so it has just started.';
 					}
-				}
-
-				if (options.get_code) {
-					const existingCode = testBotKvStore.get(`user.${user.id}.code`);
-
-					let finalCode = existingCode;
-					if (!existingCode) {
-						const words = [
-							'monkey',
-							'chicken',
-							'bandos',
-							'nex',
-							'cow',
-							'dragon',
-							'bronze',
-							'goblin',
-							'zamorak',
-							'saradomin',
-							'armadyl',
-							'kraken',
-							'swan',
-							'wildy',
-							'slayer',
-							'agility',
-							'cooking',
-							'fishing',
-							'mining',
-							'smithing',
-							'runecraft',
-							'crafting',
-							'prayer',
-							'fletching',
-							'farming',
-							'herblore',
-							'hunter',
-							'magic',
-							'attack',
-							'strength',
-							'defence',
-							'ranged',
-							'hitpoints',
-							'ahrim',
-							'guthans',
-							'torags',
-							'veracs',
-							'inferno',
-							'jad',
-							'crystal',
-							'torva',
-							'dharoks'
-						];
-						const newCode = `${randArrItem(words)}${randInt(0, 9)}`;
-						testBotKvStore.set(`user.${user.id}.code`, newCode);
-						finalCode = newCode;
-					}
-
-					return {
-						content: `Your secret code for the dashboard is: \`${finalCode}\` - do not share with anyone.
-
-Warning: Visiting a test dashboard may let developers see your IP address. Attempting to abuse a test dashboard may result in a ban.`,
-						flags: [MessageFlags.Ephemeral]
-					};
 				}
 
 				if (options.set) {
@@ -714,8 +859,42 @@ Warning: Visiting a test dashboard may let developers see your IP address. Attem
 				}
 				if (options.wipe) {
 					const { thing } = options.wipe;
+					if (thing === 'birdhouses') {
+						await user.updateBirdhouseData({
+							lastPlaced: null,
+							birdhousePlaced: false,
+							birdhouseTime: 0
+						});
+						return 'Reset your birdhouses.';
+					}
+					if (thing === 'giveaways') {
+						await prisma.giveaway.deleteMany({
+							where: {
+								user_id: user.id
+							}
+						});
+						return 'Wiped all your giveaways (no refunds given).';
+					}
+					if (thing === 'cooldowns') {
+						await user.update({
+							gambling_lockout_expiry: null
+						});
+						await prisma.userStats.upsert({
+							where: {
+								user_id: BigInt(user.id)
+							},
+							update: {
+								last_daily_timestamp: Date.now() - Time.Day,
+								last_tears_of_guthix_timestamp: Date.now() - Time.Day * 2
+							},
+							create: {
+								user_id: BigInt(user.id)
+							}
+						});
+						return 'Reset all your daily/TOG cooldowns, gambling lockout.';
+					}
 					if (thing === 'kc') {
-						await userStatsUpdate(user.id, {
+						await user.statsUpdate({
 							monster_scores: {}
 						});
 						return 'Reset all your KCs.';
@@ -729,13 +908,15 @@ Warning: Visiting a test dashboard may let developers see your IP address. Attem
 						return 'Deleted all your buy payout records, so you have no tax rate accumulated.';
 					}
 					if (thing === 'bank') {
-						await mahojiUserSettingsUpdate(user.id, {
+						await user.update({
+							// @ts-expect-error
 							bank: {}
 						});
 						return 'Reset your bank.';
 					}
 					if (thing === 'cl') {
-						await mahojiUserSettingsUpdate(user.id, {
+						await user.update({
+							// @ts-expect-error
 							collectionLogBank: {},
 							temp_cl: {}
 						});
@@ -757,12 +938,16 @@ Warning: Visiting a test dashboard may let developers see your IP address. Attem
 						return 'Reset your combat achievements.';
 					}
 					if (thing === 'quests') {
-						await user.update({
-							finished_quest_ids: [],
-							collectionLogBank: {}
+						await prisma.user.update({
+							where: {
+								id: user.id
+							},
+							data: {
+								finished_quest_ids: [],
+								collectionLogBank: {}
+							}
 						});
-						return `Your QP, and completed quests, have been reset. You can set your QP to a certain number using ${mentionCommand(
-							globalClient,
+						return `Your QP, and completed quests, have been reset. You can set your QP to a certain number using ${globalClient.mentionCommand(
 							'testpotato',
 							'set'
 						)}.`;
@@ -819,29 +1004,35 @@ Warning: Visiting a test dashboard may let developers see your IP address. Attem
 							.add(potionsPreset)
 							.add(usables)
 					});
-					await user.update({
-						GP: 5_000_000_000,
-						slayer_points: 100_000,
-						tentacle_charges: 10_000,
-						sang_charges: 10_000,
-						trident_charges: 10_000,
-						serp_helm_charges: 10_000,
-						blood_fury_charges: 10_000,
-						tum_shadow_charges: 10_000,
-						blood_essence_charges: 10_000,
-						ash_sanctifier_charges: 10_000,
-						celestial_ring_charges: 10_000,
-						scythe_of_vitur_charges: 10_000,
-						venator_bow_charges: 10_000,
-						gear_mage: TOBMaxMageGear.raw() as any,
-						gear_melee: TOBMaxMeleeGear.raw() as any,
-						gear_range: TOBMaxRangeGear.raw() as any,
-						blowpipe: {
-							scales: 100_000,
-							dartQuantity: 100_000,
-							dartID: itemID('Dragon dart')
-						},
-						finished_quest_ids: quests.map(q => q.id)
+
+					await user.updateGear([
+						{ setup: 'melee', gear: COXMaxMeleeGear.raw() },
+						{ setup: 'range', gear: COXMaxRangeGear.raw() },
+						{ setup: 'mage', gear: COXMaxMageGear.raw() }
+					]);
+
+					await user.rawUpdate({
+						data: {
+							GP: 5000000000,
+							slayer_points: 100000,
+							tentacle_charges: 10000,
+							sang_charges: 10000,
+							trident_charges: 10000,
+							serp_helm_charges: 10000,
+							blood_fury_charges: 10000,
+							tum_shadow_charges: 10000,
+							blood_essence_charges: 10000,
+							ash_sanctifier_charges: 10000,
+							celestial_ring_charges: 10000,
+							scythe_of_vitur_charges: 10000,
+							venator_bow_charges: 10000,
+							blowpipe: {
+								scales: 100000,
+								dartQuantity: 100000,
+								dartID: itemID('Dragon dart')
+							},
+							finished_quest_ids: quests.map(q => q.id)
+						}
 					});
 					await giveMaxStats(user);
 					return 'Fully maxed your account, stocked your bank, charged all chargeable items.';
@@ -851,16 +1042,17 @@ Warning: Visiting a test dashboard may let developers see your IP address. Attem
 
 					for (const type of ['melee', 'range', 'mage'] as const) {
 						const currentGear = gear[type];
-						if (currentGear.ammo && getItem(currentGear.ammo.item)?.stackable) {
-							currentGear.ammo.quantity = 10000;
+						const ammo = currentGear.get('ammo');
+						if (ammo && Items.getItem(ammo.item)?.stackable) {
+							currentGear.set('ammo', { ...ammo, quantity: 10_000 });
 						}
 					}
 
-					await user.update({
-						gear_melee: gear.melee.raw() as any,
-						gear_range: gear.range.raw() as any,
-						gear_mage: gear.mage.raw() as any
-					});
+					await user.updateGear([
+						{ setup: 'melee', gear: gear.melee.raw() },
+						{ setup: 'range', gear: gear.range.raw() },
+						{ setup: 'mage', gear: gear.mage.raw() }
+					]);
 
 					return gearViewCommand(user, 'all', false);
 				}
@@ -892,7 +1084,7 @@ Warning: Visiting a test dashboard may let developers see your IP address. Attem
 					}
 					if (item) {
 						try {
-							bankToGive.add(getOSItem(item).id);
+							bankToGive.add(Items.getOrThrow(item).id);
 						} catch (err) {
 							return err as string;
 						}
@@ -904,47 +1096,74 @@ Warning: Visiting a test dashboard may let developers see your IP address. Attem
 					}
 
 					await user.addItemsToBank({ items: bankToGive, collectionLog: Boolean(collectionlog) });
-					return `Spawned: ${bankToGive.toString().slice(0, 500)}.`;
+					return `Spawned: ${bankToGive.toString().slice(0, 1800)}.`;
 				}
 
 				if (options.setmonsterkc) {
+					if (options.setmonsterkc.monster.toLowerCase() === 'all') {
+						const kc = options.setmonsterkc.kc ?? 1;
+						const stats = await user.fetchStats();
+						await user.statsUpdate({
+							monster_scores: {
+								...(stats.monster_scores as Record<string, number>),
+								...Object.fromEntries(effectiveMonsters.map(mon => [mon.id, kc]))
+							}
+						});
+						return `Set all ${effectiveMonsters.length} monster KCs to ${kc}.`;
+					}
 					const monster = effectiveMonsters.find(m =>
 						stringMatches(m.name, options.setmonsterkc?.monster ?? '')
 					);
 					if (!monster) return 'Invalid monster';
-					const stats = await user.fetchStats({ monster_scores: true });
-					await userStatsUpdate(
-						user.id,
-						{
-							monster_scores: {
-								...(stats.monster_scores as Record<string, unknown>),
-								[monster.id]: options.setmonsterkc?.kc ?? 1
-							}
-						},
-						{}
-					);
-					return `Set your ${monster.name} KC to ${options.setmonsterkc.kc ?? 1}.`;
-				}
-				if (options.forcegrow) {
-					const farmingDetails = await getFarmingInfo(userID);
-					const thisPlant = farmingDetails.patchesDetailed.find(
-						p => p.plant?.seedType === options.forcegrow?.patch_name
-					);
-					if (!thisPlant || !thisPlant.plant) return 'You have nothing planted there.';
-					const rawPlant = farmingDetails.patches[thisPlant.plant.seedType];
-
-					await user.update({
-						[getFarmingKeyFromName(thisPlant.plant.seedType)]: {
-							...rawPlant,
-							plantTime: Date.now() - Time.Month
+					const stats = await user.fetchStats();
+					await user.statsUpdate({
+						monster_scores: {
+							...(stats.monster_scores as Record<string, unknown>),
+							[monster.id]: options.setmonsterkc?.kc ?? 1
 						}
 					});
-					return userGrowingProgressStr((await getFarmingInfo(userID)).patchesDetailed);
+					return `Set your ${monster.name} KC to ${options.setmonsterkc.kc ?? 1}.`;
+				}
+
+				if (options.forcegrow) {
+					if (options.forcegrow.patch_name === 'birdhouses') {
+						const birdhouseData = user.fetchBirdhouseData();
+						await user.updateBirdhouseData({
+							...birdhouseData,
+							birdhouseTime: Date.now() - Time.Month
+						});
+						return 'Your birdhouses have been forced to be fully grown.';
+					}
+					const farmingDetails = await getFarmingInfoFromUser(user);
+					const { patch_name } = options.forcegrow;
+					const patchesToGrow =
+						patch_name === 'all'
+							? farmingDetails.patchesDetailed.filter(patch => patch.plant)
+							: farmingDetails.patchesDetailed.filter(
+									patch => patch.patchName === patch_name && patch.plant
+								);
+					if (patchesToGrow.length === 0) {
+						return patch_name === 'all'
+							? 'You have nothing planted in any patches.'
+							: 'You have nothing planted there.';
+					}
+					const now = Date.now();
+					const updates: SafeUserUpdateInput = Object.fromEntries(
+						patchesToGrow.map(patch => [
+							getFarmingKeyFromName(patch.patchName),
+							{
+								...farmingDetails.patches[patch.patchName],
+								plantTime: now - Time.Month
+							}
+						])
+					);
+
+					await user.update(updates);
+					return userGrowingProgressStr((await getFarmingInfoFromUser(user)).patchesDetailed, user);
 				}
 
 				if (options.setslayertask) {
-					const user = await mUserFetch(userID);
-					const usersTask = await getUsersCurrentSlayerInfo(user.id);
+					const usersTask = await user.fetchSlayerInfo();
 
 					const { monster, master } = options.setslayertask;
 
@@ -952,15 +1171,25 @@ Warning: Visiting a test dashboard may let developers see your IP address. Attem
 					const selectedMaster = slayerMasters.find(
 						sm => stringMatches(master, sm.name) || sm.aliases.some(alias => stringMatches(master, alias))
 					);
+					if (!selectedMaster || !selectedMonster) return 'Invalid slayer master or monster.';
 
 					// Set quantity to 50 if user doesn't assign a quantity
 					const quantity = options.setslayertask?.quantity ?? 50;
 
-					const assignedTask = selectedMaster?.tasks.find(m => m.monster.id === selectedMonster?.id)!;
+					const assignedTask = selectedMaster.tasks.find(m => m.monster.id === selectedMonster.id)!;
 
-					if (!selectedMaster) return 'Invalid slayer master.';
-					if (!selectedMonster) return 'Invalid monster.';
-					if (!assignedTask) return `${selectedMaster.name} can not assign ${selectedMonster.name}.`;
+					if (!assignedTask) {
+						const possibleMasters = slayerMasters
+							.filter(m => m.tasks.some(t => t.monster.id === selectedMonster?.id))
+							.map(m => m.name);
+
+						const suggestion =
+							possibleMasters.length > 0
+								? ` (${possibleMasters.join(', ')} can${possibleMasters.length > 1 ? '' : ' also'} assign this monster.)`
+								: '';
+
+						return `${selectedMaster.name} cannot assign ${selectedMonster.name}.${suggestion}`;
+					}
 
 					// Update an existing slayer task for the user
 					if (usersTask.currentTask?.id) {
@@ -999,4 +1228,4 @@ Warning: Visiting a test dashboard may let developers see your IP address. Attem
 
 				return 'Nothin!';
 			}
-		};
+		});

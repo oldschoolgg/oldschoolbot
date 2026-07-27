@@ -1,8 +1,8 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import { RockslugTable } from '../low/n-s/Rockslug';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
+import { RockslugTable } from '../low/n-s/Rockslug.js';
 
-const GiantRockslugTable = new LootTable()
+const GiantRockslugTable: LootTable = new LootTable()
 	.every(RockslugTable, 3)
 
 	/* Superior Slayer tertiary */
@@ -11,7 +11,7 @@ const GiantRockslugTable = new LootTable()
 	.tertiary(1240, 'Eternal gem')
 	.tertiary(1240, 'Imbued heart');
 
-export default new SimpleMonster({
+export const GiantRockslug: SimpleMonster = new SimpleMonster({
 	id: 7392,
 	name: 'Giant rockslug',
 	table: GiantRockslugTable,

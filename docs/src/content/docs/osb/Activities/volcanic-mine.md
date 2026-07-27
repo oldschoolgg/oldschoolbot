@@ -2,7 +2,7 @@
 title: "Volcanic Mine"
 ---
 
-You can do the Volcanic Mine using [[/minigames volcanic_mine start]]
+You can do the Volcanic Mine using [[/minigames volcanic_mine start]].
 
 ---
 
@@ -18,21 +18,24 @@ You can do the Volcanic Mine using [[/minigames volcanic_mine start]]
 
 Boosts must be equipped in the **skilling** setup.
 
-- 30% more points & XP for [[mining:61]] and [[Dragon pickaxe]]
-- 50% more points & XP for [[mining:71]] and [[Crystal pickaxe]]
-- 2.5% XP for full prospector
+- 30% more points and XP for [[mining:61]] and a [[Dragon pickaxe]]
+- 50% more points and XP for [[mining:71]] and a [[Crystal pickaxe]]
+- 2.5% more XP for full Prospector
 
 ---
 
 ## Costs
 
-- One game of Volcanic brewing will use the folowing supplies
-  - 3 [[Saradomin Brew (4)]]
-  - 1 [[Prayer potion (4)]] 
-- These costs can be reduced with:
-  - 1 less [[Saradomin brew (4)]] for [[hitpoints:80]]
-  - 1 less [[Saradomin brew (4)]] for having an [[Elysian Spirit Shield]] equipped in skilling setup
-  - 1 less [[Prayer potion (4)]] for [[prayer:90]] **OR** [[prayer:80]] and [[Dragonbone necklace]] equipped in skilling setup
+One game of Volcanic Mine will use the following supplies:
+
+- 3 [[Saradomin brew (4)]]
+- 1 [[Prayer potion (4)]]
+
+These costs can be reduced with:
+
+- 1 less [[Saradomin brew (4)]] for [[hitpoints:80]]
+- 1 less [[Saradomin brew (4)]] for having an [[Elysian spirit shield]] equipped in the skilling setup
+- 1 less [[Prayer potion (4)]] for [[prayer:90]], or [[prayer:80]] and a [[Dragonbone necklace]] equipped in the skilling setup
 
 ---
 
@@ -57,6 +60,6 @@ You can buy everything with the [[/minigames volcanic_mine buy]] command.
 | [[Large water container]]    | 10,000     |
 | [[Ash covered tome]]         | 40,000     |
 
-## Ore packs
+## Ore Packs
 
-When opening an [[Ore pack]], you will receive 50 random ores scattered between iron and rune. There is a 1/100 chance per pack that you will receive the [[Dragon pickaxe (broken)]]. This pickaxe **cannot** be fixed, and is purely for the collection log.
+When opening an [[Ore pack]], you will receive 50 random ores scattered between iron and rune. There is a 1/100 chance per pack that you will receive the [[Dragon pickaxe (broken)]]. This pickaxe **cannot** be fixed and is purely for the collection log.

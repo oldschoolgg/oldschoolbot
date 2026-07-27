@@ -1,9 +1,14 @@
-import { UserError } from '@oldschoolgg/toolkit/structures';
+import { UserError } from '@oldschoolgg/toolkit';
 
-import { cancelUsersListings } from '../../mahoji/lib/abstracted_commands/cancelGEListingCommand';
-import { logError } from './logError';
+import { cancelUsersListings } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
 
 export async function migrateUser(_source: string | MUser, _dest: string | MUser): Promise<string | true> {
+	const deletedUserId = '456226577798135808';
+	if (_source === deletedUserId || _dest === deletedUserId) {
+		throw new UserError(
+			`This is not a real user ID, it's the BS user ID that discord replaces deleted user's with, sorry. You need the real user ID to find your data.`
+		);
+	}
 	const sourceUser = typeof _source === 'string' ? await mUserFetch(_source) : _source;
 	const destUser = typeof _dest === 'string' ? await mUserFetch(_dest) : _dest;
 
@@ -18,10 +23,7 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	transactions.push(prisma.$executeRaw`SET CONSTRAINTS ALL DEFERRED`);
 
 	// Delete Queries
-	// Slayer task must come before new_user since it's linked to new_users 500 IQ.
 	transactions.push(prisma.slayerTask.deleteMany({ where: { user_id: destUser.id } }));
-
-	transactions.push(prisma.newUser.deleteMany({ where: { id: destUser.id } }));
 
 	transactions.push(prisma.gearPreset.deleteMany({ where: { user_id: destUser.id } }));
 	transactions.push(prisma.giveaway.deleteMany({ where: { user_id: destUser.id } }));
@@ -57,7 +59,6 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 
 	// Update queries:
 	transactions.push(prisma.user.updateMany({ where: { id: sourceUser.id }, data: { id: destUser.id } }));
-	transactions.push(prisma.newUser.updateMany({ where: { id: sourceUser.id }, data: { id: destUser.id } }));
 
 	transactions.push(
 		prisma.bingo.updateMany({ where: { creator_id: sourceUser.id }, data: { creator_id: destUser.id } })
@@ -169,14 +170,10 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	WHERE (data->'users')::jsonb ? '${sourceUser.id}'`;
 	transactions.push(prisma.$queryRawUnsafe(updateUsers));
 
-	// Update `detailedUsers` in ToA
-	const updateToAUsers = `UPDATE activity SET data = data::jsonb || CONCAT('{"detailedUsers":', REPLACE(data->>'detailedUsers', '${sourceUser.id}', '${destUser.id}'),'}')::jsonb WHERE type = 'TombsOfAmascut' AND data->>'detailedUsers' LIKE '%${sourceUser.id}%'`;
-	transactions.push(prisma.$queryRawUnsafe(updateToAUsers));
-
 	try {
 		await prisma.$transaction(transactions);
-	} catch (err: any) {
-		logError(err);
+	} catch (err: unknown) {
+		Logging.logError(err as Error);
 		throw new UserError('Error migrating user. Sorry about that!');
 	}
 
@@ -203,9 +200,10 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 		);
 		try {
 			await roboChimpClient.$transaction(robochimpTx);
-		} catch (err: any) {
+		} catch (_err: unknown) {
+			const err = _err as Error;
 			err.message += ' - User already migrated! Robochimp migration failed!';
-			logError(err);
+			Logging.logError(err);
 			throw new UserError('Robochimp migration failed, but minion data migrated already!');
 		}
 	}

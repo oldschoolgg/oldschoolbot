@@ -1,8 +1,8 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import { GemTable } from '../../../subtables/RareDropTable';
+import { GemTable } from '@/simulation/subtables//RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-export const GargoylePreTable = new LootTable()
+export const GargoylePreTable: LootTable = new LootTable()
 	.oneIn(256, 'Granite maul')
 	.oneIn(512, 'Mystic robe top (dark)')
 
@@ -36,19 +36,19 @@ export const GargoylePreTable = new LootTable()
 	/* RDT */
 	.add(GemTable, 1, 5);
 
-const GargoyleTable = new LootTable()
+const GargoyleTable: LootTable = new LootTable()
 	.every(GargoylePreTable)
 
 	/* Tertiary */
 	.tertiary(128, 'Clue scroll (hard)');
 
-const GargoyleOnTaskTable = new LootTable()
+const GargoyleOnTaskTable: LootTable = new LootTable()
 	.every(GargoyleTable)
 
 	/* Brittle key can only drop on task */
 	.tertiary(150, 'Brittle key');
 
-export default new SimpleMonster({
+export const Gargoyle: SimpleMonster = new SimpleMonster({
 	id: 412,
 	name: 'Gargoyle',
 	table: GargoyleTable,

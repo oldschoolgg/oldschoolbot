@@ -1,8 +1,12 @@
-import { Items } from 'oldschooljs';
+import { type Item, Items } from 'oldschooljs';
 
-import type { CutLeapingFish } from '../../types';
+interface CutLeapingFish {
+	item: Item;
+	aliases: string[];
+	tickRate: number;
+}
 
-const LeapingFish: CutLeapingFish[] = [
+export const LeapingFish: CutLeapingFish[] = [
 	{
 		item: Items.getOrThrow('Leaping sturgeon'),
 		aliases: ['leaping sturgeon', 'cut leaping sturgeon', 'sturgeon'],
@@ -19,5 +23,3 @@ const LeapingFish: CutLeapingFish[] = [
 		tickRate: 1
 	}
 ];
-
-export default LeapingFish;
