@@ -57,7 +57,7 @@ const perkTierHotCache = new LRUCache<string, PerkTierHotCacheEntry>({
 	updateAgeOnGet: false
 });
 
-function setHotCache(userId: string, tier: number) {
+export function setHotCache(userId: string, tier: number) {
 	perkTierHotCache.set(userId, { tier, expires: Date.now() + PerkTierHotTTL });
 }
 export function getPerkTierCached(userId: string) {
@@ -131,10 +131,15 @@ export async function getUsersPerkTier({
 		if (tierCacheEntry && tierCacheEntry.expires > Date.now()) {
 			return tierCacheEntry.tier;
 		}
+		const redisCacheEntry = await Cache.getPerkTier(user.id);
+		if (redisCacheEntry) {
+			setHotCache(user.id, redisCacheEntry);
+			return redisCacheEntry;
+		}
 	}
 
 	const eligibleTiers = [];
-	if (user.isContributor() || user.isModOrAdmin()) {
+	if (user.isContributor() || user.isModOrAdmin() || user.isWikiContrib()) {
 		eligibleTiers.push(PerkTier.Four);
 	} else if (user.isTrusted()) {
 		eligibleTiers.push(PerkTier.Three);
@@ -163,8 +168,9 @@ export async function getUsersPerkTier({
 		eligibleTiers.push(PerkTier.Two);
 	}
 	// Server boosting perk has been eliminated
-
+	console.log(eligibleTiers);
 	const tier = Math.max(...eligibleTiers, 0);
 	setHotCache(user.id, tier);
+	await Cache.setPerkTier(user.id, tier);
 	return tier;
 }
