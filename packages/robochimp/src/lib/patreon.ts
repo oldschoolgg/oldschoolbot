@@ -140,7 +140,7 @@ function getCyrTierConfigs(): PatronTier[] {
 		.filter(notEmpty);
 }
 
-function getPatreonCampaignConfigs(): CampaignConfig[] {
+function getPatreonCampaignConfigs(creator?: 'magna' | 'cyr'): CampaignConfig[] {
 	const configs: CampaignConfig[] = [];
 
 	if (globalConfig.magnaPatreonToken && globalConfig.magnaPatreonCampaignID) {
@@ -162,7 +162,7 @@ function getPatreonCampaignConfigs(): CampaignConfig[] {
 		});
 	}
 
-	return configs;
+	return creator ? configs.filter(c => c.source === creator) : configs;
 }
 
 function buildPatreonApiURL(campaignID: string) {
