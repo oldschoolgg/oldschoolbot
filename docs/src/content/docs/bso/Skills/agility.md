@@ -24,3 +24,4 @@ Cob, Agility master cape, silverhawk boots
 | -------------------------- | --------- |
 | Daemonheim Agility Course  | 2,547,880 |
 | Hallowed Sepulchre Floor 7 | 2,808,794 |
+| Daemonheim Agility Course (With Portent) | 4,419,435 |
