@@ -47,7 +47,7 @@ const OSBChannelConfig: ChannelConfig = {
 	EconomyLogs: '802029843712573510',
 	HelpAndSupport: '668073484731154462',
 	BotLogs: isProduction ? '1051725977320964197' : TEST_SERVER_LOG_CHANNEL,
-	GeneralChannel: isProduction ? GENERAL_CHANNEL_ID : process.env.GENERAL_CHANNEL ?? GENERAL_CHANNEL_ID
+	GeneralChannel: isProduction ? GENERAL_CHANNEL_ID : (process.env.GENERAL_CHANNEL ?? GENERAL_CHANNEL_ID)
 };
 
 const BSOChannelConfig: ChannelConfig = {
@@ -57,7 +57,7 @@ const BSOChannelConfig: ChannelConfig = {
 	EconomyLogs: '802029843712573510',
 	HelpAndSupport: '970752140324790384',
 	BotLogs: isProduction ? '1051725977320964197' : TEST_SERVER_LOG_CHANNEL,
-	GeneralChannel: isProduction ? GENERAL_CHANNEL_ID : process.env.GENERAL_CHANNEL ?? GENERAL_CHANNEL_ID
+	GeneralChannel: isProduction ? GENERAL_CHANNEL_ID : (process.env.GENERAL_CHANNEL ?? GENERAL_CHANNEL_ID)
 };
 
 const TestChannelConfig: ChannelConfig = {

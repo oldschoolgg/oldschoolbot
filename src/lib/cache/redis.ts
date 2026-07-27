@@ -12,14 +12,15 @@ import {
 	ZWebhook,
 	ZWebhookPermissions
 } from '@oldschoolgg/schemas';
-import { Time } from '@oldschoolgg/toolkit';
+import { cleanUsername, Time } from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake, MockedRedis, RedisKeys } from '@oldschoolgg/util';
 import { Redis } from 'ioredis';
 
-import type { Guild } from '@/prisma/main.js';
-import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
+import type { Guild, Prisma } from '@/prisma/main.js';
+import { BitField, BOT_TYPE, globalConfig } from '@/lib/constants.js';
 import type { RobochimpUser } from '@/lib/roboChimp.js';
-import { fetchUsernameAndCache } from '@/lib/util.js';
+import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
+import {GuildUpdateInput} from "@/prisma/clients/main/models/Guild.js";
 
 type LockStatus = 'locked' | 'unlocked';
 
@@ -52,6 +53,7 @@ const RATELIMITS: Record<RatelimitType, RatelimitConfig> = {
 } as const;
 
 const BotKeys = RedisKeys[BOT_TYPE];
+type CachedGuildSettings = Pick<Guild, 'id' | 'disabledCommands' | 'petchannel' | 'staffOnlyChannels'>;
 
 class CacheManager {
 	private client: Redis;
@@ -105,7 +107,7 @@ class CacheManager {
 		await pipeline.exec();
 	}
 
-	private async getGuildSettings(id: string): Promise<Guild | null> {
+	private async getGuildSettings(id: string): Promise<CachedGuildSettings | null> {
 		const guildSettings = await prisma.guild.findUnique({
 			where: { id },
 			select: {
@@ -147,19 +149,21 @@ class CacheManager {
 		return guild;
 	}
 
-	public async updateGuild(guildId: string, updates: Partial<IGuild>) {
+	public async updateGuild(guildId: string, updates: GuildUpdateInput) {
 		const guildSettings = await prisma.guild.upsert({
 			where: { id: guildId },
 			create: {
 				id: guildId,
 				disabledCommands: updates.disabled_commands ?? undefined,
 				petchannel: updates.petchannel ?? undefined,
-				staffOnlyChannels: updates.staff_only_channels ?? undefined
+				staffOnlyChannels: updates.staff_only_channels ?? undefined,
+				mega_duck_location: updates.mega_duck_location as Prisma.InputJsonValue | undefined
 			},
 			update: {
 				disabledCommands: updates.disabled_commands ?? undefined,
 				petchannel: updates.petchannel ?? undefined,
-				staffOnlyChannels: updates.staff_only_channels ?? undefined
+				staffOnlyChannels: updates.staff_only_channels ?? undefined,
+				mega_duck_location: updates.mega_duck_location as Prisma.InputJsonValue | undefined
 			}
 		});
 
@@ -267,6 +271,22 @@ class CacheManager {
 		return this.getJson<RobochimpUser>(RedisKeys.RoboChimpUser(BigInt(userId)));
 	}
 
+	async setPerkTier(userId: string, tier: number): Promise<void> {
+		const ttlSeconds = TTL.Hour * 2 + Math.floor(Math.random() * TTL.Hour);
+		await this.setString(BotKeys.PerkTier(userId), tier.toString(), ttlSeconds);
+	}
+
+	async getPerkTier(userId: string): Promise<number | null> {
+		const cached = await this.getString(BotKeys.PerkTier(userId));
+		if (cached === null) return null;
+		const tier = Number(cached);
+		return Number.isInteger(tier) ? tier : null;
+	}
+
+	async resetPerkTier(userId: string): Promise<void> {
+		await this.client.del(BotKeys.PerkTier(userId));
+	}
+
 	// Users
 	async getUserLockStatus(userId: string): Promise<LockStatus> {
 		const status = await this.getString(BotKeys.User.LockStatus(userId));
@@ -281,29 +301,109 @@ class CacheManager {
 		await this.setString(BotKeys.User.LockStatus(userId), newStatus, 25);
 	}
 
-	async _getBadgedUsernameRaw(userId: string): Promise<string | null> {
-		return this.client.get(BotKeys.User.BadgedUsername(userId));
+	private async getExpiringString(fullKey: string): Promise<string | null> {
+		const ttl = await this.client.pttl(fullKey);
+		if (ttl === -2) {
+			return null;
+		}
+		if (ttl === -1) {
+			const delaySeconds = Math.floor(Math.random() * TTL.Hour);
+			if (delaySeconds <= TTL.Minute) {
+				await this.client.del(fullKey);
+				return null;
+			}
+			await this.client.pexpire(fullKey, delaySeconds * 1000);
+		}
+		return this.client.get(fullKey);
 	}
 
-	async getBadgedUsername(userId: string) {
+	private async setExpiringString(fullKey: string, value: string): Promise<void> {
+		const jitterSeconds = Math.floor(Math.random() * TTL.Hour * 2) - TTL.Hour;
+		await this.setString(fullKey, value, TTL.Day + jitterSeconds);
+	}
+
+	private expiringDayTTL(): number {
+		const jitterSeconds = Math.floor(Math.random() * TTL.Hour * 2) - TTL.Hour;
+		return TTL.Day + jitterSeconds;
+	}
+
+	async getUsername(userId: string): Promise<string> {
 		if (!isValidDiscordSnowflake(userId)) {
 			throw new Error(`Invalid userID: ${userId}`);
 		}
-		return fetchUsernameAndCache(userId);
+
+		const cached = await this.getExpiringString(RedisKeys.Discord.Username(userId));
+		if (cached) return cached;
+
+		let username: string | null = null;
+		const djsUser = await globalClient.fetchUser(userId).catch(() => null);
+		if (djsUser?.username) {
+			username = cleanUsername(djsUser.username);
+		}
+
+		const user = await prisma.user.upsert({
+			where: {
+				id: userId
+			},
+			create: {
+				id: userId,
+				username: username ?? undefined
+			},
+			update: username
+				? {
+						username
+					}
+				: {},
+			select: {
+				username: true
+			}
+		});
+
+		if (!user.username) return 'Unknown';
+
+		await this.setUsername(userId, user.username);
+		return user.username;
+	}
+
+	async setUsername(userId: string, username: string): Promise<void> {
+		await this.setExpiringString(RedisKeys.Discord.Username(userId), username);
+	}
+
+	async resetUsername(userId: string) {
+		await this.client.del(RedisKeys.Discord.Username(userId));
+		await this.client.del(BotKeys.User.BadgedUsername(userId));
+	}
+	async getBadgedUsername(userId: string): Promise<string> {
+		if (!isValidDiscordSnowflake(userId)) {
+			throw new Error(`Invalid userID: ${userId}`);
+		}
+		const key = BotKeys.User.BadgedUsername(userId);
+		const cached = await this.getExpiringString(key);
+		if (cached) return cached;
+
+		const username = await this.getUsername(userId);
+		const user = await prisma.user.findUnique({
+			where: {
+				id: userId
+			},
+			select: {
+				badges: true,
+				bitfield: true,
+				minion_ironman: true
+			}
+		});
+		const badgesString = user
+			? makeBadgeString(user.badges, user.minion_ironman, user.bitfield.includes(BitField.OriginalCyrSupporter))
+			: '';
+		const badgedUsername = `${badgesString} ${username}`.trim();
+		if (username !== 'Unknown') {
+			await this.setExpiringString(key, badgedUsername);
+		}
+		return badgedUsername;
 	}
 
 	async getBadgedUsernames(userIds: string[]): Promise<string[]> {
-		const result = await Promise.all(userIds.map(id => this.getBadgedUsername(id)));
-		return result;
-	}
-
-	async setBadgedUsername(userId: string, badgedUsername: string): Promise<void> {
-		await this.client.set(BotKeys.User.BadgedUsername(userId), badgedUsername);
-	}
-
-	async resetUsername(userId: string): Promise<void> {
-		await this.client.del(RedisKeys.Discord.Username(userId));
-		await this.client.del(BotKeys.User.BadgedUsername(userId));
+		return Promise.all(userIds.map(id => this.getBadgedUsername(id)));
 	}
 
 	public async fullKeyRatelimitCheck({
@@ -457,11 +557,6 @@ class CacheManager {
 			Logging.logError(err as Error);
 			return false;
 		}
-	}
-
-	private expiringDayTTL(): number {
-		const jitterSeconds = Math.floor(Math.random() * TTL.Hour * 2) - TTL.Hour;
-		return TTL.Day + jitterSeconds;
 	}
 
 	async setWebhookPermissions(permissions: IWebhookPermissions): Promise<void> {
