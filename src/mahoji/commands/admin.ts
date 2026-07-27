@@ -10,6 +10,7 @@ import {
 	notEmpty,
 	sleep,
 	stringMatches,
+	stringSearch,
 	Time,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
@@ -667,7 +668,7 @@ export const adminCommand = defineCommand({
 							.filter(bf => {
 								if (bf[1].protected && !user.isAdmin()) return false;
 								if (!value) return true;
-								return stringMatches(bf[1].name, value);
+								return stringSearch(value, bf[1].name);
 							})
 							.map(i => ({ name: i[1].name, value: i[0] }));
 					}

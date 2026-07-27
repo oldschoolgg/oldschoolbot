@@ -2,7 +2,6 @@ import type { ItemBank } from 'oldschooljs';
 
 import { Prisma } from '@/prisma/main.js';
 import { BitField, DELETED_USER_ID } from '@/lib/constants.js';
-import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { assert } from '@/lib/util/logError.js';
 
 async function ensureDeletedUserExists() {
@@ -185,7 +184,7 @@ After becoming an ironman:
 	await prisma.jsonBank.deleteMany({ where: { user_id: user.id } });
 
 	// Refund the leagues points they spent
-	const roboChimpUser = await roboChimpUserFetch(user.id);
+	const roboChimpUser = await Cache.getRoboChimpUser(user.id);
 	if (roboChimpUser.leagues_points_total >= 0) {
 		await roboChimpClient.user.upsert({
 			where: {
