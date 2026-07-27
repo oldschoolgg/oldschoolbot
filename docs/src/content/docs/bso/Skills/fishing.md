@@ -9,6 +9,7 @@ title: "Fishing"
 - Raw Rocktails - Caught at 120 fishing
 - Tackle boxes - Increases length of fishing trips according to tier of tackle box, obtained from Fishing Contest
 - [Mecha Rod ](invention/#inventions)- 45% Speed boost to Fishing
+- Shark Tooth Necklace - 5% Speed boost to Fishing
 
 ### Optimal Gear Setup
 
