@@ -1,6 +1,7 @@
 import type { ButtonMInteraction } from '@oldschoolgg/discord';
 
 import { globalConfig } from '@/constants.js';
+import { getBotShutdown, isBotService, setBotShutdown } from '@/lib/botControl.js';
 
 export async function handleButtonInteraction(interaction: ButtonMInteraction) {
 	const id = interaction.customId;
@@ -11,6 +12,23 @@ export async function handleButtonInteraction(interaction: ButtonMInteraction) {
 		userId: interaction.userId
 	});
 	if (!member) return;
+
+	if (id.startsWith('chimp.stop_bot.cancel.')) {
+		const bot = id.replace('chimp.stop_bot.cancel.', '');
+		if (!isBotService(bot)) return;
+		const user = await globalClient.fetchRUser(interaction.userId);
+		if (!user.isMod() && !user.isAdmin()) {
+			return interaction.reply({ content: 'Only moderators can cancel this shutdown.', ephemeral: true });
+		}
+		if (!(await getBotShutdown(bot))) {
+			return interaction.reply({
+				content: `There is no pending ${bot.toUpperCase()} shutdown.`,
+				ephemeral: true
+			});
+		}
+		await setBotShutdown(bot, false);
+		return interaction.reply({ content: `Cancelled pending ${bot.toUpperCase()} shutdown.`, ephemeral: true });
+	}
 
 	if (id.includes('roles.')) {
 		const roleID = id.split('_')[1];

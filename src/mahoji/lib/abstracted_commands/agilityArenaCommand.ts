@@ -103,6 +103,7 @@ export async function agilityArenaCommand(
 }
 
 export async function agilityArenaBuyCommand(user: MUser, input: string, qty = 1): CommandResponse {
+	qty = Math.max(qty, 1);
 	const buyable = agilityArenaBuyables.find(
 		i => stringMatches(input, i.name) || i.aliases.some(alias => stringMatches(alias, input))
 	);

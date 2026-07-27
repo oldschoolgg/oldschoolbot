@@ -1,5 +1,11 @@
 import { bold } from '@oldschoolgg/discord';
-import { FormattedCustomEmoji, formatOrdinal, notEmpty, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
+import {
+	FormattedCustomEmoji,
+	formatDuration,
+	formatOrdinal,
+	notEmpty,
+	roboChimpCLRankQuery
+} from '@oldschoolgg/toolkit';
 import { convertLVLtoXP, Items } from 'oldschooljs';
 
 import { skillOption } from '@/discord/index.js';
@@ -13,7 +19,6 @@ import { blowpipeCommand, blowpipeDarts } from '@/lib/minions/functions/blowpipe
 import { degradeableItemsCommand } from '@/lib/minions/functions/degradeableItemsCommand.js';
 import { allPossibleStyles, trainCommand } from '@/lib/minions/functions/trainCommand.js';
 import { getRoboChimpGroupPaidBits, getRoboChimpPaidTierDisplay } from '@/lib/perkTiers.js';
-import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import creatures from '@/lib/skilling/skills/hunter/creatures/index.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
@@ -47,7 +52,7 @@ const patMessages = [
 
 export async function getUserInfo(user: MUser) {
 	await refreshUserCache({ user });
-	const roboChimpUser = await roboChimpUserFetch(user.id);
+	const roboChimpUser = await Cache.getRoboChimpUser(user.id);
 	const leaguesRanking = await roboChimpClient.user.count({
 		where: {
 			leagues_points_total: {
@@ -84,7 +89,30 @@ export async function getUserInfo(user: MUser) {
 
 	const roboCache = await Cache.getRoboChimpUser(user.id);
 	const groupPaidBits = await getRoboChimpGroupPaidBits(user.id);
-	const perkTierDisplay = getRoboChimpPaidTierDisplay({ bits: groupPaidBits, perkTier: roboCache?.perk_tier });
+	const premiumPerkTier =
+		roboCache.premium_balance_tier &&
+		roboCache.premium_balance_expiry_date &&
+		roboCache.premium_balance_expiry_date > Date.now()
+			? roboCache.premium_balance_tier
+			: 0;
+
+	let perkTierDisplay = getRoboChimpPaidTierDisplay({ bits: groupPaidBits, perkTier: roboCache?.perk_tier });
+	if (
+		roboCache.premium_balance_tier &&
+		roboCache.premium_balance_expiry_date &&
+		roboCache.premium_balance_expiry_date > Date.now()
+	) {
+		if (roboCache.premium_balance_tier > roboCache.perk_tier) {
+			perkTierDisplay = `Premium __Tier ${premiumPerkTier - 1}__ - ${formatDuration(Number(roboCache.premium_balance_expiry_date) - Date.now())} remaining`;
+		}
+	}
+	if (result.perkTier > roboCache.perk_tier && result.perkTier > premiumPerkTier) {
+		if (user.isMod() || user.isWikiContrib() || user.isContributor() || user.isTrusted()) {
+			perkTierDisplay = `**Courtesy** __Tier ${result.perkTier - 1}__`;
+		} else {
+			perkTierDisplay = `🔴 **Expiring** __Tier ${result.perkTier - 1}__`;
+		}
+	}
 	return {
 		...result,
 		everythingString: `${user.badgedUsername}[${user.id}]

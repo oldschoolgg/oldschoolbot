@@ -17,7 +17,8 @@ export const RobochimpBitfieldEnum = {
 	CyrTier4: 20,
 	CyrTier5: 21,
 	CyrTier6: 22,
-	CyrTier7: 23
+	CyrTier7: 23,
+	CyrsOriginalPatrons: 24
 };
 
 const CYR_TIER_BITS = [
@@ -56,7 +57,7 @@ const perkTierHotCache = new LRUCache<string, PerkTierHotCacheEntry>({
 	updateAgeOnGet: false
 });
 
-function setHotCache(userId: string, tier: number) {
+export function setHotCache(userId: string, tier: number) {
 	perkTierHotCache.set(userId, { tier, expires: Date.now() + PerkTierHotTTL });
 }
 export function getPerkTierCached(userId: string) {
@@ -130,10 +131,15 @@ export async function getUsersPerkTier({
 		if (tierCacheEntry && tierCacheEntry.expires > Date.now()) {
 			return tierCacheEntry.tier;
 		}
+		const redisCacheEntry = await Cache.getPerkTier(user.id);
+		if (redisCacheEntry) {
+			setHotCache(user.id, redisCacheEntry);
+			return redisCacheEntry;
+		}
 	}
 
 	const eligibleTiers = [];
-	if (user.isContributor() || user.isModOrAdmin()) {
+	if (user.isContributor() || user.isModOrAdmin() || user.isWikiContrib()) {
 		eligibleTiers.push(PerkTier.Four);
 	} else if (user.isTrusted()) {
 		eligibleTiers.push(PerkTier.Three);
@@ -141,9 +147,39 @@ export async function getUsersPerkTier({
 
 	const bitfield = user.bitfield;
 
+	// TODO: Remove these tiers:
+	// Courtesy tiers.
+	if (bitfield.includes(BitField.PatronTier6)) {
+		eligibleTiers.push(PerkTier.Seven);
+	}
+
+	if (bitfield.includes(BitField.PatronTier5)) {
+		eligibleTiers.push(PerkTier.Six);
+	}
+
+	if (bitfield.includes(BitField.PatronTier4)) {
+		eligibleTiers.push(PerkTier.Five);
+	}
+
+	if (bitfield.includes(BitField.PatronTier3)) {
+		eligibleTiers.push(PerkTier.Four);
+	}
+
+	if (bitfield.includes(BitField.PatronTier2)) {
+		eligibleTiers.push(PerkTier.Three);
+	}
+	// END TODO
+
 	const roboChimpCached = await Cache.getRoboChimpUser(user.id);
 	if (roboChimpCached) {
 		eligibleTiers.push(roboChimpCached.perk_tier);
+		if (
+			roboChimpCached.premium_balance_tier &&
+			roboChimpCached.premium_balance_expiry_date &&
+			Number(roboChimpCached.premium_balance_expiry_date) > Date.now()
+		) {
+			eligibleTiers.push(roboChimpCached.premium_balance_tier);
+		}
 	}
 
 	// Why bother looking for the member if it doesn't help get a higher tier
@@ -155,8 +191,9 @@ export async function getUsersPerkTier({
 		eligibleTiers.push(PerkTier.Two);
 	}
 	// Server boosting perk has been eliminated
-
+	console.log(eligibleTiers);
 	const tier = Math.max(...eligibleTiers, 0);
 	setHotCache(user.id, tier);
+	await Cache.setPerkTier(user.id, tier);
 	return tier;
 }

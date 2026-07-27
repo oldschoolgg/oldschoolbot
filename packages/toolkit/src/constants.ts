@@ -48,6 +48,7 @@ export enum Emoji {
 	MinigameIcon = '<:minigameIcon:630400565070921761>',
 	Warning = '⚠️',
 	Ironman = '<:ironman:626647335900020746>',
+	Seer = '<:seer:924198628191531030>',
 	Firemaking = '<:firemaking:630911040175210518>',
 	Crafting = '<:crafting:630911040460161047>',
 	EasterEgg = '<:easterEgg:695473553314938920>',

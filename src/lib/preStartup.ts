@@ -43,7 +43,7 @@ export const preStartup = async () => {
 	await prisma.clientStorage.upsert({
 		where: { id: globalConfig.clientID },
 		create: { id: globalConfig.clientID },
-		update: {},
+		update: { shutdown: false },
 		select: { id: true }
 	});
 

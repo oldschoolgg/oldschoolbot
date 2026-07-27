@@ -228,6 +228,9 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 			rng: args.rng
 		});
 		if (!result) continue;
+		if (typeof result === 'string') {
+			return result;
+		}
 		for (const boostResult of Array.isArray(result) ? result : [result]) {
 			if (boostResult.changes) {
 				speedDurationResult.currentTaskOptions = mergeDeep(
