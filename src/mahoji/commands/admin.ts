@@ -9,7 +9,8 @@ import {
 	noOp,
 	notEmpty,
 	sleep,
-	stringMatches, stringSearch,
+	stringMatches,
+	stringSearch,
 	Time,
 	uniqueArr
 } from '@oldschoolgg/toolkit';

@@ -147,6 +147,29 @@ export async function getUsersPerkTier({
 
 	const bitfield = user.bitfield;
 
+	// TODO: Remove these tiers:
+	// Courtesy tiers.
+	if (bitfield.includes(BitField.PatronTier6)) {
+		eligibleTiers.push(PerkTier.Seven);
+	}
+
+	if (bitfield.includes(BitField.PatronTier5)) {
+		eligibleTiers.push(PerkTier.Six);
+	}
+
+	if (bitfield.includes(BitField.PatronTier4)) {
+		eligibleTiers.push(PerkTier.Five);
+	}
+
+	if (bitfield.includes(BitField.PatronTier3)) {
+		eligibleTiers.push(PerkTier.Four);
+	}
+
+	if (bitfield.includes(BitField.PatronTier2)) {
+		eligibleTiers.push(PerkTier.Three);
+	}
+	// END TODO
+
 	const roboChimpCached = await Cache.getRoboChimpUser(user.id);
 	if (roboChimpCached) {
 		eligibleTiers.push(roboChimpCached.perk_tier);
