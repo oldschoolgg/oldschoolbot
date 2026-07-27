@@ -9,7 +9,6 @@ import { autoslayModes } from '@/lib/slayer/constants.js';
 import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
 import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import { bossTasks, wildernessBossTasks } from '@/lib/slayer/tasks/bossTasks.js';
-import { canonicalSlayerTaskMonsterID, isMetalDragonTaskID } from '@/lib/slayer/tasks/metalDragonTask.js';
 import type { AssignableSlayerTask, SlayerMaster } from '@/lib/slayer/types.js';
 
 export const wildySlayerOnlyMonsters = [
@@ -139,14 +138,14 @@ function userCanUseTask(user: MUser, task: AssignableSlayerTask, master: SlayerM
 	if (task.isBoss && !allowBossTasks) return false;
 	if (task.dontAssign) return false;
 	const myLastTask = user.user.slayer_last_task;
-	if (canonicalSlayerTaskMonsterID(myLastTask) === canonicalSlayerTaskMonsterID(task.monster.id)) return false;
+	if (myLastTask === task.monster.id) return false;
 	if (task.combatLevel && task.combatLevel > user.combatLevel) return false;
 	if (task.questPoints && task.questPoints > user.QP) return false;
 	if (task.requiredQuests?.find(quest => !user.user.finished_quest_ids.includes(quest))) return false;
 	if (task.slayerLevel && task.slayerLevel > user.skillsAsLevels.slayer) return false;
 	if (task.levelRequirements && !user.hasSkillReqs(task.levelRequirements)) return false;
 	const myBlockList = user.user.slayer_blocked_ids ?? [];
-	if (task.monsters.some(monsterID => myBlockList.includes(monsterID))) return false;
+	if (myBlockList.includes(task.monster.id)) return false;
 	const myUnlocks = user.user.slayer_unlocks;
 	// Slayer unlock restrictions:
 	const lmon = task.monster.name.toLowerCase();
@@ -368,11 +367,7 @@ export async function getUsersCurrentSlayerInfo(id: string) {
 	}
 
 	const slayerMaster = slayerMasters.find(master => master.id === currentTask.slayer_master_id);
-	const assignedTask = slayerMaster?.tasks.find(
-		m =>
-			m.monster.id === currentTask.monster_id ||
-			(isMetalDragonTaskID(currentTask.monster_id) && isMetalDragonTaskID(m.monster.id))
-	);
+	const assignedTask = slayerMaster?.tasks.find(m => m.monster.id === currentTask.monster_id);
 
 	if (!assignedTask || !slayerMaster) {
 		Logging.logError(

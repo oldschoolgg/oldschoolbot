@@ -13,7 +13,6 @@ import {
 	getUsersCurrentSlayerInfo,
 	userCanUseMaster
 } from '@/lib/slayer/slayerUtil.js';
-import { canonicalSlayerTaskMonsterID } from '@/lib/slayer/tasks/metalDragonTask.js';
 import type { AssignableSlayerTask } from '@/lib/slayer/types.js';
 import type { SafeUserUpdateInput } from '@/lib/user/update.js';
 
@@ -291,8 +290,7 @@ export async function slayerSkipTaskCommand({
 		}
 	};
 	if (block) {
-		const blockedMonsterID = canonicalSlayerTaskMonsterID(currentTask.monster_id);
-		updateData.slayer_blocked_ids = [...removeFromArr(myBlockList, blockedMonsterID), blockedMonsterID];
+		updateData.slayer_blocked_ids = [...removeFromArr(myBlockList, currentTask.monster_id), currentTask.monster_id];
 	}
 	try {
 		await user.update(updateData);
@@ -335,12 +333,11 @@ export async function slayerUnblockCommand(mahojiUser: MUser, monsterName: strin
 	if (!osjsMonster) {
 		return `Cannot find Monster with name **${monsterName}**`;
 	}
-	const monsterIDToUnblock = canonicalSlayerTaskMonsterID(osjsMonster.id);
 	const blockedMonsters = mahojiUser.user.slayer_blocked_ids.map(mId => Monsters.get(mId)).filter(notEmpty);
 	if (blockedMonsters.length === 0) {
 		return "You don't currently have any monsters blocked.";
 	}
-	const monsterToUnblock = blockedMonsters.find(m => canonicalSlayerTaskMonsterID(m.id) === monsterIDToUnblock);
+	const monsterToUnblock = blockedMonsters.find(m => m.id === osjsMonster.id);
 	if (!monsterToUnblock) {
 		return `You don't currently have ${getCommonTaskName(osjsMonster)} blocked.`;
 	}

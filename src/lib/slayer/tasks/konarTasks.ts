@@ -1,9 +1,9 @@
 import { Monsters } from 'oldschooljs';
 
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
 import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import { bossTasks } from '@/lib/slayer/tasks/bossTasks.js';
-import { metalDragonTask } from '@/lib/slayer/tasks/metalDragonTask.js';
 import type { AssignableSlayerTask } from '@/lib/slayer/types.js';
 
 export const konarTasks: AssignableSlayerTask[] = [
@@ -29,11 +29,34 @@ export const konarTasks: AssignableSlayerTask[] = [
 		slayerLevel: 85,
 		unlocked: true
 	},
-	metalDragonTask({
+	{
+		monster: Monsters.AdamantDragon,
+		amount: [3, 6],
+		weight: 0,
+		monsters: [Monsters.AdamantDragon.id],
+		extendedAmount: [20, 30],
+		extendedUnlockId: SlayerTaskUnlocksEnum.AdamindSomeMore,
+		questPoints: 205,
+		unlocked: true
+	},
+	{
+		monster: Monsters.BronzeDragon,
 		amount: [30, 40],
+		weight: 15,
+		monsters: [
+			Monsters.BronzeDragon.id,
+			Monsters.IronDragon.id,
+			Monsters.SteelDragon.id,
+			Monsters.MithrilDragon.id,
+			Monsters.AdamantDragon.id,
+			Monsters.RuneDragon.id
+		],
 		extendedAmount: [150, 200],
-		weight: 15
-	}),
+		extendedUnlockId: SlayerTaskUnlocksEnum.PedalToTheMetals,
+		combatLevel: 75,
+		questPoints: 34,
+		unlocked: true
+	},
 	{
 		monster: Monsters.Ankou,
 		amount: [50, 50],
@@ -239,6 +262,17 @@ export const konarTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
+		monster: Monsters.IronDragon,
+		amount: [30, 50],
+		weight: 0,
+		monsters: [Monsters.IronDragon.id],
+		extendedAmount: [61, 100],
+		extendedUnlockId: SlayerTaskUnlocksEnum.PedalToTheMetals,
+		combatLevel: 80,
+		questPoints: 34,
+		unlocked: true
+	},
+	{
 		monster: Monsters.Jelly,
 		amount: [120, 170],
 		weight: 6,
@@ -277,6 +311,15 @@ export const konarTasks: AssignableSlayerTask[] = [
 		unlocked: false
 	},
 	{
+		monster: Monsters.MithrilDragon,
+		amount: [3, 6],
+		weight: 0,
+		monsters: [Monsters.MithrilDragon.id],
+		extendedAmount: [25, 35],
+		extendedUnlockId: SlayerTaskUnlocksEnum.IReallyMithYou,
+		unlocked: false
+	},
+	{
 		monster: Monsters.Zygomite,
 		amount: [10, 25],
 		weight: 2,
@@ -307,6 +350,16 @@ export const konarTasks: AssignableSlayerTask[] = [
 		unlocked: false
 	},
 	{
+		monster: Monsters.RuneDragon,
+		amount: [3, 6],
+		weight: 0,
+		monsters: [Monsters.RuneDragon.id],
+		extendedAmount: [30, 60],
+		extendedUnlockId: SlayerTaskUnlocksEnum.RUUUUUNE,
+		questPoints: 205,
+		unlocked: true
+	},
+	{
 		monster: Monsters.SkeletalWyvern,
 		amount: [5, 12],
 		weight: 5,
@@ -325,6 +378,18 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monsters: [Monsters.SmokeDevil.id, Monsters.ThermonuclearSmokeDevil.id],
 		combatLevel: 85,
 		slayerLevel: 93,
+		unlocked: true
+	},
+	{
+		monster: Monsters.SteelDragon,
+		amount: [30, 50],
+		weight: 0,
+		monsters: [Monsters.SteelDragon.id],
+		levelRequirements: killableMonsters.find(k => k.id === Monsters.SteelDragon.id)?.levelRequirements,
+		extendedAmount: [40, 60],
+		extendedUnlockId: SlayerTaskUnlocksEnum.PedalToTheMetals,
+		combatLevel: 85,
+		questPoints: 34,
 		unlocked: true
 	},
 	{

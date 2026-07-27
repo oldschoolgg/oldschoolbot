@@ -1,9 +1,9 @@
 import { EMonster, Monsters } from 'oldschooljs';
 
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
 import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import { bossTasks } from '@/lib/slayer/tasks/bossTasks.js';
-import { metalDragonTask } from '@/lib/slayer/tasks/metalDragonTask.js';
 import type { AssignableSlayerTask } from '@/lib/slayer/types.js';
 
 export const nieveTasks: AssignableSlayerTask[] = [
@@ -31,11 +31,34 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		questPoints: 1,
 		unlocked: true
 	},
-	metalDragonTask({
+	{
+		monster: Monsters.AdamantDragon,
+		amount: [3, 7],
+		extendedAmount: [20, 30],
+		extendedUnlockId: SlayerTaskUnlocksEnum.AdamindSomeMore,
+		weight: 0,
+		monsters: [Monsters.AdamantDragon.id],
+		questPoints: 205,
+		unlocked: true
+	},
+	{
+		monster: Monsters.BronzeDragon,
 		amount: [30, 40],
+		weight: 12,
+		monsters: [
+			Monsters.BronzeDragon.id,
+			Monsters.IronDragon.id,
+			Monsters.SteelDragon.id,
+			Monsters.MithrilDragon.id,
+			Monsters.AdamantDragon.id,
+			Monsters.RuneDragon.id
+		],
 		extendedAmount: [150, 200],
-		weight: 12
-	}),
+		extendedUnlockId: SlayerTaskUnlocksEnum.PedalToTheMetals,
+		combatLevel: 75,
+		questPoints: 34,
+		unlocked: true
+	},
 	{
 		monster: Monsters.Ankou,
 		amount: [50, 90],
@@ -274,6 +297,17 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
+		monster: Monsters.IronDragon,
+		amount: [30, 60],
+		extendedAmount: [60, 100],
+		extendedUnlockId: SlayerTaskUnlocksEnum.PedalToTheMetals,
+		weight: 0,
+		monsters: [Monsters.IronDragon.id],
+		combatLevel: 80,
+		questPoints: 34,
+		unlocked: true
+	},
+	{
 		monster: Monsters.JuvenileCustodianStalker,
 		amount: [110, 170],
 		extendedAmount: [200, 250],
@@ -329,6 +363,15 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
+		monster: Monsters.MithrilDragon,
+		amount: [4, 8],
+		extendedAmount: [25, 35],
+		extendedUnlockId: SlayerTaskUnlocksEnum.IReallyMithYou,
+		weight: 0,
+		monsters: [Monsters.MithrilDragon.id],
+		unlocked: false
+	},
+	{
 		monster: Monsters.Zygomite,
 		amount: [10, 25],
 		weight: 2,
@@ -358,6 +401,16 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		questPoints: 34,
 		combatLevel: 68,
 		unlocked: false
+	},
+	{
+		monster: Monsters.RuneDragon,
+		amount: [3, 6],
+		extendedAmount: [30, 60],
+		extendedUnlockId: SlayerTaskUnlocksEnum.RUUUUUNE,
+		weight: 0,
+		monsters: [Monsters.RuneDragon.id],
+		questPoints: 205,
+		unlocked: true
 	},
 	{
 		monster: Monsters.SkeletalWyvern,
@@ -390,6 +443,18 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		combatLevel: 60,
 		slayerLevel: 63,
 		questPoints: 3,
+		unlocked: true
+	},
+	{
+		monster: Monsters.SteelDragon,
+		amount: [30, 60],
+		extendedAmount: [40, 60],
+		extendedUnlockId: SlayerTaskUnlocksEnum.PedalToTheMetals,
+		weight: 0,
+		monsters: [Monsters.SteelDragon.id],
+		levelRequirements: killableMonsters.find(k => k.id === Monsters.SteelDragon.id)?.levelRequirements,
+		combatLevel: 85,
+		questPoints: 34,
 		unlocked: true
 	},
 	{
