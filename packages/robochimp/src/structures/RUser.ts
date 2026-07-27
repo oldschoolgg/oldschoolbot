@@ -3,18 +3,30 @@ import { RedisKeys } from '@oldschoolgg/util';
 import type { Prisma, User } from '@prisma/robochimp';
 
 import { redis } from '@/lib/redis.js';
-import { Bits, type PatronTier, tiers } from '@/util.js';
+import { Bits, formatUserPaidTiers, type PatronTier, tiers } from '@/util.js';
+
+export type RUserGroupUser = Pick<
+	User,
+	'id' | 'bits' | 'perk_tier' | 'premium_balance_tier' | 'premium_balance_expiry_date'
+>;
+
+function activeTempPerkTier(user: Pick<User, 'premium_balance_tier' | 'premium_balance_expiry_date'>) {
+	if (!user.premium_balance_tier || !user.premium_balance_expiry_date) return 0;
+	return Number(user.premium_balance_expiry_date) > Date.now() ? user.premium_balance_tier : 0;
+}
 
 export class RUser {
 	private _user: User;
-	constructor(user: User) {
+	private _groupUsers: RUserGroupUser[];
+	constructor(user: User, groupUsers: RUserGroupUser[] = [user]) {
 		this._user = user;
+		this._groupUsers = groupUsers.length > 0 ? groupUsers : [user];
 	}
 	get id(): bigint {
 		return this._user.id;
 	}
 	get bits(): Bits[] {
-		return this._user.bits;
+		return [...new Set(this._groupUsers.flatMap(u => u.bits))] as Bits[];
 	}
 
 	get leaguesPointsTotal(): number {
@@ -26,12 +38,20 @@ export class RUser {
 	}
 
 	get perkTierRaw(): number {
-		return this._user.perk_tier ?? 0;
+		return Math.max(0, ...this._groupUsers.flatMap(u => [u.perk_tier ?? 0, activeTempPerkTier(u)]));
 	}
 
 	get perkTier(): PatronTier | null {
-		const tier = tiers.find(t => t.perkTier === this._user.perk_tier);
+		const tier = tiers.find(t => t.perkTier === this.perkTierRaw);
 		return tier ?? null;
+	}
+
+	get perkTierDisplay(): string {
+		const paidTierDisplay = formatUserPaidTiers(this.bits);
+		if (paidTierDisplay !== 'None') {
+			return paidTierDisplay;
+		}
+		return this.perkTierRaw > 0 ? `Perk Tier ${this.perkTierRaw}` : 'None';
 	}
 
 	public isSupport(): boolean {
@@ -67,13 +87,21 @@ export class RUser {
 	}
 
 	async findGroup(): Promise<string[]> {
+		if (this._groupUsers.length > 1) return this._groupUsers.map(u => u.id.toString());
 		if (!this._user.user_group_id) return [this._user.id.toString()];
 		const group = await roboChimpClient.user.findMany({
 			where: {
 				user_group_id: this._user.user_group_id
+			},
+			select: {
+				id: true,
+				bits: true,
+				perk_tier: true,
+				premium_balance_tier: true,
+				premium_balance_expiry_date: true
 			}
 		});
-		if (!group) return [this._user.id.toString()];
+		this._groupUsers = group;
 		return group.map(u => u.id.toString());
 	}
 
@@ -96,6 +124,7 @@ export class RUser {
 		});
 		redis.set(RedisKeys.RoboChimpUser(this.id), JSON.stringify(newUser));
 		this._user = newUser;
+		this._groupUsers = await fetchRUserGroupUsers(newUser);
 		return this;
 	}
 
@@ -130,4 +159,39 @@ export class RUser {
 	globalCLPercent(): number {
 		return (this.osbClPercent + this.bsoClPercent) / 2;
 	}
+}
+
+export async function fetchRUserGroupUsers(
+	user: Pick<
+		User,
+		'id' | 'bits' | 'perk_tier' | 'premium_balance_tier' | 'premium_balance_expiry_date' | 'user_group_id'
+	>
+): Promise<RUserGroupUser[]> {
+	if (!user.user_group_id) {
+		return [
+			{
+				id: user.id,
+				bits: user.bits,
+				perk_tier: user.perk_tier,
+				premium_balance_tier: user.premium_balance_tier,
+				premium_balance_expiry_date: user.premium_balance_expiry_date
+			}
+		];
+	}
+
+	return roboChimpClient.user.findMany({
+		where: {
+			user_group_id: user.user_group_id
+		},
+		select: {
+			id: true,
+			bits: true,
+			perk_tier: true,
+			premium_balance_tier: true,
+			premium_balance_expiry_date: true
+		},
+		orderBy: {
+			id: 'asc'
+		}
+	});
 }

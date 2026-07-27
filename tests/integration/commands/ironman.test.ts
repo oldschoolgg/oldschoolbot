@@ -13,7 +13,6 @@ describe('Ironman Command', () => {
 		await global.prisma!.user.create({
 			data: { id: userId, skills_agility: 100_000_000, skills_attack: 100_000_000, ...userData }
 		});
-		await global.prisma!.newUser.create({ data: { id: userId } });
 		const activity = await global.prisma!.activity.create({
 			data: {
 				user_id: BigInt(userId),

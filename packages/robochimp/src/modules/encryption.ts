@@ -1,4 +1,4 @@
-import { RUser } from '@/structures/RUser.js';
+import { fetchRUserGroupUsers, RUser } from '@/structures/RUser.js';
 
 const IV_LENGTH = 16;
 const ALGORITHM = 'AES-GCM';
@@ -98,7 +98,7 @@ export async function handleAuthenticationFromToken(token?: string | null): Prom
 				where: { id: BigInt(successfulJWT.user_id) }
 			});
 			if (!matchingUser) throw new Error('User not found.');
-			return new RUser(matchingUser);
+			return new RUser(matchingUser, await fetchRUserGroupUsers(matchingUser));
 		} else {
 			throw new Error('handleAuthenticationFromToken: Invalid token.');
 		}

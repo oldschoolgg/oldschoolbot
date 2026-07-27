@@ -1,6 +1,6 @@
 {
 	"extends": "./tsconfig.base.json",
-	"include": ["src/**/*.ts", "src/**/*.tsx"],
+	"include": ["src/**/*.ts", "src/**/*.tsx", "vitest.*.mts", "vitest.*.cts"],
 	"exclude": [".git", "node_modules", "dist", "logs", "tests"],
 	"references": [
 		{ "path": "./packages/collectionlog/tsconfig.json" },
