@@ -17,7 +17,8 @@ export const RobochimpBitfieldEnum = {
 	CyrTier4: 20,
 	CyrTier5: 21,
 	CyrTier6: 22,
-	CyrTier7: 23
+	CyrTier7: 23,
+	CyrsOriginalPatrons: 24
 };
 
 const CYR_TIER_BITS = [
@@ -144,6 +145,13 @@ export async function getUsersPerkTier({
 	const roboChimpCached = await Cache.getRoboChimpUser(user.id);
 	if (roboChimpCached) {
 		eligibleTiers.push(roboChimpCached.perk_tier);
+		if (
+			roboChimpCached.premium_balance_tier &&
+			roboChimpCached.premium_balance_expiry_date &&
+			Number(roboChimpCached.premium_balance_expiry_date) > Date.now()
+		) {
+			eligibleTiers.push(roboChimpCached.premium_balance_tier);
+		}
 	}
 
 	// Why bother looking for the member if it doesn't help get a higher tier

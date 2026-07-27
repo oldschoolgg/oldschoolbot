@@ -19,6 +19,7 @@ import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 import { economy_transaction_type } from '@/prisma/main/enums.js';
 import type { ClientStorage } from '@/prisma/main.js';
 import { bulkUpdateCommands, itemOption } from '@/discord/index.js';
+import { MessageBuilder } from '@/discord/MessageBuilder.js';
 import {
 	bitfieldCanUserManipulate,
 	changeBitFieldForUser,
@@ -97,6 +98,12 @@ function formatShardAckAge(lastAckAt?: number) {
 	return formatDuration(diff);
 }
 
+function formatShardLatency(latency: number | null) {
+	if (latency === null) return '-';
+	if (!Number.isFinite(latency)) return 'timed out';
+	return `${latency}ms`;
+}
+
 function buildShardStatusResponse(
 	report: Awaited<ReturnType<typeof globalClient.getShardStatusReport>>,
 	options: { minimal?: boolean; shard?: number }
@@ -116,18 +123,20 @@ function buildShardStatusResponse(
 	};
 	const total = report.length;
 	const ready = filteredReport.filter(i => i.status === WebSocketShardStatus.Ready).length;
+	const failed = filteredReport.filter(i => i.health.label === 'failed').length;
 	const unhealthy = filteredReport.filter(i => i.health.isUnhealthy).length;
 	const dead = filteredReport.filter(i => i.health.isDead).length;
-	const overview = `Shards: ${total} total, ${ready} ready, ${unhealthy} unhealthy, ${dead} dead`;
+	const overview = `Shards: ${total} total, ${ready} ready, ${failed} failed, ${unhealthy} unhealthy, ${dead} dead`;
 	const lines = filteredReport.map(entry => {
 		let emoji = statusEmojis.ready;
 		if (entry.health.isUnhealthy) emoji = statusEmojis.unhealthy;
 		if (entry.health.isDead) emoji = statusEmojis.dead;
+		if (entry.health.label === 'failed') emoji = statusEmojis.failed;
 		if (options.minimal) {
 			return `${entry.shardId},${emoji},${entry.statusName}`;
 		}
-		const avg = entry.health.avgLatency === null ? '-' : `${entry.health.avgLatency}ms`;
-		const last = entry.health.lastLatency === null ? '-' : `${entry.health.lastLatency}ms`;
+		const avg = formatShardLatency(entry.health.avgLatency);
+		const last = formatShardLatency(entry.health.lastLatency);
 		const lastAck = formatShardAckAge(entry.stats?.lastAckAt);
 		return `${entry.shardId}: ${emoji} ${entry.health.label} | ${entry.statusName} | avg=${avg} | last=${last} | ack=${lastAck}`;
 	});
@@ -275,11 +284,11 @@ WHERE blowpipe iS NOT NULL and (blowpipe->>'dartQuantity')::int != 0;`),
 		name: 'Most Active',
 		run: async () => {
 			const res = await prisma.$queryRawUnsafe<{ num: number; username: string }[]>(`
-SELECT sum(duration)::int as num, "new_user"."username", user_id
+SELECT sum(duration)::int as num, users.username, user_id
 FROM activity
-INNER JOIN "new_users" "new_user" on "new_user"."id" = "activity"."user_id"::text
+INNER JOIN users on users.id = activity.user_id::text
 WHERE start_date > now() - interval '2 days'
-GROUP BY user_id, "new_user"."username"
+GROUP BY user_id, users.username
 ORDER BY num DESC
 LIMIT 10;
 `);
@@ -861,6 +870,7 @@ export const adminCommand = defineCommand({
 		}
 
 		if (options.shut_down) {
+			await ClientSettings.update({ shutdown: false });
 			globalClient.isShuttingDown = true;
 			const timer = Time.Second * 30;
 			await interaction.reply({
@@ -874,22 +884,8 @@ export const adminCommand = defineCommand({
 ${META_CONSTANTS.RENDERED_STR}`
 				})
 				.catch(noOp);
-			await gracefulExit(0);
+			gracefulExit(0);
 			return 'Turning off...';
-		}
-
-		/**
-		 *
-		 * Admin Only Commands
-		 *
-		 */
-		if (!isAdmin) {
-			return rng.pick(gifs);
-		}
-
-		if (options.sync_commands) {
-			await bulkUpdateCommands();
-			return 'Done.';
 		}
 		if (options.system) {
 			const { shard_status: shardStatus, shard_restart: shardRestart } = options.system;
@@ -920,6 +916,20 @@ ${META_CONSTANTS.RENDERED_STR}`
 			}
 
 			return `Invalid System Command`;
+		}
+
+		/**
+		 *
+		 * Admin Only Commands
+		 *
+		 */
+		if (!isAdmin) {
+			return rng.pick(gifs);
+		}
+
+		if (options.sync_commands) {
+			await bulkUpdateCommands();
+			return 'Done.';
 		}
 
 		if (options.view) {

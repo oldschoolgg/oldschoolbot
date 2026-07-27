@@ -1,3 +1,4 @@
+import { PermissionFlags } from '@oldschoolgg/discord';
 import {
 	type IChannel,
 	type IEmoji,
@@ -5,8 +6,11 @@ import {
 	type IMember,
 	type IRole,
 	type IWebhook,
+	type IWebhookPermissions,
 	ZMember,
-	ZRole
+	ZRole,
+	ZWebhook,
+	ZWebhookPermissions
 } from '@oldschoolgg/schemas';
 import { Time } from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake, MockedRedis, RedisKeys } from '@oldschoolgg/util';
@@ -57,7 +61,9 @@ class CacheManager {
 			this.client = new Redis();
 		} else {
 			try {
-				const redis = new Redis({ reconnectOnError: () => false });
+				const host: string = process.env.REDIS_HOST ?? 'localhost';
+				const port: number = Number(process.env.REDIS_PORT ?? 6379);
+				const redis = new Redis({ host, port });
 				redis.on('error', () => {
 					redis.disconnect();
 					this.client = new MockedRedis() as any as Redis;
@@ -75,6 +81,10 @@ class CacheManager {
 
 	private async setJson(key: string, value: object) {
 		await this.client.set(key, JSON.stringify(value));
+	}
+
+	private async setJsonWithTTL(key: string, value: object, ttlSeconds: number) {
+		await this.client.set(key, JSON.stringify(value), 'EX', ttlSeconds);
 	}
 
 	private async getJson<T = unknown>(key: string): Promise<T | null> {
@@ -291,6 +301,11 @@ class CacheManager {
 		await this.client.set(BotKeys.User.BadgedUsername(userId), badgedUsername);
 	}
 
+	async resetUsername(userId: string): Promise<void> {
+		await this.client.del(RedisKeys.Discord.Username(userId));
+		await this.client.del(BotKeys.User.BadgedUsername(userId));
+	}
+
 	public async fullKeyRatelimitCheck({
 		key: fullKey,
 		windowSeconds,
@@ -366,11 +381,108 @@ class CacheManager {
 	}
 
 	async setWebhook(webhook: IWebhook): Promise<void> {
+		ZWebhook.parse(webhook);
 		await this.setJson(BotKeys.Webhook(webhook.channel_id), webhook);
 	}
 
 	async getWebhook(channelId: string): Promise<IWebhook | null> {
-		return this.getJson(BotKeys.Webhook(channelId));
+		const cached = await this.getJson<IWebhook>(BotKeys.Webhook(channelId));
+		if (cached) return ZWebhook.parse(cached);
+
+		const stored = await prisma.webhook.findUnique({
+			where: {
+				channel_id: channelId
+			}
+		});
+		if (!stored) return null;
+
+		const webhook = ZWebhook.parse({
+			id: stored.webhook_id,
+			token: stored.webhook_token,
+			channel_id: stored.channel_id
+		});
+		await this.setWebhook(webhook);
+		return webhook;
+	}
+
+	private permissionKeysToBits(permissions: (keyof typeof PermissionFlags)[]): bigint {
+		let bits = 0n;
+		for (const permission of permissions) {
+			bits |= PermissionFlags[permission];
+		}
+		return bits;
+	}
+
+	private async fetchCanCreateWebhook(channelId: string): Promise<boolean> {
+		try {
+			const rawChannel = await globalClient.fetchChannel(channelId);
+			if (!rawChannel || !('guild_id' in rawChannel) || !rawChannel.guild_id) return false;
+			if (!('permission_overwrites' in rawChannel)) return false;
+
+			const botUserId = globalClient.application?.bot?.id ?? globalConfig.clientID;
+			const member = await globalClient.fetchMember({ guildId: rawChannel.guild_id, userId: botUserId });
+			const everyoneRole = await globalClient.fetchRole(rawChannel.guild_id, rawChannel.guild_id);
+
+			let permissions =
+				this.permissionKeysToBits(everyoneRole?.permissions ?? []) |
+				this.permissionKeysToBits(member.roles_detailed.flatMap(role => role.permissions));
+			if ((permissions & PermissionFlags.ADMINISTRATOR) === PermissionFlags.ADMINISTRATOR) return true;
+
+			const overwrites = rawChannel.permission_overwrites ?? [];
+			const applyOverwrite = (deny: string, allow: string) => {
+				permissions &= ~BigInt(deny);
+				permissions |= BigInt(allow);
+			};
+
+			const everyoneOverwrite = overwrites.find(
+				overwrite => overwrite.type === 0 && overwrite.id === rawChannel.guild_id
+			);
+			if (everyoneOverwrite) applyOverwrite(everyoneOverwrite.deny, everyoneOverwrite.allow);
+
+			let roleDeny = 0n;
+			let roleAllow = 0n;
+			for (const overwrite of overwrites) {
+				if (overwrite.type !== 0 || !member.roles.includes(overwrite.id)) continue;
+				roleDeny |= BigInt(overwrite.deny);
+				roleAllow |= BigInt(overwrite.allow);
+			}
+			permissions &= ~roleDeny;
+			permissions |= roleAllow;
+
+			const memberOverwrite = overwrites.find(overwrite => overwrite.type === 1 && overwrite.id === botUserId);
+			if (memberOverwrite) applyOverwrite(memberOverwrite.deny, memberOverwrite.allow);
+
+			return (permissions & PermissionFlags.MANAGE_WEBHOOKS) === PermissionFlags.MANAGE_WEBHOOKS;
+		} catch (err) {
+			Logging.logError(err as Error);
+			return false;
+		}
+	}
+
+	private expiringDayTTL(): number {
+		const jitterSeconds = Math.floor(Math.random() * TTL.Hour * 2) - TTL.Hour;
+		return TTL.Day + jitterSeconds;
+	}
+
+	async setWebhookPermissions(permissions: IWebhookPermissions): Promise<void> {
+		ZWebhookPermissions.parse(permissions);
+		await this.setJsonWithTTL(
+			BotKeys.WebhookPermissions(permissions.channel_id),
+			permissions,
+			this.expiringDayTTL()
+		);
+	}
+
+	async getWebhookPermissions(channelId: string): Promise<IWebhookPermissions> {
+		const cached = await this.getJson<IWebhookPermissions>(BotKeys.WebhookPermissions(channelId));
+		if (cached) return ZWebhookPermissions.parse(cached);
+
+		const permissions = ZWebhookPermissions.parse({
+			channel_id: channelId,
+			can_create_webhook: await this.fetchCanCreateWebhook(channelId)
+		});
+		await this.setWebhookPermissions(permissions);
+		return permissions;
 	}
 
 	async close() {

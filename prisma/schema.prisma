@@ -135,6 +135,7 @@ model ClientStorage {
   colo_loot                    Json     @default("{}") @db.Json
   vt_cost                      Json     @default("{}") @db.Json
   vt_loot                      Json     @default("{}") @db.Json
+  shutdown                     Boolean  @default(false)
 
   grand_exchange_is_locked Boolean @default(false)
   grand_exchange_total_tax BigInt  @default(0)
@@ -222,18 +223,6 @@ model Guild {
   @@map("guilds")
 }
 
-model NewUser {
-  id            String @id @db.VarChar(19)
-  pizazz_points Int    @default(0)
-
-  // Relations
-  minigame_id  Int?         @unique
-  minigame     Minigame?    @relation(fields: [minigame_id], references: [id])
-  slayer_tasks SlayerTask[]
-
-  @@map("new_users")
-}
-
 model PlayerOwnedHouse {
   user_id            String @id @db.VarChar(19)
   background_id      Int    @default(1)
@@ -267,9 +256,9 @@ model SlayerTask {
   monster_id         Int
   skipped            Boolean
   user_id            String   @db.VarChar(19)
-  new_user           NewUser  @relation(fields: [user_id], references: [id])
+  user               User     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: Cascade, map: "FK_slayer_tasks_user_id_users_id")
 
-  @@index([user_id, quantity_remaining])
+  @@index([user_id, quantity_remaining], map: "slayer_task_quantity_remaining")
   @@map("slayer_tasks")
 }
 
@@ -282,13 +271,11 @@ enum bank_sort_method_enum {
 }
 
 model User {
-  id                          String    @id @db.VarChar(19)
-  last_command_date           DateTime? @db.Timestamp(6)
-  minion_bought_date          DateTime? @db.Timestamp(6)
-  minion_hasBought            Boolean   @default(false) @map("minion.hasBought")
-  minion_ironman              Boolean   @default(false) @map("minion.ironman")
-  premium_balance_tier        Int?
-  premium_balance_expiry_date BigInt?
+  id                 String    @id @db.VarChar(19)
+  last_command_date  DateTime? @db.Timestamp(6)
+  minion_bought_date DateTime? @db.Timestamp(6)
+  minion_hasBought   Boolean   @default(false) @map("minion.hasBought")
+  minion_ironman     Boolean   @default(false) @map("minion.ironman")
 
   RSN  String?
   pets Json    @default("{}") @db.Json
@@ -428,6 +415,8 @@ model User {
   geListings        GEListing[]
   bingo_participant BingoParticipant[]
   bingo             Bingo[]
+  minigame          Minigame?
+  slayer_tasks      SlayerTask[]
 
   gift_boxes_owned   GiftBox[] @relation("gift_boxes_owned")
   gift_boxes_created GiftBox[] @relation("gift_boxes_created")
@@ -568,8 +557,9 @@ model Minigame {
   shades_of_morton        Int    @default(0)
   tombs_of_amascut        Int    @default(0)
   colosseum               Int    @default(0)
+  pizazz_points           Int    @default(0)
 
-  new_user NewUser?
+  user User @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: Cascade, map: "FK_minigames_user_id_users_id")
 
   @@index([user_id])
   @@map("minigames")

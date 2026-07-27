@@ -3,9 +3,10 @@ import type { Bank } from 'oldschooljs';
 import { isDeepEqual } from 'remeda';
 
 import { Prisma, type TriviaQuestion, type User } from '@/prisma/clients/robochimp/client.js';
-import { BOT_TYPE, globalConfig, masteryKey } from '@/lib/constants.js';
+import { BitField, BOT_TYPE, globalConfig, masteryKey } from '@/lib/constants.js';
 import { getTotalCl } from '@/lib/data/Collections.js';
 import { calculateMastery } from '@/lib/mastery.js';
+import { RobochimpBitfieldEnum } from '@/lib/perkTiers.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
 
 export type RobochimpUser = User;
@@ -97,6 +98,22 @@ export async function roboChimpUserFetchCached(userID: string): Promise<Robochim
 		if (cachedUser) return cachedUser;
 	}
 	return await roboChimpUserFetch(userID);
+}
+
+export async function syncOriginalCyrSupporterBit(user: MUser, roboChimpUser: RobochimpUser) {
+	if (!roboChimpUser.bits.includes(RobochimpBitfieldEnum.CyrsOriginalPatrons)) return;
+	if (user.bitfield.includes(BitField.OriginalCyrSupporter)) return;
+
+	await prisma.user.update({
+		where: {
+			id: user.id
+		},
+		data: {
+			bitfield: {
+				push: BitField.OriginalCyrSupporter
+			}
+		}
+	});
 }
 
 export async function roboChimpUserFetch(userID: string): Promise<RobochimpUser> {

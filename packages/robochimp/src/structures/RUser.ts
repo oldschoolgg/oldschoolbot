@@ -5,7 +5,15 @@ import type { Prisma, User } from '@prisma/robochimp';
 import { redis } from '@/lib/redis.js';
 import { Bits, formatUserPaidTiers, type PatronTier, tiers } from '@/util.js';
 
-export type RUserGroupUser = Pick<User, 'id' | 'bits' | 'perk_tier'>;
+export type RUserGroupUser = Pick<
+	User,
+	'id' | 'bits' | 'perk_tier' | 'premium_balance_tier' | 'premium_balance_expiry_date'
+>;
+
+function activeTempPerkTier(user: Pick<User, 'premium_balance_tier' | 'premium_balance_expiry_date'>) {
+	if (!user.premium_balance_tier || !user.premium_balance_expiry_date) return 0;
+	return Number(user.premium_balance_expiry_date) > Date.now() ? user.premium_balance_tier : 0;
+}
 
 export class RUser {
 	private _user: User;
@@ -30,7 +38,7 @@ export class RUser {
 	}
 
 	get perkTierRaw(): number {
-		return Math.max(0, ...this._groupUsers.map(u => u.perk_tier ?? 0));
+		return Math.max(0, ...this._groupUsers.flatMap(u => [u.perk_tier ?? 0, activeTempPerkTier(u)]));
 	}
 
 	get perkTier(): PatronTier | null {
@@ -88,7 +96,9 @@ export class RUser {
 			select: {
 				id: true,
 				bits: true,
-				perk_tier: true
+				perk_tier: true,
+				premium_balance_tier: true,
+				premium_balance_expiry_date: true
 			}
 		});
 		this._groupUsers = group;
@@ -152,10 +162,21 @@ export class RUser {
 }
 
 export async function fetchRUserGroupUsers(
-	user: Pick<User, 'id' | 'bits' | 'perk_tier' | 'user_group_id'>
+	user: Pick<
+		User,
+		'id' | 'bits' | 'perk_tier' | 'premium_balance_tier' | 'premium_balance_expiry_date' | 'user_group_id'
+	>
 ): Promise<RUserGroupUser[]> {
 	if (!user.user_group_id) {
-		return [{ id: user.id, bits: user.bits, perk_tier: user.perk_tier }];
+		return [
+			{
+				id: user.id,
+				bits: user.bits,
+				perk_tier: user.perk_tier,
+				premium_balance_tier: user.premium_balance_tier,
+				premium_balance_expiry_date: user.premium_balance_expiry_date
+			}
+		];
 	}
 
 	return roboChimpClient.user.findMany({
@@ -165,7 +186,9 @@ export async function fetchRUserGroupUsers(
 		select: {
 			id: true,
 			bits: true,
-			perk_tier: true
+			perk_tier: true,
+			premium_balance_tier: true,
+			premium_balance_expiry_date: true
 		},
 		orderBy: {
 			id: 'asc'
