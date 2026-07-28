@@ -1,6 +1,8 @@
+import type { RNGProvider } from 'node-rng';
 import { Bank, EItem, type Item } from 'oldschooljs';
 
 import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
+import type { Mixable } from '@/lib/skilling/types.js';
 import type { HerbloreActivityTaskOptions } from '@/lib/types/minions.js';
 
 const herbNames = [
@@ -21,29 +23,52 @@ const herbNames = [
 	'Torstol'
 ];
 
-function isSecondary(item: Item, mixableName: string): boolean {
+function isSaveableSecondary(item: Item, mixableName: string): boolean {
 	if (item.name === 'Vial of water') return false;
+	if (item.name === 'Coconut milk') return false;
+	if (item.name === 'Crystal dust') return false;
 	if (item.name.toLowerCase().includes('(unf)')) return false;
 	if (mixableName === 'Serum 207 (3)' && item.name === 'Ashes') return false;
 
 	if (herbNames.includes(item.name)) {
-		if (
-			item.name === 'Torstol' &&
-			(mixableName === 'Super combat potion (4)' || mixableName === 'Anti-venom+(4)')
-		) {
+		if (item.name === 'Toadflax' && mixableName === 'Antidote+(4)') {
 			return true;
 		}
-		if (
-			item.name === 'Irit leaf' &&
-			mixableName.includes('Antidote++') &&
-			mixableName.toLowerCase().includes('unf')
-		) {
+		if (item.name === 'Irit leaf' && mixableName === 'Antidote++(4)') {
+			return true;
+		}
+		if (item.name === 'Torstol' && (mixableName === 'Super combat potion(4)' || mixableName === 'Anti-venom+(4)')) {
 			return true;
 		}
 		return false;
 	}
 
+	const lowerName = item.name.toLowerCase();
+	if (
+		lowerName.includes('potion') ||
+		/\(\d\)$/.test(lowerName) ||
+		lowerName.includes('mix(') ||
+		lowerName.includes('balm') ||
+		lowerName.startsWith('antidote') ||
+		lowerName.startsWith('anti-venom')
+	) {
+		return false;
+	}
+
 	return true;
+}
+
+export function calculatePrescriptionGogglesSavedItems(mixableItem: Mixable, quantity: number, rng: RNGProvider): Bank {
+	const savedItems = new Bank();
+	for (let i = 0; i < quantity; i++) {
+		for (const [item, qty] of mixableItem.inputItems.items()) {
+			if (!isSaveableSecondary(item, mixableItem.item.name)) continue;
+			if (rng.percentChance(10)) {
+				savedItems.add(item, qty);
+			}
+		}
+	}
+	return savedItems;
 }
 
 export const herbloreTask: MinionTask = {
@@ -80,16 +105,7 @@ export const herbloreTask: MinionTask = {
 		const savedItems = new Bank();
 		const hasGoggles = user.gear.skilling.hasEquipped('Prescription goggles');
 		if (hasGoggles) {
-			for (let i = 0; i < quantity; i++) {
-				for (const [item, qty] of mixableItem.inputItems.items()) {
-					if (!isSecondary(item, mixableItem.item.name)) continue;
-					for (let q = 0; q < qty; q++) {
-						if (rng.percentChance(10)) {
-							savedItems.add(item, 1);
-						}
-					}
-				}
-			}
+			savedItems.add(calculatePrescriptionGogglesSavedItems(mixableItem, quantity, rng));
 		}
 
 		const xpRes = await user.addXP({ skillName: 'herblore', amount: xpReceived, duration });
