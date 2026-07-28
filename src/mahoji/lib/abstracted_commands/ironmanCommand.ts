@@ -165,13 +165,6 @@ After becoming an ironman:
 	await prisma.botItemSell.deleteMany({ where: { user_id: user.id } });
 	await prisma.pinnedTrip.deleteMany({ where: { user_id: user.id } });
 	await prisma.farmedCrop.deleteMany({ where: { user_id: user.id } });
-	// Now we can delete the user
-	await prisma.user.deleteMany({
-		where: { id: user.id }
-	});
-	await prisma.user.create({
-		data: createOptions
-	});
 	await prisma.slayerTask.deleteMany({ where: { user_id: user.id } });
 	await prisma.playerOwnedHouse.deleteMany({ where: { user_id: user.id } });
 	await prisma.minigame.deleteMany({ where: { user_id: user.id } });
@@ -182,6 +175,13 @@ After becoming an ironman:
 	await prisma.userStats.deleteMany({ where: { user_id: BigInt(user.id) } });
 	await prisma.buyCommandTransaction.deleteMany({ where: { user_id: BigInt(user.id) } });
 	await prisma.jsonBank.deleteMany({ where: { user_id: user.id } });
+	// Now we can delete the user
+	await prisma.user.deleteMany({
+		where: { id: user.id }
+	});
+	await prisma.user.create({
+		data: createOptions
+	});
 
 	// Refund the leagues points they spent
 	const roboChimpUser = await Cache.getRoboChimpUser(user.id);
