@@ -34,6 +34,12 @@ function run(cmd: string[], opts = {}): Promise<void> {
 }
 
 async function pushSchemas() {
+	await run(
+		['pnpm', 'tsx', '--tsconfig=scripts/tsconfig.json', '--env-file=.env.test', 'scripts/create-test-databases.ts'],
+		{
+			stdio: 'ignore'
+		}
+	);
 	await Promise.all([
 		run(['pnpm', 'prisma', 'db', 'push', '--schema=./prisma/schema.prisma', '--skip-generate', '--force-reset'], {
 			stdio: 'ignore'

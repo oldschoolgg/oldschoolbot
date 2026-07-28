@@ -11,13 +11,15 @@ export async function exitCleanup() {
 		TimerManager.destroy();
 		sonicBoom.flushSync();
 		sonicBoom.destroy();
-		if (prisma) {
+		if (typeof globalThis.prisma !== 'undefined') {
 			prisma.$disconnect();
 		}
-		if (roboChimpClient) {
+		if (typeof globalThis.roboChimpClient !== 'undefined') {
 			roboChimpClient.$disconnect();
 		}
-		await Cache.close();
+		if (typeof globalThis.Cache !== 'undefined') {
+			await Cache.close();
+		}
 	} catch (err) {
 		Logging.logError(err as Error);
 	}

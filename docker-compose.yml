@@ -37,7 +37,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: dockerfile
       target: build-run
       cache_from:
         - type=gha
