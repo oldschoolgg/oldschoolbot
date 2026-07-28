@@ -878,6 +878,8 @@ export const adminCommand = defineCommand({
 	],
 	run: async ({ options, userId, interaction, guildId, rng }) => {
 		console.log('admin');
+		console.log('Admin.ts args');
+		console.log(options);
 		await interaction.defer();
 
 		const adminUser = await mUserFetch(userId);

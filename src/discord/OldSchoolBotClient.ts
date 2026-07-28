@@ -18,7 +18,7 @@ import { DiscordSnowflake } from '@sapphire/snowflake';
 import { omit } from 'remeda';
 
 import { makeParty } from '@/discord/interaction/makeParty.js';
-import { mentionCommand } from '@/discord/utils.js';
+import { mentionCommand, resolveBotSendableMessage } from '@/discord/utils.js';
 import { DISCORD_USER_IDS_INSERTED_CACHE } from '@/lib/cache.js';
 import { BOT_TYPE_LOWERCASE, globalConfig } from '@/lib/constants.js';
 import { ReactEmoji } from '@/lib/data/emojis.js';
@@ -52,16 +52,6 @@ function splitContentIntoMessages(content: string): string[] {
 		parts.push(remaining);
 	}
 	return parts;
-}
-
-async function resolveBotSendableMessage(rawMessage: SendableMessage): Promise<BaseSendableMessage> {
-	if (typeof rawMessage === 'string') {
-		return { content: rawMessage };
-	}
-	if ('build' in rawMessage) {
-		return resolveBotSendableMessage(await rawMessage.build());
-	}
-	return rawMessage;
 }
 
 function splitSendableMessage(rawMessage: BaseSendableMessage): BaseSendableMessage[] {

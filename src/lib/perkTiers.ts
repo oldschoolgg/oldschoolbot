@@ -1,7 +1,7 @@
 import { Time } from '@oldschoolgg/toolkit';
 import { LRUCache } from 'lru-cache';
 
-import {BitField, BOT_TYPE, PerkTier} from '@/lib/constants.js';
+import { BitField, BOT_TYPE, PerkTier } from '@/lib/constants.js';
 
 export const RobochimpBitfieldEnum = {
 	MagnaTier1: 8,
@@ -189,10 +189,7 @@ export async function getUsersPerkTier({
 			eligibleTiers.push(PerkTier.Two);
 		}
 	}
-	if (
-		bitfield.includes(BitField.PatronTier1) ||
-		bitfield.includes(BitField.BothBotsMaxedFreeTierOnePerks)
-	) {
+	if (bitfield.includes(BitField.PatronTier1) || bitfield.includes(BitField.BothBotsMaxedFreeTierOnePerks)) {
 		eligibleTiers.push(PerkTier.Two);
 	}
 	// Server boosting perk has been eliminated

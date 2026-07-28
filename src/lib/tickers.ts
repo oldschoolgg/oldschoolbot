@@ -7,17 +7,18 @@ import { stringMatches, Time } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
 
 import type { User } from '@/prisma/main.js';
+import { resolveBotSendableMessage } from '@/discord/utils.js';
 import { analyticsTick } from '@/lib/analytics.js';
-import {Channel, globalConfig} from '@/lib/constants.js';
+import { Channel, globalConfig } from '@/lib/constants.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { cacheGEPrices } from '@/lib/marketPrices.js';
 import { collectMetrics } from '@/lib/metrics.js';
+import { runCommand } from '@/lib/settings/settings.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { FarmingPatchName, FarmingPatchSettingsKey } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { IPatchData } from '@/lib/skilling/skills/farming/utils/types.js';
 import { MUserClass } from '@/lib/user/MUser.js';
 import { handleGiveawayCompletion } from '@/lib/util/giveaway.js';
-import {runCommand} from "@/lib/settings/settings.js";
 
 /**
  * Tickers should idempotent, and be able to run at any time.
@@ -87,24 +88,12 @@ export const tickers: {
 				guildId: globalConfig.supportServerID,
 				member: null,
 				rawInteraction: {},
-				defer: async () => {
-					console.log('Deferring interaction...')
-				},
-				confirmation: async () => {
-					console.log('Confirmation faked...')
-				},
+				defer: async () => {},
+				confirmation: async () => {},
 				reply: async (message: BaseSendableMessage | string) => {
-					console.log(`Replying: ${typeof message === 'string' ? message : message.content!}`);
-					try {
-						const messageSent = await globalClient.sendMessage(
-							Channel.BotLogs,
-							typeof message === 'string' ? {content: message} : message
-						);
-						console.log(JSON.stringify(messageSent, null, 2));
-					} catch (err) {
-						console.log('Error replying shutdown:');
-						console.log(err);
-					}
+					const { content } = await resolveBotSendableMessage(message);
+					Logging.logDebug(`Shutdown message: ${content}`);
+					void globalClient.sendMessage(Channel.BotLogs, content ?? 'Shutting down...');
 				}
 			} as unknown as OSInteraction;
 
