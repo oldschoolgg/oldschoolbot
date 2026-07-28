@@ -8,7 +8,7 @@ import { TimerManager } from '@sapphire/timer-manager';
 
 import type { User } from '@/prisma/main.js';
 import { analyticsTick } from '@/lib/analytics.js';
-import { globalConfig } from '@/lib/constants.js';
+import {Channel, globalConfig} from '@/lib/constants.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { cacheGEPrices } from '@/lib/marketPrices.js';
 import { collectMetrics } from '@/lib/metrics.js';
@@ -17,6 +17,7 @@ import type { FarmingPatchName, FarmingPatchSettingsKey } from '@/lib/skilling/s
 import type { IPatchData } from '@/lib/skilling/skills/farming/utils/types.js';
 import { MUserClass } from '@/lib/user/MUser.js';
 import { handleGiveawayCompletion } from '@/lib/util/giveaway.js';
+import {runCommand} from "@/lib/settings/settings.js";
 
 /**
  * Tickers should idempotent, and be able to run at any time.
@@ -65,6 +66,55 @@ export const tickers: {
 				select: {
 					timestamp: true
 				}
+			});
+		}
+	},
+	{
+		name: 'shutdown',
+		timer: null,
+		startupWait: Time.Second * 5,
+		interval: Time.Second * 5, //Time.Minute,
+		cb: async () => {
+			const settings = await ClientSettings.fetch({ shutdown: true });
+			if (!settings.shutdown) return;
+			await ClientSettings.update({ shutdown: false });
+
+			const adminUser = await mUserFetch(globalConfig.adminUserIDs[1]);
+			const interaction = {
+				user: adminUser,
+				userId: adminUser.id,
+				channelId: Channel.BotLogs,
+				guildId: globalConfig.supportServerID,
+				member: null,
+				rawInteraction: {},
+				defer: async () => {
+					console.log('Deferring interaction...')
+				},
+				confirmation: async () => {
+					console.log('Confirmation faked...')
+				},
+				reply: async (message: BaseSendableMessage | string) => {
+					console.log(`Replying: ${typeof message === 'string' ? message : message.content!}`);
+					try {
+						const messageSent = await globalClient.sendMessage(
+							Channel.BotLogs,
+							typeof message === 'string' ? {content: message} : message
+						);
+						console.log(JSON.stringify(messageSent, null, 2));
+					} catch (err) {
+						console.log('Error replying shutdown:');
+						console.log(err);
+					}
+				}
+			} as unknown as OSInteraction;
+
+			await runCommand({
+				commandName: 'admin',
+				args: { shut_down: {} },
+				interaction,
+				user: adminUser,
+				continueDeltaMillis: null,
+				ignoreUserIsBusy: true
 			});
 		}
 	},
