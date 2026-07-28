@@ -33,6 +33,6 @@ Volcanic pickaxe, Offhand volcanic pickaxe, Expert mining gloves, Prospectors ou
 | Runite Ore | 2,484,591 _(with portent)_ |
 | Iron Ore | 3,397,184 _(with portent)_ |
 | Adamantite Ore | 3,729,644 _(with portent)_ |
-| Coal | 4,436,752 _(with portent)_) |
+| Coal | 4,436,752 _(with portent)_ |
 | Mithril Ore | 5,013,558 _(with portent)_ |
 | Gold Ore | 6,525,864 _(with portent)_ |
