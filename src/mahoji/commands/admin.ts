@@ -877,9 +877,6 @@ export const adminCommand = defineCommand({
 		}
 	],
 	run: async ({ options, userId, interaction, guildId, rng }) => {
-		console.log('admin');
-		console.log('Admin.ts args');
-		console.log(options);
 		await interaction.defer();
 
 		const adminUser = await mUserFetch(userId);
@@ -1016,6 +1013,7 @@ export const adminCommand = defineCommand({
 		}
 
 		if (options.shut_down) {
+			await ClientSettings.update({ shutdown: false });
 			globalClient.isShuttingDown = true;
 			const timer = Time.Second * 30;
 			await interaction.reply({
@@ -1029,7 +1027,7 @@ export const adminCommand = defineCommand({
 ${META_CONSTANTS.RENDERED_STR}`
 				})
 				.catch(noOp);
-			await gracefulExit(0);
+			gracefulExit(0);
 			return 'Turning off...';
 		}
 

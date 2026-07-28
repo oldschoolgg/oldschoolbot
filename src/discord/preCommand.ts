@@ -39,7 +39,12 @@ export async function preCommand({
 	};
 
 	if (!interaction.channelId) {
-		throw new Error(`${interaction}\n${JSON.stringify(interaction)}`.slice(0, 1000));
+		throw new Error(
+			`Interaction has no channel ID. ${JSON.stringify({ ...logContext, interaction }).slice(0, 5000)}`.slice(
+				0,
+				1000
+			)
+		);
 	}
 	// Todo: get the promise, and pass it thru to the commandFinish to get inihibited, duration, result, etc
 	prisma.commandUsage

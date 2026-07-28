@@ -16,7 +16,6 @@ import { blowpipeCommand, blowpipeDarts } from '@/lib/minions/functions/blowpipe
 import { degradeableItemsCommand } from '@/lib/minions/functions/degradeableItemsCommand.js';
 import { allPossibleStyles, trainCommand } from '@/lib/minions/functions/trainCommand.js';
 import { getRoboChimpGroupPaidBits, getRoboChimpPaidTierDisplay } from '@/lib/perkTiers.js';
-import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import creatures from '@/lib/skilling/skills/hunter/creatures/index.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
@@ -50,7 +49,7 @@ const patMessages = [
 
 export async function getUserInfo(user: MUser) {
 	await refreshUserCache({ user });
-	const roboChimpUser = await roboChimpUserFetch(user.id);
+	const roboChimpUser = await Cache.getRoboChimpUser(user.id);
 	const leaguesRanking = await roboChimpClient.user.count({
 		where: {
 			leagues_points_total: {

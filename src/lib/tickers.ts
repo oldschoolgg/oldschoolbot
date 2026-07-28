@@ -73,8 +73,8 @@ export const tickers: {
 	{
 		name: 'shutdown',
 		timer: null,
-		startupWait: Time.Second * 5,
-		interval: Time.Second * 5, //Time.Minute,
+		startupWait: Time.Minute,
+		interval: Time.Minute,
 		cb: async () => {
 			const settings = await ClientSettings.fetch({ shutdown: true });
 			if (!settings.shutdown) return;

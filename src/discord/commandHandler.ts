@@ -66,7 +66,6 @@ export async function rawCommandHandlerInner({
 			continueDeltaMs
 		});
 		if (inhibitedResponse) {
-			Logging.logDebug(`Command ${command.name} was inhibited. ${JSON.stringify(inhibitedResponse)}`);
 			return {
 				ephemeral: true,
 				...inhibitedResponse.reason
