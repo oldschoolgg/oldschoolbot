@@ -195,6 +195,9 @@ After becoming an ironman:
 			},
 			create: {
 				id: BigInt(user.id)
+			},
+			select: {
+				id: true
 			}
 		});
 	}

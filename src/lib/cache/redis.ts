@@ -18,7 +18,7 @@ import { Redis } from 'ioredis';
 
 import type { Guild } from '@/prisma/main.js';
 import { BitField, BOT_TYPE, globalConfig } from '@/lib/constants.js';
-import type { RobochimpUser } from '@/lib/roboChimp.js';
+import { type RobochimpUser, roboChimpUserSelect } from '@/lib/roboChimp.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
 
 type LockStatus = 'locked' | 'unlocked';
@@ -261,7 +261,7 @@ class CacheManager {
 	}
 
 	private isCompleteRoboChimpUser(user: RobochimpUser): boolean {
-		return 'premium_balance_tier' in user && 'premium_balance_expiry_date' in user && 'last_patreon_gift' in user;
+		return 'premium_balance_tier' in user && 'premium_balance_expiry_date' in user;
 	}
 
 	async setRoboChimpUser(userID: string, user: RobochimpUser): Promise<void> {
@@ -286,7 +286,8 @@ class CacheManager {
 			create: {
 				id: BigInt(userId)
 			},
-			update: {}
+			update: {},
+			select: roboChimpUserSelect
 		});
 		await this.setRoboChimpUser(userId, user);
 		return user;

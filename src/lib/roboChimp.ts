@@ -2,14 +2,42 @@ import { calcWhatPercent, formatOrdinal, round, sumArr } from '@oldschoolgg/tool
 import type { Bank } from 'oldschooljs';
 import { isDeepEqual } from 'remeda';
 
-import type { TriviaQuestion, User } from '@/prisma/clients/robochimp/client.js';
+import type { Prisma, TriviaQuestion, User } from '@/prisma/clients/robochimp/client.js';
 import { BitField, BOT_TYPE, globalConfig, masteryKey } from '@/lib/constants.js';
 import { getTotalCl } from '@/lib/data/Collections.js';
 import { calculateMastery } from '@/lib/mastery.js';
 import { RobochimpBitfieldEnum } from '@/lib/perkTiers.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
 
-export type RobochimpUser = User;
+export const roboChimpUserSelect = {
+	id: true,
+	bits: true,
+	github_id: true,
+	patreon_id: true,
+	migrated_user_id: true,
+	leagues_completed_tasks_ids: true,
+	leagues_points_balance_osb: true,
+	leagues_points_balance_bso: true,
+	leagues_points_total: true,
+	react_emoji_id: true,
+	osb_total_level: true,
+	bso_total_level: true,
+	osb_total_xp: true,
+	bso_total_xp: true,
+	osb_cl_percent: true,
+	bso_cl_percent: true,
+	osb_mastery: true,
+	bso_mastery: true,
+	store_bitfield: true,
+	testing_points: true,
+	testing_points_balance: true,
+	perk_tier: true,
+	premium_balance_tier: true,
+	premium_balance_expiry_date: true,
+	user_group_id: true
+} satisfies Prisma.UserSelect;
+
+export type RobochimpUser = Prisma.UserGetPayload<{ select: typeof roboChimpUserSelect }>;
 
 export async function getRandomTriviaQuestions(): Promise<TriviaQuestion[]> {
 	if (!globalConfig.isProduction) {
@@ -97,7 +125,8 @@ export async function roboChimpSyncData(user: MUser, newCL?: Bank) {
 		create: {
 			id: BigInt(user.id),
 			...updateObj
-		}
+		},
+		select: roboChimpUserSelect
 	});
 
 	if (!isDeepEqual(newUser.store_bitfield, user.user.store_bitfield)) {

@@ -976,6 +976,9 @@ export const testPotatoCommand = globalConfig.isProduction
 							leagues_points_balance_osb: {
 								increment: 25_000
 							}
+						},
+						select: {
+							id: true
 						}
 					});
 					await user.addItemsToBank({

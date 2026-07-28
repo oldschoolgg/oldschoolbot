@@ -132,7 +132,7 @@ export async function getUsersPerkTier({
 			return tierCacheEntry.tier;
 		}
 		const redisCacheEntry = await Cache.getPerkTier(user.id);
-		if (redisCacheEntry) {
+		if (redisCacheEntry !== null) {
 			setHotCache(user.id, redisCacheEntry);
 			return redisCacheEntry;
 		}
@@ -191,7 +191,6 @@ export async function getUsersPerkTier({
 		eligibleTiers.push(PerkTier.Two);
 	}
 	// Server boosting perk has been eliminated
-	console.log(eligibleTiers);
 	const tier = Math.max(...eligibleTiers, 0);
 	setHotCache(user.id, tier);
 	await Cache.setPerkTier(user.id, tier);
