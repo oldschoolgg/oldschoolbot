@@ -9,7 +9,7 @@ import { Planks } from '@/lib/minions/data/planks.js';
 import { quests } from '@/lib/minions/data/quests.js';
 import Agility from '@/lib/skilling/skills/agility.js';
 import Constructables from '@/lib/skilling/skills/construction/constructables.js';
-import Cooking from '@/lib/skilling/skills/cooking/cooking.js';
+import Cooking, { CookingMethodEnum } from '@/lib/skilling/skills/cooking/cooking.js';
 import ForestryRations from '@/lib/skilling/skills/cooking/forestersRations.js';
 import { LeapingFish } from '@/lib/skilling/skills/cooking/leapingFish.js';
 import Crafting from '@/lib/skilling/skills/crafting/index.js';
@@ -145,7 +145,13 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 		case 'Cooking': {
 			const data = currentTask as CookingActivityTaskOptions;
 
-			const cookable = Cooking.Cookables.find(cookable => cookable.id === data.cookableID);
+			if (data.method === CookingMethodEnum.KarambwanShop) {
+				return `${name} is currently buying, cooking and dropping ${data.quantity}x karambwans. ${formattedDuration} Your ${
+					Emoji.Cooking
+				} Cooking level is ${user.skillsAsLevels.cooking}`;
+			}
+
+			const cookable = Cooking.Cookables.find(item => item.id === data.cookableID);
 
 			return `${name} is currently cooking ${data.quantity}x ${cookable?.name}. ${formattedDuration} Your ${
 				Emoji.Cooking
@@ -358,6 +364,17 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 			const data = currentTask as FarmingActivityTaskOptions;
 
 			const plants = Farming.Plants.find(plants => plants.name === data.plantsName);
+
+			const isCombinedAutoFarm =
+				Boolean(data.autoFarmCombined) &&
+				((data.autoFarmPlan && data.autoFarmPlan.length > 0) || data.autoFarmSummary);
+
+			if (isCombinedAutoFarm) {
+				const totalRemaining = Math.max(0, durationRemaining);
+				const formattedCombinedDuration = `${formatTripDuration(user, totalRemaining)} remaining.`;
+				const currentStep = plants?.name ? ` Current step: ${plants.name} (${data.quantity}x).` : '';
+				return `${name} is currently auto-farming multiple patches. Estimated time remaining: ${formattedCombinedDuration}${currentStep} Your ${Emoji.Farming} Farming level is ${user.skillsAsLevels.farming}.`;
+			}
 
 			return `${name} is currently farming ${data.quantity}x ${plants?.name}. ${formattedDuration} Your ${
 				Emoji.Farming

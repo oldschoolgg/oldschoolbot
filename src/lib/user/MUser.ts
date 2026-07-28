@@ -44,7 +44,6 @@ import type { RemoveFoodFromUserParams } from '@/lib/minions/functions/removeFoo
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import type { AddXpParams, ClueBank, KillableMonster } from '@/lib/minions/types.js';
 import { getPerkTierCached, getUsersPerkTier } from '@/lib/perkTiers.js';
-import { roboChimpUserFetchCached } from '@/lib/roboChimp.js';
 import { type MinigameName, type MinigameScore, Minigames } from '@/lib/settings/minigames.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { DetailedFarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
@@ -708,8 +707,8 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 		return resetBackground();
 	}
 
-	async fetchRobochimpUser() {
-		return roboChimpUserFetchCached(this.id);
+	async fetchRobochimpUser(forceRefresh = false) {
+		return Cache.getRoboChimpUser(this.id, forceRefresh);
 	}
 
 	async forceUnequip(setup: GearSetupType, slot: EquipmentSlot, reason: string) {

@@ -2,6 +2,7 @@ import { WebSocketShardEvents, WebSocketShardStatus } from '@discordjs/ws';
 import {
 	type APIApplication,
 	type APIUser,
+	type BaseSendableMessage,
 	ButtonBuilder,
 	ButtonStyle,
 	ChannelType,
@@ -11,18 +12,82 @@ import {
 	type GatewayMessageCreateDispatchData,
 	Routes
 } from '@oldschoolgg/discord';
-import type { IChannel, IUserLog, IWebhook } from '@oldschoolgg/schemas';
+import type { IChannel, IMessage, IUserLog, IWebhook } from '@oldschoolgg/schemas';
 import { Time } from '@oldschoolgg/toolkit';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { omit } from 'remeda';
 
 import { makeParty } from '@/discord/interaction/makeParty.js';
-import { mentionCommand } from '@/discord/utils.js';
+import { mentionCommand, resolveSendable } from '@/discord/utils.js';
 import { DISCORD_USER_IDS_INSERTED_CACHE } from '@/lib/cache.js';
 import { globalConfig } from '@/lib/constants.js';
 import { ReactEmoji } from '@/lib/data/emojis.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import { allCommandsDONTIMPORT } from '@/mahoji/commands/allCommands.js';
+import type { FetchedShardStatus } from './OSBWorkerShardingStrategy.js';
+
+const MAX_MESSAGE_LENGTH = 1950;
+
+function splitContentIntoMessages(content: string): string[] {
+	if (content.length <= MAX_MESSAGE_LENGTH) return [content];
+
+	const parts: string[] = [];
+	let remaining = content;
+	while (remaining.length > MAX_MESSAGE_LENGTH) {
+		let splitAt = -1;
+		for (let i = MAX_MESSAGE_LENGTH; i >= 0; i--) {
+			const char = remaining[i];
+			if (char === '\n' || char === ' ' || char === '\t') {
+				splitAt = i;
+				break;
+			}
+		}
+		if (splitAt <= 0) {
+			splitAt = MAX_MESSAGE_LENGTH;
+		}
+		parts.push(remaining.slice(0, splitAt).trimEnd());
+		remaining = remaining.slice(splitAt).trimStart();
+	}
+	if (remaining.length > 0) {
+		parts.push(remaining);
+	}
+	return parts;
+}
+
+async function resolveBotSendableMessage(rawMessage: SendableMessage): Promise<BaseSendableMessage> {
+	if (typeof rawMessage === 'string') {
+		return { content: rawMessage };
+	}
+	if ('build' in rawMessage) {
+		return resolveBotSendableMessage(await rawMessage.build());
+	}
+	return rawMessage;
+}
+
+function splitSendableMessage(rawMessage: BaseSendableMessage): BaseSendableMessage[] {
+	const content = rawMessage.content ?? '';
+	const contentParts = splitContentIntoMessages(content);
+	if (contentParts.length === 1) return [rawMessage];
+
+	return contentParts.map((part, index) => {
+		const isLast = index === contentParts.length - 1;
+		return {
+			content: part,
+			allowedMentions: rawMessage.allowedMentions,
+			...(isLast
+				? {
+						components: rawMessage.components,
+						embeds: rawMessage.embeds,
+						files: rawMessage.files,
+						ephemeral: rawMessage.ephemeral,
+						messageReference: rawMessage.messageReference,
+						threadId: rawMessage.threadId,
+						withResponse: rawMessage.withResponse
+					}
+				: {})
+		};
+	});
+}
 
 export class OldSchoolBotClient extends DiscordClient {
 	public isShuttingDown = false;
@@ -102,7 +167,17 @@ export class OldSchoolBotClient extends DiscordClient {
 		return entry;
 	}
 
-	private calcShardHealth(status: WebSocketShardStatus, shardId: number) {
+	private calcShardHealth(status: FetchedShardStatus, shardId: number) {
+		if (status === null) {
+			return {
+				label: 'failed',
+				isDead: true,
+				isUnhealthy: true,
+				avgLatency: Number.POSITIVE_INFINITY,
+				lastLatency: Number.POSITIVE_INFINITY,
+				staleHeartbeat: true
+			};
+		}
 		const stats = this.shardStats.get(shardId);
 		const avgLatency =
 			stats && stats.latencies.length > 0
@@ -125,13 +200,13 @@ export class OldSchoolBotClient extends DiscordClient {
 	}
 
 	async getShardStatusReport() {
-		const statuses = await this.ws.fetchStatus();
+		const statuses = (await this.ws.fetchStatus()) as Map<number, FetchedShardStatus>;
 		return [...statuses.entries()]
 			.sort((a, b) => a[0] - b[0])
 			.map(([shardId, status]) => ({
 				shardId,
 				status,
-				statusName: WebSocketShardStatus[status],
+				statusName: status === null ? 'Timed out' : WebSocketShardStatus[status],
 				health: this.calcShardHealth(status, shardId),
 				stats: this.shardStats.get(shardId)
 			}));
@@ -183,7 +258,7 @@ export class OldSchoolBotClient extends DiscordClient {
 					id: user.id
 				},
 				create: data,
-				update: data
+				update: omit(data, ['created_at'])
 			})
 			.catch(err => Logging.logError(err));
 		DISCORD_USER_IDS_INSERTED_CACHE.add(user.id);
@@ -204,48 +279,82 @@ export class OldSchoolBotClient extends DiscordClient {
 	}
 
 	private async deleteWebhook(channelId: string): Promise<void> {
-		await Promise.all([Cache.clearWebhook(channelId), prisma.webhook.delete({ where: { channel_id: channelId } })]);
+		await Promise.all([
+			Cache.clearWebhook(channelId),
+			prisma.webhook.deleteMany({ where: { channel_id: channelId } })
+		]);
 	}
 
 	private async getChannelWebhook(channelId: string): Promise<IWebhook | null> {
 		const cachedWebhook = await Cache.getWebhook(channelId);
 		if (cachedWebhook) return cachedWebhook;
-		const existingWebhooks = await globalClient.fetchWebhooks(channelId);
-		if (existingWebhooks.length === 0) return null;
-		const existingWebhook = existingWebhooks[0];
-		const existingWebhookFmt: IWebhook = {
-			id: existingWebhook.id,
-			token: existingWebhook.token!,
-			channel_id: channelId
-		};
-		await Cache.setWebhook(existingWebhookFmt);
-		return existingWebhookFmt;
+
+		const permissions = await Cache.getWebhookPermissions(channelId);
+		if (!permissions.can_create_webhook) return null;
+
+		let webhook: IWebhook;
+		try {
+			webhook = await this.createWebhook(channelId);
+		} catch (err) {
+			Logging.logError(err as Error);
+			await Cache.setWebhookPermissions({
+				channel_id: channelId,
+				can_create_webhook: false
+			});
+			return null;
+		}
+
+		await Promise.all([
+			Cache.setWebhook(webhook),
+			prisma.webhook.upsert({
+				where: {
+					channel_id: channelId
+				},
+				create: {
+					channel_id: channelId,
+					webhook_id: webhook.id,
+					webhook_token: webhook.token
+				},
+				update: {
+					webhook_id: webhook.id,
+					webhook_token: webhook.token
+				}
+			})
+		]);
+		return webhook;
 	}
 
-	private async sendToWebhook(channelId: string, data: SendableMessage): Promise<{ success: boolean }> {
+	private async sendToWebhook(channelId: string, data: SendableMessage): Promise<IMessage | null> {
+		let webhook: IWebhook | null = null;
 		try {
-			const webhook = await this.getChannelWebhook(channelId);
-			if (!webhook) return { success: false };
-			await globalClient.sendWebhook(webhook, data);
-			return { success: true };
+			webhook = await this.getChannelWebhook(channelId);
+			if (!webhook) return null;
+			return await globalClient.sendWebhook(webhook, data);
 		} catch (_err: unknown) {
 			const err = _err as Error;
-			if (err.message?.includes('Unknown Webhook')) {
-				Logging.logDebug(`Deleting unknown webhook in ${channelId}`);
+			const context = { channelId };
+			const msg = await resolveSendable(data);
+			Logging.logError(err, { context, msg });
+			if (webhook) {
 				await this.deleteWebhook(channelId);
-			} else {
-				Logging.logError(err);
 			}
-			return { success: false };
+			return null;
 		}
 	}
 
-	async sendMessageOrWebhook(channelId: string, rawMessage: SendableMessage): Promise<void> {
-		try {
-			await this.sendMessage(channelId, rawMessage);
-		} catch {
-			await this.sendToWebhook(channelId, rawMessage);
+	async sendMessageOrWebhook(channelId: string, rawMessage: SendableMessage): Promise<IMessage | null> {
+		const message = await resolveBotSendableMessage(rawMessage);
+		const splitMessages = splitSendableMessage(message);
+		let lastMessage: IMessage | null = null;
+		for (const part of splitMessages) {
+			const webhookResponse = await this.sendToWebhook(channelId, part);
+			if (webhookResponse) {
+				lastMessage = webhookResponse;
+				continue;
+			}
+			lastMessage = await this.sendMessage(channelId, part);
 		}
+		return lastMessage;
 	}
 
 	async channelIsSendable(channelId: IChannel | string): Promise<boolean> {

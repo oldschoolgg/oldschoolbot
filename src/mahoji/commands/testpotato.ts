@@ -129,7 +129,6 @@ const thingsToReset = [
 			await prisma.giveaway.deleteMany({ where: { user_id: user.id } }).catch(noOp);
 			await prisma.lastManStandingGame.deleteMany({ where: { user_id: BigInt(user.id) } }).catch(noOp);
 			await prisma.minigame.deleteMany({ where: { user_id: user.id } }).catch(noOp);
-			await prisma.newUser.deleteMany({ where: { id: user.id } }).catch(noOp);
 			await prisma.playerOwnedHouse.deleteMany({ where: { user_id: user.id } }).catch(noOp);
 			await prisma.user.deleteMany({ where: { id: user.id } }).catch(noOp);
 			return 'Reset all your data.';
@@ -634,11 +633,11 @@ export const testPotatoCommand = globalConfig.isProduction
 						{
 							type: 'String',
 							name: 'patch_name',
-							description: 'The patches you want to harvest.',
+							description: 'The patches you want to force grow.',
 							required: true,
 							choices: [
-								{ name: 'Birdhouses', value: 'birdhouses' },
 								{ name: 'All patches', value: 'all' },
+								{ name: 'Birdhouses', value: 'birdhouses' },
 								...farmingPatchNames.map(i => ({ name: i, value: i }))
 							]
 						}
@@ -1013,9 +1012,9 @@ export const testPotatoCommand = globalConfig.isProduction
 					});
 
 					await user.updateGear([
-						{ setup: 'melee', gear: TOBMaxMeleeGear.raw() },
-						{ setup: 'range', gear: TOBMaxRangeGear.raw() },
-						{ setup: 'mage', gear: TOBMaxMageGear.raw() }
+						{ setup: 'melee', gear: COXMaxMeleeGear.raw() },
+						{ setup: 'range', gear: COXMaxRangeGear.raw() },
+						{ setup: 'mage', gear: COXMaxMageGear.raw() }
 					]);
 
 					await user.rawUpdate({
@@ -1166,7 +1165,7 @@ export const testPotatoCommand = globalConfig.isProduction
 					);
 
 					await user.update(updates);
-					return userGrowingProgressStr((await getFarmingInfoFromUser(user)).patchesDetailed);
+					return userGrowingProgressStr((await getFarmingInfoFromUser(user)).patchesDetailed, user);
 				}
 
 				if (options.setslayertask) {

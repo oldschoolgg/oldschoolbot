@@ -10,7 +10,7 @@ You can collect both **regular** and **imbued** god capes, which serve as best-i
 
 Completing this grants you **all 3 regular god capes**. You can repeat it as many times as you like.
 
-Start a trip: [[/minigames mage_arena start]]
+Start a trip: [[/activities other activity\:Mage Arena I]]
 
 ### Requirements
 
@@ -26,7 +26,7 @@ Start a trip: [[/minigames mage_arena start]]
 
 This is more difficult and includes **a chance to die (up to 70%)**, resulting in loss of supplies for that trip. You will receive **all 3 imbued god capes** upon completion.
 
-Start a trip: [[/minigames mage_arena_2 start]]
+Start a trip: [[/activities other activity\:Mage Arena II]]
 
 ### Requirements
 
