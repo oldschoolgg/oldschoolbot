@@ -7,6 +7,7 @@ import PromiseQueue from 'p-queue';
 import { omit } from 'remeda';
 import { test } from 'vitest';
 
+import { MessageBuilder } from '@/discord/MessageBuilder.js';
 import { BitField } from '@/lib/constants.js';
 import { SkillsArray } from '@/lib/skilling/types.js';
 import { Gear } from '@/lib/structures/Gear.js';

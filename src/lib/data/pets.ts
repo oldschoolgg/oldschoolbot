@@ -7,7 +7,7 @@ const fm = (num: number) => num.toLocaleString();
 
 export interface Pet {
 	id: number;
-	emoji: string;
+	emoji?: string;
 	chance: number;
 	name: string;
 	type: string;
@@ -612,7 +612,6 @@ const pets: Pet[] = [
 	},
 	{
 		id: 50,
-		emoji: ':pet:',
 		chance: 4000,
 		name: 'Abyssal protector',
 		type: 'SPECIAL',
@@ -622,7 +621,6 @@ const pets: Pet[] = [
 	},
 	{
 		id: 51,
-		emoji: ':pet:',
 		chance: 650,
 		name: "Tumeken's guardian",
 		type: 'BOSS',
@@ -633,7 +631,6 @@ const pets: Pet[] = [
 	},
 	{
 		id: 52,
-		emoji: ':pet:',
 		chance: 2500,
 		name: 'Muphin',
 		type: 'BOSS',
@@ -643,7 +640,6 @@ const pets: Pet[] = [
 	},
 	{
 		id: 53,
-		emoji: ':pet:',
 		chance: 2500,
 		name: 'Baron',
 		type: 'BOSS',
@@ -653,7 +649,6 @@ const pets: Pet[] = [
 	},
 	{
 		id: 54,
-		emoji: ':pet:',
 		chance: 3000,
 		name: 'Butch',
 		type: 'BOSS',
@@ -663,7 +658,6 @@ const pets: Pet[] = [
 	},
 	{
 		id: 55,
-		emoji: ':pet:',
 		chance: 2500,
 		name: "Lil'viathan",
 		type: 'BOSS',
@@ -673,7 +667,6 @@ const pets: Pet[] = [
 	},
 	{
 		id: 56,
-		emoji: ':pet:',
 		chance: 2000,
 		name: 'Wisp',
 		type: 'BOSS',
@@ -683,7 +676,6 @@ const pets: Pet[] = [
 	},
 	{
 		id: 57,
-		emoji: ':pet:',
 		chance: 3000,
 		name: 'Scurry',
 		type: 'BOSS',
@@ -693,7 +685,6 @@ const pets: Pet[] = [
 	},
 	{
 		id: 58,
-		emoji: ':pet:',
 		chance: 200,
 		name: 'Smol heredit',
 		type: 'BOSS',
@@ -703,7 +694,6 @@ const pets: Pet[] = [
 	},
 	{
 		id: 59,
-		emoji: ':pet:',
 		chance: 1000,
 		name: 'Quetzin',
 		type: 'SKILL',
@@ -712,7 +702,6 @@ const pets: Pet[] = [
 	},
 	{
 		id: 60,
-		emoji: ':pet:',
 		chance: 3000,
 		name: 'Nid',
 		type: 'BOSS',
@@ -722,7 +711,6 @@ const pets: Pet[] = [
 	},
 	{
 		id: 61,
-		emoji: ':pet:',
 		chance: 400,
 		name: 'Huberte',
 		type: 'BOSS',
@@ -732,7 +720,6 @@ const pets: Pet[] = [
 	},
 	{
 		id: 62,
-		emoji: ':pet:',
 		chance: 3000,
 		name: 'Moxi',
 		type: 'BOSS',
@@ -742,7 +729,6 @@ const pets: Pet[] = [
 	},
 	{
 		id: 63,
-		emoji: ':pet:',
 		chance: 3000,
 		name: 'Bran',
 		type: 'BOSS',
@@ -751,7 +737,6 @@ const pets: Pet[] = [
 	},
 	{
 		id: 64,
-		emoji: ':pet:',
 		chance: 2500,
 		name: 'Yami',
 		type: 'BOSS',
@@ -760,7 +745,6 @@ const pets: Pet[] = [
 	},
 	{
 		id: 65,
-		emoji: ':pet:',
 		chance: 1000,
 		name: 'Dom',
 		type: 'BOSS',
@@ -769,7 +753,6 @@ const pets: Pet[] = [
 	},
 	{
 		id: 66,
-		emoji: ':pet:',
 		chance: 4691,
 		name: 'Soup',
 		type: 'SKILL',

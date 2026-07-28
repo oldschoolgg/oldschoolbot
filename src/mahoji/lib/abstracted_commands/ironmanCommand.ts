@@ -2,7 +2,6 @@ import type { ItemBank } from 'oldschooljs';
 
 import { Prisma } from '@/prisma/main.js';
 import { BitField, DELETED_USER_ID } from '@/lib/constants.js';
-import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { assert } from '@/lib/util/logError.js';
 
 async function ensureDeletedUserExists() {
@@ -177,7 +176,6 @@ After becoming an ironman:
 	await prisma.playerOwnedHouse.deleteMany({ where: { user_id: user.id } });
 	await prisma.minigame.deleteMany({ where: { user_id: user.id } });
 	await prisma.xPGain.deleteMany({ where: { user_id: BigInt(user.id) } });
-	await prisma.newUser.deleteMany({ where: { id: user.id } });
 	await prisma.activity.deleteMany({ where: { user_id: BigInt(user.id) } });
 	await prisma.stashUnit.deleteMany({ where: { user_id: BigInt(user.id) } });
 	await prisma.userEvent.deleteMany({ where: { user_id: user.id } });
@@ -186,7 +184,7 @@ After becoming an ironman:
 	await prisma.jsonBank.deleteMany({ where: { user_id: user.id } });
 
 	// Refund the leagues points they spent
-	const roboChimpUser = await roboChimpUserFetch(user.id);
+	const roboChimpUser = await Cache.getRoboChimpUser(user.id);
 	if (roboChimpUser.leagues_points_total >= 0) {
 		await roboChimpClient.user.upsert({
 			where: {
