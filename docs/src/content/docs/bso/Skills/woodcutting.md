@@ -11,7 +11,8 @@ title: "Woodcutting"
 - [Twitcher's Gloves](/osb/skills/woodcutting/forestry/#boosts) - `/chop name:Elder Logs twitchers_gloves:clue nest` - 20% increased chance to receive Clue Nests
 - Forestry - `/chop name:Elder Logs forestry_events:True` - Gives additional XP in Construction, Hunter, Thieving, Woodcutting, Fletching, Farming (can be stacked with Twitcher's Gloves)
 - Forestry Basket - +5 minute trip length
-- Lumberjack outfit - 2.5% XP boost 
+- Lumberjack outfit - 2.5% XP boost
+- Suggested Pet: Mr. E
 
 ### Optimal Gear Setup
 
