@@ -110,12 +110,12 @@ export const magnaTiers: PatronTier[] = [
 export const cyrTiers: PatronTier[] = [
 	{ bit: Bits.CyrPatronTier7, perkTier: PerkTier.Seven, number: 7, source: 'cyr' },
 	{ bit: Bits.CyrPatronTier6, perkTier: PerkTier.Seven, number: 6, source: 'cyr' },
-	{ bit: Bits.CyrPatronTier5, perkTier: PerkTier.Seven, number: 5, source: 'cyr' },
-	{ bit: Bits.CyrPatronTier4, perkTier: PerkTier.Six, number: 4, source: 'cyr' },
-	{ bit: Bits.CyrPatronTier3, perkTier: PerkTier.Five, number: 3, source: 'cyr' },
-	{ bit: Bits.CyrPatronTier2, perkTier: PerkTier.Four, number: 2, source: 'cyr' },
-	{ bit: Bits.CyrPatronTier1, perkTier: PerkTier.Three, number: 1, source: 'cyr' },
-	{ bit: Bits.CyrPatronTier0, perkTier: PerkTier.Two, number: 0, source: 'cyr' }
+	{ bit: Bits.CyrPatronTier5, perkTier: PerkTier.Six, number: 5, source: 'cyr' },
+	{ bit: Bits.CyrPatronTier4, perkTier: PerkTier.Five, number: 4, source: 'cyr' },
+	{ bit: Bits.CyrPatronTier3, perkTier: PerkTier.Four, number: 3, source: 'cyr' },
+	{ bit: Bits.CyrPatronTier2, perkTier: PerkTier.Three, number: 2, source: 'cyr' },
+	{ bit: Bits.CyrPatronTier1, perkTier: PerkTier.Two, number: 1, source: 'cyr' },
+	{ bit: Bits.CyrPatronTier0, perkTier: PerkTier.One, number: 0, source: 'cyr' }
 ];
 
 export const tiers: PatronTier[] = magnaTiers;

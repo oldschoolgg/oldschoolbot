@@ -401,10 +401,6 @@ class CacheManager {
 		await this.client.del(BotKeys.User.BadgedUsername(userId));
 	}
 
-	async _getBadgedUsernameRaw(userId: string): Promise<string | null> {
-		return this.getExpiringString(BotKeys.User.BadgedUsername(userId));
-	}
-
 	async setBadgedUsername(userId: string, username: string): Promise<void> {
 		await this.setExpiringString(BotKeys.User.BadgedUsername(userId), username);
 	}
