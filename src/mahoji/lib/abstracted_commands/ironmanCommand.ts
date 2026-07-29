@@ -126,7 +126,9 @@ After becoming an ironman:
 		| 'id'
 		| 'pets'
 		| 'RSN'
-		| 'bitfield';
+		| 'bitfield'
+		| 'minion_ironman'
+		| 'minion_hasBought';
 
 	const bitFieldsToKeep: BitField[] = [
 		BitField.PatronTier1,
@@ -140,7 +142,8 @@ After becoming an ironman:
 		BitField.HasPermanentTierOne,
 		BitField.DisabledRandomEvents,
 		BitField.AlwaysSmallBank,
-		BitField.PatronTier6
+		BitField.PatronTier6,
+		BitField.OriginalCyrSupporter
 	];
 
 	const createOptions: Required<Pick<Prisma.UserCreateInput, KeysThatArentReset>> = {
@@ -151,7 +154,9 @@ After becoming an ironman:
 		minion_bought_date: user.user.minion_bought_date,
 		RSN: user.user.RSN,
 		pets: user.user.pets as ItemBank,
-		bitfield: bitFieldsToKeep.filter(i => user.bitfield.includes(i))
+		bitfield: bitFieldsToKeep.filter(i => user.bitfield.includes(i)),
+		minion_ironman: true,
+		minion_hasBought: true
 	};
 
 	// Ensure deleted user exists
@@ -165,13 +170,7 @@ After becoming an ironman:
 	await prisma.botItemSell.deleteMany({ where: { user_id: user.id } });
 	await prisma.pinnedTrip.deleteMany({ where: { user_id: user.id } });
 	await prisma.farmedCrop.deleteMany({ where: { user_id: user.id } });
-	// Now we can delete the user
-	await prisma.user.deleteMany({
-		where: { id: user.id }
-	});
-	await prisma.user.create({
-		data: createOptions
-	});
+
 	await prisma.slayerTask.deleteMany({ where: { user_id: user.id } });
 	await prisma.playerOwnedHouse.deleteMany({ where: { user_id: user.id } });
 	await prisma.minigame.deleteMany({ where: { user_id: user.id } });
@@ -183,26 +182,27 @@ After becoming an ironman:
 	await prisma.buyCommandTransaction.deleteMany({ where: { user_id: BigInt(user.id) } });
 	await prisma.jsonBank.deleteMany({ where: { user_id: user.id } });
 
+	// Now we can delete the user
+	await prisma.user.deleteMany({
+		where: { id: user.id }
+	});
+	await prisma.user.create({
+		data: createOptions
+	});
+
 	// Refund the leagues points they spent
 	const roboChimpUser = await Cache.getRoboChimpUser(user.id);
 	if (roboChimpUser.leagues_points_total >= 0) {
-		await roboChimpClient.user.upsert({
+		await roboChimpClient.user.update({
 			where: {
 				id: BigInt(user.id)
 			},
-			update: {
-				leagues_points_balance_osb: roboChimpUser.leagues_points_balance_osb
-			},
-			create: {
-				id: BigInt(user.id)
+			data: {
+				leagues_points_balance_osb: roboChimpUser.leagues_points_total
 			}
 		});
 	}
 
-	await user.update({
-		minion_ironman: true,
-		minion_hasBought: true
-	});
 	assert(
 		!user.user.GP && !user.user.QP && !user.user.skills_woodcutting,
 		`Ironman sanity check - ID: ${user.user.id}`

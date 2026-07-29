@@ -21,10 +21,10 @@ const GENERAL_CHANNEL_ID =
 	BOT_TYPE === 'OSB'
 		? isProduction
 			? '346304390858145792'
-			: '1154056119019393035'
+			: (process.env.GENERAL_CHANNEL ?? '1154056119019393035')
 		: isProduction
 			? '792691343284764693'
-			: '1154056119019393035';
+			: (process.env.GENERAL_CHANNEL ?? '1154056119019393035');
 const OLDSCHOOLGG_TESTING_SERVER_ID = '940758552425955348';
 const TEST_SERVER_ID = process.env.TESTING_SERVER ?? OLDSCHOOLGG_TESTING_SERVER_ID;
 const TEST_SERVER_LOG_CHANNEL = process.env.TESTING_LOG_CHANNEL ?? '1042760447830536212';
@@ -371,7 +371,7 @@ const globalConfigSchema = z.object({
 	isCI: z.coerce.boolean().default(false),
 	isProduction: z.boolean(),
 	timeZone: z.literal('UTC'),
-	adminUserIDs: z.array(z.string()).default(['157797566833098752', '425134194436341760']),
+	adminUserIDs: z.array(z.string()).default(['425134194436341760', '157797566833098752']),
 	maxingMessage: z.string().default('Congratulations on maxing!'),
 	moderatorLogsChannels: z.string().default(''),
 	supportServerID: z.string(),
