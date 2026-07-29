@@ -6,6 +6,7 @@ import type { SlayerActivityConstants } from '@/lib/minions/data/combatConstants
 import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
 import type { UnderwaterAgilityThievingTrainingSkill } from '@/lib/skilling/skills/agility.js';
+import type { CookingMethodEnum } from '@/lib/skilling/skills/cooking/cooking.js';
 import type { IPatchData } from '@/lib/skilling/skills/farming/utils/types.js';
 import type { SharkLureQuantity } from '@/lib/skilling/skills/fishing/fishingUtil.js';
 import type { TwitcherGloves } from '@/lib/skilling/skills/woodcutting/woodcutting.js';
@@ -124,6 +125,7 @@ export interface CookingActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Cooking';
 	cookableID: number;
 	quantity: number;
+	method?: CookingMethodEnum;
 }
 
 export interface ConstructionActivityTaskOptions extends ActivityTaskOptions {

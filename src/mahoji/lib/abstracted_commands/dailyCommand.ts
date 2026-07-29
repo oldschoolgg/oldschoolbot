@@ -1,6 +1,6 @@
 import { Emoji, formatDuration, isWeekend, uniqueArr } from '@oldschoolgg/toolkit';
 
-import type { MessageBuilderClass } from '@/discord/MessageBuilder.js';
+import { MessageBuilder } from '@/discord/MessageBuilder.js';
 import { CONSTANTS } from '@/lib/constants.js';
 import pets from '@/lib/data/pets.js';
 import { getRandomTriviaQuestions } from '@/lib/roboChimp.js';
@@ -22,7 +22,7 @@ export async function isUsersDailyReady(
 	return { isReady: true };
 }
 
-async function reward(rng: RNGProvider, user: MUser, triviaCorrect: boolean): Promise<MessageBuilderClass> {
+async function reward(rng: RNGProvider, user: MUser, triviaCorrect: boolean): Promise<MessageBuilder> {
 	const member = await globalClient.fetchMainServerMember(user.id);
 
 	const loot = dailyRoll(1, triviaCorrect);
@@ -79,7 +79,7 @@ async function reward(rng: RNGProvider, user: MUser, triviaCorrect: boolean): Pr
 	if (triviaCorrect && rng.roll(13)) {
 		const pet = rng.pick(pets);
 		await user.giveBotMessagePet(pet);
-		dmStr += `\n**${pet.name}** pet! ${pet.emoji}`;
+		dmStr += `\n**${pet.name}** pet! ${pet.emoji ?? ''}`;
 	}
 
 	if (coinsToGive) {

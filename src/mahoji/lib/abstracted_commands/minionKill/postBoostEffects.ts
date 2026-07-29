@@ -26,7 +26,7 @@ export type PostBoostEffect = {
 			BoostArgs,
 			'addPostBoostEffect' | 'itemCost'
 		>
-	) => null | undefined | PostBoostEffectReturn | PostBoostEffectReturn[];
+	) => string | null | undefined | PostBoostEffectReturn | PostBoostEffectReturn[];
 };
 export const postBoostEffects: PostBoostEffect[] = [
 	{
@@ -59,7 +59,13 @@ export const postBoostEffects: PostBoostEffect[] = [
 				minimumHealAmount: monster.minimumHealAmount
 			});
 
-			if (foodRemoveResult === null || foodRemoveResult.foodToRemove.length === 0) {
+			if (foodRemoveResult === null) {
+				return `You don't have enough food to kill ${monster.name}! You need enough food to heal at least ${
+					healAmountNeeded * quantity
+				} HP (${healAmountNeeded} per kill). You can use these food items: ${Eatables.map(i => i.name).join(', ')}.`;
+			}
+
+			if (foodRemoveResult.foodToRemove.length === 0) {
 				return {
 					percentageReduction: noFoodBoost,
 					message: `${noFoodBoost}% for no food`

@@ -31,6 +31,15 @@ function getActivityLogSummary(activity: Activity): string {
 }
 
 class SActivityManager {
+	private async getGuildIdForActivityError(channelId: string): Promise<string | null> {
+		try {
+			const channel = await Cache.getChannel(channelId);
+			return channel.guild_id;
+		} catch {
+			return null;
+		}
+	}
+
 	async cancelActivity(userID: string): Promise<void> {
 		await prisma.activity.deleteMany({ where: { user_id: BigInt(userID), completed: false } });
 	}
@@ -90,7 +99,17 @@ class SActivityManager {
 				}
 			);
 		} catch (err) {
-			Logging.logError(err as Error);
+			const date = new Date();
+			Logging.logError(err as Error, {
+				type: 'ACTIVITY_ERROR',
+				user_id: activity.userID,
+				activity_type: activity.type,
+				activity_id: activity.id,
+				channel_id: activity.channelId,
+				guild_id: await this.getGuildIdForActivityError(activity.channelId),
+				datetime: date.toISOString(),
+				timestamp: date.getTime()
+			});
 		} finally {
 			await onMinionActivityFinish(activity);
 		}

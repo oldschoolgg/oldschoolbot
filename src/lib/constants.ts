@@ -21,10 +21,10 @@ const GENERAL_CHANNEL_ID =
 	BOT_TYPE === 'OSB'
 		? isProduction
 			? '346304390858145792'
-			: '1154056119019393035'
+			: (process.env.GENERAL_CHANNEL ?? '1154056119019393035')
 		: isProduction
 			? '792691343284764693'
-			: '1154056119019393035';
+			: (process.env.GENERAL_CHANNEL ?? '1154056119019393035');
 const OLDSCHOOLGG_TESTING_SERVER_ID = '940758552425955348';
 const TEST_SERVER_ID = process.env.TESTING_SERVER ?? OLDSCHOOLGG_TESTING_SERVER_ID;
 const TEST_SERVER_LOG_CHANNEL = process.env.TESTING_LOG_CHANNEL ?? '1042760447830536212';
@@ -46,8 +46,8 @@ const OSBChannelConfig: ChannelConfig = {
 	GrandExchange: '682996313209831435',
 	EconomyLogs: '802029843712573510',
 	HelpAndSupport: '668073484731154462',
-	BotLogs: '1051725977320964197',
-	GeneralChannel: GENERAL_CHANNEL_ID
+	BotLogs: isProduction ? '1051725977320964197' : TEST_SERVER_LOG_CHANNEL,
+	GeneralChannel: isProduction ? GENERAL_CHANNEL_ID : (process.env.GENERAL_CHANNEL ?? GENERAL_CHANNEL_ID)
 };
 
 const BSOChannelConfig: ChannelConfig = {
@@ -56,8 +56,8 @@ const BSOChannelConfig: ChannelConfig = {
 	GrandExchange: '738780181946171493',
 	EconomyLogs: '802029843712573510',
 	HelpAndSupport: '970752140324790384',
-	BotLogs: '1051725977320964197',
-	GeneralChannel: GENERAL_CHANNEL_ID
+	BotLogs: isProduction ? '1051725977320964197' : TEST_SERVER_LOG_CHANNEL,
+	GeneralChannel: isProduction ? GENERAL_CHANNEL_ID : (process.env.GENERAL_CHANNEL ?? GENERAL_CHANNEL_ID)
 };
 
 const TestChannelConfig: ChannelConfig = {
@@ -165,7 +165,9 @@ export enum BitField {
 	UnlimitedGiveaways = 51,
 	ServerSupport = 52,
 	DisabledPassiveImplings = 53,
-	DisableAutoFarmButton = 54
+	DisableAutoFarmButton = 54,
+
+	OriginalCyrSupporter = 199
 }
 
 export interface IBitFieldData {
@@ -202,6 +204,7 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 	[BitField.UsedSirenicTablet]: { name: 'Used Sirenic Tablet', protected: false, userConfigurable: false },
 	[BitField.UsedStrangledTablet]: { name: 'Used Strangled Tablet', protected: false, userConfigurable: false },
 	[BitField.SelfGamblingLocked]: { name: 'Self Gambling Lock', protected: false, userConfigurable: true },
+	[BitField.OriginalCyrSupporter]: { name: "One of Cyr's first Patrons", protected: false, userConfigurable: false },
 
 	[BitField.BypassAgeRestriction]: { name: 'Bypassed Age Restriction', protected: false, userConfigurable: false },
 	[BitField.HasPermanentEventBackgrounds]: {
@@ -368,7 +371,7 @@ const globalConfigSchema = z.object({
 	isCI: z.coerce.boolean().default(false),
 	isProduction: z.boolean(),
 	timeZone: z.literal('UTC'),
-	adminUserIDs: z.array(z.string()).default(['157797566833098752', '425134194436341760']),
+	adminUserIDs: z.array(z.string()).default(['425134194436341760', '157797566833098752']),
 	maxingMessage: z.string().default('Congratulations on maxing!'),
 	moderatorLogsChannels: z.string().default(''),
 	supportServerID: z.string(),
