@@ -181,13 +181,6 @@ After becoming an ironman:
 	await prisma.userStats.deleteMany({ where: { user_id: BigInt(user.id) } });
 	await prisma.buyCommandTransaction.deleteMany({ where: { user_id: BigInt(user.id) } });
 	await prisma.jsonBank.deleteMany({ where: { user_id: user.id } });
-	// Now we can delete the user
-	await prisma.user.deleteMany({
-		where: { id: user.id }
-	});
-	await prisma.user.create({
-		data: createOptions
-	});
 
 	// Now we can delete the user
 	await prisma.user.deleteMany({
