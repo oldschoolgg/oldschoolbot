@@ -55,6 +55,32 @@ git checkout -B bso upstream/bso
 
 In GitHub Desktop, use **Current Branch** to switch between `master` and `bso`, then use **Fetch origin** / **Pull origin**. If your fork is behind the main repo, sync it on GitHub first.
 
+## Making Wiki Edits
+
+You can also use this setup to make wiki edits. All wiki changes should start from the latest `master` branch, even if the page is about BSO.
+
+Using Git from the terminal:
+
+```sh
+git checkout master
+git pull upstream master
+git checkout -b branch-name
+```
+
+Then edit the relevant files in `docs/src/content/docs`. When you are done:
+
+```sh
+git add docs/src/content/docs
+git commit -m "Update wiki"
+git push origin branch-name
+```
+
+On GitHub, open your fork and click **Compare & pull request**. The pull request should be from your new branch into `oldschoolgg/oldschoolbot`'s `master` branch.
+
+In GitHub Desktop, switch to `master`, pull the latest changes, click **Current Branch** -> **New Branch**, make your wiki edits, commit them, then click **Publish branch**. GitHub should then offer a button to open a pull request.
+
+See the [Wiki](/getting-started/wiki) page for more information.
+
 ## Asking AI
 
 Useful examples:
