@@ -70,6 +70,8 @@ Example of a useful codebase question:
 
 Be clear when you only want an explanation. AI agents can edit files if you allow them to.
 
+AI tools have usage limits. Asking lots of broad questions, asking the same thing repeatedly, or asking the AI to read a large amount of code can use up your allowance faster. Depending on the tool and plan you use, this may cause temporary rate limits, make you wait, or cost more money. Start with specific questions and check your tool's usage/pricing page if unsure.
+
 ## Accuracy
 
 The code you have locally is only as current as the branch you pulled. Always pull the latest public `master` or `bso` code before asking questions.
