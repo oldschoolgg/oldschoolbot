@@ -64,6 +64,10 @@ Useful examples:
 - "Explain how this activity works, but do not edit files."
 - "Find where this item/monster/activity is defined."
 
+Example of a useful codebase question:
+
+[[codebase-ai-example.webp]]
+
 Be clear when you only want an explanation. AI agents can edit files if you allow them to.
 
 ## Accuracy
