@@ -55,6 +55,29 @@ git checkout -B bso upstream/bso
 
 In GitHub Desktop, use **Current Branch** to switch between `master` and `bso`, then use **Fetch origin** / **Pull origin**. If your fork is behind the main repo, sync it on GitHub first.
 
+## Asking AI
+
+Useful examples:
+
+- "I'm on the `bso` branch. What is the drop rate for X?"
+- "I'm on the `master` branch. What items boost Y?"
+- "Explain how this activity works, but do not edit files."
+- "Find where this item/monster/activity is defined."
+
+Example of a useful codebase question:
+
+[[codebase-ai-example.webp]]
+
+Be clear when you only want an explanation. AI agents can edit files if you allow them to.
+
+AI tools have usage limits. Asking lots of broad questions, asking the same thing repeatedly, or asking the AI to read a large amount of code can use up your allowance faster. Depending on the tool and plan you use, this may cause temporary rate limits, make you wait, or cost more money. Start with specific questions and check your tool's usage/pricing page if unsure.
+
+## Accuracy
+
+The code you have locally is only as current as the branch you pulled. Always pull the latest public `master` or `bso` code before asking questions.
+
+The live bot can still be slightly different from public GitHub. This can happen if Cyr has made private BSO updates that are not public yet, or if code has been merged but is not live on the bot yet. Treat AI answers as guidance based on the code it can see, not as a guarantee of the live bot's exact behaviour.
+
 ## Making Wiki Edits
 
 You can also use this setup to make wiki edits. All wiki changes should start from the latest `master` branch, even if the page is about BSO.
@@ -80,26 +103,3 @@ On GitHub, open your fork and click **Compare & pull request**. The pull request
 In GitHub Desktop, switch to `master`, pull the latest changes, click **Current Branch** -> **New Branch**, make your wiki edits, commit them, then click **Publish branch**. GitHub should then offer a button to open a pull request.
 
 See the [Wiki](/getting-started/wiki) page for more information.
-
-## Asking AI
-
-Useful examples:
-
-- "I'm on the `bso` branch. What is the drop rate for X?"
-- "I'm on the `master` branch. What items boost Y?"
-- "Explain how this activity works, but do not edit files."
-- "Find where this item/monster/activity is defined."
-
-Example of a useful codebase question:
-
-[[codebase-ai-example.webp]]
-
-Be clear when you only want an explanation. AI agents can edit files if you allow them to.
-
-AI tools have usage limits. Asking lots of broad questions, asking the same thing repeatedly, or asking the AI to read a large amount of code can use up your allowance faster. Depending on the tool and plan you use, this may cause temporary rate limits, make you wait, or cost more money. Start with specific questions and check your tool's usage/pricing page if unsure.
-
-## Accuracy
-
-The code you have locally is only as current as the branch you pulled. Always pull the latest public `master` or `bso` code before asking questions.
-
-The live bot can still be slightly different from public GitHub. This can happen if Cyr has made private BSO updates that are not public yet, or if code has been merged but is not live on the bot yet. Treat AI answers as guidance based on the code it can see, not as a guarantee of the live bot's exact behaviour.
