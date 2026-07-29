@@ -202961,6 +202961,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": true,
+		"lowalch": 800,
 		"highalch": 1200,
 		"equipment": {
 			"attack_stab": 0,
@@ -203030,9 +203031,11 @@
 		"tradeable": true,
 		"tradeable_on_ge": true,
 		"equipable": false,
+		"lowalch": 10000,
+		"highalch": 15000,
 		"cost": 25000,
 		"buy_limit": 5,
-		"price": 31635000
+		"price": 16000000
 	},
 	"33015": {
 		"name": "Annihilation blueprints",
@@ -203040,9 +203043,11 @@
 		"tradeable": true,
 		"tradeable_on_ge": true,
 		"equipable": false,
+		"lowalch": 10000,
+		"highalch": 15000,
 		"cost": 25000,
 		"buy_limit": 5,
-		"price": 39970000
+		"price": 19192000
 	},
 	"33018": {
 		"name": "Annihilation teleport scroll",
@@ -203050,9 +203055,11 @@
 		"tradeable": true,
 		"tradeable_on_ge": true,
 		"equipable": true,
+		"lowalch": 10000,
+		"highalch": 15000,
 		"cost": 25000,
 		"buy_limit": 5,
-		"price": 27000002
+		"price": 13250003
 	},
 	"33044": {
 		"name": "Trinket of avarice",
@@ -203060,6 +203067,7 @@
 		"tradeable": true,
 		"tradeable_on_ge": true,
 		"equipable": false,
+		"lowalch": 40000,
 		"highalch": 60000,
 		"cost": 100000
 	},
@@ -203171,6 +203179,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": true,
+		"lowalch": 16000,
 		"highalch": 24000,
 		"equipment": {
 			"attack_stab": 0,
@@ -203198,6 +203207,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": true,
+		"lowalch": 36000,
 		"highalch": 54000,
 		"equipment": {
 			"attack_stab": 0,
@@ -203225,6 +203235,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": true,
+		"lowalch": 36000,
 		"highalch": 54000,
 		"equipment": {
 			"attack_stab": 0,
@@ -203350,6 +203361,7 @@
 		"name": "Cow slippers (base)",
 		"members": true,
 		"equipable": true,
+		"lowalch": 400,
 		"highalch": 600,
 		"equipment": {
 			"attack_stab": 0,
@@ -203376,6 +203388,7 @@
 		"name": "Cow slippers",
 		"members": true,
 		"equipable": true,
+		"lowalch": 400,
 		"highalch": 600,
 		"equipment": {
 			"attack_stab": 0,
@@ -203401,6 +203414,7 @@
 		"name": "Cow slippers",
 		"members": true,
 		"equipable": true,
+		"lowalch": 400,
 		"highalch": 600,
 		"equipment": {
 			"attack_stab": 0,
@@ -203426,6 +203440,7 @@
 		"name": "Cow slippers",
 		"members": true,
 		"equipable": true,
+		"lowalch": 400,
 		"highalch": 600,
 		"equipment": {
 			"attack_stab": 0,
@@ -203453,6 +203468,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": true,
+		"lowalch": 400,
 		"highalch": 600,
 		"equipment": {
 			"attack_stab": 0,
@@ -203553,26 +203569,29 @@
 		"tradeable": true,
 		"tradeable_on_ge": true,
 		"equipable": false,
+		"lowalch": 4,
 		"highalch": 6,
 		"cost": 10,
 		"buy_limit": 13000,
-		"price": 103
+		"price": 128
 	},
 	"33109": {
 		"name": "Cooked t-bone steak",
 		"tradeable": true,
 		"tradeable_on_ge": true,
 		"equipable": false,
+		"lowalch": 4,
 		"highalch": 6,
 		"cost": 10,
 		"buy_limit": 6000,
-		"price": 68
+		"price": 57
 	},
 	"33112": {
 		"name": "Burnt t-bone steak",
-		"tradeable": false,
-		"tradeable_on_ge": false,
+		"tradeable": true,
+		"tradeable_on_ge": true,
 		"equipable": false,
+		"lowalch": 4,
 		"highalch": 6,
 		"cost": 10
 	},
@@ -203601,6 +203620,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 4,
 		"highalch": 6,
 		"cost": 10
 	},
@@ -203633,6 +203653,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 400,
 		"highalch": 600,
 		"cost": 1000
 	},
@@ -203641,7 +203662,10 @@
 		"members": true,
 		"tradeable": false,
 		"tradeable_on_ge": false,
+		"stackable": true,
 		"equipable": false,
+		"lowalch": 40,
+		"highalch": 60,
 		"cost": 100
 	},
 	"33145": {
@@ -203649,7 +203673,10 @@
 		"members": true,
 		"tradeable": false,
 		"tradeable_on_ge": false,
+		"stackable": true,
 		"equipable": false,
+		"lowalch": 80,
+		"highalch": 120,
 		"cost": 200
 	},
 	"33146": {
@@ -203701,6 +203728,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 40,
+		"highalch": 60,
 		"cost": 100
 	},
 	"33220": {
@@ -203709,6 +203738,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 40,
+		"highalch": 60,
 		"cost": 100
 	},
 	"33221": {
@@ -203772,6 +203803,7 @@
 		"members": true,
 		"tradeable": false,
 		"tradeable_on_ge": false,
+		"stackable": true,
 		"equipable": false
 	},
 	"33233": {
@@ -203786,6 +203818,7 @@
 		"members": true,
 		"tradeable": false,
 		"tradeable_on_ge": false,
+		"stackable": true,
 		"equipable": false
 	},
 	"33237": {
@@ -203815,6 +203848,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": true,
+		"lowalch": 12000,
 		"highalch": 18000,
 		"equipment": {
 			"attack_stab": 72,
@@ -203842,6 +203876,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": true,
+		"lowalch": 30000,
 		"highalch": 45000,
 		"equipment": {
 			"attack_stab": 0,
@@ -203869,6 +203904,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": true,
+		"lowalch": 30000,
 		"highalch": 45000,
 		"equipment": {
 			"attack_stab": 0,
@@ -203896,6 +203932,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": true,
+		"lowalch": 30000,
 		"highalch": 45000,
 		"equipment": {
 			"attack_stab": 60,
@@ -203923,6 +203960,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": true,
+		"lowalch": 30000,
 		"highalch": 45000,
 		"equipment": {
 			"attack_stab": 0,
@@ -203950,6 +203988,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": true,
+		"lowalch": 30000,
 		"highalch": 45000,
 		"equipment": {
 			"attack_stab": 0,
@@ -203977,6 +204016,8 @@
 		"tradeable": true,
 		"tradeable_on_ge": true,
 		"equipable": true,
+		"lowalch": 40000,
+		"highalch": 60000,
 		"equipment": {
 			"attack_stab": 0,
 			"attack_slash": 0,
@@ -203995,7 +204036,9 @@
 			"slot": "head",
 			"requirements": null
 		},
-		"cost": 100000
+		"cost": 100000,
+		"buy_limit": 4,
+		"price": 44484
 	},
 	"33263": {
 		"name": "Demonic robe top (t1)",
@@ -204003,6 +204046,8 @@
 		"tradeable": true,
 		"tradeable_on_ge": true,
 		"equipable": true,
+		"lowalch": 40000,
+		"highalch": 60000,
 		"equipment": {
 			"attack_stab": 0,
 			"attack_slash": 0,
@@ -204021,7 +204066,9 @@
 			"slot": "body",
 			"requirements": null
 		},
-		"cost": 100000
+		"cost": 100000,
+		"buy_limit": 4,
+		"price": 12759
 	},
 	"33266": {
 		"name": "Demonic robe bottom (t1)",
@@ -204029,6 +204076,8 @@
 		"tradeable": true,
 		"tradeable_on_ge": true,
 		"equipable": true,
+		"lowalch": 40000,
+		"highalch": 60000,
 		"equipment": {
 			"attack_stab": 0,
 			"attack_slash": 0,
@@ -204047,7 +204096,9 @@
 			"slot": "legs",
 			"requirements": null
 		},
-		"cost": 100000
+		"cost": 100000,
+		"buy_limit": 4,
+		"price": 7950
 	},
 	"33269": {
 		"name": "Demonic boots (t1)",
@@ -204055,6 +204106,8 @@
 		"tradeable": true,
 		"tradeable_on_ge": true,
 		"equipable": true,
+		"lowalch": 40000,
+		"highalch": 60000,
 		"equipment": {
 			"attack_stab": 0,
 			"attack_slash": 0,
@@ -204073,7 +204126,9 @@
 			"slot": "feet",
 			"requirements": null
 		},
-		"cost": 100000
+		"cost": 100000,
+		"buy_limit": 4,
+		"price": 4628
 	},
 	"33272": {
 		"name": "Demonic hood (t2)",
@@ -204081,6 +204136,8 @@
 		"tradeable": true,
 		"tradeable_on_ge": true,
 		"equipable": true,
+		"lowalch": 40000,
+		"highalch": 60000,
 		"equipment": {
 			"attack_stab": 0,
 			"attack_slash": 0,
@@ -204099,7 +204156,9 @@
 			"slot": "head",
 			"requirements": null
 		},
-		"cost": 100000
+		"cost": 100000,
+		"buy_limit": 4,
+		"price": 381485
 	},
 	"33275": {
 		"name": "Demonic robe top (t2)",
@@ -204107,6 +204166,8 @@
 		"tradeable": true,
 		"tradeable_on_ge": true,
 		"equipable": true,
+		"lowalch": 40000,
+		"highalch": 60000,
 		"equipment": {
 			"attack_stab": 0,
 			"attack_slash": 0,
@@ -204125,7 +204186,9 @@
 			"slot": "body",
 			"requirements": null
 		},
-		"cost": 100000
+		"cost": 100000,
+		"buy_limit": 4,
+		"price": 60000
 	},
 	"33278": {
 		"name": "Demonic robe bottom (t2)",
@@ -204133,6 +204196,8 @@
 		"tradeable": true,
 		"tradeable_on_ge": true,
 		"equipable": true,
+		"lowalch": 40000,
+		"highalch": 60000,
 		"equipment": {
 			"attack_stab": 0,
 			"attack_slash": 0,
@@ -204151,7 +204216,9 @@
 			"slot": "legs",
 			"requirements": null
 		},
-		"cost": 100000
+		"cost": 100000,
+		"buy_limit": 4,
+		"price": 50000
 	},
 	"33281": {
 		"name": "Demonic boots (t2)",
@@ -204159,6 +204226,8 @@
 		"tradeable": true,
 		"tradeable_on_ge": true,
 		"equipable": true,
+		"lowalch": 40000,
+		"highalch": 60000,
 		"equipment": {
 			"attack_stab": 0,
 			"attack_slash": 0,
@@ -204177,7 +204246,9 @@
 			"slot": "feet",
 			"requirements": null
 		},
-		"cost": 100000
+		"cost": 100000,
+		"buy_limit": 4,
+		"price": 53647
 	},
 	"33284": {
 		"name": "Demonic hood (t3)",
@@ -204185,6 +204256,8 @@
 		"tradeable": true,
 		"tradeable_on_ge": true,
 		"equipable": true,
+		"lowalch": 40000,
+		"highalch": 60000,
 		"equipment": {
 			"attack_stab": 0,
 			"attack_slash": 0,
@@ -204203,7 +204276,9 @@
 			"slot": "head",
 			"requirements": null
 		},
-		"cost": 100000
+		"cost": 100000,
+		"buy_limit": 4,
+		"price": 2605472
 	},
 	"33287": {
 		"name": "Demonic robe top (t3)",
@@ -204211,6 +204286,8 @@
 		"tradeable": true,
 		"tradeable_on_ge": true,
 		"equipable": true,
+		"lowalch": 40000,
+		"highalch": 60000,
 		"equipment": {
 			"attack_stab": 0,
 			"attack_slash": 0,
@@ -204229,7 +204306,9 @@
 			"slot": "body",
 			"requirements": null
 		},
-		"cost": 100000
+		"cost": 100000,
+		"buy_limit": 4,
+		"price": 529016
 	},
 	"33290": {
 		"name": "Demonic robe bottom (t3)",
@@ -204237,6 +204316,8 @@
 		"tradeable": true,
 		"tradeable_on_ge": true,
 		"equipable": true,
+		"lowalch": 40000,
+		"highalch": 60000,
 		"equipment": {
 			"attack_stab": 0,
 			"attack_slash": 0,
@@ -204255,7 +204336,9 @@
 			"slot": "legs",
 			"requirements": null
 		},
-		"cost": 100000
+		"cost": 100000,
+		"buy_limit": 4,
+		"price": 339312
 	},
 	"33293": {
 		"name": "Demonic boots (t3)",
@@ -204263,6 +204346,8 @@
 		"tradeable": true,
 		"tradeable_on_ge": true,
 		"equipable": true,
+		"lowalch": 40000,
+		"highalch": 60000,
 		"equipment": {
 			"attack_stab": 0,
 			"attack_slash": 0,
@@ -204281,7 +204366,9 @@
 			"slot": "feet",
 			"requirements": null
 		},
-		"cost": 100000
+		"cost": 100000,
+		"buy_limit": 4,
+		"price": 133024
 	},
 	"33296": {
 		"name": "Demonic sceptre",
@@ -204289,6 +204376,36 @@
 		"tradeable": true,
 		"tradeable_on_ge": true,
 		"equipable": true,
+		"lowalch": 400,
+		"highalch": 600,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "shield",
+			"requirements": null
+		},
+		"cost": 1000,
+		"price": 972462
+	},
+	"33299": {
+		"name": "Demonic pacts banner",
+		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"equipable": true,
+		"lowalch": 400,
 		"highalch": 600,
 		"equipment": {
 			"attack_stab": 0,
@@ -204308,61 +204425,49 @@
 			"slot": "weapon",
 			"requirements": null
 		},
-		"cost": 1000
-	},
-	"33299": {
-		"name": "Demonic pacts banner",
-		"members": true,
-		"tradeable": true,
-		"tradeable_on_ge": true,
-		"equipable": true,
-		"equipment": {
-			"attack_stab": 0,
-			"attack_slash": 0,
-			"attack_crush": 0,
-			"attack_magic": 0,
-			"attack_ranged": 0,
-			"defence_stab": 0,
-			"defence_slash": 0,
-			"defence_crush": 0,
-			"defence_magic": 0,
-			"defence_ranged": 0,
-			"melee_strength": 0,
-			"ranged_strength": 0,
-			"magic_damage": 0,
-			"prayer": 0,
-			"slot": "weapon",
-			"requirements": null
-		},
-		"cost": 1000
+		"cost": 1000,
+		"price": 74561
 	},
 	"33302": {
 		"name": "Demonic skin contract",
 		"members": true,
 		"tradeable": true,
 		"tradeable_on_ge": true,
-		"equipable": false
+		"equipable": false,
+		"lowalch": 40000,
+		"highalch": 60000,
+		"cost": 100000,
+		"price": 912339
 	},
 	"33305": {
 		"name": "Demonic axe ornament kit",
 		"members": true,
 		"tradeable": true,
 		"tradeable_on_ge": true,
-		"equipable": false
+		"equipable": false,
+		"lowalch": 40000,
+		"highalch": 60000,
+		"cost": 100000,
+		"price": 2424140
 	},
 	"33308": {
 		"name": "Demonic staff ornament kit",
 		"members": true,
 		"tradeable": true,
 		"tradeable_on_ge": true,
-		"equipable": false
+		"equipable": false,
+		"price": 151253
 	},
 	"33311": {
 		"name": "Demonic trident ornament kit",
 		"members": true,
 		"tradeable": true,
 		"tradeable_on_ge": true,
-		"equipable": false
+		"equipable": false,
+		"lowalch": 40000,
+		"highalch": 60000,
+		"cost": 100000,
+		"price": 898558
 	},
 	"33332": {
 		"name": "Iban's staff (u) (o)",
@@ -204370,6 +204475,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": true,
+		"lowalch": 34000,
 		"highalch": 51000,
 		"equipment": {
 			"attack_stab": 10,
@@ -204394,9 +204500,10 @@
 	"33335": {
 		"name": "Soulreaper axe (o)",
 		"members": true,
-		"tradeable": true,
-		"tradeable_on_ge": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
 		"equipable": true,
+		"lowalch": 96000,
 		"highalch": 144000,
 		"equipment": {
 			"attack_stab": 28,
@@ -204409,7 +204516,7 @@
 			"defence_crush": 0,
 			"defence_magic": 0,
 			"defence_ranged": 0,
-			"melee_strength": 121,
+			"melee_strength": 125,
 			"ranged_strength": 0,
 			"magic_damage": 0,
 			"prayer": 0,
@@ -204424,6 +204531,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": true,
+		"lowalch": 16000,
 		"highalch": 24000,
 		"equipment": {
 			"attack_stab": 0,
@@ -204451,6 +204559,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": true,
+		"lowalch": 16000,
 		"highalch": 24000,
 		"equipment": {
 			"attack_stab": 0,
@@ -204648,12 +204757,15 @@
 		}
 	},
 	"33359": {
-		"name": "Impish ritual kit",
+		"name": "Impish ritual scroll",
 		"members": true,
 		"tradeable": true,
 		"tradeable_on_ge": true,
 		"equipable": false,
-		"cost": 25000
+		"lowalch": 10000,
+		"highalch": 15000,
+		"cost": 25000,
+		"price": 289556
 	},
 	"33362": {
 		"name": "Demonic pacts throne scroll",
@@ -204661,7 +204773,10 @@
 		"tradeable": true,
 		"tradeable_on_ge": true,
 		"equipable": false,
-		"cost": 25000
+		"lowalch": 10000,
+		"highalch": 15000,
+		"cost": 25000,
+		"price": 335327
 	},
 	"33365": {
 		"name": "Impish whistle",
@@ -204669,7 +204784,10 @@
 		"tradeable": true,
 		"tradeable_on_ge": true,
 		"equipable": false,
-		"cost": 25000
+		"lowalch": 10000,
+		"highalch": 15000,
+		"cost": 25000,
+		"price": 2481664
 	},
 	"33368": {
 		"name": "Demonic pacts demon butler scroll",
@@ -204677,7 +204795,10 @@
 		"tradeable": true,
 		"tradeable_on_ge": true,
 		"equipable": false,
-		"cost": 25000
+		"lowalch": 10000,
+		"highalch": 15000,
+		"cost": 25000,
+		"price": 934506
 	},
 	"33382": {
 		"name": "Immaculate mole skin",
@@ -204685,6 +204806,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 160,
 		"highalch": 240,
 		"cost": 400
 	},
@@ -204700,6 +204822,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": true,
+		"lowalch": 36000,
 		"highalch": 54000,
 		"equipment": {
 			"attack_stab": 0,
@@ -204727,6 +204850,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": true,
+		"lowalch": 36000,
 		"highalch": 54000,
 		"equipment": {
 			"attack_stab": 0,
@@ -204754,6 +204878,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": true,
+		"lowalch": 36000,
 		"highalch": 54000,
 		"equipment": {
 			"attack_stab": 0,
@@ -204781,6 +204906,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": true,
+		"lowalch": 36000,
 		"highalch": 54000,
 		"equipment": {
 			"attack_stab": 0,
@@ -204808,8 +204934,10 @@
 		"tradeable": true,
 		"tradeable_on_ge": true,
 		"equipable": false,
+		"lowalch": 80000,
 		"highalch": 120000,
-		"cost": 200000
+		"cost": 200000,
+		"price": 33185879
 	},
 	"33537": {
 		"name": "Garlic cocktail",
@@ -204817,6 +204945,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 8,
 		"highalch": 12,
 		"cost": 20
 	},
@@ -204832,6 +204961,7 @@
 		"members": true,
 		"tradeable": false,
 		"tradeable_on_ge": false,
+		"stackable": true,
 		"equipable": false
 	},
 	"33547": {
@@ -204839,12 +204969,15 @@
 		"members": true,
 		"tradeable": false,
 		"tradeable_on_ge": false,
+		"stackable": true,
 		"equipable": false
 	},
 	"33553": {
 		"name": "Seeking bronze arrow",
+		"members": true,
 		"tradeable": true,
 		"tradeable_on_ge": true,
+		"stackable": true,
 		"equipable": true,
 		"equipment": {
 			"attack_stab": 0,
@@ -204863,12 +204996,15 @@
 			"prayer": 0,
 			"slot": "ammo",
 			"requirements": null
-		}
+		},
+		"price": 258
 	},
 	"33559": {
 		"name": "Seeking iron arrow",
+		"members": true,
 		"tradeable": true,
 		"tradeable_on_ge": true,
+		"stackable": true,
 		"equipable": true,
 		"equipment": {
 			"attack_stab": 0,
@@ -204888,13 +205024,17 @@
 			"slot": "ammo",
 			"requirements": null
 		},
-		"cost": 3
+		"cost": 3,
+		"price": 64
 	},
 	"33565": {
 		"name": "Seeking steel arrow",
+		"members": true,
 		"tradeable": true,
 		"tradeable_on_ge": true,
+		"stackable": true,
 		"equipable": true,
+		"lowalch": 4,
 		"highalch": 7,
 		"equipment": {
 			"attack_stab": 0,
@@ -204914,13 +205054,17 @@
 			"slot": "ammo",
 			"requirements": null
 		},
-		"cost": 12
+		"cost": 12,
+		"price": 226
 	},
 	"33571": {
 		"name": "Seeking mithril arrow",
+		"members": true,
 		"tradeable": true,
 		"tradeable_on_ge": true,
+		"stackable": true,
 		"equipable": true,
+		"lowalch": 12,
 		"highalch": 19,
 		"equipment": {
 			"attack_stab": 0,
@@ -204940,13 +205084,17 @@
 			"slot": "ammo",
 			"requirements": null
 		},
-		"cost": 32
+		"cost": 32,
+		"price": 317
 	},
 	"33577": {
 		"name": "Seeking adamant arrow",
+		"members": true,
 		"tradeable": true,
 		"tradeable_on_ge": true,
+		"stackable": true,
 		"equipable": true,
+		"lowalch": 32,
 		"highalch": 48,
 		"equipment": {
 			"attack_stab": 0,
@@ -204966,14 +205114,17 @@
 			"slot": "ammo",
 			"requirements": null
 		},
-		"cost": 80
+		"cost": 80,
+		"price": 97
 	},
 	"33583": {
 		"name": "Seeking rune arrow",
 		"members": true,
 		"tradeable": true,
 		"tradeable_on_ge": true,
+		"stackable": true,
 		"equipable": true,
+		"lowalch": 160,
 		"highalch": 240,
 		"equipment": {
 			"attack_stab": 0,
@@ -204993,14 +205144,17 @@
 			"slot": "ammo",
 			"requirements": null
 		},
-		"cost": 400
+		"cost": 400,
+		"price": 244
 	},
 	"33589": {
 		"name": "Seeking amethyst arrow",
 		"members": true,
 		"tradeable": true,
 		"tradeable_on_ge": true,
+		"stackable": true,
 		"equipable": true,
+		"lowalch": 196,
 		"highalch": 294,
 		"equipment": {
 			"attack_stab": 0,
@@ -205020,14 +205174,17 @@
 			"slot": "ammo",
 			"requirements": null
 		},
-		"cost": 490
+		"cost": 490,
+		"price": 561
 	},
 	"33595": {
 		"name": "Seeking dragon arrow",
 		"members": true,
 		"tradeable": true,
 		"tradeable_on_ge": true,
+		"stackable": true,
 		"equipable": true,
+		"lowalch": 320,
 		"highalch": 480,
 		"equipment": {
 			"attack_stab": 0,
@@ -205047,14 +205204,18 @@
 			"slot": "ammo",
 			"requirements": null
 		},
-		"cost": 800
+		"cost": 800,
+		"buy_limit": 11000,
+		"price": 2307
 	},
 	"33601": {
 		"name": "Seeking broad arrows",
 		"members": true,
 		"tradeable": false,
 		"tradeable_on_ge": false,
+		"stackable": true,
 		"equipable": true,
+		"lowalch": 24,
 		"highalch": 36,
 		"equipment": {
 			"attack_stab": 0,
@@ -205091,6 +205252,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 128,
 		"highalch": 192,
 		"cost": 320
 	},
@@ -205100,6 +205262,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 64,
 		"highalch": 96,
 		"cost": 160
 	},
@@ -205109,6 +205272,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 32,
 		"highalch": 48,
 		"cost": 80
 	},
@@ -205118,6 +205282,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 16,
 		"highalch": 24,
 		"cost": 40
 	},
@@ -205127,6 +205292,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 8,
 		"highalch": 12,
 		"cost": 20
 	},
@@ -205136,6 +205302,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 180,
 		"highalch": 270,
 		"cost": 450
 	},
@@ -205145,6 +205312,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 68,
 		"highalch": 102,
 		"cost": 170
 	},
@@ -205153,7 +205321,9 @@
 		"members": true,
 		"tradeable": false,
 		"tradeable_on_ge": false,
+		"stackable": true,
 		"equipable": false,
+		"lowalch": 9,
 		"highalch": 13,
 		"cost": 23
 	},
@@ -205162,8 +205332,12 @@
 		"members": true,
 		"tradeable": true,
 		"tradeable_on_ge": true,
+		"stackable": true,
+		"equipable": false,
+		"lowalch": 96,
 		"highalch": 144,
-		"cost": 240
+		"cost": 240,
+		"price": 1579
 	},
 	"33627": {
 		"name": "Dull ancient medal",
@@ -205171,6 +205345,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 20,
 		"highalch": 30,
 		"cost": 50
 	},
@@ -205194,6 +205369,7 @@
 		"tradeable": true,
 		"tradeable_on_ge": true,
 		"equipable": true,
+		"lowalch": 96000,
 		"highalch": 144000,
 		"equipment": {
 			"attack_stab": 0,
@@ -205213,7 +205389,9 @@
 			"slot": "2h",
 			"requirements": null
 		},
-		"cost": 240000
+		"cost": 240000,
+		"buy_limit": 5,
+		"price": 51000000
 	},
 	"33634": {
 		"name": "Elder venator fang",
@@ -205221,6 +205399,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 80000,
 		"highalch": 120000,
 		"cost": 200000
 	},
@@ -205230,8 +205409,10 @@
 		"tradeable": true,
 		"tradeable_on_ge": true,
 		"equipable": false,
+		"lowalch": 80000,
 		"highalch": 120000,
-		"cost": 200000
+		"cost": 200000,
+		"price": 125302500
 	},
 	"33639": {
 		"name": "Necklace of rupture",
@@ -205239,6 +205420,7 @@
 		"tradeable": true,
 		"tradeable_on_ge": true,
 		"equipable": true,
+		"lowalch": 96800,
 		"highalch": 145200,
 		"equipment": {
 			"attack_stab": 0,
@@ -205258,7 +205440,9 @@
 			"slot": "neck",
 			"requirements": null
 		},
-		"cost": 242000
+		"cost": 242000,
+		"buy_limit": 8,
+		"price": 139684172
 	},
 	"33642": {
 		"name": "Maggot marquess",
@@ -205269,6 +205453,7 @@
 		"tradeable": true,
 		"tradeable_on_ge": true,
 		"equipable": true,
+		"lowalch": 600,
 		"highalch": 900,
 		"equipment": {
 			"attack_stab": 0,
@@ -205295,9 +205480,12 @@
 		"members": true,
 		"tradeable": true,
 		"tradeable_on_ge": true,
+		"stackable": true,
 		"equipable": false,
+		"lowalch": 4,
 		"highalch": 7,
-		"cost": 12
+		"cost": 12,
+		"price": 64
 	},
 	"33653": {
 		"name": "Stymphike carcass",
@@ -205311,36 +205499,23 @@
 		"members": true,
 		"tradeable": false,
 		"tradeable_on_ge": false,
-		"equipable": true,
-		"highalch": 210,
-		"equipment": {
-			"attack_stab": 0,
-			"attack_slash": 0,
-			"attack_crush": 0,
-			"attack_magic": 0,
-			"attack_ranged": 0,
-			"defence_stab": 0,
-			"defence_slash": 0,
-			"defence_crush": 0,
-			"defence_magic": 0,
-			"defence_ranged": 0,
-			"melee_strength": 0,
-			"ranged_strength": 0,
-			"magic_damage": 0,
-			"prayer": 0,
-			"slot": "weapon",
-			"requirements": null
-		},
-		"cost": 350
+		"stackable": true,
+		"equipable": false,
+		"lowalch": 8,
+		"highalch": 12,
+		"cost": 20
 	},
 	"33657": {
 		"name": "Orikalkum gravel",
 		"members": true,
 		"tradeable": true,
 		"tradeable_on_ge": true,
+		"stackable": true,
 		"equipable": false,
+		"lowalch": 68000,
 		"highalch": 102000,
-		"cost": 170000
+		"cost": 170000,
+		"price": 101498
 	},
 	"33659": {
 		"name": "Grapevine",
@@ -205352,20 +205527,26 @@
 	"33661": {
 		"name": "Venator fang",
 		"members": true,
-		"tradeable": false,
-		"tradeable_on_ge": false,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"stackable": true,
 		"equipable": false,
+		"lowalch": 200,
 		"highalch": 300,
-		"cost": 500
+		"cost": 500,
+		"price": 1904
 	},
 	"33663": {
 		"name": "Venator tooth",
 		"members": true,
-		"tradeable": false,
-		"tradeable_on_ge": false,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"stackable": true,
 		"equipable": false,
+		"lowalch": 100,
 		"highalch": 150,
-		"cost": 250
+		"cost": 250,
+		"price": 1247
 	},
 	"33665": {
 		"name": "Maggot egg (base)",
@@ -205421,8 +205602,9 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
-		"highalch": 300,
-		"cost": 500
+		"lowalch": 12000,
+		"highalch": 18000,
+		"cost": 30000
 	},
 	"33679": {
 		"name": "Tarnished spear",
@@ -205430,8 +205612,9 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
-		"highalch": 300,
-		"cost": 500
+		"lowalch": 8000,
+		"highalch": 12000,
+		"cost": 20000
 	},
 	"33681": {
 		"name": "Tarnished 2h sword",
@@ -205439,8 +205622,9 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
-		"highalch": 300,
-		"cost": 500
+		"lowalch": 24000,
+		"highalch": 36000,
+		"cost": 60000
 	},
 	"33683": {
 		"name": "Tarnished battleaxe",
@@ -205448,8 +205632,9 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
-		"highalch": 300,
-		"cost": 500
+		"lowalch": 16000,
+		"highalch": 24000,
+		"cost": 40000
 	},
 	"33685": {
 		"name": "Tarnished halberd",
@@ -205457,8 +205642,9 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
-		"highalch": 300,
-		"cost": 500
+		"lowalch": 24000,
+		"highalch": 36000,
+		"cost": 60000
 	},
 	"33687": {
 		"name": "Tarnished ring",
@@ -205466,17 +205652,19 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
-		"highalch": 300,
-		"cost": 500
+		"lowalch": 1200,
+		"highalch": 1800,
+		"cost": 3000
 	},
 	"33689": {
-		"name": "Tarnished necklace",
+		"name": "Tarnished bracelet",
 		"members": true,
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
-		"highalch": 300,
-		"cost": 500
+		"lowalch": 1400,
+		"highalch": 2100,
+		"cost": 3500
 	},
 	"33693": {
 		"name": "Tarnished amulet",
@@ -205484,8 +205672,9 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
-		"highalch": 300,
-		"cost": 500
+		"lowalch": 1200,
+		"highalch": 1800,
+		"cost": 3000
 	},
 	"33695": {
 		"name": "Venator heart",
@@ -205507,6 +205696,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33702": {
@@ -205515,6 +205706,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33703": {
@@ -205523,6 +205716,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33704": {
@@ -205531,6 +205726,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33705": {
@@ -205539,6 +205736,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33706": {
@@ -205547,6 +205746,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33707": {
@@ -205555,6 +205756,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33708": {
@@ -205563,6 +205766,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33709": {
@@ -205571,6 +205776,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": true,
+		"lowalch": 100,
 		"highalch": 150,
 		"equipment": {
 			"attack_stab": 0,
@@ -205598,6 +205804,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": true,
+		"lowalch": 100,
 		"highalch": 150,
 		"equipment": {
 			"attack_stab": 0,
@@ -205625,6 +205832,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": true,
+		"lowalch": 12000,
+		"highalch": 18000,
 		"equipment": {
 			"attack_stab": 44,
 			"attack_slash": 56,
@@ -205650,7 +205859,9 @@
 		"members": true,
 		"tradeable": false,
 		"tradeable_on_ge": false,
+		"stackable": true,
 		"equipable": true,
+		"lowalch": 40,
 		"highalch": 60,
 		"equipment": {
 			"attack_stab": 0,
@@ -205678,6 +205889,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": true,
+		"lowalch": 32000,
+		"highalch": 48000,
 		"equipment": {
 			"attack_stab": 32,
 			"attack_slash": 68,
@@ -205704,6 +205917,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": true,
+		"lowalch": 40000,
 		"highalch": 60000,
 		"equipment": {
 			"attack_stab": 100,
@@ -205731,6 +205945,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33725": {
@@ -205739,6 +205955,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33726": {
@@ -205747,6 +205965,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
 		"highalch": 18,
 		"cost": 30
 	},
@@ -205756,6 +205975,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33728": {
@@ -205764,6 +205985,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
 		"highalch": 18,
 		"cost": 30
 	},
@@ -205773,6 +205995,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33730": {
@@ -205781,6 +206005,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33733": {
@@ -205789,23 +206015,28 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
 		"highalch": 18,
 		"cost": 30
 	},
 	"33734": {
-		"name": "Left half crest",
+		"name": "Left crest half",
 		"members": true,
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33735": {
-		"name": "Right half crest",
+		"name": "Right crest half",
 		"members": true,
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33736": {
@@ -205814,6 +206045,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
 		"highalch": 18,
 		"cost": 30
 	},
@@ -205823,6 +206055,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33739": {
@@ -205831,6 +206065,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33740": {
@@ -205839,6 +206075,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33741": {
@@ -205847,6 +206085,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
 		"highalch": 18,
 		"cost": 30
 	},
@@ -205856,6 +206095,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33743": {
@@ -205864,6 +206105,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33744": {
@@ -205872,6 +206115,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33745": {
@@ -205880,6 +206125,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33746": {
@@ -205888,6 +206135,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
 		"highalch": 18,
 		"cost": 30
 	},
@@ -205897,6 +206145,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33748": {
@@ -205905,6 +206155,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33749": {
@@ -205913,6 +206165,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33750": {
@@ -205921,6 +206175,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33751": {
@@ -205929,6 +206185,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33752": {
@@ -205937,6 +206195,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33753": {
@@ -205945,6 +206205,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33754": {
@@ -205953,6 +206215,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33755": {
@@ -205961,6 +206225,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33756": {
@@ -205969,6 +206235,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33757": {
@@ -205977,6 +206245,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33759": {
@@ -205985,6 +206255,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33761": {
@@ -205993,6 +206265,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33762": {
@@ -206001,6 +206275,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33764": {
@@ -206009,6 +206285,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33765": {
@@ -206017,6 +206295,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33766": {
@@ -206025,6 +206305,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33767": {
@@ -206033,6 +206315,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33768": {
@@ -206041,6 +206325,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33769": {
@@ -206049,6 +206335,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33770": {
@@ -206057,6 +206345,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33771": {
@@ -206065,6 +206355,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33772": {
@@ -206073,6 +206365,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33773": {
@@ -206081,6 +206375,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33778": {
@@ -206089,6 +206385,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33779": {
@@ -206097,6 +206395,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33780": {
@@ -206105,6 +206405,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33783": {
@@ -206113,6 +206415,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33784": {
@@ -206121,6 +206425,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33785": {
@@ -206129,6 +206435,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33786": {
@@ -206137,6 +206445,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33787": {
@@ -206145,6 +206455,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33788": {
@@ -206153,6 +206465,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33789": {
@@ -206161,6 +206475,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33790": {
@@ -206168,6 +206484,7 @@
 		"members": true,
 		"tradeable": false,
 		"tradeable_on_ge": false,
+		"stackable": true,
 		"equipable": true,
 		"equipment": {
 			"attack_stab": 0,
@@ -206194,6 +206511,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33792": {
@@ -206202,6 +206521,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
 		"highalch": 18,
 		"cost": 30
 	},
@@ -206232,6 +206552,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33797": {
@@ -206240,6 +206562,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33798": {
@@ -206248,6 +206572,7 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
 		"highalch": 18,
 		"cost": 30
 	},
@@ -206257,6 +206582,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": true,
+		"lowalch": 40,
+		"highalch": 60,
 		"equipment": {
 			"attack_stab": 0,
 			"attack_slash": 0,
@@ -206282,7 +206609,10 @@
 		"members": true,
 		"tradeable": false,
 		"tradeable_on_ge": false,
+		"stackable": true,
 		"equipable": true,
+		"lowalch": 4,
+		"highalch": 6,
 		"equipment": {
 			"attack_stab": 0,
 			"attack_slash": 0,
@@ -206309,6 +206639,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33819": {
@@ -206317,6 +206649,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33820": {
@@ -206325,13 +206659,16 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false,
+		"lowalch": 12,
+		"highalch": 18,
 		"cost": 30
 	},
 	"33821": {
 		"name": "Raw impaler meat",
 		"tradeable": true,
 		"tradeable_on_ge": true,
-		"equipable": false
+		"equipable": false,
+		"price": 6400
 	},
 	"33833": {
 		"name": "Letvek in a bucket",

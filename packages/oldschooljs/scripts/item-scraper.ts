@@ -6,6 +6,7 @@ import wtf from 'wtf_wikipedia';
 import { type Item, Items } from '@/index.js';
 import { USELESS_ITEMS } from '@/structures/ItemsClass.js';
 import { pfetch } from './fetch.js';
+import { fetchPrices } from './fetchPrices.js';
 import { ZWikiBucketItem } from './schemas.js';
 import type { MoidSourceItem } from './types.js';
 import { convertWikiJSONToItem } from './wikiparse.js';
@@ -19,7 +20,7 @@ async function fetchRes(url: string) {
 async function writeItemData(filePath: string, data: Record<string, Item>) {
 	for (let i = 0; i < 5; i++) {
 		try {
-			writeFileSync(filePath, JSON.stringify(data, null, 4));
+			writeFileSync(filePath, `${JSON.stringify(data, null, '\t')}\n`);
 			return;
 		} catch (err) {
 			if (i === 4) throw err;
@@ -70,6 +71,47 @@ function isKnownSameNameVariant(item: MoidSourceItem): boolean {
 	);
 }
 
+type WikiPrice = Awaited<ReturnType<typeof fetchPrices>>[string];
+
+async function fetchPriceData() {
+	try {
+		return await fetchPrices();
+	} catch (err) {
+		console.warn(`Failed to fetch Wiki prices, preserving existing prices where possible: ${err}`);
+		return {};
+	}
+}
+
+function calculatePrice(price: WikiPrice | undefined): number | undefined {
+	if (!price) return undefined;
+	const high = price.high < price.low ? price.low : price.high;
+	if (!Number.isFinite(high) || !Number.isFinite(price.low)) return undefined;
+	return Math.ceil(Math.max(0, (high + price.low) / 2));
+}
+
+function shouldPreserveExistingPrice(
+	previousItem: Item | undefined,
+	newPrice: number | undefined,
+	wikiPrice: WikiPrice | undefined
+) {
+	if (!previousItem?.price) return false;
+	if (newPrice === undefined) return true;
+	if (previousItem.price < newPrice / 20 && previousItem.price !== 0) return true;
+	if (newPrice < previousItem.price / 10) return true;
+	if (wikiPrice && wikiPrice.low > 0 && wikiPrice.high / 10_000 > wikiPrice.low) return true;
+	return false;
+}
+
+function applyPrice(newItem: Item, previousItem: Item | undefined, wikiPrice: WikiPrice | undefined): Item {
+	if (!newItem.tradeable) return newItem;
+
+	const newPrice = calculatePrice(wikiPrice);
+	return {
+		...newItem,
+		price: shouldPreserveExistingPrice(previousItem, newPrice, wikiPrice) ? previousItem?.price : newPrice
+	};
+}
+
 async function fetchItemWikiPage(itemId: number, moidItem?: MoidSourceItem): Promise<Item | null> {
 	const params = [
 		'item_id',
@@ -112,7 +154,8 @@ async function fetchItemWikiPage(itemId: number, moidItem?: MoidSourceItem): Pro
 		tradeable_on_ge: itemFromInfoBox.tradeable_on_ge,
 		stackable: itemFromInfoBox.stackable,
 		equipable: itemFromInfoBox.equipable,
-		highalch: dataFromBucket.high_alchemy_value,
+		lowalch: itemFromInfoBox.lowalch,
+		highalch: dataFromBucket.high_alchemy_value ?? itemFromInfoBox.highalch,
 		equipment: itemFromInfoBox.equipment,
 		cost: dataFromBucket.value,
 		buy_limit: dataFromBucket.buy_limit
@@ -126,6 +169,7 @@ async function main() {
 	const highestExistingItemID = Math.max(...existingItemIDsMap.keys());
 
 	const { moidSource, moidSourceMap } = await fetchMoidData();
+	const allPrices = await fetchPriceData();
 
 	const explicitItemIDs = process.argv.slice(2).map(Number).filter(Number.isInteger);
 	const itemIdsToProcess: number[] = explicitItemIDs;
@@ -176,9 +220,10 @@ async function main() {
 
 	for (let i = 0; i < itemIdsToProcess.length; i++) {
 		await sleep(555);
-		const newItem = await fetchItemWikiPage(itemIdsToProcess[i], moidSourceMap.get(itemIdsToProcess[i]));
+		const itemId = itemIdsToProcess[i];
+		const newItem = await fetchItemWikiPage(itemId, moidSourceMap.get(itemId));
 		if (newItem === null) continue;
-		newData[itemIdsToProcess[i]] = newItem;
+		newData[itemId] = applyPrice(newItem, currentData[itemId], allPrices[itemId]);
 		await writeItemData('./src/assets/item_data.json', newData);
 	}
 }
