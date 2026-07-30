@@ -12,6 +12,7 @@ import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAch
 import { BitField, CONSTANTS, PerkTier } from '@/lib/constants.js';
 import { handleGrowablePetGrowth } from '@/lib/growablePets.js';
 import { handlePassiveImplings } from '@/lib/implings.js';
+import { BERT_SAND_BUCKETS, hasCollectedThisReset, isManualEligible } from '@/lib/minions/data/bertSand.js';
 import { triggerRandomEvent } from '@/lib/randomEvents.js';
 import { canShowAutoFarmButton } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
@@ -45,6 +46,7 @@ const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
 	'Raids',
 	'ClueCompletion'
 ];
+const BERT_SAND_AUTO_DELIVERY_MESSAGE_PREFIX = 'Bert has delivered';
 
 interface TripFinishEffectOptions {
 	data: ActivityTaskData;
@@ -79,6 +81,47 @@ const tripFinishEffects: TripFinishEffect[] = [
 					await ClientSettings.updateClientGPTrackSetting('gp_pvm', GP);
 				}
 			}
+			return {};
+		}
+	},
+	{
+		name: "Bert's Sand Auto Delivery",
+		fn: async ({ user, messages }) => {
+			if (!user.hasDiary('ardougne.elite')) {
+				return {};
+			}
+
+			const requirementError = isManualEligible(user);
+			if (requirementError) {
+				return {};
+			}
+
+			const now = Date.now();
+			const stats = await user.fetchStats();
+			const lastCollectedBigInt = stats.last_bert_sand_timestamp ?? 0n;
+			const lastCollected = Number(lastCollectedBigInt);
+
+			if (hasCollectedThisReset(lastCollected, now)) {
+				return {};
+			}
+
+			const updated = await prisma.userStats.updateMany({
+				where: {
+					user_id: BigInt(user.id),
+					last_bert_sand_timestamp: lastCollectedBigInt
+				},
+				data: {
+					last_bert_sand_timestamp: BigInt(now)
+				}
+			});
+
+			if (updated.count === 0) {
+				return {};
+			}
+
+			const loot = new Bank({ 'Bucket of sand': BERT_SAND_BUCKETS });
+			await user.addItemsToBank({ items: loot, collectionLog: true });
+			messages.push(`Bert has delivered ${BERT_SAND_BUCKETS.toLocaleString()} Buckets of sand to your bank`);
 			return {};
 		}
 	},
@@ -331,11 +374,17 @@ export async function handleTripFinish(
 		await user.transactItems({ itemsToAdd: itemsToAddWithCL, collectionLog: true, itemsToRemove });
 	}
 	const displayedMessages = messages.map(msg => msg.trim()).filter(msg => msg.length > 0);
-	if (displayedMessages.length > 0) {
-		message.addContent(`\n**Messages:** ${displayedMessages.join(', ')}`);
+	const bertSandMessages = displayedMessages.filter(msg => msg.startsWith(BERT_SAND_AUTO_DELIVERY_MESSAGE_PREFIX));
+	const regularMessages = displayedMessages.filter(msg => !msg.startsWith(BERT_SAND_AUTO_DELIVERY_MESSAGE_PREFIX));
+	if (regularMessages.length > 0) {
+		message.addContent(`\n**Messages:** ${regularMessages.join(', ')}`);
 	}
 
 	message.addContent(displayCluesAndPets(user, loot));
+
+	if (bertSandMessages.length > 0) {
+		message.addContent(`\n\n${bertSandMessages.join('\n')}`);
+	}
 
 	if (components.length > 0) {
 		message.addComponents(components);
