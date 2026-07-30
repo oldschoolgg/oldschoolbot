@@ -43,6 +43,9 @@ export const TOBRooms: TOBRoom[] = [
 	}
 ];
 
+export const FAKE_TOB_HOST_ID = 'fake_tob_mass_host';
+export const TOB_FAKE_MASS_PURPLE_KC_CUTOFF = 150;
+
 interface TOBDeaths {
 	/**
 	 * An array, where each item is the index of the room they died in.
@@ -358,7 +361,7 @@ interface ParsedTeamMember {
 	deaths: number[];
 	wipeDeaths: number[];
 }
-interface TobTeam {
+export interface TobTeam {
 	user: MUser;
 	gear: { melee: Gear; range: Gear; mage: Gear };
 	bank: Bank;
