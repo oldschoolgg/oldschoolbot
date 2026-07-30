@@ -54,7 +54,7 @@ describe('farming seed preferences', () => {
 
 	it('parsePreferredSeeds normalizes valid preferences and ignores invalid patch names', () => {
 		const raw = {
-			[herbPlant.seedType]: { type: 'seed', seedID: herbSeedID },
+			[herbPlant.seedType]: { type: 'seed', seedID: herbSeedID, quantity: 2 },
 			[treePlant.seedType]: { type: 'highest_available' },
 			[cactusPlant.seedType]: { type: 'empty' },
 			invalid_patch: { type: 'seed', seedID: 12345 },
@@ -65,7 +65,8 @@ describe('farming seed preferences', () => {
 
 		expect(result.get(herbPlant.seedType as FarmingPatchName)).toEqual({
 			type: 'seed',
-			seedID: herbSeedID
+			seedID: herbSeedID,
+			quantity: 2
 		});
 		expect(result.get(treePlant.seedType as FarmingPatchName)).toEqual({
 			type: 'highest_available'
@@ -74,6 +75,15 @@ describe('farming seed preferences', () => {
 			type: 'empty'
 		});
 		expect(result.size).toBe(3);
+	});
+
+	it('parsePreferredSeeds rejects invalid quantities', () => {
+		for (const quantity of [0, -1, 1.5, '2']) {
+			const result = parsePreferredSeeds({
+				[herbPlant.seedType]: { type: 'seed', seedID: herbSeedID, quantity }
+			});
+			expect(result.size).toBe(0);
+		}
 	});
 
 	it('parsePreferredSeeds skips entries with unknown seed IDs', () => {
