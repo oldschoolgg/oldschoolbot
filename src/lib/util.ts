@@ -42,7 +42,7 @@ export async function fetchUsernameAndCache(_id: string | bigint): Promise<strin
 	if (!isValidDiscordSnowflake(id)) {
 		throw new Error(`Invalid userID: ${id}`);
 	}
-	const cached = await Cache._getBadgedUsernameRaw(id);
+	const cached = await Cache.getBadgedUsername(id);
 	if (cached) return cached;
 	let user = await prisma.user.upsert({
 		where: {
