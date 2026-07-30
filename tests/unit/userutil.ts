@@ -34,6 +34,7 @@ export interface MockUserArgs {
 	skills_fishing?: number;
 	GP?: number;
 	bitfield?: BitField[];
+	completedAchievementDiaries?: string[];
 	id?: string;
 }
 
@@ -83,6 +84,7 @@ const mockUser = (overrides?: MockUserArgs): User => {
 		id: overrides?.id ?? '',
 		monsterScores: {},
 		badges: [],
+		completed_achievement_diaries: overrides?.completedAchievementDiaries ?? [],
 		minion_farmingContract: null,
 		minion_farmingPreferredContract: false,
 		minion_farmingPreferredSeeds: {}

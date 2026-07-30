@@ -66,4 +66,14 @@ describe('MUser.test', () => {
 		expect(testUser.cl.has('Coal')).toEqual(true);
 		expect(testUser.cl.length).toEqual(1);
 	});
+	test('hasDiary requires all preceding tiers', () => {
+		const user = mockMUser({
+			completedAchievementDiaries: ['karamja.easy', 'karamja.hard', 'karamja.elite']
+		});
+
+		expect(user.hasDiary('karamja.easy')).toEqual(true);
+		expect(user.hasDiary('karamja.medium')).toEqual(false);
+		expect(user.hasDiary('karamja.hard')).toEqual(false);
+		expect(user.hasDiary('karamja.elite')).toEqual(false);
+	});
 });
