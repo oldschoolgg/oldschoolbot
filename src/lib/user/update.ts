@@ -7,6 +7,7 @@ import type { PatchTypes } from '@/lib/skilling/skills/farming/index.js';
 import type { FarmingPatchSettingsKey } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { FarmingPreferredSeeds } from '@/lib/skilling/skills/farming/utils/types.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
+import type { SlayerSkipSettings } from '@/lib/slayer/types.js';
 import type { DegradeableItemColumns, GearColumns } from '@/lib/user/userTypes.js';
 
 type PrismaArrayUpdateInput<T> = { push: T | T[] } | T[];
@@ -41,6 +42,7 @@ type PrismaIntKeys =
 	| 'nmz_points'
 	| 'carpenter_points'
 	| 'zeal_tokens'
+	| 'slayer_auto_skip_buffer'
 	| 'slayer_points'
 	| 'sacrificedValue'
 	| DegradeableItemColumns;
@@ -50,6 +52,8 @@ type PrismaBigIntUpdateInput = bigint | number | { increment: bigint | number } 
 type PrismaBigIntKeys = 'GP' | 'sacrificedValue' | `skills_${SkillNameType}`;
 
 type PrismaItemBankKeys = 'bank' | 'collectionLogBank' | 'bank_sort_weightings' | 'temp_cl' | 'pets';
+
+type PrismaJsonKeys = 'slayer_skip_settings';
 
 type PrismaDateKeys = 'last_temp_cl_reset' | 'gambling_lockout_expiry' | 'minion_bought_date' | 'last_command_date';
 
@@ -82,6 +86,7 @@ export type FullUserUpdateInput = Partial<
 		Record<PrismaIntKeys, PrismaIntUpdateInput> &
 		Record<PrismaBigIntKeys, PrismaBigIntUpdateInput> &
 		Record<PrismaItemBankKeys, ItemBank> &
+		Record<PrismaJsonKeys, SlayerSkipSettings> &
 		Record<FarmingPatchSettingsKey, PatchTypes.IPatchData> &
 		Record<PrismaDateKeys, Date | null> &
 		Record<PrismaNullableStringKeys, string | null> &

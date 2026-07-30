@@ -40,3 +40,5 @@ export interface SlayerShopItem {
 	itemAmount?: number;
 	points: number;
 }
+
+export type SlayerSkipSettings = Record<string, number[]>;
