@@ -10,7 +10,6 @@ describe('getItemCostFromConsumables', () => {
 	test('getItemCostFromConsumables', () => {
 		const gearBank = makeGearBank();
 		gearBank.bank.add('Stamina potion(4)', 100);
-		gearBank.bank.add('Ruby dragon bolts (e)', 1000);
 
 		const monster = killableMonsters.find(m => m.name === 'Rabbit')!;
 		for (const inputQuantity of [1, 2, 5, 100]) {
@@ -23,7 +22,6 @@ describe('getItemCostFromConsumables', () => {
 				slayerKillsRemaining: null
 			});
 			expect(consumablesCost.itemCost!.amount('Stamina potion(4)')).toEqual(1 * 5);
-			expect(consumablesCost.itemCost!.amount('Ruby dragon bolts (e)')).toEqual(1 * 100);
 			expect(consumablesCost.finalQuantity).toEqual(1);
 		}
 
@@ -50,7 +48,7 @@ describe('getItemCostFromConsumables', () => {
 		const monster = killableMonsters.find(m => m.id === Monsters.AlchemicalHydra.id)!;
 
 		const consumablesCost2 = getItemCostFromConsumables({
-			consumableCosts: [monster.itemCost as any],
+			consumableCosts: Array.isArray(monster.itemCost) ? monster.itemCost : [monster.itemCost!],
 			gearBank: gearBank,
 			inputQuantity: 5,
 			timeToFinish: monster.timeToFinish,

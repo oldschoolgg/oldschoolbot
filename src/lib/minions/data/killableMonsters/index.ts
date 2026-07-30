@@ -295,7 +295,12 @@ const killableMonsters: KillableMonster[] = [
 				[GearStat.AttackRanged]: 20 + 33 + 10 + 94 + 8
 			}
 		},
-		itemCost: { itemCost: new Bank().add('Stamina potion(4)', 5).add('Ruby dragon bolts (e)', 100), qtyPerKill: 1 }
+		projectileUsage: {
+			required: true,
+			requiredItems: resolveItems(['Ruby dragon bolts (e)']),
+			calculateQuantity: ({ quantity }) => quantity * 100
+		},
+		itemCost: { itemCost: new Bank().add('Stamina potion(4)', 5), qtyPerKill: 1 }
 	},
 	{
 		id: Monsters.DerangedArchaeologist.id,
