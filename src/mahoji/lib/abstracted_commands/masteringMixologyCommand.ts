@@ -14,6 +14,8 @@ export interface MixologyHerb {
 	quantity: number;
 }
 
+export type MixologyPaste = 'Mox' | 'Lye' | 'Aga';
+
 const baseHerbs: { base: string; paste: 'Mox' | 'Lye' | 'Aga'; quantity: number; unf?: string }[] = [
 	{ base: 'Guam leaf', paste: 'Mox', quantity: 10, unf: 'Guam potion (unf)' },
 	{ base: 'Marrentill', paste: 'Mox', quantity: 13 },
@@ -52,6 +54,9 @@ export async function MixologyPasteCreationCommand(
 			'quest'
 		)}.`;
 	}
+
+	if (await user.minionIsBusy()) return `${user.minionName} is busy.`;
+
 	const herb = mixologyHerbs.find(h => h.name.toLowerCase() === herbName.toLowerCase());
 	if (!herb) {
 		return 'That is not a valid herb for mixology paste.';
@@ -111,12 +116,56 @@ export function getMixologyContractDuration(base: number): number {
 	return base * factor;
 }
 
-interface MixologyContract {
+export interface MixologyContract {
 	name: string;
-	pasteSequence: ('Mox' | 'Lye' | 'Aga')[];
+	pasteSequence: MixologyPaste[];
 	requiredLevel: number;
 	xp: number;
 	weight: number;
+}
+
+export function calcMixologyContractBasePoints(pasteSequence: MixologyPaste[]): Record<MixologyPaste, number> {
+	const counts: Record<MixologyPaste, number> = { Mox: 0, Lye: 0, Aga: 0 };
+	for (const p of pasteSequence) counts[p]++;
+
+	const unique = Object.values(counts).filter(c => c > 0).length;
+	const points: Record<MixologyPaste, number> = {
+		Mox: counts.Mox * 10,
+		Lye: counts.Lye * 10,
+		Aga: counts.Aga * 10
+	};
+
+	if (unique === 1) {
+		const only = pasteSequence[0];
+		points.Mox = points.Lye = points.Aga = 0;
+		points[only] = 20;
+	} else if (unique === 3) {
+		points.Mox *= 2;
+		points.Lye *= 2;
+		points.Aga *= 2;
+	}
+
+	return points;
+}
+
+export function calcMixologyHandInPoints(
+	batch: readonly Record<MixologyPaste, number>[]
+): Record<MixologyPaste, number> {
+	const points = batch.reduce(
+		(total, contractPoints) => ({
+			Mox: total.Mox + contractPoints.Mox,
+			Lye: total.Lye + contractPoints.Lye,
+			Aga: total.Aga + contractPoints.Aga
+		}),
+		{ Mox: 0, Lye: 0, Aga: 0 }
+	);
+
+	const multiplier = batch.length >= 3 ? 1.4 : batch.length === 2 ? 1.2 : 1;
+	return {
+		Mox: Math.floor(points.Mox * multiplier),
+		Lye: Math.floor(points.Lye * multiplier),
+		Aga: Math.floor(points.Aga * multiplier)
+	};
 }
 
 export const mixologyContracts: MixologyContract[] = [

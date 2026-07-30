@@ -2,10 +2,14 @@ import { Bank, Items } from 'oldschooljs';
 import { describe, expect, test, vi } from 'vitest';
 
 import { herbloreItems } from '@/lib/data/filterables.js';
+import { QuestID } from '@/lib/minions/data/quests.js';
 import {
+	calcMixologyContractBasePoints,
+	calcMixologyHandInPoints,
 	getMixologyContractDuration,
 	MasteringMixologyBuyCommand,
 	MasteringMixologyStatusCommand,
+	MixologyPasteCreationCommand,
 	masteringMixologyBuyables,
 	mixologyContracts,
 	mixologyHerbs
@@ -72,6 +76,46 @@ describe('Mastering Mixology', () => {
 		expect(getMixologyContractDuration(base)).toEqual(900);
 		expect(getMixologyContractDuration(base)).toEqual(1000);
 		expect(getMixologyContractDuration(base)).toEqual(1100);
+	});
+
+	test('calculates base contract points using the OSRS resin table', () => {
+		expect(calcMixologyContractBasePoints(['Lye', 'Lye', 'Lye'])).toEqual({ Mox: 0, Lye: 20, Aga: 0 });
+		expect(calcMixologyContractBasePoints(['Mox', 'Mox', 'Aga'])).toEqual({ Mox: 20, Lye: 0, Aga: 10 });
+		expect(calcMixologyContractBasePoints(['Mox', 'Aga', 'Lye'])).toEqual({ Mox: 20, Lye: 20, Aga: 20 });
+	});
+
+	test('applies multi-order hand-in bonus to batches', () => {
+		const twoOrderBatch = calcMixologyHandInPoints([
+			{ Mox: 20, Lye: 0, Aga: 10 },
+			{ Mox: 0, Lye: 20, Aga: 0 }
+		]);
+		const threeOrderBatch = calcMixologyHandInPoints([
+			{ Mox: 20, Lye: 0, Aga: 0 },
+			{ Mox: 0, Lye: 30, Aga: 0 },
+			{ Mox: 0, Lye: 0, Aga: 20 }
+		]);
+
+		expect(twoOrderBatch).toEqual({ Mox: 24, Lye: 24, Aga: 12 });
+		expect(threeOrderBatch).toEqual({ Mox: 28, Lye: 42, Aga: 28 });
+	});
+
+	test('paste creation rejects busy minions before removing herbs', async () => {
+		const removeItemsFromBank = vi.fn();
+		const user = mockMixologyUser({
+			bank: new Bank().add('Guam leaf'),
+			minionName: 'Test minion',
+			minionIsBusy: async () => true,
+			removeItemsFromBank,
+			user: {
+				finished_quest_ids: [QuestID.ChildrenOfTheSun],
+				mixology_mox_points: 0,
+				mixology_aga_points: 0,
+				mixology_lye_points: 0
+			}
+		});
+
+		await expect(MixologyPasteCreationCommand(user, '1', 'Guam leaf', 1)).resolves.toEqual('Test minion is busy.');
+		expect(removeItemsFromBank).not.toHaveBeenCalled();
 	});
 
 	test('status reports points, paste and completed contracts', async () => {

@@ -6,7 +6,10 @@ import type {
 	MasteringMixologyContractCreatingTaskOptions
 } from '../../../lib/types/minions.js';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish.js';
+import type { MixologyPaste } from '../../../mahoji/lib/abstracted_commands/masteringMixologyCommand.js';
 import {
+	calcMixologyContractBasePoints,
+	calcMixologyHandInPoints,
 	getMixologyContractDuration,
 	mixologyContracts,
 	mixologyHerbs
@@ -68,7 +71,7 @@ export const MasteringMixologyContractTask: MinionTask = {
 		const user = await mUserFetch(userID);
 		let completed = 0;
 		let totalXP = 0;
-		const pointsEarned: Record<'Mox' | 'Lye' | 'Aga', number> = {
+		const pointsEarned: Record<MixologyPaste, number> = {
 			Mox: 0,
 			Lye: 0,
 			Aga: 0
@@ -76,8 +79,20 @@ export const MasteringMixologyContractTask: MinionTask = {
 		let totalPoints = 0;
 		let actualDuration = 0;
 		const contractBaseRate = Time.Hour / 343;
+		let currentHandInBatch: Record<MixologyPaste, number>[] = [];
 
-		const pasteUsage: Record<'Mox' | 'Lye' | 'Aga', number> = {
+		const addHandInBatchPoints = () => {
+			if (currentHandInBatch.length === 0) return;
+
+			const batchPoints = calcMixologyHandInPoints(currentHandInBatch);
+			pointsEarned.Mox += batchPoints.Mox;
+			pointsEarned.Lye += batchPoints.Lye;
+			pointsEarned.Aga += batchPoints.Aga;
+			totalPoints += batchPoints.Mox + batchPoints.Lye + batchPoints.Aga;
+			currentHandInBatch = [];
+		};
+
+		const pasteUsage: Record<MixologyPaste, number> = {
 			Mox: 0,
 			Lye: 0,
 			Aga: 0
@@ -88,7 +103,7 @@ export const MasteringMixologyContractTask: MinionTask = {
 			const currentBank = user.bank.clone();
 
 			const availableContracts = mixologyContracts.filter(contract => {
-				const counts: Record<'Mox' | 'Lye' | 'Aga', number> = { Mox: 0, Lye: 0, Aga: 0 };
+				const counts: Record<MixologyPaste, number> = { Mox: 0, Lye: 0, Aga: 0 };
 				for (const p of contract.pasteSequence) counts[p] += 10;
 				return (
 					currentLevel >= contract.requiredLevel &&
@@ -103,7 +118,6 @@ export const MasteringMixologyContractTask: MinionTask = {
 			const cost = new Bank();
 			for (const paste of contract.pasteSequence) {
 				cost.add(`${paste} paste`, 10);
-				pasteUsage[paste] += 10;
 			}
 
 			if (!user.owns(cost)) continue;
@@ -111,34 +125,12 @@ export const MasteringMixologyContractTask: MinionTask = {
 			await user.removeItemsFromBank(cost);
 			await ClientSettings.updateBankSetting('mastering_mixology_cost_bank', cost);
 
-			const contractXP = contract.xp;
-			const counts: Record<'Mox' | 'Lye' | 'Aga', number> = { Mox: 0, Lye: 0, Aga: 0 };
-			for (const p of contract.pasteSequence) counts[p]++;
-
-			const unique = Object.values(counts).filter(c => c > 0).length;
-
-			const basePoints: Record<'Mox' | 'Lye' | 'Aga', number> = {
-				Mox: counts.Mox * 10,
-				Lye: counts.Lye * 10,
-				Aga: counts.Aga * 10
-			};
-
-			let contractPoints = basePoints.Mox + basePoints.Lye + basePoints.Aga;
-			if (unique === 1) {
-				const only = contract.pasteSequence[0];
-				contractPoints = Math.floor(contractPoints * (2 / 3));
-				basePoints.Mox = basePoints.Lye = basePoints.Aga = 0;
-				basePoints[only] = contractPoints;
-			} else if (unique === 3) {
-				basePoints.Mox *= 2;
-				basePoints.Lye *= 2;
-				basePoints.Aga *= 2;
-				contractPoints = basePoints.Mox + basePoints.Lye + basePoints.Aga;
+			for (const paste of contract.pasteSequence) {
+				pasteUsage[paste] += 10;
 			}
 
-			pointsEarned.Mox += basePoints.Mox;
-			pointsEarned.Lye += basePoints.Lye;
-			pointsEarned.Aga += basePoints.Aga;
+			currentHandInBatch.push(calcMixologyContractBasePoints(contract.pasteSequence));
+			if (currentHandInBatch.length === 3) addHandInBatchPoints();
 
 			const contractDuration = getMixologyContractDuration(contractBaseRate);
 
@@ -146,10 +138,10 @@ export const MasteringMixologyContractTask: MinionTask = {
 
 			await user.incrementMinigameScore('mastering_mixology', 1);
 
-			totalXP += contractXP;
-			totalPoints += contractPoints;
+			totalXP += contract.xp;
 			completed++;
 		}
+		addHandInBatchPoints();
 
 		if (completed === 0) {
 			return handleTripFinish({
