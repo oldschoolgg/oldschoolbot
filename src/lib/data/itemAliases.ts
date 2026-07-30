@@ -477,3 +477,5 @@ setItemAlias(48_231, ['indy2 box', 'indy2'], false);
 /**
  * END BSO Supply Crates
  */
+
+setItemAlias(73_703, 'Enigma token');
