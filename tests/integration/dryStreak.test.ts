@@ -1,9 +1,23 @@
-import { Items } from 'oldschooljs';
-import { describe, test } from 'vitest';
+import { Items, resolveItems } from 'oldschooljs';
+import { describe, expect, test } from 'vitest';
 
 import { dryStreakEntities } from '../../src/mahoji/commands/tools.js';
 
 describe('Drystreak', async () => {
+	test('Nightmare includes all normal collection log items', () => {
+		const nightmare = dryStreakEntities.find(entity => entity.name === 'Nightmare');
+
+		expect(nightmare?.items).toEqual(expect.arrayContaining(resolveItems(['Little nightmare', 'Jar of dreams'])));
+	});
+
+	test("Phosani's Nightmare includes its exclusive collection log items", () => {
+		const phosanisNightmare = dryStreakEntities.find(entity => entity.name === "Phosani's Nightmare");
+
+		expect(phosanisNightmare?.items).toEqual(
+			expect.arrayContaining(resolveItems(['Slepey tablet', 'Parasitic egg']))
+		);
+	});
+
 	test('Data points', async () => {
 		const promises = [];
 		for (const a of dryStreakEntities) {
