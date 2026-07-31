@@ -328,7 +328,8 @@ export const BadgesEnum = {
 	Slayer: 13,
 	TopGiveawayer: 14,
 	Farmer: 15,
-	Hacktoberfest: 16
+	Hacktoberfest: 16,
+	Tester: 17
 } as const;
 
 export const badges: { [key: number]: string } = {
@@ -348,7 +349,8 @@ export const badges: { [key: number]: string } = {
 	[BadgesEnum.Slayer]: Emoji.Slayer,
 	[BadgesEnum.TopGiveawayer]: Emoji.SantaHat,
 	[BadgesEnum.Farmer]: Emoji.Farming,
-	[BadgesEnum.Hacktoberfest]: '<:hacktoberfest:1304259875634942082>'
+	[BadgesEnum.Hacktoberfest]: '<:hacktoberfest:1304259875634942082>',
+	[BadgesEnum.Tester]: '<:Tester:1532709853586526269>'
 };
 
 export const MAX_XP = BOT_TYPE === 'OSB' ? 200_000_000 : 5_000_000_000;
