@@ -119,7 +119,7 @@ export const farmingCommand = defineCommand({
 		{
 			type: 'Subcommand',
 			name: 'check_patches',
-			description: 'The page in your bank you want to see.',
+			description: 'Check which patches u have planted and which ones are ready.',
 			required: false
 		},
 		{
