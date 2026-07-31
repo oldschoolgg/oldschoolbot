@@ -275,6 +275,8 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 			}
 			if (boostResult.charges) speedDurationResult.updateBank.chargeBank.add(boostResult.charges);
 			if (boostResult.itemCost) speedDurationResult.updateBank.itemCostBank.add(boostResult.itemCost);
+			if (boostResult.materialCost)
+				speedDurationResult.updateBank.materialsCostBank.add(boostResult.materialCost);
 			if (boostResult.message) speedDurationResult.messages.push(boostResult.message);
 		}
 	}
