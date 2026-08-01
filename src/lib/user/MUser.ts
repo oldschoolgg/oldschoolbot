@@ -43,7 +43,6 @@ import { MUTEX_CACHE } from '@/lib/cache.js';
 import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
-import { BitField, BOT_TYPE } from '@/lib/constants.js';
 import { bossCLItems } from '@/lib/data/Collections.js';
 import { avasDevices } from '@/lib/data/CollectionsExport.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
@@ -58,8 +57,7 @@ import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { RemoveFoodFromUserParams } from '@/lib/minions/functions/removeFoodFromUser.js';
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import type { AddXpParams, ClueBank, KillableMonster } from '@/lib/minions/types.js';
-import { getUsersPerkTier } from '@/lib/perkTiers.js';
-import { roboChimpUserFetchCached } from '@/lib/roboChimp.js';
+import { getPerkTierCached, getUsersPerkTier } from '@/lib/perkTiers.js';
 import { type MinigameName, type MinigameScore, Minigames } from '@/lib/settings/minigames.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { DetailedFarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
@@ -87,8 +85,6 @@ import type { JsonKeys } from '@/lib/util.js';
 import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 
 export class MUserClass extends BaseUser {
-	private _perkTier: PerkTier | 0 | null = null;
-
 	constructor(user: User) {
 		super(user);
 	}
@@ -180,16 +176,14 @@ export class MUserClass extends BaseUser {
 	}
 
 	get perkTier() {
-		if (this._perkTier === 2 && BOT_TYPE === 'BSO') {
-			return this.bitfield.includes(BitField.HasPermanentTierOne) ? (3 as PerkTier) : this._perkTier;
-		}
-		return this._perkTier ?? 0;
+		return getPerkTierCached(this.id) ?? 0;
+	}
+	get perkTierIsCached(): boolean {
+		return getPerkTierCached(this.id) !== null;
 	}
 
 	async fetchPerkTier({ forceNoCache }: { forceNoCache?: boolean } = {}): Promise<0 | PerkTier> {
-		if (!forceNoCache && this._perkTier !== null) return this._perkTier;
-		this._perkTier = await getUsersPerkTier({ user: this, forceNoCache });
-		return this._perkTier;
+		return await getUsersPerkTier({ user: this, forceNoCache });
 	}
 
 	hasMonsterRequirements(monster: KillableMonster) {
@@ -744,7 +738,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 	}
 
 	async fetchRobochimpUser() {
-		return roboChimpUserFetchCached(this.id);
+		return Cache.getRoboChimpUser(this.id);
 	}
 
 	async forceUnequip(setup: GearSetupType, slot: EquipmentSlot, reason: string) {

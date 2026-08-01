@@ -12,7 +12,6 @@ import { buildClueButtons } from '@/lib/clues/clueUtils.js';
 import { BitField, PerkTier } from '@/lib/constants.js';
 import type { UnifiedOpenable } from '@/lib/openables.js';
 import { allOpenables, getOpenableLoot } from '@/lib/openables.js';
-import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { assert } from '@/lib/util/logError.js';
 import { patronMsg } from '@/lib/util/smallUtils.js';
 import { addToOpenablesScores } from '@/mahoji/mahojiSettings.js';
@@ -98,7 +97,7 @@ export async function abstractedOpenUntilCommand(
 	let targetCount = 0;
 	const maxOpenLimit = maxOpenQuantity ?? amountOfThisOpenableOwned;
 	const max = Math.min(10000, amountOfThisOpenableOwned, maxOpenLimit);
-	const totalLeaguesPoints = (await roboChimpUserFetch(user.id)).leagues_points_total;
+	const totalLeaguesPoints = (await Cache.getRoboChimpUser(user.id)).leagues_points_total;
 	for (let i = 0; i < max; i++) {
 		cost.add(openable.openedItem.id);
 		const thisLoot = await getOpenableLoot({ openable, quantity: 1, user, rng, totalLeaguesPoints });
@@ -177,7 +176,7 @@ async function finalizeOpening({
 
 	if (hasSmokey || hasOcto) {
 		const bonuses = [];
-		const totalLeaguesPoints = (await roboChimpUserFetch(user.id)).leagues_points_total;
+		const totalLeaguesPoints = (await Cache.getRoboChimpUser(user.id)).leagues_points_total;
 		for (const openable of openables) {
 			if (!openable.smokeyApplies) continue;
 			const bonusChancePercent = hasSmokey ? 10 : 8;
@@ -294,7 +293,7 @@ export async function abstractedOpenCommand(
 	const loot = new Bank();
 	const messages: string[] = [];
 
-	const totalLeaguesPoints = (await roboChimpUserFetch(user.id)).leagues_points_total;
+	const totalLeaguesPoints = (await Cache.getRoboChimpUser(user.id)).leagues_points_total;
 
 	for (const openable of openables) {
 		const { openedItem } = openable;

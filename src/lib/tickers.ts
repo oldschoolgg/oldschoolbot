@@ -7,11 +7,13 @@ import { stringMatches, Time } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
 
 import type { User } from '@/prisma/main.js';
+import { resolveBotSendableMessage } from '@/discord/utils.js';
 import { analyticsTick } from '@/lib/analytics.js';
-import { globalConfig } from '@/lib/constants.js';
+import { Channel, globalConfig } from '@/lib/constants.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { cacheGEPrices } from '@/lib/marketPrices.js';
 import { collectMetrics } from '@/lib/metrics.js';
+import { runCommand } from '@/lib/settings/settings.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { FarmingPatchName, FarmingPatchSettingsKey } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { IPatchData } from '@/lib/skilling/skills/farming/utils/types.js';
@@ -65,6 +67,43 @@ export const tickers: {
 				select: {
 					timestamp: true
 				}
+			});
+		}
+	},
+	{
+		name: 'shutdown',
+		timer: null,
+		startupWait: Time.Minute,
+		interval: Time.Minute,
+		cb: async () => {
+			const settings = await ClientSettings.fetch({ shutdown: true });
+			if (!settings.shutdown) return;
+			await ClientSettings.update({ shutdown: false });
+
+			const adminUser = await mUserFetch(globalConfig.adminUserIDs[1]);
+			const interaction = {
+				user: adminUser,
+				userId: adminUser.id,
+				channelId: Channel.BotLogs,
+				guildId: globalConfig.supportServerID,
+				member: null,
+				rawInteraction: {},
+				defer: async () => {},
+				confirmation: async () => {},
+				reply: async (message: BaseSendableMessage | string) => {
+					const { content } = await resolveBotSendableMessage(message);
+					Logging.logDebug(`Shutdown message: ${content}`);
+					void globalClient.sendMessage(Channel.BotLogs, content ?? 'Shutting down...');
+				}
+			} as unknown as OSInteraction;
+
+			await runCommand({
+				commandName: 'admin',
+				args: { shut_down: {} },
+				interaction,
+				user: adminUser,
+				continueDeltaMillis: null,
+				ignoreUserIsBusy: true
 			});
 		}
 	},
