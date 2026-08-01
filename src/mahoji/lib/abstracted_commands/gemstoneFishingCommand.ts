@@ -39,7 +39,7 @@ export async function gemstoneFishingCommand(user: MUser, channelId: string, qua
 	if (duration > maxTripLength) {
 		return `${user.minionName} can't go on trips longer than ${formatDuration(
 			maxTripLength
-		)}, try a lower quantity. The highest amount of Gemscales you can catch is ${Math.floor(
+		)}, try a lower quantity. The highest number of Gemscales you can catch is ${Math.floor(
 			maxTripLength / timePerFish
 		)}.`;
 	}
