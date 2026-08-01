@@ -1,7 +1,6 @@
 import type { MoktangTaskOptions } from '@/lib/bso/bsoTypes.js';
 import { dwarvenOutfit } from '@/lib/bso/collection-log/main.js';
 
-import { spoiler } from '@oldschoolgg/discord';
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items, resolveItems } from 'oldschooljs';
 
@@ -9,6 +8,10 @@ import { trackLoot } from '@/lib/lootTrack.js';
 import { PercentCounter } from '@/lib/structures/PercentCounter.js';
 
 const requiredPickaxes = resolveItems(['Crystal pickaxe', 'Volcanic pickaxe', 'Dwarven pickaxe', 'Dragon pickaxe']);
+
+function formatMoktangBoostMessage(message: string) {
+	return message.startsWith('-') ? message.slice(1) : message;
+}
 
 export async function moktangCommand(user: MUser, channelId: string, inputQuantity: number | undefined) {
 	const timeToKill = new PercentCounter(Time.Minute * 15, 'time');
@@ -73,10 +76,11 @@ export async function moktangCommand(user: MUser, channelId: string, inputQuanti
 		type: 'Moktang'
 	});
 
+	const boostMessages = timeToKill.messages.map(formatMoktangBoostMessage).join(', ');
+	const missingBoostMessages = timeToKill.missed.map(formatMoktangBoostMessage).join(', ');
+
 	return `${user.minionName} is now off to kill Moktang ${quantity}x times, their trip will take ${formatDuration(
 		duration
 	)}. Removed ${cost}.
-**Boosts:** ${timeToKill.messages.join(', ')} ${
-		timeToKill.missed.length > 0 ? spoiler(timeToKill.missed.join(', ')) : ''
-	}`;
+**Boosts:** ${boostMessages}${missingBoostMessages.length > 0 ? `\n**Missing:** ${missingBoostMessages}` : ''}`;
 }
