@@ -37,6 +37,11 @@ Herblore master cape, [Mecha Mortar](/bso/skills/invention/#inventions)
 - Neem Oil - made with Neem Drupe and Jug of Water.
 - Dragon's Fury - (a potion made at 120 herblore using 3 Ignecarus Scales and 1 Abyssal Dragon Bones)
 
+### [Kibble](/bso/skills/cooking/#kibble)
+- Simple Kibble
+- Delicious Kibble
+- Extraordinary Kibble
+
 
 ## Methods
 
