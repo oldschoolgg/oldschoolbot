@@ -1050,6 +1050,128 @@ export const miscBossKillables: KillableMonster[] = [
 		]
 	},
 	{
+		id: Monsters.Yama.id,
+		name: Monsters.Yama.name,
+		aliases: Monsters.Yama.aliases,
+		timeToFinish: Time.Minute * 8.5,
+		respawnTime: Time.Second * 10,
+		table: Monsters.Yama,
+		requiredQuests: [QuestID.AKingdomDivided],
+		qpRequired: 150,
+		difficultyRating: 10,
+		deathProps: {
+			hardness: 0.2,
+			steepness: 0.99
+		},
+		notifyDrops: resolveItems(['Yami', 'Soulflame horn', 'Oathplate helm', 'Oathplate chest', 'Oathplate legs']),
+		uniques: resolveItems([
+			'Yami',
+			'Soulflame horn',
+			'Oathplate helm',
+			'Oathplate chest',
+			'Oathplate legs',
+			'Dossier',
+			'Forgotten lockbox',
+			'Oathplate shards',
+			'Chasm teleport scroll',
+			'Barrel of demonic tallow (full)',
+			'Rite of vile transference'
+		]),
+		equippedItemBoosts: [
+			{
+				items: [
+					{ boostPercent: 18, itemID: itemID('Purging staff') },
+					{ boostPercent: 14, itemID: itemID("Tumeken's shadow") },
+					{ boostPercent: 8, itemID: itemID('Sanguinesti staff') },
+					{ boostPercent: 5, itemID: itemID('Trident of the swamp') }
+				],
+				gearSetup: 'mage',
+				required: true
+			},
+			{
+				items: [
+					{ boostPercent: 6, itemID: itemID('Ancestral robe top') },
+					{ boostPercent: 3, itemID: itemID('Virtus robe top') }
+				],
+				gearSetup: 'mage'
+			},
+			{
+				items: [
+					{ boostPercent: 6, itemID: itemID('Ancestral robe bottom') },
+					{ boostPercent: 3, itemID: itemID('Virtus robe bottom') }
+				],
+				gearSetup: 'mage'
+			},
+			{
+				items: [{ boostPercent: 5, itemID: itemID('Tormented bracelet') }],
+				gearSetup: 'mage'
+			},
+			{
+				items: [{ boostPercent: 4, itemID: itemID('Occult necklace') }],
+				gearSetup: 'mage'
+			},
+			{
+				items: [{ boostPercent: 5, itemID: itemID('Emberlight') }],
+				gearSetup: 'melee'
+			}
+		],
+		itemInBankBoosts: [
+			{
+				[itemID('Saturated heart')]: 4,
+				[itemID('Imbued heart')]: 2
+			}
+		],
+		levelRequirements: {
+			prayer: 70,
+			magic: 82,
+			ranged: 80,
+			defence: 75,
+			hitpoints: 80
+		},
+		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged, GearStat.AttackSlash],
+		attackStyleToUse: GearStat.AttackMagic,
+		defaultAttackStyles: ['magic'],
+		disallowedAttackStyles: ['attack', 'strength', 'defence'],
+		healAmountNeeded: 20 * 12,
+		minimumGearRequirements: {
+			mage: {
+				[GearStat.AttackMagic]: 125
+			}
+		},
+		itemCost: [
+			{
+				itemCost: new Bank().add('Chasm teleport scroll'),
+				qtyPerKill: 1,
+				boostPercent: 25,
+				optional: true
+			},
+			{
+				itemCost: new Bank().add('Super restore(4)'),
+				qtyPerKill: 0.35,
+				alternativeConsumables: [
+					{
+						itemCost: new Bank().add('Prayer potion(4)'),
+						qtyPerKill: 0.35
+					}
+				]
+			},
+			{
+				itemCost: new Bank().add('Antidote++(4)'),
+				qtyPerKill: 0.08,
+				alternativeConsumables: [
+					{
+						itemCost: new Bank().add('Anti-venom+(4)'),
+						qtyPerKill: 0.05
+					}
+				]
+			},
+			{
+				itemCost: new Bank().add('Shark'),
+				qtyPerKill: 2
+			}
+		]
+	},
+	{
 		id: Monsters.Branda.id,
 		name: Monsters.Branda.name,
 		aliases: Monsters.Branda.aliases,

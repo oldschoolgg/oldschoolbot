@@ -1194,6 +1194,7 @@ enum activity_type_enum {
   RoguesDenMaze
   KalphiteKing
   Gauntlet
+  DoomOfMokhaiotl
   Dungeoneering
   CastleWars
   MageArena

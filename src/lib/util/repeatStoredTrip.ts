@@ -42,6 +42,7 @@ import type {
 	CreateForestersRationsActivityTaskOptions,
 	CutLeapingFishActivityTaskOptions,
 	DarkAltarOptions,
+	DoomOfMokhaiotlOptions,
 	EnchantingActivityTaskOptions,
 	FarmingActivityTaskOptions,
 	FiremakingActivityTaskOptions,
@@ -130,7 +131,7 @@ type MockedCommandOptions = {
 
 const tripHandlers: {
 	[K in keyof ActivityMap]: {
-		commandName: string;
+		commandName: string | ((data: ActivityMap[K]) => string);
 		args: (data: ActivityMap[K]) => MockedCommandOptions;
 	};
 } = {
@@ -423,6 +424,12 @@ const tripHandlers: {
 		commandName: 'minigames',
 		args: (data: GauntletOptions) => ({ gauntlet: { start: { corrupted: data.corrupted } } })
 	},
+	[activity_type_enum.DoomOfMokhaiotl]: {
+		commandName: 'minigames',
+		args: (data: DoomOfMokhaiotlOptions) => ({
+			doom_of_mokhaiotl: { start: { delve_level: data.delveLevel, quantity: data.quantity } }
+		})
+	},
 	[activity_type_enum.GloryCharging]: {
 		commandName: 'activities',
 		args: (data: ActivityTaskOptionsWithQuantity) => ({ charge: { item: 'glory', quantity: data.quantity } })
@@ -438,10 +445,17 @@ const tripHandlers: {
 		args: () => ({ gnome_restaurant: { start: {} } })
 	},
 	[activity_type_enum.GroupMonsterKilling]: {
-		commandName: 'mass',
-		args: (data: GroupMonsterActivityTaskOptions) => ({
-			monster: autocompleteMonsters.find(i => i.id === data.mi)?.name ?? data.mi.toString()
-		})
+		commandName: (data: GroupMonsterActivityTaskOptions) => (data.yamaDetails ? 'k' : 'mass'),
+		args: (data: GroupMonsterActivityTaskOptions) =>
+			data.yamaDetails
+				? {
+						name: 'Yama',
+						quantity: data.iQty ?? data.q,
+						solo: data.yamaDetails.solo
+					}
+				: {
+						monster: autocompleteMonsters.find(i => i.id === data.mi)?.name ?? data.mi.toString()
+					}
 	},
 	[activity_type_enum.Herblore]: {
 		commandName: 'mix',
@@ -981,8 +995,10 @@ export async function repeatTrip(
 		}
 		throw err;
 	}
+	const commandName =
+		typeof handler.commandName === 'function' ? handler.commandName(args as any) : handler.commandName;
 	return runCommand({
-		commandName: handler.commandName,
+		commandName,
 		isContinue: true,
 		args: commandArgs,
 		interaction,

@@ -141,3 +141,23 @@ model DiscordUser {
 
   @@map("discord_user")
 }
+
+enum PatreonSources {
+  CYR
+  MAGNA
+}
+
+model PatreonLogs {
+  id   Int      @id @default(autoincrement())
+  date DateTime @default(now())
+
+  patreon_id String         @db.Text
+  discord_id String?        @db.Text
+  action     String?        @db.Text
+  body       Json           @default("{}") @db.JsonB
+  result     String         @default("") @db.Text
+  source     PatreonSources
+  is_debug   Boolean        @default(false)
+
+  @@map("patreon_logs")
+}

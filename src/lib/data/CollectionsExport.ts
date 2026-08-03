@@ -180,6 +180,20 @@ export const muspahCL = resolveItems([
 ]);
 export const crazyArchaeologistCL = resolveItems(['Odium shard 2', 'Malediction shard 2', 'Fedora']);
 export const derangedArchaeologistCL = resolveItems(['Steel ring']);
+export const doomOfMokhaiotlCL = resolveItems(['Mokhaiotl cloth', 'Eye of ayak (uncharged)', 'Avernic treads', 'Dom']);
+export const yamaCL = resolveItems([
+	'Soulflame horn',
+	'Oathplate helm',
+	'Oathplate chest',
+	'Oathplate legs',
+	'Dossier',
+	'Forgotten lockbox',
+	'Oathplate shards',
+	'Chasm teleport scroll',
+	'Barrel of demonic tallow (full)',
+	'Rite of vile transference',
+	'Yami'
+]);
 export const dagannothKingsCL = resolveItems([
 	'Pet dagannoth prime',
 	'Pet dagannoth supreme',
@@ -1425,9 +1439,9 @@ export const allPetsCL = resolveItems([
 	'Nid',
 	'Huberte',
 	'Moxi',
-	'Bran'
-	// 'Yami', // Currently unobtainable.
-	// 'Dom' // Currently unobtainable.
+	'Bran',
+	'Yami',
+	'Dom'
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',

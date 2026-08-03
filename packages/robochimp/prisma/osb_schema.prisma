@@ -903,6 +903,7 @@ enum activity_type_enum {
   SoulWars
   RoguesDenMaze
   Gauntlet
+  DoomOfMokhaiotl
   CastleWars
   MageArena
   Raids

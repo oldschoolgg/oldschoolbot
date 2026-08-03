@@ -41,16 +41,18 @@ export class RUser {
 	}
 
 	private get activePremium(): { tier: number; expiry: bigint } | null {
+		return this.premiumEntitlements[0] ?? null;
+	}
+
+	get premiumEntitlements(): Array<{ tier: number; expiry: bigint }> {
 		const now = Date.now();
-		return (
-			this._groupUsers
-				.flatMap(user => {
-					if (!user.premium_balance_tier || !user.premium_balance_expiry_date) return [];
-					if (Number(user.premium_balance_expiry_date) <= now) return [];
-					return [{ tier: user.premium_balance_tier, expiry: user.premium_balance_expiry_date }];
-				})
-				.sort((a, b) => b.tier - a.tier || Number(b.expiry - a.expiry))[0] ?? null
-		);
+		return this._groupUsers
+			.flatMap(user => {
+				if (!user.premium_balance_tier || !user.premium_balance_expiry_date) return [];
+				if (Number(user.premium_balance_expiry_date) <= now) return [];
+				return [{ tier: user.premium_balance_tier, expiry: user.premium_balance_expiry_date }];
+			})
+			.sort((a, b) => b.tier - a.tier || Number(b.expiry - a.expiry));
 	}
 
 	get premiumTier(): number | null {

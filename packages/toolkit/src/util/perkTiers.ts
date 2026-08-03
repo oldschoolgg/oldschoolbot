@@ -101,6 +101,10 @@ export type PerkTierInput = {
 	patreonBits: number[] | null | undefined;
 	premiumTier?: PerkTier | number | null;
 	premiumExpiry?: bigint | number | Date | null;
+	premiumEntitlements?: Array<{
+		tier: PerkTier | number | null | undefined;
+		expiry: bigint | number | Date | null | undefined;
+	}>;
 };
 
 export type PerkTierOptions = {
@@ -239,16 +243,21 @@ export function getPerkTierDetails(user: PerkTierInput, options: PerkTierOptions
 		patronTier: tier.number
 	}));
 
-	const premiumExpiry = normalizeExpiry(user.premiumExpiry);
-	if (user.premiumTier && premiumExpiry && premiumExpiry > now) {
-		details.push({
-			tier: user.premiumTier as PerkTier,
-			source: 'premium',
-			expires: {
-				date: new Date(premiumExpiry),
-				ttl: BigInt(Math.max(0, premiumExpiry - now))
-			}
-		});
+	const premiumEntitlements =
+		user.premiumEntitlements ??
+		(user.premiumTier && user.premiumExpiry ? [{ tier: user.premiumTier, expiry: user.premiumExpiry }] : []);
+	for (const premium of premiumEntitlements) {
+		const premiumExpiry = normalizeExpiry(premium.expiry);
+		if (premium.tier && premiumExpiry && premiumExpiry > now) {
+			details.push({
+				tier: premium.tier as PerkTier,
+				source: 'premium',
+				expires: {
+					date: new Date(premiumExpiry),
+					ttl: BigInt(Math.max(0, premiumExpiry - now))
+				}
+			});
+		}
 	}
 
 	if (options.courtesyTier && options.courtesyTier > 0) {
@@ -272,7 +281,8 @@ export function getPerkTierDisplay(user: PerkTierInput, options?: PerkTierOption
 		PerkTier.Zero,
 		...details.filter(tier => tier.source === 'patreon').map(tier => tier.tier)
 	);
-	const premium = details.find((tier): tier is PremiumPerk => tier.source === 'premium');
+	const premiumTiers = details.filter((tier): tier is PremiumPerk => tier.source === 'premium');
+	const premium = premiumTiers[0];
 	const courtesyTier = Math.max(
 		PerkTier.Zero,
 		...details.filter(tier => tier.source === 'courtesy').map(tier => tier.tier)
@@ -283,7 +293,12 @@ export function getPerkTierDisplay(user: PerkTierInput, options?: PerkTierOption
 	);
 
 	if (premium && premium.tier > patreonTier && premium.tier >= courtesyTier && premium.tier >= legacyTier) {
-		return `Premium __Tier ${premium.tier - 1}__ - ${formatDuration(Number(premium.expires.ttl))} remaining`;
+		return premiumTiers
+			.map((tier, index) => {
+				const tierLabel = `Tier ${tier.tier - 1}`;
+				return `Temp Tier: ${index === 0 ? `**${tierLabel}**` : tierLabel} (Expires: ${tier.expires.date.toISOString()}, ${formatDuration(Number(tier.expires.ttl))} remaining)`;
+			})
+			.join(', ');
 	}
 
 	if (courtesyTier > patreonTier && courtesyTier > (premium?.tier ?? PerkTier.Zero) && courtesyTier >= legacyTier) {

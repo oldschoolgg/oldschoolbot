@@ -15,6 +15,7 @@ import { nightmareCommand } from '@/mahoji/lib/abstracted_commands/nightmareComm
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 import { temporossCommand } from '@/mahoji/lib/abstracted_commands/temporossCommand.js';
 import { wintertodtCommand } from '@/mahoji/lib/abstracted_commands/wintertodtCommand.js';
+import { yamaCommand } from '@/mahoji/lib/abstracted_commands/yamaCommand.js';
 import { zalcanoCommand } from '@/mahoji/lib/abstracted_commands/zalcanoCommand.js';
 
 const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:zulrah quantity:5`";
@@ -40,6 +41,7 @@ export async function minionKillCommand(
 
 	if (stringMatches(name, 'colosseum')) return colosseumCommand(interaction);
 	if (stringMatches(name, 'nex')) return nexCommand(interaction, user, channelId, solo);
+	if (stringMatches(name, 'yama')) return yamaCommand(interaction, user, channelId, inputQuantity, solo, rng);
 	if (stringMatches(name, 'zalcano')) return zalcanoCommand(rng, user, channelId, inputQuantity);
 	if (stringMatches(name, 'tempoross')) return temporossCommand(user, channelId, inputQuantity);
 	if (name.toLowerCase().includes('nightmare')) return nightmareCommand(user, channelId, name, inputQuantity);

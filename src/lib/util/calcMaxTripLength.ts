@@ -28,6 +28,7 @@ export function calcMaxTripLengthSync(user: MUser, roboUser: RobochimpUser, acti
 		case 'MonsterKilling':
 		case 'Wintertodt':
 		case 'Zalcano':
+		case 'DoomOfMokhaiotl':
 		case 'BarbarianAssault':
 		case 'AnimatedArmour':
 		case 'Sepulchre':

@@ -60,6 +60,7 @@ export function taskGroupFromActivity(type: activity_type_enum): ActivityGroup {
 		case 'GnomeRestaurant':
 		case 'RoguesDenMaze':
 		case 'Gauntlet':
+		case 'DoomOfMokhaiotl':
 		case 'CastleWars':
 		case 'MageArena':
 		case 'Raids':

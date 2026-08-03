@@ -1,7 +1,7 @@
 import { createHmac } from 'node:crypto';
 import { notEmpty, PerkTier, uniqueArr } from '@oldschoolgg/toolkit';
 import { RedisKeys } from '@oldschoolgg/util';
-import { Prisma } from '@prisma/robochimp';
+import { PatreonSources, Prisma } from '@prisma/robochimp';
 
 import type { RUser } from '@/structures/RUser.js';
 import { globalConfig } from '../constants.js';
@@ -64,6 +64,15 @@ type PatreonMember = {
 	discordID?: string;
 	entitledTier: PatronTier | null;
 	patronStatus: string | null;
+};
+
+type PatreonWebhookLogData = {
+	rawBody: string;
+	action: string | null;
+	member: Pick<PatreonMember, 'source' | 'patreonID'>;
+	discordID: string | null;
+	messages: string[];
+	isDebug?: boolean;
 };
 
 type Sponsor = {
@@ -328,6 +337,35 @@ function parsePayload(rawBody: string): PatreonPayload {
 	return data;
 }
 
+function parseBodyForLog(rawBody: string): Prisma.InputJsonValue {
+	return JSON.parse(rawBody) as Prisma.InputJsonValue;
+}
+
+function toPatreonSource(source: PaidTierSource): PatreonSources {
+	return source === 'cyr' ? PatreonSources.CYR : PatreonSources.MAGNA;
+}
+
+export async function createPatreonWebhookLog({
+	rawBody,
+	action,
+	member,
+	discordID,
+	messages,
+	isDebug = false
+}: PatreonWebhookLogData) {
+	await roboChimpClient.patreonLogs.create({
+		data: {
+			patreon_id: member.patreonID,
+			discord_id: discordID,
+			action,
+			body: parseBodyForLog(rawBody),
+			result: messages.join('\n'),
+			source: toPatreonSource(member.source),
+			is_debug: isDebug
+		}
+	});
+}
+
 function getDiscordID(blob: PatreonBlob | undefined): string | undefined {
 	const id = blob?.attributes?.social_connections?.discord?.user_id;
 	return typeof id === 'string' && id.length > 0 ? id : undefined;
@@ -361,6 +399,31 @@ function parseMember(rawBody: string, event: PatreonWebhookEvent, config: Campai
 	};
 }
 
+export async function logIgnoredPatreonWebhook(rawBody: string, action: string | null, config: CampaignConfig) {
+	const data = parsePayload(rawBody);
+	const member = data.data!;
+	const patreonID = member.relationships?.user?.data?.id;
+	if (typeof patreonID !== 'string' || patreonID.length === 0) {
+		throw new Error('Patreon webhook member did not contain a user relationship ID.');
+	}
+	const userBlob = data.included?.find(blob => blob.type === 'user' && blob.id === patreonID);
+	const messages = [
+		`Received ${config.source} Patreon webhook ${action ?? 'unknown'} for Patreon user ${patreonID}.`,
+		`Ignoring Patreon webhook event ${action ?? 'unknown'}.`
+	];
+	await createPatreonWebhookLog({
+		rawBody,
+		action,
+		member: {
+			source: config.source,
+			patreonID
+		},
+		discordID: getDiscordID(userBlob) ?? null,
+		messages
+	});
+	return messages.join('\n');
+}
+
 async function fetchKnownUser(id: string): Promise<RUser | null> {
 	const user = await roboChimpClient.user.findUnique({
 		where: {
@@ -392,19 +455,61 @@ async function resolvePatron(member: PatreonMember): Promise<RUser | null> {
 	return globalClient.fetchRUser(user.id);
 }
 
+async function resolvePatronUserRow(member: PatreonMember) {
+	if (member.discordID) {
+		return roboChimpClient.user.findUnique({
+			where: {
+				id: BigInt(member.discordID)
+			}
+		});
+	}
+
+	const cachedID = await redis.get(RedisKeys.PatreonToUserId(member.patreonID));
+	if (cachedID) {
+		const user = await roboChimpClient.user.findUnique({
+			where: {
+				id: BigInt(cachedID)
+			}
+		});
+		if (user) return user;
+	}
+
+	return roboChimpClient.user.findFirst({
+		where: member.source === 'magna' ? { patreon_id: member.patreonID } : { cyr_patreon_id: member.patreonID }
+	});
+}
+
 function patronIDField(source: PaidTierSource) {
 	return source === 'magna' ? 'patreon_id' : 'cyr_patreon_id';
 }
 
 export async function handlePatreonWebhook(rawBody: string, event: PatreonWebhookEvent, config: CampaignConfig) {
 	const member = parseMember(rawBody, event, config);
+	const messages: string[] = [
+		`Received ${member.source} Patreon webhook ${event} for Patreon user ${member.patreonID}.`
+	];
+	const userRow = await resolvePatronUserRow(member);
+	const resolvedDiscordID = member.discordID ?? userRow?.id.toString() ?? null;
+	if (member.discordID) {
+		messages.push(`Found Discord ID ${member.discordID} in webhook body.`);
+	} else if (userRow) {
+		messages.push(`Found Discord ID ${userRow.id.toString()} from linked Patreon profile.`);
+	} else {
+		messages.push("Couldn't find a discord id for Patreon user, skipping");
+		await createPatreonWebhookLog({ rawBody, action: event, member, discordID: null, messages });
+		return messages.join('\n');
+	}
+
 	const user = await resolvePatron(member);
 	if (!user) {
+		messages.push("Couldn't find a discord id for Patreon user, skipping");
 		console.warn(`Unable to resolve ${member.source} patron ${member.patreonID} from webhook ${event}.`);
-		return null;
+		await createPatreonWebhookLog({ rawBody, action: event, member, discordID: resolvedDiscordID, messages });
+		return messages.join('\n');
 	}
 
 	const groupIDs = await user.findGroup();
+	messages.push(`Loaded user group: ${groupIDs.join(', ')}.`);
 	const rows = await roboChimpClient.user.findMany({
 		where: {
 			id: {
@@ -423,6 +528,13 @@ export async function handlePatreonWebhook(rawBody: string, event: PatreonWebhoo
 		}
 	});
 	const paidBits = member.patronStatus === 'active_patron' && member.entitledTier ? [member.entitledTier.bit] : [];
+	if (paidBits.length > 0 && member.entitledTier) {
+		messages.push(`Adding ${member.source} tier ${member.entitledTier.number} bit ${member.entitledTier.bit}.`);
+	} else {
+		messages.push(
+			`No active paid tier for ${member.source}; removing ${member.source} paid bits from linked user.`
+		);
+	}
 	const targetID = user.id;
 	const rowsNext = rows.map(row => {
 		const nextBits =
@@ -442,14 +554,24 @@ export async function handlePatreonWebhook(rawBody: string, event: PatreonWebhoo
 			!nextBits.includes(Bits.CyrsOriginalPatrons)
 		) {
 			nextBits.push(Bits.CyrsOriginalPatrons);
+			messages.push(`Adding Cyr original patron bit ${Bits.CyrsOriginalPatrons} to ${row.id.toString()}.`);
 		}
+		const removedBits = row.bits.filter(bit => !nextBits.includes(bit));
+		const addedBits = nextBits.filter(bit => !row.bits.includes(bit));
+		if (removedBits.length > 0)
+			messages.push(`Removing bits from ${row.id.toString()}: ${removedBits.join(', ')}.`);
+		if (addedBits.length > 0) messages.push(`Adding bits to ${row.id.toString()}: ${addedBits.join(', ')}.`);
+		if (removedBits.length === 0 && addedBits.length === 0)
+			messages.push(`No bit changes necessary for ${row.id.toString()}.`);
 		return { ...row, nextBits };
 	});
 	const groupTier = Math.max(
 		...rowsNext.map(row => Math.max(getRoboChimpRolePerkTier(row.nextBits), getPerkTierFromPaidBits(row.nextBits))),
 		PerkTier.Zero
 	);
+	messages.push(`Setting perk tier to ${groupTier} for ${rowsNext.map(row => row.id.toString()).join(', ')}.`);
 	const idField = patronIDField(member.source);
+	messages.push(`Setting ${idField} to ${member.patreonID} on ${targetID.toString()}.`);
 
 	await roboChimpClient.$transaction(
 		rowsNext.map(row =>
@@ -465,17 +587,21 @@ export async function handlePatreonWebhook(rawBody: string, event: PatreonWebhoo
 	);
 
 	await redis.set(RedisKeys.PatreonToUserId(member.patreonID), user.id.toString());
+	messages.push(`Cached Patreon user ${member.patreonID} -> Discord user ${user.id.toString()}.`);
 	await onTierChange({
 		newTier: groupTier,
 		oldTier: Math.max(...rows.map(row => row.perk_tier ?? PerkTier.Zero), PerkTier.Zero),
 		discordIDs: groupIDs,
 		isFirstTimePatron: rows.every(row => !row.bits.includes(Bits.HasEverBeenPatron))
 	});
+	messages.push(`Applied tier change side effects for ${groupIDs.join(', ')}.`);
 
 	const tierText = member.entitledTier
 		? `${member.source} tier ${member.entitledTier.number}`
 		: `${member.source} no paid tier`;
-	return `${user.id.toString()}: ${tierText}, perk_tier ${groupTier}`;
+	messages.push(`${user.id.toString()}: ${tierText}, perk_tier ${groupTier}`);
+	await createPatreonWebhookLog({ rawBody, action: event, member, discordID: resolvedDiscordID, messages });
+	return messages.join('\n');
 }
 
 async function onTierChange({
@@ -998,21 +1124,6 @@ class PatreonTask {
 			});
 		}
 
-		const usersByGroup = new Map<string, DesiredRobochimpUserState[]>();
-		for (const user of desiredUsers.values()) {
-			if (!user.user_group_id) continue;
-			const groupUsers = usersByGroup.get(user.user_group_id) ?? [];
-			groupUsers.push(user);
-			usersByGroup.set(user.user_group_id, groupUsers);
-		}
-
-		for (const groupUsers of usersByGroup.values()) {
-			const groupPerkTier = Math.max(...groupUsers.map(user => user.nextPerkTier), PerkTier.Zero);
-			for (const user of groupUsers) {
-				user.nextPerkTier = groupPerkTier;
-			}
-		}
-
 		const tierChanges: Array<{
 			oldTier: number;
 			newTier: number;
@@ -1021,7 +1132,6 @@ class PatreonTask {
 		}> = [];
 
 		for (const user of desiredUsers.values()) {
-			if (user.user_group_id) continue;
 			const oldTier = user.perk_tier ?? PerkTier.Zero;
 			if (oldTier === user.nextPerkTier) continue;
 			tierChanges.push({
@@ -1029,18 +1139,6 @@ class PatreonTask {
 				newTier: user.nextPerkTier,
 				discordIDs: [user.id.toString()],
 				isFirstTimePatron: !user.bits.includes(Bits.HasEverBeenPatron)
-			});
-		}
-
-		for (const groupUsers of usersByGroup.values()) {
-			const oldTier = Math.max(...groupUsers.map(user => user.perk_tier ?? PerkTier.Zero), PerkTier.Zero);
-			const newTier = Math.max(...groupUsers.map(user => user.nextPerkTier), PerkTier.Zero);
-			if (oldTier === newTier) continue;
-			tierChanges.push({
-				oldTier,
-				newTier,
-				discordIDs: groupUsers.map(user => user.id.toString()),
-				isFirstTimePatron: groupUsers.every(user => !user.bits.includes(Bits.HasEverBeenPatron))
 			});
 		}
 

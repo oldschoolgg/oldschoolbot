@@ -6,6 +6,7 @@ import {
 	getVerifiedPatreonCampaign,
 	handlePatreonWebhook,
 	isPatreonEvent,
+	logIgnoredPatreonWebhook,
 	parseStrToTier,
 	patreonTask
 } from '@/lib/patreon.js';
@@ -29,6 +30,7 @@ webhooksServer.post('/patreon', async c => {
 	const patreonEvent = c.req.header('X-Patreon-Event');
 	if (!isPatreonEvent(patreonEvent)) {
 		console.log(`Ignoring Patreon webhook event ${patreonEvent ?? 'unknown'}.`);
+		await logIgnoredPatreonWebhook(raw, patreonEvent ?? null, campaign);
 		return c.text('OK');
 	}
 
