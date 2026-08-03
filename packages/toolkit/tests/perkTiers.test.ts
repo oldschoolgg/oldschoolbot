@@ -36,7 +36,26 @@ describe('perk tiers', () => {
 		};
 
 		expect(getPerkTierEx(input, { now })).toBe(PerkTier.Five);
-		expect(getPerkTierDisplay(input, { now })).toBe('Premium __Tier 4__ - 10 seconds remaining');
+		expect(getPerkTierDisplay(input, { now })).toBe(
+			'Temp Tier: **Tier 4** (Expires: 1970-01-01T00:00:11.000Z, 10 seconds remaining)'
+		);
+	});
+
+	test('formats multiple unexpired premium tier entitlements', () => {
+		const now = 1000;
+		const input = {
+			patreonBits: [],
+			premiumEntitlements: [
+				{ tier: 3, expiry: now + 20_000 },
+				{ tier: 5, expiry: now + 10_000 },
+				{ tier: 7, expiry: now - 1 }
+			]
+		};
+
+		expect(getPerkTierEx(input, { now })).toBe(PerkTier.Five);
+		expect(getPerkTierDisplay(input, { now })).toBe(
+			'Temp Tier: **Tier 4** (Expires: 1970-01-01T00:00:11.000Z, 10 seconds remaining), Temp Tier: Tier 2 (Expires: 1970-01-01T00:00:21.000Z, 20 seconds remaining)'
+		);
 	});
 
 	test('ignores expired premium tier', () => {

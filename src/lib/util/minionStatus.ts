@@ -44,6 +44,7 @@ import type {
 	CreateForestersRationsActivityTaskOptions,
 	CutLeapingFishActivityTaskOptions,
 	DarkAltarOptions,
+	DoomOfMokhaiotlOptions,
 	EnchantingActivityTaskOptions,
 	FarmingActivityTaskOptions,
 	FightCavesActivityTaskOptions,
@@ -81,6 +82,7 @@ import type {
 	TOAOptions,
 	ValeTotemsActivityTaskOptions,
 	WoodcuttingActivityTaskOptions,
+	YamaActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '@/lib/types/minions.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
@@ -113,6 +115,11 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 			return `${name} is currently killing ${data.q}x ${monster?.name} with a party of ${
 				data.users.length
 			}. ${formattedDuration}`;
+		}
+
+		case 'Yama': {
+			const data = currentTask as YamaActivityTaskOptions;
+			return `${name} is currently ${data.solo ? 'soloing' : 'duoing'} ${data.quantity}x Yama. ${formattedDuration}`;
 		}
 
 		case 'ClueCompletion': {
@@ -553,6 +560,12 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 			return `${name} is currently doing ${data.quantity}x ${
 				data.corrupted ? 'Corrupted' : 'Normal'
 			} Gauntlet. ${formattedDuration}`;
+		}
+		case 'DoomOfMokhaiotl': {
+			const data = currentTask as DoomOfMokhaiotlOptions;
+			return `${name} is currently doing ${data.quantity}x Doom of Mokhaiotl run${
+				data.quantity === 1 ? '' : 's'
+			} to delve ${data.delveLevel}. ${formattedDuration}`;
 		}
 
 		case 'CastleWars': {

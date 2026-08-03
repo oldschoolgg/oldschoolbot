@@ -57,6 +57,7 @@ import {
 	demonicGorillaCL,
 	derangedArchaeologistCL,
 	diariesCL,
+	doomOfMokhaiotlCL,
 	dukeSucellusCL,
 	type FormatProgressFunction,
 	fightCavesCL,
@@ -127,6 +128,7 @@ import {
 	volcanicMineCL,
 	vorkathCL,
 	wintertodtCL,
+	yamaCL,
 	zalcanoCL,
 	zulrahCL
 } from '@/lib/data/CollectionsExport.js';
@@ -265,9 +267,12 @@ export const allCollectionLogs: ICollection = {
 				items: derangedArchaeologistCL,
 				fmtProg: kcProg(Monsters.DerangedArchaeologist)
 			},
-			///	'Doom of Mokhaiotl': {
-			///		items: CollectionLog.DoomofMokhaiotl.items
-			///	},
+			'Doom of Mokhaiotl': {
+				alias: Monsters.DoomOfMokhaiotl.aliases,
+				allItems: uniqueArr([...doomOfMokhaiotlCL, ...Monsters.DoomOfMokhaiotl.allItems]),
+				items: doomOfMokhaiotlCL,
+				fmtProg: kcProg(Monsters.DoomOfMokhaiotl)
+			},
 			'Dagannoth Kings': {
 				alias: ['dagannoth kings', 'kings', 'dagga', 'dks'],
 				kcActivity: {
@@ -589,9 +594,12 @@ export const allCollectionLogs: ICollection = {
 				items: wintertodtCL,
 				fmtProg: mgProg('wintertodt')
 			},
-			///	Yama: {
-			///		items: CollectionLog.Yami.items
-			///	},
+			Yama: {
+				alias: Monsters.Yama.aliases,
+				allItems: uniqueArr([...yamaCL, ...Monsters.Yama.allItems]),
+				items: yamaCL,
+				fmtProg: kcProg(Monsters.Yama)
+			},
 			Zalcano: { items: zalcanoCL, fmtProg: ({ stats }) => `${stats.kcBank[EMonster.ZALCANO] ?? 0} KC` },
 			Zulrah: {
 				alias: Monsters.Zulrah.aliases,

@@ -68,7 +68,29 @@ describe('RUser', async () => {
 		]);
 
 		expect(user.perkTierRaw).toBe(PerkTier.Three);
-		expect(user.perkTierDisplay).toContain('Premium __Tier 2__');
+		expect(user.perkTierDisplay).toContain('Temp Tier: **Tier 2**');
+	});
+
+	test('displays all unexpired premium tiers from linked users', () => {
+		const now = BigInt(Date.now());
+		const user = new RUser({ id: 1n, bits: [], user_group_id: 'group-id' } as User, [
+			{
+				id: 1n,
+				bits: [],
+				premium_balance_tier: PerkTier.Six,
+				premium_balance_expiry_date: now + 30_000n
+			},
+			{
+				id: 2n,
+				bits: [],
+				premium_balance_tier: PerkTier.Three,
+				premium_balance_expiry_date: now + 60_000n
+			}
+		]);
+
+		expect(user.perkTierRaw).toBe(PerkTier.Six);
+		expect(user.perkTierDisplay).toContain('Temp Tier: **Tier 5**');
+		expect(user.perkTierDisplay).toContain('Temp Tier: Tier 2');
 	});
 
 	test('globalMastery', async () => {

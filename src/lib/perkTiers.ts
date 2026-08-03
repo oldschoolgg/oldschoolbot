@@ -11,7 +11,6 @@ import { LRUCache } from 'lru-cache';
 
 import { BitField, PerkTier } from '@/lib/constants.js';
 import type { RobochimpUser } from '@/lib/roboChimp.js';
-
 export const RobochimpBitfieldEnum = {
 	MagnaTier1: RoboChimpBit.MagnaTier1,
 	MagnaTier2: RoboChimpBit.MagnaTier2,
@@ -30,8 +29,6 @@ export const RobochimpBitfieldEnum = {
 	CyrsOriginalPatrons: RoboChimpBit.CyrsOriginalPatrons,
 	BonusMinute: RoboChimpBit.BonusMinute
 } as const;
-
-export const allPerkBitfields: BitField[] = [BitField.HasPermanentTierOne, BitField.BothBotsMaxedFreeTierOnePerks];
 
 type PerkTierHotCacheEntry = {
 	tier: number;

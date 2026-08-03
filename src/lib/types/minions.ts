@@ -506,10 +506,35 @@ export interface GauntletOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface DoomOfMokhaiotlOptions extends ActivityTaskOptions {
+	type: 'DoomOfMokhaiotl';
+	delveLevel: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+	quantity: number;
+}
+
 export interface GroupMonsterActivityTaskOptions extends Omit<MonsterActivityTaskOptions, 'type'> {
 	type: 'GroupMonsterKilling';
 	leader: string;
 	users: string[];
+}
+
+export interface YamaActivityTaskOptions extends ActivityTaskOptions {
+	type: 'Yama';
+	quantity: number;
+	iQty?: number;
+	leader: string;
+	users: string[];
+	solo?: boolean;
+	perKillTime: number;
+	teamMembers: YamaTeamMember[];
+}
+
+export interface YamaTeamMember {
+	id: string;
+	contribution: number;
+	deathChance: number;
+	kc: number;
+	attackStyles: AttackStyles[];
 }
 
 export interface RaidsOptions extends ActivityTaskOptionsWithUsers {
@@ -657,6 +682,8 @@ export type ActivityTaskData =
 	| CollectingOptions
 	| RaidsOptions
 	| GauntletOptions
+	| DoomOfMokhaiotlOptions
+	| YamaActivityTaskOptions
 	| CastingActivityTaskOptions
 	| EnchantingActivityTaskOptions
 	| ConstructionActivityTaskOptions

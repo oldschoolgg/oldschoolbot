@@ -11,6 +11,7 @@ import { DagannothPrime } from './DagannothPrime.js';
 import { DagannothRex } from './DagannothRex.js';
 import { DagannothSupreme } from './DagannothSupreme.js';
 import { DerangedArchaeologist } from './DerangedArchaeologist.js';
+import { DoomOfMokhaiotl } from './DoomOfMokhaiotl.js';
 import { DukeSucellus } from './DukeSucellus.js';
 import { GeneralGraardor } from './GeneralGraardor.js';
 import { GiantMole } from './GiantMole.js';
@@ -31,6 +32,7 @@ import { Vardorvis } from './Vardorvis.js';
 import { Vorkath } from './Vorkath.js';
 import { CorporealBeast } from './wildy/CorporealBeast.js';
 import { allWildyBosses } from './wildy/index.js';
+import { Yama } from './Yama.js';
 import { Zulrah } from './Zulrah.js';
 
 export const allBosses: Record<string, SimpleMonster> = {
@@ -64,6 +66,8 @@ export const allBosses: Record<string, SimpleMonster> = {
 	Scurrius,
 	TheHueycoatl,
 	Amoxliatl,
+	Yama,
+	DoomOfMokhaiotl,
 	Branda,
 	Eldric,
 	RoyalTitans,

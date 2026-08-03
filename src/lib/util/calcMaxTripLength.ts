@@ -25,9 +25,11 @@ export function calcMaxTripLengthSync(user: MUser, roboUser: RobochimpUser, acti
 	switch (activity) {
 		case 'Nightmare':
 		case 'GroupMonsterKilling':
+		case 'Yama':
 		case 'MonsterKilling':
 		case 'Wintertodt':
 		case 'Zalcano':
+		case 'DoomOfMokhaiotl':
 		case 'BarbarianAssault':
 		case 'AnimatedArmour':
 		case 'Sepulchre':

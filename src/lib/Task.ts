@@ -39,6 +39,7 @@ import { barbAssaultTask } from '@/tasks/minions/minigames/barbarianAssaultActiv
 import { castleWarsTask } from '@/tasks/minions/minigames/castleWarsActivity.js';
 import { championsChallengeTask } from '@/tasks/minions/minigames/championsChallengeActivity.js';
 import { chompHuntTask } from '@/tasks/minions/minigames/chompyHuntActivity.js';
+import { doomOfMokhaiotlTask } from '@/tasks/minions/minigames/doomOfMokhaiotlActivity.js';
 import { fightCavesTask } from '@/tasks/minions/minigames/fightCavesActivity.js';
 import { gauntletTask } from '@/tasks/minions/minigames/gauntletActivity.js';
 import { giantsFoundryTask } from '@/tasks/minions/minigames/giantsFoundryActivity.js';
@@ -95,6 +96,7 @@ import { underwaterAgilityThievingTask } from '@/tasks/minions/underwaterActivit
 import { vmTask } from '@/tasks/minions/volcanicMineActivity.js';
 import { wealthChargeTask } from '@/tasks/minions/wealthChargingActivity.js';
 import { woodcuttingTask } from '@/tasks/minions/woodcuttingActivity.js';
+import { yamaTask } from '@/tasks/minions/yamaActivity.js';
 
 type MinionTaskRunOptions = {
 	user: MUser;
@@ -131,6 +133,8 @@ export const allTasks: MinionTask[] = [
 	castleWarsTask,
 	championsChallengeTask,
 	chompHuntTask,
+	doomOfMokhaiotlTask,
+	yamaTask,
 	fightCavesTask,
 	gauntletTask,
 	gnomeResTask,

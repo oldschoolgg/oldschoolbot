@@ -145,6 +145,7 @@ GROUP BY type;`
 			const typesNotRequiredForMusicCape: activity_type_enum[] = [
 				...DEPRECATED_ACTIVITY_TYPES,
 				activity_type_enum.GroupMonsterKilling,
+				activity_type_enum.Yama,
 				activity_type_enum.Questing,
 				activity_type_enum.ChampionsChallenge,
 				activity_type_enum.Nex
