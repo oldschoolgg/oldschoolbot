@@ -169,8 +169,10 @@ export const tobTask: MinionTask = {
 				allUsers.map(async u => {
 					const theirXP = totalXPCounts[u.id];
 					if (theirXP.length === 0) return null;
-					await u.addXPCounter({ xpCounter: theirXP, source: 'TheatreOfBlood', minimal: true });
-					return `${u.mention} received ${theirXP} XP`;
+					const displayedXP = (
+						await u.addXPCounter({ xpCounter: theirXP, source: 'TheatreOfBlood', minimal: true })
+					).trim();
+					return `${u.mention} received ${displayedXP.length > 0 ? displayedXP : 'no'} XP`;
 				})
 			)
 		).filter(i => i !== null);

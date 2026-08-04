@@ -205,7 +205,7 @@ export const toaTask: MinionTask = {
 				teamSize: detailedUsers.length,
 				points: raidResults.get(user.id)!.points
 			});
-			const xpStrings = await Promise.all(xpPromises);
+			const xpStrings = (await Promise.all(xpPromises)).filter(msg => msg.trim().length > 0);
 			resultMessage += ` ${xpStrings.join(', ')}`;
 		}
 

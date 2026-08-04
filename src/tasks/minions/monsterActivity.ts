@@ -544,7 +544,7 @@ export const monsterTask: MinionTask = {
 			return;
 		}
 		const { itemTransactionResult, rawResults } = resultOrError;
-		messages.push(...rawResults.filter(r => typeof r === 'string'));
+		messages.push(...rawResults.filter(r => typeof r === 'string' && r.trim().length > 0));
 		const str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name} (${calcPerHour(data.q, data.duration).toFixed(1)}/hr), you now have ${newKC} KC.`;
 
 		let image: Awaited<ReturnType<typeof makeBankImage>> | undefined;
