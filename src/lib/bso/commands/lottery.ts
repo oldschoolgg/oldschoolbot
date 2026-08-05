@@ -20,12 +20,14 @@ const LOTTERY_ACCEPTS_ITEMS = false;
 const LOTTERY_ITEM_VALUE_MULTIPLIER = 3;
 const LOTTERY_TICKET_PRICE = 10_000_000;
 const LOTTERY_GP_GOES_INTO_POOL = true;
+const LOTTERY_GP_POOL_PERCENT = 75;
 const LOTTERY_ITEMS_GO_INTO_POOL = true;
 // Neutral storage row for admin-spawned prize-pool loot. This row is excluded from ticket stats.
 export const LOTTERY_BANK_HOLDER_USER_ID = globalConfig.adminUserIDs[0];
 
 const LOTTERY_TICKET_ITEM = Items.getOrThrow('Bank lottery ticket');
 assert(LOTTERY_TICKET_ITEM.id === 5021);
+assert(LOTTERY_GP_POOL_PERCENT >= 0 && LOTTERY_GP_POOL_PERCENT <= 100);
 
 const MAX_LOTTERY_TICKETS_PER_DEPOSIT = Math.floor(Number.MAX_SAFE_INTEGER / LOTTERY_TICKET_PRICE);
 
@@ -214,6 +216,17 @@ function getPriceOfItem(item: Item) {
 }
 
 function calcTicketsOfBank(input: Bank) {
+	const storedTicketCount = input.amount(LOTTERY_TICKET_ITEM.id);
+	if (storedTicketCount > 0) {
+		const valueInput = input.clone();
+		valueInput.remove(LOTTERY_TICKET_ITEM.id, storedTicketCount);
+		valueInput.remove('Coins', valueInput.amount('Coins'));
+		return {
+			amountOfTickets: storedTicketCount + Math.floor(calcLotteryBankValue(valueInput) / LOTTERY_TICKET_PRICE),
+			input
+		};
+	}
+
 	let totalPrice = 0;
 	for (const [item, quantity] of input.items()) {
 		totalPrice += getPriceOfItem(item) * quantity;
@@ -247,7 +260,7 @@ const LOTTERY_ITEM_BANK_TRANSFORMER = async (args: LotteryItemBankTransformerArg
 function removeIneligibleLotteryItems(input: Bank) {
 	const cleaned = input.clone();
 	for (const [item] of cleaned.items()) {
-		if (isSuperUntradeable(item.id) || item.id === LOTTERY_TICKET_ITEM.id) {
+		if (isSuperUntradeable(item.id) || item.id === LOTTERY_TICKET_ITEM.id || item.name === 'Coins') {
 			cleaned.clear(item);
 		}
 	}
@@ -284,6 +297,17 @@ function getLotteryPrizePoolBank(input: Bank) {
 		prizePool.remove(LOTTERY_TICKET_ITEM.id, prizePool.amount(LOTTERY_TICKET_ITEM.id));
 	}
 	return prizePool;
+}
+
+function getGpLotteryInput({ gpBank, amountOfTickets }: { gpBank: Bank; amountOfTickets: number }) {
+	const lotteryInput = getTicketBank(amountOfTickets);
+	if (LOTTERY_GP_GOES_INTO_POOL) {
+		const gpToAddToPool = Math.floor((gpBank.amount('Coins') * LOTTERY_GP_POOL_PERCENT) / 100);
+		if (gpToAddToPool > 0) {
+			lotteryInput.add('Coins', gpToAddToPool);
+		}
+	}
+	return lotteryInput;
 }
 
 export async function addToLotteryBank(user: MUser, bankToAdd: Bank) {
@@ -365,6 +389,26 @@ export async function getLotteryBank() {
 	};
 }
 
+function formatLotteryRules({ active }: { active: boolean }) {
+	const acceptedInputs = [
+		LOTTERY_ACCEPTS_GP ? 'GP' : null,
+		LOTTERY_ACCEPTS_ITEMS ? `items (${LOTTERY_ITEM_VALUE_MULTIPLIER}x value multiplier)` : null
+	].filter(Boolean);
+
+	return [
+		`Status: ${active ? 'Active' : 'Inactive'}`,
+		`Ticket price: ${LOTTERY_TICKET_PRICE.toLocaleString()} GP`,
+		`Accepted inputs: ${acceptedInputs.length > 0 ? acceptedInputs.join(', ') : 'None'}`,
+		`GP added to prize pool: ${LOTTERY_GP_GOES_INTO_POOL ? `${LOTTERY_GP_POOL_PERCENT}%` : '0%'}`,
+		`Items added to prize pool: ${LOTTERY_ITEMS_GO_INTO_POOL ? 'Yes' : 'No'}`,
+		'There will be 4 spins, each winner winning 1/4th of the loot.',
+		'You can win more than once.',
+		'5% of prize-pool items will be deleted based on a random unbiased roll.',
+		'Items/GP put into the lottery are non-refundable and cannot be taken out.',
+		'Custom item prices can change during the lottery; ticket counts update from the stored lottery input.'
+	].join('\n');
+}
+
 export const lotteryCommand = defineCommand({
 	name: 'lottery',
 	description: 'Win big!',
@@ -416,21 +460,41 @@ export const lotteryCommand = defineCommand({
 		}
 	],
 	run: async ({ user, options, interaction }) => {
-		const infoStr = `
-1. This is a regular Lottery (no special event or DC items)
-2. There'll be 4 spins, each winner winning 1/4th of the loot.
-3. You can win more than once.
-4. 5% of the items will be deleted (item-sunk), based on a random unbiased roll, and the GP.
-5. The Lottery will run for a month roughly, possibly longer.
-6. Items/GP put into the Lottery are non-refundable and cannot be taken out.
-7. It's possible that we change the custom prices of items (make them worth more/less), if you already put those items in, your ticket count will automatically update to reflect the new price.`;
 		const active = await isLotteryActive();
-		if (!active) return 'There is no lottery currently going on.';
-		if (user.isIronman) return 'Ironmen cannot partake in the Lottery.';
+		const rulesStr = formatLotteryRules({ active });
 
 		if (options.prices) {
 			return { files: [await makeBankImage({ bank: parsedPriceBank, title: 'Prices' })] };
 		}
+
+		if (!options.buy_tickets && !options.deposit_items) {
+			const { amountOfTickets: userTickets, input } = calcTicketsOfUser(user);
+			const { totalLoot, totalTickets, users } = await getLotteryBank();
+			const chance =
+				userTickets === 0 || totalTickets === 0 ? '0' : calcWhatPercent(userTickets, totalTickets).toFixed(4);
+
+			const message = new MessageBuilder()
+				.setContent(`Lottery Info
+${rulesStr}
+
+Current prize bank: ${totalLoot.length === 0 ? 'Empty' : totalLoot.toString()}
+Total tickets purchased: ${totalTickets.toLocaleString()}
+Your tickets: ${userTickets.toLocaleString()}
+Your win chance: ${chance}% (will fluctuate as tickets are bought)
+
+Top ticket holders: ${users
+					.slice(0, 10)
+					.map(i => `${userMention(i.id)} has ${i.tickets.toLocaleString()} tickets`)
+					.join(', ')}`)
+				.addFile(await makeBankImage({ bank: totalLoot, title: 'Lottery' }))
+				.addFile(await makeBankImage({ bank: input, title: 'Your Lottery Input' }));
+
+			return message;
+		}
+
+		if (!active) return 'There is no lottery currently going on.';
+		if (user.isIronman) return 'Ironmen cannot partake in the Lottery.';
+
 		if (options.buy_tickets) {
 			if (!LOTTERY_ACCEPTS_GP) return 'The lottery is not currently accepting GP for tickets.';
 			const ticketsToBuy = options.buy_tickets.quantity;
@@ -449,7 +513,7 @@ export const lotteryCommand = defineCommand({
 			await interaction.confirmation(
 				`${user.mention}, are you sure you want to add ${bankToSell} to the bank lottery - you'll receive **${ticketsToBuy} bank lottery tickets**.
 
-**WARNING:** ${infoStr}`
+**WARNING:** ${rulesStr}`
 			);
 
 			await user.sync();
@@ -458,7 +522,10 @@ export const lotteryCommand = defineCommand({
 				user,
 				itemsToRemove: bankToSell,
 				amountOfTickets: ticketsToBuy,
-				lotteryInputToAdd: LOTTERY_GP_GOES_INTO_POOL ? bankToSell : getTicketBank(ticketsToBuy)
+				lotteryInputToAdd: getGpLotteryInput({
+					gpBank: bankToSell,
+					amountOfTickets: ticketsToBuy
+				})
 			});
 
 			return `You put ${bankToSell} to the bank lottery, and received ${ticketsToBuy}x bank lottery tickets.`;
@@ -517,7 +584,7 @@ export const lotteryCommand = defineCommand({
 					', '
 				)}
 
-**WARNING:** ${infoStr}`
+**WARNING:** ${rulesStr}`
 			);
 
 			await user.sync();
@@ -531,24 +598,6 @@ export const lotteryCommand = defineCommand({
 
 			return `You put ${bankToSell} to the bank lottery, and received ${ticketsFromItems}x bank lottery tickets.`;
 		}
-
-		const { amountOfTickets: userTickets, input } = calcTicketsOfUser(user);
-		const { totalLoot, totalTickets, users } = await getLotteryBank();
-
-		const message = new MessageBuilder()
-			.setContent(`There have been ${totalTickets.toLocaleString()} purchased, you have ${userTickets.toLocaleString()}x tickets, and a ${
-				userTickets === 0 ? 0 : calcWhatPercent(userTickets, totalTickets).toFixed(4)
-			}% chance of winning (will fluctuate based on you/others buying tickets.)
-
-${infoStr}
-
-Top ticket holders: ${users
-				.slice(0, 10)
-				.map(i => `${userMention(i.id)} has ${i.tickets.toLocaleString()} tickets`)
-				.join(',')}`)
-			.addFile(await makeBankImage({ bank: totalLoot, title: 'Lottery' }))
-			.addFile(await makeBankImage({ bank: input, title: 'Your Lottery Input' }));
-
-		return message;
+		return 'Invalid lottery option.';
 	}
 });
