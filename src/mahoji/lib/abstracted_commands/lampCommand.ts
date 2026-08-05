@@ -295,9 +295,6 @@ export async function lampCommand(user: MUser, itemToUse: string, skill: string,
 	if (!xpObject) return "That's not a valid item to use.";
 
 	if (!isValidSkill(skill)) return "That's not a valid skill.";
-	if (skill === 'invention') {
-		return 'A magic force prevents you from using lamps on this skill.';
-	}
 
 	const qty = !_quantity ? 1 : clamp(_quantity, { min: 1, max: 1000 });
 	const toRemoveFromBank = new Bank().add(item.id, qty);
