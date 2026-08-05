@@ -3,6 +3,7 @@ import { Bank, toKMB } from 'oldschooljs';
 
 import { BOT_TYPE } from '@/lib/constants.js';
 import { MUserClass } from '@/lib/user/MUser.js';
+import { trackGamblingTransaction } from '@/lib/util/gambling.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 async function checkBal(user: MUser, amount: number) {
@@ -46,15 +47,29 @@ async function handleFinishUpdates({
 	const loot = new Bank().add('Coins', amountGPWinnerReceives);
 	await winner.addItemsToBank({ items: loot, collectionLog: false });
 
-	await prisma.economyTransaction.create({
-		data: {
-			guild_id: guildId ? BigInt(guildId) : null,
-			sender: BigInt(loser.id),
-			recipient: BigInt(winner.id),
-			items_sent: new Bank().add('Coins').toJSON(),
-			type: 'duel'
-		}
-	});
+	await Promise.all([
+		prisma.economyTransaction.create({
+			data: {
+				guild_id: guildId ? BigInt(guildId) : null,
+				sender: BigInt(loser.id),
+				recipient: BigInt(winner.id),
+				items_sent: new Bank().add('Coins').toJSON(),
+				type: 'duel'
+			}
+		}),
+		trackGamblingTransaction({
+			userID: winner.id,
+			type: 'duel',
+			amountStaked: amount,
+			pnl: amountGPWinnerReceives - amount
+		}),
+		trackGamblingTransaction({
+			userID: loser.id,
+			type: 'duel',
+			amountStaked: amount,
+			pnl: -amount
+		})
+	]);
 	return {
 		amountGPWinnerReceives,
 		taxPaid: tax
