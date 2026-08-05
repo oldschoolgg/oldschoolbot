@@ -2,7 +2,13 @@ import { feedHammyCommand } from '@/lib/bso/commands/hammyCommand.js';
 import { findGroupOfUser } from '@/lib/bso/util/findGroupOfUser.js';
 
 import { bold } from '@oldschoolgg/discord';
-import { FormattedCustomEmoji, formatOrdinal, notEmpty, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
+import {
+	FormattedCustomEmoji,
+	formatDuration,
+	formatOrdinal,
+	notEmpty,
+	roboChimpCLRankQuery
+} from '@oldschoolgg/toolkit';
 import { convertLVLtoXP, Items } from 'oldschooljs';
 
 import { ownedItemOption, skillOption } from '@/discord/index.js';
@@ -84,8 +90,30 @@ export async function getUserInfo(user: MUser) {
 		2
 	);
 
-	const roboCache = await Cache.getRoboChimpUser(user.id);
-	const perkTierDisplay = getRoboChimpPaidTierDisplay(roboCache, { perkTier: roboCache?.perk_tier });
+	const premiumPerkTier =
+		roboChimpUser.premium_balance_tier &&
+		roboChimpUser.premium_balance_expiry_date &&
+		roboChimpUser.premium_balance_expiry_date > Date.now()
+			? roboChimpUser.premium_balance_tier
+			: 0;
+
+	let perkTierDisplay = getRoboChimpPaidTierDisplay(roboChimpUser, { perkTier: roboChimpUser.perk_tier });
+	if (
+		roboChimpUser.premium_balance_tier &&
+		roboChimpUser.premium_balance_expiry_date &&
+		roboChimpUser.premium_balance_expiry_date > Date.now()
+	) {
+		if (roboChimpUser.premium_balance_tier > roboChimpUser.perk_tier) {
+			perkTierDisplay = `Premium __Tier ${premiumPerkTier - 1}__ - ${formatDuration(Number(roboChimpUser.premium_balance_expiry_date) - Date.now())} remaining`;
+		}
+	}
+	if (result.perkTier > roboChimpUser.perk_tier && result.perkTier > premiumPerkTier) {
+		if (user.isMod() || user.isWikiContrib() || user.isContributor() || user.isTrusted()) {
+			perkTierDisplay = `**Courtesy** __Tier ${result.perkTier - 1}__`;
+		} else {
+			perkTierDisplay = `🔴 **Expiring** __Tier ${result.perkTier - 1}__`;
+		}
+	}
 	return {
 		...result,
 		everythingString: `${user.badgedUsername}[${user.id}]

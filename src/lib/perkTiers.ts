@@ -121,9 +121,6 @@ export function getCyrTripBonus(bitsOrUser: number[] | RobochimpUser | null | un
 	if (bits.includes(RobochimpBitfieldEnum.CyrsOriginalPatrons)) {
 		cyrBonus += Time.Minute * 2;
 	}
-	if (bits.includes(RobochimpBitfieldEnum.BonusMinute)) {
-		cyrBonus += Time.Minute * 3;
-	}
 	return cyrBonus;
 }
 
