@@ -25,6 +25,7 @@ export enum Bits {
 	CyrPatronTier6 = 22,
 	CyrPatronTier7 = 23,
 	CyrsOriginalPatrons = 24,
+	BonusMinute = 25,
 	PatronTier1 = MagnaPatronTier1,
 	PatronTier2 = MagnaPatronTier2,
 	PatronTier3 = MagnaPatronTier3,
