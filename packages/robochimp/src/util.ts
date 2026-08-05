@@ -61,7 +61,8 @@ export const bitsDescriptions: BitDescriptions = {
 	[Bits.CyrPatronTier5]: { description: 'Cyr Tier 5 patron' },
 	[Bits.CyrPatronTier6]: { description: 'Cyr Tier 6 patron' },
 	[Bits.CyrPatronTier7]: { description: 'Cyr Tier 7 patron' },
-	[Bits.CyrsOriginalPatrons]: { description: "Cyr's original patron" }
+	[Bits.CyrsOriginalPatrons]: { description: "Cyr's original patron" },
+	[Bits.BonusMinute]: { description: 'Bonus minute' }
 };
 
 export const CHANNELS = {
