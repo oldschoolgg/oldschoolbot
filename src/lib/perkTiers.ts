@@ -2,6 +2,7 @@ import { Time } from '@oldschoolgg/toolkit';
 import { LRUCache } from 'lru-cache';
 
 import { BitField, BOT_TYPE, PerkTier } from '@/lib/constants.js';
+import type { RobochimpUser } from '@/lib/roboChimp.js';
 
 export const RobochimpBitfieldEnum = {
 	MagnaTier1: 8,
@@ -18,7 +19,8 @@ export const RobochimpBitfieldEnum = {
 	CyrTier5: 21,
 	CyrTier6: 22,
 	CyrTier7: 23,
-	CyrsOriginalPatrons: 24
+	CyrsOriginalPatrons: 24,
+	BonusMinute: 25
 };
 
 const CYR_TIER_BITS = [
@@ -40,10 +42,6 @@ const MAGNA_TIER_BITS = [
 	{ bit: RobochimpBitfieldEnum.MagnaTier2, number: 2 },
 	{ bit: RobochimpBitfieldEnum.MagnaTier1, number: 1 }
 ] as const;
-
-const ROBOCHIMP_PAID_BITS = new Set([...CYR_TIER_BITS, ...MAGNA_TIER_BITS].map(tier => tier.bit));
-
-export const allPerkBitfields: BitField[] = [BitField.HasPermanentTierOne, BitField.BothBotsMaxedFreeTierOnePerks];
 
 type PerkTierHotCacheEntry = {
 	tier: number;
@@ -68,13 +66,17 @@ export function getPerkTierCached(userId: string) {
 	return null;
 }
 
-export function getRoboChimpPaidTierDisplay({
-	bits,
-	perkTier
-}: {
-	bits: readonly number[] | null | undefined;
-	perkTier?: number | null;
-}) {
+export function getRoboChimpPaidTierDisplay(bits: number[], { perkTier }: { perkTier?: number | null }): string;
+export function getRoboChimpPaidTierDisplay(user: RobochimpUser, { perkTier }: { perkTier?: number | null }): string;
+export function getRoboChimpPaidTierDisplay(
+	bitsOrUser: number[] | RobochimpUser | null | undefined,
+	{
+		perkTier
+	}: {
+		perkTier?: number | null;
+	}
+) {
+	const bits = bitsOrUser && 'bits' in bitsOrUser ? bitsOrUser.bits : bitsOrUser;
 	if (!bits || bits.length === 0) {
 		return perkTier && perkTier > 0 ? `Perk Tier ${perkTier}` : 'None';
 	}
@@ -84,36 +86,45 @@ export function getRoboChimpPaidTierDisplay({
 		...MAGNA_TIER_BITS.filter(tier => bits.includes(tier.bit)).map(tier => `Magna Tier ${tier.number}`)
 	];
 
+	if (bits.includes(RobochimpBitfieldEnum.BonusMinute)) {
+		labels.push('*Bonus Minute??*');
+	}
+
 	return labels.length === 0 ? (perkTier && perkTier > 0 ? `Perk Tier ${perkTier}` : 'None') : labels.join(', ');
 }
 
-export function getCyrTripBonus(bits: readonly number[] | null | undefined) {
-	if (!bits || bits.length === 0) return 0;
-	const highestTier = CYR_TIER_BITS.find(tier => bits.includes(tier.bit))?.number;
-	if (highestTier === undefined) return 0;
-	if (highestTier >= 3) return Time.Minute * 15;
-	if (highestTier === 2) return Time.Minute * 10;
-	if (highestTier === 1) return Time.Minute * 6;
-	return Time.Minute * 3;
-}
-
-export async function getRoboChimpGroupPaidBits(userID: string) {
-	const roboChimpCached = await Cache.getRoboChimpUser(userID);
-	if (!roboChimpCached) return [];
-	if (!roboChimpCached.user_group_id) {
-		return roboChimpCached.bits.filter(bit => ROBOCHIMP_PAID_BITS.has(bit));
+export function getCyrTripBonus(user: RobochimpUser): number;
+export function getCyrTripBonus(bits: number[]): number;
+export function getCyrTripBonus(bitsOrUser: number[] | RobochimpUser | null | undefined) {
+	const bits = bitsOrUser && 'bits' in bitsOrUser ? bitsOrUser.bits : bitsOrUser;
+	if (!bits || bits.length === 0) {
+		return 0;
 	}
-
-	const groupUsers = await roboChimpClient.user.findMany({
-		where: {
-			user_group_id: roboChimpCached.user_group_id
-		},
-		select: {
-			bits: true
-		}
-	});
-
-	return [...new Set(groupUsers.flatMap(groupUser => groupUser.bits.filter(bit => ROBOCHIMP_PAID_BITS.has(bit))))];
+	let cyrBonus = 0;
+	const highestTier = CYR_TIER_BITS.find(tier => bits.includes(tier.bit))?.number;
+	switch (highestTier) {
+		case 1:
+			cyrBonus = Time.Minute * 7;
+			break;
+		case 2:
+			cyrBonus = Time.Minute * 11;
+			break;
+		case 3:
+		default:
+			// Default of 3 minutes
+			cyrBonus = Time.Minute * 3;
+			if (highestTier && highestTier >= 3) {
+				cyrBonus = Time.Minute * 16;
+			}
+			break;
+	}
+	if (bits.includes(RobochimpBitfieldEnum.CyrsOriginalPatrons)) {
+		cyrBonus += Time.Minute * 2;
+	}
+	if (bits.includes(RobochimpBitfieldEnum.BonusMinute)) {
+		cyrBonus += Time.Minute * 3;
+	}
+	return cyrBonus;
 }
 
 export async function getUsersPerkTier({

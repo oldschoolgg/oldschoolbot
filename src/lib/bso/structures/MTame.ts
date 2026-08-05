@@ -13,7 +13,7 @@ import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
 import { type Prisma, type Tame, tame_growth } from '@/prisma/main.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
-import { getCyrTripBonus, getRoboChimpGroupPaidBits } from '@/lib/perkTiers.js';
+import { getCyrTripBonus } from '@/lib/perkTiers.js';
 import { patronMaxTripBonus } from '@/lib/util/calcMaxTripLength.js';
 
 export class MTame {
@@ -231,7 +231,7 @@ export class MTame {
 			messages.push('+35mins trip length (ate a Zak)');
 		}
 
-		const cyrTripBonus = getCyrTripBonus(await getRoboChimpGroupPaidBits(user.id));
+		const cyrTripBonus = getCyrTripBonus((await Cache.getRoboChimpUser(user.id)).bits);
 		const cyrEmote = cyrTripBonus > 0 ? Emoji.Seer : '';
 		const patronBonus = Math.max(patronMaxTripBonus(await user.fetchPerkTier()), cyrTripBonus) * 2;
 		if (patronBonus > 0) {

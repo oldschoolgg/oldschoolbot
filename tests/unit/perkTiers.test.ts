@@ -5,9 +5,9 @@ import { getCyrTripBonus, getRoboChimpPaidTierDisplay } from '@/lib/perkTiers.js
 
 describe('perk tier helpers', () => {
 	test('formats robochimp paid tier labels', () => {
-		expect(getRoboChimpPaidTierDisplay({ bits: [19, 10], perkTier: 5 })).toBe('Cyr Tier 3, Magna Tier 3');
-		expect(getRoboChimpPaidTierDisplay({ bits: [], perkTier: 4 })).toBe('Perk Tier 4');
-		expect(getRoboChimpPaidTierDisplay({ bits: [], perkTier: 0 })).toBe('None');
+		expect(getRoboChimpPaidTierDisplay([19, 10], { perkTier: 5 })).toBe('Cyr Tier 3, Magna Tier 3');
+		expect(getRoboChimpPaidTierDisplay([], { perkTier: 4 })).toBe('Perk Tier 4');
+		expect(getRoboChimpPaidTierDisplay([], { perkTier: 0 })).toBe('None');
 	});
 
 	test('computes cyr trip bonus from paid bits', () => {

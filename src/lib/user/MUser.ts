@@ -289,7 +289,7 @@ RETURNING (monster_scores->>'${monsterID}')::int AS new_kc;
 		filterLoot?: boolean;
 		dontAddToTempCL?: boolean;
 		neverUpdateHistory?: boolean;
-		otherUpdates?: SafeUserUpdateInput;
+		otherUpdates?: TransactItemsArgs['otherUpdates'];
 	}) {
 		return this.transactItems({
 			collectionLog,
