@@ -2,7 +2,7 @@ import { calcPercentOfNum, calcWhatPercent, Time } from '@oldschoolgg/toolkit';
 
 import type { activity_type_enum } from '@/prisma/main.js';
 import { BitField, PerkTier } from '@/lib/constants.js';
-import { getCyrTripBonus, getRoboChimpGroupPaidBits } from '@/lib/perkTiers.js';
+import { getCyrTripBonus } from '@/lib/perkTiers.js';
 
 export function patronMaxTripBonus(perkTier: PerkTier | 0) {
 	if (perkTier === PerkTier.Two) return Time.Minute * 3;
@@ -13,9 +13,9 @@ export function patronMaxTripBonus(perkTier: PerkTier | 0) {
 
 export async function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
 	const perkTier = await user.fetchPerkTier();
-	const groupPaidBits = await getRoboChimpGroupPaidBits(user.id);
+	const roboBits = (await Cache.getRoboChimpUser(user.id)).bits;
 	let max = Time.Minute * 30;
-	max += Math.max(patronMaxTripBonus(perkTier), getCyrTripBonus(groupPaidBits));
+	max += Math.max(patronMaxTripBonus(perkTier), getCyrTripBonus(roboBits));
 
 	const hasMasterHPCape = user.hasEquipped('Hitpoints master cape');
 	let masterHPCapeBoost = 0;
