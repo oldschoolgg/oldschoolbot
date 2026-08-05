@@ -1,4 +1,10 @@
-import { addToLotteryBank, addToLotteryPrizePool } from '@/lib/bso/commands/lottery.js';
+import {
+	addToLotteryBank,
+	addToLotteryPrizePool,
+	getLotteryBank,
+	isLotteryActive,
+	LOTTERY_TICKET_ITEM
+} from '@/lib/bso/commands/lottery.js';
 import {
 	allLeagueTasks,
 	analyzeLeaguesCompletedTaskIDs,
@@ -113,6 +119,16 @@ function sanitizeTSVCell(value: string | number) {
 	return value.toString().replaceAll('\t', ' ').replaceAll('\n', ' ').replaceAll('\r', ' ');
 }
 
+function sanitizeCSVCell(value: string | number | bigint) {
+	const str = value.toString();
+	if (!/[",\n\r]/.test(str)) return str;
+	return `"${str.replaceAll('"', '""')}"`;
+}
+
+function toBigInt(value: string | number | bigint) {
+	return typeof value === 'bigint' ? value : BigInt(value);
+}
+
 async function fetchUsernames(userIDs: string[]) {
 	const users = await prisma.user.findMany({
 		where: {
@@ -128,6 +144,126 @@ async function fetchUsernames(userIDs: string[]) {
 
 	return new Map(users.map(user => [user.id, user.username ?? 'Unknown']));
 }
+
+interface AdminRunnableCommandArg {
+	name: string;
+	description: string;
+	required?: boolean;
+}
+
+interface AdminRunnableCommand {
+	name: string;
+	description: string;
+	args: AdminRunnableCommandArg[];
+	run: (options: { arg1?: string; arg2?: string; adminUser: MUser }) => Promise<SendableMessage>;
+}
+
+async function findUsersWithLotteryTickets() {
+	return prisma.$queryRawUnsafe<{ id: string; quantity: string | number | bigint }[]>(`
+SELECT id, (bank->>'${LOTTERY_TICKET_ITEM.id}')::bigint AS quantity
+FROM users
+WHERE COALESCE((bank->>'${LOTTERY_TICKET_ITEM.id}')::bigint, 0) > 0
+ORDER BY quantity DESC, id ASC;`);
+}
+
+function formatAdminRunnableCommand(command: AdminRunnableCommand) {
+	const args =
+		command.args.length === 0
+			? 'No arguments.'
+			: command.args
+					.map(arg => `- ${arg.name}${arg.required ? ' (required)' : ' (optional)'}: ${arg.description}`)
+					.join('\n');
+
+	return `**${command.name}**
+${command.description}
+
+Args:
+${args}
+
+Set \`exec: true\` to execute this command.`;
+}
+
+const adminRunnableCommands: AdminRunnableCommand[] = [
+	{
+		name: 'remove_lotto_tickets',
+		description:
+			'Find every user with Bank lottery tickets in users.bank, DM Cyr a CSV report, and remove those tickets.',
+		args: [],
+		run: async () => {
+			const usersWithTickets = await findUsersWithLotteryTickets();
+			const usernames = await fetchUsernames(usersWithTickets.map(user => user.id));
+			const csv = [
+				'user_id,username,quantity',
+				...usersWithTickets.map(user =>
+					[user.id, usernames.get(user.id) ?? 'Unknown', user.quantity].map(sanitizeCSVCell).join(',')
+				)
+			].join('\n');
+			const file = {
+				name: `lottery-ticket-cleanup-${Date.now()}.csv`,
+				buffer: Buffer.from(csv)
+			};
+			const totalTicketsFound = usersWithTickets.reduce((sum, user) => sum + toBigInt(user.quantity), 0n);
+
+			await globalClient.sendMessage(globalConfig.adminUserIDs[0], {
+				content: `Lottery ticket cleanup report. Found ${totalTicketsFound.toLocaleString()}x ${LOTTERY_TICKET_ITEM.name} in ${usersWithTickets.length.toLocaleString()} users.bank records. Cleanup is being executed now.`,
+				files: [file]
+			});
+
+			let removedUsers = 0;
+			let removedTickets = 0;
+			for (const row of usersWithTickets) {
+				const user = await mUserFetch(row.id);
+				const quantity = user.bank.amount(LOTTERY_TICKET_ITEM.id);
+				if (quantity < 1) continue;
+				await user.transactItems({
+					itemsToRemove: new Bank().add(LOTTERY_TICKET_ITEM.id, quantity),
+					filterLoot: false,
+					neverUpdateHistory: true
+				});
+				removedUsers++;
+				removedTickets += quantity;
+			}
+
+			return {
+				content: `Removed ${removedTickets.toLocaleString()}x ${LOTTERY_TICKET_ITEM.name} from ${removedUsers.toLocaleString()} users. CSV report sent to Cyr.`,
+				files: [file]
+			};
+		}
+	},
+	{
+		name: 'activate_lottery',
+		description: 'Set lottery_is_active to true.',
+		args: [],
+		run: async () => {
+			await ClientSettings.update({ lottery_is_active: true });
+			return 'Activated the lottery.';
+		}
+	},
+	{
+		name: 'deactivate_lottery',
+		description: 'Set lottery_is_active to false.',
+		args: [],
+		run: async () => {
+			await ClientSettings.update({ lottery_is_active: false });
+			return 'Deactivated the lottery.';
+		}
+	},
+	{
+		name: 'show_lottery',
+		description: 'Show the current lottery bank, active state, and outstanding lottery ticket count.',
+		args: [],
+		run: async () => {
+			const [active, lotteryBank] = await Promise.all([isLotteryActive(), getLotteryBank()]);
+			return {
+				content: `Lottery is ${active ? 'active' : 'inactive'}.
+Outstanding tickets: ${lotteryBank.totalTickets.toLocaleString()}
+Ticket holders: ${lotteryBank.users.length.toLocaleString()}
+Prize bank: ${lotteryBank.totalLoot.length === 0 ? 'Empty' : lotteryBank.totalLoot.toString()}`,
+				files: [await makeBankImage({ bank: lotteryBank.totalLoot, title: 'Lottery Bank' })]
+			};
+		}
+	}
+];
 
 async function buildCleanupDuplicatesTSV(
 	users: {
@@ -783,6 +919,45 @@ export const adminCommand = defineCommand({
 		},
 		{
 			type: 'Subcommand',
+			name: 'run',
+			description: 'Run a defined admin command.',
+			options: [
+				{
+					type: 'String',
+					name: 'command',
+					description: 'The command to run',
+					required: true,
+					autocomplete: async ({ value }: StringAutoComplete) => {
+						return adminRunnableCommands
+							.filter(command =>
+								!value ? true : command.name.toLowerCase().includes(value.toLowerCase())
+							)
+							.slice(0, 25)
+							.map(command => ({ name: command.name, value: command.name }));
+					}
+				},
+				{
+					type: 'String',
+					name: 'arg1',
+					description: 'First string argument',
+					required: false
+				},
+				{
+					type: 'String',
+					name: 'arg2',
+					description: 'Second string argument',
+					required: false
+				},
+				{
+					type: 'Boolean',
+					name: 'exec',
+					description: 'Execute the command. If false, shows command metadata.',
+					required: false
+				}
+			]
+		},
+		{
+			type: 'Subcommand',
 			name: 'give_items',
 			description: 'Spawn items for a user',
 			options: [
@@ -1064,6 +1239,19 @@ ${META_CONSTANTS.RENDERED_STR}`
 				bank: res,
 				title: thing.name,
 				flags: thing.name === 'All Equipped Items' ? { sort: 'name' } : undefined
+			});
+		}
+
+		if (options.run) {
+			const runnableCommand = adminRunnableCommands.find(command => command.name === options.run?.command);
+			if (!runnableCommand) return 'Invalid command.';
+			if (!options.run.exec) {
+				return formatAdminRunnableCommand(runnableCommand);
+			}
+			return runnableCommand.run({
+				arg1: options.run.arg1,
+				arg2: options.run.arg2,
+				adminUser
 			});
 		}
 

@@ -25,7 +25,7 @@ const LOTTERY_ITEMS_GO_INTO_POOL = true;
 // Neutral storage row for admin-spawned prize-pool loot. This row is excluded from ticket stats.
 export const LOTTERY_BANK_HOLDER_USER_ID = globalConfig.adminUserIDs[0];
 
-const LOTTERY_TICKET_ITEM = Items.getOrThrow('Bank lottery ticket');
+export const LOTTERY_TICKET_ITEM = Items.getOrThrow('Bank lottery ticket');
 assert(LOTTERY_TICKET_ITEM.id === 5021);
 assert(LOTTERY_GP_POOL_PERCENT >= 0 && LOTTERY_GP_POOL_PERCENT <= 100);
 
