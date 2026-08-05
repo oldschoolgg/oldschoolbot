@@ -78,6 +78,11 @@ export async function odsStartCommand(user: MUser, channelId: string) {
 		boosts.push(`${Emoji.Kuro} 5% faster with Kuro's help`);
 	}
 
+	if (user.hasEquippedOrInBank('Celestial pendant')) {
+		waveTime = reduceNumByPercent(waveTime, 10);
+		boosts.push('10% faster from Celestial pendant');
+	}
+
 	const quantity = Math.floor((await user.calcMaxTripLength('OuraniaDeliveryService')) / waveTime);
 	const duration = quantity * waveTime;
 	const essenceRequired = quantity * randInt(235, 265);

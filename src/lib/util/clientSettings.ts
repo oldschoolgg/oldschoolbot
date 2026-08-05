@@ -58,6 +58,8 @@ async function updateClientGPTrackSetting(
 type BSOClientBankKey =
 	| 'ignecarus_cost'
 	| 'ignecarus_loot'
+	| 'dominion_cost'
+	| 'dominion_loot'
 	| 'kibble_cost'
 	| 'mr_cost'
 	| 'mr_loot'

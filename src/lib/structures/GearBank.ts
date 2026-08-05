@@ -1,4 +1,5 @@
 import { type UsingPetFunction, usingPet } from '@/lib/bso/bsoUtil.js';
+import type { IslandUpgradeTiers } from '@/lib/bso/commands/islandUpgrades.js';
 import type { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
 import { type Bank, convertXPtoLVL, resolveItems } from 'oldschooljs';
@@ -21,6 +22,7 @@ export class GearBank {
 	minionName: string;
 
 	materials: MaterialBank;
+	island_upgrades: IslandUpgradeTiers;
 
 	constructor({
 		gear,
@@ -29,7 +31,8 @@ export class GearBank {
 		pet,
 		skillsAsXP,
 		minionName,
-		materials
+		materials,
+		island_upgrades
 	}: {
 		gear: UserFullGearSetup;
 		bank: Bank;
@@ -38,6 +41,7 @@ export class GearBank {
 		skillsAsXP: SkillsRequired;
 		minionName: string;
 		materials: MaterialBank;
+		island_upgrades: IslandUpgradeTiers;
 	}) {
 		this.gear = gear;
 		this.bank = bank;
@@ -46,6 +50,7 @@ export class GearBank {
 		this.skillsAsXP = skillsAsXP;
 		this.minionName = minionName;
 		this.materials = materials;
+		this.island_upgrades = island_upgrades;
 
 		const skillsAsLevels: SkillsRequired = {} as SkillsRequired;
 		for (const skill of SkillsArray) {
