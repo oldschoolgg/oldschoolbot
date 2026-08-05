@@ -99,6 +99,18 @@ Charges are bound to your minion, not the item. Therefore, when reverting or tra
 
 ---
 
+## Amulet of chemistry
+
+**Charged with -** Amulet of chemistry (5 charges per amulet sacrificed)
+
+**Revertible -** No
+
+**Provides boosts to -** Herblore potion brewing (while equipped in skilling)
+
+**Charges consumed -** Only when a 4-dose potion is created (one charge per extra dose)
+
+---
+
 ## Tumeken's shadow
 
 **Charged with -** Soul & Chaos runes (1 charge per 2 Soul runes & 5 Chaos runes)
