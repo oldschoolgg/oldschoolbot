@@ -1,3 +1,4 @@
+import { addToLotteryBank, addToLotteryPrizePool } from '@/lib/bso/commands/lottery.js';
 import {
 	allLeagueTasks,
 	analyzeLeaguesCompletedTaskIDs,
@@ -57,6 +58,7 @@ export const gifs = [
 ];
 
 const leaguesTaskNameByID = new Map(allLeagueTasks.map(task => [task.id, task.name] as const));
+const adminGiveItemDestinations = ['Lottery Bank'] as const;
 
 function formatLeaguesTaskList(taskIDs: number[]) {
 	if (taskIDs.length === 0) return 'None';
@@ -788,7 +790,14 @@ export const adminCommand = defineCommand({
 					type: 'User',
 					name: 'user',
 					description: 'The user',
-					required: true
+					required: false
+				},
+				{
+					type: 'String',
+					name: 'destination',
+					description: 'Where to send the items',
+					required: false,
+					choices: choicesOf(adminGiveItemDestinations)
 				},
 				{
 					type: 'String',
@@ -1060,16 +1069,46 @@ ${META_CONSTANTS.RENDERED_STR}`
 
 		if (options.give_items) {
 			const items = parseBank({ inputStr: options.give_items.items, noDuplicateItems: true });
-			const user = await mUserFetch(options.give_items.user.user.id);
-			await interaction.confirmation(`Are you sure you want to give ${items} to ${user.usernameOrMention}?`);
+			if (items.length === 0) return 'No items were given.';
+			const itemErrors = items.validate();
+			if (itemErrors.length > 0) return `Invalid items: ${itemErrors.join(', ')}`;
+
+			const destination = options.give_items.destination;
+			const targetUser = options.give_items.user ? await mUserFetch(options.give_items.user.user.id) : null;
+
+			if (!destination) {
+				if (!targetUser) return 'You need to specify a user or a destination.';
+				await interaction.confirmation(
+					`Are you sure you want to give ${items} to ${targetUser.usernameOrMention}?`
+				);
+				await globalClient.sendMessage(Channel.BotLogs, {
+					content: `${adminUser.logName} sent \`${items}\` to ${targetUser.logName} for ${
+						options.give_items.reason ?? 'No reason'
+					}`
+				});
+
+				await targetUser.addItemsToBank({ items, collectionLog: false });
+				return `Gave ${items} to ${targetUser.mention}`;
+			}
+
+			if (destination !== 'Lottery Bank') return 'Invalid destination.';
+
+			const targetDescription = targetUser
+				? `${targetUser.usernameOrMention}'s lottery input`
+				: 'the lottery bank';
+			await interaction.confirmation(`Are you sure you want to add ${items} to ${targetDescription}?`);
 			await globalClient.sendMessage(Channel.BotLogs, {
-				content: `${adminUser.logName} sent \`${items}\` to ${user.logName} for ${
+				content: `${adminUser.logName} sent \`${items}\` to ${targetUser?.logName ?? 'the lottery bank'} for ${
 					options.give_items.reason ?? 'No reason'
 				}`
 			});
 
-			await user.addItemsToBank({ items, collectionLog: false });
-			return `Gave ${items} to ${user.mention}`;
+			if (targetUser) {
+				await addToLotteryBank(targetUser, items);
+			} else {
+				await addToLotteryPrizePool(items);
+			}
+			return `Added ${items} to ${targetDescription}.`;
 		}
 
 		if (options.bury_in_sand) {

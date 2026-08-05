@@ -6,21 +6,33 @@ import { calcWhatPercent, sumArr } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
 import { filterOption } from '@/discord/presetCommandOptions.js';
+import { globalConfig } from '@/lib/constants.js';
 import { ores, secondaries, seeds } from '@/lib/data/filterables.js';
+import type { RobochimpUser } from '@/lib/roboChimp.js';
 import Firemaking from '@/lib/skilling/skills/firemaking.js';
 import Runecraft from '@/lib/skilling/skills/runecraft.js';
 import { assert } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 
-async function addToLotteryBank(user: MUser, bankToAdd: Bank) {
-	const current = user.user.lottery_input as ItemBank;
-	const newBank = new Bank(current).add(bankToAdd);
+const LOTTERY_ACCEPTS_GP = true;
+const LOTTERY_ACCEPTS_ITEMS = false;
+const LOTTERY_ITEM_VALUE_MULTIPLIER = 3;
+const LOTTERY_TICKET_PRICE = 10_000_000;
+const LOTTERY_GP_GOES_INTO_POOL = true;
+const LOTTERY_ITEMS_GO_INTO_POOL = true;
+// Neutral storage row for admin-spawned prize-pool loot. This row is excluded from ticket stats.
+export const LOTTERY_BANK_HOLDER_USER_ID = globalConfig.adminUserIDs[0];
 
-	const res = await user.update({
-		lottery_input: newBank.toJSON()
-	});
-	return res;
+const LOTTERY_TICKET_ITEM = Items.getOrThrow('Bank lottery ticket');
+assert(LOTTERY_TICKET_ITEM.id === 5021);
+
+const MAX_LOTTERY_TICKETS_PER_DEPOSIT = Math.floor(Number.MAX_SAFE_INTEGER / LOTTERY_TICKET_PRICE);
+
+interface LotteryItemBankTransformerArgs {
+	itemBank: Bank;
+	user?: MUser | null;
+	robochimpUser?: RobochimpUser | null;
 }
 
 const specialPricesBeforeMultiplying = new Bank()
@@ -180,11 +192,10 @@ const toDelete = ['Fire rune', 'Air rune', 'Water rune', 'Earth rune', 'Body run
 for (const item of toDelete) {
 	specialPricesBeforeMultiplying.remove(item, specialPricesBeforeMultiplying.amount(item));
 }
-const MULTIPLIER = 3;
 
 const parsedPriceBank = new Bank();
 for (const [item, qty] of specialPricesBeforeMultiplying.items()) {
-	parsedPriceBank.add(item.id, qty * MULTIPLIER);
+	parsedPriceBank.add(item.id, qty * LOTTERY_ITEM_VALUE_MULTIPLIER);
 }
 
 export async function isLotteryActive(): Promise<boolean> {
@@ -193,30 +204,141 @@ export async function isLotteryActive(): Promise<boolean> {
 }
 
 function getPriceOfItem(item: Item) {
+	if (item.id === LOTTERY_TICKET_ITEM.id) {
+		return LOTTERY_TICKET_PRICE;
+	}
 	if (parsedPriceBank.has(item.id)) {
 		return Math.floor(parsedPriceBank.amount(item.id));
 	}
-	return item.price ?? 0;
+	return Math.floor((item.price ?? 0) * LOTTERY_ITEM_VALUE_MULTIPLIER);
 }
 
-const LOTTERY_TICKET_ITEM = Items.getOrThrow('Bank lottery ticket');
-assert(LOTTERY_TICKET_ITEM.id === 5021);
-const VALUE_PER_TICKET = 10_000_000;
-
-function calcTicketsOfUser(user: MUser | Bank) {
-	const input = user instanceof Bank ? user : new Bank(user.user.lottery_input as ItemBank);
-
+function calcTicketsOfBank(input: Bank) {
 	let totalPrice = 0;
 	for (const [item, quantity] of input.items()) {
 		totalPrice += getPriceOfItem(item) * quantity;
 	}
 
-	const amountOfTickets = Math.floor(totalPrice / VALUE_PER_TICKET);
+	const amountOfTickets = Math.floor(totalPrice / LOTTERY_TICKET_PRICE);
 	return { amountOfTickets, input };
 }
 
+function calcTicketsOfUser(user: MUser | Bank) {
+	return calcTicketsOfBank(user instanceof Bank ? user : new Bank(user.user.lottery_input as ItemBank));
+}
+
+async function resolveLotteryItemBankTransformerArgs({
+	user,
+	robochimpUser
+}: Pick<LotteryItemBankTransformerArgs, 'user' | 'robochimpUser'>) {
+	if (!user && !robochimpUser) {
+		throw new Error('Either user or robochimpUser must be provided to transform lottery item input.');
+	}
+	const resolvedUser = user ?? (await mUserFetch(robochimpUser!.id.toString()));
+	const resolvedRobochimpUser = robochimpUser ?? (await Cache.getRoboChimpUser(resolvedUser.id));
+	return { user: resolvedUser, robochimpUser: resolvedRobochimpUser };
+}
+
+const LOTTERY_ITEM_BANK_TRANSFORMER = async (args: LotteryItemBankTransformerArgs): Promise<Bank> => {
+	await resolveLotteryItemBankTransformerArgs(args);
+	return args.itemBank.clone();
+};
+
+function removeIneligibleLotteryItems(input: Bank) {
+	const cleaned = input.clone();
+	for (const [item] of cleaned.items()) {
+		if (isSuperUntradeable(item.id) || item.id === LOTTERY_TICKET_ITEM.id) {
+			cleaned.clear(item);
+		}
+	}
+	return cleaned;
+}
+
+function validatePositiveLotteryBank(bank: Bank, label: string) {
+	const errors = bank.validate();
+	if (errors.length > 0) {
+		throw new Error(`Invalid ${label}: ${errors.join(', ')}`);
+	}
+	for (const [item, quantity] of bank.items()) {
+		if (!Number.isFinite(quantity) || quantity < 1) {
+			throw new Error(`Invalid ${label}: ${quantity}x ${item.name}`);
+		}
+	}
+}
+
+function calcLotteryBankValue(bank: Bank) {
+	let totalPrice = 0;
+	for (const [item, quantity] of bank.items()) {
+		totalPrice += getPriceOfItem(item) * quantity;
+	}
+	return totalPrice;
+}
+
+function getTicketBank(amountOfTickets: number) {
+	return new Bank().add(LOTTERY_TICKET_ITEM.id, amountOfTickets);
+}
+
+function getLotteryPrizePoolBank(input: Bank) {
+	const prizePool = input.clone();
+	if (prizePool.amount(LOTTERY_TICKET_ITEM.id) > 0) {
+		prizePool.remove(LOTTERY_TICKET_ITEM.id, prizePool.amount(LOTTERY_TICKET_ITEM.id));
+	}
+	return prizePool;
+}
+
+export async function addToLotteryBank(user: MUser, bankToAdd: Bank) {
+	validatePositiveLotteryBank(bankToAdd, 'lottery bank input');
+	return user.transactItems({
+		filterLoot: false,
+		neverUpdateHistory: true,
+		otherUpdates: syncedUser => ({
+			lottery_input: new Bank(syncedUser.user.lottery_input as ItemBank).add(bankToAdd).toJSON()
+		})
+	});
+}
+
+export async function addToLotteryPrizePool(bankToAdd: Bank) {
+	if (!LOTTERY_BANK_HOLDER_USER_ID) {
+		throw new Error('LOTTERY_BANK_HOLDER_USER_ID is not configured.');
+	}
+	return addToLotteryBank(await mUserFetch(LOTTERY_BANK_HOLDER_USER_ID), bankToAdd);
+}
+
+async function transactLotteryDeposit({
+	user,
+	itemsToRemove,
+	amountOfTickets,
+	lotteryInputToAdd
+}: {
+	user: MUser;
+	itemsToRemove: Bank;
+	amountOfTickets: number;
+	lotteryInputToAdd: Bank;
+}) {
+	if (
+		!Number.isSafeInteger(amountOfTickets) ||
+		amountOfTickets < 1 ||
+		amountOfTickets > MAX_LOTTERY_TICKETS_PER_DEPOSIT
+	) {
+		throw new Error(`Invalid lottery ticket amount: ${amountOfTickets}`);
+	}
+	validatePositiveLotteryBank(itemsToRemove, 'lottery deposit removal');
+	validatePositiveLotteryBank(lotteryInputToAdd, 'lottery input update');
+
+	const ticketsToAdd = getTicketBank(amountOfTickets);
+	return user.transactItems({
+		itemsToAdd: ticketsToAdd,
+		itemsToRemove,
+		filterLoot: false,
+		neverUpdateHistory: true,
+		otherUpdates: syncedUser => ({
+			lottery_input: new Bank(syncedUser.user.lottery_input as ItemBank).add(lotteryInputToAdd).toJSON()
+		})
+	});
+}
+
 export async function getLotteryBank() {
-	const res = (
+	const contributions = (
 		await prisma.$queryRawUnsafe<{ lottery_input: ItemBank; id: string }[]>(
 			"SELECT id, lottery_input FROM users WHERE lottery_input::text != '{}'::text;"
 		)
@@ -230,14 +352,15 @@ export async function getLotteryBank() {
 			tickets: calcTicketsOfUser(u.lotteryInput).amountOfTickets
 		}))
 		.sort((a, b) => b.tickets - a.tickets);
+	const users = contributions.filter(i => i.id !== LOTTERY_BANK_HOLDER_USER_ID);
 	const totalLoot = new Bank();
-	for (const i of res) {
-		totalLoot.add(i.lotteryInput);
+	for (const i of contributions) {
+		totalLoot.add(getLotteryPrizePoolBank(i.lotteryInput));
 	}
-	const totalTickets = sumArr(res.map(i => i.tickets));
+	const totalTickets = sumArr(users.map(i => i.tickets));
 	return {
 		totalLoot,
-		users: res,
+		users,
 		totalTickets
 	};
 }
@@ -255,7 +378,9 @@ export const lotteryCommand = defineCommand({
 					type: 'Integer',
 					name: 'quantity',
 					description: 'The number of tickets to buy',
-					required: true
+					required: true,
+					min_value: 1,
+					max_value: MAX_LOTTERY_TICKETS_PER_DEPOSIT
 				}
 			]
 		},
@@ -307,31 +432,40 @@ export const lotteryCommand = defineCommand({
 			return { files: [await makeBankImage({ bank: parsedPriceBank, title: 'Prices' })] };
 		}
 		if (options.buy_tickets) {
-			const amountOfTickets = options.buy_tickets.quantity;
-			if (amountOfTickets < 1) {
+			if (!LOTTERY_ACCEPTS_GP) return 'The lottery is not currently accepting GP for tickets.';
+			const ticketsToBuy = options.buy_tickets.quantity;
+			if (
+				!Number.isSafeInteger(ticketsToBuy) ||
+				ticketsToBuy < 1 ||
+				ticketsToBuy > MAX_LOTTERY_TICKETS_PER_DEPOSIT
+			) {
 				return 'You need to buy at least one ticket.';
 			}
-			const totalPrice = amountOfTickets * VALUE_PER_TICKET;
+			const totalPrice = ticketsToBuy * LOTTERY_TICKET_PRICE;
 			const bankToSell = new Bank().add('Coins', totalPrice);
 
 			if (!user.owns(bankToSell)) return 'You do not have enough GP to buy these tickets.';
 
 			await interaction.confirmation(
-				`${user.mention}, are you sure you want to add ${bankToSell} to the bank lottery - you'll receive **${amountOfTickets} bank lottery tickets**.
+				`${user.mention}, are you sure you want to add ${bankToSell} to the bank lottery - you'll receive **${ticketsToBuy} bank lottery tickets**.
 
 **WARNING:** ${infoStr}`
 			);
 
 			await user.sync();
 			if (!user.owns(bankToSell)) return "You don't have enough GP to buy these tickets.";
-			await user.removeItemsFromBank(bankToSell);
+			await transactLotteryDeposit({
+				user,
+				itemsToRemove: bankToSell,
+				amountOfTickets: ticketsToBuy,
+				lotteryInputToAdd: LOTTERY_GP_GOES_INTO_POOL ? bankToSell : getTicketBank(ticketsToBuy)
+			});
 
-			await addToLotteryBank(user, bankToSell);
-
-			return `You put ${bankToSell} to the bank lottery, and received ${amountOfTickets}x bank lottery tickets.`;
+			return `You put ${bankToSell} to the bank lottery, and received ${ticketsToBuy}x bank lottery tickets.`;
 		}
 		if (options.deposit_items) {
-			const bankToSell = parseBank({
+			if (!LOTTERY_ACCEPTS_ITEMS) return 'The lottery is not currently accepting items for tickets.';
+			let bankToSell = parseBank({
 				inputStr: options.deposit_items.items,
 				inputBank: user.bankWithGP,
 				excludeItems: [...user.user.favoriteItems],
@@ -340,31 +474,27 @@ export const lotteryCommand = defineCommand({
 				filters: [options.deposit_items.filter],
 				user
 			});
-			for (const [item] of bankToSell.items()) {
-				if (isSuperUntradeable(item.id)) {
-					bankToSell.clear(item);
-				}
-			}
+			bankToSell = removeIneligibleLotteryItems(bankToSell);
 
-			if (bankToSell.items().some(i => isSuperUntradeable(i[0].id))) {
-				return 'You cannot put in super untradeable items.';
-			}
-
-			if (bankToSell.amount('Bank lottery ticket')) {
-				bankToSell.remove('Bank lottery ticket', bankToSell.amount('Bank lottery ticket'));
-			}
-
-			let totalPrice = 0;
-			for (const [item, quantity] of bankToSell.items()) {
-				totalPrice += getPriceOfItem(item) * quantity;
-			}
-
+			if (bankToSell.length === 0) return 'No items were given.';
+			bankToSell = removeIneligibleLotteryItems(
+				await LOTTERY_ITEM_BANK_TRANSFORMER({
+					user,
+					itemBank: bankToSell
+				})
+			);
+			validatePositiveLotteryBank(bankToSell, 'lottery item deposit');
 			if (bankToSell.length === 0) return 'No items were given.';
 			if (!user.owns(bankToSell)) return 'You do not own these items.';
 
-			const amountOfTickets = Math.floor(totalPrice / VALUE_PER_TICKET);
+			const totalPrice = calcLotteryBankValue(bankToSell);
+			const ticketsFromItems = Math.floor(totalPrice / LOTTERY_TICKET_PRICE);
 
-			if (amountOfTickets < 1) {
+			if (!Number.isSafeInteger(ticketsFromItems) || ticketsFromItems > MAX_LOTTERY_TICKETS_PER_DEPOSIT) {
+				return 'Those items are worth too much to process in one lottery deposit.';
+			}
+
+			if (ticketsFromItems < 1) {
 				return "Those items aren't worth enough, your deposit needs to be enough to get you atleast 1 ticket.";
 			}
 
@@ -374,7 +504,7 @@ export const lotteryCommand = defineCommand({
 				.sort((a, b) => getPriceOfItem(b[0]) * b[1] - getPriceOfItem(a[0]) * a[1])
 				.slice(0, 10)) {
 				perItemTickets.push(
-					`${((quantity * getPriceOfItem(item)) / VALUE_PER_TICKET).toFixed(1)} tickets for ${quantity} ${
+					`${((quantity * getPriceOfItem(item)) / LOTTERY_TICKET_PRICE).toFixed(1)} tickets for ${quantity} ${
 						item.name
 					}`
 				);
@@ -383,7 +513,7 @@ export const lotteryCommand = defineCommand({
 			await interaction.confirmation(
 				`${
 					user.mention
-				}, are you sure you want to add ${bankToSell} to the bank lottery - you'll receive **${amountOfTickets} bank lottery tickets**. ${perItemTickets.join(
+				}, are you sure you want to add ${bankToSell} to the bank lottery - you'll receive **${ticketsFromItems} bank lottery tickets**. ${perItemTickets.join(
 					', '
 				)}
 
@@ -392,19 +522,22 @@ export const lotteryCommand = defineCommand({
 
 			await user.sync();
 			if (!user.owns(bankToSell)) return 'You do not own these items.';
-			await user.removeItemsFromBank(bankToSell);
+			await transactLotteryDeposit({
+				user,
+				itemsToRemove: bankToSell,
+				amountOfTickets: ticketsFromItems,
+				lotteryInputToAdd: LOTTERY_ITEMS_GO_INTO_POOL ? bankToSell : getTicketBank(ticketsFromItems)
+			});
 
-			await addToLotteryBank(user, bankToSell);
-
-			return `You put ${bankToSell} to the bank lottery, and received ${amountOfTickets}x bank lottery tickets.`;
+			return `You put ${bankToSell} to the bank lottery, and received ${ticketsFromItems}x bank lottery tickets.`;
 		}
 
-		const { amountOfTickets, input } = calcTicketsOfUser(user);
+		const { amountOfTickets: userTickets, input } = calcTicketsOfUser(user);
 		const { totalLoot, totalTickets, users } = await getLotteryBank();
 
 		const message = new MessageBuilder()
-			.setContent(`There have been ${totalTickets.toLocaleString()} purchased, you have ${amountOfTickets.toLocaleString()}x tickets, and a ${
-				amountOfTickets === 0 ? 0 : calcWhatPercent(amountOfTickets, totalTickets).toFixed(4)
+			.setContent(`There have been ${totalTickets.toLocaleString()} purchased, you have ${userTickets.toLocaleString()}x tickets, and a ${
+				userTickets === 0 ? 0 : calcWhatPercent(userTickets, totalTickets).toFixed(4)
 			}% chance of winning (will fluctuate based on you/others buying tickets.)
 
 ${infoStr}

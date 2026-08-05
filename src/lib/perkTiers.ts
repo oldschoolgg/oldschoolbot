@@ -43,10 +43,6 @@ const MAGNA_TIER_BITS = [
 	{ bit: RobochimpBitfieldEnum.MagnaTier1, number: 1 }
 ] as const;
 
-const ROBOCHIMP_PAID_BITS = new Set([...CYR_TIER_BITS, ...MAGNA_TIER_BITS].map(tier => tier.bit));
-
-export const allPerkBitfields: BitField[] = [BitField.HasPermanentTierOne, BitField.BothBotsMaxedFreeTierOnePerks];
-
 type PerkTierHotCacheEntry = {
 	tier: number;
 	expires: number;
@@ -129,25 +125,6 @@ export function getCyrTripBonus(bitsOrUser: number[] | RobochimpUser | null | un
 		cyrBonus += Time.Minute * 3;
 	}
 	return cyrBonus;
-}
-
-export async function getRoboChimpGroupPaidBits(userID: string) {
-	const roboChimpCached = await Cache.getRoboChimpUser(userID);
-	if (!roboChimpCached) return [];
-	if (!roboChimpCached.user_group_id) {
-		return roboChimpCached.bits.filter(bit => ROBOCHIMP_PAID_BITS.has(bit));
-	}
-
-	const groupUsers = await roboChimpClient.user.findMany({
-		where: {
-			user_group_id: roboChimpCached.user_group_id
-		},
-		select: {
-			bits: true
-		}
-	});
-
-	return [...new Set(groupUsers.flatMap(groupUser => groupUser.bits.filter(bit => ROBOCHIMP_PAID_BITS.has(bit))))];
 }
 
 export async function getUsersPerkTier({
