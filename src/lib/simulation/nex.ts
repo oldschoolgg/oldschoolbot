@@ -1,5 +1,4 @@
 import { userMention } from '@oldschoolgg/discord';
-import { percentChance, randFloat, randInt, randomVariation, roll } from '@oldschoolgg/rng';
 import {
 	calcWhatPercent,
 	exponentialPercentScale,
@@ -128,6 +127,7 @@ interface TeamMember {
 
 export interface NexContext {
 	quantity: number;
+	rng: RNGProvider;
 	team: { id: string; teamID: number; contribution: number; deaths: number[]; fake?: boolean }[];
 }
 
@@ -141,7 +141,7 @@ export const purpleNexItems = resolveItems([
 	'Torva platelegs (damaged)'
 ]);
 
-export function handleNexKills({ quantity, team }: NexContext) {
+export function handleNexKills({ quantity, team, rng }: NexContext) {
 	const teamLoot = new TeamLoot(purpleNexItems);
 
 	for (let i = 0; i < quantity; i++) {
@@ -150,13 +150,13 @@ export function handleNexKills({ quantity, team }: NexContext) {
 
 		const survivors = team
 			.filter(u => !u.deaths.includes(i))
-			.map(u => ({ ...u, contribution: randomVariation(u.contribution, 10) }));
+			.map(u => ({ ...u, contribution: rng.randomVariation(u.contribution, 10) }));
 		if (survivors.length === 0) {
 			continue;
 		}
 
 		const totalContribution = sumArr(survivors.map(u => u.contribution));
-		const VIPContribution = randFloat(0, totalContribution); // random VIP, weighted by contribution
+		const VIPContribution = rng.randFloat(0, totalContribution); // random VIP, weighted by contribution
 		let cumulativeSum = 0;
 		let VIP = 0;
 		for (const user of survivors) {
@@ -176,15 +176,15 @@ export function handleNexKills({ quantity, team }: NexContext) {
 
 			if (teamMember.teamID === VIP) teamLoot.add(teamMember.id, 'Big bones');
 
-			if (roll(43) && percentChance((VIPBonus * 100 * teamMember.contribution) / totalContribution)) {
+			if (rng.roll(43) && rng.percentChance((VIPBonus * 100 * teamMember.contribution) / totalContribution)) {
 				teamLoot.add(teamMember.id, NexUniqueTable.roll());
 			}
 
-			if (roll(500) && percentChance((VIPBonus * 100 * teamMember.contribution) / totalContribution)) {
+			if (rng.roll(500) && rng.percentChance((VIPBonus * 100 * teamMember.contribution) / totalContribution)) {
 				teamLoot.add(teamMember.id, 'Nexling');
 			}
 
-			if (roll(48)) {
+			if (rng.roll(48)) {
 				teamLoot.add(teamMember.id, 'Clue scroll (elite)');
 			}
 		}
@@ -193,7 +193,7 @@ export function handleNexKills({ quantity, team }: NexContext) {
 	return teamLoot;
 }
 
-export async function calculateNexDetails({ team }: { team: MUser[] }) {
+export async function calculateNexDetails({ team, rng }: { team: MUser[]; rng: RNGProvider }) {
 	let maxTripLength = Math.max(...(await Promise.all(team.map(u => u.calcMaxTripLength('Nex')))));
 	let lengthPerKill = Time.Minute * 35;
 	const resultTeam: TeamMember[] = [];
@@ -263,7 +263,7 @@ export async function calculateNexDetails({ team }: { team: MUser[] }) {
 			id: member.id,
 			contribution,
 			deathChance,
-			died: percentChance(deathChance),
+			died: rng.percentChance(deathChance),
 			cost,
 			deaths: [],
 			messages,
@@ -283,7 +283,7 @@ export async function calculateNexDetails({ team }: { team: MUser[] }) {
 	for (let i = 0; i < quantity; i++) {
 		let deathsThisKill = 0;
 		for (const user of resultTeam) {
-			if (percentChance(user.deathChance)) {
+			if (rng.percentChance(user.deathChance)) {
 				user.deaths.push(i);
 				deathsThisKill++;
 			}
@@ -299,7 +299,7 @@ export async function calculateNexDetails({ team }: { team: MUser[] }) {
 		const { rangeGear } = nexGearStats(user);
 		const ammo = rangeGear.get('ammo')?.item ?? EItem.DRAGON_ARROW;
 		// Between 50-60 ammo per kill (before reductions)
-		teamUser.cost.add(ammo, randInt(50, 60) * quantity);
+		teamUser.cost.add(ammo, rng.randInt(50, 60) * quantity);
 	}
 
 	const duration = quantity * lengthPerKill;
@@ -307,7 +307,7 @@ export async function calculateNexDetails({ team }: { team: MUser[] }) {
 	return {
 		team: resultTeam,
 		quantity,
-		duration: wipedKill ? wipedKill * lengthPerKill - randomVariation(lengthPerKill / 2, 90) : duration,
+		duration: wipedKill ? wipedKill * lengthPerKill - rng.randomVariation(lengthPerKill / 2, 90) : duration,
 		fakeDuration: duration,
 		wipedKill
 	};

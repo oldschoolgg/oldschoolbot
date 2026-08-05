@@ -1,5 +1,3 @@
-import { randInt } from '@oldschoolgg/rng';
-
 // Difference between this and ItemBank, is ItemBank is expected to have only integers as strings
 export interface GiantsFoundryBank {
 	[key: string]: number;
@@ -53,8 +51,12 @@ export function encodeGiantWeapons([tip, blade, forte]: [number, number, number]
 	return `${tip.toString()}-${blade.toString()}-${forte.toString()}`;
 }
 
-export function generateRandomGiantWeapon(): [number, number, number] {
-	return [randInt(0, tipMoulds.length - 1), randInt(0, bladeMoulds.length - 1), randInt(0, forteMoulds.length - 1)];
+export function generateRandomGiantWeapon(rng: RNGProvider): [number, number, number] {
+	return [
+		rng.randInt(0, tipMoulds.length - 1),
+		rng.randInt(0, bladeMoulds.length - 1),
+		rng.randInt(0, forteMoulds.length - 1)
+	];
 }
 
 export function giantWeaponName(weapon: number[]) {

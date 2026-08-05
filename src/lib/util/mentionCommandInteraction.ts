@@ -1,5 +1,8 @@
 import { InteractionType } from '@oldschoolgg/discord';
 import type { IInteractionResponse, IMessage } from '@oldschoolgg/schemas';
+import { MathRNG } from 'node-rng';
+
+import type { OSInteraction } from '@/lib/structures/OSInteraction.js';
 
 class MentionCommandInteraction {
 	__response__: unknown = {};
@@ -9,12 +12,14 @@ class MentionCommandInteraction {
 		data: { options: []; resolved: Record<string, never> };
 		type: InteractionType.ApplicationCommand;
 	};
+	user: MUser;
 	userId: string;
 	channelId: string;
 	guildId?: string;
 	member: null = null;
 
 	constructor({ user, message }: { user: MUser; message: IMessage }) {
+		this.user = user;
 		this.userId = user.id;
 		this.channelId = message.channel_id;
 		this.guildId = message.guild_id ?? undefined;
@@ -27,6 +32,10 @@ class MentionCommandInteraction {
 			},
 			type: InteractionType.ApplicationCommand
 		};
+	}
+
+	get rng(): RNGProvider {
+		return MathRNG;
 	}
 
 	async deferReply() {
@@ -71,6 +80,6 @@ class MentionCommandInteraction {
 	}
 }
 
-export function createMentionInteraction({ user, message }: { user: MUser; message: IMessage }): MInteraction {
-	return new MentionCommandInteraction({ user, message }) as unknown as MInteraction;
+export function createMentionInteraction({ user, message }: { user: MUser; message: IMessage }): OSInteraction {
+	return new MentionCommandInteraction({ user, message }) as unknown as OSInteraction;
 }

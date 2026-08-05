@@ -2,19 +2,31 @@
 title: "Divine Dominion"
 ---
 
-Gain favour with the five gods by sacrificing their items. Use `[/bsominigames divine_dominion check]` to see your favour and `[/bsominigames divine_dominion sacrifice_god_item item:]` to offer items. You can also gain favour passively while killing monsters – slaying a creature aligned with one god awards favour with the *other* gods.
+Divine Dominion favor is managed with:
 
-## Requirements
+- `[/bsominigames divine_dominion check]`
+- `[/bsominigames divine_dominion sacrifice_god_item item:<item> quantity:<qty>]`
 
-- No skill requirements but you must own god items to sacrifice.
-- Favour increases 10 seconds per item offered.
-- Favour from kills is based on the time spent killing.
+## Mechanics
 
-## Rewards
+- Sacrificing a valid god item gives **10 seconds** of favor per item to that item's god.
+- Sacrificed items are consumed.
+- `check` shows each god as a capped percentage (`max 100%`).
 
-- 80% favour grants the matching Warpriest armour set if you don't own it.
-- 100% favour grants that god's egg pet if not already in your collection log.
-- Each sacrificed item also has a 1/10,000 chance to award the pet immediately.
+## Rewards and thresholds
 
-Godly items include armour, pages, weapons and blessings from Armadyl, Bandos, Guthix, Saradomin and Zamorak.
-Common examples are god pages, blessed d'hide pieces and godswords. Sacrificed items are consumed.
+- **80% favor**: grants that god's **Warpriest set** (if you don't already have it in CL).
+- **100% favor**: for **Zamorak/Guthix/Saradomin only**, grants the god egg (if you don't already have it in CL).
+- Sacrificing to Zamorak/Guthix/Saradomin also has a **1/10,000 per item** roll for that god egg.
+
+## Valid gods and item pools
+
+You can only sacrifice items from these god pools:
+
+- Armadyl
+- Bandos
+- Guthix
+- Saradomin
+- Zamorak
+
+These pools include the expected pages, blessed d'hide, god armor pieces, weapons, blessings, and related god items from each set.

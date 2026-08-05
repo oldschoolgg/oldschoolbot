@@ -1,7 +1,5 @@
-import { percentChance, roll } from '@oldschoolgg/rng';
 import { SimpleTable, sumArr } from '@oldschoolgg/toolkit';
 import { Bank, type LootBank, LootTable } from 'oldschooljs';
-import { clone } from 'remeda';
 
 import { TOBRooms } from '@/lib/data/tob.js';
 import { assert } from '@/lib/util/logError.js';
@@ -22,7 +20,8 @@ interface TheatreOfBloodOptions {
 	/**
 	 * The members of the raid team, 1-5 people.
 	 */
-	team: TeamMember[];
+	team: readonly TeamMember[];
+	rng: RNGProvider;
 }
 
 interface ParsedMember extends TeamMember {
@@ -87,7 +86,7 @@ const HardModeExtraTable = new LootTable()
 	.tertiary(100, 'Holy ornament kit');
 
 class TheatreOfBloodClass {
-	nonUniqueLoot(member: ParsedMember, isHardMode: boolean, deaths: number[]) {
+	nonUniqueLoot(rng: RNGProvider, member: ParsedMember, isHardMode: boolean, deaths: number[]) {
 		if (deaths.length === TOBRooms.length) {
 			return new Bank().add('Cabbage');
 		}
@@ -117,7 +116,7 @@ class TheatreOfBloodClass {
 		if (member.numDeaths > 0) {
 			petChance *= member.numDeaths;
 		}
-		if (roll(petChance)) {
+		if (rng.roll(petChance)) {
 			loot.add("Lil' zik");
 		}
 
@@ -133,15 +132,14 @@ class TheatreOfBloodClass {
 		return table.roll();
 	}
 
-	public complete(_options: TheatreOfBloodOptions) {
-		const options = clone(_options);
-		assert(options.team.length >= 1 || options.team.length <= 5, 'TOB team must have 1-5 members');
+	public complete({ team, rng, hardMode }: TheatreOfBloodOptions) {
+		assert(team.length >= 1 || team.length <= 5, 'TOB team must have 1-5 members');
 
 		const maxPointsPerPerson = 22;
 		const penaltyForDeath = 4;
-		const maxPointsTeamCanGet = options.team.length * maxPointsPerPerson;
+		const maxPointsTeamCanGet = team.length * maxPointsPerPerson;
 
-		const parsedTeam: ParsedMember[] = _options.team.map(t => ({
+		const parsedTeam: ParsedMember[] = team.map(t => ({
 			id: t.id,
 			deaths: t.deaths,
 			numDeaths: t.deaths.length,
@@ -153,20 +151,18 @@ class TheatreOfBloodClass {
 
 		const totalDeaths = sumArr(parsedTeam.map(i => i.numDeaths));
 
-		const percentBaseChanceOfUnique = (options.hardMode ? 13 : 11) * (teamPoints / maxPointsTeamCanGet);
+		const percentBaseChanceOfUnique = (hardMode ? 13 : 11) * (teamPoints / maxPointsTeamCanGet);
 
-		const purpleReceived = percentChance(percentBaseChanceOfUnique);
+		const purpleReceived = rng.percentChance(percentBaseChanceOfUnique);
 		const purpleRecipient = purpleReceived ? this.uniqueDecide(parsedTeam) : null;
 
 		const lootResult: LootBank = {};
 
 		for (const member of parsedTeam) {
 			if (member === purpleRecipient) {
-				lootResult[member.id] = new Bank().add(
-					options.hardMode ? HardModeUniqueTable.roll() : UniqueTable.roll()
-				);
+				lootResult[member.id] = new Bank().add(hardMode ? HardModeUniqueTable.roll() : UniqueTable.roll());
 			} else {
-				lootResult[member.id] = this.nonUniqueLoot(member, options.hardMode, member.deaths);
+				lootResult[member.id] = this.nonUniqueLoot(rng, member, hardMode, member.deaths);
 			}
 		}
 

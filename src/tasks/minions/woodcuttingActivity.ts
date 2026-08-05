@@ -280,6 +280,7 @@ export const woodcuttingTask: MinionTask = {
 		// Add clue scrolls & nests
 		if (log.clueScrollChance) {
 			addSkillingClueToLoot(
+				rng,
 				user,
 				'woodcutting',
 				quantity,

@@ -1,9 +1,9 @@
-import { percentChance } from '@oldschoolgg/rng';
-import { formatDuration, Time, UserError } from '@oldschoolgg/toolkit';
+import { Time, UserError } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { avasDevices, chompyHats } from '@/lib/data/CollectionsExport.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 const diaryBoosts = [
 	['westernprovinces.elite', 100],
@@ -28,7 +28,7 @@ export async function chompyHuntClaimCommand(user: MUser) {
 	return `Added the following hats to your bank: ${missingHatsBank}`;
 }
 
-export async function chompyHuntCommand(user: MUser, channelId: string) {
+export async function chompyHuntCommand({ user, channelId, rng }: OSInteraction & { rng: RNGProvider }) {
 	if (user.QP < 10) {
 		return 'You need at least 10 QP to hunt Chompy birds.';
 	}
@@ -47,7 +47,7 @@ export async function chompyHuntCommand(user: MUser, channelId: string) {
 		if (hasDiary) {
 			let bonus = 0;
 			for (let i = 0; i < quantity; i++) {
-				if (percentChance(boost)) {
+				if (rng.percentChance(boost)) {
 					bonus++;
 				}
 			}
@@ -83,9 +83,7 @@ export async function chompyHuntCommand(user: MUser, channelId: string) {
 		minigameID: 'big_chompy_bird_hunting'
 	});
 
-	let str = `${user.minionName} is now hunting chompy birds! The trip will take ${formatDuration(
-		tripLength
-	)}. Removing items: ${realCost}.`;
+	let str = `${user.minionName} is now hunting chompy birds! The trip will return in about ${formatTripDuration(user, tripLength)}. Removing items: ${realCost}.`;
 
 	if (boosts.length > 0) {
 		str += `\n**Boosts:** ${boosts.join(', ')}.`;

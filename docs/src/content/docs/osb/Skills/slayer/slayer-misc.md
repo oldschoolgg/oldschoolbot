@@ -21,7 +21,7 @@ A: Yes, they will automatically appear 25% more frequently after you claim the d
 A: Depends on your goal; Konar for CL/XP or Duradel for bossing. Konar is better XP due to being able to complete tasks in any of Konar's assignable locations rather than a specific location (unlike OSRS).
 
 **Q: How do I imbue my slayer helm/black mask?**
-A: [[/minigames soul_wars imbue name\:Black mask]] — you can get points through the [Soul Wars minigame](https://wiki.oldschool.gg/minigames/soul-wars) or through [Nightmare Zone](../../miscellaneous/nightmare-zone).
+A: [[/minigames soul_wars imbue name\:Black mask]] — you can get points through the [Soul Wars minigame](https://wiki.oldschool.gg/osb/minigames/soul-wars/#_top) or through [Nightmare Zone](../../miscellaneous/nightmare-zone).
 
 **Q: Do I need to equip my black mask/slayer helm to get the boost?**
 A: No, the boost works from the bank.

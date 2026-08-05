@@ -1,8 +1,10 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { relative, resolve as resolveDir } from 'node:path';
 import { defineConfig, type UserConfig } from 'tsdown';
 
-const tsconfigPath = relative(import.meta.dirname, resolveDir(process.cwd(), 'src', 'tsconfig.json'));
+const cwdTsconfigPath = resolveDir(process.cwd(), 'tsconfig.json');
+const srcTsconfigPath = resolveDir(process.cwd(), 'src', 'tsconfig.json');
+const tsconfigPath = relative(import.meta.dirname, existsSync(cwdTsconfigPath) ? cwdTsconfigPath : srcTsconfigPath);
 
 const baseOptions: UserConfig = {
 	clean: true,
@@ -34,24 +36,13 @@ const dependencies: string[] = Object.keys(packageJson.dependencies)
 	.filter(dep => !external.includes(dep));
 
 export function createTsdownConfig(options: UserConfig = {}) {
-	return [
-		defineConfig({
-			...baseOptions,
-			outDir: 'dist/cjs',
-			format: 'cjs',
-			external,
-			noExternal: dependencies,
-			outExtensions: () => ({ js: '.cjs', json: '.json' }),
-			...options
-		}),
-		defineConfig({
-			...baseOptions,
-			external,
-			noExternal: dependencies,
-			outDir: 'dist/esm',
-			format: 'esm',
-			outExtensions: () => ({ js: '.mjs', json: '.json' }),
-			...options
-		})
-	];
+	return defineConfig({
+		...baseOptions,
+		external,
+		noExternal: dependencies,
+		outDir: 'dist/esm',
+		format: 'esm',
+		outExtensions: () => ({ js: '.mjs', json: '.json' }),
+		...options
+	});
 }

@@ -1,4 +1,4 @@
-import { MathRNG } from '@oldschoolgg/rng';
+import { MathRNG } from 'node-rng';
 
 export interface SimpleTableItem<T> {
 	item: T;

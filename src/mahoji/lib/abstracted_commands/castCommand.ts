@@ -3,6 +3,7 @@ import { formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldsch
 import { Castables } from '@/lib/skilling/skills/magic/castables.js';
 import type { CastingActivityTaskOptions } from '@/lib/types/minions.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export async function castCommand(channelId: string, user: MUser, name: string, quantity: number | undefined) {
 	const spell = Castables.find(spell => stringMatches(spell.id.toString(), name) || stringMatches(spell.name, name));
@@ -117,7 +118,8 @@ export async function castCommand(channelId: string, user: MUser, name: string, 
 		((spell.xp * quantity) / (duration / Time.Minute)) * 60
 	).toLocaleString()} Magic XP/Hr`;
 
-	let response = `${user.minionName} is now casting ${quantity}x ${spell.name}, it'll take around ${formatDuration(
+	let response = `${user.minionName} is now casting ${quantity}x ${spell.name}, it'll take around ${formatTripDuration(
+		user,
 		duration
 	)} to finish. Removed ${cost}${spell.gpCost ? ` and ${gpCost} Coins` : ''} from your bank. **${magicXpHr}**`;
 

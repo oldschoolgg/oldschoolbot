@@ -56,6 +56,7 @@ export interface MinionKillOptions {
 	bitfield: readonly BitField[];
 	pkEvasionExperience: number;
 	currentPeak: Peak;
+	rng: RNGProvider;
 }
 
 export function newMinionKillCommand(args: MinionKillOptions): string | MinionKillReturn {
@@ -223,9 +224,13 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 			combatMethods,
 			relevantGearStat,
 			currentTaskOptions: speedDurationResult.currentTaskOptions,
-			killsRemaining
+			killsRemaining,
+			rng: args.rng
 		});
 		if (!result) continue;
+		if (typeof result === 'string') {
+			return result;
+		}
 		for (const boostResult of Array.isArray(result) ? result : [result]) {
 			if (boostResult.changes) {
 				speedDurationResult.currentTaskOptions = mergeDeep(

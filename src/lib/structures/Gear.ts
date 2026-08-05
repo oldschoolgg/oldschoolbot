@@ -12,10 +12,10 @@ import {
 	type OtherGearStat,
 	type PartialGearSetup
 } from '@oldschoolgg/gear';
-import { deepEqual, notEmpty } from '@oldschoolgg/toolkit';
+import { notEmpty } from '@oldschoolgg/toolkit';
 import { Bank, type Item, Items, itemID, resolveItems } from 'oldschooljs';
 import type { EGear } from 'oldschooljs/EGear';
-import { clone } from 'remeda';
+import { clone, isDeepEqual } from 'remeda';
 
 import type { GearPreset } from '@/prisma/main.js';
 import { getSimilarItems, inverseSimilarItems } from '@/lib/data/similarItems.js';
@@ -172,7 +172,7 @@ export class Gear {
 	allItems(similar = false): number[] {
 		const values = new Set<number>();
 		for (const val of Object.values(this.setup)) {
-			if (val) {
+			if (val?.item) {
 				values.add(val.item);
 			}
 		}
@@ -241,9 +241,13 @@ export class Gear {
 	getStats(): GearStats {
 		const sum = { ...baseStats };
 		for (const id of this.allItems(false)) {
-			const item = Items.getOrThrow(id);
-			for (const keyToAdd of Object.keys(sum) as (keyof GearStats)[]) {
-				sum[keyToAdd] += item.equipment ? item.equipment[keyToAdd] : 0;
+			const item = Items.get(id);
+			if (item) {
+				for (const keyToAdd of Object.keys(sum) as (keyof GearStats)[]) {
+					sum[keyToAdd] += item.equipment ? item.equipment[keyToAdd] : 0;
+				}
+			} else {
+				Logging.logError(`Item not found when calculating gear stats, id[${id}]]`);
 			}
 		}
 		return sum;
@@ -349,7 +353,7 @@ export class Gear {
 	equals(other: Gear): boolean {
 		const thisRaw = this.raw();
 		const otherRaw = other.raw();
-		return deepEqual(thisRaw, otherRaw);
+		return isDeepEqual(thisRaw, otherRaw);
 	}
 }
 

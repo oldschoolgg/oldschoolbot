@@ -119,9 +119,12 @@ export class BaseUser {
 		this.skillsAsXP = this.getSkills(false);
 		this.skillsAsLevels = this.getSkills(true);
 
-		this.badgesString = makeBadgeString(this.user.badges, this.isIronman);
-
 		this.bitfield = this.user.bitfield as readonly BitField[];
+		this.badgesString = makeBadgeString(
+			this.user.badges,
+			this.isIronman,
+			this.bitfield.includes(BitField.OriginalCyrSupporter)
+		);
 		this.iconPackId = (this.user.icon_pack_id as IconPackID) ?? null;
 	}
 
@@ -351,15 +354,28 @@ export class BaseUser {
 	modifyBusy(type: 'lock' | 'unlock', reason: string): void {
 		modifyUserBusy({ type, reason, userID: this.id });
 	}
-
+	isSupport(): boolean {
+		return this.bitfield.includes(BitField.ServerSupport);
+	}
+	isTrusted(): boolean {
+		return this.isWikiContrib() || this.isStaff();
+	}
+	isStaff(): boolean {
+		return this.isModOrAdmin() || this.isSupport() || this.isContributor();
+	}
+	isWikiContrib(): boolean {
+		return this.bitfield.includes(BitField.WikiContributor);
+	}
 	isMod(): boolean {
-		return this.bitfield.includes(BitField.isModerator);
+		return this.bitfield.includes(BitField.Moderator);
+	}
+	isContributor(): boolean {
+		return this.bitfield.includes(BitField.Contributor);
 	}
 
 	isAdmin(): boolean {
 		return globalConfig.adminUserIDs.includes(this.id);
 	}
-
 	isModOrAdmin(): boolean {
 		return this.isAdmin() || this.isMod();
 	}

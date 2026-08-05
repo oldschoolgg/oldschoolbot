@@ -1,19 +1,14 @@
-import { cryptoRng } from '@oldschoolgg/rng/crypto';
+import { cryptoRng } from 'node-rng/crypto';
 
-import type { NewUser } from '@/prisma/main.js';
+import type { Minigame } from '@/prisma/main.js';
 import { rawCommandHandlerInner } from '@/discord/commandHandler.js';
 
-export async function getNewUser(id: string): Promise<NewUser> {
-	const value = await prisma.newUser.findUnique({ where: { id } });
-	if (!value) {
-		return prisma.newUser.create({
-			data: {
-				id,
-				minigame: {}
-			}
-		});
-	}
-	return value;
+export async function getMinigame(id: string): Promise<Minigame> {
+	return prisma.minigame.upsert({
+		where: { user_id: id },
+		update: {},
+		create: { user_id: id }
+	});
 }
 
 export interface RunCommandArgs {
@@ -21,7 +16,7 @@ export interface RunCommandArgs {
 	args: CommandOptions;
 	user: MUser;
 	isContinue?: boolean;
-	interaction: MInteraction;
+	interaction: OSInteraction;
 	continueDeltaMillis: number | null;
 	ignoreUserIsBusy?: true;
 }

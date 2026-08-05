@@ -1,11 +1,9 @@
-import '../base.js';
-
 import { Markdown } from '@oldschoolgg/toolkit';
 
 import { quests } from '@/lib/minions/data/quests.js';
 import { handleMarkdownEmbed } from './wikiScriptUtil.js';
 
-function renderQuestsMarkdown() {
+export function renderQuestsMarkdown() {
 	const markdown = new Markdown();
 
 	for (const quest of quests.sort((a, b) => a.name.localeCompare(b.name))) {
@@ -72,5 +70,3 @@ function renderQuestsMarkdown() {
 
 	handleMarkdownEmbed('quests', 'osb/quests.mdx', markdown.toString());
 }
-
-renderQuestsMarkdown();

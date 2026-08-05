@@ -1,6 +1,7 @@
 import '../data/itemAliases.js';
 
 import { stringMatches } from '@oldschoolgg/toolkit';
+import { MathRNG } from 'node-rng';
 import { Bank, calcDropRatesFromBank, Misc, Monsters, resolveItems } from 'oldschooljs';
 
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
@@ -82,7 +83,8 @@ export default async ({
 				{ id: '2', teamID: 2, contribution: 100, deaths: [] },
 				{ id: '3', teamID: 3, contribution: 100, deaths: [] },
 				{ id: '4', teamID: 4, contribution: 100, deaths: [] }
-			]
+			],
+			rng: MathRNG
 		});
 		return {
 			bank: loot.get('1').toJSON(),

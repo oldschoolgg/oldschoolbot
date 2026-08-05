@@ -1,4 +1,4 @@
-import { percentChance, randInt, roll } from '@oldschoolgg/rng';
+import { percentChance, randInt, roll } from 'node-rng';
 
 import { Bank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
