@@ -158,9 +158,9 @@ const AutoSlayMaxEfficiencyTable: AutoslayLink[] = [
 		efficientMethod: 'cannon'
 	},
 	{
-		monsterID: Monsters.SteelDragon.id,
-		efficientName: Monsters.SteelDragon.name,
-		efficientMonster: Monsters.SteelDragon.id,
+		monsterID: Monsters.BronzeDragon.id,
+		efficientName: Monsters.BronzeDragon.name,
+		efficientMonster: Monsters.BronzeDragon.id,
 		efficientMethod: 'cannon'
 	},
 	{
