@@ -11,9 +11,11 @@ import {
 	TOTAL_MONKEYS
 } from '@/lib/bso/minigames/monkey-rumble/monkeyRumble.js';
 
-import { Emoji, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { Emoji, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { randArrItem } from 'node-rng';
 import { Bank } from 'oldschooljs';
+
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export async function monkeyRumbleStatsCommand(user: MUser) {
 	const tier = monkeyTiers.find(t => t.id === monkeyTierOfUser(user))!;
@@ -111,7 +113,8 @@ export async function monkeyRumbleCommand(user: MUser, channelId: string): Comma
 
 	let str = `You are fighting ${quantity}x different monkeys (${monkeysToFight
 		.map(m => `${m.special ? `${Emoji.Purple} ` : ''}${m.name}`)
-		.join(', ')}). The trip will take ${formatDuration(
+		.join(', ')}). The trip will take ${formatTripDuration(
+		user,
 		duration
 	)}. Removed ${cost} from your bank. **1 in ${chanceOfSpecial} chance of a monkey being special, with ${quantity} monkeys in this trip, there was a 1 in ${(chanceOfSpecial / quantity).toFixed(2)} chance that one of them would be special.**`;
 	if (boosts.length > 0) {

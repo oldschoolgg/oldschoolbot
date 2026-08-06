@@ -3,13 +3,14 @@ import type { BathhouseTaskOptions } from '@/lib/bso/bsoTypes.js';
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 import type { MTame } from '@/lib/bso/structures/MTame.js';
 
-import { Emoji, formatDuration, reduceNumByPercent, stringMatches, Table, Time } from '@oldschoolgg/toolkit';
+import { Emoji, reduceNumByPercent, stringMatches, Table, Time } from '@oldschoolgg/toolkit';
 import { randArrItem } from 'node-rng';
 import { Bank, type Item, Items, LootTable, resolveItems } from 'oldschooljs';
 
 import type { User } from '@/prisma/main.js';
 import Grimy from '@/lib/skilling/skills/herblore/mixables/grimy.js';
 import type { Skills } from '@/lib/types/index.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 export const bathhouseTierNames = ['Warm', 'Hot', 'Fiery'] as const;
@@ -365,7 +366,7 @@ export async function baxtorianBathhousesStartCommand({
 		tier: bathHouseTier.name
 	});
 
-	return `${user.minionName} is now working at the Baxtorian Bathhouses for ${formatDuration(duration)}.
+	return `${user.minionName} is now working at the Baxtorian Bathhouses for ${formatTripDuration(user, duration)}.
 ${Emoji.Firemaking} **Water Heating cost:** ${heatingCost}
 ${Emoji.Herblore} **Water Mixture cost:** ${herbCost}
 **Boosts:** ${boosts.length > 0 ? boosts.join(', ') : 'None.'}`;

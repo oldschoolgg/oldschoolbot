@@ -10,10 +10,11 @@ import {
 import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 import { memoryHarvestResult, totalTimePerRound } from '@/lib/bso/tasks/memoryHarvestActivity.js';
 
-import { formatDuration, increaseNumByPercent, removeFromArr, Time } from '@oldschoolgg/toolkit';
+import { increaseNumByPercent, removeFromArr, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { assert } from '@/lib/util/logError.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export const divinationCommand = defineCommand({
 	name: 'divination',
@@ -327,7 +328,7 @@ You have ${portentCharges[portent.id]} charges left, and you receive ${
 
 			let str = `${user.minionName} is now harvesting ${energy.type} memories (${
 				memoryHarvestTypes[memoryHarvestMethodIndex].name
-			}), it'll take around ${formatDuration(duration)} to finish.`;
+			}), it'll take around ${formatTripDuration(user, duration)} to finish.`;
 			if (boosts.length > 0) {
 				str += `\n**Boosts:** ${boosts.join(', ')}`;
 			}

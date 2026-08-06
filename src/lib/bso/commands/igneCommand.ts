@@ -3,10 +3,11 @@ import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { BossInstance } from '@/lib/bso/structures/Boss.js';
 
 import { EmbedBuilder } from '@oldschoolgg/discord';
-import { formatDuration, Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { Gear } from '@/lib/structures/Gear.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export async function igneCommand(
 	interaction: MInteraction,
@@ -105,7 +106,8 @@ export async function igneCommand(
 
 	const embed = new EmbedBuilder()
 		.setDescription(
-			`Your team is off to fight ${instance.quantity}x Ignecarus. The total trip will take ${formatDuration(
+			`Your team is off to fight ${instance.quantity}x Ignecarus. The total trip will take ${formatTripDuration(
+				user,
 				instance.duration
 			)}.
 

@@ -16,6 +16,7 @@ import { formatDuration, formatOrdinal, reduceNumByPercent, stringMatches, Time 
 import { Bank } from 'oldschooljs';
 
 import type { MakePartyOptions } from '@/lib/types/index.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 // Max people in a party:
@@ -142,7 +143,7 @@ async function startCommand(
 		.map(u => u.usernameOrMention)
 		.join(', ')}) is now off to do ${quantity}x dungeons of the ${formatOrdinal(
 		floorToDo
-	)} floor. Each dungeon takes ${formatDuration(perFloor)} - the total trip will take ${formatDuration(duration)}.`;
+	)} floor. Each dungeon takes ${formatDuration(perFloor)} - the total trip will take ${formatTripDuration(user, duration)}.`;
 
 	if (boosts.length > 0) {
 		str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
