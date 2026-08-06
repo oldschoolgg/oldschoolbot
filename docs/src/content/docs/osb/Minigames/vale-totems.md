@@ -41,7 +41,7 @@ Auto-rummage can convert Vale offerings into loot/research points automatically 
 
 These rates are for OSB's rummage system (`100 offerings = 1 roll`).
 
-Vale offerings is effectively guaranteed quickly (you earn offerings just by doing laps).  
+Vale offerings is effectively guaranteed quickly (you earn offerings just by doing laps).
 For rummage uniques:
 
 | Item | Chance per 100 offerings | Approx. average offerings |
