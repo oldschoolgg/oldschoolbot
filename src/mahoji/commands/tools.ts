@@ -2,13 +2,18 @@ import { EmbedBuilder } from '@oldschoolgg/discord';
 import { formatDuration, stringMatches, stringSearch } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, ItemGroups, Items, resolveItems, ToBUniqueTable } from 'oldschooljs';
 
-import type { Activity } from '@/prisma/main.js';
+import { type Activity, Prisma } from '@/prisma/main.js';
 import { choicesOf, itemOption, monsterOption, skillOption } from '@/discord/index.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { allStashUnitsFlat } from '@/lib/clues/stashUnits.js';
 import { PerkTier } from '@/lib/constants.js';
 import { allCLItemsFiltered, allDroppedItems } from '@/lib/data/Collections.js';
-import { gnomeRestaurantCL, guardiansOfTheRiftCL, shadesOfMorttonCL } from '@/lib/data/CollectionsExport.js';
+import {
+	gnomeRestaurantCL,
+	guardiansOfTheRiftCL,
+	shadesOfMorttonCL,
+	valeTotemsCL
+} from '@/lib/data/CollectionsExport.js';
 import pets from '@/lib/data/pets.js';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
 import { allOpenables, type UnifiedOpenable } from '@/lib/openables.js';
@@ -509,6 +514,22 @@ LIMIT 10;`);
 			}));
 		},
 		format: num => `${num.toLocaleString()}`
+	},
+	{
+		name: 'Vale Totems',
+		items: valeTotemsCL,
+		run: async ({ item, ironmanOnly }) => {
+			const result = await prisma.$queryRaw<{ id: string; val: number }[]>(Prisma.sql`
+SELECT users.id, vale_offerings_rummaged AS val
+FROM users
+INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
+WHERE "collectionLogBank"->>${item.id.toString()} IS NULL
+${ironmanOnly ? Prisma.sql`AND "minion.ironman" = true` : Prisma.empty}
+ORDER BY vale_offerings_rummaged DESC
+LIMIT 10;`);
+			return result;
+		},
+		format: num => `${num.toLocaleString()} Offerings Rummaged`
 	}
 ];
 for (const minigame of dryStreakMinigames) {
