@@ -8,8 +8,9 @@ import { expect } from 'vitest';
 
 import type { GearSetupType, Prisma, User, UserStats } from '@/prisma/main.js';
 import { rawCommandHandlerInner } from '@/discord/commandHandler.js';
-import { MessageBuilderClass } from '@/discord/MessageBuilder.js';
+import { MessageBuilder } from '@/discord/MessageBuilder.js';
 import type { PvMMethod } from '@/lib/constants.js';
+import { BitField } from '@/lib/constants.js';
 import type { DegradeableItem } from '@/lib/degradeableItems.js';
 import { type SkillNameType, SkillsArray } from '@/lib/skilling/types.js';
 import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
@@ -245,7 +246,7 @@ export class TestUser extends MUserClass {
 			rng: MathRNG,
 			ignoreUserIsBusy: otherOptions.bypassBusy ? true : undefined
 		});
-		if (result instanceof MessageBuilderClass) {
+		if (result instanceof MessageBuilder) {
 			result = await result.build();
 		}
 		await this.sync();
@@ -352,17 +353,13 @@ export async function mockUser(
 	if (options.maxed) {
 		await user.max();
 	}
-	await prisma.newUser.create({
-		data: {
-			id: user.id
-		}
-	});
 	return user;
 }
 
 export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.UserCreateInput> = {}) {
 	const id = userData.id ?? mockedId();
 	userData.username ??= `TestUser`;
+	userData.bitfield ??= [BitField.DisabledRandomEvents, BitField.DisabledPassiveImplings];
 
 	const bank = _bank ? _bank.clone() : null;
 	let GP = userData.GP ? Number(userData.GP) : undefined;

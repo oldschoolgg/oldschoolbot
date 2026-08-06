@@ -17,6 +17,7 @@ import {
 } from 'oldschooljs';
 
 import { activity_type_enum } from '@/prisma/main/enums.js';
+import { BitField } from '@/lib/constants.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import activityInArea, { WorldLocations } from '@/lib/util/activityInArea.js';
 
@@ -87,6 +88,7 @@ const implingTableByWorldLocation = {
 };
 
 export function handlePassiveImplings(user: MUser, data: ActivityTaskData) {
+	if (user.bitfield.includes(BitField.DisabledPassiveImplings)) return null;
 	if (
 		[
 			'FightCaves',

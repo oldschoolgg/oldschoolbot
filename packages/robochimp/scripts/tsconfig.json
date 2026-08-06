@@ -1,5 +1,8 @@
 {
-	"extends": "../tsconfig.base.json",
-	"include": [".", "../src/**/*"],
-	"references": [{ "path": "../src" }]
+	"extends": "../tsconfig.json",
+	"include": ["**/*.ts"],
+	"compilerOptions": {
+		"composite": false
+	},
+	"references": [{ "path": ".." }]
 }

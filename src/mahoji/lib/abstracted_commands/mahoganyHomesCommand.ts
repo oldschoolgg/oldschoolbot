@@ -115,6 +115,7 @@ export async function mahoganyHomesBuyCommand(user: MUser, input = '', quantity?
 		quantity = 1;
 	}
 
+	quantity = Math.max(1, quantity);
 	const { item, cost } = buyable;
 	const balance = user.user.carpenter_points;
 	if (balance < cost * quantity) {

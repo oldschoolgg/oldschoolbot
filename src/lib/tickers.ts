@@ -4,10 +4,11 @@ import { TimerManager } from '@sapphire/timer-manager';
 
 import type { User } from '@/prisma/main.js';
 import { analyticsTick } from '@/lib/analytics.js';
-import { globalConfig } from '@/lib/constants.js';
+import { Channel, globalConfig } from '@/lib/constants.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { cacheGEPrices } from '@/lib/marketPrices.js';
 import { collectMetrics } from '@/lib/metrics.js';
+import { runCommand } from '@/lib/settings/settings.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { FarmingPatchName, FarmingPatchSettingsKey } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { IPatchData } from '@/lib/skilling/skills/farming/utils/types.js';
@@ -105,6 +106,43 @@ export const tickers: {
 		}
 	},
 	{
+		name: 'shutdown',
+		timer: null,
+		interval: Time.Minute,
+		cb: async () => {
+			const settings = await ClientSettings.fetch({ shutdown: true });
+			if (!settings.shutdown) return;
+			await ClientSettings.update({ shutdown: false });
+
+			const adminUser = await mUserFetch(globalConfig.adminUserIDs[0]);
+			const interaction = {
+				user: adminUser,
+				userId: adminUser.id,
+				channelId: Channel.BotLogs,
+				guildId: globalConfig.supportServerID,
+				member: null,
+				rawInteraction: {},
+				defer: async () => {},
+				confirmation: async () => {},
+				reply: async (message: BaseSendableMessage | string) => {
+					await globalClient.sendMessage(
+						Channel.BotLogs,
+						typeof message === 'string' ? { content: message } : message
+					);
+				}
+			} as unknown as OSInteraction;
+
+			await runCommand({
+				commandName: 'admin',
+				args: { shut_down: {} },
+				interaction,
+				user: adminUser,
+				continueDeltaMillis: null,
+				ignoreUserIsBusy: true
+			});
+		}
+	},
+	{
 		name: 'minion_activities',
 		startupWait: Time.Second * 10,
 		timer: null,
@@ -146,11 +184,11 @@ export const tickers: {
 FROM users u
 WHERE
   bitfield && ARRAY[
-    4,  -- IsPatronTier3
-    5,  -- IsPatronTier4
-    6,  -- IsPatronTier5
-    21, -- IsPatronTier6
-    7   -- isModerator
+    4,  -- PatronTier3
+    5,  -- PatronTier4
+    6,  -- PatronTier5
+    21, -- PatronTier6
+    7   -- Moderator
   ]::int[]
 AND last_command_date > now() - INTERVAL '5 days'
 AND EXISTS (

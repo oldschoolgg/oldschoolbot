@@ -1,9 +1,8 @@
 import { codeBlock, dateFm } from '@oldschoolgg/discord';
 import { type GearSetupType, GearSetupTypes } from '@oldschoolgg/gear';
-import { sumArr, Time, toTitleCase } from '@oldschoolgg/toolkit';
+import { sumArr, toTitleCase } from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { DiscordSnowflake } from '@sapphire/snowflake';
-import { Duration } from '@sapphire/time-utilities';
 import { Bank, type Item, type ItemBank } from 'oldschooljs';
 
 import { UserEventType, xp_gains_skill_enum } from '@/prisma/main/enums.js';
@@ -14,12 +13,13 @@ import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { unEquipAllCommand } from '@/lib/minions/functions/unequipAllCommand.js';
 import { unequipPet } from '@/lib/minions/functions/unequipPet.js';
-import { premiumPatronTime } from '@/lib/premiumPatronTime.js';
+import { runRolesTask } from '@/lib/rolesTask.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { migrateUser } from '@/lib/util/migrateUser.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
+import { refreshUserCache } from '@/lib/util/refreshCache.js';
 import { insertUserEvent } from '@/lib/util/userEvents.js';
 import { gifs } from '@/mahoji/commands/admin.js';
 import { getUserInfo } from '@/mahoji/commands/minion.js';
@@ -138,32 +138,6 @@ export const rpCommand = defineCommand({
 				},
 				{
 					type: 'Subcommand',
-					name: 'add_patron_time',
-					description: 'Give user temporary patron time.',
-					options: [
-						{
-							type: 'User',
-							name: 'user',
-							description: 'The user.',
-							required: true
-						},
-						{
-							type: 'Integer',
-							name: 'tier',
-							description: 'The tier to give.',
-							required: true,
-							choices: choicesOf([1, 2, 3, 4, 5, 6])
-						},
-						{
-							type: 'String',
-							name: 'time',
-							description: 'The time.',
-							required: true
-						}
-					]
-				},
-				{
-					type: 'Subcommand',
 					name: 'unequip_all_items',
 					description: 'Force unequip all items from a user.',
 					options: [
@@ -237,6 +211,12 @@ export const rpCommand = defineCommand({
 							name: 'user',
 							description: 'The user',
 							required: true
+						},
+						{
+							type: 'Boolean',
+							name: 'refresh',
+							description: 'Refresh cache before loading user',
+							required: false
 						}
 					]
 				},
@@ -404,6 +384,26 @@ export const rpCommand = defineCommand({
 					]
 				}
 			]
+		},
+		{
+			type: 'SubcommandGroup',
+			name: 'roles',
+			description: 'Manage support server roles.',
+			options: [
+				{
+					type: 'Subcommand',
+					name: 'sync',
+					description: 'Run the support server roles sync task.',
+					options: [
+						{
+							type: 'Boolean',
+							name: 'dry_run',
+							description: 'Run without making any changes.',
+							required: false
+						}
+					]
+				}
+			]
 		}
 	],
 	run: async ({ options, user: adminUser, interaction, guildId, rng }) => {
@@ -525,16 +525,6 @@ Date: ${dateFm(date)}`;
 			};
 		}
 
-		if (options.player?.add_patron_time) {
-			const { tier, time, user: userToGive } = options.player.add_patron_time;
-			const duration = new Duration(time);
-			if (![1, 2, 3, 4, 5, 6].includes(tier)) return 'Invalid input.';
-			const ms = duration.offset;
-			if (ms < Time.Second || ms > Time.Year * 3) return 'Invalid input.';
-			const res = await premiumPatronTime(ms, tier, await mUserFetch(userToGive.user.id), interaction);
-			return res;
-		}
-
 		// Unequip Items
 		if (options.player?.unequip_all_items) {
 			if (!isAdmin) {
@@ -626,8 +616,16 @@ Date: ${dateFm(date)}`;
 		}
 
 		if (options.player?.view_user) {
+			let msg = '';
+			if (options.player.view_user.refresh) {
+				msg = await refreshUserCache({
+					user: adminUser,
+					guildId: interaction.guildId,
+					possibleTarget: options.player.view_user.user.user.id
+				});
+			}
 			const userToView = await mUserFetch(options.player.view_user.user.user.id);
-			return (await getUserInfo(userToView)).everythingString;
+			return msg + '\n' + (await getUserInfo(userToView)).everythingString;
 		}
 
 		if (options.player?.migrate_user) {
@@ -654,6 +652,7 @@ Date: ${dateFm(date)}`;
 			await interaction.confirmation(
 				`Are you 1000%, totally, **REALLY** sure that \`${sourceUser.logName}\` is the account you want to preserve, and \`${destUser.logName}\` is the new account that will have ALL existing data destroyed?`
 			);
+			await interaction.reply('Reticulating splines...');
 			const result = await migrateUser(sourceUser, destUser);
 			if (result === true) {
 				await globalClient.sendMessage(Channel.BotLogs, {
@@ -757,6 +756,21 @@ Date: ${dateFm(date)}`;
 			const targetUser = await mUserFetch(options.player.ge_cancel.user.user.id);
 			await cancelUsersListings(targetUser);
 			return `Cancelled listings for ${targetUser}`;
+		}
+
+		if (options.roles?.sync) {
+			if (!isAdmin) {
+				return rng.pick(gifs);
+			}
+			const dryRun = options.roles.sync.dry_run ?? false;
+			if (!dryRun) {
+				await interaction.confirmation('Are you sure you want to sync support server roles?');
+			}
+			const result = await runRolesTask(dryRun);
+			await globalClient.sendMessage(Channel.BotLogs, {
+				content: `${adminUser.logName} ran the support server roles sync${dryRun ? ' (dry run)' : ''}.`
+			});
+			return result;
 		}
 
 		return 'Invalid command.';

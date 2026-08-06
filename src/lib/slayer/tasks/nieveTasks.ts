@@ -222,7 +222,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.FireGiant,
 		amount: [120, 185],
 		weight: 9,
-		monsters: [Monsters.FireGiant.id],
+		monsters: [Monsters.FireGiant.id, Monsters.Branda.id, Monsters.RoyalTitans.id],
 		combatLevel: 65,
 		unlocked: true
 	},

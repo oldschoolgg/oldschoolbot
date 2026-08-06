@@ -21,10 +21,10 @@ const GENERAL_CHANNEL_ID =
 	BOT_TYPE === 'OSB'
 		? isProduction
 			? '346304390858145792'
-			: '1154056119019393035'
+			: (process.env.GENERAL_CHANNEL ?? '1154056119019393035')
 		: isProduction
 			? '792691343284764693'
-			: '1154056119019393035';
+			: (process.env.GENERAL_CHANNEL ?? '1154056119019393035');
 const OLDSCHOOLGG_TESTING_SERVER_ID = '940758552425955348';
 const TEST_SERVER_ID = process.env.TESTING_SERVER ?? OLDSCHOOLGG_TESTING_SERVER_ID;
 const TEST_SERVER_LOG_CHANNEL = process.env.TESTING_LOG_CHANNEL ?? '1042760447830536212';
@@ -46,8 +46,8 @@ const OSBChannelConfig: ChannelConfig = {
 	GrandExchange: '682996313209831435',
 	EconomyLogs: '802029843712573510',
 	HelpAndSupport: '668073484731154462',
-	BotLogs: '1051725977320964197',
-	GeneralChannel: GENERAL_CHANNEL_ID
+	BotLogs: isProduction ? '1051725977320964197' : TEST_SERVER_LOG_CHANNEL,
+	GeneralChannel: isProduction ? GENERAL_CHANNEL_ID : (process.env.GENERAL_CHANNEL ?? GENERAL_CHANNEL_ID)
 };
 
 const BSOChannelConfig: ChannelConfig = {
@@ -56,8 +56,8 @@ const BSOChannelConfig: ChannelConfig = {
 	GrandExchange: '738780181946171493',
 	EconomyLogs: '802029843712573510',
 	HelpAndSupport: '970752140324790384',
-	BotLogs: '1051725977320964197',
-	GeneralChannel: GENERAL_CHANNEL_ID
+	BotLogs: isProduction ? '1051725977320964197' : TEST_SERVER_LOG_CHANNEL,
+	GeneralChannel: isProduction ? GENERAL_CHANNEL_ID : (process.env.GENERAL_CHANNEL ?? GENERAL_CHANNEL_ID)
 };
 
 const TestChannelConfig: ChannelConfig = {
@@ -112,12 +112,13 @@ export enum ActivityGroup {
 }
 
 export enum BitField {
-	IsPatronTier1 = 2,
-	IsPatronTier2 = 3,
-	IsPatronTier3 = 4,
-	IsPatronTier4 = 5,
-	IsPatronTier5 = 6,
-	isModerator = 7,
+	PatronTier1 = 2,
+	PatronTier2 = 3,
+	PatronTier3 = 4,
+	PatronTier4 = 5,
+	PatronTier5 = 6,
+	Moderator = 7,
+	Contributor = 8,
 	BypassAgeRestriction = 9,
 	HasHosidiusWallkit = 10,
 	HasPermanentEventBackgrounds = 11,
@@ -129,7 +130,7 @@ export enum BitField {
 	HasArcaneScroll = 17,
 	HasTornPrayerScroll = 18,
 	HasSlepeyTablet = 20,
-	IsPatronTier6 = 21,
+	PatronTier6 = 21,
 	DisableBirdhouseRunButton = 22,
 	DisableAshSanctifier = 23,
 	BothBotsMaxedFreeTierOnePerks = 24,
@@ -159,10 +160,17 @@ export enum BitField {
 	HasMysticVigourScroll = 46,
 	AllowPublicAPIDataRetrieval = 47,
 	ToggleAutoRummage = 48,
-	DisableDynamicTimestamp = 49
+	DisableDynamicTimestamp = 49,
+	WikiContributor = 50,
+	UnlimitedGiveaways = 51,
+	ServerSupport = 52,
+	DisabledPassiveImplings = 53,
+	DisableAutoFarmButton = 54,
+
+	OriginalCyrSupporter = 199
 }
 
-interface BitFieldData {
+export interface IBitFieldData {
 	name: string;
 	/**
 	 * Users can never 'choose' to get this, even in testing.
@@ -171,16 +179,16 @@ interface BitFieldData {
 	userConfigurable: boolean;
 }
 
-export const BitFieldData: Record<BitField, BitFieldData> = {
-	[BitField.isModerator]: { name: 'Moderator', protected: true, userConfigurable: false },
-
+export const BitFieldData: Record<BitField, IBitFieldData> = {
+	[BitField.Moderator]: { name: 'Moderator', protected: true, userConfigurable: false },
+	[BitField.Contributor]: { name: 'Contributor', protected: true, userConfigurable: false },
 	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1', protected: false, userConfigurable: false },
-	[BitField.IsPatronTier1]: { name: 'Tier 1 Patron', protected: false, userConfigurable: false },
-	[BitField.IsPatronTier2]: { name: 'Tier 2 Patron', protected: false, userConfigurable: false },
-	[BitField.IsPatronTier3]: { name: 'Tier 3 Patron', protected: false, userConfigurable: false },
-	[BitField.IsPatronTier4]: { name: 'Tier 4 Patron', protected: false, userConfigurable: false },
-	[BitField.IsPatronTier5]: { name: 'Tier 5 Patron', protected: false, userConfigurable: false },
-	[BitField.IsPatronTier6]: { name: 'Tier 6 Patron', protected: false, userConfigurable: false },
+	[BitField.PatronTier1]: { name: 'Tier 1 Patron', protected: false, userConfigurable: false },
+	[BitField.PatronTier2]: { name: 'Tier 2 Patron', protected: false, userConfigurable: false },
+	[BitField.PatronTier3]: { name: 'Tier 3 Patron', protected: false, userConfigurable: false },
+	[BitField.PatronTier4]: { name: 'Tier 4 Patron', protected: false, userConfigurable: false },
+	[BitField.PatronTier5]: { name: 'Tier 5 Patron', protected: false, userConfigurable: false },
+	[BitField.PatronTier6]: { name: 'Tier 6 Patron', protected: false, userConfigurable: false },
 
 	[BitField.HasHosidiusWallkit]: { name: 'Hosidius Wall Kit Unlocked', protected: false, userConfigurable: false },
 	[BitField.HasDexScroll]: { name: 'Dexterous Scroll Used', protected: false, userConfigurable: false },
@@ -195,7 +203,8 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	[BitField.UsedFrozenTablet]: { name: 'Used Frozen Tablet', protected: false, userConfigurable: false },
 	[BitField.UsedSirenicTablet]: { name: 'Used Sirenic Tablet', protected: false, userConfigurable: false },
 	[BitField.UsedStrangledTablet]: { name: 'Used Strangled Tablet', protected: false, userConfigurable: false },
-	[BitField.SelfGamblingLocked]: { name: 'Self Gambling Lock', protected: false, userConfigurable: false },
+	[BitField.SelfGamblingLocked]: { name: 'Self Gambling Lock', protected: false, userConfigurable: true },
+	[BitField.OriginalCyrSupporter]: { name: "One of Cyr's first Patrons", protected: false, userConfigurable: false },
 
 	[BitField.BypassAgeRestriction]: { name: 'Bypassed Age Restriction', protected: false, userConfigurable: false },
 	[BitField.HasPermanentEventBackgrounds]: {
@@ -248,6 +257,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		protected: false,
 		userConfigurable: true
 	},
+	[BitField.DisableAutoFarmButton]: {
+		name: 'Disable Auto Farm Button',
+		protected: false,
+		userConfigurable: true
+	},
 	[BitField.DisableHighPeakTimeWarning]: {
 		name: 'Disable Wilderness High Peak Time Warning',
 		protected: false,
@@ -283,10 +297,18 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		protected: false,
 		userConfigurable: true
 	},
+	[BitField.DisabledPassiveImplings]: {
+		name: 'Disabled Passive Implings',
+		protected: false,
+		userConfigurable: true
+	},
 
 	[BitField.HasDeadeyeScroll]: { name: 'Deadeye Scroll Used', protected: false, userConfigurable: false },
 	[BitField.HasMysticVigourScroll]: { name: 'Mystic Vigour Scroll Used', protected: false, userConfigurable: false },
-	[BitField.ToggleAutoRummage]: { name: 'Auto Rummage Vale Offerings', protected: false, userConfigurable: true }
+	[BitField.ToggleAutoRummage]: { name: 'Auto Rummage Vale Offerings', protected: false, userConfigurable: true },
+	[BitField.WikiContributor]: { name: 'Wiki Contributor', protected: false, userConfigurable: false },
+	[BitField.UnlimitedGiveaways]: { name: 'Unlimited Giveaways', protected: false, userConfigurable: false },
+	[BitField.ServerSupport]: { name: 'Server Support', protected: true, userConfigurable: false }
 } as const;
 
 export const BadgesEnum = {
@@ -349,7 +371,7 @@ const globalConfigSchema = z.object({
 	isCI: z.coerce.boolean().default(false),
 	isProduction: z.boolean(),
 	timeZone: z.literal('UTC'),
-	adminUserIDs: z.array(z.string()).default(['157797566833098752', '425134194436341760']),
+	adminUserIDs: z.array(z.string()).default(['425134194436341760', '157797566833098752']),
 	maxingMessage: z.string().default('Congratulations on maxing!'),
 	moderatorLogsChannels: z.string().default(''),
 	supportServerID: z.string(),
@@ -414,6 +436,9 @@ export const masteryKey = BOT_TYPE === 'OSB' ? 'osb_mastery' : 'bso_mastery';
 
 export const patronFeatures = {
 	ShowEnteredInGiveawayList: {
+		tier: PerkTier.Four
+	},
+	UnlimitedGiveaways: {
 		tier: PerkTier.Four
 	}
 };

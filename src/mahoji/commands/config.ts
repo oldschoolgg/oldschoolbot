@@ -1,6 +1,7 @@
 import { bold, EmbedBuilder, inlineCode } from '@oldschoolgg/discord';
 import { ECombatOption, type IGuild } from '@oldschoolgg/schemas';
 import {
+	cleanString,
 	formatDuration,
 	hexToDecimal,
 	isValidHexColor,
@@ -15,9 +16,10 @@ import { clamp } from 'remeda';
 
 import type { activity_type_enum } from '@/prisma/main/enums.js';
 import { choicesOf, itemOption } from '@/discord/index.js';
+import { MessageBuilder } from '@/discord/MessageBuilder.js';
 import { CanvasModule } from '@/lib/canvas/CanvasModule.js';
 import { ItemIconPacks } from '@/lib/canvas/iconPacks.js';
-import { BitField, PerkTier } from '@/lib/constants.js';
+import { BitField, BitFieldData, PerkTier } from '@/lib/constants.js';
 import { Eatables } from '@/lib/data/eatables.js';
 import { CombatOptionsArray } from '@/lib/minions/data/combatConstants.js';
 import { birdhouseSeeds } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
@@ -28,61 +30,31 @@ import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isValidNickname, patronMsg } from '@/lib/util/smallUtils.js';
 import { toggleBitfield } from '@/lib/util.js';
 
-interface UserConfigToggle {
-	name: string;
+type ExtendedBitFieldDataa = (typeof BitFieldData)[BitField] & {
 	bit: BitField;
 	canToggle?: (
 		user: MUser,
 		interaction?: MInteraction
 	) => Promise<{ result: false; message: string } | { result: true; message?: string }>;
-}
+};
 
-const toggles: UserConfigToggle[] = [
-	{
-		name: 'Disable Random Events',
-		bit: BitField.DisabledRandomEvents
-	},
-	{
-		name: 'Small Bank Images',
-		bit: BitField.AlwaysSmallBank
-	},
-	{
-		name: 'Disable Birdhouse Run Button',
-		bit: BitField.DisableBirdhouseRunButton
-	},
-	{
-		name: 'Disable Auto Slay Button',
-		bit: BitField.DisableAutoSlayButton
-	},
-	{
-		name: 'Disable Ash Sanctifier',
-		bit: BitField.DisableAshSanctifier
-	},
-	{
-		name: 'Disable Auto Farm Contract Button',
-		bit: BitField.DisableAutoFarmContractButton
-	},
-	{
-		name: "Disable Grand Exchange DM's",
-		bit: BitField.DisableGrandExchangeDMs
-	},
-	{
-		name: 'Clean herbs during farm runs',
-		bit: BitField.CleanHerbsFarming
-	},
-	{
+const configBitFieldOverrides: Partial<Record<BitField, Partial<ExtendedBitFieldDataa>>> = {
+	[BitField.SelfGamblingLocked]: {
 		name: 'Lock Self From Gambling',
+		userConfigurable: true,
 		bit: BitField.SelfGamblingLocked,
 		canToggle: async (user, interaction) => {
-			if (user.bitfield.includes(BitField.SelfGamblingLocked)) {
-				if (user.user.gambling_lockout_expiry && user.user.gambling_lockout_expiry.getTime() > Date.now()) {
-					const timeRemaining = user.user.gambling_lockout_expiry.getTime() - Date.now();
-					return {
-						result: false,
-						message: `You cannot toggle this off for another ${formatDuration(
-							timeRemaining
-						)}, you locked yourself from gambling!`
-					};
+			if (user.bitfield.includes(BitField.SelfGamblingLocked) && user.user.gambling_lockout_expiry) {
+				const timeRemaining = user.user.gambling_lockout_expiry.getTime() - Date.now();
+				if (timeRemaining < Time.Year) {
+					if (user.user.gambling_lockout_expiry.getTime() > Date.now()) {
+						return {
+							result: false,
+							message: `You cannot toggle this off for another ${formatDuration(
+								timeRemaining
+							)}, you locked yourself from gambling!`
+						};
+					}
 				}
 				return { result: true, message: 'Your Gambling lockout time has expired.' };
 			} else if (interaction) {
@@ -112,54 +84,24 @@ const toggles: UserConfigToggle[] = [
 				}
 				return { result: false, message: 'Cancelled.' };
 			}
-			// If handleToggle called without an interaction, perhaps by non-interactive code, allow toggle.
 			return { result: true };
 		}
-	},
-	{
-		name: 'Disable farming reminders',
-		bit: BitField.DisabledFarmingReminders
-	},
-	{
-		name: 'Disable Clue Buttons',
-		bit: BitField.DisableClueButtons
-	},
-	{
-		name: 'Disable wilderness high peak time warning',
-		bit: BitField.DisableHighPeakTimeWarning
-	},
-	{
-		name: 'Disable Names on Opens',
-		bit: BitField.DisableOpenableNames
-	},
-	{
-		name: 'Disable Tears of Guthix Trip Button',
-		bit: BitField.DisableTearsOfGuthixButton
-	},
-	{
-		name: 'Show Detailed Info',
-		bit: BitField.ShowDetailedInfo
-	},
-	{
-		name: 'Disable Minion Daily Button',
-		bit: BitField.DisableDailyButton
-	},
-	{
-		name: 'Allow Public API Data Retrieval',
-		bit: BitField.AllowPublicAPIDataRetrieval
-	},
-	{
-		name: 'Disaable dynamic return times',
-		bit: BitField.DisableDynamicTimestamp
-	},
-	{
-		name: 'Auto Rummage Vale Offerings',
-		bit: BitField.ToggleAutoRummage
 	}
-];
+};
+
+const userBitToggles: ExtendedBitFieldDataa[] = Object.entries(BitFieldData)
+	.map(([bit, data]) => {
+		const bitField = Number(bit) as BitField;
+		return {
+			...data,
+			bit: bitField,
+			...configBitFieldOverrides[bitField]
+		};
+	})
+	.filter(toggle => toggle.userConfigurable);
 
 async function handleToggle(user: MUser, name: string, interaction?: MInteraction): Promise<string> {
-	const toggle = toggles.find(i => stringMatches(i.name, name));
+	const toggle = userBitToggles.find(i => stringMatches(i.name, name));
 	if (!toggle) return 'Invalid toggle name.';
 	let messageExtra = '';
 	if (toggle.canToggle) {
@@ -741,10 +683,11 @@ export const configCommand = defineCommand({
 							required: true,
 							autocomplete: async ({ value, user }: StringAutoComplete) => {
 								const bitfield = user.bitfield;
-								return toggles
+								return userBitToggles
 									.filter(i => {
+										if ((!i.userConfigurable || i.protected) && !user.isAdmin()) return false;
 										if (!value) return true;
-										return i.name.toLowerCase().includes(value.toLowerCase());
+										return cleanString(i.name).includes(cleanString(value));
 									})
 									.map(i => ({
 										name: `${i.name} (Currently ${bitfield.includes(i.bit) ? 'On' : 'Off'})`,
@@ -928,8 +871,8 @@ export const configCommand = defineCommand({
 							description: 'Add an item to your favorite food.',
 							required: false,
 							autocomplete: async ({ value }: StringAutoComplete) => {
-								return Eatables.filter(i =>
-									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
+								return Eatables.filter(
+									i => !value || i.name.toLowerCase().includes(value.toLowerCase())
 								).map(i => ({
 									name: `${i.name}`,
 									value: i.id.toString()

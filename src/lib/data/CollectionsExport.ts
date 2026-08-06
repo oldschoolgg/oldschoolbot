@@ -1706,11 +1706,11 @@ export const slayerCL = resolveItems([
 	'Aranea boots',
 	'Glacial temotli',
 	'Pendant of ates (inert)',
-	'Frozen tear'
+	'Frozen tear',
 	// EItem.EARTHBOUND_TECPATL, // Currently unobtainable.
-	// EItem.ANTLER_GUARD, // Currently unobtainable.
-	// EItem.ALCHEMISTS_SIGNET, // Currently unobtainable.
-	// EItem.BROKEN_ANTLER // Currently unobtainable.
+	EItem.ANTLER_GUARD,
+	EItem.ALCHEMISTS_SIGNET,
+	EItem.BROKEN_ANTLER
 ]);
 
 export const tormentedDemonCL = resolveItems(['Tormented synapse', 'Burning claw', 'Guthixian temple teleport']);

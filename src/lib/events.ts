@@ -13,6 +13,7 @@ import { roboChimpSyncData } from '@/lib/roboChimp.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { minionStatsEmbed } from '@/lib/util/minionStatsEmbed.js';
+import { refreshUserCache } from '@/lib/util/refreshCache.js';
 import { minionStatusCommand } from '@/mahoji/lib/abstracted_commands/minionStatusCommand.js';
 
 const rareRolesSrc: [string, number, string][] = [
@@ -53,7 +54,7 @@ async function rareRoles(msg: IMessage) {
 
 	for (const [roleID, chance, name] of rareRolesSrc) {
 		if (roll(Math.floor(chance / 10))) {
-			const member = await Cache.getMember(msg.guild_id, msg.author_id);
+			const member = await Cache.getMember({ guildId: msg.guild_id, userId: msg.author_id });
 			if (!member || member.roles.includes(roleID)) continue;
 			member.roles.push(roleID);
 			await Cache.setMember(member);
@@ -100,15 +101,14 @@ async function petMessages(msg: IMessage) {
 		await globalClient.replyToMessage(
 			msg,
 			isNewPet
-				? `You have a funny feeling like you’re being followed. ${pet.emoji}
+				? `You have a funny feeling like you’re being followed. ${pet.emoji ?? `(${pet.name})`}
 Type \`/tools user mypets\` to see your pets.`
-				: `You have a funny feeling like they would have been followed. ${pet.emoji}`
+				: `You have a funny feeling like they would have been followed. ${pet.emoji ?? `(${pet.name})`}`
 		);
 	}
 }
 
 const mentionText = `<@${globalConfig.clientID}>`;
-const mentionRegex = new RegExp(`^(\\s*<@&?[0-9]+>)*\\s*<@${globalConfig.clientID}>\\s*(<@&?[0-9]+>\\s*)*$`);
 
 const cooldownTimers: {
 	name: string;
@@ -138,6 +138,7 @@ interface MentionCommandOptions {
 	components: BaseSendableMessage['components'];
 	content: string;
 	rng: RNGProvider;
+	guildId?: string | null;
 }
 interface MentionCommand {
 	name: command_name_enum;
@@ -147,6 +148,18 @@ interface MentionCommand {
 }
 
 const mentionCommands: MentionCommand[] = [
+	{
+		name: 'cache_refresh',
+		aliases: ['refresh', 'cache'],
+		description: 'Updates your caches',
+		run: async ({ user, components, content, guildId }: MentionCommandOptions) => {
+			const result = await refreshUserCache({ user, guildId, possibleTarget: content });
+			return {
+				content: result,
+				components
+			};
+		}
+	},
 	{
 		name: 'bs',
 		aliases: ['bs'],
@@ -276,6 +289,8 @@ const mentionCommands: MentionCommand[] = [
 	}
 ];
 
+const commandList = [...new Set(mentionCommands.flatMap(i => [i.name, ...i.aliases]))];
+
 export async function onMessage(msg: IMessage) {
 	// biome-ignore lint/nursery/noFloatingPromises:-
 	rareRoles(msg);
@@ -285,18 +300,25 @@ export async function onMessage(msg: IMessage) {
 	const content = msg.content.trim();
 	if (!content.includes(mentionText)) return;
 
+	const statusRegex = new RegExp(`^(\\s*<@&?[0-9]+>)*\\s*<@${globalConfig.clientID}>\\s*(<@&?[0-9]+>\\s*)*$`);
+	const commandRegex = new RegExp(
+		`^(?:\\s*<@&?[0-9]+>)*\\s*<@${globalConfig.clientID}>\\s*(?:\\s*<@&?[0-9]+>\\s*)*(${commandList.join('|')})\\s*(.*)$`
+	);
+	const commandMatch = content.match(commandRegex);
+	const statusMatch = content.match(statusRegex);
+	if (!commandMatch && !statusMatch) return;
+
 	const sendable = await globalClient.channelIsSendable(msg.channel_id);
 	if (!sendable) return;
 
 	const user = await mUserFetch(msg.author_id);
 	const result = await minionStatusCommand(user);
 
-	const command = mentionCommands.find(i =>
-		i.aliases.some(alias => msg.content.startsWith(`${mentionText} ${alias}`))
-	);
-	if (command) {
+	if (commandMatch) {
+		const command = mentionCommands.find(i => [i.name, ...i.aliases].includes(commandMatch[1].toLowerCase()));
+		if (!command) return;
 		Logging.logDebug(`${msg.author_id} used the ${command.name} mention command`);
-		const msgContentWithoutCommand = msg.content.split(' ').slice(2).join(' ');
+		const msgContentWithoutCommand = commandMatch[2] ?? '';
 		await prisma.commandUsage.create({
 			data: {
 				user_id: BigInt(user.id),
@@ -315,7 +337,8 @@ export async function onMessage(msg: IMessage) {
 				user,
 				components: result.components,
 				content: msgContentWithoutCommand,
-				rng: cryptoRng
+				rng: cryptoRng,
+				guildId: msg.guild_id
 			});
 			await globalClient.replyToMessage(msg, response);
 		} catch (err) {
@@ -323,18 +346,22 @@ export async function onMessage(msg: IMessage) {
 			if (typeof err === 'string') errMsg = err;
 			else if (err instanceof Error) errMsg = err.message;
 			await globalClient.replyToMessage(msg, { content: errMsg });
-			Logging.logError(err as Error);
+			Logging.logError(err instanceof Error ? err : new Error(errMsg), {
+				type: 'MENTION_COMMAND_ERROR',
+				user_id: msg.author_id,
+				channel_id: msg.channel_id,
+				guild_id: msg.guild_id,
+				command_name: command.name
+			});
 		}
 		return;
 	}
 
-	if (content.match(mentionRegex)) {
-		await globalClient.replyToMessage(msg, {
-			content: result.content,
-			components: result.components
-		});
-		return;
-	}
+	await globalClient.replyToMessage(msg, {
+		content: result.content,
+		components: result.components
+	});
+	Logging.logDebug(`${msg.author_id} used the status mention command`);
 }
 
 export async function onMinionActivityFinish(activity: ActivityTaskData) {
@@ -348,6 +375,14 @@ export async function onMinionActivityFinish(activity: ActivityTaskData) {
 			await roboChimpSyncData(await mUserFetch(activity.userID));
 		}
 	} catch (err) {
-		Logging.logError(err as Error, { activity: JSON.stringify(activity) });
+		Logging.logError(err as Error, {
+			type: 'ACTIVITY_FINISH_ERROR',
+			user_id: activity.userID,
+			activity_type: activity.type,
+			activity_id: activity.id,
+			channel_id: activity.channelId,
+			guild_id: activity.channelId ? (await Cache.getChannel(activity.channelId))?.guild_id : undefined,
+			activity: JSON.stringify(activity)
+		});
 	}
 }
