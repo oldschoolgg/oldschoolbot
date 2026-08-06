@@ -186,9 +186,10 @@ After becoming an ironman:
 	await prisma.user.deleteMany({
 		where: { id: user.id }
 	});
-	await prisma.user.create({
+	const newUser = await prisma.user.create({
 		data: createOptions
 	});
+	user._updateRawUser(newUser);
 
 	// Refund the leagues points they spent
 	const roboChimpUser = await Cache.getRoboChimpUser(user.id);

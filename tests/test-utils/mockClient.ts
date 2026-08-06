@@ -1,4 +1,4 @@
-import type { IChannel, IMember } from '@oldschoolgg/schemas';
+import type { IChannel, IMember, IUser } from '@oldschoolgg/schemas';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import type { RNGProvider } from 'node-rng';
 import { cryptoRng } from 'node-rng/crypto';
@@ -95,6 +95,14 @@ export class TestClient extends AsyncEventEmitter<any> implements AsyncDisposabl
 
 	async fetchMember({ guildId, userId }: { guildId: string; userId: string }): Promise<IMember> {
 		return mockRandomMember({ guildId, userId, rng: this.rng });
+	}
+
+	async fetchUser(userId: string): Promise<IUser> {
+		return {
+			id: userId,
+			username: 'TestUser',
+			bot: false
+		};
 	}
 
 	async memberHasPermissions() {
