@@ -5,6 +5,7 @@ import { Bank } from 'oldschooljs';
 import { quests } from '@/lib/minions/data/quests.js';
 import { courses } from '@/lib/skilling/skills/agility.js';
 import type { AgilityActivityTaskOptions } from '@/lib/types/minions.js';
+import { makeStartQuestResponse } from '@/lib/util/interactions.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
 
@@ -124,9 +125,12 @@ export const lapsCommand = defineCommand({
 		if (course.requiredQuests) {
 			const incompleteQuest = course.requiredQuests.find(quest => !user.user.finished_quest_ids.includes(quest));
 			if (incompleteQuest) {
-				return `You need to have completed the ${bold(
-					quests.find(i => i.id === incompleteQuest)!.name
-				)} quest to attempt the ${course.name} agility course.`;
+				return makeStartQuestResponse(
+					`You need to have completed the ${bold(
+						quests.find(i => i.id === incompleteQuest)!.name
+					)} quest to attempt the ${course.name} agility course.`,
+					incompleteQuest
+				);
 			}
 		}
 

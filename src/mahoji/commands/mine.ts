@@ -9,6 +9,7 @@ import Mining from '@/lib/skilling/skills/mining.js';
 import type { Ore } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import type { MiningActivityTaskOptions } from '@/lib/types/minions.js';
+import { makeStartQuestResponse } from '@/lib/util/interactions.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { motherlodeMineCommand } from '@/mahoji/lib/abstracted_commands/motherlodeMineCommand.js';
@@ -227,7 +228,10 @@ export const mineCommand = defineCommand({
 
 		if (ore.name === 'Tainted essence chunk') {
 			if (!user.user.finished_quest_ids.includes(QuestID.DesertTreasureII)) {
-				return 'You need to have completed the Desert Treasure II quest to access the scar essence mine.';
+				return makeStartQuestResponse(
+					'You need to have completed the Desert Treasure II quest to access the scar essence mine.',
+					QuestID.DesertTreasureII
+				);
 			}
 		}
 
