@@ -1,4 +1,6 @@
-import { EquipmentSlot, type Item, type ItemEquipment } from '@/index.js';
+import { EquipmentSlot } from '@oldschoolgg/gear';
+
+import type { Item, ItemEquipment } from '@/meta/item.js';
 
 interface WikiItemJSON {
 	title: string;
@@ -90,13 +92,27 @@ function extractMainInfobox(sections: WikiItemJSON['sections']) {
 	for (const section of sections as any[]) {
 		if (section.infoboxes) {
 			for (const infobox of section.infoboxes) {
-				if (infobox.name || infobox.id || infobox['name1']) {
+				if (infobox.name || infobox.id || infobox.id1 || infobox['name1']) {
 					return infobox;
 				}
 			}
 		}
 	}
 	return null;
+}
+
+function getInfoboxID(mainInfobox: Record<string, any>, itemID?: number): number | null {
+	if (itemID) {
+		if (mainInfobox.id?.number === itemID || mainInfobox.id?.text?.split(/\D+/).includes(String(itemID))) {
+			return itemID;
+		}
+		for (const key of Object.keys(mainInfobox)) {
+			if (!/^id\d+$/.test(key)) continue;
+			if (mainInfobox[key]?.number === itemID) return itemID;
+		}
+	}
+	if (Number.isSafeInteger(mainInfobox.id?.number)) return mainInfobox.id.number;
+	return mainInfobox.id1?.number ?? null;
 }
 
 function extractWeaponData(sections: WikiItemJSON['sections']) {
@@ -121,15 +137,17 @@ function extractWeaponData(sections: WikiItemJSON['sections']) {
 	return null;
 }
 
-export function convertWikiJSONToItem(wikiJson: WikiItemJSON): Item | null {
+export function convertWikiJSONToItem(wikiJson: WikiItemJSON, itemID?: number): Item | null {
 	const mainInfobox: any = extractMainInfobox(wikiJson.sections);
 	const combatInfobox = extractCombatStatsInfobox(wikiJson.sections);
 
-	if (!mainInfobox || !mainInfobox.id || !mainInfobox.name) {
+	if (!mainInfobox || !mainInfobox.name) {
 		return null;
 	}
 
-	const id = mainInfobox.id?.number || mainInfobox.id1?.number || 0;
+	const id = getInfoboxID(mainInfobox, itemID);
+	if (id === null) return null;
+
 	const name = mainInfobox.name?.text || wikiJson.title;
 	const cost = mainInfobox.value?.number || 0;
 	const members = convertYesNoToBoolean(mainInfobox.members?.text);
@@ -159,7 +177,6 @@ export function convertWikiJSONToItem(wikiJson: WikiItemJSON): Item | null {
 		...(equipable && { equipable: true })
 	};
 
-	console.log({ mainInfobox, combatInfobox, equipable });
 	if (combatInfobox && equipable) {
 		function parseENum(
 			inp:
