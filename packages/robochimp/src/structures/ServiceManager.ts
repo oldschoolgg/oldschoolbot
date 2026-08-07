@@ -29,7 +29,7 @@ class ServiceManager {
 			throw new Error(`Invalid service: ${service}`);
 		}
 
-		const { stdout, stderr } = await execAsync(`sudo /usr/bin/systemctl ${action} ${service}.service`);
+		const { stdout, stderr } = await execAsync(`sudo /usr/bin/systemctl ${action} ${service}`);
 		return stdout || stderr;
 	}
 

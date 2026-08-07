@@ -22,14 +22,31 @@ export async function preCommand({
 	command,
 	interaction,
 	user,
+	options,
 	isContinue,
 	continueDeltaMs
 }: PreCommandOptions): PrecommandReturn {
 	Logging.logDebug(`${user.logName} ran command: ${command.name}`);
 	const commandName: command_name_enum = command.name as command_name_enum;
+	const logArgs = getInteractionOptionsForLog({ command: commandName, interaction, options });
+	const logContext = {
+		commandName,
+		userName: user.logName,
+		userId: user.id,
+		guildId: interaction.guildId,
+		channelId: interaction.channelId,
+		args: logArgs
+	};
+
 	if (!interaction.channelId) {
-		throw new Error(`${interaction}\n${JSON.stringify(interaction)}`.slice(0, 1000));
+		throw new Error(
+			`Interaction has no channel ID. ${JSON.stringify({ ...logContext, interaction }).slice(0, 5000)}`.slice(
+				0,
+				1000
+			)
+		);
 	}
+	// Todo: get the promise, and pass it thru to the commandFinish to get inihibited, duration, result, etc
 	prisma.commandUsage
 		.create({
 			data: {
@@ -37,17 +54,19 @@ export async function preCommand({
 				channel_id: BigInt(interaction.channelId),
 				guild_id: interaction.guildId ? BigInt(interaction.guildId) : undefined,
 				command_name: commandName,
-				args: getInteractionOptionsForLog({ command: commandName, interaction }),
+				args: logArgs,
 				inhibited: false,
 				is_mention_command: false,
 				is_continue: isContinue ?? false,
 				continue_delta_millis: continueDeltaMs ?? null
 			}
 		})
-		.catch(err => Logging.logError({ err, interaction }));
+		.catch(err => Logging.logError({ err, interaction, context: logContext }));
+
+	if (user.isAdmin()) return;
 
 	const start = performance.now();
-	const inhibitResult = runInhibitors({
+	const inhibitResult = await runInhibitors({
 		user,
 		command,
 		interaction

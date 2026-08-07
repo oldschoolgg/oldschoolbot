@@ -1,6 +1,17 @@
+import { elderRequiredClueCLItems, elderSherlockItems } from '@/lib/bso/elderClueRequirements.js';
+
 import { EmbedBuilder, userMention } from '@oldschoolgg/discord';
-import { noOp, stringMatches, Time } from '@oldschoolgg/toolkit';
-import { Bank, convertLVLtoXP, ItemGroups, Items, itemID, MAX_INT_JAVA, resolveItems } from 'oldschooljs';
+import { noOp, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
+import {
+	Bank,
+	convertLVLtoXP,
+	type ItemBank,
+	ItemGroups,
+	Items,
+	itemID,
+	MAX_INT_JAVA,
+	resolveItems
+} from 'oldschooljs';
 
 import { xp_gains_skill_enum } from '@/prisma/main.js';
 import {
@@ -11,8 +22,8 @@ import {
 } from '@/lib/bitFieldUtils.js';
 import { allStashUnitsFlat, allStashUnitTiers } from '@/lib/clues/stashUnits.js';
 import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
-import { BitFieldData, globalConfig, MAX_LEVEL } from '@/lib/constants.js';
-import { spiritAnglerOutfit } from '@/lib/data/CollectionsExport.js';
+import { BitField, BitFieldData, globalConfig, MAX_LEVEL, MAX_XP } from '@/lib/constants.js';
+import { expertCapesCL, spiritAnglerOutfit } from '@/lib/data/CollectionsExport.js';
 import { Eatables } from '@/lib/data/eatables.js';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '@/lib/data/tob.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
@@ -254,6 +265,61 @@ const runePreset = new Bank()
 	.add('Smoke rune', MAX_INT_JAVA)
 	.add('Steam rune', MAX_INT_JAVA);
 
+const faloTheBardPreset = new Bank();
+for (const itemOrItems of elderSherlockItems) {
+	faloTheBardPreset.add(Array.isArray(itemOrItems) ? itemOrItems[0] : itemOrItems);
+}
+
+const elderClueCLPreset = new Bank();
+for (const item of [...elderRequiredClueCLItems, ...expertCapesCL.slice(0, 2)]) {
+	elderClueCLPreset.add(item);
+}
+elderClueCLPreset.add('Clue scroll (grandmaster)', 100);
+
+const elderRequiredBitfields = [
+	BitField.HasScrollOfFarming,
+	BitField.HasScrollOfLongevity,
+	BitField.HasScrollOfTheHunt,
+	BitField.HasMoondashCharm,
+	BitField.HasUnlockedVenatrix,
+	BitField.HasDaemonheimAgilityPass,
+	BitField.HasGuthixEngram,
+	BitField.HasPlantedIvy,
+	BitField.HasArcaneScroll
+];
+
+async function giveElderClueRequirements(user: MUser) {
+	await user.addItemsToBank({ items: faloTheBardPreset });
+	await user.addItemsToCollectionLog({ itemsToAdd: elderClueCLPreset });
+
+	const stats = await user.fetchStats();
+	await user.statsUpdate({
+		openable_scores: new Bank(stats.openable_scores as ItemBank).add('Reward casket (grandmaster)', 100).toJSON()
+	});
+	await prisma.userCounter.upsert({
+		where: {
+			user_id_key: {
+				user_id: BigInt(user.id),
+				key: 'cluecompletions.grandmaster'
+			}
+		},
+		create: {
+			user_id: BigInt(user.id),
+			key: 'cluecompletions.grandmaster',
+			value: 100
+		},
+		update: {
+			value: 100
+		}
+	});
+	await user.update({
+		bitfield: uniqueArr([...user.bitfield, ...elderRequiredBitfields]),
+		skills_agility: MAX_XP
+	});
+
+	return `Spawned Elder clue requirements, including Falo the Bard items: ${faloTheBardPreset}.`;
+}
+
 const spawnPresets = [
 	['fishing', fishingPreset],
 	['openables', openablesBank],
@@ -465,6 +531,11 @@ export const testPotatoCommand = globalConfig.isProduction
 					type: 'Subcommand',
 					name: 'max',
 					description: 'Set all your stats to the maximum level, and get max QP.'
+				},
+				{
+					type: 'Subcommand',
+					name: 'elder',
+					description: 'Spawn the Elder clue requirements.'
 				},
 				{
 					type: 'Subcommand',
@@ -958,6 +1029,9 @@ export const testPotatoCommand = globalConfig.isProduction
 					});
 					await giveMaxStats(user);
 					return 'Fully maxed your account, stocked your bank, charged all chargeable items.';
+				}
+				if (options.elder) {
+					return giveElderClueRequirements(user);
 				}
 				if (options.gear) {
 					const gear = gearPresets.find(i => stringMatches(i.name, options.gear?.thing))!;

@@ -1,6 +1,6 @@
 {
-	"hash": "19aa74940f9c332a4ff508c3589c86f4",
-	"date": "2026-04-24T10:26:23.947Z",
+	"hash": "aa212f7c20d999b954bc74eccd87f005",
+	"date": "2026-07-14T08:28:32.391Z",
 	"data": [
 		{
 			"name": "3rd age felling axe",
@@ -5194,6 +5194,16 @@
 			"items_required": {
 				"Dungeoneering dye": 1,
 				"Gorajan warrior top": 1
+			}
+		},
+		{
+			"name": "Gothic Dwarven warhammer",
+			"items_created": {
+				"Gothic Dwarven warhammer": 1
+			},
+			"items_required": {
+				"Dwarven warhammer": 1,
+				"Sun Scream": 1
 			}
 		},
 		{

@@ -274,7 +274,8 @@ export const allDyes = Items.resolveFullItems([
 	'Oceanic dye',
 	'Saradomin egg',
 	'Zamorak egg',
-	'Spooky dye'
+	'Spooky dye',
+	'Sun Scream'
 ]);
 
 export const discontinuedDyes = resolveItems(['Spooky dye', 'Christmas dye']);
@@ -464,6 +465,10 @@ export const dyedItems: DyedItem[] = [
 			{
 				item: Items.getOrThrow('Dwarven pumpkinsmasher'),
 				dye: Items.getOrThrow('Spooky dye')
+			},
+			{
+				item: Items.getOrThrow('Gothic Dwarven warhammer'),
+				dye: Items.getOrThrow('Sun Scream')
 			}
 		]
 	},

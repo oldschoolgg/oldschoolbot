@@ -2,11 +2,12 @@ import { calcWhatPercent, formatOrdinal, round, sumArr } from '@oldschoolgg/tool
 import type { Bank } from 'oldschooljs';
 import { isDeepEqual } from 'remeda';
 
-import { Prisma, type TriviaQuestion, type User } from '@/prisma/clients/robochimp/client.js';
-import { BOT_TYPE, globalConfig, masteryKey } from '@/lib/constants.js';
+import type { TriviaQuestion, User } from '@/prisma/clients/robochimp/client.js';
+import { BitField, BOT_TYPE, globalConfig, masteryKey } from '@/lib/constants.js';
 import { getTotalCl } from '@/lib/data/Collections.js';
 import { calculateMastery } from '@/lib/mastery.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
+import { RobochimpBitfieldEnum } from './perkTiers.js';
 
 export type RobochimpUser = User;
 
@@ -35,6 +36,23 @@ LIMIT 10;`;
 const clKey: keyof User = BOT_TYPE === 'OSB' ? 'osb_cl_percent' : 'bso_cl_percent';
 const levelKey: keyof User = BOT_TYPE === 'OSB' ? 'osb_total_level' : 'bso_total_level';
 const totalXPKey: keyof User = BOT_TYPE === 'OSB' ? 'osb_total_xp' : 'bso_total_xp';
+
+export async function syncOriginalCyrSupporterBit(user: MUser, roboChimpUser: RobochimpUser) {
+	if (!roboChimpUser.bits.includes(RobochimpBitfieldEnum.CyrsOriginalPatrons)) return;
+
+	if (user.bitfield.includes(BitField.OriginalCyrSupporter)) return;
+
+	await prisma.user.update({
+		where: {
+			id: user.id
+		},
+		data: {
+			bitfield: {
+				push: BitField.OriginalCyrSupporter
+			}
+		}
+	});
+}
 
 export async function roboChimpSyncData(user: MUser, newCL?: Bank) {
 	const id = BigInt(user.id);
@@ -86,49 +104,9 @@ export async function roboChimpSyncData(user: MUser, newCL?: Bank) {
 	if (!isDeepEqual(newUser.store_bitfield, user.user.store_bitfield)) {
 		await user.update({ store_bitfield: newUser.store_bitfield });
 	}
+	await syncOriginalCyrSupporterBit(user, newUser);
+	await Cache.setRoboChimpUser(user.id, newUser);
 	return newUser;
-}
-
-export async function roboChimpUserFetchCached(userID: string): Promise<RobochimpUser> {
-	const rateCheck = await Cache.tryRatelimit(userID, 'delay_robochimp_fetch');
-	if (!rateCheck.success) {
-		// Ratelimit success means we can re-fetch
-		const cachedUser = await Cache.getRoboChimpUser(userID);
-		if (cachedUser) return cachedUser;
-	}
-	return await roboChimpUserFetch(userID);
-}
-
-export async function roboChimpUserFetch(userID: string): Promise<RobochimpUser> {
-	const userId = BigInt(userID);
-	try {
-		const result = await roboChimpClient.user.upsert({
-			where: {
-				id: userId
-			},
-			create: {
-				id: userId
-			},
-			update: {}
-		});
-		await Cache.setRoboChimpUser(userID, result);
-		return result;
-	} catch (err) {
-		// Ignore unique constraint errors, they already have a row
-		if (!(err instanceof Prisma.PrismaClientKnownRequestError) || err.code !== 'P2002') {
-			throw err;
-		}
-	}
-
-	// They definitely should have a row now
-	const result = await roboChimpClient.user.findFirstOrThrow({
-		where: {
-			id: userId
-		}
-	});
-
-	await Cache.setRoboChimpUser(userID, result);
-	return result;
 }
 
 export async function calculateOwnCLRanking(userID: string) {

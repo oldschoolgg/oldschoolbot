@@ -15,7 +15,7 @@ export interface TransactItemsArgs {
 	filterLoot?: boolean;
 	dontAddToTempCL?: boolean;
 	neverUpdateHistory?: boolean;
-	otherUpdates?: SafeUserUpdateInput;
+	otherUpdates?: SafeUserUpdateInput | ((user: MUser) => SafeUserUpdateInput | Promise<SafeUserUpdateInput>);
 	gearUpdates?: GearWithSetupType[];
 }
 
@@ -32,6 +32,7 @@ export async function unqueuedTransactItems({
 	let itemsToAdd = options.itemsToAdd ? options.itemsToAdd.clone() : undefined;
 	const itemsToRemove = options.itemsToRemove ? options.itemsToRemove.clone() : undefined;
 	await user.sync();
+	const resolvedOtherUpdates = typeof otherUpdates === 'function' ? await otherUpdates(user) : otherUpdates;
 
 	const gpToRemove = (itemsToRemove?.amount('Coins') ?? 0) - (itemsToAdd?.amount('Coins') ?? 0);
 	if (itemsToRemove && user.GP < gpToRemove) {
@@ -121,7 +122,7 @@ export async function unqueuedTransactItems({
 		bank: newBank.toJSON(),
 		GP: gpUpdate,
 		...clUpdates,
-		...otherUpdates
+		...resolvedOtherUpdates
 	} as const;
 	const newUser = await user.rawUpdate({ data: updateData, gearUpdates });
 
@@ -132,7 +133,7 @@ export async function unqueuedTransactItems({
 
 	const itemsRemoved = new Bank(itemsToRemove);
 	if (itemsRemoved && gpUpdate && gpUpdate.increment < 0) {
-		itemsRemoved.add('Coins', gpUpdate.increment);
+		itemsRemoved.add('Coins', Math.abs(gpUpdate.increment));
 	}
 
 	const newCL = new Bank(newUser.user.collectionLogBank as ItemBank);

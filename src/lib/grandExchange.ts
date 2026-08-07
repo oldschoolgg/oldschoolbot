@@ -10,7 +10,7 @@ import { type GEListing, GEListingType, type GETransaction } from '@/prisma/main
 import { GE_SLOTS_CACHE, marketPricemap } from '@/lib/cache.js';
 import { BitField, globalConfig, PerkTier } from '@/lib/constants.js';
 import { isCustomItem } from '@/lib/customItems/util.js';
-import { type RobochimpUser, roboChimpUserFetchCached } from '@/lib/roboChimp.js';
+import type { RobochimpUser } from '@/lib/roboChimp.js';
 import { fetchTableBank, makeTransactFromTableBankQueries } from '@/lib/table-banks/tableBank.js';
 import { assert } from '@/lib/util/logError.js';
 
@@ -190,7 +190,7 @@ class GrandExchangeSingleton {
 	): Promise<{ slots: number; doesntHaveNames: string[]; possibleExtra: number; maxPossible: number }> {
 		const cached = GE_SLOTS_CACHE.get(user.id);
 		if (cached) return cached;
-		const robochimpUser = await roboChimpUserFetchCached(user.id);
+		const robochimpUser = await Cache.getRoboChimpUser(user.id);
 		let slots = 0;
 		const doesntHaveNames = [];
 		let possibleExtra = 0;
