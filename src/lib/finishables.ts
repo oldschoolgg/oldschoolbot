@@ -3,6 +3,7 @@ import {
 	Bank,
 	BeginnerCasket,
 	ChambersOfXeric,
+	Dossier,
 	EasyCasket,
 	EliteCasket,
 	EliteMimicTable,
@@ -35,7 +36,8 @@ import {
 	theGauntletCL,
 	theNightmareCL,
 	theNightmareNormalCL,
-	wintertodtCL
+	wintertodtCL,
+	yamaCL
 } from '@/lib/data/CollectionsExport.js';
 import pets from '@/lib/data/pets.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
@@ -182,6 +184,19 @@ export const finishables: Finishable[] = [
 			{ itemId: itemID('Spirit angler headband'), kcNeeded: 65 },
 			{ itemId: itemID('Spirit angler boots'), kcNeeded: 65 }
 		]
+	},
+	{
+		name: 'Yama',
+		aliases: Monsters.Yama.aliases,
+		cl: yamaCL,
+		kill: () => {
+			const loot = Monsters.Yama.kill(1, {});
+			const dossiersDropped = loot.amount('Dossier');
+			for (let i = 0; i < dossiersDropped; i++) {
+				loot.add(Dossier.table.roll(1));
+			}
+			return loot;
+		}
 	},
 	{
 		name: 'Beginner Clue Scolls',
