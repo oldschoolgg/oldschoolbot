@@ -1,8 +1,11 @@
-import { describe, expect, it, vi } from 'vitest';
+import { Bank } from 'oldschooljs';
+import { describe, expect, it, test, vi } from 'vitest';
 
 import { Farming } from '../../src/lib/skilling/skills/farming/index.js';
 import type { IPatchData } from '../../src/lib/skilling/skills/farming/utils/types.js';
+import type { Fletchable } from '../../src/lib/skilling/types.js';
 import type { FarmingActivityTaskOptions } from '../../src/lib/types/minions.js';
+import { formatZeroTimeFletchingStatus } from '../../src/lib/util/formatZeroTimeFletchingStatus.js';
 import { minionStatus } from '../../src/lib/util/minionStatus.js';
 import { formatTripDuration } from '../../src/lib/util/minionUtils.js';
 import { mockMUser } from './userutil.js';
@@ -96,5 +99,35 @@ describe('minionStatus - Farming', () => {
 		expect(result).not.toContain('auto-farming multiple patches');
 
 		vi.useRealTimers();
+	});
+});
+
+describe('formatZeroTimeFletchingStatus', () => {
+	const baseFletchable: Fletchable = {
+		name: 'Test arrows',
+		id: 1,
+		level: 1,
+		xp: 1,
+		inputItems: new Bank(),
+		tickRate: 1
+	};
+
+	test('includes sets wording for multi-output items', () => {
+		const result = formatZeroTimeFletchingStatus(5, {
+			...baseFletchable,
+			outputMultiple: 10,
+			name: 'Multi output'
+		});
+
+		expect(result).toBe('They are also fletching 5 sets of Multi output.');
+	});
+
+	test('omits sets wording for single-output items', () => {
+		const result = formatZeroTimeFletchingStatus(3, {
+			...baseFletchable,
+			name: 'Single output'
+		});
+
+		expect(result).toBe('They are also fletching 3 Single output.');
 	});
 });
