@@ -203035,7 +203035,7 @@
 		"highalch": 15000,
 		"cost": 25000,
 		"buy_limit": 5,
-		"price": 16000000
+		"price": 16777944
 	},
 	"33015": {
 		"name": "Annihilation blueprints",
@@ -203047,7 +203047,7 @@
 		"highalch": 15000,
 		"cost": 25000,
 		"buy_limit": 5,
-		"price": 19192000
+		"price": 20955272
 	},
 	"33018": {
 		"name": "Annihilation teleport scroll",
@@ -203059,7 +203059,7 @@
 		"highalch": 15000,
 		"cost": 25000,
 		"buy_limit": 5,
-		"price": 13250003
+		"price": 15000000
 	},
 	"33044": {
 		"name": "Trinket of avarice",
@@ -203573,7 +203573,7 @@
 		"highalch": 6,
 		"cost": 10,
 		"buy_limit": 13000,
-		"price": 128
+		"price": 149
 	},
 	"33109": {
 		"name": "Cooked t-bone steak",
@@ -203584,7 +203584,7 @@
 		"highalch": 6,
 		"cost": 10,
 		"buy_limit": 6000,
-		"price": 57
+		"price": 56
 	},
 	"33112": {
 		"name": "Burnt t-bone steak",
@@ -204038,7 +204038,7 @@
 		},
 		"cost": 100000,
 		"buy_limit": 4,
-		"price": 44484
+		"price": 44578
 	},
 	"33263": {
 		"name": "Demonic robe top (t1)",
@@ -204068,7 +204068,7 @@
 		},
 		"cost": 100000,
 		"buy_limit": 4,
-		"price": 12759
+		"price": 22534
 	},
 	"33266": {
 		"name": "Demonic robe bottom (t1)",
@@ -204098,7 +204098,7 @@
 		},
 		"cost": 100000,
 		"buy_limit": 4,
-		"price": 7950
+		"price": 10546
 	},
 	"33269": {
 		"name": "Demonic boots (t1)",
@@ -204128,7 +204128,7 @@
 		},
 		"cost": 100000,
 		"buy_limit": 4,
-		"price": 4628
+		"price": 7000
 	},
 	"33272": {
 		"name": "Demonic hood (t2)",
@@ -204158,7 +204158,7 @@
 		},
 		"cost": 100000,
 		"buy_limit": 4,
-		"price": 381485
+		"price": 1000000
 	},
 	"33275": {
 		"name": "Demonic robe top (t2)",
@@ -204188,7 +204188,7 @@
 		},
 		"cost": 100000,
 		"buy_limit": 4,
-		"price": 60000
+		"price": 1000000
 	},
 	"33278": {
 		"name": "Demonic robe bottom (t2)",
@@ -204218,7 +204218,7 @@
 		},
 		"cost": 100000,
 		"buy_limit": 4,
-		"price": 50000
+		"price": 1000000
 	},
 	"33281": {
 		"name": "Demonic boots (t2)",
@@ -204248,7 +204248,7 @@
 		},
 		"cost": 100000,
 		"buy_limit": 4,
-		"price": 53647
+		"price": 76000
 	},
 	"33284": {
 		"name": "Demonic hood (t3)",
@@ -204278,7 +204278,7 @@
 		},
 		"cost": 100000,
 		"buy_limit": 4,
-		"price": 2605472
+		"price": 2300610
 	},
 	"33287": {
 		"name": "Demonic robe top (t3)",
@@ -204308,7 +204308,7 @@
 		},
 		"cost": 100000,
 		"buy_limit": 4,
-		"price": 529016
+		"price": 310611
 	},
 	"33290": {
 		"name": "Demonic robe bottom (t3)",
@@ -204338,7 +204338,7 @@
 		},
 		"cost": 100000,
 		"buy_limit": 4,
-		"price": 339312
+		"price": 275617
 	},
 	"33293": {
 		"name": "Demonic boots (t3)",
@@ -204368,7 +204368,7 @@
 		},
 		"cost": 100000,
 		"buy_limit": 4,
-		"price": 133024
+		"price": 117559
 	},
 	"33296": {
 		"name": "Demonic sceptre",
@@ -204397,7 +204397,7 @@
 			"requirements": null
 		},
 		"cost": 1000,
-		"price": 972462
+		"price": 823111
 	},
 	"33299": {
 		"name": "Demonic pacts banner",
@@ -204426,7 +204426,7 @@
 			"requirements": null
 		},
 		"cost": 1000,
-		"price": 74561
+		"price": 75500
 	},
 	"33302": {
 		"name": "Demonic skin contract",
@@ -204437,7 +204437,7 @@
 		"lowalch": 40000,
 		"highalch": 60000,
 		"cost": 100000,
-		"price": 912339
+		"price": 793179
 	},
 	"33305": {
 		"name": "Demonic axe ornament kit",
@@ -204448,7 +204448,7 @@
 		"lowalch": 40000,
 		"highalch": 60000,
 		"cost": 100000,
-		"price": 2424140
+		"price": 2521412
 	},
 	"33308": {
 		"name": "Demonic staff ornament kit",
@@ -204456,7 +204456,7 @@
 		"tradeable": true,
 		"tradeable_on_ge": true,
 		"equipable": false,
-		"price": 151253
+		"price": 274778
 	},
 	"33311": {
 		"name": "Demonic trident ornament kit",
@@ -204467,7 +204467,7 @@
 		"lowalch": 40000,
 		"highalch": 60000,
 		"cost": 100000,
-		"price": 898558
+		"price": 801173
 	},
 	"33332": {
 		"name": "Iban's staff (u) (o)",
@@ -204765,7 +204765,7 @@
 		"lowalch": 10000,
 		"highalch": 15000,
 		"cost": 25000,
-		"price": 289556
+		"price": 227227
 	},
 	"33362": {
 		"name": "Demonic pacts throne scroll",
@@ -204776,7 +204776,7 @@
 		"lowalch": 10000,
 		"highalch": 15000,
 		"cost": 25000,
-		"price": 335327
+		"price": 592355
 	},
 	"33365": {
 		"name": "Impish whistle",
@@ -204787,7 +204787,7 @@
 		"lowalch": 10000,
 		"highalch": 15000,
 		"cost": 25000,
-		"price": 2481664
+		"price": 2338106
 	},
 	"33368": {
 		"name": "Demonic pacts demon butler scroll",
@@ -204798,7 +204798,7 @@
 		"lowalch": 10000,
 		"highalch": 15000,
 		"cost": 25000,
-		"price": 934506
+		"price": 1107269
 	},
 	"33382": {
 		"name": "Immaculate mole skin",
@@ -204937,7 +204937,7 @@
 		"lowalch": 80000,
 		"highalch": 120000,
 		"cost": 200000,
-		"price": 33185879
+		"price": 34861500
 	},
 	"33537": {
 		"name": "Garlic cocktail",
@@ -204997,7 +204997,7 @@
 			"slot": "ammo",
 			"requirements": null
 		},
-		"price": 258
+		"price": 500
 	},
 	"33559": {
 		"name": "Seeking iron arrow",
@@ -205025,7 +205025,7 @@
 			"requirements": null
 		},
 		"cost": 3,
-		"price": 64
+		"price": 31
 	},
 	"33565": {
 		"name": "Seeking steel arrow",
@@ -205055,7 +205055,7 @@
 			"requirements": null
 		},
 		"cost": 12,
-		"price": 226
+		"price": 571
 	},
 	"33571": {
 		"name": "Seeking mithril arrow",
@@ -205085,7 +205085,7 @@
 			"requirements": null
 		},
 		"cost": 32,
-		"price": 317
+		"price": 352
 	},
 	"33577": {
 		"name": "Seeking adamant arrow",
@@ -205115,7 +205115,7 @@
 			"requirements": null
 		},
 		"cost": 80,
-		"price": 97
+		"price": 175
 	},
 	"33583": {
 		"name": "Seeking rune arrow",
@@ -205145,7 +205145,7 @@
 			"requirements": null
 		},
 		"cost": 400,
-		"price": 244
+		"price": 298
 	},
 	"33589": {
 		"name": "Seeking amethyst arrow",
@@ -205175,7 +205175,7 @@
 			"requirements": null
 		},
 		"cost": 490,
-		"price": 561
+		"price": 554
 	},
 	"33595": {
 		"name": "Seeking dragon arrow",
@@ -205206,7 +205206,7 @@
 		},
 		"cost": 800,
 		"buy_limit": 11000,
-		"price": 2307
+		"price": 2272
 	},
 	"33601": {
 		"name": "Seeking broad arrows",
@@ -205337,7 +205337,7 @@
 		"lowalch": 96,
 		"highalch": 144,
 		"cost": 240,
-		"price": 1579
+		"price": 1411
 	},
 	"33627": {
 		"name": "Dull ancient medal",
@@ -205391,7 +205391,7 @@
 		},
 		"cost": 240000,
 		"buy_limit": 5,
-		"price": 51000000
+		"price": 56083000
 	},
 	"33634": {
 		"name": "Elder venator fang",
@@ -205412,7 +205412,7 @@
 		"lowalch": 80000,
 		"highalch": 120000,
 		"cost": 200000,
-		"price": 125302500
+		"price": 130000000
 	},
 	"33639": {
 		"name": "Necklace of rupture",
@@ -205442,7 +205442,7 @@
 		},
 		"cost": 242000,
 		"buy_limit": 8,
-		"price": 139684172
+		"price": 149093722
 	},
 	"33642": {
 		"name": "Maggot marquess",
@@ -205485,7 +205485,7 @@
 		"lowalch": 4,
 		"highalch": 7,
 		"cost": 12,
-		"price": 64
+		"price": 46
 	},
 	"33653": {
 		"name": "Stymphike carcass",
@@ -205515,7 +205515,7 @@
 		"lowalch": 68000,
 		"highalch": 102000,
 		"cost": 170000,
-		"price": 101498
+		"price": 100677
 	},
 	"33659": {
 		"name": "Grapevine",
@@ -205534,7 +205534,7 @@
 		"lowalch": 200,
 		"highalch": 300,
 		"cost": 500,
-		"price": 1904
+		"price": 1851
 	},
 	"33663": {
 		"name": "Venator tooth",
@@ -205546,7 +205546,7 @@
 		"lowalch": 100,
 		"highalch": 150,
 		"cost": 250,
-		"price": 1247
+		"price": 1149
 	},
 	"33665": {
 		"name": "Maggot egg (base)",
@@ -206714,7 +206714,7 @@
 			"requirements": null
 		},
 		"cost": 50000,
-		"price": 36750
+		"price": 65063
 	},
 	"33839": {
 		"name": "Noble robe top",
@@ -206743,7 +206743,7 @@
 			"requirements": null
 		},
 		"cost": 50000,
-		"price": 27960
+		"price": 35540
 	},
 	"33842": {
 		"name": "Noble robe top",
@@ -206772,7 +206772,7 @@
 			"requirements": null
 		},
 		"cost": 50000,
-		"price": 25471
+		"price": 34251
 	},
 	"33845": {
 		"name": "Noble robe top",
@@ -206859,7 +206859,7 @@
 			"requirements": null
 		},
 		"cost": 50000,
-		"price": 31340
+		"price": 35196
 	},
 	"33854": {
 		"name": "Noble robe top",
@@ -206917,7 +206917,7 @@
 			"requirements": null
 		},
 		"cost": 40000,
-		"price": 40810
+		"price": 104186
 	},
 	"33860": {
 		"name": "Wyrmscraig noble skirt",
@@ -206946,7 +206946,7 @@
 			"requirements": null
 		},
 		"cost": 40000,
-		"price": 41729
+		"price": 79192
 	},
 	"33863": {
 		"name": "Wyrmscraig noble skirt",
@@ -206975,7 +206975,7 @@
 			"requirements": null
 		},
 		"cost": 40000,
-		"price": 20000
+		"price": 2550
 	},
 	"33866": {
 		"name": "Wyrmscraig noble skirt",
@@ -207004,7 +207004,7 @@
 			"requirements": null
 		},
 		"cost": 40000,
-		"price": 27910
+		"price": 30408
 	},
 	"33869": {
 		"name": "Wyrmscraig noble skirt",
@@ -207033,7 +207033,7 @@
 			"requirements": null
 		},
 		"cost": 40000,
-		"price": 90000
+		"price": 48620
 	},
 	"33872": {
 		"name": "Wyrmscraig noble skirt",
@@ -207062,7 +207062,7 @@
 			"requirements": null
 		},
 		"cost": 40000,
-		"price": 25459
+		"price": 40253
 	},
 	"33875": {
 		"name": "Wyrmscraig noble skirt",
@@ -207091,7 +207091,7 @@
 			"requirements": null
 		},
 		"cost": 40000,
-		"price": 65153
+		"price": 46000
 	},
 	"33878": {
 		"name": "Wyrmscraig shoes",
@@ -207120,7 +207120,7 @@
 			"requirements": null
 		},
 		"cost": 10000,
-		"price": 5686
+		"price": 20125
 	},
 	"33881": {
 		"name": "Wyrmscraig boots",
@@ -207149,7 +207149,7 @@
 			"requirements": null
 		},
 		"cost": 10000,
-		"price": 6822
+		"price": 9644
 	},
 	"33884": {
 		"name": "Wyrmscraig villager robe top",
@@ -207322,7 +207322,7 @@
 			"requirements": null
 		},
 		"cost": 500,
-		"price": 493
+		"price": 5477
 	},
 	"33902": {
 		"name": "Wyrmscraig villager robe top",
@@ -207350,7 +207350,8 @@
 			"slot": "body",
 			"requirements": null
 		},
-		"cost": 500
+		"cost": 500,
+		"price": 3250
 	},
 	"33905": {
 		"name": "Wyrmscraig villager robe top",
@@ -207437,7 +207438,7 @@
 			"requirements": null
 		},
 		"cost": 400,
-		"price": 11334
+		"price": 2668
 	},
 	"33914": {
 		"name": "Wyrmscraig villager robe bottom",
@@ -207553,7 +207554,7 @@
 			"requirements": null
 		},
 		"cost": 400,
-		"price": 234
+		"price": 276
 	},
 	"33926": {
 		"name": "Wyrmscraig villager robe bottom",
@@ -207582,7 +207583,7 @@
 			"requirements": null
 		},
 		"cost": 400,
-		"price": 400
+		"price": 441
 	},
 	"33929": {
 		"name": "Wyrmscraig villager robe bottom",
@@ -207610,7 +207611,8 @@
 			"slot": "body",
 			"requirements": null
 		},
-		"cost": 400
+		"cost": 400,
+		"price": 5500
 	},
 	"33932": {
 		"name": "Wyrmscraig villager robe bottom",
@@ -207782,7 +207784,8 @@
 			"slot": "body",
 			"requirements": null
 		},
-		"cost": 400
+		"cost": 400,
+		"price": 400
 	},
 	"33950": {
 		"name": "Wyrmscraig villager robe top",
@@ -207840,7 +207843,7 @@
 			"requirements": null
 		},
 		"cost": 500,
-		"price": 2750
+		"price": 500
 	},
 	"33956": {
 		"name": "Wyrmscraig villager robe top",
@@ -207869,7 +207872,7 @@
 			"requirements": null
 		},
 		"cost": 500,
-		"price": 2714
+		"price": 2750
 	},
 	"33959": {
 		"name": "Wyrmscraig villager robe top",
@@ -207984,7 +207987,8 @@
 			"slot": "body",
 			"requirements": null
 		},
-		"cost": 500
+		"cost": 500,
+		"price": 500
 	},
 	"33971": {
 		"name": "Wyrmscraig villager skirt",
@@ -208098,7 +208102,8 @@
 			"slot": "legs",
 			"requirements": null
 		},
-		"cost": 400
+		"cost": 400,
+		"price": 400
 	},
 	"33983": {
 		"name": "Wyrmscraig villager skirt",
@@ -208242,7 +208247,7 @@
 			"requirements": null
 		},
 		"cost": 400,
-		"price": 400
+		"price": 589
 	},
 	"33998": {
 		"name": "Wyrmscraig villager work skirt",
@@ -208329,7 +208334,7 @@
 			"requirements": null
 		},
 		"cost": 400,
-		"price": 2755
+		"price": 8083
 	},
 	"34007": {
 		"name": "Wyrmscraig villager work skirt",
@@ -208358,7 +208363,7 @@
 			"requirements": null
 		},
 		"cost": 400,
-		"price": 400
+		"price": 680
 	},
 	"34010": {
 		"name": "Wyrmscraig villager work skirt",
@@ -208434,7 +208439,7 @@
 		"lowalch": 4,
 		"highalch": 6,
 		"cost": 10,
-		"price": 284
+		"price": 283
 	},
 	"34020": {
 		"name": "Sunstone",
@@ -208487,7 +208492,7 @@
 			"requirements": null
 		},
 		"cost": 1250000,
-		"price": 3267835
+		"price": 2889438
 	},
 	"34030": {
 		"name": "Jar of light",
@@ -208519,7 +208524,7 @@
 		"lowalch": 4,
 		"highalch": 6,
 		"cost": 10,
-		"price": 32611
+		"price": 29125
 	},
 	"34035": {
 		"name": "Placeholder",
