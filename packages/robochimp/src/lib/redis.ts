@@ -3,6 +3,13 @@ import { Redis } from 'ioredis';
 
 import { globalConfig } from '@/constants.js';
 
+const RUSER_CACHE_TTL_SECONDS = 24 * 60 * 60;
+
+export function rUserTTL() {
+	const jitter = RUSER_CACHE_TTL_SECONDS * 0.1;
+	return Math.round(RUSER_CACHE_TTL_SECONDS - jitter + Math.random() * jitter * 2);
+}
+
 function makeRedis() {
 	if (globalConfig.isProduction) {
 		return new Redis();

@@ -20,6 +20,7 @@ import {
 	GambleTiers
 } from '@/mahoji/lib/abstracted_commands/barbAssault.js';
 import { castleWarsStartCommand, castleWarsStatsCommand } from '@/mahoji/lib/abstracted_commands/castleWarsCommand.js';
+import { doomOfMokhaiotlCommand } from '@/mahoji/lib/abstracted_commands/doomOfMokhaiotlCommand.js';
 import { fishingTrawlerCommand } from '@/mahoji/lib/abstracted_commands/fishingTrawler.js';
 import { gauntletCommand } from '@/mahoji/lib/abstracted_commands/gauntletCommand.js';
 import {
@@ -517,6 +518,35 @@ export const minigamesCommand = defineCommand({
 							name: 'corrupted',
 							description: 'Corrupted Gauntlet.',
 							required: false
+						}
+					]
+				}
+			]
+		},
+		{
+			name: 'doom_of_mokhaiotl',
+			description: 'The Doom of Mokhaiotl delve boss.',
+			type: 'SubcommandGroup',
+			options: [
+				{
+					type: 'Subcommand',
+					name: 'start',
+					description: 'Start a Doom of Mokhaiotl delve run.',
+					options: [
+						{
+							type: 'Integer',
+							name: 'delve_level',
+							description: 'The deepest delve level to complete.',
+							required: true,
+							min_value: 1,
+							max_value: 8
+						},
+						{
+							type: 'Integer',
+							name: 'quantity',
+							description: 'The amount of delve runs to do.',
+							required: false,
+							min_value: 1
 						}
 					]
 				}
@@ -1291,6 +1321,15 @@ export const minigamesCommand = defineCommand({
 		 */
 		if (options.gauntlet?.start) {
 			return gauntletCommand(rng, user, channelId, options.gauntlet.start.corrupted ? 'corrupted' : 'normal');
+		}
+		if (options.doom_of_mokhaiotl?.start) {
+			return doomOfMokhaiotlCommand(
+				rng,
+				user,
+				channelId,
+				options.doom_of_mokhaiotl.start.delve_level,
+				options.doom_of_mokhaiotl.start.quantity
+			);
 		}
 
 		/**

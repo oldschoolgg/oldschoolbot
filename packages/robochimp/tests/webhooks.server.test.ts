@@ -11,10 +11,15 @@ globalThis.globalClient = {} as any;
 const mockVerifyPatreonSecret = vi.fn<(raw: string, sig?: string) => boolean>();
 const mockParseStrToTier = vi.fn<(name: string) => string | null>();
 const mockPatreonRun = vi.fn<() => Promise<string[] | null>>();
+const mockHandlePatreonWebhook = vi.fn();
 const mockPatreonChangeTier = vi.fn();
 const mockPatreonRemovePerks = vi.fn();
 vi.mock('../src/lib/patreon.js', () => ({
 	verifyPatreonSecret: (raw: string, sig?: string) => mockVerifyPatreonSecret(raw, sig),
+	getVerifiedPatreonCampaign: (raw: string, sig?: string) =>
+		mockVerifyPatreonSecret(raw, sig) ? { source: 'cyr' } : null,
+	isPatreonEvent: (event?: string) => event?.startsWith('members:') ?? false,
+	handlePatreonWebhook: (...args: unknown[]) => mockHandlePatreonWebhook(...args),
 	parseStrToTier: (name: string) => mockParseStrToTier(name),
 	patreonTask: {
 		run: () => mockPatreonRun(),
@@ -72,6 +77,7 @@ beforeAll(async () => {
 	mockVerifyPatreonSecret.mockReset().mockImplementation((_raw, sig) => sig === 'ok');
 	mockParseStrToTier.mockReset().mockImplementation(name => (/tier\s*1/i.test(name) ? 'T1' : null));
 	mockPatreonRun.mockReset().mockResolvedValue(['a', 'b']);
+	mockHandlePatreonWebhook.mockReset();
 	mockPatreonChangeTier.mockReset();
 	mockPatreonRemovePerks.mockReset();
 	mockVerifyGithubSecret.mockReset().mockImplementation((_raw, sig) => sig === 'ok');

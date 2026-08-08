@@ -71,6 +71,11 @@ export const ZStringInteger = z.string().refine(
 );
 export type TStringInteger = z.infer<typeof ZStringInteger>;
 
+export const ZBigInt = z
+	.union([z.bigint(), z.number().int(), z.string().regex(/^-?\d+$/)])
+	.transform(value => BigInt(value));
+export type IBigInt = z.infer<typeof ZBigInt>;
+
 export const AServiceTypes = ['osb', 'bso', 'robochimp'] as const;
 export const ZServiceType = z.enum(['osb', 'bso', 'robochimp']);
 export type IServiceType = z.infer<typeof ZServiceType>;

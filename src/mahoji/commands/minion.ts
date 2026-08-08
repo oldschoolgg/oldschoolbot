@@ -18,11 +18,11 @@ import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js'
 import { blowpipeCommand, blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
 import { degradeableItemsCommand } from '@/lib/minions/functions/degradeableItemsCommand.js';
 import { allPossibleStyles, trainCommand } from '@/lib/minions/functions/trainCommand.js';
-import { getRoboChimpGroupPaidBits, getRoboChimpPaidTierDisplay } from '@/lib/perkTiers.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import creatures from '@/lib/skilling/skills/hunter/creatures/index.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
+import { calcMaxTripLengthSync } from '@/lib/util/calcMaxTripLength.js';
 import { getAllKillCounts, getKCByName } from '@/lib/util/getKCByName.js';
 import { minionStatsEmbed } from '@/lib/util/minionStatsEmbed.js';
 import { getPeakTimesString } from '@/lib/util/peaks.js';
@@ -80,39 +80,32 @@ export async function getUserInfo(user: MUser) {
 		bitfields,
 		currentTask: taskText,
 		patreon: roboChimpUser.patreon_id ? 'Yes' : 'None',
-		github: roboChimpUser.github_id ? 'Yes' : 'None'
+		github: roboChimpUser.github_id ? 'Yes' : 'None',
+		maxTripLength: calcMaxTripLengthSync(user, roboChimpUser),
+		perkDebugInfo: [] as string[]
 	};
 
 	const globalCLPercent = (((roboChimpUser.bso_cl_percent ?? 0) + (roboChimpUser.osb_cl_percent ?? 0)) / 2).toFixed(
 		2
 	);
 
-	const roboCache = await Cache.getRoboChimpUser(user.id);
-	const groupPaidBits = await getRoboChimpGroupPaidBits(user.id);
-	const premiumPerkTier =
-		roboCache.premium_balance_tier &&
-		roboCache.premium_balance_expiry_date &&
-		roboCache.premium_balance_expiry_date > Date.now()
-			? roboCache.premium_balance_tier
-			: 0;
+	const perkTierDisplay = user.getPerkTierDisplay(roboChimpUser);
+	const premiumTimeActive = Boolean(
+		roboChimpUser.premium_balance_tier &&
+			roboChimpUser.premium_balance_expiry_date &&
+			roboChimpUser.premium_balance_expiry_date > Date.now()
+	);
 
-	let perkTierDisplay = getRoboChimpPaidTierDisplay({ bits: groupPaidBits, perkTier: roboCache?.perk_tier });
-	if (
-		roboCache.premium_balance_tier &&
-		roboCache.premium_balance_expiry_date &&
-		roboCache.premium_balance_expiry_date > Date.now()
-	) {
-		if (roboCache.premium_balance_tier > roboCache.perk_tier) {
-			perkTierDisplay = `Premium __Tier ${premiumPerkTier - 1}__ - ${formatDuration(Number(roboCache.premium_balance_expiry_date) - Date.now())} remaining`;
-		}
+	result.perkDebugInfo.push(`**Raw perk tier**: ${user.perkTier}`);
+	result.perkDebugInfo.push(`**Robo perk tier**: ${roboChimpUser.perk_tier}`);
+
+	if (roboChimpUser.premium_balance_tier || roboChimpUser.premium_balance_expiry_date) {
+		result.perkDebugInfo.push(`**Premium Balance Tier**: ${roboChimpUser.premium_balance_tier}`);
+		result.perkDebugInfo.push(
+			`**Premium Balance Expiry**: ${premiumTimeActive ? '🟢' : '🔴'} ${roboChimpUser.premium_balance_expiry_date} (${formatDuration(Number(roboChimpUser.premium_balance_expiry_date))}))`
+		);
 	}
-	if (result.perkTier > roboCache.perk_tier && result.perkTier > premiumPerkTier) {
-		if (user.isMod() || user.isWikiContrib() || user.isContributor() || user.isTrusted()) {
-			perkTierDisplay = `**Courtesy** __Tier ${result.perkTier - 1}__`;
-		} else {
-			perkTierDisplay = `🔴 **Expiring** __Tier ${result.perkTier - 1}__`;
-		}
-	}
+
 	return {
 		...result,
 		everythingString: `${user.badgedUsername}[${user.id}]
@@ -121,6 +114,7 @@ export async function getUserInfo(user: MUser) {
 **Blacklisted:** ${result.isBlacklisted}
 **Badges:** ${result.badges}
 **Ironman:** ${result.isIronman}
+**Max Trip Length:** ${formatDuration(result.maxTripLength)} ⏱️
 **Bitfields:** ${result.bitfields}
 **Patreon Connected:** ${result.patreon}
 **Github Connected:** ${result.github}

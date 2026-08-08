@@ -2,7 +2,8 @@ import { calcPercentOfNum, calcWhatPercent, Time } from '@oldschoolgg/toolkit';
 
 import type { activity_type_enum } from '@/prisma/main/enums.js';
 import { PerkTier } from '@/lib/constants.js';
-import { getCyrTripBonus, getRoboChimpGroupPaidBits } from '@/lib/perkTiers.js';
+import { getCyrTripBonus, RobochimpBitfieldEnum } from '@/lib/perkTiers.js';
+import type { RobochimpUser } from '@/lib/roboChimp.js';
 
 export function patronMaxTripBonus(perkTier: PerkTier | 0) {
 	if (perkTier === PerkTier.Two) return Time.Minute * 3;
@@ -11,11 +12,15 @@ export function patronMaxTripBonus(perkTier: PerkTier | 0) {
 	return 0;
 }
 
-export async function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
-	const perkTier = await user.fetchPerkTier();
-	const groupPaidBits = await getRoboChimpGroupPaidBits(user.id);
+export function calcMaxTripLengthSync(user: MUser, roboUser: RobochimpUser, activity?: activity_type_enum) {
+	const perkTier = user.perkTier;
+	const roboBits = roboUser.bits;
 	let max = Time.Minute * 30;
-	max += Math.max(patronMaxTripBonus(perkTier), getCyrTripBonus(groupPaidBits));
+	max += Math.max(patronMaxTripBonus(perkTier), getCyrTripBonus(roboBits));
+
+	if (roboBits.includes(RobochimpBitfieldEnum.BonusMinute)) {
+		max += Time.Minute * 3;
+	}
 
 	switch (activity) {
 		case 'Nightmare':
@@ -23,6 +28,7 @@ export async function calcMaxTripLength(user: MUser, activity?: activity_type_en
 		case 'MonsterKilling':
 		case 'Wintertodt':
 		case 'Zalcano':
+		case 'DoomOfMokhaiotl':
 		case 'BarbarianAssault':
 		case 'AnimatedArmour':
 		case 'Sepulchre':
@@ -31,6 +37,7 @@ export async function calcMaxTripLength(user: MUser, activity?: activity_type_en
 		case 'TombsOfAmascut':
 		case 'Pickpocket':
 		case 'SoulWars':
+		case 'Colosseum':
 		case 'Cyclops': {
 			const hpLevel = user.skillsAsLevels.hitpoints;
 			const hpPercent = calcWhatPercent(hpLevel - 10, 99 - 10);
@@ -53,6 +60,12 @@ export async function calcMaxTripLength(user: MUser, activity?: activity_type_en
 	const sac = Number(user.user.sacrificedValue);
 	const { isIronman } = user;
 	const sacPercent = Math.min(100, calcWhatPercent(sac, isIronman ? 5_000_000_000 : 10_000_000_000));
-	max += calcPercentOfNum(sacPercent, perkTier >= PerkTier.Four ? Time.Minute * 3 : Time.Minute);
+	max += calcPercentOfNum(sacPercent, perkTier >= PerkTier.Four ? Time.Minute * 4 : Time.Minute * 2);
 	return max;
+}
+
+export async function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
+	await user.fetchPerkTier({ forceNoCache: true });
+	const roboUser = await Cache.getRoboChimpUser(user.id, true);
+	return calcMaxTripLengthSync(user, roboUser, activity);
 }

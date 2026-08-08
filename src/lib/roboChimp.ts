@@ -1,4 +1,4 @@
-import { calcWhatPercent, formatOrdinal, round, sumArr } from '@oldschoolgg/toolkit';
+import { calcWhatPercent, formatOrdinal, PerkTier, round, sumArr } from '@oldschoolgg/toolkit';
 import type { Bank } from 'oldschooljs';
 import { isDeepEqual } from 'remeda';
 
@@ -10,6 +10,43 @@ import { RobochimpBitfieldEnum } from '@/lib/perkTiers.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
 
 export type RobochimpUser = User;
+type RoboChimpPerkData = Pick<RobochimpUser, 'bits' | 'premium_balance_tier' | 'premium_balance_expiry_date'>;
+
+function bestPremium(users: RoboChimpPerkData[]) {
+	const now = Date.now();
+	return (
+		users
+			.filter(user => user.premium_balance_tier && user.premium_balance_expiry_date)
+			.filter(user => Number(user.premium_balance_expiry_date) > now)
+			.sort(
+				(a, b) =>
+					(b.premium_balance_tier ?? PerkTier.Zero) - (a.premium_balance_tier ?? PerkTier.Zero) ||
+					Number(b.premium_balance_expiry_date) - Number(a.premium_balance_expiry_date)
+			)[0] ?? null
+	);
+}
+
+function mergeRoboChimpPerks(users: RobochimpUser[]): RobochimpUser[] {
+	const premium = bestPremium(users);
+	const bits = [...new Set(users.flatMap(groupUser => groupUser.bits))];
+	return users.map(user => ({
+		...user,
+		bits,
+		premium_balance_tier: premium?.premium_balance_tier ?? null,
+		premium_balance_expiry_date: premium?.premium_balance_expiry_date ?? null
+	}));
+}
+
+export async function loadRoboChimpGroup(user: RobochimpUser): Promise<RobochimpUser[]> {
+	const users = user.user_group_id
+		? await roboChimpClient.user.findMany({
+				where: {
+					user_group_id: user.user_group_id
+				}
+			})
+		: [user];
+	return mergeRoboChimpPerks(users);
+}
 
 export async function getRandomTriviaQuestions(): Promise<TriviaQuestion[]> {
 	if (!globalConfig.isProduction) {
@@ -104,7 +141,7 @@ export async function roboChimpSyncData(user: MUser, newCL?: Bank) {
 		await user.update({ store_bitfield: newUser.store_bitfield });
 	}
 	await syncOriginalCyrSupporterBit(user, newUser);
-	await Cache.setRoboChimpUser(user.id, newUser);
+	await Cache.setRoboChimpUser(newUser);
 	return newUser;
 }
 

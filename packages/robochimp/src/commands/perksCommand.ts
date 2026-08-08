@@ -3,8 +3,8 @@ import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { applyPremiumTimeGrant, calculatePremiumTimeGrant, fetchPremiumTimeBalance } from '@/lib/premiumTime.js';
 import { Bits, cyrTiers } from '@/util.js';
 
-const cyrTier4PlusBits = [Bits.CyrPatronTier4, Bits.CyrPatronTier5, Bits.CyrPatronTier6, Bits.CyrPatronTier7] as const;
-const cyrTier5PlusBits = [Bits.CyrPatronTier5, Bits.CyrPatronTier6, Bits.CyrPatronTier7] as const;
+const cyrTier4PlusBits = [Bits.CyrTier4, Bits.CyrTier5, Bits.CyrTier6, Bits.CyrTier7];
+const cyrTier5PlusBits = [Bits.CyrTier5, Bits.CyrTier6, Bits.CyrTier7];
 
 function hasCurrentMonthGift(lastGift: bigint | null, now = Date.now()) {
 	if (lastGift === null) return false;
@@ -13,7 +13,7 @@ function hasCurrentMonthGift(lastGift: bigint | null, now = Date.now()) {
 	return giftDate.getUTCFullYear() === nowDate.getUTCFullYear() && giftDate.getUTCMonth() === nowDate.getUTCMonth();
 }
 
-function getGiftTier(bits: readonly number[]) {
+function getGiftTier(bits: number[]) {
 	if (cyrTier5PlusBits.some(bit => bits.includes(bit))) {
 		return cyrTiers.find(tier => tier.number === 3) ?? null;
 	}

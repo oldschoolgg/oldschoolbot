@@ -10,7 +10,6 @@ import {
 	notEmpty,
 	sleep,
 	stringMatches,
-	stringSearch,
 	Time,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
@@ -19,7 +18,7 @@ import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import { economy_transaction_type } from '@/prisma/main/enums.js';
 import type { ClientStorage } from '@/prisma/main.js';
-import { bulkUpdateCommands, itemOption } from '@/discord/index.js';
+import { adminBitfieldOption, bulkUpdateCommands, itemOption } from '@/discord/index.js';
 import { MessageBuilder } from '@/discord/MessageBuilder.js';
 import {
 	bitfieldCanUserManipulate,
@@ -27,7 +26,7 @@ import {
 	getBitFieldData,
 	listBitFields
 } from '@/lib/bitFieldUtils.js';
-import { BadgesEnum, BitField, BitFieldData, badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
+import { BadgesEnum, BitField, badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { syncCustomPrices } from '@/lib/preStartup.js';
 import { countUsersWithItemInCl } from '@/lib/rawSql.js';
@@ -659,30 +658,14 @@ export const adminCommand = defineCommand({
 					required: true
 				},
 				{
-					type: 'String',
+					...adminBitfieldOption,
 					name: 'add',
-					description: 'The bitfield to add',
-					required: false,
-					autocomplete: async ({ value, user }: StringAutoComplete) => {
-						return Object.entries(BitFieldData)
-							.filter(bf => {
-								if (bf[1].protected && !user.isAdmin()) return false;
-								if (!value) return true;
-								return stringSearch(value, bf[1].name);
-							})
-							.map(i => ({ name: i[1].name, value: i[0] }));
-					}
+					description: 'The bitfield to add'
 				},
 				{
-					type: 'String',
+					...adminBitfieldOption,
 					name: 'remove',
-					description: 'The bitfield to remove',
-					required: false,
-					autocomplete: async ({ value }: StringAutoComplete) => {
-						return Object.entries(BitFieldData)
-							.filter(bf => (!value ? true : bf[1].name.toLowerCase().includes(value.toLowerCase())))
-							.map(i => ({ name: i[1].name, value: i[0] }));
-					}
+					description: 'The bitfield to remove'
 				}
 			]
 		},

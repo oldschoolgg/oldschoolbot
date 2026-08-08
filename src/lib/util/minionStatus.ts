@@ -44,6 +44,7 @@ import type {
 	CreateForestersRationsActivityTaskOptions,
 	CutLeapingFishActivityTaskOptions,
 	DarkAltarOptions,
+	DoomOfMokhaiotlOptions,
 	EnchantingActivityTaskOptions,
 	FarmingActivityTaskOptions,
 	FightCavesActivityTaskOptions,
@@ -553,6 +554,12 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 			return `${name} is currently doing ${data.quantity}x ${
 				data.corrupted ? 'Corrupted' : 'Normal'
 			} Gauntlet. ${formattedDuration}`;
+		}
+		case 'DoomOfMokhaiotl': {
+			const data = currentTask as DoomOfMokhaiotlOptions;
+			return `${name} is currently doing ${data.quantity}x Doom of Mokhaiotl run${
+				data.quantity === 1 ? '' : 's'
+			} to delve ${data.delveLevel}. ${formattedDuration}`;
 		}
 
 		case 'CastleWars': {
