@@ -652,7 +652,7 @@ describe('auto farm helpers', () => {
 			contractsCompleted: 0
 		};
 		(mutableUser as any).minion_farmingPreferredSeeds = {
-			herb: { type: 'seed', seedID: itemID('Ranarr seed') }
+			herb: { type: 'seed', seedID: itemID('Ranarr seed'), quantity: 2 }
 		};
 
 		const transactResult = {
@@ -679,6 +679,10 @@ describe('auto farm helpers', () => {
 
 		// As above – detailed choice logic is tested in resolveSeedForPatch.
 		expect(addSubTaskToActivityTask).toHaveBeenCalledTimes(1);
+		expect(vi.mocked(addSubTaskToActivityTask).mock.calls[0]?.[0]).toMatchObject({
+			quantity: 2,
+			autoFarmPlan: [expect.objectContaining({ quantity: 2 })]
+		});
 	});
 
 	it('autoFarm starts with the contract patch when contract priority is enabled', async () => {
