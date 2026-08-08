@@ -1,7 +1,7 @@
 import { calcWhatPercent, formatDuration, stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
 import { convertXPtoLVL } from 'oldschooljs';
 
-import { defineOption } from '@/discord/index.js';
+import { choicesOf, defineOption } from '@/discord/index.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { MAX_LEVEL, masteryKey } from '@/lib/constants.js';
 import { allClNames, getCollectionItems } from '@/lib/data/Collections.js';
@@ -13,43 +13,88 @@ import Agility from '@/lib/skilling/skills/agility.js';
 import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
 import { type SkillNameType, SkillsArray } from '@/lib/skilling/types.js';
-import { fetchCLLeaderboard } from '@/lib/util/clLeaderboard.js';
+import { type CLLeaderboardAccountFilter, fetchCLLeaderboard } from '@/lib/util/clLeaderboard.js';
 import { userEventsToMap } from '@/lib/util/userEvents.js';
 
-async function kcLb(interaction: MInteraction, name: string, ironmanOnly: boolean) {
+const accountFilterNames = ['Mixed', 'Irons Only', 'Mains Only'] as const;
+type AccountFilterName = (typeof accountFilterNames)[number];
+type AccountFilterOptions = {
+	account_type?: AccountFilterName;
+};
+
+function accountFilterNameToFilter(filter: AccountFilterName | undefined): CLLeaderboardAccountFilter {
+	switch (filter) {
+		case 'Irons Only':
+			return 'ironmen';
+		case 'Mains Only':
+			return 'mains';
+		default:
+			return 'all';
+	}
+}
+
+function accountFilterFromOptions(options: AccountFilterOptions): CLLeaderboardAccountFilter {
+	return accountFilterNameToFilter(options.account_type);
+}
+
+function isIronmenOnly(accountFilter: CLLeaderboardAccountFilter) {
+	return accountFilter === 'ironmen';
+}
+
+function accountFilterTitleSuffix(accountFilter: CLLeaderboardAccountFilter) {
+	return accountFilter === 'mains' ? ' (Mains Only)' : '';
+}
+
+function accountFilterCondition(accountFilter: CLLeaderboardAccountFilter, alias?: string) {
+	if (accountFilter === 'all') return '';
+	const column = alias ? `"${alias}"."minion.ironman"` : '"minion.ironman"';
+	return `${column} = ${accountFilter === 'ironmen' ? 'true' : 'false'}`;
+}
+
+function accountFilterAnd(accountFilter: CLLeaderboardAccountFilter, alias?: string) {
+	const condition = accountFilterCondition(accountFilter, alias);
+	return condition ? `AND ${condition}` : '';
+}
+
+function accountFilterWhere(accountFilter: CLLeaderboardAccountFilter, alias?: string) {
+	const condition = accountFilterCondition(accountFilter, alias);
+	return condition ? `WHERE ${condition}` : '';
+}
+
+async function kcLb(interaction: MInteraction, name: string, accountFilter: CLLeaderboardAccountFilter) {
 	const monster = effectiveMonsters.find(mon => [mon.name, ...mon.aliases].some(alias => stringMatches(alias, name)));
 	if (!monster) return "That's not a valid monster!";
 	const list = await prisma.$queryRawUnsafe<{ id: string; score: number }[]>(
 		`SELECT user_id::text AS id, CAST("monster_scores"->>'${monster.id}' AS INTEGER) as score
 		 FROM user_stats
-		${ironmanOnly ? 'INNER JOIN "users" on "users"."id" = "user_stats"."user_id"::text' : ''}
+		${accountFilter === 'all' ? '' : 'INNER JOIN "users" on "users"."id" = "user_stats"."user_id"::text'}
 		 WHERE CAST("monster_scores"->>'${monster.id}' AS INTEGER) > 5
-		 ${ironmanOnly ? ' AND "users"."minion.ironman" = true ' : ''}
+		 ${accountFilterAnd(accountFilter, 'users')}
 		 ORDER BY score DESC
 		 LIMIT 2000;`
 	);
 	return doMenuWrapper({
-		ironmanOnly,
+		ironmanOnly: isIronmenOnly(accountFilter),
 		interaction,
 		users: list,
-		title: `KC Leaderboard for ${monster.name}`
+		title: `KC Leaderboard for ${monster.name}${accountFilterTitleSuffix(accountFilter)}`
 	});
 }
 
-async function farmingContractLb(interaction: MInteraction, ironmanOnly: boolean) {
+async function farmingContractLb(interaction: MInteraction, accountFilter: CLLeaderboardAccountFilter) {
 	const list = await prisma.$queryRawUnsafe<{ id: string; count: number }[]>(
 		`SELECT id::text as id, CAST("minion.farmingContract"->>'contractsCompleted' AS INTEGER) as count
 		 FROM users
 		 WHERE "minion.farmingContract" is not null and CAST ("minion.farmingContract"->>'contractsCompleted' AS INTEGER) >= 1
-		 ${ironmanOnly ? ' AND "minion.ironman" = true ' : ''}
+		 ${accountFilterAnd(accountFilter)}
 		 ORDER BY count DESC
 		 LIMIT 2000;`
 	);
 	return doMenuWrapper({
-		ironmanOnly,
+		ironmanOnly: isIronmenOnly(accountFilter),
 		interaction,
 		users: list.map(u => ({ id: u.id, score: u.count })),
-		title: 'Farming Contracts Leaderboard'
+		title: `Farming Contracts Leaderboard${accountFilterTitleSuffix(accountFilter)}`
 	});
 }
 
@@ -73,7 +118,11 @@ async function infernoLb(interaction: MInteraction) {
 	});
 }
 
-async function sacrificeLb(interaction: MInteraction, type: 'value' | 'unique', ironmanOnly: boolean) {
+async function sacrificeLb(
+	interaction: MInteraction,
+	type: 'value' | 'unique',
+	accountFilter: CLLeaderboardAccountFilter
+) {
 	if (type === 'value') {
 		const list = await prisma.$queryRawUnsafe<{ id: string; amount: number }[]>(
 			`SELECT
@@ -81,15 +130,15 @@ async function sacrificeLb(interaction: MInteraction, type: 'value' | 'unique', 
 				"sacrificedValue"::bigint AS amount
 			 FROM users u
 			 WHERE "sacrificedValue" > 10000
-			 ${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
+			 ${accountFilterAnd(accountFilter, 'u')}
 			 ORDER BY "sacrificedValue" DESC
 			 LIMIT 400;`
 		);
 		return doMenuWrapper({
-			ironmanOnly,
+			ironmanOnly: isIronmenOnly(accountFilter),
 			interaction,
 			users: list.map(u => ({ id: u.id, score: Number(u.amount) })),
-			title: 'Sacrifice Leaderboard',
+			title: `Sacrifice Leaderboard${accountFilterTitleSuffix(accountFilter)}`,
 			formatter: v => `${v.toLocaleString()} GP`
 		});
 	}
@@ -101,15 +150,15 @@ async function sacrificeLb(interaction: MInteraction, type: 'value' | 'unique', 
 		FROM users u
 		INNER JOIN user_stats us ON u.id::bigint = us.user_id
 		WHERE us.sacrificed_bank::text != '{}'
-		${ironmanOnly ? 'AND u."minion.ironman" = true' : ''}
+		${accountFilterAnd(accountFilter, 'u')}
 		ORDER BY sacbanklength DESC
 		LIMIT 10;`
 	);
 	return doMenuWrapper({
-		ironmanOnly,
+		ironmanOnly: isIronmenOnly(accountFilter),
 		interaction,
 		users: mostUniques.map(u => ({ id: u.id, score: u.sacbanklength })),
-		title: 'Unique Sacrifice Leaderboard',
+		title: `Unique Sacrifice Leaderboard${accountFilterTitleSuffix(accountFilter)}`,
 		formatter: v => `${v.toLocaleString()} Unique Sac's`
 	});
 }
@@ -145,17 +194,23 @@ async function minigamesLb(interaction: MInteraction, name: string) {
 	});
 }
 
-async function clLb(interaction: MInteraction, inputType: string, ironmenOnly: boolean) {
+async function clLb(interaction: MInteraction, inputType: string, accountFilter: CLLeaderboardAccountFilter) {
 	const { resolvedCl, items } = getCollectionItems(inputType, false, false, true);
 	if (!items || items.size === 0)
 		return "That's not a valid collection log category. Check /cl for all possible logs.";
-	const { users } = await fetchCLLeaderboard({ ironmenOnly, items, resultLimit: 200, clName: resolvedCl });
+	const { users } = await fetchCLLeaderboard({
+		ironmenOnly: accountFilter === 'ironmen',
+		accountFilter,
+		items,
+		resultLimit: 200,
+		clName: resolvedCl
+	});
 	inputType = toTitleCase(inputType.toLowerCase());
 	return doMenuWrapper({
-		ironmanOnly: ironmenOnly,
+		ironmanOnly: isIronmenOnly(accountFilter),
 		interaction,
 		users: users.map(u => ({ id: u.id, score: u.qty })),
-		title: `${inputType} Collection Log Leaderboard`,
+		title: `${inputType} Collection Log Leaderboard${accountFilterTitleSuffix(accountFilter)}`,
 		formatter: val => `${val.toLocaleString()} (${calcWhatPercent(val, items.size).toFixed(1)}%)`
 	});
 }
@@ -196,7 +251,7 @@ async function lapsLb(interaction: MInteraction, courseName: string) {
 	});
 }
 
-async function openLb(interaction: MInteraction, name: string, ironmanOnly: boolean) {
+async function openLb(interaction: MInteraction, name: string, accountFilter: CLLeaderboardAccountFilter) {
 	if (name) name = name.trim();
 	let entityID = -1;
 	let openableName = '';
@@ -217,40 +272,45 @@ async function openLb(interaction: MInteraction, name: string, ironmanOnly: bool
 	}
 	const list = await prisma.$queryRawUnsafe<{ id: string; qty: number }[]>(
 		`SELECT user_id::text AS id, ("openable_scores"->>'${entityID}')::int as qty FROM user_stats
-			${ironmanOnly ? 'INNER JOIN users ON users.id::bigint = user_stats.user_id' : ''}
+			${accountFilter === 'all' ? '' : 'INNER JOIN users ON users.id::bigint = user_stats.user_id'}
 			WHERE ("openable_scores"->>'${entityID}')::int > 3
-			${ironmanOnly ? ' AND "minion.ironman" = true ' : ''}
+			${accountFilterAnd(accountFilter)}
 			ORDER BY qty DESC LIMIT 30;`
 	);
 	return doMenuWrapper({
-		ironmanOnly,
+		ironmanOnly: isIronmenOnly(accountFilter),
 		interaction,
 		users: list.map(u => ({ id: u.id, score: u.qty })),
-		title: `${openableName} Opening Leaderboard`
+		title: `${openableName} Opening Leaderboard${accountFilterTitleSuffix(accountFilter)}`
 	});
 }
 
-async function gpLb(interaction: MInteraction, ironmanOnly: boolean) {
+async function gpLb(interaction: MInteraction, accountFilter: CLLeaderboardAccountFilter) {
 	const users = (
 		await prisma.$queryRawUnsafe<{ id: string; GP: number }[]>(
 			`SELECT "id"::text as id, "GP"
 			 FROM users
 			 WHERE "GP" > 1000000
-			 ${ironmanOnly ? ' AND "minion.ironman" = true ' : ''}
+			 ${accountFilterAnd(accountFilter)}
 			 ORDER BY "GP" DESC
 			 LIMIT 100;`
 		)
 	).map(res => ({ id: res.id, score: Number(res.GP) }));
 	return doMenuWrapper({
-		ironmanOnly,
+		ironmanOnly: isIronmenOnly(accountFilter),
 		interaction,
 		users,
-		title: 'GP Leaderboard',
+		title: `GP Leaderboard${accountFilterTitleSuffix(accountFilter)}`,
 		formatter: val => `${val.toLocaleString()} GP`
 	});
 }
 
-async function skillsLb(interaction: MInteraction, inputSkill: string, type: 'xp' | 'level', ironmanOnly: boolean) {
+async function skillsLb(
+	interaction: MInteraction,
+	inputSkill: string,
+	type: 'xp' | 'level',
+	accountFilter: CLLeaderboardAccountFilter
+) {
 	let res: ({ id: string; totalxp: bigint } & Record<`skills.${SkillNameType}`, bigint>)[] = [];
 	let overallUsers: { id: string; totalLevel: number; totalXP: number }[] = [];
 	const skillsVals = Object.values(Skills);
@@ -265,7 +325,7 @@ async function skillsLb(interaction: MInteraction, inputSkill: string, type: 'xp
 			${skillsVals.map(s => `"skills.${s.id}"`)},
 			${skillsVals.map(s => `"skills.${s.id}"::int8`).join(' + ')} as totalxp
 		FROM users u
-		${ironmanOnly ? ' WHERE "minion.ironman" = true ' : ''}
+		${accountFilterWhere(accountFilter, 'u')}
 		ORDER BY totalxp DESC
 		LIMIT 2000;`;
 		res =
@@ -298,10 +358,10 @@ async function skillsLb(interaction: MInteraction, inputSkill: string, type: 'xp
 			extraXP: u.totalXP
 		}));
 		return doMenuWrapper({
-			ironmanOnly,
+			ironmanOnly: isIronmenOnly(accountFilter),
 			interaction,
 			users,
-			title: `Overall ${type} Leaderboard`,
+			title: `Overall ${type} Leaderboard${accountFilterTitleSuffix(accountFilter)}`,
 			render: (u, username) =>
 				type === 'xp'
 					? `**${username}:** ${u.extraXP.toLocaleString()} XP (${u.extraLevel.toLocaleString()})`
@@ -313,7 +373,7 @@ async function skillsLb(interaction: MInteraction, inputSkill: string, type: 'xp
 
 	const query = `SELECT u."skills.${skill.id}" as xp, u.id::text as id
 		FROM users u
-		${ironmanOnly ? ' WHERE "minion.ironman" = true ' : ''}
+		${accountFilterWhere(accountFilter, 'u')}
 		ORDER BY 1 DESC
 		LIMIT 2000;`;
 	const rows = await prisma.$queryRawUnsafe<{ xp: number; id: string }[]>(query);
@@ -341,15 +401,15 @@ async function skillsLb(interaction: MInteraction, inputSkill: string, type: 'xp
 		return { id: r.id, score: Number(r.xp), level: lvl };
 	});
 	return doMenuWrapper({
-		ironmanOnly,
+		ironmanOnly: isIronmenOnly(accountFilter),
 		interaction,
 		users,
-		title: `${toTitleCase(skill.id)} Leaderboard`,
+		title: `${toTitleCase(skill.id)} Leaderboard${accountFilterTitleSuffix(accountFilter)}`,
 		render: (u, username) => `**${username}:** ${u.score.toLocaleString()} XP (${u.level})`
 	});
 }
 
-async function cluesLb(interaction: MInteraction, clueTierName: string, ironmanOnly: boolean) {
+async function cluesLb(interaction: MInteraction, clueTierName: string, accountFilter: CLLeaderboardAccountFilter) {
 	const clueTier = ClueTiers.find(i => stringMatches(i.name, clueTierName));
 	if (!clueTier) return "That's not a valid clue tier.";
 	const { id } = clueTier;
@@ -359,16 +419,16 @@ async function cluesLb(interaction: MInteraction, clueTierName: string, ironmanO
 			 FROM users
 			 WHERE "collectionLogBank"->>'${id}' IS NOT NULL
 			   AND ("collectionLogBank"->>'${id}')::int > 25
-			   ${ironmanOnly ? 'AND "minion.ironman" = true ' : ''}
+			   ${accountFilterAnd(accountFilter)}
 			 ORDER BY ("collectionLogBank"->>'${id}')::int DESC
 			 LIMIT 50;`
 		)
 	).map(res => ({ id: res.id, score: Number(res.score) }));
 	return doMenuWrapper({
-		ironmanOnly,
+		ironmanOnly: isIronmenOnly(accountFilter),
 		interaction,
 		users,
-		title: `${clueTier.name} Clue Leaderboard`,
+		title: `${clueTier.name} Clue Leaderboard${accountFilterTitleSuffix(accountFilter)}`,
 		formatter: v => `${v.toLocaleString()} Completed`
 	});
 }
@@ -553,7 +613,11 @@ async function masteryLb(interaction: MInteraction) {
 	});
 }
 
-async function giantsFoundryLb(interaction: MInteraction, ironmanOnly: boolean, sortByTotal: boolean) {
+async function giantsFoundryLb(
+	interaction: MInteraction,
+	accountFilter: CLLeaderboardAccountFilter,
+	sortByTotal: boolean
+) {
 	const stats = await prisma.userStats.findMany({
 		select: { user_id: true, gf_weapons_made: true }
 	});
@@ -576,10 +640,13 @@ async function giantsFoundryLb(interaction: MInteraction, ironmanOnly: boolean, 
 
 	if (rows.length === 0) return 'There are no users on this leaderboard.';
 
-	if (ironmanOnly) {
-		const irons = await prisma.user.findMany({ where: { minion_ironman: true }, select: { id: true } });
-		const ironSet = new Set(irons.map(i => i.id.toString()));
-		rows = rows.filter(r => ironSet.has(r.id));
+	if (accountFilter !== 'all') {
+		const users = await prisma.user.findMany({
+			where: { minion_ironman: accountFilter === 'ironmen' },
+			select: { id: true }
+		});
+		const userSet = new Set(users.map(i => i.id.toString()));
+		rows = rows.filter(r => userSet.has(r.id));
 	}
 
 	rows.sort((a, b) => (sortByTotal ? b.total - a.total : b.uniques - a.uniques));
@@ -587,12 +654,12 @@ async function giantsFoundryLb(interaction: MInteraction, ironmanOnly: boolean, 
 	const top = rows.slice(0, 10);
 
 	return doMenuWrapper({
-		ironmanOnly,
+		ironmanOnly: isIronmenOnly(accountFilter),
 		interaction,
 		users: top.map(t => ({ id: t.id, score: sortByTotal ? t.total : t.uniques })),
 		title: sortByTotal
-			? `Giant’s Foundry – Total Weapons${ironmanOnly ? ' (Ironmen Only)' : ''}`
-			: `Giant’s Foundry – Unique Weapons${ironmanOnly ? ' (Ironmen Only)' : ''}`,
+			? `Giant’s Foundry – Total Weapons${accountFilterTitleSuffix(accountFilter)}`
+			: `Giant’s Foundry – Unique Weapons${accountFilterTitleSuffix(accountFilter)}`,
 		render: (u, name) => {
 			const row = top.find(r => r.id === u.id);
 
@@ -605,11 +672,12 @@ async function giantsFoundryLb(interaction: MInteraction, ironmanOnly: boolean, 
 	});
 }
 
-const ironmanOnlyOption = defineOption({
-	type: 'Boolean',
-	name: 'ironmen_only',
-	description: 'Only include ironmen.',
-	required: false
+const accountTypeOption = defineOption({
+	type: 'String',
+	name: 'account_type',
+	description: 'Filter by account type.',
+	required: false,
+	choices: choicesOf(accountFilterNames)
 });
 
 export const leaderboardCommand = defineCommand({
@@ -632,14 +700,14 @@ export const leaderboardCommand = defineCommand({
 							.map(i => ({ name: i.name, value: i.name }));
 					}
 				},
-				ironmanOnlyOption
+				accountTypeOption
 			]
 		},
 		{
 			type: 'Subcommand',
 			name: 'farming_contracts',
 			description: 'Check the farming contracts leaderboard.',
-			options: [ironmanOnlyOption]
+			options: [accountTypeOption]
 		},
 		{
 			type: 'Subcommand',
@@ -661,7 +729,7 @@ export const leaderboardCommand = defineCommand({
 						{ name: 'Unique Items Sacrificed', value: 'unique' }
 					]
 				},
-				ironmanOnlyOption
+				accountTypeOption
 			]
 		},
 		{
@@ -728,7 +796,7 @@ export const leaderboardCommand = defineCommand({
 			type: 'Subcommand',
 			name: 'gp',
 			description: 'Check the GP leaderboard.',
-			options: [ironmanOnlyOption]
+			options: [accountTypeOption]
 		},
 		{
 			type: 'Subcommand',
@@ -751,7 +819,7 @@ export const leaderboardCommand = defineCommand({
 					description: 'Show XP instead of levels.',
 					required: false
 				},
-				ironmanOnlyOption
+				accountTypeOption
 			]
 		},
 		{
@@ -776,7 +844,7 @@ export const leaderboardCommand = defineCommand({
 							.map(i => ({ name: i.name, value: i.name }));
 					}
 				},
-				ironmanOnlyOption
+				accountTypeOption
 			]
 		},
 		{
@@ -799,7 +867,7 @@ export const leaderboardCommand = defineCommand({
 						].filter(o => (!value ? true : o.name.toLowerCase().includes(value.toLowerCase())));
 					}
 				},
-				ironmanOnlyOption
+				accountTypeOption
 			]
 		},
 		{
@@ -814,7 +882,7 @@ export const leaderboardCommand = defineCommand({
 					required: true,
 					choices: ClueTiers.map(i => ({ name: i.name, value: i.name }))
 				},
-				ironmanOnlyOption
+				accountTypeOption
 			]
 		},
 		{
@@ -868,7 +936,7 @@ export const leaderboardCommand = defineCommand({
 					description: 'Sort by total weapons made instead.',
 					required: false
 				},
-				ironmanOnlyOption
+				accountTypeOption
 			]
 		}
 	],
@@ -876,11 +944,11 @@ export const leaderboardCommand = defineCommand({
 		await interaction.defer();
 
 		if (options.kc) {
-			return kcLb(interaction, options.kc.monster, Boolean(options.kc.ironmen_only));
+			return kcLb(interaction, options.kc.monster, accountFilterFromOptions(options.kc));
 		}
 
 		if (options.farming_contracts) {
-			return farmingContractLb(interaction, Boolean(options.farming_contracts.ironmen_only));
+			return farmingContractLb(interaction, accountFilterFromOptions(options.farming_contracts));
 		}
 
 		if (options.inferno) {
@@ -888,7 +956,7 @@ export const leaderboardCommand = defineCommand({
 		}
 
 		if (options.sacrifice) {
-			return sacrificeLb(interaction, options.sacrifice.type, Boolean(options.sacrifice.ironmen_only));
+			return sacrificeLb(interaction, options.sacrifice.type, accountFilterFromOptions(options.sacrifice));
 		}
 
 		if (options.minigames) {
@@ -904,7 +972,7 @@ export const leaderboardCommand = defineCommand({
 		}
 
 		if (options.gp) {
-			return gpLb(interaction, Boolean(options.gp.ironmen_only));
+			return gpLb(interaction, accountFilterFromOptions(options.gp));
 		}
 
 		if (options.skills) {
@@ -912,20 +980,20 @@ export const leaderboardCommand = defineCommand({
 				interaction,
 				options.skills.skill,
 				options.skills.xp ? 'xp' : 'level',
-				Boolean(options.skills.ironmen_only)
+				accountFilterFromOptions(options.skills)
 			);
 		}
 
 		if (options.opens) {
-			return openLb(interaction, options.opens.openable, Boolean(options.opens.ironmen_only));
+			return openLb(interaction, options.opens.openable, accountFilterFromOptions(options.opens));
 		}
 
 		if (options.cl) {
-			return clLb(interaction, options.cl.cl, Boolean(options.cl.ironmen_only));
+			return clLb(interaction, options.cl.cl, accountFilterFromOptions(options.cl));
 		}
 
 		if (options.clues) {
-			return cluesLb(interaction, options.clues.clue, Boolean(options.clues.ironmen_only));
+			return cluesLb(interaction, options.clues.clue, accountFilterFromOptions(options.clues));
 		}
 
 		if (options.movers) {
@@ -947,7 +1015,7 @@ export const leaderboardCommand = defineCommand({
 		if (options.giants_foundry) {
 			return giantsFoundryLb(
 				interaction,
-				Boolean(options.giants_foundry.ironmen_only),
+				accountFilterFromOptions(options.giants_foundry),
 				Boolean(options.giants_foundry.total_weapons)
 			);
 		}
