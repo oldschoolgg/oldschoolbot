@@ -27,7 +27,7 @@ export async function startServer(port: number) {
 	app.use('*', async (c, next) => {
 		c.set('prisma', roboChimpClient);
 		c.set('client', globalClient);
-		console.log(`${c.req.method} ${c.req.url}`);
+		console.log(`Webhooks: ${c.req.method} ${c.req.path} ${c.req.url}`);
 		return next();
 	});
 

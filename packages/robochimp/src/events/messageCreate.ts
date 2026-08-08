@@ -24,12 +24,12 @@ async function tagHandler(msg: IMessage): Promise<void> {
 }
 
 async function userInfo(msg: IMessage) {
-	const regex = /^\.\d+$/;
+	const regex = /^\.(?:<@!?)?\d+>?\s*$/;
 	if (!regex.test(msg.content)) return;
 	const user = await globalClient.fetchRUser(msg.author_id);
 	if (!user) return;
 
-	const possibleID = msg.content.replace('.', '');
+	const possibleID = msg.content.replace(/[^0-9]/g, '');
 
 	if (possibleID !== user.id.toString() && !user.isSupport()) return;
 

@@ -5,11 +5,28 @@ import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
 import type { GearPreset } from '@/prisma/main.js';
 import { choicesOf, defineOption } from '@/discord/index.js';
+import { BitFieldData } from '@/lib/constants.js';
 import { baseFilters, filterableTypes } from '@/lib/data/filterables.js';
 import { type GlobalPreset, globalPresets } from '@/lib/gear/gearPresets.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { SkillsArray } from '@/lib/skilling/types.js';
 import { Gear } from '@/lib/structures/Gear.js';
+
+export const adminBitfieldOption = defineOption({
+	type: 'String',
+	name: 'bitfield',
+	description: 'A field of wonderous bits',
+	required: false,
+	autocomplete: async ({ value, user }: StringAutoComplete) => {
+		return Object.entries(BitFieldData)
+			.filter(bf => {
+				if (bf[1].protected && !user.isAdmin()) return false;
+				if (!value) return true;
+				return stringSearch(value, bf[1].name);
+			})
+			.map(i => ({ name: i[1].name, value: i[0] }));
+	}
+});
 
 export const filterOption = {
 	type: 'String',

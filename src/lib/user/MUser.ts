@@ -7,7 +7,7 @@ import {
 	ZBlowpipeData,
 	ZFarmingContract
 } from '@oldschoolgg/schemas';
-import { calcWhatPercent, isObject, type PerkTier, UserError, uniqueArr } from '@oldschoolgg/toolkit';
+import { calcWhatPercent, isObject, PerkTier, UserError, uniqueArr } from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { Mutex } from 'async-mutex';
 import { cryptoRng } from 'node-rng/crypto';
@@ -43,7 +43,8 @@ import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { RemoveFoodFromUserParams } from '@/lib/minions/functions/removeFoodFromUser.js';
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import type { AddXpParams, ClueBank, KillableMonster } from '@/lib/minions/types.js';
-import { getPerkTierCached, getUsersPerkTier } from '@/lib/perkTiers.js';
+import { getMUserPerkDetails, getMUserPerkDisplay, getPerkTierCached, getUsersPerkTier } from '@/lib/perkTiers.js';
+import type { RobochimpUser } from '@/lib/roboChimp.js';
 import { type MinigameName, type MinigameScore, Minigames } from '@/lib/settings/minigames.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { DetailedFarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
@@ -162,14 +163,22 @@ export class MUserClass extends BaseUser {
 	}
 
 	get perkTier() {
-		return getPerkTierCached(this.id) ?? 0;
+		return getPerkTierCached(this.id) ?? PerkTier.Zero;
 	}
 	get perkTierIsCached(): boolean {
 		return getPerkTierCached(this.id) !== null;
 	}
 
-	async fetchPerkTier({ forceNoCache }: { forceNoCache?: boolean } = {}): Promise<0 | PerkTier> {
+	async fetchPerkTier({ forceNoCache }: { forceNoCache?: boolean } = {}): Promise<PerkTier> {
 		return await getUsersPerkTier({ user: this, forceNoCache });
+	}
+
+	getPerkTierDetails(roboUser: RobochimpUser, patreonBits?: number[]) {
+		return getMUserPerkDetails(this, roboUser, patreonBits);
+	}
+
+	getPerkTierDisplay(roboUser: RobochimpUser, patreonBits?: number[]) {
+		return getMUserPerkDisplay(this, roboUser, patreonBits);
 	}
 
 	hasMonsterRequirements(monster: KillableMonster) {

@@ -38,6 +38,7 @@ model User {
   bits       Int[]
   github_id  Int?
   patreon_id String?
+  cyr_patreon_id String?
 
   migrated_user_id BigInt?
 
