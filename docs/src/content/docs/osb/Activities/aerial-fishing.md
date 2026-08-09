@@ -2,19 +2,31 @@
 title: "Aerial Fishing"
 ---
 
-Aerial Fishing is a [[fishing]] and [[hunter]] activity requiring [[hunter: 35]] and [[fishing: 43]]. You can purchase buyables via [[/buy]], and can sell any [[Golden tench]] for 100 [[Molch pearl]] via [[/sell items\:Golden tench]].
+Aerial Fishing is a combined [[fishing]] + [[hunter]] training method.
 
-You can start Aerial Fishing with [[/activities aerial_fishing]].
+Requirements:
+- [[hunter:35]]
+- [[fishing:43]]
 
-## Aerial Fishing Buyables
+Start with:
+[[/activities aerial_fishing]]
 
-| **Item**                  | **Pearl Cost**           |
-| ------------------------- | :----------------------: |
-| [[Angler hat]]            |         100              |
-| [[Angler top]]            |         100              |
-| [[Angler waders]]         |         100              |
-| [[Angler boots]]          |         100              |
-| [[Pearl Fishing rod]]     |         100              | 
-| [[Pearl fly Fishing rod]] |         120              |
-| [[Pearl barbarian rod]]   |         150              |
-| [[Fish sack]]             |         1000             |
+You can buy rewards with [[/buy]] and sell [[Golden tench]] for 100 [[Molch pearl]] each using [[/sell items\:Golden tench]].
+
+## Buyables
+
+| Item | Molch Pearl Cost |
+| --- | --- |
+| [[Angler hat]] | 100 |
+| [[Angler top]] | 100 |
+| [[Angler waders]] | 100 |
+| [[Angler boots]] | 100 |
+| [[Pearl fishing rod]] | 100 |
+| [[Pearl fly fishing rod]] | 120 |
+| [[Pearl barbarian rod]] | 150 |
+| [[Fish sack]] | 1000 |
+
+Notes:
+
+- Angler outfit pieces from this shop provide the normal Fishing XP boost when equipped in skilling setup.
+- Golden tench and Heron can both be obtained here.

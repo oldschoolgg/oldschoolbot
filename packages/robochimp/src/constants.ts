@@ -1,4 +1,5 @@
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import * as dotenv from 'dotenv';
 import * as z from 'zod';
 
@@ -7,7 +8,8 @@ const REAL_SUPPORT_SERVER_ID = '342983479501389826';
 export const TEST_SERVER_ID = '940758552425955348';
 export const MASS_HOSTER_ROLE_ID = '734055552933429280';
 
-dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.test' : '.env') });
+const robochimpRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+dotenv.config({ path: path.resolve(robochimpRoot, isProduction ? '.env' : '.env.test') });
 
 const globalConfigSchema = z.object({
 	httpPort: z.coerce.number().int(),
