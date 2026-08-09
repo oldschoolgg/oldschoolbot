@@ -200,7 +200,7 @@ export class BaseUser {
 	}
 
 	get usernameOrMention() {
-		return this.username;
+		return this.username === 'Unknown' ?  this.mention: this.username;
 	}
 
 	get badgedUsername() {

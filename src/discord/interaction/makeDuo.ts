@@ -16,6 +16,7 @@ export async function makeDuo(options: MakeDuoOptions): Promise<MUser[] | null> 
 
 	const waitingButtons = [
 		new ButtonBuilder().setCustomId(InteractionID.Party.Join).setLabel('Join').setStyle(ButtonStyle.Primary),
+		new ButtonBuilder().setCustomId(InteractionID.Party.Start).setLabel('Start Solo').setStyle(ButtonStyle.Success),
 		new ButtonBuilder().setCustomId(InteractionID.Party.Cancel).setLabel('Cancel').setStyle(ButtonStyle.Danger)
 	];
 
@@ -103,6 +104,7 @@ export async function makeDuo(options: MakeDuoOptions): Promise<MUser[] | null> 
 			const id = bi.customId;
 			const allowedIDs = [
 				InteractionID.Party.Join,
+				InteractionID.Party.Start,
 				InteractionID.Party.Cancel,
 				InteractionID.Party.HostApprove,
 				InteractionID.Party.HostDecline
@@ -120,6 +122,20 @@ export async function makeDuo(options: MakeDuoOptions): Promise<MUser[] | null> 
 				}
 				await bi.silentButtonAck();
 				await finish(null, 'The duo invite was cancelled.');
+				return;
+			}
+
+			if (id === InteractionID.Party.Start) {
+				if (bi.userId !== options.leader.id) {
+					await bi.reply({ content: 'Only the host can start solo.', ephemeral: true });
+					return;
+				}
+				if (pendingUser) {
+					await bi.reply({ content: 'Respond to the pending duo partner first.', ephemeral: true });
+					return;
+				}
+				await bi.silentButtonAck();
+				await finish([options.leader], 'Starting solo.');
 				return;
 			}
 
@@ -141,8 +157,9 @@ export async function makeDuo(options: MakeDuoOptions): Promise<MUser[] | null> 
 					await interaction.reply(waitingContent());
 					await globalClient
 						.sendMessage(bi.channelId, {
-							content: `${declinedUser.usernameOrMention}, the host declined your duo request.`,
-							allowedMentions: { users: [declinedUser.id] }
+							content: `${declinedUser.mention}, the host declined your duo request.`,
+							allowedMentions: { users: [declinedUser.id] },
+							ephemeral: true
 						})
 						.catch(() => null);
 					return;

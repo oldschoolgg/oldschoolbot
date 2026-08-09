@@ -9,7 +9,7 @@ export const ZRoboChimpUser = z.object({
 	bits: z.array(z.number().int()),
 	github_id: z.number().int().nullable(),
 	patreon_id: z.string().nullable(),
-	cyr_patreon_id: z.string().nullable().optional(),
+	cyr_patreon_id: z.string().nullable(),
 	migrated_user_id: ZNullableBigInt,
 	leagues_completed_tasks_ids: z.array(z.number().int()),
 	leagues_points_balance_osb: z.number().int(),
