@@ -1,0 +1,182 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+import { BankBackgroundPreviewPicker } from './BankBackgroundPreviewPicker';
+
+type ParsedBackground = {
+	id: number;
+	name: string;
+	available: boolean;
+	imageFile: string | null;
+	purpleImageFile: string | null;
+	alternateImageFiles: string[];
+};
+
+const docsComponentDir = path.dirname(fileURLToPath(import.meta.url));
+const sourceFile = path.resolve(docsComponentDir, '../../../src/lib/minions/data/bankBackgrounds.ts');
+const imagesDir = path.resolve(docsComponentDir, '../../../src/lib/resources/images/bank_backgrounds');
+const imageBaseURL =
+	'https://raw.githubusercontent.com/oldschoolgg/oldschoolbot/master/src/lib/resources/images/bank_backgrounds';
+
+function splitObjectLiterals(content: string): string[] {
+	const objects: string[] = [];
+	let depth = 0;
+	let current = '';
+	let inObject = false;
+
+	for (const ch of content) {
+		if (ch === '{') {
+			depth++;
+			inObject = true;
+		}
+		if (inObject) current += ch;
+		if (ch === '}') {
+			depth--;
+			if (depth === 0 && inObject) {
+				objects.push(current);
+				current = '';
+				inObject = false;
+			}
+		}
+	}
+
+	return objects;
+}
+
+function findImageFile(baseName: string): string | null {
+	const exts = ['png', 'jpg', 'jpeg', 'webp'];
+	for (const ext of exts) {
+		const filename = `${baseName}.${ext}`;
+		if (fs.existsSync(path.join(imagesDir, filename))) return filename;
+	}
+	return null;
+}
+
+const source = fs.readFileSync(sourceFile, 'utf8');
+const startToken = 'const backgroundImages: BankBackground[] = [';
+const startIndex = source.indexOf(startToken);
+const endIndex = source.indexOf('];', startIndex);
+const arrayContent = source.slice(startIndex + startToken.length, endIndex);
+const objectBlocks = splitObjectLiterals(arrayContent);
+
+const backgrounds: ParsedBackground[] = objectBlocks
+	.map(obj => {
+		const idMatch = obj.match(/id:\s*(\d+)/);
+		const nameMatch = obj.match(/name:\s*'([^']+)'/);
+		const availableMatch = obj.match(/available:\s*(true|false)/);
+		if (!idMatch || !nameMatch || !availableMatch) return null;
+
+		const id = Number(idMatch[1]);
+		const name = nameMatch[1];
+		const available = availableMatch[1] === 'true';
+		const imageFile = findImageFile(String(id));
+		const purpleImageFile = obj.includes('hasPurple: true') ? findImageFile(`${id}_purple`) : null;
+		const alternateIDs = [...obj.matchAll(/alternateImages:\s*\[([\s\S]*?)\]/g)]
+			.flatMap(match => [...match[1].matchAll(/id:\s*(\d+)/g)].map(idMatch => Number(idMatch[1])));
+		const alternateImageFiles = alternateIDs
+			.map(altID => findImageFile(`${id}_${altID}`))
+			.filter((file): file is string => Boolean(file));
+
+		return {
+			id,
+			name,
+			available,
+			imageFile,
+			purpleImageFile,
+			alternateImageFiles
+		};
+	})
+	.filter((bg): bg is ParsedBackground => Boolean(bg))
+	.sort((a, b) => a.id - b.id);
+
+const availableBackgrounds = backgrounds.filter(bg => bg.available);
+---
+
+<BankBackgroundPreviewPicker client:load backgrounds={availableBackgrounds} imageBaseURL={imageBaseURL} />
+
+<style is:global>
+	.bank-bg-picker {
+		margin-top: 0.75rem;
+		padding: 1rem;
+		border: 1px solid var(--sl-color-hairline);
+		border-radius: 12px;
+		background: color-mix(in srgb, var(--sl-color-bg) 85%, var(--sl-color-gray-6));
+	}
+
+	.bank-bg-controls {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 0.75rem;
+		align-items: end;
+	}
+
+	.bank-bg-field {
+		display: flex;
+		flex-direction: column;
+		gap: 0.35rem;
+	}
+
+	#bank-bg-select {
+		width: 100%;
+		min-height: 2.5rem;
+	}
+
+	.bank-bg-picker-label {
+		font-size: 0.82rem;
+		letter-spacing: 0.02em;
+		text-transform: uppercase;
+		font-weight: 600;
+		color: var(--sl-color-text-2);
+	}
+
+	.bank-bg-preview {
+		margin-top: 0.75rem;
+		padding: 0.9rem;
+		border: 1px solid var(--sl-color-hairline);
+		border-radius: 10px;
+		background: color-mix(in srgb, var(--sl-color-bg) 90%, var(--sl-color-gray-6));
+	}
+
+	.bank-bg-preview-title {
+		margin-bottom: 0.35rem;
+	}
+
+	.bank-bg-preview img {
+		margin-top: 0.45rem;
+		max-width: 100%;
+		max-height: 420px;
+		display: block;
+		border-radius: 6px;
+		border: 1px solid var(--sl-color-hairline);
+		object-fit: contain;
+	}
+
+	.bank-bg-label {
+		margin-top: 0.8rem;
+		margin-bottom: 0;
+		font-size: 0.9rem;
+		font-weight: 600;
+		color: var(--sl-color-text-2);
+	}
+
+	.bank-bg-alternates {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+		gap: 0.6rem;
+	}
+
+	.bank-bg-missing {
+		margin-top: 0.5rem;
+		font-size: 0.9rem;
+		color: var(--sl-color-orange-high);
+	}
+
+	@media (min-width: 52rem) {
+		.bank-bg-controls {
+			grid-template-columns: minmax(260px, 360px);
+			gap: 1rem;
+		}
+	}
+</style>
