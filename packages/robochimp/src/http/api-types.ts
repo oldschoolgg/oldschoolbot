@@ -59,6 +59,7 @@ export type FullMinionData = {
 		blood_essence: number;
 		trident: number;
 		venator_bow: number;
+		dodgy_necklace: number;
 		scythe_of_vitur: number;
 	};
 

@@ -20,6 +20,7 @@
 		"slope": 0.76776,
 		"intercept": 18.13176,
 		"custom_tick_rate": 2.5,
+		"blackjacking": true,
 		"pet_chance": 257211
 	},
 	{
@@ -261,6 +262,7 @@
 		"slope": 0.65485,
 		"intercept": 29.30985,
 		"custom_tick_rate": 2.5,
+		"blackjacking": true,
 		"pet_chance": 257211
 	},
 	{
