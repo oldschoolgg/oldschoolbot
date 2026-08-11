@@ -36,12 +36,19 @@ export const CombatMethodOptionsSchema = z.object({
 	isInWilderness: z.boolean().optional()
 });
 
+export const FoodResultSchema = z.object({
+	message: z.string(),
+	itemCost: z.instanceof(Bank)
+});
+
 const schema = z.object({
 	timeToFinish: z.number().int().positive(),
 	messages: z.array(z.string()),
+	pkMessages: z.array(z.string()),
 	currentTaskOptions: CombatMethodOptionsSchema,
 	finalQuantity: z.number().int().positive().min(1),
 	confirmations: z.array(z.string()),
+	food: FoodResultSchema.optional(),
 	updateBank: z.instanceof(UpdateBank)
 });
 
@@ -155,9 +162,11 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 	const result = schema.parse({
 		timeToFinish,
 		messages,
+		pkMessages: [],
 		currentTaskOptions,
 		finalQuantity: consumablesCost.finalQuantity,
 		confirmations,
+		food: undefined,
 		updateBank
 	});
 
