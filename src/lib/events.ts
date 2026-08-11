@@ -1,4 +1,4 @@
-import { bold, dateFm, EmbedBuilder } from '@oldschoolgg/discord';
+import { bold, dateFm, EmbedBuilder, SpecialResponse } from '@oldschoolgg/discord';
 import type { IMessage } from '@oldschoolgg/schemas';
 import { Emoji, Events, getNextUTCReset, isFunction, Time } from '@oldschoolgg/toolkit';
 import { MathRNG, roll } from 'node-rng';
@@ -12,8 +12,10 @@ import pets from '@/lib/data/pets.js';
 import { roboChimpSyncData } from '@/lib/roboChimp.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { createMentionInteraction } from '@/lib/util/mentionCommandInteraction.js';
 import { minionStatsEmbed } from '@/lib/util/minionStatsEmbed.js';
 import { refreshUserCache } from '@/lib/util/refreshCache.js';
+import { fetchLastRepeatableTrip, repeatTrip } from '@/lib/util/repeatStoredTrip.js';
 import { minionStatusCommand } from '@/mahoji/lib/abstracted_commands/minionStatusCommand.js';
 
 const rareRolesSrc: [string, number, string][] = [
@@ -137,6 +139,7 @@ interface MentionCommandOptions {
 	user: MUser;
 	components: BaseSendableMessage['components'];
 	content: string;
+	message: IMessage;
 	rng: RNGProvider;
 	guildId?: string | null;
 }
@@ -144,7 +147,7 @@ interface MentionCommand {
 	name: command_name_enum;
 	aliases: string[];
 	description: string;
-	run: (options: MentionCommandOptions) => Promise<SendableMessage>;
+	run: (options: MentionCommandOptions) => CommandResponse;
 }
 
 const mentionCommands: MentionCommand[] = [
@@ -212,14 +215,14 @@ const mentionCommands: MentionCommand[] = [
 
 					const price = toKMB(Math.floor(item.price ?? 0));
 
-					let str = `${index + 1}. ${item.name} ID[${item.id}] Price[${price}] ${
+					let line = `${index + 1}. ${item.name} ID[${item.id}] Price[${price}] ${
 						item.tradeable ? 'Tradeable' : 'Untradeable'
 					} ${icons.join(' ')}`;
 					if (gettedItem.id === item.id) {
-						str = bold(str);
+						line = bold(line);
 					}
 
-					return str;
+					return line;
 				})
 				.join('\n')}`;
 
@@ -286,6 +289,19 @@ const mentionCommands: MentionCommand[] = [
 				components
 			};
 		}
+	},
+	{
+		name: 'm',
+		aliases: ['r', 'repeat'],
+		description: 'Repeats your last trip.',
+		run: async ({ user, components, message }: MentionCommandOptions) => {
+			const activity = await fetchLastRepeatableTrip(user);
+			if (!activity) {
+				return { content: "Couldn't find any trip to repeat.", components };
+			}
+			const interaction = createMentionInteraction({ user, message });
+			return repeatTrip(user, interaction, activity);
+		}
 	}
 ];
 
@@ -337,9 +353,17 @@ export async function onMessage(msg: IMessage) {
 				user,
 				components: result.components,
 				content: msgContentWithoutCommand,
+				message: msg,
 				rng: cryptoRng,
 				guildId: msg.guild_id
 			});
+			if (
+				response === SpecialResponse.PaginatedMessageResponse ||
+				response === SpecialResponse.SilentErrorResponse ||
+				response === SpecialResponse.RespondedManually
+			) {
+				return;
+			}
 			await globalClient.replyToMessage(msg, response);
 		} catch (err) {
 			let errMsg = 'There was an error running that command.';
