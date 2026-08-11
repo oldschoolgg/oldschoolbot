@@ -748,7 +748,13 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 	}
 
 	public hasDiary(key: HasDiaryDiaryKey): boolean {
-		return this.user.completed_achievement_diaries.includes(key);
+		const [region, tier] = key.split('.') as [string, 'easy' | 'medium' | 'hard' | 'elite'];
+		const tiers = ['easy', 'medium', 'hard', 'elite'] as const;
+		const tierIndex = tiers.indexOf(tier);
+
+		return tiers
+			.slice(0, tierIndex + 1)
+			.every(requiredTier => this.user.completed_achievement_diaries.includes(`${region}.${requiredTier}`));
 	}
 
 	hasGracefulEquipped(): boolean {
@@ -886,6 +892,8 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 				const { hasDiary } = userhasDiaryTierSync(this, diary[tier], { stats, minigameScores });
 				if (hasDiary) {
 					completedKeys.push(key);
+				} else {
+					break;
 				}
 			}
 		}
