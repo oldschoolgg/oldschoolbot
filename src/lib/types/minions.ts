@@ -9,7 +9,7 @@ import type { UnderwaterAgilityThievingTrainingSkill } from '@/lib/skilling/skil
 import type { CookingMethodEnum } from '@/lib/skilling/skills/cooking/cooking.js';
 import type { IPatchData } from '@/lib/skilling/skills/farming/utils/types.js';
 import type { SharkLureQuantity } from '@/lib/skilling/skills/fishing/fishingUtil.js';
-import type { TwitcherGloves } from '@/lib/skilling/skills/woodcutting/woodcutting.js';
+import type { ForestryType, TwitcherGloves } from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import type { Peak } from '@/lib/util/peaks.js';
 
 export interface ActivityTaskOptions {
@@ -224,7 +224,8 @@ export interface WoodcuttingActivityTaskOptions extends ActivityTaskOptions {
 	fakeDurationMax: number;
 	fakeDurationMin: number;
 	powerchopping?: boolean;
-	forestry?: boolean;
+	forestryBlocked: boolean;
+	forestry?: ForestryType;
 	twitchers?: TwitcherGloves;
 	logID: number;
 	quantity: number;
