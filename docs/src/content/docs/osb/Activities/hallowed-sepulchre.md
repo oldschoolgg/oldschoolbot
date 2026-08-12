@@ -14,8 +14,9 @@ To start the Sepulchre, use [[/minigames sepulchre start]].
   - Floor 1 – [[agility:52]]
   - Floor 2 – [[agility:62]]
   - Floor 3 – [[agility:72]]
-  - Floor 4 – [[agility:82]]
-  - Floor 5 – [[agility:92]]
+  - Floor 4 – [[agility:77]]
+  - Floor 5 – [[agility:87]]
+- Floor 5's Grand Coffin requires [[thieving:84]] or [[agility:92]] to open.
 
 ## Boosts
 
