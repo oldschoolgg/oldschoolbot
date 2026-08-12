@@ -1,5 +1,7 @@
 import type { Bank } from 'oldschooljs';
 
+import type { CropUpgradeType } from '@/prisma/main/enums.js';
+import { mentionCommand } from '@/discord/utils.js';
 import type { AutoFarmSummary } from '@/lib/types/minions.js';
 
 export const farmingBoostMessages = {
@@ -25,6 +27,17 @@ export function formatMissingCropProtectionPayment(): string {
 
 export function formatPatchTreatment(compostCost: Bank): string {
 	return `You are treating your patches with ${compostCost}.`;
+}
+
+export function formatMissingFavouritedCompost(
+	compostTier: CropUpgradeType,
+	compostCost: Bank,
+	ownedQuantity: number,
+	userMention: string
+): string {
+	const compostName = compostCost.items()[0]?.[0].name ?? compostTier;
+	const configToggleCommand = mentionCommand('config', 'user', 'toggle') || '/config user toggle';
+	return `${userMention}, your minion could not farm because your default compost is ${compostName}, but you do not have enough of it. You need ${compostCost} and currently have ${ownedQuantity.toLocaleString()}. Obtain more ${compostName}, or disable the Compost Warning toggle with ${configToggleCommand} if you want to continue without it.`;
 }
 
 const compostItemNames = new Set(['Compost', 'Supercompost', 'Ultracompost']);
