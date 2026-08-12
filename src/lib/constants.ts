@@ -684,7 +684,8 @@ export const DEPRECATED_ACTIVITY_TYPES: activity_type_enum[] = [
 	activity_type_enum.HalloweenMiniMinigame,
 	activity_type_enum.Mortimer,
 	activity_type_enum.BirthdayCollectIngredients,
-	activity_type_enum.SnoozeSpellActive
+	activity_type_enum.SnoozeSpellActive,
+	activity_type_enum.BeachCombing
 ];
 
 export const CONSTANTS = {
