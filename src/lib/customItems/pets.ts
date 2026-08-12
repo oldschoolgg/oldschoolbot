@@ -605,3 +605,57 @@ setCustomItem(
 	},
 	1_000_000
 );
+
+setCustomItem(
+	75_018,
+	'Orylin',
+	'Herbi',
+	{
+		tradeable: false,
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	75_019,
+	'Orrodin',
+	'Coal',
+	{
+		tradeable: false,
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	75_062,
+	'Sedryn',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	75_063,
+	'Bamyr',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	1_000_000
+);

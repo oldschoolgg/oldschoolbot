@@ -35,6 +35,7 @@ const miscHpMap: Record<number, number> = {
 };
 
 export function addMonsterXPRaw(params: {
+	user: MUser;
 	rng: RNGProvider;
 	monsterID: number;
 	quantity: number;
@@ -57,7 +58,7 @@ export function addMonsterXPRaw(params: {
 		attackStyles: params.attackStyles
 	});
 	let hp = miscHpMap[params.monsterID] ?? 1;
-	let xpMultiplier = 1;
+	let xpMultiplier: number;
 	const cannonQty = params.cannonMulti
 		? params.rng.randomVariation(Math.floor((xpPercentToCannonM / 100) * params.quantity), xpCannonVaryPercent)
 		: params.usingCannon
@@ -86,8 +87,13 @@ export function addMonsterXPRaw(params: {
 	} else if (maybeOSJSMonster?.data?.hitpoints) {
 		hp = maybeOSJSMonster.data.hitpoints;
 	}
-	if (maybeMonster?.combatXpMultiplier) {
-		xpMultiplier = maybeMonster.combatXpMultiplier;
+	if (maybeMonster?.combatXpMultiplier !== undefined) {
+		xpMultiplier =
+			typeof maybeMonster.combatXpMultiplier === 'function'
+				? maybeMonster.combatXpMultiplier(params.user, attackStyles)
+				: maybeMonster.combatXpMultiplier;
+	} else {
+		xpMultiplier = 1;
 	}
 
 	// Calculate superior XP:
