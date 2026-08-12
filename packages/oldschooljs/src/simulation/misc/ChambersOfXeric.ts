@@ -89,11 +89,11 @@ function createCoXUniqueTable(scrollWeight: number): LootTable {
 
 		.add('Twisted buckler', 1, 4)
 		.add('Dragon hunter crossbow', 1, 4)
-
-		.add("Dinh's bulwark", 1, 3)
 		.add('Ancestral hat', 1, 4)
 		.add('Ancestral robe top', 1, 4)
 		.add('Ancestral robe bottom', 1, 4)
+
+		.add("Dinh's bulwark", 1, 3)
 		.add('Dragon claws', 1, 3)
 
 		.add('Elder maul', 1, 2)
