@@ -15,6 +15,7 @@ import Magic from './magic/index.js';
 import Mining from './mining.js';
 import Prayer from './prayer.js';
 import Runecraft from './runecraft.js';
+import Sailing from './sailing/index.js';
 import Smithing from './smithing/index.js';
 import { Thieving } from './thieving/index.js';
 import Woodcutting from './woodcutting/woodcutting.js';
@@ -24,6 +25,7 @@ export const Skills: Record<string, Skill> = {
 	Agility,
 	Cooking,
 	Fishing,
+	Sailing,
 	Mining,
 	Smithing,
 	Woodcutting,

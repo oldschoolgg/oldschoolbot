@@ -26,12 +26,6 @@ export async function minionStatsEmbed({
 	const xp = sumArr(Object.values(user.skillsAsXP) as number[]);
 	const { totalLevel } = user;
 	const skillCell = (skill: string) => {
-		if (skill === 'overall') {
-			return `${skillEmoji[skill as keyof typeof skillEmoji] as keyof SkillsScore} ${totalLevel}\n${
-				skillEmoji.combat
-			} ${user.combatLevel}`;
-		}
-
 		const skillXP = user.skillsAsXP[skill as keyof Skills] ?? 1;
 		return `${skillEmoji[skill as keyof typeof skillEmoji] as keyof SkillsScore} ${convertXPtoLVL(
 			skillXP,
@@ -65,7 +59,7 @@ export async function minionStatsEmbed({
 		},
 		{
 			name: '\u200b',
-			value: ['mining', 'smithing', 'fishing', 'cooking', 'firemaking', 'woodcutting', 'farming', 'overall']
+			value: ['mining', 'smithing', 'fishing', 'sailing', 'cooking', 'firemaking', 'woodcutting', 'farming']
 				.map(skillCell)
 				.join('\n'),
 			inline: true
@@ -81,6 +75,7 @@ export async function minionStatsEmbed({
 		name: `${skillEmoji.total} Overall`,
 		value: `**Level:** ${totalLevel}
 **XP:** ${xp.toLocaleString()}
+**Combat:** ${user.combatLevel}
 **QP** ${QP}
 **CL Completion:** ${percent.toFixed(1)}%`,
 		inline: true
