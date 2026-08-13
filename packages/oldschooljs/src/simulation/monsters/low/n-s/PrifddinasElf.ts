@@ -5,8 +5,7 @@ import { Elf } from '../a-f/Elf.js';
 const PrifddinasElfTable: LootTable = new LootTable()
 	.oneIn(35, 'Crystal shard')
 	.oneIn(1024, 'Enhanced crystal teleport seed')
-	.add(Elf.pickpocketTable!, 1)
-	.tertiary(99_175, 'Rocky');
+	.add(Elf.pickpocketTable!, 1);
 
 export const PrifddinasElf: SimpleMonster = new SimpleMonster({
 	id: 9076,
