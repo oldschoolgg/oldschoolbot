@@ -31,7 +31,14 @@ There is no Herblore-boosting pet. [Herbert](/bso/custom-items/pets#meme-pets-an
 
 - Neem oil - made with Neem Drupe and Jug of Water.
 - Dragon's fury - a potion made at 120 Herblore using 3 Ignecarus Scales and 1 Abyssal Dragon Bones.
-- [Kibble](/bso/skills/cooking/#kibble) - made with the [[/kibble]] command and used as Hunter bait or tame food.
+
+### [Kibble](/bso/skills/cooking/#kibble)
+
+Kibble is made with the [[/kibble]] command and used as Hunter bait or tame food.
+
+- Simple Kibble
+- Delicious Kibble
+- Extraordinary Kibble
 
 ## Optimal Gear Setup
 
