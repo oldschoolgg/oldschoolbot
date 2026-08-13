@@ -72,7 +72,7 @@ export async function minionStatusCommand(
 		};
 	}
 
-	const status = minionStatus(user, currentActivity);
+	const status = minionStatus(user, currentActivity) ?? '';
 	const buttons: ButtonBuilder[] = [];
 
 	if (dailyIsReady.isReady && !user.bitfield.includes(BitField.DisableDailyButton)) {

@@ -32,6 +32,7 @@ export interface MockUserArgs {
 	skills_hitpoints?: number;
 	skills_prayer?: number;
 	skills_fishing?: number;
+	skills_fletching?: number;
 	GP?: number;
 	bitfield?: BitField[];
 	id?: string;
@@ -62,7 +63,7 @@ const mockUser = (overrides?: MockUserArgs): User => {
 		skills_runecraft: 0,
 		skills_crafting: 0,
 		skills_prayer: overrides?.skills_prayer ?? 0,
-		skills_fletching: 0,
+		skills_fletching: overrides?.skills_fletching ?? 0,
 		skills_thieving: 0,
 		skills_farming: overrides?.skills_farming ?? 0,
 		skills_herblore: 0,
