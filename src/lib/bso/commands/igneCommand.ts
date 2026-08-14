@@ -5,6 +5,7 @@ import { BossInstance, type BossUser } from '@/lib/bso/structures/Boss.js';
 import { EmbedBuilder } from '@oldschoolgg/discord';
 import { formatDuration, Time, UserError } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
+
 import { Gear } from '@/lib/structures/Gear.js';
 
 export async function igneCommand(
