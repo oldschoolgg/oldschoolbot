@@ -7,6 +7,7 @@ import { trackLoot } from '@/lib/lootTrack.js';
 import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
 import type { MonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import findMonster from '@/lib/util/findMonster.js';
+import { makeStartQuestResponse } from '@/lib/util/interactions.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { generateDailyPeakIntervals } from '@/lib/util/peaks.js';
 import { newMinionKillCommand } from '@/mahoji/lib/abstracted_commands/minionKill/newMinionKill.js';
@@ -56,8 +57,11 @@ export async function minionKillCommand(
 
 	if (!monster) return invalidMonsterMsg;
 
-	const [hasReqs, reason] = user.hasMonsterRequirements(monster);
+	const [hasReqs, reason, incompleteQuest] = user.hasMonsterRequirements(monster);
 	if (!hasReqs) {
+		if (incompleteQuest && typeof reason === 'string') {
+			return makeStartQuestResponse(reason, incompleteQuest);
+		}
 		return typeof reason === 'string' ? reason : "You don't have the requirements to fight this monster";
 	}
 
