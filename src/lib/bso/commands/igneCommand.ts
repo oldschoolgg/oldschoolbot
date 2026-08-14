@@ -1,11 +1,10 @@
 import { dwarvenOutfit } from '@/lib/bso/collection-log/main.js';
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
-import { BossInstance } from '@/lib/bso/structures/Boss.js';
+import { BossInstance, type BossUser } from '@/lib/bso/structures/Boss.js';
 
 import { EmbedBuilder } from '@oldschoolgg/discord';
-import { formatDuration, Time } from '@oldschoolgg/toolkit';
+import { formatDuration, Time, UserError } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
-
 import { Gear } from '@/lib/structures/Gear.js';
 
 export async function igneCommand(
@@ -104,7 +103,15 @@ export async function igneCommand(
 		allowMoreThan1Group: true
 	});
 
-	const { bossUsers } = await instance.start();
+	let bossUsers: BossUser[];
+	try {
+		({ bossUsers } = await instance.start());
+	} catch (err: unknown) {
+		if (err instanceof UserError) {
+			return err.message;
+		}
+		throw err;
+	}
 
 	const embed = new EmbedBuilder()
 		.setDescription(
