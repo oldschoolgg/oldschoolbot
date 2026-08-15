@@ -1,6 +1,6 @@
 import { convertAttackStyleToGearSetup } from '@oldschoolgg/gear';
 import { calcPercentOfNum, Time, uniqueArr } from '@oldschoolgg/toolkit';
-import { Bank } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 
 import type { GearSetupType } from '@/prisma/main/enums.js';
 import { BitField } from '@/lib/constants.js';
@@ -13,6 +13,7 @@ import { type Peak, PeakTier } from '@/lib/util/peaks.js';
 import type { BoostArgs, BoostResult } from '@/mahoji/lib/abstracted_commands/minionKill/speedBoosts.js';
 
 const noFoodBoost = Math.floor(Math.max(...Eatables.map(eatable => eatable.pvmBoost ?? 0)) + 1);
+const wildyEliteGreenDragonBoost = 30;
 
 // Runs after we know the quantity/duration/etc
 type PostBoostEffectReturn = Pick<
@@ -104,6 +105,17 @@ export const postBoostEffects: PostBoostEffect[] = [
 				itemCost: foodRemoveResult.foodToRemove
 			});
 			return results;
+		}
+	},
+	{
+		description: 'Wilderness elite green dragon boost',
+		run: ({ monster, isInWilderness, hasWildyEliteDiary }) => {
+			if (monster.id !== Monsters.GreenDragon.id || !isInWilderness || !hasWildyEliteDiary) return;
+
+			return {
+				percentageReduction: wildyEliteGreenDragonBoost,
+				message: `${wildyEliteGreenDragonBoost}% for Wilderness Elite Diary`
+			};
 		}
 	},
 	{
