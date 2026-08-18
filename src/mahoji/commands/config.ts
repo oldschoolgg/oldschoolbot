@@ -653,7 +653,7 @@ export const configCommand = defineCommand({
 								const bitfield = user.bitfield;
 								return userBitToggles
 									.filter(i => {
-										if ((!i.userConfigurable || i.protected) && !user.isAdmin()) return false;
+										if ((!i.userConfigurable || i.protected) && !user.isAdmin) return false;
 										if (!value) return true;
 										return cleanString(i.name).includes(cleanString(value));
 									})

@@ -48,14 +48,20 @@ import {
 	listBitFields
 } from '@/lib/bitFieldUtils.js';
 import { BadgesEnum, BitField, BitFieldData, badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
+import { customItems } from '@/lib/customItems/util.js';
+import { allDcSet } from '@/lib/data/Collections.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { syncCustomPrices } from '@/lib/preStartup.js';
 import { countUsersWithItemInCl } from '@/lib/rawSql.js';
+import { type StaffBestowSchedule, ZStrictStaffBestowSchedule } from '@/lib/settings/misc.js';
 import { sorts } from '@/lib/sorts.js';
+import { runStaffBestowReplenishment, type StaffBestowPeriod, StaffBestowPeriods } from '@/lib/staffBestow.js';
+import { dmCyrAudit, makeArgAuditFiles, sendCyrCriticalBotLog } from '@/lib/util/cyrAudit.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { safeMessage } from '@/lib/util/smallUtils.js';
 import { makeGiveawayButtons } from '@/mahoji/commands/giveaway.js';
+import {isValidDiscordSnowflake} from "@oldschoolgg/util";
 
 export const gifs = [
 	'https://tenor.com/view/angry-stab-monkey-knife-roof-gif-13841993',
@@ -155,7 +161,7 @@ interface AdminRunnableCommand {
 	name: string;
 	description: string;
 	args: AdminRunnableCommandArg[];
-	run: (options: { arg1?: string; arg2?: string; adminUser: MUser }) => Promise<SendableMessage>;
+	run: (options: { arg1?: string; arg2?: string; adminUser: MUser, rng: RNGProvider }) => Promise<SendableMessage>;
 }
 
 async function findUsersWithLotteryTickets() {
@@ -183,7 +189,143 @@ ${args}
 Set \`exec: true\` to execute this command.`;
 }
 
+function findDiscontinuedStaffBestowItems(schedule: StaffBestowSchedule) {
+	const found = new Map<number, string[]>();
+
+	for (const [source, limits] of Object.entries(schedule)) {
+		for (const period of StaffBestowPeriods) {
+			for (const itemID of Object.keys(limits[period])) {
+				const id = Number(itemID);
+				if (!allDcSet.has(id) || !customItems.includes(id)) continue;
+				const item = Items.getItem(id);
+				const itemName = item ? `${item.name} (${id})` : itemID;
+				const locations = found.get(id) ?? [];
+				locations.push(`${source}.${period}: ${itemName}`);
+				found.set(id, locations);
+			}
+		}
+	}
+
+	return [...found.values()].flat();
+}
+
 const adminRunnableCommands: AdminRunnableCommand[] = [
+	{
+		name: 'show_bestow_bank',
+		args: [
+			{
+				name: 'userId',
+				description: 'The user in Discord ID format',
+				required: true
+			}
+		],
+		description: `Shows a user's bestow bank.`,
+		run: async ({ arg1, adminUser, rng }) => {
+			arg1 = arg1 ?? adminUser.id;
+			if (!isValidDiscordSnowflake(arg1)) {
+				return 'Not a valid User ID';
+			}
+			if (!adminUser.isAdmin && ! adminUser.isGameHacker)
+			{
+				return rng.pick(gifs);
+			}
+			const user = await mUserFetch(arg1);
+			if (!user.isMod && !user.isContributor && !user.isContributor) {
+				return `That player can't bestow items on anyone`;
+			}
+
+			return {
+				files: [
+					await makeBankImage({
+						bank: new Bank(user.user.rp_rewards_left as ItemBank),
+						title: `${user.username}'s Bestow Bank`
+					})
+				]
+			};
+		}
+	} ,
+	{
+		name: 'trigger_bestow_cycle',
+		description: 'Triggers one of the staff bestow replenishment cycles.',
+		args: [
+			{
+				name: 'cycle',
+				description: 'The cycle to trigger; one of "hourly", "daily", "weekly", "monthly"".',
+				required: true
+			}
+		],
+		run: async ({ arg1, adminUser }) => {
+			if (!arg1) return "Missing cycle - If you don't know how, you shouldn't be using this!";
+			if (!['hourly', 'daily', 'weekly', 'monthly'].includes(arg1))
+				return 'Invalid cycle; must be one of "hourly", "daily", "weekly", "monthly"!';
+			const period = arg1 as StaffBestowPeriod;
+			const files = makeArgAuditFiles({name: 'cycle', data: arg1});
+			const body = `${adminUser.logName} ran /admin run trigger_bestow_cycle with exec: true for cycle ${period}.`;
+			await Promise.all([
+				dmCyrAudit(`# **Staff Bestow Cycle Triggered**\n${body}`, files),
+				sendCyrCriticalBotLog('Staff Bestow Cycle Triggered', body, files)
+			]);
+			await runStaffBestowReplenishment([period]);
+			return `Triggered staff bestow replenishment cycle: ${period}`;
+		}
+	},
+	{
+		name: 'set_bestow_limits',
+		description: 'Validate and set the Staff Best Schedule, then refresh the staff bestow schedule cache.',
+		args: [
+			{
+				name: 'bestow_replenish_limits',
+				description: 'JSON string for the full staff_bestow_limits config.',
+				required: true
+			}
+		],
+		run: async ({ arg1, adminUser }) => {
+			if (!arg1) return "Missing bestow_replenish_limits - If you don't know how, you shouldn't be using this!";
+			let parsedInput: unknown;
+			try {
+				parsedInput = JSON.parse(arg1);
+			} catch (err) {
+				return `Failed to parse bestow limits JSON: ${(err as Error).message}`;
+			}
+
+			let staffBestowSchedule: StaffBestowSchedule;
+			try {
+				staffBestowSchedule = ZStrictStaffBestowSchedule.parse(parsedInput);
+			} catch (err) {
+				return `Invalid bestow replenish limits: ${(err as Error).message}`;
+			}
+
+			const discontinuedItemsFound = findDiscontinuedStaffBestowItems(staffBestowSchedule);
+			if (discontinuedItemsFound.length > 0) {
+				const files = makeArgAuditFiles({
+					name: 'bestow_replenish_limits',
+					data: arg1
+				});
+				const body = `${adminUser.logName} attempted to set staff bestow limits containing discontinued items.\n${discontinuedItemsFound.join('\n')}`;
+				await Promise.all([
+					dmCyrAudit(`# **Discontinued Item Attempt**\n${body}`, files),
+					sendCyrCriticalBotLog('Discontinued Item Attempt', body, files)
+				]);
+				return 'Discontinued items may not be used here. This event has been logged.';
+			}
+
+			await prisma.$executeRaw`
+				UPDATE "clientStorage"
+				SET staff_bestow_limits = ${JSON.stringify(staffBestowSchedule)}::jsonb
+				WHERE id = ${globalConfig.clientID}
+			`;
+			await Cache.refreshStaffBestowScheduleCache();
+			await dmCyrAudit(
+				`${adminUser.logName} ran /admin run set_bestow_limits and updated the staff bestow limits.`,
+				makeArgAuditFiles({ name: 'new_limits', data: arg1}                                                                                                                                                                                                                        )
+			);
+
+			return safeMessage(
+				`Updated staff bestow limits and refreshed the cache.\n${JSON.stringify(staffBestowSchedule, null, 4)}`,
+				'staff-bestow-limits.json'
+			);
+		}
+	},
 	{
 		name: 'remove_lotto_tickets',
 		description:
@@ -360,7 +502,7 @@ async function getAllTradedItems(giveUniques = false) {
 interface ViewableThing {
 	name: string;
 	choices?: string[];
-	run: (clientSettings: ClientStorage, _choice?: String) => Promise<Bank | SendableMessage>;
+	run: (clientSettings: ClientStorage, _choice?: String, user?: MUser) => Promise<Bank | SendableMessage>;
 }
 const viewableThings: ViewableThing[] = [
 	{
@@ -858,7 +1000,7 @@ export const adminCommand = defineCommand({
 					autocomplete: async ({ value, user }: StringAutoComplete) => {
 						return Object.entries(BitFieldData)
 							.filter(bf => {
-								if (bf[1].protected && !user.isAdmin()) return false;
+								if (bf[1].protected && !user.isAdmin) return false;
 								if (!value) return true;
 								return cleanString(bf[1].name).includes(cleanString(value));
 							})
@@ -1064,8 +1206,9 @@ export const adminCommand = defineCommand({
 		await interaction.defer();
 
 		const adminUser = await mUserFetch(userId);
-		const isAdmin = adminUser.isAdmin();
-		const isMod = isAdmin || adminUser.isMod();
+		const isAdmin = adminUser.isAdmin;
+		const isMod = isAdmin || adminUser.isMod;
+		const isGameHacker = isAdmin || (adminUser.isMod && adminUser.isGameHacker);
 		if (!guildId || !isMod || (globalConfig.isProduction && guildId.toString() !== globalConfig.supportServerID)) {
 			return rng.pick(gifs);
 		}
@@ -1215,47 +1358,13 @@ ${META_CONSTANTS.RENDERED_STR}`
 			return 'Turning off...';
 		}
 
-		/**
-		 *
-		 * Admin Only Commands
-		 *
-		 */
-		if (!isAdmin) {
-			return rng.pick(gifs);
-		}
-
-		if (options.sync_commands) {
-			await bulkUpdateCommands();
-			return 'Done.';
-		}
-
-		if (options.view) {
-			const thing = viewableThings.find(i => i.name === options.view?.thing);
-			if (!thing) return 'Invalid';
-			const clientSettings = await ClientSettings.fetch();
-			const res = await thing.run(clientSettings, options.view.choices);
-			if (!(res instanceof Bank)) return res;
-			return new MessageBuilder().addBankImage({
-				bank: res,
-				title: thing.name,
-				flags: thing.name === 'All Equipped Items' ? { sort: 'name' } : undefined
-			});
-		}
-
-		if (options.run) {
-			const runnableCommand = adminRunnableCommands.find(command => command.name === options.run?.command);
-			if (!runnableCommand) return 'Invalid command.';
-			if (!options.run.exec) {
-				return formatAdminRunnableCommand(runnableCommand);
-			}
-			return runnableCommand.run({
-				arg1: options.run.arg1,
-				arg2: options.run.arg2,
-				adminUser
-			});
-		}
-
 		if (options.give_items) {
+			if (!isGameHacker) {
+				return rng.pick(gifs);
+			}
+			if (globalConfig.isProduction && interaction.channelId !== Channel.CyrCommandsChannel) {
+				return `You can only use this command in <#${Channel.CyrCommandsChannel}>.`;
+			}
 			const items = parseBank({ inputStr: options.give_items.items, noDuplicateItems: true });
 			if (items.length === 0) return 'No items were given.';
 			const itemErrors = items.validate();
@@ -1269,11 +1378,13 @@ ${META_CONSTANTS.RENDERED_STR}`
 				await interaction.confirmation(
 					`Are you sure you want to give ${items} to ${targetUser.usernameOrMention}?`
 				);
-				await globalClient.sendMessage(Channel.BotLogs, {
+				const auditMessage = {
 					content: `${adminUser.logName} sent \`${items}\` to ${targetUser.logName} for ${
 						options.give_items.reason ?? 'No reason'
 					}`
-				});
+				};
+				await globalClient.sendMessage(Channel.BotLogs, auditMessage);
+				await globalClient.sendMessage(globalConfig.adminUserIDs[0], auditMessage);
 
 				await targetUser.addItemsToBank({ items, collectionLog: false });
 				return `Gave ${items} to ${targetUser.mention}`;
@@ -1285,11 +1396,13 @@ ${META_CONSTANTS.RENDERED_STR}`
 				? `${targetUser.usernameOrMention}'s lottery input`
 				: 'the lottery bank';
 			await interaction.confirmation(`Are you sure you want to add ${items} to ${targetDescription}?`);
-			await globalClient.sendMessage(Channel.BotLogs, {
+			const auditMessage = {
 				content: `${adminUser.logName} sent \`${items}\` to ${targetUser?.logName ?? 'the lottery bank'} for ${
 					options.give_items.reason ?? 'No reason'
 				}`
-			});
+			};
+			await globalClient.sendMessage(Channel.BotLogs, auditMessage);
+			await globalClient.sendMessage(globalConfig.adminUserIDs[0], auditMessage);
 
 			if (targetUser) {
 				await addToLotteryBank(targetUser, items);
@@ -1297,6 +1410,66 @@ ${META_CONSTANTS.RENDERED_STR}`
 				await addToLotteryPrizePool(items);
 			}
 			return `Added ${items} to ${targetDescription}.`;
+		}
+
+		/**
+		 *
+		 * Admin Only Commands
+		 *
+		 */
+		if (!isGameHacker) {
+			return rng.pick(gifs);
+		}
+
+		if (options.sync_commands) {
+			await bulkUpdateCommands();
+			return 'Done.';
+		}
+
+		if (options.view) {
+			const thing = viewableThings.find(i => i.name === options.view?.thing);
+			if (!thing) return 'Invalid';
+			if (!isAdmin) {
+				await dmCyrAudit(
+					`${adminUser.logName} ran /admin view ${thing.name} in channel ${interaction.channelId}. Choices: ${
+						options.view.choices ?? 'None'
+					}.`
+				);
+			}
+			const clientSettings = await ClientSettings.fetch();
+			const res = await thing.run(clientSettings, options.view.choices, adminUser);
+			if (!(res instanceof Bank)) return res;
+			return new MessageBuilder().addBankImage({
+				bank: res,
+				title: thing.name,
+				flags: thing.name === 'All Equipped Items' ? { sort: 'name' } : undefined
+			});
+		}
+
+		if (options.run) {
+			const runnableCommand = adminRunnableCommands.find(command => command.name === options.run?.command);
+			if (!runnableCommand) return 'Invalid command.';
+			const argFiles = makeArgAuditFiles(options.run.arg1, options.run.arg2);
+			if (!isAdmin) {
+				await dmCyrAudit(
+					`${adminUser.logName} ran /admin run ${runnableCommand.name} in channel ${interaction.channelId}. Exec: ${Boolean(
+						options.run.exec
+					)}.`,
+					argFiles
+				);
+			}
+			if (!options.run.exec) {
+				return formatAdminRunnableCommand(runnableCommand);
+			}
+			return runnableCommand.run({
+				arg1: options.run.arg1,
+				arg2: options.run.arg2,
+				adminUser,
+				rng
+			});
+		}
+		if (!isAdmin) {
+			return rng.pick(gifs);
 		}
 
 		if (options.bury_in_sand) {

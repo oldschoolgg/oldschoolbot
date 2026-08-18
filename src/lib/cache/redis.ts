@@ -21,6 +21,12 @@ import { Redis } from 'ioredis';
 import type { Guild, Prisma } from '@/prisma/main.js';
 import { BitField, BOT_TYPE, globalConfig } from '@/lib/constants.js';
 import type { RobochimpUser } from '@/lib/roboChimp.js';
+import {
+	type IExtraSettings,
+	type StaffBestowSchedule,
+	ZExtraSettings,
+	ZStaffBestowSchedule
+} from '@/lib/settings/misc.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
 
 type LockStatus = 'locked' | 'unlocked';
@@ -498,6 +504,68 @@ class CacheManager {
 
 	async setDisabledCommands(newDisabledCommands: string[]): Promise<void> {
 		await this.setJson(BotKeys.DisabledCommands, newDisabledCommands);
+	}
+
+	async getStaffBestowSchedule({
+		forceRefresh = false
+	}: {
+		forceRefresh?: boolean;
+	} = {}): Promise<StaffBestowSchedule> {
+		if (!forceRefresh) {
+			const cached = await this.getJson(BotKeys.Global.StaffBestowSchedule);
+			if (cached) return ZStaffBestowSchedule.parse(cached);
+		}
+
+		const [clientSettings] = await prisma.$queryRaw<{ staff_bestow_limits: unknown }[]>`
+			SELECT staff_bestow_limits
+			FROM "clientStorage"
+			WHERE id = ${globalConfig.clientID}
+		`;
+		const schedule = ZStaffBestowSchedule.parse(clientSettings?.staff_bestow_limits ?? {});
+		await this.setStaffBestowSchedule(schedule);
+		return schedule;
+	}
+
+	async setStaffBestowSchedule(value: StaffBestowSchedule): Promise<void> {
+		await this.setJsonWithTTL(BotKeys.Global.StaffBestowSchedule, value, this.jitterTTL(TTL.Hour, 0.1));
+	}
+
+	async refreshStaffBestowScheduleCache(): Promise<StaffBestowSchedule> {
+		await this.resetStaffBestowSchedule();
+		return this.getStaffBestowSchedule({ forceRefresh: true });
+	}
+
+	async resetStaffBestowSchedule(): Promise<void> {
+		await this.client.del(BotKeys.Global.StaffBestowSchedule);
+	}
+
+	async getExtraSettings({ forceRefresh = false }: { forceRefresh?: boolean } = {}): Promise<IExtraSettings> {
+		if (!forceRefresh) {
+			const cached = await this.getJson(BotKeys.Global.ExtraClientSettings);
+			if (cached) return ZExtraSettings.parse(cached);
+		}
+
+		const [clientSettings] = await prisma.$queryRaw<{ extra_settings: unknown }[]>`
+			SELECT extra_settings
+			FROM "clientStorage"
+			WHERE id = ${globalConfig.clientID}
+		`;
+		const settings = ZExtraSettings.parse(clientSettings?.extra_settings ?? {});
+		await this.setExtraSettings(settings);
+		return settings;
+	}
+
+	async setExtraSettings(value: IExtraSettings): Promise<void> {
+		await this.setJsonWithTTL(BotKeys.Global.ExtraClientSettings, value, TTL.Hour);
+	}
+
+	async refreshExtraSettingsCache(): Promise<IExtraSettings> {
+		await this.resetExtraSettings();
+		return this.getExtraSettings({ forceRefresh: true });
+	}
+
+	async resetExtraSettings(): Promise<void> {
+		await this.client.del(BotKeys.Global.ExtraClientSettings);
 	}
 
 	async isUserBlacklisted(id: string): Promise<boolean> {

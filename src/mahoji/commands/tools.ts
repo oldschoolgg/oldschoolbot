@@ -1,5 +1,5 @@
 import { giveBox, spawnBoxCommand, spawnLampCommand } from '@/lib/bso/commands/spawnBoxLampCommand.js';
-import { addToDoubleLootTimer } from '@/lib/bso/doubleLoot.js';
+import { addToDoubleLootTimer, hasUsedDoubleLootThisMonth } from '@/lib/bso/doubleLoot.js';
 import { keyCrates } from '@/lib/bso/keyCrates.js';
 import { findGroupOfUser } from '@/lib/bso/util/findGroupOfUser.js';
 import { repairBrokenItemsFromUser } from '@/lib/bso/util/repairBrokenItems.js';
@@ -687,7 +687,7 @@ async function mostDrops(user: MUser, itemName: string, filter: string) {
 				? 'AND "minion.ironman" = false'
 				: '';
 	if (!item) return "That's not a valid item.";
-	if (!allDroppedItems.includes(item.id) && !user.isMod()) {
+	if (!allDroppedItems.includes(item.id) && !user.isMod) {
 		return "You can't check this item, because it's not on any collection log.";
 	}
 
@@ -760,7 +760,7 @@ async function checkMassesCommand(guildId: string | null) {
 ${massStr}`.slice(0, 1999);
 }
 
-function calcTime(perkTier: PerkTier | 0) {
+function calcTime(perkTier: PerkTier) {
 	for (const [bit, dur] of [
 		[PerkTier.Seven, Time.Minute * 90],
 		[PerkTier.Six, Time.Minute * 40],
@@ -771,11 +771,6 @@ function calcTime(perkTier: PerkTier | 0) {
 	throw new Error('User is not a Tier 4+ Patron');
 }
 
-export function getNextPatronDoubleLootReset(lastTime: Date | number) {
-	const date = typeof lastTime === 'number' ? new Date(lastTime) : lastTime;
-	return Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 1);
-}
-
 async function patronTriggerDoubleLoot(user: MUser) {
 	const perkTier = await user.fetchPerkTier();
 	if (perkTier < PerkTier.Five) {
@@ -783,9 +778,8 @@ async function patronTriggerDoubleLoot(user: MUser) {
 	}
 
 	const lastTime = user.user.last_patron_double_time_trigger;
-	const nextReset = lastTime ? getNextPatronDoubleLootReset(lastTime) : null;
-	if (nextReset && Date.now() < nextReset) {
-		return `This command is still on cooldown, you can use it again in: ${formatDuration(nextReset - Date.now())}.`;
+	if (hasUsedDoubleLootThisMonth(lastTime)) {
+		return 'This command is still on cooldown, you can use it again on the 1st of next month.';
 	}
 
 	const time = calcTime(perkTier);

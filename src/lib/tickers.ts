@@ -5,6 +5,7 @@ import { runTameTask } from '@/lib/bso/tames/tameTasks.js';
 import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
 import { stringMatches, Time } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
+import { roll } from 'node-rng';
 
 import type { User } from '@/prisma/main.js';
 import { resolveBotSendableMessage } from '@/discord/utils.js';
@@ -17,11 +18,12 @@ import { runCommand } from '@/lib/settings/settings.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { FarmingPatchName, FarmingPatchSettingsKey } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { IPatchData } from '@/lib/skilling/skills/farming/utils/types.js';
+import { runStaffBestowReplenishment, type StaffBestowPeriod } from '@/lib/staffBestow.js';
 import { MUserClass } from '@/lib/user/MUser.js';
 import { handleGiveawayCompletion } from '@/lib/util/giveaway.js';
 
 /**
- * Tickers should idempotent, and be able to run at any time.
+ * Tickers should be idempotent and be able to run at any time.
  */
 export const tickers: {
 	name: string;
@@ -114,6 +116,20 @@ export const tickers: {
 		interval: globalConfig.isProduction ? Time.Second * 5 : 500,
 		cb: async () => {
 			await ActivityManager.processPendingActivities();
+		}
+	},
+	{
+		name: 'staff_bestow_replenishment',
+		startupWait: Time.Minute,
+		timer: null,
+		interval: Time.Hour,
+		cb: async () => {
+			const periods: StaffBestowPeriod[] = [];
+			if (roll(24 * 30)) periods.push('monthly');
+			if (roll(24 * 7)) periods.push('weekly');
+			if (roll(24)) periods.push('daily');
+			periods.push('hourly');
+			await runStaffBestowReplenishment(periods);
 		}
 	},
 	{

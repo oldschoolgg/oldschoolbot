@@ -147,9 +147,9 @@ export async function getUsersPerkTier({
 	}
 
 	const eligibleTiers = [];
-	if (user.isContributor() || user.isModOrAdmin() || user.isWikiContrib()) {
+	if (user.isContributor || user.isModOrAdmin || user.isWikiContrib) {
 		eligibleTiers.push(PerkTier.Four);
-	} else if (user.isTrusted()) {
+	} else if (user.isTrusted) {
 		eligibleTiers.push(PerkTier.Three);
 	}
 
