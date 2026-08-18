@@ -304,7 +304,7 @@ const MAINTENANCE_BASE_QTY: Record<string, number> = {
 	'Blue dragon scale': 1_000,
 	'Blue dragonhide': 400,
 	'Sentinel core': 1,
-	'Brimstone spore': 1_500,
+	'Brimstone spore': 10,
 	Ignilace: 80,
 	'Pure essence': 30_000,
 	'Air rune': 15_000,
@@ -328,9 +328,9 @@ const MAINTENANCE_BASE_QTY: Record<string, number> = {
 	Feather: 25_000,
 	Battlestaff: 2_500,
 	Dragonstone: 1_500,
-	'Verdant logs': 800,
-	'Living bark': 300,
-	'Ancient verdant logs': 600,
+	'Verdant logs': 250,
+	'Living bark': 75,
+	'Ancient verdant logs': 250,
 	'Verdant plank': 400,
 	'Elder logs': 350,
 	Prismare: 8,
@@ -376,26 +376,43 @@ const MAINTENANCE_BASE_QTY: Record<string, number> = {
 	'Vibrant energy': 4_000,
 	'Lustrous energy': 3_000,
 	'Brilliant energy': 2_000,
+	'Luminous energy': 800,
 	'Incandescent energy': 1_200,
+	'Ancient energy': 400,
+	'Elder rune': 200,
 	Potato: 6_000,
+	'Potato seed': 2_000,
 	Sweetcorn: 4_000,
 	Watermelon: 2_500,
+	'Watermelon seed': 600,
 	'Ranarr weed': 1_200,
+	'Ranarr seed': 400,
 	Snapdragon: 800,
+	'Snapdragon seed': 300,
 	Torstol: 500,
+	'Torstol seed': 150,
+	'Snape grass seed': 1_000,
+	'Poison ivy seed': 200,
+	'Dragonfruit tree seed': 10,
 	'Limpwurt root': 2_000,
 	'White berries': 1_500,
 	'Dragon fruit': 600,
+	'Bucket of water': 3_000,
+	Rake: 10,
 	Compost: 5_000,
 	Supercompost: 3_000,
-	Ultracompost: 1_500
+	Ultracompost: 1_500,
+	'Empyrean shards': 125,
+	'Verdant heart': 1
 };
 
 const MAINTENANCE_ITEM_CAPS: Partial<Record<string, number>> = {
 	'Sentinel core': 50,
-	'Verdant heart': 50,
+	'Verdant heart': 1,
 	'Empyrean shards': 25
 };
+
+const MAINTENANCE_FALLBACK_BASE_QTY = 100;
 
 function tierMultiplier(tier: number): number {
 	return Math.min(1 + (tier - 1) * 0.35, 2.1);
@@ -445,7 +462,7 @@ export function getWeeklyMaintenanceDemand(
 	const catMult = CATEGORY_MAINTENANCE_MULTIPLIER[category];
 	const bank = new Bank();
 	for (const itemName of chosen) {
-		const baseQty = MAINTENANCE_BASE_QTY[itemName] ?? 500;
+		const baseQty = MAINTENANCE_BASE_QTY[itemName] ?? MAINTENANCE_FALLBACK_BASE_QTY;
 		const rawQty = Math.max(1, Math.round((baseQty * mult * catMult) / 50) * 50);
 		const cap = MAINTENANCE_ITEM_CAPS[itemName];
 		const qty = cap !== undefined ? Math.min(rawQty, cap) : rawQty;
