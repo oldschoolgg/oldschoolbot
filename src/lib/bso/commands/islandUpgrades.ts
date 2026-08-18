@@ -397,8 +397,6 @@ const MAINTENANCE_BASE_QTY: Record<string, number> = {
 	'Limpwurt root': 2_000,
 	'White berries': 1_500,
 	'Dragon fruit': 600,
-	'Bucket of water': 3_000,
-	Rake: 10,
 	Compost: 5_000,
 	Supercompost: 3_000,
 	Ultracompost: 1_500,
