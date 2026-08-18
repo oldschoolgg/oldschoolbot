@@ -68,7 +68,7 @@ test('Repair Bank', async () => {
 			'Torva boots',
 			'Drygore longsword',
 			'Offhand drygore longsword',
-			'Ignis ring (i)'
+			'Searcrown band'
 		]).sort()
 	);
 	expect(user.gear.range.allItems(false).sort()).toStrictEqual(
@@ -81,7 +81,7 @@ test('Repair Bank', async () => {
 			'Torva boots',
 			'Drygore longsword',
 			'Offhand drygore longsword',
-			'Ignis ring (i)'
+			'Searcrown band'
 		]).sort()
 	);
 	expect(user.gear.misc.allItems(false).sort()).toStrictEqual(resolveItems([]));

@@ -6,13 +6,14 @@ import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minio
 export async function stealingCreationCommand(user: MUser, channelId: string) {
 	if (await user.minionIsBusy()) return 'Your minion is busy.';
 
-	const gameTime = Time.Minute * 12.5;
+	const hasCelestialPendant = user.hasEquippedOrInBank('Celestial pendant');
+
+	const gameTime = Time.Minute * 12.5 * (hasCelestialPendant ? 0.9 : 1);
 	const quantity = Math.floor((await user.calcMaxTripLength('StealingCreation')) / gameTime);
 	const duration = randomVariation(quantity * gameTime, 5);
 
-	const str = `${
-		user.minionName
-	} is now off to do ${quantity} Stealing Creation games. The total trip will take ${formatDuration(duration)}.`;
+	const boostStr = hasCelestialPendant ? '\n\n**Boosts:** 10% faster from Celestial pendant.' : '';
+	const str = `${user.minionName} is now off to do ${quantity} Stealing Creation games. The total trip will take ${formatDuration(duration)}.${boostStr}`;
 
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,

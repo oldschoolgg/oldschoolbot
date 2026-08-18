@@ -40,6 +40,7 @@ import {
 } from '@/lib/util/interactions.js';
 import { hasSkillReqs, perHourChance } from '@/lib/util/smallUtils.js';
 import { alching } from '@/mahoji/commands/laps.js';
+import { handleTriggerArchon } from '@/mahoji/lib/abstracted_commands/archonCommand.js';
 import { isUsersDailyReady } from '@/mahoji/lib/abstracted_commands/dailyCommand.js';
 import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
 import { handleTriggerShootingStar } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
@@ -493,6 +494,12 @@ const tripFinishEffects: TripFinishEffect[] = [
 		name: 'Shooting Stars',
 		fn: async ({ user, data, components, rng }) => {
 			await handleTriggerShootingStar({ user, data, components, rng });
+		}
+	},
+	{
+		name: 'Archon',
+		fn: async ({ user, data, components }) => {
+			await handleTriggerArchon(user, data, components);
 		}
 	},
 	{

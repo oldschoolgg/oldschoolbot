@@ -962,6 +962,12 @@ export const adminCommand = defineCommand({
 			description: 'Spawn items for a user',
 			options: [
 				{
+					type: 'String',
+					name: 'items',
+					description: 'The items to give',
+					required: true
+				},
+				{
 					type: 'User',
 					name: 'user',
 					description: 'The user',
@@ -973,12 +979,6 @@ export const adminCommand = defineCommand({
 					description: 'Where to send the items',
 					required: false,
 					choices: choicesOf(adminGiveItemDestinations)
-				},
-				{
-					type: 'String',
-					name: 'items',
-					description: 'The items to give',
-					required: true
 				},
 				{
 					type: 'String',

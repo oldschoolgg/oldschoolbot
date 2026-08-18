@@ -10,3 +10,7 @@ export interface CustomMonster extends Readonly<Omit<Readonly<KillableMonster>, 
 	readonly allItems?: number[];
 	isCustom: true;
 }
+
+export interface CustomMonster {
+	xpMultiplier?: (user: MUser) => number;
+}
