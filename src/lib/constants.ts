@@ -572,7 +572,7 @@ export const COMBAT_TIER_XP = {
 	TIER_3: 5_000_000_000
 } as const;
 
-export const ARCHON_SPAWN_CHANCE = 50;
+export const ARCHON_SPAWN_CHANCE = 20;
 
 export const PATRON_ONLY_GEAR_SETUP =
 	'Sorry - but the `other` gear setup is only available for Tier 3 Patrons (and higher) to use.';
