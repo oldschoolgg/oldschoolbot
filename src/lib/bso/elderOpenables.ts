@@ -3,6 +3,7 @@ import { LampTable } from '@/lib/bso/xpLamps.js';
 import { randArrItem, randInt, roll } from 'node-rng';
 import { Bank, LootTable, resolveItems } from 'oldschooljs';
 
+import { IslandTable } from './monsters/VerdantIsland.js';
 import { AllBarrows, BattlestaffTable, runeAlchablesTable, StaffOrbTable } from './tables/sharedTables.js';
 
 const boxTable = new LootTable()
@@ -135,6 +136,7 @@ type LootTableRollOptions = { targetBank?: Bank; cl: Bank };
 export class ElderMimicCasket {
 	public allItems = resolveItems([
 		...elderMimicTable.allItems,
+		...IslandTable.allItems,
 		'Clue bag',
 		'Inventors tools',
 		'Elder knowledge',
@@ -147,9 +149,10 @@ export class ElderMimicCasket {
 		const loot = options.targetBank ?? new Bank();
 
 		for (let i = 0; i < quantity; i++) {
-			const numberOfRolls = randInt(7, 12);
+			const numberOfRolls = randInt(10, 15);
 
 			elderMimicTable.roll(numberOfRolls, { targetBank: loot });
+			IslandTable.roll(1, { targetBank: loot });
 
 			const untradeableUniques = resolveItems(['Clue bag', 'Inventors tools', 'Elder knowledge']);
 			if (roll(30)) {

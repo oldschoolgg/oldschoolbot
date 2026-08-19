@@ -9,11 +9,11 @@ import { addStatsOfItemsTogether, Gear } from '@/lib/structures/Gear.js';
 import type { MUserClass } from '@/lib/user/MUser.js';
 
 export const IslandTable = new LootTable()
-	.add('Ancient cap', [5, 15])
-	.add('Colossal stem', [5, 15])
-	.add('Brimstone spore', [5, 15])
-	.add('Ignilace seed', [2, 8])
-	.add('Ignilace', [3, 12])
+	.add('Ancient cap', [15, 250])
+	.add('Colossal stem', [15, 250])
+	.add('Brimstone spore', [15, 250])
+	.add('Ignilace seed', [5, 25])
+	.add('Ignilace', [25, 75])
 	.add('Verdant logs', [20, 500])
 	.add('Ancient verdant logs', [10, 300])
 	.add('Living bark', [15, 400])
@@ -195,10 +195,10 @@ export const FungalBehemothLootTable = new LootTable()
 	.add('Super combat potion(4)', [3, 10])
 	.add('Super restore(4)', [4, 12])
 
-	.add('Ancient cap', [8, 20])
-	.add('Colossal stem', [8, 20])
-	.add('Brimstone spore', [8, 20])
-	.add('Verdant logs', [25, 60])
+	.add('Ancient cap', [25, 75])
+	.add('Colossal stem', [25, 75])
+	.add('Brimstone spore', [25, 75])
+	.add('Verdant logs', [25, 75])
 	.add('Ancient verdant logs', [15, 40])
 	.add('Living bark', [20, 50])
 
@@ -258,6 +258,7 @@ export const OrymLootTable = new LootTable()
 	.add('Grimy lantadyme', [35, 90])
 	.add('Ignilace', [5, 30])
 	.add('Ignilace seed', [1, 10])
+	.add('Brimstone spore', [25, 75])
 	.add('Elderflame arrowtips', [3, 10]);
 
 export const OrrodilLootTable = new LootTable()
@@ -315,6 +316,7 @@ export const OrrodilLootTable = new LootTable()
 	.add('Grimy torstol', [40, 100])
 	.add('Grimy dwarf weed', [50, 125])
 	.add('Grimy lantadyme', [60, 150])
+	.add('Brimstone spore', [25, 75])
 
 	.add('Uncut zenyte', 1)
 	.add('Uncut onyx', [3, 5])
@@ -387,6 +389,7 @@ export const BurningDominionLootTable = new LootTable()
 	.add('Grimy dwarf weed', [80, 200])
 	.add('Grimy lantadyme', [95, 240])
 
+	.add('Brimstone spore', [25, 75])
 	.add('Ignilace', [5, 30])
 	.add('Ignilace seed', [1, 10])
 	.add('Uncut zenyte', 1)
@@ -439,10 +442,26 @@ export const CrystallineSentinel: CustomMonster = {
 	minimumWeaponShieldStats: {
 		melee: addStatsOfItemsTogether(resolveItems(['Dragon scimitar', 'Dragon defender']), [GearStat.AttackSlash])
 	},
-	itemCost: {
-		itemCost: new Bank().add('Super combat potion(4)').add('Prayer potion(4)', 2),
-		qtyPerKill: 1
-	},
+	itemCost: [
+		{
+			itemCost: new Bank().add('Super combat potion(4)'),
+			qtyPerMinute: 5.5 / 60
+		},
+		{
+			itemCost: new Bank().add('Prayer potion(4)'),
+			qtyPerMinute: 5.5 / 60,
+			alternativeConsumables: [
+				{
+					itemCost: new Bank().add('Super restore(4)'),
+					qtyPerMinute: 5.5 / 60
+				}
+			]
+		},
+		{
+			itemCost: new Bank().add('Saradomin brew(4)'),
+			qtyPerMinute: 16.5 / 60
+		}
+	],
 	setupsUsed: ['melee', 'range'],
 	equippedItemBoosts: [
 		{
@@ -515,10 +534,26 @@ export const FungalBehemoth: CustomMonster = {
 	minimumWeaponShieldStats: {
 		melee: addStatsOfItemsTogether(resolveItems(['Dragon scimitar', 'Dragon defender']), [GearStat.AttackSlash])
 	},
-	itemCost: {
-		itemCost: new Bank().add('Super combat potion(4)').add('Prayer potion(4)', 3).add('Saradomin brew(4)', 2),
-		qtyPerKill: 1
-	},
+	itemCost: [
+		{
+			itemCost: new Bank().add('Super combat potion(4)'),
+			qtyPerMinute: 5.5 / 60
+		},
+		{
+			itemCost: new Bank().add('Prayer potion(4)'),
+			qtyPerMinute: 5.5 / 60,
+			alternativeConsumables: [
+				{
+					itemCost: new Bank().add('Super restore(4)'),
+					qtyPerMinute: 5.5 / 60
+				}
+			]
+		},
+		{
+			itemCost: new Bank().add('Saradomin brew(4)'),
+			qtyPerMinute: 16.5 / 60
+		}
+	],
 	setupsUsed: ['melee', 'range'],
 	equippedItemBoosts: [
 		{
@@ -577,10 +612,10 @@ export const ElderMimic: CustomMonster = {
 	baseMonster: Monsters.AbyssalSire,
 	name: 'Elder Mimic',
 	aliases: ['elder mimic', 'elder'],
-	timeToFinish: Time.Minute * 400,
-	hp: 2000,
+	timeToFinish: Time.Minute * 250,
+	hp: 1750,
 	table: new LootTable().every('Elder mimic casket'),
-	difficultyRating: 6,
+	difficultyRating: 5,
 	qpRequired: 1500,
 	healAmountNeeded: 200 * 100,
 	attackStyleToUse: GearStat.AttackSlash,
