@@ -171,7 +171,7 @@ function calculateTripDuration(
 	arrowMod: number,
 	rng: RNGProvider
 ): number {
-    let totalBase = 0;
+	let totalBase = 0;
 	for (let d = 1; d <= targetDelve; d++) {
 		if (d <= 5) totalBase += 1.3 * Time.Minute;
 		else if (d <= 8) totalBase += 1.85 * Time.Minute;
