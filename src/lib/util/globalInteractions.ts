@@ -531,13 +531,20 @@ async function globalButtonInteractionHandler({
 			return shootingStarsCommand({ rng, channelId: interaction.channelId, user, star: validStar });
 		}
 		case 'DO_ARCHON': {
+			if (await user.minionIsBusy()) {
+				return {
+					content: 'Your minion is busy.',
+					ephemeral: true
+				};
+			}
+
 			const pendingArchon = await prisma.archonEvent.findFirst({
 				where: {
 					user_id: user.id,
 					has_been_done: false,
 					expires_at: { gt: new Date() }
 				},
-				orderBy: { expires_at: 'desc' }
+				orderBy: { expires_at: 'asc' }
 			});
 
 			if (!pendingArchon) {
@@ -546,11 +553,6 @@ async function globalButtonInteractionHandler({
 					ephemeral: true
 				};
 			}
-
-			await prisma.archonEvent.update({
-				where: { id: pendingArchon.id },
-				data: { has_been_done: true }
-			});
 
 			return archonCommand(interaction.channelId, user, pendingArchon);
 		}
