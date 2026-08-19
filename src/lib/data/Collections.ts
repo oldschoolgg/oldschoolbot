@@ -128,6 +128,7 @@ import {
 	volcanicMineCL,
 	vorkathCL,
 	wintertodtCL,
+	yamaCL,
 	zalcanoCL,
 	zulrahCL
 } from '@/lib/data/CollectionsExport.js';
@@ -587,9 +588,6 @@ export const allCollectionLogs: ICollection = {
 				items: wintertodtCL,
 				fmtProg: mgProg('wintertodt')
 			},
-			///	Yama: {
-			///		items: CollectionLog.Yami.items
-			///	},
 			'Doom of Mokhaiotl': {
 				alias: ['doom', 'mokhaiotl', 'mokha', 'osto-ayak', 'ostayak'],
 				allItems: resolveItems([
@@ -635,6 +633,10 @@ export const allCollectionLogs: ICollection = {
 						`Total Delves: ${totalDelves}`
 					];
 				}
+			},
+			Yama: {
+				items: yamaCL,
+				allItems: Monsters.Yama.allItems
 			},
 			Zalcano: { items: zalcanoCL, fmtProg: ({ stats }) => `${stats.kcBank[EMonster.ZALCANO] ?? 0} KC` },
 			Zulrah: {

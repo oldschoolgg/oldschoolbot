@@ -188,6 +188,7 @@ export interface MiningActivityTaskOptions extends ActivityTaskOptions {
 	fakeDurationMin: number;
 	oreID: number;
 	quantity: number;
+	minedQuantity?: number;
 	powermine: boolean;
 	iQty?: number;
 }
