@@ -296,17 +296,18 @@ export async function coxCommand(
 		quantity
 	});
 
+	const raidName = isChallengeMode ? 'Challenge Mode Chambers of Xeric' : 'Regular Chambers of Xeric';
 	let str = isSolo
-		? `${user.minionName} is now doing ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
+		? `${user.minionName} is now doing ${quantity > 1 ? quantity : 'a'} ${raidName} raid${
 				quantity > 1 ? 's' : ''
 			}. The total trip will return in about ${formatTripDuration(user, duration)}.`
 		: isFakeMass
-			? `${partyOptions.leader.usernameOrMention} your party of (${user.minionName} & ${users.length - 1} simulated users) is now off to do ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
+			? `${partyOptions.leader.usernameOrMention} your party of (${user.minionName} & ${users.length - 1} simulated users) is now off to do ${quantity > 1 ? quantity : 'a'} ${raidName} raid${
 					quantity > 1 ? 's' : ''
 				} - the total trip will return in about ${formatTripDuration(user, duration)}.`
 			: `${partyOptions.leader.usernameOrMention}'s party (${users
 					.map(u => u.usernameOrMention)
-					.join(', ')}) is now off to do ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
+					.join(', ')}) is now off to do ${quantity > 1 ? quantity : 'a'} ${raidName} raid${
 					quantity > 1 ? 's' : ''
 				} - the total trip will return in about ${formatTripDuration(user, duration)}.`;
 
