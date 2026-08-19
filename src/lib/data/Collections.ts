@@ -78,6 +78,7 @@ import {
 	ChambersOfXeric,
 	Clues,
 	EItem,
+	ElderHoard,
 	EMonster,
 	type ItemBank,
 	ItemGroups,
@@ -141,6 +142,7 @@ import {
 	diariesCL,
 	distilleryCL,
 	dukeSucellusCL,
+	elderCacheCL,
 	emergedZukInfernoCL,
 	expertCapesCL,
 	type FormatProgressFunction,
@@ -1683,6 +1685,15 @@ export const allCollectionLogs: ICollection = {
 			'Divine Dominion': {
 				alias: ['dd', 'divine dominion'],
 				items: divineDominionCL
+			},
+			'Elder Cache': {
+				alias: ['elder cache', 'elder sigil', 'cache'],
+				allItems: ElderHoard.table.allItems,
+				items: elderCacheCL,
+				kcActivity: {
+					Default: async (_, __, { openableScores }) => openableScores.amount(75_043)
+				},
+				fmtProg: ({ stats }) => `${stats.openableScores.amount(75_043)} Opened`
 			}
 		}
 	},
