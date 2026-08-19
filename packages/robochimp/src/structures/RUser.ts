@@ -70,6 +70,14 @@ export class RUser {
 		return [Bits.Admin, Bits.Moderator, Bits.Trusted].some(_bit => this.bits.includes(_bit));
 	}
 
+	public isWikiContributor(): boolean {
+		return [Bits.WikiContributor].some(_bit => this.bits.includes(_bit));
+	}
+
+	public isContributor(): boolean {
+		return [Bits.Contributor].some(_bit => this.bits.includes(_bit));
+	}
+
 	get testingPoints(): number {
 		return this._user.testing_points;
 	}
