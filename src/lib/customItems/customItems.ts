@@ -15543,7 +15543,7 @@ setCustomItem(
 	10_000_000
 );
 
-setCustomItem(75_073, 'Buried firmament', 'Abyssal cape', {}, 10_000);
+setCustomItem(75_073, 'Buried firmament', 'Abyssal cape', { customItemData: { isSuperUntradeable: true, cantBeSacrificed: true, cantDropFromMysteryBoxes: true } }, 10_000);
 setCustomItem(75_074, "Archon's Ichor", 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000);
 
 //archaic dyes
