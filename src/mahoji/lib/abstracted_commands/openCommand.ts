@@ -1,5 +1,5 @@
 import type { ButtonBuilder } from '@oldschoolgg/discord';
-import { notEmpty, stringMatches, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
+import { Emoji, notEmpty, stringMatches, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import { MessageBuilder } from '@/discord/MessageBuilder.js';
@@ -31,6 +31,7 @@ export async function abstractedOpenUntilCommand(
 	maxOpenQuantity?: number,
 	result_quantity?: number
 ) {
+	const messages: string[] = [];
 	const targetQuantity = result_quantity ?? 1;
 	if (targetQuantity < 1 || !Number.isInteger(targetQuantity)) {
 		return 'The result quantity must be a positive integer.';
@@ -40,9 +41,8 @@ export async function abstractedOpenUntilCommand(
 	}
 
 	const perkTier = await user.fetchPerkTier();
-	if (maxOpenQuantity === undefined && perkTier < PerkTier.Three) {
-		return patronMsg(PerkTier.Three);
-	}
+	const unlimitedEnabled = user.bitfield.includes(BitField.UnlimitedOpenUntil);
+	const chatMessage = Boolean(perkTier || user.bitfield.includes(BitField.OriginalCyrSupporter));
 	name = name.replace(regex, '$1');
 	const openableItem = allOpenables.find(o => o.aliases.some(alias => stringMatches(alias, name)));
 	if (!openableItem) return "That's not a valid item.";
@@ -58,6 +58,18 @@ export async function abstractedOpenUntilCommand(
 
 	const amountOfThisOpenableOwned = user.bank.amount(openableItem.id);
 	if (amountOfThisOpenableOwned === 0) return "You don't own any of that item.";
+	if (!maxOpenQuantity) {
+		if (unlimitedEnabled) {
+			maxOpenQuantity = amountOfThisOpenableOwned;
+		} else {
+			if (chatMessage) {
+				messages.push(
+					`${Emoji.Seer} **You didn't specify a quantity, so Open Until will open 1 by default (Specify more with the \`quantity\` \`option\`). You can change this to default to Unlimited with \`/config user toggle\`...**`
+				);
+			}
+			maxOpenQuantity = 1;
+		}
+	}
 
 	const targetClue = ClueTiers.find(t => t.scrollID === openUntil.id);
 	const clueStack = sumArr(ClueTiers.map(t => user.bank.amount(t.scrollID)));
@@ -73,7 +85,9 @@ export async function abstractedOpenUntilCommand(
 	let amountOpened = 0;
 	let targetCount = 0;
 	const maxOpenLimit = maxOpenQuantity ?? amountOfThisOpenableOwned;
-	const max = Math.min(10000, amountOfThisOpenableOwned, maxOpenLimit);
+	let realMax = Math.max(10_000, perkTier * 10_000);
+	if (perkTier > 4 || user.bitfield.includes(BitField.OriginalCyrSupporter)) realMax = 100_000;
+	const max = Math.min(realMax, amountOfThisOpenableOwned, maxOpenLimit);
 	for (let i = 0; i < max; i++) {
 		cost.add(openable.openedItem.id);
 		const thisLoot = await getOpenableLoot({ openable, quantity: 1, user, rng });
@@ -88,6 +102,7 @@ export async function abstractedOpenUntilCommand(
 		cost,
 		loot,
 		messages: [
+			...messages,
 			`You opened ${amountOpened}x ${openable.openedItem.name} ${
 				targetCount === 0
 					? `but you didn't get a ${openUntil.name}!`
