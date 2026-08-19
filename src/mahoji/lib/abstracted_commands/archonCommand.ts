@@ -175,7 +175,7 @@ export async function handleTriggerArchon(user: MUser, data: ActivityTaskData, c
 		data: {
 			user_id: user.id,
 			tier,
-			expires_at: new Date(Date.now() + Time.Minute * 10),
+			expires_at: new Date(Date.now() + Time.Minute * 20),
 			has_been_done: false
 		}
 	});
@@ -183,7 +183,11 @@ export async function handleTriggerArchon(user: MUser, data: ActivityTaskData, c
 	components.push(makeArchonButton(tier));
 }
 
-export async function archonCommand(channelId: string, user: MUser, archonEvent: { tier: number }): Promise<string> {
+export async function archonCommand(
+	channelId: string,
+	user: MUser,
+	archonEvent: { id?: number; tier: number }
+): Promise<string> {
 	if (await user.minionIsBusy()) return 'Your minion is busy.';
 	const tier = archonEvent.tier as 1 | 2 | 3;
 	const presentation = archonPresentations[tier];
@@ -255,6 +259,13 @@ export async function archonCommand(channelId: string, user: MUser, archonEvent:
 	}
 	if (toRemoveFromBank > 0) {
 		await user.removeItemsFromBank(new Bank().add(ELDERFLAME_ARROW_ID, toRemoveFromBank));
+	}
+
+	if (archonEvent.id) {
+		await prisma.archonEvent.update({
+			where: { id: archonEvent.id },
+			data: { has_been_done: true }
+		});
 	}
 
 	await ActivityManager.startTrip({
