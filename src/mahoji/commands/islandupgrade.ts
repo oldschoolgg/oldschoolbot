@@ -11,6 +11,7 @@ import {
 	defaultLastCollected,
 	defaultMaintenanceTimestamps,
 	formatDuration,
+	getAccumulationEntries,
 	getActiveAssignment,
 	getNextUpgradeForCategory,
 	getRemainingCost,
@@ -27,6 +28,7 @@ import {
 	MAINTENANCE_WINDOW_MS,
 	maintenanceTimeRemaining,
 	PASSIVE_ACCUM_CAP_MS,
+	PASSIVE_TICK_MS,
 	SKILL_CATEGORIES,
 	type SkillCategory,
 	TIER_LEVEL_CEILING,
@@ -467,13 +469,10 @@ export const islandUpgradeCommand = defineCommand({
 				const mult = accumulationMultiplier(category, activeAssignment);
 				const yields = calculateAccumulatedYields(category, tier, skillLevel, lastAt, now, mult, user.id);
 
-				if (yields.length === 0) {
+				const entries = getAccumulationEntries(category, tier, skillLevel);
+				if (entries.length === 0) {
 					if (skillLevel < 1) {
 						return `You need at least level 1 ${category} to collect from **${meta.label}**.`;
-					}
-					const timeSince = now - lastAt;
-					if (timeSince < 60_000) {
-						return `Nothing has accumulated yet - come back in a minute.`;
 					}
 					return (
 						`Nothing to collect from **${meta.label}** yet.\n\n` +
@@ -481,6 +480,12 @@ export const islandUpgradeCommand = defineCommand({
 						`any materials this tier unlocks up to level **${ceiling}**.\n` +
 						`Raise your ${category} level to start receiving materials.`
 					);
+				}
+
+				if (yields.length === 0) {
+					const timeSince = now - lastAt;
+					const timeRemaining = Math.max(0, PASSIVE_TICK_MS - (timeSince % PASSIVE_TICK_MS));
+					return `Nothing has accumulated from **${meta.label}** yet - materials accumulate in batches every 20 minutes (next batch ready in **${formatDuration(timeRemaining)}**).`;
 				}
 
 				const isAssigned = (activeAssignment as string) === category;
