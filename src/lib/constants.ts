@@ -171,6 +171,8 @@ export enum BitField {
 	DisableAutoFarmButton = 54,
 	DisableBankWeights = 55,
 	DisableBankFavorites = 56,
+	UnlimitedOpenUntil = 57,
+	Boring = 58,
 
 	OriginalCyrSupporter = 199,
 	HasGivenBirthdayPack = 200,
@@ -291,7 +293,11 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 		protected: false,
 		userConfigurable: true
 	},
-
+	[BitField.UnlimitedOpenUntil]: {
+		name: 'Unlimited Open Until by Default (P)',
+		protected: false,
+		userConfigurable: false
+	},
 	[BitField.HasFlickeringBoon]: {
 		name: 'Has Flickering Boon',
 		protected: false,
@@ -513,7 +519,12 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 		name: 'Disable Glow Effects',
 		protected: false,
 		userConfigurable: true
-	}
+	},
+	[BitField.Boring]: {
+		name: 'Boring',
+		protected: true,
+		userConfigurable: false
+	},
 } as const;
 
 export const BadgesEnum = {

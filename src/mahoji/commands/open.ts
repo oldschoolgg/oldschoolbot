@@ -80,8 +80,6 @@ export const openCommand = defineCommand({
 			return 'The quantity must be a positive integer.';
 		}
 
-		options.quantity = clamp(options.quantity ?? 1, { min: 1, max: 100_000_000 });
-
 		if (options.open_until) {
 			return abstractedOpenUntilCommand(
 				rng,
@@ -93,6 +91,8 @@ export const openCommand = defineCommand({
 				options.disable_pets
 			);
 		}
+
+		options.quantity = clamp(options.quantity ?? 1, { min: 1, max: 100_000_000 });
 
 		if (options.name.toLowerCase() === 'all') {
 			return abstractedOpenCommand(rng, interaction, user, ['all'], 'auto', false);

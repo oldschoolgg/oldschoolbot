@@ -31,6 +31,8 @@ export function formatOrdinal(number: number): string {
 }
 
 export enum PerkTier {
+	// For completeness
+	Zero = 0,
 	/**
 	 * Boosters
 	 */

@@ -771,7 +771,11 @@ function calcTime(perkTier: PerkTier | 0) {
 	throw new Error('User is not a Tier 4+ Patron');
 }
 
-export const PATRON_DOUBLE_LOOT_COOLDOWN = Time.Day * 31;
+export function getNextPatronDoubleLootReset(lastTime: Date | number) {
+	const date = typeof lastTime === 'number' ? new Date(lastTime) : lastTime;
+	return Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 1);
+}
+
 async function patronTriggerDoubleLoot(user: MUser) {
 	const perkTier = await user.fetchPerkTier();
 	if (perkTier < PerkTier.Five) {
@@ -779,11 +783,9 @@ async function patronTriggerDoubleLoot(user: MUser) {
 	}
 
 	const lastTime = user.user.last_patron_double_time_trigger;
-	const differenceSinceLastUsage = lastTime ? Date.now() - lastTime.getTime() : null;
-	if (differenceSinceLastUsage && differenceSinceLastUsage < PATRON_DOUBLE_LOOT_COOLDOWN) {
-		return `This command is still on cooldown, you can use it again in: ${formatDuration(
-			PATRON_DOUBLE_LOOT_COOLDOWN - differenceSinceLastUsage
-		)}.`;
+	const nextReset = lastTime ? getNextPatronDoubleLootReset(lastTime) : null;
+	if (nextReset && Date.now() < nextReset) {
+		return `This command is still on cooldown, you can use it again in: ${formatDuration(nextReset - Date.now())}.`;
 	}
 
 	const time = calcTime(perkTier);

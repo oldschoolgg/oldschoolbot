@@ -130,7 +130,7 @@ export async function getUsersPerkTier({
 }: {
 	user: MUser;
 	forceNoCache?: boolean;
-}): Promise<PerkTier | 0> {
+}): Promise<PerkTier> {
 	if (!forceNoCache) {
 		// We want a way to force a cache refresh
 		// Otherwise, we look for a cached tier:
