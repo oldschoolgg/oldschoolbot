@@ -222,7 +222,7 @@ function tierRelevanceFactor(itemMinLevel: number, tier: number): number {
 	return 0.08;
 }
 
-function getAccumulationEntries(
+export function getAccumulationEntries(
 	category: SkillCategory,
 	tier: number,
 	skillLevel: number
