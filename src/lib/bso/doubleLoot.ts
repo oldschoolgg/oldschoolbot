@@ -41,6 +41,7 @@ export async function addPatronLootTime(_tier: number, user: MUser | null) {
 		4: 25,
 		5: 60
 	};
+	// TODO: Again, this should be the Tier associated with the best entitlement.
 	const tier = _tier - 1;
 	if (!map[tier]) return;
 	const minutes = map[tier];

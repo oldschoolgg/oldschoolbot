@@ -865,7 +865,7 @@ setCustomItem(40_084, 'Twisted bow (3a)', 'Twisted bow', {}, 500_000_000);
 /**
  * Non-mystery box items
  *
- * Items from 45_000 - 50_000 will not be dropped by mystery boxes, but can be traded.
+ * Items from 45_000 - 50_000 will not be dropped by mystery boxes but can be traded.
  */
 
 // Birthday pack
@@ -878,8 +878,8 @@ setCustomItem(45_008, 'Sparkler', 'Coal', {}, 1000);
 setCustomItem(45_009, 'Party music box', 'Coal', {}, 1000);
 setCustomItem(45_010, 'Birthday pack', 'Coal', {}, 1000);
 
-// Gamblers box
-setCustomItem(45_100, 'Gamblers bag', 'Coal', {}, 1000);
+// Gambler's bag
+setCustomItem(45_100, "Gambler's bag", 'Coal', {}, 1000);
 setCustomItem(45_101, '4 sided die', 'Coal', {}, 1000);
 setCustomItem(45_102, '6 sided die', 'Coal', {}, 1000);
 setCustomItem(45_103, '8 sided die', 'Coal', {}, 1000);
@@ -2286,7 +2286,7 @@ setCustomItem(
 	'Royal dragonhide boots',
 	'Leather boots',
 	{
-		highalch: 3000 * 1,
+		highalch: 3000,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -15235,7 +15235,7 @@ setCustomItem(
 	75_048,
 	'Elderflame catalyst',
 	'Coal',
-	{ tradeable: false, customItemData: { cantDropFromMysteryBoxes: true } },
+	{ tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } },
 	10_000_000
 );
 
@@ -15247,6 +15247,9 @@ setCustomItem(
 		tradeable: true,
 		tradeable_on_ge: true,
 		buy_limit: 10,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		},
 		equipment: {
 			attack_stab: 0,
 			attack_slash: 0,
@@ -15281,7 +15284,8 @@ setCustomItem(
 		tradeable: false,
 		tradeable_on_ge: false,
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
 		},
 		equipment: {
 			attack_stab: 0,
@@ -15323,7 +15327,10 @@ setCustomItem(
 	{
 		tradeable: true,
 		tradeable_on_ge: true,
-		buy_limit: 10
+		buy_limit: 10,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
 	},
 	10_000_000
 );
@@ -15544,49 +15551,49 @@ setCustomItem(
 	75_075,
 	'Searcrown band (archaic)',
 	'Searcrown band',
-	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true } },
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true, cantDropFromMysteryBoxes: true } },
 	10_000
 );
 setCustomItem(
 	75_076,
 	'Dragonbane aegis (archaic)',
 	'Dragonbane aegis',
-	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true } },
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true, cantDropFromMysteryBoxes : true } },
 	10_000
 );
 setCustomItem(
 	75_077,
 	'Empyrean greathelm (archaic)',
 	'Empyrean greathelm',
-	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true } },
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true, cantDropFromMysteryBoxes:true } },
 	10_000
 );
 setCustomItem(
 	75_078,
 	'Empyrean greatplate (archaic)',
 	'Empyrean greatplate',
-	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true } },
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true, cantDropFromMysteryBoxes:true } },
 	10_000
 );
 setCustomItem(
 	75_079,
 	'Empyrean greatgreaves (archaic)',
 	'Empyrean greatgreaves',
-	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true } },
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true, cantDropFromMysteryBoxes:true } },
 	10_000
 );
 setCustomItem(
 	75_080,
 	'Empyrean greatsabaton (archaic)',
 	'Empyrean greatsabaton',
-	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true } },
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true, cantDropFromMysteryBoxes:true } },
 	10_000
 );
 setCustomItem(
 	75_081,
 	'Empyrean greatgauntlets (archaic)',
 	'Empyrean greatgauntlets',
-	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true } },
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true, cantDropFromMysteryBoxes:true } },
 	10_000
 );
 
