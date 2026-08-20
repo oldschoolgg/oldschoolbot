@@ -49,7 +49,8 @@ const Yama: SmithedItem[] = [
 			[itemID('Infernal plate')]: 9
 		},
 		timeToUse: fiveTicks,
-		outputMultiple: 1
+		outputMultiple: 1,
+		addToCl: false
 	},
 	{
 		name: 'Oathplate chest',
@@ -60,7 +61,8 @@ const Yama: SmithedItem[] = [
 			[itemID('Infernal plate')]: 9
 		},
 		timeToUse: fiveTicks,
-		outputMultiple: 1
+		outputMultiple: 1,
+		addToCl: false
 	},
 	{
 		name: 'Oathplate legs',
@@ -71,7 +73,8 @@ const Yama: SmithedItem[] = [
 			[itemID('Infernal plate')]: 9
 		},
 		timeToUse: fiveTicks,
-		outputMultiple: 1
+		outputMultiple: 1,
+		addToCl: false
 	}
 ];
 

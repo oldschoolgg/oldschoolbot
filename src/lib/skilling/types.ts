@@ -180,6 +180,7 @@ export interface SmithedItem {
 	timeToUse: number;
 	outputMultiple: number;
 	qpRequired?: number;
+	addToCl?: boolean;
 }
 
 export interface Craftable {

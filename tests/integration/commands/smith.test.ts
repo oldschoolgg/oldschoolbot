@@ -58,6 +58,8 @@ describe('Smith Command', async () => {
 			expect(res.activityResult?.duration).toEqual(3250);
 			await user.bankAmountMatch(armour, 1);
 			await user.bankAmountMatch('Infernal plate', 0);
+			await user.sync();
+			expect(user.cl.amount(armour)).toEqual(0);
 			expect(user.skillsAsXP.smithing - beforeXP).toEqual(2000);
 		}
 	});

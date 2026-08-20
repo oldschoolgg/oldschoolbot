@@ -589,7 +589,20 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 		cost.add(equippedArrowId, Math.min(600, Math.ceil(targetDelve * arrowsPerDelve)));
 	}
 
-	if (hasZcb) cost.add('Ruby bolts (e)', Math.min(60, Math.ceil(targetDelve * 5)));
+	if (hasZcb) {
+		let boltsRemaining = Math.min(60, Math.ceil(targetDelve * 5));
+		const rubyBoltVariants = ['Ruby bolts (e)', 'Ruby dragon bolts (e)'];
+		for (const bolt of rubyBoltVariants) {
+			if (boltsRemaining <= 0) break;
+			const owned = user.bank.amount(bolt);
+			if (owned > 0) {
+				const use = Math.min(owned, boltsRemaining);
+				cost.add(bolt, use);
+				boltsRemaining -= use;
+			}
+		}
+		if (boltsRemaining > 0) cost.add('Ruby dragon bolts (e)', boltsRemaining);
+	}
 	if (hasCrystalHalb && !hasScythe && !hasNoxHalberd) cost.add('Crystal shard', Math.ceil(targetDelve));
 
 	const realCost = new Bank();
