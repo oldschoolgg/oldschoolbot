@@ -3692,11 +3692,45 @@
 				"rng": {
 					"chance_per_kill": 20
 				}
+			},
+			{
+				"id": 1155,
+				"name": "Yama Adept",
+				"type": "kill_count",
+				"monster": "Yama",
+				"desc": "Defeat Yama once.",
+				"requirements": [
+					{
+						"kcRequirement": {
+							"14176": 1
+						}
+					}
+				]
+			},
+			{
+				"id": 1156,
+				"name": "Back so soon?",
+				"type": "mechanical",
+				"monster": "Yama",
+				"desc": "Defeat Yama without the judge being attacked with the wrong style and without taking more than one instance of damage each time you are exiled from the arena.",
+				"rng": {
+					"chance_per_kill": 5
+				}
+			},
+			{
+				"id": 1157,
+				"name": "Yama Speed-Trialist",
+				"type": "speed",
+				"monster": "Yama",
+				"desc": "Defeat Yama in an average time of under 3:38 over your last four kills.",
+				"rng": {
+					"chance_per_kill": 60
+				}
 			}
 		],
 		"name": "Elite",
 		"taskPoints": 4,
-		"rewardThreshold": 955
+		"rewardThreshold": 967
 	},
 	"master": {
 		"tasks": [
@@ -5409,11 +5443,65 @@
 				"rng": {
 					"chance_per_kill": 70
 				}
+			},
+			{
+				"id": 2158,
+				"name": "Yama Veteran",
+				"type": "kill_count",
+				"monster": "Yama",
+				"desc": "Defeat Yama 50 times.",
+				"requirements": [
+					{
+						"kcRequirement": {
+							"14176": 50
+						}
+					}
+				]
+			},
+			{
+				"id": 2159,
+				"name": "Fire fighter",
+				"type": "mechanical",
+				"monster": "Yama",
+				"desc": "Defeat Yama without getting hit by fire and having only killed void flares with special attacks.",
+				"rng": {
+					"chance_per_kill": 50
+				}
+			},
+			{
+				"id": 2160,
+				"name": "Shadow dancer",
+				"type": "mechanical",
+				"monster": "Yama",
+				"desc": "Defeat Yama without getting hit by shadows and without being more than one tile away from the center of his shadow crash attack.",
+				"rng": {
+					"chance_per_kill": 60
+				}
+			},
+			{
+				"id": 2161,
+				"name": "No toppings, no drinks, thanks",
+				"type": "restriction",
+				"monster": "Yama",
+				"desc": "Defeat Yama without anybody healing using anything other than plain pizza and without anybody drinking any potions.",
+				"rng": {
+					"chance_per_kill": 100
+				}
+			},
+			{
+				"id": 2162,
+				"name": "Yama Speed-Chaser",
+				"type": "speed",
+				"monster": "Yama",
+				"desc": "Defeat Yama in an average time of under 3:00 over your last four kills.",
+				"rng": {
+					"chance_per_kill": 135
+				}
 			}
 		],
 		"name": "Master",
 		"taskPoints": 5,
-		"rewardThreshold": 1720
+		"rewardThreshold": 1757
 	},
 	"grandmaster": {
 		"tasks": [
@@ -6605,10 +6693,30 @@
 				"rng": {
 					"chance_per_kill": 100
 				}
+			},
+			{
+				"id": 3111,
+				"name": "Contract Choreographer",
+				"type": "perfection",
+				"monster": "Yama",
+				"desc": "Defeat Yama whilst completing 'Shadow Dancer', 'Fire Fighter', 'Back so soon?' and without taking any other avoidable damage.",
+				"rng": {
+					"chance_per_kill": 75
+				}
+			},
+			{
+				"id": 3112,
+				"name": "Yama Speed-Runner",
+				"type": "speed",
+				"monster": "Yama",
+				"desc": "Defeat Yama in an average time of under 2:34 over your last four kills.",
+				"rng": {
+					"chance_per_kill": 250
+				}
 			}
 		],
 		"name": "Grandmaster",
 		"taskPoints": 6,
-		"rewardThreshold": 2368
+		"rewardThreshold": 2417
 	}
 }

@@ -35,6 +35,7 @@ export type SkillNameType = (typeof SkillsArray)[number];
 
 export interface Ore {
 	level: number;
+	prayerLevel?: number;
 	xp: number;
 	id: number;
 	name: string;
@@ -46,6 +47,9 @@ export interface Ore {
 	minerals?: number;
 	clueScrollChance?: number;
 	aliases?: string[];
+	outputId?: number;
+	outputMultiplier?: number;
+	fixedRatePerHour?: [number, number];
 }
 
 export interface Log {

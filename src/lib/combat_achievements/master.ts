@@ -1816,5 +1816,61 @@ export const masterCombatAchievements: CombatAchievement[] = [
 			chancePerKill: 70,
 			hasChance: isCertainMonsterTrip(Monsters.TheHueycoatl.id)
 		}
+	},
+	{
+		id: 2158,
+		name: 'Yama Veteran',
+		type: 'kill_count',
+		monster: 'Yama',
+		desc: 'Defeat Yama 50 times.',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Yama.id]: 50
+			}
+		})
+	},
+	{
+		id: 2159,
+		name: 'Fire fighter',
+		type: 'mechanical',
+		monster: 'Yama',
+		desc: 'Defeat Yama without getting hit by fire and having only killed void flares with special attacks.',
+		rng: {
+			chancePerKill: 50,
+			hasChance: isCertainMonsterTrip(Monsters.Yama.id)
+		}
+	},
+	{
+		id: 2160,
+		name: 'Shadow dancer',
+		type: 'mechanical',
+		monster: 'Yama',
+		desc: 'Defeat Yama without getting hit by shadows and without being more than one tile away from the center of his shadow crash attack.',
+		rng: {
+			chancePerKill: 60,
+			hasChance: isCertainMonsterTrip(Monsters.Yama.id)
+		}
+	},
+	{
+		id: 2161,
+		name: 'No toppings, no drinks, thanks',
+		type: 'restriction',
+		monster: 'Yama',
+		desc: 'Defeat Yama without anybody healing using anything other than plain pizza and without anybody drinking any potions.',
+		rng: {
+			chancePerKill: 100,
+			hasChance: isCertainMonsterTrip(Monsters.Yama.id)
+		}
+	},
+	{
+		id: 2162,
+		name: 'Yama Speed-Chaser',
+		type: 'speed',
+		monster: 'Yama',
+		desc: 'Defeat Yama in an average time of under 3:00 over your last four kills.',
+		rng: {
+			chancePerKill: 135,
+			hasChance: isCertainMonsterTrip(Monsters.Yama.id)
+		}
 	}
 ];

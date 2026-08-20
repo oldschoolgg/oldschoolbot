@@ -686,6 +686,40 @@
 		"qp_required": 4
 	},
 	{
+		"name": "Infernal chunk",
+		"level": 83,
+		"xp": 750,
+		"id": 30862,
+		"input_bars": {
+			"30858": 10
+		},
+		"time_to_use": 3000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Infernal nugget",
+		"level": 83,
+		"xp": 11.5,
+		"id": 30858,
+		"input_bars": {
+			"30765": 5,
+			"30848": 28
+		},
+		"time_to_use": 3000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Infernal plate",
+		"level": 83,
+		"xp": 1250.1,
+		"id": 30864,
+		"input_bars": {
+			"30862": 1
+		},
+		"time_to_use": 242400,
+		"output_multiple": 1
+	},
+	{
 		"name": "Iron 2h sword",
 		"level": 29,
 		"xp": 75,
@@ -1322,6 +1356,39 @@
 			"2359": 3
 		},
 		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Oathplate chest",
+		"level": 83,
+		"xp": 2000,
+		"id": 30753,
+		"input_bars": {
+			"30864": 9
+		},
+		"time_to_use": 3000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Oathplate helm",
+		"level": 83,
+		"xp": 2000,
+		"id": 30750,
+		"input_bars": {
+			"30864": 9
+		},
+		"time_to_use": 3000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Oathplate legs",
+		"level": 83,
+		"xp": 2000,
+		"id": 30756,
+		"input_bars": {
+			"30864": 9
+		},
+		"time_to_use": 3000,
 		"output_multiple": 1
 	},
 	{
