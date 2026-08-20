@@ -16,7 +16,7 @@
 	{
 		"level": 115,
 		"xp": 650,
-		"id": 75027,
+		"id": 75026,
 		"name": "Ancient Verdant Logs",
 		"find_new_tree_time": 8.5,
 		"banking_time": 25,
@@ -211,7 +211,7 @@
 	{
 		"level": 100,
 		"xp": 500,
-		"id": 75026,
+		"id": 75025,
 		"name": "Verdant Logs",
 		"find_new_tree_time": 8.5,
 		"banking_time": 25,
