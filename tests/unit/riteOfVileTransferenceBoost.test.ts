@@ -25,7 +25,7 @@ function runRiteBoost(monsterID: number, hasRite = true) {
 describe('Rite of vile transference boost', () => {
 	it('applies the configured boost percentages', () => {
 		const expectedBoosts: [number, number][] = [
-			[Monsters.Yama.id, 7],
+			[Monsters.Yama.id, 5],
 			[Monsters.Scurrius.id, 5],
 			[Monsters.Amoxliatl.id, 3],
 			[Monsters.Branda.id, 5],

@@ -1535,19 +1535,17 @@ export const miscBossKillables: KillableMonster[] = [
 		id: Monsters.Yama.id,
 		name: Monsters.Yama.name,
 		aliases: Monsters.Yama.aliases,
-		timeToFinish: Time.Minute * 8,
+		timeToFinish: Time.Minute * 5.63,
 		respawnTime: 5000,
 		table: Monsters.Yama,
 		customMonsterHP: 2500,
 		difficultyRating: 10,
 		notifyDrops: resolveItems(['Yami']),
-		itemsRequired: resolveItems(['Purging staff']),
+		itemsRequired: resolveItems(['Purging staff', 'Emberlight']),
 		qpRequired: 115,
 		itemInBankBoosts: [
 			{
-				[itemID('Emberlight')]: 15,
-				[itemID('Arclight')]: 10,
-				[itemID('Darklight')]: 6
+				[itemID('Burning claws')]: 3
 			},
 			{
 				[itemID('Lightbearer')]: 2

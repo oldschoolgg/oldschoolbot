@@ -1367,7 +1367,8 @@
 			"30864": 9
 		},
 		"time_to_use": 3000,
-		"output_multiple": 1
+		"output_multiple": 1,
+		"add_to_cl": false
 	},
 	{
 		"name": "Oathplate helm",
@@ -1378,7 +1379,8 @@
 			"30864": 9
 		},
 		"time_to_use": 3000,
-		"output_multiple": 1
+		"output_multiple": 1,
+		"add_to_cl": false
 	},
 	{
 		"name": "Oathplate legs",
@@ -1389,7 +1391,8 @@
 			"30864": 9
 		},
 		"time_to_use": 3000,
-		"output_multiple": 1
+		"output_multiple": 1,
+		"add_to_cl": false
 	},
 	{
 		"name": "Oil lantern frame",

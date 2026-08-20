@@ -10007,18 +10007,16 @@
 	{
 		"id": 14176,
 		"name": "Yama",
-		"time_to_finish": 480000,
+		"time_to_finish": 337800,
 		"respawn_time": 5000,
 		"custom_monster_hp": 2500,
 		"difficulty_rating": 10,
 		"notify_drops": ["Yami"],
-		"items_required": ["Purging staff"],
+		"items_required": ["Emberlight", "Purging staff"],
 		"qp_required": 115,
 		"item_in_bank_boosts": [
 			{
-				"6746": 6,
-				"19675": 10,
-				"29589": 15
+				"29577": 3
 			},
 			{
 				"25975": 2

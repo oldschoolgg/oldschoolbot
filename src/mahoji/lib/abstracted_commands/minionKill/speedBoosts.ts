@@ -252,7 +252,7 @@ const blackMaskBoost: Boost = {
 };
 
 const riteOfVileTransferenceBoostByMonsterID: Record<number, number> = {
-	[Monsters.Yama.id]: 7,
+	[Monsters.Yama.id]: 5,
 	[Monsters.Scurrius.id]: 5,
 	[Monsters.Amoxliatl.id]: 3,
 	[Monsters.Branda.id]: 5,

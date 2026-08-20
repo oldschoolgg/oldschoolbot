@@ -1,6 +1,6 @@
 {
-	"hash": "4c00f9c3382ffa9e4560dab3e78aac72",
-	"date": "2026-08-19T11:31:34.751Z",
+	"hash": "d29a52cf8de8e8deeb7b1a36445c505b",
+	"date": "2026-08-20T09:55:58.477Z",
 	"data": [
 		{
 			"id": 2,
@@ -6172,19 +6172,17 @@
 		{
 			"id": 14176,
 			"name": "Yama",
-			"base_kill_time_ms": 480000,
+			"base_kill_time_ms": 337800,
 			"respawn_time_ms": 5000,
 			"is_wildy": false,
 			"is_slayer_only": false,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": ["Purging staff"],
+			"items_required": ["Purging staff", "Emberlight"],
 			"qp_required": 115,
 			"item_in_bank_boosts": [
 				{
-					"Arclight": 10,
-					"Darklight": 6,
-					"Emberlight": 15
+					"Burning claws": 3
 				},
 				{
 					"Lightbearer": 2
