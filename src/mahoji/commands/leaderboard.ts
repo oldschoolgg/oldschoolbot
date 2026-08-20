@@ -1,6 +1,7 @@
 import { calcWhatPercent, formatDuration, stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
 import { convertXPtoLVL } from 'oldschooljs';
 
+import { Prisma } from '@/prisma/main.js';
 import { defineOption } from '@/discord/index.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { MAX_LEVEL, masteryKey } from '@/lib/constants.js';
@@ -160,19 +161,66 @@ async function clLb(interaction: MInteraction, inputType: string, ironmenOnly: b
 	});
 }
 
-async function creaturesLb(interaction: MInteraction, creatureName: string) {
+const birdhouseRunLeaderboard = {
+	name: 'Birdhouse runs'
+};
+
+function hunterCatchLeaderboards() {
+	return [...Hunter.Creatures, birdhouseRunLeaderboard];
+}
+
+function hunterCatchSearchNames(entry: ReturnType<typeof hunterCatchLeaderboards>[number]) {
+	return 'aliases' in entry && Array.isArray(entry.aliases) ? [entry.name, ...entry.aliases] : [entry.name];
+}
+
+async function creaturesLb(interaction: MInteraction, creatureName: string, ironmanOnly: boolean) {
+	const birdhouseRunMatch = stringMatches(birdhouseRunLeaderboard.name, creatureName);
+	if (birdhouseRunMatch) {
+		const ironmanIds = ironmanOnly
+			? await prisma.user
+					.findMany({ where: { minion_ironman: true }, select: { id: true } })
+					.then(users => users.map(user => BigInt(user.id)))
+			: undefined;
+		const data = await prisma.activity.groupBy({
+			by: ['user_id'],
+			where: {
+				type: 'Birdhouse',
+				completed: true,
+				...(ironmanIds ? { user_id: { in: ironmanIds } } : {})
+			},
+			_count: {
+				id: true
+			},
+			orderBy: {
+				_count: {
+					id: 'desc'
+				}
+			},
+			take: 50
+		});
+		return doMenuWrapper({
+			ironmanOnly,
+			interaction,
+			users: data.map(d => ({ id: d.user_id.toString(), score: d._count.id })),
+			title: 'Birdhouse Run Leaderboard',
+			formatter: value => `${value.toLocaleString()} Runs`
+		});
+	}
 	const creature = Hunter.Creatures.find(creature =>
 		creature.aliases.some(
 			alias => stringMatches(alias, creatureName) || stringMatches(alias.split(' ')[0], creatureName)
 		)
 	);
 	if (!creature) return 'Thats not a valid creature.';
-	const query = `SELECT user_id::text as id, ("creature_scores"->>'${creature.id}')::int as count
-				   FROM user_stats WHERE "creature_scores"->>'${creature.id}' IS NOT NULL
-				   ORDER BY count DESC LIMIT 50;`;
-	const data: { id: string; count: number }[] = await prisma.$queryRawUnsafe(query);
+	const data = await prisma.$queryRaw<{ id: string; count: number }[]>(Prisma.sql`
+		SELECT us.user_id::text as id, (us.creature_scores->>${creature.id.toString()})::int as count
+		FROM user_stats us
+		${ironmanOnly ? Prisma.sql`INNER JOIN users u ON u.id::bigint = us.user_id` : Prisma.empty}
+		WHERE us.creature_scores->>${creature.id.toString()} IS NOT NULL
+		${ironmanOnly ? Prisma.sql`AND u."minion.ironman" = true` : Prisma.empty}
+		ORDER BY count DESC LIMIT 50;`);
 	return doMenuWrapper({
-		ironmanOnly: false,
+		ironmanOnly,
 		interaction,
 		users: data.map(d => ({ id: d.id, score: d.count })),
 		title: `Catch Leaderboard for ${creature.name}`
@@ -692,16 +740,21 @@ export const leaderboardCommand = defineCommand({
 				{
 					type: 'String',
 					name: 'creature',
-					description: 'The particular creature you want to check.',
+					description: 'The particular creature or birdhouse run leaderboard you want to check.',
 					required: true,
 					autocomplete: async ({ value }: StringAutoComplete) => {
-						return Hunter.Creatures.filter(i =>
-							!value
-								? true
-								: [i.name, ...i.aliases].some(str => str.toLowerCase().includes(value.toLowerCase()))
-						).map(i => ({ name: i.name, value: i.name }));
+						return hunterCatchLeaderboards()
+							.filter(i =>
+								!value
+									? true
+									: hunterCatchSearchNames(i).some(str =>
+											str.toLowerCase().includes(value.toLowerCase())
+										)
+							)
+							.map(i => ({ name: i.name, value: i.name }));
 					}
-				}
+				},
+				ironmanOnlyOption
 			]
 		},
 		{
@@ -896,7 +949,11 @@ export const leaderboardCommand = defineCommand({
 		}
 
 		if (options.hunter_catches) {
-			return creaturesLb(interaction, options.hunter_catches.creature);
+			return creaturesLb(
+				interaction,
+				options.hunter_catches.creature,
+				Boolean(options.hunter_catches.ironmen_only)
+			);
 		}
 
 		if (options.agility_laps) {
