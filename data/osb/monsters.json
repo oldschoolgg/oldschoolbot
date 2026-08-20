@@ -77,9 +77,7 @@
 			"is_slayer_only": false,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": [
-				"Anti-dragon shield"
-			],
+			"items_required": ["Anti-dragon shield"],
 			"qp_required": 205,
 			"item_in_bank_boosts": [],
 			"can_barrage": false,
@@ -95,9 +93,7 @@
 			"is_slayer_only": true,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": [
-				"Boots of stone"
-			],
+			"items_required": ["Boots of stone"],
 			"qp_required": 0,
 			"item_in_bank_boosts": [
 				{
@@ -159,13 +155,7 @@
 			"can_be_pked": false,
 			"is_wildy_multi": false,
 			"items_required": [
-				[
-					"Elemental shield",
-					"Mind shield",
-					"Dragonfire shield",
-					"Dragonfire ward",
-					"Ancient wyvern shield"
-				]
+				["Elemental shield", "Mind shield", "Dragonfire shield", "Dragonfire ward", "Ancient wyvern shield"]
 			],
 			"qp_required": 2,
 			"item_in_bank_boosts": [],
@@ -578,9 +568,7 @@
 			"can_be_pked": false,
 			"is_wildy_multi": false,
 			"pk_base_death_chance": 7,
-			"items_required": [
-				"Anti-dragon shield"
-			],
+			"items_required": ["Anti-dragon shield"],
 			"qp_required": 0,
 			"item_in_bank_boosts": [],
 			"can_barrage": false,
@@ -629,9 +617,7 @@
 			"is_slayer_only": false,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": [
-				"Frozen key"
-			],
+			"items_required": ["Frozen key"],
 			"qp_required": 1,
 			"item_in_bank_boosts": [
 				{
@@ -674,9 +660,7 @@
 			"is_slayer_only": false,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": [
-				"Anti-dragon shield"
-			],
+			"items_required": ["Anti-dragon shield"],
 			"qp_required": 0,
 			"item_in_bank_boosts": [],
 			"can_barrage": false,
@@ -724,9 +708,7 @@
 			"is_slayer_only": false,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": [
-				"Anti-dragon shield"
-			],
+			"items_required": ["Anti-dragon shield"],
 			"qp_required": 0,
 			"item_in_bank_boosts": [],
 			"can_barrage": false,
@@ -743,24 +725,10 @@
 			"can_be_pked": false,
 			"is_wildy_multi": false,
 			"items_required": [
-				[
-					"Anti-dragon shield",
-					"Dragonfire shield",
-					"Dragonfire ward"
-				],
-				[
-					"Rune crossbow",
-					"Karil's crossbow",
-					"Armadyl crossbow"
-				],
-				[
-					"Armadyl chestplate",
-					"Karil's leathertop"
-				],
-				[
-					"Armadyl chainskirt",
-					"Karil's leatherskirt"
-				]
+				["Anti-dragon shield", "Dragonfire shield", "Dragonfire ward"],
+				["Rune crossbow", "Karil's crossbow", "Armadyl crossbow"],
+				["Armadyl chestplate", "Karil's leathertop"],
+				["Armadyl chainskirt", "Karil's leatherskirt"]
 			],
 			"qp_required": 0,
 			"item_in_bank_boosts": [],
@@ -777,9 +745,7 @@
 			"is_slayer_only": false,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": [
-				"Anti-dragon shield"
-			],
+			"items_required": ["Anti-dragon shield"],
 			"qp_required": 0,
 			"item_in_bank_boosts": [],
 			"can_barrage": false,
@@ -795,9 +761,7 @@
 			"is_slayer_only": false,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": [
-				"Anti-dragon shield"
-			],
+			"items_required": ["Anti-dragon shield"],
 			"qp_required": 0,
 			"item_in_bank_boosts": [],
 			"can_barrage": false,
@@ -813,9 +777,7 @@
 			"is_slayer_only": false,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": [
-				"Anti-dragon shield"
-			],
+			"items_required": ["Anti-dragon shield"],
 			"qp_required": 0,
 			"item_in_bank_boosts": [],
 			"can_barrage": false,
@@ -951,16 +913,8 @@
 			"can_be_pked": false,
 			"is_wildy_multi": false,
 			"items_required": [
-				[
-					"Karil's leathertop",
-					"Armadyl chestplate",
-					"Black d'hide body"
-				],
-				[
-					"Karil's leatherskirt",
-					"Armadyl chainskirt",
-					"Black d'hide chaps"
-				]
+				["Karil's leathertop", "Armadyl chestplate", "Black d'hide body"],
+				["Karil's leatherskirt", "Armadyl chainskirt", "Black d'hide chaps"]
 			],
 			"qp_required": 20,
 			"item_in_bank_boosts": [],
@@ -1112,14 +1066,8 @@
 			"is_wildy_multi": false,
 			"pk_base_death_chance": 5,
 			"items_required": [
-				[
-					"Black d'hide body",
-					"Karil's leathertop"
-				],
-				[
-					"Black d'hide chaps",
-					"Karil's leatherskirt"
-				]
+				["Black d'hide body", "Karil's leathertop"],
+				["Black d'hide chaps", "Karil's leatherskirt"]
 			],
 			"qp_required": 0,
 			"item_in_bank_boosts": [],
@@ -1203,14 +1151,8 @@
 			"can_be_pked": false,
 			"is_wildy_multi": false,
 			"items_required": [
-				[
-					"Karil's leathertop",
-					"Armadyl chestplate"
-				],
-				[
-					"Karil's leatherskirt",
-					"Armadyl chainskirt"
-				]
+				["Karil's leathertop", "Armadyl chestplate"],
+				["Karil's leatherskirt", "Armadyl chainskirt"]
 			],
 			"qp_required": 1,
 			"item_in_bank_boosts": [
@@ -1253,12 +1195,7 @@
 			"is_slayer_only": false,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": [
-				[
-					"Zamorakian spear",
-					"Osmumten's fang"
-				]
-			],
+			"items_required": [["Zamorakian spear", "Osmumten's fang"]],
 			"qp_required": 0,
 			"item_in_bank_boosts": [
 				{
@@ -1316,10 +1253,7 @@
 			"is_slayer_only": false,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": [
-				"Fishbowl helmet",
-				"Diving apparatus"
-			],
+			"items_required": ["Fishbowl helmet", "Diving apparatus"],
 			"qp_required": 0,
 			"item_in_bank_boosts": [],
 			"can_barrage": false,
@@ -1457,14 +1391,8 @@
 				"Guthan's chainskirt",
 				"Guthan's helm",
 				"Guthan's warspear",
-				[
-					"Armadyl chestplate",
-					"Karil's leathertop"
-				],
-				[
-					"Armadyl chainskirt",
-					"Karil's leatherskirt"
-				]
+				["Armadyl chestplate", "Karil's leathertop"],
+				["Armadyl chainskirt", "Karil's leatherskirt"]
 			],
 			"qp_required": 0,
 			"item_in_bank_boosts": [
@@ -1498,16 +1426,8 @@
 				"Guthan's chainskirt",
 				"Guthan's helm",
 				"Guthan's warspear",
-				[
-					"Torva platebody",
-					"Bandos chestplate",
-					"Torag's platebody"
-				],
-				[
-					"Torva platelegs",
-					"Bandos tassets",
-					"Torag's platelegs"
-				]
+				["Torva platebody", "Bandos chestplate", "Torag's platebody"],
+				["Torva platelegs", "Bandos tassets", "Torag's platelegs"]
 			],
 			"qp_required": 0,
 			"item_in_bank_boosts": [
@@ -1554,16 +1474,8 @@
 				"Guthan's chainskirt",
 				"Guthan's helm",
 				"Guthan's warspear",
-				[
-					"Bandos chestplate",
-					"Torag's platebody",
-					"Torva platebody"
-				],
-				[
-					"Bandos tassets",
-					"Torag's platelegs",
-					"Torva platelegs"
-				]
+				["Bandos chestplate", "Torag's platebody", "Torva platebody"],
+				["Bandos tassets", "Torag's platelegs", "Torva platelegs"]
 			],
 			"qp_required": 0,
 			"item_in_bank_boosts": [
@@ -1659,34 +1571,12 @@
 			"can_be_pked": false,
 			"is_wildy_multi": false,
 			"items_required": [
-				[
-					"Torva platebody",
-					"Bandos chestplate"
-				],
-				[
-					"Verac's plateskirt",
-					"Bandos tassets",
-					"Torva platelegs"
-				],
-				[
-					"Arclight",
-					"Emberlight",
-					"Abyssal whip",
-					"Dragon scimitar"
-				],
-				[
-					"Rune crossbow",
-					"Karil's crossbow",
-					"Armadyl crossbow"
-				],
-				[
-					"Armadyl chestplate",
-					"Karil's leathertop"
-				],
-				[
-					"Armadyl chainskirt",
-					"Karil's leatherskirt"
-				]
+				["Torva platebody", "Bandos chestplate"],
+				["Verac's plateskirt", "Bandos tassets", "Torva platelegs"],
+				["Arclight", "Emberlight", "Abyssal whip", "Dragon scimitar"],
+				["Rune crossbow", "Karil's crossbow", "Armadyl crossbow"],
+				["Armadyl chestplate", "Karil's leathertop"],
+				["Armadyl chainskirt", "Karil's leatherskirt"]
 			],
 			"qp_required": 175,
 			"item_in_bank_boosts": [
@@ -1776,9 +1666,7 @@
 			"is_slayer_only": false,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": [
-				"Boots of stone"
-			],
+			"items_required": ["Boots of stone"],
 			"qp_required": 0,
 			"item_in_bank_boosts": [],
 			"can_barrage": false,
@@ -1827,16 +1715,7 @@
 			"is_slayer_only": false,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": [
-				[
-					"Torva platebody",
-					"Bandos chestplate"
-				],
-				[
-					"Torva platelegs",
-					"Bandos tassets"
-				]
-			],
+			"items_required": [["Torva platebody", "Bandos chestplate"], ["Torva platelegs", "Bandos tassets"]],
 			"qp_required": 100,
 			"item_in_bank_boosts": [],
 			"can_barrage": false,
@@ -1853,16 +1732,7 @@
 			"is_slayer_only": false,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": [
-				[
-					"Torva platebody",
-					"Bandos chestplate"
-				],
-				[
-					"Torva platelegs",
-					"Bandos tassets"
-				]
-			],
+			"items_required": [["Torva platebody", "Bandos chestplate"], ["Torva platelegs", "Bandos tassets"]],
 			"qp_required": 100,
 			"item_in_bank_boosts": [],
 			"can_barrage": false,
@@ -2026,12 +1896,7 @@
 			"can_be_pked": false,
 			"is_wildy_multi": false,
 			"pk_base_death_chance": 4,
-			"items_required": [
-				[
-					"Dragon axe",
-					"Rune axe"
-				]
-			],
+			"items_required": [["Dragon axe", "Rune axe"]],
 			"qp_required": 0,
 			"item_in_bank_boosts": [],
 			"can_barrage": false,
@@ -2335,12 +2200,7 @@
 			"is_slayer_only": false,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": [
-				"Dharok's helm",
-				"Dharok's platebody",
-				"Dharok's platelegs",
-				"Dharok's greataxe"
-			],
+			"items_required": ["Dharok's helm", "Dharok's platebody", "Dharok's platelegs", "Dharok's greataxe"],
 			"qp_required": 0,
 			"item_in_bank_boosts": [
 				{
@@ -2431,12 +2291,7 @@
 			"is_slayer_only": false,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": [
-				[
-					"Ring of wealth",
-					"Ring of wealth (i)"
-				]
-			],
+			"items_required": [["Ring of wealth", "Ring of wealth (i)"]],
 			"qp_required": 30,
 			"item_in_bank_boosts": [
 				{
@@ -2504,9 +2359,7 @@
 			"can_be_pked": false,
 			"is_wildy_multi": false,
 			"pk_base_death_chance": 4,
-			"items_required": [
-				"Anti-dragon shield"
-			],
+			"items_required": ["Anti-dragon shield"],
 			"qp_required": 0,
 			"item_in_bank_boosts": [],
 			"can_barrage": false,
@@ -2555,9 +2408,7 @@
 			"is_slayer_only": true,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": [
-				"Brittle key"
-			],
+			"items_required": ["Brittle key"],
 			"qp_required": 0,
 			"item_in_bank_boosts": [
 				{
@@ -2715,9 +2566,7 @@
 			"is_slayer_only": false,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": [
-				"Boots of stone"
-			],
+			"items_required": ["Boots of stone"],
 			"qp_required": 0,
 			"item_in_bank_boosts": [],
 			"can_barrage": false,
@@ -2883,9 +2732,7 @@
 			"is_slayer_only": false,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": [
-				"Anti-dragon shield"
-			],
+			"items_required": ["Anti-dragon shield"],
 			"qp_required": 0,
 			"item_in_bank_boosts": [],
 			"can_barrage": false,
@@ -3063,14 +2910,8 @@
 			"can_be_pked": false,
 			"is_wildy_multi": false,
 			"items_required": [
-				[
-					"Karil's leathertop",
-					"Armadyl chestplate"
-				],
-				[
-					"Karil's leatherskirt",
-					"Armadyl chainskirt"
-				]
+				["Karil's leathertop", "Armadyl chestplate"],
+				["Karil's leatherskirt", "Armadyl chainskirt"]
 			],
 			"qp_required": 1,
 			"item_in_bank_boosts": [
@@ -3118,16 +2959,8 @@
 			"items_required": [
 				"Verac's flail",
 				"Verac's plateskirt",
-				[
-					"Black d'hide body",
-					"Karil's leathertop",
-					"Armadyl chestplate"
-				],
-				[
-					"Black d'hide chaps",
-					"Karil's leatherskirt",
-					"Armadyl chainskirt"
-				]
+				["Black d'hide body", "Karil's leathertop", "Armadyl chestplate"],
+				["Black d'hide chaps", "Karil's leatherskirt", "Armadyl chainskirt"]
 			],
 			"qp_required": 0,
 			"item_in_bank_boosts": [
@@ -3202,24 +3035,9 @@
 			"is_wildy_multi": false,
 			"items_required": [
 				"Anti-dragon shield",
-				[
-					"Armadyl crossbow",
-					"Rune crossbow",
-					"Twisted bow",
-					"Dragon hunter crossbow"
-				],
-				[
-					"Black d'hide body",
-					"Black d'hide body (g)",
-					"Black d'hide body (t)",
-					"Karil's leathertop"
-				],
-				[
-					"Black d'hide chaps",
-					"Black d'hide chaps (g)",
-					"Black d'hide chaps (t)",
-					"Karil's leatherskirt"
-				]
+				["Armadyl crossbow", "Rune crossbow", "Twisted bow", "Dragon hunter crossbow"],
+				["Black d'hide body", "Black d'hide body (g)", "Black d'hide body (t)", "Karil's leathertop"],
+				["Black d'hide chaps", "Black d'hide chaps (g)", "Black d'hide chaps (t)", "Karil's leatherskirt"]
 			],
 			"qp_required": 0,
 			"item_in_bank_boosts": [
@@ -3302,14 +3120,8 @@
 			"can_be_pked": false,
 			"is_wildy_multi": false,
 			"items_required": [
-				[
-					"Karil's leathertop",
-					"Armadyl chestplate"
-				],
-				[
-					"Karil's leatherskirt",
-					"Armadyl chainskirt"
-				]
+				["Karil's leathertop", "Armadyl chestplate"],
+				["Karil's leatherskirt", "Armadyl chainskirt"]
 			],
 			"qp_required": 1,
 			"item_in_bank_boosts": [
@@ -3363,9 +3175,7 @@
 			"can_be_pked": true,
 			"is_wildy_multi": true,
 			"pk_base_death_chance": 4,
-			"items_required": [
-				"Anti-dragon shield"
-			],
+			"items_required": ["Anti-dragon shield"],
 			"qp_required": 0,
 			"item_in_bank_boosts": [],
 			"can_barrage": false,
@@ -3454,14 +3264,7 @@
 			"is_slayer_only": false,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": [
-				[
-					"Karil's crossbow",
-					"Rune crossbow",
-					"Armadyl crossbow",
-					"Toxic blowpipe"
-				]
-			],
+			"items_required": [["Karil's crossbow", "Rune crossbow", "Armadyl crossbow", "Toxic blowpipe"]],
 			"qp_required": 30,
 			"item_in_bank_boosts": [
 				{
@@ -3505,13 +3308,7 @@
 			"is_slayer_only": false,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": [
-				[
-					"Merfolk trident",
-					"Uncharged trident",
-					"Brine sabre"
-				]
-			],
+			"items_required": [["Merfolk trident", "Uncharged trident", "Brine sabre"]],
 			"qp_required": 10,
 			"item_in_bank_boosts": [],
 			"can_barrage": false,
@@ -3544,13 +3341,7 @@
 			"can_be_pked": false,
 			"is_wildy_multi": false,
 			"items_required": [
-				[
-					"Elemental shield",
-					"Mind shield",
-					"Dragonfire shield",
-					"Dragonfire ward",
-					"Ancient wyvern shield"
-				]
+				["Elemental shield", "Mind shield", "Dragonfire shield", "Dragonfire ward", "Ancient wyvern shield"]
 			],
 			"qp_required": 2,
 			"item_in_bank_boosts": [],
@@ -3568,9 +3359,7 @@
 			"can_be_pked": false,
 			"is_wildy_multi": false,
 			"pk_base_death_chance": 1,
-			"items_required": [
-				"Lockpick"
-			],
+			"items_required": ["Lockpick"],
 			"qp_required": 0,
 			"item_in_bank_boosts": [],
 			"can_barrage": false,
@@ -3700,9 +3489,7 @@
 			"is_slayer_only": false,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": [
-				"Anti-dragon shield"
-			],
+			"items_required": ["Anti-dragon shield"],
 			"qp_required": 0,
 			"item_in_bank_boosts": [],
 			"can_barrage": false,
@@ -4107,9 +3894,7 @@
 			"can_be_pked": false,
 			"is_wildy_multi": false,
 			"pk_base_death_chance": 1,
-			"items_required": [
-				"Lockpick"
-			],
+			"items_required": ["Lockpick"],
 			"qp_required": 0,
 			"item_in_bank_boosts": [],
 			"can_barrage": false,
@@ -4589,9 +4374,7 @@
 			"is_slayer_only": false,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": [
-				"Anti-dragon shield"
-			],
+			"items_required": ["Anti-dragon shield"],
 			"qp_required": 0,
 			"item_in_bank_boosts": [],
 			"can_barrage": false,
@@ -4920,9 +4703,7 @@
 			"is_slayer_only": false,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": [
-				"Anti-dragon shield"
-			],
+			"items_required": ["Anti-dragon shield"],
 			"qp_required": 205,
 			"item_in_bank_boosts": [],
 			"can_barrage": false,
@@ -5042,9 +4823,7 @@
 			"is_slayer_only": false,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": [
-				"Antipoison(4)"
-			],
+			"items_required": ["Antipoison(4)"],
 			"qp_required": 57,
 			"item_in_bank_boosts": [],
 			"can_barrage": false,
@@ -5060,9 +4839,7 @@
 			"is_slayer_only": false,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": [
-				"Antipoison(4)"
-			],
+			"items_required": ["Antipoison(4)"],
 			"qp_required": 57,
 			"item_in_bank_boosts": [],
 			"can_barrage": false,
@@ -5147,13 +4924,7 @@
 			"can_be_pked": false,
 			"is_wildy_multi": false,
 			"items_required": [
-				[
-					"Elemental shield",
-					"Mind shield",
-					"Dragonfire shield",
-					"Dragonfire ward",
-					"Ancient wyvern shield"
-				]
+				["Elemental shield", "Mind shield", "Dragonfire shield", "Dragonfire ward", "Ancient wyvern shield"]
 			],
 			"qp_required": 0,
 			"item_in_bank_boosts": [],
@@ -5420,13 +5191,7 @@
 			"can_be_pked": false,
 			"is_wildy_multi": false,
 			"items_required": [
-				[
-					"Elemental shield",
-					"Mind shield",
-					"Dragonfire shield",
-					"Dragonfire ward",
-					"Ancient wyvern shield"
-				]
+				["Elemental shield", "Mind shield", "Dragonfire shield", "Dragonfire ward", "Ancient wyvern shield"]
 			],
 			"qp_required": 2,
 			"item_in_bank_boosts": [],
@@ -5443,9 +5208,7 @@
 			"is_slayer_only": false,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": [
-				"Anti-dragon shield"
-			],
+			"items_required": ["Anti-dragon shield"],
 			"qp_required": 0,
 			"item_in_bank_boosts": [],
 			"can_barrage": false,
@@ -5556,13 +5319,7 @@
 			"can_be_pked": false,
 			"is_wildy_multi": false,
 			"items_required": [
-				[
-					"Elemental shield",
-					"Mind shield",
-					"Dragonfire shield",
-					"Dragonfire ward",
-					"Ancient wyvern shield"
-				]
+				["Elemental shield", "Mind shield", "Dragonfire shield", "Dragonfire ward", "Ancient wyvern shield"]
 			],
 			"qp_required": 2,
 			"item_in_bank_boosts": [],
@@ -5649,16 +5406,7 @@
 			"is_slayer_only": false,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": [
-				[
-					"Masori body",
-					"Armadyl chestplate"
-				],
-				[
-					"Masori chaps",
-					"Armadyl chainskirt"
-				]
-			],
+			"items_required": [["Masori body", "Armadyl chestplate"], ["Masori chaps", "Armadyl chainskirt"]],
 			"qp_required": 100,
 			"item_in_bank_boosts": [
 				{
@@ -5680,16 +5428,7 @@
 			"is_slayer_only": false,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": [
-				[
-					"Masori body",
-					"Armadyl chestplate"
-				],
-				[
-					"Masori chaps",
-					"Armadyl chainskirt"
-				]
-			],
+			"items_required": [["Masori body", "Armadyl chestplate"], ["Masori chaps", "Armadyl chainskirt"]],
 			"qp_required": 100,
 			"item_in_bank_boosts": [],
 			"can_barrage": false,
@@ -5707,16 +5446,8 @@
 			"can_be_pked": false,
 			"is_wildy_multi": false,
 			"items_required": [
-				[
-					"Ancestral robe top",
-					"Virtus robe top",
-					"Ahrim's robetop"
-				],
-				[
-					"Ancestral robe bottom",
-					"Virtus robe bottom",
-					"Ahrim's robeskirt"
-				]
+				["Ancestral robe top", "Virtus robe top", "Ahrim's robetop"],
+				["Ancestral robe bottom", "Virtus robe bottom", "Ahrim's robeskirt"]
 			],
 			"qp_required": 100,
 			"item_in_bank_boosts": [],
@@ -5735,16 +5466,8 @@
 			"can_be_pked": false,
 			"is_wildy_multi": false,
 			"items_required": [
-				[
-					"Ancestral robe top",
-					"Virtus robe top",
-					"Ahrim's robetop"
-				],
-				[
-					"Ancestral robe bottom",
-					"Virtus robe bottom",
-					"Ahrim's robeskirt"
-				]
+				["Ancestral robe top", "Virtus robe top", "Ahrim's robetop"],
+				["Ancestral robe bottom", "Virtus robe bottom", "Ahrim's robeskirt"]
 			],
 			"qp_required": 100,
 			"item_in_bank_boosts": [],
@@ -5837,19 +5560,9 @@
 			"can_be_pked": false,
 			"is_wildy_multi": false,
 			"items_required": [
-				[
-					"Torva platebody",
-					"Bandos chestplate"
-				],
-				[
-					"Verac's plateskirt",
-					"Bandos tassets",
-					"Torva platelegs"
-				],
-				[
-					"Abyssal whip",
-					"Dragon scimitar"
-				]
+				["Torva platebody", "Bandos chestplate"],
+				["Verac's plateskirt", "Bandos tassets", "Torva platelegs"],
+				["Abyssal whip", "Dragon scimitar"]
 			],
 			"qp_required": 175,
 			"item_in_bank_boosts": [
@@ -6136,16 +5849,7 @@
 			"is_slayer_only": false,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": [
-				[
-					"Torva platebody",
-					"Bandos chestplate"
-				],
-				[
-					"Torva platelegs",
-					"Bandos tassets"
-				]
-			],
+			"items_required": [["Torva platebody", "Bandos chestplate"], ["Torva platelegs", "Bandos tassets"]],
 			"qp_required": 100,
 			"item_in_bank_boosts": [
 				{
@@ -6166,16 +5870,7 @@
 			"is_slayer_only": false,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": [
-				[
-					"Torva platebody",
-					"Bandos chestplate"
-				],
-				[
-					"Torva platelegs",
-					"Bandos tassets"
-				]
-			],
+			"items_required": [["Torva platebody", "Bandos chestplate"], ["Torva platelegs", "Bandos tassets"]],
 			"qp_required": 100,
 			"item_in_bank_boosts": [],
 			"can_barrage": false,
@@ -6227,10 +5922,7 @@
 			"is_slayer_only": false,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": [
-				"Armadyl chestplate",
-				"Armadyl chainskirt"
-			],
+			"items_required": ["Armadyl chestplate", "Armadyl chainskirt"],
 			"qp_required": 205,
 			"item_in_bank_boosts": [
 				{
@@ -6319,16 +6011,8 @@
 			"can_be_pked": false,
 			"is_wildy_multi": false,
 			"items_required": [
-				[
-					"Black d'hide body",
-					"Karil's leathertop",
-					"Armadyl chestplate"
-				],
-				[
-					"Black d'hide chaps",
-					"Karil's leatherskirt",
-					"Armadyl chainskirt"
-				]
+				["Black d'hide body", "Karil's leathertop", "Armadyl chestplate"],
+				["Black d'hide chaps", "Karil's leatherskirt", "Armadyl chainskirt"]
 			],
 			"qp_required": 0,
 			"item_in_bank_boosts": [],
@@ -6477,9 +6161,7 @@
 			"is_slayer_only": false,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": [
-				"Boots of stone"
-			],
+			"items_required": ["Boots of stone"],
 			"qp_required": 0,
 			"item_in_bank_boosts": [],
 			"can_barrage": false,
@@ -6496,9 +6178,7 @@
 			"is_slayer_only": false,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": [
-				"Purging staff"
-			],
+			"items_required": ["Purging staff"],
 			"qp_required": 115,
 			"item_in_bank_boosts": [
 				{

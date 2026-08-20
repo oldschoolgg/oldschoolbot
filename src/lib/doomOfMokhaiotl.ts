@@ -1,11 +1,21 @@
 import type { EquipmentSlot, GearSetupType } from '@oldschoolgg/gear';
-import { formatDuration, objectEntries, Time, UserError } from '@oldschoolgg/toolkit';
-import { Bank, Items, LootTable, resolveItems } from 'oldschooljs';
+import {
+	calcWhatPercent,
+	formatDuration,
+	objectEntries,
+	reduceNumByPercent,
+	round,
+	sumArr,
+	Time,
+	UserError
+} from '@oldschoolgg/toolkit';
+import { Bank, EMonster, Items, LootTable, resolveItems } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import { doomOfMokhaiotlCL } from '@/lib/data/CollectionsExport.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
+import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { DoomTaskOptions } from '@/lib/types/minions.js';
 import { formatList, formatSkillRequirements } from '@/lib/util/smallUtils.js';
@@ -138,22 +148,33 @@ function experienceScore(deepDelves: number, totalDelves: number): number {
 	return deepDelves * 2 + Math.floor(totalDelves / 10);
 }
 
+function earlyDelveDeathReduction(deepDelves: number): number {
+	if (deepDelves >= 100) return 0.95;
+	if (deepDelves >= 50) return 0.9;
+	if (deepDelves >= 25) return 0.85;
+	if (deepDelves >= 10) return 0.75;
+	return Math.min(deepDelves / 10, 1) * 0.2;
+}
+
+function deepDelveDeathReduction(deepDelves: number): number {
+	if (deepDelves < 100) return Math.min(deepDelves / 100, 1) * 0.12;
+	if (deepDelves < 200) return 0.3 + ((deepDelves - 100) / 100) * 0.2;
+	return Math.min(0.65, 0.5 + ((deepDelves - 200) / 300) * 0.15);
+}
+
 function calculateDeathChance(delve: number, deepDelves: number, totalDelves: number, hasMasori: boolean): number {
 	let chance: number;
 
 	if (delve < 8) {
 		const base = delve <= 3 ? [2, 5, 8][delve - 1] : delve <= 5 ? 8 + (delve - 3) * 3.5 : 15 + (delve - 5) * 3.5;
-		const totalReduction = Math.min(totalDelves / 2000, 1) * 0.85;
-		const deepReduction = Math.min(deepDelves / 200, 1) * 0.34;
-		const totalFactor = Math.min(totalReduction + deepReduction, 0.92);
+		const totalReduction = Math.min(totalDelves / 2000, 1) * 0.35;
+		const totalFactor = Math.min(totalReduction + earlyDelveDeathReduction(deepDelves), 0.97);
 		chance = base * (1 - totalFactor);
 	} else {
 		const base = delve <= 16 ? 12 + (delve - 8) * 2.0 : 28 + (delve - 16) * 3.0;
-		const deepFactor = Math.min(deepDelves / 500, 1);
-		const deepReduction = base * 0.6 * deepFactor;
 		const decayFactor = Math.max(0, 1 - deepDelves / 300);
 		const totalReduction = base * 0.2 * Math.min(totalDelves / 1500, 1) * decayFactor;
-		chance = base - deepReduction - totalReduction;
+		chance = base * (1 - deepDelveDeathReduction(deepDelves)) - totalReduction;
 	}
 
 	if (hasMasori) chance *= 0.9;
@@ -190,6 +211,25 @@ function calculateTripDuration(
 	return totalBase * weaponMod * rng.randFloat(0.9, 1.1);
 }
 
+function calculateDoomKcReduction(kc: number, baseDuration: number): number {
+	const kcForOnePercent = (Time.Hour * 5) / baseDuration;
+	return Math.min(Math.floor(Math.max(1, kc) / kcForOnePercent), 10);
+}
+
+function applyDoomSkillBoost(skillsAsLevels: Required<Skills>, duration: number): [number, string] {
+	const styles: AttackStyles[] = ['attack', 'strength', 'magic', 'ranged'];
+	const skillTotal = sumArr(styles.map(s => skillsAsLevels[s]));
+	let percent = round(calcWhatPercent(skillTotal, styles.length * 99), 2);
+
+	if (percent < 50) {
+		percent = 50 - percent;
+		return [duration + (duration * percent) / 100, `-${percent.toFixed(2)}% for low stats`];
+	}
+
+	percent = Math.min(15, percent / 6.5);
+	return [reduceNumByPercent(duration, percent), `${percent.toFixed(2)}% for stats`];
+}
+
 export function startDoomRun(options: {
 	targetDelve: number;
 	hasEmberlight: boolean;
@@ -206,6 +246,8 @@ export function startDoomRun(options: {
 	arrowMod: number;
 	deepDelves: number;
 	totalDelves: number;
+	baseDuration?: number;
+	durationReductionPercent: number;
 	stopOnUnique: boolean;
 	rng: RNGProvider;
 }): DoomRunResult {
@@ -218,16 +260,19 @@ export function startDoomRun(options: {
 	let ayakChargesGained = 0;
 	const pendingLoot = new Bank();
 
-	const fakeDuration = calculateTripDuration(
-		targetDelve,
-		options.hasTbow,
-		options.hasSBow,
-		options.hasScythe,
-		options.hasNoxHalberd,
-		options.hasEliteVoid,
-		options.arrowMod,
-		options.rng
-	);
+	const baseDuration =
+		options.baseDuration ??
+		calculateTripDuration(
+			targetDelve,
+			options.hasTbow,
+			options.hasSBow,
+			options.hasScythe,
+			options.hasNoxHalberd,
+			options.hasEliteVoid,
+			options.arrowMod,
+			options.rng
+		);
+	const fakeDuration = reduceNumByPercent(baseDuration, options.durationReductionPercent);
 	const realDuration = fakeDuration;
 
 	for (let d = 1; d <= targetDelve; d++) {
@@ -446,6 +491,23 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 	const stats = await user.fetchStats();
 	const deepDelves = Number(stats.doom_deep_delves ?? 0);
 	const totalDelves = Number(stats.doom_total_delves ?? 0);
+	const doomKC = Math.max(await user.getKC(EMonster.DOOM_OF_MOKHAIOTL), deepDelves);
+	const baseDuration = calculateTripDuration(
+		targetDelve,
+		hasTbow,
+		hasSBow,
+		hasScythe,
+		hasNoxHalberd,
+		hasEliteVoid,
+		arrowMod,
+		rng
+	);
+	const kcReduction = calculateDoomKcReduction(doomKC, baseDuration);
+	const [durationAfterSkillBoost, skillBoostMsg] = applyDoomSkillBoost(
+		user.skillsAsLevels as Required<Skills>,
+		reduceNumByPercent(baseDuration, kcReduction)
+	);
+	const durationReductionPercent = calcWhatPercent(baseDuration - durationAfterSkillBoost, baseDuration);
 
 	const res = startDoomRun({
 		targetDelve,
@@ -463,6 +525,8 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 		arrowMod,
 		deepDelves,
 		totalDelves,
+		baseDuration,
+		durationReductionPercent,
 		stopOnUnique,
 		rng
 	});
@@ -474,13 +538,11 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 	const restoresPerMinute = Math.max(0.3, 0.3 + experienceFactor * 0.3);
 	const brewsUsed = Math.min(10, Math.max(1, Math.ceil(fullDurationMinutes * brewsPerMinute)));
 	const restoresUsed = Math.min(10, Math.max(1, Math.ceil(fullDurationMinutes * restoresPerMinute)));
-	const divinesUsed = Math.min(10, Math.max(1, Math.ceil(targetDelve / 5)));
 	const rangingUsed = Math.min(10, Math.max(1, Math.ceil(targetDelve / 5)));
 
 	const cost = new Bank()
 		.add('Saradomin brew(4)', Math.min(10, Math.max(1, Math.ceil(fullDurationMinutes * brewsPerMinute))))
 		.add('Super restore(4)', Math.min(10, Math.max(1, Math.ceil(fullDurationMinutes * restoresPerMinute))))
-		.add('Divine ranging potion(4)', Math.min(10, Math.max(1, Math.ceil(targetDelve / 5))))
 		.add('Ranging potion(4)', Math.min(10, Math.max(1, Math.ceil(targetDelve / 5))));
 
 	if (!hasChargedEyeOfAyak) {
@@ -584,7 +646,6 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 		ayakChargesGained: res.ayakChargesGained,
 		brewsUsed,
 		restoresUsed,
-		divinesUsed,
 		rangingUsed
 	});
 
@@ -613,6 +674,8 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 
 	if (hasMasori) boostLines.push('Masori armour (10% death reduction)');
 	else if (hasEliteVoid) boostLines.push('Elite void');
+	if (kcReduction >= 1) boostLines.push(`${kcReduction}% for KC`);
+	boostLines.push(skillBoostMsg);
 	if (hasLightbearer) boostLines.push('Lightbearer');
 	if (hasZcb) boostLines.push('Zaryte crossbow');
 

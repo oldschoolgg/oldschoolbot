@@ -1557,14 +1557,6 @@ export const miscBossKillables: KillableMonster[] = [
 			{
 				gearSetup: 'melee',
 				items: [
-					{ boostPercent: 8, itemID: itemID('Emberlight') },
-					{ boostPercent: 5, itemID: itemID('Arclight') },
-					{ boostPercent: 2, itemID: itemID('Darklight') }
-				]
-			},
-			{
-				gearSetup: 'melee',
-				items: [
 					{ boostPercent: 5, itemID: itemID('Amulet of rancour') },
 					{ boostPercent: 3, itemID: itemID('Amulet of torture') }
 				]

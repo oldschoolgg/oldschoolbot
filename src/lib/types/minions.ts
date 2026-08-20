@@ -557,7 +557,6 @@ export interface DoomTaskOptions extends ActivityTaskOptions {
 	ayakChargesGained: number;
 	brewsUsed: number;
 	restoresUsed: number;
-	divinesUsed: number;
 	rangingUsed: number;
 }
 

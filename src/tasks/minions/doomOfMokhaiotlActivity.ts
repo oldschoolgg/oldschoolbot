@@ -1,14 +1,16 @@
-import { Bank, EMonster, Items } from 'oldschooljs';
+import { Bank, EMonster, type ItemBank, Items } from 'oldschooljs';
 
 import { DOOM_UNIQUE_ITEMS } from '@/lib/doomOfMokhaiotl.js';
 import { trackLoot } from '@/lib/lootTrack.js';
+import { addMonsterXPRaw } from '@/lib/minions/functions/addMonsterXPRaw.js';
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
+import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { DoomTaskOptions } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const doomOfMokhaiotlTask: MinionTask = {
 	type: 'DoomOfMokhaiotl',
-	async run(data: DoomTaskOptions, { user, handleTripFinish }) {
+	async run(data: DoomTaskOptions, { user, handleTripFinish, rng }) {
 		const {
 			channelId,
 			loot: possibleLoot,
@@ -21,7 +23,6 @@ export const doomOfMokhaiotlTask: MinionTask = {
 			ayakChargesGained,
 			brewsUsed,
 			restoresUsed,
-			divinesUsed,
 			rangingUsed
 		} = data;
 
@@ -33,16 +34,40 @@ export const doomOfMokhaiotlTask: MinionTask = {
 		const newDeepest = Math.max(prevDeepest, deepestDelveCompleted);
 		const newDeepDelves = prevDeepDelves + (deepDelvesEarned ?? 0);
 		const newTotal = prevTotal + (totalWavesCleared ?? 0);
+		const doomKcEarned = deepDelvesEarned ?? 0;
+
+		const monsterScores = { ...((currentStats.monster_scores ?? {}) as ItemBank) };
+		if (doomKcEarned > 0) {
+			monsterScores[EMonster.DOOM_OF_MOKHAIOTL] = (monsterScores[EMonster.DOOM_OF_MOKHAIOTL] ?? 0) + doomKcEarned;
+		}
 
 		await user.statsUpdate({
 			doom_deepest_delve: newDeepest,
 			doom_deep_delves: newDeepDelves,
-			doom_total_delves: newTotal
+			doom_total_delves: newTotal,
+			monster_scores: monsterScores
 		});
 
 		await user.update({
 			ayak_charges: { increment: ayakChargesGained }
 		});
+
+		let xpMessage = '';
+		if (doomKcEarned > 0) {
+			const doomAttackStyles: AttackStyles[] = ['attack', 'strength', 'magic', 'ranged'];
+			xpMessage = await user.addXPBank(
+				addMonsterXPRaw({
+					rng,
+					monsterID: EMonster.DOOM_OF_MOKHAIOTL,
+					quantity: doomKcEarned,
+					duration,
+					isOnTask: false,
+					taskQuantity: null,
+					minimal: true,
+					attackStyles: doomAttackStyles
+				})
+			);
+		}
 
 		if (diedAt !== null) {
 			const kcSummary = buildKcSummary(newDeepest, newDeepDelves, newTotal);
@@ -53,7 +78,6 @@ export const doomOfMokhaiotlTask: MinionTask = {
 				const refund = new Bank();
 				refund.add('Saradomin brew(4)', Math.floor(refundRatio * brewsUsed));
 				refund.add('Super restore(4)', Math.floor(refundRatio * restoresUsed));
-				refund.add('Divine ranging potion(4)', Math.floor(refundRatio * divinesUsed));
 				refund.add('Ranging potion(4)', Math.floor(refundRatio * rangingUsed));
 				if (refund.length > 0) {
 					await user.addItemsToBank({ items: refund, collectionLog: false });
@@ -63,7 +87,7 @@ export const doomOfMokhaiotlTask: MinionTask = {
 			return handleTripFinish({
 				user,
 				channelId,
-				message: `${user} Your minion died at delve **${diedAt}** and lost all loot.\n${kcSummary}`,
+				message: `${user} Your minion died at delve **${diedAt}** and lost all loot.\n${kcSummary}${xpMessage ? `\n${xpMessage}` : ''}`,
 				data
 			});
 		}
@@ -117,7 +141,7 @@ export const doomOfMokhaiotlTask: MinionTask = {
 			user,
 			channelId,
 			message: {
-				content: `${user} ${completionLine}\n${kcSummary}`,
+				content: `${user} ${completionLine}\n${kcSummary}${xpMessage ? `\n${xpMessage}` : ''}`,
 				files: [image]
 			},
 			data,
