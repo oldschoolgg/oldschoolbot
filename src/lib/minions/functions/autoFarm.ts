@@ -229,6 +229,9 @@ export async function autoFarm(
 				compostTier
 			});
 			if (!prepared.success) {
+				if (prepared.reason === 'missing_compost') {
+					return { content: prepared.error, allowedMentions: { users: [user.id] } };
+				}
 				errorsForPatch.push(prepared.error);
 				continue;
 			}

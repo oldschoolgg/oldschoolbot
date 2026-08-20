@@ -166,6 +166,7 @@ export enum BitField {
 	ServerSupport = 52,
 	DisabledPassiveImplings = 53,
 	DisableAutoFarmButton = 54,
+	CompostWarning = 55,
 
 	OriginalCyrSupporter = 199
 }
@@ -259,6 +260,11 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 	},
 	[BitField.DisableAutoFarmButton]: {
 		name: 'Disable Auto Farm Button',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.CompostWarning]: {
+		name: 'Compost Warning',
 		protected: false,
 		userConfigurable: true
 	},
