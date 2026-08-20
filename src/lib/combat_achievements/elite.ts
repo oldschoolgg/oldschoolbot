@@ -1800,5 +1800,76 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 				isCertainMonsterTrip(Monsters.Eldric.id)(data) ||
 				isCertainMonsterTrip(Monsters.RoyalTitans.id)(data)
 		}
+	},
+	{
+		id: 1155,
+		name: 'Doom Adept',
+		desc: 'Defeat the Doom of Mokhaiotl at delve level 3.',
+		type: 'kill_count',
+		monster: 'Doom of Mokhaiotl',
+		requirements: new Requirements().add({
+			name: 'Defeat the Doom of Mokhaiotl at delve level 3.',
+			has: ({ stats }) => Number(stats.userStats.doom_deepest_delve ?? 0) >= 3
+		})
+	},
+	{
+		id: 1156,
+		name: 'Doom Crawler',
+		desc: 'Defeat the Doom of Mokhaiotl level 1 in less than 30 seconds.',
+		type: 'speed',
+		monster: 'Doom of Mokhaiotl',
+		rng: {
+			chancePerKill: 25,
+			hasChance: (data: ActivityTaskData) =>
+				data.type === 'DoomOfMokhaiotl' &&
+				!data.diedAt &&
+				data.deepestDelveCompleted >= 1 &&
+				data.duration < Time.Minute * 1.5
+		}
+	},
+	{
+		id: 1157,
+		name: 'Exposed Doom',
+		desc: 'Defeat the Doom of Mokhaiotl during its Melee charge phase.',
+		type: 'mechanical',
+		monster: 'Doom of Mokhaiotl',
+		rng: {
+			chancePerKill: 15,
+			hasChance: (data: ActivityTaskData) => data.type === 'DoomOfMokhaiotl' && !data.diedAt
+		}
+	},
+	{
+		id: 1158,
+		name: 'Yama Adept',
+		type: 'kill_count',
+		monster: 'Yama',
+		desc: 'Defeat Yama once.',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Yama.id]: 1
+			}
+		})
+	},
+	{
+		id: 1159,
+		name: 'Back so soon?',
+		type: 'mechanical',
+		monster: 'Yama',
+		desc: 'Defeat Yama without the judge being attacked with the wrong style and without taking more than one instance of damage each time you are exiled from the arena.',
+		rng: {
+			chancePerKill: 5,
+			hasChance: isCertainMonsterTrip(Monsters.Yama.id)
+		}
+	},
+	{
+		id: 1160,
+		name: 'Yama Speed-Trialist',
+		type: 'speed',
+		monster: 'Yama',
+		desc: 'Defeat Yama in an average time of under 3:38 over your last four kills.',
+		rng: {
+			chancePerKill: 60,
+			hasChance: isCertainMonsterTrip(Monsters.Yama.id)
+		}
 	}
 ];

@@ -114,6 +114,8 @@ type ClientBankKey =
 	| 'ourania_loot'
 	| 'colo_cost'
 	| 'colo_loot'
+	| 'doom_loot'
+	| 'doom_cost'
 	| 'vt_cost'
 	| 'vt_loot';
 
