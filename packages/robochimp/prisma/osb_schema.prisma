@@ -133,6 +133,8 @@ model ClientStorage {
   ourania_loot                 Json     @default("{}") @db.Json
   colo_cost                    Json     @default("{}") @db.Json
   colo_loot                    Json     @default("{}") @db.Json
+  doom_cost                    Json     @default("{}") @db.Json
+  doom_loot                    Json     @default("{}") @db.Json
   vt_cost                      Json     @default("{}") @db.Json
   vt_loot                      Json     @default("{}") @db.Json
   shutdown                     Boolean  @default(false)
@@ -371,6 +373,7 @@ model User {
   serp_helm_charges      Int @default(0)
   blood_fury_charges     Int @default(0)
   tum_shadow_charges     Int @default(0)
+  ayak_charges           Int @default(0)
   blood_essence_charges  Int @default(0)
   trident_charges        Int @default(0)
   venator_bow_charges    Int @default(0)
@@ -556,6 +559,7 @@ model Minigame {
   shades_of_morton        Int    @default(0)
   tombs_of_amascut        Int    @default(0)
   colosseum               Int    @default(0)
+  doom_of_mokhaiotl       Int    @default(0)
   pizazz_points           Int    @default(0)
 
   user User @relation(fields: [user_id], references: [id])
@@ -763,6 +767,12 @@ model UserStats {
   colo_kc_bank   Json @default("{}") @db.Json
   colo_max_glory Int?
 
+  doom_cost      Json @default("{}") @db.Json
+  doom_loot      Json @default("{}") @db.Json
+  doom_deepest_delve   Int  @default(0)
+  doom_deep_delves     Int  @default(0)
+  doom_total_delves    Int  @default(0)
+
   quivers_sacrificed Int @default(0)
 
   recently_killed_monsters Int[] @default([])
@@ -948,6 +958,7 @@ enum activity_type_enum {
   CamdozaalSmithing
   MyNotes
   Colosseum
+  DoomOfMokhaiotl
   CreateForestersRations
   Buy
 }
@@ -1246,6 +1257,7 @@ enum command_name_enum {
   decant
   defaultfarming
   defender
+  delves
   diary
   dice
   dicebank
