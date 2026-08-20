@@ -34,6 +34,7 @@ import { countUsersWithItemInCl } from '@/lib/rawSql.js';
 import { sorts } from '@/lib/sorts.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
+import { dataPointNameAutocomplete, statsCommand } from '@/mahoji/lib/abstracted_commands/statCommand.js';
 
 export const gifs = [
 	'https://tenor.com/view/angry-stab-monkey-knife-roof-gif-13841993',
@@ -688,6 +689,28 @@ export const adminCommand = defineCommand({
 		},
 		{
 			type: 'Subcommand',
+			name: 'data',
+			description: 'View data for a user',
+			options: [
+				{
+					type: 'User',
+					name: 'user',
+					description: 'The user',
+					required: true
+				},
+				{
+					type: 'String',
+					name: 'name',
+					description: 'The data you want to see.',
+					autocomplete: async ({ value }: StringAutoComplete) => {
+						return dataPointNameAutocomplete(value);
+					},
+					required: true
+				}
+			]
+		},
+		{
+			type: 'Subcommand',
 			name: 'ltc',
 			description: 'Ltc?',
 			options: [
@@ -944,6 +967,11 @@ ${META_CONSTANTS.RENDERED_STR}`
 				title: thing.name,
 				flags: thing.name === 'All Equipped Items' ? { sort: 'name' } : undefined
 			});
+		}
+
+		if (options.data) {
+			const user = await mUserFetch(options.data.user.user.id);
+			return statsCommand(user, options.data.name, { bypassPerkTier: true });
 		}
 
 		if (options.give_items) {
