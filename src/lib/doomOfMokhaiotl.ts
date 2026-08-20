@@ -590,8 +590,14 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 	}
 
 	if (hasZcb) {
-		let boltsRemaining = Math.min(60, Math.ceil(targetDelve * 5));
 		const rubyBoltVariants = ['Ruby bolts (e)', 'Ruby dragon bolts (e)'];
+		const boltsNeeded = Math.min(60, Math.ceil(targetDelve * 5));
+		const boltsOwned = rubyBoltVariants.reduce((total, bolt) => total + user.bank.amount(bolt), 0);
+		if (boltsOwned < boltsNeeded) {
+			return `You need ${boltsNeeded.toLocaleString()}x Ruby bolts (e) or Ruby dragon bolts (e) for this trip, you only own ${boltsOwned.toLocaleString()} total.`;
+		}
+
+		let boltsRemaining = boltsNeeded;
 		for (const bolt of rubyBoltVariants) {
 			if (boltsRemaining <= 0) break;
 			const owned = user.bank.amount(bolt);
@@ -601,7 +607,6 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 				boltsRemaining -= use;
 			}
 		}
-		if (boltsRemaining > 0) cost.add('Ruby dragon bolts (e)', boltsRemaining);
 	}
 	if (hasCrystalHalb && !hasScythe && !hasNoxHalberd) cost.add('Crystal shard', Math.ceil(targetDelve));
 
