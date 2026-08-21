@@ -2719,13 +2719,34 @@
 				"prayer": 0
 			}
 		},
-		"item_cost": {
-			"item_cost": {
-				"2434": 2,
-				"12695": 1
+		"item_cost": [
+			{
+				"item_cost": {
+					"12695": 1
+				},
+				"qty_per_minute": 0.09166666666666666
 			},
-			"qty_per_kill": 1
-		},
+			{
+				"item_cost": {
+					"2434": 1
+				},
+				"qty_per_minute": 0.09166666666666666,
+				"alternative_consumables": [
+					{
+						"item_cost": {
+							"3024": 1
+						},
+						"qty_per_minute": 0.09166666666666666
+					}
+				]
+			},
+			{
+				"item_cost": {
+					"6685": 1
+				},
+				"qty_per_minute": 0.275
+			}
+		],
 		"setups_used": ["melee", "range"],
 		"equipped_item_boosts": [
 			{
@@ -3441,10 +3462,10 @@
 		"is_custom": true,
 		"id": 142005,
 		"name": "Elder Mimic",
-		"time_to_finish": 24000000,
-		"hp": 2000,
+		"time_to_finish": 15000000,
+		"hp": 1750,
 		"table": {},
-		"difficulty_rating": 6,
+		"difficulty_rating": 5,
 		"qp_required": 1500,
 		"heal_amount_needed": 20000,
 		"attack_style_to_use": "attack_slash",
@@ -3813,14 +3834,34 @@
 				"prayer": 0
 			}
 		},
-		"item_cost": {
-			"item_cost": {
-				"2434": 3,
-				"6685": 2,
-				"12695": 1
+		"item_cost": [
+			{
+				"item_cost": {
+					"12695": 1
+				},
+				"qty_per_minute": 0.09166666666666666
 			},
-			"qty_per_kill": 1
-		},
+			{
+				"item_cost": {
+					"2434": 1
+				},
+				"qty_per_minute": 0.09166666666666666,
+				"alternative_consumables": [
+					{
+						"item_cost": {
+							"3024": 1
+						},
+						"qty_per_minute": 0.09166666666666666
+					}
+				]
+			},
+			{
+				"item_cost": {
+					"6685": 1
+				},
+				"qty_per_minute": 0.275
+			}
+		],
 		"setups_used": ["melee", "range"],
 		"equipped_item_boosts": [
 			{
