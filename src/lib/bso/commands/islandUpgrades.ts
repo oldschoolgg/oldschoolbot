@@ -498,7 +498,7 @@ export function getWeeklyMaintenanceDemand(
 		}
 		const discounted = rawQty * (1 - clampedDiscount);
 
-		let qty = 1;
+		let qty: number;
 		if (discounted >= 5000) {
 			qty = Math.max(1, Math.round(discounted / 50) * 50);
 		} else if (discounted >= 500) {
