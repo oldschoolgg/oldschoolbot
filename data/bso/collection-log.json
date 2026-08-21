@@ -4200,7 +4200,6 @@
 					"Ancient cap",
 					"Ancient verdant logs",
 					"Ancient verdant plank",
-					"Anti-venom(4)",
 					"Ashes",
 					"Battlestaff",
 					"Black dragonhide",
@@ -4320,8 +4319,6 @@
 					"Elder sigil fragment (2)",
 					"Elder sigil fragment (3)",
 					"Elderflame arrowtips",
-					"Enhanced saradomin brew",
-					"Enhanced super restore",
 					"Firaxyte",
 					"Gem Infused ore",
 					"Gemstone bundle",
@@ -4391,7 +4388,6 @@
 					"Ancient cap",
 					"Ancient verdant logs",
 					"Ancient verdant plank",
-					"Anti-venom(4)",
 					"Ashes",
 					"Battlestaff",
 					"Black dragonhide",
@@ -4425,8 +4421,6 @@
 					"Elder sigil fragment (2)",
 					"Elder sigil fragment (3)",
 					"Elderflame arrowtips",
-					"Enhanced saradomin brew",
-					"Enhanced super restore",
 					"Firaxyte",
 					"Forsaken tear",
 					"Gem Infused ore",
@@ -4550,7 +4544,6 @@
 					"Nature talisman",
 					"Oneiryte",
 					"Potato cactus",
-					"Prayer potion(4)",
 					"Prismare",
 					"Prolific twine",
 					"Ranarr seed",
@@ -4569,8 +4562,6 @@
 					"Snape grass",
 					"Starfire agate",
 					"Steel arrow",
-					"Super combat potion(4)",
-					"Super restore(4)",
 					"Tooth half of key",
 					"Torstol seed",
 					"Uncut diamond",
@@ -4659,8 +4650,9 @@
 				"items": ["Elder mimic casket"]
 			},
 			"archon": {
-				"items": ["Archon's Ichor", "Empyrean shards", "Prismare ring (u)"],
-				"is_activity": true
+				"items": ["Archibald", "Archon's ichor", "Empyrean shards", "Prismare ring (u)"],
+				"is_activity": true,
+				"kc_activity": {}
 			}
 		}
 	},
@@ -9831,6 +9823,7 @@
 			},
 			"custom_pets": {
 				"items": [
+					"Archibald",
 					"Baby duckling",
 					"Baby kalphite king",
 					"Baby venatrix",
@@ -10820,6 +10813,7 @@
 					"Ferocious gloves",
 					"Fire max cape",
 					"Fire max hood",
+					"First age ring",
 					"Fish sack barrel",
 					"Forestry basket",
 					"Fox",
@@ -11411,6 +11405,25 @@
 					"Zamorak egg",
 					"Zamorak hawk"
 				]
+			},
+			"elder_cache": {
+				"all_items": [
+					"Archon relic",
+					"Celestyte",
+					"Clue scroll (grandmaster)",
+					"Elder plank",
+					"Elder rune",
+					"Elder scroll piece",
+					"Elderflame arrowtips",
+					"Elderflame catalyst",
+					"Firaxyte",
+					"Oneiryte",
+					"Prismare",
+					"Starfire agate",
+					"Verdantyte"
+				],
+				"items": ["Archon relic", "Elderflame catalyst"],
+				"kc_activity": {}
 			}
 		}
 	},

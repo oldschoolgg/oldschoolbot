@@ -66,8 +66,8 @@ const ElderHoardBase: LootTable = new LootTable()
 	.add(75_021, randInt(1, 50), 2)
 	.add(75_048, 1, 1)
 	.add(73_128, 1, 1)
-	.add(19_837, 1, 1);
-// .add(75_047, 1, 1) | Archon Relic
+	.add(19_837, 1, 1)
+	.add(75_047, 1, 1);
 
 const ElderHoardTable: LootTable = new LootTable().every(ElderHoardBase, randInt(3, 6));
 

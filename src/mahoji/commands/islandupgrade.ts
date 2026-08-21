@@ -13,6 +13,7 @@ import {
 	formatDuration,
 	getAccumulationEntries,
 	getActiveAssignment,
+	getLogisticsMaintenanceDiscount,
 	getNextUpgradeForCategory,
 	getRemainingCost,
 	getTier,
@@ -49,12 +50,16 @@ const CONTRIB_KEY = 'contributions';
 const MAINT_KEY = 'maintenance';
 const ASSIGN_KEY = 'assignment';
 const COLLECT_KEY = 'lastCollected';
+const LIFETIME_COLLECT_KEY = 'lifetimeCollected';
+const MAINT_SPENT_KEY = 'maintenanceSpent';
 
 type IslandUpgradesJson = IslandUpgradeTiers & {
 	contributions?: IslandUpgradeContributions;
 	maintenance?: IslandMaintenanceTimestamps;
 	assignment?: AssignableCategory | null;
 	lastCollected?: IslandLastCollected;
+	lifetimeCollected?: ItemBank;
+	maintenanceSpent?: ItemBank;
 };
 
 const ALL_CATEGORY_CHOICES = [
@@ -63,6 +68,8 @@ const ALL_CATEGORY_CHOICES = [
 	{ name: 'Settlement Infrastructure', value: 'settlement-infrastructure' },
 	{ name: 'Expedition Outfitters', value: 'expedition-outfitters' },
 	{ name: 'Astral Observatory', value: 'astral-observatory' },
+	{ name: 'Grand Conduit', value: 'grand-conduit' },
+	{ name: 'Supply Depot', value: 'supply-depot' },
 	{ name: 'Fishing Docks', value: 'fishing-docks' },
 	{ name: 'Excavation Tunnels', value: 'excavation-tunnels' },
 	{ name: 'Lumberyard', value: 'lumberyard' },
@@ -76,6 +83,8 @@ const CHOICE_TO_CATEGORY: Record<string, UpgradeCategory> = {
 	'settlement-infrastructure': 'minigame',
 	'expedition-outfitters': 'gathering',
 	'astral-observatory': 'prismare',
+	'grand-conduit': 'conduit',
+	'supply-depot': 'logistics',
 	'fishing-docks': 'fishing',
 	'excavation-tunnels': 'mining',
 	lumberyard: 'woodcutting',
@@ -91,23 +100,202 @@ const SKILL_CATEGORY_CHOICES = ALL_CATEGORY_CHOICES.filter(c =>
 	SKILL_CATEGORIES.includes(CHOICE_TO_CATEGORY[c.value] as SkillCategory)
 );
 
-const ASSIGNABLE_CHOICES = ALL_CATEGORY_CHOICES.filter(c => CHOICE_TO_CATEGORY[c.value] !== 'megaboss');
+const MAINTAINABLE_CHOICES = ALL_CATEGORY_CHOICES.filter(c => CHOICE_TO_CATEGORY[c.value] !== 'conduit');
 
-function readState(user: { user: { island_upgrades: unknown } }): {
+const ASSIGNABLE_CHOICES = ALL_CATEGORY_CHOICES.filter(
+	c => !['megaboss', 'conduit', 'logistics'].includes(CHOICE_TO_CATEGORY[c.value])
+);
+
+export function readState(user: { user: { island_upgrades: unknown } }): {
 	upgrades: IslandUpgradeTiers;
 	contributions: IslandUpgradeContributions;
 	maintenance: IslandMaintenanceTimestamps;
 	assignment: AssignableCategory | null;
 	lastCollected: IslandLastCollected;
+	lifetimeCollected: ItemBank;
+	maintenanceSpent: ItemBank;
 } {
 	const raw = (user.user.island_upgrades ?? {}) as IslandUpgradesJson;
-	const { contributions, maintenance, assignment, lastCollected, ...tiers } = raw;
+	const { contributions, maintenance, assignment, lastCollected, lifetimeCollected, maintenanceSpent, ...tiers } =
+		raw;
 	return {
 		upgrades: { ...defaultIslandUpgrades, ...tiers },
 		contributions: { ...defaultIslandContributions, ...(contributions ?? {}) },
 		maintenance: { ...defaultMaintenanceTimestamps, ...(maintenance ?? {}) },
 		assignment: assignment ?? null,
-		lastCollected: { ...defaultLastCollected, ...(lastCollected ?? {}) }
+		lastCollected: { ...defaultLastCollected, ...(lastCollected ?? {}) },
+		lifetimeCollected: lifetimeCollected ?? {},
+		maintenanceSpent: maintenanceSpent ?? {}
+	};
+}
+
+export function hasCampsReadyToCollect(user: MUser, now: number = Date.now()): boolean {
+	const { upgrades, maintenance, assignment, lastCollected } = readState(user);
+	const activeAssignment = getActiveAssignment(assignment, maintenance, now);
+
+	for (const category of SKILL_CATEGORIES) {
+		const tier = getTier(upgrades, category);
+		if (tier === 0) continue;
+		if (!isCategoryMaintained(maintenance, category, now)) continue;
+
+		const skillLevel = user.skillLevel(category);
+		const lastAt = lastCollected[category];
+		const mult = accumulationMultiplier(category, activeAssignment);
+		const yields = calculateAccumulatedYields(category, tier, skillLevel, lastAt, now, mult, user.id);
+		if (yields.length > 0) return true;
+	}
+	return false;
+}
+
+export function calculateLifetimeSpent(user: MUser): Bank {
+	const { upgrades, contributions, maintenanceSpent } = readState(user);
+	const totalSpent = new Bank(maintenanceSpent);
+
+	for (const [category, tier] of Object.entries(upgrades)) {
+		const cat = category as UpgradeCategory;
+		const catTiers = upgradeDefinitions[cat] ?? [];
+		for (let i = 0; i < tier && i < catTiers.length; i++) {
+			const tierCost = getUpgradeCost(catTiers[i], user.isIronman);
+			totalSpent.add(tierCost);
+		}
+	}
+
+	for (const contribMap of Object.values(contributions)) {
+		for (const [itemId, qty] of Object.entries(contribMap)) {
+			totalSpent.add(Number(itemId), qty);
+		}
+	}
+
+	return totalSpent;
+}
+
+export async function viewLifetimeSpentIsland(user: MUser): Promise<SendableMessage> {
+	const bank = calculateLifetimeSpent(user);
+
+	if (bank.length === 0) {
+		return 'You have not spent any materials on island maintenance or upgrades yet.';
+	}
+
+	const image = await makeBankImage({
+		bank,
+		title: 'Lifetime Island Upgrades & Maintenance Spent',
+		user
+	});
+
+	return {
+		content:
+			"## Lifetime Island Materials Spent\n\nTotal materials spent on facility upgrades and maintenance over your minion's lifetime:",
+		files: [image]
+	};
+}
+
+export async function viewLifetimeCollectedCamps(user: MUser): Promise<SendableMessage> {
+	const { lifetimeCollected } = readState(user);
+	const bank = new Bank(lifetimeCollected);
+
+	if (bank.length === 0) {
+		return 'You have not collected any materials from your island gathering camps yet.';
+	}
+
+	const image = await makeBankImage({
+		bank,
+		title: 'Lifetime Camp Collections',
+		user
+	});
+
+	return {
+		content:
+			"## Lifetime Camp Collections\n\nTotal materials collected from all island gathering camps over your minion's lifetime:",
+		files: [image]
+	};
+}
+
+export async function collectAllIslandCamps(user: MUser): Promise<SendableMessage> {
+	const now = Date.now();
+	const {
+		upgrades: currentUpgrades,
+		contributions: currentContributions,
+		maintenance: currentMaintenance,
+		assignment: storedAssignment,
+		lastCollected: currentLastCollected,
+		lifetimeCollected: currentLifetimeCollected
+	} = readState(user);
+
+	const activeAssignment = getActiveAssignment(storedAssignment, currentMaintenance, now);
+
+	const totalCollectBank = new Bank();
+	const totalTripCostBank = new Bank();
+	const collectedCategories: SkillCategory[] = [];
+	const updatedLastCollected: IslandLastCollected = { ...currentLastCollected };
+
+	for (const category of SKILL_CATEGORIES) {
+		const tier = getTier(currentUpgrades, category);
+		if (tier === 0) continue;
+		if (!isCategoryMaintained(currentMaintenance, category, now)) continue;
+
+		const skillLevel = user.skillLevel(category);
+		const lastAt = currentLastCollected[category];
+		const mult = accumulationMultiplier(category, activeAssignment);
+		const yields = calculateAccumulatedYields(category, tier, skillLevel, lastAt, now, mult, user.id);
+		if (yields.length === 0) continue;
+
+		const isAssigned = (activeAssignment as string) === category;
+		if (isAssigned) {
+			const tripCostItem = ASSIGNMENT_TRIP_ITEM[category as AssignableCategory];
+			const tripCostQty = ASSIGNMENT_TRIP_COSTS[category as AssignableCategory];
+			const thisCost = new Bank().add(tripCostItem, tripCostQty);
+			if (!userOwnsBank(user, new Bank().add(totalTripCostBank).add(thisCost))) {
+				continue;
+			}
+			totalTripCostBank.add(thisCost);
+		}
+
+		for (const y of yields) {
+			totalCollectBank.add(y.item, y.quantity);
+		}
+		updatedLastCollected[category] = now;
+		collectedCategories.push(category);
+	}
+
+	if (totalCollectBank.length === 0) {
+		return 'You have no materials ready to collect from any of your island camps.';
+	}
+
+	if (totalTripCostBank.length > 0) {
+		await user.removeItemsFromBank(totalTripCostBank);
+	}
+
+	await user.addItemsToBank({ items: totalCollectBank, collectionLog: false });
+
+	const newLifetimeCollected = new Bank(currentLifetimeCollected).add(totalCollectBank);
+
+	await user.update({
+		island_upgrades: {
+			...currentUpgrades,
+			[CONTRIB_KEY]: currentContributions,
+			[MAINT_KEY]: currentMaintenance,
+			[ASSIGN_KEY]: activeAssignment,
+			[COLLECT_KEY]: updatedLastCollected,
+			[LIFETIME_COLLECT_KEY]: newLifetimeCollected.toJSON()
+		} as Prisma.JsonObject
+	});
+
+	const image = await makeBankImage({
+		bank: totalCollectBank,
+		title: 'Collected from All Island Camps',
+		user
+	});
+
+	const timeLines = collectedCategories
+		.map(c => {
+			const timeAccumulated = Math.min(now - currentLastCollected[c], PASSIVE_ACCUM_CAP_MS);
+			return `• **${upgradeCategoryMeta[c].label}:** ${formatDuration(timeAccumulated)}`;
+		})
+		.join('\n');
+
+	return {
+		content: `## Collected from Island Camps\n\nAll materials have been added to your bank.\n\n**Time accumulated:**\n${timeLines}`,
+		files: [image]
 	};
 }
 
@@ -270,7 +458,7 @@ export const islandUpgradeCommand = defineCommand({
 					name: 'type',
 					description: 'Which upgrade to maintain',
 					required: true,
-					choices: ALL_CATEGORY_CHOICES
+					choices: MAINTAINABLE_CHOICES
 				}
 			]
 		},
@@ -284,7 +472,7 @@ export const islandUpgradeCommand = defineCommand({
 					name: 'type',
 					description: 'Which upgrade to preview',
 					required: true,
-					choices: ALL_CATEGORY_CHOICES
+					choices: MAINTAINABLE_CHOICES
 				}
 			]
 		},
@@ -303,6 +491,11 @@ export const islandUpgradeCommand = defineCommand({
 			]
 		},
 		{ type: 'Subcommand', name: 'unassign', description: 'Return workers to their normal posts' },
+		{
+			type: 'Subcommand',
+			name: 'lifetime',
+			description: 'View total lifetime materials spent on maintenance and upgrades'
+		},
 		{
 			type: 'SubcommandGroup',
 			name: 'gather',
@@ -338,6 +531,16 @@ export const islandUpgradeCommand = defineCommand({
 				},
 				{
 					type: 'Subcommand',
+					name: 'collect_all',
+					description: 'Collect passively accumulated materials from all skill upgrades'
+				},
+				{
+					type: 'Subcommand',
+					name: 'lifetime',
+					description: 'View total lifetime materials collected from all gathering camps'
+				},
+				{
+					type: 'Subcommand',
 					name: 'preview',
 					description: "Preview accumulated yield and this week's maintenance demand",
 					options: [
@@ -360,11 +563,14 @@ export const islandUpgradeCommand = defineCommand({
 			contributions: currentContributions,
 			maintenance: currentMaintenance,
 			assignment: storedAssignment,
-			lastCollected: currentLastCollected
+			lastCollected: currentLastCollected,
+			lifetimeCollected: currentLifetimeCollected,
+			maintenanceSpent: currentMaintenanceSpent
 		} = readState(user);
 
 		const now = Date.now();
 		const activeAssignment = getActiveAssignment(storedAssignment, currentMaintenance, now);
+		const logisticsDiscount = getLogisticsMaintenanceDiscount(currentUpgrades, currentMaintenance);
 
 		const skillLevels: Record<SkillCategory, number> = {
 			fishing: user.skillLevel('fishing'),
@@ -383,7 +589,9 @@ export const islandUpgradeCommand = defineCommand({
 			contributions: IslandUpgradeContributions = currentContributions,
 			maintenance: IslandMaintenanceTimestamps = currentMaintenance,
 			assignment: AssignableCategory | null = activeAssignment,
-			lastCollected: IslandLastCollected = currentLastCollected
+			lastCollected: IslandLastCollected = currentLastCollected,
+			lifetimeCollected: ItemBank = currentLifetimeCollected,
+			maintenanceSpent: ItemBank = currentMaintenanceSpent
 		) {
 			await user.update({
 				island_upgrades: {
@@ -391,12 +599,22 @@ export const islandUpgradeCommand = defineCommand({
 					[CONTRIB_KEY]: contributions,
 					[MAINT_KEY]: maintenance,
 					[ASSIGN_KEY]: assignment,
-					[COLLECT_KEY]: lastCollected
+					[COLLECT_KEY]: lastCollected,
+					[LIFETIME_COLLECT_KEY]: lifetimeCollected,
+					[MAINT_SPENT_KEY]: maintenanceSpent
 				} as Prisma.JsonObject
 			});
 		}
 
+		if (options.lifetime) {
+			return viewLifetimeSpentIsland(user);
+		}
+
 		if (options.gather) {
+			if (options.gather.lifetime) {
+				return viewLifetimeCollectedCamps(user);
+			}
+
 			if (options.gather.view) {
 				const category = resolveCategory(options.gather.view.type) as SkillCategory;
 				const meta = upgradeCategoryMeta[category];
@@ -434,7 +652,7 @@ export const islandUpgradeCommand = defineCommand({
 					);
 					if (accumLine) str += `\n${accumLine}`;
 				} else {
-					const demand = getWeeklyMaintenanceDemand(category, tier, user.id, now);
+					const demand = getWeeklyMaintenanceDemand(category, tier, user.id, now, logisticsDiscount);
 					str += `\n**Inactive**\n> ${demand.flavorText}`;
 					str += `\n> Bring: **${truncateString(demand.bank.toString(), 200)}**`;
 					str += `\n> \`/islandupgrade maintain type:${CATEGORY_TO_CHOICE[category]}\``;
@@ -454,7 +672,7 @@ export const islandUpgradeCommand = defineCommand({
 				}
 
 				if (!isCategoryMaintained(currentMaintenance, category, now)) {
-					const demand = getWeeklyMaintenanceDemand(category, tier, user.id, now);
+					const demand = getWeeklyMaintenanceDemand(category, tier, user.id, now, logisticsDiscount);
 					return (
 						`**${meta.label}** is inactive - passive accumulation is paused.\n\n` +
 						`> ${demand.flavorText}\n` +
@@ -518,27 +736,38 @@ export const islandUpgradeCommand = defineCommand({
 
 				if (tripCostBank) await user.removeItemsFromBank(tripCostBank);
 				await user.addItemsToBank({ items: collectBank, collectionLog: false });
+
+				const newLifetimeCollected = new Bank(currentLifetimeCollected).add(collectBank);
+
 				await saveState(
 					currentUpgrades,
 					currentContributions,
 					currentMaintenance,
 					activeAssignment,
-					updatedLastCollected
+					updatedLastCollected,
+					newLifetimeCollected.toJSON()
 				);
 
 				const workerNote = isAssigned
 					? `\nWorkers assigned - +${Math.round((ASSIGNMENT_BOOST - 1) * 100)}% yield applied. Used ${ASSIGNMENT_TRIP_COSTS[category as AssignableCategory]}x ${ASSIGNMENT_TRIP_ITEM[category as AssignableCategory]}.`
 					: '';
 
+				const timeAccumulated = Math.min(now - lastAt, PASSIVE_ACCUM_CAP_MS);
+
 				return {
 					content:
 						`## Collected from ${meta.label}\n\n` +
+						`**Time accumulated:** ${formatDuration(timeAccumulated)}\n` +
 						`**${formatYields(yields)}** added to your bank.\n` +
 						`**Your ${category} level:** ${skillLevel} → materials up to level **${ceiling}**` +
 						workerNote +
 						(atCap ? `\n\n> Accumulation was capped at 24h - collect more regularly to avoid waste.` : ''),
 					files: [image]
 				};
+			}
+
+			if (options.gather.collect_all) {
+				return collectAllIslandCamps(user);
 			}
 
 			if (options.gather.preview) {
@@ -548,7 +777,7 @@ export const islandUpgradeCommand = defineCommand({
 
 				if (tier === 0) return `**${meta.label}** hasn't been unlocked yet.`;
 
-				const demand = getWeeklyMaintenanceDemand(category, tier, user.id, now);
+				const demand = getWeeklyMaintenanceDemand(category, tier, user.id, now, logisticsDiscount);
 				const canAfford = userOwnsBank(user, demand.bank);
 				const timeToReset = MAINTENANCE_WINDOW_MS - (now % MAINTENANCE_WINDOW_MS);
 				const skillLevel = skillLevels[category];
@@ -604,7 +833,11 @@ export const islandUpgradeCommand = defineCommand({
 
 				str += `${statusIcon} **${meta.label}** - Tier ${tier}/${MAX_TIER}`;
 				if (tierDef) str += ` *(${tierDef.bonus})*`;
-				if (tier > 0 && !maintained) str += ' - **inactive**';
+				if (category === 'conduit' && tier > 0) {
+					str += ' - **permanent**';
+				} else if (tier > 0 && !maintained) {
+					str += ' - **inactive**';
+				}
 				str += '\n';
 			}
 
@@ -634,7 +867,9 @@ export const islandUpgradeCommand = defineCommand({
 				const tierDef = upgradeDefinitions[category][tier - 1];
 				if (tierDef) str += ` - ${tierDef.bonus}`;
 
-				if (maintained) {
+				if (category === 'conduit') {
+					str += '\n**Permanently Active** (requires no maintenance)';
+				} else if (maintained) {
 					str += `\n**Active** - ${formatDuration(timeLeft)} remaining`;
 					const assignLine = assignmentStatusLine(activeAssignment, category, maintained);
 					if (assignLine) str += `\n${assignLine}`;
@@ -654,7 +889,7 @@ export const islandUpgradeCommand = defineCommand({
 						if (accumLine) str += `\n${accumLine}`;
 					}
 				} else {
-					const demand = getWeeklyMaintenanceDemand(category, tier, user.id, now);
+					const demand = getWeeklyMaintenanceDemand(category, tier, user.id, now, logisticsDiscount);
 					str += `\n**Inactive**\n> ${demand.flavorText}`;
 					str += `\n> Bring: **${truncateString(demand.bank.toString(), 200)}**`;
 					str += `\n> \`/islandupgrade maintain type:${CATEGORY_TO_CHOICE[category]}\``;
@@ -686,9 +921,13 @@ export const islandUpgradeCommand = defineCommand({
 			const meta = upgradeCategoryMeta[category];
 			const tier = getTier(currentUpgrades, category);
 
+			if (category === 'conduit') {
+				return '**Grand Conduit** is permanent and does not require weekly maintenance.';
+			}
+
 			if (tier === 0) return `**${meta.label}** hasn't been unlocked yet.`;
 
-			const demand = getWeeklyMaintenanceDemand(category, tier, user.id, now);
+			const demand = getWeeklyMaintenanceDemand(category, tier, user.id, now, logisticsDiscount);
 			const canAfford = userOwnsBank(user, demand.bank);
 			const timeToReset = MAINTENANCE_WINDOW_MS - (now % MAINTENANCE_WINDOW_MS);
 
@@ -709,6 +948,10 @@ export const islandUpgradeCommand = defineCommand({
 			const meta = upgradeCategoryMeta[category];
 			const tier = getTier(currentUpgrades, category);
 
+			if (category === 'conduit') {
+				return '**Grand Conduit** is permanent and does not require weekly maintenance.';
+			}
+
 			if (tier === 0) {
 				return `**${meta.label}** hasn't been built yet - unlock Tier 1 first.`;
 			}
@@ -718,7 +961,7 @@ export const islandUpgradeCommand = defineCommand({
 				return `**${meta.label}** is already active for another **${formatDuration(timeLeft)}**.`;
 			}
 
-			const demand = getWeeklyMaintenanceDemand(category, tier, user.id, now);
+			const demand = getWeeklyMaintenanceDemand(category, tier, user.id, now, logisticsDiscount);
 
 			if (!userOwnsBank(user, demand.bank)) {
 				const missing = new Bank();
@@ -761,6 +1004,7 @@ export const islandUpgradeCommand = defineCommand({
 			await user.removeItemsFromBank(demand.bank);
 
 			const updatedMaintenance: IslandMaintenanceTimestamps = { ...currentMaintenance, [category]: now };
+			const updatedMaintenanceSpent = new Bank(currentMaintenanceSpent).add(demand.bank);
 
 			let updatedLastCollected = currentLastCollected;
 			if (SKILL_CATEGORIES.includes(category as SkillCategory)) {
@@ -775,7 +1019,9 @@ export const islandUpgradeCommand = defineCommand({
 				currentContributions,
 				updatedMaintenance,
 				activeAssignment,
-				updatedLastCollected
+				updatedLastCollected,
+				currentLifetimeCollected,
+				updatedMaintenanceSpent.toJSON()
 			);
 
 			const bonusLine = await _checkAndGrant(user, currentUpgrades);
@@ -1001,7 +1247,10 @@ export const islandUpgradeCommand = defineCommand({
 
 			await saveState(newUpgrades, newContributions, currentMaintenance, activeAssignment);
 
-			const maintainNote = `Use \`/islandupgrade maintain type:${CATEGORY_TO_CHOICE[category]}\` to activate your bonus!`;
+			const maintainNote =
+				category === 'conduit'
+					? '**The Grand Conduit is permanently active and requires no maintenance!**'
+					: `Use \`/islandupgrade maintain type:${CATEGORY_TO_CHOICE[category]}\` to activate your bonus!`;
 			const collectNote = SKILL_CATEGORIES.includes(category as SkillCategory)
 				? `\nOnce maintained, use \`/islandupgrade gather collect type:${CATEGORY_TO_CHOICE[category]}\` to collect accumulated materials.`
 				: '';

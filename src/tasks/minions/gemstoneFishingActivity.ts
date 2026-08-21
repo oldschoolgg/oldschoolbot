@@ -1,7 +1,6 @@
 import { calcPercentOfNum, Emoji, Events } from '@oldschoolgg/toolkit';
 import { LootTable } from 'oldschooljs';
 
-import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
 import type { GemstoneFish } from '@/lib/skilling/skills/fishing/fishing.js';
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
@@ -11,24 +10,27 @@ import { skillingPetDropRate } from '@/lib/util.js';
 const juvenileGemscale = Fishing.gemstoneFishes.find((fish: GemstoneFish) => fish.name === 'Juvenile gemscale')!;
 const adolescentGemscale = Fishing.gemstoneFishes.find((fish: GemstoneFish) => fish.name === 'Adolescent gemscale')!;
 const matureGemscale = Fishing.gemstoneFishes.find((fish: GemstoneFish) => fish.name === 'Mature gemscale')!;
-const elderGemscale = Fishing.gemstoneFishes.find((fish: GemstoneFish) => fish.name === 'Elder gemscale')!;
 const ancientGemscale = Fishing.gemstoneFishes.find((fish: GemstoneFish) => fish.name === 'Ancient gemscale')!;
+const elderGemscale = Fishing.gemstoneFishes.find((fish: GemstoneFish) => fish.name === 'Elder gemscale')!;
 
 function generateGemstoneFishTable(currentFishLevel: number): LootTable {
-	const gemstoneFishTable = new LootTable().add(juvenileGemscale.id, 1, 5);
+	const gemstoneFishTable = new LootTable();
+	gemstoneFishTable.add(juvenileGemscale.id, 1, 1);
 
 	if (currentFishLevel >= adolescentGemscale.level) {
-		gemstoneFishTable.add(adolescentGemscale.id, 1, 4);
+		gemstoneFishTable.add(adolescentGemscale.id, 1, 1);
 	}
 	if (currentFishLevel >= matureGemscale.level) {
-		gemstoneFishTable.add(matureGemscale.id, 1, 3);
-	}
-	if (currentFishLevel >= elderGemscale.level) {
-		gemstoneFishTable.add(elderGemscale.id, 1, 2);
+		gemstoneFishTable.add(matureGemscale.id, 1, 1);
 	}
 	if (currentFishLevel >= ancientGemscale.level) {
 		gemstoneFishTable.add(ancientGemscale.id, 1, 1);
 	}
+	if (currentFishLevel >= elderGemscale.level) {
+		gemstoneFishTable.add(elderGemscale.id, 1, 1);
+	}
+
+	gemstoneFishTable.add(new LootTable(), 1, 35);
 
 	return gemstoneFishTable;
 }
@@ -39,6 +41,7 @@ export function getBestAvailableFish(currentFishLevel: number): GemstoneFish {
 		.sort((a: GemstoneFish, b: GemstoneFish) => b.xp - a.xp);
 	return unlocked[0] ?? juvenileGemscale;
 }
+
 export const gemstoneFishingTask: MinionTask = {
 	type: 'GemstoneFishing',
 	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
@@ -61,6 +64,17 @@ export const gemstoneFishingTask: MinionTask = {
 			bonusXP += amountToAdd;
 		}
 
+		const hasFishingMasterCape =
+			user.hasEquippedOrInBank('Fishing master cape') ||
+			user.hasEquippedOrInBank('Fishing master cape (inverted)');
+
+		let lootMultiplier = 1;
+		if (hasFishingMasterCape) lootMultiplier *= 2;
+
+		if (lootMultiplier > 1) {
+			loot.multiply(lootMultiplier);
+		}
+
 		const xpRes = await user.addXP({
 			skillName: 'fishing',
 			amount: fishingXP,
@@ -70,12 +84,13 @@ export const gemstoneFishingTask: MinionTask = {
 
 		let str = `${user}, ${user.minionName} finished fishing for gemscales! ${xpRes}`;
 
+		if (hasFishingMasterCape) {
+			str += '\n**2x loot for Fishing master cape.**';
+		}
+
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
-
-		const clueScrollChance = juvenileGemscale.clueScrollChance!;
-		addSkillingClueToLoot(rng, user, 'fishing', quantity, clueScrollChance, loot);
 
 		const { petDropRate } = skillingPetDropRate(user, 'fishing', juvenileGemscale.petChance!);
 		if (rng.roll(Math.ceil(petDropRate / quantity))) {

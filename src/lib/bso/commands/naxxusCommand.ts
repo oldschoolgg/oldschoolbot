@@ -1,3 +1,4 @@
+import { getGlobalBossSpeedBonus } from '@/lib/bso/commands/islandUpgrades.js';
 import { NAXXUS_HP, Naxxus } from '@/lib/bso/monsters/bosses/Naxxus.js';
 
 import { EmbedBuilder } from '@oldschoolgg/discord';
@@ -16,6 +17,7 @@ import { checkUserCanUseDegradeableItem, degradeablePvmBoostItems, degradeItem }
 import { trackLoot } from '@/lib/lootTrack.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { readState } from '@/mahoji/commands/islandupgrade.js';
 
 const bisMageGear = new Gear({
 	head: 'Gorajan occult helmet', // 20
@@ -183,6 +185,14 @@ export async function naxxusCommand(user: MUser, channelId: string, quantity: nu
 			effectiveTime = reduceNumByPercent(effectiveTime, itemBoost.boost);
 			boosts.push(`${itemBoost.boost}% ${itemBoost.item.name}`);
 		}
+	}
+
+	const { upgrades, maintenance, assignment } = readState(user);
+	const conduitBonus = getGlobalBossSpeedBonus(upgrades, maintenance, assignment);
+	if (conduitBonus > 0) {
+		const percent = conduitBonus * 100;
+		effectiveTime = reduceNumByPercent(effectiveTime, percent);
+		boosts.push(`${percent.toFixed(0)}% for Grand Conduit - Warcamp`);
 	}
 
 	const maxTripLength = await user.calcMaxTripLength('Naxxus');

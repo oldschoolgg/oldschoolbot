@@ -46,6 +46,11 @@ export const bsoEffectiveMonsters = [
 		id: 46_274,
 		name: 'Nex',
 		aliases: ['nex']
+	},
+	{
+		id: EBSOMonster.BURNING_DOMINION,
+		name: 'Burning Dominion',
+		aliases: ['burning dominion', 'dominion', 'burning', 'bdm']
 	}
 ];
 

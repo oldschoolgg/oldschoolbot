@@ -75,7 +75,8 @@ export const customPetsCL = resolveItems([
 	'Noom',
 	'Baby venatrix',
 	'Mini akumu',
-	'Octo'
+	'Octo',
+	'Archibald'
 ]);
 
 export const discontinuedCustomPetsCL = resolveItems([

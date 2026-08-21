@@ -1,6 +1,6 @@
 {
-	"hash": "48b5ecb44e44016aa297e88d2f14f183",
-	"date": "2026-07-18T08:10:52.812Z",
+	"hash": "674748fa2f0fcf80ca10d1e84ffa13cf",
+	"date": "2026-08-21T21:57:12.659Z",
 	"data": [
 		{
 			"name": "activities",
@@ -279,6 +279,7 @@
 				"complete",
 				"contribute",
 				"gather",
+				"lifetime",
 				"maintain",
 				"preview",
 				"summary",

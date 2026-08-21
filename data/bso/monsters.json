@@ -1,6 +1,6 @@
 {
-	"hash": "a226dbfd7b7a19ca06ed8ef2b2c1ab48",
-	"date": "2026-06-24T14:26:27.285Z",
+	"hash": "2700eb997888a7384fc71a9f91785e56",
+	"date": "2026-08-21T21:57:12.669Z",
 	"data": [
 		{
 			"id": 2,
@@ -1946,7 +1946,7 @@
 		{
 			"id": 142005,
 			"name": "Elder Mimic",
-			"base_kill_time_ms": 24000000,
+			"base_kill_time_ms": 15000000,
 			"is_wildy": false,
 			"is_slayer_only": false,
 			"can_be_pked": false,
@@ -3305,21 +3305,39 @@
 			"can_be_pked": false,
 			"is_wildy_multi": false,
 			"items_required": [
-				["Dragonfire shield", "Anti-dragon shield"],
-				["Zaryte bow", "Armadyl crossbow", "Rune crossbow", "Twisted bow", "Dragon hunter crossbow"],
+				["Dragonfire shield", "Anti-dragon shield", "Dragonbane aegis", "Dragonfire ward"],
+				[
+					"Zaryte bow",
+					"Armadyl crossbow",
+					"Rune crossbow",
+					"Twisted bow",
+					"Dragon hunter crossbow",
+					"Dragon hunter lance",
+					"Dragonbane glaive",
+					"Abyssal whip",
+					"Fang",
+					"Osmumten's fang",
+					"Scythe of vitur"
+				],
 				[
 					"Pernix body",
 					"Black d'hide body",
 					"Black d'hide body (g)",
 					"Black d'hide body (t)",
-					"Karil's leathertop"
+					"Karil's leathertop",
+					"Bandos chestplate",
+					"Torva platebody",
+					"Empyrean greatplate"
 				],
 				[
 					"Pernix chaps",
 					"Black d'hide chaps",
 					"Black d'hide chaps (g)",
 					"Black d'hide chaps (t)",
-					"Karil's leatherskirt"
+					"Karil's leatherskirt",
+					"Bandos tassets",
+					"Torva platelegs",
+					"Empyrean greatgreaves"
 				]
 			],
 			"qp_required": 0,
@@ -3661,20 +3679,16 @@
 			"is_slayer_only": false,
 			"can_be_pked": true,
 			"is_wildy_multi": false,
-			"items_required": [["Anti-dragon shield", "Abyssal cape"]],
+			"items_required": [
+				["Anti-dragon shield", "Abyssal cape", "Dragonfire shield", "Dragonbane aegis", "Dragonfire ward"]
+			],
 			"qp_required": 999,
 			"item_in_bank_boosts": [
 				{
+					"Axe of the high sungod": 10,
+					"Bandos godsword": 5,
+					"Dragon warhammer": 5,
 					"Saradomin godsword": 5
-				},
-				{
-					"Dragon warhammer": 5
-				},
-				{
-					"Bandos godsword": 5
-				},
-				{
-					"Axe of the high sungod": 10
 				}
 			],
 			"can_barrage": false,
@@ -4357,7 +4371,7 @@
 			"is_slayer_only": false,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": [["Dragonfire shield", "Dragonfire ward"]],
+			"items_required": [["Dragonfire shield", "Dragonfire ward", "Dragonbane aegis", "Ancient wyvern shield"]],
 			"qp_required": 182,
 			"item_in_bank_boosts": [
 				{
@@ -6480,10 +6494,6 @@
 					"Dragon claws": 8,
 					"Dragon warhammer": 13,
 					"Zaryte crossbow": 18
-				},
-				{
-					"Dragon hunter crossbow": 15,
-					"Dragon hunter lance": 15
 				},
 				{
 					"Lightbearer": 1

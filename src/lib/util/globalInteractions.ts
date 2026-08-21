@@ -16,6 +16,7 @@ import { type RunCommandArgs, runCommand } from '@/lib/settings/settings.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import { updateGiveawayMessage } from '@/lib/util/giveaway.js';
 import { fetchRepeatTrips, repeatTrip } from '@/lib/util/repeatStoredTrip.js';
+import { collectAllIslandCamps } from '@/mahoji/commands/islandupgrade.js';
 import { archonCommand } from '@/mahoji/lib/abstracted_commands/archonCommand.js';
 import { autoSlayCommand } from '@/mahoji/lib/abstracted_commands/autoSlayCommand.js';
 import { cancelGEListingCommand } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
@@ -348,6 +349,9 @@ async function globalButtonInteractionHandler({
 			args: { send: {} },
 			...options
 		});
+	}
+	if (id === InteractionID.Commands.CollectAllCamps) {
+		return collectAllIslandCamps(user);
 	}
 
 	if (id === InteractionID.Commands.BuyMinion) {

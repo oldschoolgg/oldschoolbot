@@ -1797,6 +1797,10 @@
 				"name": "Do 2000 laps at the Ardougne Rooftop Course"
 			},
 			{
+				"id": 1161,
+				"name": "Finish the Archon CL"
+			},
+			{
 				"id": 4041,
 				"name": "Finish the CMB CL"
 			},
@@ -1826,7 +1830,7 @@
 			},
 			{
 				"id": 4162,
-				"name": "Max out all Verdant Island Camp upgrades"
+				"name": "Max out all Verdant Island upgrades (excluding Grand Conduit)"
 			},
 			{
 				"id": 4130,
@@ -2493,10 +2497,6 @@
 			{
 				"id": 1055,
 				"name": "Do a birdhouse trip"
-			},
-			{
-				"id": 1161,
-				"name": "Finish the Archon CL"
 			},
 			{
 				"id": 1117,

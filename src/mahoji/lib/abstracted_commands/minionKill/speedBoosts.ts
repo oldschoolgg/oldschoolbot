@@ -2,7 +2,8 @@ import { empyreanOutfit } from '@/lib/bso/collection-log/main.js';
 import {
 	defaultIslandUpgrades,
 	defaultMaintenanceTimestamps,
-	getBossSpeedBonus
+	getBossSpeedBonus,
+	getGlobalBossSpeedBonus
 } from '@/lib/bso/commands/islandUpgrades.js';
 import { dwarvenBlessing } from '@/lib/bso/dwarvenBlessing.js';
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
@@ -219,18 +220,34 @@ const salveBoost: Boost = {
 const dragonHunterBoost: Boost = {
 	description: 'A boost for dragon-hunter gear when killing dragons',
 	run: ({ monster, osjsMon, primaryStyle: style, gearBank }) => {
-		const isDragon = osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon);
-		if (!isDragon || monster.name.toLowerCase() === 'vorkath') return null;
+		const isDragon =
+			osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon) ||
+			monster.customMonsterData?.attributes?.includes(MonsterAttribute.Dragon);
+		if (!isDragon) return null;
 
+		const results: BoostResult[] = [];
 		for (const wep of dragonHunterWeapons) {
 			const hasWep = gearBank.hasEquippedOrInBank(wep.item.id);
 			if (hasWep && style === wep.attackStyle) {
-				return {
+				results.push({
 					percentageReduction: wep.boost,
 					message: `${wep.boost}% boost for ${wep.item.name}`
-				};
+				});
+				break;
 			}
 		}
+
+		if (
+			gearBank.hasEquippedOrInBank('Dragonbane aegis') ||
+			gearBank.hasEquippedOrInBank('Dragonbane aegis (archaic)')
+		) {
+			results.push({
+				percentageReduction: 15,
+				message: '15% boost for Dragonbane aegis'
+			});
+		}
+
+		return results.length > 0 ? results : null;
 	}
 };
 const revWildyGearBoost: Boost = {
@@ -600,12 +617,13 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 				EBSOMonster.BURNING_DOMINION
 			];
 
-			if (!verdantIslandBosses.includes(monster.id)) return null;
-
+			const isIslandBoss = verdantIslandBosses.includes(monster.id);
 			const userUpgrades = gearBank.island_upgrades ?? defaultIslandUpgrades;
 			const islandMaint = (gearBank.island_upgrades as any)?.maintenance ?? defaultMaintenanceTimestamps;
 			const islandAssign = (gearBank.island_upgrades as any)?.assignment ?? null;
-			const bossSpeedBonus = getBossSpeedBonus(userUpgrades, islandMaint, islandAssign);
+			const bossSpeedBonus = isIslandBoss
+				? getBossSpeedBonus(userUpgrades, islandMaint, islandAssign)
+				: getGlobalBossSpeedBonus(userUpgrades, islandMaint, islandAssign);
 
 			if (bossSpeedBonus > 0) {
 				return {

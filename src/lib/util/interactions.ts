@@ -150,3 +150,11 @@ export function makeFishingContestButton() {
 		.setEmoji({ id: EmojiId.Fishing })
 		.setStyle(ButtonStyle.Secondary);
 }
+
+export function makeCollectAllCampsButton() {
+	return new ButtonBuilder()
+		.setCustomId(InteractionID.Commands.CollectAllCamps)
+		.setLabel('Collect All Camps')
+		.setEmoji({ name: '🏕️' })
+		.setStyle(ButtonStyle.Secondary);
+}

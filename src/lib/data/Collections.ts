@@ -999,7 +999,22 @@ export const allCollectionLogs: ICollection = {
 			Archon: {
 				alias: ['archon', 'arch'],
 				items: archonCL,
-				isActivity: true
+				isActivity: true,
+				kcActivity: {
+					Default: async (_, __, stats) =>
+						(stats.kcBank[EBSOMonster.ARCHON_TIER_1] ?? 0) +
+						(stats.kcBank[EBSOMonster.ARCHON_TIER_2] ?? 0) +
+						(stats.kcBank[EBSOMonster.ARCHON_TIER_3] ?? 0),
+					T1: async (_, __, stats) => stats.kcBank[EBSOMonster.ARCHON_TIER_1] ?? 0,
+					T2: async (_, __, stats) => stats.kcBank[EBSOMonster.ARCHON_TIER_2] ?? 0,
+					T3: async (_, __, stats) => stats.kcBank[EBSOMonster.ARCHON_TIER_3] ?? 0
+				},
+				fmtProg: ({ stats }) => [
+					`${(stats.kcBank[EBSOMonster.ARCHON_TIER_1] ?? 0) + (stats.kcBank[EBSOMonster.ARCHON_TIER_2] ?? 0) + (stats.kcBank[EBSOMonster.ARCHON_TIER_3] ?? 0)} Total KC`,
+					`${stats.kcBank[EBSOMonster.ARCHON_TIER_1] ?? 0} Shrouded KC`,
+					`${stats.kcBank[EBSOMonster.ARCHON_TIER_2] ?? 0} Ascendant KC`,
+					`${stats.kcBank[EBSOMonster.ARCHON_TIER_3] ?? 0} Apotheotic KC`
+				]
 			}
 		}
 	},

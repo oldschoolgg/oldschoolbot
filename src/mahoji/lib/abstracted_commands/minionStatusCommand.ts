@@ -16,6 +16,7 @@ import {
 	makeAutoSlayButton,
 	makeBirdHouseTripButton,
 	makeClaimDailyButton,
+	makeCollectAllCampsButton,
 	makeFishingContestButton,
 	makeosbBsoLeaguesButton,
 	makeSendICButton,
@@ -23,6 +24,7 @@ import {
 } from '@/lib/util/interactions.js';
 import { minionStatus } from '@/lib/util/minionStatus.js';
 import { makeRepeatTripButtons } from '@/lib/util/repeatStoredTrip.js';
+import { hasCampsReadyToCollect } from '@/mahoji/commands/islandupgrade.js';
 import { isUsersDailyReady } from '@/mahoji/lib/abstracted_commands/dailyCommand.js';
 import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
 
@@ -123,6 +125,10 @@ export async function minionStatusCommand(
 			.setEmoji({ id: EmojiId.Farming })
 			.setStyle(ButtonStyle.Secondary)
 	);
+
+	if (hasCampsReadyToCollect(user)) {
+		buttons.push(makeCollectAllCampsButton());
+	}
 
 	if (!minionIsBusy && birdhouseDetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton)) {
 		buttons.push(makeBirdHouseTripButton());

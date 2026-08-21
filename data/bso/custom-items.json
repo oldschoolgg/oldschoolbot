@@ -2146,6 +2146,16 @@
 		}
 	},
 	{
+		"id": 75082,
+		"name": "Archibald",
+		"members": true,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true
+		},
+		"price": 1000000
+	},
+	{
 		"id": 71439,
 		"name": "Archon boots",
 		"members": true,
@@ -2288,17 +2298,16 @@
 	{
 		"id": 75047,
 		"name": "Archon relic",
-		"tradeable": false,
+		"tradeable": true,
 		"tradeable_on_ge": true,
 		"noteable": true,
 		"cost": 45,
 		"lowalch": 18,
 		"highalch": 27,
 		"buy_limit": 13000,
-		"price": 1,
+		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isSuperUntradeable": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -2339,7 +2348,7 @@
 	},
 	{
 		"id": 75074,
-		"name": "Archon's Ichor",
+		"name": "Archon's ichor",
 		"tradeable": true,
 		"tradeable_on_ge": true,
 		"noteable": true,
@@ -5985,7 +5994,12 @@
 		},
 		"tradeable": true,
 		"tradeable_on_ge": true,
-		"price": 10000
+		"price": 10000,
+		"customItemData": {
+			"isSuperUntradeable": true,
+			"cantBeSacrificed": true,
+			"cantDropFromMysteryBoxes": true
+		}
 	},
 	{
 		"id": 73410,
@@ -17349,8 +17363,7 @@
 		"buy_limit": 13000,
 		"price": 10000000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isSuperUntradeable": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -17365,8 +17378,7 @@
 		"buy_limit": 13000,
 		"price": 10000000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isSuperUntradeable": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -17381,8 +17393,7 @@
 		"buy_limit": 13000,
 		"price": 10000000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isSuperUntradeable": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -37674,7 +37685,8 @@
 		},
 		"price": 100000000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true
 		}
 	},
 	{
@@ -37687,7 +37699,10 @@
 		"lowalch": 18,
 		"highalch": 27,
 		"buy_limit": 10,
-		"price": 10000000
+		"price": 10000000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
 	},
 	{
 		"id": 70402,
@@ -45995,7 +46010,10 @@
 			"attack_speed": 6,
 			"weapon_type": "bow"
 		},
-		"price": 10000
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
 	},
 	{
 		"id": 75072,

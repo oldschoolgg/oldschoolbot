@@ -1,3 +1,5 @@
+import { defaultMaintenanceTimestamps, getGlobalMinigameBonus } from '@/lib/bso/commands/islandUpgrades.js';
+
 import { reduceNumByPercent, stringMatches, Time, toTitleCase } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
@@ -192,6 +194,17 @@ export async function pestControlStartCommand(user: MUser, channelId: string) {
 				break;
 			}
 		}
+	}
+
+	const rawUpgrades = (user.user.island_upgrades ?? {}) as any;
+	const islandMaint = rawUpgrades.maintenance ?? defaultMaintenanceTimestamps;
+	const islandAssign = rawUpgrades.assignment ?? null;
+	const globalMinigameBonus = getGlobalMinigameBonus(rawUpgrades, islandMaint, islandAssign);
+	if (globalMinigameBonus > 0) {
+		gameLength = reduceNumByPercent(gameLength, globalMinigameBonus * 100);
+		boosts.push(
+			`${(globalMinigameBonus * 100).toFixed(0)}% faster games from Grand Conduit (Settlement Infrastructure)`
+		);
 	}
 
 	const quantity = Math.floor(maxLength / gameLength);
