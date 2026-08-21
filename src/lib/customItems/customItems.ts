@@ -879,7 +879,7 @@ setCustomItem(45_009, 'Party music box', 'Coal', {}, 1000);
 setCustomItem(45_010, 'Birthday pack', 'Coal', {}, 1000);
 
 // Gambler's bag
-setCustomItem(45_100, "Gamblers bag", 'Coal', {}, 1000);
+setCustomItem(45_100, 'Gamblers bag', 'Coal', {}, 1000);
 setCustomItem(45_101, '4 sided die', 'Coal', {}, 1000);
 setCustomItem(45_102, '6 sided die', 'Coal', {}, 1000);
 setCustomItem(45_103, '8 sided die', 'Coal', {}, 1000);
@@ -15285,7 +15285,7 @@ setCustomItem(
 		tradeable_on_ge: false,
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-		isSuperUntradeable: true
+			isSuperUntradeable: true
 		},
 		equipment: {
 			attack_stab: 0,
@@ -15543,7 +15543,13 @@ setCustomItem(
 	10_000_000
 );
 
-setCustomItem(75_073, 'Buried firmament', 'Abyssal cape', { customItemData: { cantDropFromMysteryBoxes: true } }, {}, 10_000);
+setCustomItem(
+	75_073,
+	'Buried firmament',
+	'Abyssal cape',
+	{ customItemData: { cantDropFromMysteryBoxes: true } },
+	10_000
+);
 setCustomItem(75_074, "Archon's Ichor", 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000);
 
 //archaic dyes
@@ -15558,42 +15564,42 @@ setCustomItem(
 	75_076,
 	'Dragonbane aegis (archaic)',
 	'Dragonbane aegis',
-	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true, cantDropFromMysteryBoxes : true } },
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true, cantDropFromMysteryBoxes: true } },
 	10_000
 );
 setCustomItem(
 	75_077,
 	'Empyrean greathelm (archaic)',
 	'Empyrean greathelm',
-	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true, cantDropFromMysteryBoxes:true } },
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true, cantDropFromMysteryBoxes: true } },
 	10_000
 );
 setCustomItem(
 	75_078,
 	'Empyrean greatplate (archaic)',
 	'Empyrean greatplate',
-	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true, cantDropFromMysteryBoxes:true } },
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true, cantDropFromMysteryBoxes: true } },
 	10_000
 );
 setCustomItem(
 	75_079,
 	'Empyrean greatgreaves (archaic)',
 	'Empyrean greatgreaves',
-	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true, cantDropFromMysteryBoxes:true } },
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true, cantDropFromMysteryBoxes: true } },
 	10_000
 );
 setCustomItem(
 	75_080,
 	'Empyrean greatsabaton (archaic)',
 	'Empyrean greatsabaton',
-	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true, cantDropFromMysteryBoxes:true } },
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true, cantDropFromMysteryBoxes: true } },
 	10_000
 );
 setCustomItem(
 	75_081,
 	'Empyrean greatgauntlets (archaic)',
 	'Empyrean greatgauntlets',
-	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true, cantDropFromMysteryBoxes:true } },
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true, cantDropFromMysteryBoxes: true } },
 	10_000
 );
 
