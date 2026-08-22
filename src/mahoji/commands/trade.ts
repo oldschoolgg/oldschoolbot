@@ -7,7 +7,7 @@ import {
 	SpecialResponse,
 	userMention
 } from '@oldschoolgg/discord';
-import { Events, ellipsize, noOp } from '@oldschoolgg/toolkit';
+import { Events, ellipsize } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { filterOption } from '@/discord/index.js';
@@ -140,15 +140,16 @@ ${formatTradeItemSummary(senderUser, recipientUser, itemsSent, itemsReceived)}`;
 	return message;
 }
 
-function buildTradeCompletionResponse(senderUser: MUser, recipientUser: MUser, itemsSent: Bank, itemsReceived: Bank) {
-	const synopsis = `Trade completed! ${senderUser.mention} sold ${itemsSent.toStringFull()} to ${
+function buildTradeCompletionResponse(senderUser: MUser, recipientUser: MUser, itemsSent: Bank, itemsReceived: Bank, newTradeStyle: boolean) {
+	let synopsis = `Trade completed! ${senderUser.mention} sold ${itemsSent.toStringFull()} to ${
 		recipientUser.mention
-	} in return for ${itemsReceived.toStringFull()}.
+	} in return for ${itemsReceived.toStringFull()}.`;
+	if (newTradeStyle) {
+		synopsis += `\n\n      *Trade Hash: ${formatTradeHash(itemsSent, itemsReceived)}*\n`;
+		synopsis += `${formatTradeItemSummary(senderUser, recipientUser, itemsSent, itemsReceived)}`
+	}
 
-Trade Hash: ${formatTradeHash(itemsSent, itemsReceived)}
-${formatTradeItemSummary(senderUser, recipientUser, itemsSent, itemsReceived)}
-
-You can now buy/sell items in the Grand Exchange: ${globalClient.mentionCommand('ge')}`;
+	synopsis += `You can now buy/sell items in the Grand Exchange: ${globalClient.mentionCommand('ge')}`;
 	const response: BaseSendableMessage = {
 		content: synopsis,
 		allowedMentions: tradeAllowedMentions(senderUser, recipientUser)
@@ -377,7 +378,9 @@ export const tradeCommand = defineCommand({
 
 		let tradeMessage: APIMessage;
 		let confirmationMessage: APIMessage;
+		let newTradeStyle = false;
 		if (confirmationIsTooLong && extraSettings.tradeEnableEmbed) {
+			newTradeStyle = true;
 			const embedMessage = buildTradeConfirmationEmbedMessage(
 				senderUser,
 				recipientUser,
@@ -387,7 +390,6 @@ export const tradeCommand = defineCommand({
 			const hasOfferFiles = Boolean(embedMessage.files?.length);
 			if (hasOfferFiles) {
 				tradeMessage = await interaction.followUp(embedMessage);
-				// await interaction.deleteReply().catch(noOp);
 				const confirmationContent = `${recipientUser.mention}, ${senderUser.mention} wants to trade with you. Review the trade details above, then confirm if you accept.`;
 				confirmationMessage = await interaction.followUp({
 					content: `${confirmationContent}\n\nYou have ${Math.floor(tradeEmbedTimeout / 1000)} seconds to confirm.`,
@@ -409,7 +411,6 @@ export const tradeCommand = defineCommand({
 					content,
 					components: tradeConfirmationButtons()
 				});
-				await interaction.deleteReply().catch(noOp);
 				await confirmTradeFollowUp({
 					interaction,
 					message: tradeMessage,
@@ -428,7 +429,6 @@ export const tradeCommand = defineCommand({
 				components: tradeConfirmationButtons(),
 				allowedMentions: tradeAllowedMentions(senderUser, recipientUser)
 			});
-			await interaction.deleteReply().catch(noOp);
 			await confirmTradeFollowUp({
 				interaction,
 				message: tradeMessage,
@@ -487,7 +487,7 @@ export const tradeCommand = defineCommand({
 			await ClientSettings.addToGPTaxBalance(senderUser, itemsSent.amount('Coins'));
 		}
 
-		const completionResponse = buildTradeCompletionResponse(senderUser, recipientUser, itemsSent, itemsReceived);
+		const completionResponse = buildTradeCompletionResponse(senderUser, recipientUser, itemsSent, itemsReceived, newTradeStyle);
 		await interaction.editFollowUp(tradeMessage.id, { ...completionResponse, clearAttachments: true });
 		return SpecialResponse.RespondedManually;
 	}
