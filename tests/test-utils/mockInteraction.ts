@@ -66,6 +66,10 @@ class MockInteraction {
 		return Promise.resolve();
 	}
 
+	async deleteReply() {
+		return Promise.resolve();
+	}
+
 	async returnStringOrFile() {
 		return Promise.resolve();
 	}
