@@ -420,6 +420,9 @@ const source: [string, (string | number)[]][] = [
 
 	// Pets
 	['Patricia', ['Lydia']],
+	['Partycrab', ['Mona']],
+	['Seer', ['Black swan']],
+	['Magnabbit', ['Radiant Magnabbit']],
 
 	// Tame gear
 	['Abyssal jibwings', ['Abyssal jibwings (e)']],

@@ -62,7 +62,7 @@ interface TripFinishEffectOptions {
 	components: ButtonBuilder[];
 	lastDailyTimestamp: bigint | null;
 	lastTearsOfGuthixTimestamp: bigint | null;
-	perkTier: PerkTier | 0;
+	perkTier: PerkTier;
 	rng: RNGProvider;
 
 	// BSO

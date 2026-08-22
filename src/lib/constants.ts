@@ -39,6 +39,7 @@ interface ChannelConfig {
 	HelpAndSupport: string;
 	BotLogs: string;
 	GeneralChannel: string;
+	CyrCommandsChannel: string;
 }
 
 const OSBChannelConfig: ChannelConfig = {
@@ -48,7 +49,8 @@ const OSBChannelConfig: ChannelConfig = {
 	EconomyLogs: '802029843712573510',
 	HelpAndSupport: '668073484731154462',
 	BotLogs: isProduction ? '1051725977320964197' : TEST_SERVER_LOG_CHANNEL,
-	GeneralChannel: GENERAL_CHANNEL_ID
+	GeneralChannel: GENERAL_CHANNEL_ID,
+	CyrCommandsChannel: '1522315320260562992'
 };
 
 const BSOChannelConfig: ChannelConfig = {
@@ -58,7 +60,8 @@ const BSOChannelConfig: ChannelConfig = {
 	EconomyLogs: '802029843712573510',
 	HelpAndSupport: '970752140324790384',
 	BotLogs: isProduction ? '1051725977320964197' : TEST_SERVER_LOG_CHANNEL,
-	GeneralChannel: GENERAL_CHANNEL_ID
+	GeneralChannel: GENERAL_CHANNEL_ID,
+	CyrCommandsChannel: '1522315320260562992'
 };
 
 const TestChannelConfig: ChannelConfig = {
@@ -68,7 +71,8 @@ const TestChannelConfig: ChannelConfig = {
 	EconomyLogs: TEST_SERVER_LOG_CHANNEL,
 	HelpAndSupport: TEST_SERVER_LOG_CHANNEL,
 	BotLogs: TEST_SERVER_LOG_CHANNEL,
-	GeneralChannel: TEST_SERVER_LOG_CHANNEL
+	GeneralChannel: TEST_SERVER_LOG_CHANNEL,
+	CyrCommandsChannel: '1522315320260562992'
 };
 
 export const Channel = isProduction ? (BOT_TYPE === 'OSB' ? OSBChannelConfig : BSOChannelConfig) : TestChannelConfig;

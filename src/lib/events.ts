@@ -1,6 +1,10 @@
 import { boxSpawnHandler } from '@/lib/bso/boxSpawns.js';
 import { giveBoxResetTime, itemContractResetTime, spawnLampResetTime } from '@/lib/bso/bsoConstants.js';
-import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
+import {
+	DOUBLE_LOOT_FINISH_TIME_CACHE,
+	getNextDoubleLootUsageReset,
+	isDoubleLootActive
+} from '@/lib/bso/doubleLoot.js';
 import { getGuthixianCacheInterval, userHasDoneCurrentGuthixianCache } from '@/lib/bso/minigames/guthixianCache.js';
 import { allIronmanMbTables, allMbTables } from '@/lib/bso/openables/mysteryBoxes.js';
 
@@ -20,23 +24,22 @@ import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { minionStatsEmbed } from '@/lib/util/minionStatsEmbed.js';
 import { refreshUserCache } from '@/lib/util/refreshCache.js';
-import { getNextPatronDoubleLootReset } from '@/mahoji/commands/tools.js';
 import { minionStatusCommand } from '@/mahoji/lib/abstracted_commands/minionStatusCommand.js';
 
 const mentionText = `<@${globalConfig.clientID}>`;
 
 interface CooldownFnParams {
 	user: MUser;
-	perkTier: PerkTier | 0;
+	perkTier: PerkTier;
 }
 
 const cooldownTimers: {
 	name: string;
 	timeStamp: (user: MUser, stats: { last_daily_timestamp: bigint; last_tears_of_guthix_timestamp: bigint }) => number;
 	cd: number | ((args: CooldownFnParams) => number);
-	nextReset?: (lastDone: number) => number;
 	command: [string] | [string, string] | [string, string, string];
 	utcReset: boolean;
+	nextReset?: (lastDone: number) => number;
 }[] = [
 	{
 		name: 'Tears of Guthix',
@@ -84,9 +87,9 @@ const cooldownTimers: {
 		name: 'Monthly Double Loot',
 		timeStamp: (user: MUser) => Number(user.user.last_patron_double_time_trigger),
 		cd: 0,
-		nextReset: getNextPatronDoubleLootReset,
 		command: ['tools', 'patron', 'doubleloot'],
-		utcReset: false
+		utcReset: false,
+		nextReset: getNextDoubleLootUsageReset
 	},
 	{
 		name: 'Balthazars Big Bonanza',

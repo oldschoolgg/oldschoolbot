@@ -50,7 +50,13 @@ type PrismaBigIntUpdateInput = bigint | number | { increment: bigint | number } 
 
 type PrismaBigIntKeys = 'GP' | 'sacrificedValue' | `skills_${SkillNameType}`;
 
-type PrismaItemBankKeys = 'bank' | 'collectionLogBank' | 'bank_sort_weightings' | 'temp_cl' | 'pets';
+type PrismaItemBankKeys =
+	| 'bank'
+	| 'collectionLogBank'
+	| 'bank_sort_weightings'
+	| 'temp_cl'
+	| 'pets'
+	| 'rp_rewards_left';
 
 type PrismaDateKeys = 'last_temp_cl_reset' | 'gambling_lockout_expiry' | 'minion_bought_date' | 'last_command_date';
 
@@ -94,6 +100,7 @@ type BSOUserUpdateInput = {
 		| 'lottery_input',
 		ItemBank
 	> &
+	Record<'rp_rewards_last_refilled', Prisma.JsonObject> &
 	Record<
 		'last_bonanza_date' | 'lastSpawnLamp' | 'lastGivenBoxx' | 'last_item_contract_date' | 'last_spawn_box_date',
 		Date | number | null
