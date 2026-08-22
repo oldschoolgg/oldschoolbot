@@ -65,14 +65,18 @@ function formatTradeItemSummary(senderUser: MUser, recipientUser: MUser, itemsSe
 	}: ${formatBankItemSummary(itemsReceived)}; combined: ${formatBankItemSummary(combinedBank)}.`;
 }
 
+function formatTradeHashSummary(senderUser: MUser, recipientUser: MUser, itemsSent: Bank, itemsReceived: Bank) {
+	return `      *Trade Hash: ${formatTradeHash(itemsSent, itemsReceived)}*
+${formatTradeItemSummary(senderUser, recipientUser, itemsSent, itemsReceived)}`;
+}
+
 function buildTradeConfirmationContent(senderUser: MUser, recipientUser: MUser, itemsSent: Bank, itemsReceived: Bank) {
 	return `${recipientUser.mention}, ${userMention(senderUser.id)} wants to trade with you.
 
 **${userMention(senderUser.id)}** is giving: ${formatBankForDisplay(itemsSent)}
 **${recipientUser.mention}** is giving: ${formatBankForDisplay(itemsReceived)}
 
-Trade Hash: ${formatTradeHash(itemsSent, itemsReceived)}
-${formatTradeItemSummary(senderUser, recipientUser, itemsSent, itemsReceived)}
+${formatTradeHashSummary(senderUser, recipientUser, itemsSent, itemsReceived)}
 
 Both parties must click confirm to make the trade.`;
 }
@@ -125,8 +129,7 @@ ${recipientUser.usernameOrMention} is considering trading back: ${targetOffer.di
 
 ${senderUser.mention} would like to trade with you! See the details below:
 
-Trade Hash: ${formatTradeHash(itemsSent, itemsReceived)}
-${formatTradeItemSummary(senderUser, recipientUser, itemsSent, itemsReceived)}`;
+${formatTradeHashSummary(senderUser, recipientUser, itemsSent, itemsReceived)}`;
 	const message: BaseSendableMessage = {
 		content,
 		embeds: [
@@ -145,8 +148,7 @@ function buildTradeCompletionResponse(senderUser: MUser, recipientUser: MUser, i
 		recipientUser.mention
 	} in return for ${itemsReceived.toStringFull()}.`;
 	if (newTradeStyle) {
-		synopsis += `\n\n      *Trade Hash: ${formatTradeHash(itemsSent, itemsReceived)}*\n`;
-		synopsis += `${formatTradeItemSummary(senderUser, recipientUser, itemsSent, itemsReceived)}`
+		synopsis += `\n\n${formatTradeHashSummary(senderUser, recipientUser, itemsSent, itemsReceived)}`;
 	}
 
 	synopsis += `You can now buy/sell items in the Grand Exchange: ${globalClient.mentionCommand('ge')}`;
