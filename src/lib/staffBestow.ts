@@ -1,12 +1,14 @@
 import { type APIApplicationCommandOptionChoice, SpecialResponse } from '@oldschoolgg/discord';
+import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
+import { z } from 'zod';
 
 import { economy_transaction_type } from '@/prisma/main/enums.js';
 import type { Prisma, User } from '@/prisma/main.js';
-import { type BitField, Channel } from '@/lib/constants.js';
+import { BitField, Channel } from '@/lib/constants.js';
 import { customItems } from '@/lib/customItems/util.js';
 import { allDcSet } from '@/lib/data/Collections.js';
-import { StaffGrantRoleSources, type StaffGrants } from '@/lib/settings/misc.js';
+import { ZItemBank } from '@/lib/structures/Bank.js';
 import { dmCyrAudit, sendCyrCriticalBotLog } from '@/lib/util/cyrAudit.js';
 import { userQueueFn } from '@/lib/util/userQueues.js';
 
@@ -15,10 +17,47 @@ export const StaffBestowPeriods = ['hourly', 'daily', 'weekly', 'monthly'] as co
 export type StaffBestowPeriod = (typeof StaffBestowPeriods)[number];
 export type StaffBestowSourceKey = StaffBestowRole | string;
 
+export const StaffGrantRoleSources = {
+	mod: BitField.Moderator,
+	contrib: BitField.Contributor,
+	wiki: BitField.WikiContributor
+} as const;
+
 type StaffBestowUser = Pick<User, 'id' | 'bitfield' | 'rp_bestow_bank'>;
 const StaffGrantRoleSourceEntries = Object.entries(StaffGrantRoleSources) as [StaffBestowRole, BitField][];
 const StaffGrantRoleSourceKeys = new Set(Object.keys(StaffGrantRoleSources));
+export const StaffBestowBits: BitField[] = Object.values(StaffGrantRoleSources);
 
+const StaffBestowSourceKey = z
+	.string()
+	.refine(key => StaffGrantRoleSourceKeys.has(key) || isValidDiscordSnowflake(key), {
+		message: 'Staff bestow schedule key must be "wiki", "mod", "contrib", or a Discord user ID.'
+	});
+
+export const ZStaffGrants = z
+	.object({
+		hourly: z.record(StaffBestowSourceKey, ZItemBank).optional(),
+		daily: z.record(StaffBestowSourceKey, ZItemBank).optional(),
+		weekly: z.record(StaffBestowSourceKey, ZItemBank).optional(),
+		monthly: z.record(StaffBestowSourceKey, ZItemBank).optional()
+	})
+	.strict();
+
+export const ZExtraSettings = z
+	.object({
+		tradeEnableEmbed: z.boolean().default(false),
+		tradeMaxPull: z.number().int().positive().default(70),
+		tradeTimeout: z.number().int().positive().default(15),
+		tradeEmbedTimeout: z.number().int().positive().default(25)
+	})
+	.strict();
+
+export type StaffGrants = z.infer<typeof ZStaffGrants>;
+export type IExtraSettings = z.infer<typeof ZExtraSettings>;
+
+export function canUserBestow(user: MUser) {
+	return user.bitfield.some(bit => StaffBestowBits.includes(bit));
+}
 export function getStaffBestowRole(user: MUser | StaffBestowUser): StaffBestowRole | null {
 	for (const [sourceKey, bitfield] of StaffGrantRoleSourceEntries) {
 		if (user.bitfield.includes(bitfield)) return sourceKey;
