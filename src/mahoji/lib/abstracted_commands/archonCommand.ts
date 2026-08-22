@@ -1,11 +1,9 @@
 import type { ArchonOptions } from '@/lib/bso/bsoTypes.js';
 import {
-	defaultIslandUpgrades,
-	defaultMaintenanceTimestamps,
 	getBossSpeedBonus,
 	getMegabossLootBonus,
 	getTier,
-	type IslandUpgradeTiers
+	isCategoryMaintained
 } from '@/lib/bso/commands/islandUpgrades.js';
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 
@@ -14,9 +12,10 @@ import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { randInt, roll } from 'node-rng';
 import { Bank, itemID } from 'oldschooljs';
 
-import { ARCHON_SPAWN_CHANCE, COMBAT_TIER_XP } from '@/lib/constants.js';
+import { COMBAT_TIER_XP } from '@/lib/constants.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { makeArchonButton } from '@/lib/util/interactions.js';
+import { readState } from '@/mahoji/commands/islandupgrade.js';
 
 export const archonPresentations = {
 	1: {
@@ -36,9 +35,9 @@ export const archonPresentations = {
 	}
 } as const;
 
-const COMBAT_SKILLS = ['attack', 'strength', 'defence', 'ranged', 'magic', 'hitpoints'] as const;
+const COMBAT_SKILLS = ['attack', 'strength', 'defence', 'ranged', 'magic', 'hitpoints', 'prayer'] as const;
 
-function getEligibleTier(user: MUser): 1 | 2 | 3 | null {
+export function getEligibleTier(user: MUser): 1 | 2 | 3 | null {
 	const xpValues = COMBAT_SKILLS.map(skill => user.skillsAsXP[skill] ?? 0);
 
 	const has120InAny = xpValues.some(xp => xp >= COMBAT_TIER_XP.TIER_1);
@@ -51,9 +50,27 @@ function getEligibleTier(user: MUser): 1 | 2 | 3 | null {
 	return null;
 }
 
-export function getArchonTier(user: MUser): 1 | 2 | 3 | null {
-	if (!roll(ARCHON_SPAWN_CHANCE)) return null;
+export const MIN_TRIP_LENGTH_FOR_ARCHON = Time.Minute * 10;
+
+export function rollArchonSpawn(user: MUser, duration: number): 1 | 2 | 3 | null {
+	if (duration < MIN_TRIP_LENGTH_FOR_ARCHON) return null;
+	const minutes = Math.floor(duration / Time.Minute);
+	const durationMultiplier = Math.pow(minutes / 30, 1.25);
+	const baseChance = user.usingPet('Archibald') ? 300 : 600;
+	const chancePerMinute = Math.max(1, Math.floor(baseChance / durationMultiplier));
+	let spawned = false;
+	for (let i = 0; i < minutes; i++) {
+		if (roll(chancePerMinute)) {
+			spawned = true;
+			break;
+		}
+	}
+	if (!spawned) return null;
 	return getEligibleTier(user);
+}
+
+export function getArchonTier(user: MUser, duration: number = Time.Minute * 30): 1 | 2 | 3 | null {
+	return rollArchonSpawn(user, duration);
 }
 
 const meleeSlots: [string, number][] = [
@@ -166,10 +183,14 @@ export async function handleTriggerArchon(user: MUser, data: ActivityTaskData, c
 		if (!('mi' in data) || !archonEligibleMonsterIDs.includes(data.mi as number)) return;
 	}
 
-	const tier = getArchonTier(user);
+	if (data.duration < MIN_TRIP_LENGTH_FOR_ARCHON) return;
+
+	const { upgrades, maintenance } = readState(user);
+	const megabossTier = getTier(upgrades, 'megaboss');
+	if (megabossTier < 1 || !isCategoryMaintained(maintenance, 'megaboss', Date.now())) return;
+
+	const tier = rollArchonSpawn(user, data.duration);
 	if (tier === null) return;
-	const minutes = Math.floor(data.duration / Time.Minute);
-	if (minutes < 1) return;
 
 	await prisma.archonEvent.create({
 		data: {
@@ -192,10 +213,13 @@ export async function archonCommand(
 	const tier = archonEvent.tier as 1 | 2 | 3;
 	const presentation = archonPresentations[tier];
 
-	const islandUpgrades = (user.user.island_upgrades as IslandUpgradeTiers) ?? defaultIslandUpgrades;
-	const megabossTier = getTier(islandUpgrades, 'megaboss');
+	const { upgrades, maintenance, assignment } = readState(user);
+	const megabossTier = getTier(upgrades, 'megaboss');
 	if (megabossTier < 1) {
-		return `Your minion doesn't yet know how to find the Archon. Contribute to **Archon Sanctum I** from \`/islandupgrade contribute\` to unlock access.`;
+		return `Your minion doesn't yet know how to find the Archon. Contribute to **Archon Sanctum I** from \`/island contribute\` to unlock access.`;
+	}
+	if (!isCategoryMaintained(maintenance, 'megaboss', Date.now())) {
+		return `The **Archon Sanctum** is inactive. Use \`/island maintain type:archon-sanctum\` to maintain it before challenging the Archon.`;
 	}
 
 	const userList: string[] = [user.id];
@@ -208,14 +232,12 @@ export async function archonCommand(
 
 	const speedReduction = (contribution / 100) * 0.3;
 
-	const islandMaint = (islandUpgrades as any)?.maintenance ?? defaultMaintenanceTimestamps;
-	const islandAssignment = (islandUpgrades as any)?.assignment ?? null;
-	const islandSpeedBonus = getBossSpeedBonus(islandUpgrades, islandMaint, islandAssignment);
+	const islandSpeedBonus = getBossSpeedBonus(upgrades, maintenance, assignment);
 	if (islandSpeedBonus > 0) {
 		boostMessages.push(`Warcamp Fortifications: **${(islandSpeedBonus * 100).toFixed(0)}%** faster`);
 	}
 
-	const lootBonus = getMegabossLootBonus(islandUpgrades);
+	const lootBonus = getMegabossLootBonus(upgrades, maintenance, assignment);
 	if (lootBonus > 0) {
 		boostMessages.push(`Archon Sanctum: **+${(lootBonus * 100).toFixed(0)}%** loot (uniques unaffected)`);
 	}
@@ -241,25 +263,15 @@ export async function archonCommand(
 
 	const equippedAmmo = user.gear.range.get('ammo');
 	const equippedQty = equippedAmmo?.item === ELDERFLAME_ARROW_ID ? (equippedAmmo.quantity ?? 0) : 0;
-	const bankQty = user.bank.amount(ELDERFLAME_ARROW_ID);
-	const totalQty = equippedQty + bankQty;
 
-	if (equippedAmmo?.item !== ELDERFLAME_ARROW_ID || totalQty < arrowsNeeded) {
-		return `Your minion needs at least **${arrowsNeeded}x Elderflame arrows** equipped to fight the ${presentation.name}.${!hasArrowSaver ? ' Equip a **Tidal collector (i)** or range cape to reduce arrow consumption by 3x.' : ''}`;
+	if (equippedAmmo?.item !== ELDERFLAME_ARROW_ID || equippedQty < arrowsNeeded) {
+		return `Your minion needs at least **${arrowsNeeded}x Elderflame arrows** equipped in your ranged setup to fight the ${presentation.name}.${!hasArrowSaver ? ' Equip a **Tidal collector (i)** or range cape to reduce arrow consumption by 3x.' : ''}`;
 	}
 
-	const toRemoveFromEquipped = Math.min(equippedQty, arrowsNeeded);
-	const toRemoveFromBank = arrowsNeeded - toRemoveFromEquipped;
-
-	if (toRemoveFromEquipped > 0) {
-		const remainingEquipped = equippedQty - toRemoveFromEquipped;
-		const rangeGear = user.gear.range.raw();
-		rangeGear.ammo = remainingEquipped === 0 ? null : { item: ELDERFLAME_ARROW_ID, quantity: remainingEquipped };
-		await user.updateGear([{ setup: 'range', gear: rangeGear }]);
-	}
-	if (toRemoveFromBank > 0) {
-		await user.removeItemsFromBank(new Bank().add(ELDERFLAME_ARROW_ID, toRemoveFromBank));
-	}
+	const remainingEquipped = equippedQty - arrowsNeeded;
+	const rangeGear = user.gear.range.raw();
+	rangeGear.ammo = remainingEquipped === 0 ? null : { item: ELDERFLAME_ARROW_ID, quantity: remainingEquipped };
+	await user.updateGear([{ setup: 'range', gear: rangeGear }]);
 
 	if (archonEvent.id) {
 		await prisma.archonEvent.update({
@@ -313,7 +325,8 @@ export { tierGearPenalty };
 
 export function rollArchonLoot(
 	tier: 1 | 2 | 3,
-	multiplier = 1.0
+	multiplier = 1.0,
+	uniqueBonus = 0
 ): {
 	regularLoot: Bank;
 	uniqueLoot: Bank;
@@ -353,21 +366,13 @@ export function rollArchonLoot(
 	}[tier];
 	regularLoot.add('Coins', Math.floor(coinAmounts * multiplier));
 
-	if (tier === 1) {
-		if (roll(600)) uniqueLoot.add('Prismare ring (u)');
-	} else if (tier === 2) {
-		if (roll(400)) uniqueLoot.add('Prismare ring (u)');
-	} else {
-		if (roll(200)) uniqueLoot.add('Prismare ring (u)');
-	}
+	const ringBaseRate = tier === 1 ? 600 : tier === 2 ? 400 : 200;
+	const ringRate = Math.max(1, Math.floor(ringBaseRate / (1 + uniqueBonus)));
+	if (roll(ringRate)) uniqueLoot.add('Prismare ring (u)');
 
-	if (tier === 1) {
-		if (roll(2000)) uniqueLoot.add("Archon's ichor");
-	} else if (tier === 2) {
-		if (roll(1500)) uniqueLoot.add("Archon's ichor");
-	} else {
-		if (roll(1000)) uniqueLoot.add("Archon's ichor");
-	}
+	const ichorBaseRate = tier === 1 ? 2000 : tier === 2 ? 1500 : 1000;
+	const ichorRate = Math.max(1, Math.floor(ichorBaseRate / (1 + uniqueBonus)));
+	if (roll(ichorRate)) uniqueLoot.add("Archon's ichor");
 
 	return { regularLoot, uniqueLoot };
 }

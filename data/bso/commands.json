@@ -1,6 +1,6 @@
 {
-	"hash": "48b5ecb44e44016aa297e88d2f14f183",
-	"date": "2026-07-18T08:10:52.812Z",
+	"hash": "f51bd4e15cdeacc707319c857767bb65",
+	"date": "2026-08-22T06:29:43.750Z",
 	"data": [
 		{
 			"name": "activities",
@@ -272,13 +272,14 @@
 			"subOptions": []
 		},
 		{
-			"name": "islandupgrade",
+			"name": "island",
 			"desc": "Upgrade your island camp facilities",
 			"subOptions": [
 				"assign",
 				"complete",
 				"contribute",
 				"gather",
+				"lifetime",
 				"maintain",
 				"preview",
 				"summary",

@@ -1,4 +1,5 @@
 import type { NewBossOptions } from '@/lib/bso/bsoTypes.js';
+import { getGlobalBossSpeedBonus } from '@/lib/bso/commands/islandUpgrades.js';
 
 import type { GearStats } from '@oldschoolgg/gear';
 import {
@@ -22,6 +23,7 @@ import type { Gear } from '@/lib/structures/Gear.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { ClientBankKey } from '@/lib/util/clientSettings.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
+import { readState } from '@/mahoji/commands/islandupgrade.js';
 
 export const gpCostPerKill = (user: MUser) =>
 	user.gear.melee.hasEquipped(['Ring of charos', 'Ring of charos(a)'], false) ? 5_000_000 : 10_000_000;
@@ -153,6 +155,7 @@ export interface BossOptions {
 	speedKcWeight?: number;
 	// Skip users without item cost (masses)
 	skipInvalidUsers?: boolean;
+	hideExtraMassText?: boolean;
 }
 
 export interface BossUser {
@@ -178,20 +181,17 @@ export class BossInstance {
 	ignoreStats: (keyof GearStats)[] = [];
 	food: Bank | ((user: MUser) => Bank);
 	bossUsers: BossUser[] = [];
-	duration = -1;
-	quantity: number | null = null;
-	tempQty: number | null = null;
-	allowMoreThan1Solo = false;
-	allowMoreThan1Group = false;
-	totalPercent = -1;
 	settingsKeys?: [ClientBankKey, ClientBankKey];
 	channelId: string;
 	activity: 'VasaMagus' | 'KingGoldemar' | 'Ignecarus' | 'BossEvent' | 'BurningDominion' | 'Archon';
 	massText: string;
-	users: MUser[] | null = null;
 	leader: MUser;
 	minSize: number;
 	solo: boolean;
+	users?: MUser[];
+	duration: number = 0;
+	tempQty: number | null = null;
+	quantity: number | null = null;
 	canDie: boolean;
 	kcLearningCap: number;
 	customDeathChance: null | ((user: MUser, deathChance: number, solo: boolean) => number);
@@ -203,7 +203,9 @@ export class BossInstance {
 	speedGearWeight = 25;
 	speedKcWeight = 35;
 	skipInvalidUsers?: boolean = false;
-	// allowedMentions?: BaseMessageOptions['allowedMentions'];
+	allowMoreThan1Solo = false;
+	allowMoreThan1Group = false;
+	totalPercent = -1;
 
 	constructor(options: BossOptions) {
 		this.interaction = options.interaction;
@@ -235,17 +237,21 @@ export class BossInstance {
 		this.allowMoreThan1Group = options.allowMoreThan1Group ?? false;
 		this.quantity = options.quantity ?? null;
 		this.maxSize = options.maxSize ?? 10;
-		const massText = [options.massText, '\n'];
-		if (Object.keys(this.skillRequirements).length > 0) {
-			massText.push(`**Skill Reqs:** ${formatSkillRequirements(this.skillRequirements)}`);
+		if (options.hideExtraMassText) {
+			this.massText = options.massText;
+		} else {
+			const massText = [options.massText, '\n'];
+			if (Object.keys(this.skillRequirements).length > 0) {
+				massText.push(`**Skill Reqs:** ${formatSkillRequirements(this.skillRequirements)}`);
+			}
+			if (this.itemBoosts.length > 0) {
+				massText.push(`**Item Boosts:** ${this.itemBoosts.map(i => `${i[0]}: ${i[1]}%`).join(', ')}`);
+			}
+			if (this.bisGear.allItems(false).length > 0) {
+				massText.push(`**BiS Gear:** ${this.bisGear}`);
+			}
+			this.massText = massText.join('\n');
 		}
-		if (this.itemBoosts.length > 0) {
-			massText.push(`**Item Boosts:** ${this.itemBoosts.map(i => `${i[0]}: ${i[1]}%`).join(', ')}`);
-		}
-		if (this.bisGear.allItems(false).length > 0) {
-			massText.push(`**BiS Gear:** ${this.bisGear}`);
-		}
-		this.massText = massText.join('\n');
 		this.automaticStartTime = options.automaticStartTime ?? Time.Minute * 2;
 		if (options.skipInvalidUsers) this.skipInvalidUsers = options.skipInvalidUsers;
 		// this.allowedMentions = options.allowedMentions;
@@ -436,6 +442,18 @@ export class BossInstance {
 
 		// Reduce or increase the duration based on the team size. Solo is longer, big team is faster.
 		duration -= duration * (teamSizeBoostPercent(this.users!.length) / 100);
+
+		const teamConduitBonus =
+			sumArr(
+				this.users!.map(u => {
+					const { upgrades, maintenance, assignment } = readState(u);
+					return getGlobalBossSpeedBonus(upgrades, maintenance, assignment);
+				})
+			) / this.users!.length;
+		if (teamConduitBonus > 0) {
+			duration = reduceNumByPercent(duration, teamConduitBonus * 100);
+			this.boosts.push(`${(teamConduitBonus * 100).toFixed(0)}% faster kills (Grand Conduit - Warcamp)`);
+		}
 
 		if (isWeekend()) {
 			this.boosts.push('5% Weekend boost');

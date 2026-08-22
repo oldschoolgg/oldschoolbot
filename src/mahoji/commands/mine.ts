@@ -1,3 +1,5 @@
+import { defaultMaintenanceTimestamps, getGlobalGatheringSpeedBonus } from '@/lib/bso/commands/islandUpgrades.js';
+
 import { increaseNumByPercent, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
@@ -189,6 +191,17 @@ export function calculateMiningInput({
 		newQuantity = Math.round(increaseNumByPercent(newQuantity, 150));
 		// Same as 60% speed reduction, just keeps full trips
 		messages.push('150% increased quantity for Offhand volcanic pickaxe');
+	}
+
+	const rawUpgrades = (gearBank.island_upgrades ?? {}) as any;
+	const islandMaint = rawUpgrades.maintenance ?? defaultMaintenanceTimestamps;
+	const islandAssign = rawUpgrades.assignment ?? null;
+	const globalGatherBonus = getGlobalGatheringSpeedBonus(rawUpgrades, islandMaint, islandAssign);
+	if (globalGatherBonus > 0) {
+		newQuantity = Math.round(increaseNumByPercent(newQuantity, globalGatherBonus * 100));
+		messages.push(
+			`${(globalGatherBonus * 100).toFixed(0)}% increased yield for Grand Conduit (Expedition Outfitters)`
+		);
 	}
 
 	const duration = timeToMine;

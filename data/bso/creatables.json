@@ -1,6 +1,6 @@
 {
-	"hash": "88c9e03427f51e104d2a3e389477bb58",
-	"date": "2026-08-01T10:40:55.088Z",
+	"hash": "68eb64821d14362b74eb7c40f66542c5",
+	"date": "2026-08-21T21:57:12.735Z",
 	"data": [
 		{
 			"name": "3rd age felling axe",
@@ -3313,7 +3313,7 @@
 				"Dragonbane aegis (archaic)": 1
 			},
 			"items_required": {
-				"Archon's Ichor": 1,
+				"Archon's ichor": 1,
 				"Dragonbane aegis": 1
 			}
 		},
@@ -4175,7 +4175,7 @@
 				"Empyrean greatgauntlets (archaic)": 1
 			},
 			"items_required": {
-				"Archon's Ichor": 1,
+				"Archon's ichor": 1,
 				"Empyrean greatgauntlets": 1
 			}
 		},
@@ -4185,7 +4185,7 @@
 				"Empyrean greatgreaves (archaic)": 1
 			},
 			"items_required": {
-				"Archon's Ichor": 1,
+				"Archon's ichor": 1,
 				"Empyrean greatgreaves": 1
 			}
 		},
@@ -4195,7 +4195,7 @@
 				"Empyrean greathelm (archaic)": 1
 			},
 			"items_required": {
-				"Archon's Ichor": 1,
+				"Archon's ichor": 1,
 				"Empyrean greathelm": 1
 			}
 		},
@@ -4205,7 +4205,7 @@
 				"Empyrean greatplate (archaic)": 1
 			},
 			"items_required": {
-				"Archon's Ichor": 1,
+				"Archon's ichor": 1,
 				"Empyrean greatplate": 1
 			}
 		},
@@ -4215,7 +4215,7 @@
 				"Empyrean greatsabaton (archaic)": 1
 			},
 			"items_required": {
-				"Archon's Ichor": 1,
+				"Archon's ichor": 1,
 				"Empyrean greatsabaton": 1
 			}
 		},
@@ -9084,6 +9084,19 @@
 			"noCl": true
 		},
 		{
+			"name": "Revert celestial flame",
+			"items_created": {
+				"Diluted brimstone": 100
+			},
+			"items_required": {
+				"Celestial flame": 1
+			},
+			"required_stats": {
+				"herblore": 120
+			},
+			"noCl": true
+		},
+		{
 			"name": "Revert Combatant's cape",
 			"items_created": ["Dynamic"],
 			"items_required": {
@@ -9882,6 +9895,19 @@
 				"divination": 10
 			},
 			"forceAddToCl": true
+		},
+		{
+			"name": "Revert forsaken tear",
+			"items_created": {
+				"Diluted brimstone": 100
+			},
+			"items_required": {
+				"Forsaken tear": 1
+			},
+			"required_stats": {
+				"herblore": 120
+			},
+			"noCl": true
 		},
 		{
 			"name": "Revert Fox",
@@ -11440,13 +11466,53 @@
 			"noCl": true
 		},
 		{
+			"name": "Revert primordial heartstring",
+			"items_created": {
+				"Diluted brimstone": 100
+			},
+			"items_required": {
+				"Primordial heartstring": 1
+			},
+			"required_stats": {
+				"herblore": 120
+			},
+			"noCl": true
+		},
+		{
+			"name": "Revert primordial spine",
+			"items_created": {
+				"Diluted brimstone": 100
+			},
+			"items_required": {
+				"Primordial spine": 1
+			},
+			"required_stats": {
+				"herblore": 120
+			},
+			"noCl": true
+		},
+		{
 			"name": "Revert prismare ring",
 			"items_created": {
+				"First age ring": 1,
 				"Prismare ring (u)": 1
 			},
 			"items_required": {
 				"Prismare ring": 1
 			}
+		},
+		{
+			"name": "Revert prolific twine",
+			"items_created": {
+				"Diluted brimstone": 50
+			},
+			"items_required": {
+				"Prolific twine": 1
+			},
+			"required_stats": {
+				"herblore": 120
+			},
+			"noCl": true
 		},
 		{
 			"name": "Revert purple slayer helmet",
@@ -11756,6 +11822,19 @@
 			}
 		},
 		{
+			"name": "Revert sacrilegious flask",
+			"items_created": {
+				"Diluted brimstone": 100
+			},
+			"items_required": {
+				"Sacrilegious flask": 1
+			},
+			"required_stats": {
+				"herblore": 120
+			},
+			"noCl": true
+		},
+		{
 			"name": "Revert sanguine scythe of vitur",
 			"items_created": {
 				"Sanguine scythe of vitur (uncharged)": 1
@@ -11855,6 +11934,19 @@
 			}
 		},
 		{
+			"name": "Revert sentinel core",
+			"items_created": {
+				"Diluted brimstone": 50
+			},
+			"items_required": {
+				"Sentinel core": 1
+			},
+			"required_stats": {
+				"herblore": 120
+			},
+			"noCl": true
+		},
+		{
 			"name": "Revert serpentine helm (uncharged)",
 			"items_created": {
 				"Zulrah's scales": 20000
@@ -11871,6 +11963,19 @@
 			},
 			"items_required": {
 				"Serpentine visage": 1
+			},
+			"noCl": true
+		},
+		{
+			"name": "Revert shattered pendant",
+			"items_created": {
+				"Diluted brimstone": 100
+			},
+			"items_required": {
+				"Shattered pendant": 1
+			},
+			"required_stats": {
+				"herblore": 120
 			},
 			"noCl": true
 		},
@@ -12101,6 +12206,19 @@
 				"divination": 40
 			},
 			"forceAddToCl": true
+		},
+		{
+			"name": "Revert starfire bow (u)",
+			"items_created": {
+				"Diluted brimstone": 150
+			},
+			"items_required": {
+				"Starfire bow (u)": 1
+			},
+			"required_stats": {
+				"herblore": 120
+			},
+			"noCl": true
 		},
 		{
 			"name": "Revert steam battlestaff (or)",
@@ -12587,6 +12705,19 @@
 			},
 			"items_required": {
 				"Venator shard": 1
+			},
+			"noCl": true
+		},
+		{
+			"name": "Revert verdant heart",
+			"items_created": {
+				"Diluted brimstone": 50
+			},
+			"items_required": {
+				"Verdant heart": 1
+			},
+			"required_stats": {
+				"herblore": 120
 			},
 			"noCl": true
 		},
@@ -13576,7 +13707,7 @@
 				"Searcrown band (archaic)": 1
 			},
 			"items_required": {
-				"Archon's Ichor": 1,
+				"Archon's ichor": 1,
 				"Searcrown band": 1
 			}
 		},

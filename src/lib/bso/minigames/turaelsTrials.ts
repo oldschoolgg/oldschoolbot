@@ -1,6 +1,7 @@
 import type { TuraelsTrialsOptions } from '@/lib/bso/bsoTypes.js';
+import { defaultMaintenanceTimestamps, getGlobalMinigameBonus } from '@/lib/bso/commands/islandUpgrades.js';
 
-import { formatDuration, increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { formatDuration, increaseNumByPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { degradeChargeBank } from '@/lib/degradeableItems.js';
@@ -12,13 +13,18 @@ export type TuraelsTrialsMethod = (typeof TuraelsTrialsMethods)[number];
 export function calculateTuraelsTrialsInput({
 	maxTripLength,
 	method,
-	isUsingBloodFury
+	isUsingBloodFury,
+	minigameBonus = 0
 }: {
 	maxTripLength: number;
 	isUsingBloodFury: boolean;
 	method: TuraelsTrialsMethod;
+	minigameBonus?: number;
 }) {
-	const timePerKill = Time.Minute * 2.9;
+	let timePerKill = Time.Minute * 2.9;
+	if (minigameBonus > 0) {
+		timePerKill = reduceNumByPercent(timePerKill, minigameBonus * 100);
+	}
 	const quantity = Math.floor(maxTripLength / timePerKill);
 	const duration = Math.floor(timePerKill * quantity);
 	const minutesRoundedUp = Math.ceil(duration / Time.Minute);
@@ -88,10 +94,21 @@ export async function turaelsTrialsStartCommand(user: MUser, channelId: string, 
 		messages.push('+20% Trip length for Blood fury');
 	}
 
+	const rawUpgrades = (user.user.island_upgrades ?? {}) as any;
+	const islandMaint = rawUpgrades.maintenance ?? defaultMaintenanceTimestamps;
+	const islandAssign = rawUpgrades.assignment ?? null;
+	const globalMinigameBonus = getGlobalMinigameBonus(rawUpgrades, islandMaint, islandAssign);
+	if (globalMinigameBonus > 0) {
+		messages.push(
+			`+${(globalMinigameBonus * 100).toFixed(0)}% faster from Grand Conduit (Settlement Infrastructure)`
+		);
+	}
+
 	const { duration, quantity, cost, chargeBank } = calculateTuraelsTrialsInput({
 		maxTripLength,
 		method,
-		isUsingBloodFury
+		isUsingBloodFury,
+		minigameBonus: globalMinigameBonus
 	});
 
 	const hasChargesResult = user.hasCharges(chargeBank);

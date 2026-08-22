@@ -1,9 +1,5 @@
-import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
-import { BurningDominionTemplate } from '@/lib/bso/monsters/VerdantIsland.js';
-
 import { EmbedBuilder } from '@oldschoolgg/discord';
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
-import { Bank } from 'oldschooljs';
 
 import type { GearSetupType } from '@/prisma/main/enums.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
@@ -15,7 +11,6 @@ import type { KillableMonster } from '@/lib/minions/types.js';
 import type { GroupMonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
 import findMonster from '@/lib/util/findMonster.js';
-import { calculateSimpleMonsterDeathChance } from '@/lib/util/smallUtils.js';
 
 async function checkReqs(users: MUser[], monster: KillableMonster, quantity: number) {
 	// Check if every user has the requirements for this monster.
@@ -33,6 +28,12 @@ async function checkReqs(users: MUser[], monster: KillableMonster, quantity: num
 		if (!hasReqs) {
 			return `${user.usernameOrMention} doesn't have the requirements for this monster: ${reason}`;
 		}
+		if (monster.itemCost && typeof monster.itemCost === 'object' && 'itemCost' in monster.itemCost) {
+			const totalCost = monster.itemCost.itemCost.clone().multiply(quantity);
+			if (!user.owns(totalCost)) {
+				return `${users.length === 1 ? "You don't" : `${user.usernameOrMention} doesn't`} have enough supplies. Needed for ${quantity}x ${monster.name}: ${totalCost}.`;
+			}
+		}
 		if (1 > 2 && !hasEnoughFoodForMonster(monster, user, quantity, users.length)) {
 			return `${
 				users.length === 1 ? "You don't" : `${user.usernameOrMention} doesn't`
@@ -45,11 +46,11 @@ async function checkReqs(users: MUser[], monster: KillableMonster, quantity: num
 
 function buildBoostEmbedFields(playerBoostInfos: PlayerBoostInfo[]) {
 	return playerBoostInfos.map(player => {
-		const header = `${player.teamMultiplier.toFixed(2)}x team | +${player.totalPersonalPercent.toFixed(1)}% personal`;
+		const header = `**+${player.totalPersonalPercent.toFixed(0)}% personal** (${player.teamMultiplier.toFixed(2)}x team)`;
 		const boostLines =
 			player.personalBoosts.length === 0
 				? 'No personal boosts'
-				: player.personalBoosts.map(b => `${b.name}: +${b.percent.toFixed(1)}%`).join('\n');
+				: player.personalBoosts.map(b => `${b.name} (+${b.percent.toFixed(0)}%)`).join(', ');
 
 		return {
 			name: player.username,
@@ -110,6 +111,12 @@ export const massCommand = defineCommand({
 				if (!hasReqs) {
 					return [true, `you don't have the requirements for this monster; ${reason}`];
 				}
+				if (monster.itemCost && typeof monster.itemCost === 'object' && 'itemCost' in monster.itemCost) {
+					const minCost = monster.itemCost.itemCost.clone().multiply(1);
+					if (!user.owns(minCost)) {
+						return [true, `you don't have enough supplies to join. You need at least ${minCost}.`];
+					}
+				}
 				return [false];
 			}
 		});
@@ -137,52 +144,16 @@ export const massCommand = defineCommand({
 			}
 		}
 
-		if (monster.id === EBSOMonster.BURNING_DOMINION) {
-			const bossUsers = await Promise.all(
-				users.map(async u => {
-					const currentKC = await u.getKC(BurningDominionTemplate.id);
-					const deathChance = BurningDominionTemplate.deathProps
-						? calculateSimpleMonsterDeathChance({
-								...BurningDominionTemplate.deathProps,
-								currentKC
-							})
-						: 0;
-
-					const itemsToRemove = new Bank();
-					if (monster.itemCost && typeof monster.itemCost === 'object' && 'itemCost' in monster.itemCost) {
-						itemsToRemove.add(monster.itemCost.itemCost.clone().multiply(quantity));
-					}
-
-					return {
-						user: u.id,
-						deathChance,
-						itemsToRemove: itemsToRemove.toJSON()
-					};
-				})
-			);
-
-			await ActivityManager.startTrip({
-				mi: monster.id,
-				userID: user.id,
-				channelId,
-				quantity,
-				duration,
-				type: 'BurningDominion',
-				users: users.map(u => u.id),
-				bossUsers
-			} as any);
-		} else {
-			await ActivityManager.startTrip<GroupMonsterActivityTaskOptions>({
-				mi: monster.id,
-				userID: user.id,
-				channelId,
-				q: quantity,
-				duration,
-				type: 'GroupMonsterKilling',
-				leader: user.id,
-				users: users.map(u => u.id)
-			});
-		}
+		await ActivityManager.startTrip<GroupMonsterActivityTaskOptions>({
+			mi: monster.id,
+			userID: user.id,
+			channelId,
+			q: quantity,
+			duration,
+			type: 'GroupMonsterKilling',
+			leader: user.id,
+			users: users.map(u => u.id)
+		});
 
 		const killsPerHr = Math.round((quantity / (duration / Time.Minute)) * 60).toLocaleString();
 
