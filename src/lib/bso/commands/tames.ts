@@ -221,7 +221,7 @@ const tameImageReplacementChoices = [
 
 interface TameImageReplacementEasterEgg {
 	image: Buffer;
-	shouldActivate: (args: { tame: Tame; user: MUser; perkTier: PerkTier | 0 }) => boolean;
+	shouldActivate: (args: { tame: Tame; user: MUser; perkTier: PerkTier }) => boolean;
 }
 
 const tameImageReplacementEasterEggs: TameImageReplacementEasterEgg[] = [

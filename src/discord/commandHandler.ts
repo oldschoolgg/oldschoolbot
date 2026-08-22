@@ -44,7 +44,7 @@ export async function rawCommandHandlerInner({
 		user.syncCompletedAchievementDiaries().catch(err => Logging.logError(err));
 	}
 
-	const shouldIgnoreBusy = user.isAdmin() || ignoreUserIsBusy || busyImmuneCommands.includes(command.name);
+	const shouldIgnoreBusy = user.isAdmin || ignoreUserIsBusy || busyImmuneCommands.includes(command.name);
 
 	if (!shouldIgnoreBusy && (await user.getIsLocked())) {
 		return {

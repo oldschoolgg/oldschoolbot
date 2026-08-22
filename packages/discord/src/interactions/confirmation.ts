@@ -1,6 +1,7 @@
 import { ButtonBuilder } from '@discordjs/builders';
 import { ButtonStyle } from 'discord-api-types/v10';
 
+import type { BaseSendableMessage } from '../client/types.js';
 import { createInteractionCollector } from './interactionCollector.js';
 import type { MInteraction } from './MInteraction.js';
 
@@ -15,18 +16,21 @@ enum StopReason {
 	Timeout = 'timeout'
 }
 
+export type InteractionConfirmationMessage =
+	| string
+	| ({ content: string; timeout?: number; embeds?: BaseSendableMessage['embeds'] } & (
+			| { ephemeral?: false; users?: string[] }
+			| { ephemeral?: boolean; users?: undefined }
+	  ));
+
 export async function interactionConfirmation(
 	interaction: MInteraction,
-	message:
-		| string
-		| ({ content: string; timeout?: number } & (
-				| { ephemeral?: false; users?: string[] }
-				| { ephemeral?: boolean; users?: undefined }
-		  ))
+	message: InteractionConfirmationMessage
 ): Promise<void> {
 	const ephemeral = typeof message !== 'string' ? (message.ephemeral ?? false) : false;
 	interaction.isConfirmation = true;
 	const content = typeof message === 'string' ? message : message.content;
+	const embeds = typeof message === 'string' ? undefined : message.embeds;
 	const users: string[] =
 		typeof message !== 'string' ? (message.users ?? [interaction.userId]) : [interaction.userId];
 	const timeout: number = typeof message !== 'string' ? (message.timeout ?? 15_000) : 15_000;
@@ -41,6 +45,7 @@ export async function interactionConfirmation(
 	await interaction.reply({
 		content: `${content}\n\nYou have ${Math.floor(timeout / 1000)} seconds to confirm.`,
 		components: confirmRow,
+		embeds,
 		ephemeral,
 		allowedMentions: { users }
 	});
@@ -90,6 +95,7 @@ export async function interactionConfirmation(
 					await interaction.reply({
 						content: `${content}\n\n${confirms.size}/${users.length} confirmed. Waiting for ${unconfirmedUsernames.join(', ')}...`,
 						components: confirmRow,
+						embeds,
 						allowedMentions: { users }
 					});
 				}
@@ -99,11 +105,11 @@ export async function interactionConfirmation(
 		collector.on('end', async (collected, reason) => {
 			if (reason === StopReason.AllConfirmed) return resolve();
 			if (reason === StopReason.UserCancelled) {
-				await interaction.reply({ content: `The confirmation was cancelled.`, components: [] });
+				await interaction.reply({ content: `The confirmation was cancelled.`, components: [], embeds: [] });
 				return reject(new Error('SILENT_ERROR'));
 			}
 			if (reason === StopReason.Timeout || collected.size !== users.length) {
-				await interaction.reply({ content: `You ran out of time to confirm.`, components: [] });
+				await interaction.reply({ content: `You ran out of time to confirm.`, components: [], embeds: [] });
 				reject(new Error('SILENT_ERROR'));
 			}
 		});
