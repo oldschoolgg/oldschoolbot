@@ -101,7 +101,7 @@ export function makeArchonButton(tier: 1 | 2 | 3) {
 		.setCustomId('DO_ARCHON')
 		.setLabel(`Fight the ${name}`)
 		.setEmoji({ name: '⚔️' })
-		.setStyle(ButtonStyle.Secondary);
+		.setStyle(ButtonStyle.Danger);
 }
 
 export function makeTameRepeatTripButton() {

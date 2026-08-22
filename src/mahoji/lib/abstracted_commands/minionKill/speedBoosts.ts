@@ -603,6 +603,29 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 				});
 			}
 
+			if (
+				[
+					EBSOMonster.CRYSTALLINE_SENTINEL,
+					EBSOMonster.FUNGAL_BEHEMOTH,
+					EBSOMonster.ELDER_MIMIC,
+					EBSOMonster.ORYM,
+					EBSOMonster.ORRODIL
+				].includes(monster.id) &&
+				gearBank.gear.range.hasEquipped('Elderflame arrow')
+			) {
+				if (gearBank.gear.range.hasEquipped('Elderflame bow')) {
+					results.push({
+						percentageReduction: 15,
+						message: '15% for Elderflame bow with Elderflame arrows'
+					});
+				} else if (gearBank.gear.range.hasEquipped('Starfire bow')) {
+					results.push({
+						percentageReduction: 7,
+						message: '7% for Starfire bow with Elderflame arrows'
+					});
+				}
+			}
+
 			return results;
 		}
 	},

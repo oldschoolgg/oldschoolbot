@@ -12,7 +12,7 @@ import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { randInt, roll } from 'node-rng';
 import { Bank, itemID } from 'oldschooljs';
 
-import { ARCHON_SPAWN_CHANCE, COMBAT_TIER_XP } from '@/lib/constants.js';
+import { COMBAT_TIER_XP } from '@/lib/constants.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { makeArchonButton } from '@/lib/util/interactions.js';
 import { readState } from '@/mahoji/commands/islandupgrade.js';
@@ -35,7 +35,7 @@ export const archonPresentations = {
 	}
 } as const;
 
-const COMBAT_SKILLS = ['attack', 'strength', 'defence', 'ranged', 'magic', 'hitpoints'] as const;
+const COMBAT_SKILLS = ['attack', 'strength', 'defence', 'ranged', 'magic', 'hitpoints', 'prayer'] as const;
 
 export function getEligibleTier(user: MUser): 1 | 2 | 3 | null {
 	const xpValues = COMBAT_SKILLS.map(skill => user.skillsAsXP[skill] ?? 0);
@@ -50,10 +50,27 @@ export function getEligibleTier(user: MUser): 1 | 2 | 3 | null {
 	return null;
 }
 
-export function getArchonTier(user: MUser): 1 | 2 | 3 | null {
-	const chance = user.usingPet('Archibald') ? 10 : ARCHON_SPAWN_CHANCE;
-	if (!roll(chance)) return null;
+export const MIN_TRIP_LENGTH_FOR_ARCHON = Time.Minute * 10;
+
+export function rollArchonSpawn(user: MUser, duration: number): 1 | 2 | 3 | null {
+	if (duration < MIN_TRIP_LENGTH_FOR_ARCHON) return null;
+	const minutes = Math.floor(duration / Time.Minute);
+	const durationMultiplier = Math.pow(minutes / 30, 1.25);
+	const baseChance = user.usingPet('Archibald') ? 300 : 600;
+	const chancePerMinute = Math.max(1, Math.floor(baseChance / durationMultiplier));
+	let spawned = false;
+	for (let i = 0; i < minutes; i++) {
+		if (roll(chancePerMinute)) {
+			spawned = true;
+			break;
+		}
+	}
+	if (!spawned) return null;
 	return getEligibleTier(user);
+}
+
+export function getArchonTier(user: MUser, duration: number = Time.Minute * 30): 1 | 2 | 3 | null {
+	return rollArchonSpawn(user, duration);
 }
 
 const meleeSlots: [string, number][] = [
@@ -166,13 +183,13 @@ export async function handleTriggerArchon(user: MUser, data: ActivityTaskData, c
 		if (!('mi' in data) || !archonEligibleMonsterIDs.includes(data.mi as number)) return;
 	}
 
-	if (data.duration < Time.Minute * 30) return;
+	if (data.duration < MIN_TRIP_LENGTH_FOR_ARCHON) return;
 
 	const { upgrades, maintenance } = readState(user);
 	const megabossTier = getTier(upgrades, 'megaboss');
 	if (megabossTier < 1 || !isCategoryMaintained(maintenance, 'megaboss', Date.now())) return;
 
-	const tier = getArchonTier(user);
+	const tier = rollArchonSpawn(user, data.duration);
 	if (tier === null) return;
 
 	await prisma.archonEvent.create({
@@ -199,10 +216,10 @@ export async function archonCommand(
 	const { upgrades, maintenance, assignment } = readState(user);
 	const megabossTier = getTier(upgrades, 'megaboss');
 	if (megabossTier < 1) {
-		return `Your minion doesn't yet know how to find the Archon. Contribute to **Archon Sanctum I** from \`/islandupgrade contribute\` to unlock access.`;
+		return `Your minion doesn't yet know how to find the Archon. Contribute to **Archon Sanctum I** from \`/island contribute\` to unlock access.`;
 	}
 	if (!isCategoryMaintained(maintenance, 'megaboss', Date.now())) {
-		return `The **Archon Sanctum** is inactive. Use \`/islandupgrade maintain type:archon-sanctum\` to maintain it before challenging the Archon.`;
+		return `The **Archon Sanctum** is inactive. Use \`/island maintain type:archon-sanctum\` to maintain it before challenging the Archon.`;
 	}
 
 	const userList: string[] = [user.id];

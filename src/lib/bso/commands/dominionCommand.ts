@@ -148,7 +148,7 @@ export async function burningDominionCommand(
 		minSize: 2,
 		maxSize: 10,
 		ironmanAllowed: true,
-		message: `${user.badgedUsername} is doing a Burning Dominion mass! Use the buttons below to join/leave.`,
+		message: `${user.badgedUsername} is hosting a **Burning Dominion mass (2-10 players, CANNOT be done solo)**! Use the buttons below to join/leave.`,
 		customDenier: async u => {
 			const [pass, denyReason] = await checkBurningDominionUserReqs(u);
 			if (!pass) {

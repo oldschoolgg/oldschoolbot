@@ -879,7 +879,7 @@ setCustomItem(45_009, 'Party music box', 'Coal', {}, 1000);
 setCustomItem(45_010, 'Birthday pack', 'Coal', {}, 1000);
 
 // Gambler's bag
-setCustomItem(45_100, "Gamblers bag", 'Coal', {}, 1000);
+setCustomItem(45_100, 'Gamblers bag', 'Coal', {}, 1000);
 setCustomItem(45_101, '4 sided die', 'Coal', {}, 1000);
 setCustomItem(45_102, '6 sided die', 'Coal', {}, 1000);
 setCustomItem(45_103, '8 sided die', 'Coal', {}, 1000);

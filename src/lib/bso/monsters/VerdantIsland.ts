@@ -457,17 +457,6 @@ export const CrystallineSentinel: CustomMonster = {
 			items: [{ boostPercent: 25, itemID: itemID('Vitrolic curse') }]
 		},
 		{
-			gearSetup: 'range',
-			items: [
-				{ boostPercent: 10, itemID: itemID('Elderflame bow') },
-				{ boostPercent: 7, itemID: itemID('Starfire bow') }
-			]
-		},
-		{
-			gearSetup: 'range',
-			items: [{ boostPercent: 10, itemID: itemID('Elderflame arrow') }]
-		},
-		{
 			gearSetup: 'melee',
 			items: [{ boostPercent: 10, itemID: itemID("Brawler's hook necklace") }]
 		}
@@ -544,17 +533,6 @@ export const FungalBehemoth: CustomMonster = {
 		{
 			gearSetup: 'melee',
 			items: [{ boostPercent: 25, itemID: itemID('Vitrolic curse') }]
-		},
-		{
-			gearSetup: 'range',
-			items: [
-				{ boostPercent: 10, itemID: itemID('Elderflame bow') },
-				{ boostPercent: 7, itemID: itemID('Starfire bow') }
-			]
-		},
-		{
-			gearSetup: 'range',
-			items: [{ boostPercent: 10, itemID: itemID('Elderflame arrow') }]
 		},
 		{
 			gearSetup: 'melee',
@@ -637,20 +615,7 @@ export const ElderMimic: CustomMonster = {
 	},
 	tameCantKill: true,
 	groupKillable: false,
-	setupsUsed: ['melee', 'range'],
-	equippedItemBoosts: [
-		{
-			gearSetup: 'range',
-			items: [
-				{ boostPercent: 10, itemID: itemID('Elderflame bow') },
-				{ boostPercent: 7, itemID: itemID('Starfire bow') }
-			]
-		},
-		{
-			gearSetup: 'range',
-			items: [{ boostPercent: 10, itemID: itemID('Elderflame arrow') }]
-		}
-	]
+	setupsUsed: ['melee', 'range']
 };
 
 export const Orym: CustomMonster = {
@@ -732,17 +697,6 @@ export const Orym: CustomMonster = {
 		{
 			gearSetup: 'melee',
 			items: [{ boostPercent: 7, itemID: itemID('Searcrown band') }]
-		},
-		{
-			gearSetup: 'range',
-			items: [
-				{ boostPercent: 10, itemID: itemID('Elderflame bow') },
-				{ boostPercent: 7, itemID: itemID('Starfire bow') }
-			]
-		},
-		{
-			gearSetup: 'range',
-			items: [{ boostPercent: 10, itemID: itemID('Elderflame arrow') }]
 		}
 	]
 };
@@ -826,17 +780,6 @@ export const Orrodil: CustomMonster = {
 		{
 			gearSetup: 'melee',
 			items: [{ boostPercent: 7, itemID: itemID('Searcrown band') }]
-		},
-		{
-			gearSetup: 'range',
-			items: [
-				{ boostPercent: 10, itemID: itemID('Elderflame bow') },
-				{ boostPercent: 7, itemID: itemID('Starfire bow') }
-			]
-		},
-		{
-			gearSetup: 'range',
-			items: [{ boostPercent: 10, itemID: itemID('Elderflame arrow') }]
 		}
 	]
 };

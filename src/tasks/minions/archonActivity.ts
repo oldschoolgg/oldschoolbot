@@ -41,7 +41,7 @@ export const archonTask: MinionTask = {
 			messages.push('Archibald doubled your Archon loot!');
 		}
 
-		const baseArchibaldRate = tier === 1 ? 7000 : tier === 2 ? 5000 : 3000;
+		const baseArchibaldRate = tier === 1 ? 4000 : tier === 2 ? 3000 : 2000;
 		const archibaldRate = Math.max(1, Math.floor(baseArchibaldRate / (1 + uniqueBonus)));
 		if (roll(archibaldRate)) {
 			realUserLoot.add('Archibald');

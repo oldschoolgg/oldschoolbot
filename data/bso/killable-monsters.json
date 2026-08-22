@@ -2804,28 +2804,6 @@
 				]
 			},
 			{
-				"gear_setup": "range",
-				"items": [
-					{
-						"boost_percent": 10,
-						"item_id": 75016
-					},
-					{
-						"boost_percent": 7,
-						"item_id": 75049
-					}
-				]
-			},
-			{
-				"gear_setup": "range",
-				"items": [
-					{
-						"boost_percent": 10,
-						"item_id": 75020
-					}
-				]
-			},
-			{
 				"gear_setup": "melee",
 				"items": [
 					{
@@ -3573,31 +3551,7 @@
 		},
 		"tame_cant_kill": true,
 		"group_killable": false,
-		"setups_used": ["melee", "range"],
-		"equipped_item_boosts": [
-			{
-				"gear_setup": "range",
-				"items": [
-					{
-						"boost_percent": 10,
-						"item_id": 75016
-					},
-					{
-						"boost_percent": 7,
-						"item_id": 75049
-					}
-				]
-			},
-			{
-				"gear_setup": "range",
-				"items": [
-					{
-						"boost_percent": 10,
-						"item_id": 75020
-					}
-				]
-			}
-		]
+		"setups_used": ["melee", "range"]
 	},
 	{
 		"id": 5295,
@@ -3930,28 +3884,6 @@
 					{
 						"boost_percent": 25,
 						"item_id": 75003
-					}
-				]
-			},
-			{
-				"gear_setup": "range",
-				"items": [
-					{
-						"boost_percent": 10,
-						"item_id": 75016
-					},
-					{
-						"boost_percent": 7,
-						"item_id": 75049
-					}
-				]
-			},
-			{
-				"gear_setup": "range",
-				"items": [
-					{
-						"boost_percent": 10,
-						"item_id": 75020
 					}
 				]
 			},
@@ -5998,28 +5930,6 @@
 						"item_id": 75017
 					}
 				]
-			},
-			{
-				"gear_setup": "range",
-				"items": [
-					{
-						"boost_percent": 10,
-						"item_id": 75016
-					},
-					{
-						"boost_percent": 7,
-						"item_id": 75049
-					}
-				]
-			},
-			{
-				"gear_setup": "range",
-				"items": [
-					{
-						"boost_percent": 10,
-						"item_id": 75020
-					}
-				]
 			}
 		]
 	},
@@ -6130,28 +6040,6 @@
 					{
 						"boost_percent": 7,
 						"item_id": 75017
-					}
-				]
-			},
-			{
-				"gear_setup": "range",
-				"items": [
-					{
-						"boost_percent": 10,
-						"item_id": 75016
-					},
-					{
-						"boost_percent": 7,
-						"item_id": 75049
-					}
-				]
-			},
-			{
-				"gear_setup": "range",
-				"items": [
-					{
-						"boost_percent": 10,
-						"item_id": 75020
 					}
 				]
 			}

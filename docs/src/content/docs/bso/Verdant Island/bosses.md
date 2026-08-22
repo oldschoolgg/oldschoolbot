@@ -19,7 +19,7 @@ The entry-level Verdant Island boss, fought with melee and ranged combat styles.
 - **Supplies per Kill:** 1x Super combat potion(4), 2x Prayer potion(4)
 - **Speed Boosts:**
   - Vitrolic curse (melee): +25%
-  - Elderflame bow + Elderflame arrows: +10%
+  - Elderflame bow + Elderflame arrows: +15%
   - Brawler's hook necklace (melee): +10%
   - Starfire bow + Elderflame arrows: +7%
 - **Notable Drops:** Sentinel core (1/1000), Starfire bow (u) (1/3000), Celestyte, Oneiryte, Starfire agate, Crystalline ore, Dense crystal shard, Crystalline plank, Gem infused ore, Elderflame arrowtips.
@@ -37,7 +37,7 @@ A colossus with massive hitpoints where combat XP scaling is inverted: lower com
 - **Supplies per Kill:** 1x Super combat potion(4), 3x Prayer potion(4), 2x Saradomin brew(4)
 - **Speed Boosts:**
   - Vitrolic curse (melee): +25%
-  - Elderflame bow + Elderflame arrows: +10%
+  - Elderflame bow + Elderflame arrows: +15%
   - Brawler's hook necklace (melee): +10%
   - Starfire bow + Elderflame arrows: +7%
 - **Notable Drops:** Verdant heart (1/3000), Prolific twine (1/5000), Grimy herbs, Seeds, Verdantyte, Starfire agate, Oneiryte, Elderflame arrowtips.
@@ -57,10 +57,9 @@ A high-level dragon patriarch fought using Melee (Stab style).
 - **Speed Boosts:**
   - Dragonbane glaive: +25%
   - Dragonbane aegis: +15%
+  - Elderflame bow + Elderflame arrows: +15%
   - Searcrown band: +7%
-  - Elderflame bow: +10%
-  - Starfire bow: +7%
-  - Elderflame arrow: +10% (consumes arrows during trip)
+  - Starfire bow + Elderflame arrows: +7%
 - **Notable Drops:** Primordial Bones (2–5 guaranteed), Primordial Scales (12–50 guaranteed), Forsaken tear, Sacrilegious flask, Primordial heartstring, Primordial spine, Clue scroll (grandmaster) (1/50), Orylin pet (1/5000).
 
 ---
@@ -78,10 +77,9 @@ The companion twin dragon with distinct unique drops.
 - **Speed Boosts:**
   - Dragonbane glaive: +25%
   - Dragonbane aegis: +15%
+  - Elderflame bow + Elderflame arrows: +15%
   - Searcrown band: +7%
-  - Elderflame bow: +10%
-  - Starfire bow: +7%
-  - Elderflame arrow: +10% (consumes arrows during trip)
+  - Starfire bow + Elderflame arrows: +7%
 - **Notable Drops:** Primordial Bones (2–5 guaranteed), Primordial Scales (12–50 guaranteed), Shattered pendant, Celestial flame, Elder scroll piece (1/75), Elder sigil fragments 1–3 (1/95 each), Primordial heartstring, Primordial spine, Orrodin pet (1/5000).
 
 ---
@@ -97,9 +95,8 @@ A solo boss consuming an Elder mimic casket per kill.
 - **QP Required:** 1,500 | **Kill Time:** ~400 minutes
 - **Supplies per Kill:** 1x of every clue tier (Beginner through Elder) + 1x locked Elder Mimic casket. Always rewards an unlocked Elder mimic casket.
 - **Speed Boosts:**
-  - Elderflame bow: +10%
-  - Starfire bow: +7%
-  - Elderflame arrow: +10% (consumes arrows during trip)
+  - Elderflame bow + Elderflame arrows: +15%
+  - Starfire bow + Elderflame arrows: +7%
 
 ---
 
