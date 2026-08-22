@@ -9,6 +9,7 @@ import { BitField, MAX_CLUES_DROPPED, PerkTier } from '@/lib/constants.js';
 import type { UnifiedOpenable } from '@/lib/openables.js';
 import { allOpenables, getOpenableLoot } from '@/lib/openables.js';
 import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
+import { FriendlyTask } from '@/lib/util/FriendlyTask.js';
 import { patronMsg } from '@/lib/util/smallUtils.js';
 import { addToOpenablesScores } from '@/mahoji/mahojiSettings.js';
 
@@ -88,14 +89,25 @@ export async function abstractedOpenUntilCommand(
 	let realMax = Math.max(10_000, perkTier * 10_000);
 	if (perkTier > 4 || user.bitfield.includes(BitField.OriginalCyrSupporter)) realMax = 100_000;
 	const max = Math.min(realMax, amountOfThisOpenableOwned, maxOpenLimit);
+	const yielder = new FriendlyTask(`OpenUntil`, {
+		yieldAfterMs: 50,
+		warnAfterMs: 500,
+		data: {
+			openable,
+			openUntil,
+			targetQuantity
+		}
+	});
 	for (let i = 0; i < max; i++) {
 		cost.add(openable.openedItem.id);
-		const thisLoot = await getOpenableLoot({ openable, quantity: 1, user, rng });
+		const thisLoot = await getOpenableLoot({ openable, quantity: 1, user, rng, yielder });
 		loot.add(thisLoot.bank);
 		amountOpened++;
 		targetCount = loot.amount(openUntil.id);
 		if (targetCount >= targetQuantity) break;
+		await yielder.checkpoint();
 	}
+	yielder.finish();
 
 	return finalizeOpening({
 		user,
@@ -182,6 +194,7 @@ export async function abstractedOpenCommand(
 	_names: string[],
 	_quantity: number | 'auto' = 1
 ): Promise<string | MessageBuilder> {
+	const isOpenAll = _names.includes('all');
 	const favorites = user.user.favoriteItems;
 
 	const names = _names.map(i => i.replace(regex, '$1'));
@@ -194,7 +207,10 @@ export async function abstractedOpenCommand(
 	if (names.includes('all')) {
 		if (openables.length === 0) return 'You have no openable items.';
 		if ((await user.fetchPerkTier()) < PerkTier.Two) return patronMsg(PerkTier.Two);
-		if (interaction) await interaction.confirmation('Are you sure you want to open ALL your items?');
+		if (interaction) {
+			await interaction.confirmation('Are you sure you want to open ALL your items?');
+			void interaction.reply('Opening all your items...');
+		}
 	}
 
 	if (openables.length === 0) return "That's not a valid item.";
@@ -210,15 +226,26 @@ export async function abstractedOpenCommand(
 	const loot = new Bank();
 	const messages: string[] = [];
 
+	const yielder = new FriendlyTask(`Open`, {
+		yieldAfterMs: 50,
+		warnAfterMs: 500,
+		data: {
+			openables: isOpenAll ? 'all' : openables,
+			quantity: _quantity,
+			userId: user.id
+		}
+	});
 	for (const openable of openables) {
 		const { openedItem } = openable;
 		const quantity = typeof _quantity === 'string' ? user.bank.amount(openedItem.id) : _quantity;
+		await yielder.checkpoint();
 		cost.add(openedItem.id, quantity);
 		kcBank.add(openedItem.id, quantity);
-		const thisLoot = await getOpenableLoot({ openable, quantity, user, rng });
+		const thisLoot = await getOpenableLoot({ openable, quantity, user, rng, yielder });
 		loot.add(thisLoot.bank);
 		if (thisLoot.message) messages.push(thisLoot.message);
 	}
+	yielder.finish();
 
 	return finalizeOpening({ user, cost, loot, messages, openables, kcBank });
 }
