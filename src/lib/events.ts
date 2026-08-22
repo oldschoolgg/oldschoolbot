@@ -37,7 +37,6 @@ const cooldownTimers: {
 	name: string;
 	timeStamp: (user: MUser, stats: { last_daily_timestamp: bigint; last_tears_of_guthix_timestamp: bigint }) => number;
 	cd: number | ((args: CooldownFnParams) => number);
-	nextReset?: (lastDone: number) => number;
 	command: [string] | [string, string] | [string, string, string];
 	utcReset: boolean;
 	nextReset?: (lastDone: number) => number;
