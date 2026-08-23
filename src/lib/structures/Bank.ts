@@ -1,5 +1,5 @@
 import { GeneralBank, type GeneralBankType } from '@oldschoolgg/toolkit';
-import { Bank, type ItemBank } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 import * as z from 'zod';
 
 import { type DegradeableItem, degradeableItems } from '@/lib/degradeableItems.js';
@@ -7,24 +7,7 @@ import { assert } from '@/lib/util/logError.js';
 
 export const ZRawItemBank = z.record(z.string(), z.number().int().positive());
 
-function itemBankMatchesSanitizedBank(bank: ItemBank): boolean {
-	const sanitized = Bank.withSanitizedValues(bank).toJSON();
-	const bankEntries = Object.entries(bank);
-	const sanitizedEntries = Object.entries(sanitized);
-	if (bankEntries.length !== sanitizedEntries.length) return false;
-
-	for (const [itemID, quantity] of bankEntries) {
-		if (sanitized[itemID] !== quantity) return false;
-	}
-
-	return true;
-}
-
 export const ZItemBank = ZRawItemBank.transform(bank => Bank.withSanitizedValues(bank).toJSON());
-
-export const ZStrictItemBank = ZRawItemBank.refine(itemBankMatchesSanitizedBank, {
-	message: 'Invalid item bank.'
-}).transform(bank => Bank.withSanitizedValues(bank).toJSON());
 
 export class ChargeBank extends GeneralBank<DegradeableItem['settingsKey']> {
 	constructor(initialBank?: GeneralBankType<DegradeableItem['settingsKey']>) {

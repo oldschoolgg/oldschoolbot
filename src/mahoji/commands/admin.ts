@@ -53,15 +53,15 @@ import { allDcSet } from '@/lib/data/Collections.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { syncCustomPrices } from '@/lib/preStartup.js';
 import { countUsersWithItemInCl } from '@/lib/rawSql.js';
-import { type StaffBestowSchedule, ZStrictStaffBestowSchedule } from '@/lib/settings/misc.js';
+import { type StaffGrants, ZStaffGrants } from '@/lib/settings/misc.js';
 import { sorts } from '@/lib/sorts.js';
-import { runStaffBestowReplenishment, type StaffBestowPeriod, StaffBestowPeriods } from '@/lib/staffBestow.js';
+import { runStaffBestowReplenishment, type StaffBestowPeriod } from '@/lib/staffBestow.js';
 import { dmCyrAudit, makeArgAuditFiles, sendCyrCriticalBotLog } from '@/lib/util/cyrAudit.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { safeMessage } from '@/lib/util/smallUtils.js';
 import { makeGiveawayButtons } from '@/mahoji/commands/giveaway.js';
-import {isValidDiscordSnowflake} from "@oldschoolgg/util";
+import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 
 export const gifs = [
 	'https://tenor.com/view/angry-stab-monkey-knife-roof-gif-13841993',
@@ -161,7 +161,7 @@ interface AdminRunnableCommand {
 	name: string;
 	description: string;
 	args: AdminRunnableCommandArg[];
-	run: (options: { arg1?: string; arg2?: string; adminUser: MUser, rng: RNGProvider }) => Promise<SendableMessage>;
+	run: (options: { arg1?: string; arg2?: string; adminUser: MUser; rng: RNGProvider }) => Promise<SendableMessage>;
 }
 
 async function findUsersWithLotteryTickets() {
@@ -189,18 +189,19 @@ ${args}
 Set \`exec: true\` to execute this command.`;
 }
 
-function findDiscontinuedStaffBestowItems(schedule: StaffBestowSchedule) {
+function findDiscontinuedStaffBestowItems(schedule: StaffGrants) {
 	const found = new Map<number, string[]>();
 
-	for (const [source, limits] of Object.entries(schedule)) {
-		for (const period of StaffBestowPeriods) {
-			for (const itemID of Object.keys(limits[period])) {
+	for (const [period, sources] of Object.entries(schedule)) {
+		if (!sources) continue;
+		for (const [source, limits] of Object.entries(sources)) {
+			for (const itemID of Object.keys(limits)) {
 				const id = Number(itemID);
 				if (!allDcSet.has(id) || !customItems.includes(id)) continue;
 				const item = Items.getItem(id);
 				const itemName = item ? `${item.name} (${id})` : itemID;
 				const locations = found.get(id) ?? [];
-				locations.push(`${source}.${period}: ${itemName}`);
+				locations.push(`${period}.${source}: ${itemName}`);
 				found.set(id, locations);
 			}
 		}
@@ -225,25 +226,24 @@ const adminRunnableCommands: AdminRunnableCommand[] = [
 			if (!isValidDiscordSnowflake(arg1)) {
 				return 'Not a valid User ID';
 			}
-			if (!adminUser.isAdmin && ! adminUser.isGameHacker)
-			{
+			if (!adminUser.isAdmin && !adminUser.isGameHacker) {
 				return rng.pick(gifs);
 			}
 			const user = await mUserFetch(arg1);
-			if (!user.isMod && !user.isContributor && !user.isContributor) {
+			if (!user.isMod && !user.isContributor && !user.isWikiContrib) {
 				return `That player can't bestow items on anyone`;
 			}
 
 			return {
 				files: [
 					await makeBankImage({
-						bank: new Bank(user.user.rp_rewards_left as ItemBank),
+						bank: new Bank((user.user.rp_bestow_bank ?? {}) as ItemBank),
 						title: `${user.username}'s Bestow Bank`
 					})
 				]
 			};
 		}
-	} ,
+	},
 	{
 		name: 'trigger_bestow_cycle',
 		description: 'Triggers one of the staff bestow replenishment cycles.',
@@ -259,7 +259,7 @@ const adminRunnableCommands: AdminRunnableCommand[] = [
 			if (!['hourly', 'daily', 'weekly', 'monthly'].includes(arg1))
 				return 'Invalid cycle; must be one of "hourly", "daily", "weekly", "monthly"!';
 			const period = arg1 as StaffBestowPeriod;
-			const files = makeArgAuditFiles({name: 'cycle', data: arg1});
+			const files = makeArgAuditFiles({ name: 'cycle', data: arg1 });
 			const body = `${adminUser.logName} ran /admin run trigger_bestow_cycle with exec: true for cycle ${period}.`;
 			await Promise.all([
 				dmCyrAudit(`# **Staff Bestow Cycle Triggered**\n${body}`, files),
@@ -288,14 +288,14 @@ const adminRunnableCommands: AdminRunnableCommand[] = [
 				return `Failed to parse bestow limits JSON: ${(err as Error).message}`;
 			}
 
-			let staffBestowSchedule: StaffBestowSchedule;
+			let StaffGrantsSchedule: StaffGrants;
 			try {
-				staffBestowSchedule = ZStrictStaffBestowSchedule.parse(parsedInput);
+				StaffGrantsSchedule = ZStaffGrants.parse(parsedInput);
 			} catch (err) {
 				return `Invalid bestow replenish limits: ${(err as Error).message}`;
 			}
 
-			const discontinuedItemsFound = findDiscontinuedStaffBestowItems(staffBestowSchedule);
+			const discontinuedItemsFound = findDiscontinuedStaffBestowItems(StaffGrantsSchedule);
 			if (discontinuedItemsFound.length > 0) {
 				const files = makeArgAuditFiles({
 					name: 'bestow_replenish_limits',
@@ -311,17 +311,17 @@ const adminRunnableCommands: AdminRunnableCommand[] = [
 
 			await prisma.$executeRaw`
 				UPDATE "clientStorage"
-				SET staff_bestow_limits = ${JSON.stringify(staffBestowSchedule)}::jsonb
+				SET staff_bestow_limits = ${JSON.stringify(StaffGrantsSchedule)}::jsonb
 				WHERE id = ${globalConfig.clientID}
 			`;
-			await Cache.refreshStaffBestowScheduleCache();
+			await Cache.refreshStaffGrants();
 			await dmCyrAudit(
 				`${adminUser.logName} ran /admin run set_bestow_limits and updated the staff bestow limits.`,
-				makeArgAuditFiles({ name: 'new_limits', data: arg1}                                                                                                                                                                                                                        )
+				makeArgAuditFiles({ name: 'new_limits', data: arg1 })
 			);
 
 			return safeMessage(
-				`Updated staff bestow limits and refreshed the cache.\n${JSON.stringify(staffBestowSchedule, null, 4)}`,
+				`Updated staff bestow limits and refreshed the cache.\n${JSON.stringify(StaffGrantsSchedule, null, 4)}`,
 				'staff-bestow-limits.json'
 			);
 		}
@@ -346,10 +346,11 @@ const adminRunnableCommands: AdminRunnableCommand[] = [
 			};
 			const totalTicketsFound = usersWithTickets.reduce((sum, user) => sum + toBigInt(user.quantity), 0n);
 
-			await globalClient.sendMessage(globalConfig.adminUserIDs[0], {
-				content: `Lottery ticket cleanup report. Found ${totalTicketsFound.toLocaleString()}x ${LOTTERY_TICKET_ITEM.name} in ${usersWithTickets.length.toLocaleString()} users.bank records. Cleanup is being executed now.`,
-				files: [file]
-			});
+			await sendCyrCriticalBotLog(
+				'Lottery ticket cleanup report',
+				`Found ${totalTicketsFound.toLocaleString()}x ${LOTTERY_TICKET_ITEM.name} in ${usersWithTickets.length.toLocaleString()} users.bank records. Cleanup is being executed now.`,
+				[file]
+			);
 
 			let removedUsers = 0;
 			let removedTickets = 0;
@@ -1384,7 +1385,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 					}`
 				};
 				await globalClient.sendMessage(Channel.BotLogs, auditMessage);
-				await globalClient.sendMessage(globalConfig.adminUserIDs[0], auditMessage);
+				await dmCyrAudit(auditMessage.content);
 
 				await targetUser.addItemsToBank({ items, collectionLog: false });
 				return `Gave ${items} to ${targetUser.mention}`;
@@ -1402,7 +1403,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 				}`
 			};
 			await globalClient.sendMessage(Channel.BotLogs, auditMessage);
-			await globalClient.sendMessage(globalConfig.adminUserIDs[0], auditMessage);
+			await dmCyrAudit(auditMessage.content);
 
 			if (targetUser) {
 				await addToLotteryBank(targetUser, items);

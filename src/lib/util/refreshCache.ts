@@ -14,7 +14,7 @@ export async function refreshUserCache({
 	possibleTarget?: string;
 }) {
 	let refreshUser = user;
-	const shouldRefreshStaffBestowSchedule = !possibleTarget?.trim() && user.isModOrAdmin;
+	const shouldRefreshStaffGrantsSchedule = !possibleTarget?.trim() && user.isModOrAdmin;
 	let shouldRefreshExtraSettings = false;
 
 	if (possibleTarget) {
@@ -42,11 +42,11 @@ export async function refreshUserCache({
 		updateGuildMember(refreshUser.id),
 		Cache.getRoboChimpUser(refreshUser.id, true),
 		roboChimpSyncData(refreshUser),
-		shouldRefreshStaffBestowSchedule ? Cache.refreshStaffBestowScheduleCache() : Promise.resolve(),
+		shouldRefreshStaffGrantsSchedule ? Cache.refreshStaffGrants() : Promise.resolve(),
 		shouldRefreshExtraSettings ? Cache.refreshExtraSettingsCache() : Promise.resolve()
 	]);
 	user.updateProperties();
 	return `${refreshUser}'s Caches updated successfully!${
-		shouldRefreshStaffBestowSchedule ? ' Staff bestow schedule cache refreshed.' : ''
+		shouldRefreshStaffGrantsSchedule ? ' Staff bestow schedule cache refreshed.' : ''
 	}${shouldRefreshExtraSettings ? ' Extra settings cache refreshed.' : ''}`;
 }

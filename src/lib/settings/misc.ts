@@ -1,35 +1,31 @@
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import * as z from 'zod';
 
-import { ZItemBank, ZStrictItemBank } from '@/lib/structures/Bank.js';
+import { BitField } from '@/lib/constants.js';
+import { ZItemBank } from '@/lib/structures/Bank.js';
+
+export const StaffGrantRoleSources = {
+	mod: BitField.Moderator,
+	contrib: BitField.Contributor,
+	wiki: BitField.WikiContributor
+} as const;
+
+const StaffGrantRoleSourceKeys = new Set(Object.keys(StaffGrantRoleSources));
 
 const StaffBestowSourceKey = z
 	.string()
-	.refine(key => key === 'mod' || key === 'contrib' || isValidDiscordSnowflake(key), {
-		message: 'Staff bestow schedule key must be "mod", "contrib", or a Discord user ID.'
+	.refine(key => StaffGrantRoleSourceKeys.has(key) || isValidDiscordSnowflake(key), {
+		message: 'Staff bestow schedule key must be "wiki", "mod", "contrib", or a Discord user ID.'
 	});
 
-export const ZStaffBestowBank = z
+export const ZStaffGrants = z
 	.object({
-		hourly: ZItemBank,
-		daily: ZItemBank,
-		weekly: ZItemBank,
-		monthly: ZItemBank
+		hourly: z.record(StaffBestowSourceKey, ZItemBank).optional(),
+		daily: z.record(StaffBestowSourceKey, ZItemBank).optional(),
+		weekly: z.record(StaffBestowSourceKey, ZItemBank).optional(),
+		monthly: z.record(StaffBestowSourceKey, ZItemBank).optional()
 	})
 	.strict();
-
-export const ZStrictStaffBestowBank = z
-	.object({
-		hourly: ZStrictItemBank,
-		daily: ZStrictItemBank,
-		weekly: ZStrictItemBank,
-		monthly: ZStrictItemBank
-	})
-	.strict();
-
-export const ZStaffBestowSchedule = z.record(StaffBestowSourceKey, ZStaffBestowBank);
-
-export const ZStrictStaffBestowSchedule = z.record(StaffBestowSourceKey, ZStrictStaffBestowBank);
 
 export const ZExtraSettings = z
 	.object({
@@ -40,6 +36,5 @@ export const ZExtraSettings = z
 	})
 	.strict();
 
-export type StaffBestowBank = z.infer<typeof ZStaffBestowBank>;
-export type StaffBestowSchedule = z.infer<typeof ZStaffBestowSchedule>;
+export type StaffGrants = z.infer<typeof ZStaffGrants>;
 export type IExtraSettings = z.infer<typeof ZExtraSettings>;

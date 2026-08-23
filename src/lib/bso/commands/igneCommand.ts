@@ -27,13 +27,15 @@ export async function igneCommand(
 			slayer: 110
 		},
 		itemBoosts: [
-			['Dragonbane glaive', 20],
-			['Dragonbane aegis', 15],
-			['Drygore longsword', 15],
-			['Searcrown band', 12],
-			['Ignis ring(i)', 10],
+			['Drygore longsword', 25],
 			['TzKal cape', 6],
 			["Brawler's hook necklace", 4]
+		],
+		additionalItemBoosts: [
+			['Ignis ring', 6],
+			['Ignis ring(i)', 10],
+			['Dragonbane glaive', 20],
+			['Dragonbane aegis', 15],
 		],
 		speedMaxReduction: 40,
 		customDenier: async () => {
@@ -46,9 +48,9 @@ export async function igneCommand(
 			hands: 'Dwarven gloves',
 			feet: 'Dwarven boots',
 			cape: 'TzKal cape',
-			ring: 'Searcrown band',
-			weapon: 'Dragonbane glaive',
-			shield: 'Dragonbane aegis',
+			ring: 'Ignis ring(i)',
+			weapon: 'Drygore longsword',
+			shield: 'Dragonfire shield',
 			neck: "Brawler's hook necklace"
 		}),
 		gearSetup: 'melee',
