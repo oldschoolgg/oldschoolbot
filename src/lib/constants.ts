@@ -528,7 +528,7 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 		name: 'Boring',
 		protected: true,
 		userConfigurable: false
-	},
+	}
 } as const;
 
 export const BadgesEnum = {

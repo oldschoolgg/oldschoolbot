@@ -21,12 +21,7 @@ import { Redis } from 'ioredis';
 import type { Guild, Prisma } from '@/prisma/main.js';
 import { BitField, BOT_TYPE, globalConfig } from '@/lib/constants.js';
 import type { RobochimpUser } from '@/lib/roboChimp.js';
-import {
-	type IExtraSettings,
-	type StaffBestowSchedule,
-	ZExtraSettings,
-	ZStaffBestowSchedule
-} from '@/lib/settings/misc.js';
+import { type IExtraSettings, type StaffGrants, ZExtraSettings, ZStaffGrants } from '@/lib/settings/misc.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
 
 type LockStatus = 'locked' | 'unlocked';
@@ -506,14 +501,10 @@ class CacheManager {
 		await this.setJson(BotKeys.DisabledCommands, newDisabledCommands);
 	}
 
-	async getStaffBestowSchedule({
-		forceRefresh = false
-	}: {
-		forceRefresh?: boolean;
-	} = {}): Promise<StaffBestowSchedule> {
+	async getStaffGrantsSchedule({ forceRefresh = false }: { forceRefresh?: boolean } = {}): Promise<StaffGrants> {
 		if (!forceRefresh) {
-			const cached = await this.getJson(BotKeys.Global.StaffBestowSchedule);
-			if (cached) return ZStaffBestowSchedule.parse(cached);
+			const cached = await this.getJson(BotKeys.Global.StaffGrantsSchedule);
+			if (cached) return ZStaffGrants.parse(cached);
 		}
 
 		const [clientSettings] = await prisma.$queryRaw<{ staff_bestow_limits: unknown }[]>`
@@ -521,22 +512,22 @@ class CacheManager {
 			FROM "clientStorage"
 			WHERE id = ${globalConfig.clientID}
 		`;
-		const schedule = ZStaffBestowSchedule.parse(clientSettings?.staff_bestow_limits ?? {});
-		await this.setStaffBestowSchedule(schedule);
+		const schedule = ZStaffGrants.parse(clientSettings?.staff_bestow_limits ?? {});
+		await this.setStaffGrantsSchedule(schedule);
 		return schedule;
 	}
 
-	async setStaffBestowSchedule(value: StaffBestowSchedule): Promise<void> {
-		await this.setJsonWithTTL(BotKeys.Global.StaffBestowSchedule, value, this.jitterTTL(TTL.Hour, 0.1));
+	async setStaffGrantsSchedule(value: StaffGrants): Promise<void> {
+		await this.setJsonWithTTL(BotKeys.Global.StaffGrantsSchedule, value, this.jitterTTL(TTL.Hour, 0.1));
 	}
 
-	async refreshStaffBestowScheduleCache(): Promise<StaffBestowSchedule> {
-		await this.resetStaffBestowSchedule();
-		return this.getStaffBestowSchedule({ forceRefresh: true });
+	async refreshStaffGrants(): Promise<StaffGrants> {
+		await this.resetStaffGrants();
+		return this.getStaffGrantsSchedule({ forceRefresh: true });
 	}
 
-	async resetStaffBestowSchedule(): Promise<void> {
-		await this.client.del(BotKeys.Global.StaffBestowSchedule);
+	async resetStaffGrants(): Promise<void> {
+		await this.client.del(BotKeys.Global.StaffGrantsSchedule);
 	}
 
 	async getExtraSettings({ forceRefresh = false }: { forceRefresh?: boolean } = {}): Promise<IExtraSettings> {

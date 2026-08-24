@@ -61,7 +61,7 @@ export async function abstractedOpenUntilCommand(
 		return 'The quantity must be a positive integer.';
 	}
 
-	const elligible =  (await user.fetchPerkTier()) || user.bitfield.includes((BitField.OriginalCyrSupporter));
+	const elligible = (await user.fetchPerkTier()) || user.bitfield.includes(BitField.OriginalCyrSupporter);
 	if (!maxOpenQuantity) {
 		if (elligible && user.bitfield.includes(BitField.UnlimitedOpenUntil)) {
 			maxOpenQuantity = 100_000_000;

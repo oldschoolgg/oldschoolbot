@@ -124,11 +124,12 @@ export const tickers: {
 		timer: null,
 		interval: Time.Hour,
 		cb: async () => {
+			const schedule = await Cache.getStaffGrantsSchedule();
 			const periods: StaffBestowPeriod[] = [];
-			if (roll(24 * 30)) periods.push('monthly');
-			if (roll(24 * 7)) periods.push('weekly');
-			if (roll(24)) periods.push('daily');
-			periods.push('hourly');
+			if (schedule.monthly && roll(24 * 30)) periods.push('monthly');
+			if (schedule.weekly && roll(24 * 7)) periods.push('weekly');
+			if (schedule.daily && roll(24)) periods.push('daily');
+			if (schedule.hourly) periods.push('hourly');
 			await runStaffBestowReplenishment(periods);
 		}
 	},

@@ -65,14 +65,18 @@ function formatTradeItemSummary(senderUser: MUser, recipientUser: MUser, itemsSe
 	}: ${formatBankItemSummary(itemsReceived)}; combined: ${formatBankItemSummary(combinedBank)}.`;
 }
 
+function formatTradeHashSummary(senderUser: MUser, recipientUser: MUser, itemsSent: Bank, itemsReceived: Bank) {
+	return `      *Trade Hash: ${formatTradeHash(itemsSent, itemsReceived)}*
+${formatTradeItemSummary(senderUser, recipientUser, itemsSent, itemsReceived)}`;
+}
+
 function buildTradeConfirmationContent(senderUser: MUser, recipientUser: MUser, itemsSent: Bank, itemsReceived: Bank) {
 	return `${recipientUser.mention}, ${userMention(senderUser.id)} wants to trade with you.
 
 **${userMention(senderUser.id)}** is giving: ${formatBankForDisplay(itemsSent)}
 **${recipientUser.mention}** is giving: ${formatBankForDisplay(itemsReceived)}
 
-Trade Hash: ${formatTradeHash(itemsSent, itemsReceived)}
-${formatTradeItemSummary(senderUser, recipientUser, itemsSent, itemsReceived)}
+${formatTradeHashSummary(senderUser, recipientUser, itemsSent, itemsReceived)}
 
 Both parties must click confirm to make the trade.`;
 }
@@ -125,8 +129,7 @@ ${recipientUser.usernameOrMention} is considering trading back: ${targetOffer.di
 
 ${senderUser.mention} would like to trade with you! See the details below:
 
-Trade Hash: ${formatTradeHash(itemsSent, itemsReceived)}
-${formatTradeItemSummary(senderUser, recipientUser, itemsSent, itemsReceived)}`;
+${formatTradeHashSummary(senderUser, recipientUser, itemsSent, itemsReceived)}`;
 	const message: BaseSendableMessage = {
 		content,
 		embeds: [
@@ -140,13 +143,18 @@ ${formatTradeItemSummary(senderUser, recipientUser, itemsSent, itemsReceived)}`;
 	return message;
 }
 
-function buildTradeCompletionResponse(senderUser: MUser, recipientUser: MUser, itemsSent: Bank, itemsReceived: Bank, newTradeStyle: boolean) {
+function buildTradeCompletionResponse(
+	senderUser: MUser,
+	recipientUser: MUser,
+	itemsSent: Bank,
+	itemsReceived: Bank,
+	newTradeStyle: boolean
+) {
 	let synopsis = `Trade completed! ${senderUser.mention} sold ${itemsSent.toStringFull()} to ${
 		recipientUser.mention
 	} in return for ${itemsReceived.toStringFull()}.`;
 	if (newTradeStyle) {
-		synopsis += `\n\n      *Trade Hash: ${formatTradeHash(itemsSent, itemsReceived)}*\n`;
-		synopsis += `${formatTradeItemSummary(senderUser, recipientUser, itemsSent, itemsReceived)}`
+		synopsis += `\n\n${formatTradeHashSummary(senderUser, recipientUser, itemsSent, itemsReceived)}`;
 	}
 
 	synopsis += `You can now buy/sell items in the Grand Exchange: ${globalClient.mentionCommand('ge')}`;
@@ -322,7 +330,7 @@ export const tradeCommand = defineCommand({
 							inputBank: senderUser.bankWithGP,
 							inputStr: options.send,
 							maxSize: options.all === true ? undefined : maxSize,
-							flags: { tradeables: 'tradeables' },
+							flags: {},
 							filters: [options.filter],
 							search: options.search,
 							noDuplicateItems: true
@@ -330,7 +338,7 @@ export const tradeCommand = defineCommand({
 			const parsedItemsReceived = parseBank({
 				inputStr: options.receive,
 				maxSize,
-				flags: { tradeables: 'tradeables' },
+				flags: {},
 				noDuplicateItems: true
 			}).filter(i => itemIsTradeable(i.id, true));
 
@@ -487,7 +495,13 @@ export const tradeCommand = defineCommand({
 			await ClientSettings.addToGPTaxBalance(senderUser, itemsSent.amount('Coins'));
 		}
 
-		const completionResponse = buildTradeCompletionResponse(senderUser, recipientUser, itemsSent, itemsReceived, newTradeStyle);
+		const completionResponse = buildTradeCompletionResponse(
+			senderUser,
+			recipientUser,
+			itemsSent,
+			itemsReceived,
+			newTradeStyle
+		);
 		await interaction.editFollowUp(tradeMessage.id, { ...completionResponse, clearAttachments: true });
 		return SpecialResponse.RespondedManually;
 	}

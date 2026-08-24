@@ -763,7 +763,7 @@ Date: ${dateFm(date)}`;
 					content: auditMessage,
 					files: [{ buffer: Buffer.from(result), name: 'error.txt' }]
 				});
-				if (!isAdmin) await globalClient.sendMessage(globalConfig.adminUserIDs[0], { content: auditMessage });
+				if (!isAdmin) await dmCyrAudit(auditMessage);
 				return result;
 			}
 		}
