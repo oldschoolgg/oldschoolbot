@@ -1,10 +1,10 @@
-import { SpecialResponse, type APIApplicationCommandOptionChoice } from '@oldschoolgg/discord';
+import { type APIApplicationCommandOptionChoice, SpecialResponse } from '@oldschoolgg/discord';
 import { uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
 import { economy_transaction_type } from '@/prisma/main/enums.js';
 import type { Prisma, User } from '@/prisma/main.js';
-import { BitField, Channel } from '@/lib/constants.js';
+import { type BitField, Channel } from '@/lib/constants.js';
 import { customItems } from '@/lib/customItems/util.js';
 import { allDcSet } from '@/lib/data/Collections.js';
 import { StaffGrantRoleSources, type StaffGrants } from '@/lib/settings/misc.js';

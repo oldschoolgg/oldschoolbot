@@ -34,8 +34,8 @@ export async function igneCommand(
 		additionalItemBoosts: [
 			['Ignis ring', 6],
 			['Ignis ring(i)', 10],
-			['Dragonbane glaive', 20],
-			['Dragonbane aegis', 15],
+			['Searcrown band', 15], // TODO: This should be fixed so only 1 ring can take effect.
+			['Dragonbane aegis', 15]
 		],
 		speedMaxReduction: 40,
 		customDenier: async () => {

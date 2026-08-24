@@ -21,12 +21,7 @@ import { Redis } from 'ioredis';
 import type { Guild, Prisma } from '@/prisma/main.js';
 import { BitField, BOT_TYPE, globalConfig } from '@/lib/constants.js';
 import type { RobochimpUser } from '@/lib/roboChimp.js';
-import {
-	type IExtraSettings,
-	type StaffGrants,
-	ZExtraSettings,
-	ZStaffGrants
-} from '@/lib/settings/misc.js';
+import { type IExtraSettings, type StaffGrants, ZExtraSettings, ZStaffGrants } from '@/lib/settings/misc.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
 
 type LockStatus = 'locked' | 'unlocked';
@@ -506,11 +501,7 @@ class CacheManager {
 		await this.setJson(BotKeys.DisabledCommands, newDisabledCommands);
 	}
 
-	async getStaffGrantsSchedule({
-		forceRefresh = false
-	}: {
-		forceRefresh?: boolean;
-	} = {}): Promise<StaffGrants> {
+	async getStaffGrantsSchedule({ forceRefresh = false }: { forceRefresh?: boolean } = {}): Promise<StaffGrants> {
 		if (!forceRefresh) {
 			const cached = await this.getJson(BotKeys.Global.StaffGrantsSchedule);
 			if (cached) return ZStaffGrants.parse(cached);

@@ -143,7 +143,13 @@ ${formatTradeHashSummary(senderUser, recipientUser, itemsSent, itemsReceived)}`;
 	return message;
 }
 
-function buildTradeCompletionResponse(senderUser: MUser, recipientUser: MUser, itemsSent: Bank, itemsReceived: Bank, newTradeStyle: boolean) {
+function buildTradeCompletionResponse(
+	senderUser: MUser,
+	recipientUser: MUser,
+	itemsSent: Bank,
+	itemsReceived: Bank,
+	newTradeStyle: boolean
+) {
 	let synopsis = `Trade completed! ${senderUser.mention} sold ${itemsSent.toStringFull()} to ${
 		recipientUser.mention
 	} in return for ${itemsReceived.toStringFull()}.`;
@@ -324,7 +330,7 @@ export const tradeCommand = defineCommand({
 							inputBank: senderUser.bankWithGP,
 							inputStr: options.send,
 							maxSize: options.all === true ? undefined : maxSize,
-							flags: { tradeables: 'tradeables' },
+							flags: {},
 							filters: [options.filter],
 							search: options.search,
 							noDuplicateItems: true
@@ -332,7 +338,7 @@ export const tradeCommand = defineCommand({
 			const parsedItemsReceived = parseBank({
 				inputStr: options.receive,
 				maxSize,
-				flags: { tradeables: 'tradeables' },
+				flags: {},
 				noDuplicateItems: true
 			}).filter(i => itemIsTradeable(i.id, true));
 
@@ -489,7 +495,13 @@ export const tradeCommand = defineCommand({
 			await ClientSettings.addToGPTaxBalance(senderUser, itemsSent.amount('Coins'));
 		}
 
-		const completionResponse = buildTradeCompletionResponse(senderUser, recipientUser, itemsSent, itemsReceived, newTradeStyle);
+		const completionResponse = buildTradeCompletionResponse(
+			senderUser,
+			recipientUser,
+			itemsSent,
+			itemsReceived,
+			newTradeStyle
+		);
 		await interaction.editFollowUp(tradeMessage.id, { ...completionResponse, clearAttachments: true });
 		return SpecialResponse.RespondedManually;
 	}

@@ -35,6 +35,7 @@ import {
 	Time,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
+import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { gracefulExit } from 'exit-hook';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
@@ -61,7 +62,6 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { safeMessage } from '@/lib/util/smallUtils.js';
 import { makeGiveawayButtons } from '@/mahoji/commands/giveaway.js';
-import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 
 export const gifs = [
 	'https://tenor.com/view/angry-stab-monkey-knife-roof-gif-13841993',
