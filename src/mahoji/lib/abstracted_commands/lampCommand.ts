@@ -1,8 +1,10 @@
 import { Bank, type Item, Items, itemID, resolveItems } from 'oldschooljs';
 import { clamp } from 'remeda';
 
+import { canGainSailingXP, sailingXPUnlockMessage } from '@/lib/skilling/skills/sailing/sailingXPUnlock.js';
 import { type SkillNameType, SkillsArray } from '@/lib/skilling/types.js';
 import type { Skills } from '@/lib/types/index.js';
+import { makeStartQuestButton } from '@/lib/util/interactions.js';
 import { assert } from '@/lib/util/logError.js';
 import { isValidSkill } from '@/lib/util/smallUtils.js';
 
@@ -281,6 +283,13 @@ export async function lampCommand(user: MUser, itemToUse: string, skill: string,
 
 	if (!skillsToReceive[skill]) {
 		return 'This is not a valid skill for this item.';
+	}
+
+	if (skill === 'sailing' && !canGainSailingXP(user)) {
+		return {
+			content: sailingXPUnlockMessage(user),
+			components: [makeStartQuestButton('Pandemonium')]
+		};
 	}
 
 	if (skillsRequirements && user.skillLevel(skill) < skillsRequirements[skill]!) {
