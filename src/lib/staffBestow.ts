@@ -1,5 +1,4 @@
 import { type APIApplicationCommandOptionChoice, SpecialResponse } from '@oldschoolgg/discord';
-import { uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
 import { economy_transaction_type } from '@/prisma/main/enums.js';
@@ -79,6 +78,31 @@ function replenishStaffBestowBank({
 	return added;
 }
 
+function getStaffBestowPeriodUserWhere(schedule: StaffGrants, period: StaffBestowPeriod): Prisma.UserWhereInput[] {
+	const periodLimits = schedule[period];
+	if (!periodLimits) return [];
+
+	const sourceKeys = Object.keys(periodLimits);
+	const userIDs = sourceKeys.filter(key => !StaffGrantRoleSourceKeys.has(key));
+	const roleBitfields = StaffGrantRoleSourceEntries.filter(([sourceKey]) => sourceKeys.includes(sourceKey)).map(
+		([, bitfield]) => bitfield
+	);
+	const userWhere: Prisma.UserWhereInput[] = [];
+
+	if (userIDs.length > 0) {
+		userWhere.push({ id: { in: userIDs } });
+	}
+	if (roleBitfields.length > 0) {
+		userWhere.push({
+			bitfield: {
+				hasSome: roleBitfields
+			}
+		});
+	}
+
+	return userWhere;
+}
+
 export async function runStaffBestowReplenishment(periods: StaffBestowPeriod[]) {
 	if (periods.length === 0) return;
 
@@ -86,37 +110,34 @@ export async function runStaffBestowReplenishment(periods: StaffBestowPeriod[]) 
 	const configuredPeriods = periods.filter(period => schedule[period]);
 	if (configuredPeriods.length === 0) return;
 
-	const configuredSourceKeys = uniqueArr(configuredPeriods.flatMap(period => Object.keys(schedule[period] ?? {})));
-	const configuredUserIDs = configuredSourceKeys.filter(key => !StaffGrantRoleSourceKeys.has(key));
-	const configuredRoleBitfields = StaffGrantRoleSourceEntries.filter(([sourceKey]) =>
-		configuredSourceKeys.includes(sourceKey)
-	).map(([, bitfield]) => bitfield);
-	const userWhere: Prisma.UserWhereInput[] = [];
-	if (configuredUserIDs.length > 0) {
-		userWhere.push({ id: { in: configuredUserIDs } });
-	}
-	if (configuredRoleBitfields.length > 0) {
-		userWhere.push({
-			bitfield: {
-				hasSome: configuredRoleBitfields
+	const usersByID = new Map<string, { user: StaffBestowUser; periods: StaffBestowPeriod[] }>();
+	for (const period of configuredPeriods) {
+		const userWhere = getStaffBestowPeriodUserWhere(schedule, period);
+		if (userWhere.length === 0) continue;
+
+		const users = await prisma.user.findMany({
+			where: {
+				OR: userWhere
+			},
+			select: {
+				id: true,
+				bitfield: true,
+				rp_bestow_bank: true
 			}
 		});
-	}
-	if (userWhere.length === 0) return;
 
-	const users = await prisma.user.findMany({
-		where: {
-			OR: userWhere
-		},
-		select: {
-			id: true,
-			bitfield: true,
-			rp_bestow_bank: true
+		for (const user of users) {
+			if (!getStaffBestowSourceKey(schedule, user, period)) continue;
+			const existing = usersByID.get(user.id);
+			if (existing) {
+				existing.periods.push(period);
+			} else {
+				usersByID.set(user.id, { user, periods: [period] });
+			}
 		}
-	});
+	}
 
-	for (const user of users) {
-		const userPeriods = configuredPeriods.filter(period => getStaffBestowSourceKey(schedule, user, period));
+	for (const { user, periods: userPeriods } of usersByID.values()) {
 		if (userPeriods.length === 0) continue;
 
 		await userQueueFn(user.id, async () => {
