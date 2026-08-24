@@ -105,9 +105,9 @@ const maxMageGear = constructGearSetup({
 	neck: 'Occult necklace',
 	body: 'Ancestral robe top',
 	cape: 'Imbued saradomin cape',
-	hands: 'Tormented bracelet',
+	hands: 'Confliction gauntlets',
 	legs: 'Ancestral robe bottom',
-	feet: 'Eternal boots',
+	feet: 'Avernic treads (max)',
 	'2h': "Tumeken's shadow",
 	ring: 'Lightbearer'
 });
@@ -119,7 +119,7 @@ const maxRangeGear = constructGearSetup({
 	cape: "Ava's assembler",
 	hands: 'Zaryte vambraces',
 	legs: 'Masori chaps (f)',
-	feet: 'Pegasian boots',
+	feet: 'Avernic treads (max)',
 	'2h': 'Twisted bow',
 	ring: 'Lightbearer',
 	ammo: 'Dragon arrow'
@@ -132,7 +132,7 @@ const maxMeleeLessThan300Gear = constructGearSetup({
 	cape: 'Infernal cape',
 	hands: 'Ferocious gloves',
 	legs: 'Torva platelegs',
-	feet: 'Primordial boots',
+	feet: 'Avernic treads (max)',
 	weapon: 'Ghrazi rapier',
 	shield: 'Avernic defender',
 	ring: 'Lightbearer'
@@ -144,7 +144,7 @@ const maxMeleeOver300Gear = constructGearSetup({
 	cape: 'Infernal cape',
 	hands: 'Ferocious gloves',
 	legs: 'Torva platelegs',
-	feet: 'Primordial boots',
+	feet: 'Avernic treads (max)',
 	weapon: "Osmumten's fang",
 	shield: 'Avernic defender',
 	ring: 'Ultor ring'
