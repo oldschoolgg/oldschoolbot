@@ -1,0 +1,122 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+import { BankBackgroundEligibility } from './BankBackgroundEligibility';
+
+type BackgroundRequirement = {
+	id: number;
+	name: string;
+	available: boolean;
+	perkTierNeeded: number | null;
+	sacValueRequired: number | null;
+	bitfield: number | null;
+	skillsNeeded: Record<string, number>;
+	collectionLogItemsNeeded: string[];
+};
+
+function splitObjectLiterals(content: string): string[] {
+	const objects: string[] = [];
+	let depth = 0;
+	let current = '';
+	let inObject = false;
+	for (const ch of content) {
+		if (ch === '{') {
+			depth++;
+			inObject = true;
+		}
+		if (inObject) current += ch;
+		if (ch === '}') {
+			depth--;
+			if (depth === 0 && inObject) {
+				objects.push(current);
+				current = '';
+				inObject = false;
+			}
+		}
+	}
+	return objects;
+}
+
+const tierMap: Record<string, number> = {
+	One: 2,
+	Two: 3,
+	Three: 4,
+	Four: 5,
+	Five: 6,
+	Six: 7
+};
+
+const docsComponentDir = path.dirname(fileURLToPath(import.meta.url));
+const sourceFile = path.resolve(docsComponentDir, '../../../src/lib/minions/data/bankBackgrounds.ts');
+const constantsFile = path.resolve(docsComponentDir, '../../../src/lib/constants.ts');
+
+const constantsSource = fs.readFileSync(constantsFile, 'utf8');
+const bitfieldEnumMatch = constantsSource.match(/export enum BitField \{([\s\S]*?)\n\}/);
+const bitfieldMap = new Map<string, number>();
+if (bitfieldEnumMatch) {
+	for (const match of bitfieldEnumMatch[1].matchAll(/(\w+)\s*=\s*(\d+)/g)) {
+		bitfieldMap.set(match[1], Number(match[2]));
+	}
+}
+
+const source = fs.readFileSync(sourceFile, 'utf8');
+const startToken = 'const backgroundImages: BankBackground[] = [';
+const startIndex = source.indexOf(startToken);
+const endIndex = source.indexOf('];', startIndex);
+const arrayContent = source.slice(startIndex + startToken.length, endIndex);
+
+const backgrounds: BackgroundRequirement[] = splitObjectLiterals(arrayContent)
+	.map(obj => {
+		const idMatch = obj.match(/id:\s*(\d+)/);
+		const nameMatch = obj.match(/name:\s*'([^']+)'/);
+		const availableMatch = obj.match(/available:\s*(true|false)/);
+		if (!idMatch || !nameMatch || !availableMatch) return null;
+
+		const perkTierName = obj.match(/perkTierNeeded:\s*PerkTier\.(\w+)/)?.[1];
+		const bitfieldName = obj.match(/bitfield:\s*BitField\.(\w+)/)?.[1];
+		const sacValueRequired = obj.match(/sacValueRequired:\s*([\d_]+)/)?.[1];
+		const skillsBlock = obj.match(/skillsNeeded:\s*{([\s\S]*?)}/)?.[1];
+		const clItemsBlock = obj.match(/collectionLogItemsNeeded:\s*new Bank\(\{([\s\S]*?)\}\)/)?.[1];
+
+		const skillsNeeded: Record<string, number> = {};
+		if (skillsBlock) {
+			for (const skill of skillsBlock.matchAll(/(\w+)\s*:\s*(\d+)/g)) {
+				skillsNeeded[skill[1]] = Number(skill[2]);
+			}
+		}
+
+		const collectionLogItemsNeeded: string[] = [];
+		if (clItemsBlock) {
+			for (const quoted of clItemsBlock.matchAll(/'([^']+)'\s*:/g)) {
+				collectionLogItemsNeeded.push(quoted[1]);
+			}
+			for (const bare of clItemsBlock.matchAll(/\b([A-Za-z][A-Za-z0-9 ]*)\s*:/g)) {
+				const value = bare[1].trim();
+				if (
+					!value.includes("'") &&
+					!collectionLogItemsNeeded.includes(value) &&
+					!['new Bank', 'itemCost', 'gpCost'].includes(value)
+				) {
+					collectionLogItemsNeeded.push(value);
+				}
+			}
+		}
+
+		return {
+			id: Number(idMatch[1]),
+			name: nameMatch[1],
+			available: availableMatch[1] === 'true',
+			perkTierNeeded: perkTierName ? (tierMap[perkTierName] ?? null) : null,
+			sacValueRequired: sacValueRequired ? Number(sacValueRequired.replaceAll('_', '')) : null,
+			bitfield: bitfieldName ? (bitfieldMap.get(bitfieldName) ?? null) : null,
+			skillsNeeded,
+			collectionLogItemsNeeded
+		};
+	})
+	.filter((bg): bg is BackgroundRequirement => Boolean(bg))
+	.sort((a, b) => a.id - b.id);
+---
+
+<BankBackgroundEligibility client:load backgrounds={backgrounds} />
