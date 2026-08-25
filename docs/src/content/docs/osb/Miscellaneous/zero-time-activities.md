@@ -2,7 +2,7 @@
 title: "Zero-time Activities"
 ---
 
-Zero-time activities let your minion cast High Alchemy or fletch stackable ammunition during trips without increasing the trip's duration. Configure them with [[/zero_time_activity set primary_type\:alch]] or [[/zero_time_activity set primary_type\:fletch primary_item\:"Rune dart"]] before you start Agility laps, the Hallowed Sepulchre, or any other activity that supports zero-time actions.
+Zero-time activities let your minion cast High Alchemy or fletch stackable ammunition during trips without increasing the trip's duration. Configure them with [[/zero_time_activity set primary_type\:alch]] or [[/zero_time_activity set primary_type\:fletch primary_item\:"Rune dart"]] before you start Agility laps, the Hallowed Sepulchre, Ourania Altar runecrafting, or any other activity that supports zero-time actions.
 
 ## Configuring `/zero_time_activity`
 
@@ -30,11 +30,13 @@ Only one zero-time action runs per trip, but the fallback preference means you r
 - Fletching speeds vary by content:
   - **Agility laps:** up to ~15,000 items per hour for darts, bolts, broad bolts, and similar stackables.
   - **Hallowed Sepulchre:** uses the item's zero-time rate (about 18,000 items/hour for darts and bolts, or ~10,000 items/hour for arrows, javelins, and similar ammunition).
+  - **Ourania Altar (ZMI):** up to ~9,000 items per hour during the running time. Broad arrows give 10 Fletching XP each, so expect up to ~90,000 Fletching XP/hr if you have enough supplies.
 - Materials (tips, feathers, unfinished ammunition, etc.) are removed when the trip begins, so ensure your bank holds enough supplies for the expected duration.
 
 ## Location Notes
 
 - **Agility laps:** configure the background action before running [[/laps]]. You cannot alch on the Ape Atoll course because your minion must hold a greegree, but fletching still works there.
 - **Hallowed Sepulchre:** configure the action before [[/minigames sepulchre start]]. Zero-time alching and fletching both operate floor by floor without slowing your runs.
+- **Ourania Altar (ZMI):** configure zero-time fletching before [[/runecraft rune\:Ourania Altar]]. Alching is unavailable here, but fletching stackable ammunition can run alongside the trip.
 
-Refer back to the [Agility guide](/osb/skills/agility) and [Hallowed Sepulchre guide](/osb/activities/hallowed-sepulchre) for activity-specific advice, boost information, and strategies.
+Refer back to the [Agility guide](/osb/skills/agility), [Hallowed Sepulchre guide](/osb/activities/hallowed-sepulchre), and [Runecrafting guide](/osb/skills/runecrafting) for activity-specific advice, boost information, and strategies.
