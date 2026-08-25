@@ -208657,5 +208657,56 @@
 		"lowalch": 12,
 		"highalch": 18,
 		"cost": 30
+	},
+	"34059": {
+		"name": "Fairy tale quest lamp",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
+	},
+	"34061": {
+		"name": "Vampyre snail shell",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false,
+		"lowalch": 60,
+		"highalch": 90,
+		"cost": 150
+	},
+	"34063": {
+		"name": "Vampyre snelm",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": true,
+		"lowalch": 120,
+		"highalch": 180,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": -3,
+			"attack_ranged": -1,
+			"defence_stab": 7,
+			"defence_slash": 8,
+			"defence_crush": 6,
+			"defence_magic": -1,
+			"defence_ranged": 7,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "head",
+			"requirements": null
+		},
+		"cost": 300
+	},
+	"34065": {
+		"name": "Shark lure pack",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	}
 }
