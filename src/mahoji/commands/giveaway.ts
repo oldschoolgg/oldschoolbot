@@ -1,6 +1,5 @@
 import { ButtonBuilder, ButtonStyle, EmbedBuilder, messageLink, time } from '@oldschoolgg/discord';
-import { Emoji, Time } from '@oldschoolgg/toolkit';
-import { Duration } from '@sapphire/time-utilities';
+import { Emoji, parseDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 import { chunk } from 'remeda';
 
@@ -97,8 +96,17 @@ export const giveawayCommand = defineCommand({
 			options: []
 		}
 	],
-	run: async ({ options, user, guildId, interaction, channelId, user: apiUser, rng }): CommandResponse => {
+	run: async ({ options, user, guildId, interaction, channelId, rng }): CommandResponse => {
 		if (user.isIronman) return 'You cannot do giveaways!';
+
+		let maxGiveaways = 10;
+		const cyrFan = user.bitfield.includes(BitField.OriginalCyrSupporter);
+		const perkTier = await user.fetchPerkTier();
+		if (cyrFan) {
+			if (perkTier >= 2) maxGiveaways += 5 * (perkTier - 1);
+		} else if (perkTier >= 3) {
+			maxGiveaways += 5 * (perkTier - 2);
+		}
 
 		if (options.start) {
 			const existingGiveaways = await prisma.giveaway.findMany({
@@ -107,8 +115,8 @@ export const giveawayCommand = defineCommand({
 					completed: false
 				}
 			});
-			if (existingGiveaways.length >= 10 && !userHasUnlimitedGiveaways(user)) {
-				return 'You cannot have more than 10 giveaways active at a time.';
+			if (existingGiveaways.length >= maxGiveaways && !userHasUnlimitedGiveaways(user)) {
+				return `You cannot have more than ${cyrFan ? Emoji.Seer : ''} ${maxGiveaways} giveaways active at a time.`;
 			}
 
 			if (!guildId && !interaction.guildId) {
@@ -140,11 +148,11 @@ export const giveawayCommand = defineCommand({
 				);
 			}
 
-			const duration = new Duration(options.start.duration);
-			const ms = duration.offset;
+			const ms = parseDuration(options.start.duration);
 			if (!ms || ms > Time.Day * 7 || ms < Time.Second * 5) {
 				return 'Your giveaway cannot last longer than 7 days, or be faster than 5 seconds.';
 			}
+			const finishDate = new Date(Date.now() + ms);
 
 			await user.sync();
 			if (!user.bankWithGP.has(bank)) {
@@ -158,11 +166,11 @@ export const giveawayCommand = defineCommand({
 			const giveawayID = rng.randInt(1, 500_000_000);
 
 			const message = await globalClient.sendMessage(channelId, {
-				content: generateGiveawayContent(user.id, duration.fromNow, []),
+				content: generateGiveawayContent(user.id, finishDate, []),
 				files: [
 					await makeBankImage({
 						bank,
-						title: `${apiUser?.username ?? user.username}'s Giveaway`
+						title: `${user?.username ?? user.username}'s Giveaway`
 					})
 				],
 				components: makeGiveawayButtons(giveawayID),
@@ -185,11 +193,11 @@ export const giveawayCommand = defineCommand({
 						guild_id,
 						channel_id: channelId.toString(),
 						start_date: new Date(),
-						finish_date: duration.fromNow,
+						finish_date: finishDate,
 						completed: false,
 						loot: bank.toJSON(),
 						user_id: user.id,
-						duration: duration.offset,
+						duration: ms,
 						message_id: message.id,
 						users_entered: []
 					}
