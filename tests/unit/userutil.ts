@@ -5,6 +5,7 @@ import { isFunction, isObjectType } from 'remeda';
 import type { Prisma, User } from '@/prisma/main.js';
 import { MUserClass } from '@/lib/user/MUser.js';
 import type { BitField } from '../../src/lib/constants.js';
+import type { SlayerTaskUnlocksEnum } from '../../src/lib/slayer/slayerUnlocks.js';
 import { constructGearSetup, Gear } from '../../src/lib/structures/Gear.js';
 
 function filterGearSetup(gear: undefined | null | GearSetup | PartialGearSetup): GearSetup | undefined {
@@ -35,6 +36,7 @@ export interface MockUserArgs {
 	skills_fletching?: number;
 	GP?: number;
 	bitfield?: BitField[];
+	slayer_unlocks?: SlayerTaskUnlocksEnum[];
 	id?: string;
 }
 
@@ -78,6 +80,7 @@ const mockUser = (overrides?: MockUserArgs): User => {
 		skills_hitpoints: overrides?.skills_hitpoints ?? convertLVLtoXP(10),
 		GP: overrides?.GP ?? 0,
 		bitfield: overrides?.bitfield ?? [],
+		slayer_unlocks: overrides?.slayer_unlocks ?? [],
 		username: 'Magnaboy',
 		QP: overrides?.QP ?? 0,
 		sacrificedValue: 0,

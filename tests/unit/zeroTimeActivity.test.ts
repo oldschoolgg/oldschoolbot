@@ -3,12 +3,14 @@ import { Bank, convertLVLtoXP, Items } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { zeroTimeFletchables } from '../../src/lib/skilling/skills/fletching/fletchables/index.js';
+import { SlayerTaskUnlocksEnum } from '../../src/lib/slayer/slayerUnlocks.js';
 import {
 	attemptZeroTimeActivity,
 	getZeroTimeFletchTime,
 	type ZeroTimeActivityPreference
 } from '../../src/lib/util/zeroTimeActivity.js';
 import { timePerAlch } from '../../src/mahoji/lib/abstracted_commands/alchCommand.js';
+import { OURANIA_ALTAR_FLETCH_CAP_PER_HOUR } from '../../src/mahoji/lib/abstracted_commands/ouraniaAltarCommand.js';
 import { mockMUser } from './userutil.js';
 
 describe('attemptZeroTimeActivity', () => {
@@ -249,5 +251,35 @@ describe('attemptZeroTimeActivity', () => {
 		expect(response.failures[0]?.message).toBe(
 			"You don't have the required Slayer unlocks to fletch Broad arrows."
 		);
+	});
+
+	test('ourania altar broad arrows use ZMI fletching rate', () => {
+		const fletchable = zeroTimeFletchables.find(item => item.name === 'Broad arrows');
+		expect(fletchable).toBeDefined();
+		if (!fletchable) return;
+
+		const user = mockMUser({
+			bank: new Bank().add('Broad arrowheads', 20_000).add('Headless arrow', 20_000),
+			skills_fletching: convertLVLtoXP(70),
+			slayer_unlocks: [SlayerTaskUnlocksEnum.BroaderFletching]
+		});
+
+		const preference: ZeroTimeActivityPreference = { role: 'primary', type: 'fletch', itemID: fletchable.id };
+		const response = attemptZeroTimeActivity({
+			user,
+			duration: Time.Hour,
+			preferences: [preference],
+			fletch: { itemsPerHour: OURANIA_ALTAR_FLETCH_CAP_PER_HOUR }
+		});
+
+		expect(response.failures).toHaveLength(0);
+		expect(response.result?.type).toBe('fletch');
+		if (!response.result || response.result.type !== 'fletch') return;
+
+		expect(response.result.quantity).toBe(OURANIA_ALTAR_FLETCH_CAP_PER_HOUR);
+		expect(
+			response.result.itemsToRemove.equals(new Bank().add('Broad arrowheads', 9000).add('Headless arrow', 9000))
+		).toBe(true);
+		expect(response.result.timePerAction).toBe(Time.Hour / OURANIA_ALTAR_FLETCH_CAP_PER_HOUR);
 	});
 });
