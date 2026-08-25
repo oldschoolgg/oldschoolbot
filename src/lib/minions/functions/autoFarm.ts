@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import type { CropUpgradeType } from '@/prisma/main/enums.js';
 import { AutoFarmFilterEnum, activity_type_enum } from '@/prisma/main/enums.js';
+import { MessageBuilder } from '@/discord/MessageBuilder.js';
 import { InteractionID } from '@/lib/InteractionID.js';
 import { allFarm, replant } from '@/lib/minions/functions/autoFarmFilters.js';
 import {
