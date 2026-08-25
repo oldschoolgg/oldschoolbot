@@ -132,7 +132,7 @@ for (const clueTier of ClueTiers) {
 				let qtyRemaining = qty;
 				while (qtyRemaining > 0) {
 					const toOpen = Math.min(qtyRemaining, batchSize);
-					await yielder.checkpoint()
+					await yielder.checkpoint();
 					miniLoot.add(table.roll(toOpen));
 					qtyRemaining -= batchSize;
 				}
