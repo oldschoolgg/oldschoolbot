@@ -32,7 +32,11 @@ This assumes you are using VSCode as your IDE. If you have errors or issues, you
 3. Create 2 databases called "osb_test" and "robochimp_test".
    - Using **pgAdmin 4** select `Servers > PostgreSQL > Databases > Create > Database...`.
    - Enter the database name into `Database` and hit `Save`.
-4. Change `DATABASE_URL` and `ROBOCHIMP_DATABASE_URL` in your .env file with the format `postgresql://USER:PASSWORD@HOST:PORT/DATABASE_NAME`.
+4. Set these DB URLs in your `.env` file using `postgresql://USER:PASSWORD@HOST:PORT/DATABASE_NAME`:
+   - `DATABASE_URL` (main bot)
+   - `OSB_DATABASE_URL` (RoboChimp OSB DB)
+   - `BSO_DATABASE_URL` (RoboChimp BSO DB)
+   - `ROBOCHIMP_DATABASE_URL` (RoboChimp DB)
 
 ### Finalizing Setup
 
@@ -59,6 +63,43 @@ This assumes you are using VSCode as your IDE. If you have errors or issues, you
 `pnpm monorepo:test`: Run this if you want to either monorepo (oldschooljs or toolkit).
 
 `pnpm spritesheet`: Run this to update the spritesheets.
+
+### Wiki testing (CA/Fishing lookups)
+
+These wiki components call the minion API (for example Combat Achievements and Fishing Advisor).
+
+1. Run the wiki + local API together:
+   - `pnpm wiki:testbot`
+   - This starts `docs` + `@oldschoolgg/robochimp` and auto-sets `PUBLIC_MINION_API_URL=http://localhost:3002`.
+2. Choose DB mode using `USE_REAL_PG` in your root `.env`:
+   - `USE_REAL_PG=1` uses Postgres (`OSB_DATABASE_URL`, `BSO_DATABASE_URL`, `ROBOCHIMP_DATABASE_URL`).
+   - `USE_REAL_PG=0` (or unset) uses local PGlite files.
+   - For CA/Fishing ID lookups, Postgres mode is usually best.
+3. If using Postgres mode, ensure DB URLs exist and schemas are pushed:
+   - Ensure both schemas are pushed:
+     - `npx prisma db push`
+     - `npx prisma db push --schema ./prisma/robochimp.prisma`
+4. Open local wiki pages:
+   - `http://localhost:4321/osb/combat-achievements`
+   - `http://localhost:4321/osb/skills/fishing`
+5. Check the local minion API directly if needed:
+   - `curl "http://localhost:3002/minion/<DISCORD_ID>"`
+   - Expected:
+     - `200` + JSON = lookup should work in wiki
+     - `404` = that user has no public minion data in your current DB
+6. Important: `pnpm wiki:testbot` does **not** start the main bot process.
+   - If your user is missing in local DB, run `pnpm start` separately, use your testbot once (for example `/minion`), then retry the wiki lookup.
+
+Common issues:
+- `Failed to fetch` on the wiki page:
+  - Usually means API is down or wrong URL. Confirm `http://localhost:3002/minion/<DISCORD_ID>` works first.
+- `No public OSB minion data... (404)`:
+  - Your testbot user record is not in the DB currently used by robochimp.
+- `Lookup failed (503)` / `ECONNREFUSED` in robochimp logs:
+  - Your `USE_REAL_PG=1` mode is on, but Postgres is not reachable at the host/port in `OSB_DATABASE_URL`/`BSO_DATABASE_URL`/`ROBOCHIMP_DATABASE_URL`.
+  - Either start Postgres and fix the URLs, or set `USE_REAL_PG=0` to use local PGlite mode.
+- Cloudflare / remote API errors:
+  - Use local API for development (`pnpm wiki:testbot`) instead of relying on remote test API uptime.
 
 #### VSCode settings (Optional)
 
