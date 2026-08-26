@@ -5,6 +5,7 @@ import { PerkTier, sumArr, Time } from '@oldschoolgg/toolkit';
 import { Bank, type Item, Items, resolveItems } from 'oldschooljs';
 
 import { BitField, MAX_XP } from '@/lib/constants.js';
+import { getSimilarItems } from '@/lib/data/similarItems.js';
 import type { Skills } from '@/lib/types/index.js';
 
 export function hasUnlockedAtlantis(user: MUser) {
@@ -24,15 +25,51 @@ export function isSuperUntradeable(item: number | Item) {
 	}
 	return id >= 40_000 && id <= 45_000;
 }
+export type UsingPetOptions = {
+	/** If true, similar pet variants are ignored. */
+	ignoreSimilar?: boolean;
+
+	/** If true, return the pet ID instead of a boolean. */
+	returnID?: boolean;
+};
+
+export interface UsingPetFunction {
+	(pet: string | number, options: { ignoreSimilar?: boolean; returnID: true }): number | false;
+	(pet: string | number, options?: { ignoreSimilar?: boolean; returnID?: false }): boolean;
+}
+
+/**
+ * Checks if the user is using a specific pet.
+ * @param equippedPet The user's equipped pet to compare against.
+ * @param pet The pet to check for.
+ * @param options Options for the check.
+ * @returns Whether the user is using the specified pet.
+ */
+export function usingPet(
+	equippedPet: number | null,
+	pet: string | number,
+	options?: UsingPetOptions
+): boolean | number {
+	if (equippedPet === null) return false;
+	const petID = typeof pet === 'number' ? pet : Items.getItem(pet)?.id;
+	if (petID === undefined) return false;
+	const petIDs = options?.ignoreSimilar ? [petID] : getSimilarItems(petID);
+	const isUsingPet = petIDs.includes(equippedPet);
+	if (options?.returnID) return isUsingPet ? equippedPet : false;
+	return isUsingPet;
+}
 
 export function isGEUntradeable(item: number | Item) {
 	const fullItem = typeof item === 'number' ? Items.get(item) : item;
-	if (!fullItem || !fullItem.customItemData || !fullItem.customItemData.superTradeableButTradeableOnGE) {
-		return isSuperUntradeable(item);
+	if (!fullItem) return true;
+	if (fullItem.customItemData) {
+		const { dontTradeOnGE, superUntradeableButTradeableOnGE, isSuperUntradeable } = fullItem.customItemData;
+		// This order is important: use order as defined in the deconstruction.
+		if (dontTradeOnGE) return true;
+		if (superUntradeableButTradeableOnGE) return false;
+		if (isSuperUntradeable) return true;
 	}
-	if (fullItem.customItemData.isSuperUntradeable && fullItem.customItemData.superTradeableButTradeableOnGE) {
-		return false;
-	}
+
 	return isSuperUntradeable(item);
 }
 
@@ -45,9 +82,11 @@ export function clAdjustedDroprate(
 	const amountInCL = user instanceof Bank ? user.amount(item) : user.cl.amount(item);
 	if (amountInCL === 0) return Math.floor(baseRate);
 	let newRate = baseRate;
+	const ceilRate = Math.max(baseRate * 10, 2000);
+
 	for (let i = 0; i < amountInCL; i++) {
 		newRate *= increaseMultiplier;
-		if (newRate >= 1_000_000_000) break;
+		if (newRate >= ceilRate) return ceilRate;
 	}
 	return Math.floor(newRate);
 }

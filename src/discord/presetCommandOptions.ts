@@ -30,9 +30,11 @@ export const filterOption = {
 
 export const itemArr = Items.array()
 	.filter(i => !i.customItemData?.isSecret)
-	.map(i => ({ ...i, key: `${i.name.toLowerCase()}${i.id}` }));
+	.map(i => ({ ...i, key: `${i.name.toLowerCase()}_${i.id}` }));
 
-export const tradeableItemArr = itemArr.filter(i => i.tradeable_on_ge);
+export const tradeableItemArr = itemArr.filter(
+	i => i.tradeable_on_ge && !(i.customItemData && i.customItemData.dontTradeOnGE)
+);
 
 export const allEquippableItems = Items.array().filter(i => i.equipable && i.equipment?.slot);
 

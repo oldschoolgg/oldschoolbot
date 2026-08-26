@@ -4,7 +4,7 @@ import type { GearSetup } from '@oldschoolgg/gear';
 import type { IBirdhouseData, IBlowpipeData, IFarmingContract } from '@oldschoolgg/schemas';
 import type { ItemBank } from 'oldschooljs';
 
-import type { AutoFarmFilterEnum, bank_sort_method_enum, CropUpgradeType } from '@/prisma/main.js';
+import type { AutoFarmFilterEnum, bank_sort_method_enum, CropUpgradeType, Prisma } from '@/prisma/main.js';
 import type { PatchTypes } from '@/lib/skilling/skills/farming/index.js';
 import type { FarmingPatchSettingsKey } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
@@ -35,7 +35,6 @@ type PrismaNullableIntKeys = 'minion_equippedPet' | 'gear_template';
 type PrismaIntUpdateInput = number | { increment: number } | { decrement: number };
 
 type PrismaIntKeys =
-	| 'premium_balance_tier'
 	| 'bankBackground'
 	| 'QP'
 	| 'lms_points'
@@ -49,9 +48,9 @@ type PrismaIntKeys =
 
 type PrismaBigIntUpdateInput = bigint | number | { increment: bigint | number } | { decrement: bigint | number };
 
-type PrismaBigIntKeys = 'premium_balance_expiry_date' | 'GP' | 'sacrificedValue' | `skills_${SkillNameType}`;
+type PrismaBigIntKeys = 'GP' | 'sacrificedValue' | `skills_${SkillNameType}`;
 
-type PrismaItemBankKeys = 'bank' | 'collectionLogBank' | 'bank_sort_weightings' | 'temp_cl' | 'pets';
+type PrismaItemBankKeys = 'bank' | 'collectionLogBank' | 'bank_sort_weightings' | 'temp_cl' | 'pets' | 'rp_bestow_bank';
 
 type PrismaDateKeys = 'last_temp_cl_reset' | 'gambling_lockout_expiry' | 'minion_bought_date' | 'last_command_date';
 
@@ -73,6 +72,9 @@ type BSOUserUpdateInput = {
 	nursery: Nursery;
 	selected_tame: number | null;
 	current_item_contract: number | null;
+	island_upgrades: Prisma.JsonObject;
+	distillery_stats: Prisma.JsonObject;
+	construction_stats: Prisma.JsonObject;
 } & Record<'unlocked_blueprints' | 'unlocked_gear_templates' | 'disabled_inventions', PrismaArrayUpdateInput<number>> &
 	Record<
 		| 'item_contract_streak'

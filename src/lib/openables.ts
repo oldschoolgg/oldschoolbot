@@ -8,9 +8,13 @@ import {
 	BrimstoneChest,
 	BronzeHAMChest,
 	EItem,
+	ElderHoard,
 	EliteMimicTable,
 	ElvenCrystalChest,
 	EMonster,
+	GemstoneBundle,
+	GemstoneCore,
+	GemstoneSatchel,
 	GiantEggSacFull,
 	GiantsFoundryOrePack,
 	GrubbyChest,
@@ -482,6 +486,38 @@ const osjsOpenables: UnifiedOpenable[] = [
 		aliases: ['zombie pirate key', 'zombie pirate locker', 'pirate locker'],
 		output: ZombiePiratesLocker.table,
 		allItems: ZombiePiratesLocker.table.allItems
+	},
+	{
+		name: 'Gemstone Bundle',
+		id: 75_022,
+		openedItem: Items.getOrThrow('Gemstone bundle'),
+		aliases: ['gemstone bundle', 'gem bundle'],
+		output: GemstoneBundle.table,
+		allItems: GemstoneBundle.table.allItems
+	},
+	{
+		name: 'Gemstone Satchel',
+		id: 75_023,
+		openedItem: Items.getOrThrow('Gemstone satchel'),
+		aliases: ['gemstone satchel', 'gem satchel'],
+		output: GemstoneSatchel.table,
+		allItems: GemstoneSatchel.table.allItems
+	},
+	{
+		name: 'Gemstone Core',
+		id: 75_024,
+		openedItem: Items.getOrThrow('Gemstone core'),
+		aliases: ['gemstone core', 'gem core'],
+		output: GemstoneCore.table,
+		allItems: GemstoneCore.table.allItems
+	},
+	{
+		name: 'Elder Cache',
+		id: 75_043,
+		openedItem: Items.getOrThrow('Elder sigil'),
+		aliases: ['elder cache', 'elder sigil'],
+		output: ElderHoard.table,
+		allItems: ElderHoard.table.allItems
 	}
 ];
 
@@ -617,6 +653,12 @@ export const allOpenables: UnifiedOpenable[] = [
 for (const openable of allOpenables) {
 	openable.aliases.push(openable.openedItem.name);
 	openable.aliases.push(openable.id.toString());
+	for (const [alias, iId] of Items.itemNameMap.entries()) {
+		if (iId === openable.id) {
+			openable.aliases.push(alias);
+		}
+	}
+	openable.aliases = [...new Set(openable.aliases)];
 }
 
 export const allOpenablesIDs = new Set(allOpenables.map(i => i.id));

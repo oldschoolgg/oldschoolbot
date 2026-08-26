@@ -1,3 +1,4 @@
+import { type UsingPetFunction, usingPet } from '@/lib/bso/bsoUtil.js';
 import type { GodFavourBank, GodName } from '@/lib/bso/minigames/divineDominion.js';
 import { mysteriousStepData, mysteriousTrailTracks } from '@/lib/bso/mysteryTrail.js';
 import type { IMaterialBank } from '@/lib/bso/skills/invention/index.js';
@@ -24,7 +25,7 @@ import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { Mutex } from 'async-mutex';
 import { randArrItem, SeedableRNG } from 'node-rng';
 import { cryptoRng } from 'node-rng/crypto';
-import { Bank, EMonster, type Item, type ItemBank, Items, itemID } from 'oldschooljs';
+import { Bank, EMonster, type Item, type ItemBank, Items } from 'oldschooljs';
 import { clone } from 'remeda';
 
 import type {
@@ -57,7 +58,6 @@ import type { RemoveFoodFromUserParams } from '@/lib/minions/functions/removeFoo
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import type { AddXpParams, ClueBank, KillableMonster } from '@/lib/minions/types.js';
 import { getPerkTierCached, getUsersPerkTier } from '@/lib/perkTiers.js';
-import { roboChimpUserFetchCached } from '@/lib/roboChimp.js';
 import { type MinigameName, type MinigameScore, Minigames } from '@/lib/settings/minigames.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { DetailedFarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
@@ -182,8 +182,13 @@ export class MUserClass extends BaseUser {
 		return getPerkTierCached(this.id) !== null;
 	}
 
-	async fetchPerkTier({ forceNoCache }: { forceNoCache?: boolean } = {}): Promise<0 | PerkTier> {
+	async fetchPerkTier({ forceNoCache }: { forceNoCache?: boolean } = {}): Promise<PerkTier> {
 		return await getUsersPerkTier({ user: this, forceNoCache });
+	}
+	get premiumTier(): PerkTier | null {
+		// TODO: Replace this with the actual Tier associated with the best entitlement.
+		const cached = getPerkTierCached(this.id);
+		return cached !== null ? Math.max(0, cached - 1) : null;
 	}
 
 	hasMonsterRequirements(monster: KillableMonster) {
@@ -289,7 +294,7 @@ RETURNING (monster_scores->>'${monsterID}')::int AS new_kc;
 		filterLoot?: boolean;
 		dontAddToTempCL?: boolean;
 		neverUpdateHistory?: boolean;
-		otherUpdates?: SafeUserUpdateInput;
+		otherUpdates?: TransactItemsArgs['otherUpdates'];
 	}) {
 		return this.transactItems({
 			collectionLog,
@@ -391,7 +396,7 @@ RETURNING (creature_scores->>'${creatureID}')::int AS new_kc;
 				throw new Error(`Invalid degradeable item key: ${keyName}`);
 			}
 			const currentCharges = this.user[degradeableItem.settingsKey];
-			const newCharges = currentCharges - chargesToDegrade;
+			const newCharges = (currentCharges ?? 0) - chargesToDegrade;
 			if (newCharges < 0) {
 				failureReasons.push(
 					`You don't have enough ${degradeableItem.item.name} charges, you need ${chargesToDegrade}, but you have only ${currentCharges}.`
@@ -705,7 +710,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 	}
 
 	async checkBankBackground() {
-		if (this.isModOrAdmin()) {
+		if (this.isModOrAdmin) {
 			return;
 		}
 		const resetBackground = async () => {
@@ -738,7 +743,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 	}
 
 	async fetchRobochimpUser() {
-		return roboChimpUserFetchCached(this.id);
+		return Cache.getRoboChimpUser(this.id);
 	}
 
 	async forceUnequip(setup: GearSetupType, slot: EquipmentSlot, reason: string) {
@@ -858,7 +863,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 	}
 
 	async addMonsterXP(params: AddMonsterXpParams) {
-		const res = addMonsterXPRaw({ ...params, attackStyles: this.getAttackStyles(), rng: cryptoRng });
+		const res = addMonsterXPRaw({ ...params, user: this, attackStyles: this.getAttackStyles(), rng: cryptoRng });
 		const result = await this.addXPBank(res);
 		return `**XP Gains:** ${result}`;
 	}
@@ -1186,10 +1191,8 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 		return 1;
 	}
 
-	usingPet(name: string | number) {
-		if (typeof name === 'number') return this.user.minion_equippedPet === name;
-		return this.user.minion_equippedPet === itemID(name);
-	}
+	usingPet: UsingPetFunction = ((pet, options) =>
+		usingPet(this.user.minion_equippedPet, pet, options)) as UsingPetFunction;
 }
 
 export async function srcMUserFetch(userID: string, updates?: Prisma.UserUpdateInput) {
@@ -1212,6 +1215,7 @@ export async function srcMUserFetch(userID: string, updates?: Prisma.UserUpdateI
 	if (!user) {
 		return srcMUserFetch(userID, {});
 	}
+	user.username = await Cache.getUsername(user.id);
 	return new MUserClass(user);
 }
 

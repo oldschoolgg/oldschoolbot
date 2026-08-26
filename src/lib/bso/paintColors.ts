@@ -14,6 +14,28 @@ export interface PaintColor {
 
 export const paintColorsMap = new Map(paintColors.map(i => [i.itemId, i]));
 
+const inversionPaintColor = [1, 2, 3] as const;
+const commonBorderColor = [48, 32, 32] as const;
+
+function isInversionPaintColor(tintColor: [number, number, number]) {
+	return tintColor.every((value, index) => value === inversionPaintColor[index]);
+}
+
+function isNearCommonBorderColor(red: number, green: number, blue: number) {
+	const tolerance = 18;
+	return (
+		Math.abs(red - commonBorderColor[0]) <= tolerance &&
+		Math.abs(green - commonBorderColor[1]) <= tolerance &&
+		Math.abs(blue - commonBorderColor[2]) <= tolerance &&
+		red >= green &&
+		green >= blue
+	);
+}
+
+function isNearBlack(red: number, green: number, blue: number, tolerance: number) {
+	return red <= tolerance && green <= tolerance && blue <= tolerance;
+}
+
 export const applyPaintToItemIcon = async (
 	img: CanvasImage | Canvas,
 	tintColor: [number, number, number],
@@ -24,6 +46,7 @@ export const applyPaintToItemIcon = async (
 	const [r, g, b] = tintColor;
 	ctx.drawImage(img, 0, 0, img.width, img.height);
 	const imageData = ctx.getImageData(0, 0, img.width, img.height);
+	const isInversionPaint = isInversionPaintColor(tintColor);
 
 	for (let i = 0; i < imageData.data.length; i += 4) {
 		const originalRed = imageData.data[i + 0] as number;
@@ -31,15 +54,15 @@ export const applyPaintToItemIcon = async (
 		const originalBlue = imageData.data[i + 2] as number;
 
 		if (
-			(originalRed === 48 && originalGreen === 32 && originalBlue === 32) ||
-			(originalRed <= blackTolerance && originalGreen <= blackTolerance && originalBlue <= blackTolerance)
+			isNearCommonBorderColor(originalRed, originalGreen, originalBlue) ||
+			isNearBlack(originalRed, originalGreen, originalBlue, isInversionPaint ? 32 : blackTolerance)
 		) {
-			// Skip pixels that are black (with tolerance) or exactly r=48, g=32, b=32
+			// Preserve black and anti-aliased outline pixels.
 			continue;
 		}
 
 		// Special case for inversion paint:
-		if ([1, 2, 3].every(n => tintColor.includes(n))) {
+		if (isInversionPaint) {
 			imageData.data[i + 0] = 255 - originalRed;
 			imageData.data[i + 1] = 255 - originalGreen;
 			imageData.data[i + 2] = 255 - originalBlue;

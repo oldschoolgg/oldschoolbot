@@ -40,6 +40,7 @@ import {
 } from '@/lib/util/interactions.js';
 import { hasSkillReqs, perHourChance } from '@/lib/util/smallUtils.js';
 import { alching } from '@/mahoji/commands/laps.js';
+import { handleTriggerArchon } from '@/mahoji/lib/abstracted_commands/archonCommand.js';
 import { isUsersDailyReady } from '@/mahoji/lib/abstracted_commands/dailyCommand.js';
 import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
 import { handleTriggerShootingStar } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
@@ -59,7 +60,7 @@ interface TripFinishEffectOptions {
 	components: ButtonBuilder[];
 	lastDailyTimestamp: bigint | null;
 	lastTearsOfGuthixTimestamp: bigint | null;
-	perkTier: PerkTier | 0;
+	perkTier: PerkTier;
 	rng: RNGProvider;
 
 	// BSO
@@ -120,7 +121,15 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Loot Doubling',
 		fn: async ({ data, messages, user, loot }) => {
-			const cantBeDoubled = ['GroupMonsterKilling', 'KingGoldemar', 'Ignecarus', 'Inferno', 'Alching', 'Agility'];
+			const cantBeDoubled = [
+				'GroupMonsterKilling',
+				'KingGoldemar',
+				'Ignecarus',
+				'Inferno',
+				'Alching',
+				'Agility',
+				'BeachCombing'
+			];
 			if (!loot || data.cantBeDoubled || cantBeDoubled.includes(data.type) || data.duration < Time.Minute * 20) {
 				return;
 			}
@@ -328,6 +337,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Crate Spawns',
 		fn: async ({ data, messages, user }) => {
+			if (data.type === activity_type_enum.BeachCombing) return;
 			const crateRes = handleCrateSpawns(user, data.duration, 'trip', messages);
 			if (crateRes && crateRes.length > 0) {
 				messages.push(bold(`You found ${crateRes}!`));
@@ -484,6 +494,12 @@ const tripFinishEffects: TripFinishEffect[] = [
 		name: 'Shooting Stars',
 		fn: async ({ user, data, components, rng }) => {
 			await handleTriggerShootingStar({ user, data, components, rng });
+		}
+	},
+	{
+		name: 'Archon',
+		fn: async ({ user, data, components }) => {
+			await handleTriggerArchon(user, data, components);
 		}
 	},
 	{

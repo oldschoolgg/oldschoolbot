@@ -12,20 +12,21 @@ import {
 	type GatewayMessageCreateDispatchData,
 	Routes
 } from '@oldschoolgg/discord';
-import type { IChannel, IUserLog, IWebhook } from '@oldschoolgg/schemas';
+import type { IChannel, IMessage, IUserLog, IWebhook } from '@oldschoolgg/schemas';
 import { Time } from '@oldschoolgg/toolkit';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { omit } from 'remeda';
 
 import { makeParty } from '@/discord/interaction/makeParty.js';
-import { mentionCommand } from '@/discord/utils.js';
+import { mentionCommand, resolveBotSendableMessage } from '@/discord/utils.js';
 import { DISCORD_USER_IDS_INSERTED_CACHE } from '@/lib/cache.js';
-import { globalConfig } from '@/lib/constants.js';
+import { BOT_TYPE_LOWERCASE, globalConfig } from '@/lib/constants.js';
 import { ReactEmoji } from '@/lib/data/emojis.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import { allCommandsDONTIMPORT } from '@/mahoji/commands/allCommands.js';
 
 const MAX_MESSAGE_LENGTH = 1950;
+const WEBHOOK_AVATAR_PATH = `./src/lib/resources/images/discord/${BOT_TYPE_LOWERCASE}-avatar.webp`;
 
 function splitContentIntoMessages(content: string): string[] {
 	if (content.length <= MAX_MESSAGE_LENGTH) return [content];
@@ -51,16 +52,6 @@ function splitContentIntoMessages(content: string): string[] {
 		parts.push(remaining);
 	}
 	return parts;
-}
-
-async function resolveBotSendableMessage(rawMessage: SendableMessage): Promise<BaseSendableMessage> {
-	if (typeof rawMessage === 'string') {
-		return { content: rawMessage };
-	}
-	if ('build' in rawMessage) {
-		return resolveBotSendableMessage(await rawMessage.build());
-	}
-	return rawMessage;
 }
 
 function splitSendableMessage(rawMessage: BaseSendableMessage): BaseSendableMessage[] {
@@ -132,13 +123,14 @@ export class OldSchoolBotClient extends DiscordClient {
 			avatar: user.avatar,
 			created_at: new Date(DiscordSnowflake.timestampFrom(user.id))
 		} as const;
+		const { created_at, ...update } = data; // only write created_at one creation.
 		await roboChimpClient.discordUser
 			.upsert({
 				where: {
 					id: user.id
 				},
 				create: data,
-				update: data
+				update
 			})
 			.catch(err => Logging.logError(err));
 		DISCORD_USER_IDS_INSERTED_CACHE.add(user.id);
@@ -159,61 +151,80 @@ export class OldSchoolBotClient extends DiscordClient {
 	}
 
 	private async deleteWebhook(channelId: string): Promise<void> {
-		await Promise.all([Cache.clearWebhook(channelId), prisma.webhook.delete({ where: { channel_id: channelId } })]);
+		await Promise.all([
+			Cache.clearWebhook(channelId),
+			prisma.webhook.deleteMany({ where: { channel_id: channelId } })
+		]);
 	}
 
 	private async getChannelWebhook(channelId: string): Promise<IWebhook | null> {
 		const cachedWebhook = await Cache.getWebhook(channelId);
 		if (cachedWebhook) return cachedWebhook;
-		const existingWebhooks = await globalClient.fetchWebhooks(channelId);
-		if (existingWebhooks.length === 0) return null;
-		const existingWebhook = existingWebhooks[0];
-		const existingWebhookFmt: IWebhook = {
-			id: existingWebhook.id,
-			token: existingWebhook.token!,
-			channel_id: channelId
-		};
-		await Cache.setWebhook(existingWebhookFmt);
-		return existingWebhookFmt;
+
+		const permissions = await Cache.getWebhookPermissions(channelId);
+		if (!permissions.can_create_webhook) return null;
+
+		let webhook: IWebhook;
+		try {
+			webhook = await this.createWebhook(channelId, WEBHOOK_AVATAR_PATH);
+		} catch (err) {
+			Logging.logError(err as Error);
+			await Cache.setWebhookPermissions({
+				channel_id: channelId,
+				can_create_webhook: false
+			});
+			return null;
+		}
+
+		await Promise.all([
+			Cache.setWebhook(webhook),
+			prisma.webhook.upsert({
+				where: {
+					channel_id: channelId
+				},
+				create: {
+					channel_id: channelId,
+					webhook_id: webhook.id,
+					webhook_token: webhook.token
+				},
+				update: {
+					webhook_id: webhook.id,
+					webhook_token: webhook.token
+				}
+			})
+		]);
+		return webhook;
 	}
 
-	private async sendToWebhook(channelId: string, data: SendableMessage): Promise<{ success: boolean }> {
+	private async sendToWebhook(channelId: string, data: SendableMessage): Promise<IMessage | null> {
+		let webhook: IWebhook | null = null;
 		try {
-			const webhook = await this.getChannelWebhook(channelId);
-			if (!webhook) return { success: false };
-			await globalClient.sendWebhook(webhook, data);
-			return { success: true };
+			webhook = await this.getChannelWebhook(channelId);
+			if (!webhook) return null;
+			return await globalClient.sendWebhook(webhook, data);
 		} catch (_err: unknown) {
 			const err = _err as Error;
-			if (err.message?.includes('Unknown Webhook')) {
-				Logging.logDebug(`Deleting unknown webhook in ${channelId}`);
+			Logging.logError(err);
+			if (webhook) {
 				await this.deleteWebhook(channelId);
-			} else {
-				Logging.logError(err);
 			}
-			return { success: false };
+			return null;
 		}
 	}
 
-	async sendMessageOrWebhook(channelId: string, rawMessage: SendableMessage): Promise<void> {
+	async sendMessageOrWebhook(channelId: string, rawMessage: SendableMessage): Promise<IMessage | null> {
 		const message = await resolveBotSendableMessage(rawMessage);
 		const splitMessages = splitSendableMessage(message);
-		try {
-			await this.sendMessage(channelId, splitMessages[0]);
-		} catch {
-			for (const part of splitMessages) {
-				await this.sendToWebhook(channelId, part);
-			}
-			return;
-		}
+		let firstResponse: IMessage | null = null;
 
-		for (const part of splitMessages.slice(1)) {
-			try {
-				await this.sendMessage(channelId, part);
-			} catch {
-				await this.sendToWebhook(channelId, part);
+		for (const part of splitMessages) {
+			let response = await this.sendToWebhook(channelId, part);
+			if (!response) {
+				response = await this.sendMessage(channelId, part).catch(() => null);
 			}
+			firstResponse ??= response;
 		}
+		return firstResponse;
 	}
 
 	async channelIsSendable(channelId: IChannel | string): Promise<boolean> {

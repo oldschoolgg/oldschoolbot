@@ -2,7 +2,13 @@ import { feedHammyCommand } from '@/lib/bso/commands/hammyCommand.js';
 import { findGroupOfUser } from '@/lib/bso/util/findGroupOfUser.js';
 
 import { bold } from '@oldschoolgg/discord';
-import { FormattedCustomEmoji, formatOrdinal, notEmpty, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
+import {
+	FormattedCustomEmoji,
+	formatDuration,
+	formatOrdinal,
+	notEmpty,
+	roboChimpCLRankQuery
+} from '@oldschoolgg/toolkit';
 import { convertLVLtoXP, Items } from 'oldschooljs';
 
 import { ownedItemOption, skillOption } from '@/discord/index.js';
@@ -15,7 +21,7 @@ import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js'
 import { blowpipeCommand, blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
 import { degradeableItemsCommand } from '@/lib/minions/functions/degradeableItemsCommand.js';
 import { allPossibleStyles, trainCommand } from '@/lib/minions/functions/trainCommand.js';
-import { roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { getRoboChimpPaidTierDisplay } from '@/lib/perkTiers.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import creatures from '@/lib/skilling/skills/hunter/creatures/index.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
@@ -49,7 +55,7 @@ const patMessages = [
 
 export async function getUserInfo(user: MUser) {
 	await refreshUserCache({ user });
-	const roboChimpUser = await roboChimpUserFetch(user.id);
+	const roboChimpUser = await Cache.getRoboChimpUser(user.id);
 	const leaguesRanking = await roboChimpClient.user.count({
 		where: {
 			leagues_points_total: {
@@ -84,12 +90,35 @@ export async function getUserInfo(user: MUser) {
 		2
 	);
 
-	const roboCache = await Cache.getRoboChimpUser(user.id);
+	const premiumPerkTier =
+		roboChimpUser.premium_balance_tier &&
+		roboChimpUser.premium_balance_expiry_date &&
+		roboChimpUser.premium_balance_expiry_date > Date.now()
+			? roboChimpUser.premium_balance_tier
+			: 0;
+
+	let perkTierDisplay = getRoboChimpPaidTierDisplay(roboChimpUser, { perkTier: roboChimpUser.perk_tier });
+	if (
+		roboChimpUser.premium_balance_tier &&
+		roboChimpUser.premium_balance_expiry_date &&
+		roboChimpUser.premium_balance_expiry_date > Date.now()
+	) {
+		if (roboChimpUser.premium_balance_tier > roboChimpUser.perk_tier) {
+			perkTierDisplay = `Premium __Tier ${premiumPerkTier - 1}__ - ${formatDuration(Number(roboChimpUser.premium_balance_expiry_date) - Date.now())} remaining`;
+		}
+	}
+	if (result.perkTier > roboChimpUser.perk_tier && result.perkTier > premiumPerkTier) {
+		if (user.isMod || user.isWikiContrib || user.isContributor || user.isTrusted) {
+			perkTierDisplay = `**Courtesy** __Tier ${result.perkTier - 1}__`;
+		} else {
+			perkTierDisplay = `🔴 **Expiring** __Tier ${result.perkTier - 1}__`;
+		}
+	}
 	return {
 		...result,
 		everythingString: `${user.badgedUsername}[${user.id}]
 **Current Trip:** ${taskText}
-**Perk Tier:** ${roboCache?.perk_tier ?? 'None'}
+**Perk Tier:** ${perkTierDisplay}
 **Blacklisted:** ${result.isBlacklisted}
 **Badges:** ${result.badges}
 **Ironman:** ${result.isIronman}
@@ -184,7 +213,7 @@ export const minionCommand = defineCommand({
 							)
 							.map(bg => bg.id);
 						return bankImages
-							.filter(bg => user.isModOrAdmin() || bg.available || owned.includes(bg.id))
+							.filter(bg => user.isModOrAdmin || bg.available || owned.includes(bg.id))
 							.filter(bg => (!value ? true : bg.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => {
 								const name = i.perkTierNeeded

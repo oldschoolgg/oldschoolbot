@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 import { gzip } from 'node:zlib';
+import { EmbedBuilder } from '@oldschoolgg/discord';
 import { objectEntries, stripEmojis, toTitleCase } from '@oldschoolgg/toolkit';
 import { type ArrayItemsResolved, type Bank, Items } from 'oldschooljs';
 import { clamp } from 'remeda';
@@ -144,7 +145,7 @@ export function perHourChance(
 export function patronMsg(tierNeeded: number) {
 	return `You need to be a Tier ${
 		tierNeeded - 1
-	} Patron to use this command. You can become a patron to support the bot here: <https://www.patreon.com/oldschoolbot>`;
+	} Patron to use this command. You can become a patron to support the bot here: <https://www.patreon.com/OldschoolCyr>`;
 }
 
 export function isValidBitField(bit: number): bit is BitField {
@@ -164,6 +165,30 @@ export async function asyncGzip(buffer: Buffer): Promise<Buffer> {
 
 export function md5sum(str: string): string {
 	return createHash('md5').update(str).digest('hex');
+}
+
+export function safeMessage(content: string, filename = 'result.txt', blockMentions: boolean = true): SendableMessage {
+	const trimmedContent = content.trim();
+	const overview = trimmedContent.split(/\r?\n/, 1)[0] ?? '';
+	if (trimmedContent.length === 0) {
+		return { content: overview };
+	}
+
+	if (trimmedContent.length <= 1800) {
+		return { content: trimmedContent, allowedMentions: blockMentions ? { parse: [] } : undefined };
+	}
+	if (trimmedContent.length <= 4000) {
+		return {
+			content: overview,
+			embeds: [new EmbedBuilder().setDescription(trimmedContent)],
+			allowedMentions: blockMentions ? { parse: [] } : undefined
+		};
+	}
+	return {
+		content: overview,
+		files: [{ name: filename, buffer: Buffer.from(trimmedContent) }],
+		allowedMentions: blockMentions ? { parse: [] } : undefined
+	};
 }
 
 const wordBlacklistBase64 =

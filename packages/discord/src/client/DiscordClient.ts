@@ -1,6 +1,16 @@
 import { makeURLSearchParams, REST } from '@discordjs/rest';
 import { CompressionMethod, WebSocketManager, WebSocketShardEvents, WorkerShardingStrategy } from '@discordjs/ws';
-import type { IChannel, IInteraction, IMember, IMessage, IRichMember, IRole, IWebhook } from '@oldschoolgg/schemas';
+import {
+	type IChannel,
+	type IInteraction,
+	type IMember,
+	type IMessage,
+	type IRichMember,
+	type IRole,
+	type IWebhook,
+	ZCreateWebhook,
+	ZWebhook
+} from '@oldschoolgg/schemas';
 import { uniqueArr } from '@oldschoolgg/util';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
@@ -36,6 +46,7 @@ import {
 } from '../interactions/interactionCollector.js';
 import type { MInteraction } from '../interactions/MInteraction.js';
 import { type PermissionKey, Permissions } from '../Permissions.js';
+import { imageFileToDataUri } from '../util.js';
 import {
 	type DiscordClientEventsMap,
 	type DiscordClientOptions,
@@ -178,8 +189,7 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 	}
 
 	private async fetchCommands() {
-		const commands = (await this.rest.get(this.apiCommandsRoute())) as APIApplicationCommand[];
-		this.applicationCommands = commands;
+		this.applicationCommands = (await this.rest.get(this.apiCommandsRoute())) as APIApplicationCommand[];
 	}
 
 	async memberHasPermissions(member: IMember, perms: PermissionKey[]): Promise<boolean> {
@@ -201,13 +211,15 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 		return res as IMessage;
 	}
 
-	async createWebhook(channelId: string): Promise<APIWebhook> {
-		const data = await this.rest.post(Routes.channelWebhooks(channelId), {
-			body: {
-				name: this.application!.name
-			}
+	async createWebhook(channelId: string, imagePath: string): Promise<IWebhook> {
+		const requestBody = ZCreateWebhook.parse({
+			name: this.application!.name,
+			avatar: await imageFileToDataUri(imagePath)
 		});
-		return data as APIWebhook;
+		const data: unknown = await this.rest.post(Routes.channelWebhooks(channelId), {
+			body: requestBody
+		});
+		return ZWebhook.parse(data);
 	}
 
 	async fetchWebhooks(channelId: string): Promise<APIWebhook[]> {
@@ -215,17 +227,18 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 		return data as APIWebhook[];
 	}
 
-	async sendWebhook(webhook: IWebhook, rawMessage: SendableMessage): Promise<void> {
+	async sendWebhook(webhook: IWebhook, rawMessage: SendableMessage): Promise<IMessage> {
 		const { files, message } = await this.sendableMsgToApiCreate(rawMessage);
 		const query = makeURLSearchParams({
 			wait: true
 		});
-		await this.rest.post(Routes.webhook(webhook.id, webhook.token), {
+		const res = await this.rest.post(Routes.webhook(webhook.id, webhook.token), {
 			body: message,
 			query,
 			files: files ?? undefined,
 			auth: false
 		});
+		return res as IMessage;
 	}
 
 	async sendMessage(channelId: string, rawMessage: SendableMessage): Promise<IMessage> {

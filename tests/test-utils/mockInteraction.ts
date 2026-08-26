@@ -10,10 +10,12 @@ class MockInteraction {
 	public rawInteraction: any;
 	public userId: string;
 	public user: MUser;
+	public client: typeof globalClient;
 
 	constructor({ user }: { user: MUser }) {
 		this.userId = user.id;
 		this.user = user;
+		this.client = globalClient;
 		this.rawInteraction = {
 			guild_id: '1',
 			data: {
@@ -36,6 +38,10 @@ class MockInteraction {
 		this.__response__ = res;
 	}
 	async followUp(res: any) {
+		this.__response__ = res;
+		return { ...res, id: '2222555555' };
+	}
+	async editFollowUp(_messageId: string, res: any) {
 		this.__response__ = res;
 	}
 	async reply(res: any) {
@@ -63,6 +69,10 @@ class MockInteraction {
 	}
 
 	async defer() {
+		return Promise.resolve();
+	}
+
+	async deleteReply() {
 		return Promise.resolve();
 	}
 

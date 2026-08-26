@@ -17,10 +17,7 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	transactions.push(prisma.$executeRaw`SET CONSTRAINTS ALL DEFERRED`);
 
 	// Delete Queries
-	// Slayer task must come before new_user since it's linked to new_users 500 IQ.
 	transactions.push(prisma.slayerTask.deleteMany({ where: { user_id: destUser.id } }));
-
-	transactions.push(prisma.newUser.deleteMany({ where: { id: destUser.id } }));
 
 	transactions.push(prisma.gearPreset.deleteMany({ where: { user_id: destUser.id } }));
 	transactions.push(prisma.giveaway.deleteMany({ where: { user_id: destUser.id } }));
@@ -67,7 +64,6 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 
 	// Update queries:
 	transactions.push(prisma.user.updateMany({ where: { id: sourceUser.id }, data: { id: destUser.id } }));
-	transactions.push(prisma.newUser.updateMany({ where: { id: sourceUser.id }, data: { id: destUser.id } }));
 
 	transactions.push(
 		prisma.bingo.updateMany({ where: { creator_id: sourceUser.id }, data: { creator_id: destUser.id } })
@@ -212,7 +208,10 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	try {
 		await prisma.$transaction(transactions);
 	} catch (err: unknown) {
-		Logging.logError(err as Error);
+		const error = err instanceof Error ? err : new Error(String(err));
+
+		Logging.logError(error);
+		if (error.stack) Logging.logError(error.stack);
 		throw new UserError('Error migrating user. Sorry about that!');
 	}
 

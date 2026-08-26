@@ -1,26 +1,26 @@
 import { codeBlock, dateFm } from '@oldschoolgg/discord';
 import { type GearSetupType, GearSetupTypes } from '@oldschoolgg/gear';
-import { sumArr, Time, toTitleCase } from '@oldschoolgg/toolkit';
+import { sumArr, toTitleCase } from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { DiscordSnowflake } from '@sapphire/snowflake';
-import { Duration } from '@sapphire/time-utilities';
 import { Bank, type Item, type ItemBank } from 'oldschooljs';
 
 import { UserEventType, xp_gains_skill_enum } from '@/prisma/main/enums.js';
 import { choicesOf, gearSetupOption } from '@/discord/index.js';
 import { marketPricemap } from '@/lib/cache.js';
 import { Channel, globalConfig } from '@/lib/constants.js';
-import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
+import { customItems } from '@/lib/customItems/util.js';
+import { allCollectionLogsFlat, allDcSet } from '@/lib/data/Collections.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { unEquipAllCommand } from '@/lib/minions/functions/unequipAllCommand.js';
 import { unequipPet } from '@/lib/minions/functions/unequipPet.js';
-import { premiumPatronTime } from '@/lib/premiumPatronTime.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
+import { autocompleteStaffBestowRewards, sendStaffBestowReward } from '@/lib/staffBestow.js';
+import { dmCyrAudit } from '@/lib/util/cyrAudit.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { migrateUser } from '@/lib/util/migrateUser.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
-import { refreshUserCache } from '@/lib/util/refreshCache.js';
 import { insertUserEvent } from '@/lib/util/userEvents.js';
 import { gifs } from '@/mahoji/commands/admin.js';
 import { getUserInfo } from '@/mahoji/commands/minion.js';
@@ -45,8 +45,94 @@ const itemFilters = [
 function isProtectedAccount(user: MUser) {
 	const botAccounts = ['303730326692429825', '729244028989603850', '969542224058654790'];
 	if (botAccounts.includes(user.id)) return true;
-	if (user.isModOrAdmin()) return true;
+	if (user.isModOrAdmin) return true;
 	return false;
+}
+
+type StealItemsOptions = {
+	delete?: boolean;
+	user: {
+		user: {
+			id: string;
+		};
+	};
+	item_filter?: string;
+	items?: string;
+	reason?: string;
+};
+
+async function handleStealItems({
+	adminUser,
+	interaction,
+	rng,
+	stealItemsOptions
+}: {
+	adminUser: MUser;
+	interaction: MInteraction;
+	rng: RNGProvider;
+	stealItemsOptions: StealItemsOptions;
+}): CommandResponse {
+	if (!adminUser.isGameHacker && !adminUser.isAdmin) {
+		return rng.pick(gifs);
+	}
+	if (globalConfig.isProduction && !adminUser.isAdmin && interaction.channelId !== Channel.CyrCommandsChannel) {
+		return `You can only use this command in <#${Channel.CyrCommandsChannel}>.`;
+	}
+	const toDelete = stealItemsOptions.delete ?? false;
+	const actionMsg = toDelete ? 'delete' : 'steal';
+	const actionMsgPast = toDelete ? 'deleted' : 'stole';
+
+	const userToStealFrom = await mUserFetch(stealItemsOptions.user.user.id);
+
+	const items = new Bank();
+	if (stealItemsOptions.item_filter) {
+		const filter = itemFilters.find(i => i.name === stealItemsOptions.item_filter);
+		if (!filter) return 'Invalid item filter.';
+		for (const [item, qty] of userToStealFrom.bank.items()) {
+			if (filter.filter(item)) {
+				items.add(item.id, qty);
+			}
+		}
+	} else {
+		items.add(
+			parseBank({
+				inputStr: stealItemsOptions.items,
+				noDuplicateItems: true,
+				inputBank: userToStealFrom.bankWithGP
+			})
+		);
+	}
+	if (items.length === 0) {
+		return `${userToStealFrom.mention} doesn't have those items, or they don't exist.`;
+	}
+	if (items.itemIDs.some(i => allDcSet.has(i) && customItems.includes(i))) {
+		return `You cannot steal Discontinued Items, sorry!`;
+	}
+	await interaction.confirmation(
+		`Are you sure you want to ${actionMsg} ${items.toString().slice(0, 500)} from ${
+			userToStealFrom.usernameOrMention
+		}?`
+	);
+	let missing = new Bank();
+	if (!userToStealFrom.owns(items)) {
+		missing = items.clone().remove(userToStealFrom.bankWithGP);
+		return `${userToStealFrom.mention} doesn't have all items. Missing: ${missing.toString().slice(0, 500)}`;
+	}
+
+	const auditMessage = {
+		content: `${adminUser.logName} ${actionMsgPast} \`${items.toString().slice(0, 500)}\` from ${
+			userToStealFrom.logName
+		} for ${stealItemsOptions.reason ?? 'No reason'}`,
+		files: [{ buffer: Buffer.from(items.toString()), name: 'items.txt' }]
+	};
+	await globalClient.sendMessage(Channel.BotLogs, auditMessage);
+	if (!adminUser.isAdmin) {
+		await dmCyrAudit(auditMessage.content, auditMessage.files);
+	}
+
+	await userToStealFrom.removeItemsFromBank(items);
+	if (!toDelete) await adminUser.addItemsToBank({ items, collectionLog: false });
+	return `${toTitleCase(actionMsgPast)} ${items.toString().slice(0, 500)} from ${userToStealFrom.mention}`;
 }
 
 export const rpCommand = defineCommand({
@@ -65,6 +151,26 @@ export const rpCommand = defineCommand({
 		// 		options: []
 		// 	}))
 		// },
+		{
+			type: 'Subcommand',
+			name: 'bestow',
+			description: 'Bestow a staff reward.',
+			options: [
+				{
+					type: 'String',
+					name: 'reward',
+					description: 'The reward to bestow.',
+					required: true,
+					autocomplete: autocompleteStaffBestowRewards
+				},
+				{
+					type: 'User',
+					name: 'user',
+					description: 'The user to receive the reward.',
+					required: true
+				}
+			]
+		},
 		{
 			type: 'SubcommandGroup',
 			name: 'player',
@@ -415,10 +521,34 @@ export const rpCommand = defineCommand({
 	],
 	run: async ({ options, user: adminUser, interaction, guildId, rng }) => {
 		await interaction.defer();
-		const isAdmin = adminUser.isAdmin();
-		const isMod = isAdmin || adminUser.isMod();
+		const isAdmin = adminUser.isAdmin;
+		const isMod = isAdmin || adminUser.isMod;
+		const isContrib = adminUser.isContributor || isAdmin;
+		const isGameHacker = adminUser.isGameHacker || isAdmin;
+		const canBestow = isAdmin || isMod || isContrib;
+
 		if (!guildId || (globalConfig.isProduction && guildId.toString() !== globalConfig.supportServerID)) {
 			return rng.pick(gifs);
+		}
+		if (options.bestow) {
+			if (!canBestow) return rng.pick(gifs);
+			if (globalConfig.isProduction && interaction.channelId !== Channel.GeneralChannel) {
+				return `You can only use this command in <#${Channel.GeneralChannel}>.`;
+			}
+			if (options.bestow.user.user.id === adminUser.id) {
+				return "You can't bestow rewards to yourself.";
+			}
+			if (options.bestow.user.user.bot) {
+				return "You can't bestow rewards to a bot.";
+			}
+			const recipient = await mUserFetch(options.bestow.user.user.id);
+			return sendStaffBestowReward({
+				user: adminUser,
+				rawReward: options.bestow.reward,
+				recipient,
+				guildId,
+				interaction
+			});
 		}
 		if (!isAdmin && !isMod) return rng.pick(gifs);
 
@@ -474,7 +604,14 @@ Date: ${dateFm(date)}`;
 			return `Done: ${confirmationStr.replace('Please confirm:', '')}`;
 		}
 
-		if (!isMod) return rng.pick(gifs);
+		if (options.player?.steal_items) {
+			return handleStealItems({
+				adminUser,
+				interaction,
+				rng,
+				stealItemsOptions: options.player.steal_items
+			});
+		}
 
 		// if (options.action) {
 		// 	for (const action of actions) {
@@ -532,15 +669,7 @@ Date: ${dateFm(date)}`;
 			};
 		}
 
-		if (options.player?.add_patron_time) {
-			const { tier, time, user: userToGive } = options.player.add_patron_time;
-			const duration = new Duration(time);
-			if (![1, 2, 3, 4, 5, 6].includes(tier)) return 'Invalid input.';
-			const ms = duration.offset;
-			if (ms < Time.Second || ms > Time.Year * 3) return 'Invalid input.';
-			const res = await premiumPatronTime(ms, tier, await mUserFetch(userToGive.user.id), interaction);
-			return res;
-		}
+		if (!isAdmin) return rng.pick(gifs);
 
 		// Unequip Items
 		if (options.player?.unequip_all_items) {
@@ -578,75 +707,14 @@ Date: ${dateFm(date)}`;
 			return `Successfully removed ${gearSlot} gear.${opts.pet ? ` ${petResult}` : ''}`;
 		}
 
-		// Steal Items
-		if (options.player?.steal_items) {
-			if (!isAdmin) {
-				return rng.pick(gifs);
-			}
-			const toDelete = options.player.steal_items.delete ?? false;
-			const actionMsg = toDelete ? 'delete' : 'steal';
-			const actionMsgPast = toDelete ? 'deleted' : 'stole';
-
-			const userToStealFrom = await mUserFetch(options.player.steal_items.user.user.id);
-
-			const items = new Bank();
-			if (options.player.steal_items.item_filter) {
-				const filter = itemFilters.find(i => i.name === options.player?.steal_items?.item_filter);
-				if (!filter) return 'Invalid item filter.';
-				for (const [item, qty] of userToStealFrom.bank.items()) {
-					if (filter.filter(item)) {
-						items.add(item.id, qty);
-					}
-				}
-			} else {
-				items.add(
-					parseBank({
-						inputStr: options.player.steal_items.items,
-						noDuplicateItems: true,
-						inputBank: userToStealFrom.bankWithGP
-					})
-				);
-			}
-			await interaction.confirmation(
-				`Are you sure you want to ${actionMsg} ${items.toString().slice(0, 500)} from ${
-					userToStealFrom.usernameOrMention
-				}?`
-			);
-			let missing = new Bank();
-			if (!userToStealFrom.owns(items)) {
-				missing = items.clone().remove(userToStealFrom.bankWithGP);
-				return `${userToStealFrom.mention} doesn't have all items. Missing: ${missing
-					.toString()
-					.slice(0, 500)}`;
-			}
-
-			await globalClient.sendMessage(Channel.BotLogs, {
-				content: `${adminUser.logName} ${actionMsgPast} \`${items.toString().slice(0, 500)}\` from ${
-					userToStealFrom.logName
-				} for ${options.player.steal_items.reason ?? 'No reason'}`,
-				files: [{ buffer: Buffer.from(items.toString()), name: 'items.txt' }]
-			});
-
-			await userToStealFrom.removeItemsFromBank(items);
-			if (!toDelete) await adminUser.addItemsToBank({ items, collectionLog: false });
-			return `${toTitleCase(actionMsgPast)} ${items.toString().slice(0, 500)} from ${userToStealFrom.mention}`;
-		}
-
 		if (options.player?.view_user) {
-			let msg = '';
-			if (options.player.view_user.refresh) {
-				msg = await refreshUserCache({
-					user: adminUser,
-					guildId: interaction.guildId,
-					possibleTarget: options.player.view_user.user.user.id
-				});
-			}
+			const msg = '';
 			const userToView = await mUserFetch(options.player.view_user.user.user.id);
 			return msg + '\n' + (await getUserInfo(userToView)).everythingString;
 		}
 
 		if (options.player?.migrate_user) {
-			if (!isAdmin) {
+			if (!isGameHacker) {
 				return rng.pick(gifs);
 			}
 
@@ -655,6 +723,11 @@ Date: ${dateFm(date)}`;
 			if (source.user.id === dest.user.id) {
 				return 'Destination cannot be the same as the source!';
 			}
+
+			if (source.user.id === adminUser.id || dest.user.id === adminUser.id) {
+				return 'You cannot migrate yourself! Ask another mod if you need help, this is because Discord makes it too easy to put your own user accidentally.';
+			}
+
 			const sourceUser = await mUserFetch(source.user.id);
 			const destUser = await mUserFetch(dest.user.id);
 
@@ -671,15 +744,28 @@ Date: ${dateFm(date)}`;
 			);
 			await interaction.reply('Reticulating splines...');
 			const result = await migrateUser(sourceUser, destUser);
+
+			const auditParts = [];
+			auditParts.push(`${sourceUser.logName} to ${destUser.logName}`);
+			if (reason) auditParts.push(`, because ${reason}`);
+
 			if (result === true) {
+				auditParts.unshift(`${adminUser.logName} migrated `);
 				await globalClient.sendMessage(Channel.BotLogs, {
-					content: `${adminUser.logName} migrated ${sourceUser.logName} to ${destUser.logName}${
-						reason ? `, for ${reason}` : ''
-					}`
+					content: auditParts.join('')
 				});
 				return 'Done';
+			} else {
+				auditParts.unshift(`${adminUser.logName} tried to migrate `);
+				auditParts.push(` but failed: ${result}`);
+				const auditMessage = auditParts.join('');
+				await globalClient.sendMessage(Channel.BotLogs, {
+					content: auditMessage,
+					files: [{ buffer: Buffer.from(result), name: 'error.txt' }]
+				});
+				if (!isAdmin) await dmCyrAudit(auditMessage);
+				return result;
 			}
-			return result;
 		}
 		if (options.player?.list_trades) {
 			const baseSql =

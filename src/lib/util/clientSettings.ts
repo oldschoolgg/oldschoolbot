@@ -2,8 +2,9 @@ import { Bank, type ItemBank } from 'oldschooljs';
 
 import type { ClientStorage, Prisma } from '@/prisma/main.js';
 import { globalConfig } from '@/lib/constants.js';
+import type { IExtraSettings } from '@/lib/settings/misc.js';
 
-async function mahojiClientSettingsFetch(select: Prisma.ClientStorageSelect = { id: true }) {
+async function mahojiClientSettingsFetch(select?: Prisma.ClientStorageSelect) {
 	const clientSettings = await prisma.clientStorage.findFirst({
 		where: {
 			id: globalConfig.clientID
@@ -23,6 +24,10 @@ async function mahojiClientSettingsUpdate(data: Prisma.ClientStorageUpdateInput)
 			id: true
 		}
 	});
+}
+
+async function getExtraSettings(): Promise<IExtraSettings> {
+	return Cache.getExtraSettings();
 }
 
 async function updateClientGPTrackSetting(
@@ -58,6 +63,8 @@ async function updateClientGPTrackSetting(
 type BSOClientBankKey =
 	| 'ignecarus_cost'
 	| 'ignecarus_loot'
+	| 'dominion_cost'
+	| 'dominion_loot'
 	| 'kibble_cost'
 	| 'mr_cost'
 	| 'mr_loot'
@@ -196,6 +203,7 @@ async function addToGPTaxBalance(user: MUser, amount: number) {
 const ClientSettingsSrc = {
 	fetch: mahojiClientSettingsFetch,
 	update: mahojiClientSettingsUpdate,
+	getExtraSettings,
 	updateClientGPTrackSetting,
 	updateBankSetting,
 	addToGPTaxBalance

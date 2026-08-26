@@ -1,5 +1,5 @@
-import { calcPercentOfNum, reduceNumByPercent } from '@oldschoolgg/toolkit';
-import { Bank, type Item, itemID, MAX_INT_JAVA, toKMB } from 'oldschooljs';
+import { calcPercentOfNum, ellipsize, reduceNumByPercent } from '@oldschoolgg/toolkit';
+import { Bank, type Item, type ItemBank, itemID, MAX_INT_JAVA, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import type { Prisma } from '@/prisma/main.js';
@@ -34,6 +34,37 @@ const specialSoldItems = new Map([
 	// Ecumenical Key - requires wildy hard diary
 	[itemID('Ecumenical key'), 61_500]
 ]);
+
+const MAX_BANK_CONFIRMATION_LENGTH = 1600;
+const DEFAULT_SELL_MAX_SIZE = 50;
+
+function totalQuantityInBank(bank: Bank): number {
+	return bank.items().reduce((sum, [, qty]) => sum + qty, 0);
+}
+
+function formatBankItemSummary(bank: Bank): string {
+	return `${bank.length.toLocaleString()} different items, ${totalQuantityInBank(bank).toLocaleString()} total quantity`;
+}
+
+function itemsExcludedFromSell(user: MUser): number[] {
+	const weightedItems = new Bank(user.user.bank_sort_weightings as ItemBank);
+	return [...user.user.favoriteItems, ...weightedItems.itemIDs];
+}
+
+function sellConfirmationMessage(user: MUser, bankToSell: Bank, totalValue: string): string {
+	const bankToSellStr = bankToSell.toString();
+	const itemSummary = formatBankItemSummary(bankToSell);
+	if (bankToSellStr.length <= MAX_BANK_CONFIRMATION_LENGTH) {
+		return `${user}, please confirm you want to sell ${bankToSellStr} (${itemSummary}) for **${totalValue}**.`;
+	}
+
+	return `${user}
+# ❗ **WARNING**
+**You are about to sell ${itemSummary}, for ${totalValue}, are you sure?**
+Use \`/sell preview:true\` to see the full list before selling.
+
+Selling: ${ellipsize(bankToSellStr, MAX_BANK_CONFIRMATION_LENGTH)}`;
+}
 
 export function sellPriceOfItem(item: Item, taxRate = 25): { price: number; basePrice: number } {
 	const cachePrice = CUSTOM_PRICE_CACHE.get(item.id);
@@ -80,19 +111,38 @@ export const sellCommand = defineCommand({
 			name: 'search',
 			description: 'A search query for items in your bank to sell.',
 			required: false
+		},
+		{
+			type: 'Boolean',
+			name: 'preview',
+			description: 'Preview the items being sold as a text file.',
+			required: false
+		},
+		{
+			type: 'Boolean',
+			name: 'all',
+			description: 'Sell all matching items with no max limit.',
+			required: false
 		}
 	],
 	run: async ({ user, options, interaction }) => {
 		const bankToSell = parseBank({
 			inputBank: user.bank,
 			inputStr: options.items,
-			maxSize: 70,
 			filters: [options.filter],
 			search: options.search,
-			excludeItems: user.user.favoriteItems,
+			excludeItems: itemsExcludedFromSell(user),
+			maxSize: options.all === true ? undefined : DEFAULT_SELL_MAX_SIZE,
 			noDuplicateItems: true
 		});
 		if (bankToSell.length === 0) return 'No items provided.';
+
+		if (options.preview === true) {
+			return {
+				content: 'Here is your selected bank in text file format.',
+				files: [{ name: 'bank.txt', buffer: Buffer.from(bankToSell.toString()) }]
+			};
+		}
 
 		if (bankToSell.has('mole claw') || bankToSell.has('mole skin')) {
 			const moleBank = new Bank();
@@ -263,11 +313,8 @@ export const sellCommand = defineCommand({
 			});
 		}
 
-		await interaction.confirmation(
-			`${user}, please confirm you want to sell ${bankToSell} for **${totalPrice.toLocaleString()}** (${toKMB(
-				totalPrice
-			)}).`
-		);
+		const totalValue = `${totalPrice.toLocaleString()}gp (${toKMB(totalPrice)})`;
+		await interaction.confirmation(sellConfirmationMessage(user, bankToSell, totalValue));
 
 		await user.sync();
 		if (!user.owns(bankToSell)) {
@@ -292,10 +339,10 @@ export const sellCommand = defineCommand({
 		]);
 
 		if (user.isIronman) {
-			return `Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(totalPrice)})**`;
+			return `Sold ${bankToSell} (${formatBankItemSummary(bankToSell)}) for **${totalPrice.toLocaleString()}gp (${toKMB(totalPrice)})**`;
 		}
 		return interaction.returnStringOrFile(
-			`Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(
+			`Sold ${bankToSell} (${formatBankItemSummary(bankToSell)}) for **${totalPrice.toLocaleString()}gp (${toKMB(
 				totalPrice
 			)})** (${taxRatePercent}% below market price). ${
 				hasSkipper

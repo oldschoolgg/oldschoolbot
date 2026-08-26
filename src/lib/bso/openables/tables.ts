@@ -81,6 +81,12 @@ export const FestivePresentTable = new LootTable()
 
 export const IndependenceBoxTable = new LootTable().add('Fireworks').add('Fireworks').add('Liber tea').add("Sam's hat");
 
+export const IndependenceDay2BoxTable = new LootTable()
+	.add('Sam')
+	.add('Alien green card')
+	.add('Stars and Stripeship')
+	.add('Liber-ray-tor');
+
 const spookyEpic = new LootTable().add('Spooky partyhat').add('Orange halloween mask');
 const spookyRare = new LootTable()
 	.add('Necronomicon')

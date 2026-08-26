@@ -3672,6 +3672,14 @@
 		}
 	},
 	{
+		"name": "Pestle and mortar",
+		"gp_cost": 10000,
+		"ironman_price": 128,
+		"output_items": {
+			"233": 1
+		}
+	},
+	{
 		"name": "Pet rock",
 		"gp_cost": 500000,
 		"qp_required": 60,
@@ -4015,6 +4023,13 @@
 			"70019": 1
 		},
 		"gp_cost": 1000000
+	},
+	{
+		"name": "Rake",
+		"gp_cost": 10,
+		"output_items": {
+			"5341": 1
+		}
 	},
 	{
 		"name": "Ram skull helm",
@@ -4484,6 +4499,13 @@
 		}
 	},
 	{
+		"name": "Saw",
+		"gp_cost": 13,
+		"output_items": {
+			"8794": 1
+		}
+	},
+	{
 		"name": "Sawmill voucher",
 		"item_cost": {
 			"28134": 150
@@ -4712,6 +4734,14 @@
 		"gp_cost": 20000,
 		"output_items": {
 			"7110": 1
+		}
+	},
+	{
+		"name": "Summer crate key (s9)",
+		"gp_cost": 55555555,
+		"ironman_price": 5555555,
+		"output_items": {
+			"73971": 1
 		}
 	},
 	{

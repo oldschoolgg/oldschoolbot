@@ -145,9 +145,9 @@ export const Root: React.FC = () => {
 	const [stageTimings, setStageTimings] = useState<Record<string, number>>({});
 	const [_tick, setTick] = useState(0);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies:-
 	useEffect(() => {
 		const interval = setInterval(() => setTick(t => t + 1), 500);
+		// biome-ignore lint/nursery/noFloatingPromises: Errors are handled
 		(async () => {
 			try {
 				for (let i = 0; i < stages.length; i++) {

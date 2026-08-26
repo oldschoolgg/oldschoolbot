@@ -1,4 +1,26 @@
-import { dateFm } from '@oldschoolgg/discord';
+import {
+	addToLotteryBank,
+	addToLotteryPrizePool,
+	getLotteryBank,
+	isLotteryActive,
+	LOTTERY_TICKET_ITEM
+} from '@/lib/bso/commands/lottery.js';
+import {
+	allLeagueTasks,
+	analyzeLeaguesCompletedTaskIDs,
+	cleanupDuplicateLeaguesClaims,
+	getRobochimpUsersWithDuplicateLeaguesTasks,
+	type LeaguesCompletedTaskAnalysis,
+	type LeaguesTaskAuditUserResult,
+	previewValidateStoredLeaguesTasks,
+	previewVerifyLeaguesTasksForUser,
+	summarizeDuplicateClaimCleanup,
+	validateStoredLeaguesTasks,
+	verifyLeaguesTasksForUser
+} from '@/lib/bso/leagues/leagues.js';
+import { getLydiaQuote } from '@/lib/bso/summerDays.js';
+
+import { dateFm, EmbedBuilder } from '@oldschoolgg/discord';
 import type { GearSetup } from '@oldschoolgg/gear';
 import {
 	calcPerHour,
@@ -9,15 +31,17 @@ import {
 	notEmpty,
 	sleep,
 	stringMatches,
+	sumArr,
 	Time,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
+import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { gracefulExit } from 'exit-hook';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import { economy_transaction_type } from '@/prisma/main/enums.js';
 import type { ClientStorage } from '@/prisma/main.js';
-import { bulkUpdateCommands, itemOption } from '@/discord/index.js';
+import { bulkUpdateCommands, choicesOf, itemOption } from '@/discord/index.js';
 import {
 	bitfieldCanUserManipulate,
 	changeBitFieldForUser,
@@ -25,12 +49,18 @@ import {
 	listBitFields
 } from '@/lib/bitFieldUtils.js';
 import { BadgesEnum, BitField, BitFieldData, badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
+import { customItems } from '@/lib/customItems/util.js';
+import { allDcSet } from '@/lib/data/Collections.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { syncCustomPrices } from '@/lib/preStartup.js';
 import { countUsersWithItemInCl } from '@/lib/rawSql.js';
+import { type StaffGrants, ZStaffGrants } from '@/lib/settings/misc.js';
 import { sorts } from '@/lib/sorts.js';
+import { runStaffBestowReplenishment, type StaffBestowPeriod } from '@/lib/staffBestow.js';
+import { dmCyrAudit, makeArgAuditFiles, sendCyrCriticalBotLog } from '@/lib/util/cyrAudit.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
+import { safeMessage } from '@/lib/util/smallUtils.js';
 import { makeGiveawayButtons } from '@/mahoji/commands/giveaway.js';
 
 export const gifs = [
@@ -38,6 +68,388 @@ export const gifs = [
 	'https://gfycat.com/serenegleamingfruitbat',
 	'https://tenor.com/view/monkey-monito-mask-gif-23036908'
 ];
+
+const leaguesTaskNameByID = new Map(allLeagueTasks.map(task => [task.id, task.name] as const));
+const adminGiveItemDestinations = ['Lottery Bank'] as const;
+
+function formatLeaguesTaskList(taskIDs: number[]) {
+	if (taskIDs.length === 0) return 'None';
+
+	const taskCounts = new Map<number, number>();
+	const taskOrder: number[] = [];
+	for (const taskID of taskIDs) {
+		if (!taskCounts.has(taskID)) taskOrder.push(taskID);
+		taskCounts.set(taskID, (taskCounts.get(taskID) ?? 0) + 1);
+	}
+
+	return taskOrder
+		.map(taskID => {
+			const taskName = leaguesTaskNameByID.get(taskID) ?? `Unknown task ${taskID}`;
+			const count = taskCounts.get(taskID)!;
+			return count === 1 ? `- ${taskName}` : `- ${taskName} **x${count}**`;
+		})
+		.join('\n');
+}
+
+function formatLeaguesPointSnapshot(points: { osb: number; bso: number; total: number }) {
+	return `OSB ${points.osb.toLocaleString()}, BSO ${points.bso.toLocaleString()}, Total ${points.total.toLocaleString()}`;
+}
+
+function buildLeaguesTaskAuditBody(audit: LeaguesTaskAuditUserResult) {
+	const lines = [
+		`**User**: <@${audit.userID}> ${audit.userID}`,
+		`**Tasks before**: ${audit.beforeTaskCount.toLocaleString()}`,
+		`**Tasks after**: ${audit.afterTaskCount.toLocaleString()}`,
+		`**Removed tasks**:\n${formatLeaguesTaskList(audit.removedTaskIDs)}`,
+		`**Current points**: ${formatLeaguesPointSnapshot(audit.beforePoints)}`,
+		`**New points**: ${formatLeaguesPointSnapshot(audit.afterPoints)}`,
+		`**Balance delta**: ${audit.pointDelta >= 0 ? '+' : ''}${audit.pointDelta.toLocaleString()}`
+	];
+
+	if (audit.removedUnknownTaskIDs.length > 0) {
+		lines.push(`Unknown removed task IDs: ${audit.removedUnknownTaskIDs.join(', ')}`);
+	}
+
+	return lines.join('\n');
+}
+
+function buildLeaguesTaskAuditOverview(label: string, audit: LeaguesTaskAuditUserResult) {
+	return `${label}: ${audit.beforeTaskCount.toLocaleString()} -> ${audit.afterTaskCount.toLocaleString()} tasks | ${formatLeaguesPointSnapshot(audit.beforePoints)} -> ${formatLeaguesPointSnapshot(audit.afterPoints)}`;
+}
+
+function buildLeaguesTaskAuditBatchBody(audits: LeaguesTaskAuditUserResult[]) {
+	return audits.map(buildLeaguesTaskAuditBody).join('\n\n');
+}
+
+function sanitizeTSVCell(value: string | number) {
+	return value.toString().replaceAll('\t', ' ').replaceAll('\n', ' ').replaceAll('\r', ' ');
+}
+
+function sanitizeCSVCell(value: string | number | bigint) {
+	const str = value.toString();
+	if (!/[",\n\r]/.test(str)) return str;
+	return `"${str.replaceAll('"', '""')}"`;
+}
+
+function toBigInt(value: string | number | bigint) {
+	return typeof value === 'bigint' ? value : BigInt(value);
+}
+
+async function fetchUsernames(userIDs: string[]) {
+	const users = await prisma.user.findMany({
+		where: {
+			id: {
+				in: userIDs
+			}
+		},
+		select: {
+			id: true,
+			username: true
+		}
+	});
+
+	return new Map(users.map(user => [user.id, user.username ?? 'Unknown']));
+}
+
+interface AdminRunnableCommandArg {
+	name: string;
+	description: string;
+	required?: boolean;
+}
+
+interface AdminRunnableCommand {
+	name: string;
+	description: string;
+	args: AdminRunnableCommandArg[];
+	run: (options: { arg1?: string; arg2?: string; adminUser: MUser; rng: RNGProvider }) => Promise<SendableMessage>;
+}
+
+async function findUsersWithLotteryTickets() {
+	return prisma.$queryRawUnsafe<{ id: string; quantity: string | number | bigint }[]>(`
+SELECT id, (bank->>'${LOTTERY_TICKET_ITEM.id}')::bigint AS quantity
+FROM users
+WHERE COALESCE((bank->>'${LOTTERY_TICKET_ITEM.id}')::bigint, 0) > 0
+ORDER BY quantity DESC, id ASC;`);
+}
+
+function formatAdminRunnableCommand(command: AdminRunnableCommand) {
+	const args =
+		command.args.length === 0
+			? 'No arguments.'
+			: command.args
+					.map(arg => `- ${arg.name}${arg.required ? ' (required)' : ' (optional)'}: ${arg.description}`)
+					.join('\n');
+
+	return `**${command.name}**
+${command.description}
+
+Args:
+${args}
+
+Set \`exec: true\` to execute this command.`;
+}
+
+function findDiscontinuedStaffBestowItems(schedule: StaffGrants) {
+	const found = new Map<number, string[]>();
+
+	for (const [period, sources] of Object.entries(schedule)) {
+		if (!sources) continue;
+		for (const [source, limits] of Object.entries(sources)) {
+			for (const itemID of Object.keys(limits)) {
+				const id = Number(itemID);
+				if (!allDcSet.has(id) || !customItems.includes(id)) continue;
+				const item = Items.getItem(id);
+				const itemName = item ? `${item.name} (${id})` : itemID;
+				const locations = found.get(id) ?? [];
+				locations.push(`${period}.${source}: ${itemName}`);
+				found.set(id, locations);
+			}
+		}
+	}
+
+	return [...found.values()].flat();
+}
+
+const adminRunnableCommands: AdminRunnableCommand[] = [
+	{
+		name: 'show_bestow_bank',
+		args: [
+			{
+				name: 'userId',
+				description: 'The user in Discord ID format',
+				required: true
+			}
+		],
+		description: `Shows a user's bestow bank.`,
+		run: async ({ arg1, adminUser, rng }) => {
+			arg1 = arg1 ?? adminUser.id;
+			if (!isValidDiscordSnowflake(arg1)) {
+				return 'Not a valid User ID';
+			}
+			if (!adminUser.isAdmin && !adminUser.isGameHacker) {
+				return rng.pick(gifs);
+			}
+			const user = await mUserFetch(arg1);
+			if (!user.isMod && !user.isContributor && !user.isWikiContrib) {
+				return `That player can't bestow items on anyone`;
+			}
+
+			return {
+				files: [
+					await makeBankImage({
+						bank: new Bank((user.user.rp_bestow_bank ?? {}) as ItemBank),
+						title: `${user.username}'s Bestow Bank`
+					})
+				]
+			};
+		}
+	},
+	{
+		name: 'trigger_bestow_cycle',
+		description: 'Triggers one of the staff bestow replenishment cycles.',
+		args: [
+			{
+				name: 'cycle',
+				description: 'The cycle to trigger; one of "hourly", "daily", "weekly", "monthly"".',
+				required: true
+			}
+		],
+		run: async ({ arg1, adminUser }) => {
+			if (!arg1) return "Missing cycle - If you don't know how, you shouldn't be using this!";
+			if (!['hourly', 'daily', 'weekly', 'monthly'].includes(arg1))
+				return 'Invalid cycle; must be one of "hourly", "daily", "weekly", "monthly"!';
+			const period = arg1 as StaffBestowPeriod;
+			const files = makeArgAuditFiles({ name: 'cycle', data: arg1 });
+			const body = `${adminUser.logName} ran /admin run trigger_bestow_cycle with exec: true for cycle ${period}.`;
+			await Promise.all([
+				dmCyrAudit(`# **Staff Bestow Cycle Triggered**\n${body}`, files),
+				sendCyrCriticalBotLog('Staff Bestow Cycle Triggered', body, files)
+			]);
+			await runStaffBestowReplenishment([period]);
+			return `Triggered staff bestow replenishment cycle: ${period}`;
+		}
+	},
+	{
+		name: 'set_bestow_limits',
+		description: 'Validate and set the Staff Best Schedule, then refresh the staff bestow schedule cache.',
+		args: [
+			{
+				name: 'bestow_replenish_limits',
+				description: 'JSON string for the full staff_bestow_limits config.',
+				required: true
+			}
+		],
+		run: async ({ arg1, adminUser }) => {
+			if (!arg1) return "Missing bestow_replenish_limits - If you don't know how, you shouldn't be using this!";
+			let parsedInput: unknown;
+			try {
+				parsedInput = JSON.parse(arg1);
+			} catch (err) {
+				return `Failed to parse bestow limits JSON: ${(err as Error).message}`;
+			}
+
+			let StaffGrantsSchedule: StaffGrants;
+			try {
+				StaffGrantsSchedule = ZStaffGrants.parse(parsedInput);
+			} catch (err) {
+				return `Invalid bestow replenish limits: ${(err as Error).message}`;
+			}
+
+			const discontinuedItemsFound = findDiscontinuedStaffBestowItems(StaffGrantsSchedule);
+			if (discontinuedItemsFound.length > 0) {
+				const files = makeArgAuditFiles({
+					name: 'bestow_replenish_limits',
+					data: arg1
+				});
+				const body = `${adminUser.logName} attempted to set staff bestow limits containing discontinued items.\n${discontinuedItemsFound.join('\n')}`;
+				await Promise.all([
+					dmCyrAudit(`# **Discontinued Item Attempt**\n${body}`, files),
+					sendCyrCriticalBotLog('Discontinued Item Attempt', body, files)
+				]);
+				return 'Discontinued items may not be used here. This event has been logged.';
+			}
+
+			await prisma.$executeRaw`
+				UPDATE "clientStorage"
+				SET staff_bestow_limits = ${JSON.stringify(StaffGrantsSchedule)}::jsonb
+				WHERE id = ${globalConfig.clientID}
+			`;
+			await Cache.refreshStaffGrants();
+			await dmCyrAudit(
+				`${adminUser.logName} ran /admin run set_bestow_limits and updated the staff bestow limits.`,
+				makeArgAuditFiles({ name: 'new_limits', data: arg1 })
+			);
+
+			return safeMessage(
+				`Updated staff bestow limits and refreshed the cache.\n${JSON.stringify(StaffGrantsSchedule, null, 4)}`,
+				'staff-bestow-limits.json'
+			);
+		}
+	},
+	{
+		name: 'remove_lotto_tickets',
+		description:
+			'Find every user with Bank lottery tickets in users.bank, DM Cyr a CSV report, and remove those tickets.',
+		args: [],
+		run: async () => {
+			const usersWithTickets = await findUsersWithLotteryTickets();
+			const usernames = await fetchUsernames(usersWithTickets.map(user => user.id));
+			const csv = [
+				'user_id,username,quantity',
+				...usersWithTickets.map(user =>
+					[user.id, usernames.get(user.id) ?? 'Unknown', user.quantity].map(sanitizeCSVCell).join(',')
+				)
+			].join('\n');
+			const file = {
+				name: `lottery-ticket-cleanup-${Date.now()}.csv`,
+				buffer: Buffer.from(csv)
+			};
+			const totalTicketsFound = usersWithTickets.reduce((sum, user) => sum + toBigInt(user.quantity), 0n);
+
+			await sendCyrCriticalBotLog(
+				'Lottery ticket cleanup report',
+				`Found ${totalTicketsFound.toLocaleString()}x ${LOTTERY_TICKET_ITEM.name} in ${usersWithTickets.length.toLocaleString()} users.bank records. Cleanup is being executed now.`,
+				[file]
+			);
+
+			let removedUsers = 0;
+			let removedTickets = 0;
+			for (const row of usersWithTickets) {
+				const user = await mUserFetch(row.id);
+				const quantity = user.bank.amount(LOTTERY_TICKET_ITEM.id);
+				if (quantity < 1) continue;
+				await user.transactItems({
+					itemsToRemove: new Bank().add(LOTTERY_TICKET_ITEM.id, quantity),
+					filterLoot: false,
+					neverUpdateHistory: true
+				});
+				removedUsers++;
+				removedTickets += quantity;
+			}
+
+			return {
+				content: `Removed ${removedTickets.toLocaleString()}x ${LOTTERY_TICKET_ITEM.name} from ${removedUsers.toLocaleString()} users. CSV report sent to Cyr.`,
+				files: [file]
+			};
+		}
+	},
+	{
+		name: 'activate_lottery',
+		description: 'Set lottery_is_active to true.',
+		args: [],
+		run: async () => {
+			await ClientSettings.update({ lottery_is_active: true });
+			return 'Activated the lottery.';
+		}
+	},
+	{
+		name: 'deactivate_lottery',
+		description: 'Set lottery_is_active to false.',
+		args: [],
+		run: async () => {
+			await ClientSettings.update({ lottery_is_active: false });
+			return 'Deactivated the lottery.';
+		}
+	},
+	{
+		name: 'show_lottery',
+		description: 'Show the current lottery bank, active state, and outstanding lottery ticket count.',
+		args: [],
+		run: async () => {
+			const [active, lotteryBank] = await Promise.all([isLotteryActive(), getLotteryBank()]);
+			return {
+				content: `Lottery is ${active ? 'active' : 'inactive'}.
+Outstanding tickets: ${lotteryBank.totalTickets.toLocaleString()}
+Ticket holders: ${lotteryBank.users.length.toLocaleString()}
+Prize bank: ${lotteryBank.totalLoot.length === 0 ? 'Empty' : lotteryBank.totalLoot.toString()}`,
+				files: [await makeBankImage({ bank: lotteryBank.totalLoot, title: 'Lottery Bank' })]
+			};
+		}
+	}
+];
+
+async function buildCleanupDuplicatesTSV(
+	users: {
+		userID: string;
+		duplicateTaskIDsToRemove: number[];
+		pointsToRemove: number;
+		beforePoints: { total: number; osb: number; bso: number };
+	}[]
+) {
+	const usernames = await fetchUsernames(users.map(user => user.userID));
+	return [
+		'userID\tusername\tduplicateTasksIDs\tpointsToRemove\tcurrentTotal\tcurrentOsb\tcurrentBSO',
+		...users.map(user =>
+			[
+				sanitizeTSVCell(user.userID),
+				sanitizeTSVCell(usernames.get(user.userID) ?? 'Unknown'),
+				sanitizeTSVCell(user.duplicateTaskIDsToRemove.join(',')),
+				sanitizeTSVCell(user.pointsToRemove),
+				sanitizeTSVCell(user.beforePoints.total),
+				sanitizeTSVCell(user.beforePoints.osb),
+				sanitizeTSVCell(user.beforePoints.bso)
+			].join('\t')
+		)
+	].join('\n');
+}
+
+async function buildValidateTasksTSV(users: LeaguesTaskAuditUserResult[]) {
+	const usernames = await fetchUsernames(users.map(user => user.userID));
+	return [
+		'userID\tusername\tduplicateTasksIDs\tpointsToRemove\tcurrentTotal\tcurrentOsb\tcurrentBSO',
+		...users.map(user =>
+			[
+				sanitizeTSVCell(user.userID),
+				sanitizeTSVCell(usernames.get(user.userID) ?? 'Unknown'),
+				sanitizeTSVCell(user.removedTaskIDs.join(',')),
+				sanitizeTSVCell(user.beforePoints.total - user.afterPoints.total),
+				sanitizeTSVCell(user.beforePoints.total),
+				sanitizeTSVCell(user.beforePoints.osb),
+				sanitizeTSVCell(user.beforePoints.bso)
+			].join('\t')
+		)
+	].join('\n');
+}
 
 async function allEquippedPets() {
 	const pets = await prisma.$queryRawUnsafe<
@@ -88,10 +500,58 @@ async function getAllTradedItems(giveUniques = false) {
 	return total;
 }
 
-const viewableThings: {
+interface ViewableThing {
 	name: string;
-	run: (clientSettings: ClientStorage) => Promise<Bank | SendableMessage>;
-}[] = [
+	choices?: string[];
+	run: (clientSettings: ClientStorage, _choice?: String, user?: MUser) => Promise<Bank | SendableMessage>;
+}
+const viewableThings: ViewableThing[] = [
+	{
+		name: 'Lydia Quote',
+		run: async () => {
+			return {
+				content: `You observe Patricia's transformation...`,
+				embeds: [
+					new EmbedBuilder()
+						.setDescription(getLydiaQuote())
+						.setImage(
+							'https://media.discordapp.net/attachments/851273567416483861/1516534890911240242/image.png'
+						)
+				]
+			};
+		}
+	},
+	{
+		name: 'Buried Treasure Bank',
+		run: async clientSettings => {
+			return {
+				files: [
+					await makeBankImage({
+						bank: new Bank(clientSettings.buried_treasure_bank as ItemBank),
+						title: 'Buried Treasure Bank'
+					})
+				]
+			};
+		}
+	},
+	{
+		name: 'Buried Treasure Winners',
+		choices: ['private'],
+		run: async (clientSettings, choice) => {
+			const privateUsers = choice === 'private';
+			const winners = clientSettings.buried_treasure_winners as Record<string, ItemBank>;
+			const lines = Object.entries(winners).map(
+				([winnerId, treasureWon]) =>
+					`${privateUsers ? '\\@secret' : `<@${winnerId}>`}: ${new Bank(treasureWon).toString()}`
+			);
+
+			return safeMessage(
+				`**Buried Treasure Winners**\n${lines.length === 0 ? 'No buried treasure winners yet.' : lines.join('\n')}`,
+				'buried-treasure-winners.txt',
+				privateUsers
+			);
+		}
+	},
 	{
 		name: 'ToB Cost',
 		run: async clientSettings => {
@@ -212,11 +672,11 @@ WHERE blowpipe iS NOT NULL and (blowpipe->>'dartQuantity')::int != 0;`),
 		name: 'Most Active',
 		run: async () => {
 			const res = await prisma.$queryRawUnsafe<{ num: number; username: string }[]>(`
-SELECT sum(duration)::int as num, "new_user"."username", user_id
+SELECT sum(duration)::int as num, "users"."username", user_id
 FROM activity
-INNER JOIN "new_users" "new_user" on "new_user"."id" = "activity"."user_id"::text
+INNER JOIN "users" on "users"."id" = "activity"."user_id"::text
 WHERE start_date > now() - interval '2 days'
-GROUP BY user_id, "new_user"."username"
+GROUP BY user_id, "users"."username"
 ORDER BY num DESC
 LIMIT 10;
 `);
@@ -541,9 +1001,9 @@ export const adminCommand = defineCommand({
 					autocomplete: async ({ value, user }: StringAutoComplete) => {
 						return Object.entries(BitFieldData)
 							.filter(bf => {
-								if (bf[1].protected && !user.isAdmin()) return false;
+								if (bf[1].protected && !user.isAdmin) return false;
 								if (!value) return true;
-								return stringMatches(bf[1].name, value);
+								return cleanString(bf[1].name).includes(cleanString(value));
 							})
 							.map(i => ({ name: i[1].name, value: i[0] }));
 					}
@@ -584,7 +1044,58 @@ export const adminCommand = defineCommand({
 					name: 'thing',
 					description: 'The thing',
 					required: true,
-					choices: viewableThings.map(i => ({ name: i.name, value: i.name }))
+					autocomplete: async ({ value }: StringAutoComplete) => {
+						return viewableThings
+							.filter(thing => (!value ? true : thing.name.toLowerCase().includes(value.toLowerCase())))
+							.slice(0, 25)
+							.map(thing => ({ name: thing.name, value: thing.name }));
+					}
+				},
+				{
+					type: 'String',
+					name: 'choices',
+					description: 'The choices',
+					required: false,
+					choices: viewableThings.filter(thing => thing.choices).flatMap(thing => choicesOf(thing.choices!))
+				}
+			]
+		},
+		{
+			type: 'Subcommand',
+			name: 'run',
+			description: 'Run a defined admin command.',
+			options: [
+				{
+					type: 'String',
+					name: 'command',
+					description: 'The command to run',
+					required: true,
+					autocomplete: async ({ value }: StringAutoComplete) => {
+						return adminRunnableCommands
+							.filter(command =>
+								!value ? true : command.name.toLowerCase().includes(value.toLowerCase())
+							)
+							.slice(0, 25)
+							.map(command => ({ name: command.name, value: command.name }));
+					}
+				},
+				{
+					type: 'String',
+					name: 'arg1',
+					description: 'First string argument',
+					required: false
+				},
+				{
+					type: 'String',
+					name: 'arg2',
+					description: 'Second string argument',
+					required: false
+				},
+				{
+					type: 'Boolean',
+					name: 'exec',
+					description: 'Execute the command. If false, shows command metadata.',
+					required: false
 				}
 			]
 		},
@@ -594,21 +1105,95 @@ export const adminCommand = defineCommand({
 			description: 'Spawn items for a user',
 			options: [
 				{
-					type: 'User',
-					name: 'user',
-					description: 'The user',
-					required: true
-				},
-				{
 					type: 'String',
 					name: 'items',
 					description: 'The items to give',
 					required: true
 				},
 				{
+					type: 'User',
+					name: 'user',
+					description: 'The user',
+					required: false
+				},
+				{
+					type: 'String',
+					name: 'destination',
+					description: 'Where to send the items',
+					required: false,
+					choices: choicesOf(adminGiveItemDestinations)
+				},
+				{
 					type: 'String',
 					name: 'reason',
 					description: 'The reason'
+				}
+			]
+		},
+		{
+			type: 'Subcommand',
+			name: 'bury_in_sand',
+			description: 'Add items to the buried treasure bank',
+			options: [
+				{
+					type: 'String',
+					name: 'items',
+					description: 'The items to bury',
+					required: true
+				},
+				{
+					type: 'Boolean',
+					name: 'spawn',
+					description: "If true, don't remove the items from your bank first"
+				}
+			]
+		},
+		{
+			type: 'SubcommandGroup',
+			name: 'leagues',
+			description: 'Leagues RoboChimp repair and verification commands.',
+			options: [
+				{
+					type: 'Subcommand',
+					name: 'cleanup_duplicates',
+					description: 'Remove duplicate leagues task claims and repair RoboChimp leagues points.',
+					options: [
+						{
+							type: 'Boolean',
+							name: 'full',
+							description: 'Return a tab-separated dataset of all affected users.'
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'validate_tasks',
+					description: 'Remove stored leagues task IDs that no longer exist and repair leagues points.',
+					options: [
+						{
+							type: 'Boolean',
+							name: 'full',
+							description: 'Return a tab-separated dataset of all affected users.'
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'verify_tasks',
+					description: 'Verify a users stored leagues tasks against their real current task completion.',
+					options: [
+						{
+							type: 'User',
+							name: 'user',
+							description: 'The user to verify.',
+							required: true
+						},
+						{
+							type: 'Boolean',
+							name: 'confirm',
+							description: 'Confirm the target user and apply the verified leagues changes.'
+						}
+					]
 				}
 			]
 		},
@@ -622,8 +1207,9 @@ export const adminCommand = defineCommand({
 		await interaction.defer();
 
 		const adminUser = await mUserFetch(userId);
-		const isAdmin = adminUser.isAdmin();
-		const isMod = isAdmin || adminUser.isMod();
+		const isAdmin = adminUser.isAdmin;
+		const isMod = isAdmin || adminUser.isMod;
+		const isGameHacker = isAdmin || (adminUser.isMod && adminUser.isGameHacker);
 		if (!guildId || !isMod || (globalConfig.isProduction && guildId.toString() !== globalConfig.supportServerID)) {
 			return rng.pick(gifs);
 		}
@@ -744,13 +1330,18 @@ export const adminCommand = defineCommand({
 			const user = await mUserFetch(options.bitfield.user.user.id);
 			const bit = getBitFieldData(bitInput);
 			const action: 'add' | 'remove' = bitOpts.add ? 'add' : 'remove';
-			if (!bit) return listBitFields(adminUser);
+			if (!bit)
+				return {
+					content: 'List of Bitfields',
+					embeds: [new EmbedBuilder().setDescription(listBitFields(adminUser))]
+				};
 			const canManipulate = bitfieldCanUserManipulate({ user: adminUser, bit, target: user });
 			if (canManipulate !== true) return canManipulate;
 			return changeBitFieldForUser(user, bit.bit, action);
 		}
 
 		if (options.shut_down) {
+			await ClientSettings.update({ shutdown: false });
 			globalClient.isShuttingDown = true;
 			const timer = Time.Second * 30;
 			await interaction.reply({
@@ -764,8 +1355,62 @@ export const adminCommand = defineCommand({
 ${META_CONSTANTS.RENDERED_STR}`
 				})
 				.catch(noOp);
-			await gracefulExit(0);
+			gracefulExit(0);
 			return 'Turning off...';
+		}
+
+		if (options.give_items) {
+			if (!isGameHacker) {
+				return rng.pick(gifs);
+			}
+			if (globalConfig.isProduction && interaction.channelId !== Channel.CyrCommandsChannel) {
+				return `You can only use this command in <#${Channel.CyrCommandsChannel}>.`;
+			}
+			const items = parseBank({ inputStr: options.give_items.items, noDuplicateItems: true });
+			if (items.length === 0) return 'No items were given.';
+			const itemErrors = items.validate();
+			if (itemErrors.length > 0) return `Invalid items: ${itemErrors.join(', ')}`;
+
+			const destination = options.give_items.destination;
+			const targetUser = options.give_items.user ? await mUserFetch(options.give_items.user.user.id) : null;
+
+			if (!destination) {
+				if (!targetUser) return 'You need to specify a user or a destination.';
+				await interaction.confirmation(
+					`Are you sure you want to give ${items} to ${targetUser.usernameOrMention}?`
+				);
+				const auditMessage = {
+					content: `${adminUser.logName} sent \`${items}\` to ${targetUser.logName} for ${
+						options.give_items.reason ?? 'No reason'
+					}`
+				};
+				await globalClient.sendMessage(Channel.BotLogs, auditMessage);
+				await dmCyrAudit(auditMessage.content);
+
+				await targetUser.addItemsToBank({ items, collectionLog: false });
+				return `Gave ${items} to ${targetUser.mention}`;
+			}
+
+			if (destination !== 'Lottery Bank') return 'Invalid destination.';
+
+			const targetDescription = targetUser
+				? `${targetUser.usernameOrMention}'s lottery input`
+				: 'the lottery bank';
+			await interaction.confirmation(`Are you sure you want to add ${items} to ${targetDescription}?`);
+			const auditMessage = {
+				content: `${adminUser.logName} sent \`${items}\` to ${targetUser?.logName ?? 'the lottery bank'} for ${
+					options.give_items.reason ?? 'No reason'
+				}`
+			};
+			await globalClient.sendMessage(Channel.BotLogs, auditMessage);
+			await dmCyrAudit(auditMessage.content);
+
+			if (targetUser) {
+				await addToLotteryBank(targetUser, items);
+			} else {
+				await addToLotteryPrizePool(items);
+			}
+			return `Added ${items} to ${targetDescription}.`;
 		}
 
 		/**
@@ -773,7 +1418,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 		 * Admin Only Commands
 		 *
 		 */
-		if (!isAdmin) {
+		if (!isGameHacker) {
 			return rng.pick(gifs);
 		}
 
@@ -785,8 +1430,15 @@ ${META_CONSTANTS.RENDERED_STR}`
 		if (options.view) {
 			const thing = viewableThings.find(i => i.name === options.view?.thing);
 			if (!thing) return 'Invalid';
+			if (!isAdmin) {
+				await dmCyrAudit(
+					`${adminUser.logName} ran /admin view ${thing.name} in channel ${interaction.channelId}. Choices: ${
+						options.view.choices ?? 'None'
+					}.`
+				);
+			}
 			const clientSettings = await ClientSettings.fetch();
-			const res = await thing.run(clientSettings);
+			const res = await thing.run(clientSettings, options.view.choices, adminUser);
 			if (!(res instanceof Bank)) return res;
 			return new MessageBuilder().addBankImage({
 				bank: res,
@@ -795,18 +1447,174 @@ ${META_CONSTANTS.RENDERED_STR}`
 			});
 		}
 
-		if (options.give_items) {
-			const items = parseBank({ inputStr: options.give_items.items, noDuplicateItems: true });
-			const user = await mUserFetch(options.give_items.user.user.id);
-			await interaction.confirmation(`Are you sure you want to give ${items} to ${user.usernameOrMention}?`);
-			await globalClient.sendMessage(Channel.BotLogs, {
-				content: `${adminUser.logName} sent \`${items}\` to ${user.logName} for ${
-					options.give_items.reason ?? 'No reason'
-				}`
+		if (options.run) {
+			const runnableCommand = adminRunnableCommands.find(command => command.name === options.run?.command);
+			if (!runnableCommand) return 'Invalid command.';
+			const argFiles = makeArgAuditFiles(options.run.arg1, options.run.arg2);
+			if (!isAdmin) {
+				await dmCyrAudit(
+					`${adminUser.logName} ran /admin run ${runnableCommand.name} in channel ${interaction.channelId}. Exec: ${Boolean(
+						options.run.exec
+					)}.`,
+					argFiles
+				);
+			}
+			if (!options.run.exec) {
+				return formatAdminRunnableCommand(runnableCommand);
+			}
+			return runnableCommand.run({
+				arg1: options.run.arg1,
+				arg2: options.run.arg2,
+				adminUser,
+				rng
+			});
+		}
+		if (!isAdmin) {
+			return rng.pick(gifs);
+		}
+
+		if (options.bury_in_sand) {
+			const itemsToBury = parseBank({ inputStr: options.bury_in_sand.items, noDuplicateItems: true });
+			const shouldSpawn = Boolean(options.bury_in_sand.spawn);
+			await interaction.confirmation(`Are you sure you want to bury ${itemsToBury} in the sand?`);
+
+			if (!shouldSpawn) {
+				await adminUser.removeItemsFromBank(itemsToBury);
+			}
+
+			const settings = await ClientSettings.fetch({ buried_treasure_bank: true });
+			const updatedBuriedTreasureBank = new Bank(settings.buried_treasure_bank as ItemBank).add(itemsToBury);
+			await ClientSettings.update({
+				buried_treasure_bank: updatedBuriedTreasureBank.toJSON()
 			});
 
-			await user.addItemsToBank({ items, collectionLog: false });
-			return `Gave ${items} to ${user.mention}`;
+			return {
+				content: `Buried ${itemsToBury} in the sand.`,
+				files: [
+					await makeBankImage({
+						bank: updatedBuriedTreasureBank,
+						title: 'Buried Treasure Bank'
+					})
+				]
+			};
+		}
+
+		if (options.leagues?.cleanup_duplicates) {
+			const fullOutput = Boolean(options.leagues.cleanup_duplicates.full);
+			const usersToChange = await getRobochimpUsersWithDuplicateLeaguesTasks();
+			const userChanges = usersToChange.map(u => {
+				return {
+					userId: u.id.toString(),
+					...analyzeLeaguesCompletedTaskIDs(u.leagues_completed_tasks_ids)
+				} as LeaguesCompletedTaskAnalysis;
+			});
+			const preview = summarizeDuplicateClaimCleanup(userChanges);
+			if (preview.affectedUsers === 0) {
+				return 'No duplicate leagues task claims were found in RoboChimp.';
+			}
+
+			let confirmationMessage = `This will clean ${preview.affectedUsers.toLocaleString()} RoboChimp users, remove ${preview.duplicateEntriesRemoved.toLocaleString()} duplicate task entries, and deduct ${preview.pointsToRemove.toLocaleString()} from OSB balances, ${preview.pointsToRemove.toLocaleString()} from BSO balances, and ${preview.pointsToRemove.toLocaleString()} from total leagues points.`;
+			if (preview.unknownDuplicateTaskIDs.length > 0) {
+				confirmationMessage += ` Unknown duplicate task IDs with no point mapping: ${preview.unknownDuplicateTaskIDs.join(', ')}.`;
+			}
+			let fullData = '';
+			if (fullOutput) {
+				fullData = userChanges
+					.map(
+						u =>
+							`${u.userId ? `<@${u.userId}>` : 'unknown'}: ${u.duplicateEntriesRemoved} duplicate entries, ${u.pointsToRemove} points removed`
+					)
+					.join('\n');
+			}
+			if (fullData.length + confirmationMessage.length < 1950) confirmationMessage += `\n\n${fullData}`;
+
+			await interaction.confirmation(confirmationMessage);
+
+			const result = await cleanupDuplicateLeaguesClaims();
+			if (result.affectedUsers === 0) {
+				return 'No duplicate leagues task claims were found in RoboChimp.';
+			}
+
+			let overview = `Leagues duplicate cleanup: ${result.affectedUsers.toLocaleString()} users | ${result.duplicateEntriesRemoved.toLocaleString()} duplicate entries removed | -${result.pointsToRemove.toLocaleString()} from OSB/BSO/Total`;
+			if (result.unknownDuplicateTaskIDs.length > 0) {
+				overview += ` | Unknown IDs: ${result.unknownDuplicateTaskIDs.join(', ')}`;
+			}
+			return safeMessage(
+				`${overview}\n${fullOutput ? await buildCleanupDuplicatesTSV(result.users) : result.report}`,
+				'leagues-duplicate-cleanup.txt'
+			);
+		}
+
+		if (options.leagues?.validate_tasks) {
+			const fullOutput = Boolean(options.leagues.validate_tasks.full);
+			const preview = await previewValidateStoredLeaguesTasks();
+			if (preview.length === 0) {
+				return 'No users need leagues task validation.';
+			}
+
+			const totalRemovedTasks = sumArr(preview.map(user => user.removedTaskIDs.length));
+			const totalPointDelta = sumArr(preview.map(user => user.pointDelta));
+			let confirmationMsg = `This will validate ${preview.length.toLocaleString()} RoboChimp users, remove ${totalRemovedTasks.toLocaleString()} stored tasks that no longer exist, and apply a ${totalPointDelta >= 0 ? '+' : ''}${totalPointDelta.toLocaleString()} total balance delta across OSB/BSO leagues balances.`;
+			let rowData = '';
+			if (fullOutput) {
+				rowData = preview
+					.map(user => {
+						const removedTasks = user.removedTaskIDs.join(',');
+						const pointDelta = user.pointDelta;
+						return `<@${user.userID}>\t${removedTasks ? removedTasks : '-'}\t${pointDelta}`;
+					})
+					.join('\n');
+				if (rowData.length + confirmationMsg.length < 1950) {
+					confirmationMsg += `\n\nuser\tremovedTasks\tpointDelta\n${rowData}`;
+				}
+			}
+
+			await interaction.confirmation(confirmationMsg);
+
+			const result = await validateStoredLeaguesTasks();
+			if (result.length === 0) {
+				return 'No users need leagues task validation.';
+			}
+
+			const totalRemoved = sumArr(result.map(user => user.removedTaskIDs.length));
+			const totalDelta = sumArr(result.map(user => user.pointDelta));
+			const overview = `Leagues task validation: ${result.length.toLocaleString()} users | ${totalRemoved.toLocaleString()} removed tasks | ${totalDelta >= 0 ? '+' : ''}${totalDelta.toLocaleString()} balance delta`;
+			return safeMessage(
+				`${overview}\n${fullOutput ? await buildValidateTasksTSV(result) : buildLeaguesTaskAuditBatchBody(result)}`,
+				'leagues-task-validation.txt'
+			);
+		}
+
+		if (options.leagues?.verify_tasks) {
+			const targetUserID = options.leagues.verify_tasks.user.user.id;
+			const shouldConfirmAndApply = Boolean(options.leagues.verify_tasks.confirm);
+			const preview = await previewVerifyLeaguesTasksForUser(targetUserID);
+			const overview = buildLeaguesTaskAuditOverview(`Leagues Task Verification for <@${targetUserID}>`, preview);
+			const body = buildLeaguesTaskAuditBody(preview);
+
+			if (!shouldConfirmAndApply) {
+				return safeMessage(`${overview}\n${body}`, `leagues-verify-${targetUserID}.txt`);
+			}
+
+			await interaction.confirmation({
+				content: `Confirm leagues verification target: <@${targetUserID}> (${targetUserID})`,
+				ephemeral: true
+			});
+
+			if (!preview.changed) {
+				return safeMessage(`${overview}\n${body}`, `leagues-verify-${targetUserID}.txt`);
+			}
+
+			const result =
+				(await verifyLeaguesTasksForUser(targetUserID)) ??
+				(await previewVerifyLeaguesTasksForUser(targetUserID));
+			return safeMessage(
+				`${buildLeaguesTaskAuditOverview(
+					`Leagues Validation Result for <@${targetUserID}> ${targetUserID}`,
+					result
+				)}\n${buildLeaguesTaskAuditBody(result)}`,
+				`leagues-verify-${targetUserID}.txt`
+			);
 		}
 
 		if (options.fix_giveaways) {

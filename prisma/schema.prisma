@@ -136,12 +136,14 @@ model ClientStorage {
   colo_loot                    Json     @default("{}") @db.Json
   vt_cost                      Json     @default("{}") @db.Json
   vt_loot                      Json     @default("{}") @db.Json
+  shutdown                     Boolean  @default(false)
 
   grand_exchange_is_locked Boolean @default(false)
   grand_exchange_total_tax BigInt  @default(0)
   grand_exchange_tax_bank  BigInt  @default(0)
 
   maxing_message String @default("Congratulations on maxing!")
+  extra_settings Json   @default("{}") @db.Json
 
   // BSO
   gp_ic                   BigInt @default(0)
@@ -149,6 +151,8 @@ model ClientStorage {
   gp_pet                  BigInt @default(0)
   ignecarus_cost          Json   @default("{}") @db.Json
   ignecarus_loot          Json   @default("{}") @db.Json
+  dominion_cost           Json   @default("{}") @db.Json
+  dominion_loot           Json   @default("{}") @db.Json
   kibble_cost             Json   @default("{}") @db.Json
   mr_cost                 Json   @default("{}") @db.Json
   mr_loot                 Json   @default("{}") @db.Json
@@ -186,6 +190,9 @@ model ClientStorage {
   invention_prizes_remaining Json @default("{}") @db.Json
   clue_upgrader_loot         Json @default("{}") @db.Json
   portable_tanner_loot       Json @default("{}") @db.Json
+  buried_treasure_bank       Json @default("{}") @db.JsonB
+  buried_treasure_winners    Json @default("{}") @db.JsonB
+  staff_bestow_limits        Json @default("{}") @db.JsonB
 
   last_bso_giveaways_ping  DateTime? @db.Timestamp(6)
   last_giveaway_doubleloot DateTime? @db.Timestamp(6)
@@ -278,18 +285,6 @@ model Guild {
   @@map("guilds")
 }
 
-model NewUser {
-  id            String @id @db.VarChar(19)
-  pizazz_points Int    @default(0)
-
-  // Relations
-  minigame_id  Int?         @unique
-  minigame     Minigame?    @relation(fields: [minigame_id], references: [id])
-  slayer_tasks SlayerTask[]
-
-  @@map("new_users")
-}
-
 model PlayerOwnedHouse {
   user_id            String @id @db.VarChar(19)
   background_id      Int    @default(1)
@@ -323,7 +318,7 @@ model SlayerTask {
   monster_id         Int
   skipped            Boolean
   user_id            String   @db.VarChar(19)
-  new_user           NewUser  @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: Cascade, map: "FK_43bf436cc70acda1752fb6e6006")
+  user               User     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: Cascade, map: "FK_slayer_tasks_user_id_users_id")
 
   @@index([user_id, quantity_remaining], map: "slayer_task_quantity_remaining")
   @@map("slayer_tasks")
@@ -338,13 +333,11 @@ enum bank_sort_method_enum {
 }
 
 model User {
-  id                          String    @id @db.VarChar(19)
-  last_command_date           DateTime? @db.Timestamp(6)
-  minion_bought_date          DateTime? @db.Timestamp(6)
-  minion_hasBought            Boolean   @default(false) @map("minion.hasBought")
-  minion_ironman              Boolean   @default(false) @map("minion.ironman")
-  premium_balance_tier        Int?
-  premium_balance_expiry_date BigInt?
+  id                 String    @id @db.VarChar(19)
+  last_command_date  DateTime? @db.Timestamp(6)
+  minion_bought_date DateTime? @db.Timestamp(6)
+  minion_hasBought   Boolean   @default(false) @map("minion.hasBought")
+  minion_ironman     Boolean   @default(false) @map("minion.ironman")
 
   RSN  String?
   pets Json    @default("{}") @db.Json
@@ -373,6 +366,8 @@ model User {
   botItemSell    BotItemSell[]
   pinnedTrip     PinnedTrip[]
   historicalData HistoricalData[]
+  minigame       Minigame?
+  slayer_tasks   SlayerTask[]
 
   // Configs/Settings
   minion_defaultCompostToUse CropUpgradeType    @default(compost) @map("minion.defaultCompostToUse")
@@ -471,6 +466,7 @@ model User {
   item_contract_streak     Int      @default(0)
   item_contract_bank       Json     @default("{}") @db.Json
   void_staff_charges       Int      @default(0)
+  prismare_ring_charges    Int      @default(0)
 
   last_patron_double_time_trigger DateTime? @db.Timestamp(6)
   lottery_input                   Json      @default("{}") @db.Json
@@ -492,6 +488,11 @@ model User {
   magic_words_guessed String[] @default([])
 
   store_bitfield Int[] @default([])
+
+  island_upgrades      Json @default("{}") @db.Json
+  island_contributions Json @default("{}")
+  distillery_stats     Json @default("{}")
+  construction_stats   Json @default("{}")
 
   farmingPatches_herb       Json? @map("farmingPatches.herb") @db.Json
   farmingPatches_fruit_tree Json? @map("farmingPatches.fruit tree") @db.Json
@@ -534,6 +535,7 @@ model User {
 
   cl_array                      Int[]    @default([])
   completed_achievement_diaries String[] @default([])
+  rp_bestow_bank                Json?    @db.JsonB
 
   @@index([id, last_command_date])
   @@map("users")
@@ -601,6 +603,9 @@ enum XpGainSource {
   PuroPuro
   MahoganyHomes
   AerialFishing
+  GemstoneFishing
+  AncientMycology
+  ArchaicMining
   CleaningHerbsWhileFarming
   CamdozaalMining
   CamdozaalSmithing
@@ -610,6 +615,8 @@ enum XpGainSource {
   ForestryEvents
   TuraelsTrials
   MonsterKilling
+  BrimstoneDistillery
+  ConstructionContracts
 }
 
 model XPGain {
@@ -645,6 +652,7 @@ model Metric {
 model Minigame {
   id                      Int    @id @default(autoincrement())
   user_id                 String @unique @db.VarChar(19)
+  pizazz_points           Int    @default(0)
   tithe_farm              Int    @default(0)
   wintertodt              Int    @default(0)
   tempoross               Int    @default(0)
@@ -684,21 +692,22 @@ model Minigame {
   colosseum               Int    @default(0)
 
   // BSO
-  ourania_delivery_service Int @default(0)
-  monkey_rumble            Int @default(0)
-  emerged_inferno          Int @default(0)
-  fishing_contest          Int @default(0)
-  bax_baths                Int @default(0)
-  fist_of_guthix           Int @default(0)
-  stealing_creation        Int @default(0)
-  tinkering_workshop       Int @default(0)
-  balthazars_big_bonanza   Int @default(0)
-  depths_of_atlantis       Int @default(0)
-  depths_of_atlantis_cm    Int @default(0)
-  guthixian_cache          Int @default(0)
-  turaels_trials           Int @default(0)
-
-  new_user NewUser?
+  ourania_delivery_service Int  @default(0)
+  monkey_rumble            Int  @default(0)
+  emerged_inferno          Int  @default(0)
+  fishing_contest          Int  @default(0)
+  bax_baths                Int  @default(0)
+  fist_of_guthix           Int  @default(0)
+  stealing_creation        Int  @default(0)
+  tinkering_workshop       Int  @default(0)
+  balthazars_big_bonanza   Int  @default(0)
+  depths_of_atlantis       Int  @default(0)
+  depths_of_atlantis_cm    Int  @default(0)
+  guthixian_cache          Int  @default(0)
+  turaels_trials           Int  @default(0)
+  brimstone_distillery     Int  @default(0)
+  construction_contracts   Int  @default(0)
+  user                     User @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: Cascade, map: "FK_minigames_user_id_users_id")
 
   @@index([user_id])
   @@map("minigames")
@@ -726,7 +735,7 @@ model TameActivity {
   channel_id  String?  @db.VarChar(19)
   data        Json     @db.Json
   tame_id     Int
-  tame        Tame     @relation(fields: [tame_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_aa012dd3d9d58b8acb4e2cffd4d")
+  tame        Tame     @relation(fields: [tame_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_tame_activity_tame_id_tame_id")
 
   fake_duration Int?
   deaths        Int  @default(0)
@@ -859,6 +868,7 @@ enum economy_transaction_type {
   duel
   gri
   gift
+  bestow
 }
 
 model EconomyTransaction {
@@ -1137,7 +1147,7 @@ model HistoricalData {
 
   comp_cape_percent_untrimmed Decimal? @db.Decimal(5, 2)
 
-  user User @relation(fields: [user_id], references: [id])
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@id([user_id, date])
   @@map("historical_data")
@@ -1194,6 +1204,9 @@ enum activity_type_enum {
   AgilityArena
   ChampionsChallenge
   AerialFishing
+  GemstoneFishing
+  AncientMycology
+  ArchaicMining
   DriftNet
   MahoganyHomes
   Nex
@@ -1217,6 +1230,7 @@ enum activity_type_enum {
   OuraniaDeliveryService
   DarkAltar
   Ignecarus
+  BurningDominion
   OuraniaAltar
   Trekking
   KibbleMaking
@@ -1238,11 +1252,14 @@ enum activity_type_enum {
   PuroPuro
   Easter
   BaxtorianBathhouses
+  BrimstoneDistillery
+  ConstructionContracts
   Naxxus
   Disassembling
   Research
   Moktang
   ShootingStars
+  ArchonEvent
   FistOfGuthix
   StealingCreation
   HalloweenMiniMinigame
@@ -1274,6 +1291,8 @@ enum activity_type_enum {
   CreateForestersRations
   SnoozeSpellActive
   Buy
+  BeachCombing
+  Archon
 }
 
 enum xp_gains_skill_enum {
@@ -1535,11 +1554,13 @@ model UserCounter {
 
 enum command_name_enum {
   cache_refresh
+  buried_treasure
   testpotato
   achievementdiary
   activities
   admin
   aerialfish
+  gemstonefish
   agilityarena
   alch
   amrod
@@ -1670,6 +1691,7 @@ enum command_name_enum {
   invite
   ironman
   is
+  islandupgrade
   itemtrivia
   jmodcomments
   jmodtweets
@@ -1882,6 +1904,18 @@ model HalloweenEvent {
   @@map("halloween_event")
 }
 
+model ArchonEvent {
+  id            Int      @id @default(autoincrement())
+  created_at    DateTime @default(now()) @db.Timestamp(6)
+  user_id       String   @db.VarChar(19)
+  tier          Int
+  expires_at    DateTime @db.Timestamp(6)
+  has_been_done Boolean  @default(false)
+
+  @@index([user_id, has_been_done, expires_at])
+  @@map("archon_event")
+}
+
 enum JsonBankType {
   Bank
   CollectionLog
@@ -1944,6 +1978,8 @@ model ShootingStars {
 
 enum SystemLogsType {
   ERROR
+  USER_ERROR
+  DEBUG
 }
 
 model SystemLogs {
@@ -1951,8 +1987,10 @@ model SystemLogs {
 
   date DateTime @default(now())
 
-  type SystemLogsType
-  data Json           @db.JsonB
+  type  SystemLogsType
+  msg   String?
+  stack String?
+  data  Json           @default("{}") @db.JsonB
 
   @@map("system_logs")
 }

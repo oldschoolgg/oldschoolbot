@@ -7,12 +7,13 @@ import {
 	tameSpecies
 } from '@/lib/bso/tames/tames.js';
 
-import { formatDuration, round, Time } from '@oldschoolgg/toolkit';
+import { Emoji, formatDuration, round, Time } from '@oldschoolgg/toolkit';
 import { roll } from 'node-rng';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
 import { type Prisma, type Tame, tame_growth } from '@/prisma/main.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
+import { getCyrTripBonus } from '@/lib/perkTiers.js';
 import { patronMaxTripBonus } from '@/lib/util/calcMaxTripLength.js';
 
 export class MTame {
@@ -230,10 +231,12 @@ export class MTame {
 			messages.push('+35mins trip length (ate a Zak)');
 		}
 
-		const patronBonus = patronMaxTripBonus(await user.fetchPerkTier()) * 2;
+		const cyrTripBonus = getCyrTripBonus((await Cache.getRoboChimpUser(user.id)).bits);
+		const cyrEmote = cyrTripBonus > 0 ? Emoji.Seer : '';
+		const patronBonus = Math.max(patronMaxTripBonus(await user.fetchPerkTier()), cyrTripBonus) * 2;
 		if (patronBonus > 0) {
 			maxTripLength += patronBonus;
-			messages.push(`+${formatDuration(patronBonus, true)} trip length (Patron bonus)`);
+			messages.push(`+${formatDuration(patronBonus, true)} trip length (${cyrEmote} Patron bonus)`);
 		}
 
 		if (activity === 'Clues') {

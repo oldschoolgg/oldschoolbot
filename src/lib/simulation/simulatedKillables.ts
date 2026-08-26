@@ -8,9 +8,8 @@ import { NEX_UNIQUE_DROPRATE, nexLootTable } from '@/lib/bso/monsters/nex.js';
 import { zygomiteFarmingSource } from '@/lib/bso/skills/farming/zygomites.js';
 import { calcDwwhChance } from '@/lib/bso/structures/Boss.js';
 
-import { SimpleTable } from '@oldschoolgg/toolkit';
 import { MathRNG, randArrItem, randInt, roll } from 'node-rng';
-import { Bank, Misc } from 'oldschooljs';
+import { Bank, Misc, SimpleTable } from 'oldschooljs';
 
 import { WintertodtCrate } from '@/lib/simulation/wintertodt.js';
 
