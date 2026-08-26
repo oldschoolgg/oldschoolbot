@@ -120,6 +120,7 @@ export async function fetchFullMinionData(bot: IBotType, targetUserId: string): 
 			blood_essence: botUser.blood_essence_charges,
 			trident: botUser.trident_charges,
 			venator_bow: botUser.venator_bow_charges,
+			dodgy_necklace: botUser.dodgy_necklace_charges,
 			scythe_of_vitur: botUser.scythe_of_vitur_charges
 		},
 

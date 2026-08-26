@@ -48,6 +48,7 @@ export interface Stealable {
 	slope?: number;
 	intercept?: number;
 	customTickRate?: number;
+	blackjacking?: boolean;
 }
 
 const stalls: Stealable[] = [
@@ -529,6 +530,7 @@ const pickpocketables: Stealable[] = [
 		slope: 0.767_76,
 		intercept: 18.131_76,
 		customTickRate: 2.5,
+		blackjacking: true,
 		petChance: 257_211
 	},
 	{
@@ -602,6 +604,7 @@ const pickpocketables: Stealable[] = [
 		slope: 0.654_85,
 		intercept: 29.309_85,
 		customTickRate: 2.5,
+		blackjacking: true,
 		petChance: 257_211
 	},
 	{
