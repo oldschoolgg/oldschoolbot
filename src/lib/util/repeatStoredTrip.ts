@@ -87,7 +87,15 @@ import { giantsFoundryAlloys } from '@/mahoji/lib/abstracted_commands/giantsFoun
 import puroOptions from '@/mahoji/lib/abstracted_commands/puroPuroCommand.js';
 import { slayerNewTaskCommand } from '@/mahoji/lib/abstracted_commands/slayerTaskCommand.js';
 
+function isNonRepeatableTrip({ data }: Activity) {
+	if (!data || typeof data !== 'object' || Array.isArray(data)) return false;
+	return Boolean((data as { metadata?: { nonRepeatable?: boolean } }).metadata?.nonRepeatable);
+}
+
 const taskCanBeRepeated = (activity: Activity, user: MUser, taskIndex: number) => {
+	if (isNonRepeatableTrip(activity)) {
+		return false;
+	}
 	const data = ActivityManager.convertStoredActivityToFlatActivity(activity);
 	if (data.type === activity_type_enum.Farming) {
 		return taskIndex === 0 && data.autoFarmed;
@@ -956,6 +964,9 @@ export async function repeatTrip(
 ): CommandResponse {
 	if (!activity || !activity.data || !activity.type) {
 		return { content: "Couldn't find any trip to repeat.", ephemeral: true };
+	}
+	if (isNonRepeatableTrip(activity)) {
+		return { content: 'That activity is not repeatable.', ephemeral: true };
 	}
 	const handler = tripHandlers[activity.type];
 	const args: ActivityTaskData = ActivityManager.convertStoredActivityToFlatActivity(activity);
