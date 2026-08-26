@@ -36,7 +36,7 @@ You can create Runecrafting pouches using [[/create]]. Similarly to in-game, hig
 
 You can runecraft at the Ourania Altar with [[/runecraft rune\:Ourania Altar]]. This uses Pure essence or Daeyalt essence and crafts a mixture of runes based on your Runecrafting level.
 
-If you have zero-time fletching configured with [[/zero_time_activity]], ZMI trips will also fletch stackable ammunition during the running time without increasing the trip duration. This is capped at about 9,000 fletched outputs per hour; for Broad arrows, that is roughly 90,000 Fletching XP/hr if you have Broader Fletching unlocked and enough Broad arrowheads and Headless arrows.
+If you have zero-time fletching configured with [[/zero_time_activity]], ZMI trips will also fletch stackable ammunition during the running time without increasing the trip duration. This reserves two essence spaces for fletching supplies, slightly reducing Runecrafting XP/hr. The fletching is capped at about 9,000 fletched outputs per hour; for Broad arrows, that is roughly 90,000 Fletching XP/hr if you have Broader Fletching unlocked and enough Broad arrowheads and Headless arrows.
 
 ## Regular Runes
 

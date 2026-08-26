@@ -10,7 +10,11 @@ import {
 	type ZeroTimeActivityPreference
 } from '../../src/lib/util/zeroTimeActivity.js';
 import { timePerAlch } from '../../src/mahoji/lib/abstracted_commands/alchCommand.js';
-import { OURANIA_ALTAR_FLETCH_CAP_PER_HOUR } from '../../src/mahoji/lib/abstracted_commands/ouraniaAltarCommand.js';
+import {
+	calculateOuraniaAltarEssencePlan,
+	OURANIA_ALTAR_FLETCH_CAP_PER_HOUR,
+	OURANIA_ALTAR_FLETCH_INVENTORY_SPACES
+} from '../../src/mahoji/lib/abstracted_commands/ouraniaAltarCommand.js';
 import { mockMUser } from './userutil.js';
 
 describe('attemptZeroTimeActivity', () => {
@@ -281,5 +285,33 @@ describe('attemptZeroTimeActivity', () => {
 			response.result.itemsToRemove.equals(new Bank().add('Broad arrowheads', 9000).add('Headless arrow', 9000))
 		).toBe(true);
 		expect(response.result.timePerAction).toBe(Time.Hour / OURANIA_ALTAR_FLETCH_CAP_PER_HOUR);
+	});
+
+	test('ourania altar fletching reserves two essence spaces', () => {
+		const sharedPlanOptions = {
+			maxTripLength: Time.Minute * 10,
+			timePerTrip: Time.Minute,
+			pureEssenceOwned: 1000,
+			daeyaltEssenceOwned: 0,
+			useDaeyaltEssence: false,
+			minionName: 'Minion'
+		};
+
+		const basePlan = calculateOuraniaAltarEssencePlan({
+			...sharedPlanOptions,
+			inventorySize: 28
+		});
+		const fletchingPlan = calculateOuraniaAltarEssencePlan({
+			...sharedPlanOptions,
+			inventorySize: 28 - OURANIA_ALTAR_FLETCH_INVENTORY_SPACES
+		});
+
+		expect(typeof basePlan).not.toBe('string');
+		expect(typeof fletchingPlan).not.toBe('string');
+		if (typeof basePlan === 'string' || typeof fletchingPlan === 'string') return;
+
+		expect(basePlan.quantity).toBe(280);
+		expect(fletchingPlan.quantity).toBe(260);
+		expect(fletchingPlan.duration).toBe(basePlan.duration);
 	});
 });

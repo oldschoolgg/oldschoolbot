@@ -30,7 +30,7 @@ Only one zero-time action runs per trip, but the fallback preference means you r
 - Fletching speeds vary by content:
   - **Agility laps:** up to ~15,000 items per hour for darts, bolts, broad bolts, and similar stackables.
   - **Hallowed Sepulchre:** uses the item's zero-time rate (about 18,000 items/hour for darts and bolts, or ~10,000 items/hour for arrows, javelins, and similar ammunition).
-  - **Ourania Altar (ZMI):** up to ~9,000 items per hour during the running time. Broad arrows give 10 Fletching XP each, so expect up to ~90,000 Fletching XP/hr if you have enough supplies.
+  - **Ourania Altar (ZMI):** up to ~9,000 items per hour during the running time. Fletching reserves two essence spaces, slightly reducing Runecrafting XP/hr. Broad arrows give 10 Fletching XP each, so expect up to ~90,000 Fletching XP/hr if you have enough supplies.
 - Materials (tips, feathers, unfinished ammunition, etc.) are removed when the trip begins, so ensure your bank holds enough supplies for the expected duration.
 
 ## Location Notes
