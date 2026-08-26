@@ -86,7 +86,8 @@ import {
 	valeTotemsBuyCommand,
 	valeTotemsRummageCommand,
 	valeTotemsSellCommand,
-	valeTotemsStartCommand
+	valeTotemsStartCommand,
+	valeTotemsStatsCommand
 } from '@/mahoji/lib/abstracted_commands/valeTotemsCommand.js';
 import {
 	VolcanicMineShop,
@@ -1168,6 +1169,11 @@ export const minigamesCommand = defineCommand({
 							required: false
 						}
 					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'stats',
+					description: 'Show Vale Totems stats.'
 				}
 			]
 		}
@@ -1531,6 +1537,9 @@ export const minigamesCommand = defineCommand({
 				options.vale_totems.rummage.quantity,
 				options.vale_totems.rummage.all
 			);
+		}
+		if (options.vale_totems?.stats) {
+			return valeTotemsStatsCommand(user);
 		}
 
 		return 'Invalid command.';
