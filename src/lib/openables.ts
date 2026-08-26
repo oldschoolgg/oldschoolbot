@@ -44,6 +44,7 @@ import {
 } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { BitField } from '@/lib/constants.js';
 import { cluesRaresCL } from '@/lib/data/CollectionsExport.js';
 import { shadeChestOpenables } from '@/lib/shadesKeys.js';
 import { nestTable } from '@/lib/simulation/birdsNest.js';
@@ -55,6 +56,7 @@ import {
 	SpoilsOfWarTable
 } from '@/lib/simulation/misc.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
+import { FriendlyTask } from '@/lib/util/FriendlyTask.js';
 
 const CacheOfRunesTable = new LootTable()
 	.add('Death rune', [1000, 1500], 2)
@@ -99,6 +101,7 @@ interface OpenArgs {
 	rng: RNGProvider;
 	openedCountOffset?: number;
 	previousLoot?: Bank;
+	yielder: FriendlyTask;
 }
 
 export interface UnifiedOpenable {
@@ -151,37 +154,54 @@ for (const clueTier of ClueTiers) {
 		id: casketItem.id,
 		openedItem: casketItem,
 		aliases: [clueTier.name.toLowerCase()],
-		output: async ({ quantity, user, self, rng }) => {
-			const clueTier = ClueTiers.find(c => c.id === self.id)!;
-			const loot = clueTier.table.roll(quantity);
+		output: async ({ quantity, user, self, rng, yielder }) => {
+			const batchYieldClues = async (table: LootTable, qty: number) => {
+				const miniLoot = new Bank();
+				const batchSize = 100;
+				let qtyRemaining = qty;
+				while (qtyRemaining > 0) {
+					const toOpen = Math.min(qtyRemaining, batchSize);
+					await yielder.checkpoint();
+					miniLoot.add(table.roll(toOpen));
+					qtyRemaining -= batchSize;
+				}
+				return miniLoot;
+			};
+			const currentClueTier = ClueTiers.find(c => c.id === self.id)!;
+
+			const loot = await batchYieldClues(currentClueTier.table, quantity);
 			let mimicNumber = 0;
-			if (clueTier.mimicChance) {
-				const table = clueTier.name === 'Master' ? MasterMimicTable : EliteMimicTable;
+			if (currentClueTier.mimicChance) {
+				const table = currentClueTier.name === 'Master' ? MasterMimicTable : EliteMimicTable;
 				for (let i = 0; i < quantity; i++) {
-					if (rng.roll(clueTier.mimicChance)) {
-						loot.add(table.roll());
+					if (rng.roll(currentClueTier.mimicChance)) {
 						mimicNumber++;
 					}
 				}
+				loot.add(await batchYieldClues(table, mimicNumber));
 			}
 
-			const message = `${quantity}x ${clueTier.name} Clue Casket${quantity > 1 ? 's' : ''} ${
+			const message = `${quantity}x ${currentClueTier.name} Clue Casket${quantity > 1 ? 's' : ''} ${
 				mimicNumber > 0 ? `with ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''
 			}`;
 
+			// TODO: We need a way to separate rolling the loot from the server notifications
+			// With a really big opening, it can take a while to finish, and it can still fail
+			// It need to be at a point where it can no longer fail. Maybe we just take the cost first,
+			// but then they can lose their caskets
 			const stats = await user.fetchStats();
-			const nthCasket = ((stats.openable_scores as ItemBank)[clueTier.id] ?? 0) + quantity;
+			const nthCasket = ((stats.openable_scores as ItemBank)[currentClueTier.id] ?? 0) + quantity;
 
 			let gotMilestoneReward = false;
 			// If this tier has a milestone reward, and their new score meets the req, and
 			// they don't own it already, add it to the loot.
 			if (
-				clueTier.milestoneReward &&
-				nthCasket >= clueTier.milestoneReward.scoreNeeded &&
-				user.allItemsOwned.amount(clueTier.milestoneReward.itemReward) === 0
+				currentClueTier.milestoneReward &&
+				nthCasket >= currentClueTier.milestoneReward.scoreNeeded &&
+				user.allItemsOwned.amount(currentClueTier.milestoneReward.itemReward) === 0
 			) {
 				await user.addItemsToBank({
-					items: new Bank().add(clueTier.milestoneReward.itemReward),
+					items: new Bank().add(currentClueTier.milestoneReward.itemReward),
 					collectionLog: true
 				});
 				gotMilestoneReward = true;
@@ -191,14 +211,14 @@ for (const clueTier of ClueTiers) {
 			// and send a notification if they got one.
 			const announcedLoot = loot.filter(i => clueItemsToNotifyOf.includes(i.id));
 			if (gotMilestoneReward) {
-				announcedLoot.add(clueTier.milestoneReward?.itemReward);
+				announcedLoot.add(currentClueTier.milestoneReward?.itemReward);
 			}
 			if (announcedLoot.length > 0) {
 				globalClient.emit(
 					Events.ServerNotification,
 					`**${user.badgedUsername}'s** minion, ${user.minionName}, just opened their ${formatOrdinal(
 						nthCasket
-					)} ${clueTier.name} casket and received **${announcedLoot}**!`
+					)} ${currentClueTier.name} casket and received **${announcedLoot}**!`
 				);
 			}
 
@@ -454,6 +474,7 @@ const osjsOpenables: UnifiedOpenable[] = [
 			const yamaKC = openedCountOffset === 0 ? await user.getKC(Monsters.Yama.id) : 0;
 
 			const hadRiteAlready =
+				user.bitfield.includes(BitField.HasRiteOfVileTransference) ||
 				user.cl.has(DOSSIER_RITE_NAME) ||
 				user.allItemsOwned.has(DOSSIER_RITE_NAME) ||
 				Boolean(previousLoot?.has(DOSSIER_RITE_NAME));
@@ -668,13 +689,14 @@ for (const openable of allOpenables) {
 
 export const allOpenablesIDs = new Set(allOpenables.map(i => i.id));
 
-export function getOpenableLoot({
+export async function getOpenableLoot({
 	openable,
 	quantity,
 	user,
 	rng,
 	openedCountOffset,
-	previousLoot
+	previousLoot,
+	yielder
 }: {
 	openable: UnifiedOpenable;
 	quantity: number;
@@ -682,8 +704,41 @@ export function getOpenableLoot({
 	rng: RNGProvider;
 	openedCountOffset?: number;
 	previousLoot?: Bank;
+	yielder?: FriendlyTask;
 }) {
-	return openable.output instanceof LootTable
-		? { bank: openable.output.roll(quantity), message: null }
-		: openable.output({ user, self: openable, quantity, rng, openedCountOffset, previousLoot });
+	const activeYielder =
+		yielder ??
+		new FriendlyTask(`OpenableLoot`, {
+			yieldAfterMs: 50,
+			warnAfterMs: 500,
+			data: {
+				openable,
+				quantity,
+				userId: user.id
+			}
+		});
+	const loot = new Bank();
+	if (openable.output instanceof LootTable) {
+		const batchSize = 100;
+		let qtyRemaining = quantity;
+		while (qtyRemaining > 0) {
+			loot.add(openable.output.roll(Math.min(batchSize, qtyRemaining)));
+			qtyRemaining -= batchSize;
+			if (qtyRemaining) await activeYielder.checkpoint();
+		}
+		if (!yielder) activeYielder.finish();
+		return { bank: loot, message: null };
+	} else {
+		const result = await openable.output({
+			user,
+			self: openable,
+			quantity,
+			rng,
+			openedCountOffset,
+			previousLoot,
+			yielder: activeYielder
+		});
+		if (!yielder) activeYielder.finish();
+		return result;
+	}
 }

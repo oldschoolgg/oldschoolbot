@@ -1,7 +1,8 @@
+import { Emoji } from '@oldschoolgg/toolkit';
 import { Bank, Monsters } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { BitField } from '@/lib/constants.js';
+import { BitField } from '../../../src/lib/constants.js';
 import { openCommand } from '../../../src/mahoji/commands/open.js';
 import { createTestUser, mockClient, mockMathRandom } from '../util.js';
 
@@ -39,14 +40,74 @@ describe('Open Command', async () => {
 		mockMathRandom(0.1);
 		const user = await createTestUser();
 		await user.addItemsToBank({ items: new Bank().add('Reward casket (beginner)', 10) });
-		await user.runCommand(openCommand, {
+		const result = await user.runCommand(openCommand, {
 			name: 'reward casket (beginner)',
 			quantity: 2,
 			open_until: 'Fire rune',
 			result_quantity: 100
 		});
+		expect(result).toMatchObject({
+			content: expect.not.stringContaining("You didn't specify a quantity")
+		});
 		await user.bankAmountMatch('Reward casket (beginner)', 8);
 		await user.openedBankMatch(new Bank().add('Reward casket (beginner)', 2));
+	});
+
+	test('Open until defaults to opening one without quantity', async () => {
+		mockMathRandom(0.1);
+		const user = await createTestUser();
+		await user.addItemsToBank({ items: new Bank().add('Reward casket (beginner)', 10) });
+		const result = await user.runCommand(openCommand, {
+			name: 'reward casket (beginner)',
+			open_until: 'Fire rune',
+			result_quantity: 1000
+		});
+		expect(result).toMatchObject({
+			content: expect.stringContaining(
+				`${Emoji.Seer} **You didn't specify a quantity, so Open Until will open 1 by default`
+			)
+		});
+		expect(result).toMatchObject({
+			content: expect.stringContaining('You opened 1x Reward casket (beginner)')
+		});
+		await user.bankAmountMatch('Reward casket (beginner)', 9);
+		await user.openedBankMatch(new Bank().add('Reward casket (beginner)', 1));
+	});
+
+	test('Open until uses unlimited default for patrons with the toggle', async () => {
+		mockMathRandom(0.1);
+		const user = await createTestUser();
+		await user.givePatronTier(1);
+		await user.update({ bitfield: { push: BitField.UnlimitedOpenUntil } });
+		await user.addItemsToBank({ items: new Bank().add('Reward casket (beginner)', 10) });
+		const result = await user.runCommand(openCommand, {
+			name: 'reward casket (beginner)',
+			open_until: 'Fire rune',
+			result_quantity: 1000
+		});
+		expect(result).toMatchObject({
+			content: expect.stringContaining(
+				`${Emoji.Seer} You didn't specify a quantity, so Open Until is using your unlimited default`
+			)
+		});
+	});
+
+	test('Open until uses unlimited default for Cyr original patrons with the toggle', async () => {
+		mockMathRandom(0.1);
+		const user = await createTestUser();
+		await user.update({ bitfield: { push: BitField.OriginalCyrSupporter } });
+		await user.update({ bitfield: { push: BitField.UnlimitedOpenUntil } });
+		await user.addItemsToBank({ items: new Bank().add('Reward casket (beginner)', 10) });
+		const result = await user.runCommand(openCommand, {
+			name: 'reward casket (beginner)',
+			open_until: 'Fire rune',
+			result_quantity: 1000
+		});
+		expect(result).toMatchObject({
+			content: expect.stringContaining(
+				`${Emoji.Seer} You didn't specify a quantity, so Open Until is using your unlimited default`
+			)
+		});
 	});
 
 	test('Open until rejects invalid item', async () => {
