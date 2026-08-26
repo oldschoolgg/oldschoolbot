@@ -6,6 +6,8 @@ Shooting Stars is a [[mining]] activity. A star can spawn after any trip, and yo
 
 Start this trip by clicking the `Mine Crashed Star` button when you see it on a return trip message.
 
+You can also actively hunt for Crashed Stars using [[/activities other activity\:Hunt Crashed Stars]]. As your minion is spending time searching for a star, hunted Crashed Stars are mined at 75% efficiency compared with stars found from trip return buttons.
+
 ## Requirements
 
 | Star Size | Mining Level Required |
