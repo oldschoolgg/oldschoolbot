@@ -89,7 +89,7 @@ export const arbitraryTameActivities: ArbitraryTameActivity[] = [
 		run: async ({ handleFinish, user, duration, tame, previousTameCL, activity }) => {
 			const quantity = Math.ceil(duration / (Time.Minute * 5));
 			const loot = getTemporossLoot(quantity, tame.maxGathererLevel + 15, previousTameCL);
-			handleFinish({
+			void handleFinish({
 				lootToAdd: loot,
 				message: `${user}, ${tame} finished defeating Tempoross ${quantity}x times.`,
 				user,
@@ -116,7 +116,7 @@ export const arbitraryTameActivities: ArbitraryTameActivity[] = [
 					})
 				);
 			}
-			handleFinish({
+			void handleFinish({
 				lootToAdd: loot,
 				message: `${user}, ${tame} finished defeating Wintertodt ${quantity}x times.`,
 				user,

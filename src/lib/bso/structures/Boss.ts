@@ -80,7 +80,8 @@ function calcSetupPercent(
 	maxGear: Gear,
 	userGear: Gear,
 	heavyPenalizeStat: keyof GearStats,
-	ignoreStats: (keyof GearStats)[]
+	ignoreStats: (keyof GearStats)[],
+	allowOvercap = false
 ) {
 	const maxStats = maxGear.stats;
 	const userStats = userGear.stats;
@@ -89,7 +90,9 @@ function calcSetupPercent(
 
 	for (const [key, val] of Object.entries(maxStats) as [keyof GearStats, number][]) {
 		if (val <= 0 || ignoreStats.includes(key)) continue;
-		const rawPercent = Math.min(100, calcWhatPercent(userStats[key], val));
+		const rawPercent = allowOvercap
+			? calcWhatPercent(userStats[key], val)
+			: Math.min(100, calcWhatPercent(userStats[key], val));
 		totalPercent += rawPercent;
 		numKeys++;
 	}
@@ -105,11 +108,16 @@ function calcSetupPercent(
 		totalPercent = Math.floor(Math.max(0, totalPercent / 2));
 	}
 
-	if (Number.isNaN(totalPercent) || totalPercent < 0 || totalPercent > 100) {
+	if (Number.isNaN(totalPercent) || totalPercent < 0 || (!allowOvercap && totalPercent > 100)) {
 		throw new Error(`Invalid total gear percent: ${totalPercent}`);
 	}
 
 	return totalPercent;
+}
+
+function taperBoostPercent(percent: number) {
+	if (percent <= 100) return percent;
+	return 100 + Math.log2(percent / 100) * 50;
 }
 
 export interface BossOptions {
@@ -120,6 +128,7 @@ export interface BossOptions {
 	skillRequirements: Skills;
 	// The total combined values for item boosts equal their relative contribution to the speed, see `speedMaxReduction`
 	itemBoosts: [string, number][];
+	additionalItemBoosts?: [string, number][];
 	customDenier: (user: MUser) => Promise<UserDenyResult>;
 	bisGear: Gear;
 	gearSetup: GearSetupType;
@@ -129,7 +138,7 @@ export interface BossOptions {
 	food: Bank | ((user: MUser) => Bank);
 	settingsKeys?: [ClientBankKey, ClientBankKey];
 	channelId: string;
-	activity: 'VasaMagus' | 'KingGoldemar' | 'Ignecarus' | 'BossEvent';
+	activity: 'VasaMagus' | 'KingGoldemar' | 'Ignecarus' | 'BossEvent' | 'BurningDominion' | 'Archon';
 	massText: string;
 	leader: MUser;
 	minSize: number;
@@ -170,6 +179,7 @@ export class BossInstance {
 	baseDuration: number;
 	skillRequirements: Skills;
 	itemBoosts: [string, number][];
+	additionalItemBoosts: [string, number][] = [];
 	customDenier: (user: MUser) => Promise<UserDenyResult>;
 	bisGear: Gear;
 	gearSetup: GearSetupType;
@@ -186,7 +196,7 @@ export class BossInstance {
 	totalPercent = -1;
 	settingsKeys?: [ClientBankKey, ClientBankKey];
 	channelId: string;
-	activity: 'VasaMagus' | 'KingGoldemar' | 'Ignecarus' | 'BossEvent';
+	activity: 'VasaMagus' | 'KingGoldemar' | 'Ignecarus' | 'BossEvent' | 'BurningDominion' | 'Archon';
 	massText: string;
 	users: MUser[] | null = null;
 	leader: MUser;
@@ -210,6 +220,7 @@ export class BossInstance {
 		this.baseDuration = options.baseDuration;
 		this.skillRequirements = options.skillRequirements;
 		this.itemBoosts = options.itemBoosts;
+		this.additionalItemBoosts = options.additionalItemBoosts ?? [];
 		this.customDenier = options.customDenier;
 		this.bisGear = options.bisGear;
 		this.gearSetup = options.gearSetup;
@@ -241,6 +252,11 @@ export class BossInstance {
 		}
 		if (this.itemBoosts.length > 0) {
 			massText.push(`**Item Boosts:** ${this.itemBoosts.map(i => `${i[0]}: ${i[1]}%`).join(', ')}`);
+		}
+		if (this.additionalItemBoosts.length > 0) {
+			massText.push(
+				`**Additional Boosts:** ${this.additionalItemBoosts.map(i => `${i[0]}: ${i[1]}%`).join(', ')}`
+			);
 		}
 		if (this.bisGear.allItems(false).length > 0) {
 			massText.push(`**BiS Gear:** ${this.bisGear}`);
@@ -342,7 +358,8 @@ export class BossInstance {
 			this.bisGear,
 			user.gear[this.gearSetup],
 			this.mostImportantStat,
-			this.ignoreStats
+			this.ignoreStats,
+			this.additionalItemBoosts.length > 0
 		);
 		if (gearPercent < 20) {
 			return [true, 'has terrible gear'];
@@ -355,7 +372,12 @@ export class BossInstance {
 		const kc = await user.getKC(this.id);
 		const itemsToRemove = calcFood({ solo, kc, user });
 		if (this.itemCost) {
-			return this.itemCost({ user, kills: this.quantity ?? 0, baseFood: itemsToRemove, solo });
+			return this.itemCost({
+				user,
+				kills: this.quantity ?? 0,
+				baseFood: itemsToRemove,
+				solo
+			});
 		}
 		return itemsToRemove.multiply(this.quantity ?? 0);
 	}
@@ -382,7 +404,15 @@ export class BossInstance {
 			let userPercentChange = 0;
 
 			// Gear
-			const gearPercent = calcSetupPercent(this.bisGear, gear, this.mostImportantStat, this.ignoreStats);
+			const rawGearPercent = calcSetupPercent(
+				this.bisGear,
+				gear,
+				this.mostImportantStat,
+				this.ignoreStats,
+				this.additionalItemBoosts.length > 0
+			);
+			const gearPercent =
+				this.additionalItemBoosts.length > 0 ? taperBoostPercent(rawGearPercent) : rawGearPercent;
 			const gearBoostPercent = calcPercentOfNum(gearPercent, speedReductionForGear);
 			userPercentChange += gearBoostPercent;
 			debugStr.push(`**Gear**[${gearPercent.toFixed(1)}%]`);
@@ -402,24 +432,58 @@ export class BossInstance {
 						itemBoosts += amount;
 					}
 				}
-				const itemBoostPercent = calcWhatPercent(itemBoosts, speedReductionForBoosts);
-				const itemBoostsBoostPercent = calcPercentOfNum(itemBoostPercent, speedReductionForBoosts);
-				userPercentChange += itemBoostsBoostPercent;
-				debugStr.push(`**Boosts**[${itemBoostPercent.toFixed(1)}%]`);
+				const baseItemBoostPercent = calcWhatPercent(itemBoosts, speedReductionForBoosts);
+				if (this.additionalItemBoosts.length > 0) {
+					const additionalItemBoosts = sumArr(
+						this.additionalItemBoosts.map(([name, amount]) =>
+							gear.hasEquipped(name, false, false) ? amount : 0
+						)
+					);
+					const rawItemBoostPercent =
+						baseItemBoostPercent + calcWhatPercent(additionalItemBoosts, speedReductionForBoosts);
+					const itemBoostPercent = taperBoostPercent(rawItemBoostPercent);
+					const averagePercent = (gearPercent + kcPercent + itemBoostPercent) / 3;
+					userPercentChange = averagePercent;
+					debugStr.push(`**Boosts**[${rawItemBoostPercent.toFixed(1)}%]`);
+				} else {
+					const itemBoostsBoostPercent = calcPercentOfNum(baseItemBoostPercent, speedReductionForBoosts);
+					userPercentChange += itemBoostsBoostPercent;
+					debugStr.push(`**Boosts**[${baseItemBoostPercent.toFixed(1)}%]`);
+				}
 			}
 
 			// Total
-			debugStr.push(`**Total**[${calcWhatPercent(userPercentChange, totalSpeedReduction).toFixed(2)}%]`);
+			debugStr.push(
+				`**Total**[${
+					this.additionalItemBoosts.length > 0
+						? userPercentChange.toFixed(2)
+						: calcWhatPercent(userPercentChange, totalSpeedReduction).toFixed(2)
+				}%]`
+			);
 
 			// Death chance
+			const deathKcBoostPercent =
+				this.additionalItemBoosts.length > 0
+					? calcPercentOfNum(kcPercent, speedReductionForKC)
+					: kcBoostPercent;
+			const deathGearBoostPercent =
+				this.additionalItemBoosts.length > 0
+					? calcPercentOfNum(Math.min(100, gearPercent), speedReductionForGear)
+					: gearBoostPercent;
 			let deathChance = this.canDie
-				? Math.max(0, reduceNumByPercent(55, kcBoostPercent * 2.4 + gearBoostPercent)) + randFloat(4.5, 5.5)
+				? Math.max(0, reduceNumByPercent(55, deathKcBoostPercent * 2.4 + deathGearBoostPercent)) +
+					randFloat(4.5, 5.5)
 				: 0;
 			if (this.customDeathChance) deathChance = this.customDeathChance(user, deathChance, solo);
 			debugStr.push(`**Death**[${deathChance.toFixed(2)}%]`);
 
 			// Apply a percentage of maxReduction based on the percent of total boosts.
-			const percentToAdd = ((userPercentChange / totalSpeedReduction) * maxReduction) / this.users!.length;
+			const percentToAdd =
+				((this.additionalItemBoosts.length > 0
+					? userPercentChange / 100
+					: userPercentChange / totalSpeedReduction) *
+					maxReduction) /
+				this.users!.length;
 			totalPercent += percentToAdd;
 
 			bossUsers.push({
@@ -502,7 +566,11 @@ export class BossInstance {
 			duration: this.duration,
 			type: this.activity,
 			users: this.bossUsers.map(u => u.user.id),
-			bossUsers: this.bossUsers.map(u => ({ ...u, itemsToRemove: u.itemsToRemove.toJSON(), user: u.user.id })),
+			bossUsers: this.bossUsers.map(u => ({
+				...u,
+				itemsToRemove: u.itemsToRemove.toJSON(),
+				user: u.user.id
+			})),
 			bossID: this.id
 		});
 		return {

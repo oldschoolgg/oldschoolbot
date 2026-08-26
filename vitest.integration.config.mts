@@ -21,7 +21,7 @@ export default defineConfig({
 		maxConcurrency: 4,
 		isolate: false,
 		pool: 'forks',
-		maxWorkers: 10,
+		maxWorkers: 1,
 		sequence: {
 			shuffle: true,
 			seed: 1

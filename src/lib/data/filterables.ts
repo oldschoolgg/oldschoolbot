@@ -1,7 +1,8 @@
 import { BSOItemGroups } from '@/lib/bso/bsoItemGroups.js';
-import { discontinuedCustomPetsCL } from '@/lib/bso/collection-log/main.js';
+import { allDiscontinuedPets, discontinuedCustomPetsAltArt } from '@/lib/bso/collection-log/main.js';
 import { GrandmasterClueTable } from '@/lib/bso/grandmasterClue.js';
 import { PartyhatTable } from '@/lib/bso/holidayItems.js';
+import { keyCrates } from '@/lib/bso/keyCrates.js';
 import { gods } from '@/lib/bso/minigames/divineDominion.js';
 import { monkeyEatables } from '@/lib/bso/minigames/monkey-rumble/monkeyRumble.js';
 import { tmbTable, umbTable } from '@/lib/bso/openables/mysteryBoxes.js';
@@ -185,8 +186,6 @@ export const ores = resolveItems([
 	'Dwarven ore',
 	'Dark animica'
 ]);
-
-const dcPetsExtras = resolveItems(['Black swan']);
 
 const bars = resolveItems([
 	'Bronze bar',
@@ -968,7 +967,12 @@ export const baseFilters: Filterable[] = [
 	{
 		name: 'Custom Pets (Discontinued)',
 		aliases: ['dc pets', 'dcpets', 'dcpet', 'dcp', 'discontinued custom pet', 'disc custom pet'],
-		items: () => [...discontinuedCustomPetsCL, ...dcPetsExtras]
+		items: () => allDiscontinuedPets
+	},
+	{
+		name: 'Alt Art Custom Pets (DC)',
+		aliases: ['aacp', 'aacpdc', 'dcaacp', 'artartdc', 'dcpalt', 'altdcp', 'alt dcp', 'alt art custom pets'],
+		items: () => discontinuedCustomPetsAltArt
 	},
 	{
 		name: 'Pets',
@@ -1024,6 +1028,11 @@ export const baseFilters: Filterable[] = [
 		name: 'Fruit',
 		aliases: ['fruit'],
 		items: () => monkeyEatables.map(i => i.item.id)
+	},
+	{
+		name: 'Seasonal Creates',
+		aliases: ['crates'],
+		items: () => keyCrates.flatMap(i => [i.item.id, i.key.id])
 	}
 ];
 

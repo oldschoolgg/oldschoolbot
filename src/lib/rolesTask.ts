@@ -191,7 +191,7 @@ LIMIT 1;`
 			userID: res.user_id,
 			roleID: Roles.BSOTopClueHunter,
 			reason: `Rank 1 ${res.tier_name} Clues`,
-			badge: BadgesEnum.TopMinigame
+			badge: BadgesEnum.TopClueHunter
 		});
 	}
 	return results;

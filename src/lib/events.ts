@@ -1,6 +1,10 @@
 import { boxSpawnHandler } from '@/lib/bso/boxSpawns.js';
 import { giveBoxResetTime, itemContractResetTime, spawnLampResetTime } from '@/lib/bso/bsoConstants.js';
-import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
+import {
+	DOUBLE_LOOT_FINISH_TIME_CACHE,
+	getNextDoubleLootUsageReset,
+	isDoubleLootActive
+} from '@/lib/bso/doubleLoot.js';
 import { getGuthixianCacheInterval, userHasDoneCurrentGuthixianCache } from '@/lib/bso/minigames/guthixianCache.js';
 import { allIronmanMbTables, allMbTables } from '@/lib/bso/openables/mysteryBoxes.js';
 
@@ -8,7 +12,7 @@ import { bold, dateFm, EmbedBuilder, time } from '@oldschoolgg/discord';
 import type { IMessage } from '@oldschoolgg/schemas';
 import { Emoji, getNextUTCReset, isFunction, type PerkTier, Time } from '@oldschoolgg/toolkit';
 import { cryptoRng } from 'node-rng/crypto';
-import { type ItemBank, Items, toKMB } from 'oldschooljs';
+import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import type { command_name_enum } from '@/prisma/main.js';
 import { mentionCommand } from '@/discord/utils.js';
@@ -20,15 +24,13 @@ import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { minionStatsEmbed } from '@/lib/util/minionStatsEmbed.js';
 import { refreshUserCache } from '@/lib/util/refreshCache.js';
-import { PATRON_DOUBLE_LOOT_COOLDOWN } from '@/mahoji/commands/tools.js';
 import { minionStatusCommand } from '@/mahoji/lib/abstracted_commands/minionStatusCommand.js';
 
 const mentionText = `<@${globalConfig.clientID}>`;
-const mentionRegex = new RegExp(`^(\\s*<@&?[0-9]+>)*\\s*<@${globalConfig.clientID}>\\s*(<@&?[0-9]+>\\s*)*$`);
 
 interface CooldownFnParams {
 	user: MUser;
-	perkTier: PerkTier | 0;
+	perkTier: PerkTier;
 }
 
 const cooldownTimers: {
@@ -37,6 +39,7 @@ const cooldownTimers: {
 	cd: number | ((args: CooldownFnParams) => number);
 	command: [string] | [string, string] | [string, string, string];
 	utcReset: boolean;
+	nextReset?: (lastDone: number) => number;
 }[] = [
 	{
 		name: 'Tears of Guthix',
@@ -83,9 +86,10 @@ const cooldownTimers: {
 	{
 		name: 'Monthly Double Loot',
 		timeStamp: (user: MUser) => Number(user.user.last_patron_double_time_trigger),
-		cd: PATRON_DOUBLE_LOOT_COOLDOWN,
+		cd: 0,
 		command: ['tools', 'patron', 'doubleloot'],
-		utcReset: false
+		utcReset: false,
+		nextReset: getNextDoubleLootUsageReset
 	},
 	{
 		name: 'Balthazars Big Bonanza',
@@ -112,14 +116,33 @@ interface MentionCommand {
 
 const mentionCommands: MentionCommand[] = [
 	{
+		name: 'buried_treasure',
+		aliases: ['buried_treasure', 'treasure'],
+		description: 'Searches for buried treasure.',
+		run: async () => {
+			const clientSettings = await ClientSettings.fetch({ buried_treasure_bank: true });
+			if (!clientSettings) {
+				return 'Things went poorly...';
+			}
+
+			return {
+				files: [
+					await makeBankImage({
+						bank: new Bank(clientSettings.buried_treasure_bank as ItemBank),
+						title: 'Buried Treasure Bank'
+					})
+				]
+			};
+		}
+	},
+	{
 		name: 'cache_refresh',
 		aliases: ['refresh', 'cache'],
 		description: 'Updates your caches',
-		run: async ({ user, components, content, guildId }: MentionCommandOptions) => {
+		run: async ({ user, content, guildId }: MentionCommandOptions) => {
 			const result = await refreshUserCache({ user, guildId, possibleTarget: content });
 			return {
-				content: result,
-				components
+				content: result
 			};
 		}
 	},
@@ -229,7 +252,11 @@ const mentionCommands: MentionCommand[] = [
 				.map(cd => {
 					const lastDone = cd.timeStamp(user, stats);
 					const cooldown = isFunction(cd.cd) ? cd.cd({ user, perkTier }) : cd.cd;
-					const nextReset = cd.utcReset ? getNextUTCReset(lastDone, cooldown) : lastDone + cooldown;
+					const nextReset = cd.nextReset
+						? cd.nextReset(lastDone)
+						: cd.utcReset
+							? getNextUTCReset(lastDone, cooldown)
+							: lastDone + cooldown;
 
 					if (Date.now() < nextReset) {
 						const durationRemaining = dateFm(new Date(nextReset));
@@ -271,12 +298,22 @@ const mentionCommands: MentionCommand[] = [
 	}
 ];
 
+const commandList = [...new Set(mentionCommands.flatMap(i => [i.name, ...i.aliases]))];
+
 export async function onMessage(msg: IMessage) {
 	if (!msg.content) return;
-	boxSpawnHandler(msg);
+	void boxSpawnHandler(msg);
 
 	const content = msg.content.trim();
 	if (!content.includes(mentionText)) return;
+
+	const statusRegex = new RegExp(`^(\\s*<@&?[0-9]+>)*\\s*<@${globalConfig.clientID}>\\s*(<@&?[0-9]+>\\s*)*$`);
+	const commandRegex = new RegExp(
+		`^(?:\\s*<@&?[0-9]+>)*\\s*<@${globalConfig.clientID}>\\s*(?:\\s*<@&?[0-9]+>\\s*)*(${commandList.join('|')})\\s*(.*)$`
+	);
+	const commandMatch = content.match(commandRegex);
+	const statusMatch = content.match(statusRegex);
+	if (!commandMatch && !statusMatch) return;
 
 	const sendable = await globalClient.channelIsSendable(msg.channel_id);
 	if (!sendable) return;
@@ -284,19 +321,18 @@ export async function onMessage(msg: IMessage) {
 	const user = await mUserFetch(msg.author_id);
 	const result = await minionStatusCommand(user, msg.channel_id);
 
-	const command = mentionCommands.find(i =>
-		i.aliases.some(alias => msg.content.startsWith(`${mentionText} ${alias}`))
-	);
-	if (command) {
+	if (commandMatch) {
+		const command = mentionCommands.find(i => [i.name, ...i.aliases].includes(commandMatch[1].toLowerCase()));
+		if (!command) return 'This really should not happen...';
 		Logging.logDebug(`${msg.author_id} used the ${command.name} mention command`);
-		const msgContentWithoutCommand = msg.content.split(' ').slice(2).join(' ');
+		const args = commandMatch[2] ?? '';
 		await prisma.commandUsage.create({
 			data: {
 				user_id: BigInt(user.id),
 				channel_id: BigInt(msg.channel_id),
 				guild_id: msg.guild_id ? BigInt(msg.guild_id) : undefined,
 				command_name: command.name,
-				args: msgContentWithoutCommand,
+				args,
 				inhibited: false,
 				is_mention_command: true
 			},
@@ -307,7 +343,7 @@ export async function onMessage(msg: IMessage) {
 			const response = await command.run({
 				user,
 				components: result.components,
-				content: msgContentWithoutCommand,
+				content: args,
 				rng: cryptoRng,
 				guildId: msg.guild_id
 			});
@@ -315,20 +351,18 @@ export async function onMessage(msg: IMessage) {
 		} catch (err) {
 			let errMsg = 'There was an error running that command.';
 			if (typeof err === 'string') errMsg = err;
-			else if (err instanceof Error) errMsg = err.message;
 			await globalClient.replyToMessage(msg, { content: errMsg });
-			Logging.logError(err as Error);
+			Logging.logError(err instanceof Error ? err : new Error(errMsg));
 		}
 		return;
 	}
 
-	if (content.match(mentionRegex)) {
-		await globalClient.replyToMessage(msg, {
-			content: result.content,
-			components: result.components
-		});
-		return;
-	}
+	await globalClient.replyToMessage(msg, {
+		content: result.content,
+		components: result.components
+	});
+	Logging.logDebug(`${msg.author_id} used the status mention command`);
+	return;
 }
 
 export async function onMinionActivityFinish(activity: ActivityTaskData) {

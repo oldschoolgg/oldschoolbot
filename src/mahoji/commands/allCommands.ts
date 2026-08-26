@@ -51,6 +51,7 @@ import { gpCommand } from '@/mahoji/commands/gp.js';
 import { helpCommand } from '@/mahoji/commands/help.js';
 import { huntCommand } from '@/mahoji/commands/hunt.js';
 import { inviteCommand } from '@/mahoji/commands/invite.js';
+import { islandUpgradeCommand } from '@/mahoji/commands/islandupgrade.js';
 import { minionKCommand } from '@/mahoji/commands/k.js';
 import { killCommand } from '@/mahoji/commands/kill.js';
 import { lapsCommand } from '@/mahoji/commands/laps.js';
@@ -176,7 +177,8 @@ export const allCommandsDONTIMPORT: AnyCommand[] = [
 	ratesCommand,
 	tamesCommand,
 	testerShopCommand,
-	bsoLeaguesCommand
+	bsoLeaguesCommand,
+	islandUpgradeCommand
 ];
 
 if (!globalConfig.isProduction && testPotatoCommand) {

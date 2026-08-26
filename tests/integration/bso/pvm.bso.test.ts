@@ -10,6 +10,7 @@ import { describe, expect, it } from 'vitest';
 import { CombatCannonItemBank } from '@/lib/minions/data/combatConstants.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import { gearCommand } from '@/mahoji/commands/gear.js';
+import { handleTripFinishResults } from '../../test-utils/misc.js';
 import { mockClient } from '../util.js';
 import { BSOTestUtil } from './bsoTestUtil.js';
 
@@ -153,9 +154,12 @@ describe('BSO PVM', async () => {
 		});
 		await BSOTestUtil.giveMaterials(user);
 		const previousMats = user.materialsOwned().clone();
-		await user.kill(EMonster.GREEN_DRAGON);
+		const killResult = await user.kill(EMonster.GREEN_DRAGON);
+		const tripResult = handleTripFinishResults.get(`${user.id}-${killResult.activityResult!.type}`);
+		expect(tripResult?.loot).toBeDefined();
+		const tripLoot = tripResult.loot as Bank;
 		const newMats = user.materialsOwned().clone();
-		const leatherGained = user.bank.amount('Green dragon leather');
+		const leatherGained = tripLoot.amount('Green dragon leather');
 		expect(user.bank.amount('Green dragonhide')).toBe(0);
 		expect(leatherGained).toBeGreaterThan(0);
 		expect(newMats.amount('metallic')).toBeLessThan(previousMats.amount('metallic'));
@@ -165,10 +169,10 @@ describe('BSO PVM', async () => {
 		expect(
 			userTannerStats.amount('Green dragon leather'),
 			`User stats should reflect the tanned leathers (got ${leatherGained}x leather from the trip)`
-		).toBeOneOf([leatherGained, leatherGained / 2]);
+		).toBe(leatherGained);
 		await client.sync();
 		const clientPortableTannerLoot = new Bank(client.data.portable_tanner_loot as ItemBank);
-		expect(clientPortableTannerLoot.amount('Green dragon leather')).toBeOneOf([leatherGained, leatherGained / 2]);
+		expect(clientPortableTannerLoot.amount('Green dragon leather')).toBe(leatherGained);
 		expect(clientPortableTannerLoot.length).toBe(1);
 	});
 
@@ -232,7 +236,18 @@ describe('BSO PVM', async () => {
 				items: '1000 hellfire arrow'
 			}
 		});
-		await global.prisma!.playerOwnedHouse.create({ data: { user_id: user.id, pool: 99_950 } });
+		await global.prisma!.playerOwnedHouse.upsert({
+			where: {
+				user_id: user.id
+			},
+			create: {
+				user_id: user.id,
+				pool: 99_950
+			},
+			update: {
+				pool: 99_950
+			}
+		});
 		await user.incrementKC(BSOMonsters.Malygos.id, 5000);
 		await user.setAttackStyle(['ranged']);
 		const result = await user.kill(BSOMonsters.Malygos.id, { wilderness: true });

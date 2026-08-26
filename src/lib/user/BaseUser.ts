@@ -1,3 +1,4 @@
+import { defaultIslandUpgrades, type IslandUpgradeTiers } from '@/lib/bso/commands/islandUpgrades.js';
 import type { IMaterialBank } from '@/lib/bso/skills/invention/index.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
@@ -72,6 +73,7 @@ export class BaseUser {
 	private _bankLazy: Bank | null = null;
 	private _clLazy: Bank | null = null;
 	private _gearLazy: UserFullGearSetup | null = null;
+	private _username: string | null = null;
 
 	paintedItems!: Map<number, number>;
 
@@ -89,7 +91,8 @@ export class BaseUser {
 			minionName: this.minionName,
 
 			materials: this.ownedMaterials(),
-			pet: this.user.minion_equippedPet
+			pet: this.user.minion_equippedPet,
+			island_upgrades: (this.user.island_upgrades as IslandUpgradeTiers) ?? defaultIslandUpgrades
 		});
 	}
 
@@ -134,13 +137,18 @@ export class BaseUser {
 		this._bankLazy = null;
 		this._clLazy = null;
 		this._gearLazy = null;
+		this._username = this.user.username ? cleanUsername(this.user.username) : 'Unknown';
 		this.skillsAsXP = this.getSkills(false);
 		this.skillsAsLevels = this.getSkills(true);
 
 		this.paintedItems = new Map((this.user.painted_items_tuple as [number, number][]) ?? []);
-		this.badgesString = makeBadgeString(this.user.badges, this.isIronman);
-
 		this.bitfield = this.user.bitfield as readonly BitField[];
+		this.badgesString = makeBadgeString(
+			this.user.badges,
+			this.isIronman,
+			this.bitfield.includes(BitField.OriginalCyrSupporter)
+		);
+
 		this.iconPackId = (this.user.icon_pack_id as IconPackID) ?? null;
 	}
 
@@ -212,7 +220,10 @@ export class BaseUser {
 	}
 
 	get username() {
-		return cleanUsername(this.user.username ?? 'Unknown');
+		return this._username ?? 'Unknown';
+	}
+	set username(user: string) {
+		this._username = user;
 	}
 
 	get usernameOrMention() {
@@ -374,30 +385,36 @@ export class BaseUser {
 	modifyBusy(type: 'lock' | 'unlock', reason: string): void {
 		modifyUserBusy({ type, reason, userID: this.id });
 	}
-	isSupport(): boolean {
+	get isSupport(): boolean {
 		return this.bitfield.includes(BitField.ServerSupport);
 	}
-	isTrusted(): boolean {
-		return this.isWikiContrib() || this.isStaff();
+	get isTrusted(): boolean {
+		return this.isWikiContrib || this.isStaff;
 	}
-	isStaff(): boolean {
-		return this.isModOrAdmin() || this.isSupport() || this.isContributor();
+	get isStaff(): boolean {
+		return this.isModOrAdmin || this.isSupport || this.isContributor;
 	}
-	isWikiContrib(): boolean {
+	get isWikiContrib(): boolean {
 		return this.bitfield.includes(BitField.WikiContributor);
 	}
-	isMod(): boolean {
+	get isMod(): boolean {
 		return this.bitfield.includes(BitField.Moderator);
 	}
-	isContributor(): boolean {
+	get isGameHacker(): boolean {
+		return this.isMod && this.isBoring;
+	}
+	get isBoring(): boolean {
+		return this.bitfield.includes(BitField.Boring);
+	}
+	get isContributor(): boolean {
 		return this.bitfield.includes(BitField.Contributor);
 	}
 
-	isAdmin(): boolean {
+	get isAdmin(): boolean {
 		return globalConfig.adminUserIDs.includes(this.id);
 	}
-	isModOrAdmin(): boolean {
-		return this.isAdmin() || this.isMod();
+	get isModOrAdmin(): boolean {
+		return this.isAdmin || this.isMod;
 	}
 
 	/**

@@ -759,15 +759,16 @@ The creator of the bingo (${userMention(
 							buffer: Buffer.from(
 								(
 									await Promise.all(
-										teams.map(team =>
-											[
-												team.participants
-													.map(u => Cache.getBadgedUsername(u.user_id))
-													.join(','),
+										teams.map(async team => {
+											const names = await Promise.all(
+												team.participants.map(u => Cache.getBadgedUsername(u.user_id))
+											);
+											return [
+												names.join(','),
 												team.tilesCompletedCount,
 												team.trophy?.item.name ?? 'No Trophy'
-											].join('\t')
-										)
+											].join('\t');
+										})
 									)
 								).join('\n')
 							),

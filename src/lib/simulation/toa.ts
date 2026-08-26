@@ -10,13 +10,12 @@ import {
 	objectEntries,
 	reduceNumByPercent,
 	round,
-	SimpleTable,
 	scaleNumber,
 	sumArr,
 	Time,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
-import { Bank, Items, itemID, LootTable, resolveItems } from 'oldschooljs';
+import { Bank, Items, itemID, LootTable, resolveItems, SimpleTable } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import { type Minigame, XpGainSource } from '@/prisma/main.js';

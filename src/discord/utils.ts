@@ -3,6 +3,16 @@ import { ApplicationCommandType, type RESTPostAPIApplicationGuildCommandsJSONBod
 import { convertCommandOptionToAPIOption } from '@/discord/index.js';
 import { globalConfig } from '@/lib/constants.js';
 
+export async function resolveBotSendableMessage(rawMessage: SendableMessage): Promise<BaseSendableMessage> {
+	if (typeof rawMessage === 'string') {
+		return { content: rawMessage };
+	}
+	if ('build' in rawMessage) {
+		return resolveBotSendableMessage(await rawMessage.build());
+	}
+	return rawMessage;
+}
+
 export function mentionCommand(name: string, subCommand?: string, subSubCommand?: string) {
 	if (process.env.TEST) return '';
 	const command = globalClient.allCommands.find(i => i.name === name);

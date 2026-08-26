@@ -5,21 +5,25 @@ import { runTameTask } from '@/lib/bso/tames/tameTasks.js';
 import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
 import { stringMatches, Time } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
+import { roll } from 'node-rng';
 
 import type { User } from '@/prisma/main.js';
+import { resolveBotSendableMessage } from '@/discord/utils.js';
 import { analyticsTick } from '@/lib/analytics.js';
-import { globalConfig } from '@/lib/constants.js';
+import { Channel, globalConfig } from '@/lib/constants.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { cacheGEPrices } from '@/lib/marketPrices.js';
 import { collectMetrics } from '@/lib/metrics.js';
+import { runCommand } from '@/lib/settings/settings.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { FarmingPatchName, FarmingPatchSettingsKey } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { IPatchData } from '@/lib/skilling/skills/farming/utils/types.js';
+import { runStaffBestowReplenishment, type StaffBestowPeriod } from '@/lib/staffBestow.js';
 import { MUserClass } from '@/lib/user/MUser.js';
 import { handleGiveawayCompletion } from '@/lib/util/giveaway.js';
 
 /**
- * Tickers should idempotent, and be able to run at any time.
+ * Tickers should be idempotent and be able to run at any time.
  */
 export const tickers: {
 	name: string;
@@ -69,12 +73,64 @@ export const tickers: {
 		}
 	},
 	{
+		name: 'shutdown',
+		timer: null,
+		startupWait: Time.Minute,
+		interval: Time.Minute,
+		cb: async () => {
+			const settings = await ClientSettings.fetch({ shutdown: true });
+			if (!settings.shutdown) return;
+			await ClientSettings.update({ shutdown: false });
+
+			const adminUser = await mUserFetch(globalConfig.adminUserIDs[1]);
+			const interaction = {
+				user: adminUser,
+				userId: adminUser.id,
+				channelId: Channel.BotLogs,
+				guildId: globalConfig.supportServerID,
+				member: null,
+				rawInteraction: {},
+				defer: async () => {},
+				confirmation: async () => {},
+				reply: async (message: BaseSendableMessage | string) => {
+					const { content } = await resolveBotSendableMessage(message);
+					Logging.logDebug(`Shutdown message: ${content}`);
+					void globalClient.sendMessage(Channel.BotLogs, content ?? 'Shutting down...');
+				}
+			} as unknown as OSInteraction;
+
+			await runCommand({
+				commandName: 'admin',
+				args: { shut_down: {} },
+				interaction,
+				user: adminUser,
+				continueDeltaMillis: null,
+				ignoreUserIsBusy: true
+			});
+		}
+	},
+	{
 		name: 'minion_activities',
-		startupWait: Time.Second * 10,
+		startupWait: globalConfig.isProduction ? Time.Second * 10 : 4,
 		timer: null,
 		interval: globalConfig.isProduction ? Time.Second * 5 : 500,
 		cb: async () => {
 			await ActivityManager.processPendingActivities();
+		}
+	},
+	{
+		name: 'staff_bestow_replenishment',
+		startupWait: Time.Minute,
+		timer: null,
+		interval: Time.Hour,
+		cb: async () => {
+			const schedule = await Cache.getStaffGrantsSchedule();
+			const periods: StaffBestowPeriod[] = [];
+			if (schedule.monthly && roll(24 * 30)) periods.push('monthly');
+			if (schedule.weekly && roll(24 * 7)) periods.push('weekly');
+			if (schedule.daily && roll(24)) periods.push('daily');
+			if (schedule.hourly) periods.push('hourly');
+			await runStaffBestowReplenishment(periods);
 		}
 	},
 	{

@@ -14,6 +14,7 @@ import {
 import { calcWhatPercent, sumArr } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
+import { Prisma } from '@/prisma/clients/robochimp/client.js';
 import { activity_type_enum, type User } from '@/prisma/main.js';
 import { BitField } from '@/lib/constants.js';
 import { calcCLDetails } from '@/lib/data/Collections.js';
@@ -44,6 +45,498 @@ export const leagueTasks = [
 export const maxLeaguesPoints = sumArr(leagueTasks.map(group => group.tasks.length * group.points));
 
 export const allLeagueTasks = leagueTasks.map(i => i.tasks).flat(2);
+
+const leaguesTaskMetaByID = new Map(
+	leagueTasks.flatMap(group => group.tasks.map(task => [task.id, { task, points: group.points }] as const))
+);
+
+type LeaguesTaskMeta = typeof leaguesTaskMetaByID extends Map<number, infer T> ? T : never;
+
+function getLeaguesTaskMeta(taskID: number): LeaguesTaskMeta | undefined {
+	return leaguesTaskMetaByID.get(taskID);
+}
+
+export type LeaguesDuplicateTaskAnalysis = {
+	taskID: number;
+	taskName: string;
+	count: number;
+	extraCount: number;
+	pointsEach: number;
+	pointsToRemove: number;
+	knownTask: boolean;
+};
+
+export type LeaguesCompletedTaskAnalysis = {
+	cleanedTaskIDs: number[];
+	duplicateEntriesRemoved: number;
+	pointsToRemove: number;
+	duplicatedTasks: LeaguesDuplicateTaskAnalysis[];
+	unknownDuplicateTaskIDs: number[];
+	userId?: string;
+};
+
+export function analyzeLeaguesCompletedTaskIDs(taskIDs: number[]): LeaguesCompletedTaskAnalysis {
+	const counts = new Map<number, number>();
+	const seen = new Set<number>();
+	const cleanedTaskIDs: number[] = [];
+
+	for (const taskID of taskIDs) {
+		counts.set(taskID, (counts.get(taskID) ?? 0) + 1);
+		if (!seen.has(taskID)) {
+			seen.add(taskID);
+			cleanedTaskIDs.push(taskID);
+		}
+	}
+
+	let duplicateEntriesRemoved = 0;
+	let pointsToRemove = 0;
+	const duplicatedTasks: LeaguesDuplicateTaskAnalysis[] = [];
+
+	for (const [taskID, count] of counts) {
+		if (count < 2) continue;
+		const extraCount = count - 1;
+		const meta = getLeaguesTaskMeta(taskID);
+		const pointsEach = meta?.points ?? 0;
+		const duplicatePoints = extraCount * pointsEach;
+		duplicateEntriesRemoved += extraCount;
+		pointsToRemove += duplicatePoints;
+		duplicatedTasks.push({
+			taskID,
+			taskName: meta?.task.name ?? `Unknown task ${taskID}`,
+			count,
+			extraCount,
+			pointsEach,
+			pointsToRemove: duplicatePoints,
+			knownTask: Boolean(meta)
+		});
+	}
+
+	return {
+		cleanedTaskIDs,
+		duplicateEntriesRemoved,
+		pointsToRemove,
+		duplicatedTasks,
+		unknownDuplicateTaskIDs: duplicatedTasks.filter(task => !task.knownTask).map(task => task.taskID)
+	};
+}
+
+type LeaguesDuplicateClaimPreview = {
+	affectedUsers: number;
+	duplicateEntriesRemoved: number;
+	pointsToRemove: number;
+	unknownDuplicateTaskIDs: number[];
+};
+
+type LeaguesPointsSnapshot = {
+	osb: number;
+	bso: number;
+	total: number;
+};
+
+export type LeaguesTaskAuditUserResult = {
+	userID: string;
+	beforeTaskIDs: number[];
+	afterTaskIDs: number[];
+	removedTaskIDs: number[];
+	removedUnknownTaskIDs: number[];
+	beforeTaskCount: number;
+	afterTaskCount: number;
+	beforePoints: LeaguesPointsSnapshot;
+	afterPoints: LeaguesPointsSnapshot;
+	expectedTotalPoints: number;
+	pointDelta: number;
+	changed: boolean;
+};
+
+export type LeaguesDuplicateClaimCleanupUserResult = {
+	userID: string;
+	beforePoints: LeaguesPointsSnapshot;
+	duplicateEntriesRemoved: number;
+	pointsToRemove: number;
+	duplicateTaskIDsToRemove: number[];
+	duplicatedTasks: LeaguesDuplicateTaskAnalysis[];
+	leagues_points_balance_osb: number;
+	leagues_points_balance_bso: number;
+	leagues_points_total: number;
+};
+
+export type LeaguesDuplicateClaimCleanupResult = LeaguesDuplicateClaimPreview & {
+	users: LeaguesDuplicateClaimCleanupUserResult[];
+	report: string;
+};
+
+type RobochimpLeaguesRow = {
+	id: bigint;
+	leagues_completed_tasks_ids: number[];
+};
+
+type RobochimpLeaguesPointsRow = RobochimpLeaguesRow & {
+	leagues_points_balance_osb: number;
+	leagues_points_balance_bso: number;
+	leagues_points_total: number;
+};
+
+function splitKnownAndUnknownLeaguesTaskIDs(taskIDs: number[]) {
+	const knownTaskIDs: number[] = [];
+	const unknownTaskIDs: number[] = [];
+	for (const taskID of taskIDs) {
+		if (getLeaguesTaskMeta(taskID)) knownTaskIDs.push(taskID);
+		else unknownTaskIDs.push(taskID);
+	}
+	return { knownTaskIDs, unknownTaskIDs };
+}
+
+function uniqueTaskIDsPreservingOrder(taskIDs: number[]) {
+	const seen = new Set<number>();
+	const uniqueTaskIDs: number[] = [];
+	for (const taskID of taskIDs) {
+		if (seen.has(taskID)) continue;
+		seen.add(taskID);
+		uniqueTaskIDs.push(taskID);
+	}
+	return uniqueTaskIDs;
+}
+
+function calculateLeaguesPointsForTaskIDs(taskIDs: number[]) {
+	let points = 0;
+	for (const taskID of taskIDs) {
+		points += getLeaguesTaskMeta(taskID)?.points ?? 0;
+	}
+	return points;
+}
+
+function taskIDArraysMatch(first: number[], second: number[]) {
+	return first.length === second.length && first.every((taskID, index) => taskID === second[index]);
+}
+
+function subtractTaskIDArrays(source: number[], toSubtract: number[]) {
+	const counts = new Map<number, number>();
+	for (const taskID of toSubtract) {
+		counts.set(taskID, (counts.get(taskID) ?? 0) + 1);
+	}
+
+	const result: number[] = [];
+	for (const taskID of source) {
+		const remaining = counts.get(taskID) ?? 0;
+		if (remaining > 0) {
+			counts.set(taskID, remaining - 1);
+			continue;
+		}
+		result.push(taskID);
+	}
+	return result;
+}
+
+function buildLeaguesTaskAuditUserResult({
+	userID,
+	beforeTaskIDs,
+	afterTaskIDs,
+	beforePoints
+}: {
+	userID: string;
+	beforeTaskIDs: number[];
+	afterTaskIDs: number[];
+	beforePoints: LeaguesPointsSnapshot;
+}): LeaguesTaskAuditUserResult {
+	const expectedTotalPoints = calculateLeaguesPointsForTaskIDs(afterTaskIDs);
+	const pointDelta = expectedTotalPoints - beforePoints.total;
+	const removedTaskIDs = subtractTaskIDArrays(beforeTaskIDs, afterTaskIDs);
+	const afterPoints = {
+		osb: beforePoints.osb + pointDelta,
+		bso: beforePoints.bso + pointDelta,
+		total: expectedTotalPoints
+	};
+
+	return {
+		userID,
+		beforeTaskIDs,
+		afterTaskIDs,
+		removedTaskIDs,
+		removedUnknownTaskIDs: removedTaskIDs.filter(taskID => !getLeaguesTaskMeta(taskID)),
+		beforeTaskCount: beforeTaskIDs.length,
+		afterTaskCount: afterTaskIDs.length,
+		beforePoints,
+		afterPoints,
+		expectedTotalPoints,
+		pointDelta,
+		changed:
+			pointDelta !== 0 ||
+			!taskIDArraysMatch(beforeTaskIDs, afterTaskIDs) ||
+			beforePoints.osb !== afterPoints.osb ||
+			beforePoints.bso !== afterPoints.bso
+	};
+}
+
+async function getRobochimpUsersWithLeaguesPoints(): Promise<RobochimpLeaguesPointsRow[]> {
+	return roboChimpClient.$queryRaw<RobochimpLeaguesPointsRow[]>`
+SELECT id, leagues_completed_tasks_ids, leagues_points_balance_osb, leagues_points_balance_bso, leagues_points_total
+FROM public.user
+WHERE COALESCE(cardinality(leagues_completed_tasks_ids), 0) > 0
+	OR COALESCE(leagues_points_total, 0) > 0;`;
+}
+
+async function getRobochimpLeaguesPointsRow(userID: bigint): Promise<RobochimpLeaguesPointsRow> {
+	return roboChimpClient.user.upsert({
+		where: { id: userID },
+		create: { id: userID },
+		update: {},
+		select: {
+			id: true,
+			leagues_completed_tasks_ids: true,
+			leagues_points_balance_osb: true,
+			leagues_points_balance_bso: true,
+			leagues_points_total: true
+		}
+	});
+}
+
+function auditStoredLeaguesTasksForRow(row: RobochimpLeaguesPointsRow): LeaguesTaskAuditUserResult {
+	const { knownTaskIDs } = splitKnownAndUnknownLeaguesTaskIDs(row.leagues_completed_tasks_ids);
+	return buildLeaguesTaskAuditUserResult({
+		userID: row.id.toString(),
+		beforeTaskIDs: row.leagues_completed_tasks_ids,
+		afterTaskIDs: knownTaskIDs,
+		beforePoints: {
+			osb: row.leagues_points_balance_osb,
+			bso: row.leagues_points_balance_bso,
+			total: row.leagues_points_total
+		}
+	});
+}
+
+async function applyLeaguesTaskAuditForUser(
+	userID: bigint,
+	getAuditResult: (row: RobochimpLeaguesPointsRow) => Promise<LeaguesTaskAuditUserResult> | LeaguesTaskAuditUserResult
+): Promise<LeaguesTaskAuditUserResult | null> {
+	const MAX_RETRIES = 5;
+	let retries = 0;
+
+	while (retries < MAX_RETRIES) {
+		try {
+			const result = await roboChimpClient.$transaction(
+				async tx => {
+					const row = await tx.user.findUniqueOrThrow({
+						where: { id: userID },
+						select: {
+							id: true,
+							leagues_completed_tasks_ids: true,
+							leagues_points_balance_osb: true,
+							leagues_points_balance_bso: true,
+							leagues_points_total: true
+						}
+					});
+
+					const auditResult = await getAuditResult(row);
+					if (!auditResult.changed) return null;
+
+					const updatedUser = await tx.user.update({
+						where: { id: userID },
+						data: {
+							leagues_completed_tasks_ids: {
+								set: auditResult.afterTaskIDs
+							},
+							leagues_points_balance_osb: auditResult.afterPoints.osb,
+							leagues_points_balance_bso: auditResult.afterPoints.bso,
+							leagues_points_total: auditResult.afterPoints.total
+						}
+					});
+
+					return { auditResult, updatedUser };
+				},
+				{
+					isolationLevel: Prisma.TransactionIsolationLevel.Serializable
+				}
+			);
+
+			if (!result) return null;
+			await Cache.setRoboChimpUser(result.auditResult.userID, result.updatedUser);
+			return result.auditResult;
+		} catch (error) {
+			if ((error as Prisma.PrismaClientKnownRequestError).code === 'P2034') {
+				retries++;
+				if (retries < MAX_RETRIES) continue;
+			}
+			throw error;
+		}
+	}
+
+	return null;
+}
+
+export async function previewValidateStoredLeaguesTasks(): Promise<LeaguesTaskAuditUserResult[]> {
+	const users = await getRobochimpUsersWithLeaguesPoints();
+	return users.map(auditStoredLeaguesTasksForRow).filter(user => user.changed);
+}
+
+export async function validateStoredLeaguesTasks(): Promise<LeaguesTaskAuditUserResult[]> {
+	const users = await getRobochimpUsersWithLeaguesPoints();
+	const changedUsers: LeaguesTaskAuditUserResult[] = [];
+
+	for (const user of users) {
+		const changed = await applyLeaguesTaskAuditForUser(user.id, row => auditStoredLeaguesTasksForRow(row));
+		if (changed) changedUsers.push(changed);
+	}
+
+	return changedUsers;
+}
+
+export async function getRobochimpUsersWithDuplicateLeaguesTasks(): Promise<RobochimpLeaguesRow[]> {
+	return roboChimpClient.$queryRaw<RobochimpLeaguesRow[]>`
+SELECT id, leagues_completed_tasks_ids
+FROM public.user
+WHERE COALESCE(cardinality(leagues_completed_tasks_ids), 0) > COALESCE((
+	SELECT COUNT(DISTINCT task_id)
+	FROM unnest(leagues_completed_tasks_ids) AS duplicate_tasks(task_id)
+), 0);`;
+}
+
+export function summarizeDuplicateClaimCleanup(
+	summaries: LeaguesCompletedTaskAnalysis[]
+): LeaguesDuplicateClaimPreview {
+	return {
+		affectedUsers: summaries.length,
+		duplicateEntriesRemoved: sumArr(summaries.map(summary => summary.duplicateEntriesRemoved)),
+		pointsToRemove: sumArr(summaries.map(summary => summary.pointsToRemove)),
+		unknownDuplicateTaskIDs: [...new Set(summaries.flatMap(summary => summary.unknownDuplicateTaskIDs))].sort(
+			(a, b) => a - b
+		)
+	};
+}
+
+async function cleanupDuplicateLeaguesClaimsForUser(
+	userID: bigint
+): Promise<LeaguesDuplicateClaimCleanupUserResult | null> {
+	const MAX_RETRIES = 5;
+	let retries = 0;
+
+	while (retries < MAX_RETRIES) {
+		try {
+			const result = await roboChimpClient.$transaction(
+				async tx => {
+					const roboChimpUser = await tx.user.findUniqueOrThrow({
+						where: { id: userID }
+					});
+					const analysis = analyzeLeaguesCompletedTaskIDs(roboChimpUser.leagues_completed_tasks_ids);
+					if (analysis.duplicateEntriesRemoved === 0) return null;
+
+					const updatedUser = await tx.user.update({
+						where: { id: userID },
+						data: {
+							leagues_completed_tasks_ids: {
+								set: analysis.cleanedTaskIDs
+							},
+							leagues_points_balance_osb: {
+								decrement: analysis.pointsToRemove
+							},
+							leagues_points_balance_bso: {
+								decrement: analysis.pointsToRemove
+							},
+							leagues_points_total: {
+								decrement: analysis.pointsToRemove
+							}
+						}
+					});
+
+					return {
+						userID: userID.toString(),
+						beforePoints: {
+							osb: roboChimpUser.leagues_points_balance_osb,
+							bso: roboChimpUser.leagues_points_balance_bso,
+							total: roboChimpUser.leagues_points_total
+						},
+						duplicateEntriesRemoved: analysis.duplicateEntriesRemoved,
+						pointsToRemove: analysis.pointsToRemove,
+						duplicateTaskIDsToRemove: analysis.duplicatedTasks.flatMap(task =>
+							Array.from({ length: task.extraCount }, () => task.taskID)
+						),
+						duplicatedTasks: analysis.duplicatedTasks,
+						leagues_points_balance_osb: updatedUser.leagues_points_balance_osb,
+						leagues_points_balance_bso: updatedUser.leagues_points_balance_bso,
+						leagues_points_total: updatedUser.leagues_points_total,
+						updatedUser
+					};
+				},
+				{
+					isolationLevel: Prisma.TransactionIsolationLevel.Serializable
+				}
+			);
+
+			if (!result) return null;
+			await Cache.setRoboChimpUser(result.userID, result.updatedUser);
+			return {
+				userID: result.userID,
+				beforePoints: result.beforePoints,
+				duplicateEntriesRemoved: result.duplicateEntriesRemoved,
+				pointsToRemove: result.pointsToRemove,
+				duplicateTaskIDsToRemove: result.duplicateTaskIDsToRemove,
+				duplicatedTasks: result.duplicatedTasks,
+				leagues_points_balance_osb: result.leagues_points_balance_osb,
+				leagues_points_balance_bso: result.leagues_points_balance_bso,
+				leagues_points_total: result.leagues_points_total
+			};
+		} catch (error) {
+			if ((error as Prisma.PrismaClientKnownRequestError).code === 'P2034') {
+				retries++;
+				if (retries < MAX_RETRIES) continue;
+			}
+			throw error;
+		}
+	}
+
+	return null;
+}
+
+function buildDuplicateClaimCleanupReport(users: LeaguesDuplicateClaimCleanupUserResult[]): string {
+	if (users.length === 0) return 'No duplicate leagues task claims found.';
+
+	return users
+		.map(user => {
+			const taskSummary = user.duplicatedTasks
+				.map(task => {
+					if (!task.knownTask) {
+						return `${task.taskName} x${task.extraCount} extra`;
+					}
+					return `${task.taskName} x${task.extraCount} extra (${task.pointsToRemove.toLocaleString()} pts)`;
+				})
+				.join(', ');
+			return [
+				`User ${user.userID}`,
+				`Removed ${user.duplicateEntriesRemoved} duplicate entries`,
+				`Deducted ${user.pointsToRemove.toLocaleString()} from OSB/BSO/Total`,
+				`Tasks: ${taskSummary}`
+			].join(' | ');
+		})
+		.join('\n');
+}
+
+export async function cleanupDuplicateLeaguesClaims(): Promise<LeaguesDuplicateClaimCleanupResult> {
+	const usersWithDuplicates = await getRobochimpUsersWithDuplicateLeaguesTasks();
+	const cleanedUsers: LeaguesDuplicateClaimCleanupUserResult[] = [];
+
+	for (const user of usersWithDuplicates) {
+		const cleaned = await cleanupDuplicateLeaguesClaimsForUser(user.id);
+		if (cleaned) cleanedUsers.push(cleaned);
+	}
+
+	const totals = {
+		affectedUsers: cleanedUsers.length,
+		duplicateEntriesRemoved: sumArr(cleanedUsers.map(user => user.duplicateEntriesRemoved)),
+		pointsToRemove: sumArr(cleanedUsers.map(user => user.pointsToRemove)),
+		unknownDuplicateTaskIDs: [
+			...new Set(
+				cleanedUsers.flatMap(user =>
+					user.duplicatedTasks.filter(task => !task.knownTask).map(task => task.taskID)
+				)
+			)
+		].sort((a, b) => a - b)
+	};
+
+	return {
+		...totals,
+		users: cleanedUsers,
+		report: buildDuplicateClaimCleanupReport(cleanedUsers)
+	};
+}
 
 export function generateLeaguesTasksTextFile(finishedTasksIDs: number[], excludeFinished: boolean | undefined) {
 	let totalTasks = 0;
@@ -112,9 +605,10 @@ function calcSuppliesUsedForSmithing(itemsSmithed: Bank) {
 	return input;
 }
 
-export async function leaguesCheckUser(userID: string) {
+async function buildLeaguesTaskCheckContext(userID: string, includeRanking = false) {
 	const user = await mUserFetch(userID);
 	const roboChimpUser = await user.fetchRobochimpUser();
+	const rankingPromise = includeRanking ? calcLeaguesRanking(roboChimpUser) : Promise.resolve(null);
 	const [
 		conStats,
 		poh,
@@ -151,7 +645,7 @@ export async function leaguesCheckUser(userID: string) {
 		personalCollectingStats(user),
 		personalWoodcuttingStats(user),
 		user.calcActualClues(),
-		calcLeaguesRanking(roboChimpUser),
+		rankingPromise,
 		personalSmeltingStats(user),
 		getParsedStashUnits(userID),
 		calculateAllFletchedItems(user)
@@ -210,6 +704,74 @@ export async function leaguesCheckUser(userID: string) {
 			itemsSmithed: smithingStats
 		})
 	};
+
+	return { user, roboChimpUser, args, ranking };
+}
+
+export async function getCurrentlyCompletedLeaguesTaskIDs(userID: string) {
+	const { args } = await buildLeaguesTaskCheckContext(userID);
+	const finishedIDs: number[] = [];
+
+	for (const { tasks } of leagueTasks) {
+		for (const task of tasks) {
+			const has = await task.has(args);
+			if (has) finishedIDs.push(task.id);
+		}
+	}
+
+	return finishedIDs;
+}
+
+async function verifyStoredLeaguesTaskIDs(userID: string, storedTaskIDs: number[]) {
+	const { args } = await buildLeaguesTaskCheckContext(userID);
+	const verifiedTaskIDs: number[] = [];
+
+	for (const taskID of uniqueTaskIDsPreservingOrder(storedTaskIDs)) {
+		const meta = getLeaguesTaskMeta(taskID);
+		if (!meta) continue;
+		if (await meta.task.has(args)) {
+			verifiedTaskIDs.push(taskID);
+		}
+	}
+
+	return verifiedTaskIDs;
+}
+
+export async function previewVerifyLeaguesTasksForUser(userID: string): Promise<LeaguesTaskAuditUserResult> {
+	const row = await getRobochimpLeaguesPointsRow(BigInt(userID));
+	const verifiedTaskIDs = await verifyStoredLeaguesTaskIDs(userID, row.leagues_completed_tasks_ids);
+
+	return buildLeaguesTaskAuditUserResult({
+		userID,
+		beforeTaskIDs: row.leagues_completed_tasks_ids,
+		afterTaskIDs: verifiedTaskIDs,
+		beforePoints: {
+			osb: row.leagues_points_balance_osb,
+			bso: row.leagues_points_balance_bso,
+			total: row.leagues_points_total
+		}
+	});
+}
+
+export async function verifyLeaguesTasksForUser(userID: string): Promise<LeaguesTaskAuditUserResult | null> {
+	return applyLeaguesTaskAuditForUser(BigInt(userID), async row => {
+		const verifiedTaskIDs = await verifyStoredLeaguesTaskIDs(userID, row.leagues_completed_tasks_ids);
+		return buildLeaguesTaskAuditUserResult({
+			userID,
+			beforeTaskIDs: row.leagues_completed_tasks_ids,
+			afterTaskIDs: verifiedTaskIDs,
+			beforePoints: {
+				osb: row.leagues_points_balance_osb,
+				bso: row.leagues_points_balance_bso,
+				total: row.leagues_points_total
+			}
+		});
+	});
+}
+
+export async function leaguesCheckUser(userID: string) {
+	const { roboChimpUser, args, ranking } = await buildLeaguesTaskCheckContext(userID, true);
+	if (!ranking) throw new Error(`Missing leagues ranking for user ${userID}.`);
 
 	let resStr = '\n';
 	let totalTasks = 0;
@@ -279,8 +841,7 @@ const unlockables: {
 
 export async function leaguesClaimCommand(user: MUser, finishedTaskIDs: number[]) {
 	const roboChimpUser = await user.fetchRobochimpUser();
-
-	const newlyFinishedTasks = finishedTaskIDs.filter(i => !roboChimpUser.leagues_completed_tasks_ids.includes(i));
+	const uniqueFinishedTaskIDs = analyzeLeaguesCompletedTaskIDs(finishedTaskIDs).cleanedTaskIDs;
 
 	const unlockMessages: string[] = [];
 	for (const unl of unlockables) {
@@ -294,35 +855,90 @@ export async function leaguesClaimCommand(user: MUser, finishedTaskIDs: number[]
 		return `**You unlocked...** ${unlockMessages.join(', ')}`;
 	}
 
-	if (newlyFinishedTasks.length === 0) return "You don't have any unclaimed points.";
-
-	const fullNewlyFinishedTasks: Task[] = [];
+	const MAX_RETRIES = 5;
+	let retries = 0;
+	let newUser: Awaited<ReturnType<typeof roboChimpClient.user.update>> | null = null;
+	let newlyFinishedTasks: number[] = [];
+	let fullNewlyFinishedTasks: Task[] = [];
 	let pointsToAward = 0;
-	for (const task of newlyFinishedTasks) {
-		const group = leagueTasks.find(i => i.tasks.some(t => t.id === task))!;
-		pointsToAward += group.points;
-		fullNewlyFinishedTasks.push(group.tasks.find(i => i.id === task)!);
+
+	while (retries < MAX_RETRIES) {
+		try {
+			const result = await roboChimpClient.$transaction(
+				async tx => {
+					const freshRoboChimpUser = await tx.user.findUniqueOrThrow({
+						where: { id: BigInt(user.id) }
+					});
+					const currentCompletedTaskIDs = freshRoboChimpUser.leagues_completed_tasks_ids;
+					const currentCompletedTaskSet = new Set(currentCompletedTaskIDs);
+					const tasksToClaim = uniqueFinishedTaskIDs.filter(taskID => !currentCompletedTaskSet.has(taskID));
+					if (tasksToClaim.length === 0) {
+						return {
+							newUser: freshRoboChimpUser,
+							newlyFinishedTasks: [] as number[],
+							fullNewlyFinishedTasks: [] as Task[],
+							pointsToAward: 0
+						};
+					}
+
+					const fullTasks: Task[] = [];
+					let points = 0;
+					for (const taskID of tasksToClaim) {
+						const meta = getLeaguesTaskMeta(taskID);
+						if (!meta) {
+							throw new Error(`Unknown leagues task ID ${taskID} while claiming leagues points.`);
+						}
+						points += meta.points;
+						fullTasks.push(meta.task);
+					}
+
+					const updatedUser = await tx.user.update({
+						where: { id: BigInt(user.id) },
+						data: {
+							leagues_completed_tasks_ids: {
+								set: [...currentCompletedTaskIDs, ...tasksToClaim]
+							},
+							leagues_points_balance_osb: {
+								increment: points
+							},
+							leagues_points_balance_bso: {
+								increment: points
+							},
+							leagues_points_total: {
+								increment: points
+							}
+						}
+					});
+
+					return {
+						newUser: updatedUser,
+						newlyFinishedTasks: tasksToClaim,
+						fullNewlyFinishedTasks: fullTasks,
+						pointsToAward: points
+					};
+				},
+				{
+					isolationLevel: Prisma.TransactionIsolationLevel.Serializable
+				}
+			);
+
+			newUser = result.newUser;
+			newlyFinishedTasks = result.newlyFinishedTasks;
+			fullNewlyFinishedTasks = result.fullNewlyFinishedTasks;
+			pointsToAward = result.pointsToAward;
+			break;
+		} catch (error) {
+			if ((error as Prisma.PrismaClientKnownRequestError).code === 'P2034') {
+				retries++;
+				if (retries < MAX_RETRIES) continue;
+			}
+			throw error;
+		}
 	}
 
-	const newUser = await roboChimpClient.user.update({
-		where: {
-			id: BigInt(user.id)
-		},
-		data: {
-			leagues_completed_tasks_ids: {
-				push: newlyFinishedTasks
-			},
-			leagues_points_balance_osb: {
-				increment: pointsToAward
-			},
-			leagues_points_balance_bso: {
-				increment: pointsToAward
-			},
-			leagues_points_total: {
-				increment: pointsToAward
-			}
-		}
-	});
+	if (newlyFinishedTasks.length === 0) return "You don't have any unclaimed points.";
+	if (!newUser) throw new Error(`Failed to update leagues points for user ${user.id}.`);
+	await Cache.setRoboChimpUser(user.id, newUser);
 
 	const newTotal = newUser.leagues_points_total;
 

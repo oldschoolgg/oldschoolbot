@@ -22,6 +22,8 @@ export interface ActivityTaskOptions {
 	cantBeDoubled?: boolean;
 }
 
+export type BeachCombingMethod = 'Surfing' | 'BeachCombing' | 'BuildSandcastles' | 'PickupTrash';
+
 export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
 	type:
 		| 'Questing'
@@ -53,6 +55,12 @@ export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
 		| 'Revenants';
 }
 
+export interface BeachCombingActivityTaskOptions extends ActivityTaskOptions {
+	type: 'BeachCombing';
+	minutes?: number;
+	method: BeachCombingMethod;
+}
+
 export interface ActivityTaskOptionsWithQuantity extends ActivityTaskOptions {
 	type:
 		| 'VolcanicMine'
@@ -65,6 +73,9 @@ export interface ActivityTaskOptionsWithQuantity extends ActivityTaskOptions {
 		| 'AerialFishing'
 		| 'FishingTrawler'
 		| 'CamdozaalFishing'
+		| 'GemstoneFishing'
+		| 'AncientMycology'
+		| 'ArchaicMining'
 		| 'CamdozaalMining'
 		| 'CamdozaalSmithing'
 		| 'Naxxus'
@@ -196,6 +207,13 @@ export interface MiningActivityTaskOptions extends ActivityTaskOptions {
 	oreID: number;
 	quantity: number;
 	powermine: boolean;
+	iQty?: number;
+}
+
+export interface ArchaicMiningActivityTaskOptions extends ActivityTaskOptions {
+	type: 'ArchaicMining';
+	miningType: 'dragonbone' | 'crystalline';
+	quantity: number;
 	iQty?: number;
 }
 
@@ -708,6 +726,7 @@ export type ActivityTaskData =
 	| FiremakingActivityTaskOptions
 	| FishingActivityTaskOptions
 	| MiningActivityTaskOptions
+	| ArchaicMiningActivityTaskOptions
 	| MotherlodeMiningActivityTaskOptions
 	| PlunderActivityTaskOptions
 	| SmithingActivityTaskOptions
@@ -728,6 +747,7 @@ export type ActivityTaskData =
 	| ActivityTaskOptionsWithNoChanges
 	| TokkulShopOptions
 	| BuyActivityTaskOptions
+	| BeachCombingActivityTaskOptions
 	| BirdhouseActivityTaskOptions
 	| FightCavesActivityTaskOptions
 	| ActivityTaskOptionsWithQuantity

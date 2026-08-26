@@ -1,12 +1,10 @@
-import { cleanUsername, removeFromArr } from '@oldschoolgg/toolkit';
-import { isValidDiscordSnowflake } from '@oldschoolgg/util';
+import { removeFromArr } from '@oldschoolgg/toolkit';
 import { convertXPtoLVL, type ItemBank } from 'oldschooljs';
 
-import type { Prisma, User } from '@/prisma/main.js';
+import type { Prisma } from '@/prisma/main.js';
 import { type BitField, BitFieldData, MAX_LEVEL, MAX_XP } from '@/lib/constants.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
-import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
 
 // @ts-expect-error ignore
 BigInt.prototype.toJSON = function () {
@@ -24,66 +22,6 @@ export function skillingPetDropRate(
 	const petRateDivisor = twoHundredMillXP ? 15 : 1;
 	const dropRate = Math.floor((baseDropRate - skillLevel * 25) / petRateDivisor);
 	return { petDropRate: dropRate };
-}
-
-function createUsernameWithBadges(user: Pick<User, 'username' | 'badges' | 'minion_ironman'>): string {
-	if (!user.username) return 'Unknown';
-	const badges = makeBadgeString(user.badges, user.minion_ironman);
-	return `${badges ? `${badges} ` : ''}${user.username}`;
-}
-
-export async function fetchUsernameAndCache(_id: string | bigint): Promise<string> {
-	const id = _id.toString();
-
-	if (!isValidDiscordSnowflake(id)) {
-		throw new Error(`Invalid userID: ${id}`);
-	}
-	const cached = await Cache._getBadgedUsernameRaw(id);
-	if (cached) return cached;
-	let user = await prisma.user.upsert({
-		where: {
-			id
-		},
-		select: {
-			username: true,
-			badges: true,
-			minion_ironman: true
-		},
-		create: {
-			id
-		},
-		update: {}
-	});
-
-	// If no username available, fetch it
-	if (!user?.username && !process.env.TEST) {
-		const djsUser = await globalClient.fetchUser(id).catch(() => null);
-		if (djsUser) {
-			user = await prisma.user.update({
-				where: {
-					id
-				},
-				data: {
-					username: cleanUsername(djsUser.username)
-				}
-			});
-		}
-		// Now the user has a username, and we can continue to create the username with badges.
-	}
-
-	const badgedUsername = createUsernameWithBadges(user);
-	await Promise.all([
-		Cache.setBadgedUsername(id, badgedUsername),
-		prisma.user.update({
-			where: {
-				id
-			},
-			data: {
-				username_with_badges: badgedUsername
-			}
-		})
-	]);
-	return badgedUsername;
 }
 
 export async function toggleBitfield(user: MUser, bit: BitField, toggleName?: string) {

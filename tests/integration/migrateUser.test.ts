@@ -270,7 +270,7 @@ class UserData {
 		}
 
 		if (this.username !== target.username) {
-			errors.push(`Usernames don't match (new_users) - ${this.username}:${target.username}`);
+			errors.push(`Usernames don't match (users) - ${this.username}:${target.username}`);
 		}
 
 		if (!ignoreRoboChimp && this.githubId !== target.githubId) {

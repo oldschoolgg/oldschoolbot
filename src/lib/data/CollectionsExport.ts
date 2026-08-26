@@ -1,4 +1,4 @@
-import { allDOAPets, customPetsCL, discontinuedCustomPetsCL } from '@/lib/bso/collection-log/main.js';
+import { allDiscontinuedPets, allDOAPets, customPetsCL } from '@/lib/bso/collection-log/main.js';
 import { allHolidayItems, PartyhatTable } from '@/lib/bso/holidayItems.js';
 import { stoneSpirits } from '@/lib/bso/skills/mining/stoneSpirits.js';
 import { LampTable } from '@/lib/bso/xpLamps.js';
@@ -1509,6 +1509,8 @@ export const aerialFishingCL = resolveItems([
 	'Fish sack',
 	...ItemGroups.anglerOutfit
 ]);
+export const distilleryCL = resolveItems(['Diluted brimstone', 'Sedryn']);
+export const concontractsCL = resolveItems(['Bamyr']);
 export const allPetsCL = resolveItems([
 	'Abyssal orphan',
 	'Ikkle hydra',
@@ -2270,11 +2272,11 @@ const mumpkinMetamorphPets = resolveItems(['Mumpkin (demonic)', 'Mumpkin (pumpki
 export const allPetIDs = [
 	...allPetsCL,
 	...customPetsCL,
-	...discontinuedCustomPetsCL,
+	...allDiscontinuedPets,
 	...chambersOfXericMetamorphPets,
 	...tobMetamorphPets,
 	...growablePets.flatMap(petSeries => petSeries.stages),
-	...resolveItems(['Little parasite', 'Dark squirrel', 'Black swan', 'Abyssal protector']),
+	...resolveItems(['Little parasite', 'Dark squirrel', 'Abyssal protector']),
 	...metamorphPets,
 	...toaMetamorphPets,
 	...allDOAPets,
@@ -2392,6 +2394,8 @@ export const LMSBuyables: LMSBuyable[] = [
 ];
 
 export const shootingStarsCL = resolveItems(['Celestial ring (uncharged)', 'Star fragment']);
+export const archonCL = resolveItems(['Prismare ring (u)', 'Empyrean shards', "Archon's ichor"]);
+export const elderCacheCL = resolveItems(['Elderflame catalyst']);
 export const skillingMiscCL = resolveItems([
 	'Prospector helmet',
 	'Prospector jacket',

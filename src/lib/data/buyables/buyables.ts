@@ -231,6 +231,10 @@ const constructionBuyables: Buyable[] = [
 		name: 'Bucket of water',
 		gpCost: 500,
 		ironmanPrice: 12
+	},
+	{
+		name: 'Saw',
+		gpCost: 13
 	}
 ];
 
@@ -776,6 +780,12 @@ const noveltyFood: Buyable[] = [
 
 const Buyables: Buyable[] = [
 	{
+		name: 'Pestle and mortar',
+		aliases: ['mortar and pestle', 'pestle & mortar', 'mortar & pestle'],
+		gpCost: 10_000,
+		ironmanPrice: 128
+	},
+	{
 		name: 'Rope',
 		aliases: ['rope'],
 		gpCost: 100,
@@ -1136,6 +1146,10 @@ const Buyables: Buyable[] = [
 		name: 'Diving apparatus',
 		gpCost: 1000,
 		qpRequired: 30
+	},
+	{
+		name: 'Rake',
+		gpCost: 10
 	},
 	{
 		name: 'Fishbowl helmet',

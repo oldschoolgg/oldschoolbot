@@ -1,5 +1,7 @@
 import type {
 	BathhouseTaskOptions,
+	BrimstoneDistilleryTaskOptions,
+	ConstructionContractsTaskOptions,
 	DisassembleTaskOptions,
 	DOAOptions,
 	DungeoneeringOptions,
@@ -14,7 +16,7 @@ import type {
 import { kibbles } from '@/lib/bso/kibble.js';
 import { divinationEnergies, memoryHarvestTypes } from '@/lib/bso/skills/divination.js';
 
-import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
+import { ButtonBuilder, ButtonStyle, idToUnixTs } from '@oldschoolgg/discord';
 import { objectValues, Time } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
@@ -22,6 +24,7 @@ import { activity_type_enum } from '@/prisma/main/enums.js';
 import type { Activity } from '@/prisma/main.js';
 import type { PvMMethod } from '@/lib/constants.js';
 import { findTripBuyable } from '@/lib/data/buyables/tripBuyables.js';
+import { InteractionID } from '@/lib/InteractionID.js';
 import { SlayerActivityConstants } from '@/lib/minions/data/combatConstants.js';
 import { autocompleteMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { runCommand } from '@/lib/settings/settings.js';
@@ -38,6 +41,7 @@ import type {
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
 	AnimatedArmourActivityTaskOptions,
+	ArchaicMiningActivityTaskOptions,
 	BossActivityTaskOptions,
 	BuryingActivityTaskOptions,
 	ButlerActivityTaskOptions,
@@ -101,6 +105,7 @@ export const taskCanBeRepeated = (activity: Activity) => {
 		[
 			activity_type_enum.TearsOfGuthix,
 			activity_type_enum.ShootingStars,
+			activity_type_enum.Archon,
 			activity_type_enum.BirthdayEvent,
 			activity_type_enum.BlastFurnace,
 			activity_type_enum.Easter,
@@ -113,7 +118,8 @@ export const taskCanBeRepeated = (activity: Activity) => {
 			activity_type_enum.GuthixianCache,
 			activity_type_enum.Birdhouse,
 			activity_type_enum.StrongholdOfSecurity,
-			activity_type_enum.CombatRing
+			activity_type_enum.CombatRing,
+			activity_type_enum.ArchonEvent
 		] as activity_type_enum[]
 	).includes(activity.type);
 };
@@ -201,6 +207,14 @@ const tripHandlers: {
 		commandName: 'm',
 		args: () => ({})
 	},
+	[activity_type_enum.Archon]: {
+		commandName: 'm',
+		args: () => ({})
+	},
+	[activity_type_enum.ArchonEvent]: {
+		commandName: 'm',
+		args: () => ({})
+	},
 	[activity_type_enum.BirthdayEvent]: {
 		commandName: 'm',
 		args: () => ({})
@@ -273,6 +287,27 @@ const tripHandlers: {
 			camdozaal: { action: 'fishing', quantity: data.iQty }
 		})
 	},
+	[activity_type_enum.GemstoneFishing]: {
+		commandName: 'activities',
+		args: (data: ActivityTaskOptionsWithQuantity) => ({
+			gemstone_fishing: { quantity: data.iQty }
+		})
+	},
+	[activity_type_enum.AncientMycology]: {
+		commandName: 'activities',
+		args: (data: ActivityTaskOptionsWithQuantity) => ({
+			ancient_mycology: { quantity: data.iQty }
+		})
+	},
+	[activity_type_enum.ArchaicMining]: {
+		commandName: 'activities',
+		args: (data: ArchaicMiningActivityTaskOptions | ActivityTaskOptionsWithQuantity) => ({
+			archaic_mining: {
+				type: (data as ArchaicMiningActivityTaskOptions).miningType,
+				quantity: data.iQty
+			}
+		})
+	},
 	[activity_type_enum.BarbarianAssault]: {
 		commandName: 'minigames',
 		args: () => ({ barb_assault: { start: {} } })
@@ -316,6 +351,10 @@ const tripHandlers: {
 	[activity_type_enum.MyNotes]: {
 		commandName: 'activities',
 		args: () => ({ my_notes: {} })
+	},
+	[activity_type_enum.BeachCombing]: {
+		commandName: 'activities',
+		args: data => ({ beach_combing: { focus: data.method, minutes: data.minutes } })
 	},
 	[activity_type_enum.Collecting]: {
 		commandName: 'activities',
@@ -781,6 +820,12 @@ const tripHandlers: {
 			name: `Ignecarus ${data.users.length === 1 ? 'solo' : 'mass'}`
 		})
 	},
+	[activity_type_enum.BurningDominion]: {
+		commandName: 'mass',
+		args: () => ({
+			monster: 'burning dominion'
+		})
+	},
 	[activity_type_enum.KibbleMaking]: {
 		commandName: 'kibble',
 		args: (data: KibbleOptions) => ({
@@ -963,6 +1008,26 @@ const tripHandlers: {
 			}
 		})
 	},
+	[activity_type_enum.BrimstoneDistillery]: {
+		commandName: 'bsominigames',
+		args: (data: BrimstoneDistilleryTaskOptions) => ({
+			brimstone_distillery: {
+				start: {
+					recipe: data.recipe
+				}
+			}
+		})
+	},
+	[activity_type_enum.ConstructionContracts]: {
+		commandName: 'bsominigames',
+		args: (data: ConstructionContractsTaskOptions) => ({
+			construction_contracts: {
+				start: {
+					recipe: data.recipe
+				}
+			}
+		})
+	},
 	[activity_type_enum.Colosseum]: {
 		commandName: 'k',
 		args: (data: ColoTaskOptions) => ({
@@ -1016,7 +1081,7 @@ export async function makeRepeatTripButtons(user: MUser) {
 		buttons.push(
 			new ButtonBuilder()
 				.setLabel(`Repeat ${trip.type}`)
-				.setCustomId(`REPEAT_TRIP_${trip.type}`)
+				.setCustomId(`${InteractionID.Commands.RepeatTrip}_${trip.type}`)
 				.setStyle(ButtonStyle.Secondary)
 		);
 	}
@@ -1028,7 +1093,7 @@ export async function repeatTrip(user: MUser, interaction: OSInteraction, activi
 		return { content: "Couldn't find any trip to repeat.", ephemeral: true };
 	}
 	const handler = tripHandlers[activity.type];
-	const args: ActivityTaskData = ActivityManager.convertStoredActivityToFlatActivity(activity);
+	const args: ActivityTaskData = ActivityManager.convertStoredActivityToFlatActivity(activity, interaction);
 	let commandArgs: CommandOptions;
 	try {
 		commandArgs = handler.args(args as any) as CommandOptions;
@@ -1038,13 +1103,15 @@ export async function repeatTrip(user: MUser, interaction: OSInteraction, activi
 		}
 		throw err;
 	}
+	const continueDeltaMillis = interaction.createdTimestamp - idToUnixTs(interaction.messageId);
+
 	return runCommand({
 		commandName: handler.commandName,
 		isContinue: true,
 		args: commandArgs,
 		interaction,
 		user,
-		continueDeltaMillis: 0
+		continueDeltaMillis
 		// TODO: continueDeltaMillis: interaction.createdAt.getTime() - (interaction.message?.createdTimestamp ?? 0)
 	});
 }

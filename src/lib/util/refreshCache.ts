@@ -1,6 +1,7 @@
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 
-import { roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { globalConfig } from '@/lib/constants.js';
+import { roboChimpSyncData } from '@/lib/roboChimp.js';
 import { getIdFromMention } from '@/lib/util.js';
 
 export async function refreshUserCache({
@@ -13,13 +14,22 @@ export async function refreshUserCache({
 	possibleTarget?: string;
 }) {
 	let refreshUser = user;
+	const shouldRefreshStaffGrantsSchedule = !possibleTarget?.trim() && user.isModOrAdmin;
+	let shouldRefreshExtraSettings = false;
 
 	if (possibleTarget) {
 		possibleTarget = getIdFromMention(possibleTarget);
-		if (user.isMod() || user.isAdmin()) {
+		shouldRefreshExtraSettings = possibleTarget === globalConfig.clientID && (user.isAdmin || user.isGameHacker);
+		if (user.isMod || user.isAdmin) {
 			if (!isValidDiscordSnowflake(possibleTarget)) return 'Invalid user ID.';
-			refreshUser = await mUserFetch(possibleTarget);
-			if (!refreshUser.hasMinion) return 'Target player does not have a minion.';
+			if (possibleTarget === globalConfig.clientID) {
+				refreshUser = user;
+			} else {
+				refreshUser = await mUserFetch(possibleTarget);
+				if (!refreshUser.hasMinion) return 'Target player does not have a minion.';
+			}
+		} else if (shouldRefreshExtraSettings) {
+			refreshUser = user;
 		} else return 'Ook';
 	}
 
@@ -28,8 +38,15 @@ export async function refreshUserCache({
 	};
 	await Promise.all([
 		refreshUser.fetchPerkTier({ forceNoCache: true }),
+		Cache.resetUsername(refreshUser.id),
 		updateGuildMember(refreshUser.id),
-		roboChimpUserFetch(refreshUser.id)
+		Cache.getRoboChimpUser(refreshUser.id, true),
+		roboChimpSyncData(refreshUser),
+		shouldRefreshStaffGrantsSchedule ? Cache.refreshStaffGrants() : Promise.resolve(),
+		shouldRefreshExtraSettings ? Cache.refreshExtraSettingsCache() : Promise.resolve()
 	]);
-	return `${refreshUser}'s Caches updated successfully!`;
+	user.updateProperties();
+	return `${refreshUser}'s Caches updated successfully!${
+		shouldRefreshStaffGrantsSchedule ? ' Staff bestow schedule cache refreshed.' : ''
+	}${shouldRefreshExtraSettings ? ' Extra settings cache refreshed.' : ''}`;
 }
