@@ -59,7 +59,7 @@ Use [[/farming auto_farm]] to process every patch your current filter/preference
 
 - Builds a combined plan that spends the entire Farming trip length, chaining each patch back-to-back.
 - Respects [[/farming auto_farm_filter]] choices (`AllFarm` to use your best seeds everywhere, `Replant` to stick to what was already growing).
-- Supports [[/farming set_preferred]] for per-patch behavior (`seed`, `highest_available`, or `empty`) plus optional contract prioritization.
+- Supports [[/farming set_preferred]] for per-patch behaviour (`seed`, `highest_available`, or `empty`), an optional planting quantity, and contract prioritisation.
 - Applies your [[/farming default_compost]] choice and [[/farming always_pay]] setting automatically.
 - Skips patches that would push the trip beyond the max duration or when required resources are missing.
 
