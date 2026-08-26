@@ -62,7 +62,26 @@ export const mixCommand = defineCommand({
 			return `You need at least **${mixableItem.qpRequired}** QP to make ${mixableItem.item.name}.`;
 		}
 
-		const requiredItems = new Bank(mixableItem.inputItems);
+		const resolvedRequiredItems = new Bank();
+		for (const [item, qty] of mixableItem.inputItems.items()) {
+    		const itemName = item.name;
+
+    		if (user.owns(new Bank({ [itemName]: qty }))) {
+        		resolvedRequiredItems.add(itemName, qty);
+   			 } 
+    		else if (mixableItem.alternatives && mixableItem.alternatives[itemName]) {
+        		const altItemName = mixableItem.alternatives[itemName];
+        		if (user.owns(new Bank({ [altItemName]: qty }))) {
+           			resolvedRequiredItems.add(altItemName, qty);
+        		} else {
+            		resolvedRequiredItems.add(itemName, qty);
+        			}
+    		} else {
+        		resolvedRequiredItems.add(itemName, qty);
+    			}
+		}
+
+		const requiredItems = resolvedRequiredItems;
 		const baseCost = new Bank(mixableItem.inputItems);
 		const { zahur, wesley, quantity: optionQuantity } = options;
 		const {
