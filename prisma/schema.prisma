@@ -768,11 +768,12 @@ model UserStats {
   colo_kc_bank   Json @default("{}") @db.Json
   colo_max_glory Int?
 
-  doom_cost          Json @default("{}") @db.Json
-  doom_loot          Json @default("{}") @db.Json
-  doom_deepest_delve Int  @default(0)
-  doom_deep_delves   Int  @default(0)
-  doom_total_delves  Int  @default(0)
+  doom_cost             Json @default("{}") @db.Json
+  doom_loot             Json @default("{}") @db.Json
+  doom_deepest_delve    Int  @default(0)
+  doom_deep_delves      Int  @default(0)
+  doom_total_delves     Int  @default(0)
+  doom_wave_completions Json @default("{}") @db.Json
 
   quivers_sacrificed Int @default(0)
 

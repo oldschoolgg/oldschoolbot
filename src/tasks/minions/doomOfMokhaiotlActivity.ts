@@ -1,6 +1,6 @@
 import { Bank, EMonster, type ItemBank, Items } from 'oldschooljs';
 
-import { DOOM_UNIQUE_ITEMS } from '@/lib/doomOfMokhaiotl.js';
+import { DOOM_UNIQUE_ITEMS, normaliseDoomWaveCompletions } from '@/lib/doomOfMokhaiotl.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { addMonsterXPRaw } from '@/lib/minions/functions/addMonsterXPRaw.js';
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
@@ -30,11 +30,17 @@ export const doomOfMokhaiotlTask: MinionTask = {
 		const prevDeepest = Number(currentStats.doom_deepest_delve ?? 0);
 		const prevDeepDelves = Number(currentStats.doom_deep_delves ?? 0);
 		const prevTotal = Number(currentStats.doom_total_delves ?? 0);
+		const waveCompletions = normaliseDoomWaveCompletions(
+			(currentStats as { doom_wave_completions?: unknown }).doom_wave_completions
+		);
 
 		const newDeepest = Math.max(prevDeepest, deepestDelveCompleted);
 		const newDeepDelves = prevDeepDelves + (deepDelvesEarned ?? 0);
 		const newTotal = prevTotal + (totalWavesCleared ?? 0);
 		const doomKcEarned = deepDelvesEarned ?? 0;
+		for (let wave = 1; wave <= deepestDelveCompleted; wave++) {
+			waveCompletions[wave] = (waveCompletions[wave] ?? 0) + 1;
+		}
 
 		const monsterScores = { ...((currentStats.monster_scores ?? {}) as ItemBank) };
 		if (doomKcEarned > 0) {
@@ -45,8 +51,9 @@ export const doomOfMokhaiotlTask: MinionTask = {
 			doom_deepest_delve: newDeepest,
 			doom_deep_delves: newDeepDelves,
 			doom_total_delves: newTotal,
+			doom_wave_completions: waveCompletions,
 			monster_scores: monsterScores
-		});
+		} as Parameters<typeof user.statsUpdate>[0]);
 
 		await user.update({
 			ayak_charges: { increment: ayakChargesGained }

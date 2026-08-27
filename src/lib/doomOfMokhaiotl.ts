@@ -5,24 +5,47 @@ import {
 	objectEntries,
 	reduceNumByPercent,
 	round,
-	sumArr,
 	Time,
 	UserError
 } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, Items, LootTable, resolveItems } from 'oldschooljs';
-import { clamp } from 'remeda';
 
-import { doomOfMokhaiotlCL } from '@/lib/data/CollectionsExport.js';
+import { avasDevices, doomOfMokhaiotlCL } from '@/lib/data/CollectionsExport.js';
+import {
+	applyDoomSkillBoost,
+	calculateDoomDeathChances,
+	calculateDoomKcReduction,
+	calculateDoomRunDeathChance,
+	calculateDoomTripDuration,
+	calculateDoomZcbBoltsNeeded,
+	type DoomMeleePunishWeapon,
+	type DoomWaveCompletions,
+	formatDoomDeathChance,
+	getDoomArrowMod,
+	getDoomMeleePunishWeaponName,
+	MAX_DELVE,
+	NOXIOUS_HALBERD_SPEED_BOOST,
+	normaliseDoomWaveCompletions,
+	selectDoomMeleePunishWeapon,
+	ZCB_SPEED_BOOST
+} from '@/lib/doomOfMokhaiotlHelpers.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
-import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { DoomTaskOptions } from '@/lib/types/minions.js';
 import { formatList, formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
-export const MAX_DELVE = 30;
-
 export const DOOM_UNIQUE_ITEMS = resolveItems(['Mokhaiotl cloth', 'Eye of ayak (uncharged)', 'Avernic treads', 'Dom']);
+
+export {
+	calculateDeathChance,
+	calculateDoomRunDeathChance,
+	calculateDoomTripDuration,
+	calculateDoomZcbBoltsNeeded,
+	MAX_DELVE,
+	normaliseDoomWaveCompletions,
+	selectDoomMeleePunishWeapon
+} from '@/lib/doomOfMokhaiotlHelpers.js';
 
 export const DoomOfMokhaiotl = {
 	id: 14708,
@@ -33,17 +56,6 @@ export const DoomOfMokhaiotl = {
 	fmtProg: (deepestDelve: number, deepDelves: number, totalDelves: number) =>
 		`Deepest Delve: ${deepestDelve} | Deep Delves: ${deepDelves} | Total Delves: ${totalDelves}`
 };
-
-const ARROW_TIER_IDS: { mod: number; ids: number[] }[] = [
-	{ mod: -0.08, ids: resolveItems(['Dragon arrow']) },
-	{ mod: -0.04, ids: resolveItems(['Amethyst arrow']) },
-	{ mod: 0.05, ids: resolveItems(['Rune arrow']) },
-	{ mod: 0.12, ids: resolveItems(['Adamant arrow']) },
-	{ mod: 0.12, ids: resolveItems(['Mithril arrow']) },
-	{ mod: 0.12, ids: resolveItems(['Steel arrow']) },
-	{ mod: 0.12, ids: resolveItems(['Iron arrow']) },
-	{ mod: 0.12, ids: resolveItems(['Bronze arrow']) }
-];
 
 interface DelveEntry {
 	delveLevel: number;
@@ -139,95 +151,8 @@ export const doomDelves: DelveEntry[] = Array.from({ length: MAX_DELVE }, (_, i)
 	};
 });
 
-function getArrowMod(arrowId: number | null): number {
-	if (arrowId === null) return 0.12;
-	return ARROW_TIER_IDS.find(tier => tier.ids.includes(arrowId))?.mod ?? 0.12;
-}
-
 function experienceScore(deepDelves: number, totalDelves: number): number {
 	return deepDelves * 2 + Math.floor(totalDelves / 10);
-}
-
-function earlyDelveDeathReduction(deepDelves: number): number {
-	if (deepDelves >= 100) return 0.95;
-	if (deepDelves >= 50) return 0.9;
-	if (deepDelves >= 25) return 0.85;
-	if (deepDelves >= 10) return 0.75;
-	return Math.min(deepDelves / 10, 1) * 0.2;
-}
-
-function deepDelveDeathReduction(deepDelves: number): number {
-	if (deepDelves < 100) return Math.min(deepDelves / 100, 1) * 0.12;
-	if (deepDelves < 200) return 0.3 + ((deepDelves - 100) / 100) * 0.2;
-	return Math.min(0.65, 0.5 + ((deepDelves - 200) / 300) * 0.15);
-}
-
-function calculateDeathChance(delve: number, deepDelves: number, totalDelves: number, hasMasori: boolean): number {
-	let chance: number;
-
-	if (delve < 8) {
-		const base = delve <= 3 ? [2, 5, 8][delve - 1] : delve <= 5 ? 8 + (delve - 3) * 3.5 : 15 + (delve - 5) * 3.5;
-		const totalReduction = Math.min(totalDelves / 2000, 1) * 0.35;
-		const totalFactor = Math.min(totalReduction + earlyDelveDeathReduction(deepDelves), 0.97);
-		chance = base * (1 - totalFactor);
-	} else {
-		const base = delve <= 16 ? 12 + (delve - 8) * 2.0 : 28 + (delve - 16) * 3.0;
-		const decayFactor = Math.max(0, 1 - deepDelves / 300);
-		const totalReduction = base * 0.2 * Math.min(totalDelves / 1500, 1) * decayFactor;
-		chance = base * (1 - deepDelveDeathReduction(deepDelves)) - totalReduction;
-	}
-
-	if (hasMasori) chance *= 0.9;
-
-	return clamp(chance, { min: 0.1, max: 70 });
-}
-
-function calculateTripDuration(
-	targetDelve: number,
-	hasTbow: boolean,
-	hasSBow: boolean,
-	hasScythe: boolean,
-	hasNoxHalberd: boolean,
-	hasEliteVoid: boolean,
-	arrowMod: number,
-	rng: RNGProvider
-): number {
-	let totalBase = 0;
-	for (let d = 1; d <= targetDelve; d++) {
-		if (d <= 5) totalBase += 1.3 * Time.Minute;
-		else if (d <= 8) totalBase += 1.85 * Time.Minute;
-		else if (d <= 16) totalBase += 3.2 * Time.Minute;
-		else totalBase += 3.8 * Time.Minute;
-	}
-
-	let weaponMod = 1.0;
-	if (hasTbow) weaponMod -= 0.1;
-	else if (hasSBow) weaponMod += 0.17;
-	if (hasScythe) weaponMod -= 0.08;
-	else if (hasNoxHalberd) weaponMod -= 0.04;
-	if (hasEliteVoid) weaponMod -= 0.05;
-	weaponMod += arrowMod;
-
-	return totalBase * weaponMod * rng.randFloat(0.9, 1.1);
-}
-
-function calculateDoomKcReduction(kc: number, baseDuration: number): number {
-	const kcForOnePercent = (Time.Hour * 5) / baseDuration;
-	return Math.min(Math.floor(Math.max(1, kc) / kcForOnePercent), 10);
-}
-
-function applyDoomSkillBoost(skillsAsLevels: Required<Skills>, duration: number): [number, string] {
-	const styles: AttackStyles[] = ['attack', 'strength', 'magic', 'ranged'];
-	const skillTotal = sumArr(styles.map(s => skillsAsLevels[s]));
-	let percent = round(calcWhatPercent(skillTotal, styles.length * 99), 2);
-
-	if (percent < 50) {
-		percent = 50 - percent;
-		return [duration + (duration * percent) / 100, `-${percent.toFixed(2)}% for low stats`];
-	}
-
-	percent = Math.min(15, percent / 6.5);
-	return [reduceNumByPercent(duration, percent), `${percent.toFixed(2)}% for stats`];
 }
 
 export function startDoomRun(options: {
@@ -238,14 +163,14 @@ export function startDoomRun(options: {
 	hasSBow: boolean;
 	hasLightbearer: boolean;
 	hasZcb: boolean;
-	hasScythe: boolean;
-	hasNoxHalberd: boolean;
+	meleePunishWeapon: DoomMeleePunishWeapon;
 	hasMasori: boolean;
 	hasEliteVoid: boolean;
 	hasChargedEyeOfAyak: boolean;
 	arrowMod: number;
 	deepDelves: number;
 	totalDelves: number;
+	waveCompletions: DoomWaveCompletions;
 	baseDuration?: number;
 	durationReductionPercent: number;
 	stopOnUnique: boolean;
@@ -253,7 +178,13 @@ export function startDoomRun(options: {
 }): DoomRunResult {
 	const { targetDelve, deepDelves, totalDelves } = options;
 
-	const deathChances: number[] = [];
+	const deathChances = calculateDoomDeathChances(
+		targetDelve,
+		deepDelves,
+		totalDelves,
+		options.hasMasori,
+		options.waveCompletions
+	);
 	let deepestDelveCompleted = 0;
 	let deepDelvesEarned = 0;
 	let totalWavesCleared = 0;
@@ -262,12 +193,12 @@ export function startDoomRun(options: {
 
 	const baseDuration =
 		options.baseDuration ??
-		calculateTripDuration(
+		calculateDoomTripDuration(
 			targetDelve,
 			options.hasTbow,
 			options.hasSBow,
-			options.hasScythe,
-			options.hasNoxHalberd,
+			options.hasZcb,
+			options.meleePunishWeapon,
 			options.hasEliteVoid,
 			options.arrowMod,
 			options.rng
@@ -276,8 +207,7 @@ export function startDoomRun(options: {
 	const realDuration = fakeDuration;
 
 	for (let d = 1; d <= targetDelve; d++) {
-		const deathChance = calculateDeathChance(d, deepDelves, totalDelves, options.hasMasori);
-		deathChances.push(deathChance);
+		const deathChance = deathChances[d - 1];
 
 		if (options.rng.percentChance(deathChance)) {
 			return {
@@ -386,12 +316,6 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 	}
 
 	const crystalHalberdVariants = resolveItems(['Crystal halberd']);
-	const meleePunishWeapons = resolveItems(['Scythe of vitur', 'Noxious halberd', 'Dual macuahuitl']).concat(
-		crystalHalberdVariants
-	);
-	if (!meleePunishWeapons.some(i => user.hasEquippedOrInBank(i))) {
-		return `You need a melee punish weapon (Scythe of vitur, Noxious halberd, Crystal halberd, or Dual macuahuitl) to fight the Doom of Mokhaiotl. It is required to interrupt the Special Beam Cannon.`;
-	}
 
 	const mageWeapons = resolveItems([
 		'Skull sceptre',
@@ -461,14 +385,35 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 	const hasZcb = user.hasEquippedOrInBank('Zaryte crossbow');
 	const hasNoxHalberd = user.hasEquippedOrInBank('Noxious halberd');
 	const hasCrystalHalb = crystalHalberdVariants.some(i => user.hasEquippedOrInBank(i));
-	const hasScythe = user.hasEquippedOrInBank('Scythe of vitur');
+	const hasDualMacuahuitl = user.hasEquippedOrInBank('Dual macuahuitl');
 	const hasBloodFury = user.hasEquippedOrInBank('Amulet of blood fury');
+	const crystalShardsNeeded = Math.ceil(targetDelve);
+	const meleePunishWeapon = selectDoomMeleePunishWeapon({
+		hasNoxHalberd,
+		hasCrystalHalberd: hasCrystalHalb,
+		hasDualMacuahuitl,
+		crystalShardsOwned: user.bank.amount('Crystal shard'),
+		crystalShardsNeeded
+	});
+
+	if (!meleePunishWeapon) {
+		return 'You need a melee punish weapon (Noxious halberd, Crystal halberd, or Dual macuahuitl) to fight the Doom of Mokhaiotl. It is required to interrupt the Special Beam Cannon.';
+	}
+
+	if (meleePunishWeapon === 'crystal_halberd' && user.bank.amount('Crystal shard') < crystalShardsNeeded) {
+		return `You need ${crystalShardsNeeded.toLocaleString()}x Crystal shard to use Crystal halberd for this trip.`;
+	}
+
+	const bloodFuryChargesNeeded = Math.ceil(targetDelve * 3);
+	if (hasBloodFury && user.user.blood_fury_charges < bloodFuryChargesNeeded) {
+		return `You need at least ${bloodFuryChargesNeeded} Amulet of blood fury charges for this trip.`;
+	}
 
 	const equippedAmmo = user.gear.range.get('ammo');
 	const equippedArrowId: number | null = equippedAmmo?.item ?? null;
 	const equippedArrowName: string | null =
 		equippedArrowId !== null ? (Items.itemNameFromId(equippedArrowId) ?? null) : null;
-	const arrowMod = getArrowMod(equippedArrowId);
+	const arrowMod = getDoomArrowMod(equippedArrowId);
 
 	const masoriHead = resolveItems(['Masori mask (f)', 'Masori mask']);
 	const masoriBody = resolveItems(['Masori body (f)', 'Masori body']);
@@ -491,13 +436,16 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 	const stats = await user.fetchStats();
 	const deepDelves = Number(stats.doom_deep_delves ?? 0);
 	const totalDelves = Number(stats.doom_total_delves ?? 0);
+	const waveCompletions = normaliseDoomWaveCompletions(
+		(stats as { doom_wave_completions?: unknown }).doom_wave_completions
+	);
 	const doomKC = Math.max(await user.getKC(EMonster.DOOM_OF_MOKHAIOTL), deepDelves);
-	const baseDuration = calculateTripDuration(
+	const baseDuration = calculateDoomTripDuration(
 		targetDelve,
 		hasTbow,
 		hasSBow,
-		hasScythe,
-		hasNoxHalberd,
+		hasZcb,
+		meleePunishWeapon,
 		hasEliteVoid,
 		arrowMod,
 		rng
@@ -517,14 +465,14 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 		hasSBow,
 		hasLightbearer,
 		hasZcb,
-		hasScythe,
-		hasNoxHalberd,
+		meleePunishWeapon,
 		hasMasori,
 		hasEliteVoid,
 		hasChargedEyeOfAyak,
 		arrowMod,
 		deepDelves,
 		totalDelves,
+		waveCompletions,
 		baseDuration,
 		durationReductionPercent,
 		stopOnUnique,
@@ -591,7 +539,8 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 
 	if (hasZcb) {
 		const rubyBoltVariants = ['Ruby bolts (e)', 'Ruby dragon bolts (e)'];
-		const boltsNeeded = Math.min(60, Math.ceil(targetDelve * 5));
+		const avasDevice = avasDevices.find(avas => user.gear.range.hasEquipped(avas.item.id));
+		const boltsNeeded = calculateDoomZcbBoltsNeeded(targetDelve, avasDevice?.reduction ?? 0);
 		const boltsOwned = rubyBoltVariants.reduce((total, bolt) => total + user.bank.amount(bolt), 0);
 		if (boltsOwned < boltsNeeded) {
 			return `You need ${boltsNeeded.toLocaleString()}x Ruby bolts (e) or Ruby dragon bolts (e) for this trip, you only own ${boltsOwned.toLocaleString()} total.`;
@@ -608,7 +557,7 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 			}
 		}
 	}
-	if (hasCrystalHalb && !hasScythe && !hasNoxHalberd) cost.add('Crystal shard', Math.ceil(targetDelve));
+	if (meleePunishWeapon === 'crystal_halberd') cost.add('Crystal shard', crystalShardsNeeded);
 
 	const realCost = new Bank();
 	try {
@@ -619,23 +568,9 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 		throw err;
 	}
 
-	if (hasScythe) {
-		const chargesNeeded = Math.ceil(targetDelve * 3);
-		if (user.user.scythe_of_vitur_charges < chargesNeeded) {
-			return `You need at least ${chargesNeeded} Scythe of vitur charges for this trip.`;
-		}
-		await user.update({
-			scythe_of_vitur_charges: { decrement: chargesNeeded }
-		});
-	}
-
 	if (hasBloodFury) {
-		const chargesNeeded = Math.ceil(targetDelve * 3);
-		if (user.user.blood_fury_charges < chargesNeeded) {
-			return `You need at least ${chargesNeeded} Amulet of blood fury charges for this trip.`;
-		}
 		await user.update({
-			blood_fury_charges: { decrement: chargesNeeded }
+			blood_fury_charges: { decrement: bloodFuryChargesNeeded }
 		});
 	}
 
@@ -683,10 +618,13 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 	else if (hasArclight) boostLines.push('Arclight');
 	else boostLines.push('Darklight');
 
-	if (hasScythe) boostLines.push('Scythe of vitur (8% speed boost)');
-	else if (hasNoxHalberd) boostLines.push('Noxious halberd (4% speed boost)');
-	else if (hasCrystalHalb) boostLines.push('Crystal halberd');
-	else boostLines.push('Dual macuahuitl');
+	if (meleePunishWeapon === 'noxious_halberd') {
+		boostLines.push(
+			`${getDoomMeleePunishWeaponName(meleePunishWeapon)} (${NOXIOUS_HALBERD_SPEED_BOOST}% speed boost)`
+		);
+	} else {
+		boostLines.push(getDoomMeleePunishWeaponName(meleePunishWeapon));
+	}
 
 	if (hasChargedEyeOfAyak) boostLines.push('Eye of Ayak (mage grubs, no rune cost)');
 
@@ -695,11 +633,20 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 	if (kcReduction >= 1) boostLines.push(`${kcReduction}% for KC`);
 	boostLines.push(skillBoostMsg);
 	if (hasLightbearer) boostLines.push('Lightbearer');
-	if (hasZcb) boostLines.push('Zaryte crossbow');
+	if (hasZcb) boostLines.push(`Zaryte crossbow (${ZCB_SPEED_BOOST}% speed boost)`);
+
+	const runDeathChance = calculateDoomRunDeathChance(res.deathChances);
+	const deathChanceLine =
+		runDeathChance.expectedDeathWave !== null
+			? `**Death chance before completing target delve:** ${formatDoomDeathChance(
+					runDeathChance.deathChance
+				)} | **Expected death:** Delve ${round(runDeathChance.expectedDeathWave, 1)}`
+			: `**Death chance before completing target delve:** ${formatDoomDeathChance(runDeathChance.deathChance)}`;
 
 	return [
 		`${user.usernameOrMention}'s minion is now fighting the **Doom of Mokhaiotl** (targeting delve **${targetDelve}**)!`,
 		`**Duration:** ${formatDuration(res.fakeDuration)} | **Stop on unique:** ${stopOnUnique ? 'Yes' : 'No'}`,
+		deathChanceLine,
 		`**Cost:** ${realCost}`,
 		`**Boosts:** ${boostLines.join(', ')}`
 	].join('\n');
