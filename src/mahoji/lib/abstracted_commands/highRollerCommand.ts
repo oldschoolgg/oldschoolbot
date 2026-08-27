@@ -23,6 +23,7 @@ type RollResult = {
 };
 
 type JoinMode = { type: 'invites'; inviteIDs: string[] } | { type: 'open' };
+type HighRollerParticipant = Pick<MUser, 'badgedUsername' | 'bitfield' | 'GP' | 'isIronman'>;
 
 const MAX_PARTICIPANTS = 50;
 const MIN_PARTICIPANTS = 2;
@@ -38,6 +39,19 @@ function pickRandomItem(rng: RNGProvider): Item {
 	}
 	const index = rng.randInt(0, randomGambleItems.length - 1);
 	return randomGambleItems[index]!;
+}
+
+export function getHighRollerIneligibilityReason(participant: HighRollerParticipant, stake?: number): string | null {
+	if (participant.isIronman) {
+		return `${participant.badgedUsername} is an ironman and cannot join High Roller Pots.`;
+	}
+	if (participant.bitfield.includes(BitField.SelfGamblingLocked)) {
+		return `${participant.badgedUsername} has gambling disabled.`;
+	}
+	if (stake !== undefined && participant.GP < stake) {
+		return `${participant.badgedUsername} lacked the GP required to start the gamble.`;
+	}
+	return null;
 }
 
 export function calculatePayouts({
@@ -115,12 +129,14 @@ async function collectDirectInvites({
 	interaction,
 	host,
 	inviteIDs,
+	stake,
 	stakeDisplay,
 	payoutDescription
 }: {
 	interaction: MInteraction;
 	host: MUser;
 	inviteIDs: string[];
+	stake: number;
 	stakeDisplay: string;
 	payoutDescription: string;
 }): Promise<string[] | null> {
@@ -167,6 +183,13 @@ async function collectDirectInvites({
 				declined.add(button.userId);
 				await button.silentButtonAck();
 				collector.stop('declined');
+				return;
+			}
+			const mUser = await mUserFetch(button.userId);
+			await mUser.sync();
+			const ineligibilityReason = getHighRollerIneligibilityReason(mUser, stake);
+			if (ineligibilityReason) {
+				await button.reply({ content: ineligibilityReason, ephemeral: true });
 				return;
 			}
 			if (confirmed.has(button.userId)) {
@@ -269,13 +292,10 @@ async function collectOpenLobby({
 					});
 					return;
 				}
-				if (mUser.bitfield.includes(BitField.SelfGamblingLocked)) {
-					await button.reply({ content: `You have gambling disabled.`, ephemeral: true });
-					return;
-				}
 				await mUser.sync();
-				if (mUser.GP < stake) {
-					await button.reply({ content: `You need ${toKMB(stake)} GP to join.`, ephemeral: true });
+				const ineligibilityReason = getHighRollerIneligibilityReason(mUser, stake);
+				if (ineligibilityReason) {
+					await button.reply({ content: ineligibilityReason, ephemeral: true });
 					return;
 				}
 				joined.add(mUser.id);
@@ -355,11 +375,13 @@ async function ensureParticipantsReady({
 	const missingFunds: string[] = [];
 	for (const participant of participants) {
 		await participant.sync();
-		if (participant.bitfield.includes(BitField.SelfGamblingLocked)) {
-			throw new Error(`${participant.badgedUsername} has gambling disabled.`);
-		}
-		if (participant.GP < stake) {
-			missingFunds.push(participant.badgedUsername);
+		const ineligibilityReason = getHighRollerIneligibilityReason(participant, stake);
+		if (ineligibilityReason) {
+			if (participant.GP < stake) {
+				missingFunds.push(participant.badgedUsername);
+				continue;
+			}
+			throw new Error(ineligibilityReason);
 		}
 	}
 	if (missingFunds.length > 0) {
@@ -385,33 +407,73 @@ async function payoutWinners({
 
 	const potAccount = BigInt(0);
 
-	await prisma.economyTransaction.createMany({
-		data: sortedResults.map(result => ({
-			guild_id: interaction.guildId ? BigInt(interaction.guildId) : undefined,
-			sender: BigInt(result.user.id),
-			recipient: potAccount,
-			type: 'duel',
-			items_sent: new Bank().add('Coins', stake).toJSON(),
-			items_received: undefined
-		}))
+	await prisma.$transaction(async tx => {
+		for (const result of sortedResults) {
+			const updateResult = await tx.user.updateMany({
+				where: {
+					id: result.user.id,
+					GP: {
+						gte: stake
+					}
+				},
+				data: {
+					GP: {
+						decrement: stake
+					}
+				}
+			});
+			if (updateResult.count !== 1) {
+				throw new Error(`${result.user.badgedUsername} lacked the GP required to start the gamble.`);
+			}
+		}
+
+		await tx.economyTransaction.createMany({
+			data: sortedResults.map(result => ({
+				guild_id: interaction.guildId ? BigInt(interaction.guildId) : undefined,
+				sender: BigInt(result.user.id),
+				recipient: potAccount,
+				type: 'duel',
+				items_sent: new Bank().add('Coins', stake).toJSON(),
+				items_received: undefined
+			}))
+		});
+
+		for (const [index, amount] of payouts.entries()) {
+			const winner = sortedResults[index];
+			if (!winner || amount <= 0) continue;
+			await tx.user.update({
+				where: {
+					id: winner.user.id
+				},
+				data: {
+					GP: {
+						increment: amount
+					}
+				}
+			});
+			await tx.economyTransaction.create({
+				data: {
+					guild_id: interaction.guildId ? BigInt(interaction.guildId) : undefined,
+					sender: potAccount,
+					recipient: BigInt(winner.user.id),
+					type: 'duel',
+					items_sent: new Bank().add('Coins', amount).toJSON(),
+					items_received: undefined
+				}
+			});
+			payoutsMessages.push(`🏆 ${winner.user.badgedUsername} receives ${toKMB(amount)} GP.`);
+		}
 	});
 
-	for (const [index, amount] of payouts.entries()) {
-		const winner = sortedResults[index];
-		if (!winner || amount <= 0) continue;
-		await winner.user.addItemsToBank({ items: new Bank().add('Coins', amount) });
-		await prisma.economyTransaction.create({
-			data: {
-				guild_id: interaction.guildId ? BigInt(interaction.guildId) : undefined,
-				sender: potAccount,
-				recipient: BigInt(winner.user.id),
-				type: 'duel',
-				items_sent: new Bank().add('Coins', amount).toJSON(),
-				items_received: undefined
-			}
+	try {
+		await Promise.all(sortedResults.map(result => result.user.sync()));
+	} catch (err) {
+		Logging.logError({
+			err,
+			message: 'Failed to sync users after High Roller Pot transaction.'
 		});
-		payoutsMessages.push(`🏆 ${winner.user.badgedUsername} receives ${toKMB(amount)} GP.`);
 	}
+
 	return { pot, payoutsMessages };
 }
 
@@ -439,6 +501,9 @@ export async function highRollerCommand({
 	if (user.bitfield.includes(BitField.SelfGamblingLocked)) {
 		return 'You have gambling disabled and cannot join High Roller Pots.';
 	}
+	if (user.isIronman) {
+		return 'Ironmen cannot join High Roller Pots.';
+	}
 
 	const stakeDisplay = toKMB(stake);
 	const mode: HighRollerPayoutMode = payoutMode ?? 'winner_takes_all';
@@ -464,6 +529,7 @@ export async function highRollerCommand({
 					interaction,
 					host: user,
 					inviteIDs: joinMode.inviteIDs,
+					stake,
 					stakeDisplay,
 					payoutDescription
 				})
@@ -514,24 +580,6 @@ export async function highRollerCommand({
 		return interaction.returnStringOrFile(`The High Roller Pot could not start: ${reason}`);
 	}
 
-	const removedParticipants: MUser[] = [];
-	try {
-		for (const participant of participants) {
-			await participant.removeItemsFromBank(new Bank().add('Coins', stake));
-			removedParticipants.push(participant);
-		}
-	} catch (error) {
-		for (const participant of removedParticipants) {
-			await participant.addItemsToBank({ items: new Bank().add('Coins', stake) });
-		}
-		const reason = (error as Error).message ?? 'an unknown error occurred while reserving GP.';
-		await safeEdit(interaction, {
-			content: `The High Roller Pot could not start: ${reason}`,
-			components: []
-		});
-		return interaction.returnStringOrFile(`The High Roller Pot could not start: ${reason}`);
-	}
-
 	const rolls = generateUniqueRolls({
 		count: participants.length,
 		rollFn: () => {
@@ -564,7 +612,20 @@ export async function highRollerCommand({
 		console.error('Error generating High Roller image:', err);
 	}
 
-	const { pot, payoutsMessages } = await payoutWinners({ interaction, sortedResults: rollResults, stake, mode });
+	let pot: number;
+	let payoutsMessages: string[];
+	try {
+		const payoutResult = await payoutWinners({ interaction, sortedResults: rollResults, stake, mode });
+		pot = payoutResult.pot;
+		payoutsMessages = payoutResult.payoutsMessages;
+	} catch (error) {
+		const reason = (error as Error).message ?? 'an unknown error occurred while paying out the pot.';
+		await safeEdit(interaction, {
+			content: `The High Roller Pot could not finish: ${reason}`,
+			components: []
+		});
+		return interaction.returnStringOrFile(`The High Roller Pot could not finish: ${reason}`);
+	}
 
 	const summary = `**High Roller Pot** (${
 		mode === 'winner_takes_all' ? 'Winner takes all' : 'Top 3 (60/30/10)'

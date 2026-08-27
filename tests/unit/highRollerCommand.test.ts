@@ -1,9 +1,20 @@
 import type { Item } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
-import { calculatePayouts, generateUniqueRolls } from '@/mahoji/lib/abstracted_commands/highRollerCommand.js';
+import { BitField } from '@/lib/constants.js';
+import {
+	calculatePayouts,
+	generateUniqueRolls,
+	getHighRollerIneligibilityReason
+} from '@/mahoji/lib/abstracted_commands/highRollerCommand.js';
 
 const dummyItem = { id: 1, name: 'Dummy item' } as Item;
+const baseParticipant = {
+	badgedUsername: 'TestUser',
+	bitfield: [],
+	GP: 10_000_000,
+	isIronman: false
+};
 
 describe('calculatePayouts', () => {
 	it('distributes pot to a single winner when using winner takes all', () => {
@@ -48,5 +59,25 @@ describe('generateUniqueRolls', () => {
 		const values = results.map(result => result.value);
 		expect(new Set(values).size).toBe(3);
 		expect(values.sort((a, b) => a - b)).toStrictEqual([10, 11, 12]);
+	});
+});
+
+describe('getHighRollerIneligibilityReason', () => {
+	it('blocks ironmen from high roller pots', () => {
+		expect(getHighRollerIneligibilityReason({ ...baseParticipant, isIronman: true }, 1)).toContain('ironman');
+	});
+
+	it('blocks users with gambling disabled', () => {
+		expect(
+			getHighRollerIneligibilityReason({ ...baseParticipant, bitfield: [BitField.SelfGamblingLocked] }, 1)
+		).toContain('gambling disabled');
+	});
+
+	it('blocks users without enough GP', () => {
+		expect(getHighRollerIneligibilityReason({ ...baseParticipant, GP: 999 }, 1000)).toContain('lacked the GP');
+	});
+
+	it('allows eligible users', () => {
+		expect(getHighRollerIneligibilityReason(baseParticipant, 1_000_000)).toBeNull();
 	});
 });
