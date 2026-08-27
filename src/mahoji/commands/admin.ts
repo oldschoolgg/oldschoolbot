@@ -54,9 +54,13 @@ import { allDcSet } from '@/lib/data/Collections.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { syncCustomPrices } from '@/lib/preStartup.js';
 import { countUsersWithItemInCl } from '@/lib/rawSql.js';
-import { type StaffGrants, ZStaffGrants } from '@/lib/settings/misc.js';
 import { sorts } from '@/lib/sorts.js';
-import { runStaffBestowReplenishment, type StaffBestowPeriod } from '@/lib/staffBestow.js';
+import {
+	runStaffBestowReplenishment,
+	type StaffBestowPeriod,
+	type StaffGrants,
+	ZStaffGrants
+} from '@/lib/staffBestow.js';
 import { dmCyrAudit, makeArgAuditFiles, sendCyrCriticalBotLog } from '@/lib/util/cyrAudit.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';

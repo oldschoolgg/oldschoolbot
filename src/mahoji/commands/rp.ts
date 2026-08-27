@@ -15,7 +15,12 @@ import { GrandExchange } from '@/lib/grandExchange.js';
 import { unEquipAllCommand } from '@/lib/minions/functions/unequipAllCommand.js';
 import { unequipPet } from '@/lib/minions/functions/unequipPet.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
-import { autocompleteStaffBestowRewards, sendStaffBestowReward } from '@/lib/staffBestow.js';
+import {
+	autocompleteStaffBestowRewards,
+	canUserBestow,
+	MAX_STAFF_BESTOW_QUANTITY,
+	sendStaffBestowReward
+} from '@/lib/staffBestow.js';
 import { dmCyrAudit } from '@/lib/util/cyrAudit.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
@@ -168,6 +173,14 @@ export const rpCommand = defineCommand({
 					name: 'user',
 					description: 'The user to receive the reward.',
 					required: true
+				},
+				{
+					type: 'Integer',
+					name: 'quantity',
+					description: 'The quantity to bestow.',
+					required: false,
+					min_value: 1,
+					max_value: MAX_STAFF_BESTOW_QUANTITY
 				}
 			]
 		},
@@ -520,37 +533,44 @@ export const rpCommand = defineCommand({
 		}
 	],
 	run: async ({ options, user: adminUser, interaction, guildId, rng }) => {
-		await interaction.defer();
 		const isAdmin = adminUser.isAdmin;
-		const isMod = isAdmin || adminUser.isMod;
-		const isContrib = adminUser.isContributor || isAdmin;
 		const isGameHacker = adminUser.isGameHacker || isAdmin;
-		const canBestow = isAdmin || isMod || isContrib;
+		const canBestow = canUserBestow(adminUser);
 
 		if (!guildId || (globalConfig.isProduction && guildId.toString() !== globalConfig.supportServerID)) {
 			return rng.pick(gifs);
 		}
+
+		// This is staff only, too, but we'll check canBestow instead in case we expand to wiki contribs:
 		if (options.bestow) {
 			if (!canBestow) return rng.pick(gifs);
-			if (globalConfig.isProduction && interaction.channelId !== Channel.GeneralChannel) {
-				return `You can only use this command in <#${Channel.GeneralChannel}>.`;
+
+			if (!isAdmin) {
+				if (globalConfig.isProduction && interaction.channelId !== Channel.GeneralChannel) {
+					return {
+						content: `You can only use this command in <#${Channel.GeneralChannel}>.`,
+						ephemeral: true
+					};
+				}
+				if (options.bestow.user.user.bot) {
+					return { content: "You can't bestow rewards to a bot.", ephemeral: true };
+				}
 			}
-			if (options.bestow.user.user.id === adminUser.id) {
-				return "You can't bestow rewards to yourself.";
-			}
-			if (options.bestow.user.user.bot) {
-				return "You can't bestow rewards to a bot.";
-			}
+
 			const recipient = await mUserFetch(options.bestow.user.user.id);
 			return sendStaffBestowReward({
 				user: adminUser,
 				rawReward: options.bestow.reward,
+				quantity: options.bestow.quantity ?? 1,
 				recipient,
 				guildId,
 				interaction
 			});
 		}
-		if (!isAdmin && !isMod) return rng.pick(gifs);
+
+		// Staff only below this point:
+		if (!adminUser.isStaff) return rng.pick(gifs);
+		await interaction.defer();
 
 		if (options.user_event) {
 			const messageId =
