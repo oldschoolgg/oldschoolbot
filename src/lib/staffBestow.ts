@@ -27,6 +27,7 @@ type StaffBestowUser = Pick<User, 'id' | 'bitfield' | 'rp_bestow_bank'>;
 const StaffGrantRoleSourceEntries = Object.entries(StaffGrantRoleSources) as [StaffBestowRole, BitField][];
 const StaffGrantRoleSourceKeys = new Set(Object.keys(StaffGrantRoleSources));
 export const StaffBestowBits: BitField[] = Object.values(StaffGrantRoleSources);
+export const MAX_STAFF_BESTOW_QUANTITY = 10_000;
 
 const StaffBestowSourceKey = z
 	.string()
@@ -241,30 +242,42 @@ function resolveRewardItemID(rawReward: string): number | null {
 export async function sendStaffBestowReward({
 	user,
 	rawReward,
+	quantity = 1,
 	recipient,
 	guildId,
 	interaction
 }: {
 	user: MUser;
 	rawReward: string;
+	quantity?: number;
 	recipient: MUser;
 	guildId?: string | null;
 	interaction: MInteraction;
 }) {
-	if (!user.hasMinion) return 'You need a minion to use this command.';
-	const schedule = await Cache.getStaffGrantsSchedule();
-	if (!StaffBestowPeriods.some(period => getStaffBestowSourceKey(schedule, user, period))) {
-		return 'Only staff with a configured bestow schedule can use this command.';
+	if (!Number.isInteger(quantity) || quantity < 1 || quantity > MAX_STAFF_BESTOW_QUANTITY) {
+		return {
+			content: `Quantity must be between 1 and ${MAX_STAFF_BESTOW_QUANTITY.toLocaleString()}.`,
+			ephemeral: true
+		};
 	}
-	if (recipient.id === user.id) return "You can't bestow rewards to yourself.";
+	if (recipient.id === user.id) {
+		return { content: "You can't bestow rewards to yourself.", ephemeral: true };
+	}
+
 	if (!recipient.hasMinion) return 'That user needs a minion to receive bestow rewards.';
-	if (await recipient.isBlacklisted()) return "Blacklisted players can't receive bestow rewards.";
-	if (await recipient.getIsLocked()) return 'That user is busy right now.';
+	if (await recipient.isBlacklisted()) {
+		return {
+			content: "That user is blacklisted and can't receive bestow rewards.",
+			ephemeral: true
+		};
+	}
+	if (await recipient.getIsLocked()) return { content: 'That user is busy right now.', ephemeral: true };
 
 	const itemID = resolveRewardItemID(rawReward);
 	if (!itemID) {
 		return 'Invalid bestow reward.';
 	}
+	await interaction.defer();
 	if (allDcSet.has(itemID) && customItems.includes(itemID)) {
 		const item = Items.getOrThrow(itemID);
 		const body = `${user.logName} attempted to bestow discontinued item ${item.name} (${item.id}) to ${recipient.logName}. Raw reward: ${rawReward}`;
@@ -280,12 +293,17 @@ export async function sendStaffBestowReward({
 			await Promise.all([user.sync(), recipient.sync()]);
 			const rewardsLeft = new Bank(getBestowBankJSON(user));
 			const item = Items.getOrThrow(itemID);
-			if (rewardsLeft.amount(itemID) < 1) {
-				return `You have no ${item.name} bestow rewards left.`;
+			const availableQuantity = rewardsLeft.amount(itemID);
+			if (availableQuantity < quantity) {
+				await interaction.followUp({
+					content: `You don't have ${quantity.toLocaleString()}x ${item.name} to give. You only have ${availableQuantity.toLocaleString()}x.`,
+					ephemeral: true
+				});
+				return SpecialResponse.RespondedManually;
 			}
 
-			rewardsLeft.remove(itemID, 1);
-			const loot = new Bank().add(itemID, 1);
+			rewardsLeft.remove(itemID, quantity);
+			const loot = new Bank().add(itemID, quantity);
 			const recipientBank = recipient.bank.clone();
 			let recipientGP = recipient.GP;
 			const bankLoot = loot.clone();
@@ -339,7 +357,6 @@ export async function sendStaffBestowReward({
 				content: `Your remaining bestow bank: ${rewardsLeft.toString()}`,
 				ephemeral: true
 			});
-			//await interaction.deleteReply().catch(noOp);
 
 			return SpecialResponse.RespondedManually;
 		});
