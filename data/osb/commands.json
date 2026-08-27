@@ -1,6 +1,6 @@
 {
-	"hash": "4adfea88669c8929e25c50c45d38ca91",
-	"date": "2026-06-09T08:23:51.005Z",
+	"hash": "9a7fc68fb1910606a01bfa31a63edbb9",
+	"date": "2026-08-27T08:28:47.353Z",
 	"data": [
 		{
 			"name": "activities",
@@ -201,7 +201,7 @@
 		{
 			"name": "gamble",
 			"desc": "Partake in various gambling activities.",
-			"subOptions": ["dice", "duel", "give_random_item", "hot_cold", "item", "lucky_pick", "slots"]
+			"subOptions": ["dice", "duel", "give_random_item", "high_roller", "hot_cold", "item", "lucky_pick", "slots"]
 		},
 		{
 			"name": "ge",
