@@ -9,6 +9,7 @@ import { BitField, MAX_CLUES_DROPPED } from '@/lib/constants.js';
 import { allOpenables, getOpenableLoot } from '@/lib/openables.js';
 import { getPOHObject } from '@/lib/poh/index.js';
 import type { ClueActivityTaskOptions } from '@/lib/types/minions.js';
+import { FriendlyTask } from '@/lib/util/FriendlyTask.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 import { addToOpenablesScores } from '@/mahoji/mahojiSettings.js';
@@ -371,12 +372,22 @@ export const clueCommand = defineCommand({
 			const bankedImplings = user.bank.amount(clueImpling.id);
 			let openedImplings = 0;
 			const implingLoot = new Bank();
+			const yielder = new FriendlyTask(`ClueImplings`, {
+				yieldAfterMs: 50,
+				warnAfterMs: 500,
+				data: {
+					openable: implingJarOpenable,
+					quantity,
+					userId: user.id
+				}
+			});
 			while (implingClues + bankedClues < quantity && openedImplings < bankedImplings) {
-				const impLoot = await getOpenableLoot({ openable: implingJarOpenable, user, quantity: 1, rng });
+				const impLoot = await getOpenableLoot({ openable: implingJarOpenable, user, quantity: 1, rng, yielder });
 				implingLoot.add(impLoot.bank);
 				implingClues = implingLoot.amount(clueTier.scrollID);
 				openedImplings++;
 			}
+			yielder.finish();
 			if (implingLoot.has(clueTier.scrollID)) {
 				implingLoot.remove(clueTier.scrollID, implingLoot.amount(clueTier.scrollID));
 			}
