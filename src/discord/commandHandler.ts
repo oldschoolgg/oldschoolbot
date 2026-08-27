@@ -87,6 +87,10 @@ export async function rawCommandHandlerInner({
 			: await runClosure();
 		return response;
 	} catch (err) {
+		if (err instanceof UserError) {
+			await interaction.reply({ content: err.message });
+			return SpecialResponse.RespondedManually;
+		}
 		if ((err as Error).message === SILENT_ERROR) return SpecialResponse.SilentErrorResponse;
 		const date = new Date();
 		Logging.logError({
@@ -102,7 +106,6 @@ export async function rawCommandHandlerInner({
 				options: JSON.stringify(options)
 			}
 		});
-		if (err instanceof UserError) return SpecialResponse.RespondedManually;
 		return {
 			content: `An error occurred while running this command.`
 		};
