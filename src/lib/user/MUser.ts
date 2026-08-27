@@ -7,7 +7,7 @@ import {
 	ZBlowpipeData,
 	ZFarmingContract
 } from '@oldschoolgg/schemas';
-import { calcWhatPercent, isObject, type PerkTier, UserError, uniqueArr } from '@oldschoolgg/toolkit';
+import { calcWhatPercent, cleanUsername, isObject, type PerkTier, UserError, uniqueArr } from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { Mutex } from 'async-mutex';
 import { cryptoRng } from 'node-rng/crypto';
@@ -1026,12 +1026,14 @@ export async function srcMUserFetch(userID: string, updates?: Prisma.UserUpdateI
 	if (!isValidDiscordSnowflake(userID)) {
 		throw new Error(`Invalid userID: ${userID}`);
 	}
-	const user =
+	const createData: Prisma.UserCreateInput = { id: userID };
+	if (updates && typeof updates.username === 'string') {
+		createData.username = updates.username;
+	}
+	let user =
 		updates !== undefined
 			? await prisma.user.upsert({
-					create: {
-						id: userID
-					},
+					create: createData,
 					update: updates,
 					where: {
 						id: userID
@@ -1041,6 +1043,24 @@ export async function srcMUserFetch(userID: string, updates?: Prisma.UserUpdateI
 
 	if (!user) {
 		return srcMUserFetch(userID, {});
+	}
+	if (
+		!user.username &&
+		!process.env.TEST &&
+		typeof globalClient !== 'undefined' &&
+		typeof globalClient.fetchUser === 'function'
+	) {
+		const discordUser = await globalClient.fetchUser(userID).catch(() => null);
+		if (discordUser?.username) {
+			user = await prisma.user.update({
+				where: {
+					id: userID
+				},
+				data: {
+					username: cleanUsername(discordUser.username)
+				}
+			});
+		}
 	}
 	return new MUserClass(user);
 }
