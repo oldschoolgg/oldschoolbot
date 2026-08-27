@@ -14,6 +14,12 @@ describe('PVM', async () => {
 	const client = await mockClient();
 	expect(Monsters.Man.id).toBe(EMonster.MAN);
 
+	it('Should reject Doom through the kill command', async () => {
+		const user = await createTestUser();
+		const result = await user.runCommand(minionKCommand, { name: 'doom' });
+		expect(result).toEqual('Use `/delves doom` to fight the Doom of Mokhaiotl.');
+	});
+
 	it('Should remove food', async () => {
 		const user = await createTestUser(new Bank().add('Shark', 1000), {
 			skills_prayer: convertLVLtoXP(70),
