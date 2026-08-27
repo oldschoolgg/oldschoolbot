@@ -1,4 +1,3 @@
-import { cryptoRng } from '@oldschoolgg/rng/crypto';
 import { Emoji, Events, sleep } from '@oldschoolgg/toolkit';
 import { Bank, toKMB } from 'oldschooljs';
 
@@ -63,6 +62,7 @@ async function handleFinishUpdates({
 }
 
 export async function duelCommand(
+	rng: RNGProvider,
 	user: MUser,
 	interaction: MInteraction,
 	duelUser: MUser,
@@ -131,7 +131,7 @@ export async function duelCommand(
 		});
 	}
 
-	const [winner, loser] = cryptoRng.shuffle([duelSourceUser, duelTargetUser]);
+	const [winner, loser] = rng.shuffle([duelSourceUser, duelTargetUser]);
 	const { amountGPWinnerReceives, taxPaid } = await handleFinishUpdates({
 		winner,
 		loser,

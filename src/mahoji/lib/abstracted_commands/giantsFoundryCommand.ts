@@ -5,6 +5,7 @@ import { type GiantsFoundryBank, TOTAL_GIANT_WEAPONS } from '@/lib/giantsFoundry
 import { trackLoot } from '@/lib/lootTrack.js';
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import type { GiantsFoundryActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export const giantsFoundryAlloys = [
 	{
@@ -231,9 +232,7 @@ export async function giantsFoundryStartCommand(
 		metalScore: alloy.metalScore
 	});
 
-	return `${user.minionName} is now doing ${quantity}x Giants' Foundry! It will take ${formatDuration(
-		duration
-	)} to finish. **Boosts:** ${boosts.join(', ')}\nYour minion used up ${totalCost}`;
+	return `${user.minionName} is now doing ${quantity}x Giants' Foundry! It will take ${formatTripDuration(user, duration)} to finish. **Boosts:** ${boosts.join(', ')}\nYour minion used up ${totalCost}`;
 }
 
 export async function giantsFoundryShopCommand(

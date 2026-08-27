@@ -34,7 +34,7 @@ export const ensureModeratorUser: MiddlewareHandler<HonoServerGeneric> = async (
 		return httpErr.UNAUTHORIZED({ message: 'Not Logged In' });
 	}
 
-	if (!user.bits.includes(Bits.Mod) && !user.bits.includes(Bits.Admin)) {
+	if (!user.bits.includes(Bits.Moderator) && !user.bits.includes(Bits.Admin)) {
 		return httpErr.UNAUTHORIZED({ message: 'Not Staff' });
 	}
 

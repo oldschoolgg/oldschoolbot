@@ -1,10 +1,10 @@
-import { roll } from '@oldschoolgg/rng';
 import type { IFarmingContract } from '@oldschoolgg/schemas';
 import { Emoji, Events, formatOrdinal } from '@oldschoolgg/toolkit';
 import {
 	Bank,
 	BrimstoneChest,
 	BronzeHAMChest,
+	CastleWarsSupplyCrate,
 	EItem,
 	EliteMimicTable,
 	ElvenCrystalChest,
@@ -52,6 +52,7 @@ import {
 	SpoilsOfWarTable
 } from '@/lib/simulation/misc.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
+import type { FriendlyTask } from '@/lib/util/FriendlyTask.js';
 
 const CacheOfRunesTable = new LootTable()
 	.add('Death rune', [1000, 1500], 2)
@@ -87,10 +88,14 @@ const FrozenCacheTable = new LootTable()
 	.add('Spirit seed', 1, 2)
 	.add('Rune sword');
 
+const BaleOfFlax = new LootTable().add('Flax', 25);
+
 interface OpenArgs {
 	quantity: number;
 	user: MUser;
 	self: UnifiedOpenable;
+	rng: RNGProvider;
+	yielder: FriendlyTask;
 }
 
 export interface UnifiedOpenable {
@@ -120,24 +125,41 @@ for (const clueTier of ClueTiers) {
 		id: casketItem.id,
 		openedItem: casketItem,
 		aliases: [clueTier.name.toLowerCase()],
-		output: async ({ quantity, user, self }) => {
+		output: async ({ quantity, user, self, rng, yielder }) => {
+			const batchYieldClues = async (table: LootTable, qty: number) => {
+				const miniLoot = new Bank();
+				const batchSize = 100;
+				let qtyRemaining = qty;
+				while (qtyRemaining > 0) {
+					const toOpen = Math.min(qtyRemaining, batchSize);
+					await yielder.checkpoint()
+					miniLoot.add(table.roll(toOpen));
+					qtyRemaining -= batchSize;
+				}
+				return miniLoot;
+			};
 			const clueTier = ClueTiers.find(c => c.id === self.id)!;
-			const loot = clueTier.table.roll(quantity);
+
+			const loot = await batchYieldClues(clueTier.table, quantity);
 			let mimicNumber = 0;
 			if (clueTier.mimicChance) {
 				const table = clueTier.name === 'Master' ? MasterMimicTable : EliteMimicTable;
 				for (let i = 0; i < quantity; i++) {
-					if (roll(clueTier.mimicChance)) {
-						loot.add(table.roll());
+					if (rng.roll(clueTier.mimicChance)) {
 						mimicNumber++;
 					}
 				}
+				loot.add(await batchYieldClues(table, mimicNumber));
 			}
 
 			const message = `${quantity}x ${clueTier.name} Clue Casket${quantity > 1 ? 's' : ''} ${
 				mimicNumber > 0 ? `with ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''
 			}`;
 
+			// TODO: We need a way to separate rolling the loot from the server notifications
+			// With a really big opening, it can take a while to finish, and it can still fail
+			// It need to be at a point where it can no longer fail. Maybe we just take the cost first,
+			// but then they can lose their caskets
 			const stats = await user.fetchStats();
 			const nthCasket = ((stats.openable_scores as ItemBank)[clueTier.id] ?? 0) + quantity;
 
@@ -416,6 +438,16 @@ const osjsOpenables: UnifiedOpenable[] = [
 		aliases: ['zombie pirate key', 'zombie pirate locker', 'pirate locker'],
 		output: ZombiePiratesLocker.table,
 		allItems: ZombiePiratesLocker.table.allItems
+	},
+	{
+		name: 'Castle wars supply crate',
+		id: 30_690,
+		openedItem: Items.getOrThrow(30_690),
+		aliases: ['castle wars supply crate'],
+		output: async (args: OpenArgs): Promise<{ bank: Bank }> => ({
+			bank: CastleWarsSupplyCrate.open(args.quantity)
+		}),
+		allItems: CastleWarsSupplyCrate.table.allItems
 	}
 ];
 
@@ -534,6 +566,30 @@ export const allOpenables: UnifiedOpenable[] = [
 		output: FrozenCacheTable,
 		allItems: FrozenCacheTable.allItems
 	},
+	{
+		name: 'Olive oil pack',
+		id: itemID('Olive oil pack'),
+		openedItem: Items.getOrThrow('Olive oil pack'),
+		aliases: ['olive oil pack', 'olive oil'],
+		output: new LootTable().every('Olive oil(4)', 100),
+		allItems: resolveItems(['Olive oil(4)'])
+	},
+	{
+		name: 'Bale of flax',
+		id: itemID('Bale of flax'),
+		openedItem: Items.getOrThrow('Bale of flax'),
+		aliases: ['bale of flax', 'flax bale', 'bale flax'],
+		output: BaleOfFlax,
+		allItems: BaleOfFlax.allItems
+	},
+	{
+		name: 'Soft clay pack',
+		id: itemID('Soft clay pack'),
+		openedItem: Items.getOrThrow('Soft clay pack'),
+		aliases: ['soft clay pack', 'clay pack'],
+		output: new LootTable().add('Soft clay', 100),
+		allItems: resolveItems(['Soft clay'])
+	},
 	...clueOpenables,
 	...osjsOpenables,
 	...shadeChestOpenables
@@ -546,16 +602,30 @@ for (const openable of allOpenables) {
 
 export const allOpenablesIDs = new Set(allOpenables.map(i => i.id));
 
-export function getOpenableLoot({
+export async function getOpenableLoot({
 	openable,
 	quantity,
-	user
+	user,
+	rng,
+	yielder
 }: {
 	openable: UnifiedOpenable;
 	quantity: number;
 	user: MUser;
+	rng: RNGProvider;
+	yielder: FriendlyTask;
 }) {
-	return openable.output instanceof LootTable
-		? { bank: openable.output.roll(quantity), message: null }
-		: openable.output({ user, self: openable, quantity });
+	const loot = new Bank();
+	if (openable.output instanceof LootTable) {
+		const batchSize = 100;
+		let qtyRemaining = quantity;
+		while (qtyRemaining > 0) {
+			loot.add(openable.output.roll(Math.min(batchSize, qtyRemaining)));
+			qtyRemaining -= batchSize;
+			if (qtyRemaining) await yielder.checkpoint();
+		}
+		return { bank: loot, message: null };
+	} else {
+		return openable.output({ user, self: openable, quantity, rng, yielder });
+	}
 }

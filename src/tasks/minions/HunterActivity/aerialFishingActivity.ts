@@ -1,8 +1,9 @@
-import { calcPercentOfNum, Emoji, Events } from '@oldschoolgg/toolkit';
+import { Emoji, Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
+import { calcRadasBlessingBoost } from '@/lib/skilling/skills/fishing/fishingUtil.js';
 import aerialFishingCreatures from '@/lib/skilling/skills/hunter/aerialFishing.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 import { skillingPetDropRate } from '@/lib/util.js';
@@ -76,27 +77,13 @@ export const aerialFishingTask: MinionTask = {
 			bluegillCaught * bluegill.fishingXP!;
 
 		let bonusXP = 0;
-
-		// If they have the entire angler outfit, give an extra 2.5% xp bonus
-		if (
-			user.gear.skilling.hasEquipped(
-				Fishing.anglerItems.map(i => i[0]),
-				true
-			)
-		) {
-			const amountToAdd = Math.floor(fishXpReceived * (2.5 / 100));
-			fishXpReceived += amountToAdd;
-			bonusXP += amountToAdd;
-		} else {
-			// For each angler item, check if they have it, give its' XP boost if so.
-			for (const [itemID, bonus] of Fishing.anglerItems) {
-				if (user.hasEquipped(itemID)) {
-					const amountToAdd = Math.floor(fishXpReceived * (bonus / 100));
-					fishXpReceived += amountToAdd;
-					bonusXP += amountToAdd;
-				}
-			}
-		}
+		const anglerBonus = Fishing.util.calcAnglerBonusXP({
+			gearBank: user.gearBank,
+			xp: fishXpReceived,
+			roundingMethod: 'ceil'
+		});
+		fishXpReceived = anglerBonus.totalXP;
+		bonusXP += anglerBonus.bonusXP;
 
 		const fishXP = await user.addXP({
 			skillName: 'fishing',
@@ -123,11 +110,6 @@ export const aerialFishingTask: MinionTask = {
 			await user.incrementCreatureScore(greaterSiren.id, greaterSirenCaught);
 		}
 
-		const xpBonusPercent = Fishing.util.calcAnglerBoostPercent(user.gearBank);
-		if (xpBonusPercent > 0) {
-			bonusXP += Math.ceil(calcPercentOfNum(xpBonusPercent, fishXpReceived));
-		}
-
 		let str = `${user}, ${user.minionName} finished aerial fishing and caught ${greaterSirenCaught}x ${greaterSiren.name}, ${mottledEelCaught}x ${mottledEel.name}, ${commonTenchCaught}x ${commonTench.name}, ${bluegillCaught}x ${bluegill.name}, ${huntXP}, ${fishXP}. ${user.minionName} asks if you'd like them to do another of the same trip.`;
 
 		if (bonusXP > 0) {
@@ -136,7 +118,7 @@ export const aerialFishingTask: MinionTask = {
 
 		// Add clue scrolls
 		const clueScrollChance = 636_833;
-		addSkillingClueToLoot(user, 'fishing', quantity, clueScrollChance, loot);
+		addSkillingClueToLoot(rng, user, 'fishing', quantity, clueScrollChance, loot);
 
 		// Heron Pet roll
 		const totalFishCaught = greaterSirenCaught + mottledEelCaught + commonTenchCaught + bluegillCaught;
@@ -156,6 +138,15 @@ export const aerialFishingTask: MinionTask = {
 		str += `\n\nYou received: ${loot}.`;
 
 		if (loot.has('Golden tench')) {
+			const { blessingChance } = calcRadasBlessingBoost(user.gearBank);
+			if (blessingChance > 0) {
+				const goldenTenchQty = loot.amount('Golden tench');
+				for (let i = 0; i < goldenTenchQty; i++) {
+					if (rng.percentChance(blessingChance)) {
+						loot.add('Golden tench');
+					}
+				}
+			}
 			str += '\n\n**The cormorant has brought you a very strange tench.**';
 			globalClient.emit(
 				Events.ServerNotification,

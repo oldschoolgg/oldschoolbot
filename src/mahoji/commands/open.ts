@@ -1,4 +1,5 @@
 import { truncateString } from '@oldschoolgg/toolkit';
+import { clamp } from 'remeda';
 
 import { allOpenables, allOpenablesIDs } from '@/lib/openables.js';
 import {
@@ -35,7 +36,7 @@ export const openCommand = defineCommand({
 		{
 			type: 'Integer',
 			name: 'quantity',
-			description: 'The quantity you want to open (defaults to one).',
+			description: 'The quantity you want to open. Defaults to one, or max possible with open_until.',
 			required: false,
 			min_value: 1,
 			max_value: 100_000
@@ -62,7 +63,7 @@ export const openCommand = defineCommand({
 			max_value: 1000
 		}
 	],
-	run: async ({ user, options, interaction }) => {
+	run: async ({ user, options, interaction, rng }) => {
 		if (interaction) await interaction.defer();
 
 		if (!options.name) {
@@ -73,16 +74,19 @@ export const openCommand = defineCommand({
 		}
 		if (options.open_until) {
 			return abstractedOpenUntilCommand(
+				rng,
 				interaction,
 				user,
 				options.name,
 				options.open_until,
+				options.quantity,
 				options.result_quantity
 			);
 		}
+		options.quantity = clamp(options.quantity ?? 1, { min: 1, max: 100_000_000 });
 		if (options.name.toLowerCase() === 'all') {
-			return abstractedOpenCommand(interaction, user, ['all'], 'auto');
+			return abstractedOpenCommand(rng, interaction, user, ['all'], 'auto');
 		}
-		return abstractedOpenCommand(interaction, user, [options.name], options.quantity);
+		return abstractedOpenCommand(rng, interaction, user, [options.name], options.quantity);
 	}
 });

@@ -1,12 +1,13 @@
-import type { RNGProvider } from '@oldschoolgg/rng';
-import { cryptoRng } from '@oldschoolgg/rng/crypto';
 import type { IChannel, IRole } from '@oldschoolgg/schemas';
 import { Time, uniqueArr } from '@oldschoolgg/toolkit';
+import type { RNGProvider } from 'node-rng';
+import { cryptoRng } from 'node-rng/crypto';
 import { convertLVLtoXP } from 'oldschooljs';
 import PromiseQueue from 'p-queue';
 import { omit } from 'remeda';
 import { test } from 'vitest';
 
+import { MessageBuilder } from '@/discord/MessageBuilder.js';
 import { BitField } from '@/lib/constants.js';
 import { SkillsArray } from '@/lib/skilling/types.js';
 import { Gear } from '@/lib/structures/Gear.js';
@@ -130,8 +131,8 @@ export async function generateCommandInputs(
 }
 
 const bitfields = [
-	BitField.IsPatronTier3,
-	BitField.IsPatronTier1,
+	BitField.PatronTier3,
+	BitField.PatronTier1,
 	BitField.HasDexScroll,
 	BitField.CleanHerbsFarming,
 	BitField.ShowDetailedInfo,

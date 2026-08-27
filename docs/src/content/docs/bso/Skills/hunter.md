@@ -28,3 +28,8 @@ Xp rates without Hunter Master Cape
 | Elder Birdhouse  | 3,255,309 |
 | Sand Gecko       | 562,955   |
 | Black Chinchompa | 1,545,000 |
+
+
+## Box trap-only Quick Trap note
+
+The Quick trap invention boost is only applied on creatures that use the **Box Trapping** technique. Other hunter techniques do not receive this boost.

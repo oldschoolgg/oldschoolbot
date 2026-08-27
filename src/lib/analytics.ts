@@ -99,6 +99,9 @@ FROM users;
 			gpLuckypick: currentClientSettings.gp_luckypick,
 			gpSlots: currentClientSettings.gp_slots,
 			gpHotCold: currentClientSettings.gp_hotcold
+		},
+		select: {
+			timestamp: true
 		}
 	});
 }

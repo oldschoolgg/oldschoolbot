@@ -13,6 +13,8 @@ const trees: Plant[] = [
 		aliases: ['oak tree', 'oak'],
 		inputItems: new Bank({ Acorn: 1 }).freeze(),
 		outputLogs: itemID('Oak logs'),
+		outputLogsQuantity: 16,
+		logDepletionChance: 1 / 8,
 		outputRoots: itemID('Oak roots'),
 		treeWoodcuttingLevel: 15,
 		petChance: 22_483,
@@ -31,7 +33,7 @@ const trees: Plant[] = [
 		defaultNumOfPatches: 5,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -52,6 +54,8 @@ const trees: Plant[] = [
 		aliases: ['willow tree', 'willow'],
 		inputItems: new Bank({ 'Willow seed': 1 }).freeze(),
 		outputLogs: itemID('Willow logs'),
+		outputLogsQuantity: 16,
+		logDepletionChance: 1 / 8,
 		outputRoots: itemID('Willow roots'),
 		treeWoodcuttingLevel: 30,
 		petChance: 16_059,
@@ -70,7 +74,7 @@ const trees: Plant[] = [
 		defaultNumOfPatches: 5,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -91,6 +95,8 @@ const trees: Plant[] = [
 		aliases: ['maple tree', 'maple'],
 		inputItems: new Bank({ 'Maple seed': 1 }).freeze(),
 		outputLogs: itemID('Maple logs'),
+		outputLogsQuantity: 16,
+		logDepletionChance: 1 / 8,
 		outputRoots: itemID('Maple roots'),
 		treeWoodcuttingLevel: 45,
 		petChance: 14_052,
@@ -109,7 +115,7 @@ const trees: Plant[] = [
 		defaultNumOfPatches: 5,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -130,6 +136,8 @@ const trees: Plant[] = [
 		aliases: ['yew tree', 'yew'],
 		inputItems: new Bank({ 'Yew seed': 1 }).freeze(),
 		outputLogs: itemID('Yew logs'),
+		outputLogsQuantity: 16,
+		logDepletionChance: 1 / 8,
 		outputRoots: itemID('Yew roots'),
 		treeWoodcuttingLevel: 60,
 		petChance: 11_242,
@@ -148,7 +156,7 @@ const trees: Plant[] = [
 		defaultNumOfPatches: 5,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -169,6 +177,8 @@ const trees: Plant[] = [
 		aliases: ['magic tree', 'magic'],
 		inputItems: new Bank({ 'Magic seed': 1 }).freeze(),
 		outputLogs: itemID('Magic logs'),
+		outputLogsQuantity: 16,
+		logDepletionChance: 1 / 8,
 		outputRoots: itemID('Magic roots'),
 		treeWoodcuttingLevel: 75,
 		petChance: 9368,
@@ -187,7 +197,7 @@ const trees: Plant[] = [
 		defaultNumOfPatches: 5,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]

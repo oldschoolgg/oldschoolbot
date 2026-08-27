@@ -1,5 +1,4 @@
 import type { GearStats } from '@oldschoolgg/gear';
-import { percentChance, randInt, randomVariation, shuffleArr } from '@oldschoolgg/rng';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
@@ -7,6 +6,7 @@ import {
 	reduceNumByPercent,
 	Time
 } from '@oldschoolgg/toolkit';
+import { MathRNG } from 'node-rng';
 import { Bank, type ChambersOfXericOptions, type Item, Items, itemID, resolveItems } from 'oldschooljs';
 
 import { getSimilarItems } from '@/lib/data/similarItems.js';
@@ -81,7 +81,8 @@ function kcPointsEffect(kc: number) {
 
 export async function createTeam(
 	users: MUser[],
-	cm: boolean
+	cm: boolean,
+	rng: RNGProvider = MathRNG
 ): Promise<Array<{ deaths: number; deathChance: number } & ChambersOfXericOptions['team'][0]>> {
 	const res = [];
 	const isSolo = users.length === 1;
@@ -131,14 +132,14 @@ export async function createTeam(
 		}
 
 		let deaths = 0;
-		for (let i = 0; i < randInt(1, 3); i++) {
-			if (percentChance(deathChance)) {
-				points = reduceNumByPercent(points, randInt(36, 44));
+		for (let i = 0; i < rng.randInt(1, 3); i++) {
+			if (rng.percentChance(deathChance)) {
+				points = reduceNumByPercent(points, rng.randInt(36, 44));
 				++deaths;
 			}
 		}
 
-		points = Math.floor(randomVariation(points, 5));
+		points = Math.floor(rng.randomVariation(points, 5));
 		if (points < 1 || points > 60_000) {
 			Logging.logError(`${u.usernameOrMention} had ${points} points in a team of ${users.length}.`);
 			points = 10_000;
@@ -609,14 +610,15 @@ const baseCmDuration = Time.Minute * 110;
 
 export async function calcCoxDuration(
 	_team: MUser[],
-	challengeMode: boolean
+	challengeMode: boolean,
+	rng = MathRNG
 ): Promise<{
 	reductions: Record<string, number>;
 	duration: number;
 	maxUserReduction: number;
 	degradeables: { item: Item; user: MUser; chargesToDegrade: number }[];
 }> {
-	const team = shuffleArr(_team).slice(0, 9);
+	const team = rng.shuffle(_team).slice(0, 9);
 	const size = team.length;
 
 	let totalReduction = 0;

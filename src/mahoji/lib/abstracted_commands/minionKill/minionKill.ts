@@ -1,4 +1,4 @@
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { Monsters } from 'oldschooljs';
 
 import { colosseumCommand } from '@/lib/colosseum.js';
@@ -7,6 +7,7 @@ import { trackLoot } from '@/lib/lootTrack.js';
 import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
 import type { MonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import findMonster from '@/lib/util/findMonster.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { generateDailyPeakIntervals } from '@/lib/util/peaks.js';
 import { newMinionKillCommand } from '@/mahoji/lib/abstracted_commands/minionKill/newMinionKill.js';
 import { nexCommand } from '@/mahoji/lib/abstracted_commands/nexCommand.js';
@@ -20,14 +21,14 @@ const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:
 
 export async function minionKillCommand(
 	user: MUser,
-	interaction: MInteraction,
+	interaction: OSInteraction,
 	channelId: string,
 	name: string,
+	rng: RNGProvider,
 	inputQuantity: number | undefined,
 	method: PvMMethod | undefined,
 	wilderness: boolean | undefined,
-	solo: boolean | undefined,
-	onTask: boolean | undefined
+	solo: boolean | undefined
 ): CommandResponse {
 	if (inputQuantity !== undefined && inputQuantity < 1) return 'Quantity must be greater than 0.';
 	if (await user.minionIsBusy()) {
@@ -37,9 +38,9 @@ export async function minionKillCommand(
 
 	if (!name) return invalidMonsterMsg;
 
-	if (stringMatches(name, 'colosseum')) return colosseumCommand(user, channelId);
+	if (stringMatches(name, 'colosseum')) return colosseumCommand(interaction);
 	if (stringMatches(name, 'nex')) return nexCommand(interaction, user, channelId, solo);
-	if (stringMatches(name, 'zalcano')) return zalcanoCommand(user, channelId, inputQuantity);
+	if (stringMatches(name, 'zalcano')) return zalcanoCommand(rng, user, channelId, inputQuantity);
 	if (stringMatches(name, 'tempoross')) return temporossCommand(user, channelId, inputQuantity);
 	if (name.toLowerCase().includes('nightmare')) return nightmareCommand(user, channelId, name, inputQuantity);
 	if (name.toLowerCase().includes('wintertodt')) return wintertodtCommand(user, channelId, inputQuantity);
@@ -61,8 +62,6 @@ export async function minionKillCommand(
 	}
 
 	const slayerInfo = await user.fetchSlayerInfo();
-
-	if (slayerInfo.assignedTask === null && onTask) return 'You are no longer on a slayer task for this monster!';
 
 	const pkEvasionExperience = await user.fetchUserStat('pk_evasion_exp');
 
@@ -91,7 +90,8 @@ export async function minionKillCommand(
 		slayerUnlocks: user.user.slayer_unlocks,
 		favoriteFood: user.user.favorite_food,
 		bitfield: user.bitfield,
-		currentPeak: generateDailyPeakIntervals().currentPeak
+		currentPeak: generateDailyPeakIntervals().currentPeak,
+		rng
 	});
 
 	if (typeof result === 'string') {
@@ -145,11 +145,12 @@ export async function minionKillCommand(
 		died,
 		pkEncounters,
 		hasWildySupplies,
-		isInWilderness: result.isInWilderness === true ? true : undefined,
+		isInWilderness: result.isInWilderness ? true : undefined,
 		attackStyles: result.attackStyles,
-		onTask: slayerInfo.assignedTask !== null
+		onTask: result.isOnTask
 	});
-	let response = `${minionName} is now killing ${result.quantity}x ${monster.name}, it'll take around ${formatDuration(
+	let response = `${minionName} is now killing ${result.quantity}x ${monster.name}, it'll take around ${formatTripDuration(
+		user,
 		result.duration
 	)} to finish. Attack styles used: ${result.attackStyles.join(', ')}.`;
 
