@@ -38,6 +38,16 @@ const DOOM_EARLY_WAVE_DURATION = 1.75 * Time.Minute;
 const DOOM_MID_WAVE_DURATION = 2.5 * Time.Minute;
 const DOOM_DEEP_WAVE_DURATION = 2.35 * Time.Minute;
 
+function calculateDoomDurationWeight(targetDelve: number): number {
+	let totalBase = 0;
+	for (let d = 1; d <= targetDelve; d++) {
+		if (d <= 5) totalBase += DOOM_EARLY_WAVE_DURATION;
+		else if (d <= 8) totalBase += DOOM_MID_WAVE_DURATION;
+		else totalBase += DOOM_DEEP_WAVE_DURATION;
+	}
+	return totalBase;
+}
+
 const ARROW_TIER_IDS: { mod: number; ids: number[] }[] = [
 	{ mod: -0.08, ids: resolveItems(['Dragon arrow']) },
 	{ mod: -0.04, ids: resolveItems(['Amethyst arrow']) },
@@ -163,6 +173,16 @@ export function calculateDoomZcbBoltsNeeded(targetDelve: number, avasReduction =
 	return Math.max(1, Math.ceil(baseBoltsNeeded * (1 - avasReduction / 100)));
 }
 
+export function scaleDoomDurationForCompletedDelves(
+	fullDuration: number,
+	completedDelves: number,
+	targetDelve: number
+): number {
+	const targetWeight = calculateDoomDurationWeight(targetDelve);
+	if (targetWeight <= 0) return fullDuration;
+	return fullDuration * (calculateDoomDurationWeight(completedDelves) / targetWeight);
+}
+
 export function selectDoomVenomProtection(itemQuantity: (itemName: string) => number): DoomVenomProtection | null {
 	for (const option of DOOM_VENOM_PROTECTION_OPTIONS) {
 		for (const dose of [1, 2, 3, 4]) {
@@ -230,13 +250,6 @@ export function calculateDoomTripDuration(
 	arrowMod: number,
 	rng: RNGProvider
 ): number {
-	let totalBase = 0;
-	for (let d = 1; d <= targetDelve; d++) {
-		if (d <= 5) totalBase += DOOM_EARLY_WAVE_DURATION;
-		else if (d <= 8) totalBase += DOOM_MID_WAVE_DURATION;
-		else totalBase += DOOM_DEEP_WAVE_DURATION;
-	}
-
 	let weaponMod = 1.0;
 	if (hasTbow) weaponMod -= 0.1;
 	else if (hasSBow) weaponMod += SCORCHING_BOW_SPEED_PENALTY / 100;
@@ -248,7 +261,12 @@ export function calculateDoomTripDuration(
 	if (hasRiteOfVileTransference) weaponMod -= RITE_OF_VILE_TRANSFERENCE_SPEED_BOOST / 100;
 	weaponMod += arrowMod;
 
-	return totalBase * DOOM_BASE_DURATION_MULTIPLIER * weaponMod * getDoomDurationVariance(rng);
+	return (
+		calculateDoomDurationWeight(targetDelve) *
+		DOOM_BASE_DURATION_MULTIPLIER *
+		weaponMod *
+		getDoomDurationVariance(rng)
+	);
 }
 
 export function calculateDoomKcReduction(kc: number, baseDuration: number): number {

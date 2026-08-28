@@ -1440,8 +1440,8 @@ export const allPetsCL = resolveItems([
 	'Huberte',
 	'Moxi',
 	'Bran',
-	'Yami'
-	// 'Dom' // Currently unobtainable.
+	'Yami',
+	'Dom'
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',

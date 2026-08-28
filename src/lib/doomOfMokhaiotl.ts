@@ -35,6 +35,7 @@ import {
 	normaliseDoomWaveCompletions,
 	RITE_OF_VILE_TRANSFERENCE_SPEED_BOOST,
 	SCORCHING_BOW_SPEED_PENALTY,
+	scaleDoomDurationForCompletedDelves,
 	selectDoomMeleePunishWeapon,
 	selectDoomVenomProtection,
 	ZCB_SPEED_BOOST
@@ -56,6 +57,7 @@ export {
 	calculateDoomZcbBoltsNeeded,
 	MAX_DELVE,
 	normaliseDoomWaveCompletions,
+	scaleDoomDurationForCompletedDelves,
 	selectDoomMeleePunishWeapon,
 	selectDoomVenomProtection
 } from '@/lib/doomOfMokhaiotlHelpers.js';
@@ -255,14 +257,18 @@ export function startDoomRun(options: {
 		}
 
 		if (options.stopOnUnique && DOOM_UNIQUE_ITEMS.some(id => waveRoll.has(id))) {
+			const stoppedDuration = reduceNumByPercent(
+				scaleDoomDurationForCompletedDelves(baseDuration, d, targetDelve),
+				options.durationReductionPercent
+			);
 			return {
 				diedAt: null,
 				loot: pendingLoot,
 				deepestDelveCompleted: d,
 				deepDelvesEarned,
 				totalWavesCleared,
-				fakeDuration,
-				realDuration,
+				fakeDuration: stoppedDuration,
+				realDuration: stoppedDuration,
 				deathChances,
 				ayakChargesGained
 			};
@@ -400,7 +406,6 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 	const hasNoxHalberd = user.hasEquippedOrInBank('Noxious halberd');
 	const hasCrystalHalb = crystalHalberdVariants.some(i => user.hasEquippedOrInBank(i));
 	const hasDualMacuahuitl = user.hasEquippedOrInBank('Dual macuahuitl');
-	const hasBloodFury = user.hasEquippedOrInBank('Amulet of blood fury');
 	const crystalShardsNeeded = Math.ceil(targetDelve);
 	const meleePunishWeapon = selectDoomMeleePunishWeapon({
 		hasNoxHalberd,
@@ -416,11 +421,6 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 
 	if (meleePunishWeapon === 'crystal_halberd' && user.bank.amount('Crystal shard') < crystalShardsNeeded) {
 		return `You need ${crystalShardsNeeded.toLocaleString()}x Crystal shard to use Crystal halberd for this trip.`;
-	}
-
-	const bloodFuryChargesNeeded = Math.ceil(targetDelve * 3);
-	if (hasBloodFury && user.user.blood_fury_charges < bloodFuryChargesNeeded) {
-		return `You need at least ${bloodFuryChargesNeeded} Amulet of blood fury charges for this trip.`;
 	}
 
 	const equippedAmmo = user.gear.range.get('ammo');
@@ -502,6 +502,7 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 		rng
 	});
 
+	const delvesForCost = res.diedAt === null ? res.deepestDelveCompleted : targetDelve;
 	const fullDurationMinutes = res.realDuration / Time.Minute;
 	const score = experienceScore(deepDelves, totalDelves);
 	const experienceFactor = Math.min(score / 1000, 1);
@@ -509,12 +510,12 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 	const restoresPerMinute = Math.max(0.3, 0.3 + experienceFactor * 0.3);
 	const brewsUsed = Math.min(10, Math.max(1, Math.ceil(fullDurationMinutes * brewsPerMinute)));
 	const restoresUsed = Math.min(10, Math.max(1, Math.ceil(fullDurationMinutes * restoresPerMinute)));
-	const rangingUsed = Math.min(10, Math.max(1, Math.ceil(targetDelve / 5)));
+	const rangingUsed = Math.min(10, Math.max(1, Math.ceil(delvesForCost / 5)));
 
 	const cost = new Bank()
 		.add('Saradomin brew(4)', Math.min(10, Math.max(1, Math.ceil(fullDurationMinutes * brewsPerMinute))))
 		.add('Super restore(4)', Math.min(10, Math.max(1, Math.ceil(fullDurationMinutes * restoresPerMinute))))
-		.add('Ranging potion(4)', Math.min(10, Math.max(1, Math.ceil(targetDelve / 5))))
+		.add('Ranging potion(4)', Math.min(10, Math.max(1, Math.ceil(delvesForCost / 5))))
 		.add(venomProtection.itemName);
 
 	if (!hasChargedEyeOfAyak) {
@@ -522,14 +523,14 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 		let soulRunes = 0;
 
 		if (userMagicLevel >= 82) {
-			fireRunes = 7 * targetDelve;
-			soulRunes = 2 * targetDelve;
+			fireRunes = 7 * delvesForCost;
+			soulRunes = 2 * delvesForCost;
 		} else if (userMagicLevel >= 62) {
-			fireRunes = 5 * targetDelve;
-			soulRunes = 1 * targetDelve;
+			fireRunes = 5 * delvesForCost;
+			soulRunes = 1 * delvesForCost;
 		} else {
-			fireRunes = 3 * targetDelve;
-			cost.add('Chaos rune', targetDelve);
+			fireRunes = 3 * delvesForCost;
+			cost.add('Chaos rune', delvesForCost);
 		}
 
 		const fireAlternatives = ['Fire rune', 'Smoke rune', 'Steam rune', 'Lava rune'];
@@ -558,13 +559,13 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 
 	if ((hasTbow || hasSBow) && equippedArrowId !== null) {
 		const arrowsPerDelve = hasTbow ? 15 : 20;
-		cost.add(equippedArrowId, Math.min(600, Math.ceil(targetDelve * arrowsPerDelve)));
+		cost.add(equippedArrowId, Math.min(600, Math.ceil(delvesForCost * arrowsPerDelve)));
 	}
 
 	if (hasZcb) {
 		const rubyBoltVariants = ['Ruby bolts (e)', 'Ruby dragon bolts (e)'];
 		const avasDevice = avasDevices.find(avas => user.gear.range.hasEquipped(avas.item.id));
-		const boltsNeeded = calculateDoomZcbBoltsNeeded(targetDelve, avasDevice?.reduction ?? 0);
+		const boltsNeeded = calculateDoomZcbBoltsNeeded(delvesForCost, avasDevice?.reduction ?? 0);
 		const boltsOwned = rubyBoltVariants.reduce((total, bolt) => total + user.bank.amount(bolt), 0);
 		if (boltsOwned < boltsNeeded) {
 			return `You need ${boltsNeeded.toLocaleString()}x Ruby bolts (e) or Ruby dragon bolts (e) for this trip, you only own ${boltsOwned.toLocaleString()} total.`;
@@ -581,7 +582,7 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 			}
 		}
 	}
-	if (meleePunishWeapon === 'crystal_halberd') cost.add('Crystal shard', crystalShardsNeeded);
+	if (meleePunishWeapon === 'crystal_halberd') cost.add('Crystal shard', Math.ceil(delvesForCost));
 
 	const realCost = new Bank();
 	try {
@@ -594,12 +595,6 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 	if (venomProtection.replacementItemName) {
 		await user.addItemsToBank({ items: new Bank().add(venomProtection.replacementItemName), collectionLog: false });
 		realCost.remove(venomProtection.itemName).add(venomProtection.consumedDoseItemName);
-	}
-
-	if (hasBloodFury) {
-		await user.update({
-			blood_fury_charges: { decrement: bloodFuryChargesNeeded }
-		});
 	}
 
 	await ClientSettings.updateBankSetting('doom_cost', realCost);
@@ -619,11 +614,13 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 		fakeDuration: res.fakeDuration,
 		type: 'DoomOfMokhaiotl',
 		targetDelve,
+		xpTargetDelve: res.diedAt === null ? res.deepestDelveCompleted : targetDelve,
 		diedAt: res.diedAt,
 		loot: res.loot?.toJSON() ?? {},
 		deepDelvesEarned: res.deepDelvesEarned,
 		totalWavesCleared: res.totalWavesCleared,
 		deepestDelveCompleted: res.deepestDelveCompleted,
+		stopOnUnique,
 		ayakChargesGained: res.ayakChargesGained,
 		brewsUsed,
 		restoresUsed,

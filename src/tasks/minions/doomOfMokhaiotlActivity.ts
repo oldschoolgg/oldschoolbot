@@ -14,6 +14,7 @@ export const doomOfMokhaiotlTask: MinionTask = {
 			loot: possibleLoot,
 			diedAt,
 			targetDelve,
+			xpTargetDelve,
 			duration,
 			deepDelvesEarned,
 			totalWavesCleared,
@@ -62,7 +63,7 @@ export const doomOfMokhaiotlTask: MinionTask = {
 			xpMessage = await user.addXPBank(
 				calculateDoomXP({
 					duration,
-					targetDelve,
+					targetDelve: xpTargetDelve ?? targetDelve,
 					totalWavesCleared,
 					minimal: true
 				})

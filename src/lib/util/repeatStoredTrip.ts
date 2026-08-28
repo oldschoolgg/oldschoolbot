@@ -794,7 +794,7 @@ const tripHandlers: {
 	[activity_type_enum.DoomOfMokhaiotl]: {
 		commandName: 'delves',
 		args: (data: DoomTaskOptions) => ({
-			doom: { target_delve: data.targetDelve }
+			doom: { target_delve: data.targetDelve, stop_on_unique: data.stopOnUnique ?? true }
 		})
 	}
 } as const;

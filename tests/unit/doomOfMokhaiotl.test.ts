@@ -9,6 +9,7 @@ import {
 	calculateDoomXP,
 	calculateDoomZcbBoltsNeeded,
 	normaliseDoomWaveCompletions,
+	scaleDoomDurationForCompletedDelves,
 	selectDoomMeleePunishWeapon,
 	selectDoomVenomProtection
 } from '@/lib/doomOfMokhaiotlHelpers.js';
@@ -124,6 +125,26 @@ describe('Doom of Mokhaiotl', () => {
 			maxKcAndStatsDurationMultiplier;
 
 		expect(delveEightFastDuration).toBeLessThan(Time.Minute * 7.25);
+	});
+
+	test('scales early unique stop duration by completed delve weight', () => {
+		const fullDuration = calculateDoomTripDuration(
+			8,
+			true,
+			false,
+			true,
+			true,
+			'noxious_halberd',
+			true,
+			false,
+			true,
+			-0.08,
+			fixedDurationRollRng(0.525)
+		);
+		const stoppedDuration = scaleDoomDurationForCompletedDelves(fullDuration, 5, 8);
+
+		expect(stoppedDuration).toBeLessThan(fullDuration);
+		expect(stoppedDuration / fullDuration).toBeCloseTo(8.75 / 16.25, 5);
 	});
 
 	test('Lightbearer gives a Doom speed boost', () => {
