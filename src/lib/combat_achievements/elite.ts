@@ -1819,12 +1819,9 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'Doom of Mokhaiotl',
 		rng: {
-			chancePerKill: 25,
+			chancePerKill: 20,
 			hasChance: (data: ActivityTaskData) =>
-				data.type === 'DoomOfMokhaiotl' &&
-				!data.diedAt &&
-				data.deepestDelveCompleted >= 1 &&
-				data.duration < Time.Minute * 1.5
+				data.type === 'DoomOfMokhaiotl' && !data.diedAt && data.deepestDelveCompleted >= 1
 		}
 	},
 	{

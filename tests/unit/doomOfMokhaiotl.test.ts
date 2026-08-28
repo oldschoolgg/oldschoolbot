@@ -116,6 +116,16 @@ describe('Doom of Mokhaiotl', () => {
 		expect(extraDeepWaveDuration).toBeLessThanOrEqual(Time.Minute * 1.33);
 	});
 
+	test('Doom Racer duration threshold remains reachable', () => {
+		const maxKcAndStatsDurationMultiplier = 0.9 * 0.85;
+		const maxGearWithLightbearer = [true, false, true, true, 'noxious_halberd', true, false, true, -0.08] as const;
+		const delveEightFastDuration =
+			calculateDoomTripDuration(8, ...maxGearWithLightbearer, fixedDurationRollRng(0.049_999)) *
+			maxKcAndStatsDurationMultiplier;
+
+		expect(delveEightFastDuration).toBeLessThan(Time.Minute * 7.25);
+	});
+
 	test('Lightbearer gives a Doom speed boost', () => {
 		const withoutLightbearer = calculateDoomTripDuration(
 			8,

@@ -16,7 +16,7 @@ By default, the trip stops early when a unique is received. To keep going until 
 - A demonbane weapon: [[Darklight]], [[Arclight]], or [[Emberlight]]
 - A mage weapon, or a charged [[Eye of ayak]]
 - A melee punish weapon: [[Noxious halberd]], [[Crystal halberd]], or [[Dual macuahuitl]]
-- At least one dose of [[Anti-venom(4)]], [[Anti-venom+(4)]], or [[Extended anti-venom+(4)]]. Any dose variant works.
+- At least one dose of Anti-venom, Anti-venom+, or Extended anti-venom+. Any dose variant works, and one dose is consumed per trip.
 - Appropriate range gear, including head, body, legs, neck, cape, feet, and hands slots
 
 ## Rewards and Progress
@@ -33,11 +33,47 @@ Deaths lose all loot from the run. Some unused supplies can be refunded if the d
 
 XP is weighted heavily towards Ranged. A full completion gives around 105k Ranged XP/hr, up to 10k Magic XP/hr, and around 5k total melee XP/hr.
 
+## Death Chance
+
+Delves 1-7 become safe after successful clears of that specific delve. Delve 1 needs 1 clear, delve 2 needs 2 clears, continuing up to delve 7 needing 7 clears.
+
+Delve 8+ never becomes fully safe. Repeated clears reduce the death chance towards these minimums when wearing full Masori:
+
+- Delve 8: 3%
+- Delve 9: 5%
+- Delve 10: 7%
+- Delve 11: 9%
+- Delve 12: 11%
+- Delve 13: 13%
+- Delve 14: 15%
+- Delve 15: 17%
+- Delve 16+: 20%
+
+Without full Masori, these minimums are 2% higher.
+
 ## Boosts and Gear
 
-[[Twisted bow]], [[Zaryte crossbow]], [[Noxious halberd]], Elite Void, Masori armour, better arrows, [[Rite of vile transference]], KC, and combat stats can improve trip speed. [[Masori mask]], [[Masori body]], and [[Masori chaps]] together give a 2% death chance reduction.
+- 10% speed boost for [[Twisted bow]]
+- 17% speed penalty for [[Scorching bow]]
+- 8% speed boost for [[Noxious halberd]]
+- 5% speed boost for full Masori armour
+- 5% speed boost for Elite Void
+- 3% speed boost for [[Zaryte crossbow]]
+- 3% speed boost for [[Rite of vile transference]]
+- 2% speed boost for [[Lightbearer]]
+- Up to 10% speed boost for KC
+- Up to 15% speed boost for combat stats
+- Arrow modifiers: [[Dragon arrow]] is 8% faster, [[Amethyst arrow]] is 4% faster, [[Rune arrow]] is 5% slower, and lower arrows are 12% slower.
+
+[[Masori mask]], [[Masori body]], and [[Masori chaps]] together also give a 2% death chance reduction. If [[Avernic treads (max)]] are equipped in any Melee, Mage, or Range setup, they count for Doom's range feet slot check.
 
 [[Eye of ayak]] can replace rune costs for mage grubs when charged. Completing Doom with a charged Eye of Ayak also adds more Eye of Ayak charges.
+
+## Combat Achievements
+
+Doom CAs are rolled from successful Doom trips. Doom Chaser uses the trip duration shown by the bot and needs delve 8 under 10:00. Doom Racer also uses the shown duration and needs delve 8 under 7:15, which is reachable with max speed boosts, max KC speed reduction, high combat stats, and a fast duration roll.
+
+Doom Crawler keeps the in-game 30-second challenge wording, but is represented in the bot as a 1/20 chance from successful Doom trips that complete at least delve 1.
 
 ## Related Items
 

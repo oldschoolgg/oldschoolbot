@@ -3712,7 +3712,7 @@
 				"type": "speed",
 				"monster": "Doom of Mokhaiotl",
 				"rng": {
-					"chance_per_kill": 25
+					"chance_per_kill": 20
 				}
 			},
 			{
