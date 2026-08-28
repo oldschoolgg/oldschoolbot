@@ -3,11 +3,15 @@ import { resolveItems } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import type { AttackStyles } from '@/lib/minions/functions/index.js';
+import { XPBank } from '@/lib/structures/XPBank.js';
 import type { Skills } from '@/lib/types/index.js';
 
 export const MAX_DELVE = 30;
 export const ZCB_SPEED_BOOST = 3;
 export const NOXIOUS_HALBERD_SPEED_BOOST = 8;
+const DOOM_RANGED_XP_PER_HOUR = 105_000;
+const DOOM_MAGIC_XP_PER_HOUR = 10_000;
+const DOOM_MELEE_XP_PER_HOUR = 5_000;
 
 const MASORI_DEATH_CHANCE_MULTIPLIER = 0.9;
 const DOOM_BASE_DEATH_CHANCES = [5, 10, 15, 20, 25, 30, 50, 75, 77, 79, 81, 82, 83, 85, 87];
@@ -212,4 +216,49 @@ export function applyDoomSkillBoost(skillsAsLevels: Required<Skills>, duration: 
 
 	percent = Math.min(15, percent / 6.5);
 	return [reduceNumByPercent(duration, percent), `${percent.toFixed(2)}% for stats`];
+}
+
+export function calculateDoomXP({
+	duration,
+	targetDelve,
+	totalWavesCleared,
+	minimal = true
+}: {
+	duration: number;
+	targetDelve: number;
+	totalWavesCleared: number;
+	minimal?: boolean;
+}) {
+	const completionRatio = clamp(totalWavesCleared / targetDelve, { min: 0, max: 1 });
+	const hours = duration / Time.Hour;
+	const xpMultiplier = hours * completionRatio;
+	const hitpointsXPPerHour = (DOOM_RANGED_XP_PER_HOUR + DOOM_MAGIC_XP_PER_HOUR + DOOM_MELEE_XP_PER_HOUR) / 3;
+	const debugId = `doom_xp duration[${duration}] target[${targetDelve}] cleared[${totalWavesCleared}]`;
+
+	return new XPBank()
+		.add('ranged', Math.floor(DOOM_RANGED_XP_PER_HOUR * xpMultiplier), {
+			duration,
+			minimal,
+			debugId
+		})
+		.add('magic', Math.floor(DOOM_MAGIC_XP_PER_HOUR * xpMultiplier), {
+			duration,
+			minimal,
+			debugId
+		})
+		.add('attack', Math.floor((DOOM_MELEE_XP_PER_HOUR / 2) * xpMultiplier), {
+			duration,
+			minimal,
+			debugId
+		})
+		.add('strength', Math.floor((DOOM_MELEE_XP_PER_HOUR / 2) * xpMultiplier), {
+			duration,
+			minimal,
+			debugId
+		})
+		.add('hitpoints', Math.floor(hitpointsXPPerHour * xpMultiplier), {
+			duration,
+			minimal,
+			debugId
+		});
 }

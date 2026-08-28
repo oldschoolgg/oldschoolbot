@@ -1,16 +1,14 @@
 import { Bank, EMonster, type ItemBank, Items } from 'oldschooljs';
 
-import { DOOM_UNIQUE_ITEMS, normaliseDoomWaveCompletions } from '@/lib/doomOfMokhaiotl.js';
+import { calculateDoomXP, DOOM_UNIQUE_ITEMS, normaliseDoomWaveCompletions } from '@/lib/doomOfMokhaiotl.js';
 import { trackLoot } from '@/lib/lootTrack.js';
-import { addMonsterXPRaw } from '@/lib/minions/functions/addMonsterXPRaw.js';
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
-import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { DoomTaskOptions } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const doomOfMokhaiotlTask: MinionTask = {
 	type: 'DoomOfMokhaiotl',
-	async run(data: DoomTaskOptions, { user, handleTripFinish, rng }) {
+	async run(data: DoomTaskOptions, { user, handleTripFinish }) {
 		const {
 			channelId,
 			loot: possibleLoot,
@@ -60,18 +58,13 @@ export const doomOfMokhaiotlTask: MinionTask = {
 		});
 
 		let xpMessage = '';
-		if (doomKcEarned > 0) {
-			const doomAttackStyles: AttackStyles[] = ['attack', 'strength', 'magic', 'ranged'];
+		if (totalWavesCleared > 0) {
 			xpMessage = await user.addXPBank(
-				addMonsterXPRaw({
-					rng,
-					monsterID: EMonster.DOOM_OF_MOKHAIOTL,
-					quantity: doomKcEarned,
+				calculateDoomXP({
 					duration,
-					isOnTask: false,
-					taskQuantity: null,
-					minimal: true,
-					attackStyles: doomAttackStyles
+					targetDelve,
+					totalWavesCleared,
+					minimal: true
 				})
 			);
 		}

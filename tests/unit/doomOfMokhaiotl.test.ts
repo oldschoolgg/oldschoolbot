@@ -5,6 +5,7 @@ import {
 	calculateDeathChance,
 	calculateDoomRunDeathChance,
 	calculateDoomTripDuration,
+	calculateDoomXP,
 	calculateDoomZcbBoltsNeeded,
 	normaliseDoomWaveCompletions,
 	selectDoomMeleePunishWeapon
@@ -156,5 +157,31 @@ describe('Doom of Mokhaiotl', () => {
 		expect(calculateDoomZcbBoltsNeeded(10)).toBe(4);
 		expect(calculateDoomZcbBoltsNeeded(30)).toBe(14);
 		expect(calculateDoomZcbBoltsNeeded(30, 80)).toBe(3);
+	});
+
+	test('awards Doom combat XP at the intended per-hour rates for a completed run', () => {
+		const xpBank = calculateDoomXP({
+			duration: Time.Hour,
+			targetDelve: 8,
+			totalWavesCleared: 8
+		});
+
+		expect(xpBank.amount('ranged')).toBe(105_000);
+		expect(xpBank.amount('magic')).toBe(10_000);
+		expect(xpBank.amount('attack') + xpBank.amount('strength')).toBe(5_000);
+		expect(xpBank.amount('hitpoints')).toBe(40_000);
+	});
+
+	test('scales Doom combat XP down for incomplete runs', () => {
+		const xpBank = calculateDoomXP({
+			duration: Time.Hour,
+			targetDelve: 8,
+			totalWavesCleared: 4
+		});
+
+		expect(xpBank.amount('ranged')).toBe(52_500);
+		expect(xpBank.amount('magic')).toBe(5_000);
+		expect(xpBank.amount('attack') + xpBank.amount('strength')).toBe(2_500);
+		expect(xpBank.amount('hitpoints')).toBe(20_000);
 	});
 });

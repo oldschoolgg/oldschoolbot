@@ -41,6 +41,7 @@ export {
 	calculateDeathChance,
 	calculateDoomRunDeathChance,
 	calculateDoomTripDuration,
+	calculateDoomXP,
 	calculateDoomZcbBoltsNeeded,
 	MAX_DELVE,
 	normaliseDoomWaveCompletions,
