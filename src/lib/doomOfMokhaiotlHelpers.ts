@@ -9,6 +9,20 @@ import type { Skills } from '@/lib/types/index.js';
 export const MAX_DELVE = 30;
 export const ZCB_SPEED_BOOST = 3;
 export const NOXIOUS_HALBERD_SPEED_BOOST = 8;
+export const SCORCHING_BOW_SPEED_PENALTY = 17;
+export const ELITE_VOID_SPEED_BOOST = 5;
+export const LIGHTBEARER_SPEED_BOOST = 2;
+export const DOOM_VENOM_PROTECTION_OPTIONS = [
+	{
+		potionName: 'Anti-venom'
+	},
+	{
+		potionName: 'Anti-venom+'
+	},
+	{
+		potionName: 'Extended anti-venom+'
+	}
+] as const;
 const DOOM_RANGED_XP_PER_HOUR = 105_000;
 const DOOM_MAGIC_XP_PER_HOUR = 10_000;
 const DOOM_MELEE_XP_PER_HOUR = 5_000;
@@ -34,6 +48,14 @@ const ARROW_TIER_IDS: { mod: number; ids: number[] }[] = [
 
 export type DoomWaveCompletions = Record<number, number>;
 export type DoomMeleePunishWeapon = 'noxious_halberd' | 'crystal_halberd' | 'dual_macuahuitl';
+export type DoomVenomProtectionOption = (typeof DOOM_VENOM_PROTECTION_OPTIONS)[number];
+
+export interface DoomVenomProtection {
+	option: DoomVenomProtectionOption;
+	itemName: string;
+	consumedDoseItemName: string;
+	replacementItemName: string | null;
+}
 
 export function normaliseDoomWaveCompletions(rawCompletions: unknown): DoomWaveCompletions {
 	if (!rawCompletions || typeof rawCompletions !== 'object') return {};
@@ -121,6 +143,11 @@ export function calculateDoomRunDeathChance(deathChances: number[]): {
 	};
 }
 
+export function calculateDoomWipeChanceBeforeTarget(deathChances: number[]): number {
+	if (deathChances.length <= 1) return 0;
+	return calculateDoomRunDeathChance(deathChances.slice(0, -1)).deathChance;
+}
+
 export function formatDoomDeathChance(chance: number): string {
 	if (chance >= 99.995) return '100%';
 	if (chance > 0 && chance < 0.01) return '<0.01%';
@@ -131,6 +158,22 @@ export function calculateDoomZcbBoltsNeeded(targetDelve: number, avasReduction =
 	const rawBoltsNeeded = targetDelve <= 9 ? 6 : 6 + (targetDelve - 9);
 	const baseBoltsNeeded = Math.ceil(rawBoltsNeeded / 2);
 	return Math.max(1, Math.ceil(baseBoltsNeeded * (1 - avasReduction / 100)));
+}
+
+export function selectDoomVenomProtection(itemQuantity: (itemName: string) => number): DoomVenomProtection | null {
+	for (const option of DOOM_VENOM_PROTECTION_OPTIONS) {
+		for (const dose of [1, 2, 3, 4]) {
+			const itemName = `${option.potionName}(${dose})`;
+			if (itemQuantity(itemName) <= 0) continue;
+			return {
+				option,
+				itemName,
+				consumedDoseItemName: `${option.potionName}(1)`,
+				replacementItemName: dose > 1 ? `${option.potionName}(${dose - 1})` : null
+			};
+		}
+	}
+	return null;
 }
 
 function getDoomDurationVariance(rng: RNGProvider): number {
@@ -176,6 +219,7 @@ export function calculateDoomTripDuration(
 	hasTbow: boolean,
 	hasSBow: boolean,
 	hasZcb: boolean,
+	hasLightbearer: boolean,
 	meleePunishWeapon: DoomMeleePunishWeapon | null,
 	hasEliteVoid: boolean,
 	arrowMod: number,
@@ -190,10 +234,11 @@ export function calculateDoomTripDuration(
 
 	let weaponMod = 1.0;
 	if (hasTbow) weaponMod -= 0.1;
-	else if (hasSBow) weaponMod += 0.17;
+	else if (hasSBow) weaponMod += SCORCHING_BOW_SPEED_PENALTY / 100;
 	if (hasZcb) weaponMod -= ZCB_SPEED_BOOST / 100;
+	if (hasLightbearer) weaponMod -= LIGHTBEARER_SPEED_BOOST / 100;
 	if (meleePunishWeapon === 'noxious_halberd') weaponMod -= NOXIOUS_HALBERD_SPEED_BOOST / 100;
-	if (hasEliteVoid) weaponMod -= 0.05;
+	if (hasEliteVoid) weaponMod -= ELITE_VOID_SPEED_BOOST / 100;
 	weaponMod += arrowMod;
 
 	return totalBase * weaponMod * getDoomDurationVariance(rng);
@@ -211,11 +256,11 @@ export function applyDoomSkillBoost(skillsAsLevels: Required<Skills>, duration: 
 
 	if (percent < 50) {
 		percent = 50 - percent;
-		return [duration + (duration * percent) / 100, `-${percent.toFixed(2)}% for low stats`];
+		return [duration + (duration * percent) / 100, `${percent.toFixed(2)}% speed penalty for low stats`];
 	}
 
 	percent = Math.min(15, percent / 6.5);
-	return [reduceNumByPercent(duration, percent), `${percent.toFixed(2)}% for stats`];
+	return [reduceNumByPercent(duration, percent), `${percent.toFixed(2)}% speed boost for stats`];
 }
 
 export function calculateDoomXP({

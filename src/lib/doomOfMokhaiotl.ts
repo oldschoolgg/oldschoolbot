@@ -17,16 +17,22 @@ import {
 	calculateDoomKcReduction,
 	calculateDoomRunDeathChance,
 	calculateDoomTripDuration,
+	calculateDoomWipeChanceBeforeTarget,
 	calculateDoomZcbBoltsNeeded,
+	DOOM_VENOM_PROTECTION_OPTIONS,
 	type DoomMeleePunishWeapon,
 	type DoomWaveCompletions,
+	ELITE_VOID_SPEED_BOOST,
 	formatDoomDeathChance,
 	getDoomArrowMod,
 	getDoomMeleePunishWeaponName,
+	LIGHTBEARER_SPEED_BOOST,
 	MAX_DELVE,
 	NOXIOUS_HALBERD_SPEED_BOOST,
 	normaliseDoomWaveCompletions,
+	SCORCHING_BOW_SPEED_PENALTY,
 	selectDoomMeleePunishWeapon,
+	selectDoomVenomProtection,
 	ZCB_SPEED_BOOST
 } from '@/lib/doomOfMokhaiotlHelpers.js';
 import { trackLoot } from '@/lib/lootTrack.js';
@@ -41,11 +47,13 @@ export {
 	calculateDeathChance,
 	calculateDoomRunDeathChance,
 	calculateDoomTripDuration,
+	calculateDoomWipeChanceBeforeTarget,
 	calculateDoomXP,
 	calculateDoomZcbBoltsNeeded,
 	MAX_DELVE,
 	normaliseDoomWaveCompletions,
-	selectDoomMeleePunishWeapon
+	selectDoomMeleePunishWeapon,
+	selectDoomVenomProtection
 } from '@/lib/doomOfMokhaiotlHelpers.js';
 
 export const DoomOfMokhaiotl = {
@@ -199,6 +207,7 @@ export function startDoomRun(options: {
 			options.hasTbow,
 			options.hasSBow,
 			options.hasZcb,
+			options.hasLightbearer,
 			options.meleePunishWeapon,
 			options.hasEliteVoid,
 			options.arrowMod,
@@ -446,6 +455,7 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 		hasTbow,
 		hasSBow,
 		hasZcb,
+		hasLightbearer,
 		meleePunishWeapon,
 		hasEliteVoid,
 		arrowMod,
@@ -456,6 +466,13 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 		user.skillsAsLevels as Required<Skills>,
 		reduceNumByPercent(baseDuration, kcReduction)
 	);
+	const venomProtection = selectDoomVenomProtection(itemName => user.bank.amount(itemName));
+	if (!venomProtection) {
+		return `You need at least one dose of ${formatList(
+			DOOM_VENOM_PROTECTION_OPTIONS.map(option => option.potionName),
+			'or'
+		)} to fight the Doom of Mokhaiotl.`;
+	}
 	const durationReductionPercent = calcWhatPercent(baseDuration - durationAfterSkillBoost, baseDuration);
 
 	const res = startDoomRun({
@@ -492,7 +509,8 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 	const cost = new Bank()
 		.add('Saradomin brew(4)', Math.min(10, Math.max(1, Math.ceil(fullDurationMinutes * brewsPerMinute))))
 		.add('Super restore(4)', Math.min(10, Math.max(1, Math.ceil(fullDurationMinutes * restoresPerMinute))))
-		.add('Ranging potion(4)', Math.min(10, Math.max(1, Math.ceil(targetDelve / 5))));
+		.add('Ranging potion(4)', Math.min(10, Math.max(1, Math.ceil(targetDelve / 5))))
+		.add(venomProtection.itemName);
 
 	if (!hasChargedEyeOfAyak) {
 		let fireRunes = 0;
@@ -568,6 +586,10 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 		if (err instanceof UserError) return err.message;
 		throw err;
 	}
+	if (venomProtection.replacementItemName) {
+		await user.addItemsToBank({ items: new Bank().add(venomProtection.replacementItemName), collectionLog: false });
+		realCost.remove(venomProtection.itemName).add(venomProtection.consumedDoseItemName);
+	}
 
 	if (hasBloodFury) {
 		await user.update({
@@ -606,7 +628,7 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 	const boostLines: string[] = [];
 
 	if (hasTbow) boostLines.push('Twisted bow (10% speed boost)');
-	else boostLines.push('Scorching bow');
+	else boostLines.push(`Scorching bow (${SCORCHING_BOW_SPEED_PENALTY}% speed penalty)`);
 
 	if (equippedArrowName ?? equippedArrowId !== null) {
 		const pct = Math.round(Math.abs(arrowMod) * 100);
@@ -615,34 +637,47 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 		boostLines.push(`${displayName} (${effect})`);
 	}
 
-	if (hasEmberlight && !hasArclight) boostLines.push('Emberlight');
-	else if (hasArclight) boostLines.push('Arclight');
-	else boostLines.push('Darklight');
+	if (hasEmberlight && !hasArclight) boostLines.push('Emberlight (demonbane weapon)');
+	else if (hasArclight) boostLines.push('Arclight (demonbane weapon)');
+	else boostLines.push('Darklight (demonbane weapon)');
 
 	if (meleePunishWeapon === 'noxious_halberd') {
 		boostLines.push(
-			`${getDoomMeleePunishWeaponName(meleePunishWeapon)} (${NOXIOUS_HALBERD_SPEED_BOOST}% speed boost)`
+			`${getDoomMeleePunishWeaponName(meleePunishWeapon)} (${NOXIOUS_HALBERD_SPEED_BOOST}% speed boost, melee punish weapon)`
+		);
+	} else if (meleePunishWeapon === 'crystal_halberd') {
+		boostLines.push(
+			`${getDoomMeleePunishWeaponName(meleePunishWeapon)} (melee punish weapon, uses Crystal shards)`
 		);
 	} else {
-		boostLines.push(getDoomMeleePunishWeaponName(meleePunishWeapon));
+		boostLines.push(`${getDoomMeleePunishWeaponName(meleePunishWeapon)} (melee punish weapon)`);
 	}
 
-	if (hasChargedEyeOfAyak) boostLines.push('Eye of Ayak (mage grubs, no rune cost)');
+	if (hasChargedEyeOfAyak) {
+		boostLines.push('Eye of Ayak (mage grubs, no rune cost, gains 10-20 charges per cleared delve)');
+	}
 
 	if (hasMasori) boostLines.push('Masori armour (10% death reduction)');
-	else if (hasEliteVoid) boostLines.push('Elite void');
-	if (kcReduction >= 1) boostLines.push(`${kcReduction}% for KC`);
+	else if (hasEliteVoid) boostLines.push(`Elite void (${ELITE_VOID_SPEED_BOOST}% speed boost)`);
+	if (kcReduction >= 1) boostLines.push(`${kcReduction}% speed boost for KC`);
 	boostLines.push(skillBoostMsg);
-	if (hasLightbearer) boostLines.push('Lightbearer');
+	boostLines.push(`${venomProtection.option.potionName} (venom protection, 1 dose)`);
+	if (hasLightbearer) boostLines.push(`Lightbearer (${LIGHTBEARER_SPEED_BOOST}% speed boost)`);
 	if (hasZcb) boostLines.push(`Zaryte crossbow (${ZCB_SPEED_BOOST}% speed boost)`);
 
 	const runDeathChance = calculateDoomRunDeathChance(res.deathChances);
+	const wipeChanceBeforeTarget = calculateDoomWipeChanceBeforeTarget(res.deathChances);
+	const targetDelveDeathChance = res.deathChances.at(-1) ?? 0;
 	const deathChanceLine =
 		runDeathChance.expectedDeathWave !== null
-			? `**Death chance before completing target delve:** ${formatDoomDeathChance(
-					runDeathChance.deathChance
+			? `**Wipe chance before target delve:** ${formatDoomDeathChance(
+					wipeChanceBeforeTarget
+				)} | **Target delve death chance:** ${formatDoomDeathChance(
+					targetDelveDeathChance
 				)} | **Expected death:** Delve ${round(runDeathChance.expectedDeathWave, 1)}`
-			: `**Death chance before completing target delve:** ${formatDoomDeathChance(runDeathChance.deathChance)}`;
+			: `**Wipe chance before target delve:** ${formatDoomDeathChance(
+					wipeChanceBeforeTarget
+				)} | **Target delve death chance:** ${formatDoomDeathChance(targetDelveDeathChance)}`;
 
 	return [
 		`${user.usernameOrMention}'s minion is now fighting the **Doom of Mokhaiotl** (targeting delve **${targetDelve}**)!`,

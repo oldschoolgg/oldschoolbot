@@ -16,6 +16,7 @@ By default, the trip stops early when a unique is received. To keep going until 
 - A demonbane weapon: [[Darklight]], [[Arclight]], or [[Emberlight]]
 - A mage weapon, or a charged [[Eye of ayak]]
 - A melee punish weapon: [[Noxious halberd]], [[Crystal halberd]], or [[Dual macuahuitl]]
+- At least one dose of [[Anti-venom(4)]], [[Anti-venom+(4)]], or [[Extended anti-venom+(4)]]. Any dose variant works.
 - Appropriate range gear, including head, body, legs, neck, cape, feet, and hands slots
 
 ## Rewards and Progress

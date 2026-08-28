@@ -1836,7 +1836,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'Doom of Mokhaiotl',
 		rng: {
-			chancePerKill: 15,
+			chancePerKill: 1,
 			hasChance: (data: ActivityTaskData) =>
 				data.type === 'DoomOfMokhaiotl' &&
 				!data.diedAt &&

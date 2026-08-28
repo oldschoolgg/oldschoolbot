@@ -5,10 +5,12 @@ import {
 	calculateDeathChance,
 	calculateDoomRunDeathChance,
 	calculateDoomTripDuration,
+	calculateDoomWipeChanceBeforeTarget,
 	calculateDoomXP,
 	calculateDoomZcbBoltsNeeded,
 	normaliseDoomWaveCompletions,
-	selectDoomMeleePunishWeapon
+	selectDoomMeleePunishWeapon,
+	selectDoomVenomProtection
 } from '@/lib/doomOfMokhaiotlHelpers.js';
 
 function fixedDurationRollRng(roll: number): RNGProvider {
@@ -89,8 +91,13 @@ describe('Doom of Mokhaiotl', () => {
 		expect(result.expectedDeathWave).toBeCloseTo(1.33, 2);
 	});
 
+	test('calculates wipe chance before the target delve separately from target death chance', () => {
+		expect(calculateDoomWipeChanceBeforeTarget([50])).toBe(0);
+		expect(calculateDoomWipeChanceBeforeTarget([3, 5, 7, 9])).toBeCloseTo(14.3, 2);
+	});
+
 	test('max gear Doom durations average around 1-8 speed targets', () => {
-		const maxGearArgs = [true, false, true, 'noxious_halberd', false, -0.08] as const;
+		const maxGearArgs = [true, false, true, false, 'noxious_halberd', false, -0.08] as const;
 		const maxKcAndStatsDurationMultiplier = 0.9 * 0.85;
 		const normalDuration =
 			calculateDoomTripDuration(8, ...maxGearArgs, fixedDurationRollRng(0.525)) * maxKcAndStatsDurationMultiplier;
@@ -106,6 +113,34 @@ describe('Doom of Mokhaiotl', () => {
 		expect(speedDuration).toBeLessThan(Time.Minute * 7.25);
 		expect(extraDeepWaveDuration).toBeGreaterThanOrEqual(Time.Minute * 1.25);
 		expect(extraDeepWaveDuration).toBeLessThanOrEqual(Time.Minute * 1.33);
+	});
+
+	test('Lightbearer gives a Doom speed boost', () => {
+		const withoutLightbearer = calculateDoomTripDuration(
+			8,
+			true,
+			false,
+			false,
+			false,
+			'dual_macuahuitl',
+			false,
+			-0.08,
+			fixedDurationRollRng(0.525)
+		);
+		const withLightbearer = calculateDoomTripDuration(
+			8,
+			true,
+			false,
+			false,
+			true,
+			'dual_macuahuitl',
+			false,
+			-0.08,
+			fixedDurationRollRng(0.525)
+		);
+
+		expect(withLightbearer).toBeLessThan(withoutLightbearer);
+		expect(withLightbearer / withoutLightbearer).toBeCloseTo(0.8 / 0.82, 5);
 	});
 
 	test('selects the best available melee punish weapon without blocking Dual macuahuitl fallback', () => {
@@ -157,6 +192,27 @@ describe('Doom of Mokhaiotl', () => {
 		expect(calculateDoomZcbBoltsNeeded(10)).toBe(4);
 		expect(calculateDoomZcbBoltsNeeded(30)).toBe(14);
 		expect(calculateDoomZcbBoltsNeeded(30, 80)).toBe(3);
+	});
+
+	test('selects one dose of Doom venom protection', () => {
+		expect(selectDoomVenomProtection(itemName => (itemName === 'Anti-venom(1)' ? 1 : 0))?.option.potionName).toBe(
+			'Anti-venom'
+		);
+		expect(selectDoomVenomProtection(itemName => (itemName === 'Anti-venom+(1)' ? 1 : 0))?.option.potionName).toBe(
+			'Anti-venom+'
+		);
+		expect(
+			selectDoomVenomProtection(itemName => (itemName === 'Extended anti-venom+(1)' ? 1 : 0))?.option.potionName
+		).toBe('Extended anti-venom+');
+	});
+
+	test('returns the remaining potion dose after Doom venom protection is consumed', () => {
+		const protection = selectDoomVenomProtection(itemName => (itemName === 'Anti-venom+(4)' ? 1 : 0));
+
+		expect(protection?.itemName).toBe('Anti-venom+(4)');
+		expect(protection?.consumedDoseItemName).toBe('Anti-venom+(1)');
+		expect(protection?.replacementItemName).toBe('Anti-venom+(3)');
+		expect(selectDoomVenomProtection(() => 0)).toBeNull();
 	});
 
 	test('awards Doom combat XP at the intended per-hour rates for a completed run', () => {
