@@ -38,6 +38,7 @@ import {
 	scaleDoomDurationForCompletedDelves,
 	selectDoomMeleePunishWeapon,
 	selectDoomVenomProtection,
+	ZARYTE_VAMBRACES_SPEED_BOOST,
 	ZCB_SPEED_BOOST
 } from '@/lib/doomOfMokhaiotlHelpers.js';
 import { trackLoot } from '@/lib/lootTrack.js';
@@ -179,6 +180,7 @@ export function startDoomRun(options: {
 	meleePunishWeapon: DoomMeleePunishWeapon;
 	hasMasori: boolean;
 	hasEliteVoid: boolean;
+	hasZaryteVambraces: boolean;
 	hasRiteOfVileTransference: boolean;
 	hasChargedEyeOfAyak: boolean;
 	arrowMod: number;
@@ -216,6 +218,7 @@ export function startDoomRun(options: {
 			options.meleePunishWeapon,
 			options.hasMasori,
 			options.hasEliteVoid,
+			options.hasZaryteVambraces,
 			options.hasRiteOfVileTransference,
 			options.arrowMod,
 			options.rng
@@ -442,6 +445,7 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 		user.gear.range.hasEquipped(resolveItems(['Elite void top'])[0]) &&
 		user.gear.range.hasEquipped(resolveItems(['Elite void robe'])[0]) &&
 		user.gear.range.hasEquipped(resolveItems(['Void knight gloves'])[0]);
+	const hasZaryteVambraces = user.gear.range.hasEquipped(resolveItems(['Zaryte vambraces'])[0]);
 
 	if ((hasTbow || hasSBow) && equippedArrowId === null) {
 		return 'You need arrows equipped in your range setup to fight the Doom of Mokhaiotl.';
@@ -463,6 +467,7 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 		meleePunishWeapon,
 		hasMasori,
 		hasEliteVoid,
+		hasZaryteVambraces,
 		hasRiteOfVileTransference,
 		arrowMod,
 		rng
@@ -490,6 +495,7 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 		meleePunishWeapon,
 		hasMasori,
 		hasEliteVoid,
+		hasZaryteVambraces,
 		hasRiteOfVileTransference,
 		hasChargedEyeOfAyak,
 		arrowMod,
@@ -646,6 +652,7 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 		boostLines.push(`${MASORI_SPEED_BOOST}% for Masori armour`);
 		boostLines.push(`${MASORI_DEATH_CHANCE_REDUCTION}% death reduction for Masori armour`);
 	} else if (hasEliteVoid) boostLines.push(`${ELITE_VOID_SPEED_BOOST}% for Elite void`);
+	if (hasZaryteVambraces) boostLines.push(`${ZARYTE_VAMBRACES_SPEED_BOOST}% for Zaryte vambraces`);
 	if (kcReduction >= 1) boostLines.push(`${kcReduction}% for KC`);
 	boostLines.push(skillBoostMsg);
 	if (hasLightbearer) boostLines.push(`${LIGHTBEARER_SPEED_BOOST}% for Lightbearer`);

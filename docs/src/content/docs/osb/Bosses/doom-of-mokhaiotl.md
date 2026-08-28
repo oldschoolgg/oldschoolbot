@@ -56,7 +56,8 @@ Without full Masori, these minimums are 2% higher.
 - 10% speed boost for [[Twisted bow]]
 - 17% speed penalty for [[Scorching bow]]
 - 8% speed boost for [[Noxious halberd]]
-- 5% speed boost for full Masori armour
+- 3% speed boost for full Masori armour
+- 2% speed boost for [[Zaryte vambraces]]
 - 5% speed boost for Elite Void
 - 3% speed boost for [[Zaryte crossbow]]
 - 3% speed boost for [[Rite of vile transference]]
@@ -65,7 +66,7 @@ Without full Masori, these minimums are 2% higher.
 - Up to 15% speed boost for combat stats
 - Arrow modifiers: [[Dragon arrow]] is 8% faster, [[Amethyst arrow]] is 4% faster, [[Rune arrow]] is 5% slower, and lower arrows are 12% slower.
 
-[[Masori mask]], [[Masori body]], and [[Masori chaps]] together also give a 2% death chance reduction. If [[Avernic treads (max)]] are equipped in any Melee, Mage, or Range setup, they count for Doom's range feet slot check.
+[[Masori mask]], [[Masori body]], and [[Masori chaps]] together also give a 2% death chance reduction. Full Masori armour with [[Zaryte vambraces]] matches Elite Void's 5% total speed boost. If [[Avernic treads (max)]] are equipped in any Melee, Mage, or Range setup, they count for Doom's range feet slot check.
 
 [[Eye of ayak]] can replace rune costs for mage grubs when charged. Completing Doom with a charged Eye of Ayak also adds more Eye of Ayak charges.
 

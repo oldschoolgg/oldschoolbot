@@ -11,7 +11,8 @@ export const ZCB_SPEED_BOOST = 3;
 export const NOXIOUS_HALBERD_SPEED_BOOST = 8;
 export const SCORCHING_BOW_SPEED_PENALTY = 17;
 export const ELITE_VOID_SPEED_BOOST = 5;
-export const MASORI_SPEED_BOOST = 5;
+export const MASORI_SPEED_BOOST = 3;
+export const ZARYTE_VAMBRACES_SPEED_BOOST = 2;
 export const MASORI_DEATH_CHANCE_REDUCTION = 2;
 export const LIGHTBEARER_SPEED_BOOST = 2;
 export const RITE_OF_VILE_TRANSFERENCE_SPEED_BOOST = 3;
@@ -246,6 +247,7 @@ export function calculateDoomTripDuration(
 	meleePunishWeapon: DoomMeleePunishWeapon | null,
 	hasMasori: boolean,
 	hasEliteVoid: boolean,
+	hasZaryteVambraces: boolean,
 	hasRiteOfVileTransference: boolean,
 	arrowMod: number,
 	rng: RNGProvider
@@ -258,6 +260,7 @@ export function calculateDoomTripDuration(
 	if (meleePunishWeapon === 'noxious_halberd') weaponMod -= NOXIOUS_HALBERD_SPEED_BOOST / 100;
 	if (hasMasori) weaponMod -= MASORI_SPEED_BOOST / 100;
 	if (hasEliteVoid) weaponMod -= ELITE_VOID_SPEED_BOOST / 100;
+	if (hasZaryteVambraces) weaponMod -= ZARYTE_VAMBRACES_SPEED_BOOST / 100;
 	if (hasRiteOfVileTransference) weaponMod -= RITE_OF_VILE_TRANSFERENCE_SPEED_BOOST / 100;
 	weaponMod += arrowMod;
 

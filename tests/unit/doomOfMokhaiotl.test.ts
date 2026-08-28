@@ -99,7 +99,7 @@ describe('Doom of Mokhaiotl', () => {
 	});
 
 	test('max gear Doom durations average around 1-8 speed targets', () => {
-		const maxGearArgs = [true, false, true, false, 'noxious_halberd', true, false, true, -0.08] as const;
+		const maxGearArgs = [true, false, true, false, 'noxious_halberd', true, false, true, true, -0.08] as const;
 		const maxKcAndStatsDurationMultiplier = 0.9 * 0.85;
 		const normalDuration =
 			calculateDoomTripDuration(8, ...maxGearArgs, fixedDurationRollRng(0.525)) * maxKcAndStatsDurationMultiplier;
@@ -119,7 +119,18 @@ describe('Doom of Mokhaiotl', () => {
 
 	test('Doom Racer duration threshold remains reachable', () => {
 		const maxKcAndStatsDurationMultiplier = 0.9 * 0.85;
-		const maxGearWithLightbearer = [true, false, true, true, 'noxious_halberd', true, false, true, -0.08] as const;
+		const maxGearWithLightbearer = [
+			true,
+			false,
+			true,
+			true,
+			'noxious_halberd',
+			true,
+			false,
+			true,
+			true,
+			-0.08
+		] as const;
 		const delveEightFastDuration =
 			calculateDoomTripDuration(8, ...maxGearWithLightbearer, fixedDurationRollRng(0.049_999)) *
 			maxKcAndStatsDurationMultiplier;
@@ -137,6 +148,7 @@ describe('Doom of Mokhaiotl', () => {
 			'noxious_halberd',
 			true,
 			false,
+			true,
 			true,
 			-0.08,
 			fixedDurationRollRng(0.525)
@@ -158,6 +170,7 @@ describe('Doom of Mokhaiotl', () => {
 			false,
 			false,
 			false,
+			false,
 			-0.08,
 			fixedDurationRollRng(0.525)
 		);
@@ -168,6 +181,7 @@ describe('Doom of Mokhaiotl', () => {
 			false,
 			true,
 			'dual_macuahuitl',
+			false,
 			false,
 			false,
 			false,
