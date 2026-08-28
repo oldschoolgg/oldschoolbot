@@ -35,7 +35,7 @@ XP is weighted heavily towards Ranged. A full completion gives around 105k Range
 
 ## Boosts and Gear
 
-[[Twisted bow]], [[Zaryte crossbow]], [[Noxious halberd]], Elite Void, better arrows, KC, and combat stats can improve trip speed. [[Masori mask]], [[Masori body]], and [[Masori chaps]] together reduce death chance.
+[[Twisted bow]], [[Zaryte crossbow]], [[Noxious halberd]], Elite Void, Masori armour, better arrows, [[Rite of vile transference]], KC, and combat stats can improve trip speed. [[Masori mask]], [[Masori body]], and [[Masori chaps]] together give a 2% death chance reduction.
 
 [[Eye of ayak]] can replace rune costs for mage grubs when charged. Completing Doom with a charged Eye of Ayak also adds more Eye of Ayak charges.
 

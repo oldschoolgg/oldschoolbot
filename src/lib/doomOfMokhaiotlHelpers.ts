@@ -11,7 +11,11 @@ export const ZCB_SPEED_BOOST = 3;
 export const NOXIOUS_HALBERD_SPEED_BOOST = 8;
 export const SCORCHING_BOW_SPEED_PENALTY = 17;
 export const ELITE_VOID_SPEED_BOOST = 5;
+export const MASORI_SPEED_BOOST = 5;
+export const MASORI_DEATH_CHANCE_REDUCTION = 2;
 export const LIGHTBEARER_SPEED_BOOST = 2;
+export const RITE_OF_VILE_TRANSFERENCE_SPEED_BOOST = 3;
+const DOOM_BASE_DURATION_MULTIPLIER = 1.13;
 export const DOOM_VENOM_PROTECTION_OPTIONS = [
 	{
 		potionName: 'Anti-venom'
@@ -27,7 +31,6 @@ const DOOM_RANGED_XP_PER_HOUR = 105_000;
 const DOOM_MAGIC_XP_PER_HOUR = 10_000;
 const DOOM_MELEE_XP_PER_HOUR = 5_000;
 
-const MASORI_DEATH_CHANCE_MULTIPLIER = 0.9;
 const DOOM_BASE_DEATH_CHANCES = [5, 10, 15, 20, 25, 30, 50, 75, 77, 79, 81, 82, 83, 85, 87];
 const DOOM_LOWEST_MASORI_DEATH_CHANCES = [3, 5, 7, 9, 11, 13, 15, 17];
 const DOOM_WAVE_LEARNING_COMPLETIONS = 10;
@@ -75,7 +78,7 @@ function getDoomBaseDeathChance(delve: number): number {
 }
 
 function getDoomLowestDeathChanceBeforeGear(delve: number): number {
-	return (DOOM_LOWEST_MASORI_DEATH_CHANCES[delve - 8] ?? 20) / MASORI_DEATH_CHANCE_MULTIPLIER;
+	return (DOOM_LOWEST_MASORI_DEATH_CHANCES[delve - 8] ?? 20) + MASORI_DEATH_CHANCE_REDUCTION;
 }
 
 function getDoomWaveLearningProgress(delve: number, waveCompletions: DoomWaveCompletions): number {
@@ -105,7 +108,7 @@ export function calculateDeathChance(
 		chance = Math.max(minimumChance, base - learnableChance * learningProgress);
 	}
 
-	if (hasMasori) chance *= MASORI_DEATH_CHANCE_MULTIPLIER;
+	if (hasMasori) chance -= MASORI_DEATH_CHANCE_REDUCTION;
 
 	return clamp(chance, { min: 0.1, max: 95 });
 }
@@ -221,7 +224,9 @@ export function calculateDoomTripDuration(
 	hasZcb: boolean,
 	hasLightbearer: boolean,
 	meleePunishWeapon: DoomMeleePunishWeapon | null,
+	hasMasori: boolean,
 	hasEliteVoid: boolean,
+	hasRiteOfVileTransference: boolean,
 	arrowMod: number,
 	rng: RNGProvider
 ): number {
@@ -238,10 +243,12 @@ export function calculateDoomTripDuration(
 	if (hasZcb) weaponMod -= ZCB_SPEED_BOOST / 100;
 	if (hasLightbearer) weaponMod -= LIGHTBEARER_SPEED_BOOST / 100;
 	if (meleePunishWeapon === 'noxious_halberd') weaponMod -= NOXIOUS_HALBERD_SPEED_BOOST / 100;
+	if (hasMasori) weaponMod -= MASORI_SPEED_BOOST / 100;
 	if (hasEliteVoid) weaponMod -= ELITE_VOID_SPEED_BOOST / 100;
+	if (hasRiteOfVileTransference) weaponMod -= RITE_OF_VILE_TRANSFERENCE_SPEED_BOOST / 100;
 	weaponMod += arrowMod;
 
-	return totalBase * weaponMod * getDoomDurationVariance(rng);
+	return totalBase * DOOM_BASE_DURATION_MULTIPLIER * weaponMod * getDoomDurationVariance(rng);
 }
 
 export function calculateDoomKcReduction(kc: number, baseDuration: number): number {
@@ -256,11 +263,11 @@ export function applyDoomSkillBoost(skillsAsLevels: Required<Skills>, duration: 
 
 	if (percent < 50) {
 		percent = 50 - percent;
-		return [duration + (duration * percent) / 100, `${percent.toFixed(2)}% speed penalty for low stats`];
+		return [duration + (duration * percent) / 100, `${percent.toFixed(2)}% slower for low stats`];
 	}
 
 	percent = Math.min(15, percent / 6.5);
-	return [reduceNumByPercent(duration, percent), `${percent.toFixed(2)}% speed boost for stats`];
+	return [reduceNumByPercent(duration, percent), `${percent.toFixed(2)}% for stats`];
 }
 
 export function calculateDoomXP({

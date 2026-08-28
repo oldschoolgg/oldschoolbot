@@ -10,6 +10,7 @@ import {
 } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, Items, LootTable, resolveItems } from 'oldschooljs';
 
+import { BitField } from '@/lib/constants.js';
 import { avasDevices, doomOfMokhaiotlCL } from '@/lib/data/CollectionsExport.js';
 import {
 	applyDoomSkillBoost,
@@ -27,9 +28,12 @@ import {
 	getDoomArrowMod,
 	getDoomMeleePunishWeaponName,
 	LIGHTBEARER_SPEED_BOOST,
+	MASORI_DEATH_CHANCE_REDUCTION,
+	MASORI_SPEED_BOOST,
 	MAX_DELVE,
 	NOXIOUS_HALBERD_SPEED_BOOST,
 	normaliseDoomWaveCompletions,
+	RITE_OF_VILE_TRANSFERENCE_SPEED_BOOST,
 	SCORCHING_BOW_SPEED_PENALTY,
 	selectDoomMeleePunishWeapon,
 	selectDoomVenomProtection,
@@ -166,8 +170,6 @@ function experienceScore(deepDelves: number, totalDelves: number): number {
 
 export function startDoomRun(options: {
 	targetDelve: number;
-	hasEmberlight: boolean;
-	hasArclight: boolean;
 	hasTbow: boolean;
 	hasSBow: boolean;
 	hasLightbearer: boolean;
@@ -175,6 +177,7 @@ export function startDoomRun(options: {
 	meleePunishWeapon: DoomMeleePunishWeapon;
 	hasMasori: boolean;
 	hasEliteVoid: boolean;
+	hasRiteOfVileTransference: boolean;
 	hasChargedEyeOfAyak: boolean;
 	arrowMod: number;
 	deepDelves: number;
@@ -209,7 +212,9 @@ export function startDoomRun(options: {
 			options.hasZcb,
 			options.hasLightbearer,
 			options.meleePunishWeapon,
+			options.hasMasori,
 			options.hasEliteVoid,
+			options.hasRiteOfVileTransference,
 			options.arrowMod,
 			options.rng
 		);
@@ -389,10 +394,9 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 		}
 	}
 
-	const hasEmberlight = user.hasEquippedOrInBank('Emberlight');
-	const hasArclight = !hasEmberlight && user.hasEquippedOrInBank('Arclight');
 	const hasLightbearer = user.hasEquippedOrInBank('Lightbearer');
 	const hasZcb = user.hasEquippedOrInBank('Zaryte crossbow');
+	const hasRiteOfVileTransference = user.user.bitfield.includes(BitField.HasRiteOfVileTransference);
 	const hasNoxHalberd = user.hasEquippedOrInBank('Noxious halberd');
 	const hasCrystalHalb = crystalHalberdVariants.some(i => user.hasEquippedOrInBank(i));
 	const hasDualMacuahuitl = user.hasEquippedOrInBank('Dual macuahuitl');
@@ -457,7 +461,9 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 		hasZcb,
 		hasLightbearer,
 		meleePunishWeapon,
+		hasMasori,
 		hasEliteVoid,
+		hasRiteOfVileTransference,
 		arrowMod,
 		rng
 	);
@@ -477,8 +483,6 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 
 	const res = startDoomRun({
 		targetDelve,
-		hasEmberlight,
-		hasArclight,
 		hasTbow,
 		hasSBow,
 		hasLightbearer,
@@ -486,6 +490,7 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 		meleePunishWeapon,
 		hasMasori,
 		hasEliteVoid,
+		hasRiteOfVileTransference,
 		hasChargedEyeOfAyak,
 		arrowMod,
 		deepDelves,
@@ -627,43 +632,30 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 
 	const boostLines: string[] = [];
 
-	if (hasTbow) boostLines.push('Twisted bow (10% speed boost)');
-	else boostLines.push(`Scorching bow (${SCORCHING_BOW_SPEED_PENALTY}% speed penalty)`);
+	if (hasTbow) boostLines.push('10% for Twisted bow');
+	else boostLines.push(`${SCORCHING_BOW_SPEED_PENALTY}% slower for Scorching bow`);
 
 	if (equippedArrowName ?? equippedArrowId !== null) {
 		const pct = Math.round(Math.abs(arrowMod) * 100);
 		const displayName = equippedArrowName ?? Items.itemNameFromId(equippedArrowId!) ?? 'Unknown arrow';
-		const effect = arrowMod < 0 ? `${pct}% speed boost` : `${pct}% speed penalty`;
-		boostLines.push(`${displayName} (${effect})`);
+		boostLines.push(arrowMod < 0 ? `${pct}% for ${displayName}` : `${pct}% slower for ${displayName}`);
 	}
-
-	if (hasEmberlight && !hasArclight) boostLines.push('Emberlight (demonbane weapon)');
-	else if (hasArclight) boostLines.push('Arclight (demonbane weapon)');
-	else boostLines.push('Darklight (demonbane weapon)');
 
 	if (meleePunishWeapon === 'noxious_halberd') {
-		boostLines.push(
-			`${getDoomMeleePunishWeaponName(meleePunishWeapon)} (${NOXIOUS_HALBERD_SPEED_BOOST}% speed boost, melee punish weapon)`
-		);
-	} else if (meleePunishWeapon === 'crystal_halberd') {
-		boostLines.push(
-			`${getDoomMeleePunishWeaponName(meleePunishWeapon)} (melee punish weapon, uses Crystal shards)`
-		);
-	} else {
-		boostLines.push(`${getDoomMeleePunishWeaponName(meleePunishWeapon)} (melee punish weapon)`);
+		boostLines.push(`${NOXIOUS_HALBERD_SPEED_BOOST}% for ${getDoomMeleePunishWeaponName(meleePunishWeapon)}`);
 	}
 
-	if (hasChargedEyeOfAyak) {
-		boostLines.push('Eye of Ayak (mage grubs, no rune cost, gains 10-20 charges per cleared delve)');
-	}
-
-	if (hasMasori) boostLines.push('Masori armour (10% death reduction)');
-	else if (hasEliteVoid) boostLines.push(`Elite void (${ELITE_VOID_SPEED_BOOST}% speed boost)`);
-	if (kcReduction >= 1) boostLines.push(`${kcReduction}% speed boost for KC`);
+	if (hasMasori) {
+		boostLines.push(`${MASORI_SPEED_BOOST}% for Masori armour`);
+		boostLines.push(`${MASORI_DEATH_CHANCE_REDUCTION}% death reduction for Masori armour`);
+	} else if (hasEliteVoid) boostLines.push(`${ELITE_VOID_SPEED_BOOST}% for Elite void`);
+	if (kcReduction >= 1) boostLines.push(`${kcReduction}% for KC`);
 	boostLines.push(skillBoostMsg);
-	boostLines.push(`${venomProtection.option.potionName} (venom protection, 1 dose)`);
-	if (hasLightbearer) boostLines.push(`Lightbearer (${LIGHTBEARER_SPEED_BOOST}% speed boost)`);
-	if (hasZcb) boostLines.push(`Zaryte crossbow (${ZCB_SPEED_BOOST}% speed boost)`);
+	if (hasLightbearer) boostLines.push(`${LIGHTBEARER_SPEED_BOOST}% for Lightbearer`);
+	if (hasRiteOfVileTransference) {
+		boostLines.push(`${RITE_OF_VILE_TRANSFERENCE_SPEED_BOOST}% for Rite of vile transference`);
+	}
+	if (hasZcb) boostLines.push(`${ZCB_SPEED_BOOST}% for Zaryte crossbow`);
 
 	const runDeathChance = calculateDoomRunDeathChance(res.deathChances);
 	const wipeChanceBeforeTarget = calculateDoomWipeChanceBeforeTarget(res.deathChances);

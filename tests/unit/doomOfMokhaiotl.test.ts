@@ -70,6 +70,7 @@ describe('Doom of Mokhaiotl', () => {
 
 		for (const [wave, chance] of expectedLowestWithMasori) {
 			expect(calculateDeathChance(wave, 0, 0, true, { [wave]: 10 })).toBeCloseTo(chance, 5);
+			expect(calculateDeathChance(wave, 0, 0, false, { [wave]: 10 })).toBeCloseTo(chance + 2, 5);
 			expect(calculateDeathChance(wave, 0, 0, true, { [wave]: 9 })).toBeGreaterThan(chance);
 		}
 	});
@@ -80,8 +81,8 @@ describe('Doom of Mokhaiotl', () => {
 	});
 
 	test('Masori still reduces non-learned death chances', () => {
-		expect(calculateDeathChance(7, 0, 0, true)).toBe(45);
-		expect(calculateDeathChance(8, 0, 0, true)).toBe(67.5);
+		expect(calculateDeathChance(7, 0, 0, true)).toBe(48);
+		expect(calculateDeathChance(8, 0, 0, true)).toBe(73);
 	});
 
 	test('calculates the chance to die before completing the target delve', () => {
@@ -97,7 +98,7 @@ describe('Doom of Mokhaiotl', () => {
 	});
 
 	test('max gear Doom durations average around 1-8 speed targets', () => {
-		const maxGearArgs = [true, false, true, false, 'noxious_halberd', false, -0.08] as const;
+		const maxGearArgs = [true, false, true, false, 'noxious_halberd', true, false, true, -0.08] as const;
 		const maxKcAndStatsDurationMultiplier = 0.9 * 0.85;
 		const normalDuration =
 			calculateDoomTripDuration(8, ...maxGearArgs, fixedDurationRollRng(0.525)) * maxKcAndStatsDurationMultiplier;
@@ -124,6 +125,8 @@ describe('Doom of Mokhaiotl', () => {
 			false,
 			'dual_macuahuitl',
 			false,
+			false,
+			false,
 			-0.08,
 			fixedDurationRollRng(0.525)
 		);
@@ -134,6 +137,8 @@ describe('Doom of Mokhaiotl', () => {
 			false,
 			true,
 			'dual_macuahuitl',
+			false,
+			false,
 			false,
 			-0.08,
 			fixedDurationRollRng(0.525)
