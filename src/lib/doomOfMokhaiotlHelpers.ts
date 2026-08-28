@@ -7,16 +7,16 @@ import { XPBank } from '@/lib/structures/XPBank.js';
 import type { Skills } from '@/lib/types/index.js';
 
 export const MAX_DELVE = 30;
-export const ZCB_SPEED_BOOST = 3;
+export const ZCB_SPEED_BOOST = 10;
+export const CRYSTAL_HALBERD_SPEED_BOOST = 3;
 export const NOXIOUS_HALBERD_SPEED_BOOST = 8;
 export const SCORCHING_BOW_SPEED_PENALTY = 17;
 export const ELITE_VOID_SPEED_BOOST = 5;
 export const MASORI_SPEED_BOOST = 3;
 export const ZARYTE_VAMBRACES_SPEED_BOOST = 2;
-export const MASORI_DEATH_CHANCE_REDUCTION = 2;
 export const LIGHTBEARER_SPEED_BOOST = 2;
 export const RITE_OF_VILE_TRANSFERENCE_SPEED_BOOST = 3;
-const DOOM_BASE_DURATION_MULTIPLIER = 1.13;
+const DOOM_BASE_DURATION_MULTIPLIER = 1.2765;
 export const DOOM_VENOM_PROTECTION_OPTIONS = [
 	{
 		potionName: 'Anti-venom'
@@ -32,8 +32,8 @@ const DOOM_RANGED_XP_PER_HOUR = 105_000;
 const DOOM_MAGIC_XP_PER_HOUR = 10_000;
 const DOOM_MELEE_XP_PER_HOUR = 5_000;
 
-const DOOM_BASE_DEATH_CHANCES = [5, 10, 15, 20, 25, 30, 50, 75, 77, 79, 81, 82, 83, 85, 87];
-const DOOM_LOWEST_MASORI_DEATH_CHANCES = [3, 5, 7, 9, 11, 13, 15, 17];
+const DOOM_BASE_DEATH_CHANCES = [3, 8, 13, 18, 23, 28, 48, 73, 75, 77, 79, 80, 81, 83, 85];
+const DOOM_LOWEST_DEATH_CHANCES = [3, 5, 7, 9, 11, 13, 15, 17];
 const DOOM_WAVE_LEARNING_COMPLETIONS = 10;
 const DOOM_EARLY_WAVE_DURATION = 1.75 * Time.Minute;
 const DOOM_MID_WAVE_DURATION = 2.5 * Time.Minute;
@@ -85,11 +85,11 @@ export function normaliseDoomWaveCompletions(rawCompletions: unknown): DoomWaveC
 }
 
 function getDoomBaseDeathChance(delve: number): number {
-	return DOOM_BASE_DEATH_CHANCES[delve - 1] ?? Math.min(95, 87 + (delve - DOOM_BASE_DEATH_CHANCES.length) * 2);
+	return DOOM_BASE_DEATH_CHANCES[delve - 1] ?? Math.min(95, 85 + (delve - DOOM_BASE_DEATH_CHANCES.length) * 2);
 }
 
-function getDoomLowestDeathChanceBeforeGear(delve: number): number {
-	return (DOOM_LOWEST_MASORI_DEATH_CHANCES[delve - 8] ?? 20) + MASORI_DEATH_CHANCE_REDUCTION;
+function getDoomLowestDeathChance(delve: number): number {
+	return DOOM_LOWEST_DEATH_CHANCES[delve - 8] ?? 20;
 }
 
 function getDoomWaveLearningProgress(delve: number, waveCompletions: DoomWaveCompletions): number {
@@ -104,7 +104,7 @@ export function calculateDeathChance(
 	delve: number,
 	_deepDelves: number,
 	_totalDelves: number,
-	hasMasori: boolean,
+	_hasMasori: boolean,
 	waveCompletions: DoomWaveCompletions = {}
 ): number {
 	if (isDoomWaveLearned(delve, waveCompletions)) return 0;
@@ -113,13 +113,11 @@ export function calculateDeathChance(
 	let chance = base;
 
 	if (delve >= 8) {
-		const minimumChance = getDoomLowestDeathChanceBeforeGear(delve);
+		const minimumChance = getDoomLowestDeathChance(delve);
 		const learningProgress = getDoomWaveLearningProgress(delve, waveCompletions);
 		const learnableChance = base - minimumChance;
 		chance = Math.max(minimumChance, base - learnableChance * learningProgress);
 	}
-
-	if (hasMasori) chance -= MASORI_DEATH_CHANCE_REDUCTION;
 
 	return clamp(chance, { min: 0.1, max: 95 });
 }
@@ -256,6 +254,7 @@ export function calculateDoomTripDuration(
 	if (hasTbow) weaponMod -= 0.1;
 	else if (hasSBow) weaponMod += SCORCHING_BOW_SPEED_PENALTY / 100;
 	if (hasZcb) weaponMod -= ZCB_SPEED_BOOST / 100;
+	else if (meleePunishWeapon === 'crystal_halberd') weaponMod -= CRYSTAL_HALBERD_SPEED_BOOST / 100;
 	if (hasLightbearer) weaponMod -= LIGHTBEARER_SPEED_BOOST / 100;
 	if (meleePunishWeapon === 'noxious_halberd') weaponMod -= NOXIOUS_HALBERD_SPEED_BOOST / 100;
 	if (hasMasori) weaponMod -= MASORI_SPEED_BOOST / 100;

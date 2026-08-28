@@ -75,8 +75,8 @@ export const doomOfMokhaiotlTask: MinionTask = {
 
 			const delvesCompleted = deepestDelveCompleted;
 			const refundRatio = Math.max(0, 1 - delvesCompleted / targetDelve);
+			const refund = new Bank();
 			if (refundRatio > 0) {
-				const refund = new Bank();
 				refund.add('Saradomin brew(4)', Math.floor(refundRatio * brewsUsed));
 				refund.add('Super restore(4)', Math.floor(refundRatio * restoresUsed));
 				refund.add('Ranging potion(4)', Math.floor(refundRatio * rangingUsed));
@@ -84,11 +84,13 @@ export const doomOfMokhaiotlTask: MinionTask = {
 					await user.addItemsToBank({ items: refund, collectionLog: false });
 				}
 			}
+			const refundMessage =
+				refund.length > 0 ? `\n**Refunded supplies:** ${refund}` : '\n**Refunded supplies:** None.';
 
 			return handleTripFinish({
 				user,
 				channelId,
-				message: `${user} Your minion died at delve **${diedAt}** and lost all loot.\n${kcSummary}${xpMessage ? `\n${xpMessage}` : ''}`,
+				message: `${user} Your minion died at delve **${diedAt}** and lost all loot.${refundMessage}\n${kcSummary}${xpMessage ? `\n${xpMessage}` : ''}`,
 				data
 			});
 		}

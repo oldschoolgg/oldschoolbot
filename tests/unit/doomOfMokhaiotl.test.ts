@@ -34,7 +34,7 @@ function fixedDurationRollRng(roll: number): RNGProvider {
 
 describe('Doom of Mokhaiotl', () => {
 	test('uses the configured base death chance table', () => {
-		const expectedChances = [5, 10, 15, 20, 25, 30, 50, 75, 77, 79, 81, 82, 83, 85, 87];
+		const expectedChances = [3, 8, 13, 18, 23, 28, 48, 73, 75, 77, 79, 80, 81, 83, 85];
 
 		for (const [index, chance] of expectedChances.entries()) {
 			expect(calculateDeathChance(index + 1, 0, 0, false)).toBe(chance);
@@ -43,20 +43,20 @@ describe('Doom of Mokhaiotl', () => {
 
 	test('early waves become safe only after enough successful clears', () => {
 		expect(calculateDeathChance(1, 0, 0, false, { 1: 1 })).toBe(0);
-		expect(calculateDeathChance(2, 0, 0, false, { 2: 1 })).toBe(10);
+		expect(calculateDeathChance(2, 0, 0, false, { 2: 1 })).toBe(8);
 		expect(calculateDeathChance(2, 0, 0, false, { 2: 2 })).toBe(0);
-		expect(calculateDeathChance(7, 0, 0, false, { 7: 6 })).toBe(50);
+		expect(calculateDeathChance(7, 0, 0, false, { 7: 6 })).toBe(48);
 		expect(calculateDeathChance(7, 0, 0, false, { 7: 7 })).toBe(0);
 	});
 
 	test('wave 8 and above never become permanently safe', () => {
-		expect(calculateDeathChance(8, 0, 0, false)).toBe(75);
+		expect(calculateDeathChance(8, 0, 0, false)).toBe(73);
 		expect(calculateDeathChance(8, 0, 0, false, { 8: 100 })).toBeGreaterThan(0);
-		expect(calculateDeathChance(8, 0, 0, false, { 8: 100 })).toBeLessThan(75);
+		expect(calculateDeathChance(8, 0, 0, false, { 8: 100 })).toBeLessThan(73);
 	});
 
-	test('wave completion learning bottoms out at the configured Masori death chances', () => {
-		const expectedLowestWithMasori = [
+	test('wave completion learning bottoms out at the configured minimum death chances', () => {
+		const expectedLowestChances = [
 			[8, 3],
 			[9, 5],
 			[10, 7],
@@ -69,9 +69,9 @@ describe('Doom of Mokhaiotl', () => {
 			[30, 20]
 		];
 
-		for (const [wave, chance] of expectedLowestWithMasori) {
+		for (const [wave, chance] of expectedLowestChances) {
 			expect(calculateDeathChance(wave, 0, 0, true, { [wave]: 10 })).toBeCloseTo(chance, 5);
-			expect(calculateDeathChance(wave, 0, 0, false, { [wave]: 10 })).toBeCloseTo(chance + 2, 5);
+			expect(calculateDeathChance(wave, 0, 0, false, { [wave]: 10 })).toBeCloseTo(chance, 5);
 			expect(calculateDeathChance(wave, 0, 0, true, { [wave]: 9 })).toBeGreaterThan(chance);
 		}
 	});
@@ -81,9 +81,9 @@ describe('Doom of Mokhaiotl', () => {
 		expect(calculateDeathChance(16, 0, 0, true)).toBe(calculateDeathChance(16, 500, 1500, true));
 	});
 
-	test('Masori still reduces non-learned death chances', () => {
-		expect(calculateDeathChance(7, 0, 0, true)).toBe(48);
-		expect(calculateDeathChance(8, 0, 0, true)).toBe(73);
+	test('Masori no longer changes death chances', () => {
+		expect(calculateDeathChance(7, 0, 0, true)).toBe(calculateDeathChance(7, 0, 0, false));
+		expect(calculateDeathChance(8, 0, 0, true)).toBe(calculateDeathChance(8, 0, 0, false));
 	});
 
 	test('calculates the chance to die before completing the target delve', () => {
@@ -191,6 +191,48 @@ describe('Doom of Mokhaiotl', () => {
 
 		expect(withLightbearer).toBeLessThan(withoutLightbearer);
 		expect(withLightbearer / withoutLightbearer).toBeCloseTo(0.8 / 0.82, 5);
+	});
+
+	test('Crystal halberd gives a fallback Doom speed boost only without Zaryte crossbow', () => {
+		const baseArgs = [8, true, false, false, false] as const;
+		const baseDuration = calculateDoomTripDuration(
+			...baseArgs,
+			'dual_macuahuitl',
+			false,
+			false,
+			false,
+			false,
+			-0.08,
+			fixedDurationRollRng(0.525)
+		);
+		const crystalHalberdDuration = calculateDoomTripDuration(
+			...baseArgs,
+			'crystal_halberd',
+			false,
+			false,
+			false,
+			false,
+			-0.08,
+			fixedDurationRollRng(0.525)
+		);
+		const zcbWithCrystalHalberdDuration = calculateDoomTripDuration(
+			8,
+			true,
+			false,
+			true,
+			false,
+			'crystal_halberd',
+			false,
+			false,
+			false,
+			false,
+			-0.08,
+			fixedDurationRollRng(0.525)
+		);
+
+		expect(crystalHalberdDuration).toBeLessThan(baseDuration);
+		expect(crystalHalberdDuration / baseDuration).toBeCloseTo(0.79 / 0.82, 5);
+		expect(zcbWithCrystalHalberdDuration / baseDuration).toBeCloseTo(0.72 / 0.82, 5);
 	});
 
 	test('selects the best available melee punish weapon without blocking Dual macuahuitl fallback', () => {

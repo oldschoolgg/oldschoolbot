@@ -37,7 +37,7 @@ XP is weighted heavily towards Ranged. A full completion gives around 105k Range
 
 Delves 1-7 become safe after successful clears of that specific delve. Delve 1 needs 1 clear, delve 2 needs 2 clears, continuing up to delve 7 needing 7 clears.
 
-Delve 8+ never becomes fully safe. Repeated clears reduce the death chance towards these minimums when wearing full Masori:
+Delve 8+ never becomes fully safe. Repeated clears reduce the death chance towards these minimums:
 
 - Delve 8: 3%
 - Delve 9: 5%
@@ -49,24 +49,23 @@ Delve 8+ never becomes fully safe. Repeated clears reduce the death chance towar
 - Delve 15: 17%
 - Delve 16+: 20%
 
-Without full Masori, these minimums are 2% higher.
-
 ## Boosts and Gear
 
 - 10% speed boost for [[Twisted bow]]
 - 17% speed penalty for [[Scorching bow]]
 - 8% speed boost for [[Noxious halberd]]
-- 3% speed boost for full Masori armour
+- 3% speed boost for full fortified Masori armour
 - 2% speed boost for [[Zaryte vambraces]]
 - 5% speed boost for Elite Void
-- 3% speed boost for [[Zaryte crossbow]]
+- 10% speed boost for [[Zaryte crossbow]]
+- 3% speed boost for [[Crystal halberd]] if you do not have a [[Zaryte crossbow]]
 - 3% speed boost for [[Rite of vile transference]]
 - 2% speed boost for [[Lightbearer]]
 - Up to 10% speed boost for KC
 - Up to 15% speed boost for combat stats
 - Arrow modifiers: [[Dragon arrow]] is 8% faster, [[Amethyst arrow]] is 4% faster, [[Rune arrow]] is 5% slower, and lower arrows are 12% slower.
 
-[[Masori mask]], [[Masori body]], and [[Masori chaps]] together also give a 2% death chance reduction. Full Masori armour with [[Zaryte vambraces]] matches Elite Void's 5% total speed boost. If [[Avernic treads (max)]] are equipped in any Melee, Mage, or Range setup, they count for Doom's range feet slot check.
+Full fortified Masori armour with [[Zaryte vambraces]] matches Elite Void's 5% total speed boost. If [[Avernic treads (max)]] are equipped in any Melee, Mage, or Range setup, they count for Doom's range feet slot check.
 
 [[Eye of ayak]] can replace rune costs for mage grubs when charged. Completing Doom with a charged Eye of Ayak also adds more Eye of Ayak charges.
 

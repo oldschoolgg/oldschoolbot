@@ -14,6 +14,7 @@ import { BitField } from '@/lib/constants.js';
 import { avasDevices, doomOfMokhaiotlCL } from '@/lib/data/CollectionsExport.js';
 import {
 	applyDoomSkillBoost,
+	CRYSTAL_HALBERD_SPEED_BOOST,
 	calculateDoomDeathChances,
 	calculateDoomKcReduction,
 	calculateDoomRunDeathChance,
@@ -28,7 +29,6 @@ import {
 	getDoomArrowMod,
 	getDoomMeleePunishWeaponName,
 	LIGHTBEARER_SPEED_BOOST,
-	MASORI_DEATH_CHANCE_REDUCTION,
 	MASORI_SPEED_BOOST,
 	MAX_DELVE,
 	NOXIOUS_HALBERD_SPEED_BOOST,
@@ -432,9 +432,9 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 		equippedArrowId !== null ? (Items.itemNameFromId(equippedArrowId) ?? null) : null;
 	const arrowMod = getDoomArrowMod(equippedArrowId);
 
-	const masoriHead = resolveItems(['Masori mask (f)', 'Masori mask']);
-	const masoriBody = resolveItems(['Masori body (f)', 'Masori body']);
-	const masoriLegs = resolveItems(['Masori chaps (f)', 'Masori chaps']);
+	const masoriHead = resolveItems(['Masori mask (f)']);
+	const masoriBody = resolveItems(['Masori body (f)']);
+	const masoriLegs = resolveItems(['Masori chaps (f)']);
 	const hasMasori =
 		masoriHead.some(i => user.gear.range.hasEquipped(i)) &&
 		masoriBody.some(i => user.gear.range.hasEquipped(i)) &&
@@ -650,7 +650,6 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 
 	if (hasMasori) {
 		boostLines.push(`${MASORI_SPEED_BOOST}% for Masori armour`);
-		boostLines.push(`${MASORI_DEATH_CHANCE_REDUCTION}% death reduction for Masori armour`);
 	} else if (hasEliteVoid) boostLines.push(`${ELITE_VOID_SPEED_BOOST}% for Elite void`);
 	if (hasZaryteVambraces) boostLines.push(`${ZARYTE_VAMBRACES_SPEED_BOOST}% for Zaryte vambraces`);
 	if (kcReduction >= 1) boostLines.push(`${kcReduction}% for KC`);
@@ -660,6 +659,9 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 		boostLines.push(`${RITE_OF_VILE_TRANSFERENCE_SPEED_BOOST}% for Rite of vile transference`);
 	}
 	if (hasZcb) boostLines.push(`${ZCB_SPEED_BOOST}% for Zaryte crossbow`);
+	else if (meleePunishWeapon === 'crystal_halberd') {
+		boostLines.push(`${CRYSTAL_HALBERD_SPEED_BOOST}% for ${getDoomMeleePunishWeaponName(meleePunishWeapon)}`);
+	}
 
 	const runDeathChance = calculateDoomRunDeathChance(res.deathChances);
 	const wipeChanceBeforeTarget = calculateDoomWipeChanceBeforeTarget(res.deathChances);
