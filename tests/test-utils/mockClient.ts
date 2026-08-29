@@ -109,6 +109,13 @@ export class TestClient extends AsyncEventEmitter<any> implements AsyncDisposabl
 		return await Promise.all(new Array(5).fill(null).map(() => mockChannel(this.rng)));
 	}
 
+	async fetchUser(userId: string) {
+		return {
+			id: userId,
+			username: `user_${userId.slice(0, 8)}`
+		};
+	}
+
 	async setPresence(...args: any) {
 		TestLogs.Debug(`Client ${this.data.id} setting presence: ${JSON.stringify(args)}`);
 	}
