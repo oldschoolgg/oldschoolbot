@@ -1,6 +1,7 @@
 import { TimerManager } from '@sapphire/timer-manager';
 
 import '@/lib/cache/redis.js';
+
 import { sonicBoom } from '@/lib/util/logger.js';
 
 export async function exitCleanup() {
