@@ -161,6 +161,25 @@ function buildAutoFarmPlan(plannedSteps: PlannedAutoFarmStep[], planningStartTim
 	return autoFarmPlan;
 }
 
+function buildFallbackPlantsByPatch(
+	eligiblePlants: Plant[],
+	patchesByName: Map<FarmingPatchName, IPatchDataDetailed>
+): Map<FarmingPatchName, Plant> {
+	const fallbackPlantsByPatch = new Map<FarmingPatchName, Plant>();
+	for (const plant of eligiblePlants) {
+		const patchName = plant.seedType as FarmingPatchName;
+		if (fallbackPlantsByPatch.has(patchName)) {
+			continue;
+		}
+		const patch = patchesByName.get(patchName);
+		if (!patch || patch.ready === false) {
+			continue;
+		}
+		fallbackPlantsByPatch.set(patchName, plant);
+	}
+	return fallbackPlantsByPatch;
+}
+
 async function tryRepeatPreviousTrip({
 	user,
 	interaction,
@@ -400,18 +419,7 @@ export async function planAutoFarmTrip(
 	const patchesByName = new Map<FarmingPatchName, IPatchDataDetailed>(
 		patchesDetailed.map(patch => [patch.patchName, patch])
 	);
-	const fallbackPlantsByPatch = new Map<FarmingPatchName, Plant>();
-	for (const plant of eligiblePlants) {
-		const patchName = plant.seedType as FarmingPatchName;
-		if (fallbackPlantsByPatch.has(patchName)) {
-			continue;
-		}
-		const patch = patchesByName.get(patchName);
-		if (!patch || patch.ready === false) {
-			continue;
-		}
-		fallbackPlantsByPatch.set(patchName, plant);
-	}
+	const fallbackPlantsByPatch = buildFallbackPlantsByPatch(eligiblePlants, patchesByName);
 
 	const contract = user.farmingContract();
 	const hasActiveContract = Boolean(contract.contract?.hasContract);
