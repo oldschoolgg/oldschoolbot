@@ -10,6 +10,9 @@ export async function handleDTD(monster: KillableMonster, user: MUser) {
 		if (bingos.some(bingo => bingo.isActive())) {
 			return 'You cannot use Deathtouched darts while in an active Bingo.';
 		}
+		if (monster.name === 'Enigmar') {
+			return "You are extremely confused by Enigmar's Enigma and cannot seem to throw the dart yet";
+		}
 		if (rangeSetup.weapon.quantity > 1) {
 			rangeSetup.weapon.quantity--;
 		} else {
@@ -63,6 +66,10 @@ export async function handleDTD(monster: KillableMonster, user: MUser) {
 
 		if (monster.name === 'Burning Dominion') {
 			return `You throw your dart at the furious twins, your minion soils their pants in fear and runs away.`;
+		}
+
+		if (monster.name === 'Enigmar') {
+			return "You are extremely confused by Enigmar's Enigma and cannot seem to throw the dart yet";
 		}
 
 		await user.statsUpdate({
