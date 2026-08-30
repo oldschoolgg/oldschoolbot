@@ -15,7 +15,11 @@ import {
 import { plants } from '@/lib/skilling/skills/farming/index.js';
 import { formatFarmingBoosts, formatItemsUsed } from '@/lib/skilling/skills/farming/utils/farmingFormatters.js';
 import type { FarmingPatchName } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
-import type { IPatchData, IPatchDataDetailed } from '@/lib/skilling/skills/farming/utils/types.js';
+import type {
+	FarmingSeedPreference,
+	IPatchData,
+	IPatchDataDetailed
+} from '@/lib/skilling/skills/farming/utils/types.js';
 import type { Plant } from '@/lib/skilling/types.js';
 import type { AutoFarmStepData, FarmingActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
@@ -87,6 +91,74 @@ function buildSummaryForStep(index: number, step: PlannedAutoFarmStep): BuildSum
 		summaryLine: `${index + 1}. ${step.friendlyName}: ${step.quantity.toLocaleString()}x ${step.plant.name}`,
 		extraInfoLines
 	};
+}
+
+function buildPlanRequests({
+	patchesDetailed,
+	preferredSeeds,
+	preferContract,
+	hasActiveContract,
+	contractPlant,
+	fallbackPlantsByPatch
+}: {
+	patchesDetailed: IPatchDataDetailed[];
+	preferredSeeds: Map<FarmingPatchName, FarmingSeedPreference>;
+	preferContract: boolean;
+	hasActiveContract: boolean;
+	contractPlant: Plant | null | undefined;
+	fallbackPlantsByPatch: Map<FarmingPatchName, Plant>;
+}): PlanRequest[] {
+	const planRequests: PlanRequest[] = [];
+	for (const patch of patchesDetailed) {
+		const resolved = resolveSeedForPatch({
+			patch,
+			preferContract,
+			hasActiveContract,
+			contractPlant: contractPlant ?? null,
+			preferences: preferredSeeds,
+			fallbackPlant: fallbackPlantsByPatch.get(patch.patchName) ?? null
+		});
+
+		if (!resolved) {
+			continue;
+		}
+
+		if (resolved.type === 'plant') {
+			const planRequest: PlanRequest = { type: 'plant', patch, plant: resolved.plant };
+			if (resolved.reason === 'contract') {
+				planRequests.unshift(planRequest);
+			} else {
+				planRequests.push(planRequest);
+			}
+			continue;
+		}
+
+		planRequests.push({ type: 'highest', patch });
+	}
+
+	return planRequests;
+}
+
+function buildAutoFarmPlan(plannedSteps: PlannedAutoFarmStep[], planningStartTime: number): AutoFarmStepData[] {
+	const autoFarmPlan: AutoFarmStepData[] = [];
+	let accumulatedDuration = 0;
+	for (const step of plannedSteps) {
+		autoFarmPlan.push({
+			plantsName: step.plant.name,
+			quantity: step.quantity,
+			upgradeType: step.upgradeType,
+			patchName: step.patchName,
+			payment: step.didPay,
+			treeChopFeePaid: step.treeChopFee,
+			treeChopFeePlanned: step.treeChopFee,
+			patchType: step.patch,
+			planting: true,
+			currentDate: planningStartTime + accumulatedDuration,
+			duration: step.duration
+		});
+		accumulatedDuration += step.duration;
+	}
+	return autoFarmPlan;
 }
 
 async function tryRepeatPreviousTrip({
@@ -349,33 +421,14 @@ export async function planAutoFarmTrip(
 				(contract.contract?.plantToGrow ? plants.find(pl => pl.name === contract.contract?.plantToGrow) : null))
 			: null;
 
-	const planRequests: PlanRequest[] = [];
-	for (const patch of patchesDetailed) {
-		const resolved = resolveSeedForPatch({
-			patch,
-			preferContract,
-			hasActiveContract,
-			contractPlant: contractPlant ?? null,
-			preferences: preferredSeeds,
-			fallbackPlant: fallbackPlantsByPatch.get(patch.patchName) ?? null
-		});
-
-		if (!resolved) {
-			continue;
-		}
-
-		if (resolved.type === 'plant') {
-			const planRequest: PlanRequest = { type: 'plant', patch, plant: resolved.plant };
-			if (resolved.reason === 'contract') {
-				planRequests.unshift(planRequest);
-			} else {
-				planRequests.push(planRequest);
-			}
-			continue;
-		}
-
-		planRequests.push({ type: 'highest', patch });
-	}
+	const planRequests = buildPlanRequests({
+		patchesDetailed,
+		preferredSeeds,
+		preferContract,
+		hasActiveContract,
+		contractPlant: contractPlant ?? null,
+		fallbackPlantsByPatch
+	});
 
 	for (const request of planRequests) {
 		const patch = request.patch;
@@ -407,25 +460,7 @@ export async function planAutoFarmTrip(
 		}
 	}
 
-	const autoFarmPlan: AutoFarmStepData[] = [];
-	const planningStartTime = Date.now();
-	let accumulatedDuration = 0;
-	for (const step of plannedSteps) {
-		autoFarmPlan.push({
-			plantsName: step.plant.name,
-			quantity: step.quantity,
-			upgradeType: step.upgradeType,
-			patchName: step.patchName,
-			payment: step.didPay,
-			treeChopFeePaid: step.treeChopFee,
-			treeChopFeePlanned: step.treeChopFee,
-			patchType: step.patch,
-			planting: true,
-			currentDate: planningStartTime + accumulatedDuration,
-			duration: step.duration
-		});
-		accumulatedDuration += step.duration;
-	}
+	const autoFarmPlan = buildAutoFarmPlan(plannedSteps, Date.now());
 
 	return {
 		plannedSteps,
