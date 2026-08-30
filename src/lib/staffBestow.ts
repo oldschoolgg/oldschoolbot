@@ -1,5 +1,6 @@
 import { type APIApplicationCommandOptionChoice, SpecialResponse } from '@oldschoolgg/discord';
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
+import { MathRNG } from 'node-rng';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 import { z } from 'zod';
 
@@ -35,12 +36,21 @@ const StaffBestowSourceKey = z
 		message: 'Staff bestow schedule key must be "wiki", "mod", "contrib", or a Discord user ID.'
 	});
 
+const ZStaffBestowPeriodDrop = z
+	.object({
+		odds: z.number().int().positive().default(1),
+		bank: ZItemBank
+	})
+	.strict();
+
+const ZStaffBestowPeriod = z.record(StaffBestowSourceKey, z.array(ZStaffBestowPeriodDrop));
+
 export const ZStaffGrants = z
 	.object({
-		hourly: z.record(StaffBestowSourceKey, ZItemBank).optional(),
-		daily: z.record(StaffBestowSourceKey, ZItemBank).optional(),
-		weekly: z.record(StaffBestowSourceKey, ZItemBank).optional(),
-		monthly: z.record(StaffBestowSourceKey, ZItemBank).optional()
+		hourly: ZStaffBestowPeriod.optional(),
+		daily: ZStaffBestowPeriod.optional(),
+		weekly: ZStaffBestowPeriod.optional(),
+		monthly: ZStaffBestowPeriod.optional()
 	})
 	.strict();
 
@@ -99,23 +109,27 @@ function replenishStaffBestowBank({
 	current,
 	schedule,
 	user,
-	periods
+	periods,
+	rng = MathRNG
 }: {
 	current: Bank;
 	schedule: StaffGrants;
 	user: MUser | StaffBestowUser;
 	periods: StaffBestowPeriod[];
+	rng?: RNGProvider;
 }) {
-	const added = new Bank();
-
+	const rewardBank = new Bank();
 	for (const period of periods) {
 		const sourceKey = getStaffBestowSourceKey(schedule, user, period);
 		if (!sourceKey) continue;
-		const limit = schedule[period]?.[sourceKey];
-		if (limit) added.add(topUpToLimit(current, limit));
+		const drops = schedule[period]?.[sourceKey];
+		for (const drop of drops ?? []) {
+			if (!rng.roll(drop.odds)) continue;
+			rewardBank.add(drop.bank);
+		}
 	}
 
-	return added;
+	return topUpToLimit(current, rewardBank.toJSON());
 }
 
 function getStaffBestowPeriodUserWhere(schedule: StaffGrants, period: StaffBestowPeriod): Prisma.UserWhereInput[] {
@@ -143,7 +157,7 @@ function getStaffBestowPeriodUserWhere(schedule: StaffGrants, period: StaffBesto
 	return userWhere;
 }
 
-export async function runStaffBestowReplenishment(periods: StaffBestowPeriod[]) {
+export async function runStaffBestowReplenishment(periods: StaffBestowPeriod[], rng: RNGProvider = MathRNG) {
 	if (periods.length === 0) return;
 
 	const schedule = await Cache.getStaffGrantsSchedule();
@@ -181,22 +195,13 @@ export async function runStaffBestowReplenishment(periods: StaffBestowPeriod[]) 
 		if (userPeriods.length === 0) continue;
 
 		await userQueueFn(user.id, async () => {
-			const freshUser = await prisma.user.findUnique({
-				where: { id: user.id },
-				select: {
-					id: true,
-					bitfield: true,
-					rp_bestow_bank: true
-				}
-			});
-			if (!freshUser) return;
-
-			const rewardBank = new Bank(getBestowBankJSON(freshUser));
+			const rewardBank = new Bank(getBestowBankJSON(user));
 			const added = replenishStaffBestowBank({
 				current: rewardBank,
 				schedule,
-				user: freshUser,
-				periods: userPeriods
+				user,
+				periods: userPeriods,
+				rng
 			});
 			if (added.length === 0) return;
 

@@ -198,15 +198,17 @@ function findDiscontinuedStaffBestowItems(schedule: StaffGrants) {
 
 	for (const [period, sources] of Object.entries(schedule)) {
 		if (!sources) continue;
-		for (const [source, limits] of Object.entries(sources)) {
-			for (const itemID of Object.keys(limits)) {
-				const id = Number(itemID);
-				if (!allDcSet.has(id) || !customItems.includes(id)) continue;
-				const item = Items.getItem(id);
-				const itemName = item ? `${item.name} (${id})` : itemID;
-				const locations = found.get(id) ?? [];
-				locations.push(`${period}.${source}: ${itemName}`);
-				found.set(id, locations);
+		for (const [source, drops] of Object.entries(sources)) {
+			for (const [dropIndex, drop] of drops.entries()) {
+				for (const itemID of Object.keys(drop.bank)) {
+					const id = Number(itemID);
+					if (!allDcSet.has(id) || !customItems.includes(id)) continue;
+					const item = Items.getItem(id);
+					const itemName = item ? `${item.name} (${id})` : itemID;
+					const locations = found.get(id) ?? [];
+					locations.push(`${period}.${source}[${dropIndex}].bank: ${itemName}`);
+					found.set(id, locations);
+				}
 			}
 		}
 	}
@@ -258,7 +260,7 @@ const adminRunnableCommands: AdminRunnableCommand[] = [
 				required: true
 			}
 		],
-		run: async ({ arg1, adminUser }) => {
+		run: async ({ arg1, adminUser, rng }) => {
 			if (!arg1) return "Missing cycle - If you don't know how, you shouldn't be using this!";
 			if (!['hourly', 'daily', 'weekly', 'monthly'].includes(arg1))
 				return 'Invalid cycle; must be one of "hourly", "daily", "weekly", "monthly"!';
@@ -269,7 +271,7 @@ const adminRunnableCommands: AdminRunnableCommand[] = [
 				dmCyrAudit(`# **Staff Bestow Cycle Triggered**\n${body}`, files),
 				sendCyrCriticalBotLog('Staff Bestow Cycle Triggered', body, files)
 			]);
-			await runStaffBestowReplenishment([period]);
+			await runStaffBestowReplenishment([period], rng);
 			return `Triggered staff bestow replenishment cycle: ${period}`;
 		}
 	},
