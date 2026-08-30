@@ -772,6 +772,7 @@ export async function verifyLeaguesTasksForUser(userID: string): Promise<Leagues
 export async function leaguesCheckUser(userID: string) {
 	const { roboChimpUser, args, ranking } = await buildLeaguesTaskCheckContext(userID, true);
 	if (!ranking) throw new Error(`Missing leagues ranking for user ${userID}.`);
+	const completedTaskIDs = new Set(roboChimpUser.leagues_completed_tasks_ids);
 
 	let resStr = '\n';
 	let totalTasks = 0;
@@ -785,6 +786,8 @@ export async function leaguesCheckUser(userID: string) {
 			const has = await task.has(args);
 			if (has) {
 				finishedIDs.push(task.id);
+			}
+			if (completedTaskIDs.has(task.id)) {
 				finished++;
 			}
 		}
@@ -801,7 +804,7 @@ export async function leaguesCheckUser(userID: string) {
 **Total Points:** ${roboChimpUser.leagues_points_total.toLocaleString()} (Rank ${ranking.pointsRanking})
 **Points Balance:** ${roboChimpUser.leagues_points_balance_osb.toLocaleString()} OSB / ${roboChimpUser.leagues_points_balance_bso.toLocaleString()} BSO
 ${resStr}`,
-		finished: [...finishedIDs, ...roboChimpUser.leagues_completed_tasks_ids]
+		finished: [...new Set([...finishedIDs, ...roboChimpUser.leagues_completed_tasks_ids])]
 	};
 }
 
