@@ -49,6 +49,14 @@ interface BuildSummaryResult {
 	extraInfoLines: string[];
 }
 
+interface CandidateEvaluationResult {
+	success: boolean;
+	error?: string;
+	plannedStep?: PlannedAutoFarmStep;
+	updatedTotalDuration?: number;
+	skippedTripLength?: boolean;
+}
+
 export interface PrepareAutoFarmResult {
 	plannedSteps: PlannedAutoFarmStep[];
 	totalDuration: number;
@@ -111,6 +119,165 @@ async function tryRepeatPreviousTrip({
 		Logging.logError(err as Error);
 		return null;
 	}
+}
+
+async function evaluateCandidateForPatch({
+	user,
+	candidate,
+	patch,
+	maxTripLength,
+	remainingBank,
+	totalDuration,
+	totalCost,
+	compostTier,
+	patches
+}: {
+	user: MUser;
+	candidate: Plant;
+	patch: IPatchDataDetailed;
+	maxTripLength: number;
+	remainingBank: Bank;
+	totalDuration: number;
+	totalCost: Bank;
+	compostTier: CropUpgradeType;
+	patches: Record<FarmingPatchName, IPatchData>;
+}): Promise<CandidateEvaluationResult> {
+	const prepared = await prepareFarmingStep({
+		user,
+		plant: candidate,
+		quantity: null,
+		pay: false,
+		patchDetailed: patch,
+		maxTripLength,
+		availableBank: remainingBank,
+		compostTier
+	});
+	if (!prepared.success) {
+		return { success: false, error: prepared.error };
+	}
+
+	const { quantity, duration, cost, upgradeType, didPay, infoStr, boostStr, treeChopFee } = prepared.data;
+	if (quantity <= 0 || duration <= 0) {
+		return { success: false };
+	}
+	if (duration > maxTripLength) {
+		return {
+			success: false,
+			error: `${user.minionName} can't go on trips longer than ${formatDuration(maxTripLength)}.`
+		};
+	}
+	const totalCoinCost = cost.amount('Coins') + treeChopFee;
+	if (totalCoinCost > 0 && remainingBank.amount('Coins') < totalCoinCost) {
+		return { success: false, error: `You don't own ${new Bank().add('Coins', totalCoinCost)}.` };
+	}
+	if (!remainingBank.has(cost)) {
+		return { success: false, error: `You don't own ${cost}.` };
+	}
+	if (totalDuration + duration > maxTripLength) {
+		return {
+			success: false,
+			skippedTripLength: true
+		};
+	}
+	const patchData = patches[patch.patchName];
+	if (!patchData) {
+		return { success: false, error: `Unable to resolve patch data for ${patch.friendlyName}.` };
+	}
+
+	remainingBank.remove(cost);
+	if (treeChopFee > 0) {
+		const treeFeeBank = new Bank().add('Coins', treeChopFee);
+		remainingBank.remove(treeFeeBank);
+		totalCost.add(treeFeeBank);
+	}
+	totalCost.add(cost);
+	const updatedTotalDuration = totalDuration + duration;
+	return {
+		success: true,
+		plannedStep: {
+			plant: candidate,
+			quantity,
+			duration,
+			upgradeType,
+			didPay,
+			treeChopFee,
+			patch: patchData,
+			patchName: patch.patchName,
+			friendlyName: patch.friendlyName,
+			info: infoStr,
+			boosts: boostStr
+		},
+		updatedTotalDuration
+	};
+}
+
+async function selectCandidateForPatch({
+	user,
+	patch,
+	candidates,
+	maxTripLength,
+	remainingBank,
+	totalDuration,
+	totalCost,
+	compostTier,
+	patches,
+	skippedPatchNamesDueToTripLength,
+	plannedSteps
+}: {
+	user: MUser;
+	patch: IPatchDataDetailed;
+	candidates: Plant[];
+	maxTripLength: number;
+	remainingBank: Bank;
+	totalDuration: number;
+	totalCost: Bank;
+	compostTier: CropUpgradeType;
+	patches: Record<FarmingPatchName, IPatchData>;
+	skippedPatchNamesDueToTripLength: Set<string>;
+	plannedSteps: PlannedAutoFarmStep[];
+}): Promise<{ planned: boolean; updatedTotalDuration: number; firstError: string | null; skippedDueToTripLength: boolean }> {
+	let planned = false;
+	let currentTotalDuration = totalDuration;
+	let skippedThisPatch = false;
+	const errorsForPatch: string[] = [];
+
+	for (const candidate of candidates) {
+		const result = await evaluateCandidateForPatch({
+			user,
+			candidate,
+			patch,
+			maxTripLength,
+			remainingBank,
+			totalDuration: currentTotalDuration,
+			totalCost,
+			compostTier,
+			patches
+		});
+		if (!result.success) {
+			if (result.skippedTripLength) {
+				skippedThisPatch = true;
+				skippedPatchNamesDueToTripLength.add(patch.friendlyName);
+				continue;
+			}
+			if (result.error) {
+				errorsForPatch.push(result.error);
+			}
+			continue;
+		}
+		if (result.plannedStep) {
+			plannedSteps.push(result.plannedStep);
+			planned = true;
+			currentTotalDuration = result.updatedTotalDuration ?? currentTotalDuration;
+			break;
+		}
+	}
+
+	return {
+		planned,
+		updatedTotalDuration: currentTotalDuration,
+		firstError: errorsForPatch[0] ?? null,
+		skippedDueToTripLength: skippedThisPatch
+	};
 }
 
 export async function planAutoFarmTrip(
@@ -219,81 +386,24 @@ export async function planAutoFarmTrip(
 			continue;
 		}
 
-		let planned = false;
-		const errorsForPatch: string[] = [];
-		for (const candidate of levelEligibleCandidates) {
-			const prepared = await prepareFarmingStep({
-				user,
-				plant: candidate,
-				quantity: null,
-				pay: false,
-				patchDetailed: patch,
-				maxTripLength,
-				availableBank: remainingBank,
-				compostTier
-			});
-			if (!prepared.success) {
-				errorsForPatch.push(prepared.error);
-				continue;
-			}
+		const selection = await selectCandidateForPatch({
+			user,
+			patch,
+			candidates: levelEligibleCandidates,
+			maxTripLength,
+			remainingBank,
+			totalDuration,
+			totalCost,
+			compostTier,
+			patches,
+			skippedPatchNamesDueToTripLength,
+			plannedSteps
+		});
 
-			const { quantity, duration, cost, upgradeType, didPay, infoStr, boostStr, treeChopFee } = prepared.data;
-			if (quantity <= 0 || duration <= 0) {
-				continue;
-			}
-			if (duration > maxTripLength) {
-				errorsForPatch.push(
-					`${user.minionName} can't go on trips longer than ${formatDuration(maxTripLength)}.`
-				);
-				continue;
-			}
-			const totalCoinCost = cost.amount('Coins') + treeChopFee;
-			if (totalCoinCost > 0 && remainingBank.amount('Coins') < totalCoinCost) {
-				errorsForPatch.push(`You don't own ${new Bank().add('Coins', totalCoinCost)}.`);
-				continue;
-			}
-			if (!remainingBank.has(cost)) {
-				errorsForPatch.push(`You don't own ${cost}.`);
-				continue;
-			}
-			if (totalDuration + duration > maxTripLength) {
-				skippedDueToTripLength = true;
-				skippedPatchNamesDueToTripLength.add(patch.friendlyName);
-				continue;
-			}
-			const patchData = patches[patch.patchName];
-			if (!patchData) {
-				errorsForPatch.push(`Unable to resolve patch data for ${patch.friendlyName}.`);
-				break;
-			}
-
-			remainingBank.remove(cost);
-			if (treeChopFee > 0) {
-				const treeFeeBank = new Bank().add('Coins', treeChopFee);
-				remainingBank.remove(treeFeeBank);
-				totalCost.add(treeFeeBank);
-			}
-			totalCost.add(cost);
-			totalDuration += duration;
-			plannedSteps.push({
-				plant: candidate,
-				quantity,
-				duration,
-				upgradeType,
-				didPay,
-				treeChopFee,
-				patch: patchData,
-				patchName: patch.patchName,
-				friendlyName: patch.friendlyName,
-				info: infoStr,
-				boosts: boostStr
-			});
-			planned = true;
-			break;
-		}
-
-		if (!planned && errorsForPatch.length > 0 && !firstPrepareError) {
-			firstPrepareError = errorsForPatch[0];
+		totalDuration = selection.updatedTotalDuration;
+		skippedDueToTripLength = skippedDueToTripLength || selection.skippedDueToTripLength;
+		if (!selection.planned && selection.firstError && !firstPrepareError) {
+			firstPrepareError = selection.firstError;
 		}
 	}
 
