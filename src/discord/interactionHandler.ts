@@ -6,7 +6,6 @@ import {
 	InteractionType
 } from '@oldschoolgg/discord';
 import type { IAutoCompleteInteraction, IButtonInteraction, IChatInputCommandInteraction } from '@oldschoolgg/schemas';
-import { cleanUsername } from '@oldschoolgg/toolkit';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 
 import { autoCompleteHandler } from '@/discord/autoCompleteHandler.js';
@@ -22,12 +21,11 @@ export async function interactionHandler(client: OldSchoolBotClient, itx: APIInt
 	const userId = user.id;
 
 	if (!DISCORD_USER_IDS_INSERTED_CACHE.has(userId) && user) {
-		client.upsertDiscordUser(user);
+		void client.upsertDiscordUser(user);
 	}
 
-	const fullUser = await mUserFetch(userId, {
-		username: cleanUsername(user.username)
-	});
+	if (user?.username) await Cache.updateUsername(user.id, user.username);
+	const fullUser = await mUserFetch(userId);
 
 	if (itx.type === InteractionType.ApplicationCommandAutocomplete) {
 		const d: IAutoCompleteInteraction = {

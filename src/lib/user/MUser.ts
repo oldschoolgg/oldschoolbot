@@ -1022,14 +1022,15 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 	}
 }
 
-export async function srcMUserFetch(userID: string, updates?: Prisma.UserUpdateInput) {
+type MUserFetchCreateInput = Omit<Prisma.UserCreateInput, 'id'>;
+type MUserFetchUpdateInput = MUserFetchCreateInput & Omit<Prisma.UserUpdateInput, 'id'>;
+
+export async function srcMUserFetch(userID: string, updates?: MUserFetchUpdateInput) {
 	if (!isValidDiscordSnowflake(userID)) {
 		throw new Error(`Invalid userID: ${userID}`);
 	}
-	const createData: Prisma.UserCreateInput = { id: userID };
-	if (updates && typeof updates.username === 'string') {
-		createData.username = updates.username;
-	}
+	const createData = { ...updates, id: userID } satisfies Prisma.UserCreateInput;
+
 	let user =
 		updates !== undefined
 			? await prisma.user.upsert({
