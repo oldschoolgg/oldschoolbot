@@ -707,7 +707,7 @@ model Minigame {
   turaels_trials           Int  @default(0)
   brimstone_distillery     Int  @default(0)
   construction_contracts   Int  @default(0)
-  user                     User @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: Cascade, map: "FK_minigames_user_id_users_id")
+  user                     User @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "FK_minigames_user_id_users_id")
 
   @@index([user_id])
   @@map("minigames")
