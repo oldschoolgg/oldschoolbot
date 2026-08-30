@@ -191,12 +191,12 @@ export const chimpCommand = defineCommand({
 		}
 	],
 	run: async ({ options, user, interaction }) => {
-		await interaction.defer();
-
 		// Support Staff+ Commands:
 		if (!user.isSupport()) return 'Ook';
 
 		if (options.patreon?.sync) {
+			await interaction.defer();
+
 			const res = await patreonTask.run();
 			if (res) {
 				console.log(res.join('\n').slice(0, 1950));
@@ -224,6 +224,7 @@ export const chimpCommand = defineCommand({
 			}
 
 			const cancelId = `chimp.stop_bot.cancel.${bot}`;
+			interaction.defer();
 			await globalClient.sendMessage(interaction.channelId, {
 				content: `Pending ${bot.toUpperCase()} shutdown, click to cancel...`,
 				components: [new ButtonBuilder().setCustomId(cancelId).setLabel('CANCEL').setStyle(ButtonStyle.Danger)]
@@ -246,6 +247,7 @@ export const chimpCommand = defineCommand({
 				await githubSetUser.update({ github_id: null });
 				return `Reset ${options.setgithubid.user.user.username}'s github ID.`;
 			}
+			await interaction.defer();
 			const res = (await fetch(`https://api.github.com/users/${encodeURIComponent(github_username)}`)
 				.then(res => res.json())
 				.catch(() => null)) as Record<string, string> | null;
@@ -301,6 +303,7 @@ export const chimpCommand = defineCommand({
 			return `Changed ${targetMention} to Magna Tier ${tier.number} (perkTier ${tier.perkTier}).`;
 		}
 		if (options.patreon?.debug) {
+			await interaction.defer();
 			const res = await patreonTask.fetchPatrons();
 			return {
 				content: 'Debug',
@@ -314,6 +317,7 @@ export const chimpCommand = defineCommand({
 			) {
 				return "You can't run this command in this channel.";
 			}
+			await interaction.defer();
 			const [osbResult, bsoResult] = await Promise.all([detectMischief('osb'), detectMischief('bso')]);
 			return {
 				content: "Here's the mischief reports!",
