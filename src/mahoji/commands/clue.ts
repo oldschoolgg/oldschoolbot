@@ -257,6 +257,11 @@ ${reqs.unmetRequirements.map(str => `- ${str}`).join('\n')}`;
 			],
 			Hard: [
 				{
+					item: Items.getOrThrow('Book of the dead'),
+					boost: '5% for Book of the dead',
+					durationMultiplier: 0.95
+				},
+				{
 					item: Items.getOrThrow('Achievement diary cape'),
 					boost: '10% for Achievement diary cape',
 					durationMultiplier: 0.9
@@ -288,6 +293,11 @@ ${reqs.unmetRequirements.map(str => `- ${str}`).join('\n')}`;
 				}
 			],
 			Elite: [
+				{
+					item: Items.getOrThrow('Book of the dead'),
+					boost: '5% for Book of the dead',
+					durationMultiplier: 0.95
+				},
 				{
 					item: Items.getOrThrow('Achievement diary cape'),
 					boost: '10% for Achievement diary cape',
