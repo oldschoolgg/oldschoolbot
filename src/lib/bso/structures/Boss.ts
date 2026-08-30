@@ -350,7 +350,7 @@ export class BossInstance {
 		if (this.quantity) {
 			const itemCost = await this.calcFoodForUser(user, false);
 			if (!user.owns(itemCost)) {
-				return [true, `doesn't have ${itemCost}`];
+				return [true, `doesn't have ${itemCost.clone().remove(user.bankWithGP)}`];
 			}
 		}
 
