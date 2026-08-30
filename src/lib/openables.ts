@@ -52,7 +52,7 @@ import {
 	SpoilsOfWarTable
 } from '@/lib/simulation/misc.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
-import type { FriendlyTask } from '@/lib/util/FriendlyTask.js';
+import { FriendlyTask } from '@/lib/util/FriendlyTask.js';
 
 const CacheOfRunesTable = new LootTable()
 	.add('Death rune', [1000, 1500], 2)
@@ -607,14 +607,15 @@ export async function getOpenableLoot({
 	quantity,
 	user,
 	rng,
-	yielder
+	yielder: _yielder
 }: {
 	openable: UnifiedOpenable;
 	quantity: number;
 	user: MUser;
 	rng: RNGProvider;
-	yielder: FriendlyTask;
+	yielder?: FriendlyTask;
 }) {
+	const yielder = _yielder ?? new FriendlyTask(`getOpenableLoot(${quantity}x ${openable.name})`);
 	const loot = new Bank();
 	if (openable.output instanceof LootTable) {
 		const batchSize = 100;
@@ -624,8 +625,12 @@ export async function getOpenableLoot({
 			qtyRemaining -= batchSize;
 			if (qtyRemaining) await yielder.checkpoint();
 		}
+		// If we created the yielder, finish it
+		if (!_yielder) yielder.finish();
 		return { bank: loot, message: null };
 	} else {
-		return openable.output({ user, self: openable, quantity, rng, yielder });
+		const result = await openable.output({ user, self: openable, quantity, rng, yielder });
+		if (!_yielder) yielder.finish();
+		return result;
 	}
 }

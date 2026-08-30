@@ -382,7 +382,13 @@ export const clueCommand = defineCommand({
 				}
 			});
 			while (implingClues + bankedClues < quantity && openedImplings < bankedImplings) {
-				const impLoot = await getOpenableLoot({ openable: implingJarOpenable, user, quantity: 1, rng, yielder });
+				const impLoot = await getOpenableLoot({
+					openable: implingJarOpenable,
+					user,
+					quantity: 1,
+					rng,
+					yielder
+				});
 				implingLoot.add(impLoot.bank);
 				implingClues = implingLoot.amount(clueTier.scrollID);
 				openedImplings++;
