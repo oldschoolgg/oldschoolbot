@@ -3,7 +3,7 @@ import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, type 
 
 import './setup.js';
 
-import { autoFarm } from '../../src/lib/minions/functions/autoFarm.js';
+import { autoFarm, planAutoFarmTrip } from '../../src/lib/minions/functions/autoFarm.js';
 import { prepareFarmingStep } from '../../src/lib/minions/functions/farmingTripHelpers.js';
 import { resolveSeedForPatch } from '../../src/lib/skilling/skills/farming/autoFarm/preferences.js';
 import { plants } from '../../src/lib/skilling/skills/farming/index.js';
@@ -290,6 +290,32 @@ describe('auto farm helpers', () => {
 		expect(cost.amount('Acorn')).toBe(treePatchDetailed.lastQuantity);
 		expect(cost.amount('Supercompost')).toBe(treePatchDetailed.lastQuantity);
 		expect(cost.amount('Tomatoes(5)')).toBe(0);
+	});
+
+	it('planAutoFarmTrip creates a deterministic step list for AllFarm', async () => {
+		const bank = new Bank().add('Guam seed', 4).add('Compost', 4);
+		const user = mockMUser({
+			bank,
+			skills_farming: convertLVLtoXP(50)
+		});
+		const mutableUser = user.user as MutableUser;
+		mutableUser.auto_farm_filter = AutoFarmFilterEnum.AllFarm;
+		mutableUser.minion_defaultCompostToUse = CropUpgradeType.compost;
+
+		calcMaxTripLengthSpy.mockReturnValue(300 * 1000);
+
+		const plan = await planAutoFarmTrip(
+			user,
+			[herbPatchDetailed],
+			herbPatches as Record<FarmingPatchName, IPatchData>
+		);
+
+		expect(plan.plannedSteps).toHaveLength(1);
+		expect(plan.plannedSteps[0]?.plant.name).toBe('Guam');
+		expect(plan.plannedSteps[0]?.quantity).toBe(4);
+		expect(plan.totalDuration).toBeGreaterThan(0);
+		expect(plan.totalCost.amount('Guam seed')).toBe(4);
+		expect(plan.totalCost.amount('Compost')).toBe(4);
 	});
 
 	it('autoFarm generates plan for AllFarm filter', async () => {

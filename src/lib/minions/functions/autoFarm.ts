@@ -49,6 +49,18 @@ interface BuildSummaryResult {
 	extraInfoLines: string[];
 }
 
+export interface PrepareAutoFarmResult {
+	plannedSteps: PlannedAutoFarmStep[];
+	totalDuration: number;
+	totalCost: Bank;
+	maxTripLength: number;
+	skippedDueToTripLength: boolean;
+	skippedPatchNamesDueToTripLength: string[];
+	firstPrepareError: string | null;
+	errorString: string;
+	autoFarmPlan: AutoFarmStepData[];
+}
+
 function shouldHideInfoLine(line: string): boolean {
 	const normalized = line.toLowerCase();
 	return (
@@ -101,22 +113,15 @@ async function tryRepeatPreviousTrip({
 	}
 }
 
-export async function autoFarm(
+export async function planAutoFarmTrip(
 	user: MUser,
 	patchesDetailed: IPatchDataDetailed[],
-	patches: Record<FarmingPatchName, IPatchData>,
-	interaction: MInteraction
-) {
-	if (await user.minionIsBusy()) {
-		return 'Your minion must not be busy to use this command.';
-	}
-
+	patches: Record<FarmingPatchName, IPatchData>
+): Promise<PrepareAutoFarmResult> {
 	const farmingLevel = user.skillsAsLevels.farming;
-
 	const autoFarmFilter = user.autoFarmFilter ?? AutoFarmFilterEnum.AllFarm;
 	const preferContract = Boolean(user.user.minion_farmingPreferredContract);
 	const preferredSeeds = parsePreferredSeeds(user.user.minion_farmingPreferredSeeds);
-
 	const baseBank = user.bank.clone().add('Coins', user.GP);
 
 	const eligiblePlants = [...plants]
@@ -195,7 +200,6 @@ export async function autoFarm(
 		if (resolved.type === 'plant') {
 			const planRequest: PlanRequest = { type: 'plant', patch, plant: resolved.plant };
 			if (resolved.reason === 'contract') {
-				// Always attempt the contract patch first when contract priority is enabled.
 				planRequests.unshift(planRequest);
 			} else {
 				planRequests.push(planRequest);
@@ -293,6 +297,62 @@ export async function autoFarm(
 		}
 	}
 
+	const autoFarmPlan: AutoFarmStepData[] = [];
+	const planningStartTime = Date.now();
+	let accumulatedDuration = 0;
+	for (const step of plannedSteps) {
+		autoFarmPlan.push({
+			plantsName: step.plant.name,
+			quantity: step.quantity,
+			upgradeType: step.upgradeType,
+			patchName: step.patchName,
+			payment: step.didPay,
+			treeChopFeePaid: step.treeChopFee,
+			treeChopFeePlanned: step.treeChopFee,
+			patchType: step.patch,
+			planting: true,
+			currentDate: planningStartTime + accumulatedDuration,
+			duration: step.duration
+		});
+		accumulatedDuration += step.duration;
+	}
+
+	return {
+		plannedSteps,
+		totalDuration,
+		totalCost,
+		maxTripLength,
+		skippedDueToTripLength,
+		skippedPatchNamesDueToTripLength: [...skippedPatchNamesDueToTripLength],
+		firstPrepareError,
+		errorString,
+		autoFarmPlan
+	};
+}
+
+export async function autoFarm(
+	user: MUser,
+	patchesDetailed: IPatchDataDetailed[],
+	patches: Record<FarmingPatchName, IPatchData>,
+	interaction: MInteraction
+) {
+	if (await user.minionIsBusy()) {
+		return 'Your minion must not be busy to use this command.';
+	}
+
+	const planning = await planAutoFarmTrip(user, patchesDetailed, patches);
+	const {
+		plannedSteps,
+		totalDuration,
+		totalCost,
+		maxTripLength,
+		skippedDueToTripLength,
+		skippedPatchNamesDueToTripLength,
+		firstPrepareError,
+		errorString,
+		autoFarmPlan
+	} = planning;
+
 	if (plannedSteps.length === 0) {
 		if (firstPrepareError !== null) {
 			return firstPrepareError;
@@ -314,26 +374,6 @@ export async function autoFarm(
 		}
 
 		return noCropsResponse;
-	}
-
-	const autoFarmPlan: AutoFarmStepData[] = [];
-	const planningStartTime = Date.now();
-	let accumulatedDuration = 0;
-	for (const step of plannedSteps) {
-		autoFarmPlan.push({
-			plantsName: step.plant.name,
-			quantity: step.quantity,
-			upgradeType: step.upgradeType,
-			patchName: step.patchName,
-			payment: step.didPay,
-			treeChopFeePaid: step.treeChopFee,
-			treeChopFeePlanned: step.treeChopFee,
-			patchType: step.patch,
-			planting: true,
-			currentDate: planningStartTime + accumulatedDuration,
-			duration: step.duration
-		});
-		accumulatedDuration += step.duration;
 	}
 
 	const firstStep = autoFarmPlan[0];
@@ -425,7 +465,7 @@ ${infoDetails.join('\n')}`;
 
 	response += formatFarmingBoosts(uniqueBoosts, { label: '**Boosts**:', suffix: '' });
 	if (skippedDueToTripLength) {
-		const skippedPatches = [...skippedPatchNamesDueToTripLength];
+		const skippedPatches = skippedPatchNamesDueToTripLength;
 		const skippedPatchStr =
 			skippedPatches.length > 0
 				? `Skipped due to trip length: ${skippedPatches.join(', ')}.`
