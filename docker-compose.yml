@@ -18,8 +18,6 @@ services:
       PGPORT: 5435
     tmpfs:
       - /var/lib/postgresql/data
-    volumes:
-      - ./docker/postgres/init-databases.sql:/docker-entrypoint-initdb.d/init-databases.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -p 5435"]
       interval: 2s
