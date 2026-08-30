@@ -4,6 +4,14 @@ import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, type 
 import './setup.js';
 
 import { autoFarm, planAutoFarmTrip } from '../../src/lib/minions/functions/autoFarm.js';
+import {
+	buildAutoFarmPlan,
+	buildFallbackPlantsByPatch,
+	buildPlanRequests,
+	buildSummaryForStep,
+	type PlannedAutoFarmStep,
+	shouldHideInfoLine
+} from '../../src/lib/minions/functions/autoFarmHelpers.js';
 import { prepareFarmingStep } from '../../src/lib/minions/functions/farmingTripHelpers.js';
 import { resolveSeedForPatch } from '../../src/lib/skilling/skills/farming/autoFarm/preferences.js';
 import { plants } from '../../src/lib/skilling/skills/farming/index.js';
@@ -13,6 +21,7 @@ import type {
 	IPatchData,
 	IPatchDataDetailed
 } from '../../src/lib/skilling/skills/farming/utils/types.js';
+import type { Plant } from '../../src/lib/skilling/types.js';
 import type { FarmingActivityTaskOptions } from '../../src/lib/types/minions.js';
 import addSubTaskToActivityTask from '../../src/lib/util/addSubTaskToActivityTask.js';
 import * as calcMaxTripLengthModule from '../../src/lib/util/calcMaxTripLength.js';
@@ -86,6 +95,7 @@ type MutableUser = Mutable<User>;
 function isBaseMessage(value: unknown): value is {
 	content?: string;
 	components?: any[];
+	embeds?: Array<{ data?: { title?: string; description?: string } }>;
 } {
 	return typeof value === 'object' && value !== null && !('type' in (value as any));
 }
@@ -316,6 +326,76 @@ describe('auto farm helpers', () => {
 		expect(plan.totalDuration).toBeGreaterThan(0);
 		expect(plan.totalCost.amount('Guam seed')).toBe(4);
 		expect(plan.totalCost.amount('Compost')).toBe(4);
+	});
+
+	it('planAutoFarmTrip prioritizes contract patch requests before other patch requests', async () => {
+		const bank = new Bank().add('Guam seed', 6).add('Acorn', 1).add('Compost', 10);
+		const user = mockMUser({
+			bank,
+			skills_farming: convertLVLtoXP(50)
+		});
+		const mutableUser = user.user as MutableUser & {
+			minion_farmingContract?: any;
+			minion_farmingPreferredContract?: boolean;
+		};
+		mutableUser.auto_farm_filter = AutoFarmFilterEnum.AllFarm;
+		mutableUser.minion_farmingPreferredContract = true;
+		mutableUser.minion_farmingContract = {
+			hasContract: true,
+			difficultyLevel: 'easy',
+			plantToGrow: herbPlant.name,
+			plantTier: 1,
+			contractsCompleted: 0
+		};
+
+		calcMaxTripLengthSpy.mockReturnValue(10 * 60 * 1000);
+
+		const plan = await planAutoFarmTrip(user, [herbPatchDetailed, treePatchDetailed], {
+			[herbPlant.seedType]: herbPatch,
+			[treePlant.seedType]: treePatch
+		} as Record<FarmingPatchName, IPatchData>);
+
+		expect(plan.plannedSteps.length).toBeGreaterThan(0);
+		expect(plan.plannedSteps[0]?.patchName).toBe(herbPlant.seedType);
+	});
+
+	it('planAutoFarmTrip marks a later patch as trip-length-blocked when the cumulative trip would exceed the max', async () => {
+		const treeEmptyPatch: IPatchData = {
+			lastPlanted: null,
+			patchPlanted: false,
+			plantTime: Date.now(),
+			lastQuantity: 0,
+			lastUpgradeType: null,
+			lastPayment: false
+		};
+		const treeEmptyPatchDetailed: IPatchDataDetailed = {
+			...treeEmptyPatch,
+			ready: null,
+			readyIn: null,
+			readyAt: null,
+			patchName: treePlant.seedType,
+			friendlyName: 'Tree patch',
+			plant: null
+		};
+		const bank = new Bank().add('Guam seed', 4).add('Compost', 4).add('Acorn', 5).add('Supercompost', 5);
+		const user = mockMUser({
+			bank,
+			skills_farming: convertLVLtoXP(50)
+		});
+		const mutableUser = user.user as MutableUser;
+		mutableUser.auto_farm_filter = AutoFarmFilterEnum.AllFarm;
+		mutableUser.minion_defaultCompostToUse = CropUpgradeType.compost;
+
+		calcMaxTripLengthSpy.mockReturnValue(150 * 1000);
+
+		const plan = await planAutoFarmTrip(user, [herbPatchDetailed, treeEmptyPatchDetailed], {
+			[herbPlant.seedType]: herbPatch,
+			[treePlant.seedType]: treeEmptyPatch
+		} as Record<FarmingPatchName, IPatchData>);
+
+		expect(plan.plannedSteps.length).toBeGreaterThan(0);
+		expect(plan.skippedDueToTripLength).toBe(true);
+		expect(plan.skippedPatchNamesDueToTripLength).toContain('Tree patch');
 	});
 
 	it('autoFarm generates plan for AllFarm filter', async () => {
@@ -884,5 +964,114 @@ describe('resolveSeedForPatch', () => {
 
 		expect(result).not.toBeNull();
 		expect(result).toMatchObject({ type: 'plant', plant: herbPlant, reason: 'preference_seed' });
+	});
+});
+
+describe('auto farm planning helpers', () => {
+	it('shouldHideInfoLine filters farmer payment and compost treatment lines', () => {
+		expect(shouldHideInfoLine('You are paying a nearby farmer to protect your crops.')).toBe(true);
+		expect(shouldHideInfoLine('You are treating your patches with supercompost.')).toBe(true);
+		expect(shouldHideInfoLine('You may need to pay a nearby farmer later.')).toBe(true);
+		expect(shouldHideInfoLine('Your minion will harvest the patch.')).toBe(false);
+	});
+
+	it('buildSummaryForStep hides payment info but keeps other patch details', () => {
+		const step: PlannedAutoFarmStep = {
+			plant: herbPlant,
+			quantity: 4,
+			duration: 60_000,
+			upgradeType: CropUpgradeType.compost,
+			didPay: false,
+			treeChopFee: 0,
+			patch: herbPatch,
+			patchName: herbPlant.seedType,
+			friendlyName: 'Herb patch',
+			info: [
+				'You are paying a nearby farmer to protect your crops.',
+				'Your minion will use compost on every patch.'
+			],
+			boosts: []
+		};
+
+		const summary = buildSummaryForStep(0, step);
+
+		expect(summary.summaryLine).toBe('1. Herb patch: 4x Guam');
+		expect(summary.extraInfoLines).toEqual(['Herb patch: Your minion will use compost on every patch.']);
+	});
+
+	it('buildPlanRequests puts contract patch requests first', () => {
+		const fallbackPlants = new Map<FarmingPatchName, Plant>([
+			[treePlant.seedType, treePlant],
+			[herbPlant.seedType, herbPlant]
+		]);
+
+		const requests = buildPlanRequests({
+			patchesDetailed: [treePatchDetailed, herbPatchDetailed],
+			preferredSeeds: new Map(),
+			preferContract: true,
+			hasActiveContract: true,
+			contractPlant: herbPlant,
+			fallbackPlantsByPatch: fallbackPlants
+		});
+
+		expect(requests).toHaveLength(2);
+		expect(requests[0]?.patch.patchName).toBe(herbPlant.seedType);
+		expect(requests[0]?.type).toBe('plant');
+		expect(requests[1]?.patch.patchName).toBe(treePlant.seedType);
+	});
+
+	it('buildFallbackPlantsByPatch skips patches that are not ready', () => {
+		const notReadyPatch: IPatchDataDetailed = {
+			...herbPatchDetailed,
+			ready: false
+		};
+		const patchesByName = new Map<FarmingPatchName, IPatchDataDetailed>([
+			[herbPlant.seedType, notReadyPatch],
+			[treePlant.seedType, treePatchDetailed]
+		]);
+
+		const fallbacks = buildFallbackPlantsByPatch([herbPlant, treePlant], patchesByName);
+
+		expect(fallbacks.has(herbPlant.seedType)).toBe(false);
+		expect(fallbacks.get(treePlant.seedType)).toBe(treePlant);
+	});
+
+	it('buildAutoFarmPlan accumulates step durations into currentDate offsets', () => {
+		const steps: PlannedAutoFarmStep[] = [
+			{
+				plant: herbPlant,
+				quantity: 4,
+				duration: 60_000,
+				upgradeType: CropUpgradeType.compost,
+				didPay: false,
+				treeChopFee: 0,
+				patch: herbPatch,
+				patchName: herbPlant.seedType,
+				friendlyName: 'Herb patch',
+				info: [],
+				boosts: []
+			},
+			{
+				plant: treePlant,
+				quantity: 1,
+				duration: 35_000,
+				upgradeType: null,
+				didPay: true,
+				treeChopFee: 200,
+				patch: treePatch,
+				patchName: treePlant.seedType,
+				friendlyName: 'Tree patch',
+				info: [],
+				boosts: []
+			}
+		];
+
+		const plan = buildAutoFarmPlan(steps, 1_000_000);
+
+		expect(plan).toHaveLength(2);
+		expect(plan[0]?.currentDate).toBe(1_000_000);
+		expect(plan[0]?.duration).toBe(60_000);
+		expect(plan[1]?.currentDate).toBe(1_060_000);
+		expect(plan[1]?.duration).toBe(35_000);
 	});
 });
