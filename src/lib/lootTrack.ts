@@ -137,11 +137,16 @@ export async function getDetailsOfSingleTrackedLoot(user: MUser, trackedLoot: Lo
 		makeBankImage({ bank: new Bank(trackedLoot.cost as ItemBank), title: `Cost For ${trackedLoot.key}` }),
 		makeBankImage({ bank: new Bank(trackedLoot.loot as ItemBank), title: `Loot For ${trackedLoot.key}` })
 	]);
+	const isZeroTimeLoot = trackedLoot.key === 'zerotimeloot' || trackedLoot.key === 'zero_time_loot';
+	const content = isZeroTimeLoot
+		? `Loot/Cost from ${trackedLoot.key} for ${user.username}
+**Total Duration:** ${formatDuration(trackedLoot.total_duration * Time.Minute)}`
+		: `Loot/Cost from ${trackedLoot.total_kc.toLocaleString()}x ${trackedLoot.key} for ${user.username}
+**Total Duration:** ${formatDuration(trackedLoot.total_duration * Time.Minute)}
+**Total KC:** ${trackedLoot.total_kc}`;
 
 	return {
-		content: `Loot/Cost from ${trackedLoot.total_kc.toLocaleString()}x ${trackedLoot.key} for ${user.username}
-**Total Duration:** ${formatDuration(trackedLoot.total_duration * Time.Minute)}
-**Total KC:** ${trackedLoot.total_kc}`,
+		content,
 		files: [cost, loot]
 	};
 }

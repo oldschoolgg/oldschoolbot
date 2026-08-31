@@ -270,6 +270,11 @@ enum bank_sort_method_enum {
   market
 }
 
+enum zero_time_activity_type_enum {
+  alch
+  fletch
+}
+
 model User {
   id                 String    @id @db.VarChar(19)
   last_command_date  DateTime? @db.Timestamp(6)
@@ -308,25 +313,29 @@ model User {
   historicalData HistoricalData[]
 
   // Configs/Settings
-  minion_defaultCompostToUse CropUpgradeType    @default(compost) @map("minion.defaultCompostToUse")
-  auto_farm_filter           AutoFarmFilterEnum @default(AllFarm)
-  favoriteItems              Int[]              @default([])
-  favorite_alchables         Int[]              @default([])
-  favorite_food              Int[]              @default([])
-  favorite_bh_seeds          Int[]              @default([])
-  minion_defaultPay          Boolean            @default(false) @map("minion.defaultPay")
-  minion_icon                String?            @map("minion.icon")
-  minion_name                String?            @map("minion.name") @db.Text()
-  bank_bg_hex                String?
-  bankBackground             Int                @default(1)
-  attack_style               String[]           @default([])
-  combat_options             Int[]              @default([])
-  slayer_remember_master     String?            @map("slayer.remember_master")
-  slayer_autoslay_options    Int[]              @default([]) @map("slayer.autoslay_options")
-  bank_sort_method           String?            @db.VarChar(16)
-  bank_sort_weightings       Json               @default("{}") @db.Json
-  gambling_lockout_expiry    DateTime?
-  icon_pack_id               String?
+  minion_defaultCompostToUse       CropUpgradeType               @default(compost) @map("minion.defaultCompostToUse")
+  auto_farm_filter                 AutoFarmFilterEnum            @default(AllFarm)
+  favoriteItems                    Int[]                         @default([])
+  favorite_alchables               Int[]                         @default([])
+  favorite_food                    Int[]                         @default([])
+  favorite_bh_seeds                Int[]                         @default([])
+  zero_time_activity_primary_type  zero_time_activity_type_enum?
+  zero_time_activity_primary_item  Int?
+  zero_time_activity_fallback_type zero_time_activity_type_enum?
+  zero_time_activity_fallback_item Int?
+  minion_defaultPay                Boolean                       @default(false) @map("minion.defaultPay")
+  minion_icon                      String?                       @map("minion.icon")
+  minion_name                      String?                       @map("minion.name") @db.Text()
+  bank_bg_hex                      String?
+  bankBackground                   Int                           @default(1)
+  attack_style                     String[]                      @default([])
+  combat_options                   Int[]                         @default([])
+  slayer_remember_master           String?                       @map("slayer.remember_master")
+  slayer_autoslay_options          Int[]                         @default([]) @map("slayer.autoslay_options")
+  bank_sort_method                 String?                       @db.VarChar(16)
+  bank_sort_weightings             Json                          @default("{}") @db.Json
+  gambling_lockout_expiry          DateTime?
+  icon_pack_id                     String?
 
   // Skills
   skills_agility      BigInt @default(0) @map("skills.agility")
@@ -485,6 +494,7 @@ enum XpGainSource {
   CamdozaalFishing
   ForestryEvents
   MonsterKilling
+  ZeroTimeActivity
 }
 
 model XPGain {
@@ -951,6 +961,7 @@ enum activity_type_enum {
   Colosseum
   CreateForestersRations
   Buy
+  ZeroTimeActivity
 }
 
 enum xp_gains_skill_enum {
@@ -1444,6 +1455,8 @@ enum command_name_enum {
   xpgains
   xpto99
   zalcano
+  zero_time_activity
+  zerotimeactivity
 }
 
 enum TableBankType {
