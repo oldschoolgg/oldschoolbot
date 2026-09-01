@@ -39,7 +39,7 @@ export const bsoLogs: Log[] = [
 	{
 		level: 115,
 		xp: 650,
-		id: 75_027,
+		id: 75_026,
 		name: 'Ancient Verdant Logs',
 		findNewTreeTime: 8.5,
 		bankingTime: 25,
@@ -54,7 +54,7 @@ export const bsoLogs: Log[] = [
 	{
 		level: 100,
 		xp: 500,
-		id: 75_026,
+		id: 75_025,
 		name: 'Verdant Logs',
 		findNewTreeTime: 8.5,
 		bankingTime: 25,
