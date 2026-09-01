@@ -305,7 +305,7 @@ A dummy boss with a large hp pool. The combat XP multiplier scales inversely wit
 
 **Requirements:** [[attack:35]] [[strength:35]] [[defence:35]] [[hitpoints:35]]
 **Min. Gear:** Rune armour, Dragon scimitar, Dragon defender
-**QP Required:** 750 | **Kill Time:** ~9 minutes 
+**QP Required:** 750 | **Kill Time:** ~9 minutes
 **Item cost per kill:** Super combat potion(4), 3x Prayer potion(4), 2x Saradomin brew(4)
 
 **Boosts:**
