@@ -7,7 +7,7 @@ import {
 	ZBlowpipeData,
 	ZFarmingContract
 } from '@oldschoolgg/schemas';
-import { calcWhatPercent, isObject, type PerkTier, UserError, uniqueArr } from '@oldschoolgg/toolkit';
+import { calcWhatPercent, cleanUsername, isObject, type PerkTier, UserError, uniqueArr } from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { Mutex } from 'async-mutex';
 import { cryptoRng } from 'node-rng/crypto';
@@ -44,7 +44,6 @@ import type { RemoveFoodFromUserParams } from '@/lib/minions/functions/removeFoo
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import type { AddXpParams, ClueBank, KillableMonster } from '@/lib/minions/types.js';
 import { getPerkTierCached, getUsersPerkTier } from '@/lib/perkTiers.js';
-import { roboChimpUserFetchCached } from '@/lib/roboChimp.js';
 import { type MinigameName, type MinigameScore, Minigames } from '@/lib/settings/minigames.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { DetailedFarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
@@ -708,8 +707,8 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 		return resetBackground();
 	}
 
-	async fetchRobochimpUser() {
-		return roboChimpUserFetchCached(this.id);
+	async fetchRobochimpUser(forceRefresh = false) {
+		return Cache.getRoboChimpUser(this.id, forceRefresh);
 	}
 
 	async forceUnequip(setup: GearSetupType, slot: EquipmentSlot, reason: string) {
@@ -1023,16 +1022,19 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 	}
 }
 
-export async function srcMUserFetch(userID: string, updates?: Prisma.UserUpdateInput) {
+type MUserFetchCreateInput = Omit<Prisma.UserCreateInput, 'id'>;
+type MUserFetchUpdateInput = MUserFetchCreateInput & Omit<Prisma.UserUpdateInput, 'id'>;
+
+export async function srcMUserFetch(userID: string, updates?: MUserFetchUpdateInput) {
 	if (!isValidDiscordSnowflake(userID)) {
 		throw new Error(`Invalid userID: ${userID}`);
 	}
-	const user =
+	const createData = { ...updates, id: userID } satisfies Prisma.UserCreateInput;
+
+	let user =
 		updates !== undefined
 			? await prisma.user.upsert({
-					create: {
-						id: userID
-					},
+					create: createData,
 					update: updates,
 					where: {
 						id: userID
@@ -1042,6 +1044,24 @@ export async function srcMUserFetch(userID: string, updates?: Prisma.UserUpdateI
 
 	if (!user) {
 		return srcMUserFetch(userID, {});
+	}
+	if (
+		!user.username &&
+		!process.env.TEST &&
+		typeof globalClient !== 'undefined' &&
+		typeof globalClient.fetchUser === 'function'
+	) {
+		const discordUser = await globalClient.fetchUser(userID).catch(() => null);
+		if (discordUser?.username) {
+			user = await prisma.user.update({
+				where: {
+					id: userID
+				},
+				data: {
+					username: cleanUsername(discordUser.username)
+				}
+			});
+		}
 	}
 	return new MUserClass(user);
 }

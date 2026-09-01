@@ -128,7 +128,6 @@ const thingsToReset = [
 			await prisma.giveaway.deleteMany({ where: { user_id: user.id } }).catch(noOp);
 			await prisma.lastManStandingGame.deleteMany({ where: { user_id: BigInt(user.id) } }).catch(noOp);
 			await prisma.minigame.deleteMany({ where: { user_id: user.id } }).catch(noOp);
-			await prisma.newUser.deleteMany({ where: { id: user.id } }).catch(noOp);
 			await prisma.playerOwnedHouse.deleteMany({ where: { user_id: user.id } }).catch(noOp);
 			await prisma.user.deleteMany({ where: { id: user.id } }).catch(noOp);
 			return 'Reset all your data.';
@@ -1007,9 +1006,9 @@ export const testPotatoCommand = globalConfig.isProduction
 					});
 
 					await user.updateGear([
-						{ setup: 'melee', gear: TOBMaxMeleeGear.raw() },
-						{ setup: 'range', gear: TOBMaxRangeGear.raw() },
-						{ setup: 'mage', gear: TOBMaxMageGear.raw() }
+						{ setup: 'melee', gear: COXMaxMeleeGear.raw() },
+						{ setup: 'range', gear: COXMaxRangeGear.raw() },
+						{ setup: 'mage', gear: COXMaxMageGear.raw() }
 					]);
 
 					await user.rawUpdate({

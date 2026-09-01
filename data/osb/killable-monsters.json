@@ -289,7 +289,7 @@
 			"defence": 65,
 			"hitpoints": 65
 		},
-		"attack_style_to_use": "attack_slash",
+		"attack_style_to_use": "attack_crush",
 		"attack_styles_used": ["attack_magic"],
 		"default_attack_styles": ["attack"],
 		"heal_amount_needed": 400,
