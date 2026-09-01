@@ -1,7 +1,7 @@
 import { Time } from '@oldschoolgg/toolkit';
 import { LRUCache } from 'lru-cache';
 
-import { BitField, PerkTier } from '@/lib/constants.js';
+import { BitField, BOT_TYPE, PerkTier } from '@/lib/constants.js';
 
 export const RobochimpBitfieldEnum = {
 	MagnaTier1: 8,
@@ -18,7 +18,8 @@ export const RobochimpBitfieldEnum = {
 	CyrTier5: 21,
 	CyrTier6: 22,
 	CyrTier7: 23,
-	CyrsOriginalPatrons: 24
+	CyrsOriginalPatrons: 24,
+	BonusMinute: 25
 };
 
 const CYR_TIER_BITS = [
@@ -182,16 +183,17 @@ export async function getUsersPerkTier({
 		}
 	}
 
-	// Why bother looking for the member if it doesn't help get a higher tier
-	if (
-		bitfield.includes(BitField.PatronTier1) ||
-		bitfield.includes(BitField.HasPermanentTierOne) ||
-		bitfield.includes(BitField.BothBotsMaxedFreeTierOnePerks)
-	) {
+	if (bitfield.includes(BitField.HasPermanentTierOne)) {
+		if (BOT_TYPE === 'BSO') {
+			eligibleTiers.push(PerkTier.Three);
+		} else {
+			eligibleTiers.push(PerkTier.Two);
+		}
+	}
+	if (bitfield.includes(BitField.PatronTier1) || bitfield.includes(BitField.BothBotsMaxedFreeTierOnePerks)) {
 		eligibleTiers.push(PerkTier.Two);
 	}
 	// Server boosting perk has been eliminated
-	console.log(eligibleTiers);
 	const tier = Math.max(...eligibleTiers, 0);
 	setHotCache(user.id, tier);
 	await Cache.setPerkTier(user.id, tier);

@@ -6,7 +6,7 @@ import { describe, expect, test } from 'vitest';
 import { activity_type_enum } from '@/prisma/main.js';
 import { ClueTiers } from '../../src/lib/clues/clueTiers.js';
 import { assert } from '../../src/lib/util/logError.js';
-import { createTestUser } from './util.js';
+import { createTestUser, mockedId } from './util.js';
 
 async function stressTest(userID: string) {
 	const user = await mUserFetch(userID);
@@ -76,6 +76,14 @@ async function stressTest(userID: string) {
 }
 
 describe('MUser', () => {
+	test('mUserFetch applies updates when creating a user', async () => {
+		const user = await mUserFetch(mockedId(), { username: 'FreshUser' });
+		expect(user.username).toBe('FreshUser');
+
+		const refetchedUser = await mUserFetch(user.id);
+		expect(refetchedUser.username).toBe('FreshUser');
+	});
+
 	test('Should pass stress test', async () => {
 		const firstUser = await createTestUser();
 		const secondUser = await createTestUser();
