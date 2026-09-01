@@ -1,11 +1,10 @@
 import { Bank, toKMB } from 'oldschooljs';
 
 import { formatFarmingBoosts } from '@/lib/skilling/skills/farming/utils/farmingFormatters.js';
-import type { AutoFarmSummary, FarmingActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import type { AutoFarmStepData, AutoFarmSummary, FarmingActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish as defaultHandleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { executeFarmingStep, type FarmingStepSummary } from './farmingStep.js';
+import { executeFarmingStep, type FarmingStepResult, type FarmingStepSummary } from './farmingStep.js';
 
 function getPatchLabel(data: FarmingActivityTaskOptions): string {
 	const patchType = data.patchType as Partial<typeof data.patchType> & { friendlyName?: string; patchName?: string };
@@ -136,6 +135,60 @@ function buildCombinedAutoFarmMessage(user: MUser, summary: AutoFarmSummary): st
 	return lines.join('\n');
 }
 
+function taskToAutoFarmStep(data: FarmingActivityTaskOptions): AutoFarmStepData {
+	return {
+		plantsName: data.plantsName,
+		quantity: data.quantity,
+		upgradeType: data.upgradeType,
+		patchName: data.patchName,
+		payment: data.payment,
+		treeChopFeePaid: data.treeChopFeePaid,
+		treeChopFeePlanned: data.treeChopFeePlanned,
+		patchType: data.patchType,
+		planting: data.planting,
+		currentDate: data.currentDate,
+		duration: data.duration,
+		pid: data.pid
+	};
+}
+
+function planIncludesCurrentTask(data: FarmingActivityTaskOptions, plan: AutoFarmStepData[]): boolean {
+	const firstStep = plan[0];
+	return Boolean(
+		firstStep &&
+			firstStep.plantsName === data.plantsName &&
+			firstStep.currentDate === data.currentDate &&
+			firstStep.patchName === data.patchName
+	);
+}
+
+function makeStepTaskData(
+	data: FarmingActivityTaskOptions,
+	channelId: string,
+	step: AutoFarmStepData
+): FarmingActivityTaskOptions {
+	return {
+		...data,
+		channelId,
+		plantsName: step.plantsName,
+		patchType: step.patchType,
+		quantity: step.quantity,
+		upgradeType: step.upgradeType,
+		payment: step.payment,
+		treeChopFeePaid: step.treeChopFeePaid,
+		treeChopFeePlanned: step.treeChopFeePlanned,
+		planting: step.planting,
+		duration: step.duration,
+		currentDate: step.currentDate,
+		autoFarmed: true,
+		autoFarmPlan: [],
+		autoFarmCombined: false,
+		autoFarmSummary: undefined,
+		patchName: step.patchName,
+		pid: step.pid
+	};
+}
+
 export const farmingTask: MinionTask = {
 	type: 'Farming',
 	async run(data: FarmingActivityTaskOptions, options) {
@@ -147,7 +200,52 @@ export const farmingTask: MinionTask = {
 		if (!channelId) {
 			throw new Error('Farming task completed without a channel id.');
 		}
-		const result = await executeFarmingStep({ user, channelID: channelId, data, rng });
+
+		const combinedMode = Boolean(data.autoFarmCombined);
+		let result: FarmingStepResult | null = null;
+		let updatedSummary = data.autoFarmSummary;
+
+		if (combinedMode) {
+			const storedPlan = data.autoFarmPlan ?? [];
+			const steps = planIncludesCurrentTask(data, storedPlan)
+				? storedPlan
+				: [taskToAutoFarmStep(data), ...storedPlan];
+			for (const step of steps) {
+				const stepData = makeStepTaskData(data, channelId, step);
+				result = await executeFarmingStep({ user, channelID: channelId, data: stepData, rng });
+				if (!result) {
+					await handleTripFinish({
+						user,
+						channelId,
+						message: `${user}, ${user.minionName} finished farming, but could not complete all follow-up actions.`,
+						data,
+						loot: null
+					});
+					return;
+				}
+				if (result.stopChain) {
+					break;
+				}
+				updatedSummary = updateAutoFarmSummary({
+					existingSummary: updatedSummary,
+					data: stepData,
+					loot: result.loot ?? null,
+					stepSummary: result.summary
+				});
+			}
+		} else {
+			result = await executeFarmingStep({ user, channelID: channelId, data, rng });
+			if (!result) {
+				await handleTripFinish({
+					user,
+					channelId,
+					message: `${user}, ${user.minionName} finished farming, but could not complete all follow-up actions.`,
+					data,
+					loot: null
+				});
+				return;
+			}
+		}
 		if (!result) {
 			await handleTripFinish({
 				user,
@@ -156,53 +254,6 @@ export const farmingTask: MinionTask = {
 				data,
 				loot: null
 			});
-			return;
-		}
-
-		const combinedMode = Boolean(data.autoFarmCombined);
-		const [nextStep, ...remainingSteps] = data.autoFarmPlan ?? [];
-		const shouldContinueCombined = combinedMode && !result.stopChain;
-		const updatedSummary = shouldContinueCombined
-			? updateAutoFarmSummary({
-					existingSummary: data.autoFarmSummary,
-					data,
-					loot: result.loot ?? null,
-					stepSummary: result.summary
-				})
-			: data.autoFarmSummary;
-
-		const scheduleNextStep = async (
-			step: typeof nextStep,
-			remaining: typeof remainingSteps,
-			summaryToPass?: AutoFarmSummary
-		) => {
-			if (!step) return;
-			const nextTask = {
-				plantsName: step.plantsName,
-				patchType: step.patchType,
-				userID: user.id,
-				channelId,
-				quantity: step.quantity,
-				upgradeType: step.upgradeType,
-				payment: step.payment,
-				treeChopFeePaid: step.treeChopFeePaid,
-				treeChopFeePlanned: step.treeChopFeePlanned,
-				planting: step.planting,
-				duration: step.duration,
-				currentDate: step.currentDate,
-				type: 'Farming',
-				autoFarmed: true,
-				autoFarmPlan: remaining,
-				autoFarmCombined: data.autoFarmCombined,
-				autoFarmSummary: summaryToPass,
-				patchName: step.patchName,
-				pid: step.pid
-			} satisfies Omit<FarmingActivityTaskOptions, 'finishDate' | 'id'>;
-			await addSubTaskToActivityTask(nextTask);
-		};
-
-		if (shouldContinueCombined && nextStep) {
-			await scheduleNextStep(nextStep, remainingSteps, updatedSummary);
 			return;
 		}
 
@@ -234,9 +285,5 @@ export const farmingTask: MinionTask = {
 			data: tripFinishData,
 			loot: totalLoot && totalLoot.length > 0 ? totalLoot : null
 		});
-
-		if (!combinedMode && nextStep) {
-			await scheduleNextStep(nextStep, remainingSteps);
-		}
 	}
 };

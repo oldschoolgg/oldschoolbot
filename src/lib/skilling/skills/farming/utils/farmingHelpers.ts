@@ -110,7 +110,7 @@ export async function canShowAutoFarmButton(user: MUser): Promise<boolean> {
 	return canShowAutoFarmButtonForPatches(user, info.patchesDetailed);
 }
 
-export function userGrowingProgressStr(patchesDetailed: IPatchDataDetailed[], user?: MUser): SendableMessage {
+export function userGrowingProgressStr(patchesDetailed: IPatchDataDetailed[], user?: MUser): BaseSendableMessage {
 	let str = '';
 	for (const patch of patchesDetailed.filter(i => i.ready === true)) {
 		str += `${Emoji.Tick} **${patch.friendlyName}**: ${patch.lastQuantity} ${patch.lastPlanted} are ready to be harvested!\n`;

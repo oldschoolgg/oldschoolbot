@@ -1,5 +1,4 @@
 import type { RNGProvider } from 'node-rng';
-import { Bank } from 'oldschooljs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import './setup.js';
@@ -10,12 +9,16 @@ import { farmingTask } from '../../src/tasks/minions/farmingActivity.js';
 import * as farmingStepModule from '../../src/tasks/minions/farmingStep.js';
 import { mockMUser } from './userutil.js';
 
+vi.mock('@/lib/util/makeBankImage.js', () => ({
+	makeBankImage: vi.fn(async () => ({ name: 'bank.png', buffer: Buffer.from('bank') }))
+}));
+
 describe('farmingActivity auto farm chain', () => {
 	afterEach(() => {
 		vi.restoreAllMocks();
 	});
 
-	it('queues next step without pre-creating a farmedCrop row', async () => {
+	it('executes the stored plan without queueing another activity', async () => {
 		const user = mockMUser({ id: '123' });
 		const basePatch: IPatchData = {
 			lastPlanted: 'Guam',
@@ -40,7 +43,7 @@ describe('farmingActivity auto farm chain', () => {
 
 		vi.spyOn(farmingStepModule, 'executeFarmingStep').mockResolvedValue({
 			message: 'First step complete',
-			loot: new Bank().add('Seed pack', 1),
+			loot: null,
 			summary: {
 				duration: 60_000,
 				xp: {
@@ -110,8 +113,8 @@ describe('farmingActivity auto farm chain', () => {
 				rng
 			});
 
-			expect(activityCountSpy).toHaveBeenCalledTimes(1);
-			expect(activityCreateSpy).toHaveBeenCalledTimes(1);
+			expect(activityCountSpy).not.toHaveBeenCalled();
+			expect(activityCreateSpy).not.toHaveBeenCalled();
 			expect(createSpy).not.toHaveBeenCalled();
 		} finally {
 			(globalThis as { prisma?: unknown }).prisma = originalPrisma;

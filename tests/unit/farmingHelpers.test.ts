@@ -2,6 +2,11 @@ import { Bank, convertLVLtoXP } from 'oldschooljs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 const getFarmingInfoFromUserMock = vi.fn();
+function normalizeGrowingProgress(msg: BaseSendableMessage) {
+	return 'content' in msg
+		? { content: msg.content, components: msg.components ?? [] }
+		: { content: '', components: [] as unknown[] };
+}
 
 vi.mock('@oldschoolgg/discord', async () => {
 	const actual = await vi.importActual<typeof import('@oldschoolgg/discord')>('@oldschoolgg/discord');
@@ -188,12 +193,7 @@ describe('farming helpers', () => {
 
 		const result = userGrowingProgressStr([basePatch, growingPatch, emptyPatch], mockMUser());
 
-		const normalized =
-			typeof result === 'string'
-				? { content: result, components: [] as unknown[] }
-				: 'content' in result
-					? { content: result.content, components: result.components ?? [] }
-					: { content: '', components: [] as unknown[] };
+		const normalized = normalizeGrowingProgress(result);
 
 		expect(normalized.content).toContain('Ready patch');
 		expect(normalized.content).toContain('Growing patch');
@@ -220,12 +220,7 @@ describe('farming helpers', () => {
 
 		const result = userGrowingProgressStr([readyPatch], mockMUser({ bitfield: [BitField.DisableAutoFarmButton] }));
 
-		const normalized =
-			typeof result === 'string'
-				? { content: result, components: [] as unknown[] }
-				: 'content' in result
-					? { content: result.content, components: result.components ?? [] }
-					: { content: '', components: [] as unknown[] };
+		const normalized = normalizeGrowingProgress(result);
 
 		expect(normalized.content).toContain('Ready patch');
 		expect(normalized.components).toHaveLength(0);
@@ -249,12 +244,7 @@ describe('farming helpers', () => {
 
 		const result = userGrowingProgressStr([emptyOnly]);
 
-		const normalized =
-			typeof result === 'string'
-				? { content: result, components: [] as unknown[] }
-				: 'content' in result
-					? { content: result.content, components: result.components ?? [] }
-					: { content: '', components: [] as unknown[] };
+		const normalized = normalizeGrowingProgress(result);
 
 		expect(normalized.components).toHaveLength(0);
 		expect(normalized.content).toContain('Nothing planted');
@@ -283,12 +273,7 @@ describe('farming helpers', () => {
 
 		const result = userGrowingProgressStr([emptyOnly], user);
 
-		const normalized =
-			typeof result === 'string'
-				? { content: result, components: [] as unknown[] }
-				: 'content' in result
-					? { content: result.content, components: result.components ?? [] }
-					: { content: '', components: [] as unknown[] };
+		const normalized = normalizeGrowingProgress(result);
 
 		expect(normalized.components).toHaveLength(1);
 		expect(normalized.content).toContain('Nothing planted');

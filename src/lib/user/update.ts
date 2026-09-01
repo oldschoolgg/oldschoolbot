@@ -34,7 +34,6 @@ type PrismaNullableIntKeys = 'minion_equippedPet' | 'gear_template';
 type PrismaIntUpdateInput = number | { increment: number } | { decrement: number };
 
 type PrismaIntKeys =
-	| 'premium_balance_tier'
 	| 'bankBackground'
 	| 'QP'
 	| 'lms_points'
@@ -48,7 +47,7 @@ type PrismaIntKeys =
 
 type PrismaBigIntUpdateInput = bigint | number | { increment: bigint | number } | { decrement: bigint | number };
 
-type PrismaBigIntKeys = 'premium_balance_expiry_date' | 'GP' | 'sacrificedValue' | `skills_${SkillNameType}`;
+type PrismaBigIntKeys = 'GP' | 'sacrificedValue' | `skills_${SkillNameType}`;
 
 type PrismaItemBankKeys = 'bank' | 'collectionLogBank' | 'bank_sort_weightings' | 'temp_cl' | 'pets';
 

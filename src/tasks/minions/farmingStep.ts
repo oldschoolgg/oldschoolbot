@@ -719,14 +719,22 @@ async function persistHarvestResult(options: { user: MUser; loot: Bank; harveste
 	});
 	await user.statsBankUpdate('farming_harvest_loot_bank', loot);
 	if (harvestedPid) {
-		await prisma.farmedCrop.update({
+		const plantedRecord = await prisma.farmedCrop.findFirst({
 			where: {
 				id: harvestedPid
-			},
-			data: {
-				date_harvested: new Date()
 			}
 		});
+
+		if (plantedRecord) {
+			await prisma.farmedCrop.update({
+				where: {
+					id: harvestedPid
+				},
+				data: {
+					date_harvested: new Date()
+				}
+			});
+		}
 	}
 }
 

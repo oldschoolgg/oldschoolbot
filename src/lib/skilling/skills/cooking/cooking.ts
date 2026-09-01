@@ -3,6 +3,11 @@ import { itemID } from 'oldschooljs';
 
 import { type Cookable, defineSkill } from '@/lib/skilling/types.js';
 
+export enum CookingMethodEnum {
+	Default = 0,
+	KarambwanShop = 1
+}
+
 export const Cookables: Cookable[] = [
 	{
 		level: 1,
@@ -296,6 +301,17 @@ export const Cookables: Cookable[] = [
 		burntCookable: itemID('Burnt manta ray')
 	}
 ];
+
+export const CookingMethods = [
+	{
+		type: CookingMethodEnum.KarambwanShop,
+		name: 'Karambwan Shop Cook + Drop',
+		aliases: ['karambwan shop', 'karambwan shop cook', 'karambwan shop cook drop'],
+		level: 92,
+		gpCost: 133,
+		quantityPerHour: 2450
+	}
+] as const;
 
 const Cooking = defineSkill({
 	aliases: ['cooking', 'cook'],

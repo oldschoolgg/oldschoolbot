@@ -6,13 +6,12 @@ import './setup.js';
 
 import type { IPatchData } from '../../src/lib/skilling/skills/farming/utils/types.js';
 import type { AutoFarmStepData, FarmingActivityTaskOptions } from '../../src/lib/types/minions.js';
-import * as addSubTaskModule from '../../src/lib/util/addSubTaskToActivityTask.js';
 import * as handleTripFinishModule from '../../src/lib/util/handleTripFinish.js';
 import { farmingTask } from '../../src/tasks/minions/farmingActivity.js';
 import * as farmingStepModule from '../../src/tasks/minions/farmingStep.js';
 import { createTestUser, mockClient } from './util.js';
 
-vi.mock('../../src/lib/util/makeBankImage.js', () => ({
+vi.mock('@/lib/util/makeBankImage.js', () => ({
 	makeBankImage: vi.fn(async () => ({ name: 'bank.png', buffer: Buffer.from('bank') }))
 }));
 
@@ -124,7 +123,6 @@ describe('farming task auto farm sequencing', () => {
 		});
 
 		const handleTripFinishSpy = vi.spyOn(handleTripFinishModule, 'handleTripFinish').mockResolvedValue();
-		const addSubTaskSpy = vi.spyOn(addSubTaskModule, 'default').mockResolvedValue(undefined as any);
 
 		const taskData: FarmingActivityTaskOptions = {
 			type: 'Farming',
@@ -140,10 +138,10 @@ describe('farming task auto farm sequencing', () => {
 			treeChopFeePaid: plan[0].treeChopFeePaid,
 			treeChopFeePlanned: plan[0].treeChopFeePlanned,
 			planting: plan[0].planting,
-			duration: plan[0].duration,
+			duration: combinedMode ? Time.Minute * 2 : plan[0].duration,
 			currentDate: plan[0].currentDate,
 			autoFarmed: true,
-			autoFarmPlan: plan.slice(1),
+			autoFarmPlan: combinedMode ? plan : plan.slice(1),
 			autoFarmCombined: combinedMode
 		};
 
@@ -168,74 +166,51 @@ describe('farming task auto farm sequencing', () => {
 
 		await farmingTask.run(taskData, runOptions);
 
-		const nextTaskArgs = addSubTaskSpy.mock.calls[0]?.[0] as FarmingActivityTaskOptions | undefined;
-		if (!nextTaskArgs) {
-			throw new Error('auto farm did not schedule the next patch.');
-		}
-
-		const followUpTask: FarmingActivityTaskOptions = {
-			...nextTaskArgs,
-			id: 456,
-			finishDate: Date.now(),
-			userID: user.id,
-			channelId: 'test-channel-id',
-			type: 'Farming'
-		};
-		await farmingTask.run(followUpTask, runOptions);
-
 		return {
 			user,
 			executeSpy,
-			handleTripFinishSpy,
-			addSubTaskSpy,
-			nextTaskArgs
+			handleTripFinishSpy
 		};
 	}
 
-	it('processes multiple auto farm patches sequentially', async () => {
-		const { user, executeSpy, handleTripFinishSpy, addSubTaskSpy } = await runAutoFarmScenario();
+	it('keeps normal farming completion when not combined', async () => {
+		const { user, executeSpy, handleTripFinishSpy } = await runAutoFarmScenario();
 
-		expect(executeSpy).toHaveBeenCalledTimes(2);
-		expect(handleTripFinishSpy).toHaveBeenCalledTimes(2);
-		expect(addSubTaskSpy).toHaveBeenCalledTimes(1);
+		expect(executeSpy).toHaveBeenCalledTimes(1);
+		expect(handleTripFinishSpy).toHaveBeenCalledTimes(1);
 
 		const firstCallData = executeSpy.mock.calls[0]?.[0]?.data as FarmingActivityTaskOptions | undefined;
-		const secondCallData = executeSpy.mock.calls[1]?.[0]?.data as FarmingActivityTaskOptions | undefined;
 
 		expect(firstCallData?.plantsName).toBe('Guam');
 		expect(firstCallData?.patchType.lastPlanted).toBe('Guam');
 
-		expect(secondCallData?.plantsName).toBe('Watermelon');
-		expect(secondCallData?.patchType.lastPlanted).toBe('Guam');
-
-		const nextTaskArgs = addSubTaskSpy.mock.calls[0]?.[0] as FarmingActivityTaskOptions | undefined;
-		expect(nextTaskArgs?.autoFarmPlan).toEqual([]);
-		expect(nextTaskArgs?.duration).toBe(Time.Minute);
-
 		expect(user.minionName).toBeDefined();
 	});
 
-	it('queues follow-up steps even when auto contract unlocks are pending', async () => {
-		const { addSubTaskSpy } = await runAutoFarmScenario();
-
-		expect(addSubTaskSpy).toHaveBeenCalledTimes(1);
-	});
-
-	it('combines auto farm messaging when requested', async () => {
-		const { executeSpy, handleTripFinishSpy, addSubTaskSpy, nextTaskArgs } = await runAutoFarmScenario({
+	it('processes combined auto farm patches inside one task', async () => {
+		const { executeSpy, handleTripFinishSpy } = await runAutoFarmScenario({
 			combinedMode: true
 		});
 
 		expect(executeSpy).toHaveBeenCalledTimes(2);
 		expect(handleTripFinishSpy).toHaveBeenCalledTimes(1);
-		expect(addSubTaskSpy).toHaveBeenCalledTimes(1);
 
-		expect(nextTaskArgs?.autoFarmSummary?.steps).toHaveLength(1);
-		expect(nextTaskArgs?.autoFarmSummary?.totalXP).toBe(100);
-		expect(nextTaskArgs?.autoFarmSummary?.steps[0]).toMatchObject({
-			plantsName: 'Guam seed',
-			quantity: 6
+		const firstCallData = executeSpy.mock.calls[0]?.[0]?.data as FarmingActivityTaskOptions | undefined;
+		const secondCallData = executeSpy.mock.calls[1]?.[0]?.data as FarmingActivityTaskOptions | undefined;
+
+		expect(firstCallData?.plantsName).toBe('Guam');
+		expect(firstCallData?.duration).toBe(Time.Minute);
+		expect(secondCallData?.plantsName).toBe('Watermelon');
+		expect(secondCallData?.duration).toBe(Time.Minute);
+	});
+
+	it('combines auto farm messaging when requested', async () => {
+		const { executeSpy, handleTripFinishSpy } = await runAutoFarmScenario({
+			combinedMode: true
 		});
+
+		expect(executeSpy).toHaveBeenCalledTimes(2);
+		expect(handleTripFinishSpy).toHaveBeenCalledTimes(1);
 
 		const finalCall = handleTripFinishSpy.mock.calls[0]?.[0] as
 			| { message?: string | { content?: string; files?: SendableFile[] }; loot?: Bank | null }
@@ -245,6 +220,7 @@ describe('farming task auto farm sequencing', () => {
 
 		expect(messageContent).not.toContain('Seed pack');
 		expect(messageContent).toContain('Woodcutting 100 XP (3k/Hr)');
+		expect(messageContent).toContain('Farming 300 XP (9k/Hr)');
 		expect(messageContent).not.toContain('**Total loot:**');
 		expect(messageContent).not.toContain('**Patches farmed:**');
 		expect(messageContent).toContain('**Boosts:** Graceful.');

@@ -19,7 +19,7 @@ const defaultPatch: IPatchData = {
 describe('minionStatus - Farming', () => {
 	const plantsName = Farming.Plants[0].name;
 
-	it('shows combined auto-farm with aggregated remaining time', () => {
+	it('shows combined auto-farm with the current task remaining time', () => {
 		const now = new Date('2024-01-01T00:00:00.000Z');
 		vi.useFakeTimers();
 		vi.setSystemTime(now);
@@ -57,7 +57,7 @@ describe('minionStatus - Farming', () => {
 		};
 
 		const result = minionStatus(user, task);
-		const expectedRemaining = `${formatTripDuration(user, currentDuration + planDuration)} remaining`;
+		const expectedRemaining = `${formatTripDuration(user, currentDuration)} remaining`;
 
 		expect(result).toContain('auto-farming multiple patches');
 		expect(result).toContain(`Estimated time remaining: ${expectedRemaining}.`);
