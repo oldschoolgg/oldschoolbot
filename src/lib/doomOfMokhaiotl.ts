@@ -477,13 +477,6 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 		user.skillsAsLevels as Required<Skills>,
 		reduceNumByPercent(baseDuration, kcReduction)
 	);
-	const venomProtection = selectDoomVenomProtection(itemName => user.bank.amount(itemName));
-	if (!venomProtection) {
-		return `You need at least one dose of ${formatList(
-			DOOM_VENOM_PROTECTION_OPTIONS.map(option => option.potionName),
-			'or'
-		)} to fight the Doom of Mokhaiotl.`;
-	}
 	const durationReductionPercent = calcWhatPercent(baseDuration - durationAfterSkillBoost, baseDuration);
 
 	const res = startDoomRun({
@@ -507,6 +500,13 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 		stopOnUnique,
 		rng
 	});
+	const venomProtection = selectDoomVenomProtection(itemName => user.bank.amount(itemName), res.realDuration);
+	if (!venomProtection) {
+		return `You need enough doses of ${formatList(
+			DOOM_VENOM_PROTECTION_OPTIONS.map(option => option.potionName),
+			'or'
+		)} to cover this ${formatDuration(res.realDuration)} Doom trip.`;
+	}
 
 	const delvesForCost = res.diedAt === null ? res.deepestDelveCompleted : targetDelve;
 	const fullDurationMinutes = res.realDuration / Time.Minute;
@@ -522,7 +522,7 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 		.add('Saradomin brew(4)', Math.min(10, Math.max(1, Math.ceil(fullDurationMinutes * brewsPerMinute))))
 		.add('Super restore(4)', Math.min(10, Math.max(1, Math.ceil(fullDurationMinutes * restoresPerMinute))))
 		.add('Ranging potion(4)', Math.min(10, Math.max(1, Math.ceil(delvesForCost / 5))))
-		.add(venomProtection.itemName);
+		.add(venomProtection.itemCost);
 
 	if (!hasChargedEyeOfAyak) {
 		let fireRunes = 0;
@@ -598,9 +598,9 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 		if (err instanceof UserError) return err.message;
 		throw err;
 	}
-	if (venomProtection.replacementItemName) {
-		await user.addItemsToBank({ items: new Bank().add(venomProtection.replacementItemName), collectionLog: false });
-		realCost.remove(venomProtection.itemName).add(venomProtection.consumedDoseItemName);
+	if (venomProtection.replacementItems.length > 0) {
+		await user.addItemsToBank({ items: venomProtection.replacementItems, collectionLog: false });
+		realCost.remove(venomProtection.itemCost).add(venomProtection.effectiveCost);
 	}
 
 	await ClientSettings.updateBankSetting('doom_cost', realCost);

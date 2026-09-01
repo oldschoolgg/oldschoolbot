@@ -1,4 +1,5 @@
 import { Time } from '@oldschoolgg/toolkit';
+import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import {
@@ -286,25 +287,48 @@ describe('Doom of Mokhaiotl', () => {
 		expect(calculateDoomZcbBoltsNeeded(30, 80)).toBe(3);
 	});
 
-	test('selects one dose of Doom venom protection', () => {
-		expect(selectDoomVenomProtection(itemName => (itemName === 'Anti-venom(1)' ? 1 : 0))?.option.potionName).toBe(
-			'Anti-venom'
-		);
-		expect(selectDoomVenomProtection(itemName => (itemName === 'Anti-venom+(1)' ? 1 : 0))?.option.potionName).toBe(
-			'Anti-venom+'
-		);
+	test('selects Doom venom protection based on trip duration', () => {
 		expect(
-			selectDoomVenomProtection(itemName => (itemName === 'Extended anti-venom+(1)' ? 1 : 0))?.option.potionName
+			selectDoomVenomProtection(itemName => (itemName === 'Anti-venom(1)' ? 1 : 0), 30_000)?.option.potionName
+		).toBe('Anti-venom');
+		expect(
+			selectDoomVenomProtection(itemName => (itemName === 'Anti-venom+(1)' ? 1 : 0), 3 * Time.Minute)?.option
+				.potionName
+		).toBe('Anti-venom+');
+		expect(
+			selectDoomVenomProtection(itemName => (itemName === 'Extended anti-venom+(1)' ? 1 : 0), 6 * Time.Minute)
+				?.option.potionName
 		).toBe('Extended anti-venom+');
 	});
 
-	test('returns the remaining potion dose after Doom venom protection is consumed', () => {
-		const protection = selectDoomVenomProtection(itemName => (itemName === 'Anti-venom+(4)' ? 1 : 0));
+	test('returns the remaining potion doses after Doom venom protection is consumed', () => {
+		const protection = selectDoomVenomProtection(
+			itemName => (itemName === 'Anti-venom+(4)' ? 1 : 0),
+			7 * Time.Minute
+		);
 
-		expect(protection?.itemName).toBe('Anti-venom+(4)');
-		expect(protection?.consumedDoseItemName).toBe('Anti-venom+(1)');
-		expect(protection?.replacementItemName).toBe('Anti-venom+(3)');
-		expect(selectDoomVenomProtection(() => 0)).toBeNull();
+		expect(protection?.itemCost.equals(new Bank().add('Anti-venom+(4)'))).toBe(true);
+		expect(protection?.effectiveCost.equals(new Bank().add('Anti-venom+(1)', 2))).toBe(true);
+		expect(protection?.replacementItems.equals(new Bank().add('Anti-venom+(2)'))).toBe(true);
+	});
+
+	test('uses multiple vials when a Doom trip needs several venom protection doses', () => {
+		const protection = selectDoomVenomProtection(itemName => {
+			if (itemName === 'Anti-venom+(4)') return 1;
+			if (itemName === 'Anti-venom+(2)') return 1;
+			return 0;
+		}, 18 * Time.Minute);
+
+		expect(protection?.dosesNeeded).toBe(5);
+		expect(protection?.itemCost.equals(new Bank().add('Anti-venom+(4)').add('Anti-venom+(2)'))).toBe(true);
+		expect(protection?.effectiveCost.equals(new Bank().add('Anti-venom+(1)', 5))).toBe(true);
+		expect(protection?.replacementItems.equals(new Bank().add('Anti-venom+(1)'))).toBe(true);
+	});
+
+	test('does not select Doom venom protection without enough doses for the trip', () => {
+		expect(
+			selectDoomVenomProtection(itemName => (itemName === 'Anti-venom+(1)' ? 1 : 0), 10 * Time.Minute)
+		).toBeNull();
 	});
 
 	test('awards Doom combat XP at the intended per-hour rates for a completed run', () => {

@@ -1,5 +1,5 @@
 import { calcWhatPercent, reduceNumByPercent, round, sumArr, Time } from '@oldschoolgg/toolkit';
-import { resolveItems } from 'oldschooljs';
+import { Bank, resolveItems } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import type { AttackStyles } from '@/lib/minions/functions/index.js';
@@ -19,13 +19,16 @@ export const RITE_OF_VILE_TRANSFERENCE_SPEED_BOOST = 3;
 const DOOM_BASE_DURATION_MULTIPLIER = 1.2765;
 export const DOOM_VENOM_PROTECTION_OPTIONS = [
 	{
-		potionName: 'Anti-venom'
+		potionName: 'Anti-venom',
+		venomImmunityDuration: 54_000
 	},
 	{
-		potionName: 'Anti-venom+'
+		potionName: 'Anti-venom+',
+		venomImmunityDuration: 3.6 * Time.Minute
 	},
 	{
-		potionName: 'Extended anti-venom+'
+		potionName: 'Extended anti-venom+',
+		venomImmunityDuration: 6.3 * Time.Minute
 	}
 ] as const;
 const DOOM_RANGED_XP_PER_HOUR = 105_000;
@@ -66,9 +69,10 @@ export type DoomVenomProtectionOption = (typeof DOOM_VENOM_PROTECTION_OPTIONS)[n
 
 export interface DoomVenomProtection {
 	option: DoomVenomProtectionOption;
-	itemName: string;
-	consumedDoseItemName: string;
-	replacementItemName: string | null;
+	dosesNeeded: number;
+	itemCost: Bank;
+	replacementItems: Bank;
+	effectiveCost: Bank;
 }
 
 export function normaliseDoomWaveCompletions(rawCompletions: unknown): DoomWaveCompletions {
@@ -182,20 +186,55 @@ export function scaleDoomDurationForCompletedDelves(
 	return fullDuration * (calculateDoomDurationWeight(completedDelves) / targetWeight);
 }
 
-export function selectDoomVenomProtection(itemQuantity: (itemName: string) => number): DoomVenomProtection | null {
-	for (const option of DOOM_VENOM_PROTECTION_OPTIONS) {
-		for (const dose of [1, 2, 3, 4]) {
-			const itemName = `${option.potionName}(${dose})`;
-			if (itemQuantity(itemName) <= 0) continue;
-			return {
-				option,
-				itemName,
-				consumedDoseItemName: `${option.potionName}(1)`,
-				replacementItemName: dose > 1 ? `${option.potionName}(${dose - 1})` : null
-			};
+function calculateDoomVenomDosesNeeded(duration: number, option: DoomVenomProtectionOption): number {
+	return Math.max(1, Math.ceil(duration / option.venomImmunityDuration));
+}
+
+function getDoomVenomDosesOwned(option: DoomVenomProtectionOption, itemQuantity: (itemName: string) => number): number {
+	let dosesOwned = 0;
+	for (const dose of [1, 2, 3, 4]) {
+		dosesOwned += dose * itemQuantity(`${option.potionName}(${dose})`);
+	}
+	return dosesOwned;
+}
+
+export function selectDoomVenomProtection(
+	itemQuantity: (itemName: string) => number,
+	duration: number
+): DoomVenomProtection | null {
+	const options = DOOM_VENOM_PROTECTION_OPTIONS.map(option => ({
+		option,
+		dosesNeeded: calculateDoomVenomDosesNeeded(duration, option)
+	}))
+		.filter(({ option, dosesNeeded }) => getDoomVenomDosesOwned(option, itemQuantity) >= dosesNeeded)
+		.sort((a, b) => a.dosesNeeded - b.dosesNeeded);
+
+	const selected = options[0];
+	if (!selected) return null;
+
+	const itemCost = new Bank();
+	const replacementItems = new Bank();
+	let dosesRemaining = selected.dosesNeeded;
+
+	for (const dose of [4, 3, 2, 1]) {
+		const itemName = `${selected.option.potionName}(${dose})`;
+		let quantity = itemQuantity(itemName);
+		while (quantity > 0 && dosesRemaining > 0) {
+			const dosesUsed = Math.min(dose, dosesRemaining);
+			itemCost.add(itemName);
+			if (dose > dosesUsed) replacementItems.add(`${selected.option.potionName}(${dose - dosesUsed})`);
+			dosesRemaining -= dosesUsed;
+			quantity--;
 		}
 	}
-	return null;
+
+	return {
+		option: selected.option,
+		dosesNeeded: selected.dosesNeeded,
+		itemCost,
+		replacementItems,
+		effectiveCost: new Bank().add(`${selected.option.potionName}(1)`, selected.dosesNeeded)
+	};
 }
 
 function getDoomDurationVariance(rng: RNGProvider): number {

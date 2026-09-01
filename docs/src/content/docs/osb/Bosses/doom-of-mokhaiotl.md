@@ -16,7 +16,7 @@ By default, the trip stops early when a unique is received. To keep going until 
 - A demonbane weapon: [[Darklight]], [[Arclight]], or [[Emberlight]]
 - A mage weapon, or a charged [[Eye of ayak]]
 - A melee punish weapon: [[Noxious halberd]], [[Crystal halberd]], or [[Dual macuahuitl]]
-- At least one dose of Anti-venom, Anti-venom+, or Extended anti-venom+. Any dose variant works, and one dose is consumed per trip.
+- Enough doses of Anti-venom, Anti-venom+, or Extended anti-venom+ to cover the trip duration. Anti-venom covers 54 seconds per dose, Anti-venom+ covers around 3.6 minutes per dose, and Extended anti-venom+ covers around 6.3 minutes per dose.
 - Appropriate range gear, including head, body, legs, neck, cape, feet, and hands slots
 
 ## Rewards and Progress
