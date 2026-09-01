@@ -1,17 +1,17 @@
+import type { GearSetup, PartialGearSetup } from '@oldschoolgg/gear';
 import { Bank, convertLVLtoXP, Items, LootTable, type SimpleMonster } from 'oldschooljs';
 import { isFunction, isObjectType } from 'remeda';
 
 import type { Prisma, User } from '@/prisma/main.js';
+import { MUserClass } from '@/lib/user/MUser.js';
 import type { BitField } from '../../src/lib/constants.js';
-import type { GearSetup } from '../../src/lib/gear/types.js';
-import { MUserClass } from '../../src/lib/MUser.js';
-import { constructGearSetup, Gear, type PartialGearSetup } from '../../src/lib/structures/Gear.js';
+import { constructGearSetup, Gear } from '../../src/lib/structures/Gear.js';
 
 function filterGearSetup(gear: undefined | null | GearSetup | PartialGearSetup): GearSetup | undefined {
 	const filteredGear = !gear
 		? undefined
 		: typeof gear.ammo === 'undefined' || typeof gear.ammo === 'string'
-			? constructGearSetup(gear as PartialGearSetup)
+			? constructGearSetup(gear as PartialGearSetup).raw()
 			: (gear as GearSetup);
 	return filteredGear;
 }
@@ -23,6 +23,8 @@ export interface MockUserArgs {
 	meleeGear?: GearSetup | PartialGearSetup;
 	skills_agility?: number;
 	skills_attack?: number;
+	skills_farming?: number;
+	skills_woodcutting?: number;
 	skills_strength?: number;
 	skills_ranged?: number;
 	skills_magic?: number;
@@ -55,14 +57,14 @@ const mockUser = (overrides?: MockUserArgs): User => {
 		skills_fishing: overrides?.skills_fishing ?? 0,
 		skills_mining: 0,
 		skills_smithing: 0,
-		skills_woodcutting: 0,
+		skills_woodcutting: overrides?.skills_woodcutting ?? 0,
 		skills_firemaking: 0,
 		skills_runecraft: 0,
 		skills_crafting: 0,
 		skills_prayer: overrides?.skills_prayer ?? 0,
 		skills_fletching: 0,
 		skills_thieving: 0,
-		skills_farming: 0,
+		skills_farming: overrides?.skills_farming ?? 0,
 		skills_herblore: 0,
 		skills_hunter: 0,
 		skills_construction: 0,
@@ -80,7 +82,10 @@ const mockUser = (overrides?: MockUserArgs): User => {
 		sacrificedValue: 0,
 		id: overrides?.id ?? '',
 		monsterScores: {},
-		badges: []
+		badges: [],
+		minion_farmingContract: null,
+		minion_farmingPreferredContract: false,
+		minion_farmingPreferredSeeds: {}
 	} as unknown as User;
 
 	return r;

@@ -204,6 +204,19 @@
 		"burnt_cookable": "Burnt fish"
 	},
 	{
+		"level": 35,
+		"xp": 110,
+		"id": 10136,
+		"name": "Rainbow fish",
+		"input_cookables": {
+			"10138": 1
+		},
+		"stop_burn_at": 64,
+		"stop_burn_at_cg": 64,
+		"burn_kourend_bonus": [63, 60, 60, 60],
+		"burnt_cookable": "Burnt rainbow fish"
+	},
+	{
 		"level": 25,
 		"xp": 90,
 		"id": 329,

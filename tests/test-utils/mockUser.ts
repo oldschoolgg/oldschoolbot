@@ -1,22 +1,23 @@
 import assert from 'node:assert';
-import { MathRNG } from '@oldschoolgg/rng';
-import { cryptoRng } from '@oldschoolgg/rng/crypto';
 import type { IUser } from '@oldschoolgg/schemas';
+import { MathRNG } from 'node-rng';
+import { cryptoRng } from 'node-rng/crypto';
 import { Bank, convertLVLtoXP, EItem, type EMonster, type ItemBank, Items, Monsters } from 'oldschooljs';
 import { clone } from 'remeda';
 import { expect } from 'vitest';
 
 import type { GearSetupType, Prisma, User, UserStats } from '@/prisma/main.js';
 import { rawCommandHandlerInner } from '@/discord/commandHandler.js';
-import { MessageBuilderClass } from '@/discord/MessageBuilder.js';
+import { MessageBuilder } from '@/discord/MessageBuilder.js';
 import type { PvMMethod } from '@/lib/constants.js';
+import { BitField } from '@/lib/constants.js';
 import type { DegradeableItem } from '@/lib/degradeableItems.js';
-import { MUserClass } from '@/lib/MUser.js';
 import { type SkillNameType, SkillsArray } from '@/lib/skilling/types.js';
 import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import type { SkillsRequired } from '@/lib/types/index.js';
 import type { ActivityTaskData, MonsterActivityTaskOptions } from '@/lib/types/minions.js';
+import { MUserClass } from '@/lib/user/MUser.js';
 import { fetchUsernameAndCache } from '@/lib/util.js';
 import { minionKCommand } from '@/mahoji/commands/k.js';
 import { giveMaxStats } from '@/mahoji/commands/testpotato.js';
@@ -36,6 +37,15 @@ export class TestUser extends MUserClass {
 	async setBank(bank: Bank) {
 		// @ts-expect-error
 		await this.update({ bank: bank.toJSON() });
+		return this;
+	}
+
+	async givePatronTier(tier: number) {
+		await this.update({
+			bitfield: {
+				push: tier + 1
+			}
+		});
 		return this;
 	}
 
@@ -236,7 +246,7 @@ export class TestUser extends MUserClass {
 			rng: MathRNG,
 			ignoreUserIsBusy: otherOptions.bypassBusy ? true : undefined
 		});
-		if (result instanceof MessageBuilderClass) {
+		if (result instanceof MessageBuilder) {
 			result = await result.build();
 		}
 		await this.sync();
@@ -343,17 +353,13 @@ export async function mockUser(
 	if (options.maxed) {
 		await user.max();
 	}
-	await prisma.newUser.create({
-		data: {
-			id: user.id
-		}
-	});
 	return user;
 }
 
 export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.UserCreateInput> = {}) {
 	const id = userData.id ?? mockedId();
 	userData.username ??= `TestUser`;
+	userData.bitfield ??= [BitField.DisabledRandomEvents, BitField.DisabledPassiveImplings];
 
 	const bank = _bank ? _bank.clone() : null;
 	let GP = userData.GP ? Number(userData.GP) : undefined;

@@ -3,6 +3,7 @@ import { Bank, EItem } from 'oldschooljs';
 
 import Runecraft from '@/lib/skilling/skills/runecraft.js';
 import type { OuraniaAltarOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 const gracefulPenalty = 20;
 
@@ -40,8 +41,8 @@ export async function ouraniaAltarStartCommand({
 
 	if (inventorySize > 28) boosts.push(`+${inventorySize - 28} inv spaces from pouches`);
 
-	if (!user.hasGracefulEquipped() || !spellbookSwap) {
-		boosts.push(`${gracefulPenalty}% slower for no Graceful`);
+	if (!user.hasGracefulEquipped() && !spellbookSwap) {
+		boosts.push(`${gracefulPenalty}% slower without Graceful or Spellbook Swap`);
 		timePerTrip = increaseNumByPercent(timePerTrip, gracefulPenalty);
 	}
 
@@ -133,7 +134,8 @@ export async function ouraniaAltarStartCommand({
 		response += ' Pure ';
 	}
 
-	response += `Essence at the Ourania Altar, it'll take around ${formatDuration(
+	response += `Essence at the Ourania Altar, it'll take around ${formatTripDuration(
+		user,
 		duration
 	)} to finish, this will take ${numberOfInventories}x trips to the altar.\nYour minion has consumed: ${itemCost}.\n\n**Boosts:** ${boosts.join(
 		', '

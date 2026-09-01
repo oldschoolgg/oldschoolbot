@@ -1,14 +1,15 @@
 import type { ButtonBuilder } from '@oldschoolgg/discord';
-import { notEmpty, stringMatches, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
+import { Emoji, notEmpty, stringMatches, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
-import type { MessageBuilderClass } from '@/discord/MessageBuilder.js';
+import { MessageBuilder } from '@/discord/MessageBuilder.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';
 import { BitField, MAX_CLUES_DROPPED, PerkTier } from '@/lib/constants.js';
 import type { UnifiedOpenable } from '@/lib/openables.js';
 import { allOpenables, getOpenableLoot } from '@/lib/openables.js';
 import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
+import { FriendlyTask } from '@/lib/util/FriendlyTask.js';
 import { patronMsg } from '@/lib/util/smallUtils.js';
 import { addToOpenablesScores } from '@/mahoji/mahojiSettings.js';
 
@@ -23,24 +24,26 @@ export const OpenUntilItems = uniqueArr(allOpenables.map(i => i.allItems).flat(2
 	});
 
 export async function abstractedOpenUntilCommand(
-	interaction: MInteraction,
+	rng: RNGProvider,
+	interaction: OSInteraction,
 	user: MUser,
 	name: string,
 	openUntilItem: string,
+	maxOpenQuantity?: number,
 	result_quantity?: number
 ) {
-	let quantity = 1;
-
-	if (result_quantity) {
-		quantity = result_quantity;
+	const messages: string[] = [];
+	const targetQuantity = result_quantity ?? 1;
+	if (targetQuantity < 1 || !Number.isInteger(targetQuantity)) {
+		return 'The result quantity must be a positive integer.';
 	}
-
-	if (quantity < 1 || !Number.isInteger(quantity)) {
+	if (maxOpenQuantity !== undefined && (maxOpenQuantity < 1 || !Number.isInteger(maxOpenQuantity))) {
 		return 'The quantity must be a positive integer.';
 	}
 
 	const perkTier = await user.fetchPerkTier();
-	if (perkTier < PerkTier.Three) return patronMsg(PerkTier.Three);
+	const unlimitedEnabled = user.bitfield.includes(BitField.UnlimitedOpenUntil);
+	const chatMessage = Boolean(perkTier || user.bitfield.includes(BitField.OriginalCyrSupporter));
 	name = name.replace(regex, '$1');
 	const openableItem = allOpenables.find(o => o.aliases.some(alias => stringMatches(alias, name)));
 	if (!openableItem) return "That's not a valid item.";
@@ -56,6 +59,23 @@ export async function abstractedOpenUntilCommand(
 
 	const amountOfThisOpenableOwned = user.bank.amount(openableItem.id);
 	if (amountOfThisOpenableOwned === 0) return "You don't own any of that item.";
+	if (!maxOpenQuantity) {
+		if (unlimitedEnabled) {
+			if (chatMessage) {
+				messages.push(
+					`${Emoji.Seer} You didn't specify a quantity, so Open Until is using your unlimited default`
+				);
+			}
+			maxOpenQuantity = amountOfThisOpenableOwned;
+		} else {
+			if (chatMessage) {
+				messages.push(
+					`${Emoji.Seer} **You didn't specify a quantity, so Open Until will open 1 by default (Specify more with the \`quantity\` \`option\`). You can change this to default to Unlimited with \`/config user toggle\`...**`
+				);
+			}
+			maxOpenQuantity = 1;
+		}
+	}
 
 	const targetClue = ClueTiers.find(t => t.scrollID === openUntil.id);
 	const clueStack = sumArr(ClueTiers.map(t => user.bank.amount(t.scrollID)));
@@ -70,27 +90,42 @@ export async function abstractedOpenUntilCommand(
 	const loot = new Bank();
 	let amountOpened = 0;
 	let targetCount = 0;
-	const max = Math.min(10000, amountOfThisOpenableOwned);
+	const maxOpenLimit = maxOpenQuantity ?? amountOfThisOpenableOwned;
+	let realMax = Math.max(10_000, perkTier * 10_000);
+	if (perkTier > 4 || user.bitfield.includes(BitField.OriginalCyrSupporter)) realMax = 100_000;
+	const max = Math.min(realMax, amountOfThisOpenableOwned, maxOpenLimit);
+	const yielder = new FriendlyTask(`OpenUntil`, {
+		yieldAfterMs: 50,
+		warnAfterMs: 500,
+		data: {
+			openable,
+			openUntil,
+			targetQuantity
+		}
+	});
 	for (let i = 0; i < max; i++) {
 		cost.add(openable.openedItem.id);
-		const thisLoot = await getOpenableLoot({ openable, quantity: 1, user });
+		const thisLoot = await getOpenableLoot({ openable, quantity: 1, user, rng, yielder });
 		loot.add(thisLoot.bank);
 		amountOpened++;
 		targetCount = loot.amount(openUntil.id);
-		if (targetCount >= quantity) break;
+		if (targetCount >= targetQuantity) break;
+		await yielder.checkpoint();
 	}
+	yielder.finish();
 
 	return finalizeOpening({
 		user,
 		cost,
 		loot,
 		messages: [
+			...messages,
 			`You opened ${amountOpened}x ${openable.openedItem.name} ${
 				targetCount === 0
 					? `but you didn't get a ${openUntil.name}!`
-					: targetCount >= quantity
+					: targetCount >= targetQuantity
 						? `and successfully obtained ${targetCount}x ${openUntil.name}.`
-						: `but only received ${targetCount}/${quantity}x ${openUntil.name}.`
+						: `but only received ${targetCount}/${targetQuantity}x ${openUntil.name}.`
 			}`
 		],
 		openables: [openable],
@@ -112,7 +147,7 @@ async function finalizeOpening({
 	loot: Bank;
 	messages: string[];
 	openables: UnifiedOpenable[];
-}): Promise<MessageBuilderClass> {
+}): Promise<MessageBuilder> {
 	const { bank } = user;
 	if (!bank.has(cost)) return new MessageBuilder().setContent(`You don't have ${cost}.`);
 	const newOpenableScores = await addToOpenablesScores(user, kcBank);
@@ -158,11 +193,13 @@ ${messages.join(', ')}`.trim()
 }
 
 export async function abstractedOpenCommand(
-	interaction: MInteraction | null,
+	rng: RNGProvider,
+	interaction: OSInteraction | null,
 	user: MUser,
 	_names: string[],
 	_quantity: number | 'auto' = 1
-): Promise<string | MessageBuilderClass> {
+): Promise<string | MessageBuilder> {
+	const isOpenAll = _names.includes('all');
 	const favorites = user.user.favoriteItems;
 
 	const names = _names.map(i => i.replace(regex, '$1'));
@@ -175,7 +212,10 @@ export async function abstractedOpenCommand(
 	if (names.includes('all')) {
 		if (openables.length === 0) return 'You have no openable items.';
 		if ((await user.fetchPerkTier()) < PerkTier.Two) return patronMsg(PerkTier.Two);
-		if (interaction) await interaction.confirmation('Are you sure you want to open ALL your items?');
+		if (interaction) {
+			await interaction.confirmation('Are you sure you want to open ALL your items?');
+			void interaction.reply('Opening all your items...');
+		}
 	}
 
 	if (openables.length === 0) return "That's not a valid item.";
@@ -191,15 +231,26 @@ export async function abstractedOpenCommand(
 	const loot = new Bank();
 	const messages: string[] = [];
 
+	const yielder = new FriendlyTask(`Open`, {
+		yieldAfterMs: 50,
+		warnAfterMs: 500,
+		data: {
+			openables: isOpenAll ? 'all' : openables,
+			quantity: _quantity,
+			userId: user.id
+		}
+	});
 	for (const openable of openables) {
 		const { openedItem } = openable;
 		const quantity = typeof _quantity === 'string' ? user.bank.amount(openedItem.id) : _quantity;
+		await yielder.checkpoint();
 		cost.add(openedItem.id, quantity);
 		kcBank.add(openedItem.id, quantity);
-		const thisLoot = await getOpenableLoot({ openable, quantity, user });
+		const thisLoot = await getOpenableLoot({ openable, quantity, user, rng, yielder });
 		loot.add(thisLoot.bank);
 		if (thisLoot.message) messages.push(thisLoot.message);
 	}
+	yielder.finish();
 
 	return finalizeOpening({ user, cost, loot, messages, openables, kcBank });
 }

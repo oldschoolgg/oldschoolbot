@@ -1,14 +1,15 @@
 import type { APIApplicationCommandOptionChoice } from '@oldschoolgg/discord';
+import { GearSetupTypes } from '@oldschoolgg/gear';
 import { stringSearch, toTitleCase, truncateString, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
 import type { GearPreset } from '@/prisma/main.js';
 import { choicesOf, defineOption } from '@/discord/index.js';
 import { baseFilters, filterableTypes } from '@/lib/data/filterables.js';
-import { GearSetupTypes } from '@/lib/gear/types.js';
-import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { type GlobalPreset, globalPresets } from '@/lib/gear/gearPresets.js';
+import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { SkillsArray } from '@/lib/skilling/types.js';
-import { Gear, type GlobalPreset, globalPresets } from '@/lib/structures/Gear.js';
+import { Gear } from '@/lib/structures/Gear.js';
 
 export const filterOption = {
 	type: 'String',
@@ -25,7 +26,7 @@ export const filterOption = {
 	}
 } as const;
 
-const itemArr = Items.array().map(i => ({ ...i, key: `${i.name.toLowerCase()}${i.id}` }));
+export const itemArr = Items.array().map(i => ({ ...i, key: `${i.name.toLowerCase()}_${i.id}` }));
 
 export const tradeableItemArr = itemArr.filter(i => i.tradeable_on_ge);
 
@@ -52,7 +53,7 @@ export const monsterOption = defineOption({
 	description: 'The monster you want to pick.',
 	required: true,
 	autocomplete: async ({ value }: StringAutoComplete) => {
-		return killableMonsters
+		return effectiveMonsters
 			.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 			.map(i => ({ name: i.name, value: i.name }));
 	}

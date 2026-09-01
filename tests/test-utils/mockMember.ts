@@ -1,5 +1,5 @@
-import type { RNGProvider } from '@oldschoolgg/rng';
 import type { IMember } from '@oldschoolgg/schemas';
+import type { RNGProvider } from 'node-rng';
 
 export async function mockRandomMember({
 	userId,

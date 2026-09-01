@@ -3,12 +3,14 @@ import {
 	type APIApplicationCommandOption,
 	type APIApplicationCommandSubcommandOption,
 	type APIChatInputApplicationCommandGuildInteraction,
+	type APIInteractionDataResolvedGuildMember,
 	ApplicationCommandOptionType,
 	convertApiChannelToZChannel,
 	convertApiMemberToZMember,
 	convertApiRoleToZRole,
 	convertApiUserToZUser
 } from '@oldschoolgg/discord';
+import type { IMember } from '@oldschoolgg/schemas';
 
 const BASIC_TYPES = new Set<CommandOption['type']>([
 	'Integer',
@@ -185,15 +187,21 @@ export function convertAPIOptionsToCommandOptions({
 				guildId: guildId!
 			});
 		} else if (opt.type === ApplicationCommandOptionType.User) {
+			const userId = opt.value;
+
+			const user = convertApiUserToZUser(resolvedObjects.users![userId]!);
+			const memberData: APIInteractionDataResolvedGuildMember | undefined = resolvedObjects.members?.[userId];
+			let member: IMember | undefined;
+			if (guildId && memberData) {
+				member = convertApiMemberToZMember({
+					userId,
+					guildId,
+					apiMember: memberData
+				});
+			}
 			parsedOptions[opt.name] = {
-				user: convertApiUserToZUser(resolvedObjects.users![opt.value]!),
-				member: guildId
-					? convertApiMemberToZMember({
-							userId: opt.value,
-							guildId: guildId,
-							apiMember: resolvedObjects.members![opt.value]!
-						})
-					: undefined
+				user,
+				member
 			};
 		} else {
 			parsedOptions[opt.name as string] = opt.value;

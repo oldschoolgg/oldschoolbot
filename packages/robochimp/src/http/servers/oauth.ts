@@ -2,9 +2,10 @@ import { discordAuth } from '@hono/oauth-providers/discord';
 import { Time } from '@oldschoolgg/toolkit';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Hono } from 'hono';
-import { setCookie } from 'hono/cookie';
+import { deleteCookie, setCookie } from 'hono/cookie';
 
 import { globalConfig } from '@/constants.js';
+import type { AuthenticatedUser } from '@/http/api-types.js';
 import { type HonoServerGeneric, httpErr, httpRes } from '@/http/serverUtil.js';
 import { encryptToken } from '@/modules/encryption.js';
 
@@ -53,7 +54,17 @@ oauthHonoServer.use(
 			}
 		});
 		if (!user) {
-			return c.json({ error: 'User not found' }, 400);
+			return httpErr.NOT_FOUND({ message: 'Robochimp user not found' });
+		}
+		const isBlacklisted: boolean =
+			(await roboChimpClient.blacklistedEntity.count({
+				where: {
+					type: 'user',
+					id: user.id
+				}
+			})) > 0;
+		if (isBlacklisted) {
+			return httpErr.FORBIDDEN({ message: 'You are blacklisted.' });
 		}
 
 		const secret = JSON.stringify({
@@ -87,7 +98,7 @@ oauthHonoServer.use(
 			sameSite: 'lax',
 			path: '/'
 		});
-		return c.redirect(`${globalConfig.frontendUrl}/login_callback`);
+		return c.redirect(`${globalConfig.frontendUrl}/login-callback`);
 	}
 );
 
@@ -107,11 +118,23 @@ oauthHonoServer.get('/me', async c => {
 		return httpErr.NOT_FOUND({ message: 'Discord user not found' });
 	}
 
-	return httpRes.JSON({
+	const result: AuthenticatedUser = {
 		id: discordUser.id,
 		username: discordUser.username,
 		avatar: discordUser.avatar,
 		global_name: discordUser.global_name,
 		bits: user.bits
+	};
+	return httpRes.JSON(result);
+});
+
+oauthHonoServer.get('/logout', async c => {
+	deleteCookie(c, 'token', {
+		httpOnly: true,
+		secure: true,
+		domain: globalConfig.cookieOrigin,
+		sameSite: 'lax',
+		path: '/'
 	});
+	return c.redirect(`${globalConfig.frontendUrl}/`);
 });

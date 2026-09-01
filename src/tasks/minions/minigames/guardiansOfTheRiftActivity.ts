@@ -129,7 +129,7 @@ export const guardiansOfTheRiftTask: MinionTask = {
 
 		const totalLoot = new Bank();
 		totalLoot.add(rewardsGuardianLoot);
-		const bonusBloods = await bloodEssence(user, runesLoot.amount('Blood rune'));
+		const bonusBloods = await bloodEssence(rng, user, runesLoot.amount('Blood rune'));
 		runesLoot.add('Blood rune', bonusBloods);
 		totalLoot.add(runesLoot);
 

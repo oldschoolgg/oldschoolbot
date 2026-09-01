@@ -1,4 +1,3 @@
-import { randInt } from '@oldschoolgg/rng';
 import { Bank, ItemGroups } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
@@ -22,7 +21,7 @@ function getLowestCountOutfitPiece(bank: Bank): number {
 export const roguesDenTask: MinionTask = {
 	type: 'RoguesDenMaze',
 
-	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
 		const { channelId, quantity } = data;
 
 		await user.incrementMinigameScore('rogues_den', quantity);
@@ -33,7 +32,7 @@ export const roguesDenTask: MinionTask = {
 		let str = `<@${user.id}>, ${user.minionName} finished completing ${quantity}x laps of the Rogues' Den Maze.`;
 
 		for (let i = 0; i < quantity; i++) {
-			if (randInt(1, 8) <= 5) {
+			if (rng.randInt(1, 8) <= 5) {
 				const piece = getLowestCountOutfitPiece(userBankCopy);
 				userBankCopy.add(piece);
 				loot.add(piece);

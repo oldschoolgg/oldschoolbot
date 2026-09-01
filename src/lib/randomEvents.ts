@@ -1,4 +1,3 @@
-import { MathRNG } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, ItemGroups, LootTable } from 'oldschooljs';
 
@@ -175,11 +174,17 @@ export const RandomEvents: RandomEvent[] = [
 
 const doesntGetRandomEvent: activity_type_enum[] = [activity_type_enum.TombsOfAmascut, activity_type_enum.Buy];
 
-export async function triggerRandomEvent(user: MUser, type: activity_type_enum, duration: number, messages: string[]) {
+export async function triggerRandomEvent(
+	user: MUser,
+	type: activity_type_enum,
+	duration: number,
+	messages: string[],
+	rng: RNGProvider
+) {
 	if (doesntGetRandomEvent.includes(type)) return {};
-	const minutes = Math.min(30, duration / Time.Minute);
+	const minutes = Math.min(30, Math.floor(duration / Time.Minute));
 	const randomEventChance = 60 - minutes;
-	if (!MathRNG.roll(randomEventChance)) return {};
+	if (minutes < 1 || !rng.roll(randomEventChance)) return {};
 	if (user.bitfield.includes(BitField.DisabledRandomEvents)) {
 		return;
 	}
@@ -189,7 +194,7 @@ export async function triggerRandomEvent(user: MUser, type: activity_type_enum, 
 	// Max 1 event per 3h mins per user
 	if (!ratelimitResult.success) return;
 
-	const event = MathRNG.pick(RandomEvents);
+	const event = rng.pick(RandomEvents);
 	const loot = new Bank();
 	if (event.outfit) {
 		for (const piece of event.outfit) {

@@ -1,6 +1,6 @@
+import { GearStat } from '@oldschoolgg/gear';
 import { stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, deepResolveItems, EMonster, itemID, Monsters, NIGHTMARES_HP, resolveItems } from 'oldschooljs';
-import { GearStat } from 'oldschooljs/gear';
 
 import { bossKillables } from '@/lib/minions/data/killableMonsters/bosses/index.js';
 import { camdozaalMonsters } from '@/lib/minions/data/killableMonsters/camdozaalMonsters.js';

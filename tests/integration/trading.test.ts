@@ -1,5 +1,5 @@
-import { cryptoRng } from '@oldschoolgg/rng/crypto';
 import { sleep } from '@oldschoolgg/toolkit';
+import { cryptoRng } from 'node-rng/crypto';
 import { Bank } from 'oldschooljs';
 import { chunk } from 'remeda';
 import { expect, test } from 'vitest';
@@ -76,10 +76,10 @@ test('Trade consistency', async () => {
 					attempts += 1;
 					await Promise.all([user1.sync(), user2?.sync()]);
 					const res = await tradeCommand.run({ ...options, guildId: mockSnowflake(cryptoRng) });
-					if (typeof res === 'string' && !res.includes('Trade failed')) {
+					if (typeof res !== 'string' || !res.includes('Trade failed')) {
 						break;
 					}
-					await sleep(40);
+					await sleep(150);
 				}
 				if (attempts === 100) {
 					throw new Error('Trade failed 100 times in a row, something is wrong');

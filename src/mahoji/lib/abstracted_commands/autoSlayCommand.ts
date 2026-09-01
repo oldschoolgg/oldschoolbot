@@ -393,12 +393,14 @@ export async function autoSlayCommand({
 	user,
 	modeOverride,
 	saveMode,
-	interaction
+	interaction,
+	rng
 }: {
 	user: MUser;
 	modeOverride?: string;
 	saveMode?: boolean;
-	interaction: MInteraction;
+	interaction: OSInteraction;
+	rng: RNGProvider;
 }): CommandResponse {
 	modeOverride = modeOverride?.toLowerCase();
 	const autoslayOptions = user.user.slayer_autoslay_options;
@@ -406,7 +408,7 @@ export async function autoSlayCommand({
 	const isOnTask = usersTask.assignedTask !== null && usersTask.currentTask !== null;
 
 	if (!isOnTask) {
-		return slayerNewTaskCommand({ user, interaction, showButtons: true });
+		return slayerNewTaskCommand({ user, interaction, showButtons: true, rng });
 	}
 	const savedMethod = determineAutoslayMethod(autoslayOptions as AutoslayOptionsEnum[]);
 	const method = modeOverride ?? savedMethod;
@@ -518,7 +520,7 @@ export async function autoSlayCommand({
 			return usersTask.assignedTask?.monsters.includes(m.id);
 		});
 		if (allMonsters.length === 0) return 'Please report this error. No monster variations found.';
-		let maxDiff = 0;
+		let maxDiff = -1;
 		let maxMobName: string | null = null;
 
 		for (const m of allMonsters) {

@@ -222,7 +222,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.FireGiant,
 		amount: [120, 185],
 		weight: 9,
-		monsters: [Monsters.FireGiant.id],
+		monsters: [Monsters.FireGiant.id, Monsters.Branda.id, Monsters.RoyalTitans.id],
 		combatLevel: 65,
 		unlocked: true
 	},
@@ -288,6 +288,21 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		combatLevel: 80,
 		questPoints: 34,
 		unlocked: true
+	},
+	{
+		monster: Monsters.JuvenileCustodianStalker,
+		amount: [110, 170],
+		extendedAmount: [200, 250],
+		extendedUnlockId: SlayerTaskUnlocksEnum.UnRestrainingOrder,
+		weight: 8,
+		monsters: [
+			Monsters.JuvenileCustodianStalker.id,
+			Monsters.MatureCustodianStalker.id,
+			Monsters.ElderCustodianStalker.id
+		],
+		slayerLevel: 54,
+		unlocked: false,
+		requiredQuests: [QuestID.ShadowsOfCustodia]
 	},
 	{
 		monster: Monsters.KalphiteWorker,

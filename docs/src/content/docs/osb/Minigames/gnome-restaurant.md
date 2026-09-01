@@ -35,5 +35,5 @@ The bot will randomly choose between a piece of jewellery to use every trip. If 
 
 - Ring of dueling - Consumed and not returned
 - Games necklace - Consumed and not returned
-- Amulet of glory - Returned with no charges (currently the only method to use up charges)
+- Amulet of glory - Returned with no charges (a faster option is uncharging via [[/activities charge]])
 - Amulet of eternal glory - Returned with no harm done

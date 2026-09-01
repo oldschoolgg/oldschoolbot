@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./fonts.css";
+@import "./position.css";
 
 .dark {
 	--color-background: #0b080c;
@@ -20,6 +21,8 @@ body {
 	--color-bright-blue: oklch(0.47 0.15 248.07);
 	--color-bright-saturated-blue: oklch(0.39 0.19 263.55);
 	--color-dark: #111117;
+	--color-blurple: #5865f2;
+	--color-border: hsl(215.97deg 100% 72.5% / 18%);
 
 	--color-background: white;
 	--color-text: black;
@@ -58,5 +61,10 @@ main {
 }
 
 .border-main {
-	border: 2px solid hsl(215.97deg 100% 72.5% / 18%);
+	border: 2px solid var(--color-border);
+}
+
+.link {
+	color: rgb(57, 115, 223);
+	text-decoration: underline;
 }

@@ -1,5 +1,5 @@
 import { type GatewayMessageCreateDispatchData, InteractionType } from '@oldschoolgg/discord';
-import { cryptoRng } from '@oldschoolgg/rng/crypto';
+import { cryptoRng } from 'node-rng/crypto';
 
 import { TEST_SERVER_ID } from '@/constants.js';
 
@@ -94,7 +94,7 @@ export async function pointsHandler(msg: GatewayMessageCreateDispatchData) {
 						await globalClient.giveRole(TEST_SERVER_ID, msg.interaction_metadata.user.id, role.id);
 						await globalClient.sendMessage(
 							msg.channel_id,
-							`${userMember}, you have been awarded the ${role.name} role! Thank you for testing.`
+							`<@${userMember.user_id}>, you have been awarded the ${role.name} role! Thank you for testing.`
 						);
 						break;
 					}

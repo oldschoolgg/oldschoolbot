@@ -1,16 +1,16 @@
+import type { GearSetupType } from '@oldschoolgg/gear';
+import { defaultGearSetup, type GearSetup, type GearStat, isValidGearSetup, isValidGearStat } from '@oldschoolgg/gear';
 import { PerkTier, stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
-import type { GearStat } from 'oldschooljs/gear';
 
 import type { GearPreset } from '@/prisma/main.js';
 import { generateGearImage } from '@/lib/canvas/generateGearImage.js';
 import { PATRON_ONLY_GEAR_SETUP } from '@/lib/constants.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
-import { isValidGearSetup, isValidGearStat } from '@/lib/gear/functions/isValidGearSetup.js';
-import type { GearSetup, GearSetupType } from '@/lib/gear/types.js';
+import { globalPresets } from '@/lib/gear/gearPresets.js';
 import getUserBestGearFromBank from '@/lib/minions/functions/getUserBestGearFromBank.js';
 import { unEquipAllCommand } from '@/lib/minions/functions/unequipAllCommand.js';
-import { defaultGear, Gear, globalPresets } from '@/lib/structures/Gear.js';
+import { Gear } from '@/lib/structures/Gear.js';
 import calculateGearLostOnDeathWilderness from '@/lib/util/calculateGearLostOnDeathWilderness.js';
 import { gearEquipMultiImpl } from '@/lib/util/equipMulti.js';
 import { assert } from '@/lib/util/logError.js';
@@ -74,7 +74,7 @@ async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName
 		};
 	}
 
-	const newGear = { ...defaultGear };
+	const newGear = { ...defaultGearSetup };
 	newGear.head = gearItem(preset.head);
 	newGear.neck = gearItem(preset.neck);
 	newGear.body = gearItem(preset.body);
@@ -147,7 +147,6 @@ async function gearEquipMultiCommand(user: MUser, setup: string, items: string) 
 	}
 
 	const dbKey = `gear_${setup}` as const;
-
 	await user.transactItems({
 		filterLoot: false,
 		itemsToRemove: equipBank,
@@ -302,7 +301,7 @@ async function autoEquipCommand(user: MUser, gearSetup: GearSetupType, equipment
 }
 
 export async function gearStatsCommand(user: MUser, input: string): CommandResponse {
-	const gear = { ...defaultGear };
+	const gear = { ...defaultGearSetup };
 	for (const name of input.split(',')) {
 		const item = Items.getItem(name);
 		if (item?.equipment) {
@@ -370,7 +369,7 @@ export async function gearViewCommand(user: MUser, input: string, text: boolean)
 
 		const content = scenarios
 			.map((scenario, index) => {
-				const lostItemsString = calculateAndGetString({ gear: userGear, ...scenario }, scenario.smited);
+				const lostItemsString = calculateAndGetString({ gear: userGear.raw(), ...scenario }, scenario.smited);
 				const description = scenarioDescriptions[index];
 				return `The gear you would lose ${description}:\n${lostItemsString}`;
 			})
@@ -408,15 +407,10 @@ export async function gearSwapCommand(
 		return PATRON_ONLY_GEAR_SETUP;
 	}
 
-	return user.update(current => {
-		const { gear } = current;
+	await user.updateGear([
+		{ setup: first, gear: user.gear[second].raw() },
+		{ setup: second, gear: user.gear[first].raw() }
+	]);
 
-		return {
-			response: `You swapped your ${first} gear with your ${second} gear.`,
-			otherUpdates: {
-				[`gear_${first}`]: gear[second],
-				[`gear_${second}`]: gear[first]
-			}
-		};
-	});
+	return `You swapped your ${first} gear with your ${second} gear.`;
 }

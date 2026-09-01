@@ -79,14 +79,14 @@ export function calculateResultOfLMSGames(
 
 		const position = died ? diedPosition : 1;
 		let points = 0;
-		if (position === 1) points += 5;
-		else if (position === 2) points += 4;
-		else if (position <= 4) points += 3;
-		else if (position <= 9) points += 2;
+		if (position === 1) points += 6;
+		else if (position === 2) points += 5;
+		else if (position <= 4) points += 4;
+		else if (position <= 9) points += 3;
 		else if (position <= 19) points += 1;
 
-		if (kills >= 5) points += 2;
-		else if (kills >= 3) points += 1;
+		if (kills >= 5) points += 3;
+		else if (kills >= 3) points += 2;
 
 		gameResults.push({ position, kills, points });
 	}

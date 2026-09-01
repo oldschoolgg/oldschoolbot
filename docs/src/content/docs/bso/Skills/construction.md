@@ -26,7 +26,7 @@ Carpenter's helmet, Carpenter's shirt, Carpenter's trousers, Carpenter's boots, 
 
 | Method      | XP/hr      |
 | ----------- | ---------- |
-| Elder Table | 15,633,221 |
+| Elder Table | 19,700,000 |
 
 ---
 

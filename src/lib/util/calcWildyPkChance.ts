@@ -1,4 +1,3 @@
-import { percentChance, randomVariation } from '@oldschoolgg/rng';
 import { calcPercentOfNum, calcWhatPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 
 import type { KillableMonster } from '@/lib/minions/types.js';
@@ -11,15 +10,25 @@ export async function increaseWildEvasionXp(user: MUser, duration: number) {
 	const newPkXp = Math.floor(Math.min(1_000_000_000, oldPkXp.pk_evasion_exp + duration));
 	await user.statsUpdate({ pk_evasion_exp: newPkXp });
 }
-export function calcWildyPKChance(
-	currentPeak: Peak,
-	gearBank: GearBank,
-	monster: KillableMonster,
-	duration: number,
-	supplies: boolean,
-	cannonMulti: boolean,
-	pkEvasionExperience: number
-) {
+export function calcWildyPKChance({
+	rng,
+	currentPeak,
+	gearBank,
+	monster,
+	duration,
+	supplies,
+	cannonMulti,
+	pkEvasionExperience
+}: {
+	rng: RNGProvider;
+	currentPeak: Peak;
+	gearBank: GearBank;
+	monster: KillableMonster;
+	duration: number;
+	supplies: boolean;
+	cannonMulti: boolean;
+	pkEvasionExperience: number;
+}) {
 	// Chance per minute, Difficulty from 1 to 10, and factor a million difference, High peak 5x as likley encounter, Medium peak 1x, Low peak 5x as unlikley
 	const peakInfluence = peakFactor.find(_peaktier => _peaktier.peakTier === currentPeak?.peakTier)?.factor ?? 1;
 	const pkChance = (1 / (7_000_000 / (Math.pow(monster.pkActivityRating ?? 1, 6) * peakInfluence))) * 100;
@@ -28,12 +37,12 @@ export function calcWildyPKChance(
 	const maxReductionPercent = 75;
 	const maxBoostDuration = Time.Hour * 10;
 	const scaledExp = Math.min(100, (pkEvasionExperience / maxBoostDuration) * 100);
-	const evasionReduction = randomVariation(calcPercentOfNum(scaledExp, maxReductionPercent), 10);
+	const evasionReduction = rng.randomVariation(calcPercentOfNum(scaledExp, maxReductionPercent), 10);
 
 	const tripMinutes = Math.round(duration / Time.Minute);
 	let pkEncounters = 0;
 	for (let i = 0; i < tripMinutes; i++) {
-		if (percentChance(pkChance)) {
+		if (rng.percentChance(pkChance)) {
 			pkEncounters++;
 		}
 	}
@@ -86,7 +95,7 @@ export function calcWildyPKChance(
 	deathChance = Math.min(Math.max(0, deathChance), 100);
 	if (pkEncounters > 0) {
 		for (let i = 0; i < pkEncounters; i++) {
-			if (percentChance(deathChance)) {
+			if (rng.percentChance(deathChance)) {
 				died = true;
 				break;
 			}

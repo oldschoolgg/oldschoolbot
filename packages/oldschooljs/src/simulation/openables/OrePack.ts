@@ -1,4 +1,4 @@
-import { randInt } from '@oldschoolgg/rng';
+import { randInt } from 'node-rng';
 
 import LootTable from '@/structures/LootTable.js';
 import { SimpleOpenable } from '@/structures/SimpleOpenable.js';

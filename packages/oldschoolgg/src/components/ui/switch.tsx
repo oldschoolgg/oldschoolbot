@@ -45,7 +45,7 @@ export const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
 		};
 
 		return (
-			<div className="relative">
+			<div className="flex relative">
 				<input
 					ref={ref}
 					type="checkbox"

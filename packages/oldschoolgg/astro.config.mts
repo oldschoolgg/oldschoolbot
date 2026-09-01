@@ -33,11 +33,11 @@ function splitVendorChunkPlugin() {
 	return plugin;
 }
 
+const production = process.env.NODE_ENV === 'production';
+
 const config: Record<string, string> = {
-	__API_URL__: process.env.API_URL || 'https://api.oldschool.gg',
-	__FRONTEND_URL__: process.env.FRONTEND_URL || 'https://oldschool.gg',
-	__WS_URL__: process.env.WS_URL || 'wss://ws.oldschool.gg',
-	__DISCORD_CLIENT_ID__: process.env.DISCORD_CLIENT_ID || ''
+	__API_URL__: production ? 'https://api.oldschool.gg' : 'https://osgtestapi.magnaboy.com',
+	__FRONTEND_URL__: production ? 'https://oldschool.gg' : 'https://osgtest.magnaboy.com'
 };
 
 for (const [key, value] of Object.entries(config)) {
@@ -45,14 +45,20 @@ for (const [key, value] of Object.entries(config)) {
 }
 
 export default defineConfig({
+	prefetch: true,
+	site: 'https://oldschool.gg',
+	trailingSlash: 'ignore',
 	server: {
-		allowedHosts: ['wfe.magnaboy.com'],
-		port: 3002,
+		allowedHosts: ['osgtest.magnaboy.com'],
+		port: 5488,
 		host: true
 	},
 	vite: {
 		ssr: {
-			noExternal: ['zod']
+			noExternal: ['zod', 'oldschooljs']
+		},
+		optimizeDeps: {
+			include: ['oldschooljs']
 		},
 		resolve: {
 			alias: {

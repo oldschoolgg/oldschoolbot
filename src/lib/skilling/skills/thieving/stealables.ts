@@ -688,9 +688,3 @@ const pickpocketables: Stealable[] = [
 ];
 
 export const stealables: Stealable[] = [...stalls, ...pickpocketables];
-
-for (const entity of stealables) {
-	if (!entity.table) {
-		console.error(`Warning! No table for ${entity.name}.`);
-	}
-}
