@@ -696,7 +696,7 @@ export async function getOpenableLoot({
 	rng,
 	openedCountOffset,
 	previousLoot,
-	yielder
+	yielder: _yielder
 }: {
 	openable: UnifiedOpenable;
 	quantity: number;
@@ -706,8 +706,8 @@ export async function getOpenableLoot({
 	previousLoot?: Bank;
 	yielder?: FriendlyTask;
 }) {
-	const activeYielder =
-		yielder ??
+	const yielder =
+		_yielder ??
 		new FriendlyTask(`OpenableLoot`, {
 			yieldAfterMs: 50,
 			warnAfterMs: 500,
@@ -724,9 +724,10 @@ export async function getOpenableLoot({
 		while (qtyRemaining > 0) {
 			loot.add(openable.output.roll(Math.min(batchSize, qtyRemaining)));
 			qtyRemaining -= batchSize;
-			if (qtyRemaining) await activeYielder.checkpoint();
+			if (qtyRemaining) await yielder.checkpoint();
 		}
-		if (!yielder) activeYielder.finish();
+		// If we created the yielder, finish it
+		if (!_yielder) yielder.finish();
 		return { bank: loot, message: null };
 	} else {
 		const result = await openable.output({
@@ -736,9 +737,9 @@ export async function getOpenableLoot({
 			rng,
 			openedCountOffset,
 			previousLoot,
-			yielder: activeYielder
+			yielder
 		});
-		if (!yielder) activeYielder.finish();
+		if (!_yielder) yielder.finish();
 		return result;
 	}
 }

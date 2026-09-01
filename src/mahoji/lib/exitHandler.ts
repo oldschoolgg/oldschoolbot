@@ -22,5 +22,6 @@ export async function exitCleanup() {
 		}
 	} catch (err) {
 		Logging.logError(err as Error);
+		process.exit(1);
 	}
 }

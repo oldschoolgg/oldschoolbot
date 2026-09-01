@@ -1,4 +1,4 @@
-import type { IChannel, IMember, IUser } from '@oldschoolgg/schemas';
+import type { IChannel, IMember } from '@oldschoolgg/schemas';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import type { RNGProvider } from 'node-rng';
 import { cryptoRng } from 'node-rng/crypto';
@@ -8,6 +8,7 @@ import { globalConfig } from '@/lib/constants.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import { allCommandsDONTIMPORT } from '@/mahoji/commands/allCommands.js';
 import { mockMessage, mockUser } from '../integration/util.js';
+import { mockAPIUser } from './fakeUsernames.js';
 import { TestLogs } from './logs.js';
 import { mockedId, mockSnowflake } from './misc.js';
 import { mockChannel } from './mockChannel.js';
@@ -56,6 +57,14 @@ export class TestClient extends AsyncEventEmitter<any> implements AsyncDisposabl
 		return mockChannel(this.rng);
 	}
 
+	async fetchUser(userId: string) {
+		return mockAPIUser(userId, this.rng);
+	}
+
+	async fetchUserUsername(userId: string) {
+		return (await this.fetchUser(userId)).username;
+	}
+
 	async editMessage() {
 		return Promise.resolve();
 	}
@@ -95,14 +104,6 @@ export class TestClient extends AsyncEventEmitter<any> implements AsyncDisposabl
 
 	async fetchMember({ guildId, userId }: { guildId: string; userId: string }): Promise<IMember> {
 		return mockRandomMember({ guildId, userId, rng: this.rng });
-	}
-
-	async fetchUser(userId: string): Promise<IUser> {
-		return {
-			id: userId,
-			username: 'TestUser',
-			bot: false
-		};
 	}
 
 	async memberHasPermissions() {

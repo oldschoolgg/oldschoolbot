@@ -43,6 +43,7 @@ export async function abstractedOpenUntilCommand(
 
 	const perkTier = await user.fetchPerkTier();
 	const unlimitedEnabled = user.bitfield.includes(BitField.UnlimitedOpenUntil);
+	const chatMessage = Boolean(perkTier || user.bitfield.includes(BitField.OriginalCyrSupporter));
 	name = name.replace(regex, '$1');
 	const openableItem = allOpenables.find(o => o.aliases.some(alias => stringMatches(alias, name)));
 	if (!openableItem) return "That's not a valid item.";
@@ -60,14 +61,18 @@ export async function abstractedOpenUntilCommand(
 	if (amountOfThisOpenableOwned === 0) return "You don't own any of that item.";
 	if (!maxOpenQuantity) {
 		if (unlimitedEnabled) {
-			messages.push(
-				`${Emoji.Seer} You didn't specify a quantity, so Open Until is using your unlimited default.`
-			);
+			if (chatMessage) {
+				messages.push(
+					`${Emoji.Seer} You didn't specify a quantity, so Open Until is using your unlimited default.`
+				);
+			}
 			maxOpenQuantity = amountOfThisOpenableOwned;
 		} else {
-			messages.push(
-				`${Emoji.Seer} **You didn't specify a quantity, so Open Until will open 1 by default (Specify more with the \`quantity\` \`option\`). You can change this to default to Unlimited with \`/config user toggle\`...**`
-			);
+			if (chatMessage) {
+				messages.push(
+					`${Emoji.Seer} **You didn't specify a quantity, so Open Until will open 1 by default (Specify more with the \`quantity\` \`option\`). You can change this to default to Unlimited with \`/config user toggle\`...**`
+				);
+			}
 			maxOpenQuantity = 1;
 		}
 	}
