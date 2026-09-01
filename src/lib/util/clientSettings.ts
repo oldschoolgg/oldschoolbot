@@ -2,6 +2,7 @@ import { Bank, type ItemBank } from 'oldschooljs';
 
 import type { ClientStorage, Prisma } from '@/prisma/main.js';
 import { globalConfig } from '@/lib/constants.js';
+import type { IExtraSettings } from '@/lib/staffBestow.js';
 
 async function mahojiClientSettingsFetch(select?: Prisma.ClientStorageSelect) {
 	const clientSettings = await prisma.clientStorage.findFirst({
@@ -23,6 +24,10 @@ async function mahojiClientSettingsUpdate(data: Prisma.ClientStorageUpdateInput)
 			id: true
 		}
 	});
+}
+
+async function getExtraSettings(): Promise<IExtraSettings> {
+	return Cache.getExtraSettings();
 }
 
 async function updateClientGPTrackSetting(
@@ -198,6 +203,7 @@ async function addToGPTaxBalance(user: MUser, amount: number) {
 const ClientSettingsSrc = {
 	fetch: mahojiClientSettingsFetch,
 	update: mahojiClientSettingsUpdate,
+	getExtraSettings,
 	updateClientGPTrackSetting,
 	updateBankSetting,
 	addToGPTaxBalance

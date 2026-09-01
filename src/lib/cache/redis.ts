@@ -21,6 +21,7 @@ import { Redis } from 'ioredis';
 import type { Guild, Prisma } from '@/prisma/main.js';
 import { BitField, BOT_TYPE, globalConfig } from '@/lib/constants.js';
 import type { RobochimpUser } from '@/lib/roboChimp.js';
+import { type IExtraSettings, type StaffGrants, ZExtraSettings, ZStaffGrants } from '@/lib/staffBestow.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
 
 type LockStatus = 'locked' | 'unlocked';
@@ -498,6 +499,64 @@ class CacheManager {
 
 	async setDisabledCommands(newDisabledCommands: string[]): Promise<void> {
 		await this.setJson(BotKeys.DisabledCommands, newDisabledCommands);
+	}
+
+	async getStaffGrantsSchedule({ forceRefresh = false }: { forceRefresh?: boolean } = {}): Promise<StaffGrants> {
+		if (!forceRefresh) {
+			const cached = await this.getJson(BotKeys.Global.StaffGrantsSchedule);
+			if (cached) return ZStaffGrants.parse(cached);
+		}
+
+		const [clientSettings] = await prisma.$queryRaw<{ staff_bestow_limits: unknown }[]>`
+			SELECT staff_bestow_limits
+			FROM "clientStorage"
+			WHERE id = ${globalConfig.clientID}
+		`;
+		const schedule = ZStaffGrants.parse(clientSettings?.staff_bestow_limits ?? {});
+		await this.setStaffGrantsSchedule(schedule);
+		return schedule;
+	}
+
+	async setStaffGrantsSchedule(value: StaffGrants): Promise<void> {
+		await this.setJsonWithTTL(BotKeys.Global.StaffGrantsSchedule, value, this.jitterTTL(TTL.Hour, 0.1));
+	}
+
+	async refreshStaffGrants(): Promise<StaffGrants> {
+		await this.resetStaffGrants();
+		return this.getStaffGrantsSchedule({ forceRefresh: true });
+	}
+
+	async resetStaffGrants(): Promise<void> {
+		await this.client.del(BotKeys.Global.StaffGrantsSchedule);
+	}
+
+	async getExtraSettings({ forceRefresh = false }: { forceRefresh?: boolean } = {}): Promise<IExtraSettings> {
+		if (!forceRefresh) {
+			const cached = await this.getJson(BotKeys.Global.ExtraClientSettings);
+			if (cached) return ZExtraSettings.parse(cached);
+		}
+
+		const [clientSettings] = await prisma.$queryRaw<{ extra_settings: unknown }[]>`
+			SELECT extra_settings
+			FROM "clientStorage"
+			WHERE id = ${globalConfig.clientID}
+		`;
+		const settings = ZExtraSettings.parse(clientSettings?.extra_settings ?? {});
+		await this.setExtraSettings(settings);
+		return settings;
+	}
+
+	async setExtraSettings(value: IExtraSettings): Promise<void> {
+		await this.setJsonWithTTL(BotKeys.Global.ExtraClientSettings, value, TTL.Hour);
+	}
+
+	async refreshExtraSettingsCache(): Promise<IExtraSettings> {
+		await this.resetExtraSettings();
+		return this.getExtraSettings({ forceRefresh: true });
+	}
+
+	async resetExtraSettings(): Promise<void> {
+		await this.client.del(BotKeys.Global.ExtraClientSettings);
 	}
 
 	async isUserBlacklisted(id: string): Promise<boolean> {

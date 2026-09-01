@@ -83,7 +83,7 @@ export const itemContractResetTime = Time.Hour * 7.8;
 export const giveBoxResetTime = Time.Hour * 23.5;
 export const SPAWN_BOX_COOLDOWN = Time.Minute * 45;
 
-export const spawnLampResetTime = (user: MUser, perkTier: PerkTier | 0) => {
+export const spawnLampResetTime = (user: MUser, perkTier: PerkTier) => {
 	const bf = user.bitfield;
 
 	const hasPerm = bf.includes(BitField.HasPermanentSpawnLamp);

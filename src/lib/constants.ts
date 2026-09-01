@@ -39,6 +39,7 @@ interface ChannelConfig {
 	HelpAndSupport: string;
 	BotLogs: string;
 	GeneralChannel: string;
+	CyrCommandsChannel: string;
 }
 
 const OSBChannelConfig: ChannelConfig = {
@@ -48,7 +49,8 @@ const OSBChannelConfig: ChannelConfig = {
 	EconomyLogs: '802029843712573510',
 	HelpAndSupport: '668073484731154462',
 	BotLogs: isProduction ? '1051725977320964197' : TEST_SERVER_LOG_CHANNEL,
-	GeneralChannel: GENERAL_CHANNEL_ID
+	GeneralChannel: GENERAL_CHANNEL_ID,
+	CyrCommandsChannel: '1522315320260562992'
 };
 
 const BSOChannelConfig: ChannelConfig = {
@@ -58,7 +60,8 @@ const BSOChannelConfig: ChannelConfig = {
 	EconomyLogs: '802029843712573510',
 	HelpAndSupport: '970752140324790384',
 	BotLogs: isProduction ? '1051725977320964197' : TEST_SERVER_LOG_CHANNEL,
-	GeneralChannel: GENERAL_CHANNEL_ID
+	GeneralChannel: GENERAL_CHANNEL_ID,
+	CyrCommandsChannel: '1522315320260562992'
 };
 
 const TestChannelConfig: ChannelConfig = {
@@ -68,7 +71,8 @@ const TestChannelConfig: ChannelConfig = {
 	EconomyLogs: TEST_SERVER_LOG_CHANNEL,
 	HelpAndSupport: TEST_SERVER_LOG_CHANNEL,
 	BotLogs: TEST_SERVER_LOG_CHANNEL,
-	GeneralChannel: TEST_SERVER_LOG_CHANNEL
+	GeneralChannel: TEST_SERVER_LOG_CHANNEL,
+	CyrCommandsChannel: '1522315320260562992'
 };
 
 export const Channel = isProduction ? (BOT_TYPE === 'OSB' ? OSBChannelConfig : BSOChannelConfig) : TestChannelConfig;
@@ -171,6 +175,8 @@ export enum BitField {
 	DisableAutoFarmButton = 54,
 	DisableBankWeights = 55,
 	DisableBankFavorites = 56,
+	UnlimitedOpenUntil = 57,
+	Boring = 58,
 
 	OriginalCyrSupporter = 199,
 	HasGivenBirthdayPack = 200,
@@ -291,7 +297,11 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 		protected: false,
 		userConfigurable: true
 	},
-
+	[BitField.UnlimitedOpenUntil]: {
+		name: 'Unlimited Open Until by Default (P)',
+		protected: false,
+		userConfigurable: false
+	},
 	[BitField.HasFlickeringBoon]: {
 		name: 'Has Flickering Boon',
 		protected: false,
@@ -513,6 +523,11 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 		name: 'Disable Glow Effects',
 		protected: false,
 		userConfigurable: true
+	},
+	[BitField.Boring]: {
+		name: 'Boring',
+		protected: true,
+		userConfigurable: false
 	}
 } as const;
 
@@ -572,7 +587,7 @@ export const COMBAT_TIER_XP = {
 	TIER_3: 5_000_000_000
 } as const;
 
-export const ARCHON_SPAWN_CHANCE = 50;
+export const ARCHON_SPAWN_CHANCE = 20;
 
 export const PATRON_ONLY_GEAR_SETUP =
 	'Sorry - but the `other` gear setup is only available for Tier 3 Patrons (and higher) to use.';

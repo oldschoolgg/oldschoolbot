@@ -108,7 +108,7 @@ export async function getUserInfo(user: MUser) {
 		}
 	}
 	if (result.perkTier > roboChimpUser.perk_tier && result.perkTier > premiumPerkTier) {
-		if (user.isMod() || user.isWikiContrib() || user.isContributor() || user.isTrusted()) {
+		if (user.isMod || user.isWikiContrib || user.isContributor || user.isTrusted) {
 			perkTierDisplay = `**Courtesy** __Tier ${result.perkTier - 1}__`;
 		} else {
 			perkTierDisplay = `🔴 **Expiring** __Tier ${result.perkTier - 1}__`;
@@ -213,7 +213,7 @@ export const minionCommand = defineCommand({
 							)
 							.map(bg => bg.id);
 						return bankImages
-							.filter(bg => user.isModOrAdmin() || bg.available || owned.includes(bg.id))
+							.filter(bg => user.isModOrAdmin || bg.available || owned.includes(bg.id))
 							.filter(bg => (!value ? true : bg.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => {
 								const name = i.perkTierNeeded

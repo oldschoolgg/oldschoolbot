@@ -44,7 +44,7 @@ export async function rawCommandHandlerInner({
 		user.syncCompletedAchievementDiaries().catch(err => Logging.logError(err));
 	}
 
-	const shouldIgnoreBusy = user.isAdmin() || ignoreUserIsBusy || busyImmuneCommands.includes(command.name);
+	const shouldIgnoreBusy = user.isAdmin || ignoreUserIsBusy || busyImmuneCommands.includes(command.name);
 
 	if (!shouldIgnoreBusy && (await user.getIsLocked())) {
 		return {
@@ -94,6 +94,10 @@ export async function rawCommandHandlerInner({
 		return response;
 	} catch (err) {
 		if ((err as Error).message === SILENT_ERROR) return SpecialResponse.SilentErrorResponse;
+		if (err instanceof UserError) {
+			await interaction.reply({ content: err.message });
+			return SpecialResponse.RespondedManually;
+		}
 		const date = new Date();
 		Logging.logError({
 			err: err as Error,
@@ -108,7 +112,6 @@ export async function rawCommandHandlerInner({
 				options: JSON.stringify(options)
 			}
 		});
-		if (err instanceof UserError) return SpecialResponse.RespondedManually;
 		return {
 			content: `An error occurred while running this command.`
 		};

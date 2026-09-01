@@ -143,6 +143,7 @@ model ClientStorage {
   grand_exchange_tax_bank  BigInt  @default(0)
 
   maxing_message String @default("Congratulations on maxing!")
+  extra_settings Json   @default("{}") @db.Json
 
   // BSO
   gp_ic                   BigInt @default(0)
@@ -191,6 +192,7 @@ model ClientStorage {
   portable_tanner_loot       Json @default("{}") @db.Json
   buried_treasure_bank       Json @default("{}") @db.JsonB
   buried_treasure_winners    Json @default("{}") @db.JsonB
+  staff_bestow_limits        Json @default("{}") @db.JsonB
 
   last_bso_giveaways_ping  DateTime? @db.Timestamp(6)
   last_giveaway_doubleloot DateTime? @db.Timestamp(6)
@@ -533,6 +535,7 @@ model User {
 
   cl_array                      Int[]    @default([])
   completed_achievement_diaries String[] @default([])
+  rp_bestow_bank                Json?    @db.JsonB
 
   @@index([id, last_command_date])
   @@map("users")
@@ -865,6 +868,7 @@ enum economy_transaction_type {
   duel
   gri
   gift
+  bestow
 }
 
 model EconomyTransaction {
