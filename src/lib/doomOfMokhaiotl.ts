@@ -1,13 +1,5 @@
-import type { EquipmentSlot, GearSetupType } from '@oldschoolgg/gear';
-import {
-	calcWhatPercent,
-	formatDuration,
-	objectEntries,
-	reduceNumByPercent,
-	round,
-	Time,
-	UserError
-} from '@oldschoolgg/toolkit';
+import type { EquipmentSlot } from '@oldschoolgg/gear';
+import { calcWhatPercent, formatDuration, reduceNumByPercent, round, Time, UserError } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, Items, LootTable, resolveItems } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
@@ -23,6 +15,7 @@ import {
 	calculateDoomZcbBoltsNeeded,
 	DOOM_VENOM_PROTECTION_OPTIONS,
 	type DoomMeleePunishWeapon,
+	type DoomVenomProtection,
 	type DoomWaveCompletions,
 	ELITE_VOID_SPEED_BOOST,
 	formatDoomDeathChance,
@@ -85,8 +78,7 @@ export interface DoomRunResult {
 	deepestDelveCompleted: number;
 	deepDelvesEarned: number;
 	totalWavesCleared: number;
-	fakeDuration: number;
-	realDuration: number;
+	duration: number;
 	deathChances: number[];
 	ayakChargesGained: number;
 }
@@ -171,6 +163,76 @@ function experienceScore(deepDelves: number, totalDelves: number): number {
 	return deepDelves * 2 + Math.floor(totalDelves / 10);
 }
 
+type DoomUser = OSInteraction['user'];
+
+interface DoomGearState {
+	hasTbow: boolean;
+	hasSBow: boolean;
+	hasChargedEyeOfAyak: boolean;
+	hasLightbearer: boolean;
+	hasZcb: boolean;
+	hasRiteOfVileTransference: boolean;
+	meleePunishWeapon: DoomMeleePunishWeapon | null;
+	equippedArrowId: number | null;
+	equippedArrowName: string | null;
+	arrowMod: number;
+	hasMasori: boolean;
+	hasEliteVoid: boolean;
+	hasZaryteVambraces: boolean;
+	crystalShardsNeeded: number;
+}
+
+interface DoomTripCostResult {
+	cost: Bank;
+	brewsUsed: number;
+	restoresUsed: number;
+	rangingUsed: number;
+}
+
+const DOOM_SKILL_REQUIREMENTS: Skills = {
+	attack: 85,
+	strength: 85,
+	defence: 70,
+	ranged: 90,
+	prayer: 74,
+	hitpoints: 90
+};
+
+const DOOM_DEMONBANE_WEAPONS = resolveItems(['Darklight', 'Arclight', 'Emberlight']);
+const DOOM_CRYSTAL_HALBERD_VARIANTS = resolveItems(['Crystal halberd']);
+const DOOM_MAGE_WEAPONS = resolveItems([
+	'Skull sceptre',
+	"Slayer's staff",
+	"Slayer's staff (e)",
+	"Ahrim's staff",
+	'Blue moon spear',
+	'Staff of the dead',
+	'Toxic staff of the dead',
+	'Purging staff',
+	'Master wand',
+	'Kodai wand'
+]);
+const DOOM_REQUIRED_RANGE_GEAR: Partial<Record<EquipmentSlot, number[]>> = {
+	head: resolveItems(['Masori mask (f)', 'Masori mask', 'Void ranger helm', 'Armadyl helmet']),
+	body: resolveItems(['Masori body (f)', 'Masori body', 'Elite void top', 'Armadyl chestplate']),
+	legs: resolveItems(['Masori chaps (f)', 'Masori chaps', 'Elite void robe', 'Armadyl chainskirt']),
+	neck: resolveItems(['Necklace of anguish', 'Amulet of fury']),
+	cape: resolveItems(["Dizana's quiver", "Ava's assembler", "Ava's accumulator"]),
+	feet: resolveItems([
+		'Avernic treads',
+		'Avernic treads (pr)',
+		'Avernic treads (pe)',
+		'Avernic treads (et)',
+		'Avernic treads (pr)(pe)',
+		'Avernic treads (pr)(et)',
+		'Avernic treads (pe)(et)',
+		'Avernic treads (max)',
+		'Pegasian boots',
+		'Aranea boots'
+	]),
+	hands: resolveItems(['Zaryte vambraces', 'Void knight gloves', 'Barrows gloves'])
+};
+
 export function startDoomRun(options: {
 	targetDelve: number;
 	hasTbow: boolean;
@@ -184,23 +246,15 @@ export function startDoomRun(options: {
 	hasRiteOfVileTransference: boolean;
 	hasChargedEyeOfAyak: boolean;
 	arrowMod: number;
-	deepDelves: number;
-	totalDelves: number;
 	waveCompletions: DoomWaveCompletions;
 	baseDuration?: number;
 	durationReductionPercent: number;
 	stopOnUnique: boolean;
 	rng: RNGProvider;
 }): DoomRunResult {
-	const { targetDelve, deepDelves, totalDelves } = options;
+	const { targetDelve } = options;
 
-	const deathChances = calculateDoomDeathChances(
-		targetDelve,
-		deepDelves,
-		totalDelves,
-		options.hasMasori,
-		options.waveCompletions
-	);
+	const deathChances = calculateDoomDeathChances(targetDelve, options.waveCompletions);
 	let deepestDelveCompleted = 0;
 	let deepDelvesEarned = 0;
 	let totalWavesCleared = 0;
@@ -223,8 +277,7 @@ export function startDoomRun(options: {
 			options.arrowMod,
 			options.rng
 		);
-	const fakeDuration = reduceNumByPercent(baseDuration, options.durationReductionPercent);
-	const realDuration = fakeDuration;
+	const duration = reduceNumByPercent(baseDuration, options.durationReductionPercent);
 
 	for (let d = 1; d <= targetDelve; d++) {
 		const deathChance = deathChances[d - 1];
@@ -236,8 +289,7 @@ export function startDoomRun(options: {
 				deepestDelveCompleted,
 				deepDelvesEarned,
 				totalWavesCleared,
-				fakeDuration,
-				realDuration,
+				duration,
 				deathChances,
 				ayakChargesGained
 			};
@@ -270,8 +322,7 @@ export function startDoomRun(options: {
 				deepestDelveCompleted: d,
 				deepDelvesEarned,
 				totalWavesCleared,
-				fakeDuration: stoppedDuration,
-				realDuration: stoppedDuration,
+				duration: stoppedDuration,
 				deathChances,
 				ayakChargesGained
 			};
@@ -284,130 +335,21 @@ export function startDoomRun(options: {
 		deepestDelveCompleted,
 		deepDelvesEarned,
 		totalWavesCleared,
-		fakeDuration,
-		realDuration,
+		duration,
 		deathChances,
 		ayakChargesGained
 	};
 }
 
-export async function doomCommand(itx: OSInteraction, targetDelve: number, stopOnUnique = true) {
-	const { user, rng } = itx;
-
-	if (await user.minionIsBusy()) {
-		return `${user.usernameOrMention} is busy`;
-	}
-
-	if (!user.user.finished_quest_ids.includes(QuestID.TheFinalDawn)) {
-		return `You need to complete "The Final Dawn" quest before you can fight the Doom of Mokhaiotl. Send your minion to do the quest using: ${globalClient.mentionCommand('activities', 'quest')}.`;
-	}
-
-	if (targetDelve < 1 || targetDelve > MAX_DELVE) {
-		return `Target delve must be between 1 and ${MAX_DELVE}. Drop rates cap at delve 9, but death chance continues to increase beyond that.`;
-	}
-
-	const skillReqs: Skills = {
-		attack: 85,
-		strength: 85,
-		defence: 70,
-		ranged: 90,
-		prayer: 74,
-		hitpoints: 90
-	};
-
-	if (!user.hasSkillReqs(skillReqs)) {
-		return `You need ${formatSkillRequirements(skillReqs)} to fight the Doom of Mokhaiotl.`;
-	}
-
+function getDoomGearState(user: DoomUser, targetDelve: number): DoomGearState {
 	const hasTbow = user.gear.range.hasEquipped('Twisted bow', true, true);
 	const hasSBow = user.gear.range.hasEquipped('Scorching bow', true, true);
-
-	if (!hasSBow && !hasTbow) {
-		const ownsTbow = user.hasEquippedOrInBank('Twisted bow');
-		const ownsSBow = user.hasEquippedOrInBank('Scorching bow');
-		if (ownsTbow || ownsSBow) {
-			return 'You have a Twisted bow or Scorching bow but it is not equipped in your **range** setup. Equip it there before fighting the Doom of Mokhaiotl.';
-		}
-		return 'You need a Twisted bow or Scorching bow equipped in your range setup to fight the Doom of Mokhaiotl. It is required for killing ranged demonic larvae.';
-	}
-
-	const demonbaneWeapons = resolveItems(['Darklight', 'Arclight', 'Emberlight']);
-	if (!demonbaneWeapons.some(i => user.hasEquippedOrInBank(i))) {
-		return `You need a demonbane weapon (${formatList(
-			demonbaneWeapons.map(i => Items.itemNameFromId(i)),
-			'or'
-		)}) to fight the Doom of Mokhaiotl. Its demonic shield cannot be damaged without one.`;
-	}
-
-	const crystalHalberdVariants = resolveItems(['Crystal halberd']);
-
-	const mageWeapons = resolveItems([
-		'Skull sceptre',
-		"Slayer's staff",
-		"Slayer's staff (e)",
-		"Ahrim's staff",
-		'Blue moon spear',
-		'Staff of the dead',
-		'Toxic staff of the dead',
-		'Purging staff',
-		'Master wand',
-		'Kodai wand'
-	]);
-
 	const hasChargedEyeOfAyak = user.user.ayak_charges > 0 && user.hasEquippedOrInBank('Eye of ayak');
-	const hasStaffMageWeapon = mageWeapons.some(i => user.hasEquippedOrInBank(i));
-	const hasMageWeapon = hasChargedEyeOfAyak || hasStaffMageWeapon;
-
-	if (!hasMageWeapon) {
-		return `You need a mage weapon to fight the Doom of Mokhaiotl (required for killing mage grubs). Use the Eye of Ayak (with charges) or one of: ${formatList(
-			mageWeapons.map(i => Items.itemNameFromId(i)),
-			'or'
-		)}.`;
-	}
-
-	const userMagicLevel = user.skillLevel('magic');
-
-	const requiredItems: Partial<Record<GearSetupType, Partial<Record<EquipmentSlot, number[]>>>> = {
-		range: {
-			head: resolveItems(['Masori mask (f)', 'Masori mask', 'Void ranger helm', 'Armadyl helmet']),
-			body: resolveItems(['Masori body (f)', 'Masori body', 'Elite void top', 'Armadyl chestplate']),
-			legs: resolveItems(['Masori chaps (f)', 'Masori chaps', 'Elite void robe', 'Armadyl chainskirt']),
-			neck: resolveItems(['Necklace of anguish', 'Amulet of fury']),
-			cape: resolveItems(["Dizana's quiver", "Ava's assembler", "Ava's accumulator"]),
-			feet: resolveItems([
-				'Avernic treads',
-				'Avernic treads (pr)',
-				'Avernic treads (pe)',
-				'Avernic treads (et)',
-				'Avernic treads (pr)(pe)',
-				'Avernic treads (pr)(et)',
-				'Avernic treads (pe)(et)',
-				'Avernic treads (max)',
-				'Pegasian boots',
-				'Aranea boots'
-			]),
-			hands: resolveItems(['Zaryte vambraces', 'Void knight gloves', 'Barrows gloves'])
-		}
-	};
-
-	for (const [gearType, gearNeeded] of objectEntries(requiredItems)) {
-		const gear = user.gear[gearType];
-		if (!gearNeeded) continue;
-		for (const items of Object.values(gearNeeded)) {
-			if (!items.some(g => gear.hasEquipped(g))) {
-				return `You need one of these equipped in your ${gearType} setup to fight the Doom of Mokhaiotl: ${formatList(
-					items.map(i => Items.itemNameFromId(i)),
-					'or'
-				)}.`;
-			}
-		}
-	}
-
 	const hasLightbearer = user.hasEquippedOrInBank('Lightbearer');
 	const hasZcb = user.hasEquippedOrInBank('Zaryte crossbow');
 	const hasRiteOfVileTransference = user.user.bitfield.includes(BitField.HasRiteOfVileTransference);
 	const hasNoxHalberd = user.hasEquippedOrInBank('Noxious halberd');
-	const hasCrystalHalb = crystalHalberdVariants.some(i => user.hasEquippedOrInBank(i));
+	const hasCrystalHalb = DOOM_CRYSTAL_HALBERD_VARIANTS.some(i => user.hasEquippedOrInBank(i));
 	const hasDualMacuahuitl = user.hasEquippedOrInBank('Dual macuahuitl');
 	const crystalShardsNeeded = Math.ceil(targetDelve);
 	const meleePunishWeapon = selectDoomMeleePunishWeapon({
@@ -418,98 +360,159 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 		crystalShardsNeeded
 	});
 
-	if (!meleePunishWeapon) {
-		return 'You need a melee punish weapon (Noxious halberd, Crystal halberd, or Dual macuahuitl) to fight the Doom of Mokhaiotl. It is required to interrupt the Special Beam Cannon.';
-	}
-
-	if (meleePunishWeapon === 'crystal_halberd' && user.bank.amount('Crystal shard') < crystalShardsNeeded) {
-		return `You need ${crystalShardsNeeded.toLocaleString()}x Crystal shard to use Crystal halberd for this trip.`;
-	}
-
 	const equippedAmmo = user.gear.range.get('ammo');
 	const equippedArrowId: number | null = equippedAmmo?.item ?? null;
 	const equippedArrowName: string | null =
 		equippedArrowId !== null ? (Items.itemNameFromId(equippedArrowId) ?? null) : null;
-	const arrowMod = getDoomArrowMod(equippedArrowId);
 
-	const masoriHead = resolveItems(['Masori mask (f)']);
-	const masoriBody = resolveItems(['Masori body (f)']);
-	const masoriLegs = resolveItems(['Masori chaps (f)']);
 	const hasMasori =
-		masoriHead.some(i => user.gear.range.hasEquipped(i)) &&
-		masoriBody.some(i => user.gear.range.hasEquipped(i)) &&
-		masoriLegs.some(i => user.gear.range.hasEquipped(i));
-
+		user.gear.range.hasEquipped('Masori mask (f)') &&
+		user.gear.range.hasEquipped('Masori body (f)') &&
+		user.gear.range.hasEquipped('Masori chaps (f)');
 	const hasEliteVoid =
-		user.gear.range.hasEquipped(resolveItems(['Void ranger helm'])[0]) &&
-		user.gear.range.hasEquipped(resolveItems(['Elite void top'])[0]) &&
-		user.gear.range.hasEquipped(resolveItems(['Elite void robe'])[0]) &&
-		user.gear.range.hasEquipped(resolveItems(['Void knight gloves'])[0]);
-	const hasZaryteVambraces = user.gear.range.hasEquipped(resolveItems(['Zaryte vambraces'])[0]);
+		user.gear.range.hasEquipped('Void ranger helm') &&
+		user.gear.range.hasEquipped('Elite void top') &&
+		user.gear.range.hasEquipped('Elite void robe') &&
+		user.gear.range.hasEquipped('Void knight gloves');
 
-	if ((hasTbow || hasSBow) && equippedArrowId === null) {
+	return {
+		hasTbow,
+		hasSBow,
+		hasChargedEyeOfAyak,
+		hasLightbearer,
+		hasZcb,
+		hasRiteOfVileTransference,
+		meleePunishWeapon,
+		equippedArrowId,
+		equippedArrowName,
+		arrowMod: getDoomArrowMod(equippedArrowId),
+		hasMasori,
+		hasEliteVoid,
+		hasZaryteVambraces: user.gear.range.hasEquipped('Zaryte vambraces'),
+		crystalShardsNeeded
+	};
+}
+
+function getDoomPreflightError(user: DoomUser, targetDelve: number): string | null {
+	if (!user.user.finished_quest_ids.includes(QuestID.TheFinalDawn)) {
+		return `You need to complete "The Final Dawn" quest before you can fight the Doom of Mokhaiotl. Send your minion to do the quest using: ${globalClient.mentionCommand('activities', 'quest')}.`;
+	}
+
+	if (targetDelve < 1 || targetDelve > MAX_DELVE) {
+		return `Target delve must be between 1 and ${MAX_DELVE}. Drop rates cap at delve 9, but death chance continues to increase beyond that.`;
+	}
+
+	if (!user.hasSkillReqs(DOOM_SKILL_REQUIREMENTS)) {
+		return `You need ${formatSkillRequirements(DOOM_SKILL_REQUIREMENTS)} to fight the Doom of Mokhaiotl.`;
+	}
+
+	return null;
+}
+
+function getDoomGearError(user: DoomUser, state: DoomGearState): string | null {
+	if (!state.hasSBow && !state.hasTbow) {
+		const ownsTbow = user.hasEquippedOrInBank('Twisted bow');
+		const ownsSBow = user.hasEquippedOrInBank('Scorching bow');
+		if (ownsTbow || ownsSBow) {
+			return 'You have a Twisted bow or Scorching bow but it is not equipped in your **range** setup. Equip it there before fighting the Doom of Mokhaiotl.';
+		}
+		return 'You need a Twisted bow or Scorching bow equipped in your range setup to fight the Doom of Mokhaiotl. It is required for killing ranged demonic larvae.';
+	}
+
+	if (!DOOM_DEMONBANE_WEAPONS.some(i => user.hasEquippedOrInBank(i))) {
+		return `You need a demonbane weapon (${formatList(
+			DOOM_DEMONBANE_WEAPONS.map(i => Items.itemNameFromId(i)),
+			'or'
+		)}) to fight the Doom of Mokhaiotl. Its demonic shield cannot be damaged without one.`;
+	}
+
+	const hasStaffMageWeapon = DOOM_MAGE_WEAPONS.some(i => user.hasEquippedOrInBank(i));
+	if (!state.hasChargedEyeOfAyak && !hasStaffMageWeapon) {
+		return `You need a mage weapon to fight the Doom of Mokhaiotl (required for killing mage grubs). Use the Eye of Ayak (with charges) or one of: ${formatList(
+			DOOM_MAGE_WEAPONS.map(i => Items.itemNameFromId(i)),
+			'or'
+		)}.`;
+	}
+
+	for (const items of Object.values(DOOM_REQUIRED_RANGE_GEAR)) {
+		if (!items.some(g => user.gear.range.hasEquipped(g))) {
+			return `You need one of these equipped in your range setup to fight the Doom of Mokhaiotl: ${formatList(
+				items.map(i => Items.itemNameFromId(i)),
+				'or'
+			)}.`;
+		}
+	}
+
+	if (!state.meleePunishWeapon) {
+		return 'You need a melee punish weapon (Noxious halberd, Crystal halberd, or Dual macuahuitl) to fight the Doom of Mokhaiotl. It is required to interrupt the Special Beam Cannon.';
+	}
+
+	if (
+		state.meleePunishWeapon === 'crystal_halberd' &&
+		user.bank.amount('Crystal shard') < state.crystalShardsNeeded
+	) {
+		return `You need ${state.crystalShardsNeeded.toLocaleString()}x Crystal shard to use Crystal halberd for this trip.`;
+	}
+
+	if ((state.hasTbow || state.hasSBow) && state.equippedArrowId === null) {
 		return 'You need arrows equipped in your range setup to fight the Doom of Mokhaiotl.';
 	}
 
-	const stats = await user.fetchStats();
-	const deepDelves = Number(stats.doom_deep_delves ?? 0);
-	const totalDelves = Number(stats.doom_total_delves ?? 0);
-	const waveCompletions = normaliseDoomWaveCompletions(
-		(stats as { doom_wave_completions?: unknown }).doom_wave_completions
-	);
-	const doomKC = Math.max(await user.getKC(EMonster.DOOM_OF_MOKHAIOTL), deepDelves);
-	const baseDuration = calculateDoomTripDuration(
-		targetDelve,
-		hasTbow,
-		hasSBow,
-		hasZcb,
-		hasLightbearer,
-		meleePunishWeapon,
-		hasMasori,
-		hasEliteVoid,
-		hasZaryteVambraces,
-		hasRiteOfVileTransference,
-		arrowMod,
-		rng
-	);
-	const kcReduction = calculateDoomKcReduction(doomKC, baseDuration);
-	const [durationAfterSkillBoost, skillBoostMsg] = applyDoomSkillBoost(
-		user.skillsAsLevels as Required<Skills>,
-		reduceNumByPercent(baseDuration, kcReduction)
-	);
-	const durationReductionPercent = calcWhatPercent(baseDuration - durationAfterSkillBoost, baseDuration);
+	return null;
+}
 
-	const res = startDoomRun({
-		targetDelve,
-		hasTbow,
-		hasSBow,
-		hasLightbearer,
-		hasZcb,
-		meleePunishWeapon,
-		hasMasori,
-		hasEliteVoid,
-		hasZaryteVambraces,
-		hasRiteOfVileTransference,
-		hasChargedEyeOfAyak,
-		arrowMod,
-		deepDelves,
-		totalDelves,
-		waveCompletions,
-		baseDuration,
-		durationReductionPercent,
-		stopOnUnique,
-		rng
-	});
-	const venomProtection = selectDoomVenomProtection(itemName => user.bank.amount(itemName), res.realDuration);
-	if (!venomProtection) {
-		return `You need enough doses of ${formatList(
-			DOOM_VENOM_PROTECTION_OPTIONS.map(option => option.potionName),
-			'or'
-		)} to cover this ${formatDuration(res.realDuration)} Doom trip.`;
+function addDoomRuneCosts(cost: Bank, user: DoomUser, userMagicLevel: number, delvesForCost: number) {
+	let fireRunes = 0;
+	let soulRunes = 0;
+
+	if (userMagicLevel >= 82) {
+		fireRunes = 7 * delvesForCost;
+		soulRunes = 2 * delvesForCost;
+	} else if (userMagicLevel >= 62) {
+		fireRunes = 5 * delvesForCost;
+		soulRunes = delvesForCost;
+	} else {
+		fireRunes = 3 * delvesForCost;
+		cost.add('Chaos rune', delvesForCost);
 	}
 
-	const delvesForCost = res.diedAt === null ? res.deepestDelveCompleted : targetDelve;
-	const fullDurationMinutes = res.realDuration / Time.Minute;
+	const fireAlternatives = ['Fire rune', 'Smoke rune', 'Steam rune', 'Lava rune'];
+	let fireRemaining = fireRunes;
+	for (const rune of fireAlternatives) {
+		if (fireRemaining <= 0) break;
+		const owned = user.bank.amount(rune);
+		if (owned > 0) {
+			const use = Math.min(owned, fireRemaining);
+			cost.add(rune, use);
+			fireRemaining -= use;
+		}
+	}
+	if (fireRemaining > 0) cost.add('Fire rune', fireRemaining);
+
+	if (soulRunes > 0) {
+		const soulOwned = user.bank.amount('Soul rune');
+		if (soulOwned >= soulRunes) {
+			cost.add('Soul rune', soulRunes);
+		} else {
+			if (soulOwned > 0) cost.add('Soul rune', soulOwned);
+			cost.add('Aether rune', soulRunes - soulOwned);
+		}
+	}
+}
+
+function getDoomTripCost(options: {
+	user: DoomUser;
+	state: DoomGearState;
+	result: DoomRunResult;
+	targetDelve: number;
+	userMagicLevel: number;
+	venomProtection: DoomVenomProtection;
+	deepDelves: number;
+	totalDelves: number;
+}): DoomTripCostResult | string {
+	const { user, state, result, targetDelve, userMagicLevel, venomProtection, deepDelves, totalDelves } = options;
+	const delvesForCost = result.diedAt === null ? result.deepestDelveCompleted : targetDelve;
+	const fullDurationMinutes = result.duration / Time.Minute;
 	const score = experienceScore(deepDelves, totalDelves);
 	const experienceFactor = Math.min(score / 1000, 1);
 	const brewsPerMinute = Math.max(0.2, 0.6 - experienceFactor * 0.3);
@@ -517,58 +520,22 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 	const brewsUsed = Math.min(10, Math.max(1, Math.ceil(fullDurationMinutes * brewsPerMinute)));
 	const restoresUsed = Math.min(10, Math.max(1, Math.ceil(fullDurationMinutes * restoresPerMinute)));
 	const rangingUsed = Math.min(10, Math.max(1, Math.ceil(delvesForCost / 5)));
-
 	const cost = new Bank()
-		.add('Saradomin brew(4)', Math.min(10, Math.max(1, Math.ceil(fullDurationMinutes * brewsPerMinute))))
-		.add('Super restore(4)', Math.min(10, Math.max(1, Math.ceil(fullDurationMinutes * restoresPerMinute))))
-		.add('Ranging potion(4)', Math.min(10, Math.max(1, Math.ceil(delvesForCost / 5))))
+		.add('Saradomin brew(4)', brewsUsed)
+		.add('Super restore(4)', restoresUsed)
+		.add('Ranging potion(4)', rangingUsed)
 		.add(venomProtection.itemCost);
 
-	if (!hasChargedEyeOfAyak) {
-		let fireRunes = 0;
-		let soulRunes = 0;
-
-		if (userMagicLevel >= 82) {
-			fireRunes = 7 * delvesForCost;
-			soulRunes = 2 * delvesForCost;
-		} else if (userMagicLevel >= 62) {
-			fireRunes = 5 * delvesForCost;
-			soulRunes = 1 * delvesForCost;
-		} else {
-			fireRunes = 3 * delvesForCost;
-			cost.add('Chaos rune', delvesForCost);
-		}
-
-		const fireAlternatives = ['Fire rune', 'Smoke rune', 'Steam rune', 'Lava rune'];
-		let fireRemaining = fireRunes;
-		for (const rune of fireAlternatives) {
-			if (fireRemaining <= 0) break;
-			const owned = user.bank.amount(rune);
-			if (owned > 0) {
-				const use = Math.min(owned, fireRemaining);
-				cost.add(rune, use);
-				fireRemaining -= use;
-			}
-		}
-		if (fireRemaining > 0) cost.add('Fire rune', fireRemaining);
-
-		if (soulRunes > 0) {
-			const soulOwned = user.bank.amount('Soul rune');
-			if (soulOwned >= soulRunes) {
-				cost.add('Soul rune', soulRunes);
-			} else {
-				if (soulOwned > 0) cost.add('Soul rune', soulOwned);
-				cost.add('Aether rune', soulRunes - soulOwned);
-			}
-		}
+	if (!state.hasChargedEyeOfAyak) {
+		addDoomRuneCosts(cost, user, userMagicLevel, delvesForCost);
 	}
 
-	if ((hasTbow || hasSBow) && equippedArrowId !== null) {
-		const arrowsPerDelve = hasTbow ? 15 : 20;
-		cost.add(equippedArrowId, Math.min(600, Math.ceil(delvesForCost * arrowsPerDelve)));
+	if ((state.hasTbow || state.hasSBow) && state.equippedArrowId !== null) {
+		const arrowsPerDelve = state.hasTbow ? 15 : 20;
+		cost.add(state.equippedArrowId, Math.min(600, Math.ceil(delvesForCost * arrowsPerDelve)));
 	}
 
-	if (hasZcb) {
+	if (state.hasZcb) {
 		const rubyBoltVariants = ['Ruby bolts (e)', 'Ruby dragon bolts (e)'];
 		const avasDevice = avasDevices.find(avas => user.gear.range.hasEquipped(avas.item.id));
 		const boltsNeeded = calculateDoomZcbBoltsNeeded(delvesForCost, avasDevice?.reduction ?? 0);
@@ -588,8 +555,22 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 			}
 		}
 	}
-	if (meleePunishWeapon === 'crystal_halberd') cost.add('Crystal shard', Math.ceil(delvesForCost));
 
+	if (state.meleePunishWeapon === 'crystal_halberd') cost.add('Crystal shard', Math.ceil(delvesForCost));
+
+	return {
+		cost,
+		brewsUsed,
+		restoresUsed,
+		rangingUsed
+	};
+}
+
+async function removeDoomTripCost(
+	user: DoomUser,
+	cost: Bank,
+	venomProtection: DoomVenomProtection
+): Promise<Bank | string> {
 	const realCost = new Bank();
 	try {
 		const result = await user.specialRemoveItems(cost);
@@ -602,6 +583,145 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 		await user.addItemsToBank({ items: venomProtection.replacementItems, collectionLog: false });
 		realCost.remove(venomProtection.itemCost).add(venomProtection.effectiveCost);
 	}
+	return realCost;
+}
+
+function buildDoomBoostLines(state: DoomGearState, kcReduction: number, skillBoostMsg: string): string[] {
+	const boostLines: string[] = [];
+
+	if (state.hasTbow) boostLines.push('10% for Twisted bow');
+	else boostLines.push(`${SCORCHING_BOW_SPEED_PENALTY}% slower for Scorching bow`);
+
+	if (state.equippedArrowId !== null) {
+		const pct = Math.round(Math.abs(state.arrowMod) * 100);
+		const displayName = state.equippedArrowName ?? Items.itemNameFromId(state.equippedArrowId) ?? 'Unknown arrow';
+		boostLines.push(state.arrowMod < 0 ? `${pct}% for ${displayName}` : `${pct}% slower for ${displayName}`);
+	}
+
+	if (state.meleePunishWeapon === 'noxious_halberd') {
+		boostLines.push(`${NOXIOUS_HALBERD_SPEED_BOOST}% for ${getDoomMeleePunishWeaponName(state.meleePunishWeapon)}`);
+	}
+
+	if (state.hasMasori) boostLines.push(`${MASORI_SPEED_BOOST}% for Masori armour`);
+	else if (state.hasEliteVoid) boostLines.push(`${ELITE_VOID_SPEED_BOOST}% for Elite void`);
+	if (state.hasZaryteVambraces) boostLines.push(`${ZARYTE_VAMBRACES_SPEED_BOOST}% for Zaryte vambraces`);
+	if (kcReduction >= 1) boostLines.push(`${kcReduction}% for KC`);
+	boostLines.push(skillBoostMsg);
+	if (state.hasLightbearer) boostLines.push(`${LIGHTBEARER_SPEED_BOOST}% for Lightbearer`);
+	if (state.hasRiteOfVileTransference) {
+		boostLines.push(`${RITE_OF_VILE_TRANSFERENCE_SPEED_BOOST}% for Rite of vile transference`);
+	}
+	if (state.hasZcb) boostLines.push(`${ZCB_SPEED_BOOST}% for Zaryte crossbow`);
+	else if (state.meleePunishWeapon === 'crystal_halberd') {
+		boostLines.push(`${CRYSTAL_HALBERD_SPEED_BOOST}% for ${getDoomMeleePunishWeaponName(state.meleePunishWeapon)}`);
+	}
+
+	return boostLines;
+}
+
+function buildDoomDeathChanceLine(deathChances: number[]): string {
+	const runDeathChance = calculateDoomRunDeathChance(deathChances);
+	const wipeChanceBeforeTarget = calculateDoomWipeChanceBeforeTarget(deathChances);
+	const targetDelveDeathChance = deathChances.at(-1) ?? 0;
+
+	if (runDeathChance.expectedDeathWave !== null) {
+		return `**Wipe chance before target delve:** ${formatDoomDeathChance(
+			wipeChanceBeforeTarget
+		)} | **Target delve death chance:** ${formatDoomDeathChance(
+			targetDelveDeathChance
+		)} | **Expected death:** Delve ${round(runDeathChance.expectedDeathWave, 1)}`;
+	}
+
+	return `**Wipe chance before target delve:** ${formatDoomDeathChance(
+		wipeChanceBeforeTarget
+	)} | **Target delve death chance:** ${formatDoomDeathChance(targetDelveDeathChance)}`;
+}
+
+export async function doomCommand(itx: OSInteraction, targetDelve: number, stopOnUnique = true) {
+	const { user, rng } = itx;
+
+	if (await user.minionIsBusy()) {
+		return `${user.usernameOrMention} is busy`;
+	}
+
+	const preflightError = getDoomPreflightError(user, targetDelve);
+	if (preflightError) return preflightError;
+
+	const state = getDoomGearState(user, targetDelve);
+	const gearError = getDoomGearError(user, state);
+	if (gearError) return gearError;
+	if (!state.meleePunishWeapon) throw new Error('Doom gear validated without a melee punish weapon.');
+	const userMagicLevel = user.skillLevel('magic');
+
+	const stats = await user.fetchStats();
+	const deepDelves = Number(stats.doom_deep_delves ?? 0);
+	const totalDelves = Number(stats.doom_total_delves ?? 0);
+	const waveCompletions = normaliseDoomWaveCompletions(
+		(stats as { doom_wave_completions?: unknown }).doom_wave_completions
+	);
+	const doomKC = Math.max(await user.getKC(EMonster.DOOM_OF_MOKHAIOTL), deepDelves);
+	const baseDuration = calculateDoomTripDuration(
+		targetDelve,
+		state.hasTbow,
+		state.hasSBow,
+		state.hasZcb,
+		state.hasLightbearer,
+		state.meleePunishWeapon,
+		state.hasMasori,
+		state.hasEliteVoid,
+		state.hasZaryteVambraces,
+		state.hasRiteOfVileTransference,
+		state.arrowMod,
+		rng
+	);
+	const kcReduction = calculateDoomKcReduction(doomKC, baseDuration);
+	const [durationAfterSkillBoost, skillBoostMsg] = applyDoomSkillBoost(
+		user.skillsAsLevels as Required<Skills>,
+		reduceNumByPercent(baseDuration, kcReduction)
+	);
+	const durationReductionPercent = calcWhatPercent(baseDuration - durationAfterSkillBoost, baseDuration);
+
+	const res = startDoomRun({
+		targetDelve,
+		hasTbow: state.hasTbow,
+		hasSBow: state.hasSBow,
+		hasLightbearer: state.hasLightbearer,
+		hasZcb: state.hasZcb,
+		meleePunishWeapon: state.meleePunishWeapon,
+		hasMasori: state.hasMasori,
+		hasEliteVoid: state.hasEliteVoid,
+		hasZaryteVambraces: state.hasZaryteVambraces,
+		hasRiteOfVileTransference: state.hasRiteOfVileTransference,
+		hasChargedEyeOfAyak: state.hasChargedEyeOfAyak,
+		arrowMod: state.arrowMod,
+		waveCompletions,
+		baseDuration,
+		durationReductionPercent,
+		stopOnUnique,
+		rng
+	});
+	const venomProtection = selectDoomVenomProtection(itemName => user.bank.amount(itemName), res.duration);
+	if (!venomProtection) {
+		return `You need enough doses of ${formatList(
+			DOOM_VENOM_PROTECTION_OPTIONS.map(option => option.potionName),
+			'or'
+		)} to cover this ${formatDuration(res.duration)} Doom trip.`;
+	}
+
+	const costResult = getDoomTripCost({
+		user,
+		state,
+		result: res,
+		targetDelve,
+		userMagicLevel,
+		venomProtection,
+		deepDelves,
+		totalDelves
+	});
+	if (typeof costResult === 'string') return costResult;
+
+	const realCost = await removeDoomTripCost(user, costResult.cost, venomProtection);
+	if (typeof realCost === 'string') return realCost;
 
 	await ClientSettings.updateBankSetting('doom_cost', realCost);
 	await user.statsBankUpdate('doom_cost', realCost);
@@ -616,8 +736,8 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 	await ActivityManager.startTrip<DoomTaskOptions>({
 		userID: user.id,
 		channelId: itx.channelId,
-		duration: res.realDuration,
-		fakeDuration: res.fakeDuration,
+		duration: res.duration,
+		fakeDuration: res.duration,
 		type: 'DoomOfMokhaiotl',
 		targetDelve,
 		xpTargetDelve: res.diedAt === null ? res.deepestDelveCompleted : targetDelve,
@@ -628,60 +748,16 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 		deepestDelveCompleted: res.deepestDelveCompleted,
 		stopOnUnique,
 		ayakChargesGained: res.ayakChargesGained,
-		brewsUsed,
-		restoresUsed,
-		rangingUsed
+		brewsUsed: costResult.brewsUsed,
+		restoresUsed: costResult.restoresUsed,
+		rangingUsed: costResult.rangingUsed
 	});
-
-	const boostLines: string[] = [];
-
-	if (hasTbow) boostLines.push('10% for Twisted bow');
-	else boostLines.push(`${SCORCHING_BOW_SPEED_PENALTY}% slower for Scorching bow`);
-
-	if (equippedArrowName ?? equippedArrowId !== null) {
-		const pct = Math.round(Math.abs(arrowMod) * 100);
-		const displayName = equippedArrowName ?? Items.itemNameFromId(equippedArrowId!) ?? 'Unknown arrow';
-		boostLines.push(arrowMod < 0 ? `${pct}% for ${displayName}` : `${pct}% slower for ${displayName}`);
-	}
-
-	if (meleePunishWeapon === 'noxious_halberd') {
-		boostLines.push(`${NOXIOUS_HALBERD_SPEED_BOOST}% for ${getDoomMeleePunishWeaponName(meleePunishWeapon)}`);
-	}
-
-	if (hasMasori) {
-		boostLines.push(`${MASORI_SPEED_BOOST}% for Masori armour`);
-	} else if (hasEliteVoid) boostLines.push(`${ELITE_VOID_SPEED_BOOST}% for Elite void`);
-	if (hasZaryteVambraces) boostLines.push(`${ZARYTE_VAMBRACES_SPEED_BOOST}% for Zaryte vambraces`);
-	if (kcReduction >= 1) boostLines.push(`${kcReduction}% for KC`);
-	boostLines.push(skillBoostMsg);
-	if (hasLightbearer) boostLines.push(`${LIGHTBEARER_SPEED_BOOST}% for Lightbearer`);
-	if (hasRiteOfVileTransference) {
-		boostLines.push(`${RITE_OF_VILE_TRANSFERENCE_SPEED_BOOST}% for Rite of vile transference`);
-	}
-	if (hasZcb) boostLines.push(`${ZCB_SPEED_BOOST}% for Zaryte crossbow`);
-	else if (meleePunishWeapon === 'crystal_halberd') {
-		boostLines.push(`${CRYSTAL_HALBERD_SPEED_BOOST}% for ${getDoomMeleePunishWeaponName(meleePunishWeapon)}`);
-	}
-
-	const runDeathChance = calculateDoomRunDeathChance(res.deathChances);
-	const wipeChanceBeforeTarget = calculateDoomWipeChanceBeforeTarget(res.deathChances);
-	const targetDelveDeathChance = res.deathChances.at(-1) ?? 0;
-	const deathChanceLine =
-		runDeathChance.expectedDeathWave !== null
-			? `**Wipe chance before target delve:** ${formatDoomDeathChance(
-					wipeChanceBeforeTarget
-				)} | **Target delve death chance:** ${formatDoomDeathChance(
-					targetDelveDeathChance
-				)} | **Expected death:** Delve ${round(runDeathChance.expectedDeathWave, 1)}`
-			: `**Wipe chance before target delve:** ${formatDoomDeathChance(
-					wipeChanceBeforeTarget
-				)} | **Target delve death chance:** ${formatDoomDeathChance(targetDelveDeathChance)}`;
 
 	return [
 		`${user.usernameOrMention}'s minion is now fighting the **Doom of Mokhaiotl** (targeting delve **${targetDelve}**)!`,
-		`**Duration:** ${formatDuration(res.fakeDuration)} | **Stop on unique:** ${stopOnUnique ? 'Yes' : 'No'}`,
-		deathChanceLine,
+		`**Duration:** ${formatDuration(res.duration)} | **Stop on unique:** ${stopOnUnique ? 'Yes' : 'No'}`,
+		buildDoomDeathChanceLine(res.deathChances),
 		`**Cost:** ${realCost}`,
-		`**Boosts:** ${boostLines.join(', ')}`
+		`**Boosts:** ${buildDoomBoostLines(state, kcReduction, skillBoostMsg).join(', ')}`
 	].join('\n');
 }

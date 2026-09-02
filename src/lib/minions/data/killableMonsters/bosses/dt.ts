@@ -32,6 +32,21 @@ function makeTabletEffect(itemName: string): KillableMonster['effect'] {
 	};
 }
 
+const meleeTreadBoosts = [
+	{ boostPercent: 5, itemID: itemID('Avernic treads (pr)') },
+	{ boostPercent: 3, itemID: itemID('Primordial boots') }
+];
+
+const rangeTreadBoosts = [
+	{ boostPercent: 5, itemID: itemID('Avernic treads (pe)') },
+	{ boostPercent: 3, itemID: itemID('Pegasian boots') }
+];
+
+const mageTreadBoosts = [
+	{ boostPercent: 5, itemID: itemID('Avernic treads (et)') },
+	{ boostPercent: 3, itemID: itemID('Eternal boots') }
+];
+
 export const desertTreasureKillableBosses: KillableMonster[] = [
 	{
 		id: Monsters.DukeSucellus.id,
@@ -51,14 +66,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 				gearSetup: 'melee'
 			},
 			{
-				items: [
-					{ boostPercent: 5, itemID: itemID('Avernic treads (max)') },
-					{ boostPercent: 5, itemID: itemID('Avernic treads (pr)(et)') },
-					{ boostPercent: 5, itemID: itemID('Avernic treads (pr)(pe)') },
-					{ boostPercent: 5, itemID: itemID('Avernic treads (pr)') },
-					{ boostPercent: 3, itemID: itemID('Avernic treads') },
-					{ boostPercent: 3, itemID: itemID('Primordial boots') }
-				],
+				items: meleeTreadBoosts,
 				gearSetup: 'melee'
 			},
 			{
@@ -130,14 +138,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 				gearSetup: 'melee'
 			},
 			{
-				items: [
-					{ boostPercent: 5, itemID: itemID('Avernic treads (max)') },
-					{ boostPercent: 5, itemID: itemID('Avernic treads (pr)(et)') },
-					{ boostPercent: 5, itemID: itemID('Avernic treads (pr)(pe)') },
-					{ boostPercent: 5, itemID: itemID('Avernic treads (pr)') },
-					{ boostPercent: 3, itemID: itemID('Avernic treads') },
-					{ boostPercent: 3, itemID: itemID('Primordial boots') }
-				],
+				items: meleeTreadBoosts,
 				gearSetup: 'melee'
 			},
 			{
@@ -214,14 +215,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 				gearSetup: 'range'
 			},
 			{
-				items: [
-					{ boostPercent: 5, itemID: itemID('Avernic treads (max)') },
-					{ boostPercent: 5, itemID: itemID('Avernic treads (pe)(et)') },
-					{ boostPercent: 5, itemID: itemID('Avernic treads (pr)(pe)') },
-					{ boostPercent: 5, itemID: itemID('Avernic treads (pe)') },
-					{ boostPercent: 3, itemID: itemID('Avernic treads') },
-					{ boostPercent: 3, itemID: itemID('Pegasian boots') }
-				],
+				items: rangeTreadBoosts,
 				gearSetup: 'range'
 			},
 			{
@@ -301,14 +295,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 				gearSetup: 'range'
 			},
 			{
-				items: [
-					{ boostPercent: 5, itemID: itemID('Avernic treads (max)') },
-					{ boostPercent: 5, itemID: itemID('Avernic treads (pe)(et)') },
-					{ boostPercent: 5, itemID: itemID('Avernic treads (pr)(pe)') },
-					{ boostPercent: 5, itemID: itemID('Avernic treads (pe)') },
-					{ boostPercent: 3, itemID: itemID('Avernic treads') },
-					{ boostPercent: 3, itemID: itemID('Pegasian boots') }
-				],
+				items: rangeTreadBoosts,
 				gearSetup: 'range'
 			},
 			{
@@ -389,14 +376,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 				gearSetup: 'mage'
 			},
 			{
-				items: [
-					{ boostPercent: 5, itemID: itemID('Avernic treads (max)') },
-					{ boostPercent: 5, itemID: itemID('Avernic treads (pe)(et)') },
-					{ boostPercent: 5, itemID: itemID('Avernic treads (pr)(et)') },
-					{ boostPercent: 5, itemID: itemID('Avernic treads (et)') },
-					{ boostPercent: 3, itemID: itemID('Avernic treads') },
-					{ boostPercent: 3, itemID: itemID('Eternal boots') }
-				],
+				items: mageTreadBoosts,
 				gearSetup: 'mage'
 			},
 			{
@@ -502,14 +482,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 				gearSetup: 'mage'
 			},
 			{
-				items: [
-					{ boostPercent: 5, itemID: itemID('Avernic treads (max)') },
-					{ boostPercent: 5, itemID: itemID('Avernic treads (pe)(et)') },
-					{ boostPercent: 5, itemID: itemID('Avernic treads (pr)(et)') },
-					{ boostPercent: 5, itemID: itemID('Avernic treads (et)') },
-					{ boostPercent: 3, itemID: itemID('Avernic treads') },
-					{ boostPercent: 3, itemID: itemID('Eternal boots') }
-				],
+				items: mageTreadBoosts,
 				gearSetup: 'mage'
 			},
 			{
@@ -617,14 +590,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 				gearSetup: 'melee'
 			},
 			{
-				items: [
-					{ boostPercent: 5, itemID: itemID('Avernic treads (max)') },
-					{ boostPercent: 5, itemID: itemID('Avernic treads (pr)(et)') },
-					{ boostPercent: 5, itemID: itemID('Avernic treads (pr)(pe)') },
-					{ boostPercent: 5, itemID: itemID('Avernic treads (pr)') },
-					{ boostPercent: 3, itemID: itemID('Avernic treads') },
-					{ boostPercent: 3, itemID: itemID('Primordial boots') }
-				],
+				items: meleeTreadBoosts,
 				gearSetup: 'melee'
 			},
 			{
@@ -701,14 +667,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 				gearSetup: 'melee'
 			},
 			{
-				items: [
-					{ boostPercent: 5, itemID: itemID('Avernic treads (max)') },
-					{ boostPercent: 5, itemID: itemID('Avernic treads (pr)(et)') },
-					{ boostPercent: 5, itemID: itemID('Avernic treads (pr)(pe)') },
-					{ boostPercent: 5, itemID: itemID('Avernic treads (pr)') },
-					{ boostPercent: 3, itemID: itemID('Avernic treads') },
-					{ boostPercent: 3, itemID: itemID('Primordial boots') }
-				],
+				items: meleeTreadBoosts,
 				gearSetup: 'melee'
 			},
 			{

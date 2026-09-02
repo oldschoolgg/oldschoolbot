@@ -60,9 +60,6 @@ export const maxOtherStats: { [key in OtherGearStat]: number } = {
 	[GearStat.Prayer]: 66
 };
 
-const AVERNIC_TREADS_MAX_ID = itemID('Avernic treads (max)');
-const PRIMARY_GEAR_SETUPS = ['melee', 'mage', 'range'] as const;
-
 const baseStats: GearStats = {
 	attack_stab: 0,
 	attack_slash: 0,
@@ -96,7 +93,6 @@ function addSimilarItems(values: Set<number>) {
 
 export class Gear {
 	private setup: GearSetup = { ...defaultGearSetup };
-	private virtualSetup: Partial<Record<EquipmentSlotKey, number>> = {};
 
 	stats = baseStats;
 
@@ -202,45 +198,6 @@ export class Gear {
 		return Array.from(values);
 	}
 
-	private effectiveAllItems(similar = false): number[] {
-		const values = new Set<number>();
-		for (const [slot, val] of Object.entries(this.setup) as [EquipmentSlotKey, GearSlotItem | null][]) {
-			const virtualItem = this.virtualSetup[slot];
-			if (virtualItem) {
-				values.add(virtualItem);
-			} else if (val?.item) {
-				values.add(val.item);
-			}
-		}
-
-		if (similar) {
-			addSimilarItems(values);
-		}
-
-		return Array.from(values);
-	}
-
-	private checkableAllItems(similar = false): number[] {
-		const values = new Set(this.allItems(false));
-		for (const item of Object.values(this.virtualSetup)) {
-			values.add(item);
-		}
-
-		if (similar) {
-			addSimilarItems(values);
-		}
-
-		return Array.from(values);
-	}
-
-	setVirtualEquippedItems(items: Partial<Record<EquipmentSlotKey, number | null>>) {
-		this.virtualSetup = {};
-		for (const [slot, item] of Object.entries(items) as [EquipmentSlotKey, number | null][]) {
-			if (item) this.virtualSetup[slot] = item;
-		}
-		this.stats = this.getStats();
-	}
-
 	allItemsBank() {
 		const gear = this.raw();
 		const values = Object.values(gear).filter(notEmpty);
@@ -255,7 +212,7 @@ export class Gear {
 
 	hasEquipped(_items: number | string | (string | number)[], every = false, includeSimilar = true) {
 		const items = resolveItems(_items);
-		const allItems = this.checkableAllItems();
+		const allItems = this.allItems();
 		if (!includeSimilar) {
 			return items[every ? 'every' : 'some'](i => allItems.includes(i));
 		} else if (every) {
@@ -287,7 +244,7 @@ export class Gear {
 
 	getStats(): GearStats {
 		const sum = { ...baseStats };
-		for (const id of this.effectiveAllItems(false)) {
+		for (const id of this.allItems(false)) {
 			const item = Items.get(id);
 			if (item) {
 				for (const keyToAdd of Object.keys(sum) as (keyof GearStats)[]) {
@@ -419,17 +376,6 @@ export function constructGearSetup(setup: PartialGearSetup): Gear {
 		shield: setup.shield ? { item: itemID(setup.shield), quantity: 1 } : null,
 		weapon: setup.weapon ? { item: itemID(setup.weapon), quantity: 1 } : null
 	});
-}
-
-export function applySharedPrimaryGearEffects(gear: Partial<{ [key in (typeof PRIMARY_GEAR_SETUPS)[number]]: Gear }>) {
-	const hasAvernicTreadsMax = PRIMARY_GEAR_SETUPS.some(
-		setup => gear[setup]?.get('feet')?.item === AVERNIC_TREADS_MAX_ID
-	);
-	for (const setup of PRIMARY_GEAR_SETUPS) {
-		gear[setup]?.setVirtualEquippedItems({
-			feet: hasAvernicTreadsMax ? AVERNIC_TREADS_MAX_ID : null
-		});
-	}
 }
 
 export type GearRequirement = Partial<{ [key in GearStat]: number }>;

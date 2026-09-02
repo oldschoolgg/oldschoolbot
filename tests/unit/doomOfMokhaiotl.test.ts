@@ -38,22 +38,22 @@ describe('Doom of Mokhaiotl', () => {
 		const expectedChances = [3, 8, 13, 18, 23, 28, 48, 73, 75, 77, 79, 80, 81, 83, 85];
 
 		for (const [index, chance] of expectedChances.entries()) {
-			expect(calculateDeathChance(index + 1, 0, 0, false)).toBe(chance);
+			expect(calculateDeathChance(index + 1)).toBe(chance);
 		}
 	});
 
 	test('early waves become safe only after enough successful clears', () => {
-		expect(calculateDeathChance(1, 0, 0, false, { 1: 1 })).toBe(0);
-		expect(calculateDeathChance(2, 0, 0, false, { 2: 1 })).toBe(8);
-		expect(calculateDeathChance(2, 0, 0, false, { 2: 2 })).toBe(0);
-		expect(calculateDeathChance(7, 0, 0, false, { 7: 6 })).toBe(48);
-		expect(calculateDeathChance(7, 0, 0, false, { 7: 7 })).toBe(0);
+		expect(calculateDeathChance(1, { 1: 1 })).toBe(0);
+		expect(calculateDeathChance(2, { 2: 1 })).toBe(8);
+		expect(calculateDeathChance(2, { 2: 2 })).toBe(0);
+		expect(calculateDeathChance(7, { 7: 6 })).toBe(48);
+		expect(calculateDeathChance(7, { 7: 7 })).toBe(0);
 	});
 
 	test('wave 8 and above never become permanently safe', () => {
-		expect(calculateDeathChance(8, 0, 0, false)).toBe(73);
-		expect(calculateDeathChance(8, 0, 0, false, { 8: 100 })).toBeGreaterThan(0);
-		expect(calculateDeathChance(8, 0, 0, false, { 8: 100 })).toBeLessThan(73);
+		expect(calculateDeathChance(8)).toBe(73);
+		expect(calculateDeathChance(8, { 8: 100 })).toBeGreaterThan(0);
+		expect(calculateDeathChance(8, { 8: 100 })).toBeLessThan(73);
 	});
 
 	test('wave completion learning bottoms out at the configured minimum death chances', () => {
@@ -71,20 +71,9 @@ describe('Doom of Mokhaiotl', () => {
 		];
 
 		for (const [wave, chance] of expectedLowestChances) {
-			expect(calculateDeathChance(wave, 0, 0, true, { [wave]: 10 })).toBeCloseTo(chance, 5);
-			expect(calculateDeathChance(wave, 0, 0, false, { [wave]: 10 })).toBeCloseTo(chance, 5);
-			expect(calculateDeathChance(wave, 0, 0, true, { [wave]: 9 })).toBeGreaterThan(chance);
+			expect(calculateDeathChance(wave, { [wave]: 10 })).toBeCloseTo(chance, 5);
+			expect(calculateDeathChance(wave, { [wave]: 9 })).toBeGreaterThan(chance);
 		}
-	});
-
-	test('deep delve count no longer reduces wave death chance without wave completions', () => {
-		expect(calculateDeathChance(8, 0, 0, true)).toBe(calculateDeathChance(8, 500, 1500, true));
-		expect(calculateDeathChance(16, 0, 0, true)).toBe(calculateDeathChance(16, 500, 1500, true));
-	});
-
-	test('Masori no longer changes death chances', () => {
-		expect(calculateDeathChance(7, 0, 0, true)).toBe(calculateDeathChance(7, 0, 0, false));
-		expect(calculateDeathChance(8, 0, 0, true)).toBe(calculateDeathChance(8, 0, 0, false));
 	});
 
 	test('calculates the chance to die before completing the target delve', () => {

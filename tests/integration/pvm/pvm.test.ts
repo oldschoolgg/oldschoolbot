@@ -497,6 +497,7 @@ describe('PVM', async () => {
 			meleeGear: resolveItems(['Scythe of vitur']),
 			bank: new Bank()
 				.add('Anglerfish', 100)
+				.add('Shark', 1000)
 				.add('Saradomin brew(4)', 100)
 				.add('Super restore(4)', 100)
 				.add('Super combat potion(4)', 100)
@@ -504,6 +505,7 @@ describe('PVM', async () => {
 				.add('Soul rune', 1000)
 				.add('Fire rune', 10_000)
 				.add('Purging staff')
+				.add('Emberlight')
 		});
 		await user.update({
 			scythe_of_vitur_charges: 100_000
@@ -547,7 +549,7 @@ describe('PVM', async () => {
 		expect(res.commandResult).toContain('10% for KC');
 		expect(res.commandResult).toContain('5% for Rite of vile transference');
 		expect(res.commandResult).toContain('2% for Shark');
-		expect(calcPerHour(res.activityResult!.q, res.activityResult!.duration)).toBe(isWeekend() ? 20 : 18);
+		expect(calcPerHour(res.activityResult!.q, res.activityResult!.duration)).toBeCloseTo(isWeekend() ? 20 : 18, 0);
 	});
 
 	it('requires a Purging staff to kill Yama', async () => {

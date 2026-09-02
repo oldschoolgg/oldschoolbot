@@ -16,7 +16,7 @@ import type { UserFullGearSetup } from '@/lib/gear/types.js';
 import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { BankSortMethod } from '@/lib/sorts.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
-import { applySharedPrimaryGearEffects, Gear } from '@/lib/structures/Gear.js';
+import { Gear } from '@/lib/structures/Gear.js';
 import { GearBank } from '@/lib/structures/GearBank.js';
 import type { SkillRequirements, Skills } from '@/lib/types/index.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
@@ -105,7 +105,6 @@ export class BaseUser {
 			fashion: new Gear((this.user.gear_fashion as GearSetup | null) ?? { ...defaultGearSetup }),
 			other: new Gear((this.user.gear_other as GearSetup | null) ?? { ...defaultGearSetup })
 		};
-		applySharedPrimaryGearEffects(gear);
 		this._gearLazy = gear;
 		return this._gearLazy;
 	}

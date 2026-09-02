@@ -1,5 +1,3 @@
-import { Dossier } from '@/simulation/openables/Dossier.js';
-import { ForgottenLockbox } from '@/simulation/openables/ForgottenLockbox.js';
 import { Collection } from '@/structures/Collection.js';
 import type Openable from '@/structures/Openable.js';
 import type { SimpleOpenable } from '@/structures/SimpleOpenable.js';
@@ -7,7 +5,9 @@ import { BrimstoneChest } from './BrimstoneChest.js';
 import { Casket } from './Casket.js';
 import { CastleWarsSupplyCrate } from './CastleWarsSupplyCrate.js';
 import { CrystalChest } from './CrystalChest.js';
+import { Dossier } from './Dossier.js';
 import { ElvenCrystalChest } from './ElvenCrystalChest.js';
+import { ForgottenLockbox } from './ForgottenLockbox.js';
 import { GiantEggSacFull } from './GiantEggSacFull.js';
 import { GrubbyChest } from './GrubbyChest.js';
 import { BronzeHAMChest, IronHAMChest, SilverHAMChest, SteelHAMChest } from './HAMStoreRoomChests.js';

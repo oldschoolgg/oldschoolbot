@@ -104,13 +104,7 @@ function isDoomWaveLearned(delve: number, waveCompletions: DoomWaveCompletions):
 	return delve <= 7 && (waveCompletions[delve] ?? 0) >= delve;
 }
 
-export function calculateDeathChance(
-	delve: number,
-	_deepDelves: number,
-	_totalDelves: number,
-	_hasMasori: boolean,
-	waveCompletions: DoomWaveCompletions = {}
-): number {
+export function calculateDeathChance(delve: number, waveCompletions: DoomWaveCompletions = {}): number {
 	if (isDoomWaveLearned(delve, waveCompletions)) return 0;
 
 	const base = getDoomBaseDeathChance(delve);
@@ -126,16 +120,8 @@ export function calculateDeathChance(
 	return clamp(chance, { min: 0.1, max: 95 });
 }
 
-export function calculateDoomDeathChances(
-	targetDelve: number,
-	deepDelves: number,
-	totalDelves: number,
-	hasMasori: boolean,
-	waveCompletions: DoomWaveCompletions = {}
-): number[] {
-	return Array.from({ length: targetDelve }, (_, index) =>
-		calculateDeathChance(index + 1, deepDelves, totalDelves, hasMasori, waveCompletions)
-	);
+export function calculateDoomDeathChances(targetDelve: number, waveCompletions: DoomWaveCompletions = {}): number[] {
+	return Array.from({ length: targetDelve }, (_, index) => calculateDeathChance(index + 1, waveCompletions));
 }
 
 export function calculateDoomRunDeathChance(deathChances: number[]): {
