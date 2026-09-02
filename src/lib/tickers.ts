@@ -5,7 +5,7 @@ import { runTameTask } from '@/lib/bso/tames/tameTasks.js';
 import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
 import { stringMatches, Time } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
-import { roll } from 'node-rng';
+import { MathRNG } from 'node-rng';
 
 import type { User } from '@/prisma/main.js';
 import { resolveBotSendableMessage } from '@/discord/utils.js';
@@ -125,12 +125,13 @@ export const tickers: {
 		interval: Time.Hour,
 		cb: async () => {
 			const schedule = await Cache.getStaffGrantsSchedule();
+			const rng = MathRNG;
 			const periods: StaffBestowPeriod[] = [];
-			if (schedule.monthly && roll(24 * 30)) periods.push('monthly');
-			if (schedule.weekly && roll(24 * 7)) periods.push('weekly');
-			if (schedule.daily && roll(24)) periods.push('daily');
+			if (schedule.monthly && rng.roll(24 * 30)) periods.push('monthly');
+			if (schedule.weekly && rng.roll(24 * 7)) periods.push('weekly');
+			if (schedule.daily && rng.roll(24)) periods.push('daily');
 			if (schedule.hourly) periods.push('hourly');
-			await runStaffBestowReplenishment(periods);
+			await runStaffBestowReplenishment(periods, rng);
 		}
 	},
 	{
