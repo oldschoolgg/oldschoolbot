@@ -1369,7 +1369,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 			if (!isGameHacker) {
 				return rng.pick(gifs);
 			}
-			if (globalConfig.isProduction && interaction.channelId !== Channel.CyrCommandsChannel) {
+			if (globalConfig.isProduction && !isAdmin && interaction.channelId !== Channel.CyrCommandsChannel) {
 				return `You can only use this command in <#${Channel.CyrCommandsChannel}>.`;
 			}
 			const items = parseBank({ inputStr: options.give_items.items, noDuplicateItems: true });
