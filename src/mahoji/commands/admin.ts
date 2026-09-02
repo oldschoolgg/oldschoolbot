@@ -1218,7 +1218,7 @@ export const adminCommand = defineCommand({
 				{
 					type: 'Subcommand',
 					name: 'allow_irons',
-					description: 'Allow ironmen to join a giveaway.',
+					description: 'Toggle whether ironmen can join a giveaway.',
 					options: [
 						{
 							type: 'String',
@@ -1704,10 +1704,11 @@ ${META_CONSTANTS.RENDERED_STR}`
 					id: giveaway.id
 				},
 				data: {
-					allow_ironmen: true
+					allow_ironmen: !giveaway.allow_ironmen
 				}
 			});
 			giveawayCache.set(updatedGiveaway.id, updatedGiveaway);
+			const ironmanStatus = updatedGiveaway.allow_ironmen ? 'enabled' : 'disabled';
 
 			try {
 				await globalClient.editMessage(updatedGiveaway.channel_id, updatedGiveaway.message_id, {
@@ -1725,10 +1726,10 @@ ${META_CONSTANTS.RENDERED_STR}`
 					channel_id: updatedGiveaway.channel_id,
 					message_id: updatedGiveaway.message_id
 				});
-				return 'Ironmen are enabled for this giveaway, but I failed to edit the giveaway message.';
+				return `Ironmen are now ${ironmanStatus} for this giveaway, but I failed to edit the giveaway message.`;
 			}
 
-			return `Ironmen are now enabled for giveaway message ${updatedGiveaway.message_id}.`;
+			return `Ironmen are now ${ironmanStatus} for giveaway message ${updatedGiveaway.message_id}.`;
 		}
 
 		if (options.item_stats) {
