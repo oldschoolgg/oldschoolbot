@@ -1,10 +1,13 @@
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
 
 import { applyPremiumTimeGrant, calculatePremiumTimeGrant, fetchPremiumTimeBalance } from '@/lib/premiumTime.js';
-import { Bits, cyrTiers } from '@/util.js';
+import { Bits, cyrTiers, type PatronTier } from '@/util.js';
 
 const cyrTier4PlusBits = [Bits.CyrPatronTier4, Bits.CyrPatronTier5, Bits.CyrPatronTier6, Bits.CyrPatronTier7] as const;
 const cyrTier5PlusBits = [Bits.CyrPatronTier5, Bits.CyrPatronTier6, Bits.CyrPatronTier7] as const;
+const cyrTier6PlusBits = [Bits.CyrPatronTier6, Bits.CyrPatronTier7] as const;
+
+type GiftTier = { tier: PatronTier; duration: number };
 
 function hasCurrentMonthGift(lastGift: bigint | null, now = Date.now()) {
 	if (lastGift === null) return false;
@@ -13,14 +16,18 @@ function hasCurrentMonthGift(lastGift: bigint | null, now = Date.now()) {
 	return giftDate.getUTCFullYear() === nowDate.getUTCFullYear() && giftDate.getUTCMonth() === nowDate.getUTCMonth();
 }
 
-function getGiftTier(bits: readonly number[]) {
+function getGiftTier(bits: readonly number[]): GiftTier | null {
+	let duration = Time.Week;
+	let tier: PatronTier | null = null;
 	if (cyrTier5PlusBits.some(bit => bits.includes(bit))) {
-		return cyrTiers.find(tier => tier.number === 3) ?? null;
+		if (cyrTier6PlusBits.some(bit => bits.includes(bit))) duration = Time.Day * 31;
+		tier = cyrTiers.find(tier => tier.number === 3) ?? null;
 	}
 	if (cyrTier4PlusBits.some(bit => bits.includes(bit))) {
-		return cyrTiers.find(tier => tier.number === 2) ?? null;
+		tier = cyrTiers.find(tier => tier.number === 2) ?? null;
 	}
-	return null;
+
+	return tier ? { tier, duration } : null;
 }
 
 export const perksCommand = defineCommand({
@@ -67,13 +74,13 @@ export const perksCommand = defineCommand({
 			const currentBalance = await fetchPremiumTimeBalance(targetUser.id);
 			const grant = calculatePremiumTimeGrant({
 				currentBalance,
-				timeMs: Time.Week,
-				tier: giftTier.perkTier,
+				timeMs: giftTier.duration,
+				tier: giftTier.tier.perkTier,
 				now
 			});
 
 			await interaction.confirmation(
-				`Donate 1 week of Cyr Tier ${giftTier.number} patron to ${targetUser.mention}? This uses your monthly Patreon gift.`
+				`Donate 1 week of Cyr Tier ${giftTier.tier.number} patron to ${targetUser.mention}? This uses your monthly Patreon gift.`
 			);
 
 			await roboChimpClient.$transaction(async tx => {
@@ -94,7 +101,7 @@ export const perksCommand = defineCommand({
 
 			await Promise.all([globalClient.fetchRUser(targetUser.id), globalClient.fetchRUser(user.id)]);
 
-			return `Donated 1 week of Cyr Tier ${giftTier.number} patron to ${targetUser.mention}. They have ${formatDuration(
+			return `Donated 1 week of Cyr Tier ${giftTier.tier.number} patron to ${targetUser.mention}. They have ${formatDuration(
 				grant.remainingTime
 			)} remaining.`;
 		}
