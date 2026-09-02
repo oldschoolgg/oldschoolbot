@@ -48,6 +48,7 @@ import {
 	getBitFieldData,
 	listBitFields
 } from '@/lib/bitFieldUtils.js';
+import { giveawayCache } from '@/lib/cache.js';
 import { BadgesEnum, BitField, BitFieldData, badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
 import { customItems } from '@/lib/customItems/util.js';
 import { allDcSet } from '@/lib/data/Collections.js';
@@ -62,6 +63,7 @@ import {
 	ZStaffGrants
 } from '@/lib/staffBestow.js';
 import { dmCyrAudit, makeArgAuditFiles, sendCyrCriticalBotLog } from '@/lib/util/cyrAudit.js';
+import { generateGiveawayContent } from '@/lib/util/giveaway.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { safeMessage } from '@/lib/util/smallUtils.js';
@@ -1204,9 +1206,29 @@ export const adminCommand = defineCommand({
 			]
 		},
 		{
-			type: 'Subcommand',
-			name: 'fix_giveaways',
-			description: 'Re-add Join/Leave buttons to all active giveaways.'
+			type: 'SubcommandGroup',
+			name: 'giveaway',
+			description: 'Admin giveaway management commands.',
+			options: [
+				{
+					type: 'Subcommand',
+					name: 'fix_buttons',
+					description: 'Re-add Join/Leave buttons to all active giveaways.'
+				},
+				{
+					type: 'Subcommand',
+					name: 'allow_irons',
+					description: 'Allow ironmen to join a giveaway.',
+					options: [
+						{
+							type: 'String',
+							name: 'message_id',
+							description: 'The message ID of the giveaway.',
+							required: true
+						}
+					]
+				}
+			]
 		}
 	],
 	run: async ({ options, userId, interaction, guildId, rng }) => {
@@ -1623,7 +1645,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 			);
 		}
 
-		if (options.fix_giveaways) {
+		if (options.giveaway?.fix_buttons) {
 			const giveaways = await prisma.giveaway.findMany({
 				where: {
 					completed: false
@@ -1648,7 +1670,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 					failed++;
 					errors.push(`${giveaway.id}: ${(err as Error).message}`);
 					Logging.logError(err as Error, {
-						command: 'admin_fix_giveaways',
+						command: 'admin_giveaway_fix_buttons',
 						giveaway_id: giveaway.id,
 						channel_id: giveaway.channel_id,
 						message_id: giveaway.message_id
@@ -1661,6 +1683,52 @@ ${META_CONSTANTS.RENDERED_STR}`
 				response += `\n\nFirst errors:\n${errors.slice(0, 10).join('\n')}`;
 			}
 			return response;
+		}
+
+		if (options.giveaway?.allow_irons) {
+			const { message_id: messageID } = options.giveaway.allow_irons;
+			if (!isValidDiscordSnowflake(messageID)) {
+				return 'Invalid message ID.';
+			}
+
+			const giveaway = await prisma.giveaway.findFirst({
+				where: {
+					message_id: messageID
+				}
+			});
+			if (!giveaway) return 'No giveaway found for that message ID.';
+			if (giveaway.completed) return 'That giveaway has already finished.';
+
+			const updatedGiveaway = await prisma.giveaway.update({
+				where: {
+					id: giveaway.id
+				},
+				data: {
+					allow_ironmen: true
+				}
+			});
+			giveawayCache.set(updatedGiveaway.id, updatedGiveaway);
+
+			try {
+				await globalClient.editMessage(updatedGiveaway.channel_id, updatedGiveaway.message_id, {
+					content: generateGiveawayContent(
+						updatedGiveaway.user_id,
+						updatedGiveaway.finish_date,
+						updatedGiveaway.users_entered,
+						updatedGiveaway.allow_ironmen
+					)
+				});
+			} catch (err) {
+				Logging.logError(err as Error, {
+					command: 'admin_giveaway_allow_irons',
+					giveaway_id: updatedGiveaway.id,
+					channel_id: updatedGiveaway.channel_id,
+					message_id: updatedGiveaway.message_id
+				});
+				return 'Ironmen are enabled for this giveaway, but I failed to edit the giveaway message.';
+			}
+
+			return `Ironmen are now enabled for giveaway message ${updatedGiveaway.message_id}.`;
 		}
 
 		if (options.item_stats) {

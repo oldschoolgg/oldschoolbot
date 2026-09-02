@@ -1,3 +1,4 @@
+import { execSync } from 'node:child_process';
 import path from 'node:path';
 import { isMainThread } from 'node:worker_threads';
 import { dateFm } from '@oldschoolgg/discord';
@@ -8,7 +9,6 @@ import * as z from 'zod';
 
 import { activity_type_enum } from '@/prisma/main/enums.js';
 import { SkillsArray } from '@/lib/skilling/types.js';
-import { execSync } from "node:child_process";
 
 export { PerkTier };
 

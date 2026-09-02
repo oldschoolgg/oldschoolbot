@@ -255,17 +255,18 @@ model GearPreset {
 }
 
 model Giveaway {
-  id          Int      @id
-  user_id     String   @db.VarChar(19)
-  start_date  DateTime @db.Timestamp(6)
-  finish_date DateTime @db.Timestamp(6)
-  duration    Int
-  completed   Boolean
-  guild_id    String?  @db.VarChar(20)
-  channel_id  String   @db.VarChar(19)
-  loot        Json     @db.Json
-  message_id  String   @db.VarChar(19)
-  reaction_id String?  @db.VarChar(19)
+  id            Int      @id
+  user_id       String   @db.VarChar(19)
+  start_date    DateTime @db.Timestamp(6)
+  finish_date   DateTime @db.Timestamp(6)
+  duration      Int
+  completed     Boolean
+  allow_ironmen Boolean  @default(false)
+  guild_id      String?  @db.VarChar(20)
+  channel_id    String   @db.VarChar(19)
+  loot          Json     @db.Json
+  message_id    String   @db.VarChar(19)
+  reaction_id   String?  @db.VarChar(19)
 
   users_entered String[] @default([])
 
