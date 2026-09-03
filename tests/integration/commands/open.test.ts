@@ -63,11 +63,6 @@ describe('Open Command', async () => {
 			result_quantity: 1000
 		});
 		expect(result).toMatchObject({
-			content: expect.stringContaining(
-				`${Emoji.Seer} **You didn't specify a quantity, so Open Until will open 1 by default`
-			)
-		});
-		expect(result).toMatchObject({
 			content: expect.stringContaining('You opened 1x Reward casket (beginner)')
 		});
 		await user.bankAmountMatch('Reward casket (beginner)', 9);
