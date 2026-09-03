@@ -929,7 +929,12 @@ async function handleSlayerTaskFinishedPrompt(
 	const actionInteraction = toOSInteraction(selectedInteraction, interaction, user);
 
 	if (selectedInteraction.customId === SlayerTaskFinishedPromptID.NewTask) {
-		const response = await slayerNewTaskCommand({ user, interaction: actionInteraction, showButtons: true });
+		const response = await slayerNewTaskCommand({
+			user,
+			interaction: actionInteraction,
+			showButtons: true,
+			ephemeralButtonResponse: false
+		});
 		await replyToCollectedButton(actionInteraction, response);
 		return SpecialResponse.RespondedManually;
 	}
