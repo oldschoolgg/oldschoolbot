@@ -266,6 +266,9 @@ export const allCollectionLogs: ICollection = {
 				items: derangedArchaeologistCL,
 				fmtProg: kcProg(Monsters.DerangedArchaeologist)
 			},
+			///	'Doom of Mokhaiotl': {
+			///		items: CollectionLog.DoomofMokhaiotl.items
+			///	},
 			'Dagannoth Kings': {
 				alias: ['dagannoth kings', 'kings', 'dagga', 'dks'],
 				kcActivity: {
