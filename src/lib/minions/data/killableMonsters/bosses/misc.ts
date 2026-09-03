@@ -1531,7 +1531,7 @@ export const miscBossKillables: KillableMonster[] = [
 			magic: 82
 		},
 		healAmountNeeded: 20 * 35,
-		minimumHealAmount: 20 * 15,
+		minimumHealAmount: 20,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackMagic, GearStat.AttackRanged],
 		defaultAttackStyles: ['attack', 'magic', 'ranged'],
