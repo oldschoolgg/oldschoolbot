@@ -9772,7 +9772,7 @@
 			"magic": 82
 		},
 		"heal_amount_needed": 700,
-		"minimum_heal_amount": 300,
+		"minimum_heal_amount": 20,
 		"attack_style_to_use": "attack_slash",
 		"attack_styles_used": ["attack_slash", "attack_magic", "attack_ranged"],
 		"default_attack_styles": ["attack", "magic", "ranged"],

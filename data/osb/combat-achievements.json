@@ -3695,6 +3695,38 @@
 			},
 			{
 				"id": 1155,
+				"name": "Doom Adept",
+				"desc": "Defeat the Doom of Mokhaiotl at delve level 3.",
+				"type": "kill_count",
+				"monster": "Doom of Mokhaiotl",
+				"requirements": [
+					{
+						"name": "Defeat the Doom of Mokhaiotl at delve level 3."
+					}
+				]
+			},
+			{
+				"id": 1156,
+				"name": "Doom Crawler",
+				"desc": "Defeat the Doom of Mokhaiotl level 1 in less than 30 seconds.",
+				"type": "speed",
+				"monster": "Doom of Mokhaiotl",
+				"rng": {
+					"chance_per_kill": 20
+				}
+			},
+			{
+				"id": 1157,
+				"name": "Exposed Doom",
+				"desc": "Defeat the Doom of Mokhaiotl during its Melee charge phase.",
+				"type": "mechanical",
+				"monster": "Doom of Mokhaiotl",
+				"rng": {
+					"chance_per_kill": 15
+				}
+			},
+			{
+				"id": 1158,
 				"name": "Yama Adept",
 				"type": "kill_count",
 				"monster": "Yama",
@@ -3708,7 +3740,7 @@
 				]
 			},
 			{
-				"id": 1156,
+				"id": 1159,
 				"name": "Back so soon?",
 				"type": "mechanical",
 				"monster": "Yama",
@@ -3718,7 +3750,7 @@
 				}
 			},
 			{
-				"id": 1157,
+				"id": 1160,
 				"name": "Yama Speed-Trialist",
 				"type": "speed",
 				"monster": "Yama",
@@ -3730,7 +3762,7 @@
 		],
 		"name": "Elite",
 		"taskPoints": 4,
-		"rewardThreshold": 967
+		"rewardThreshold": 979
 	},
 	"master": {
 		"tasks": [
@@ -5446,6 +5478,48 @@
 			},
 			{
 				"id": 2158,
+				"name": "Grub Patrol",
+				"desc": "Defeat the Doom of Mokhaiotl levels 1-8 without ever letting a grub be absorbed.",
+				"type": "mechanical",
+				"monster": "Doom of Mokhaiotl",
+				"rng": {
+					"chance_per_kill": 15
+				}
+			},
+			{
+				"id": 2159,
+				"name": "Doom Chaser",
+				"desc": "Defeat the Doom of Mokhaiotl levels 1-8 in less than 10:00.",
+				"type": "speed",
+				"monster": "Doom of Mokhaiotl",
+				"rng": {
+					"chance_per_kill": 1
+				}
+			},
+			{
+				"id": 2160,
+				"name": "Mine's Better",
+				"desc": "Defeat the Doom of Mokhaiotl levels 1-8 whilst always wearing a shield.",
+				"type": "restriction",
+				"monster": "Doom of Mokhaiotl",
+				"rng": {
+					"chance_per_kill": 10
+				}
+			},
+			{
+				"id": 2161,
+				"name": "Doom Veteran",
+				"desc": "Defeat the Doom of Mokhaiotl at delve level 8.",
+				"type": "kill_count",
+				"monster": "Doom of Mokhaiotl",
+				"requirements": [
+					{
+						"name": "Defeat the Doom of Mokhaiotl at delve level 8."
+					}
+				]
+			},
+			{
+				"id": 2162,
 				"name": "Yama Veteran",
 				"type": "kill_count",
 				"monster": "Yama",
@@ -5459,7 +5533,7 @@
 				]
 			},
 			{
-				"id": 2159,
+				"id": 2163,
 				"name": "Fire fighter",
 				"type": "mechanical",
 				"monster": "Yama",
@@ -5469,7 +5543,7 @@
 				}
 			},
 			{
-				"id": 2160,
+				"id": 2164,
 				"name": "Shadow dancer",
 				"type": "mechanical",
 				"monster": "Yama",
@@ -5479,7 +5553,7 @@
 				}
 			},
 			{
-				"id": 2161,
+				"id": 2165,
 				"name": "No toppings, no drinks, thanks",
 				"type": "restriction",
 				"monster": "Yama",
@@ -5489,7 +5563,7 @@
 				}
 			},
 			{
-				"id": 2162,
+				"id": 2166,
 				"name": "Yama Speed-Chaser",
 				"type": "speed",
 				"monster": "Yama",
@@ -5501,7 +5575,7 @@
 		],
 		"name": "Master",
 		"taskPoints": 5,
-		"rewardThreshold": 1757
+		"rewardThreshold": 1789
 	},
 	"grandmaster": {
 		"tasks": [
@@ -6696,6 +6770,78 @@
 			},
 			{
 				"id": 3111,
+				"name": "Duel of Mokhaiotl",
+				"desc": "Defeat the Doom of Mokhaiotl levels 1-8 whilst only damaging the boss with one-handed melee attacks.",
+				"type": "restriction",
+				"monster": "Doom of Mokhaiotl",
+				"rng": {
+					"chance_per_kill": 10
+				}
+			},
+			{
+				"id": 3112,
+				"name": "Darkness Is Your Ally?",
+				"desc": "Defeat the Doom of Mokhaiotl levels 1-8 without equipping a demonbane weapon.",
+				"type": "restriction",
+				"monster": "Doom of Mokhaiotl",
+				"rng": {
+					"chance_per_kill": 10
+				}
+			},
+			{
+				"id": 3113,
+				"name": "Perfect Doom",
+				"desc": "Defeat the Doom of Mokhaiotl levels 1-8 without taking any damage from the boss, letting any grubs be absorbed, or stepping in acid blood.",
+				"type": "perfection",
+				"monster": "Doom of Mokhaiotl",
+				"rng": {
+					"chance_per_kill": 15
+				}
+			},
+			{
+				"id": 3114,
+				"name": "The Praying Mantis",
+				"desc": "Defeat the Doom of Mokhaiotl levels 1-8 without restoring your prayer points through any method.",
+				"type": "restriction",
+				"monster": "Doom of Mokhaiotl",
+				"rng": {
+					"chance_per_kill": 10
+				}
+			},
+			{
+				"id": 3115,
+				"name": "Doom Racer",
+				"desc": "Defeat the Doom of Mokhaiotl levels 1-8 in less than 7:15.",
+				"type": "speed",
+				"monster": "Doom of Mokhaiotl",
+				"rng": {
+					"chance_per_kill": 1
+				}
+			},
+			{
+				"id": 3116,
+				"name": "It's Dark Down Here",
+				"desc": "Defeat the Doom of Mokhaiotl at delve level 16.",
+				"type": "stamina",
+				"monster": "Doom of Mokhaiotl",
+				"requirements": [
+					{
+						"name": "Defeat the Doom of Mokhaiotl at delve level 16."
+					}
+				]
+			},
+			{
+				"id": 3117,
+				"name": "Mopping up",
+				"desc": "Clear at least 8 acid splats in a single Volatile Earth special attack.",
+				"type": "mechanical",
+				"monster": "Doom of Mokhaiotl",
+				"rng": {
+					"chance_per_kill": 10
+				}
+			},
+			{
+				"id": 3118,
 				"name": "Contract Choreographer",
 				"type": "perfection",
 				"monster": "Yama",
@@ -6705,7 +6851,7 @@
 				}
 			},
 			{
-				"id": 3112,
+				"id": 3119,
 				"name": "Yama Speed-Runner",
 				"type": "speed",
 				"monster": "Yama",
@@ -6717,6 +6863,6 @@
 		],
 		"name": "Grandmaster",
 		"taskPoints": 6,
-		"rewardThreshold": 2417
+		"rewardThreshold": 2491
 	}
 }
