@@ -415,6 +415,10 @@ function getDoomPreflightError(user: DoomUser, targetDelve: number): string | nu
 		return `You need ${formatSkillRequirements(DOOM_SKILL_REQUIREMENTS)} to fight the Doom of Mokhaiotl.`;
 	}
 
+	if (!user.user.bitfield.includes(BitField.HasDexScroll)) {
+		return 'You need to use a Dexterous prayer scroll to unlock Rigour before you can fight the Doom of Mokhaiotl.';
+	}
+
 	return null;
 }
 

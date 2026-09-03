@@ -8,6 +8,7 @@ import { QuestID } from '@/lib/minions/data/quests.js';
 import { getPOHObject } from '@/lib/poh/index.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import { minionKCommand } from '@/mahoji/commands/k.js';
+import { delvesCommand } from '@/mahoji/lib/abstracted_commands/delveCommand.js';
 import { createTestUser, mockClient, mockUser } from '../util.js';
 
 describe('PVM', async () => {
@@ -18,6 +19,16 @@ describe('PVM', async () => {
 		const user = await createTestUser();
 		const result = await user.runCommand(minionKCommand, { name: 'doom' });
 		expect(result).toEqual('Use `/delves doom` to fight the Doom of Mokhaiotl.');
+	});
+
+	it('requires Dexterous prayer scroll to fight Doom', async () => {
+		const user = await client.mockUser({ maxed: true });
+		await user.update({ finished_quest_ids: [QuestID.TheFinalDawn] });
+
+		const result = await user.runCommand(delvesCommand, { doom: { target_delve: 1 } });
+		expect(result).toEqual(
+			'You need to use a Dexterous prayer scroll to unlock Rigour before you can fight the Doom of Mokhaiotl.'
+		);
 	});
 
 	it('Should remove food', async () => {
