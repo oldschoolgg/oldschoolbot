@@ -1803,6 +1803,40 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 	},
 	{
 		id: 1155,
+		name: 'Doom Adept',
+		desc: 'Defeat the Doom of Mokhaiotl at delve level 3.',
+		type: 'kill_count',
+		monster: 'Doom of Mokhaiotl',
+		requirements: new Requirements().add({
+			name: 'Defeat the Doom of Mokhaiotl at delve level 3.',
+			has: ({ stats }) => Number(stats.userStats.doom_deepest_delve ?? 0) >= 3
+		})
+	},
+	{
+		id: 1156,
+		name: 'Doom Crawler',
+		desc: 'Defeat the Doom of Mokhaiotl level 1 in less than 30 seconds.',
+		type: 'speed',
+		monster: 'Doom of Mokhaiotl',
+		rng: {
+			chancePerKill: 20,
+			hasChance: (data: ActivityTaskData) =>
+				data.type === 'DoomOfMokhaiotl' && !data.diedAt && data.deepestDelveCompleted >= 1
+		}
+	},
+	{
+		id: 1157,
+		name: 'Exposed Doom',
+		desc: 'Defeat the Doom of Mokhaiotl during its Melee charge phase.',
+		type: 'mechanical',
+		monster: 'Doom of Mokhaiotl',
+		rng: {
+			chancePerKill: 15,
+			hasChance: (data: ActivityTaskData) => data.type === 'DoomOfMokhaiotl' && !data.diedAt
+		}
+	},
+	{
+		id: 1158,
 		name: 'Yama Adept',
 		type: 'kill_count',
 		monster: 'Yama',
@@ -1814,7 +1848,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		})
 	},
 	{
-		id: 1156,
+		id: 1159,
 		name: 'Back so soon?',
 		type: 'mechanical',
 		monster: 'Yama',
@@ -1825,7 +1859,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		}
 	},
 	{
-		id: 1157,
+		id: 1160,
 		name: 'Yama Speed-Trialist',
 		type: 'speed',
 		monster: 'Yama',

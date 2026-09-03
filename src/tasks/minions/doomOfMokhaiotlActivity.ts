@@ -1,0 +1,158 @@
+import { Bank, EMonster, type ItemBank, Items } from 'oldschooljs';
+
+import { calculateDoomXP, DOOM_UNIQUE_ITEMS, normaliseDoomWaveCompletions } from '@/lib/doomOfMokhaiotl.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import announceLoot from '@/lib/minions/functions/announceLoot.js';
+import type { DoomTaskOptions } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+
+export const doomOfMokhaiotlTask: MinionTask = {
+	type: 'DoomOfMokhaiotl',
+	async run(data: DoomTaskOptions, { user, handleTripFinish }) {
+		const {
+			channelId,
+			loot: possibleLoot,
+			diedAt,
+			targetDelve,
+			xpTargetDelve,
+			duration,
+			deepDelvesEarned,
+			totalWavesCleared,
+			deepestDelveCompleted,
+			ayakChargesGained,
+			brewsUsed,
+			restoresUsed,
+			rangingUsed
+		} = data;
+
+		const currentStats = await user.fetchStats();
+		const prevDeepest = Number(currentStats.doom_deepest_delve ?? 0);
+		const prevDeepDelves = Number(currentStats.doom_deep_delves ?? 0);
+		const prevTotal = Number(currentStats.doom_total_delves ?? 0);
+		const waveCompletions = normaliseDoomWaveCompletions(
+			(currentStats as { doom_wave_completions?: unknown }).doom_wave_completions
+		);
+
+		const newDeepest = Math.max(prevDeepest, deepestDelveCompleted);
+		const newDeepDelves = prevDeepDelves + (deepDelvesEarned ?? 0);
+		const newTotal = prevTotal + (totalWavesCleared ?? 0);
+		const doomKcEarned = deepDelvesEarned ?? 0;
+		for (let wave = 1; wave <= deepestDelveCompleted; wave++) {
+			waveCompletions[wave] = (waveCompletions[wave] ?? 0) + 1;
+		}
+
+		const monsterScores = { ...((currentStats.monster_scores ?? {}) as ItemBank) };
+		if (doomKcEarned > 0) {
+			monsterScores[EMonster.DOOM_OF_MOKHAIOTL] = (monsterScores[EMonster.DOOM_OF_MOKHAIOTL] ?? 0) + doomKcEarned;
+		}
+
+		await user.statsUpdate({
+			doom_deepest_delve: newDeepest,
+			doom_deep_delves: newDeepDelves,
+			doom_total_delves: newTotal,
+			doom_wave_completions: waveCompletions,
+			monster_scores: monsterScores
+		} as Parameters<typeof user.statsUpdate>[0]);
+
+		await user.update({
+			ayak_charges: { increment: ayakChargesGained }
+		});
+
+		let xpMessage = '';
+		if (totalWavesCleared > 0) {
+			xpMessage = await user.addXPBank(
+				calculateDoomXP({
+					duration,
+					targetDelve: xpTargetDelve ?? targetDelve,
+					totalWavesCleared,
+					minimal: true
+				})
+			);
+		}
+
+		if (diedAt !== null) {
+			const kcSummary = buildKcSummary(newDeepest, newDeepDelves, newTotal);
+
+			const delvesCompleted = deepestDelveCompleted;
+			const refundRatio = Math.max(0, 1 - delvesCompleted / targetDelve);
+			const refund = new Bank();
+			if (refundRatio > 0) {
+				refund.add('Saradomin brew(4)', Math.floor(refundRatio * brewsUsed));
+				refund.add('Super restore(4)', Math.floor(refundRatio * restoresUsed));
+				refund.add('Ranging potion(4)', Math.floor(refundRatio * rangingUsed));
+				if (refund.length > 0) {
+					await user.addItemsToBank({ items: refund, collectionLog: false });
+				}
+			}
+			const refundMessage =
+				refund.length > 0 ? `\n**Refunded supplies:** ${refund}` : '\n**Refunded supplies:** None.';
+
+			return handleTripFinish({
+				user,
+				channelId,
+				message: `${user} Your minion died at delve **${diedAt}** and lost all loot.${refundMessage}\n${kcSummary}${xpMessage ? `\n${xpMessage}` : ''}`,
+				data
+			});
+		}
+
+		const loot = new Bank().add(possibleLoot ?? {});
+
+		const { previousCL, itemsAdded } = await user.transactItems({
+			itemsToAdd: loot,
+			collectionLog: true
+		});
+
+		const stoppedOnUnique = deepestDelveCompleted < targetDelve;
+
+		const uniqueNames = DOOM_UNIQUE_ITEMS.filter((id: number) => loot.has(id))
+			.map((id: number) => Items.itemNameFromId(id))
+			.join(', ');
+
+		const completionLine = stoppedOnUnique
+			? `Your minion stopped at delve **${deepestDelveCompleted}** after receiving a unique: **${uniqueNames}**.`
+			: `Your minion completed the Doom of Mokhaiotl up to delve **${deepestDelveCompleted}**.`;
+
+		announceLoot({
+			user,
+			monsterID: EMonster.DOOM_OF_MOKHAIOTL,
+			loot: itemsAdded,
+			notifyDrops: DOOM_UNIQUE_ITEMS
+		});
+
+		await ClientSettings.updateBankSetting('doom_loot', itemsAdded);
+		await user.statsBankUpdate('doom_loot', itemsAdded);
+		await trackLoot({
+			totalLoot: itemsAdded,
+			id: 'doom_of_mokhaiotl',
+			type: 'Monster',
+			changeType: 'loot',
+			duration,
+			kc: totalWavesCleared ?? 0,
+			users: [{ id: user.id, loot: itemsAdded, duration }]
+		});
+
+		const image = await makeBankImage({
+			bank: itemsAdded,
+			title: `Doom of Mokhaiotl - Delve ${deepestDelveCompleted}`,
+			user,
+			previousCL
+		});
+
+		const kcSummary = buildKcSummary(newDeepest, newDeepDelves, newTotal);
+
+		return handleTripFinish({
+			user,
+			channelId,
+			message: {
+				content: `${user} ${completionLine}\n${kcSummary}${xpMessage ? `\n${xpMessage}` : ''}`,
+				files: [image]
+			},
+			data,
+			loot: itemsAdded
+		});
+	}
+};
+
+function buildKcSummary(deepestDelve: number, deepDelves: number, totalDelves: number): string {
+	return `Deepest Delve: **${deepestDelve}** | Deep Delves: **${deepDelves}** | Total Delves: **${totalDelves}**`;
+}

@@ -352,6 +352,14 @@ export const yamaCL = resolveItems([
 	'Dossier',
 	'Barrel of demonic tallow (full)'
 ]);
+export const doomOfMokhaiotlCL = resolveItems([
+	'Dom',
+	'Avernic treads',
+	'Eye of ayak (uncharged)',
+	'Mokhaiotl cloth',
+	'Mokhaiotl waystone',
+	'Demon tear'
+]);
 export const zalcanoCL = resolveItems(['Smolcano', 'Crystal tool seed', 'Zalcano shard', 'Uncut onyx']);
 export const zulrahCL = resolveItems([
 	'Pet snakeling',
