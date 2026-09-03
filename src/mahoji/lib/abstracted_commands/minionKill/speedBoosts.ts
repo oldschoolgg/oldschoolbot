@@ -16,6 +16,14 @@ import {
 	SlayerActivityConstants
 } from '@/lib/minions/data/combatConstants.js';
 import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
+import {
+	calcDeathChargeCasts,
+	DEATH_CHARGE_MAGIC_LEVEL,
+	deathChargeCastCost,
+	formatDeathChargeBoost,
+	maxAffordableDeathChargeCasts,
+	scaleDeathChargeBoost
+} from '@/lib/minions/functions/deathCharge.js';
 import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { Consumable } from '@/lib/minions/types.js';
 import { calcPOHBoosts } from '@/lib/poh/index.js';
@@ -284,14 +292,31 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 	},
 	{
 		description: 'Rite of vile transference boost',
-		run: ({ monster, bitfield }) => {
+		run: ({ monster, bitfield, gearBank, addPostBoostEffect }) => {
 			if (!bitfield.includes(BitField.HasRiteOfVileTransference)) return null;
+			if (bitfield.includes(BitField.DisableRiteOfVileTransference)) return null;
+			if (gearBank.skillsAsLevels.magic < DEATH_CHARGE_MAGIC_LEVEL) return null;
+			if (maxAffordableDeathChargeCasts(gearBank.bank) < 1) return null;
 			const riteBoost = riteOfVileTransferenceBoostByMonsterID[monster.id];
 			if (riteBoost === undefined) return null;
-			return {
-				percentageReduction: riteBoost,
-				message: `${riteBoost}% for Rite of vile transference`
-			};
+			addPostBoostEffect({
+				description: 'Rite of vile transference',
+				run: ({ duration, quantity, gearBank }) => {
+					const casts = calcDeathChargeCasts({
+						bank: gearBank.bank,
+						duration,
+						quantity
+					});
+					if (casts < 1) return null;
+					const scaledBoost = scaleDeathChargeBoost(riteBoost, casts, quantity);
+					return {
+						percentageReduction: scaledBoost,
+						itemCost: deathChargeCastCost(casts),
+						message: formatDeathChargeBoost(scaledBoost, casts)
+					};
+				}
+			});
+			return null;
 		}
 	},
 	{

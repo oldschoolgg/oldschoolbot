@@ -171,6 +171,7 @@ export enum BitField {
 	UnlimitedOpenUntil = 57,
 	Boring = 58,
 	HasRiteOfVileTransference = 59,
+	DisableRiteOfVileTransference = 60,
 
 	OriginalCyrSupporter = 199
 }
@@ -325,6 +326,11 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 		name: 'Rite of vile transference Used',
 		protected: false,
 		userConfigurable: false
+	},
+	[BitField.DisableRiteOfVileTransference]: {
+		name: 'Disable Rite of vile transference boost',
+		protected: false,
+		userConfigurable: true
 	},
 	[BitField.ToggleAutoRummage]: { name: 'Auto Rummage Vale Offerings', protected: false, userConfigurable: true },
 	[BitField.WikiContributor]: { name: 'Wiki Contributor', protected: false, userConfigurable: false },

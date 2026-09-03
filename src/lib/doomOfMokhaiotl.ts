@@ -36,6 +36,11 @@ import {
 } from '@/lib/doomOfMokhaiotlHelpers.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
+import {
+	calcDeathChargeCasts,
+	DEATH_CHARGE_MAGIC_LEVEL,
+	deathChargeCastCost
+} from '@/lib/minions/functions/deathCharge.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { DoomTaskOptions } from '@/lib/types/minions.js';
 import { formatList, formatSkillRequirements } from '@/lib/util/smallUtils.js';
@@ -347,7 +352,11 @@ function getDoomGearState(user: DoomUser, targetDelve: number): DoomGearState {
 	const hasChargedEyeOfAyak = user.user.ayak_charges > 0 && user.hasEquippedOrInBank('Eye of ayak');
 	const hasLightbearer = user.hasEquippedOrInBank('Lightbearer');
 	const hasZcb = user.hasEquippedOrInBank('Zaryte crossbow');
-	const hasRiteOfVileTransference = user.user.bitfield.includes(BitField.HasRiteOfVileTransference);
+	const hasRiteOfVileTransference =
+		user.user.bitfield.includes(BitField.HasRiteOfVileTransference) &&
+		!user.user.bitfield.includes(BitField.DisableRiteOfVileTransference) &&
+		user.skillLevel('magic') >= DEATH_CHARGE_MAGIC_LEVEL &&
+		user.bank.has(deathChargeCastCost(1));
 	const hasNoxHalberd = user.hasEquippedOrInBank('Noxious halberd');
 	const hasCrystalHalb = DOOM_CRYSTAL_HALBERD_VARIANTS.some(i => user.hasEquippedOrInBank(i));
 	const hasDualMacuahuitl = user.hasEquippedOrInBank('Dual macuahuitl');
@@ -557,6 +566,14 @@ function getDoomTripCost(options: {
 	}
 
 	if (state.meleePunishWeapon === 'crystal_halberd') cost.add('Crystal shard', Math.ceil(delvesForCost));
+	if (state.hasRiteOfVileTransference) {
+		const casts = calcDeathChargeCasts({
+			bank: user.bank,
+			duration: result.duration,
+			quantity: delvesForCost
+		});
+		if (casts > 0) cost.add(deathChargeCastCost(casts));
+	}
 
 	return {
 		cost,

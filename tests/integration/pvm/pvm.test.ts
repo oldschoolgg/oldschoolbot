@@ -528,6 +528,8 @@ describe('PVM', async () => {
 				.add('Super restore(4)', 100)
 				.add('Super combat potion(4)', 100)
 				.add('Cosmic rune', 1000)
+				.add('Death rune', 1000)
+				.add('Blood rune', 1000)
 				.add('Soul rune', 1000)
 				.add('Fire rune', 10_000)
 				.add('Purging staff')
