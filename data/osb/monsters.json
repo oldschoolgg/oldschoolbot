@@ -1,6 +1,6 @@
 {
-	"hash": "d29a52cf8de8e8deeb7b1a36445c505b",
-	"date": "2026-08-20T09:55:58.477Z",
+	"hash": "c25a8e3538d8dff60e437a638401571a",
+	"date": "2026-09-03T09:12:13.789Z",
 	"data": [
 		{
 			"id": 2,
@@ -397,7 +397,6 @@
 					"Barrows gloves": 2
 				},
 				{
-					"Eye of ayak": 15,
 					"Harmonised nightmare staff": 7,
 					"Iban's staff": 5,
 					"Tumeken's shadow": 10,
@@ -1157,11 +1156,6 @@
 			"qp_required": 1,
 			"item_in_bank_boosts": [
 				{
-					"Avernic treads": 5,
-					"Avernic treads (max)": 7,
-					"Avernic treads (pe)": 7,
-					"Avernic treads (pe)(et)": 7,
-					"Avernic treads (pr)(pe)": 7,
 					"Pegasian boots": 5,
 					"Ranger boots": 3
 				},
@@ -3090,7 +3084,6 @@
 			"qp_required": 0,
 			"item_in_bank_boosts": [
 				{
-					"Eye of ayak": 25,
 					"Harmonised nightmare staff": 15,
 					"Sanguinesti staff": 12,
 					"Trident of the seas": 5,

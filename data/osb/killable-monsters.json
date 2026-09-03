@@ -1011,8 +1011,7 @@
 				"1409": 5,
 				"24423": 7,
 				"27275": 10,
-				"28583": 6,
-				"31113": 15
+				"28583": 6
 			},
 			{
 				"24738": 7
@@ -2111,12 +2110,7 @@
 		"item_in_bank_boosts": [
 			{
 				"2577": 3,
-				"13237": 5,
-				"31088": 5,
-				"31092": 7,
-				"31094": 7,
-				"31096": 7,
-				"31097": 7
+				"13237": 5
 			},
 			{
 				"11785": 5,
@@ -2782,10 +2776,6 @@
 			{
 				"items": [
 					{
-						"boost_percent": 5,
-						"item_id": 31091
-					},
-					{
 						"boost_percent": 3,
 						"item_id": 13239
 					}
@@ -2892,10 +2882,6 @@
 			},
 			{
 				"items": [
-					{
-						"boost_percent": 5,
-						"item_id": 31091
-					},
 					{
 						"boost_percent": 3,
 						"item_id": 13239
@@ -4250,8 +4236,7 @@
 				"22323": 12,
 				"24423": 15,
 				"27275": 20,
-				"28583": 3,
-				"31113": 25
+				"28583": 3
 			},
 			{
 				"20724": 5
@@ -8061,10 +8046,6 @@
 			{
 				"items": [
 					{
-						"boost_percent": 5,
-						"item_id": 31092
-					},
-					{
 						"boost_percent": 3,
 						"item_id": 13237
 					}
@@ -8192,10 +8173,6 @@
 			{
 				"items": [
 					{
-						"boost_percent": 5,
-						"item_id": 31092
-					},
-					{
 						"boost_percent": 3,
 						"item_id": 13237
 					}
@@ -8320,10 +8297,6 @@
 			{
 				"items": [
 					{
-						"boost_percent": 5,
-						"item_id": 31106
-					},
-					{
 						"boost_percent": 3,
 						"item_id": 19544
 					}
@@ -8332,10 +8305,6 @@
 			},
 			{
 				"items": [
-					{
-						"boost_percent": 5,
-						"item_id": 31093
-					},
 					{
 						"boost_percent": 3,
 						"item_id": 13235
@@ -8479,10 +8448,6 @@
 			{
 				"items": [
 					{
-						"boost_percent": 5,
-						"item_id": 31106
-					},
-					{
 						"boost_percent": 3,
 						"item_id": 19544
 					}
@@ -8491,10 +8456,6 @@
 			},
 			{
 				"items": [
-					{
-						"boost_percent": 5,
-						"item_id": 31093
-					},
 					{
 						"boost_percent": 3,
 						"item_id": 13235
@@ -8970,10 +8931,6 @@
 			{
 				"items": [
 					{
-						"boost_percent": 5,
-						"item_id": 31091
-					},
-					{
 						"boost_percent": 3,
 						"item_id": 13239
 					}
@@ -9085,10 +9042,6 @@
 			},
 			{
 				"items": [
-					{
-						"boost_percent": 5,
-						"item_id": 31091
-					},
 					{
 						"boost_percent": 3,
 						"item_id": 13239
