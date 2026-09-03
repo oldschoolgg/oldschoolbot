@@ -182,8 +182,13 @@ export class MUserClass extends BaseUser {
 		return getPerkTierCached(this.id) !== null;
 	}
 
-	async fetchPerkTier({ forceNoCache }: { forceNoCache?: boolean } = {}): Promise<0 | PerkTier> {
+	async fetchPerkTier({ forceNoCache }: { forceNoCache?: boolean } = {}): Promise<PerkTier> {
 		return await getUsersPerkTier({ user: this, forceNoCache });
+	}
+	get premiumTier(): PerkTier | null {
+		// TODO: Replace this with the actual Tier associated with the best entitlement.
+		const cached = getPerkTierCached(this.id);
+		return cached !== null ? Math.max(0, cached - 1) : null;
 	}
 
 	hasMonsterRequirements(monster: KillableMonster) {
@@ -705,7 +710,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 	}
 
 	async checkBankBackground() {
-		if (this.isModOrAdmin()) {
+		if (this.isModOrAdmin) {
 			return;
 		}
 		const resetBackground = async () => {

@@ -1,6 +1,10 @@
 import { boxSpawnHandler } from '@/lib/bso/boxSpawns.js';
 import { giveBoxResetTime, itemContractResetTime, spawnLampResetTime } from '@/lib/bso/bsoConstants.js';
-import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
+import {
+	DOUBLE_LOOT_FINISH_TIME_CACHE,
+	getNextDoubleLootUsageReset,
+	isDoubleLootActive
+} from '@/lib/bso/doubleLoot.js';
 import { getGuthixianCacheInterval, userHasDoneCurrentGuthixianCache } from '@/lib/bso/minigames/guthixianCache.js';
 import { allIronmanMbTables, allMbTables } from '@/lib/bso/openables/mysteryBoxes.js';
 
@@ -20,14 +24,13 @@ import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { minionStatsEmbed } from '@/lib/util/minionStatsEmbed.js';
 import { refreshUserCache } from '@/lib/util/refreshCache.js';
-import { PATRON_DOUBLE_LOOT_COOLDOWN } from '@/mahoji/commands/tools.js';
 import { minionStatusCommand } from '@/mahoji/lib/abstracted_commands/minionStatusCommand.js';
 
 const mentionText = `<@${globalConfig.clientID}>`;
 
 interface CooldownFnParams {
 	user: MUser;
-	perkTier: PerkTier | 0;
+	perkTier: PerkTier;
 }
 
 const cooldownTimers: {
@@ -36,6 +39,7 @@ const cooldownTimers: {
 	cd: number | ((args: CooldownFnParams) => number);
 	command: [string] | [string, string] | [string, string, string];
 	utcReset: boolean;
+	nextReset?: (lastDone: number) => number;
 }[] = [
 	{
 		name: 'Tears of Guthix',
@@ -82,9 +86,10 @@ const cooldownTimers: {
 	{
 		name: 'Monthly Double Loot',
 		timeStamp: (user: MUser) => Number(user.user.last_patron_double_time_trigger),
-		cd: PATRON_DOUBLE_LOOT_COOLDOWN,
+		cd: 0,
 		command: ['tools', 'patron', 'doubleloot'],
-		utcReset: false
+		utcReset: false,
+		nextReset: getNextDoubleLootUsageReset
 	},
 	{
 		name: 'Balthazars Big Bonanza',
@@ -247,7 +252,11 @@ const mentionCommands: MentionCommand[] = [
 				.map(cd => {
 					const lastDone = cd.timeStamp(user, stats);
 					const cooldown = isFunction(cd.cd) ? cd.cd({ user, perkTier }) : cd.cd;
-					const nextReset = cd.utcReset ? getNextUTCReset(lastDone, cooldown) : lastDone + cooldown;
+					const nextReset = cd.nextReset
+						? cd.nextReset(lastDone)
+						: cd.utcReset
+							? getNextUTCReset(lastDone, cooldown)
+							: lastDone + cooldown;
 
 					if (Date.now() < nextReset) {
 						const durationRemaining = dateFm(new Date(nextReset));

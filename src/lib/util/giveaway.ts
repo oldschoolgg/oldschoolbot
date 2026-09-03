@@ -27,13 +27,16 @@ export function generateGiveawayFinishedMsg(
 	return result;
 }
 
-export function generateGiveawayContent(host: string, finishDate: Date, usersEntered: string[]) {
-	return `${userMention(host)} created a giveaway that will finish at ${time(finishDate, 'F')} (${time(
-		finishDate,
-		'R'
-	)}).
-
-There are ${usersEntered.length} users entered in this giveaway.`;
+export function generateGiveawayContent(host: string, finishDate: Date, usersEntered: string[], allowIronmen = false) {
+	return [
+		`${userMention(host)} created a giveaway that will finish at ${time(finishDate, 'F')} (${time(
+			finishDate,
+			'R'
+		)}).`,
+		'',
+		...(allowIronmen ? ['🛡️ **Ironmen are enabled for this giveaway.**', ''] : []),
+		`There are ${usersEntered.length} users entered in this giveaway.`
+	].join('\n');
 }
 
 async function pickRandomGiveawayWinner(giveaway: Giveaway): Promise<MUser | null> {
@@ -46,7 +49,7 @@ async function pickRandomGiveawayWinner(giveaway: Giveaway): Promise<MUser | nul
 SELECT id
 FROM users
 WHERE id IN (SELECT user_id FROM giveaway_users)
-AND "minion.ironman" = false
+AND (${giveaway.allow_ironmen} = true OR "minion.ironman" = false)
 AND id != ${giveaway.user_id}
 ORDER BY random()
 LIMIT 1;
@@ -71,7 +74,12 @@ export const updateGiveawayMessage = debounce(async (_giveaway: Giveaway, winner
 			winner
 		);
 	} else {
-		newContent = generateGiveawayContent(giveaway.user_id, giveaway.finish_date, giveaway.users_entered);
+		newContent = generateGiveawayContent(
+			giveaway.user_id,
+			giveaway.finish_date,
+			giveaway.users_entered,
+			giveaway.allow_ironmen
+		);
 	}
 	const edits: BaseSendableMessage = {};
 	if (giveaway.completed) edits.components = [];

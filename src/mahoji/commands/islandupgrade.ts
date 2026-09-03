@@ -11,10 +11,12 @@ import {
 	defaultLastCollected,
 	defaultMaintenanceTimestamps,
 	formatDuration,
+	getAccumulationEntries,
 	getActiveAssignment,
 	getNextUpgradeForCategory,
 	getRemainingCost,
 	getTier,
+	getUpgradeCost,
 	getWeeklyMaintenanceDemand,
 	type IslandLastCollected,
 	type IslandMaintenanceTimestamps,
@@ -26,6 +28,7 @@ import {
 	MAINTENANCE_WINDOW_MS,
 	maintenanceTimeRemaining,
 	PASSIVE_ACCUM_CAP_MS,
+	PASSIVE_TICK_MS,
 	SKILL_CATEGORIES,
 	type SkillCategory,
 	TIER_LEVEL_CEILING,
@@ -466,13 +469,10 @@ export const islandUpgradeCommand = defineCommand({
 				const mult = accumulationMultiplier(category, activeAssignment);
 				const yields = calculateAccumulatedYields(category, tier, skillLevel, lastAt, now, mult, user.id);
 
-				if (yields.length === 0) {
+				const entries = getAccumulationEntries(category, tier, skillLevel);
+				if (entries.length === 0) {
 					if (skillLevel < 1) {
 						return `You need at least level 1 ${category} to collect from **${meta.label}**.`;
-					}
-					const timeSince = now - lastAt;
-					if (timeSince < 60_000) {
-						return `Nothing has accumulated yet - come back in a minute.`;
 					}
 					return (
 						`Nothing to collect from **${meta.label}** yet.\n\n` +
@@ -480,6 +480,12 @@ export const islandUpgradeCommand = defineCommand({
 						`any materials this tier unlocks up to level **${ceiling}**.\n` +
 						`Raise your ${category} level to start receiving materials.`
 					);
+				}
+
+				if (yields.length === 0) {
+					const timeSince = now - lastAt;
+					const timeRemaining = Math.max(0, PASSIVE_TICK_MS - (timeSince % PASSIVE_TICK_MS));
+					return `Nothing has accumulated from **${meta.label}** yet - materials accumulate in batches every 20 minutes (next batch ready in **${formatDuration(timeRemaining)}**).`;
 				}
 
 				const isAssigned = (activeAssignment as string) === category;
@@ -659,10 +665,10 @@ export const islandUpgradeCommand = defineCommand({
 
 			if (nextUpgrade) {
 				str += `**Next:** ${nextUpgrade.name} *(${nextUpgrade.bonus})*\n`;
-				if (isContributionComplete(nextUpgrade, contribs)) {
+				if (isContributionComplete(nextUpgrade, contribs, user.isIronman)) {
 					str += `Ready! \`/islandupgrade complete type:${CATEGORY_TO_CHOICE[category]}\`\n`;
 				} else {
-					const remaining = getRemainingCost(nextUpgrade, contribs);
+					const remaining = getRemainingCost(nextUpgrade, contribs, user.isIronman);
 					str += `**Still needed:** ${truncateString(remaining.toString(), 300)}\n`;
 				}
 			} else {
@@ -884,11 +890,11 @@ export const islandUpgradeCommand = defineCommand({
 
 			const contribs = currentContributions[category] ?? {};
 
-			if (isContributionComplete(nextUpgrade, contribs)) {
+			if (isContributionComplete(nextUpgrade, contribs, user.isIronman)) {
 				return `All resources are in. \`/islandupgrade complete type:${CATEGORY_TO_CHOICE[category]}\``;
 			}
 
-			const remaining = getRemainingCost(nextUpgrade, contribs);
+			const remaining = getRemainingCost(nextUpgrade, contribs, user.isIronman);
 			const toContribute = new Bank();
 			for (const [item, qty] of remaining.items()) {
 				const has = item.name === 'Coins' ? Number(user.user.GP) : user.bank.amount(item.id);
@@ -907,7 +913,7 @@ export const islandUpgradeCommand = defineCommand({
 				const key = item.id.toString();
 				afterContribs[key] = (afterContribs[key] ?? 0) + qty;
 			}
-			const afterRemaining = getRemainingCost(nextUpgrade, afterContribs);
+			const afterRemaining = getRemainingCost(nextUpgrade, afterContribs, user.isIronman);
 			const willComplete = afterRemaining.length === 0;
 
 			const image = await makeBankImage({
@@ -916,6 +922,8 @@ export const islandUpgradeCommand = defineCommand({
 				user
 			});
 
+			const fullCost = getUpgradeCost(nextUpgrade, user.isIronman);
+
 			await interaction.confirmation(
 				`**Contribute to ${nextUpgrade.name}?**\n\n` +
 					`> ${nextUpgrade.flavorText}\n\n` +
@@ -923,7 +931,7 @@ export const islandUpgradeCommand = defineCommand({
 					(willComplete
 						? `**This will complete the upgrade!**`
 						: `**Still needed after this:** ${truncateString(afterRemaining.toString(), 300)}`) +
-					`\n\n**Full cost:** ${truncateString(nextUpgrade.cost.toString(), 300)}\n\n` +
+					`\n\n**Full cost:** ${truncateString(fullCost.toString(), 300)}\n\n` +
 					`Contributed items cannot be refunded.`
 			);
 
@@ -946,7 +954,7 @@ export const islandUpgradeCommand = defineCommand({
 
 			await saveState(currentUpgrades, updatedContributions, currentMaintenance, activeAssignment);
 
-			const nowComplete = isContributionComplete(nextUpgrade, updatedContribs);
+			const nowComplete = isContributionComplete(nextUpgrade, updatedContribs, user.isIronman);
 
 			if (nowComplete) {
 				return {
@@ -957,7 +965,7 @@ export const islandUpgradeCommand = defineCommand({
 				};
 			}
 
-			const newRemaining = getRemainingCost(nextUpgrade, updatedContribs);
+			const newRemaining = getRemainingCost(nextUpgrade, updatedContribs, user.isIronman);
 			return {
 				content:
 					`**Contributed to ${nextUpgrade.name}!**\n\n> ${nextUpgrade.flavorText}\n\n` +
@@ -975,8 +983,8 @@ export const islandUpgradeCommand = defineCommand({
 
 			const contribs = currentContributions[category] ?? {};
 
-			if (!isContributionComplete(nextUpgrade, contribs)) {
-				const remaining = getRemainingCost(nextUpgrade, contribs);
+			if (!isContributionComplete(nextUpgrade, contribs, user.isIronman)) {
+				const remaining = getRemainingCost(nextUpgrade, contribs, user.isIronman);
 				return (
 					`**${nextUpgrade.name}** is not yet fully funded.\n\n` +
 					`**Still needed:** ${truncateString(remaining.toString(), 500)}\n\n` +

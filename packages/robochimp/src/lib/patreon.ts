@@ -106,6 +106,16 @@ function getPerkTierFromPaidBits(bits: readonly number[]) {
 	return highestPaidTier?.perkTier ?? 0;
 }
 
+function getRoboChimpRolePerkTier(bits: readonly number[]) {
+	if ([Bits.Admin, Bits.Moderator, Bits.WikiContributor, Bits.Contributor].some(bit => bits.includes(bit))) {
+		return PerkTier.Four;
+	}
+	if (bits.includes(Bits.Trusted)) {
+		return PerkTier.Three;
+	}
+	return 0;
+}
+
 function sameNumberArray(a: readonly number[], b: readonly number[]) {
 	return a.length === b.length && a.every((value, index) => value === b[index]);
 }
@@ -314,6 +324,11 @@ class PatreonTask {
 			where: {
 				OR: [
 					{ bits: { hasSome: allPatronBits } },
+					{
+						bits: {
+							hasSome: [Bits.Admin, Bits.Moderator, Bits.WikiContributor, Bits.Contributor, Bits.Trusted]
+						}
+					},
 					{ perk_tier: { gt: 0 } },
 					...(extraIDs.length > 0 ? [{ id: { in: extraIDs } }] : [])
 				]
@@ -682,7 +697,11 @@ class PatreonTask {
 			) {
 				nextBits.push(Bits.CyrsOriginalPatrons);
 			}
-			const nextPerkTier = Math.max(...entitlements.map(tier => tier.perkTier), 0);
+			const nextPerkTier = Math.max(
+				getRoboChimpRolePerkTier(user.bits),
+				...entitlements.map(tier => tier.perkTier),
+				0
+			);
 
 			desiredUsers.set(discordID, {
 				...user,

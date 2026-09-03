@@ -44,6 +44,37 @@ export class TestClient extends AsyncEventEmitter<any> implements AsyncDisposabl
 		return '';
 	}
 
+	createInteractionCollector(options: { users?: string[] }) {
+		const handlers: Record<string, (...args: any[]) => any> = {};
+		const collector = {
+			on: (event: string, handler: (...args: any[]) => any) => {
+				handlers[event] = handler;
+				if (event === 'collect') {
+					queueMicrotask(async () => {
+						for (const userId of options.users ?? []) {
+							if (!handlers.collect) return;
+							await handlers.collect({
+								customId: 'TRADE_CONFIRM',
+								userId,
+								reply: async () => {},
+								silentButtonAck: () => {}
+							});
+						}
+					});
+				}
+				return collector;
+			},
+			stop: (reason = 'user') => {
+				handlers.end?.(new Map(), reason);
+			}
+		};
+		return collector;
+	}
+
+	async fetchUserUsername(userId: string): Promise<string> {
+		return (await this.fetchUser(userId)).username;
+	}
+
 	async reset() {
 		await global.prisma!.clientStorage.delete({ where: { id: this.data.id } });
 		this.data = (await global.prisma!.clientStorage.create({ data: { id: this.data.id } }))!;
@@ -143,5 +174,6 @@ export async function mockClient() {
 
 	globalConfig.clientID = clientId;
 	process.env.CLIENT_ID = clientId;
-	return new TestClient(client);
+	global.globalClient = new TestClient(client) as any;
+	return global.globalClient as any as TestClient;
 }

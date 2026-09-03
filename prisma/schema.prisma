@@ -143,6 +143,7 @@ model ClientStorage {
   grand_exchange_tax_bank  BigInt  @default(0)
 
   maxing_message String @default("Congratulations on maxing!")
+  extra_settings Json   @default("{}") @db.Json
 
   // BSO
   gp_ic                   BigInt @default(0)
@@ -191,6 +192,7 @@ model ClientStorage {
   portable_tanner_loot       Json @default("{}") @db.Json
   buried_treasure_bank       Json @default("{}") @db.JsonB
   buried_treasure_winners    Json @default("{}") @db.JsonB
+  staff_bestow_limits        Json @default("{}") @db.JsonB
 
   last_bso_giveaways_ping  DateTime? @db.Timestamp(6)
   last_giveaway_doubleloot DateTime? @db.Timestamp(6)
@@ -253,17 +255,18 @@ model GearPreset {
 }
 
 model Giveaway {
-  id          Int      @id
-  user_id     String   @db.VarChar(19)
-  start_date  DateTime @db.Timestamp(6)
-  finish_date DateTime @db.Timestamp(6)
-  duration    Int
-  completed   Boolean
-  guild_id    String?  @db.VarChar(20)
-  channel_id  String   @db.VarChar(19)
-  loot        Json     @db.Json
-  message_id  String   @db.VarChar(19)
-  reaction_id String?  @db.VarChar(19)
+  id            Int      @id
+  user_id       String   @db.VarChar(19)
+  start_date    DateTime @db.Timestamp(6)
+  finish_date   DateTime @db.Timestamp(6)
+  duration      Int
+  completed     Boolean
+  allow_ironmen Boolean  @default(false)
+  guild_id      String?  @db.VarChar(20)
+  channel_id    String   @db.VarChar(19)
+  loot          Json     @db.Json
+  message_id    String   @db.VarChar(19)
+  reaction_id   String?  @db.VarChar(19)
 
   users_entered String[] @default([])
 
@@ -533,6 +536,7 @@ model User {
 
   cl_array                      Int[]    @default([])
   completed_achievement_diaries String[] @default([])
+  rp_bestow_bank                Json?    @db.JsonB
 
   @@index([id, last_command_date])
   @@map("users")
@@ -704,7 +708,7 @@ model Minigame {
   turaels_trials           Int  @default(0)
   brimstone_distillery     Int  @default(0)
   construction_contracts   Int  @default(0)
-  user                     User @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: Cascade, map: "FK_minigames_user_id_users_id")
+  user                     User @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "FK_minigames_user_id_users_id")
 
   @@index([user_id])
   @@map("minigames")
@@ -865,6 +869,7 @@ enum economy_transaction_type {
   duel
   gri
   gift
+  bestow
 }
 
 model EconomyTransaction {
