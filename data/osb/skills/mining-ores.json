@@ -108,6 +108,20 @@
 		"clue_scroll_chance": 741600
 	},
 	{
+		"level": 78,
+		"prayer_level": 43,
+		"xp": 22.5,
+		"id": 30846,
+		"name": "Infernal shale",
+		"respawn_time": 0,
+		"banking_time": 0,
+		"slope": 0,
+		"intercept": 100,
+		"output_id": 30848,
+		"output_multiplier": 1.3,
+		"fixed_rate_per_hour": ["Diamond amulet", "Iban's shadow"]
+	},
+	{
 		"level": 15,
 		"xp": 35,
 		"id": 440,
