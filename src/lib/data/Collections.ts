@@ -57,7 +57,6 @@ import {
 	demonicGorillaCL,
 	derangedArchaeologistCL,
 	diariesCL,
-	doomOfMokhaiotlCL,
 	dukeSucellusCL,
 	type FormatProgressFunction,
 	fightCavesCL,
@@ -587,52 +586,6 @@ export const allCollectionLogs: ICollection = {
 				alias: ['todt', 'wintertodt', 'wt'],
 				items: wintertodtCL,
 				fmtProg: mgProg('wintertodt')
-			},
-			'Doom of Mokhaiotl': {
-				alias: ['doom', 'mokhaiotl', 'mokha', 'osto-ayak', 'ostayak'],
-				allItems: resolveItems([
-					'Mokhaiotl cloth',
-					'Eye of ayak (uncharged)',
-					'Avernic treads',
-					'Dom',
-					'Dragon med helm',
-					'Dragon platelegs',
-					'Mystic earth staff',
-					'Rune pickaxe',
-					'Death rune',
-					'Chaos rune',
-					'Earth rune',
-					'Fire rune',
-					'Cannonball',
-					'Onyx bolts',
-					'Coal',
-					'Gold ore',
-					'Runite ore',
-					'Celastrus seed',
-					'Ranarr seed',
-					'Spirit seed',
-					'Aether catalyst',
-					'Dragon dart tip',
-					'Raw shark',
-					'Shark lure',
-					'Sun-kissed bones',
-					'Tooth half of key (moon key)',
-					'Demon tear',
-					'Mokhaiotl waystone',
-					'Clue scroll (elite)'
-				]),
-				items: doomOfMokhaiotlCL,
-				fmtProg: async ({ user }) => {
-					const stats = await user.fetchStats();
-					const deepestDelve = (stats.doom_deepest_delve ?? 0) as number;
-					const deepDelves = (stats.doom_deep_delves ?? 0) as number;
-					const totalDelves = (stats.doom_total_delves ?? 0) as number;
-					return [
-						`Deepest Delve: ${deepestDelve}`,
-						`Deep Delves: ${deepDelves}`,
-						`Total Delves: ${totalDelves}`
-					];
-				}
 			},
 			Yama: {
 				items: yamaCL,
