@@ -31,6 +31,44 @@ describe('PVM', async () => {
 		);
 	});
 
+	it('lists charged Eye of ayak on Doom trips', async () => {
+		const user = await client.mockUser({
+			maxed: true,
+			rangeGear: resolveItems([
+				'Masori mask (f)',
+				'Necklace of anguish',
+				'Masori body (f)',
+				"Ava's assembler",
+				'Zaryte vambraces',
+				'Masori chaps (f)',
+				'Avernic treads',
+				'Twisted bow',
+				'Dragon arrow'
+			]),
+			bank: new Bank()
+				.add('Anti-venom+(4)', 100)
+				.add('Dragon arrow', 1000)
+				.add('Emberlight')
+				.add('Eye of ayak')
+				.add('Noxious halberd')
+				.add('Ranging potion(4)', 100)
+				.add('Saradomin brew(4)', 100)
+				.add('Super restore(4)', 100)
+		});
+		await user.update({
+			ayak_charges: 100,
+			bitfield: {
+				push: BitField.HasDexScroll
+			},
+			finished_quest_ids: [QuestID.TheFinalDawn]
+		});
+		user.gear.range.equip('Dragon arrow', 1000);
+		await user.update({ gear_range: user.gear.range.raw() } as any);
+
+		const result = await user.runCommand(delvesCommand, { doom: { target_delve: 1 } });
+		expect(result).toContain('Eye of ayak replacing mage grub rune costs');
+	});
+
 	it('Should remove food', async () => {
 		const user = await createTestUser(new Bank().add('Shark', 1000), {
 			skills_prayer: convertLVLtoXP(70),

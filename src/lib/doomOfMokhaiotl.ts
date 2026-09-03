@@ -632,6 +632,7 @@ function buildDoomBoostLines(state: DoomGearState, kcReduction: number, skillBoo
 	if (state.hasRiteOfVileTransference) {
 		boostLines.push(`${RITE_OF_VILE_TRANSFERENCE_SPEED_BOOST}% for Rite of vile transference`);
 	}
+	if (state.hasChargedEyeOfAyak) boostLines.push('Eye of ayak replacing mage grub rune costs');
 	if (state.hasZcb) boostLines.push(`${ZCB_SPEED_BOOST}% for Zaryte crossbow`);
 	else if (state.meleePunishWeapon === 'crystal_halberd') {
 		boostLines.push(`${CRYSTAL_HALBERD_SPEED_BOOST}% for ${getDoomMeleePunishWeaponName(state.meleePunishWeapon)}`);
