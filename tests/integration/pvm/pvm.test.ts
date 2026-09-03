@@ -69,6 +69,51 @@ describe('PVM', async () => {
 		expect(result).toContain('Eye of ayak replacing mage grub rune costs');
 	});
 
+	it('allows Doom without the ZCB boost when missing ruby bolts', async () => {
+		const user = await client.mockUser({
+			maxed: true,
+			rangeGear: resolveItems([
+				'Masori mask (f)',
+				'Necklace of anguish',
+				'Masori body (f)',
+				"Ava's assembler",
+				'Zaryte vambraces',
+				'Masori chaps (f)',
+				'Avernic treads',
+				'Twisted bow',
+				'Dragon arrow'
+			]),
+			bank: new Bank()
+				.add('Anti-venom+(4)', 100)
+				.add('Dragon arrow', 1000)
+				.add('Emberlight')
+				.add('Eye of ayak')
+				.add('Noxious halberd')
+				.add('Ranging potion(4)', 100)
+				.add('Saradomin brew(4)', 100)
+				.add('Super restore(4)', 100)
+				.add('Zaryte crossbow')
+		});
+		await user.update({
+			ayak_charges: 100,
+			bitfield: {
+				push: BitField.HasDexScroll
+			},
+			finished_quest_ids: [QuestID.TheFinalDawn]
+		});
+		user.gear.range.equip('Dragon arrow', 1000);
+		await user.update({ gear_range: user.gear.range.raw() } as any);
+
+		const result = await user.runCommand(delvesCommand, { doom: { target_delve: 1 } });
+		expect(result).toContain('is now fighting the **Doom of Mokhaiotl**');
+		expect(result).toContain('Zaryte crossbow boost skipped (missing Ruby bolts (e)/Ruby dragon bolts (e))');
+		expect(result).not.toContain('10% for Zaryte crossbow');
+
+		const activity = await ActivityManager.getActivityOfUser(user.id);
+		expect(activity?.type).toEqual('DoomOfMokhaiotl');
+		expect(activity && 'disableZcbBoost' in activity ? activity.disableZcbBoost : false).toBe(true);
+	});
+
 	it('Should remove food', async () => {
 		const user = await createTestUser(new Bank().add('Shark', 1000), {
 			skills_prayer: convertLVLtoXP(70),

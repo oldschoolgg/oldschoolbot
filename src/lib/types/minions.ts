@@ -559,6 +559,7 @@ export interface DoomTaskOptions extends ActivityTaskOptions {
 	brewsUsed: number;
 	restoresUsed: number;
 	rangingUsed: number;
+	disableZcbBoost?: boolean;
 }
 
 type UserID = string;

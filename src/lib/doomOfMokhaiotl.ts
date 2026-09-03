@@ -176,6 +176,9 @@ interface DoomGearState {
 	hasChargedEyeOfAyak: boolean;
 	hasLightbearer: boolean;
 	hasZcb: boolean;
+	zcbBoostDisabled: boolean;
+	zcbBoltsNeeded: number;
+	zcbBoltsOwned: number;
 	hasRiteOfVileTransference: boolean;
 	meleePunishWeapon: DoomMeleePunishWeapon | null;
 	equippedArrowId: number | null;
@@ -346,12 +349,19 @@ export function startDoomRun(options: {
 	};
 }
 
-function getDoomGearState(user: DoomUser, targetDelve: number): DoomGearState {
+const RUBY_BOLT_VARIANTS = ['Ruby bolts (e)', 'Ruby dragon bolts (e)'] as const;
+
+function getDoomGearState(user: DoomUser, targetDelve: number, disableZcbBoost = false): DoomGearState {
 	const hasTbow = user.gear.range.hasEquipped('Twisted bow', true, true);
 	const hasSBow = user.gear.range.hasEquipped('Scorching bow', true, true);
 	const hasChargedEyeOfAyak = user.user.ayak_charges > 0 && user.hasEquippedOrInBank('Eye of ayak');
 	const hasLightbearer = user.hasEquippedOrInBank('Lightbearer');
-	const hasZcb = user.hasEquippedOrInBank('Zaryte crossbow');
+	const ownsZcb = user.hasEquippedOrInBank('Zaryte crossbow');
+	const avasDevice = avasDevices.find(avas => user.gear.range.hasEquipped(avas.item.id));
+	const zcbBoltsNeeded = calculateDoomZcbBoltsNeeded(targetDelve, avasDevice?.reduction ?? 0);
+	const zcbBoltsOwned = RUBY_BOLT_VARIANTS.reduce((total, bolt) => total + user.bank.amount(bolt), 0);
+	const zcbBoostDisabled = ownsZcb && (disableZcbBoost || zcbBoltsOwned < zcbBoltsNeeded);
+	const hasZcb = ownsZcb && !zcbBoostDisabled;
 	const hasRiteOfVileTransference =
 		user.user.bitfield.includes(BitField.HasRiteOfVileTransference) &&
 		!user.user.bitfield.includes(BitField.DisableRiteOfVileTransference) &&
@@ -390,6 +400,9 @@ function getDoomGearState(user: DoomUser, targetDelve: number): DoomGearState {
 		hasChargedEyeOfAyak,
 		hasLightbearer,
 		hasZcb,
+		zcbBoostDisabled,
+		zcbBoltsNeeded,
+		zcbBoltsOwned,
 		hasRiteOfVileTransference,
 		meleePunishWeapon,
 		equippedArrowId,
@@ -549,16 +562,10 @@ function getDoomTripCost(options: {
 	}
 
 	if (state.hasZcb) {
-		const rubyBoltVariants = ['Ruby bolts (e)', 'Ruby dragon bolts (e)'];
 		const avasDevice = avasDevices.find(avas => user.gear.range.hasEquipped(avas.item.id));
 		const boltsNeeded = calculateDoomZcbBoltsNeeded(delvesForCost, avasDevice?.reduction ?? 0);
-		const boltsOwned = rubyBoltVariants.reduce((total, bolt) => total + user.bank.amount(bolt), 0);
-		if (boltsOwned < boltsNeeded) {
-			return `You need ${boltsNeeded.toLocaleString()}x Ruby bolts (e) or Ruby dragon bolts (e) for this trip, you only own ${boltsOwned.toLocaleString()} total.`;
-		}
-
 		let boltsRemaining = boltsNeeded;
-		for (const bolt of rubyBoltVariants) {
+		for (const bolt of RUBY_BOLT_VARIANTS) {
 			if (boltsRemaining <= 0) break;
 			const owned = user.bank.amount(bolt);
 			if (owned > 0) {
@@ -634,8 +641,15 @@ function buildDoomBoostLines(state: DoomGearState, kcReduction: number, skillBoo
 	}
 	if (state.hasChargedEyeOfAyak) boostLines.push('Eye of ayak replacing mage grub rune costs');
 	if (state.hasZcb) boostLines.push(`${ZCB_SPEED_BOOST}% for Zaryte crossbow`);
-	else if (state.meleePunishWeapon === 'crystal_halberd') {
-		boostLines.push(`${CRYSTAL_HALBERD_SPEED_BOOST}% for ${getDoomMeleePunishWeaponName(state.meleePunishWeapon)}`);
+	else {
+		if (state.zcbBoostDisabled) {
+			boostLines.push('Zaryte crossbow boost skipped (missing Ruby bolts (e)/Ruby dragon bolts (e))');
+		}
+		if (state.meleePunishWeapon === 'crystal_halberd') {
+			boostLines.push(
+				`${CRYSTAL_HALBERD_SPEED_BOOST}% for ${getDoomMeleePunishWeaponName(state.meleePunishWeapon)}`
+			);
+		}
 	}
 
 	return boostLines;
@@ -659,7 +673,12 @@ function buildDoomDeathChanceLine(deathChances: number[]): string {
 	)} | **Target delve death chance:** ${formatDoomDeathChance(targetDelveDeathChance)}`;
 }
 
-export async function doomCommand(itx: OSInteraction, targetDelve: number, stopOnUnique = true) {
+export async function doomCommand(
+	itx: OSInteraction,
+	targetDelve: number,
+	stopOnUnique = true,
+	disableZcbBoost = false
+) {
 	const { user, rng } = itx;
 
 	if (await user.minionIsBusy()) {
@@ -669,10 +688,15 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 	const preflightError = getDoomPreflightError(user, targetDelve);
 	if (preflightError) return preflightError;
 
-	const state = getDoomGearState(user, targetDelve);
+	const state = getDoomGearState(user, targetDelve, disableZcbBoost);
 	const gearError = getDoomGearError(user, state);
 	if (gearError) return gearError;
 	if (!state.meleePunishWeapon) throw new Error('Doom gear validated without a melee punish weapon.');
+	if (state.zcbBoostDisabled && !disableZcbBoost) {
+		await itx.confirmation(
+			`You have a Zaryte crossbow, but need ${state.zcbBoltsNeeded.toLocaleString()}x Ruby bolts (e) or Ruby dragon bolts (e) for the ZCB boost and only own ${state.zcbBoltsOwned.toLocaleString()} total. Continue without the ZCB boost?`
+		);
+	}
 	const userMagicLevel = user.skillLevel('magic');
 
 	const stats = await user.fetchStats();
@@ -772,7 +796,8 @@ export async function doomCommand(itx: OSInteraction, targetDelve: number, stopO
 		ayakChargesGained: res.ayakChargesGained,
 		brewsUsed: costResult.brewsUsed,
 		restoresUsed: costResult.restoresUsed,
-		rangingUsed: costResult.rangingUsed
+		rangingUsed: costResult.rangingUsed,
+		disableZcbBoost: state.zcbBoostDisabled || undefined
 	});
 
 	return [

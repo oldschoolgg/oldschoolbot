@@ -32,7 +32,12 @@ export const delvesCommand = defineCommand({
 	],
 	run: async ({ options, interaction }) => {
 		if (options.doom) {
-			return doomCommand(interaction, options.doom.target_delve as number, options.doom.stop_on_unique ?? true);
+			return doomCommand(
+				interaction,
+				options.doom.target_delve as number,
+				options.doom.stop_on_unique ?? true,
+				Boolean((options.doom as { disable_zcb_boost?: boolean }).disable_zcb_boost)
+			);
 		}
 		return 'Invalid command.';
 	}
