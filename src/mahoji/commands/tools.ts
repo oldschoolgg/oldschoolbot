@@ -1,8 +1,18 @@
 import { EmbedBuilder } from '@oldschoolgg/discord';
 import { formatDuration, stringMatches, stringSearch } from '@oldschoolgg/toolkit';
-import { Bank, ECreature, type Item, type ItemBank, ItemGroups, Items, resolveItems, ToBUniqueTable } from 'oldschooljs';
+import {
+	Bank,
+	ECreature,
+	type Item,
+	type ItemBank,
+	ItemGroups,
+	Items,
+	resolveItems,
+	ToBUniqueTable
+} from 'oldschooljs';
 
 import type { Activity } from '@/prisma/main.js';
+import { Prisma } from '@/prisma/main.js';
 import { choicesOf, itemOption, monsterOption, skillOption } from '@/discord/index.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { allStashUnitsFlat } from '@/lib/clues/stashUnits.js';
@@ -10,7 +20,6 @@ import { PerkTier } from '@/lib/constants.js';
 import { allCLItemsFiltered, allDroppedItems } from '@/lib/data/Collections.js';
 import { gnomeRestaurantCL, guardiansOfTheRiftCL, shadesOfMorttonCL } from '@/lib/data/CollectionsExport.js';
 import pets from '@/lib/data/pets.js';
-import { Prisma } from '@/prisma/main.js';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
 import { allOpenables, type UnifiedOpenable } from '@/lib/openables.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
@@ -342,7 +351,7 @@ LIMIT 10;`);
 }
 
 export const dryStreakEntities: DrystreakEntity[] = [
-		{
+	{
 		name: 'Herbiboar',
 		items: resolveItems(['Herbi']),
 		run: async ({ item, ironmanOnly }) => {
