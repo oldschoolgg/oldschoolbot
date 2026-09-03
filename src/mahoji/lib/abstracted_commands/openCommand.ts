@@ -63,7 +63,7 @@ export async function abstractedOpenUntilCommand(
 		if (unlimitedEnabled) {
 			if (chatMessage) {
 				messages.push(
-					`${Emoji.Seer} You didn't specify a quantity, so Open Until is using your unlimited default`
+					`${Emoji.Seer} You didn't specify a quantity, so Open Until is using your unlimited default.`
 				);
 			}
 			maxOpenQuantity = amountOfThisOpenableOwned;
@@ -105,7 +105,15 @@ export async function abstractedOpenUntilCommand(
 	});
 	for (let i = 0; i < max; i++) {
 		cost.add(openable.openedItem.id);
-		const thisLoot = await getOpenableLoot({ openable, quantity: 1, user, rng, yielder });
+		const thisLoot = await getOpenableLoot({
+			openable,
+			quantity: 1,
+			user,
+			rng,
+			openedCountOffset: amountOpened,
+			previousLoot: loot,
+			yielder
+		});
 		loot.add(thisLoot.bank);
 		amountOpened++;
 		targetCount = loot.amount(openUntil.id);

@@ -111,6 +111,9 @@ setItemAlias(25_346, 'Blue soul cape');
 
 setItemAlias(6672, 'Fishbowl pet');
 
+// Yama Dossier
+setItemAlias(30_803, 'Dossier');
+
 // Castle wars
 setItemAlias(25_165, 'Red decorative full helm');
 setItemAlias(4071, 'Red decorative helm');

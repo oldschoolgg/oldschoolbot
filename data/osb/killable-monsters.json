@@ -254,6 +254,26 @@
 			{
 				"items": [
 					{
+						"boost_percent": 7,
+						"item_id": 31097
+					},
+					{
+						"boost_percent": 7,
+						"item_id": 31095
+					},
+					{
+						"boost_percent": 7,
+						"item_id": 31094
+					},
+					{
+						"boost_percent": 7,
+						"item_id": 31091
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31088
+					},
+					{
 						"boost_percent": 5,
 						"item_id": 13239
 					}
@@ -513,12 +533,32 @@
 			{
 				"items": [
 					{
+						"boost_percent": 3,
+						"item_id": 31097
+					},
+					{
+						"boost_percent": 3,
+						"item_id": 31095
+					},
+					{
+						"boost_percent": 3,
+						"item_id": 31094
+					},
+					{
+						"boost_percent": 3,
+						"item_id": 31091
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 31088
+					},
+					{
 						"boost_percent": 2,
 						"item_id": 13239
 					}
 				],
 				"gear_setup": "melee",
-				"required": true
+				"required": false
 			}
 		],
 		"item_in_bank_boosts": [
@@ -971,7 +1011,8 @@
 				"1409": 5,
 				"24423": 7,
 				"27275": 10,
-				"28583": 6
+				"28583": 6,
+				"31113": 15
 			},
 			{
 				"24738": 7
@@ -2070,7 +2111,12 @@
 		"item_in_bank_boosts": [
 			{
 				"2577": 3,
-				"13237": 5
+				"13237": 5,
+				"31088": 5,
+				"31092": 7,
+				"31094": 7,
+				"31096": 7,
+				"31097": 7
 			},
 			{
 				"11785": 5,
@@ -2212,11 +2258,32 @@
 			{
 				"items": [
 					{
+						"boost_percent": 2,
+						"item_id": 31097
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 31095
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 31094
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 31091
+					},
+					{
+						"boost_percent": 1,
+						"item_id": 31088
+					},
+					{
 						"boost_percent": 1,
 						"item_id": 13239
 					}
 				],
-				"gear_setup": "melee"
+				"gear_setup": "melee",
+				"required": false
 			}
 		],
 		"degradeable_item_usage": [
@@ -2715,6 +2782,10 @@
 			{
 				"items": [
 					{
+						"boost_percent": 5,
+						"item_id": 31091
+					},
+					{
 						"boost_percent": 3,
 						"item_id": 13239
 					}
@@ -2821,6 +2892,10 @@
 			},
 			{
 				"items": [
+					{
+						"boost_percent": 5,
+						"item_id": 31091
+					},
 					{
 						"boost_percent": 3,
 						"item_id": 13239
@@ -4175,7 +4250,8 @@
 				"22323": 12,
 				"24423": 15,
 				"27275": 20,
-				"28583": 3
+				"28583": 3,
+				"31113": 25
 			},
 			{
 				"20724": 5
@@ -5022,6 +5098,10 @@
 				"items": [
 					{
 						"boost_percent": 5,
+						"item_id": 31106
+					},
+					{
+						"boost_percent": 3,
 						"item_id": 19544
 					}
 				],
@@ -5029,6 +5109,26 @@
 			},
 			{
 				"items": [
+					{
+						"boost_percent": 5,
+						"item_id": 31097
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31096
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31094
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31092
+					},
+					{
+						"boost_percent": 3,
+						"item_id": 31088
+					},
 					{
 						"boost_percent": 3,
 						"item_id": 13237
@@ -5038,6 +5138,26 @@
 			},
 			{
 				"items": [
+					{
+						"boost_percent": 5,
+						"item_id": 31097
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31096
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31095
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31093
+					},
+					{
+						"boost_percent": 3,
+						"item_id": 31088
+					},
 					{
 						"boost_percent": 3,
 						"item_id": 13235
@@ -7815,7 +7935,27 @@
 			{
 				"items": [
 					{
-						"boost_percent": 2,
+						"boost_percent": 7,
+						"item_id": 31097
+					},
+					{
+						"boost_percent": 7,
+						"item_id": 31095
+					},
+					{
+						"boost_percent": 7,
+						"item_id": 31094
+					},
+					{
+						"boost_percent": 7,
+						"item_id": 31091
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 31088
+					},
+					{
+						"boost_percent": 5,
 						"item_id": 13239
 					}
 				],
@@ -7920,6 +8060,10 @@
 			},
 			{
 				"items": [
+					{
+						"boost_percent": 5,
+						"item_id": 31092
+					},
 					{
 						"boost_percent": 3,
 						"item_id": 13237
@@ -8048,6 +8192,10 @@
 			{
 				"items": [
 					{
+						"boost_percent": 5,
+						"item_id": 31092
+					},
+					{
 						"boost_percent": 3,
 						"item_id": 13237
 					}
@@ -8172,6 +8320,10 @@
 			{
 				"items": [
 					{
+						"boost_percent": 5,
+						"item_id": 31106
+					},
+					{
 						"boost_percent": 3,
 						"item_id": 19544
 					}
@@ -8180,6 +8332,10 @@
 			},
 			{
 				"items": [
+					{
+						"boost_percent": 5,
+						"item_id": 31093
+					},
 					{
 						"boost_percent": 3,
 						"item_id": 13235
@@ -8323,6 +8479,10 @@
 			{
 				"items": [
 					{
+						"boost_percent": 5,
+						"item_id": 31106
+					},
+					{
 						"boost_percent": 3,
 						"item_id": 19544
 					}
@@ -8331,6 +8491,10 @@
 			},
 			{
 				"items": [
+					{
+						"boost_percent": 5,
+						"item_id": 31093
+					},
 					{
 						"boost_percent": 3,
 						"item_id": 13235
@@ -8806,6 +8970,10 @@
 			{
 				"items": [
 					{
+						"boost_percent": 5,
+						"item_id": 31091
+					},
+					{
 						"boost_percent": 3,
 						"item_id": 13239
 					}
@@ -8917,6 +9085,10 @@
 			},
 			{
 				"items": [
+					{
+						"boost_percent": 5,
+						"item_id": 31091
+					},
 					{
 						"boost_percent": 3,
 						"item_id": 13239
@@ -9705,6 +9877,125 @@
 		"attack_styles_used": ["attack_slash", "attack_magic"]
 	},
 	{
+		"id": 14176,
+		"name": "Yama",
+		"time_to_finish": 337800,
+		"respawn_time": 5000,
+		"custom_monster_hp": 2500,
+		"difficulty_rating": 10,
+		"notify_drops": ["Yami"],
+		"items_required": ["Emberlight", "Purging staff"],
+		"qp_required": 115,
+		"item_in_bank_boosts": [
+			{
+				"29577": 3
+			},
+			{
+				"25975": 2
+			}
+		],
+		"equipped_item_boosts": [
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 5,
+						"item_id": 29801
+					},
+					{
+						"boost_percent": 3,
+						"item_id": 19553
+					}
+				]
+			},
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 4,
+						"item_id": 21295
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 6570
+					}
+				]
+			},
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 4,
+						"item_id": 22981
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 7462
+					}
+				]
+			}
+		],
+		"level_requirements": {
+			"prayer": 70,
+			"attack": 80,
+			"strength": 80,
+			"defence": 70,
+			"magic": 82
+		},
+		"heal_amount_needed": 700,
+		"minimum_heal_amount": 300,
+		"attack_style_to_use": "attack_slash",
+		"attack_styles_used": ["attack_slash", "attack_magic", "attack_ranged"],
+		"default_attack_styles": ["attack", "magic", "ranged"],
+		"death_props": {
+			"hardness": 0.25,
+			"steepness": 0.995
+		},
+		"poh_boosts": {
+			"pool": {
+				"ornate_rejuvenation_pool": 10,
+				"fancy_rejuvenation_pool": 10,
+				"rejuvenation_pool": 10
+			}
+		},
+		"item_cost": [
+			{
+				"item_cost": {
+					"564": 1,
+					"566": 1
+				},
+				"qty_per_minute": 0.5,
+				"is_rune_cost": true
+			},
+			{
+				"item_cost": {
+					"554": 7,
+					"566": 2
+				},
+				"qty_per_kill_range": [8, 12],
+				"is_rune_cost": true
+			},
+			{
+				"item_cost": {
+					"6685": 1
+				},
+				"qty_per_kill": 0.6
+			},
+			{
+				"item_cost": {
+					"3024": 1
+				},
+				"qty_per_kill": 0.5
+			},
+			{
+				"item_cost": {
+					"12695": 1
+				},
+				"qty_per_kill": 0.2
+			}
+		]
+	},
+	{
 		"id": 866,
 		"name": "Zogre",
 		"time_to_finish": 30000,
@@ -9828,7 +10119,12 @@
 		"item_in_bank_boosts": [
 			{
 				"2577": 2,
-				"13237": 4
+				"13237": 4,
+				"31088": 4,
+				"31092": 6,
+				"31094": 6,
+				"31096": 6,
+				"31097": 6
 			},
 			{
 				"11907": 2,
@@ -9836,7 +10132,8 @@
 				"22323": 4,
 				"24423": 5,
 				"27275": 8,
-				"28583": 1
+				"28583": 1,
+				"31113": 10
 			},
 			{
 				"7462": 3

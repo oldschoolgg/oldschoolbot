@@ -1800,5 +1800,39 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 				isCertainMonsterTrip(Monsters.Eldric.id)(data) ||
 				isCertainMonsterTrip(Monsters.RoyalTitans.id)(data)
 		}
+	},
+	{
+		id: 1155,
+		name: 'Yama Adept',
+		type: 'kill_count',
+		monster: 'Yama',
+		desc: 'Defeat Yama once.',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Yama.id]: 1
+			}
+		})
+	},
+	{
+		id: 1156,
+		name: 'Back so soon?',
+		type: 'mechanical',
+		monster: 'Yama',
+		desc: 'Defeat Yama without the judge being attacked with the wrong style and without taking more than one instance of damage each time you are exiled from the arena.',
+		rng: {
+			chancePerKill: 5,
+			hasChance: isCertainMonsterTrip(Monsters.Yama.id)
+		}
+	},
+	{
+		id: 1157,
+		name: 'Yama Speed-Trialist',
+		type: 'speed',
+		monster: 'Yama',
+		desc: 'Defeat Yama in an average time of under 3:38 over your last four kills.',
+		rng: {
+			chancePerKill: 60,
+			hasChance: isCertainMonsterTrip(Monsters.Yama.id)
+		}
 	}
 ];
