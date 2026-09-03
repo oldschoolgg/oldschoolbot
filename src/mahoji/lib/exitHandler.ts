@@ -20,5 +20,6 @@ export async function exitCleanup() {
 		await Cache.close();
 	} catch (err) {
 		Logging.logError(err as Error);
+		process.exit(1);
 	}
 }
