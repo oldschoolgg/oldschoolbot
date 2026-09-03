@@ -1,6 +1,6 @@
 {
-	"hash": "c25a8e3538d8dff60e437a638401571a",
-	"date": "2026-09-03T09:12:13.789Z",
+	"hash": "9bc6235f63d84147c049394d0c71521e",
+	"date": "2026-09-03T09:24:51.113Z",
 	"data": [
 		{
 			"id": 2,
@@ -6264,16 +6264,10 @@
 			"qp_required": 75,
 			"item_in_bank_boosts": [
 				{
-					"Avernic treads": 4,
-					"Avernic treads (max)": 6,
-					"Avernic treads (pe)": 6,
-					"Avernic treads (pe)(et)": 6,
-					"Avernic treads (pr)(pe)": 6,
 					"Pegasian boots": 4,
 					"Ranger boots": 2
 				},
 				{
-					"Eye of ayak": 10,
 					"Harmonised nightmare staff": 5,
 					"Sanguinesti staff": 4,
 					"Trident of the seas": 2,

@@ -1440,8 +1440,7 @@ export const allPetsCL = resolveItems([
 	'Huberte',
 	'Moxi',
 	'Bran',
-	'Yami',
-	'Dom'
+	'Yami'
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',

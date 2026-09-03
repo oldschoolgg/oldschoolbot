@@ -254,26 +254,6 @@
 			{
 				"items": [
 					{
-						"boost_percent": 7,
-						"item_id": 31097
-					},
-					{
-						"boost_percent": 7,
-						"item_id": 31095
-					},
-					{
-						"boost_percent": 7,
-						"item_id": 31094
-					},
-					{
-						"boost_percent": 7,
-						"item_id": 31091
-					},
-					{
-						"boost_percent": 5,
-						"item_id": 31088
-					},
-					{
 						"boost_percent": 5,
 						"item_id": 13239
 					}
@@ -532,26 +512,6 @@
 			},
 			{
 				"items": [
-					{
-						"boost_percent": 3,
-						"item_id": 31097
-					},
-					{
-						"boost_percent": 3,
-						"item_id": 31095
-					},
-					{
-						"boost_percent": 3,
-						"item_id": 31094
-					},
-					{
-						"boost_percent": 3,
-						"item_id": 31091
-					},
-					{
-						"boost_percent": 2,
-						"item_id": 31088
-					},
 					{
 						"boost_percent": 2,
 						"item_id": 13239
@@ -2251,26 +2211,6 @@
 			},
 			{
 				"items": [
-					{
-						"boost_percent": 2,
-						"item_id": 31097
-					},
-					{
-						"boost_percent": 2,
-						"item_id": 31095
-					},
-					{
-						"boost_percent": 2,
-						"item_id": 31094
-					},
-					{
-						"boost_percent": 2,
-						"item_id": 31091
-					},
-					{
-						"boost_percent": 1,
-						"item_id": 31088
-					},
 					{
 						"boost_percent": 1,
 						"item_id": 13239
@@ -5082,10 +5022,6 @@
 			{
 				"items": [
 					{
-						"boost_percent": 5,
-						"item_id": 31106
-					},
-					{
 						"boost_percent": 3,
 						"item_id": 19544
 					}
@@ -5095,26 +5031,6 @@
 			{
 				"items": [
 					{
-						"boost_percent": 5,
-						"item_id": 31097
-					},
-					{
-						"boost_percent": 5,
-						"item_id": 31096
-					},
-					{
-						"boost_percent": 5,
-						"item_id": 31094
-					},
-					{
-						"boost_percent": 5,
-						"item_id": 31092
-					},
-					{
-						"boost_percent": 3,
-						"item_id": 31088
-					},
-					{
 						"boost_percent": 3,
 						"item_id": 13237
 					}
@@ -5123,26 +5039,6 @@
 			},
 			{
 				"items": [
-					{
-						"boost_percent": 5,
-						"item_id": 31097
-					},
-					{
-						"boost_percent": 5,
-						"item_id": 31096
-					},
-					{
-						"boost_percent": 5,
-						"item_id": 31095
-					},
-					{
-						"boost_percent": 5,
-						"item_id": 31093
-					},
-					{
-						"boost_percent": 3,
-						"item_id": 31088
-					},
 					{
 						"boost_percent": 3,
 						"item_id": 13235
@@ -7920,26 +7816,6 @@
 			{
 				"items": [
 					{
-						"boost_percent": 7,
-						"item_id": 31097
-					},
-					{
-						"boost_percent": 7,
-						"item_id": 31095
-					},
-					{
-						"boost_percent": 7,
-						"item_id": 31094
-					},
-					{
-						"boost_percent": 7,
-						"item_id": 31091
-					},
-					{
-						"boost_percent": 5,
-						"item_id": 31088
-					},
-					{
 						"boost_percent": 5,
 						"item_id": 13239
 					}
@@ -10072,12 +9948,7 @@
 		"item_in_bank_boosts": [
 			{
 				"2577": 2,
-				"13237": 4,
-				"31088": 4,
-				"31092": 6,
-				"31094": 6,
-				"31096": 6,
-				"31097": 6
+				"13237": 4
 			},
 			{
 				"11907": 2,
@@ -10085,8 +9956,7 @@
 				"22323": 4,
 				"24423": 5,
 				"27275": 8,
-				"28583": 1,
-				"31113": 10
+				"28583": 1
 			},
 			{
 				"7462": 3
