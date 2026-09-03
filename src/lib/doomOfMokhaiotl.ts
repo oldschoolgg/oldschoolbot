@@ -535,7 +535,7 @@ function getDoomTripCost(options: {
 	venomProtection: DoomVenomProtection;
 	deepDelves: number;
 	totalDelves: number;
-}): DoomTripCostResult | string {
+}): DoomTripCostResult {
 	const { user, state, result, targetDelve, userMagicLevel, venomProtection, deepDelves, totalDelves } = options;
 	const delvesForCost = result.diedAt === null ? result.deepestDelveCompleted : targetDelve;
 	const fullDurationMinutes = result.duration / Time.Minute;
@@ -764,7 +764,6 @@ export async function doomCommand(
 		deepDelves,
 		totalDelves
 	});
-	if (typeof costResult === 'string') return costResult;
 
 	const realCost = await removeDoomTripCost(user, costResult.cost, venomProtection);
 	if (typeof realCost === 'string') return realCost;
