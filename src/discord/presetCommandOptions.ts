@@ -104,7 +104,7 @@ export const equippedItemOption = defineOption({
 			const equippedIn = entries.filter(i => i[1].includes(item));
 			results.push({
 				name: `${item.name} (${equippedIn.map(i => i[0]).join(', ')})`,
-				value: item.name
+				value: item.id.toString()
 			});
 		}
 		return results;
