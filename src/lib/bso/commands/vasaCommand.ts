@@ -1,8 +1,8 @@
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
-import { BossInstance } from '@/lib/bso/structures/Boss.js';
+import { BossInstance, type BossUser } from '@/lib/bso/structures/Boss.js';
 
 import { EmbedBuilder } from '@oldschoolgg/discord';
-import { formatDuration, sumArr, Time } from '@oldschoolgg/toolkit';
+import { formatDuration, sumArr, Time, UserError } from '@oldschoolgg/toolkit';
 import { randInt } from 'node-rng';
 import { Bank } from 'oldschooljs';
 
@@ -68,7 +68,15 @@ export async function vasaCommand(interaction: MInteraction, user: MUser, channe
 		allowMoreThan1Solo: true,
 		quantity
 	});
-	const { bossUsers } = await instance.start();
+	let bossUsers: BossUser[];
+	try {
+		({ bossUsers } = await instance.start());
+	} catch (err: unknown) {
+		if (err instanceof UserError) {
+			return err.message;
+		}
+		throw err;
+	}
 	const embed = new EmbedBuilder().setDescription(
 		`Your team is off to fight ${instance.quantity}x Vasa Magus. The total trip will take ${formatDuration(
 			instance.duration
