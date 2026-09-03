@@ -149,6 +149,33 @@
 		]
 	},
 	{
+		"main_item": "Avernic treads (et)",
+		"similar_items": [
+			"Avernic treads (et)",
+			"Avernic treads (max)",
+			"Avernic treads (pe)(et)",
+			"Avernic treads (pr)(et)"
+		]
+	},
+	{
+		"main_item": "Avernic treads (pe)",
+		"similar_items": [
+			"Avernic treads (max)",
+			"Avernic treads (pe)",
+			"Avernic treads (pe)(et)",
+			"Avernic treads (pr)(pe)"
+		]
+	},
+	{
+		"main_item": "Avernic treads (pr)",
+		"similar_items": [
+			"Avernic treads (max)",
+			"Avernic treads (pr)",
+			"Avernic treads (pr)(et)",
+			"Avernic treads (pr)(pe)"
+		]
+	},
+	{
 		"main_item": "Bandos godsword",
 		"similar_items": ["Bandos godsword", "Bandos godsword (or)"]
 	},
@@ -439,6 +466,10 @@
 	{
 		"main_item": "Elite void top",
 		"similar_items": ["Elite void top", "Elite void top (l)", "Elite void top (or)"]
+	},
+	{
+		"main_item": "Eternal boots",
+		"similar_items": ["Avernic treads", "Eternal boots"]
 	},
 	{
 		"main_item": "Facemask",
@@ -787,8 +818,16 @@
 		"similar_items": ["Osmumten's fang", "Osmumten's fang (or)"]
 	},
 	{
+		"main_item": "Pegasian boots",
+		"similar_items": ["Avernic treads", "Pegasian boots"]
+	},
+	{
 		"main_item": "Prayer cape",
 		"similar_items": ["Max cape", "Prayer cape", "Prayer cape(t)"]
+	},
+	{
+		"main_item": "Primordial boots",
+		"similar_items": ["Avernic treads", "Primordial boots"]
 	},
 	{
 		"main_item": "Prospector boots",
