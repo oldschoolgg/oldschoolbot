@@ -353,20 +353,20 @@ class CacheManager {
 		return baseSeconds + Math.floor(Math.random() * (jitterSeconds * 2 + 1)) - jitterSeconds;
 	}
 
-	async getUsername(userId: string): Promise<string> {
-		if (!isValidDiscordSnowflake(userId)) {
-			throw new Error(`Invalid userID: ${userId}`);
-		}
-
+	async updateUsername(userId: string, username: string): Promise<boolean> {
 		const cached = await this.getExpiringString(RedisKeys.Discord.Username(userId));
-		if (cached) return cached;
+		if (cached) return false;
 
-		let username: string | null = null;
-		const djsUser = await globalClient.fetchUser(userId).catch(() => null);
-		if (djsUser?.username) {
-			username = cleanUsername(djsUser.username);
-		}
+		username = cleanUsername(username);
+		if (!username) return false;
 
+		const successfulUpdate = await this.prismaUpdateUsername(userId, username);
+
+		await this.setUsername(userId, username);
+		return successfulUpdate;
+	}
+
+	private async prismaUpdateUsername(userId: string, username: string) {
 		const user = await prisma.user.upsert({
 			where: {
 				id: userId
@@ -384,11 +384,30 @@ class CacheManager {
 				username: true
 			}
 		});
+		return user?.username === username;
+	}
 
-		if (!user.username) return 'Unknown';
+	async getUsername(userId: string): Promise<string> {
+		if (!isValidDiscordSnowflake(userId)) {
+			throw new Error(`Invalid userID: ${userId}`);
+		}
 
-		await this.setUsername(userId, user.username);
-		return user.username;
+		const cached = await this.getExpiringString(RedisKeys.Discord.Username(userId));
+		if (cached) return cached;
+
+		let username: string | null = null;
+		const djsUser = await globalClient.fetchUser(userId).catch(() => null);
+		if (djsUser?.username) {
+			username = cleanUsername(djsUser.username);
+		}
+
+		if (username) {
+			await this.prismaUpdateUsername(userId, username);
+
+			await this.setUsername(userId, username);
+			return username;
+		}
+		return 'Unknown';
 	}
 
 	async setUsername(userId: string, username: string): Promise<void> {
