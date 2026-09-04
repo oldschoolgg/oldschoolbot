@@ -1,6 +1,11 @@
 import { Bank, EMonster, type ItemBank, Items } from 'oldschooljs';
 
-import { calculateDoomXP, DOOM_UNIQUE_ITEMS, normaliseDoomWaveCompletions } from '@/lib/doomOfMokhaiotl.js';
+import {
+	calculateDoomEarlyDeathSupplyRefund,
+	calculateDoomXP,
+	DOOM_UNIQUE_ITEMS,
+	normaliseDoomWaveCompletions
+} from '@/lib/doomOfMokhaiotl.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
 import type { DoomTaskOptions } from '@/lib/types/minions.js';
@@ -22,7 +27,9 @@ export const doomOfMokhaiotlTask: MinionTask = {
 			ayakChargesGained,
 			brewsUsed,
 			restoresUsed,
-			rangingUsed
+			rangingUsed,
+			venomProtectionPotionName,
+			venomProtectionDosesUsed
 		} = data;
 
 		const currentStats = await user.fetchStats();
@@ -72,17 +79,17 @@ export const doomOfMokhaiotlTask: MinionTask = {
 
 		if (diedAt !== null) {
 			const kcSummary = buildKcSummary(newDeepest, newDeepDelves, newTotal);
-
-			const delvesCompleted = deepestDelveCompleted;
-			const refundRatio = Math.max(0, 1 - delvesCompleted / targetDelve);
-			const refund = new Bank();
-			if (refundRatio > 0) {
-				refund.add('Saradomin brew(4)', Math.floor(refundRatio * brewsUsed));
-				refund.add('Super restore(4)', Math.floor(refundRatio * restoresUsed));
-				refund.add('Ranging potion(4)', Math.floor(refundRatio * rangingUsed));
-				if (refund.length > 0) {
-					await user.addItemsToBank({ items: refund, collectionLog: false });
-				}
+			const refund = calculateDoomEarlyDeathSupplyRefund({
+				targetDelve,
+				deepestDelveCompleted,
+				brewsUsed,
+				restoresUsed,
+				rangingUsed,
+				venomProtectionPotionName,
+				venomProtectionDosesUsed
+			});
+			if (refund.length > 0) {
+				await user.addItemsToBank({ items: refund, collectionLog: false });
 			}
 			const refundMessage =
 				refund.length > 0 ? `\n**Refunded supplies:** ${refund}` : '\n**Refunded supplies:** None.';

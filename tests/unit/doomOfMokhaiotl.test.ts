@@ -4,6 +4,7 @@ import { describe, expect, test } from 'vitest';
 
 import {
 	calculateDeathChance,
+	calculateDoomEarlyDeathSupplyRefund,
 	calculateDoomRunDeathChance,
 	calculateDoomTripDuration,
 	calculateDoomWipeChanceBeforeTarget,
@@ -318,6 +319,28 @@ describe('Doom of Mokhaiotl', () => {
 		expect(
 			selectDoomVenomProtection(itemName => (itemName === 'Anti-venom+(1)' ? 1 : 0), 10 * Time.Minute)
 		).toBeNull();
+	});
+
+	test('refunds unused Doom venom protection on early death', () => {
+		const refund = calculateDoomEarlyDeathSupplyRefund({
+			targetDelve: 8,
+			deepestDelveCompleted: 2,
+			brewsUsed: 4,
+			restoresUsed: 4,
+			rangingUsed: 2,
+			venomProtectionPotionName: 'Anti-venom+',
+			venomProtectionDosesUsed: 4
+		});
+
+		expect(
+			refund.equals(
+				new Bank()
+					.add('Saradomin brew(4)', 3)
+					.add('Super restore(4)', 3)
+					.add('Ranging potion(4)', 1)
+					.add('Anti-venom+(1)', 3)
+			)
+		).toBe(true);
 	});
 
 	test('awards Doom combat XP at the intended per-hour rates for a completed run', () => {

@@ -66,6 +66,7 @@ const ARROW_TIER_IDS: { mod: number; ids: number[] }[] = [
 export type DoomWaveCompletions = Record<number, number>;
 export type DoomMeleePunishWeapon = 'noxious_halberd' | 'crystal_halberd' | 'dual_macuahuitl';
 export type DoomVenomProtectionOption = (typeof DOOM_VENOM_PROTECTION_OPTIONS)[number];
+export type DoomVenomProtectionPotionName = DoomVenomProtectionOption['potionName'];
 
 export interface DoomVenomProtection {
 	option: DoomVenomProtectionOption;
@@ -73,6 +74,33 @@ export interface DoomVenomProtection {
 	itemCost: Bank;
 	replacementItems: Bank;
 	effectiveCost: Bank;
+}
+
+export function calculateDoomEarlyDeathSupplyRefund(options: {
+	targetDelve: number;
+	deepestDelveCompleted: number;
+	brewsUsed: number;
+	restoresUsed: number;
+	rangingUsed: number;
+	venomProtectionPotionName?: DoomVenomProtectionPotionName;
+	venomProtectionDosesUsed?: number;
+}): Bank {
+	const refundRatio = Math.max(0, 1 - options.deepestDelveCompleted / options.targetDelve);
+	const refund = new Bank();
+	if (refundRatio <= 0) return refund;
+
+	refund.add('Saradomin brew(4)', Math.floor(refundRatio * options.brewsUsed));
+	refund.add('Super restore(4)', Math.floor(refundRatio * options.restoresUsed));
+	refund.add('Ranging potion(4)', Math.floor(refundRatio * options.rangingUsed));
+
+	if (options.venomProtectionPotionName && options.venomProtectionDosesUsed) {
+		refund.add(
+			`${options.venomProtectionPotionName}(1)`,
+			Math.floor(refundRatio * options.venomProtectionDosesUsed)
+		);
+	}
+
+	return refund;
 }
 
 export function normaliseDoomWaveCompletions(rawCompletions: unknown): DoomWaveCompletions {

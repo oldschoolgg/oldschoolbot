@@ -49,6 +49,7 @@ export const DOOM_UNIQUE_ITEMS = resolveItems(['Mokhaiotl cloth', 'Eye of ayak (
 
 export {
 	calculateDeathChance,
+	calculateDoomEarlyDeathSupplyRefund,
 	calculateDoomRunDeathChance,
 	calculateDoomTripDuration,
 	calculateDoomWipeChanceBeforeTarget,
@@ -804,6 +805,8 @@ export async function doomCommand(
 		brewsUsed: costResult.brewsUsed,
 		restoresUsed: costResult.restoresUsed,
 		rangingUsed: costResult.rangingUsed,
+		venomProtectionPotionName: venomProtection.option.potionName,
+		venomProtectionDosesUsed: venomProtection.dosesNeeded,
 		disableZcbBoost: state.zcbBoostDisabled || undefined
 	});
 

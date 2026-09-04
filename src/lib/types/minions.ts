@@ -559,6 +559,8 @@ export interface DoomTaskOptions extends ActivityTaskOptions {
 	brewsUsed: number;
 	restoresUsed: number;
 	rangingUsed: number;
+	venomProtectionPotionName?: 'Anti-venom' | 'Anti-venom+' | 'Extended anti-venom+';
+	venomProtectionDosesUsed?: number;
 	disableZcbBoost?: boolean;
 }
 
