@@ -117,6 +117,7 @@ export interface UnifiedOpenable {
 	emoji?: string;
 	aliases: string[];
 	allItems: number[];
+	canOpenUntil?: (args: { user: MUser; item: Item }) => true | string;
 }
 
 const clueItemsToNotifyOf = cluesRaresCL
@@ -126,6 +127,15 @@ const clueItemsToNotifyOf = cluesRaresCL
 const DOSSIER_RITE_NAME = 'Rite of vile transference';
 const DOSSIER_SCROLL_NAME = 'Chasm teleport scroll';
 const DOSSIER_RITE_GUARANTEE_KC = 100;
+
+function hasDossierRiteAlready(user: MUser, previousLoot?: Bank): boolean {
+	return (
+		user.bitfield.includes(BitField.HasRiteOfVileTransference) ||
+		user.cl.has(DOSSIER_RITE_NAME) ||
+		user.allItemsOwned.has(DOSSIER_RITE_NAME) ||
+		Boolean(previousLoot?.has(DOSSIER_RITE_NAME))
+	);
+}
 
 function replaceDossierRiteWithScrolls({
 	loot,
@@ -465,6 +475,13 @@ const osjsOpenables: UnifiedOpenable[] = [
 		id: EItem.DOSSIER,
 		openedItem: Items.getOrThrow(EItem.DOSSIER),
 		aliases: ['dossier'],
+		canOpenUntil: ({ user, item }) => {
+			if (item.name !== DOSSIER_RITE_NAME || !hasDossierRiteAlready(user)) {
+				return true;
+			}
+
+			return `You can't open until ${DOSSIER_RITE_NAME}, because you have already received or used it.`;
+		},
 		output: async ({ quantity, user, rng, openedCountOffset = 0, previousLoot }) => {
 			const loot = new Bank();
 			if (quantity <= 0) {
@@ -473,11 +490,7 @@ const osjsOpenables: UnifiedOpenable[] = [
 
 			const yamaKC = openedCountOffset === 0 ? await user.getKC(Monsters.Yama.id) : 0;
 
-			const hadRiteAlready =
-				user.bitfield.includes(BitField.HasRiteOfVileTransference) ||
-				user.cl.has(DOSSIER_RITE_NAME) ||
-				user.allItemsOwned.has(DOSSIER_RITE_NAME) ||
-				Boolean(previousLoot?.has(DOSSIER_RITE_NAME));
+			const hadRiteAlready = hasDossierRiteAlready(user, previousLoot);
 			const shouldGuaranteeRite =
 				yamaKC >= DOSSIER_RITE_GUARANTEE_KC && !hadRiteAlready && openedCountOffset === 0;
 

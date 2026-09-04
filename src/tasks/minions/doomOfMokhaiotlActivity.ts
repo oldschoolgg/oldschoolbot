@@ -115,6 +115,11 @@ export const doomOfMokhaiotlTask: MinionTask = {
 		announceLoot({
 			user,
 			monsterID: EMonster.DOOM_OF_MOKHAIOTL,
+			monsterName: 'Doom of Mokhaiotl',
+			progress: {
+				name: 'Doom of Mokhaiotl Total Delves',
+				value: newTotal
+			},
 			loot: itemsAdded,
 			notifyDrops: DOOM_UNIQUE_ITEMS
 		});

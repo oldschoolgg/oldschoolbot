@@ -230,6 +230,26 @@ describe('Open Command', async () => {
 		expect(scrolls).toBeLessThanOrEqual(18);
 	});
 
+	test('Dossier open until rejects rite if rite was already used via bitfield', async () => {
+		const user = await createTestUser();
+		await user.update({
+			bitfield: {
+				push: BitField.HasRiteOfVileTransference
+			}
+		});
+		await user.addItemsToBank({ items: new Bank().add('Dossier', 1) });
+
+		const res = await user.runCommand(openCommand, {
+			name: 'dossier',
+			open_until: 'Rite of vile transference'
+		});
+
+		expect(res).toEqual(
+			"You can't open until Rite of vile transference, because you have already received or used it."
+		);
+		await user.bankAmountMatch('Dossier', 1);
+	});
+
 	test('Dossier converts extra rite rolls in the same opening batch to scrolls', async () => {
 		mockMathRandom(0.82);
 		const user = await createTestUser();

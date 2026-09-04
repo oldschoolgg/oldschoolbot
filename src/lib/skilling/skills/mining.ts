@@ -254,7 +254,7 @@ const ores: Ore[] = [
 		aliases: ['infernal', 'shale', 'crushed infernal shale'],
 		outputId: 30_848,
 		outputMultiplier: 1.3,
-		fixedRatePerHour: [1500, 1700]
+		fixedRatePerHour: [1900, 2200]
 	},
 	{
 		level: 85,
