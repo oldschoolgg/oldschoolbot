@@ -188,6 +188,7 @@ interface DoomGearState {
 	hasEliteVoid: boolean;
 	hasZaryteVambraces: boolean;
 	crystalShardsNeeded: number;
+	hasMokhaiotlWaystone: boolean;
 }
 
 interface DoomTripCostResult {
@@ -207,6 +208,7 @@ const DOOM_SKILL_REQUIREMENTS: Skills = {
 };
 
 const DOOM_DEMONBANE_WEAPONS = resolveItems(['Darklight', 'Arclight', 'Emberlight']);
+const MOKHAIOTL_WAYSTONE_SPEED_BOOST = 2;
 const DOOM_CRYSTAL_HALBERD_VARIANTS = resolveItems(['Crystal halberd']);
 const DOOM_MAGE_WEAPONS = resolveItems([
 	'Skull sceptre',
@@ -411,7 +413,8 @@ function getDoomGearState(user: DoomUser, targetDelve: number, disableZcbBoost =
 		hasMasori,
 		hasEliteVoid,
 		hasZaryteVambraces: user.gear.range.hasEquipped('Zaryte vambraces'),
-		crystalShardsNeeded
+		crystalShardsNeeded,
+		hasMokhaiotlWaystone: user.bank.has('Mokhaiotl waystone')
 	};
 }
 
@@ -585,6 +588,7 @@ function getDoomTripCost(options: {
 		});
 		if (casts > 0) cost.add(deathChargeCastCost(casts));
 	}
+	if (state.hasMokhaiotlWaystone) cost.add('Mokhaiotl waystone');
 
 	return {
 		cost,
@@ -640,6 +644,7 @@ function buildDoomBoostLines(state: DoomGearState, kcReduction: number, skillBoo
 		boostLines.push(`${RITE_OF_VILE_TRANSFERENCE_SPEED_BOOST}% for Rite of vile transference`);
 	}
 	if (state.hasChargedEyeOfAyak) boostLines.push('Eye of ayak replacing mage grub rune costs');
+	if (state.hasMokhaiotlWaystone) boostLines.push(`${MOKHAIOTL_WAYSTONE_SPEED_BOOST}% for Mokhaiotl waystone`);
 	if (state.hasZcb) boostLines.push(`${ZCB_SPEED_BOOST}% for Zaryte crossbow`);
 	else {
 		if (state.zcbBoostDisabled) {
@@ -725,7 +730,10 @@ export async function doomCommand(
 		user.skillsAsLevels as Required<Skills>,
 		reduceNumByPercent(baseDuration, kcReduction)
 	);
-	const durationReductionPercent = calcWhatPercent(baseDuration - durationAfterSkillBoost, baseDuration);
+	const durationAfterWaystone = state.hasMokhaiotlWaystone
+		? reduceNumByPercent(durationAfterSkillBoost, MOKHAIOTL_WAYSTONE_SPEED_BOOST)
+		: durationAfterSkillBoost;
+	const durationReductionPercent = calcWhatPercent(baseDuration - durationAfterWaystone, baseDuration);
 
 	const res = startDoomRun({
 		targetDelve,

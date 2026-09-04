@@ -12,16 +12,17 @@ By default, the trip stops early when a unique is received. To keep going until 
 
 - Completion of The Final Dawn
 - [[attack:85]] [[strength:85]] [[defence:70]] [[ranged:90]] [[hitpoints:90]] [[prayer:74]]
+- [[Dexterous prayer scroll]] used, unlocking Rigour
 - A [[Twisted bow]] or [[Scorching bow]] equipped in the range setup, with arrows equipped
 - A demonbane weapon: [[Darklight]], [[Arclight]], or [[Emberlight]]
 - A mage weapon, or a charged [[Eye of ayak]]
-- A melee punish weapon: [[Noxious halberd]], [[Crystal halberd]], or [[Dual macuahuitl]]
+- A melee punish weapon: [[Noxious halberd]], [[Crystal halberd]], or [[Dual macuahuitl]]. [[Crystal halberd]] also needs [[Crystal shard]]s equal to the target delve.
 - Enough doses of Anti-venom, Anti-venom+, or Extended anti-venom+ to cover the trip duration. Anti-venom covers 54 seconds per dose, Anti-venom+ covers around 3.6 minutes per dose, and Extended anti-venom+ covers around 6.3 minutes per dose.
 - Appropriate range gear, including head, body, legs, neck, cape, feet, and hands slots
 
 ## Rewards and Progress
 
-Doom can drop [[Mokhaiotl cloth]], [[Eye of ayak (uncharged)]], [[Avernic treads]], and [[Dom]]. It also awards [[Demon tear]], including guaranteed tears from delve 3 onwards.
+Doom can drop [[Mokhaiotl cloth]], [[Eye of ayak (uncharged)]], [[Avernic treads]], and [[Dom]]. It also awards [[Demon tear]], including guaranteed tears from delve 3 onwards. [[Mokhaiotl waystone]] can also be received and consumed for a small speed boost on a later Doom trip.
 
 The bot tracks Doom progress as:
 
@@ -57,9 +58,10 @@ Delve 8+ never becomes fully safe. Repeated clears reduce the death chance towar
 - 3% speed boost for full fortified Masori armour
 - 2% speed boost for [[Zaryte vambraces]]
 - 5% speed boost for Elite Void
-- 10% speed boost for [[Zaryte crossbow]]
+- 10% speed boost for [[Zaryte crossbow]] with enough [[Ruby bolts (e)]] or [[Ruby dragon bolts (e)]]
 - 3% speed boost for [[Crystal halberd]] if you do not have a [[Zaryte crossbow]]
-- 3% speed boost for [[Rite of vile transference]]
+- 3% speed boost for [[Rite of vile transference]], requiring Death Charge casts and runes
+- 2% speed boost for [[Mokhaiotl waystone]], consuming one per trip
 - 2% speed boost for [[Lightbearer]]
 - Up to 10% speed boost for KC
 - Up to 15% speed boost for combat stats

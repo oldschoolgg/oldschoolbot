@@ -63,10 +63,50 @@ describe('PVM', async () => {
 			finished_quest_ids: [QuestID.TheFinalDawn]
 		});
 		user.gear.range.equip('Dragon arrow', 1000);
-		await user.update({ gear_range: user.gear.range.raw() } as any);
+		await user.update({ gear_range: user.gear.range.raw() } as Parameters<typeof user.update>[0]);
 
 		const result = await user.runCommand(delvesCommand, { doom: { target_delve: 1 } });
 		expect(result).toContain('Eye of ayak replacing mage grub rune costs');
+	});
+
+	it('uses Mokhaiotl waystones as a small Doom speed boost', async () => {
+		const user = await client.mockUser({
+			maxed: true,
+			rangeGear: resolveItems([
+				'Masori mask (f)',
+				'Necklace of anguish',
+				'Masori body (f)',
+				"Ava's assembler",
+				'Zaryte vambraces',
+				'Masori chaps (f)',
+				'Avernic treads',
+				'Twisted bow',
+				'Dragon arrow'
+			]),
+			bank: new Bank()
+				.add('Anti-venom+(4)', 100)
+				.add('Dragon arrow', 1000)
+				.add('Emberlight')
+				.add('Eye of ayak')
+				.add('Mokhaiotl waystone')
+				.add('Noxious halberd')
+				.add('Ranging potion(4)', 100)
+				.add('Saradomin brew(4)', 100)
+				.add('Super restore(4)', 100)
+		});
+		await user.update({
+			ayak_charges: 100,
+			bitfield: {
+				push: BitField.HasDexScroll
+			},
+			finished_quest_ids: [QuestID.TheFinalDawn]
+		});
+		user.gear.range.equip('Dragon arrow', 1000);
+		await user.update({ gear_range: user.gear.range.raw() } as Parameters<typeof user.update>[0]);
+
+		const result = await user.runCommand(delvesCommand, { doom: { target_delve: 1 } });
+		expect(result).toContain('2% for Mokhaiotl waystone');
+		await user.bankAmountMatch('Mokhaiotl waystone', 0);
 	});
 
 	it('allows Doom without the ZCB boost when missing ruby bolts', async () => {
@@ -102,7 +142,7 @@ describe('PVM', async () => {
 			finished_quest_ids: [QuestID.TheFinalDawn]
 		});
 		user.gear.range.equip('Dragon arrow', 1000);
-		await user.update({ gear_range: user.gear.range.raw() } as any);
+		await user.update({ gear_range: user.gear.range.raw() } as Parameters<typeof user.update>[0]);
 
 		const result = await user.runCommand(delvesCommand, { doom: { target_delve: 1 } });
 		expect(result).toContain('is now fighting the **Doom of Mokhaiotl**');
