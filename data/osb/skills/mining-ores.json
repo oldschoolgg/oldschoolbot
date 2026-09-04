@@ -119,7 +119,7 @@
 		"intercept": 100,
 		"output_id": 30848,
 		"output_multiplier": 1.3,
-		"fixed_rate_per_hour": ["Diamond amulet", "Iban's shadow"]
+		"fixed_rate_per_hour": [1500, 1700]
 	},
 	{
 		"level": 15,
