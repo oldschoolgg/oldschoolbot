@@ -70,6 +70,7 @@ An alternative method that yields more bars per hour and higher XP/hr. See [Blas
 | Godsword blade                  | [[smithing:80]]    | Requires 1 of each Godsword shard                    |
 | Blade of saeldor (uncharged)    | [[smithing:82]]    | [[crafting:82]]                                      |
 | Bow of faerdhinen (uncharged)   | [[smithing:82]]    | [[crafting:82]]                                      |
+| Yama smithables                 | [[smithing:83]]    | Infernal nugget, chunk, plate, and Oathplate pieces  |
 | Infernal pickaxe                | [[smithing:85]]    | Smouldering stone + Dragon pickaxe                   |
 | Arcane spirit shield            | [[smithing:85]]    | Requires [[prayer:90]]                               |
 | Spectral spirit shield          | [[smithing:85]]    | Requires [[prayer:90]]                               |
@@ -78,3 +79,5 @@ An alternative method that yields more bars per hour and higher XP/hr. See [Blas
 | Uncharged dragonfire ward       | [[smithing:90]]    |                                                      |
 | Uncharged dragonfire shield     | [[smithing:90]]    |                                                      |
 | Uncharged ancient wyvern shield | [[smithing:90]]    |                                                      |
+
+Yama smithables use [[Crushed infernal shale]], [[Oathplate shards]], and the intermediate Infernal items. [[Infernal shale]] can be mined with [[/mine name\:Infernal shale]].

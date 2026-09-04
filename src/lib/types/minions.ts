@@ -188,6 +188,7 @@ export interface MiningActivityTaskOptions extends ActivityTaskOptions {
 	fakeDurationMin: number;
 	oreID: number;
 	quantity: number;
+	minedQuantity?: number;
 	powermine: boolean;
 	iQty?: number;
 }
@@ -543,6 +544,26 @@ export interface ColoTaskOptions extends ActivityTaskOptions {
 	bloodFuryCharges: number;
 }
 
+export interface DoomTaskOptions extends ActivityTaskOptions {
+	type: 'DoomOfMokhaiotl';
+	targetDelve: number;
+	xpTargetDelve?: number;
+	diedAt: number | null;
+	loot: ItemBank | null;
+	fakeDuration: number;
+	stopOnUnique?: boolean;
+	deepDelvesEarned: number;
+	totalWavesCleared: number;
+	deepestDelveCompleted: number;
+	ayakChargesGained: number;
+	brewsUsed: number;
+	restoresUsed: number;
+	rangingUsed: number;
+	venomProtectionPotionName?: 'Anti-venom' | 'Anti-venom+' | 'Extended anti-venom+';
+	venomProtectionDosesUsed?: number;
+	disableZcbBoost?: boolean;
+}
+
 type UserID = string;
 type Points = number;
 type RoomIDsDiedAt = number[];
@@ -721,4 +742,5 @@ export type ActivityTaskData =
 	| MinigameActivityTaskOptionsWithNoChanges
 	| CutLeapingFishActivityTaskOptions
 	| CreateForestersRationsActivityTaskOptions
-	| ColoTaskOptions;
+	| ColoTaskOptions
+	| DoomTaskOptions;
