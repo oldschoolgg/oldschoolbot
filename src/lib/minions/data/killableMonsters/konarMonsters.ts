@@ -189,7 +189,7 @@ export const konarMonsters: KillableMonster[] = [
 		table: Monsters.MithrilDragon,
 		wildy: false,
 
-		difficultyRating: 3,
+		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Dragon full helm']),
 		qpRequired: 0,
@@ -223,7 +223,7 @@ export const konarMonsters: KillableMonster[] = [
 		table: Monsters.RuneDragon,
 		wildy: false,
 
-		difficultyRating: 4,
+		difficultyRating: 6,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Dragon metal lump', 'Draconic visage']),
 		qpRequired: 205,

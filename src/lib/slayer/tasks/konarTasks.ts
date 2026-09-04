@@ -32,11 +32,29 @@ export const konarTasks: AssignableSlayerTask[] = [
 	{
 		monster: Monsters.AdamantDragon,
 		amount: [3, 6],
-		weight: 5,
+		weight: 0,
 		monsters: [Monsters.AdamantDragon.id],
 		extendedAmount: [20, 30],
 		extendedUnlockId: SlayerTaskUnlocksEnum.AdamindSomeMore,
 		questPoints: 205,
+		unlocked: true
+	},
+	{
+		monster: Monsters.BronzeDragon,
+		amount: [30, 40],
+		weight: 15,
+		monsters: [
+			Monsters.BronzeDragon.id,
+			Monsters.IronDragon.id,
+			Monsters.SteelDragon.id,
+			Monsters.MithrilDragon.id,
+			Monsters.AdamantDragon.id,
+			Monsters.RuneDragon.id
+		],
+		extendedAmount: [150, 200],
+		extendedUnlockId: SlayerTaskUnlocksEnum.PedalToTheMetals,
+		combatLevel: 75,
+		questPoints: 34,
 		unlocked: true
 	},
 	{
@@ -119,17 +137,6 @@ export const konarTasks: AssignableSlayerTask[] = [
 		combatLevel: 45,
 		slayerLevel: 47,
 		questPoints: 4,
-		unlocked: true
-	},
-	{
-		monster: Monsters.BronzeDragon,
-		amount: [30, 50],
-		weight: 5,
-		monsters: [Monsters.BronzeDragon.id],
-		extendedAmount: [30, 50],
-		extendedUnlockId: SlayerTaskUnlocksEnum.PedalToTheMetals,
-		combatLevel: 75,
-		questPoints: 34,
 		unlocked: true
 	},
 	{
@@ -257,7 +264,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 	{
 		monster: Monsters.IronDragon,
 		amount: [30, 50],
-		weight: 5,
+		weight: 0,
 		monsters: [Monsters.IronDragon.id],
 		extendedAmount: [61, 100],
 		extendedUnlockId: SlayerTaskUnlocksEnum.PedalToTheMetals,
@@ -306,7 +313,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 	{
 		monster: Monsters.MithrilDragon,
 		amount: [3, 6],
-		weight: 5,
+		weight: 0,
 		monsters: [Monsters.MithrilDragon.id],
 		extendedAmount: [25, 35],
 		extendedUnlockId: SlayerTaskUnlocksEnum.IReallyMithYou,
@@ -345,7 +352,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 	{
 		monster: Monsters.RuneDragon,
 		amount: [3, 6],
-		weight: 5,
+		weight: 0,
 		monsters: [Monsters.RuneDragon.id],
 		extendedAmount: [30, 60],
 		extendedUnlockId: SlayerTaskUnlocksEnum.RUUUUUNE,
@@ -376,7 +383,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 	{
 		monster: Monsters.SteelDragon,
 		amount: [30, 50],
-		weight: 5,
+		weight: 0,
 		monsters: [Monsters.SteelDragon.id],
 		levelRequirements: killableMonsters.find(k => k.id === Monsters.SteelDragon.id)?.levelRequirements,
 		extendedAmount: [40, 60],
