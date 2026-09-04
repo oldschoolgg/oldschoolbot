@@ -1816,5 +1816,111 @@ export const masterCombatAchievements: CombatAchievement[] = [
 			chancePerKill: 70,
 			hasChance: isCertainMonsterTrip(Monsters.TheHueycoatl.id)
 		}
+	},
+	{
+		id: 2158,
+		name: 'Grub Patrol',
+		desc: 'Defeat the Doom of Mokhaiotl levels 1-8 without ever letting a grub be absorbed.',
+		type: 'mechanical',
+		monster: 'Doom of Mokhaiotl',
+		rng: {
+			chancePerKill: 15,
+			hasChance: (data: ActivityTaskData) =>
+				data.type === 'DoomOfMokhaiotl' && !data.diedAt && data.deepestDelveCompleted >= 8
+		}
+	},
+	{
+		id: 2159,
+		name: 'Doom Chaser',
+		desc: 'Defeat the Doom of Mokhaiotl levels 1-8 in less than 10:00.',
+		type: 'speed',
+		monster: 'Doom of Mokhaiotl',
+		rng: {
+			chancePerKill: 1,
+			hasChance: (data: ActivityTaskData) =>
+				data.type === 'DoomOfMokhaiotl' &&
+				!data.diedAt &&
+				data.deepestDelveCompleted >= 8 &&
+				data.duration < Time.Minute * 10
+		}
+	},
+	{
+		id: 2160,
+		name: "Mine's Better",
+		desc: 'Defeat the Doom of Mokhaiotl levels 1-8 whilst always wearing a shield.',
+		type: 'restriction',
+		monster: 'Doom of Mokhaiotl',
+		rng: {
+			chancePerKill: 10,
+			hasChance: (data: ActivityTaskData) =>
+				data.type === 'DoomOfMokhaiotl' && !data.diedAt && data.deepestDelveCompleted >= 8
+		}
+	},
+	{
+		id: 2161,
+		name: 'Doom Veteran',
+		desc: 'Defeat the Doom of Mokhaiotl at delve level 8.',
+		type: 'kill_count',
+		monster: 'Doom of Mokhaiotl',
+		requirements: new Requirements().add({
+			name: 'Defeat the Doom of Mokhaiotl at delve level 8.',
+			has: ({ stats }) => Number(stats.userStats.doom_deepest_delve ?? 0) >= 8
+		})
+	},
+	{
+		id: 2162,
+		name: 'Yama Veteran',
+		type: 'kill_count',
+		monster: 'Yama',
+		desc: 'Defeat Yama 50 times.',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Yama.id]: 50
+			}
+		})
+	},
+	{
+		id: 2163,
+		name: 'Fire fighter',
+		type: 'mechanical',
+		monster: 'Yama',
+		desc: 'Defeat Yama without getting hit by fire and having only killed void flares with special attacks.',
+		rng: {
+			chancePerKill: 50,
+			hasChance: isCertainMonsterTrip(Monsters.Yama.id)
+		}
+	},
+	{
+		id: 2164,
+		name: 'Shadow dancer',
+		type: 'mechanical',
+		monster: 'Yama',
+		desc: 'Defeat Yama without getting hit by shadows and without being more than one tile away from the center of his shadow crash attack.',
+		rng: {
+			chancePerKill: 60,
+			hasChance: isCertainMonsterTrip(Monsters.Yama.id)
+		}
+	},
+	{
+		id: 2165,
+		name: 'No toppings, no drinks, thanks',
+		type: 'restriction',
+		monster: 'Yama',
+		desc: 'Defeat Yama without anybody healing using anything other than plain pizza and without anybody drinking any potions.',
+		rng: {
+			chancePerKill: 100,
+			hasChance: isCertainMonsterTrip(Monsters.Yama.id)
+		}
+	},
+	{
+		id: 2166,
+		name: 'Yama Speed-Chaser',
+		type: 'speed',
+		monster: 'Yama',
+		desc: 'Defeat Yama in an average time of under 3:00 over your last four kills.',
+		rng: {
+			chancePerKill: 135,
+			hasChance: isCertainMonsterTrip(Monsters.Yama.id)
+		}
 	}
 ];

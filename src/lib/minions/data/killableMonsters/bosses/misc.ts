@@ -268,7 +268,8 @@ export const miscBossKillables: KillableMonster[] = [
 			},
 			{
 				items: [{ boostPercent: 1, itemID: itemID('Primordial boots') }],
-				gearSetup: 'melee'
+				gearSetup: 'melee',
+				required: false
 			}
 		],
 		degradeableItemUsage: [
@@ -502,7 +503,7 @@ export const miscBossKillables: KillableMonster[] = [
 				gearSetup: 'range'
 			},
 			{
-				items: [{ boostPercent: 5, itemID: itemID('Tormented bracelet') }],
+				items: [{ boostPercent: 3, itemID: itemID('Tormented bracelet') }],
 				gearSetup: 'mage'
 			},
 			{
@@ -658,9 +659,9 @@ export const miscBossKillables: KillableMonster[] = [
 				required: true
 			},
 			{
-				items: resolveItems(['Primordial boots']).map(id => ({ boostPercent: 2, itemID: id })),
+				items: [{ boostPercent: 2, itemID: itemID('Primordial boots') }],
 				gearSetup: 'melee',
-				required: true
+				required: false
 			}
 		],
 		itemInBankBoosts: [
@@ -839,7 +840,7 @@ export const miscBossKillables: KillableMonster[] = [
 				required: false
 			},
 			{
-				items: resolveItems(['Primordial boots']).map(id => ({ boostPercent: 2, itemID: id })),
+				items: [{ boostPercent: 5, itemID: itemID('Primordial boots') }],
 				gearSetup: 'melee',
 				required: false
 			}
@@ -974,7 +975,7 @@ export const miscBossKillables: KillableMonster[] = [
 				required: false
 			},
 			{
-				items: resolveItems(['Primordial boots']).map(id => ({ boostPercent: 5, itemID: id })),
+				items: [{ boostPercent: 5, itemID: itemID('Primordial boots') }],
 				gearSetup: 'melee',
 				required: false
 			}
@@ -1478,5 +1479,96 @@ export const miscBossKillables: KillableMonster[] = [
 				[GearStat.AttackMagic]: 70
 			}
 		}
+	},
+	{
+		id: Monsters.Yama.id,
+		name: Monsters.Yama.name,
+		aliases: Monsters.Yama.aliases,
+		timeToFinish: Time.Minute * 5.63,
+		respawnTime: 5000,
+		table: Monsters.Yama,
+		customMonsterHP: 2500,
+		difficultyRating: 10,
+		notifyDrops: resolveItems(['Yami']),
+		itemsRequired: resolveItems(['Purging staff', 'Emberlight']),
+		qpRequired: 115,
+		itemInBankBoosts: [
+			{
+				[itemID('Burning claws')]: 3
+			},
+			{
+				[itemID('Lightbearer')]: 2
+			}
+		],
+		equippedItemBoosts: [
+			{
+				gearSetup: 'melee',
+				items: [
+					{ boostPercent: 5, itemID: itemID('Amulet of rancour') },
+					{ boostPercent: 3, itemID: itemID('Amulet of torture') }
+				]
+			},
+			{
+				gearSetup: 'melee',
+				items: [
+					{ boostPercent: 4, itemID: itemID('Infernal cape') },
+					{ boostPercent: 2, itemID: itemID('Fire cape') }
+				]
+			},
+			{
+				gearSetup: 'melee',
+				items: [
+					{ boostPercent: 4, itemID: itemID('Ferocious gloves') },
+					{ boostPercent: 2, itemID: itemID('Barrows gloves') }
+				]
+			}
+		],
+		levelRequirements: {
+			prayer: 70,
+			attack: 80,
+			strength: 80,
+			defence: 70,
+			magic: 82
+		},
+		healAmountNeeded: 20 * 35,
+		minimumHealAmount: 20,
+		attackStyleToUse: GearStat.AttackSlash,
+		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackMagic, GearStat.AttackRanged],
+		defaultAttackStyles: ['attack', 'magic', 'ranged'],
+		deathProps: {
+			hardness: 0.25,
+			steepness: 0.995
+		},
+		pohBoosts: {
+			pool: {
+				'Ornate rejuvenation pool': 10,
+				'Fancy rejuvenation pool': 10,
+				'Rejuvenation pool': 10
+			}
+		},
+		itemCost: [
+			{
+				itemCost: new Bank().add('Cosmic rune').add('Soul rune'),
+				qtyPerMinute: 0.5,
+				isRuneCost: true
+			},
+			{
+				itemCost: new Bank().add('Fire rune', 7).add('Soul rune', 2),
+				qtyPerKillRange: [8, 12],
+				isRuneCost: true
+			},
+			{
+				itemCost: new Bank().add('Saradomin brew(4)'),
+				qtyPerKill: 0.6
+			},
+			{
+				itemCost: new Bank().add('Super restore(4)'),
+				qtyPerKill: 0.5
+			},
+			{
+				itemCost: new Bank().add('Super combat potion(4)'),
+				qtyPerKill: 0.2
+			}
+		]
 	}
 ];

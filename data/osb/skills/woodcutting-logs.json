@@ -42,6 +42,21 @@
 		"clue_scroll_chance": 214367
 	},
 	{
+		"level": 80,
+		"xp": 10,
+		"id": 31111,
+		"name": "Infected Roots",
+		"find_new_tree_time": 0,
+		"banking_time": 60,
+		"slope": 0.13,
+		"intercept": 9.47,
+		"depletion_chance": 0,
+		"pet_chance": 0,
+		"qp_required": 70,
+		"clue_scroll_chance": 0,
+		"clue_nests_only": true
+	},
+	{
 		"level": 1,
 		"xp": 25,
 		"id": 1511,

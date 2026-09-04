@@ -1,17 +1,118 @@
-import { calcPerHour } from '@oldschoolgg/toolkit';
+import { calcPerHour, isWeekend } from '@oldschoolgg/toolkit';
 import { Bank, convertLVLtoXP, EItem, EMonster, itemID, Monsters, resolveItems } from 'oldschooljs';
 import { describe, expect, it, test } from 'vitest';
 
+import { BitField } from '@/lib/constants.js';
 import { CombatCannonItemBank } from '@/lib/minions/data/combatConstants.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
 import { getPOHObject } from '@/lib/poh/index.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import { minionKCommand } from '@/mahoji/commands/k.js';
+import { delvesCommand } from '@/mahoji/lib/abstracted_commands/delveCommand.js';
 import { createTestUser, mockClient, mockUser } from '../util.js';
 
 describe('PVM', async () => {
 	const client = await mockClient();
 	expect(Monsters.Man.id).toBe(EMonster.MAN);
+
+	it('Should reject Doom through the kill command', async () => {
+		const user = await createTestUser();
+		const result = await user.runCommand(minionKCommand, { name: 'doom' });
+		expect(result).toEqual('Use `/delves doom` to fight the Doom of Mokhaiotl.');
+	});
+
+	it('requires Dexterous prayer scroll to fight Doom', async () => {
+		const user = await client.mockUser({ maxed: true });
+		await user.update({ finished_quest_ids: [QuestID.TheFinalDawn] });
+
+		const result = await user.runCommand(delvesCommand, { doom: { target_delve: 1 } });
+		expect(result).toEqual(
+			'You need to use a Dexterous prayer scroll to unlock Rigour before you can fight the Doom of Mokhaiotl.'
+		);
+	});
+
+	it('lists charged Eye of ayak on Doom trips', async () => {
+		const user = await client.mockUser({
+			maxed: true,
+			rangeGear: resolveItems([
+				'Masori mask (f)',
+				'Necklace of anguish',
+				'Masori body (f)',
+				"Ava's assembler",
+				'Zaryte vambraces',
+				'Masori chaps (f)',
+				'Avernic treads',
+				'Twisted bow',
+				'Dragon arrow'
+			]),
+			bank: new Bank()
+				.add('Anti-venom+(4)', 100)
+				.add('Dragon arrow', 1000)
+				.add('Emberlight')
+				.add('Eye of ayak')
+				.add('Noxious halberd')
+				.add('Ranging potion(4)', 100)
+				.add('Saradomin brew(4)', 100)
+				.add('Super restore(4)', 100)
+		});
+		await user.update({
+			ayak_charges: 100,
+			bitfield: {
+				push: BitField.HasDexScroll
+			},
+			finished_quest_ids: [QuestID.TheFinalDawn]
+		});
+		user.gear.range.equip('Dragon arrow', 1000);
+		await user.update({ gear_range: user.gear.range.raw() } as any);
+
+		const result = await user.runCommand(delvesCommand, { doom: { target_delve: 1 } });
+		expect(result).toContain('Eye of ayak replacing mage grub rune costs');
+	});
+
+	it('allows Doom without the ZCB boost when missing ruby bolts', async () => {
+		const user = await client.mockUser({
+			maxed: true,
+			rangeGear: resolveItems([
+				'Masori mask (f)',
+				'Necklace of anguish',
+				'Masori body (f)',
+				"Ava's assembler",
+				'Zaryte vambraces',
+				'Masori chaps (f)',
+				'Avernic treads',
+				'Twisted bow',
+				'Dragon arrow'
+			]),
+			bank: new Bank()
+				.add('Anti-venom+(4)', 100)
+				.add('Dragon arrow', 1000)
+				.add('Emberlight')
+				.add('Eye of ayak')
+				.add('Noxious halberd')
+				.add('Ranging potion(4)', 100)
+				.add('Saradomin brew(4)', 100)
+				.add('Super restore(4)', 100)
+				.add('Zaryte crossbow')
+		});
+		await user.update({
+			ayak_charges: 100,
+			bitfield: {
+				push: BitField.HasDexScroll
+			},
+			finished_quest_ids: [QuestID.TheFinalDawn]
+		});
+		user.gear.range.equip('Dragon arrow', 1000);
+		await user.update({ gear_range: user.gear.range.raw() } as any);
+
+		const result = await user.runCommand(delvesCommand, { doom: { target_delve: 1 } });
+		expect(result).toContain('is now fighting the **Doom of Mokhaiotl**');
+		expect(result).toContain('Zaryte crossbow boost skipped (missing Ruby bolts (e)/Ruby dragon bolts (e))');
+		expect(result).not.toContain('10% for Zaryte crossbow');
+
+		const activity = await ActivityManager.getActivityOfUser(user.id);
+		expect(activity?.type).toEqual('DoomOfMokhaiotl');
+		expect(activity && 'disableZcbBoost' in activity ? activity.disableZcbBoost : false).toBe(true);
+	});
 
 	it('Should remove food', async () => {
 		const user = await createTestUser(new Bank().add('Shark', 1000), {
@@ -481,5 +582,88 @@ describe('PVM', async () => {
 
 		expect(perHourWithScythe).toBeGreaterThan(perHourWithoutScythe);
 		expect(user.user.scythe_of_vitur_charges).toBeLessThan(100_000);
+	});
+
+	it('can kill Yama with a degradable melee weapon equipped', async () => {
+		const user = await client.mockUser({
+			maxed: true,
+			QP: 300,
+			meleeGear: resolveItems(['Scythe of vitur']),
+			bank: new Bank()
+				.add('Anglerfish', 100)
+				.add('Shark', 1000)
+				.add('Saradomin brew(4)', 100)
+				.add('Super restore(4)', 100)
+				.add('Super combat potion(4)', 100)
+				.add('Cosmic rune', 1000)
+				.add('Soul rune', 1000)
+				.add('Fire rune', 10_000)
+				.add('Emberlight')
+				.add('Purging staff')
+				.add('Emberlight')
+		});
+		await user.update({
+			scythe_of_vitur_charges: 100_000
+		});
+
+		const res = await user.kill(EMonster.YAMA, { quantity: 1 });
+		expect(res.commandResult).toContain('is now killing 1x Yama');
+		expect(res.commandResult).toContain('5% for Scythe of vitur');
+		expect(user.user.scythe_of_vitur_charges).toBeLessThan(100_000);
+	});
+
+	it('kills Yama at the intended rate with maxed boosts and 10k KC', async () => {
+		const user = await client.mockUser({
+			maxed: true,
+			QP: 300,
+			meleeGear: resolveItems(['Amulet of rancour', 'Infernal cape', 'Ferocious gloves']),
+			bank: new Bank()
+				.add('Shark', 1000)
+				.add('Saradomin brew(4)', 100)
+				.add('Super restore(4)', 100)
+				.add('Super combat potion(4)', 100)
+				.add('Cosmic rune', 1000)
+				.add('Death rune', 1000)
+				.add('Blood rune', 1000)
+				.add('Soul rune', 1000)
+				.add('Fire rune', 10_000)
+				.add('Purging staff')
+				.add('Emberlight')
+				.add('Burning claws')
+				.add('Lightbearer')
+		});
+		await user.setAttackStyle(['attack', 'strength', 'defence']);
+		await user.update({
+			bitfield: {
+				push: BitField.HasRiteOfVileTransference
+			}
+		});
+		await user.incrementKC(EMonster.YAMA, 10_000);
+
+		const res = await user.kill(EMonster.YAMA, { quantity: 9 });
+		expect(res.commandResult).toContain('is now killing 9x Yama');
+		expect(res.commandResult).toContain('15.00% for stats');
+		expect(res.commandResult).toContain('10% for KC');
+		expect(res.commandResult).toContain('5% for Rite of vile transference');
+		expect(res.commandResult).toContain('2% for Shark');
+		expect(calcPerHour(res.activityResult!.q, res.activityResult!.duration)).toBeCloseTo(isWeekend() ? 20 : 18, 0);
+	});
+
+	it('requires a Purging staff to kill Yama', async () => {
+		const user = await client.mockUser({
+			maxed: true,
+			QP: 300,
+			bank: new Bank()
+				.add('Anglerfish', 100)
+				.add('Saradomin brew(4)', 100)
+				.add('Super restore(4)', 100)
+				.add('Super combat potion(4)', 100)
+				.add('Cosmic rune', 1000)
+				.add('Soul rune', 1000)
+				.add('Fire rune', 10_000)
+		});
+
+		const res = await user.kill(EMonster.YAMA, { quantity: 1, shouldFail: true });
+		expect(res.commandResult).toContain("You're missing Purging staff");
 	});
 });

@@ -127,6 +127,7 @@ import {
 	volcanicMineCL,
 	vorkathCL,
 	wintertodtCL,
+	yamaCL,
 	zalcanoCL,
 	zulrahCL
 } from '@/lib/data/CollectionsExport.js';
@@ -589,9 +590,10 @@ export const allCollectionLogs: ICollection = {
 				items: wintertodtCL,
 				fmtProg: mgProg('wintertodt')
 			},
-			///	Yama: {
-			///		items: CollectionLog.Yami.items
-			///	},
+			Yama: {
+				items: yamaCL,
+				allItems: Monsters.Yama.allItems
+			},
 			Zalcano: { items: zalcanoCL, fmtProg: ({ stats }) => `${stats.kcBank[EMonster.ZALCANO] ?? 0} KC` },
 			Zulrah: {
 				alias: Monsters.Zulrah.aliases,
@@ -1270,6 +1272,7 @@ export const allCollectionLogs: ICollection = {
 		}
 	}
 };
+
 // Get all items, from all monsters and all CLs into a variable, for uses like mostdrops
 export const allDroppedItems = uniqueArr([
 	...Object.values(allCollectionLogs)
@@ -1541,7 +1544,8 @@ export async function getCollection(options: {
 						logType === 'sacrifice'
 					),
 					userItems: userCheckBank,
-					counts: attributes.counts ?? true
+					counts: attributes.counts ?? true,
+					fmtProgResult: await resolveFmtProg(attributes.fmtProg, user, minigameScores, userStats)
 				};
 			}
 		}
@@ -1564,6 +1568,21 @@ export async function getCollection(options: {
 	}
 
 	return false;
+}
+
+async function resolveFmtProg(
+	fmtProg: FormatProgressFunction | undefined,
+	user: MUser,
+	minigames: Awaited<ReturnType<MUser['fetchMinigameScores']>>,
+	stats: MUserStats
+): Promise<string | string[] | undefined> {
+	if (!fmtProg) return undefined;
+	return fmtProg({
+		user,
+		getKC: async (id: number) => user.getKC(id),
+		minigames: minigames as any,
+		stats
+	});
 }
 
 export const allCollectionLogsFlat = Object.values(allCollectionLogs).flatMap(i =>

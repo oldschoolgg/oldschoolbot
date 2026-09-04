@@ -17,7 +17,9 @@ export async function exitCleanup() {
 		if (roboChimpClient) {
 			roboChimpClient.$disconnect();
 		}
-		await Cache.close();
+		if (typeof globalThis.Cache !== 'undefined') {
+			await globalThis.Cache.close();
+		}
 	} catch (err) {
 		Logging.logError(err as Error);
 		process.exit(1);
