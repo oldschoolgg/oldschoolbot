@@ -1,6 +1,6 @@
-import { ButtonBuilder, type ButtonMInteraction, ButtonStyle, codeBlock, dateFm } from '@oldschoolgg/discord';
+import { codeBlock, dateFm } from '@oldschoolgg/discord';
 import { type GearSetupType, GearSetupTypes } from '@oldschoolgg/gear';
-import { sumArr, Time, toTitleCase } from '@oldschoolgg/toolkit';
+import { sumArr, toTitleCase } from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Bank, type Item, type ItemBank } from 'oldschooljs';
@@ -46,10 +46,6 @@ function isProtectedAccount(user: MUser) {
 	if (botAccounts.includes(user.id)) return true;
 	if (user.isModOrAdmin()) return true;
 	return false;
-}
-
-function makeMigrateUserCancelButton(customId: string) {
-	return new ButtonBuilder().setCustomId(customId).setLabel('Cancel migration').setStyle(ButtonStyle.Danger);
 }
 
 export const rpCommand = defineCommand({
@@ -656,65 +652,8 @@ Date: ${dateFm(date)}`;
 			await interaction.confirmation(
 				`Are you 1000%, totally, **REALLY** sure that \`${sourceUser.logName}\` is the account you want to preserve, and \`${destUser.logName}\` is the new account that will have ALL existing data destroyed?`
 			);
-			const cancelCustomId = `RP_MIGRATE_USER_CANCEL_${interaction.id}`;
-			let cancelRequested = false;
-			let cancelButtonActive = false;
-			const cancelCollector = globalClient.createInteractionCollector({
-				timeoutMs: Time.Minute * 30,
-				interaction,
-				maxCollected: Infinity
-			});
-			cancelCollector.on('collect', async (buttonInteraction: ButtonMInteraction) => {
-				if (buttonInteraction.customId !== cancelCustomId) return;
-				if (buttonInteraction.userId !== adminUser.id) {
-					await buttonInteraction.reply({
-						content: 'Only the command user can cancel this migration.',
-						ephemeral: true
-					});
-					return;
-				}
-				if (!cancelButtonActive) {
-					await buttonInteraction.reply({
-						content: 'This migration can no longer be cancelled.',
-						ephemeral: true
-					});
-					return;
-				}
-
-				cancelRequested = true;
-				cancelButtonActive = false;
-				await buttonInteraction.silentButtonAck();
-				await interaction.reply({
-					content: 'Cancelling migration; waiting for the current database step to roll back...',
-					components: []
-				});
-			});
-
-			await interaction.reply('Preparing migration...');
-			let result: string | true;
-			try {
-				result = await migrateUser(sourceUser, destUser, {
-					shouldCancel: () => cancelRequested,
-					onBeforeMainTransaction: async () => {
-						cancelButtonActive = true;
-						await interaction.reply({
-							content: 'Reticulating splines...',
-							components: [makeMigrateUserCancelButton(cancelCustomId)]
-						});
-					},
-					onMainTransactionComplete: async () => {
-						cancelButtonActive = false;
-						cancelCollector.stop('mainTransactionComplete');
-						await interaction.reply({
-							content: 'Minion data migrated; finalizing Robochimp migration...',
-							components: []
-						});
-					}
-				});
-			} finally {
-				cancelButtonActive = false;
-				cancelCollector.stop('finished');
-			}
+			await interaction.reply('Reticulating splines...');
+			const result = await migrateUser(sourceUser, destUser);
 			if (result === true) {
 				await globalClient.sendMessage(Channel.BotLogs, {
 					content: `${adminUser.logName} migrated ${sourceUser.logName} to ${destUser.logName}${
