@@ -67,7 +67,7 @@ Delve 8+ never becomes fully safe. Repeated clears reduce the death chance towar
 - Up to 15% speed boost for combat stats
 - Arrow modifiers: [[Dragon arrow]] is 8% faster, [[Amethyst arrow]] is 4% faster, [[Rune arrow]] is 5% slower, and lower arrows are 12% slower.
 
-Full fortified Masori armour with [[Zaryte vambraces]] matches Elite Void's 5% total speed boost. If [[Avernic treads (max)]] are equipped in any Melee, Mage, or Range setup, they count for Doom's range feet slot check.
+Full fortified Masori armour with [[Zaryte vambraces]] matches Elite Void's 5% total speed boost. [[Avernic treads (max)]] count for Doom's range feet slot check when equipped in the range setup.
 
 [[Eye of ayak]] can replace rune costs for mage grubs when charged. Completing Doom with a charged Eye of Ayak also adds more Eye of Ayak charges.
 

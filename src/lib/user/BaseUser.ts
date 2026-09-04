@@ -95,7 +95,7 @@ export class BaseUser {
 
 	public get gear(): UserFullGearSetup {
 		if (this._gearLazy) return this._gearLazy;
-		const gear = {
+		this._gearLazy = {
 			melee: new Gear((this.user.gear_melee as GearSetup | null) ?? { ...defaultGearSetup }),
 			mage: new Gear((this.user.gear_mage as GearSetup | null) ?? { ...defaultGearSetup }),
 			range: new Gear((this.user.gear_range as GearSetup | null) ?? { ...defaultGearSetup }),
@@ -105,7 +105,6 @@ export class BaseUser {
 			fashion: new Gear((this.user.gear_fashion as GearSetup | null) ?? { ...defaultGearSetup }),
 			other: new Gear((this.user.gear_other as GearSetup | null) ?? { ...defaultGearSetup })
 		};
-		this._gearLazy = gear;
 		return this._gearLazy;
 	}
 

@@ -77,7 +77,7 @@ export async function abstractedOpenUntilCommand(
 		if (unlimitedEnabled) {
 			if (chatMessage) {
 				messages.push(
-					`${Emoji.Seer} You didn't specify a quantity, so Open Until is using your unlimited default.`
+					`${Emoji.Seer} You didn't specify a quantity, so Open Until is using your unlimited default`
 				);
 			}
 			maxOpenQuantity = amountOfThisOpenableOwned;

@@ -77,20 +77,6 @@ const baseStats: GearStats = {
 	prayer: 0
 };
 
-function addSimilarItems(values: Set<number>) {
-	for (const item of [...values]) {
-		const inverse = inverseSimilarItems.get(item);
-		if (inverse) {
-			for (const invSimilarItem of inverse.values()) {
-				values.add(invSimilarItem);
-			}
-		}
-		for (const similarItem of getSimilarItems(item)) {
-			values.add(similarItem);
-		}
-	}
-}
-
 export class Gear {
 	private setup: GearSetup = { ...defaultGearSetup };
 
@@ -192,7 +178,17 @@ export class Gear {
 		}
 
 		if (similar) {
-			addSimilarItems(values);
+			for (const item of [...values]) {
+				const inverse = inverseSimilarItems.get(item);
+				if (inverse) {
+					for (const invSimilarItem of inverse.values()) {
+						values.add(invSimilarItem);
+					}
+				}
+				for (const similarItem of getSimilarItems(item)) {
+					values.add(similarItem);
+				}
+			}
 		}
 
 		return Array.from(values);
