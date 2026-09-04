@@ -1,6 +1,6 @@
 {
-	"hash": "4adfea88669c8929e25c50c45d38ca91",
-	"date": "2026-06-09T08:23:51.005Z",
+	"hash": "a8acf93eb8ffd994da85886ad58879b4",
+	"date": "2026-07-07T15:16:46.854Z",
 	"data": [
 		{
 			"name": "activities",
@@ -544,6 +544,11 @@
 			"desc": "See your OSRS xp.",
 			"examples": ["/xp rsn:Magnaboy"],
 			"subOptions": []
+		},
+		{
+			"name": "zero_time_activity",
+			"desc": "Configure your preferred zero-time activities.",
+			"subOptions": ["clear", "overview", "set"]
 		}
 	]
 }

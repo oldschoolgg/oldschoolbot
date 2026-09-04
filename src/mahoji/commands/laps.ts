@@ -1,68 +1,19 @@
 import { bold } from '@oldschoolgg/discord';
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
-import { Bank } from 'oldschooljs';
 
 import { quests } from '@/lib/minions/data/quests.js';
 import { courses } from '@/lib/skilling/skills/agility.js';
 import type { AgilityActivityTaskOptions } from '@/lib/types/minions.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
+import {
+	getZeroTimeActivityPreferences,
+	prepareZeroTimeActivityTrip,
+	resolveConfiguredFletchItemsPerHour
+} from '@/lib/util/zeroTimeActivity.js';
 import { timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
 
-const unlimitedFireRuneProviders = [
-	'Staff of fire',
-	'Fire battlestaff',
-	'Mystic fire staff',
-	'Lava battlestaff',
-	'Mystic lava staff',
-	'Steam battlestaff',
-	'Mystic steam staff',
-	'Smoke battlestaff',
-	'Mystic smoke staff',
-	'Tome of fire'
-];
-
-function alching(user: MUser, tripLength: number) {
-	if (user.skillsAsLevels.magic < 55) return null;
-	const { bank } = user;
-	const favAlchables = user.favAlchs(tripLength, true);
-
-	if (favAlchables.length === 0) {
-		return null;
-	}
-
-	const [itemToAlch] = favAlchables;
-
-	const alchItemQty = bank.amount(itemToAlch.id);
-	const nats = bank.amount('Nature rune');
-	const fireRunes = bank.amount('Fire rune');
-
-	const hasInfiniteFireRunes = user.hasEquipped(unlimitedFireRuneProviders);
-
-	let maxCasts = Math.floor(tripLength / timePerAlchAgility);
-	maxCasts = Math.min(alchItemQty, maxCasts);
-	maxCasts = Math.min(nats, maxCasts);
-	if (!hasInfiniteFireRunes) {
-		maxCasts = Math.min(fireRunes / 5, maxCasts);
-	}
-	maxCasts = Math.floor(maxCasts);
-
-	const bankToRemove = new Bank().add('Nature rune', maxCasts).add(itemToAlch.id, maxCasts);
-	if (!hasInfiniteFireRunes) {
-		bankToRemove.add('Fire rune', maxCasts * 5);
-	}
-
-	if (maxCasts === 0 || bankToRemove.length === 0) return null;
-
-	const alchGP = itemToAlch.highalch! * maxCasts;
-	const bankToAdd = new Bank().add('Coins', alchGP);
-
-	return {
-		maxCasts,
-		bankToRemove,
-		itemToAlch,
-		bankToAdd
-	};
-}
+const AGILITY_ALCHES_PER_HOUR = Time.Hour / timePerAlchAgility;
+const AGILITY_FLETCH_CAP_PER_HOUR = 15_000;
 
 export const lapsCommand = defineCommand({
 	name: 'laps',
@@ -93,15 +44,10 @@ export const lapsCommand = defineCommand({
 			description: 'The quantity of laps you want to do (optional).',
 			required: false,
 			min_value: 1
-		},
-		{
-			type: 'Boolean',
-			name: 'alch',
-			description: 'Do you want to alch while doing agility? (optional).',
-			required: false
 		}
 	],
-	run: async ({ options, user, channelId }) => {
+	run: async ({ options, userId, channelId }) => {
+		const user = await mUserFetch(userId);
 		const course = courses.find(
 			course =>
 				stringMatches(course.id.toString(), options.name) ||
@@ -152,15 +98,51 @@ export const lapsCommand = defineCommand({
 			course.name
 		} laps, it'll take around ${formatTripDuration(user, duration)} to finish.`;
 
-		const alchResult = course.name === 'Ape Atoll Agility Course' || !options.alch ? null : alching(user, duration);
-		if (alchResult !== null) {
-			if (!user.owns(alchResult.bankToRemove)) {
-				return `You don't own ${alchResult.bankToRemove}.`;
+		const preferences = getZeroTimeActivityPreferences(user);
+		const alchDisabledReason =
+			course.name === 'Ape Atoll Agility Course'
+				? 'Alching is unavailable on this course because your minion must hold a greegree.'
+				: undefined;
+		const { fletchResult, alchResult, infoMessages, zeroTimePreferenceRole } = await prepareZeroTimeActivityTrip({
+			user,
+			duration,
+			preferences,
+			removeItems: true,
+			alch: {
+				variant: 'agility',
+				itemsPerHour: AGILITY_ALCHES_PER_HOUR,
+				...(alchDisabledReason ? { disabledReason: alchDisabledReason } : {})
+			},
+			fletch: {
+				itemsPerHour: preference => {
+					const configuredRate = resolveConfiguredFletchItemsPerHour(preference);
+					if (!configuredRate) return undefined;
+					return Math.min(configuredRate, AGILITY_FLETCH_CAP_PER_HOUR);
+				}
 			}
+		});
 
-			await user.removeItemsFromBank(alchResult.bankToRemove);
-			response += `\n\nYour minion is alching ${alchResult.maxCasts}x ${alchResult.itemToAlch.name} while training. Removed ${alchResult.bankToRemove} from your bank.`;
-			await ClientSettings.updateBankSetting('magic_cost_bank', alchResult.bankToRemove);
+		if (fletchResult) {
+			const setsText = fletchResult.fletchable.outputMultiple ? ' sets of' : '';
+			const prefix =
+				zeroTimePreferenceRole === 'fallback' ? 'Using fallback preference, your minion is' : 'Your minion is';
+			response += `
+
+${prefix} fletching ${fletchResult.quantity}${setsText} ${fletchResult.fletchable.name} while training. Removed ${fletchResult.itemsToRemove} from your bank.`;
+		}
+
+		if (alchResult) {
+			const prefix =
+				zeroTimePreferenceRole === 'fallback' ? 'Using fallback preference, your minion is' : 'Your minion is';
+			response += `
+
+${prefix} alching ${alchResult.quantity}x ${alchResult.item.name} while training. Removed ${alchResult.bankToRemove} from your bank.`;
+		}
+
+		if (infoMessages.length > 0) {
+			response += `
+
+${infoMessages.join('\n')}`;
 		}
 
 		await ActivityManager.startTrip<AgilityActivityTaskOptions>({
@@ -170,13 +152,9 @@ export const lapsCommand = defineCommand({
 			quantity,
 			duration,
 			type: 'Agility',
-			alch:
-				alchResult === null
-					? undefined
-					: {
-							itemID: alchResult.itemToAlch.id,
-							quantity: alchResult.maxCasts
-						}
+			alch: alchResult ? { itemID: alchResult.item.id, quantity: alchResult.quantity } : undefined,
+			fletch: fletchResult ? { id: fletchResult.fletchable.id, qty: fletchResult.quantity } : undefined,
+			zeroTimePreferenceRole
 		});
 
 		return response;
