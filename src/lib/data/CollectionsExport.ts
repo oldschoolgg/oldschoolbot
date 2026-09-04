@@ -26,6 +26,7 @@ export interface IToReturnCollection {
 	leftList?: ILeftListStatus;
 	userItems: Bank;
 	counts: boolean;
+	fmtProgResult?: string | string[];
 }
 
 export type CollectionStatus = 'not_started' | 'started' | 'completed';
@@ -337,6 +338,19 @@ export const wintertodtCL = resolveItems([
 	'Warm gloves',
 	'Bruma torch',
 	'Dragon axe'
+]);
+export const yamaCL = resolveItems([
+	'Yami',
+	'Chasm teleport scroll',
+	'Oathplate shards',
+	'Oathplate helm',
+	'Oathplate chest',
+	'Oathplate legs',
+	'Soulflame horn',
+	'Rite of vile transference',
+	'Forgotten lockbox',
+	'Dossier',
+	'Barrel of demonic tallow (full)'
 ]);
 export const zalcanoCL = resolveItems(['Smolcano', 'Crystal tool seed', 'Zalcano shard', 'Uncut onyx']);
 export const zulrahCL = resolveItems([
@@ -1425,8 +1439,8 @@ export const allPetsCL = resolveItems([
 	'Nid',
 	'Huberte',
 	'Moxi',
-	'Bran'
-	// 'Yami', // Currently unobtainable.
+	'Bran',
+	'Yami'
 	// 'Dom' // Currently unobtainable.
 ]);
 export const camdozaalCL = resolveItems([

@@ -81,6 +81,11 @@ export const usableUnlocks: UsableUnlock[] = [
 		item: Items.getOrThrow('Mystic vigour prayer scroll'),
 		bitfield: BitField.HasMysticVigourScroll,
 		resultMessage: 'You used your Mystic vigour prayer scroll, and unlocked the Mystic vigour prayer.'
+	},
+	{
+		item: Items.getOrThrow('Rite of vile transference'),
+		bitfield: BitField.HasRiteOfVileTransference,
+		resultMessage: 'You used your Rite of vile transference.'
 	}
 ];
 for (const usableUnlock of usableUnlocks) {

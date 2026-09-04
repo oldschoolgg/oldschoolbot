@@ -1,6 +1,6 @@
 {
-	"hash": "117af84ead8737c866ad5ecb2234ce21",
-	"date": "2026-05-09T10:48:36.665Z",
+	"hash": "9bc6235f63d84147c049394d0c71521e",
+	"date": "2026-09-03T09:24:51.113Z",
 	"data": [
 		{
 			"id": 2,
@@ -6157,6 +6157,30 @@
 			"items_required": ["Boots of stone"],
 			"qp_required": 0,
 			"item_in_bank_boosts": [],
+			"can_barrage": false,
+			"can_chin": false,
+			"can_cannon": false,
+			"cannon_multi": false
+		},
+		{
+			"id": 14176,
+			"name": "Yama",
+			"base_kill_time_ms": 337800,
+			"respawn_time_ms": 5000,
+			"is_wildy": false,
+			"is_slayer_only": false,
+			"can_be_pked": false,
+			"is_wildy_multi": false,
+			"items_required": ["Purging staff", "Emberlight"],
+			"qp_required": 115,
+			"item_in_bank_boosts": [
+				{
+					"Burning claws": 3
+				},
+				{
+					"Lightbearer": 2
+				}
+			],
 			"can_barrage": false,
 			"can_chin": false,
 			"can_cannon": false,
