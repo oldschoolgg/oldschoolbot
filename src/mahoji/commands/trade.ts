@@ -1,6 +1,8 @@
 import { createHash } from 'node:crypto';
+import { TextDecoder } from 'node:util';
 import {
 	type APIMessage,
+	type APIAttachment,
 	ButtonBuilder,
 	ButtonStyle,
 	EmbedBuilder,
@@ -8,9 +10,10 @@ import {
 	userMention
 } from '@oldschoolgg/discord';
 import { Events, ellipsize } from '@oldschoolgg/toolkit';
-import { Bank } from 'oldschooljs';
+import { Bank, type ItemBank } from 'oldschooljs';
 
 import { filterOption } from '@/discord/index.js';
+import { ZItemBank } from '@/lib/structures/Bank.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { tradePlayerItems } from '@/lib/util/tradePlayerItems.js';
@@ -23,6 +26,7 @@ const TRADE_MAX_PULL_REDUCTION_STEP = 10;
 const MIN_TRADE_MAX_PULL = 10;
 const MAX_TRADE_SYNOPSIS_LENGTH = 1950;
 const EMBED_SIDE_LENGTH = 1800;
+const MAX_TRADE_FILE_BYTES = 2 * 1024 * 1024;
 const TradeConfirmationButtonID = {
 	Confirm: 'TRADE_CONFIRM',
 	Cancel: 'TRADE_CANCEL'
@@ -32,6 +36,159 @@ const TradeConfirmationStopReason = {
 	UserCancelled: 'user_cancelled',
 	Timeout: 'timeout'
 };
+type TradeFileOptionName = 'send_file' | 'receive_file';
+type TradeFileTextResult = { text: string } | { error: string };
+
+function formatTradeFileError(optionName: TradeFileOptionName, message: string, underlyingError?: string) {
+	const prefix = `I couldn't use your ${optionName} attachment. ${message}`;
+	if (!underlyingError) return prefix;
+	return `${prefix}\n\n\`\`\`text\n${underlyingError}\n\`\`\``;
+}
+
+function formatTradeFileParseError(optionName: TradeFileOptionName, underlyingError?: string) {
+	const prefix = `I couldn't parse your ${optionName} attachment as an item bank.`;
+	if (!underlyingError) return prefix;
+	return `${prefix}\n\n\`\`\`text\n${underlyingError}\n\`\`\``;
+}
+
+function hasAllowedTradeFileExtension(attachment: APIAttachment) {
+	return /\.(?:txt|json)$/i.test(attachment.filename);
+}
+
+function hasBinaryTextCharacters(text: string) {
+	return /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/u.test(text);
+}
+
+function assertJSONObject(value: unknown): asserts value is Record<string, unknown> {
+	if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+		throw new Error('JSON item banks must be an object of item ID keys to quantities.');
+	}
+}
+
+function assertJSONItemBankUsesIDKeys(bank: Record<string, unknown>) {
+	const nonIDKey = Object.keys(bank).find(key => !/^\d+$/.test(key));
+	if (nonIDKey) {
+		throw new Error('JSON item bank keys must be item IDs only.');
+	}
+}
+
+function validateJSONItemBank(json: unknown): ItemBank {
+	assertJSONObject(json);
+	assertJSONItemBankUsesIDKeys(json);
+	const parsed = ZItemBank.safeParse(json);
+	if (!parsed.success) {
+		throw new Error(
+			parsed.error.issues.map(issue => `${issue.path.join('.') || 'bank'}: ${issue.message}`).join('\n')
+		);
+	}
+	const parsedKeyCount = Object.keys(parsed.data).length;
+	if (parsedKeyCount !== Object.keys(json).length) {
+		throw new Error('JSON item bank contains unknown item IDs.');
+	}
+	return parsed.data;
+}
+
+function parseTradeFileBankContent({
+	optionName,
+	content,
+	inputBank
+}: {
+	optionName: TradeFileOptionName;
+	content: string;
+	inputBank?: Bank;
+}): Bank | string {
+	const trimmedContent = content.trim();
+	if (!trimmedContent) {
+		return formatTradeFileError(optionName, 'Attachment content is empty.');
+	}
+
+	try {
+		if (trimmedContent[0] === '{') {
+			const parsedJSON = JSON.parse(trimmedContent);
+			return new Bank(validateJSONItemBank(parsedJSON)).filter(i => itemIsTradeable(i.id, true));
+		}
+
+		return parseBank({
+			inputBank,
+			inputStr: trimmedContent,
+			flags: {},
+			noDuplicateItems: true
+		}).filter(i => itemIsTradeable(i.id, true));
+	} catch (err) {
+		return formatTradeFileParseError(
+			optionName,
+			err instanceof Error ? err.message : 'Unknown parsing error.'
+		);
+	}
+}
+
+async function downloadTradeAttachmentText(
+	optionName: TradeFileOptionName,
+	attachment: APIAttachment
+): Promise<TradeFileTextResult> {
+	if (!hasAllowedTradeFileExtension(attachment)) {
+		return { error: formatTradeFileError(optionName, 'The file must be a .txt or .json file.') };
+	}
+
+	if (attachment.size > MAX_TRADE_FILE_BYTES) {
+		return {
+			error: formatTradeFileError(
+				optionName,
+				'The file is over 2MB. Use item IDs instead of item names to make it smaller.'
+			)
+		};
+	}
+
+	let response: Response;
+	try {
+		response = await fetch(attachment.url);
+	} catch (err) {
+		return {
+			error: formatTradeFileError(
+				optionName,
+				"I couldn't download the file.",
+				err instanceof Error ? err.message : 'Unknown download error.'
+			)
+		};
+	}
+	if (!response.ok) {
+		return {
+			error: formatTradeFileError(
+				optionName,
+				"I couldn't download the file.",
+				`${response.status} ${response.statusText}`
+			)
+		};
+	}
+
+	const buffer = Buffer.from(await response.arrayBuffer());
+	if (buffer.length > MAX_TRADE_FILE_BYTES) {
+		return {
+			error: formatTradeFileError(
+				optionName,
+				'The downloaded file is over 2MB. Use item IDs instead of item names to make it smaller.'
+			)
+		};
+	}
+
+	try {
+		const text = new TextDecoder('utf-8', { fatal: true }).decode(buffer);
+		if (hasBinaryTextCharacters(text)) {
+			return {
+				error: formatTradeFileError(optionName, 'The file must be plaintext UTF-8.', 'Binary data was detected.')
+			};
+		}
+		return { text };
+	} catch (err) {
+		return {
+			error: formatTradeFileError(
+				optionName,
+				'The file must be plaintext UTF-8.',
+				err instanceof Error ? err.message : 'Invalid UTF-8 content.'
+			)
+		};
+	}
+}
 
 function formatBankForDisplay(bank: Bank): string {
 	const fullStr = bank.toStringFull();
@@ -281,9 +438,21 @@ export const tradeCommand = defineCommand({
 			required: false
 		},
 		{
+			type: 'Attachment',
+			name: 'send_file',
+			description: 'A plaintext item bank file of items you want to send.',
+			required: false
+		},
+		{
 			type: 'String',
 			name: 'receive',
 			description: 'The items you want to receive from the other player.',
+			required: false
+		},
+		{
+			type: 'Attachment',
+			name: 'receive_file',
+			description: 'A plaintext item bank file of items you want to receive.',
 			required: false
 		},
 		{
@@ -319,12 +488,43 @@ export const tradeCommand = defineCommand({
 		if (recipientUser.id === senderUser.id) return "You can't trade yourself.";
 		if (options.user.user.bot) return "You can't trade a bot.";
 		if (await recipientUser.getIsLocked()) return 'That user is busy right now.';
+		if (options.send && options.send_file) return 'Use either send or send_file, not both.';
+		if (options.receive && options.receive_file) return 'Use either receive or receive_file, not both.';
+		if (options.send_file && (options.filter || options.search || options.all)) {
+			return 'You cannot use send_file with filter, search, or all.';
+		}
 
 		const extraSettings = await ClientSettings.getExtraSettings();
+		let fileItemsSent: Bank | undefined;
+		let fileItemsReceived: Bank | undefined;
+
+		if (options.send_file) {
+			const sendFileText = await downloadTradeAttachmentText('send_file', options.send_file);
+			if ('error' in sendFileText) return sendFileText.error;
+			const parsed = parseTradeFileBankContent({
+				optionName: 'send_file',
+				content: sendFileText.text,
+				inputBank: senderUser.bankWithGP
+			});
+			if (typeof parsed === 'string') return parsed;
+			fileItemsSent = parsed;
+		}
+
+		if (options.receive_file) {
+			const receiveFileText = await downloadTradeAttachmentText('receive_file', options.receive_file);
+			if ('error' in receiveFileText) return receiveFileText.error;
+			const parsed = parseTradeFileBankContent({
+				optionName: 'receive_file',
+				content: receiveFileText.text
+			});
+			if (typeof parsed === 'string') return parsed;
+			fileItemsReceived = parsed;
+		}
 
 		function parseTradeBanks(maxSize: number) {
 			const parsedItemsSent =
-				!options.search && !options.filter && !options.send && !options.all
+				(fileItemsSent ? new Bank(fileItemsSent) : undefined) ??
+				(!options.search && !options.filter && !options.send && !options.all
 					? new Bank()
 					: parseBank({
 							inputBank: senderUser.bankWithGP,
@@ -334,13 +534,15 @@ export const tradeCommand = defineCommand({
 							filters: [options.filter],
 							search: options.search,
 							noDuplicateItems: true
-						}).filter(i => itemIsTradeable(i.id, true));
-			const parsedItemsReceived = parseBank({
-				inputStr: options.receive,
-				maxSize,
-				flags: {},
-				noDuplicateItems: true
-			}).filter(i => itemIsTradeable(i.id, true));
+						}).filter(i => itemIsTradeable(i.id, true)));
+			const parsedItemsReceived =
+				(fileItemsReceived ? new Bank(fileItemsReceived) : undefined) ??
+				parseBank({
+					inputStr: options.receive,
+					maxSize,
+					flags: {},
+					noDuplicateItems: true
+				}).filter(i => itemIsTradeable(i.id, true));
 
 			if (options.price) {
 				const gp = mahojiParseNumber({ input: options.price, min: 1 });
@@ -446,8 +648,7 @@ export const tradeCommand = defineCommand({
 			});
 		}
 
-		await senderUser.sync();
-		await recipientUser.sync();
+		// Don't sync now because the tradePlayerItems syncs already
 		if (!recipientUser.owns(itemsReceived)) {
 			await interaction.editFollowUp(tradeMessage.id, {
 				content: "They don't own those items.",

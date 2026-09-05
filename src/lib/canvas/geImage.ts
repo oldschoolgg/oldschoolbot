@@ -104,15 +104,12 @@ class GeImageGeneratorSingleton {
 
 		const maxWidth = progressShadowImage.width;
 		ctx.fillStyle = OSRSCanvas.COLORS.ORANGE;
-		let percentFullfilled = calcWhatPercent(
+		const percentFullfilled = calcWhatPercent(
 			listing.total_quantity - listing.quantity_remaining,
 			listing.total_quantity
 		);
-		if (listing.type === 'Sell') {
-			percentFullfilled = 100 - percentFullfilled;
-		}
 		const progressWidth = calcPercentOfNum(percentFullfilled, maxWidth);
-		if (percentFullfilled === 100) {
+		if (percentFullfilled === 100 && listing.type !== 'Sell') {
 			ctx.fillStyle = OSRSCanvas.COLORS.DARK_GREEN;
 		} else {
 			ctx.fillStyle = OSRSCanvas.COLORS.ORANGE;
@@ -142,9 +139,11 @@ class GeImageGeneratorSingleton {
 		canvas.ctx.drawImage(this.geInterface!, 0, 0, canvas.width, canvas.height);
 
 		// Pages
-		const chunkSize = 8;
-		const totalChunks = Math.ceil(maxSlots / chunkSize);
-		if (page > totalChunks) page = totalChunks;
+		const slotsPerRow = 4;
+		const rowsPerPage = 2;
+		const chunkSize = slotsPerRow * rowsPerPage;
+		const totalChunks = Math.max(1, Math.ceil(maxSlots / chunkSize));
+		page = Math.min(Math.max(page, 1), totalChunks);
 		if (page >= 0) {
 			canvas.drawTitleText({
 				text: `Page ${page} of ${totalChunks}`,
@@ -157,22 +156,18 @@ class GeImageGeneratorSingleton {
 		const startX = 9;
 		const startY = 64;
 
-		let y = 0;
-		let x = 0;
-		for (let i = (page - 1) * chunkSize; i < maxSlots; i++) {
+		const pageStart = (page - 1) * chunkSize;
+		const pageEnd = Math.min(pageStart + chunkSize, maxSlots);
+		for (let i = pageStart; i < pageEnd; i++) {
 			const listing: GEListingWithTransactions = activeListings[i];
-			if (i > (page - 1) * chunkSize && i % 4 === 0) {
-				y += this.geSlotOpen!.height + 10;
-				x = 0;
-			}
+			const indexOnPage = i - pageStart;
+			const x = indexOnPage % slotsPerRow;
+			const y = Math.floor(indexOnPage / slotsPerRow) * (this.geSlotOpen!.height + 10);
 
 			canvas.ctx.save();
 			canvas.ctx.translate(startX + x * (this.geSlotOpen!.width + 2), startY + y);
 			await this.getSlotImage(opts.user ?? null, canvas, i + 1, i >= slotsUsed, listing);
 			canvas.ctx.restore();
-
-			x++;
-			if (i > (page - 1) * chunkSize + 8) break;
 		}
 
 		return canvas.toScaledOutput(2);

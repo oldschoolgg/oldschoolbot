@@ -207,6 +207,8 @@ export function convertAPIOptionsToCommandOptions({
 				user,
 				member
 			};
+		} else if (opt.type === ApplicationCommandOptionType.Attachment) {
+			parsedOptions[opt.name] = resolvedObjects.attachments![opt.value]!;
 		} else {
 			parsedOptions[opt.name as string] = opt.value;
 		}
