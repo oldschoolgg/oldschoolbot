@@ -1,9 +1,10 @@
-import { Events } from '@oldschoolgg/toolkit';
+import { Emoji } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { lootRoom, plunderRooms } from '@/lib/minions/data/plunder.js';
 import type { PlunderActivityTaskOptions } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { sendServerNotification } from '@/lib/util/serverNotification.js';
 
 export const plunderTask: MinionTask = {
 	type: 'Plunder',
@@ -29,6 +30,18 @@ export const plunderTask: MinionTask = {
 			}
 		}
 
+		if (loot.has('Rocky')) {
+			sendServerNotification({
+				user,
+				item: 'Rocky',
+				action: 'doing',
+				activity: 'Pyramid Plunder',
+				level: user.skillsAsLevels.thieving,
+				skill: 'Thieving',
+				emoji: Emoji.Thieving
+			});
+		}
+
 		const { itemsAdded, previousCL } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
@@ -36,15 +49,6 @@ export const plunderTask: MinionTask = {
 		const xpRes = await user.addXP({ skillName: 'thieving', amount: thievingXP, duration: data.duration });
 
 		const str = `${user}, ${user.minionName} finished doing the Pyramid Plunder ${quantity}x times. ${totalAmountUrns}x urns opened. ${xpRes}`;
-
-		if (loot.amount('Rocky') > 0) {
-			globalClient.emit(
-				Events.ServerNotification,
-				`**${user.badgedUsername}'s** minion, ${
-					user.minionName
-				}, just received a **Rocky** <:Rocky:324127378647285771> while doing the Pyramid Plunder, their Thieving level is ${user.skillsAsLevels.thieving}!`
-			);
-		}
 
 		const image = await makeBankImage({
 			bank: itemsAdded,

@@ -1,4 +1,3 @@
-import { Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { MessageBuilder } from '@/discord/MessageBuilder.js';
@@ -6,6 +5,7 @@ import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { Thieving } from '@/lib/skilling/skills/thieving/index.js';
 import type { Stealable } from '@/lib/skilling/skills/thieving/stealables.js';
 import type { PickpocketActivityTaskOptions } from '@/lib/types/minions.js';
+import { sendServerNotification } from '@/lib/util/serverNotification.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
 export function calcLootXPPickpocketing(
@@ -102,6 +102,17 @@ export const pickpocketTask: MinionTask = {
 			await ClientSettings.updateClientGPTrackSetting('gp_pickpocket', loot.amount('Coins'));
 		}
 
+		if (loot.has('Rocky')) {
+			sendServerNotification({
+				user,
+				item: 'Rocky',
+				action: obj.type === 'pickpockable' ? 'pickpocketing' : 'stealing',
+				activity: `from ${obj.name}`,
+				level: currentLevel,
+				skill: 'Thieving'
+			});
+		}
+
 		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
@@ -124,17 +135,6 @@ export const pickpocketTask: MinionTask = {
 
 		if (rogueOutfitBoostActivated) {
 			str += '\nYour rogue outfit allows you to take some extra loot.';
-		}
-
-		if (loot.amount('Rocky') > 0) {
-			globalClient.emit(
-				Events.ServerNotification,
-				`**${user.badgedUsername}'s** minion, ${
-					user.minionName
-				}, just received a **Rocky** <:Rocky:324127378647285771> while ${
-					obj.type === 'pickpockable' ? 'pickpocketing' : 'stealing'
-				} from ${obj.name}, their Thieving level is ${currentLevel}!`
-			);
 		}
 
 		const message = new MessageBuilder().setContent(str);

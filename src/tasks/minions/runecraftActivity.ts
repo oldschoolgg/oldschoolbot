@@ -1,9 +1,10 @@
-import { Emoji, Events } from '@oldschoolgg/toolkit';
+import { Emoji } from '@oldschoolgg/toolkit';
 import { Bank, EItem } from 'oldschooljs';
 
 import { bloodEssence, raimentBonus } from '@/lib/skilling/functions/calcsRunecrafting.js';
 import Runecraft from '@/lib/skilling/skills/runecraft.js';
 import type { RunecraftActivityTaskOptions } from '@/lib/types/minions.js';
+import { sendServerNotification } from '@/lib/util/serverNotification.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 import { calcMaxRCQuantity } from '@/mahoji/mahojiSettings.js';
 
@@ -60,14 +61,15 @@ export const runecraftTask: MinionTask = {
 		const { petDropRate } = skillingPetDropRate(user, 'runecraft', 1_795_758);
 		if (rng.roll(Math.ceil(petDropRate / essenceQuantity))) {
 			loot.add('Rift guardian');
-			globalClient.emit(
-				Events.ServerNotification,
-				`${Emoji.Runecraft} **${user.badgedUsername}'s** minion, ${
-					user.minionName
-				}, just received a Rift guardian while crafting ${rune.name}s at level ${user.skillLevel(
-					'runecraft'
-				)} Runecrafting!`
-			);
+			sendServerNotification({
+				user,
+				item: 'Rift guardian',
+				action: 'crafting',
+				activity: `${rune.name}s`,
+				level: user.skillLevel('runecraft'),
+				skill: 'Runecrafting',
+				emoji: Emoji.Runecraft
+			});
 		}
 
 		if (daeyaltEssence) {

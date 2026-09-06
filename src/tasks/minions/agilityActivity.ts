@@ -1,8 +1,9 @@
-import { Emoji, Events, increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { Emoji, increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { addItemToBank, Bank, type ItemBank, Items } from 'oldschooljs';
 
 import Agility from '@/lib/skilling/skills/agility.js';
 import type { AgilityActivityTaskOptions } from '@/lib/types/minions.js';
+import { sendServerNotification } from '@/lib/util/serverNotification.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
 function chanceOfFailingAgilityPyramid(user: MUser) {
@@ -135,10 +136,15 @@ export const agilityTask: MinionTask = {
 		);
 		if (rng.roll(Math.ceil(petDropRate / quantity))) {
 			loot.add('Giant squirrel');
-			globalClient.emit(
-				Events.ServerNotification,
-				`${Emoji.Agility} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Giant squirrel while running ${course.name} laps at level ${currentLevel} Agility!`
-			);
+			sendServerNotification({
+				user,
+				item: 'Giant squirrel',
+				action: 'running',
+				activity: `${course.name} laps`,
+				level: currentLevel,
+				skill: 'Agility',
+				emoji: Emoji.Agility
+			});
 		}
 
 		await user.transactItems({

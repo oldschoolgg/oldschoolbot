@@ -1,8 +1,9 @@
-import { Emoji, Events } from '@oldschoolgg/toolkit';
+import { Emoji } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
 import Mining from '@/lib/skilling/skills/mining.js';
 import type { MotherlodeMiningActivityTaskOptions } from '@/lib/types/minions.js';
+import { sendServerNotification } from '@/lib/util/serverNotification.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
 export const motherlodeMiningTask: MinionTask = {
@@ -96,10 +97,15 @@ export const motherlodeMiningTask: MinionTask = {
 		const { petDropRate } = skillingPetDropRate(user, 'mining', Mining.MotherlodeMine.petChance!);
 		if (rng.roll(Math.ceil(petDropRate / quantity))) {
 			loot.add('Rock golem');
-			globalClient.emit(
-				Events.ServerNotification,
-				`${Emoji.Mining} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Rock golem while mining at the ${Mining.MotherlodeMine.name} at level ${currentLevel} Mining!`
-			);
+			sendServerNotification({
+				user,
+				item: 'Rock golem',
+				action: 'mining at',
+				activity: `the ${Mining.MotherlodeMine.name}`,
+				level: currentLevel,
+				skill: 'Mining',
+				emoji: Emoji.Mining
+			});
 		}
 
 		str += `\n\nYou received: ${loot}.`;

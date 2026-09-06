@@ -1,4 +1,4 @@
-import { Emoji, Events } from '@oldschoolgg/toolkit';
+import { Emoji } from '@oldschoolgg/toolkit';
 import { EItem } from 'oldschooljs';
 
 import { QuestID } from '@/lib/minions/data/quests.js';
@@ -6,6 +6,7 @@ import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import { FISHING_REWORK_MESSAGE, findFishingSpotForStoredTrip } from '@/lib/skilling/skills/fishing/fishingRework.js';
 import type { FishingActivityTaskOptions } from '@/lib/types/minions.js';
 import { rollForMoonKeyHalf } from '@/lib/util/minionUtils.js';
+import { sendServerNotification } from '@/lib/util/serverNotification.js';
 
 export const fishingTask: MinionTask = {
 	type: 'Fishing',
@@ -103,6 +104,18 @@ export const fishingTask: MinionTask = {
 			});
 		}
 
+		if (result.updateBank.itemLootBank.has(EItem.HERON)) {
+			sendServerNotification({
+				user,
+				item: 'Heron',
+				action: 'fishing',
+				activity: fish.name,
+				level: user.skillsAsLevels.fishing,
+				skill: 'Fishing',
+				emoji: Emoji.Fishing
+			});
+		}
+
 		const updateResult = await result.updateBank.transact(user);
 		if (typeof updateResult === 'string') {
 			throw new Error(`Fishing trip update bank failed: ${updateResult}`);
@@ -141,13 +154,6 @@ export const fishingTask: MinionTask = {
 
 		if (result.messages.length > 0) {
 			message += `\n${result.messages.join(', ')}.`;
-		}
-
-		if (itemTransactionResult?.itemsAdded.has(EItem.HERON)) {
-			globalClient.emit(
-				Events.ServerNotification,
-				`${Emoji.Fishing} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a Heron while fishing ${fish.name} at level ${user.skillsAsLevels.fishing} Fishing!`
-			);
 		}
 
 		return handleTripFinish(user, channelId, message, data, result.updateBank.itemLootBank);

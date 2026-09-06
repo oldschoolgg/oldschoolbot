@@ -1,4 +1,4 @@
-import { Emoji, Events, increaseNumByPercent, sumArr, Time } from '@oldschoolgg/toolkit';
+import { Emoji, increaseNumByPercent, sumArr, Time } from '@oldschoolgg/toolkit';
 import { toKMB } from 'oldschooljs';
 
 import { QuestID } from '@/lib/minions/data/quests.js';
@@ -9,6 +9,7 @@ import type { GearBank } from '@/lib/structures/GearBank.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import type { MiningActivityTaskOptions } from '@/lib/types/minions.js';
 import { rollForMoonKeyHalf } from '@/lib/util/minionUtils.js';
+import { sendServerNotification } from '@/lib/util/serverNotification.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
 export function determineMiningResult({
@@ -155,6 +156,18 @@ export const miningTask: MinionTask = {
 			rng
 		});
 
+		if (updateBank.itemLootBank.has('Rock golem')) {
+			sendServerNotification({
+				user,
+				item: 'Rock golem',
+				action: 'mining',
+				activity: ore.name,
+				level: user.skillsAsLevels.mining,
+				skill: 'Mining',
+				emoji: Emoji.Mining
+			});
+		}
+
 		const updateResult = await updateBank.transact(user);
 		if (typeof updateResult === 'string') throw new Error(updateResult);
 		let str = `${user}, ${user.minionName} finished mining ${quantity} ${ore.name}. ${updateResult.message}${
@@ -163,13 +176,6 @@ export const miningTask: MinionTask = {
 
 		if (updateResult.itemTransactionResult?.itemsAdded)
 			str += `\nYou received ${updateResult.itemTransactionResult?.itemsAdded}.`;
-
-		if (updateBank.itemLootBank.has('Rock golem')) {
-			globalClient.emit(
-				Events.ServerNotification,
-				`${Emoji.Mining} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a Rock golem while mining ${ore.name} at level ${user.skillsAsLevels.mining} Mining!`
-			);
-		}
 
 		return handleTripFinish({
 			user,

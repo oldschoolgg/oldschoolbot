@@ -1,7 +1,8 @@
-import { Emoji, Events, Time } from '@oldschoolgg/toolkit';
+import { Emoji, Time } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { sendServerNotification } from '@/lib/util/serverNotification.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 import { VolcanicMineGameTime } from '@/mahoji/lib/abstracted_commands/volcanicMineCommand.js';
 
@@ -74,12 +75,16 @@ export const vmTask: MinionTask = {
 		}\nYou received **${pointsReceived.toLocaleString()}** Volcanic Mine points. ${warningMessage}`;
 
 		if (loot.has('Rock golem')) {
-			globalClient.emit(
-				Events.ServerNotification,
-				`${Emoji.Mining} **${user.badgedUsername}'s** minion, ${user.minionName}, just received ${
-					loot.amount('Rock golem') > 1 ? `${loot.amount('Rock golem')}x ` : 'a'
-				} Rock golem while mining on the Volcanic Mine at level ${userMiningLevel} Mining!`
-			);
+			sendServerNotification({
+				user,
+				item: 'Rock golem',
+				quantity: loot.amount('Rock golem'),
+				action: 'mining on',
+				activity: 'the Volcanic Mine',
+				level: userMiningLevel,
+				skill: 'Mining',
+				emoji: Emoji.Mining
+			});
 		}
 
 		const { itemsAdded } = await user.transactItems({

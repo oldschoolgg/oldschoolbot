@@ -6,6 +6,7 @@ import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import { calcRadasBlessingBoost } from '@/lib/skilling/skills/fishing/fishingUtil.js';
 import aerialFishingCreatures from '@/lib/skilling/skills/hunter/aerialFishing.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { sendServerNotification } from '@/lib/util/serverNotification.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
 export const aerialFishingTask: MinionTask = {
@@ -125,10 +126,15 @@ export const aerialFishingTask: MinionTask = {
 		const { petDropRate } = skillingPetDropRate(user, 'fishing', 636_833);
 		if (rng.roll(Math.ceil(petDropRate / totalFishCaught))) {
 			loot.add('Heron');
-			globalClient.emit(
-				Events.ServerNotification,
-				`${Emoji.Fishing} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a **Heron** while Aerial fishing at level ${currentFishLevel} Fishing!`
-			);
+			sendServerNotification({
+				user,
+				item: 'Heron',
+				action: 'Aerial',
+				activity: 'fishing',
+				level: currentFishLevel,
+				skill: 'Fishing',
+				emoji: Emoji.Fishing
+			});
 		}
 
 		await user.transactItems({

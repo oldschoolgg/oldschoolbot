@@ -1,4 +1,4 @@
-import { Emoji, Events, objectEntries, perTimeUnitChance, Time } from '@oldschoolgg/toolkit';
+import { Emoji, objectEntries, perTimeUnitChance, Time } from '@oldschoolgg/toolkit';
 import { Bank, EItem } from 'oldschooljs';
 
 import { MediumSeedPackTable } from '@/lib/data/seedPackTables.js';
@@ -10,6 +10,7 @@ import Woodcutting, { type TwitcherGloves } from '@/lib/skilling/skills/woodcutt
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { WoodcuttingActivityTaskOptions } from '@/lib/types/minions.js';
 import { rollForMoonKeyHalf } from '@/lib/util/minionUtils.js';
+import { sendServerNotification } from '@/lib/util/serverNotification.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
 async function handleForestry({
@@ -325,14 +326,15 @@ export const woodcuttingTask: MinionTask = {
 			const { petDropRate } = skillingPetDropRate(user, 'woodcutting', log.petChance);
 			if (rng.roll(Math.ceil(petDropRate / quantity))) {
 				loot.add('Beaver');
-				globalClient.emit(
-					Events.ServerNotification,
-					`${Emoji.Woodcutting} **${user.badgedUsername}'s** minion, ${
-						user.minionName
-					}, just received a Beaver while cutting ${log.name} at level ${user.skillLevel(
-						'woodcutting'
-					)} Woodcutting!`
-				);
+				sendServerNotification({
+					user,
+					item: 'Beaver',
+					action: 'cutting',
+					activity: log.name,
+					level: user.skillLevel('woodcutting'),
+					skill: 'Woodcutting',
+					emoji: Emoji.Woodcutting
+				});
 			}
 		}
 

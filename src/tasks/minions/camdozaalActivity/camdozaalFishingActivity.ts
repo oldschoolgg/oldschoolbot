@@ -1,10 +1,11 @@
-import { Emoji, Events } from '@oldschoolgg/toolkit';
+import { Emoji } from '@oldschoolgg/toolkit';
 import { LootTable } from 'oldschooljs';
 
 import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { sendServerNotification } from '@/lib/util/serverNotification.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
 const guppy = Fishing.camdozaalFishes.find(_fish => _fish.name === 'Raw guppy')!;
@@ -76,10 +77,15 @@ export const camdozaalFishingTask: MinionTask = {
 		const { petDropRate } = skillingPetDropRate(user, 'fishing', guppy.petChance!);
 		if (rng.roll(Math.ceil(petDropRate / quantity))) {
 			loot.add('Heron');
-			globalClient.emit(
-				Events.ServerNotification,
-				`${Emoji.Fishing} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Heron while fishing in Camdozaal at level ${currentFishLevel} Fishing!`
-			);
+			sendServerNotification({
+				user,
+				item: 'Heron',
+				action: 'fishing in',
+				activity: 'Camdozaal',
+				level: currentFishLevel,
+				skill: 'Fishing',
+				emoji: Emoji.Fishing
+			});
 		}
 
 		// Give the user the items from the trip
