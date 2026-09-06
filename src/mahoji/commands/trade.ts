@@ -22,8 +22,6 @@ import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 const MAX_CHARACTER_LENGTH = 950;
 const MAX_TRADE_CONFIRMATION_LENGTH = 1950;
 const DEFAULT_TRADE_MAX_PULL = 70;
-const TRADE_MAX_PULL_REDUCTION_STEP = 10;
-const MIN_TRADE_MAX_PULL = 10;
 const MAX_TRADE_SYNOPSIS_LENGTH = 1950;
 const EMBED_SIDE_LENGTH = 1800;
 const MAX_TRADE_FILE_BYTES = 2 * 1024 * 1024;
@@ -304,15 +302,13 @@ function buildTradeCompletionResponse(
 	senderUser: MUser,
 	recipientUser: MUser,
 	itemsSent: Bank,
-	itemsReceived: Bank,
-	newTradeStyle: boolean
+	itemsReceived: Bank
 ) {
 	let synopsis = `Trade completed! ${senderUser.mention} sold ${itemsSent.toStringFull()} to ${
 		recipientUser.mention
 	} in return for ${itemsReceived.toStringFull()}.`;
-	if (newTradeStyle) {
-		synopsis += `\n\n${formatTradeHashSummary(senderUser, recipientUser, itemsSent, itemsReceived)}`;
-	}
+
+	synopsis += `\n\n${formatTradeHashSummary(senderUser, recipientUser, itemsSent, itemsReceived)}`;
 
 	synopsis += `You can now buy/sell items in the Grand Exchange: ${globalClient.mentionCommand('ge')}`;
 	const response: BaseSendableMessage = {
@@ -650,7 +646,7 @@ export const tradeCommand = defineCommand({
 			return SpecialResponse.RespondedManually;
 		}
 		if (!senderUser.owns(itemsSent)) {
-			await interaction.editFollowUp(tradeMessage.id, {
+			await interaction.editFollowUp(confirmationMessage.id, {
 				content: "You don't own those items.",
 				components: [],
 				clearAttachments: true
@@ -660,7 +656,7 @@ export const tradeCommand = defineCommand({
 
 		const { success, message } = await tradePlayerItems(senderUser, recipientUser, itemsSent, itemsReceived);
 		if (!success) {
-			await interaction.editFollowUp(tradeMessage.id, {
+			await interaction.editFollowUp(confirmationMessage.id, {
 				content: `Trade failed because: ${message}`,
 				components: [],
 				clearAttachments: true
@@ -692,10 +688,9 @@ export const tradeCommand = defineCommand({
 			senderUser,
 			recipientUser,
 			itemsSent,
-			itemsReceived,
-			newTradeStyle
+			itemsReceived
 		);
-		await interaction.editFollowUp(tradeMessage.id, { ...completionResponse, clearAttachments: true });
+		await interaction.editFollowUp(confirmationMessage.id, { ...completionResponse, clearAttachments: true });
 		return SpecialResponse.RespondedManually;
 	}
 });

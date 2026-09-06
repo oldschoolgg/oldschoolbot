@@ -1002,9 +1002,7 @@ Difference: ${shouldHave.difference(currentBank)}`);
 			grand_exchange_tax_bank: 0,
 			grand_exchange_total_tax: 0
 		});
-		await prisma.gEBank.deleteMany();
-		await prisma.gETransaction.deleteMany();
-		await prisma.gEListing.deleteMany();
+		await prisma.$executeRaw`TRUNCATE TABLE "ge_bank", "ge_transaction", "ge_listing" RESTART IDENTITY;`;
 	}
 }
 

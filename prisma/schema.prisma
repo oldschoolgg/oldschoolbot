@@ -1385,6 +1385,7 @@ model GETransaction {
   sell_listing    GEListing @relation("sell_transactions", fields: [sell_listing_id], references: [id], onDelete: Cascade)
   sell_listing_id Int
 
+  @@index([buy_listing_id])
   @@index([sell_listing_id])
   @@index([created_at])
   @@map("ge_transaction")

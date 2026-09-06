@@ -382,6 +382,25 @@ const adminRunnableCommands: AdminRunnableCommand[] = [
 		}
 	},
 	{
+		name: 'reset_grand_exchange',
+		description: 'Reset the grand exchange.',
+		args: [
+			{
+				name: 'actually_reset_ge',
+				description: `Must be \`actually_reset_ge\` but it won't work on production anyway.`,
+				required: true
+			}],
+		run: async ({ arg1, adminUser}) => {
+			if (!adminUser.isAdmin) return 'You must be the owner to reset the grand exchange.';
+			if (globalConfig.isProduction) {
+				return 'You cannot reset the grand exchange on production no matter who you are.';
+			}
+			if (arg1 !== 'actually_reset_ge') return 'Missing confirmation.';
+			await GrandExchange.totalReset();
+			return 'Reset the grand exchange.';
+		}
+	},
+	{
 		name: 'activate_lottery',
 		description: 'Set lottery_is_active to true.',
 		args: [],
