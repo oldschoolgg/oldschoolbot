@@ -227,7 +227,7 @@ function formatTradeHashSummary(senderUser: MUser, recipientUser: MUser, itemsSe
 ${formatTradeItemSummary(senderUser, recipientUser, itemsSent, itemsReceived)}`;
 }
 
-function buildTradeConfirmationContent(senderUser: MUser, recipientUser: MUser, itemsSent: Bank, itemsReceived: Bank) {
+function tradeComposeMainContent(senderUser: MUser, recipientUser: MUser, itemsSent: Bank, itemsReceived: Bank) {
 	return `${recipientUser.mention}, ${userMention(senderUser.id)} wants to trade with you.
 
 **${userMention(senderUser.id)}** is giving: ${formatBankForDisplay(itemsSent)}
@@ -266,7 +266,7 @@ function buildTradeOfferDisplay(
 	};
 }
 
-function buildTradeConfirmationEmbedMessage(
+function tradeComposeEmbed(
 	senderUser: MUser,
 	recipientUser: MUser,
 	itemsSent: Bank,
@@ -372,14 +372,14 @@ async function confirmTradeFollowUp({
 			}
 
 			if (confirms.has(buttonInteraction.userId)) {
-				buttonInteraction.reply({ ephemeral: true, content: `You have already confirmed.` });
+				void buttonInteraction.reply({ ephemeral: true, content: `You have already confirmed.` });
 				return;
 			}
 
 			confirms.add(buttonInteraction.userId);
 
 			if (buttonInteraction.customId === TradeConfirmationButtonID.Confirm) {
-				buttonInteraction.silentButtonAck();
+				void buttonInteraction.silentButtonAck();
 				if (confirms.size === users.length) {
 					collector.stop(TradeConfirmationStopReason.AllConfirmed);
 					resolve();
@@ -521,6 +521,11 @@ export const tradeCommand = defineCommand({
 			fileItemsReceived = parsed;
 		}
 
+		// Need to use a new followUp() message to ping because we use defer()
+		function tradeConfirmationMsg(tradeTimeout: number) {
+			return `${recipientUser.mention}, ${senderUser.mention} wants to trade with you. Review the trade details above, then confirm if you accept.\n\nYou have ${Math.floor(tradeTimeout / 1000)} seconds to confirm.`;
+		}
+
 		function parseTradeBanks(maxSize: number) {
 			const parsedItemsSent =
 				(fileItemsSent ? new Bank(fileItemsSent) : undefined) ??
@@ -556,20 +561,9 @@ export const tradeCommand = defineCommand({
 
 		let tradeMaxPull = extraSettings.tradeMaxPull ?? DEFAULT_TRADE_MAX_PULL;
 		let { itemsSent, itemsReceived } = parseTradeBanks(tradeMaxPull);
-		let confirmationContent = buildTradeConfirmationContent(senderUser, recipientUser, itemsSent, itemsReceived);
+		let mainContent = tradeComposeMainContent(senderUser, recipientUser, itemsSent, itemsReceived);
 		const tradeTimeout = extraSettings.tradeTimeout * 1000;
 		const tradeEmbedTimeout = extraSettings.tradeEmbedTimeout * 1000;
-
-		while (
-			!extraSettings.tradeEnableEmbed &&
-			confirmationMessageLength(confirmationContent, extraSettings.tradeTimeout) >
-				MAX_TRADE_CONFIRMATION_LENGTH &&
-			tradeMaxPull > MIN_TRADE_MAX_PULL
-		) {
-			tradeMaxPull = Math.max(MIN_TRADE_MAX_PULL, tradeMaxPull - TRADE_MAX_PULL_REDUCTION_STEP);
-			({ itemsSent, itemsReceived } = parseTradeBanks(tradeMaxPull));
-			confirmationContent = buildTradeConfirmationContent(senderUser, recipientUser, itemsSent, itemsReceived);
-		}
 
 		const allItems = new Bank().add(itemsSent).add(itemsReceived);
 		if (allItems.items().some(i => !itemIsTradeable(i[0].id, true))) {
@@ -581,41 +575,41 @@ export const tradeCommand = defineCommand({
 		await senderUser.sync();
 		if (!senderUser.owns(itemsSent)) return "You don't own those items.";
 
-		const confirmationIsTooLong =
-			confirmationMessageLength(confirmationContent, extraSettings.tradeTimeout) > MAX_TRADE_CONFIRMATION_LENGTH;
+		const needsEmbed =
+			confirmationMessageLength(mainContent, extraSettings.tradeTimeout) > MAX_TRADE_CONFIRMATION_LENGTH;
 
 		const usersToConfirm = [recipientUser.id, senderUser.id];
 
 		let tradeMessage: APIMessage;
 		let confirmationMessage: APIMessage;
-		let newTradeStyle = false;
-		if (confirmationIsTooLong && extraSettings.tradeEnableEmbed) {
-			newTradeStyle = true;
-			const embedMessage = buildTradeConfirmationEmbedMessage(
+		if (needsEmbed) {
+			const embedMessage = tradeComposeEmbed(
 				senderUser,
 				recipientUser,
 				itemsSent,
 				itemsReceived
 			);
-			const hasOfferFiles = Boolean(embedMessage.files?.length);
-			if (hasOfferFiles) {
+			// Is the response too big for an embed?
+			if (Boolean(embedMessage.files?.length)) {
 				tradeMessage = await interaction.followUp(embedMessage);
-				const confirmationContent = `${recipientUser.mention}, ${senderUser.mention} wants to trade with you. Review the trade details above, then confirm if you accept.`;
+				const content = tradeConfirmationMsg(tradeEmbedTimeout);
+
 				confirmationMessage = await interaction.followUp({
-					content: `${confirmationContent}\n\nYou have ${Math.floor(tradeEmbedTimeout / 1000)} seconds to confirm.`,
+					content,
 					components: tradeConfirmationButtons(),
 					allowedMentions: tradeAllowedMentions(senderUser, recipientUser)
 				});
 				await confirmTradeFollowUp({
 					interaction,
 					message: confirmationMessage,
-					content: confirmationContent,
+					content,
 					users: usersToConfirm,
 					timeout: tradeEmbedTimeout
 				});
 				await interaction.editFollowUp(confirmationMessage.id, { content: 'Trade confirmed.', components: [] });
 			} else {
 				const content = `${embedMessage.content}\n\nYou have ${Math.floor(tradeEmbedTimeout / 1000)} seconds to confirm.`;
+				confirmationMessage =
 				tradeMessage = await interaction.followUp({
 					...embedMessage,
 					content,
@@ -630,19 +624,17 @@ export const tradeCommand = defineCommand({
 					timeout: tradeEmbedTimeout
 				});
 			}
-		} else if (confirmationIsTooLong) {
-			return "All those items won't fit in a trade confirmation. Maybe you should've helped with Cyr's embed test.";
 		} else {
-			const content = `${confirmationContent}\n\nYou have ${Math.floor(tradeTimeout / 1000)} seconds to confirm.`;
-			tradeMessage = await interaction.followUp({
+			const content = `${mainContent}\n\nYou have ${Math.floor(tradeTimeout / 1000)} seconds to confirm.`;
+			confirmationMessage = await interaction.followUp({
 				content,
 				components: tradeConfirmationButtons(),
 				allowedMentions: tradeAllowedMentions(senderUser, recipientUser)
 			});
 			await confirmTradeFollowUp({
 				interaction,
-				message: tradeMessage,
-				content: confirmationContent,
+				message: confirmationMessage,
+				content: mainContent,
 				users: usersToConfirm,
 				timeout: tradeTimeout
 			});
@@ -650,7 +642,7 @@ export const tradeCommand = defineCommand({
 
 		// Don't sync now because the tradePlayerItems syncs already
 		if (!recipientUser.owns(itemsReceived)) {
-			await interaction.editFollowUp(tradeMessage.id, {
+			await interaction.editFollowUp(confirmationMessage.id, {
 				content: "They don't own those items.",
 				components: [],
 				clearAttachments: true
