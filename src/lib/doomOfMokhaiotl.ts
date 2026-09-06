@@ -2,7 +2,7 @@ import type { EquipmentSlot } from '@oldschoolgg/gear';
 import { calcWhatPercent, formatDuration, reduceNumByPercent, round, Time, UserError } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, type ItemBank, Items, LootTable, resolveItems } from 'oldschooljs';
 
-import { BitField } from '@/lib/constants.js';
+import { BitField, globalConfig } from '@/lib/constants.js';
 import { avasDevices, doomOfMokhaiotlCL } from '@/lib/data/CollectionsExport.js';
 import {
 	applyDoomSkillBoost,
@@ -42,6 +42,7 @@ import {
 } from '@/lib/minions/functions/deathCharge.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { DoomTaskOptions } from '@/lib/types/minions.js';
+import { autoDecantPotions } from '@/lib/util/autoDecantPotions.js';
 import { formatList, formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 export const DOOM_UNIQUE_ITEMS = resolveItems(['Mokhaiotl cloth', 'Eye of ayak (uncharged)', 'Avernic treads', 'Dom']);
@@ -900,7 +901,7 @@ export async function doomCommand(
 		const availableSupplies = user.bank.clone();
 		const venomProtection = selectDoomVenomProtection(
 			itemName => availableSupplies.amount(itemName),
-			fullTripDuration * tripQuantity
+			fullTripDuration * tripQuantity * 1.1, tripQuantity
 		);
 		if (!venomProtection) return null;
 		const cost = new Bank().add(venomProtection.itemCost);
@@ -945,16 +946,14 @@ export async function doomCommand(
 	const suppliesUsed = new Bank();
 	const venomItemsUsed = new Bank();
 	const venomItemsRefunded = new Bank();
-	const tripSuppliesAvailable = estimatedCost.clone();
+	const tripSuppliesAvailable = user.bank.clone();
 	const effectiveVenomCost = new Bank();
+	// One wasted dose of antivenom per death, plus 30 seconds of duration per trip.
+	let antivenomWastedDoses = 0;
+	// Calculate how much venom duration is needed for the trip, there's always some waste.
+	let antivenomDurationNeeded = Time.Second * 30 * trips.length;
+	console.log('estimatedCost', `${estimatedCost}`);
 	for (const trip of trips) {
-		const tripCostVenomProtection = selectDoomVenomProtection(
-			itemName => tripSuppliesAvailable.amount(itemName),
-			trip.dur
-		);
-		if (!tripCostVenomProtection) {
-			return "You don't have enough allocated venom protection to complete a Doom of Mokhaiotl trip.";
-		}
 		const tripCost = getDoomTripCost({
 			user,
 			state,
@@ -969,20 +968,44 @@ export async function doomCommand(
 				ayakChargesGained: trip.ayak ?? 0
 			},
 			userMagicLevel,
-			venomProtection: tripCostVenomProtection,
+			venomProtection: { itemCost: new Bank() },
 			deepDelves,
 			totalDelves,
 			availableSupplies: tripSuppliesAvailable
 		});
-		if (!tripSuppliesAvailable.has(tripCost.cost)) {
-			return "You don't have enough allocated supplies to complete a Doom of Mokhaiotl trip.";
-		}
-		tripSuppliesAvailable.remove(tripCost.cost).add(tripCostVenomProtection.replacementItems);
+		if (trip.diedAt) antivenomWastedDoses++;
+		tripSuppliesAvailable.remove(tripCost.cost);
+		antivenomDurationNeeded += trip.dur;
 		suppliesUsed.add(tripCost.cost);
+	}
+	const tripCostVenomProtection = selectDoomVenomProtection(
+		itemName => tripSuppliesAvailable.amount(itemName),
+		antivenomDurationNeeded,
+		antivenomWastedDoses
+	);
+	if (tripCostVenomProtection) {
 		venomItemsUsed.add(tripCostVenomProtection.itemCost);
 		venomItemsRefunded.add(tripCostVenomProtection.replacementItems);
 		effectiveVenomCost.add(tripCostVenomProtection.effectiveCost);
 	}
+	suppliesUsed.add(venomItemsUsed);
+	console.log('suppliesUsed', `${suppliesUsed}`);
+	const refundedSupplies = new Bank();
+	// Calculate refund, or notify Cyr if there's a cuck up
+	try {
+		const diff = estimatedCost.clone().remove(suppliesUsed);
+		refundedSupplies.add(autoDecantPotions(diff));
+	} catch (err) {
+		const now = Date.now();
+		void globalClient.sendDm(globalConfig.adminUserIDs[0], `Error calculating refund at ${now}: ${err}`);
+		Logging.logError(new Error('Doom: Error calculating refund'), {
+			timestamp: now,
+			estimatedCost,
+			suppliesUsed,
+			tripCostVenomProtection
+		});
+	}
+
 	const deepestDelveCompletedForTask = Math.max(...trips.map(trip => trip.lvl));
 	const totalWavesClearedForTask = trips.reduce((sum, trip) => sum + trip.lvl, 0);
 	const deepDelvesEarnedForTask = trips.reduce((sum, trip) => sum + Math.max(0, trip.lvl - 7), 0);
@@ -995,17 +1018,17 @@ export async function doomCommand(
 		effectiveCost: estimatedEffectiveVenomCost
 	});
 	if (typeof costRemovalResult === 'string') return costRemovalResult;
-	const { removedCost, effectiveCost: realCost } = costRemovalResult;
+	const { removedCost, effectiveCost } = costRemovalResult;
 	const refund = removedCost.clone().remove(suppliesUsed).add(venomItemsRefunded);
 
-	await ClientSettings.updateBankSetting('doom_cost', realCost);
-	await user.statsBankUpdate('doom_cost', realCost);
+	await ClientSettings.updateBankSetting('doom_cost', effectiveCost);
+	await user.statsBankUpdate('doom_cost', effectiveCost);
 	await trackLoot({
-		totalCost: realCost,
+		totalCost: effectiveCost,
 		id: 'doom_of_mokhaiotl',
 		type: 'Monster',
 		changeType: 'cost',
-		users: [{ id: user.id, cost: realCost }]
+		users: [{ id: user.id, cost: effectiveCost }]
 	});
 
 	await ActivityManager.startTrip<DoomTaskOptions>({
@@ -1038,7 +1061,7 @@ export async function doomCommand(
 			: `${user.usernameOrMention}'s minion is now fighting the **Doom of Mokhaiotl**! Attempting to do as many trips as possible up to level ${targetDelve}.`,
 		`**Duration:** ${formatDuration(fakeDuration)} | **Stop on unique:** ${effectiveStopOnUnique ? 'Yes' : 'No'}`,
 		buildDoomDeathChanceLine(deathChances),
-		`**Cost:** ${realCost}`,
+		`**Cost:** ${removedCost}`,
 		`**Boosts:** ${buildDoomBoostLines(state, kcReduction, skillBoostMsg).join(', ')}`,
 		targetDelve > 15
 			? 'Doom levels beyond 15 are not worth the time, but you can try if you would like :). You will only use the supplies and time for levels actually completed, so you are not wasting anything.'

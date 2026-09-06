@@ -214,11 +214,12 @@ function getDoomVenomDosesOwned(option: DoomVenomProtectionOption, itemQuantity:
 
 export function selectDoomVenomProtection(
 	itemQuantity: (itemName: string) => number,
-	duration: number
+	duration: number,
+	wastedDoses: number
 ): DoomVenomProtection | null {
 	const options = DOOM_VENOM_PROTECTION_OPTIONS.map(option => ({
 		option,
-		dosesNeeded: calculateDoomVenomDosesNeeded(duration, option)
+		dosesNeeded: wastedDoses + calculateDoomVenomDosesNeeded(duration, option)
 	}))
 		.filter(({ option, dosesNeeded }) => getDoomVenomDosesOwned(option, itemQuantity) >= dosesNeeded)
 		.sort((a, b) => a.dosesNeeded - b.dosesNeeded);
