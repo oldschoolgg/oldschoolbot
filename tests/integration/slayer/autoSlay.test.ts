@@ -10,6 +10,8 @@ describe('Autoslay EHP', async () => {
 	test('uses burst below 94 Magic', async () => {
 		const user = await mockUser({
 			bank: new Bank()
+				.add("Black d'hide body", 1)
+				.add("Black d'hide chaps", 1)
 				.add('Blood rune', 1000)
 				.add('Death rune', 1000)
 				.add('Water rune', 10000)
@@ -33,6 +35,8 @@ describe('Autoslay EHP', async () => {
 	test('uses barrage at 94 Magic', async () => {
 		const user = await mockUser({
 			bank: new Bank()
+				.add("Black d'hide body", 1)
+				.add("Black d'hide chaps", 1)
 				.add('Blood rune', 1000)
 				.add('Death rune', 1000)
 				.add('Water rune', 10000)
