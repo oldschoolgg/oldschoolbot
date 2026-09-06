@@ -1,5 +1,13 @@
 import type { EquipmentSlot } from '@oldschoolgg/gear';
-import { calcWhatPercent, formatDuration, reduceNumByPercent, round, Time, UserError } from '@oldschoolgg/toolkit';
+import {
+	calcWhatPercent,
+	formatDuration,
+	isWeekend,
+	reduceNumByPercent,
+	round,
+	Time,
+	UserError
+} from '@oldschoolgg/toolkit';
 import { Bank, EMonster, type ItemBank, Items, LootTable, resolveItems } from 'oldschooljs';
 
 import { BitField, globalConfig } from '@/lib/constants.js';
@@ -747,16 +755,16 @@ function buildDoomDeathChanceLine(deathChances: number[]): string {
 	const targetDelveDeathChance = deathChances.at(-1) ?? 0;
 
 	if (runDeathChance.expectedDeathWave !== null) {
-		return `**Wipe chance before target delve:** ${formatDoomDeathChance(
+		return `\n**Wipe chance before target delve:** ${formatDoomDeathChance(
 			wipeChanceBeforeTarget
 		)} | **Target delve death chance:** ${formatDoomDeathChance(
 			targetDelveDeathChance
-		)} | **Expected death:** Delve ${round(runDeathChance.expectedDeathWave, 1)}`;
+		)} | **Expected death:** Delve ${round(runDeathChance.expectedDeathWave, 1)}\n`;
 	}
 
-	return `**Wipe chance before target delve:** ${formatDoomDeathChance(
+	return `\n**Wipe chance before target delve:** ${formatDoomDeathChance(
 		wipeChanceBeforeTarget
-	)} | **Target delve death chance:** ${formatDoomDeathChance(targetDelveDeathChance)}`;
+	)} | **Target delve death chance:** ${formatDoomDeathChance(targetDelveDeathChance)}\n`;
 }
 
 export async function doomCommand(
@@ -845,13 +853,19 @@ export async function doomCommand(
 		rng
 	};
 	const fullTripDuration = Math.floor(reduceNumByPercent(baseDuration, durationReductionPercent));
-
+	const weekendMod = isWeekend() ? 1.2 : 1.1;
 	const maxTripLength = Math.floor(
-		rng.randomVariation(Math.max((await user.calcMaxTripLength('DoomOfMokhaiotl')) * 1.1, fullTripDuration), 10)
+		Math.max(
+			rng.randomVariation((await user.calcMaxTripLength('DoomOfMokhaiotl')) * weekendMod, 10),
+			fullTripDuration
+		)
 	);
+
 	const maxTripQuantity = Math.max(1, Math.floor(maxTripLength / fullTripDuration));
 
+	console.log('maxTripLength', formatDuration(maxTripLength));
 	const fakeDuration = quantity ? quantity * fullTripDuration : maxTripLength;
+	console.log('fakeDuration', formatDuration(fakeDuration));
 	if (quantity && quantity > maxTripQuantity) {
 		return `The max amount of trips you can do at Delve ${targetDelve} is ${maxTripQuantity.toLocaleString()}, try a lower quantity. Doing ${quantity.toLocaleString()}x would take ${formatDuration(
 			quantity * fullTripDuration
@@ -874,7 +888,6 @@ export async function doomCommand(
 	while (trips.length < tripsToAttempt) {
 		const trip = startDoomRun(tripOptions);
 		const tripDuration = Math.floor(trip.duration);
-		if (trips.length > 0 && totalDuration + tripDuration > maxTripLength) break;
 		totalDuration += tripDuration;
 		const uniqueLoot = new Bank();
 		if (trip.loot) {
@@ -891,7 +904,10 @@ export async function doomCommand(
 			diedAt: trip.diedAt ?? undefined,
 			ayak: trip.ayakChargesGained || undefined
 		});
+
+		if (totalDuration > maxTripLength) break;
 	}
+	console.log('totalDuration', formatDuration(totalDuration));
 	// This shouldn't happen since we always allow at least 1 trip
 	if (trips.length === 0) {
 		void itx.reply({ content: 'Doom Error: No trips successfully added. Please report this.' });
@@ -901,7 +917,8 @@ export async function doomCommand(
 		const availableSupplies = user.bank.clone();
 		const venomProtection = selectDoomVenomProtection(
 			itemName => availableSupplies.amount(itemName),
-			fullTripDuration * tripQuantity * 1.1, tripQuantity
+			fullTripDuration * tripQuantity * 1.1,
+			tripQuantity
 		);
 		if (!venomProtection) return null;
 		const cost = new Bank().add(venomProtection.itemCost);
@@ -950,9 +967,9 @@ export async function doomCommand(
 	const effectiveVenomCost = new Bank();
 	// One wasted dose of antivenom per death, plus 30 seconds of duration per trip.
 	let antivenomWastedDoses = 0;
-	// Calculate how much venom duration is needed for the trip, there's always some waste.
+	// Calculate how much venom duration is needed for the trip; there's always some waste.
 	let antivenomDurationNeeded = Time.Second * 30 * trips.length;
-	console.log('estimatedCost', `${estimatedCost}`);
+
 	for (const trip of trips) {
 		const tripCost = getDoomTripCost({
 			user,
