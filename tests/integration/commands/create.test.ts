@@ -37,7 +37,11 @@ describe('Create Command', async () => {
 				Facemask: 1,
 				'Spiny helmet': 1,
 				'Enchanted gem': 1
-			})
+			}),
+			{
+				skills_crafting: convertLVLtoXP(55),
+				slayer_unlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade]
+			}
 		);
 
 		const result = await user.runCommand(createCommand, { item: 'Revert slayer helmet' });
