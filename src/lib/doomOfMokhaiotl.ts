@@ -520,17 +520,23 @@ function checkLine(passed: boolean, text: string): string {
 
 function buildDoomRequirementsChecklist(user: DoomUser, targetDelve: number, state: DoomGearState): string {
 	const lines = [
-		checkLine(
-			user.user.finished_quest_ids.includes(QuestID.TheFinalDawn),
-			'Completed "The Final Dawn" quest.'
-		),
+		checkLine(user.user.finished_quest_ids.includes(QuestID.TheFinalDawn), 'Completed "The Final Dawn" quest.'),
 		checkLine(targetDelve >= 1 && targetDelve <= MAX_DELVE, `Target delve is between 1 and ${MAX_DELVE}.`),
-		checkLine(user.hasSkillReqs(DOOM_SKILL_REQUIREMENTS), `Stats: ${formatSkillRequirements(DOOM_SKILL_REQUIREMENTS)}.`),
-		checkLine(user.user.bitfield.includes(BitField.HasDexScroll), 'Rigour unlocked from a Dexterous prayer scroll.'),
+		checkLine(
+			user.hasSkillReqs(DOOM_SKILL_REQUIREMENTS),
+			`Stats: ${formatSkillRequirements(DOOM_SKILL_REQUIREMENTS)}.`
+		),
+		checkLine(
+			user.user.bitfield.includes(BitField.HasDexScroll),
+			'Rigour unlocked from a Dexterous prayer scroll.'
+		),
 		checkLine(state.hasSBow || state.hasTbow, 'Twisted bow or Scorching bow equipped in your range setup.'),
 		checkLine(
 			DOOM_DEMONBANE_WEAPONS.some(i => user.hasEquippedOrInBank(i)),
-			`Demonbane weapon owned: ${formatList(DOOM_DEMONBANE_WEAPONS.map(i => Items.itemNameFromId(i)), 'or')}.`
+			`Demonbane weapon owned: ${formatList(
+				DOOM_DEMONBANE_WEAPONS.map(i => Items.itemNameFromId(i)),
+				'or'
+			)}.`
 		),
 		checkLine(
 			state.hasChargedEyeOfAyak || DOOM_MAGE_WEAPONS.some(i => user.hasEquippedOrInBank(i)),
@@ -539,7 +545,10 @@ function buildDoomRequirementsChecklist(user: DoomUser, targetDelve: number, sta
 		...Object.entries(DOOM_REQUIRED_RANGE_GEAR).map(([slot, items]) =>
 			checkLine(
 				items.some(g => user.gear.range.hasEquipped(g)),
-				`Range ${slot}: ${formatList(items.map(i => Items.itemNameFromId(i)), 'or')}.`
+				`Range ${slot}: ${formatList(
+					items.map(i => Items.itemNameFromId(i)),
+					'or'
+				)}.`
 			)
 		),
 		checkLine(
@@ -547,10 +556,14 @@ function buildDoomRequirementsChecklist(user: DoomUser, targetDelve: number, sta
 			'Melee punish weapon: Noxious halberd, Crystal halberd, or Dual macuahuitl.'
 		),
 		checkLine(
-			state.meleePunishWeapon !== 'crystal_halberd' || user.bank.amount('Crystal shard') >= state.crystalShardsNeeded,
+			state.meleePunishWeapon !== 'crystal_halberd' ||
+				user.bank.amount('Crystal shard') >= state.crystalShardsNeeded,
 			`${state.crystalShardsNeeded.toLocaleString()}x Crystal shard for Crystal halberd.`
 		),
-		checkLine(!(state.hasTbow || state.hasSBow) || state.equippedArrowId !== null, 'Arrows equipped in your range setup.')
+		checkLine(
+			!(state.hasTbow || state.hasSBow) || state.equippedArrowId !== null,
+			'Arrows equipped in your range setup.'
+		)
 	];
 
 	return `**Doom of Mokhaiotl requirements for delve ${targetDelve}:**\n${lines.join('\n')}`;
@@ -757,7 +770,8 @@ export async function doomCommand(
 	const effectiveStopOnUnique = quantity ? stopOnUnique : true;
 
 	if (!Number.isInteger(targetDelve)) return 'Target delve must be a whole number.';
-	if (quantity !== undefined && (!Number.isInteger(quantity) || quantity < 1)) return 'Quantity must be a positive whole number.';
+	if (quantity !== undefined && (!Number.isInteger(quantity) || quantity < 1))
+		return 'Quantity must be a positive whole number.';
 
 	const state = getDoomGearState(user, targetDelve, disableZcbBoost);
 	if (check) return buildDoomRequirementsChecklist(user, targetDelve, state);
@@ -830,20 +844,19 @@ export async function doomCommand(
 		rng
 	};
 	const fullTripDuration = Math.floor(reduceNumByPercent(baseDuration, durationReductionPercent));
-	let fakeDuration = quantity ? quantity * fullTripDuration : fullTripDuration;
-	const maxTripLength = await user.calcMaxTripLength('DoomOfMokhaiotl');
+
+	const maxTripLength = Math.floor(
+		rng.randomVariation(Math.max((await user.calcMaxTripLength('DoomOfMokhaiotl')) * 1.1, fullTripDuration), 10)
+	);
 	const maxTripQuantity = Math.max(1, Math.floor(maxTripLength / fullTripDuration));
+
+	const fakeDuration = quantity ? quantity * fullTripDuration : maxTripLength;
 	if (quantity && quantity > maxTripQuantity) {
-		return `The max amount of trips you can do is ${maxTripQuantity.toLocaleString()}, try a lower quantity. Doing ${quantity.toLocaleString()}x would take ${formatDuration(
+		return `The max amount of trips you can do at Delve ${targetDelve} is ${maxTripQuantity.toLocaleString()}, try a lower quantity. Doing ${quantity.toLocaleString()}x would take ${formatDuration(
 			quantity * fullTripDuration
 		)}. If you want to maximize your trip length, then don't specify a quantity and you will do as many as you can by default.`;
 	}
-	if (!quantity) {
-		fakeDuration = Math.max(
-			fullTripDuration,
-			Math.floor(rng.randomVariation(Math.max(maxTripLength, fullTripDuration) * 1.1, 10))
-		);
-	}
+
 	const trips: DoomActivityTripData[] = [];
 	const fullTripCostResult: DoomRunResult = {
 		diedAt: null,
@@ -860,7 +873,7 @@ export async function doomCommand(
 	while (trips.length < tripsToAttempt) {
 		const trip = startDoomRun(tripOptions);
 		const tripDuration = Math.floor(trip.duration);
-		if (totalDuration + tripDuration > fakeDuration) break;
+		if (trips.length > 0 && totalDuration + tripDuration > maxTripLength) break;
 		totalDuration += tripDuration;
 		const uniqueLoot = new Bank();
 		if (trip.loot) {
@@ -878,7 +891,11 @@ export async function doomCommand(
 			ayak: trip.ayakChargesGained || undefined
 		});
 	}
-	if (trips.length === 0) return 'Your minion needs enough time to attempt at least one Doom of Mokhaiotl trip.';
+	// This shouldn't happen since we always allow at least 1 trip
+	if (trips.length === 0) {
+		void itx.reply({ content: 'Doom Error: No trips successfully added. Please report this.' });
+		throw new Error('Doom Error: No trips successfully added');
+	}
 	function buildEstimatedCost(tripQuantity: number) {
 		const availableSupplies = user.bank.clone();
 		const venomProtection = selectDoomVenomProtection(
@@ -920,7 +937,11 @@ export async function doomCommand(
 		estimated = buildEstimatedCost(trips.length);
 	}
 	if (!estimated) return "You don't have enough supplies to complete a Doom of Mokhaiotl trip.";
-	const { cost: estimatedCost, venomCost: estimatedVenomCost, effectiveVenomCost: estimatedEffectiveVenomCost } = estimated;
+	const {
+		cost: estimatedCost,
+		venomCost: estimatedVenomCost,
+		effectiveVenomCost: estimatedEffectiveVenomCost
+	} = estimated;
 	const suppliesUsed = new Bank();
 	const venomItemsUsed = new Bank();
 	const venomItemsRefunded = new Bank();

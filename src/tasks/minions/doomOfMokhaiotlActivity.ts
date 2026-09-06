@@ -26,17 +26,15 @@ export const doomOfMokhaiotlTask: MinionTask = {
 			trips,
 			refund
 		} = data;
-		const tripData =
-			trips ??
-			[
-				{
-					dur: duration,
-					dead: diedAt !== null,
-					lvl: deepestDelveCompleted,
-					loot: possibleLoot ?? undefined,
-					diedAt: diedAt ?? undefined
-				}
-			];
+		const tripData = trips ?? [
+			{
+				dur: duration,
+				dead: diedAt !== null,
+				lvl: deepestDelveCompleted,
+				loot: possibleLoot ?? undefined,
+				diedAt: diedAt ?? undefined
+			}
+		];
 		const aggregatedLoot = new Bank();
 		let aggregatedDeepDelves = 0;
 		let aggregatedWavesCleared = 0;
@@ -123,7 +121,7 @@ export const doomOfMokhaiotlTask: MinionTask = {
 			});
 		}
 
-		const loot = new Bank().add(trips ? aggregatedLoot : possibleLoot ?? {});
+		const loot = new Bank().add(trips ? aggregatedLoot : (possibleLoot ?? {}));
 
 		const { previousCL, itemsAdded } = await user.transactItems({
 			itemsToAdd: loot,
@@ -180,8 +178,7 @@ export const doomOfMokhaiotlTask: MinionTask = {
 					)
 					.join('\n')}`
 			: '';
-		const refundMessage =
-			refundedSupplies.length > 0 ? `\n**Refunded supplies:** ${refundedSupplies}` : '';
+		const refundMessage = refundedSupplies.length > 0 ? `\n**Refunded supplies:** ${refundedSupplies}` : '';
 		const content = `${user} ${completionLine}${tripSummary}${
 			itemsAdded.length === 0 ? "\n\nYou didn't get any loot. Sorry. 😞\n" : ''
 		}${refundMessage}\n${kcSummary}${xpMessage ? `\n${xpMessage}` : ''}`;
