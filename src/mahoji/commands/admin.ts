@@ -382,6 +382,25 @@ const adminRunnableCommands: AdminRunnableCommand[] = [
 		}
 	},
 	{
+		name: 'reset_grand_exchange',
+		description: 'Reset the grand exchange.',
+		args: [
+			{
+				name: 'actually_reset_ge',
+				description: `Must be \`actually_reset_ge\` but it won't work on production anyway.`,
+				required: true
+			}],
+		run: async ({ arg1, adminUser}) => {
+			if (!adminUser.isAdmin) return 'You must be the owner to reset the grand exchange.';
+			if (globalConfig.isProduction) {
+				return 'You cannot reset the grand exchange on production no matter who you are.';
+			}
+			if (arg1 !== 'actually_reset_ge') return 'Missing confirmation.';
+			await GrandExchange.totalReset();
+			return 'Reset the grand exchange.';
+		}
+	},
+	{
 		name: 'activate_lottery',
 		description: 'Set lottery_is_active to true.',
 		args: [],
@@ -1218,7 +1237,7 @@ export const adminCommand = defineCommand({
 				{
 					type: 'Subcommand',
 					name: 'allow_irons',
-					description: 'Allow ironmen to join a giveaway.',
+					description: 'Toggle whether ironmen can join a giveaway.',
 					options: [
 						{
 							type: 'String',
@@ -1704,10 +1723,11 @@ ${META_CONSTANTS.RENDERED_STR}`
 					id: giveaway.id
 				},
 				data: {
-					allow_ironmen: true
+					allow_ironmen: !giveaway.allow_ironmen
 				}
 			});
 			giveawayCache.set(updatedGiveaway.id, updatedGiveaway);
+			const ironmanStatus = updatedGiveaway.allow_ironmen ? 'enabled' : 'disabled';
 
 			try {
 				await globalClient.editMessage(updatedGiveaway.channel_id, updatedGiveaway.message_id, {
@@ -1725,10 +1745,10 @@ ${META_CONSTANTS.RENDERED_STR}`
 					channel_id: updatedGiveaway.channel_id,
 					message_id: updatedGiveaway.message_id
 				});
-				return 'Ironmen are enabled for this giveaway, but I failed to edit the giveaway message.';
+				return `Ironmen are now ${ironmanStatus} for this giveaway, but I failed to edit the giveaway message.`;
 			}
 
-			return `Ironmen are now enabled for giveaway message ${updatedGiveaway.message_id}.`;
+			return `Ironmen are now ${ironmanStatus} for giveaway message ${updatedGiveaway.message_id}.`;
 		}
 
 		if (options.item_stats) {

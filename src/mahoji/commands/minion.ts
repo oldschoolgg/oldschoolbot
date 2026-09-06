@@ -111,7 +111,7 @@ export async function getUserInfo(user: MUser) {
 		if (user.isMod || user.isWikiContrib || user.isContributor || user.isTrusted) {
 			perkTierDisplay = `**Courtesy** __Tier ${result.perkTier - 1}__`;
 		} else {
-			perkTierDisplay = `🔴 **Expiring** __Tier ${result.perkTier - 1}__`;
+			perkTierDisplay = `🔴 **Temporary** __Tier ${result.perkTier - 1}__`;
 		}
 	}
 	return {

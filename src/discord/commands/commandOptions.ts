@@ -1,4 +1,4 @@
-import type { APIApplicationCommandOptionChoice } from '@oldschoolgg/discord';
+import type { APIApplicationCommandOptionChoice, APIAttachment } from '@oldschoolgg/discord';
 import type { IChannel, IMember, IRole, IUser } from '@oldschoolgg/schemas';
 
 import type { AnyArr, Lit, Simplify, ToObj, UnionToIntersection } from './typeUtils.js';
@@ -8,7 +8,7 @@ export interface MahojiUserOption {
 	member?: IMember;
 }
 
-export type MahojiCommandOption = number | string | MahojiUserOption | IChannel | IRole | boolean;
+export type MahojiCommandOption = number | string | MahojiUserOption | IChannel | IRole | APIAttachment | boolean;
 
 export interface CommandOptions {
 	[key: string]: MahojiCommandOption | CommandOptions;
@@ -58,9 +58,11 @@ type OptionValue<O> = O extends { type: 'String'; choices?: infer C }
 			? boolean
 			: O extends { type: 'User' }
 				? MahojiUserOption
-				: O extends { type: 'Channel' | 'Role' | 'Mentionable' }
-					? string
-					: never;
+				: O extends { type: 'Attachment' }
+					? APIAttachment
+					: O extends { type: 'Channel' | 'Role' | 'Mentionable' }
+						? string
+						: never;
 
 type ExtractArgs<T extends AnyArr<unknown> | undefined> =
 	T extends AnyArr<unknown>

@@ -15447,6 +15447,7 @@ setCustomItem(
 		tradeable: false,
 		tradeable_on_ge: false,
 		customItemData: {
+			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -15483,6 +15484,7 @@ setCustomItem(
 		tradeable: false,
 		tradeable_on_ge: false,
 		customItemData: {
+			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -15519,6 +15521,7 @@ setCustomItem(
 		tradeable: false,
 		tradeable_on_ge: false,
 		customItemData: {
+			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -15555,6 +15558,7 @@ setCustomItem(
 		tradeable: false,
 		tradeable_on_ge: false,
 		customItemData: {
+			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -15591,6 +15595,7 @@ setCustomItem(
 		tradeable: false,
 		tradeable_on_ge: false,
 		customItemData: {
+			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
