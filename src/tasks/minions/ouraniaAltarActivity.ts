@@ -1,10 +1,10 @@
-import { Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
 import { raimentBonus } from '@/lib/skilling/functions/calcsRunecrafting.js';
 import Runecraft, { ouraniaAltarTables } from '@/lib/skilling/skills/runecraft.js';
 import type { OuraniaAltarOptions } from '@/lib/types/minions.js';
+import { sendServerNotification } from '@/lib/util/serverNotification.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
 const ouraniaAltarTask: MinionTask = {
@@ -67,14 +67,14 @@ const ouraniaAltarTask: MinionTask = {
 		} ${xpRes}`;
 
 		if (loot.has('Rift guardian')) {
-			globalClient.emit(
-				Events.ServerNotification,
-				`**${user.badgedUsername}'s** minion, ${
-					user.minionName
-				}, just received a Rift guardian while runecrafting at the Ourania Altar at level ${user.skillLevel(
-					'runecraft'
-				)} Runecrafting!`
-			);
+			sendServerNotification({
+				user,
+				item: 'Rift guardian',
+				action: 'runecrafting at',
+				activity: 'the Ourania Altar',
+				level: user.skillLevel('runecraft'),
+				skill: 'Runecrafting'
+			});
 		}
 
 		await user.transactItems({

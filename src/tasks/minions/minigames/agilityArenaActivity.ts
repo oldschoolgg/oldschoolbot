@@ -1,7 +1,8 @@
-import { calcWhatPercent, Emoji, Events, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { calcWhatPercent, Emoji, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank, toKMB } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { sendServerNotification } from '@/lib/util/serverNotification.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
 export const agilityArenaTask: MinionTask = {
@@ -56,10 +57,15 @@ export const agilityArenaTask: MinionTask = {
 		for (let i = 0; i < ticketsReceived; i++) {
 			if (rng.roll(petDropRate)) {
 				itemsToAdd.add('Giant Squirrel');
-				globalClient.emit(
-					Events.ServerNotification,
-					`${Emoji.Agility} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a Giant squirrel while running at the Agility Arena at level ${currentLevel} Agility!`
-				);
+				sendServerNotification({
+					user,
+					item: 'Giant Squirrel',
+					action: 'running at',
+					activity: 'the Agility Arena',
+					level: currentLevel,
+					skill: 'Agility',
+					emoji: Emoji.Agility
+				});
 			}
 		}
 

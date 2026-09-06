@@ -1,5 +1,5 @@
 import { EquipmentSlot } from '@oldschoolgg/gear';
-import { Events, Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank, ECreature, EItem } from 'oldschooljs';
 
 import { MAX_LEVEL } from '@/lib/constants.js';
@@ -9,6 +9,7 @@ import { calcLootXPHunting, generateHerbiTable } from '@/lib/skilling/functions/
 import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
 import type { HunterActivityTaskOptions } from '@/lib/types/minions.js';
 import { PeakTier } from '@/lib/util/peaks.js';
+import { sendServerNotification } from '@/lib/util/serverNotification.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
 const riskDeathNumbers = [
@@ -159,6 +160,19 @@ export const hunterTask: MinionTask = {
 			await user.incrementCreatureScore(creature.id, scoreToAdd);
 		}
 
+		for (const item of ['Baby chinchompa', 'Herbi']) {
+			if (loot.has(item)) {
+				sendServerNotification({
+					user,
+					item,
+					action: 'hunting',
+					activity: `a ${creature.name}`,
+					level: currentLevel,
+					skill: 'Hunter'
+				});
+			}
+		}
+
 		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
@@ -183,17 +197,6 @@ export const hunterTask: MinionTask = {
 
 		if (died) {
 			str += `\n${diedStr}`;
-		}
-
-		if (loot.amount('Baby chinchompa') > 0 || loot.amount('Herbi') > 0) {
-			globalClient.emit(
-				Events.ServerNotification,
-				`**${user.usernameOrMention}'s** minion, ${user.minionName}, just received a ${
-					loot.amount('Baby chinchompa') > 0
-						? '**Baby chinchompa** <:Baby_chinchompa_red:324127375539306497>'
-						: '**Herbi** <:Herbi:357773175318249472>'
-				} while hunting a ${creature.name}, their Hunter level is ${currentLevel}!`
-			);
 		}
 
 		await ClientSettings.updateBankSetting('hunter_loot', loot);

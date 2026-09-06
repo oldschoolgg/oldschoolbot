@@ -1,10 +1,11 @@
-import { Emoji, Events } from '@oldschoolgg/toolkit';
+import { Emoji } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
 import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
 import Mining from '@/lib/skilling/skills/mining.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { sendServerNotification } from '@/lib/util/serverNotification.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
 export const camdozaalMiningTask: MinionTask = {
@@ -99,10 +100,15 @@ export const camdozaalMiningTask: MinionTask = {
 		const { petDropRate } = skillingPetDropRate(user, 'mining', Mining.CamdozaalMine.petChance!);
 		if (rng.roll(Math.ceil(petDropRate / quantity))) {
 			loot.add('Rock golem');
-			globalClient.emit(
-				Events.ServerNotification,
-				`${Emoji.Mining} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Rock golem while mining in Camdozaal at level ${currentLevel} Mining!`
-			);
+			sendServerNotification({
+				user,
+				item: 'Rock golem',
+				action: 'mining in',
+				activity: 'Camdozaal',
+				level: currentLevel,
+				skill: 'Mining',
+				emoji: Emoji.Mining
+			});
 		}
 
 		// Give the user the items from the trip

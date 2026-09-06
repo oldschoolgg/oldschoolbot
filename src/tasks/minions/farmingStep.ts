@@ -1,5 +1,5 @@
 import type { IFarmingContract } from '@oldschoolgg/schemas';
-import { Emoji, Events } from '@oldschoolgg/toolkit';
+import { Emoji } from '@oldschoolgg/toolkit';
 import { MathRNG, type RNGProvider } from 'node-rng';
 import { Bank, itemID, Monsters } from 'oldschooljs';
 
@@ -19,6 +19,7 @@ import {
 import { getFarmingKeyFromName } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import { assert } from '@/lib/util/logError.js';
+import { sendServerNotification } from '@/lib/util/serverNotification.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
 export type FarmingStepAttachment = Awaited<ReturnType<typeof chatHeadImage>>;
@@ -669,10 +670,15 @@ async function applySpecialFarmingLoot(options: {
 	}
 
 	if (loot.has('Tangleroot')) {
-		globalClient.emit(
-			Events.ServerNotification,
-			`${Emoji.Farming} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a Tangleroot while farming ${patchType.lastPlanted} at level ${currentFarmingLevel} Farming!`
-		);
+		sendServerNotification({
+			user,
+			item: 'Tangleroot',
+			action: 'farming',
+			activity: patchType.lastPlanted ?? 'a crop',
+			level: currentFarmingLevel,
+			skill: 'Farming',
+			emoji: Emoji.Farming
+		});
 	}
 
 	return loot;

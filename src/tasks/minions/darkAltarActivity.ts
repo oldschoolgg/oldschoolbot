@@ -1,9 +1,10 @@
-import { Events, increaseNumByPercent } from '@oldschoolgg/toolkit';
+import { increaseNumByPercent } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { darkAltarRunes } from '@/lib/minions/functions/darkAltarCommand.js';
 import { bloodEssence, raimentBonus } from '@/lib/skilling/functions/calcsRunecrafting.js';
 import type { DarkAltarOptions } from '@/lib/types/minions.js';
+import { sendServerNotification } from '@/lib/util/serverNotification.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
 export const darkAltarTask: MinionTask = {
@@ -79,14 +80,14 @@ export const darkAltarTask: MinionTask = {
 		}
 
 		if (loot.has('Rift guardian')) {
-			globalClient.emit(
-				Events.ServerNotification,
-				`**${user.badgedUsername}'s** minion, ${
-					user.minionName
-				}, just received a Rift guardian while crafting ${runeData.item.name}s at level ${user.skillLevel(
-					'runecraft'
-				)} Runecrafting!`
-			);
+			sendServerNotification({
+				user,
+				item: 'Rift guardian',
+				action: 'crafting',
+				activity: `${runeData.item.name}s`,
+				level: user.skillLevel('runecraft'),
+				skill: 'Runecrafting'
+			});
 		}
 
 		await user.transactItems({
