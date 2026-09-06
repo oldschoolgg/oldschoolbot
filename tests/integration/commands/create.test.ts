@@ -46,6 +46,6 @@ describe('Create Command', async () => {
 
 		const result = await user.runCommand(createCommand, { item: 'Revert slayer helmet' });
 
-		expect(result).toBe("You don't have the required items to revert this item. You need: Slayer helmet.");
+		expect(result).toBe("You don't have the required items to revert this item. You need: 1x Slayer helmet.");
 	});
 });
