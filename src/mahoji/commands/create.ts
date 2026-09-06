@@ -140,7 +140,20 @@ export const createCommand = defineCommand({
 
 		// Ensure they have the required items to create the item.
 		if (!user.owns(inItems)) {
-			return `You don't have the required items to ${action} this item. You need: ${inItems}.`;
+			const availableItems = user.bank.clone().add('Coins', Number(user.GP));
+			const missingItems = inItems.clone().remove(availableItems);
+			const createableHints = missingItems.items().flatMap(([item]) => {
+				const createable = Createables.find(candidate => {
+					if (candidate.name.startsWith('Revert')) return false;
+					const outputItems = new Bank(candidate.outputItems);
+					const inputItems = new Bank(candidate.inputItems);
+					if (candidate.GPCost) inputItems.add('Coins', candidate.GPCost);
+					return outputItems.has(item.id) && user.owns(inputItems);
+				});
+				return createable ? `${item.name} with \`/create item:${createable.name}\`` : [];
+			});
+			const hint = createableHints.length ? ` Note: You can make a ${createableHints.join(', ')}.` : '';
+			return `You don't have the required items to ${action} this item. You need: ${inItems}.${hint}`;
 		}
 
 		let extraMessage = '';
