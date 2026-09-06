@@ -12,8 +12,8 @@ describe('Create Command', async () => {
 		const user = await createTestUser(
 			new Bank({
 				'Black mask (10)': 1,
-				'Earmuffs': 1,
-				'Facemask': 1,
+				Earmuffs: 1,
+				Facemask: 1,
 				'Nose peg': 1,
 				'Spiny helmet': 1,
 				'Enchanted gem': 1
@@ -33,8 +33,8 @@ describe('Create Command', async () => {
 		const user = await createTestUser(
 			new Bank({
 				'Black mask': 1,
-				'Earmuffs': 1,
-				'Facemask': 1,
+				Earmuffs: 1,
+				Facemask: 1,
 				'Spiny helmet': 1,
 				'Enchanted gem': 1
 			})
