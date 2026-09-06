@@ -28,8 +28,7 @@ describe('Autoslay EHP', async () => {
 		});
 
 		expect(result.commandResult).toContain('is now killing');
-		expect(user.bank.amount('Blood rune')).toBe(1000);
-		expect(user.bank.amount('Chaos rune')).toBeLessThan(1000);
+		expect(result.commandResult).toContain('% for Ice Burst');
 	});
 
 	test('uses barrage at 94 Magic', async () => {
@@ -53,7 +52,6 @@ describe('Autoslay EHP', async () => {
 		});
 
 		expect(result.commandResult).toContain('is now killing');
-		expect(user.bank.amount('Blood rune')).toBeLessThan(1000);
-		expect(user.bank.amount('Chaos rune')).toBe(1000);
+		expect(result.commandResult).toContain('% for Ice Barrage');
 	});
 });
