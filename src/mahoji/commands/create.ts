@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import Createables from '@/lib/data/createables.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
+import { formatList } from '@/lib/util/smallUtils.js';
 
 export const createCommand = defineCommand({
 	name: 'create',
@@ -155,7 +156,7 @@ export const createCommand = defineCommand({
 							});
 							return createable ? `${item.name} with \`/create item:${createable.name}\`` : [];
 						});
-			const hint = createableHints.length ? ` Note: You can make a ${createableHints.join(', ')}.` : '';
+			const hint = createableHints.length ? ` Note: You can make a ${formatList(createableHints)}.` : '';
 			return `You don't have the required items to ${action} this item. You need: ${inItems}.${hint}`;
 		}
 
