@@ -1,7 +1,8 @@
-import { Emoji, Events } from '@oldschoolgg/toolkit';
+import { Emoji } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { TitheFarmActivityTaskOptions } from '@/lib/types/minions.js';
+import { sendServerNotification } from '@/lib/util/serverNotification.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
 export const titheFarmTask: MinionTask = {
@@ -89,14 +90,15 @@ export const titheFarmTask: MinionTask = {
 		const { petDropRate } = skillingPetDropRate(user, 'farming', 7_494_389);
 		if (rng.roll(Math.ceil(petDropRate / determineHarvest))) {
 			loot.add('Tangleroot');
-			globalClient.emit(
-				Events.ServerNotification,
-				`${Emoji.Farming} **${user.badgedUsername}'s** minion, ${
-					user.minionName
-				}, just received a Tangleroot by completing the ${Emoji.MinigameIcon} Tithe Farm on their ${
-					titheFarmsCompleted + 1
-				} run!`
-			);
+			sendServerNotification({
+				user,
+				item: 'Tangleroot',
+				action: 'completing',
+				activity: `the ${Emoji.MinigameIcon} Tithe Farm on their ${titheFarmsCompleted + 1} run`,
+				level: farmingLvl,
+				skill: 'Farming',
+				emoji: Emoji.Farming
+			});
 
 			await user.transactItems({
 				collectionLog: true,
