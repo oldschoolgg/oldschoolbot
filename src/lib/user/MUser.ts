@@ -437,6 +437,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 	}
 
 	calculateSpecialRemoveItems(bankToRemove: Bank, options?: SpecialRemoveItemsOptions): SpecialRemoveItemsResult {
+		console.log(`Special: ${bankToRemove.amount('Dragon arrow')}`);
 		bankToRemove = determineRunes(this, bankToRemove);
 		const bankRemove = new Bank();
 		const ammoToRemove = new Bank();
@@ -447,6 +448,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 		const realCost = bankToRemove.clone();
 		const rangeGear = this.gear[gearSlot];
 		const avasDevice = options?.avasDevice ?? avasDevices.find(avas => rangeGear.hasEquipped(avas.item.id));
+		console.log(`gearSlot: ${gearSlot} Avas: ${avasDevice?.item.name}\n\tReal Cost: ${realCost}n\n\tGear: ${rangeGear}`);
 		const newGear = rangeGear.raw();
 		let newBlowpipe: IBlowpipeData | undefined;
 
@@ -484,10 +486,12 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 			if (avasDevice && projectileCategory?.savedByAvas) {
 				const ammoCopy = ammoRemove[1];
 				for (let i = 0; i < ammoCopy; i++) {
+					let ammoSaved = 0;
 					if (cryptoRng.percentChance(avasDevice.reduction)) {
-						ammoRemove[1]--;
-						realCost.remove(ammoRemove[0].id, 1);
+						ammoSaved++;
 					}
+					ammoRemove[1] -= ammoSaved;
+					realCost.remove(ammoRemove[0].id, ammoSaved);
 				}
 			}
 			if (!ammo || ammo < ammoRemove[1]) {
@@ -543,7 +547,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 				throw new UserError(`You don't own: ${bankRemove.clone().remove(this.bankWithGP)}.`);
 			}
 		}
-		return {
+		const removeResult =  {
 			bankToRemove: bankRemove,
 			ammoToRemove,
 			gearSlot,
@@ -552,6 +556,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 			blowpipe: newBlowpipe,
 			realCost
 		};
+		return removeResult;
 	}
 
 	async applySpecialRemoveItemsResult(result: SpecialRemoveItemsResult) {

@@ -50,7 +50,7 @@ import {
 } from '@/lib/minions/functions/deathCharge.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { DoomTaskOptions } from '@/lib/types/minions.js';
-import { autoDecantPotions } from '@/lib/util/autoDecantPotions.js';
+import { autoDecantBank } from '@/lib/util/autoDecantBank.js';
 import { formatList, formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 export const DOOM_UNIQUE_ITEMS = resolveItems(['Mokhaiotl cloth', 'Eye of ayak (uncharged)', 'Avernic treads', 'Dom']);
@@ -973,13 +973,8 @@ export async function doomCommand(
 		venomCost: estimatedVenomCost,
 		effectiveVenomCost: estimatedEffectiveVenomCost
 	} = estimated;
-	let specialRemoval: ReturnType<DoomUser['calculateSpecialRemoveItems']>;
-	try {
-		specialRemoval = user.calculateSpecialRemoveItems(estimatedCost);
-	} catch (err: unknown) {
-		if (err instanceof UserError) return err.message;
-		throw err;
-	}
+	const specialRemoval = user.calculateSpecialRemoveItems(estimatedCost);
+
 	const suppliesUsed = new Bank();
 	const venomItemsUsed = new Bank();
 	const venomItemsRefunded = new Bank();
@@ -1027,6 +1022,7 @@ export async function doomCommand(
 	}
 	suppliesUsed.add(venomItemsUsed);
 	for (const [item, quantity] of specialRemoval.ammoToRemove.items()) {
+		// If we underestimated ammo cost, that's on us, just ignore it.
 		if (quantity > estimatedCost.amount(item.id)) continue;
 		suppliesUsed.remove(item.id, suppliesUsed.amount(item.id)).add(item.id, quantity);
 	}
@@ -1052,7 +1048,7 @@ export async function doomCommand(
 		console.log('suppliesUsed', `${suppliesUsed}`);
 		const refund = removedCost.clone().remove(suppliesUsed).add(venomItemsRefunded);
 		console.log('refund', `${refund}`);
-		refundedSupplies.add(autoDecantPotions(refund));
+		refundedSupplies.add(autoDecantBank(refund));
 		for (const [item] of specialRemoval.ammoToRemove.items()) {
 			const refundQuantity = refundedSupplies.amount(item.id);
 			if (refundQuantity > 0) {
