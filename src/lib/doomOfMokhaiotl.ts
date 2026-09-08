@@ -812,7 +812,6 @@ export async function doomCommand(
 	check = false
 ) {
 	const { user, rng } = itx;
-	const effectiveStopOnUnique = quantity ? stopOnUnique : true;
 
 	if (!Number.isInteger(targetDelve)) return 'Target delve must be a whole number.';
 	if (quantity !== undefined && (!Number.isInteger(quantity) || quantity < 1))
@@ -890,7 +889,7 @@ export async function doomCommand(
 		waveCompletions,
 		baseDuration,
 		durationReductionPercent,
-		stopOnUnique: effectiveStopOnUnique,
+		stopOnUnique,
 		rng
 	};
 	const fullDelveDuration = Math.floor(reduceNumByPercent(baseDuration, durationReductionPercent));
@@ -923,9 +922,7 @@ export async function doomCommand(
 	}
 
 	if (quantity && plannedTaskDuration(quantity) > maxTripLength) {
-		return `The max amount of delves you can do at Delve ${targetDelve} is ${maxDelveQuantity.toLocaleString()}, try a lower quantity. Doing ${quantity.toLocaleString()}x would take ${formatDuration(
-			plannedTaskDuration(quantity)
-		)}. If you want to maximize your task length, then don't specify a quantity and you will do as many delves as you can by default.`;
+		return `You can't do that many Doom of Mohkaiotl delves! If you want to maximize your task length, then don't specify a quantity and you will do as many delves as you can by default.`;
 	}
 
 	const delves: DoomActivityDelveData[] = [];
@@ -1183,7 +1180,7 @@ export async function doomCommand(
 		loot: taskLoot.toJSON(),
 		refund: refundedSupplies.toJSON(),
 		refundAmmo: refundedAmmo.toJSON(),
-		stopOnUnique: effectiveStopOnUnique,
+		stopOnUnique,
 		disableZcbBoost: state.zcbBoostDisabled || undefined
 	});
 
@@ -1191,7 +1188,7 @@ export async function doomCommand(
 		quantity
 			? `${user.usernameOrMention}'s minion is now fighting the **Doom of Mokhaiotl** ${delves.length}x (targeting delve **${targetDelve}**)!`
 			: `${user.usernameOrMention}'s minion is now fighting the **Doom of Mokhaiotl**! Attempting as many delves as possible up to level ${targetDelve}.`,
-		`**Duration:** ${formatDuration(fakeDuration)} | **Stop on unique:** ${effectiveStopOnUnique ? 'Yes' : 'No'}`,
+		`**Duration:** ${formatDuration(fakeDuration)} | **Stop on unique:** ${stopOnUnique ? 'Yes' : 'No'}`,
 		buildDoomDeathChanceLine(deathChances),
 		`**Cost:** ${removedCost}`,
 		`**Boosts:** ${buildDoomBoostLines(state, kcReduction, skillBoostMsg).join(', ')}`,

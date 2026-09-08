@@ -272,7 +272,17 @@ export class Gear {
 		if (allItems.length === 0) {
 			return 'No items';
 		}
+
 		const items: string[] = [];
+		for (const slot of Object.values(this.setup)) {
+			if (!slot?.quantity) continue;
+
+			const qty = slot.quantity > 1 ? `${slot.quantity}x ` : '';
+			const name = Items.itemNameFromId(Number(slot.item)) ?? `Unknown Item? (${slot.item})`;
+
+			items.push(`${qty}${name}`);
+		}
+
 		for (const item of allItems.sort((a, b) => a - b)) {
 			items.push(Items.itemNameFromId(item) ?? `Unknown Item? (${item})`);
 		}

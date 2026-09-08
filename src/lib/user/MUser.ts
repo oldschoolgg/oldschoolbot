@@ -558,6 +558,10 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 			blowpipe: newBlowpipe,
 			realCost
 		};
+		if (removeResult.gearChanged) {
+			console.log(`--------------------\nNew Arrow Quantity: ${newGear.ammo!.quantity}`);
+			console.log(`Bank to remove: ${bankRemove}`);
+		}
 		return removeResult;
 	}
 
