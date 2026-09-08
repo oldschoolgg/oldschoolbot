@@ -54,6 +54,7 @@ export interface MinionKillOptions {
 	slayerUnlocks: SlayerTaskUnlocksEnum[];
 	favoriteFood: number[];
 	bitfield: readonly BitField[];
+	hasWildyEliteDiary: boolean;
 	pkEvasionExperience: number;
 	currentPeak: Peak;
 	rng: RNGProvider;

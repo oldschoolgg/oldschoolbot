@@ -17,6 +17,7 @@ import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '@/lib/data/cox
 import { leaguesCreatables } from '@/lib/data/creatables/leagueCreatables.js';
 import { Eatables } from '@/lib/data/eatables.js';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '@/lib/data/tob.js';
+import { diaries } from '@/lib/diaries.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import potions from '@/lib/minions/data/potions.js';
 import { MAX_QP, quests } from '@/lib/minions/data/quests.js';
@@ -36,6 +37,7 @@ import { SlayerRewardsShop } from '@/lib/slayer/slayerUnlocks.js';
 import { allSlayerMonsters } from '@/lib/slayer/tasks/index.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import type { SafeUserUpdateInput } from '@/lib/user/update.js';
+import type { HasDiaryDiaryKey } from '@/lib/user/userTypes.js';
 import { parseStringBank } from '@/lib/util/parseStringBank.js';
 import { fetchBingosThatUserIsInvolvedIn } from '@/mahoji/commands/bingo.js';
 import { gearViewCommand } from '@/mahoji/lib/abstracted_commands/gearCommands.js';
@@ -338,6 +340,14 @@ const thingsToWipe = [
 	'giveaways'
 ] as const;
 
+const diaryTierChoices = ['easy', 'medium', 'hard', 'elite', 'all'] as const;
+type TestPotatoDiaryTier = (typeof diaryTierChoices)[number];
+const diaryTierNames = ['easy', 'medium', 'hard', 'elite'] as const;
+
+function formatDiaryKey(diaryName: string, tier: (typeof diaryTierNames)[number]): HasDiaryDiaryKey {
+	return `${diaryName}.${tier}`.replace(/\s/g, '').toLowerCase() as HasDiaryDiaryKey;
+}
+
 export const testPotatoCommand = globalConfig.isProduction
 	? null
 	: defineCommand({
@@ -611,6 +621,27 @@ export const testPotatoCommand = globalConfig.isProduction
 							required: true,
 							min_value: 0,
 							max_value: 10_000
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'setdiarytier',
+					description: 'Set an achievement diary tier as complete.',
+					options: [
+						{
+							type: 'String',
+							name: 'diary',
+							description: 'The achievement diary.',
+							required: true,
+							choices: diaries.map(diary => ({ name: diary.name, value: diary.name }))
+						},
+						{
+							type: 'String',
+							name: 'tier',
+							description: 'The diary tier to complete.',
+							required: true,
+							choices: diaryTierChoices.map(tier => ({ name: tier, value: tier }))
 						}
 					]
 				},
@@ -1066,6 +1097,25 @@ export const testPotatoCommand = globalConfig.isProduction
 				}
 				if (options.setxp) {
 					return setXP(user, options.setxp.skill, options.setxp.xp);
+				}
+				if (options.setdiarytier) {
+					const diary = diaries.find(d => stringMatches(d.name, options.setdiarytier?.diary ?? ''));
+					if (!diary) return 'Invalid diary.';
+
+					const tier = options.setdiarytier.tier as TestPotatoDiaryTier;
+					const tiersToSet = tier === 'all' ? diaryTierNames : [tier];
+					const completedDiaries = new Set(user.user.completed_achievement_diaries);
+
+					for (const tierToSet of tiersToSet) {
+						completedDiaries.add(formatDiaryKey(diary.name, tierToSet));
+					}
+
+					await user.update({
+						completed_achievement_diaries: [...completedDiaries]
+					});
+
+					const tierName = tier === 'all' ? 'all tiers' : diary[tier].name;
+					return `Set your ${diary.name} ${tierName} diary as complete.`;
 				}
 				if (options.spawn) {
 					const { preset, collectionlog, item, items } = options.spawn;
