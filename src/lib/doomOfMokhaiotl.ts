@@ -21,6 +21,7 @@ import {
 	calculateDoomTripDuration,
 	calculateDoomWipeChanceBeforeTarget,
 	calculateDoomZcbBoltsNeeded,
+	DOOM_VENOM_PROTECTION_OPTIONS,
 	type DoomMeleePunishWeapon,
 	type DoomVenomProtection,
 	type DoomWaveCompletions,
@@ -216,6 +217,17 @@ interface DoomTripCostResult {
 	rangingUsed: number;
 }
 
+function doomResultFromActivityTrip(trip: DoomActivityTripData): DoomRunResult {
+	return {
+		diedAt: trip.diedAt ?? null,
+		loot: null,
+		lastWave: trip.lastWave,
+		duration: trip.dur,
+		deathChances: [],
+		ayakChargesGained: trip.ayak ?? 0
+	};
+}
+
 const DOOM_SKILL_REQUIREMENTS: Skills = {
 	attack: 85,
 	strength: 85,
@@ -362,6 +374,7 @@ export function startDoomRun(options: {
 }
 
 const DOOM_ARROWS_PER_HOUR = 500;
+const DOOM_SUPPLY_ESTIMATE_DURATION = Time.Hour * 2;
 
 export function calculateDoomArrowsNeeded(duration: number): number {
 	return Math.max(1, Math.ceil((duration / Time.Hour) * DOOM_ARROWS_PER_HOUR));
@@ -369,6 +382,28 @@ export function calculateDoomArrowsNeeded(duration: number): number {
 
 export function hasCompletedDoomTrip(trips: DoomActivityTripData[], targetWave = 1): boolean {
 	return trips.some(trip => !trip.dead && trip.lastWave >= targetWave);
+}
+
+function describeMissingSupplies(availableSupplies: Bank, cost: Bank): string {
+	return cost
+		.items()
+		.flatMap(([item, quantity]) => {
+			const owned = availableSupplies.amount(item.id);
+			if (owned >= quantity) return [];
+			return [`${Items.itemNameFromId(item.id)}: need ${quantity}, only have ${owned}`];
+		})
+		.join('; ');
+}
+
+function describeDoomVenomShortfall(availableSupplies: Bank, duration: number, wastedDoses: number): string {
+	return DOOM_VENOM_PROTECTION_OPTIONS.map(option => {
+		const dosesNeeded = wastedDoses + Math.ceil(duration / option.venomImmunityDuration);
+		const dosesOwned = [1, 2, 3, 4].reduce(
+			(total, dose) => total + dose * availableSupplies.amount(`${option.potionName}(${dose})`),
+			0
+		);
+		return `${option.potionName}: need ${dosesNeeded} doses, only have ${dosesOwned}`;
+	}).join('; ');
 }
 
 const RUBY_BOLT_VARIANTS = ['Ruby bolts (e)', 'Ruby dragon bolts (e)'] as const;
@@ -854,9 +889,7 @@ export async function doomCommand(
 
 	const maxTripQuantity = Math.max(1, Math.floor(maxTripLength / fullTripDuration));
 
-	console.log('maxTripLength', formatDuration(maxTripLength));
 	const fakeDuration = quantity ? quantity * fullTripDuration : maxTripLength;
-	console.log('fakeDuration', formatDuration(fakeDuration));
 	if (quantity && quantity > maxTripQuantity) {
 		return `The max amount of trips you can do at Delve ${targetDelve} is ${maxTripQuantity.toLocaleString()}, try a lower quantity. Doing ${quantity.toLocaleString()}x would take ${formatDuration(
 			quantity * fullTripDuration
@@ -864,14 +897,6 @@ export async function doomCommand(
 	}
 
 	const trips: DoomActivityTripData[] = [];
-	const fullTripCostResult: DoomRunResult = {
-		diedAt: null,
-		loot: null,
-		lastWave: targetDelve,
-		duration: fullTripDuration,
-		deathChances: [],
-		ayakChargesGained: 0
-	};
 	let totalDuration = 0;
 	const tripsToAttempt = quantity ?? Number.POSITIVE_INFINITY;
 	while (trips.length < tripsToAttempt) {
@@ -891,36 +916,60 @@ export async function doomCommand(
 
 		if (totalDuration > maxTripLength) break;
 	}
-	console.log('totalDuration', formatDuration(totalDuration));
 	// This shouldn't happen since we always allow at least 1 trip
 	if (trips.length === 0) {
 		void itx.reply({ content: 'Doom Error: No trips successfully added. Please report this.' });
 		throw new Error('Doom Error: No trips successfully added');
 	}
-	function buildEstimatedCost(tripQuantity: number) {
+	const DELETE_COPY_originalTrips = trips.map(trip => ({ ...trip, loot: trip.loot ? { ...trip.loot } : undefined }));
+	let poppedTrips = false;
+	// Keep this target- and outcome-independent. Charging from actual trip results leaks outcomes and is gameable.
+	const supplyEstimateResult: DoomRunResult = {
+		diedAt: null,
+		loot: null,
+		lastWave: MAX_DELVE,
+		duration: DOOM_SUPPLY_ESTIMATE_DURATION,
+		deathChances: [],
+		ayakChargesGained: 0
+	};
+	function buildEstimatedCost(
+		tripQuantity: number
+	): { cost: Bank; venomCost: Bank; effectiveVenomCost: Bank } | { reason: string } {
 		const availableSupplies = user.bank.clone();
 		const venomProtection = selectDoomVenomProtection(
 			itemName => availableSupplies.amount(itemName),
-			fullTripDuration * tripQuantity * 1.1,
+			DOOM_SUPPLY_ESTIMATE_DURATION * tripQuantity * 1.1,
 			tripQuantity
 		);
-		if (!venomProtection) return null;
+		if (!venomProtection) {
+			return {
+				reason: `no single venom-protection type covers the estimate: ${describeDoomVenomShortfall(
+					availableSupplies,
+					DOOM_SUPPLY_ESTIMATE_DURATION * tripQuantity * 1.1,
+					tripQuantity
+				)}`
+			};
+		}
 		const cost = new Bank().add(venomProtection.itemCost);
-		if (!availableSupplies.has(venomProtection.itemCost)) return null;
+		if (!availableSupplies.has(venomProtection.itemCost)) {
+			return { reason: describeMissingSupplies(availableSupplies, venomProtection.itemCost) };
+		}
 		availableSupplies.remove(venomProtection.itemCost);
 
-		for (let i = 0; i < tripQuantity; i++) {
+		for (let index = 0; index < tripQuantity; index++) {
 			const tripCost = getDoomTripCost({
 				user,
 				state,
-				result: fullTripCostResult,
+				result: supplyEstimateResult,
 				userMagicLevel,
 				venomProtection: { itemCost: new Bank() },
 				deepDelves,
 				totalDelves,
 				availableSupplies
 			});
-			if (!availableSupplies.has(tripCost.cost)) return null;
+			if (!availableSupplies.has(tripCost.cost)) {
+				return { reason: describeMissingSupplies(availableSupplies, tripCost.cost) };
+			}
 			availableSupplies.remove(tripCost.cost);
 			cost.add(tripCost.cost);
 		}
@@ -931,25 +980,43 @@ export async function doomCommand(
 			effectiveVenomCost: venomProtection.effectiveCost
 		};
 	}
-	let estimated = buildEstimatedCost(trips.length);
-	if (!estimated && quantity) return "You don't have enough supplies to complete this many Doom of Mokhaiotl trips.";
-	while (!estimated && trips.length > 1) {
+	function logPoppedTripList(title: string, color: string, list: DoomActivityTripData[]) {
+		console.info(`${color}${title}\x1b[0m`);
+		for (const trip of list) {
+			const cost = getDoomTripCost({
+				user,
+				state,
+				result: doomResultFromActivityTrip(trip),
+				userMagicLevel,
+				venomProtection: { itemCost: new Bank() },
+				deepDelves,
+				totalDelves
+			}).cost;
+			console.info(
+				`${trip.diedAt ? `Died at: ${trip.diedAt} | ` : ''}Wave: ${trip.lastWave} | Duration: ${formatDuration(trip.dur)} | Cost: ${cost}`
+			);
+		}
+	}
+	let estimate = buildEstimatedCost(trips.length);
+	if ('reason' in estimate && quantity)
+		return "You don't have enough supplies to complete this many Doom of Mokhaiotl trips.";
+	while ('reason' in estimate && trips.length > 1) {
 		const removedTrip = trips.pop()!;
 		totalDuration -= removedTrip.dur;
-		console.log('Doom of Mokhaiotl trip popped for supplies', {
-			userID: user.id,
-			targetDelve,
-			tripsRemaining: trips.length,
-			removedTrip
-		});
-		estimated = buildEstimatedCost(trips.length);
+		poppedTrips = true;
+		console.info(`Trip popped because: ${estimate.reason}`);
+		estimate = buildEstimatedCost(trips.length);
 	}
-	if (!estimated) return "You don't have enough supplies to complete a Doom of Mokhaiotl trip.";
+	if ('reason' in estimate) return "You don't have enough supplies to complete a Doom of Mokhaiotl trip.";
+	if (poppedTrips) {
+		logPoppedTripList('ORIGINAL LIST', '\x1b[33m', DELETE_COPY_originalTrips);
+		logPoppedTripList('NEW LIST', '\x1b[31m', trips);
+	}
 	const {
 		cost: estimatedCost,
 		venomCost: estimatedVenomCost,
 		effectiveVenomCost: estimatedEffectiveVenomCost
-	} = estimated;
+	} = estimate;
 	const specialRemoval = user.calculateSpecialRemoveItems(estimatedCost);
 
 	const suppliesUsed = new Bank();
@@ -966,14 +1033,7 @@ export async function doomCommand(
 		const tripCost = getDoomTripCost({
 			user,
 			state,
-			result: {
-				diedAt: trip.diedAt ?? null,
-				loot: null,
-				lastWave: trip.lastWave,
-				duration: trip.dur,
-				deathChances: [],
-				ayakChargesGained: trip.ayak ?? 0
-			},
+			result: doomResultFromActivityTrip(trip),
 			userMagicLevel,
 			venomProtection: { itemCost: new Bank() },
 			deepDelves,
@@ -1014,10 +1074,12 @@ export async function doomCommand(
 	const { removedCost, effectiveCost } = costRemovalResult;
 	// Calculate refund, or notify Cyr if there's a cuck up
 	try {
-		console.log('removedCost', `${removedCost}`);
-		console.log('suppliesUsed', `${suppliesUsed}`);
+		if (!estimatedCost.has(suppliesUsed)) {
+			const error = new Error('Doom: actual supplies exceeded the outcome-independent estimate');
+			void globalClient.sendDm(globalConfig.adminUserIDs[0], `${error.message} for ${user.id}.`);
+			Logging.logError(error, { estimatedCost, suppliesUsed, trips });
+		}
 		const refund = removedCost.clone().remove(suppliesUsed).add(venomItemsRefunded);
-		console.log('refund', `${refund}`);
 		refundedSupplies.add(autoDecantBank(refund));
 		for (const [item] of specialRemoval.ammoToRemove.items()) {
 			const refundQuantity = refundedSupplies.amount(item.id);
