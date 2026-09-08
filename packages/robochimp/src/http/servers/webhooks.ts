@@ -21,7 +21,6 @@ webhooksServer.post('/patreon', async c => {
 	if (!isVerified) return httpErr.BAD_REQUEST({ message: 'Unverified' });
 	console.log('Verified! Syncing patreon...');
 
-	// biome-ignore lint/nursery/noFloatingPromises:-
 	patreonTask.run().then(res => {
 		if (res) {
 			console.log(res.join('\n').slice(0, 1950));

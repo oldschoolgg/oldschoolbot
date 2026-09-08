@@ -102,12 +102,17 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 	const matchedRevenantMonster = revenantMonsters.find(m => m.id === monster.id);
 	if (matchedRevenantMonster) {
 		const weapon = gearBank.gear.wildy.equippedWeapon();
+		const revRequiredWeaponAttackBonus = 10;
 		if (!weapon) {
 			return 'You have no weapon equipped in your Wildy outfit.';
 		}
 
-		if (weapon.equipment![relevantGearStat] < 10) {
-			return `Your weapon is terrible, you can't kill Revenants. You should have ${primaryStyle} gear equipped in your wildy outfit, as this is what you're currently training. You can change this using \`/minion train\``;
+		if (weapon.equipment![relevantGearStat] < revRequiredWeaponAttackBonus) {
+			const weaponAttackBonusName =
+				primaryStyle === 'melee' ? 'Crush' : primaryStyle === 'range' ? 'Ranged' : 'Magic';
+			const trainingStyleName =
+				primaryStyle === 'melee' ? 'melee' : primaryStyle === 'range' ? 'ranged' : 'magic';
+			return `You need a weapon in your Wildy outfit with at least +${revRequiredWeaponAttackBonus} ${weaponAttackBonusName} Attack to kill Revenants while training ${trainingStyleName}. Equip a better ${weaponAttackBonusName.toLowerCase()} weapon, or change your training style with \`/minion train\`.`;
 		}
 	}
 
