@@ -677,7 +677,7 @@ function getDoomTripCost(options: {
 		});
 		if (casts > 0) cost.add(deathChargeCastCost(casts));
 	}
-	if (state.hasMokhaiotlWaystone) cost.add('Mokhaiotl waystone');
+	if (state.hasMokhaiotlWaystone && availableSupplies.has('Mokhaiotl waystone')) cost.add('Mokhaiotl waystone');
 
 	return {
 		cost,
@@ -828,10 +828,12 @@ export async function doomCommand(
 		user.skillsAsLevels as Required<Skills>,
 		reduceNumByPercent(baseDuration, kcReduction)
 	);
+	const durationReductionPercentWithoutWaystone = calcWhatPercent(baseDuration - durationAfterSkillBoost, baseDuration);
 	const durationAfterWaystone = state.hasMokhaiotlWaystone
 		? reduceNumByPercent(durationAfterSkillBoost, MOKHAIOTL_WAYSTONE_SPEED_BOOST)
 		: durationAfterSkillBoost;
 	const durationReductionPercent = calcWhatPercent(baseDuration - durationAfterWaystone, baseDuration);
+	const mokhaiotlWaystonesOwned = user.bank.amount('Mokhaiotl waystone');
 
 	const tripOptions = {
 		targetDelve,
@@ -886,6 +888,8 @@ export async function doomCommand(
 	let totalDuration = 0;
 	const tripsToAttempt = quantity ?? Number.POSITIVE_INFINITY;
 	while (trips.length < tripsToAttempt) {
+		tripOptions.durationReductionPercent =
+			trips.length < mokhaiotlWaystonesOwned ? durationReductionPercent : durationReductionPercentWithoutWaystone;
 		const trip = startDoomRun(tripOptions);
 		const tripDuration = Math.floor(trip.duration);
 		totalDuration += tripDuration;
@@ -952,6 +956,12 @@ export async function doomCommand(
 	while (!estimated && trips.length > 1) {
 		const removedTrip = trips.pop()!;
 		totalDuration -= removedTrip.dur;
+		console.log('Doom of Mokhaiotl trip popped for supplies', {
+			userID: user.id,
+			targetDelve,
+			tripsRemaining: trips.length,
+			removedTrip
+		});
 		estimated = buildEstimatedCost(trips.length);
 	}
 	if (!estimated) return "You don't have enough supplies to complete a Doom of Mokhaiotl trip.";
@@ -1006,11 +1016,13 @@ export async function doomCommand(
 		effectiveVenomCost.add(tripCostVenomProtection.effectiveCost);
 	}
 	suppliesUsed.add(venomItemsUsed);
-	console.log('suppliesUsed', `${suppliesUsed}`);
 	const refundedSupplies = new Bank();
 	// Calculate refund, or notify Cyr if there's a cuck up
 	try {
+		console.log('estimatedCost', `${estimatedCost}`);
+		console.log('suppliesUsed', `${suppliesUsed}`);
 		const diff = estimatedCost.clone().remove(suppliesUsed);
+		console.log('diff', `${diff}`);
 		refundedSupplies.add(autoDecantPotions(diff));
 	} catch (err) {
 		const now = Date.now();
