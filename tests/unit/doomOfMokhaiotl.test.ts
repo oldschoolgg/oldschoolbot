@@ -2,12 +2,12 @@ import { Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { calculateDoomArrowsNeeded, startDoomRun } from '@/lib/doomOfMokhaiotl.js';
+import { calculateDoomArrowsNeeded, startDoomDelve } from '@/lib/doomOfMokhaiotl.js';
 import {
 	calculateDeathChance,
 	calculateDoomEarlyDeathSupplyRefund,
 	calculateDoomRunDeathChance,
-	calculateDoomTripDuration,
+	calculateDoomDelveDuration,
 	calculateDoomWipeChanceBeforeTarget,
 	calculateDoomXP,
 	calculateDoomZcbBoltsNeeded,
@@ -94,12 +94,12 @@ describe('Doom of Mokhaiotl', () => {
 		const maxGearArgs = [true, false, true, false, 'noxious_halberd', true, false, true, true, -0.08] as const;
 		const maxKcAndStatsDurationMultiplier = 0.9 * 0.85;
 		const normalDuration =
-			calculateDoomTripDuration(8, ...maxGearArgs, fixedDurationRollRng(0.525)) * maxKcAndStatsDurationMultiplier;
+			calculateDoomDelveDuration(8, ...maxGearArgs, fixedDurationRollRng(0.525)) * maxKcAndStatsDurationMultiplier;
 		const speedDuration =
-			calculateDoomTripDuration(8, ...maxGearArgs, fixedDurationRollRng(0.025)) * maxKcAndStatsDurationMultiplier;
+			calculateDoomDelveDuration(8, ...maxGearArgs, fixedDurationRollRng(0.025)) * maxKcAndStatsDurationMultiplier;
 		const extraDeepWaveDuration =
-			(calculateDoomTripDuration(9, ...maxGearArgs, fixedDurationRollRng(0.525)) -
-				calculateDoomTripDuration(8, ...maxGearArgs, fixedDurationRollRng(0.525))) *
+			(calculateDoomDelveDuration(9, ...maxGearArgs, fixedDurationRollRng(0.525)) -
+				calculateDoomDelveDuration(8, ...maxGearArgs, fixedDurationRollRng(0.525))) *
 			maxKcAndStatsDurationMultiplier;
 
 		expect(normalDuration).toBeGreaterThanOrEqual(Time.Minute * 8.5);
@@ -124,14 +124,14 @@ describe('Doom of Mokhaiotl', () => {
 			-0.08
 		] as const;
 		const delveEightFastDuration =
-			calculateDoomTripDuration(8, ...maxGearWithLightbearer, fixedDurationRollRng(0.049_999)) *
+			calculateDoomDelveDuration(8, ...maxGearWithLightbearer, fixedDurationRollRng(0.049_999)) *
 			maxKcAndStatsDurationMultiplier;
 
 		expect(delveEightFastDuration).toBeLessThan(Time.Minute * 7.25);
 	});
 
 	test('scales early unique stop duration by completed delve weight', () => {
-		const fullDuration = calculateDoomTripDuration(
+		const fullDuration = calculateDoomDelveDuration(
 			8,
 			true,
 			false,
@@ -152,7 +152,7 @@ describe('Doom of Mokhaiotl', () => {
 	});
 
 	test('Lightbearer gives a Doom speed boost', () => {
-		const withoutLightbearer = calculateDoomTripDuration(
+		const withoutLightbearer = calculateDoomDelveDuration(
 			8,
 			true,
 			false,
@@ -166,7 +166,7 @@ describe('Doom of Mokhaiotl', () => {
 			-0.08,
 			fixedDurationRollRng(0.525)
 		);
-		const withLightbearer = calculateDoomTripDuration(
+		const withLightbearer = calculateDoomDelveDuration(
 			8,
 			true,
 			false,
@@ -187,7 +187,7 @@ describe('Doom of Mokhaiotl', () => {
 
 	test('Crystal halberd gives a fallback Doom speed boost only without Zaryte crossbow', () => {
 		const baseArgs = [8, true, false, false, false] as const;
-		const baseDuration = calculateDoomTripDuration(
+		const baseDuration = calculateDoomDelveDuration(
 			...baseArgs,
 			'dual_macuahuitl',
 			false,
@@ -197,7 +197,7 @@ describe('Doom of Mokhaiotl', () => {
 			-0.08,
 			fixedDurationRollRng(0.525)
 		);
-		const crystalHalberdDuration = calculateDoomTripDuration(
+		const crystalHalberdDuration = calculateDoomDelveDuration(
 			...baseArgs,
 			'crystal_halberd',
 			false,
@@ -207,7 +207,7 @@ describe('Doom of Mokhaiotl', () => {
 			-0.08,
 			fixedDurationRollRng(0.525)
 		);
-		const zcbWithCrystalHalberdDuration = calculateDoomTripDuration(
+		const zcbWithCrystalHalberdDuration = calculateDoomDelveDuration(
 			8,
 			true,
 			false,
@@ -286,7 +286,7 @@ describe('Doom of Mokhaiotl', () => {
 		);
 		const run = (targetDelve: number) => {
 			let wave = 0;
-			return startDoomRun({
+			return startDoomDelve({
 				targetDelve,
 				hasTbow: true,
 				hasSBow: false,
@@ -322,7 +322,7 @@ describe('Doom of Mokhaiotl', () => {
 		expect(target17ArrowsPerHour).toBeLessThan(510);
 	});
 
-	test('selects Doom venom protection based on trip duration', () => {
+	test('selects Doom venom protection based on delve duration', () => {
 		expect(
 			selectDoomVenomProtection(itemName => (itemName === 'Anti-venom(1)' ? 1 : 0), 30_000)?.option.potionName
 		).toBe('Anti-venom');
@@ -347,7 +347,7 @@ describe('Doom of Mokhaiotl', () => {
 		expect(protection?.replacementItems.equals(new Bank().add('Anti-venom+(2)'))).toBe(true);
 	});
 
-	test('uses multiple vials when a Doom trip needs several venom protection doses', () => {
+	test('uses multiple vials when a Doom delve needs several venom protection doses', () => {
 		const protection = selectDoomVenomProtection(itemName => {
 			if (itemName === 'Anti-venom+(4)') return 1;
 			if (itemName === 'Anti-venom+(2)') return 1;
@@ -360,7 +360,7 @@ describe('Doom of Mokhaiotl', () => {
 		expect(protection?.replacementItems.equals(new Bank().add('Anti-venom+(1)'))).toBe(true);
 	});
 
-	test('does not select Doom venom protection without enough doses for the trip', () => {
+	test('does not select Doom venom protection without enough doses for the delve', () => {
 		expect(
 			selectDoomVenomProtection(itemName => (itemName === 'Anti-venom+(1)' ? 1 : 0), 10 * Time.Minute)
 		).toBeNull();

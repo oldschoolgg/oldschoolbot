@@ -290,7 +290,7 @@ export function getDoomMeleePunishWeaponName(weapon: DoomMeleePunishWeapon): str
 	}
 }
 
-export function calculateDoomTripDuration(
+export function calculateDoomDelveDuration(
 	targetDelve: number,
 	hasTbow: boolean,
 	hasSBow: boolean,

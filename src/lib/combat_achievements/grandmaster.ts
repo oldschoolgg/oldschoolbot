@@ -3,7 +3,7 @@ import { Bank, EMonster, Monsters } from 'oldschooljs';
 
 import { isCertainMonsterTrip } from '@/lib/combat_achievements/caUtils.js';
 import type { CombatAchievement } from '@/lib/combat_achievements/combatAchievements.js';
-import { hasCompletedDoomTrip } from '@/lib/doomOfMokhaiotl.js';
+import { hasCompletedDoomDelve } from '@/lib/doomOfMokhaiotl.js';
 import { Requirements } from '@/lib/structures/Requirements.js';
 import type {
 	ActivityTaskData,
@@ -1331,7 +1331,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 10,
 			hasChance: (data: ActivityTaskData) =>
-				data.type === 'DoomOfMokhaiotl' && hasCompletedDoomTrip(data.trips, 8)
+				data.type === 'DoomOfMokhaiotl' && hasCompletedDoomDelve(data.delves, 8)
 		}
 	},
 	{
@@ -1343,7 +1343,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 10,
 			hasChance: (data: ActivityTaskData) =>
-				data.type === 'DoomOfMokhaiotl' && hasCompletedDoomTrip(data.trips, 8)
+				data.type === 'DoomOfMokhaiotl' && hasCompletedDoomDelve(data.delves, 8)
 		}
 	},
 	{
@@ -1355,7 +1355,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 15,
 			hasChance: (data: ActivityTaskData) =>
-				data.type === 'DoomOfMokhaiotl' && hasCompletedDoomTrip(data.trips, 8)
+				data.type === 'DoomOfMokhaiotl' && hasCompletedDoomDelve(data.delves, 8)
 		}
 	},
 	{
@@ -1367,7 +1367,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 10,
 			hasChance: (data: ActivityTaskData) =>
-				data.type === 'DoomOfMokhaiotl' && hasCompletedDoomTrip(data.trips, 8)
+				data.type === 'DoomOfMokhaiotl' && hasCompletedDoomDelve(data.delves, 8)
 		}
 	},
 	{
@@ -1380,7 +1380,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 			chancePerKill: 1,
 			hasChance: (data: ActivityTaskData) =>
 				data.type === 'DoomOfMokhaiotl' &&
-				hasCompletedDoomTrip(data.trips, 8) &&
+				hasCompletedDoomDelve(data.delves, 8) &&
 				data.duration < Time.Minute * 7.25
 		}
 	},
@@ -1404,7 +1404,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 10,
 			hasChance: (data: ActivityTaskData) =>
-				data.type === 'DoomOfMokhaiotl' && hasCompletedDoomTrip(data.trips, 8)
+				data.type === 'DoomOfMokhaiotl' && hasCompletedDoomDelve(data.delves, 8)
 		}
 	},
 	{

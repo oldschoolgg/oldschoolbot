@@ -544,7 +544,7 @@ export interface ColoTaskOptions extends ActivityTaskOptions {
 	bloodFuryCharges: number;
 }
 
-export interface DoomActivityTripData {
+export interface DoomActivityDelveData {
 	dur: number;
 	dead: boolean;
 	lastWave: number;
@@ -556,7 +556,8 @@ export interface DoomActivityTripData {
 export interface DoomTaskOptions extends ActivityTaskOptions {
 	type: 'DoomOfMokhaiotl';
 	targetDelve: number;
-	trips: DoomActivityTripData[];
+	delves: DoomActivityDelveData[];
+	loot: ItemBank;
 	refund?: ItemBank;
 	refundAmmo?: ItemBank;
 	fakeDuration: number;
