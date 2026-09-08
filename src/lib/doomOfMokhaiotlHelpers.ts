@@ -215,7 +215,7 @@ function getDoomVenomDosesOwned(option: DoomVenomProtectionOption, itemQuantity:
 export function selectDoomVenomProtection(
 	itemQuantity: (itemName: string) => number,
 	duration: number,
-	wastedDoses: number
+	wastedDoses = 0
 ): DoomVenomProtection | null {
 	const options = DOOM_VENOM_PROTECTION_OPTIONS.map(option => ({
 		option,

@@ -828,7 +828,10 @@ export async function doomCommand(
 		user.skillsAsLevels as Required<Skills>,
 		reduceNumByPercent(baseDuration, kcReduction)
 	);
-	const durationReductionPercentWithoutWaystone = calcWhatPercent(baseDuration - durationAfterSkillBoost, baseDuration);
+	const durationReductionPercentWithoutWaystone = calcWhatPercent(
+		baseDuration - durationAfterSkillBoost,
+		baseDuration
+	);
 	const durationAfterWaystone = state.hasMokhaiotlWaystone
 		? reduceNumByPercent(durationAfterSkillBoost, MOKHAIOTL_WAYSTONE_SPEED_BOOST)
 		: durationAfterSkillBoost;
@@ -970,6 +973,13 @@ export async function doomCommand(
 		venomCost: estimatedVenomCost,
 		effectiveVenomCost: estimatedEffectiveVenomCost
 	} = estimated;
+	let specialRemoval: ReturnType<DoomUser['calculateSpecialRemoveItems']>;
+	try {
+		specialRemoval = user.calculateSpecialRemoveItems(estimatedCost);
+	} catch (err: unknown) {
+		if (err instanceof UserError) return err.message;
+		throw err;
+	}
 	const suppliesUsed = new Bank();
 	const venomItemsUsed = new Bank();
 	const venomItemsRefunded = new Bank();
@@ -1016,24 +1026,12 @@ export async function doomCommand(
 		effectiveVenomCost.add(tripCostVenomProtection.effectiveCost);
 	}
 	suppliesUsed.add(venomItemsUsed);
-	const refundedSupplies = new Bank();
-	// Calculate refund, or notify Cyr if there's a cuck up
-	try {
-		console.log('estimatedCost', `${estimatedCost}`);
-		console.log('suppliesUsed', `${suppliesUsed}`);
-		const diff = estimatedCost.clone().remove(suppliesUsed);
-		console.log('diff', `${diff}`);
-		refundedSupplies.add(autoDecantPotions(diff));
-	} catch (err) {
-		const now = Date.now();
-		void globalClient.sendDm(globalConfig.adminUserIDs[0], `Error calculating refund at ${now}: ${err}`);
-		Logging.logError(new Error('Doom: Error calculating refund'), {
-			timestamp: now,
-			estimatedCost,
-			suppliesUsed,
-			tripCostVenomProtection
-		});
+	for (const [item, quantity] of specialRemoval.ammoToRemove.items()) {
+		if (quantity > estimatedCost.amount(item.id)) continue;
+		suppliesUsed.remove(item.id, suppliesUsed.amount(item.id)).add(item.id, quantity);
 	}
+	const refundedSupplies = new Bank();
+	const refundedAmmo = new Bank();
 
 	const deepestDelveCompletedForTask = Math.max(...trips.map(trip => trip.lvl));
 	const totalWavesClearedForTask = trips.reduce((sum, trip) => sum + trip.lvl, 0);
@@ -1048,7 +1046,31 @@ export async function doomCommand(
 	});
 	if (typeof costRemovalResult === 'string') return costRemovalResult;
 	const { removedCost, effectiveCost } = costRemovalResult;
-	const refund = removedCost.clone().remove(suppliesUsed).add(venomItemsRefunded);
+	// Calculate refund, or notify Cyr if there's a cuck up
+	try {
+		console.log('removedCost', `${removedCost}`);
+		console.log('suppliesUsed', `${suppliesUsed}`);
+		const refund = removedCost.clone().remove(suppliesUsed).add(venomItemsRefunded);
+		console.log('refund', `${refund}`);
+		refundedSupplies.add(autoDecantPotions(refund));
+		for (const [item] of specialRemoval.ammoToRemove.items()) {
+			const refundQuantity = refundedSupplies.amount(item.id);
+			if (refundQuantity > 0) {
+				refundedAmmo.add(item.id, refundQuantity);
+				refundedSupplies.remove(item.id, refundQuantity);
+			}
+		}
+	} catch (err) {
+		const now = Date.now();
+		void globalClient.sendDm(globalConfig.adminUserIDs[0], `Error calculating refund at ${now}: ${err}`);
+		Logging.logError(new Error('Doom: Error calculating refund'), {
+			timestamp: now,
+			estimatedCost,
+			removedCost,
+			suppliesUsed,
+			tripCostVenomProtection
+		});
+	}
 
 	await ClientSettings.updateBankSetting('doom_cost', effectiveCost);
 	await user.statsBankUpdate('doom_cost', effectiveCost);
@@ -1072,7 +1094,8 @@ export async function doomCommand(
 		diedAt: diedAtForTask,
 		loot: {},
 		trips,
-		refund: refund.toJSON(),
+		refund: refundedSupplies.toJSON(),
+		refundAmmo: refundedAmmo.toJSON(),
 		deepDelvesEarned: deepDelvesEarnedForTask,
 		totalWavesCleared: totalWavesClearedForTask,
 		deepestDelveCompleted: deepestDelveCompletedForTask,

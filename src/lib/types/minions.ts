@@ -560,6 +560,7 @@ export interface DoomTaskOptions extends ActivityTaskOptions {
 		ayak?: number;
 	}[];
 	refund?: ItemBank;
+	refundAmmo?: ItemBank;
 	fakeDuration: number;
 	stopOnUnique?: boolean;
 	deepDelvesEarned: number;

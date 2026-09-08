@@ -24,7 +24,8 @@ export const doomOfMokhaiotlTask: MinionTask = {
 			deepestDelveCompleted,
 			ayakChargesGained,
 			trips,
-			refund
+			refund,
+			refundAmmo
 		} = data;
 		const tripData = trips ?? [
 			{
@@ -102,15 +103,33 @@ export const doomOfMokhaiotlTask: MinionTask = {
 		}
 
 		const refundedSupplies = new Bank().add(refund ?? {});
-		if (refundedSupplies.length > 0) {
-			await user.addItemsToBank({ items: refundedSupplies, collectionLog: false });
+		const refundedAmmo = new Bank().add(refundAmmo ?? {});
+		const refundedItems = refundedSupplies.clone().add(refundedAmmo);
+		if (refundedItems.length > 0) {
+			if (refundedSupplies.length > 0) {
+				await user.addItemsToBank({ items: refundedSupplies, collectionLog: false });
+			}
+			if (refundedAmmo.length > 0) {
+				const rangeGear = user.gear.range.raw();
+				const [ammo, quantity] = refundedAmmo.items()[0]!;
+				if (refundedAmmo.length === 1 && rangeGear.ammo?.item === ammo.id) {
+					rangeGear.ammo.quantity += quantity;
+					await user.updateGear([{ setup: 'range', gear: rangeGear }]);
+				} else {
+					await user.addItemsToBank({ items: refundedAmmo, collectionLog: false });
+				}
+			}
+			await Promise.all([
+				user.statsBankRemove('doom_cost', refundedItems),
+				ClientSettings.removeFromBankSetting('doom_cost', refundedItems)
+			]);
 		}
 
 		if (!trips && diedAt !== null) {
 			const kcSummary = buildKcSummary(newDeepest, newDeepDelves, newTotal);
 			const refundMessage =
-				refundedSupplies.length > 0
-					? `\n**Refunded supplies:** ${refundedSupplies}`
+				refundedItems.length > 0
+					? `\n**Refunded supplies:** ${refundedItems}`
 					: '\n**Refunded supplies:** None.';
 
 			return handleTripFinish({
@@ -178,7 +197,7 @@ export const doomOfMokhaiotlTask: MinionTask = {
 					)
 					.join('\n')}`
 			: '';
-		const refundMessage = refundedSupplies.length > 0 ? `\n**Refunded supplies:** ${refundedSupplies}` : '';
+		const refundMessage = refundedItems.length > 0 ? `\n**Refunded supplies:** ${refundedItems}` : '';
 		const content = `${user} ${completionLine}${tripSummary}${
 			itemsAdded.length === 0 ? "\n\nYou didn't get any loot. Sorry. 😞\n" : ''
 		}${refundMessage}\n${kcSummary}${xpMessage ? `\n${xpMessage}` : ''}`;

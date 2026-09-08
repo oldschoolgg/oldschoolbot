@@ -133,6 +133,17 @@ async function updateBankSetting(key: ClientBankKey, bankToAdd: Bank) {
 	return res;
 }
 
+async function removeFromBankSetting(key: ClientBankKey, bankToRemove: Bank) {
+	if (bankToRemove === undefined || bankToRemove === null) throw new Error(`Gave null bank for ${key}`);
+	const currentClientSettings = await mahojiClientSettingsFetch({
+		[key]: true
+	});
+	const current = currentClientSettings[key] as ItemBank;
+	return mahojiClientSettingsUpdate({
+		[key]: new Bank(current).remove(bankToRemove).toJSON()
+	});
+}
+
 async function addToGPTaxBalance(user: MUser, amount: number) {
 	await Promise.all([
 		prisma.clientStorage.update({
@@ -161,6 +172,7 @@ const ClientSettingsSrc = {
 	update: mahojiClientSettingsUpdate,
 	updateClientGPTrackSetting,
 	updateBankSetting,
+	removeFromBankSetting,
 	addToGPTaxBalance
 };
 
