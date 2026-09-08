@@ -52,6 +52,7 @@ import {
 	SpoilsOfWarTable
 } from '@/lib/simulation/misc.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
+import { FriendlyTask } from '@/lib/util/FriendlyTask.js';
 
 const CacheOfRunesTable = new LootTable()
 	.add('Death rune', [1000, 1500], 2)
@@ -94,6 +95,7 @@ interface OpenArgs {
 	user: MUser;
 	self: UnifiedOpenable;
 	rng: RNGProvider;
+	yielder: FriendlyTask;
 }
 
 export interface UnifiedOpenable {
@@ -123,24 +125,41 @@ for (const clueTier of ClueTiers) {
 		id: casketItem.id,
 		openedItem: casketItem,
 		aliases: [clueTier.name.toLowerCase()],
-		output: async ({ quantity, user, self, rng }) => {
+		output: async ({ quantity, user, self, rng, yielder }) => {
+			const batchYieldClues = async (table: LootTable, qty: number) => {
+				const miniLoot = new Bank();
+				const batchSize = 100;
+				let qtyRemaining = qty;
+				while (qtyRemaining > 0) {
+					const toOpen = Math.min(qtyRemaining, batchSize);
+					await yielder.checkpoint();
+					miniLoot.add(table.roll(toOpen));
+					qtyRemaining -= batchSize;
+				}
+				return miniLoot;
+			};
 			const clueTier = ClueTiers.find(c => c.id === self.id)!;
-			const loot = clueTier.table.roll(quantity);
+
+			const loot = await batchYieldClues(clueTier.table, quantity);
 			let mimicNumber = 0;
 			if (clueTier.mimicChance) {
 				const table = clueTier.name === 'Master' ? MasterMimicTable : EliteMimicTable;
 				for (let i = 0; i < quantity; i++) {
 					if (rng.roll(clueTier.mimicChance)) {
-						loot.add(table.roll());
 						mimicNumber++;
 					}
 				}
+				loot.add(await batchYieldClues(table, mimicNumber));
 			}
 
 			const message = `${quantity}x ${clueTier.name} Clue Casket${quantity > 1 ? 's' : ''} ${
 				mimicNumber > 0 ? `with ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''
 			}`;
 
+			// TODO: We need a way to separate rolling the loot from the server notifications
+			// With a really big opening, it can take a while to finish, and it can still fail
+			// It need to be at a point where it can no longer fail. Maybe we just take the cost first,
+			// but then they can lose their caskets
 			const stats = await user.fetchStats();
 			const nthCasket = ((stats.openable_scores as ItemBank)[clueTier.id] ?? 0) + quantity;
 
@@ -583,18 +602,35 @@ for (const openable of allOpenables) {
 
 export const allOpenablesIDs = new Set(allOpenables.map(i => i.id));
 
-export function getOpenableLoot({
+export async function getOpenableLoot({
 	openable,
 	quantity,
 	user,
-	rng
+	rng,
+	yielder: _yielder
 }: {
 	openable: UnifiedOpenable;
 	quantity: number;
 	user: MUser;
 	rng: RNGProvider;
+	yielder?: FriendlyTask;
 }) {
-	return openable.output instanceof LootTable
-		? { bank: openable.output.roll(quantity), message: null }
-		: openable.output({ user, self: openable, quantity, rng });
+	const yielder = _yielder ?? new FriendlyTask(`getOpenableLoot(${quantity}x ${openable.name})`);
+	const loot = new Bank();
+	if (openable.output instanceof LootTable) {
+		const batchSize = 100;
+		let qtyRemaining = quantity;
+		while (qtyRemaining > 0) {
+			loot.add(openable.output.roll(Math.min(batchSize, qtyRemaining)));
+			qtyRemaining -= batchSize;
+			if (qtyRemaining) await yielder.checkpoint();
+		}
+		// If we created the yielder, finish it
+		if (!_yielder) yielder.finish();
+		return { bank: loot, message: null };
+	} else {
+		const result = await openable.output({ user, self: openable, quantity, rng, yielder });
+		if (!_yielder) yielder.finish();
+		return result;
+	}
 }

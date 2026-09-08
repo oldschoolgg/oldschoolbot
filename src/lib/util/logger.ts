@@ -71,6 +71,34 @@ type RichErrorLogArgs = {
 	context?: AnyContextObj;
 };
 
+type ClockLogContext = {
+	duration: number;
+	source: string;
+	context?: LogContext;
+	stack?: string;
+};
+
+function logClock({ source, duration, context, stack }: ClockLogContext) {
+	console.log(`${process.uptime()}s: ${source} took ${duration}ms`);
+	const ctx = {
+		source,
+		duration,
+		...(context ?? {}),
+		stack
+	};
+
+	return prisma.systemLogs
+		.create({
+			data: {
+				type: 'CLOCK',
+				msg: source,
+				stack,
+				data: ctx as any
+			}
+		})
+		.catch();
+}
+
 function toError(value: unknown): Error {
 	if (value instanceof Error) {
 		return value;
@@ -179,7 +207,8 @@ function logError(args: string | Error | RichErrorLogArgs, ctx?: LogContext): vo
 const LoggingGlobal = {
 	logError,
 	logDebug,
-	logPerf
+	logPerf,
+	logClock
 };
 
 declare global {

@@ -189,6 +189,7 @@ After becoming an ironman:
 	await prisma.user.create({
 		data: createOptions
 	});
+	await user.sync();
 
 	// Refund the leagues points they spent
 	const roboChimpUser = await Cache.getRoboChimpUser(user.id);

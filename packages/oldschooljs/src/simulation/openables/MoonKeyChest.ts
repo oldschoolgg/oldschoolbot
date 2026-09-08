@@ -54,12 +54,10 @@ export class MoonKeyChestOpenable extends Openable {
 
 			if (roll(500)) {
 				loot.add('Helmet of the moon');
-				continue;
 			}
-
-			loot.add(MoonKeyChestMainTable.roll());
 		}
 
+		loot.add(MoonKeyChestMainTable.roll(quantity));
 		return loot;
 	}
 

@@ -224,7 +224,7 @@ export const bossTasks: AssignableSlayerTask[] = [
 	},
 	{
 		monster: Monsters.Zulrah,
-		amount: [3, 15],
+		amount: [3, 35],
 		weight: 1,
 		levelRequirements: {
 			prayer: 43

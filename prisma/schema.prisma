@@ -1537,6 +1537,7 @@ enum SystemLogsType {
   ERROR
   USER_ERROR
   DEBUG
+  CLOCK
 }
 
 model SystemLogs {
