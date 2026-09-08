@@ -110,4 +110,21 @@ describe('Gear', () => {
 		expect(user.allItemsOwned.amount(EGear.TWISTED_BOW)).toBe(1);
 		expect(user.bank.amount(EGear.TWISTED_BOW)).toBe(1);
 	});
+
+	it('equips and unequips duplicate-name item variants by name', async () => {
+		const user = await createTestUser();
+		const bandosGodswordVariant = 21_060;
+		await user.max();
+		await user.setBank(new Bank().add(bandosGodswordVariant));
+
+		await user.runCommand('gear', { equip: { gear_setup: 'melee', items: 'bandos godsword' } });
+		await user.sync();
+		expect(user.gear.melee.hasEquipped(bandosGodswordVariant, true, false)).toBe(true);
+		expect(user.bank.amount(bandosGodswordVariant)).toBe(0);
+
+		await user.runCommand('gear', { unequip: { gear_setup: 'melee', item: 'bandos godsword' } });
+		await user.sync();
+		expect(user.gear.melee.hasEquipped(bandosGodswordVariant, true, false)).toBe(false);
+		expect(user.bank.amount(bandosGodswordVariant)).toBe(1);
+	});
 });

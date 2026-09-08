@@ -11411,6 +11411,24 @@
 					"Zamorak egg",
 					"Zamorak hawk"
 				]
+			},
+			"elder_cache": {
+				"all_items": [
+					"Celestyte",
+					"Clue scroll (grandmaster)",
+					"Elder plank",
+					"Elder rune",
+					"Elder scroll piece",
+					"Elderflame arrowtips",
+					"Elderflame catalyst",
+					"Firaxyte",
+					"Oneiryte",
+					"Prismare",
+					"Starfire agate",
+					"Verdantyte"
+				],
+				"items": ["Elderflame catalyst"],
+				"kc_activity": {}
 			}
 		}
 	},

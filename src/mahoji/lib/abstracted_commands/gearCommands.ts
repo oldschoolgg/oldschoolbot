@@ -15,6 +15,25 @@ import { gearEquipMultiImpl } from '@/lib/util/equipMulti.js';
 import { assert } from '@/lib/util/logError.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
+function resolveEquippedItemFromInput(gear: Gear, input: string | undefined) {
+	if (!input) return { item: null, variantCount: 0 };
+
+	const exactItem = Items.getItem(input);
+	const parsedID = Number(input);
+	if (!Number.isNaN(parsedID)) {
+		return { item: exactItem, variantCount: exactItem ? 1 : 0 };
+	}
+
+	const itemName = exactItem?.name ?? input;
+	const variants = Items.array().filter(item => item.name.toLowerCase() === itemName.toLowerCase());
+	const equippedVariant = variants.find(item => gear.hasEquipped(item.id, true, false));
+
+	return {
+		item: equippedVariant ?? exactItem,
+		variantCount: variants.length
+	};
+}
+
 async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName: string): CommandResponse {
 	if (await user.minionIsBusy()) {
 		return `${user.minionName} is currently out on a trip, so you can't change their gear!`;
@@ -227,10 +246,14 @@ export async function gearUnequipCommand(
 	const currentEquippedGear = user.gear[gearSetup];
 	const currentGear = currentEquippedGear.raw();
 
-	const item = Items.getItem(itemToUnequip);
+	const { item, variantCount } = resolveEquippedItemFromInput(currentEquippedGear, itemToUnequip);
 	if (!item) return "That's not a valid item.";
-	if (!currentEquippedGear.hasEquipped(item.id, true, false))
+	if (!currentEquippedGear.hasEquipped(item.id, true, false)) {
+		if (variantCount > 1) {
+			return `You don't have any variant of ${item.name} equipped in your ${gearSetup} setup.`;
+		}
 		return `You don't have that equipped in your ${gearSetup} setup.`;
+	}
 	if (!itemToUnequip) {
 		return "You don't have this item equipped!";
 	}
