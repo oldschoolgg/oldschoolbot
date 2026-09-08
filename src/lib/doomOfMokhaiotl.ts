@@ -374,7 +374,7 @@ export function startDoomRun(options: {
 }
 
 const DOOM_ARROWS_PER_HOUR = 500;
-const DOOM_SUPPLY_ESTIMATE_DURATION = Time.Hour * 2;
+const DOOM_SUPPLY_ESTIMATE_DURATION = Time.Hour * 1.5;
 
 export function calculateDoomArrowsNeeded(duration: number): number {
 	return Math.max(1, Math.ceil((duration / Time.Hour) * DOOM_ARROWS_PER_HOUR));
@@ -642,6 +642,7 @@ function getDoomTripCost(options: {
 	deepDelves: number;
 	totalDelves: number;
 	availableSupplies?: Bank;
+	arrowEstimateDuration?: number;
 }): DoomTripCostResult {
 	const { user, state, result, userMagicLevel, venomProtection, deepDelves, totalDelves } = options;
 	const availableSupplies = options.availableSupplies ?? user.bank;
@@ -665,7 +666,10 @@ function getDoomTripCost(options: {
 	}
 
 	if ((state.hasTbow || state.hasSBow) && state.equippedArrowId !== null) {
-		cost.add(state.equippedArrowId, calculateDoomArrowsNeeded(result.duration));
+		cost.add(
+			state.equippedArrowId,
+			calculateDoomArrowsNeeded(options.arrowEstimateDuration ?? result.duration)
+		);
 	}
 
 	if (state.hasZcb) {
@@ -932,14 +936,14 @@ export async function doomCommand(
 		const availableSupplies = user.bank.clone();
 		const venomProtection = selectDoomVenomProtection(
 			itemName => availableSupplies.amount(itemName),
-			DOOM_SUPPLY_ESTIMATE_DURATION * tripQuantity * 1.1,
+			supplyEstimateResult.duration,
 			tripQuantity
 		);
 		if (!venomProtection) {
 			return {
 				reason: `no single venom-protection type covers the estimate: ${describeDoomVenomShortfall(
 					availableSupplies,
-					DOOM_SUPPLY_ESTIMATE_DURATION * tripQuantity * 1.1,
+					DOOM_SUPPLY_ESTIMATE_DURATION,
 					tripQuantity
 				)}`
 			};
@@ -959,7 +963,8 @@ export async function doomCommand(
 				venomProtection: { itemCost: new Bank() },
 				deepDelves,
 				totalDelves,
-				availableSupplies
+				availableSupplies,
+				arrowEstimateDuration: DOOM_SUPPLY_ESTIMATE_DURATION
 			});
 			if (!availableSupplies.has(tripCost.cost)) {
 				return { reason: describeMissingSupplies(availableSupplies, tripCost.cost) };
