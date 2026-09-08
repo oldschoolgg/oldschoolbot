@@ -8,7 +8,7 @@ import {
 	Time,
 	UserError
 } from '@oldschoolgg/toolkit';
-import { Bank, EMonster, type ItemBank, Items, LootTable, resolveItems } from 'oldschooljs';
+import { Bank, EMonster, Items, LootTable, resolveItems } from 'oldschooljs';
 
 import { BitField, globalConfig } from '@/lib/constants.js';
 import { avasDevices, doomOfMokhaiotlCL } from '@/lib/data/CollectionsExport.js';
@@ -49,7 +49,7 @@ import {
 	deathChargeCastCost
 } from '@/lib/minions/functions/deathCharge.js';
 import type { Skills } from '@/lib/types/index.js';
-import type { DoomTaskOptions } from '@/lib/types/minions.js';
+import type { DoomActivityTripData, DoomTaskOptions } from '@/lib/types/minions.js';
 import { autoDecantBank } from '@/lib/util/autoDecantBank.js';
 import { formatList, formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
@@ -89,9 +89,7 @@ interface DelveEntry {
 export interface DoomRunResult {
 	diedAt: number | null;
 	loot: Bank | null;
-	deepestDelveCompleted: number;
-	deepDelvesEarned: number;
-	totalWavesCleared: number;
+	lastWave: number;
 	duration: number;
 	deathChances: number[];
 	ayakChargesGained: number;
@@ -218,15 +216,6 @@ interface DoomTripCostResult {
 	rangingUsed: number;
 }
 
-interface DoomActivityTripData {
-	dur: number;
-	dead: boolean;
-	lvl: number;
-	loot?: ItemBank;
-	diedAt?: number;
-	ayak?: number;
-}
-
 const DOOM_SKILL_REQUIREMENTS: Skills = {
 	attack: 85,
 	strength: 85,
@@ -294,11 +283,9 @@ export function startDoomRun(options: {
 	const { targetDelve } = options;
 
 	const deathChances = calculateDoomDeathChances(targetDelve, options.waveCompletions);
-	let deepestDelveCompleted = 0;
-	let deepDelvesEarned = 0;
-	let totalWavesCleared = 0;
+	let lastWave = 0;
 	let ayakChargesGained = 0;
-	const pendingLoot = new Bank();
+	const uniqueLoot = new Bank();
 
 	const baseDuration =
 		options.baseDuration ??
@@ -329,25 +316,19 @@ export function startDoomRun(options: {
 			return {
 				diedAt: d,
 				loot: null,
-				deepestDelveCompleted,
-				deepDelvesEarned,
-				totalWavesCleared,
+				lastWave: d,
 				duration: deathDuration,
 				deathChances,
 				ayakChargesGained
 			};
 		}
 
-		deepestDelveCompleted = d;
-		totalWavesCleared++;
-		if (d >= 8) deepDelvesEarned++;
+		lastWave = d;
 
-		const entry = doomDelves[d - 1];
-		const waveRoll = entry.table.roll();
-		pendingLoot.add(waveRoll);
-
-		if (entry.guaranteedTears > 0) {
-			pendingLoot.add('Demon tear', entry.guaranteedTears);
+		const waveRoll = doomDelves[d - 1].table.roll();
+		for (const itemID of DOOM_UNIQUE_ITEMS) {
+			const quantity = waveRoll.amount(itemID);
+			if (quantity > 0) uniqueLoot.add(itemID, quantity);
 		}
 
 		if (options.hasChargedEyeOfAyak) {
@@ -361,10 +342,8 @@ export function startDoomRun(options: {
 			);
 			return {
 				diedAt: null,
-				loot: pendingLoot,
-				deepestDelveCompleted: d,
-				deepDelvesEarned,
-				totalWavesCleared,
+				loot: uniqueLoot.length > 0 ? uniqueLoot : null,
+				lastWave: d,
 				duration: stoppedDuration,
 				deathChances,
 				ayakChargesGained
@@ -374,14 +353,22 @@ export function startDoomRun(options: {
 
 	return {
 		diedAt: null,
-		loot: pendingLoot,
-		deepestDelveCompleted,
-		deepDelvesEarned,
-		totalWavesCleared,
+		loot: uniqueLoot.length > 0 ? uniqueLoot : null,
+		lastWave,
 		duration,
 		deathChances,
 		ayakChargesGained
 	};
+}
+
+const DOOM_ARROWS_PER_HOUR = 500;
+
+export function calculateDoomArrowsNeeded(duration: number): number {
+	return Math.max(1, Math.ceil((duration / Time.Hour) * DOOM_ARROWS_PER_HOUR));
+}
+
+export function hasCompletedDoomTrip(trips: DoomActivityTripData[], targetWave = 1): boolean {
+	return trips.some(trip => !trip.dead && trip.lastWave >= targetWave);
 }
 
 const RUBY_BOLT_VARIANTS = ['Ruby bolts (e)', 'Ruby dragon bolts (e)'] as const;
@@ -629,7 +616,7 @@ function getDoomTripCost(options: {
 }): DoomTripCostResult {
 	const { user, state, result, userMagicLevel, venomProtection, deepDelves, totalDelves } = options;
 	const availableSupplies = options.availableSupplies ?? user.bank;
-	const delvesForCost = result.diedAt ?? result.deepestDelveCompleted;
+	const delvesForCost = result.lastWave;
 	const fullDurationMinutes = result.duration / Time.Minute;
 	const score = experienceScore(deepDelves, totalDelves);
 	const experienceFactor = Math.min(score / 1000, 1);
@@ -649,8 +636,7 @@ function getDoomTripCost(options: {
 	}
 
 	if ((state.hasTbow || state.hasSBow) && state.equippedArrowId !== null) {
-		const arrowsPerDelve = state.hasTbow ? 15 : 20;
-		cost.add(state.equippedArrowId, Math.min(600, Math.ceil(delvesForCost * arrowsPerDelve)));
+		cost.add(state.equippedArrowId, calculateDoomArrowsNeeded(result.duration));
 	}
 
 	if (state.hasZcb) {
@@ -881,9 +867,7 @@ export async function doomCommand(
 	const fullTripCostResult: DoomRunResult = {
 		diedAt: null,
 		loot: null,
-		deepestDelveCompleted: targetDelve,
-		deepDelvesEarned: Math.max(0, targetDelve - 7),
-		totalWavesCleared: targetDelve,
+		lastWave: targetDelve,
 		duration: fullTripDuration,
 		deathChances: [],
 		ayakChargesGained: 0
@@ -896,18 +880,11 @@ export async function doomCommand(
 		const trip = startDoomRun(tripOptions);
 		const tripDuration = Math.floor(trip.duration);
 		totalDuration += tripDuration;
-		const uniqueLoot = new Bank();
-		if (trip.loot) {
-			for (const itemID of DOOM_UNIQUE_ITEMS) {
-				const qty = trip.loot.amount(itemID);
-				if (qty > 0) uniqueLoot.add(itemID, qty);
-			}
-		}
 		trips.push({
 			dur: tripDuration,
 			dead: trip.diedAt !== null,
-			lvl: trip.deepestDelveCompleted,
-			loot: uniqueLoot.length > 0 ? uniqueLoot.toJSON() : undefined,
+			lastWave: trip.lastWave,
+			loot: trip.loot?.toJSON(),
 			diedAt: trip.diedAt ?? undefined,
 			ayak: trip.ayakChargesGained || undefined
 		});
@@ -992,9 +969,7 @@ export async function doomCommand(
 			result: {
 				diedAt: trip.diedAt ?? null,
 				loot: null,
-				deepestDelveCompleted: trip.lvl,
-				deepDelvesEarned: Math.max(0, trip.lvl - 7),
-				totalWavesCleared: trip.lvl,
+				lastWave: trip.lastWave,
 				duration: trip.dur,
 				deathChances: [],
 				ayakChargesGained: trip.ayak ?? 0
@@ -1029,11 +1004,6 @@ export async function doomCommand(
 	const refundedSupplies = new Bank();
 	const refundedAmmo = new Bank();
 
-	const deepestDelveCompletedForTask = Math.max(...trips.map(trip => trip.lvl));
-	const totalWavesClearedForTask = trips.reduce((sum, trip) => sum + trip.lvl, 0);
-	const deepDelvesEarnedForTask = trips.reduce((sum, trip) => sum + Math.max(0, trip.lvl - 7), 0);
-	const ayakChargesGainedForTask = trips.reduce((sum, trip) => sum + (trip.ayak ?? 0), 0);
-	const diedAtForTask = trips.length === 1 ? (trips[0].diedAt ?? null) : null;
 	const deathChances = calculateDoomDeathChances(targetDelve, waveCompletions);
 	const costRemovalResult = await removeDoomTripCost(user, estimatedCost, {
 		itemCost: estimatedVenomCost,
@@ -1085,21 +1055,10 @@ export async function doomCommand(
 		fakeDuration,
 		type: 'DoomOfMokhaiotl',
 		targetDelve,
-		quantity: trips.length,
-		xpTargetDelve: deepestDelveCompletedForTask,
-		diedAt: diedAtForTask,
-		loot: {},
 		trips,
 		refund: refundedSupplies.toJSON(),
 		refundAmmo: refundedAmmo.toJSON(),
-		deepDelvesEarned: deepDelvesEarnedForTask,
-		totalWavesCleared: totalWavesClearedForTask,
-		deepestDelveCompleted: deepestDelveCompletedForTask,
 		stopOnUnique: effectiveStopOnUnique,
-		ayakChargesGained: ayakChargesGainedForTask,
-		brewsUsed: suppliesUsed.amount('Saradomin brew(4)'),
-		restoresUsed: suppliesUsed.amount('Super restore(4)'),
-		rangingUsed: suppliesUsed.amount('Ranging potion(4)'),
 		disableZcbBoost: state.zcbBoostDisabled || undefined
 	});
 

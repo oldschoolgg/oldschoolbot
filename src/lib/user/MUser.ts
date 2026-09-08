@@ -448,7 +448,9 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 		const realCost = bankToRemove.clone();
 		const rangeGear = this.gear[gearSlot];
 		const avasDevice = options?.avasDevice ?? avasDevices.find(avas => rangeGear.hasEquipped(avas.item.id));
-		console.log(`gearSlot: ${gearSlot} Avas: ${avasDevice?.item.name}\n\tReal Cost: ${realCost}n\n\tGear: ${rangeGear}`);
+		console.log(
+			`gearSlot: ${gearSlot} Avas: ${avasDevice?.item.name}\n\tReal Cost: ${realCost}n\n\tGear: ${rangeGear}`
+		);
 		const newGear = rangeGear.raw();
 		let newBlowpipe: IBlowpipeData | undefined;
 
@@ -547,7 +549,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 				throw new UserError(`You don't own: ${bankRemove.clone().remove(this.bankWithGP)}.`);
 			}
 		}
-		const removeResult =  {
+		const removeResult = {
 			bankToRemove: bankRemove,
 			ammoToRemove,
 			gearSlot,

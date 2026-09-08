@@ -544,34 +544,23 @@ export interface ColoTaskOptions extends ActivityTaskOptions {
 	bloodFuryCharges: number;
 }
 
+export interface DoomActivityTripData {
+	dur: number;
+	dead: boolean;
+	lastWave: number;
+	loot?: ItemBank;
+	diedAt?: number;
+	ayak?: number;
+}
+
 export interface DoomTaskOptions extends ActivityTaskOptions {
 	type: 'DoomOfMokhaiotl';
 	targetDelve: number;
-	quantity?: number;
-	xpTargetDelve?: number;
-	diedAt: number | null;
-	loot: ItemBank | null;
-	trips?: {
-		dur: number;
-		dead: boolean;
-		lvl: number;
-		loot?: ItemBank;
-		diedAt?: number;
-		ayak?: number;
-	}[];
+	trips: DoomActivityTripData[];
 	refund?: ItemBank;
 	refundAmmo?: ItemBank;
 	fakeDuration: number;
 	stopOnUnique?: boolean;
-	deepDelvesEarned: number;
-	totalWavesCleared: number;
-	deepestDelveCompleted: number;
-	ayakChargesGained: number;
-	brewsUsed: number;
-	restoresUsed: number;
-	rangingUsed: number;
-	venomProtectionPotionName?: 'Anti-venom' | 'Anti-venom+' | 'Extended anti-venom+';
-	venomProtectionDosesUsed?: number;
 	disableZcbBoost?: boolean;
 }
 

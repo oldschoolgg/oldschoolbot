@@ -2,6 +2,7 @@ import { Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
+import { calculateDoomArrowsNeeded, startDoomRun } from '@/lib/doomOfMokhaiotl.js';
 import {
 	calculateDeathChance,
 	calculateDoomEarlyDeathSupplyRefund,
@@ -275,6 +276,50 @@ describe('Doom of Mokhaiotl', () => {
 		expect(calculateDoomZcbBoltsNeeded(10)).toBe(4);
 		expect(calculateDoomZcbBoltsNeeded(30)).toBe(14);
 		expect(calculateDoomZcbBoltsNeeded(30, 80)).toBe(3);
+	});
+
+	test('uses roughly equal dragon arrows per hour for equivalent target 17 and 30 runs', () => {
+		const delves = 3500;
+		const deepDelves = 1350;
+		const waveCompletions = Object.fromEntries(
+			Array.from({ length: 30 }, (_, index) => [index + 1, index < 7 ? delves : deepDelves])
+		);
+		const run = (targetDelve: number) => {
+			let wave = 0;
+			return startDoomRun({
+				targetDelve,
+				hasTbow: true,
+				hasSBow: false,
+				hasLightbearer: false,
+				hasZcb: false,
+				meleePunishWeapon: 'noxious_halberd',
+				hasMasori: false,
+				hasEliteVoid: false,
+				hasZaryteVambraces: false,
+				hasRiteOfVileTransference: false,
+				hasChargedEyeOfAyak: false,
+				arrowMod: -0.08,
+				waveCompletions,
+				durationReductionPercent: 0,
+				stopOnUnique: false,
+				rng: {
+					percentChance: () => ++wave === 15,
+					randFloat: () => 0.525,
+					randInt: (min: number) => min,
+					roll: () => false
+				} as unknown as RNGProvider
+			});
+		};
+		const target17 = run(17);
+		const target30 = run(30);
+		const target17ArrowsPerHour = calculateDoomArrowsNeeded(target17.duration) * (Time.Hour / target17.duration);
+		const target30ArrowsPerHour = calculateDoomArrowsNeeded(target30.duration) * (Time.Hour / target30.duration);
+
+		expect(target17.lastWave).toBe(15);
+		expect(target30.lastWave).toBe(15);
+		expect(target17ArrowsPerHour).toBeCloseTo(target30ArrowsPerHour, 5);
+		expect(target17ArrowsPerHour).toBeGreaterThanOrEqual(500);
+		expect(target17ArrowsPerHour).toBeLessThan(510);
 	});
 
 	test('selects Doom venom protection based on trip duration', () => {
