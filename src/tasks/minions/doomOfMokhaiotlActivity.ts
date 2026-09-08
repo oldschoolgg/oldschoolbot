@@ -1,4 +1,5 @@
-import { Bank, EMonster, type ItemBank, Items } from 'oldschooljs';
+import { Emoji } from '@oldschoolgg/toolkit';
+import { Bank, EMonster, type ItemBank } from 'oldschooljs';
 
 import { calculateDoomXP, DOOM_UNIQUE_ITEMS, normaliseDoomWaveCompletions } from '@/lib/doomOfMokhaiotl.js';
 import { trackLoot } from '@/lib/lootTrack.js';
@@ -116,29 +117,15 @@ export const doomOfMokhaiotlTask: MinionTask = {
 			collectionLog: true
 		});
 
-		const delvesStoppedOnUnique = delves.filter(
-			delve =>
-				!delve.dead &&
-				delve.lastWave < targetDelve &&
-				Boolean(delve.loot && DOOM_UNIQUE_ITEMS.some(id => new Bank(delve.loot).has(id)))
-		).length;
 		const anyDeath = delves.some(delve => delve.dead);
 
-		const uniqueNames = DOOM_UNIQUE_ITEMS.filter((id: number) => lootBank.has(id))
-			.map((id: number) => Items.itemNameFromId(id))
-			.join(', ');
+		const uniqueLoot = lootBank.filter(item => DOOM_UNIQUE_ITEMS.includes(item.id));
 
-		const completionLine = `${
-			anyDeath
-				? `Your minion attempted **${delves.length}x** Doom of Mokhaiotl delves up to level **${targetDelve}**.`
-				: `Your minion completed **${delves.length}x** Doom of Mokhaiotl delves up to level **${aggregatedDeepest}**.`
-		}${
-			delvesStoppedOnUnique > 0
-				? `\n**Delves stopped on a unique:** ${delvesStoppedOnUnique.toLocaleString()}`
-				: ''
-		}${uniqueNames.length > 0 ? `\n**Uniques received:** ${uniqueNames}` : ''}`;
-
-		announceLoot({
+		let completionLine = `Your minion ${anyDeath ? 'attempted' : 'completed'} **${delves.length}x** Doom of Mokhaiotl delves up to level **${targetDelve}**.\n`;
+		if (uniqueLoot.length > 0) {
+			completionLine += `\n${Emoji.Special}**Uniques received:** ${uniqueLoot}\n`;
+		}
+		void announceLoot({
 			user,
 			monsterID: EMonster.DOOM_OF_MOKHAIOTL,
 			monsterName: 'Doom of Mokhaiotl',
@@ -166,11 +153,11 @@ export const doomOfMokhaiotlTask: MinionTask = {
 		const delveSummary = `\n${delves
 			.map(
 				(delve, index) =>
-					`Delve ${index + 1}: ${delve.dead ? `died at level **${delve.diedAt ?? delve.lastWave}**` : `reached level **${delve.lastWave}**`}${
+					`${
 						delve.loot && DOOM_UNIQUE_ITEMS.some(id => new Bank(delve.loot).has(id))
-							? ' and received a unique'
+							? `${Emoji.Purple} `
 							: ''
-					}`
+					}Delve ${index + 1}: ${delve.dead ? `died at level **${delve.diedAt ?? delve.lastWave}**` : `reached level **${delve.lastWave}**`}`
 			)
 			.join('\n')}`;
 		const refundMessage = refundedItems.length > 0 ? `\n**Refunded supplies:** ${refundedItems}` : '';
@@ -190,7 +177,7 @@ export const doomOfMokhaiotlTask: MinionTask = {
 
 		const image = await makeBankImage({
 			bank: itemsAdded,
-			title: `Doom of Mokhaiotl - ${delves.length}x Delve ${targetDelve}`,
+			title: `Doom of Mokhaiotl - ${delves.length}x Delves`,
 			user,
 			previousCL
 		});

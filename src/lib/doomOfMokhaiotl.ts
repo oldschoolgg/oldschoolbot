@@ -1,6 +1,7 @@
 import type { EquipmentSlot } from '@oldschoolgg/gear';
 import {
 	calcWhatPercent,
+	Emoji,
 	formatDuration,
 	isWeekend,
 	reduceNumByPercent,
@@ -16,9 +17,9 @@ import {
 	applyDoomSkillBoost,
 	CRYSTAL_HALBERD_SPEED_BOOST,
 	calculateDoomDeathChances,
+	calculateDoomDelveDuration,
 	calculateDoomKcReduction,
 	calculateDoomRunDeathChance,
-	calculateDoomDelveDuration,
 	calculateDoomWipeChanceBeforeTarget,
 	calculateDoomZcbBoltsNeeded,
 	DOOM_VENOM_PROTECTION_OPTIONS,
@@ -58,9 +59,9 @@ export const DOOM_UNIQUE_ITEMS = resolveItems(['Mokhaiotl cloth', 'Eye of ayak (
 
 export {
 	calculateDeathChance,
+	calculateDoomDelveDuration,
 	calculateDoomEarlyDeathSupplyRefund,
 	calculateDoomRunDeathChance,
-	calculateDoomDelveDuration,
 	calculateDoomWipeChanceBeforeTarget,
 	calculateDoomXP,
 	calculateDoomZcbBoltsNeeded,
@@ -909,10 +910,7 @@ export async function doomCommand(
 	}
 	function plannedTaskDuration(delveQuantity: number): number {
 		const boostedDelves = Math.min(delveQuantity, mokhaiotlWaystonesOwned);
-		return (
-			boostedDelves * fullDelveDuration +
-			(delveQuantity - boostedDelves) * fullDelveDurationWithoutWaystone
-		);
+		return boostedDelves * fullDelveDuration + (delveQuantity - boostedDelves) * fullDelveDurationWithoutWaystone;
 	}
 	let maxDelveQuantity = 0;
 	let maxPlannedDuration = 0;
@@ -931,7 +929,9 @@ export async function doomCommand(
 	const fakeDuration = quantity ? plannedTaskDuration(quantity) : maxTripLength;
 	while (delves.length < delvesToAttempt) {
 		delveOptions.durationReductionPercent =
-			delves.length < mokhaiotlWaystonesOwned ? durationReductionPercent : durationReductionPercentWithoutWaystone;
+			delves.length < mokhaiotlWaystonesOwned
+				? durationReductionPercent
+				: durationReductionPercentWithoutWaystone;
 		const delve = startDoomDelve(delveOptions);
 		const delveDuration = Math.floor(delve.duration);
 		totalDuration += delveDuration;
@@ -1122,9 +1122,7 @@ export async function doomCommand(
 						Math.ceil((actualArrows / estimatedArrows) * physicallyRemovedArrows)
 					)
 				: 0;
-		suppliesUsed
-			.remove(state.equippedArrowId, actualArrows)
-			.add(state.equippedArrowId, physicallyUsedArrows);
+		suppliesUsed.remove(state.equippedArrowId, actualArrows).add(state.equippedArrowId, physicallyUsedArrows);
 	}
 	// Calculate refund, or notify Cyr if there's a cuck up
 	try {
@@ -1184,16 +1182,19 @@ export async function doomCommand(
 		disableZcbBoost: state.zcbBoostDisabled || undefined
 	});
 
+	const quantityString = quantity
+		? `${delves.length}x up to delve **${targetDelve}**!`
+		: `Attempting as many delves as possible up to level ${targetDelve}.`;
+
 	return [
-		quantity
-			? `${user.usernameOrMention}'s minion is now fighting the **Doom of Mokhaiotl** ${delves.length}x (targeting delve **${targetDelve}**)!`
-			: `${user.usernameOrMention}'s minion is now fighting the **Doom of Mokhaiotl**! Attempting as many delves as possible up to level ${targetDelve}.`,
+		`${user.usernameOrMention}'s minion is now fighting the **Doom of Mokhaiotl** ${quantityString}`,
+
 		`**Duration:** ${formatDuration(fakeDuration)} | **Stop on unique:** ${stopOnUnique ? 'Yes' : 'No'}`,
 		buildDoomDeathChanceLine(deathChances),
-		`**Cost:** ${removedCost}`,
+		`**Cost:** ${removedCost}\n`,
 		`**Boosts:** ${buildDoomBoostLines(state, kcReduction, skillBoostMsg).join(', ')}`,
 		targetDelve > 15
-			? 'Doom levels beyond 15 are not worth the time, but you can try if you would like :). You will only use the supplies and time for levels actually completed, so you are not wasting anything.'
+			? `\n*Doom levels beyond 15 are considered, "__not worth the time__," but you can try if you would like ${Emoji.Joy}*. You will only use the supplies and time for levels actually completed, so you are not wasting anything.`
 			: ''
 	].join('\n');
 }

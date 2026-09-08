@@ -5,9 +5,9 @@ import { describe, expect, test } from 'vitest';
 import { calculateDoomArrowsNeeded, startDoomDelve } from '@/lib/doomOfMokhaiotl.js';
 import {
 	calculateDeathChance,
+	calculateDoomDelveDuration,
 	calculateDoomEarlyDeathSupplyRefund,
 	calculateDoomRunDeathChance,
-	calculateDoomDelveDuration,
 	calculateDoomWipeChanceBeforeTarget,
 	calculateDoomXP,
 	calculateDoomZcbBoltsNeeded,
@@ -94,9 +94,11 @@ describe('Doom of Mokhaiotl', () => {
 		const maxGearArgs = [true, false, true, false, 'noxious_halberd', true, false, true, true, -0.08] as const;
 		const maxKcAndStatsDurationMultiplier = 0.9 * 0.85;
 		const normalDuration =
-			calculateDoomDelveDuration(8, ...maxGearArgs, fixedDurationRollRng(0.525)) * maxKcAndStatsDurationMultiplier;
+			calculateDoomDelveDuration(8, ...maxGearArgs, fixedDurationRollRng(0.525)) *
+			maxKcAndStatsDurationMultiplier;
 		const speedDuration =
-			calculateDoomDelveDuration(8, ...maxGearArgs, fixedDurationRollRng(0.025)) * maxKcAndStatsDurationMultiplier;
+			calculateDoomDelveDuration(8, ...maxGearArgs, fixedDurationRollRng(0.025)) *
+			maxKcAndStatsDurationMultiplier;
 		const extraDeepWaveDuration =
 			(calculateDoomDelveDuration(9, ...maxGearArgs, fixedDurationRollRng(0.525)) -
 				calculateDoomDelveDuration(8, ...maxGearArgs, fixedDurationRollRng(0.525))) *
