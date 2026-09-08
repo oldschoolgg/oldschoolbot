@@ -973,7 +973,7 @@ export async function doomCommand(
 		const cost = new Bank();
 		const venomCost = new Bank();
 		const effectiveVenomCost = new Bank();
-		const taskSupplyEstimateDuration = quantity ? plannedTaskDuration(delveQuantity) : maxTripLength;
+		const taskSupplyEstimateDuration = quantity ? plannedTaskDuration(delveQuantity) : maxTripLength * 1.25;
 
 		for (let index = 0; index < delveQuantity; index++) {
 			const estimateDuration = plannedDelveDuration(index);
