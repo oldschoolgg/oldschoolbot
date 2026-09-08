@@ -385,14 +385,8 @@ export function hasCompletedDoomTrip(trips: DoomActivityTripData[], targetWave =
 }
 
 function describeMissingSupplies(availableSupplies: Bank, cost: Bank): string {
-	return cost
-		.items()
-		.flatMap(([item, quantity]) => {
-			const owned = availableSupplies.amount(item.id);
-			if (owned >= quantity) return [];
-			return [`${Items.itemNameFromId(item.id)}: need ${quantity}, only have ${owned}`];
-		})
-		.join('; ');
+	const missing = cost.clone().remove(availableSupplies);
+	return `${missing}`;
 }
 
 function describeDoomVenomShortfall(availableSupplies: Bank, duration: number, wastedDoses: number): string {
@@ -999,7 +993,7 @@ export async function doomCommand(
 	}
 	let estimate = buildEstimatedCost(trips.length);
 	if ('reason' in estimate && quantity)
-		return "You don't have enough supplies to complete this many Doom of Mokhaiotl trips.";
+		return `You don't have enough supplies to complete this many Doom of Mokhaiotl trips. Missing: ${estimate.reason}`;
 	while ('reason' in estimate && trips.length > 1) {
 		const removedTrip = trips.pop()!;
 		totalDuration -= removedTrip.dur;
@@ -1007,7 +1001,8 @@ export async function doomCommand(
 		console.info(`Trip popped because: ${estimate.reason}`);
 		estimate = buildEstimatedCost(trips.length);
 	}
-	if ('reason' in estimate) return "You don't have enough supplies to complete a Doom of Mokhaiotl trip.";
+	if ('reason' in estimate)
+		return `You don't have enough supplies to complete a Doom of Mokhaiotl trip. Missing: ${estimate.reason}`;
 	if (poppedTrips) {
 		logPoppedTripList('ORIGINAL LIST', '\x1b[33m', DELETE_COPY_originalTrips);
 		logPoppedTripList('NEW LIST', '\x1b[31m', trips);
