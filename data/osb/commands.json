@@ -1,6 +1,6 @@
 {
-	"hash": "4adfea88669c8929e25c50c45d38ca91",
-	"date": "2026-06-09T08:23:51.005Z",
+	"hash": "eadfe32c565fd3860f1ef814130ef381",
+	"date": "2026-07-28T10:48:39.108Z",
 	"data": [
 		{
 			"name": "activities",
@@ -346,6 +346,7 @@
 				"lms",
 				"mage_training_arena",
 				"mahogany_homes",
+				"mastering_mixology",
 				"nmz",
 				"pest_control",
 				"pyramid_plunder",

@@ -36,6 +36,9 @@ type PrismaIntUpdateInput = number | { increment: number } | { decrement: number
 type PrismaIntKeys =
 	| 'bankBackground'
 	| 'QP'
+	| 'mixology_mox_points'
+	| 'mixology_aga_points'
+	| 'mixology_lye_points'
 	| 'lms_points'
 	| 'volcanic_mine_points'
 	| 'nmz_points'
