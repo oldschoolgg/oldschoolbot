@@ -44,7 +44,6 @@ import {
 } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
-import { BitField } from '@/lib/constants.js';
 import { cluesRaresCL } from '@/lib/data/CollectionsExport.js';
 import { shadeChestOpenables } from '@/lib/shadesKeys.js';
 import { nestTable } from '@/lib/simulation/birdsNest.js';
@@ -128,13 +127,8 @@ const DOSSIER_RITE_NAME = 'Rite of vile transference';
 const DOSSIER_SCROLL_NAME = 'Chasm teleport scroll';
 const DOSSIER_RITE_GUARANTEE_KC = 100;
 
-function hasDossierRiteAlready(user: MUser, previousLoot?: Bank): boolean {
-	return (
-		user.bitfield.includes(BitField.HasRiteOfVileTransference) ||
-		user.cl.has(DOSSIER_RITE_NAME) ||
-		user.allItemsOwned.has(DOSSIER_RITE_NAME) ||
-		Boolean(previousLoot?.has(DOSSIER_RITE_NAME))
-	);
+function hasDossierRiteAvailable(user: MUser, previousLoot?: Bank): boolean {
+	return user.owns(DOSSIER_RITE_NAME) || Boolean(previousLoot?.has(DOSSIER_RITE_NAME));
 }
 
 function replaceDossierRiteWithScrolls({
@@ -476,11 +470,11 @@ const osjsOpenables: UnifiedOpenable[] = [
 		openedItem: Items.getOrThrow(EItem.DOSSIER),
 		aliases: ['dossier'],
 		canOpenUntil: ({ user, item }) => {
-			if (item.name !== DOSSIER_RITE_NAME || !hasDossierRiteAlready(user)) {
+			if (item.name !== DOSSIER_RITE_NAME || !hasDossierRiteAvailable(user)) {
 				return true;
 			}
 
-			return `You can't open until ${DOSSIER_RITE_NAME}, because you have already received or used it.`;
+			return `You can't open until ${DOSSIER_RITE_NAME}, because you already have one in your bank.`;
 		},
 		output: async ({ quantity, user, rng, openedCountOffset = 0, previousLoot }) => {
 			const loot = new Bank();
@@ -490,9 +484,9 @@ const osjsOpenables: UnifiedOpenable[] = [
 
 			const yamaKC = openedCountOffset === 0 ? await user.getKC(Monsters.Yama.id) : 0;
 
-			const hadRiteAlready = hasDossierRiteAlready(user, previousLoot);
+			const hasRiteAvailable = hasDossierRiteAvailable(user, previousLoot);
 			const shouldGuaranteeRite =
-				yamaKC >= DOSSIER_RITE_GUARANTEE_KC && !hadRiteAlready && openedCountOffset === 0;
+				yamaKC >= DOSSIER_RITE_GUARANTEE_KC && !hasRiteAvailable && openedCountOffset === 0;
 
 			let rollsFromTable = quantity;
 			if (shouldGuaranteeRite) {
@@ -506,7 +500,7 @@ const osjsOpenables: UnifiedOpenable[] = [
 
 			const ritesRolled = loot.amount(DOSSIER_RITE_NAME);
 			if (ritesRolled > 0) {
-				const maxRitesAllowed = hadRiteAlready ? 0 : 1;
+				const maxRitesAllowed = hasRiteAvailable ? 0 : 1;
 				const ritesToReplace = Math.max(0, ritesRolled - maxRitesAllowed);
 				replaceDossierRiteWithScrolls({ loot, rng, ritesToReplace });
 			}
