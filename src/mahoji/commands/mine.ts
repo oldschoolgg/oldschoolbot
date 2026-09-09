@@ -1,4 +1,4 @@
-import { increaseNumByPercent, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
+import { increaseNumByPercent, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Items, itemID } from 'oldschooljs';
 
 import { QuestID } from '@/lib/minions/data/quests.js';
@@ -32,7 +32,34 @@ export function determineMiningTrip({
 	randomVariationEnabled?: boolean;
 	rng: RNGProvider;
 }) {
-	const boosts = [];
+	const boosts: string[] = [];
+	if (ore.fixedRatePerHour && ore.outputMultiplier && ore.outputId) {
+		const [minRate, maxRate] = ore.fixedRatePerHour;
+		const infernalShalePerHour = rng.randInt(minRate, maxRate);
+		const outputPerHour = infernalShalePerHour * ore.outputMultiplier;
+		const maxQuantity = Math.max(1, Math.floor((maxTripLength / Time.Hour) * outputPerHour));
+		const outputQuantity = quantityInput ? Math.min(quantityInput, maxQuantity) : maxQuantity;
+		const duration = Math.ceil((outputQuantity / outputPerHour) * Time.Hour);
+		const fakeDurationMin =
+			quantityInput && randomVariationEnabled
+				? rng.randomVariation(reduceNumByPercent(duration, 25), 20)
+				: duration;
+		const fakeDurationMax =
+			quantityInput && randomVariationEnabled
+				? rng.randomVariation(increaseNumByPercent(duration, 25), 20)
+				: duration;
+
+		return {
+			duration,
+			quantity: outputQuantity,
+			minedQuantity: Math.ceil(outputQuantity / ore.outputMultiplier),
+			boosts,
+			fakeDurationMin: Math.floor(fakeDurationMin),
+			fakeDurationMax: Math.floor(fakeDurationMax),
+			isPowermining: false
+		};
+	}
+
 	// Invisible mining level, dosen't help equip pickaxe etc
 	let miningLevel = gearBank.skillsAsLevels.mining;
 	if (ore.minerals && miningLevel >= 60) {
@@ -198,20 +225,23 @@ export const mineCommand = defineCommand({
 			return motherlodeMineCommand({ user, channelId, quantity, rng });
 		}
 		const ore = Mining.Ores.find(
-			ore =>
-				stringMatches(ore.id, options.name) ||
-				stringMatches(ore.name, options.name) ||
-				ore.aliases?.some(a => stringMatches(a, options.name))
+			oreToMine =>
+				stringMatches(oreToMine.id, options.name) ||
+				stringMatches(oreToMine.name, options.name) ||
+				oreToMine.aliases?.some(a => stringMatches(a, options.name))
 		);
 
 		if (!ore) {
-			return `Thats not a valid ore to mine. Valid ores are ${Mining.Ores.map(ore => ore.name).join(', ')}, or ${
-				Mining.MotherlodeMine.name
-			}.`;
+			return `Thats not a valid ore to mine. Valid ores are ${Mining.Ores.map(oreToMine => oreToMine.name).join(
+				', '
+			)}, or ${Mining.MotherlodeMine.name}.`;
 		}
 
 		if (user.skillsAsLevels.mining < ore.level) {
 			return `${user.minionName} needs ${ore.level} Mining to mine ${ore.name}.`;
+		}
+		if (ore.prayerLevel && user.skillsAsLevels.prayer < ore.prayerLevel) {
+			return `${user.minionName} needs ${ore.prayerLevel} Prayer to mine ${ore.name}.`;
 		}
 
 		// Check for daeyalt shard requirements.
@@ -247,6 +277,7 @@ export const mineCommand = defineCommand({
 			userID: user.id,
 			channelId,
 			quantity: res.quantity,
+			minedQuantity: res.minedQuantity,
 			iQty: options.quantity ? options.quantity : undefined,
 			powermine: res.isPowermining,
 			duration: res.duration,
@@ -255,8 +286,9 @@ export const mineCommand = defineCommand({
 			type: 'Mining'
 		});
 
+		const outputName = ore.outputId ? Items.itemNameFromId(ore.outputId) : ore.name;
 		let response = `${user.minionName} is now mining ${ore.name} until your minion ${
-			quantity ? `mined ${quantity}x or gets tired` : 'is satisfied'
+			quantity ? `mined ${quantity}x ${outputName} or gets tired` : 'is satisfied'
 		}, it'll take ${
 			quantity
 				? `between ${formatTripDuration(user, res.fakeDurationMin)} **and** ${formatTripDuration(user, res.fakeDurationMax)}`

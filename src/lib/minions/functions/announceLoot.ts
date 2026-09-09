@@ -6,12 +6,19 @@ import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js'
 export default async function announceLoot({
 	user,
 	monsterID,
+	monsterName: _monsterName,
+	progress,
 	notifyDrops: _notifyDrops,
 	loot,
 	team
 }: {
 	user: MUser;
 	monsterID: number;
+	monsterName?: string;
+	progress?: {
+		name: string;
+		value: number;
+	};
 	notifyDrops?: number[] | ArrayItemsResolved;
 	loot: Bank;
 	team?: { leader: MUser; lootRecipient: MUser; size: number };
@@ -22,14 +29,16 @@ export default async function announceLoot({
 	if (itemsToAnnounce.length > 0) {
 		const recipient = team && team.size > 1 ? team.lootRecipient : user;
 		let notif = '';
-		const monsterName = effectiveMonsters.find(m => m.id === monsterID)?.name;
-		const kc = await recipient.getKC(monsterID);
+		const monsterName = _monsterName ?? effectiveMonsters.find(m => m.id === monsterID)?.name;
+		const progressText = progress
+			? `${progress.name} is ${progress.value.toLocaleString()}`
+			: `${monsterName ?? 'Unknown monster'} KC is ${(await recipient.getKC(monsterID)).toLocaleString()}`;
 
 		if (team && team.size > 1) {
-			notif += `In ${team.leader.badgedUsername}'s party of ${team.size} minions killing ${monsterName}, `;
+			notif += `In ${team.leader.badgedUsername}'s party of ${team.size} minions killing ${monsterName ?? 'an unknown monster'}, `;
 		}
 
-		notif += `**${recipient.badgedUsername}'s** minion, ${recipient.minionName}, just received **${itemsToAnnounce}**, their ${monsterName} KC is ${kc.toLocaleString()}!`;
+		notif += `**${recipient.badgedUsername}'s** minion, ${recipient.minionName}, just received **${itemsToAnnounce}**, their ${progressText}!`;
 
 		globalClient.emit(Events.ServerNotification, notif);
 	}

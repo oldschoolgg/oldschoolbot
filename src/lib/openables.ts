@@ -5,10 +5,12 @@ import {
 	BrimstoneChest,
 	BronzeHAMChest,
 	CastleWarsSupplyCrate,
+	Dossier,
 	EItem,
 	EliteMimicTable,
 	ElvenCrystalChest,
 	EMonster,
+	ForgottenLockbox,
 	GiantEggSacFull,
 	GiantsFoundryOrePack,
 	GrubbyChest,
@@ -23,6 +25,7 @@ import {
 	LarransChest,
 	LootTable,
 	MasterMimicTable,
+	Monsters,
 	MoonKeyChest,
 	MuddyChest,
 	MysteryBox,
@@ -41,6 +44,7 @@ import {
 } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { BitField } from '@/lib/constants.js';
 import { cluesRaresCL } from '@/lib/data/CollectionsExport.js';
 import { shadeChestOpenables } from '@/lib/shadesKeys.js';
 import { nestTable } from '@/lib/simulation/birdsNest.js';
@@ -95,6 +99,8 @@ interface OpenArgs {
 	user: MUser;
 	self: UnifiedOpenable;
 	rng: RNGProvider;
+	openedCountOffset?: number;
+	previousLoot?: Bank;
 	yielder: FriendlyTask;
 }
 
@@ -111,11 +117,44 @@ export interface UnifiedOpenable {
 	emoji?: string;
 	aliases: string[];
 	allItems: number[];
+	canOpenUntil?: (args: { user: MUser; item: Item }) => true | string;
 }
 
 const clueItemsToNotifyOf = cluesRaresCL
 	.concat(ClueTiers.filter(i => Boolean(i.milestoneReward)).map(i => i.milestoneReward!.itemReward))
 	.concat([itemID('Bloodhound'), itemID('Ranger boots')]);
+
+const DOSSIER_RITE_NAME = 'Rite of vile transference';
+const DOSSIER_SCROLL_NAME = 'Chasm teleport scroll';
+const DOSSIER_RITE_GUARANTEE_KC = 100;
+
+function hasDossierRiteAlready(user: MUser, previousLoot?: Bank): boolean {
+	return (
+		user.bitfield.includes(BitField.HasRiteOfVileTransference) ||
+		user.cl.has(DOSSIER_RITE_NAME) ||
+		user.allItemsOwned.has(DOSSIER_RITE_NAME) ||
+		Boolean(previousLoot?.has(DOSSIER_RITE_NAME))
+	);
+}
+
+function replaceDossierRiteWithScrolls({
+	loot,
+	rng,
+	ritesToReplace
+}: {
+	loot: Bank;
+	rng: RNGProvider;
+	ritesToReplace: number;
+}) {
+	if (ritesToReplace <= 0) {
+		return;
+	}
+
+	loot.remove(DOSSIER_RITE_NAME, ritesToReplace);
+	for (let i = 0; i < ritesToReplace; i++) {
+		loot.add(DOSSIER_SCROLL_NAME, rng.randInt(15, 18));
+	}
+}
 
 const clueOpenables: UnifiedOpenable[] = [];
 for (const clueTier of ClueTiers) {
@@ -138,21 +177,21 @@ for (const clueTier of ClueTiers) {
 				}
 				return miniLoot;
 			};
-			const clueTier = ClueTiers.find(c => c.id === self.id)!;
+			const currentClueTier = ClueTiers.find(c => c.id === self.id)!;
 
-			const loot = await batchYieldClues(clueTier.table, quantity);
+			const loot = await batchYieldClues(currentClueTier.table, quantity);
 			let mimicNumber = 0;
-			if (clueTier.mimicChance) {
-				const table = clueTier.name === 'Master' ? MasterMimicTable : EliteMimicTable;
+			if (currentClueTier.mimicChance) {
+				const table = currentClueTier.name === 'Master' ? MasterMimicTable : EliteMimicTable;
 				for (let i = 0; i < quantity; i++) {
-					if (rng.roll(clueTier.mimicChance)) {
+					if (rng.roll(currentClueTier.mimicChance)) {
 						mimicNumber++;
 					}
 				}
 				loot.add(await batchYieldClues(table, mimicNumber));
 			}
 
-			const message = `${quantity}x ${clueTier.name} Clue Casket${quantity > 1 ? 's' : ''} ${
+			const message = `${quantity}x ${currentClueTier.name} Clue Casket${quantity > 1 ? 's' : ''} ${
 				mimicNumber > 0 ? `with ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''
 			}`;
 
@@ -161,18 +200,18 @@ for (const clueTier of ClueTiers) {
 			// It need to be at a point where it can no longer fail. Maybe we just take the cost first,
 			// but then they can lose their caskets
 			const stats = await user.fetchStats();
-			const nthCasket = ((stats.openable_scores as ItemBank)[clueTier.id] ?? 0) + quantity;
+			const nthCasket = ((stats.openable_scores as ItemBank)[currentClueTier.id] ?? 0) + quantity;
 
 			let gotMilestoneReward = false;
 			// If this tier has a milestone reward, and their new score meets the req, and
 			// they don't own it already, add it to the loot.
 			if (
-				clueTier.milestoneReward &&
-				nthCasket >= clueTier.milestoneReward.scoreNeeded &&
-				user.allItemsOwned.amount(clueTier.milestoneReward.itemReward) === 0
+				currentClueTier.milestoneReward &&
+				nthCasket >= currentClueTier.milestoneReward.scoreNeeded &&
+				user.allItemsOwned.amount(currentClueTier.milestoneReward.itemReward) === 0
 			) {
 				await user.addItemsToBank({
-					items: new Bank().add(clueTier.milestoneReward.itemReward),
+					items: new Bank().add(currentClueTier.milestoneReward.itemReward),
 					collectionLog: true
 				});
 				gotMilestoneReward = true;
@@ -182,14 +221,14 @@ for (const clueTier of ClueTiers) {
 			// and send a notification if they got one.
 			const announcedLoot = loot.filter(i => clueItemsToNotifyOf.includes(i.id));
 			if (gotMilestoneReward) {
-				announcedLoot.add(clueTier.milestoneReward?.itemReward);
+				announcedLoot.add(currentClueTier.milestoneReward?.itemReward);
 			}
 			if (announcedLoot.length > 0) {
 				globalClient.emit(
 					Events.ServerNotification,
 					`**${user.badgedUsername}'s** minion, ${user.minionName}, just opened their ${formatOrdinal(
 						nthCasket
-					)} ${clueTier.name} casket and received **${announcedLoot}**!`
+					)} ${currentClueTier.name} casket and received **${announcedLoot}**!`
 				);
 			}
 
@@ -432,6 +471,59 @@ const osjsOpenables: UnifiedOpenable[] = [
 		allItems: IntricatePouch.table.allItems
 	},
 	{
+		name: 'Dossier',
+		id: EItem.DOSSIER,
+		openedItem: Items.getOrThrow(EItem.DOSSIER),
+		aliases: ['dossier'],
+		canOpenUntil: ({ user, item }) => {
+			if (item.name !== DOSSIER_RITE_NAME || !hasDossierRiteAlready(user)) {
+				return true;
+			}
+
+			return `You can't open until ${DOSSIER_RITE_NAME}, because you have already received or used it.`;
+		},
+		output: async ({ quantity, user, rng, openedCountOffset = 0, previousLoot }) => {
+			const loot = new Bank();
+			if (quantity <= 0) {
+				return { bank: loot };
+			}
+
+			const yamaKC = openedCountOffset === 0 ? await user.getKC(Monsters.Yama.id) : 0;
+
+			const hadRiteAlready = hasDossierRiteAlready(user, previousLoot);
+			const shouldGuaranteeRite =
+				yamaKC >= DOSSIER_RITE_GUARANTEE_KC && !hadRiteAlready && openedCountOffset === 0;
+
+			let rollsFromTable = quantity;
+			if (shouldGuaranteeRite) {
+				rollsFromTable--;
+				loot.add(DOSSIER_RITE_NAME, 1);
+			}
+
+			if (rollsFromTable > 0) {
+				loot.add(Dossier.table.roll(rollsFromTable));
+			}
+
+			const ritesRolled = loot.amount(DOSSIER_RITE_NAME);
+			if (ritesRolled > 0) {
+				const maxRitesAllowed = hadRiteAlready ? 0 : 1;
+				const ritesToReplace = Math.max(0, ritesRolled - maxRitesAllowed);
+				replaceDossierRiteWithScrolls({ loot, rng, ritesToReplace });
+			}
+
+			return { bank: loot };
+		},
+		allItems: Dossier.table.allItems
+	},
+	{
+		name: 'Forgotten lockbox',
+		id: 30_763,
+		openedItem: Items.getOrThrow(30_763),
+		aliases: ['forgotten lockbox', 'lockbox'],
+		output: ForgottenLockbox.table,
+		allItems: ForgottenLockbox.table.allItems
+	},
+	{
 		name: "Zombie Pirate's Locker",
 		id: EItem.ZOMBIE_PIRATE_KEY,
 		openedItem: Items.getOrThrow('Zombie pirate key'),
@@ -583,6 +675,14 @@ export const allOpenables: UnifiedOpenable[] = [
 		allItems: BaleOfFlax.allItems
 	},
 	{
+		name: 'Barrel of demonic tallow (full)',
+		id: itemID('Barrel of demonic tallow (full)'),
+		openedItem: Items.getOrThrow('Barrel of demonic tallow (full)'),
+		aliases: ['barrel of demonic tallow', 'demonic tallow barrel'],
+		output: new LootTable().every('Demonic tallow', 100),
+		allItems: resolveItems(['Demonic tallow'])
+	},
+	{
 		name: 'Soft clay pack',
 		id: itemID('Soft clay pack'),
 		openedItem: Items.getOrThrow('Soft clay pack'),
@@ -607,15 +707,29 @@ export async function getOpenableLoot({
 	quantity,
 	user,
 	rng,
+	openedCountOffset,
+	previousLoot,
 	yielder: _yielder
 }: {
 	openable: UnifiedOpenable;
 	quantity: number;
 	user: MUser;
 	rng: RNGProvider;
+	openedCountOffset?: number;
+	previousLoot?: Bank;
 	yielder?: FriendlyTask;
 }) {
-	const yielder = _yielder ?? new FriendlyTask(`getOpenableLoot(${quantity}x ${openable.name})`);
+	const yielder =
+		_yielder ??
+		new FriendlyTask(`OpenableLoot`, {
+			yieldAfterMs: 50,
+			warnAfterMs: 500,
+			data: {
+				openable,
+				quantity,
+				userId: user.id
+			}
+		});
 	const loot = new Bank();
 	if (openable.output instanceof LootTable) {
 		const batchSize = 100;
@@ -629,7 +743,15 @@ export async function getOpenableLoot({
 		if (!_yielder) yielder.finish();
 		return { bank: loot, message: null };
 	} else {
-		const result = await openable.output({ user, self: openable, quantity, rng, yielder });
+		const result = await openable.output({
+			user,
+			self: openable,
+			quantity,
+			rng,
+			openedCountOffset,
+			previousLoot,
+			yielder
+		});
 		if (!_yielder) yielder.finish();
 		return result;
 	}
