@@ -16,7 +16,7 @@ export const delvesCommand = defineCommand({
 				{
 					type: 'Integer',
 					name: 'target_delve',
-					description: 'Target level (default: continue until a unique or death).',
+					description: 'Target Delve (default: continue until a unique or death).',
 					required: false,
 					min_value: 1,
 					max_value: 30

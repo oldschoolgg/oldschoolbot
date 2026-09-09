@@ -82,9 +82,9 @@ export const DoomOfMokhaiotl = {
 		`Deepest Delve: ${deepestDelve} | Deep Delves: ${deepDelves} | Total Delves: ${totalDelves}`
 };
 
-// A Delve is one individual in-game level within a complete Delve Trek.
-interface DoomDelveLevelEntry {
-	delveLevel: number;
+// A Delve is one individual in-game Delve within a complete Delve Trek.
+interface DoomDelveEntry {
+	delve: number;
 	guaranteedTears: number;
 	table: LootTable;
 }
@@ -99,11 +99,11 @@ export interface DoomDelveTrekResult {
 	ayakChargesGained: number;
 }
 
-function cappedDelve(delveLevel: number): number {
-	return Math.min(delveLevel, 9);
+function cappedDelve(delve: number): number {
+	return Math.min(delve, 9);
 }
 
-function buildDelveTable(delveLevel: number): LootTable {
+function buildDelveTable(delve: number): LootTable {
 	const multipliers: Record<number, number> = {
 		1: -0.5,
 		2: -0.35,
@@ -115,13 +115,13 @@ function buildDelveTable(delveLevel: number): LootTable {
 		8: 0.17,
 		9: 0.2
 	};
-	const mult = multipliers[cappedDelve(delveLevel)] ?? 0.2;
+	const mult = multipliers[cappedDelve(delve)] ?? 0.2;
 
 	function qty(base: number): number {
 		return Math.max(1, Math.trunc(base + base * mult));
 	}
 
-	const clueRate = delveLevel <= 2 ? 75 : 50;
+	const clueRate = delve <= 2 ? 75 : 50;
 
 	const table = new LootTable()
 		.add('Dragon med helm', 1, 5)
@@ -147,10 +147,10 @@ function buildDelveTable(delveLevel: number): LootTable {
 		.add('Sun-kissed bones', [qty(25), qty(75)], 5)
 		.add('Tooth half of key (moon key)', 1, 1)
 		.add('Demon tear', [100, 300], 7)
-		.add('Mokhaiotl waystone', delveLevel <= 1 ? 1 : [1, 2], 7)
+		.add('Mokhaiotl waystone', delve <= 1 ? 1 : [1, 2], 7)
 		.tertiary(clueRate, 'Clue scroll (elite)');
 
-	const cd = cappedDelve(delveLevel);
+	const cd = cappedDelve(delve);
 
 	const clothRates: Record<number, number> = { 2: 2500, 3: 2000, 4: 1350, 5: 810, 6: 765, 7: 720, 8: 630, 9: 540 };
 	const eyeRates: Record<number, number> = { 3: 2000, 4: 1350, 5: 810, 6: 765, 7: 720, 8: 630, 9: 540 };
@@ -165,13 +165,13 @@ function buildDelveTable(delveLevel: number): LootTable {
 	return table;
 }
 
-export const doomDelves: DoomDelveLevelEntry[] = Array.from({ length: MAX_DELVE }, (_, i) => {
-	const delveLevel = i + 1;
-	const guaranteedTears = delveLevel < 3 ? 0 : delveLevel === 3 ? 50 : Math.min(100, 50 + (delveLevel - 3) * 10);
+export const doomDelves: DoomDelveEntry[] = Array.from({ length: MAX_DELVE }, (_, i) => {
+	const delve = i + 1;
+	const guaranteedTears = delve < 3 ? 0 : delve === 3 ? 50 : Math.min(100, 50 + (delve - 3) * 10);
 	return {
-		delveLevel,
+		delve,
 		guaranteedTears,
-		table: buildDelveTable(delveLevel)
+		table: buildDelveTable(delve)
 	};
 });
 
@@ -329,10 +329,10 @@ export function startDoomDelveTrek(options: {
 
 		lastDelve = d;
 
-		const delveLevel = doomDelves[d - 1];
-		const delveRoll = delveLevel.table.roll();
+		const delve = doomDelves[d - 1];
+		const delveRoll = delve.table.roll();
 		pendingLoot.add(delveRoll);
-		if (delveLevel.guaranteedTears > 0) pendingLoot.add('Demon tear', delveLevel.guaranteedTears);
+		if (delve.guaranteedTears > 0) pendingLoot.add('Demon tear', delve.guaranteedTears);
 
 		if (options.hasChargedEyeOfAyak) {
 			ayakChargesGained += options.rng.randInt(10, 20);
@@ -623,19 +623,19 @@ function buildDoomRequirementsChecklist(user: DoomUser, targetDelve: number, sta
 	return `**Doom of Mokhaiotl requirements for delve ${targetDelve}:**\n${lines.join('\n')}`;
 }
 
-function addDoomRuneCosts(cost: Bank, bank: Bank, userMagicLevel: number, delveLevelsForCost: number) {
+function addDoomRuneCosts(cost: Bank, bank: Bank, userMagicLevel: number, delvesForCost: number) {
 	let fireRunes = 0;
 	let soulRunes = 0;
 
 	if (userMagicLevel >= 82) {
-		fireRunes = 7 * delveLevelsForCost;
-		soulRunes = 2 * delveLevelsForCost;
+		fireRunes = 7 * delvesForCost;
+		soulRunes = 2 * delvesForCost;
 	} else if (userMagicLevel >= 62) {
-		fireRunes = 5 * delveLevelsForCost;
-		soulRunes = delveLevelsForCost;
+		fireRunes = 5 * delvesForCost;
+		soulRunes = delvesForCost;
 	} else {
-		fireRunes = 3 * delveLevelsForCost;
-		cost.add('Chaos rune', delveLevelsForCost);
+		fireRunes = 3 * delvesForCost;
+		cost.add('Chaos rune', delvesForCost);
 	}
 
 	const fireAlternatives = ['Fire rune', 'Smoke rune', 'Steam rune', 'Lava rune'];
@@ -675,7 +675,7 @@ function getDoomDelveTrekCost(options: {
 }): DoomDelveTrekCostResult {
 	const { user, state, result, userMagicLevel, venomProtection, deepDelves, totalDelves } = options;
 	const availableSupplies = options.availableSupplies ?? user.bank;
-	const delveLevelsForCost = result.lastDelve;
+	const delvesForCost = result.lastDelve;
 	const fullDurationMinutes = result.duration / Time.Minute;
 	const score = experienceScore(deepDelves, totalDelves);
 	const experienceFactor = Math.min(score / 20, 1);
@@ -684,7 +684,7 @@ function getDoomDelveTrekCost(options: {
 	const restoresPerMinute = 0.1 + learningFactor * 0.3;
 	const brewsUsed = Math.min(10, Math.max(1, Math.ceil(fullDurationMinutes * brewsPerMinute)));
 	const restoresUsed = Math.min(10, Math.max(1, Math.ceil(fullDurationMinutes * restoresPerMinute)));
-	const rangingUsed = Math.min(10, Math.max(1, Math.ceil(delveLevelsForCost / 5)));
+	const rangingUsed = Math.min(10, Math.max(1, Math.ceil(delvesForCost / 5)));
 	const cost = new Bank()
 		.add('Saradomin brew(4)', brewsUsed)
 		.add('Super restore(4)', restoresUsed)
@@ -692,7 +692,7 @@ function getDoomDelveTrekCost(options: {
 		.add(venomProtection.itemCost);
 
 	if (!state.hasChargedEyeOfAyak) {
-		addDoomRuneCosts(cost, availableSupplies, userMagicLevel, delveLevelsForCost);
+		addDoomRuneCosts(cost, availableSupplies, userMagicLevel, delvesForCost);
 	}
 
 	if ((state.hasTbow || state.hasSBow) && state.equippedArrowId !== null) {
@@ -702,7 +702,7 @@ function getDoomDelveTrekCost(options: {
 
 	if (state.hasZcb) {
 		const avasDevice = avasDevices.find(avas => user.gear.range.hasEquipped(avas.item.id));
-		const boltsNeeded = calculateDoomZcbBoltsNeeded(delveLevelsForCost, avasDevice?.reduction ?? 0);
+		const boltsNeeded = calculateDoomZcbBoltsNeeded(delvesForCost, avasDevice?.reduction ?? 0);
 		let boltsRemaining = boltsNeeded;
 		for (const bolt of RUBY_BOLT_VARIANTS) {
 			if (boltsRemaining <= 0) break;
@@ -715,12 +715,12 @@ function getDoomDelveTrekCost(options: {
 		}
 	}
 
-	if (state.meleePunishWeapon === 'crystal_halberd') cost.add('Crystal shard', Math.ceil(delveLevelsForCost));
+	if (state.meleePunishWeapon === 'crystal_halberd') cost.add('Crystal shard', Math.ceil(delvesForCost));
 	if (state.hasRiteOfVileTransference) {
 		const casts = calcDeathChargeCasts({
 			bank: availableSupplies,
 			duration: result.duration,
-			quantity: delveLevelsForCost
+			quantity: delvesForCost
 		});
 		if (casts > 0) cost.add(deathChargeCastCost(casts));
 	}
@@ -1211,7 +1211,7 @@ export async function doomCommand(
 		`**Cost:** ${removedCost}\n`,
 		`**Boosts:** ${buildDoomBoostLines(state, kcReduction, skillBoostMsg).join(', ')}`,
 		targetDelve > 15
-			? `\n*Doom levels beyond 15 are considered, "__not worth the time__," but you can try if you would like ${Emoji.Joy}*. You will only use the supplies and time for levels actually completed, so you are not wasting anything.`
+			? `\n*Doom Delves beyond 15 are considered, "__not worth the time__," but you can try if you would like ${Emoji.Joy}*. You will only use the supplies and time for Delves actually completed, so you are not wasting anything.`
 			: ''
 	].join('\n');
 }
