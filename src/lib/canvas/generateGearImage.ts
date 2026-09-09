@@ -14,6 +14,8 @@ import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 import type { UserFullGearSetup } from '@/lib/gear/types.js';
 import { type Gear, maxDefenceStats, maxOffenceStats } from '@/lib/structures/Gear.js';
 
+const SHARED_ITEM_ALPHA = 0.45;
+
 /**
  * The default gear in a gear setup, when nothing is equipped.
  */
@@ -327,15 +329,18 @@ export async function generateGearImage({
 
 	// Draw equipped items
 	for (const enumName of allEquipmentSlots) {
-		const item = gearSetup.get(enumName);
+		const item = gearSetup.getForDisplay(enumName);
 		if (!item) continue;
 		const [x, y] = slotCoordinates[enumName];
+		ctx.save();
+		if (item.isVirtual) ctx.globalAlpha = SHARED_ITEM_ALPHA;
 		await canvas.drawItemIDSprite({
 			itemID: item.item,
 			x: x,
 			y: y,
 			quantity: item.quantity === 1 ? undefined : item.quantity
 		});
+		ctx.restore();
 	}
 
 	return canvas.toScaledOutput(2);
@@ -417,16 +422,19 @@ export async function generateAllGearImage({
 		});
 		ctx.drawImage(gearTemplateImage, 0, 0, gearTemplateImage.width, gearTemplateImage.height);
 		for (const enumName of Object.values(EquipmentSlot)) {
-			const item = gearSetup.get(enumName);
+			const item = gearSetup.getForDisplay(enumName);
 			if (!item) continue;
 			const [x, y] = slotCoordinatesCompact[enumName];
 
+			ctx.save();
+			if (item.isVirtual) ctx.globalAlpha = SHARED_ITEM_ALPHA;
 			await canvas.drawItemIDSprite({
 				itemID: item.item,
 				x,
 				y,
 				quantity: item.quantity === 1 ? undefined : item.quantity
 			});
+			ctx.restore();
 		}
 		i++;
 		ctx.restore();

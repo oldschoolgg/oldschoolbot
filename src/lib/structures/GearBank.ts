@@ -5,6 +5,7 @@ import { getSimilarItems } from '@/lib/data/similarItems.js';
 import type { UserFullGearSetup } from '@/lib/gear/types.js';
 import { SkillsArray } from '@/lib/skilling/types.js';
 import type { ChargeBank } from '@/lib/structures/Bank.js';
+import { applySharedPrimaryGearEffects } from '@/lib/structures/Gear.js';
 import type { SkillRequirements, SkillsRequired } from '@/lib/types/index.js';
 import { hasSkillReqsRaw } from '@/lib/util/smallUtils.js';
 
@@ -30,6 +31,7 @@ export class GearBank {
 		minionName: string;
 	}) {
 		this.gear = gear;
+		applySharedPrimaryGearEffects(this.gear);
 		this.bank = bank;
 		this.chargeBank = chargeBank;
 		this.skillsAsXP = skillsAsXP;
