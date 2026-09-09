@@ -20,7 +20,7 @@ import { Gear } from '@/lib/structures/Gear.js';
 import { GearBank } from '@/lib/structures/GearBank.js';
 import type { SkillRequirements, Skills } from '@/lib/types/index.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
-import { timePerAlch, timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
+import { canAlchItem, timePerAlch, timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
 
 const USER_DEFAULTS = {
 	slayer_unlocks: [],
@@ -147,7 +147,7 @@ export class BaseUser {
 		return this.user.favorite_alchables
 			.filter(id => bank.has(id))
 			.map(id => Items.getItem(id))
-			.filter(i => i !== null && i?.highalch !== undefined && i.highalch > 0 && i.tradeable)
+			.filter(i => i !== null && canAlchItem(i))
 			.sort((a, b) => alchPrice(bank, b!, duration, agility) - alchPrice(bank, a!, duration, agility)) as Item[];
 	}
 
