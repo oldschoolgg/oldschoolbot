@@ -15,7 +15,7 @@ import {
 import { notEmpty } from '@oldschoolgg/toolkit';
 import { Bank, type Item, Items, itemID, resolveItems } from 'oldschooljs';
 import type { EGear } from 'oldschooljs/EGear';
-import {clone, isDeepEqual} from 'remeda';
+import { clone, isDeepEqual } from 'remeda';
 
 import type { GearPreset } from '@/prisma/main.js';
 import { getSimilarItems, inverseSimilarItems } from '@/lib/data/similarItems.js';
@@ -170,12 +170,12 @@ export class Gear {
 	}
 
 	allItems(similar: true, withQuantities?: boolean): number[];
-	allItems(similar?: false, withQuantities?: false) : number[];
-	allItems(similar: false, withQuantities: true) : [number, number][];
+	allItems(similar?: false, withQuantities?: false): number[];
+	allItems(similar: false, withQuantities: true): [number, number][];
 	allItems(similar = false, withQuantities = false): number[] | [number, number][] {
 		const values = new Set<number>();
 		const valuesWithQuantities: [number, number][] = [];
-		let returnQuantities = withQuantities && !similar;
+		const returnQuantities = withQuantities && !similar;
 
 		for (const val of Object.values(this.setup)) {
 			if (val?.item) {
@@ -281,7 +281,7 @@ export class Gear {
 		}
 
 		const items: string[] = [];
-		for (const [item, qty] of allItems.sort((a,b) => a[0] - b[0])) {
+		for (const [item, qty] of allItems.sort((a, b) => a[0] - b[0])) {
 			const name = Items.itemNameFromId(Number(item)) ?? `Unknown Item? (${item})`;
 			items.push(`${qty > 1 ? `${qty}x ` : ''}${name}`);
 		}
