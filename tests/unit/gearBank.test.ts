@@ -1,4 +1,4 @@
-import { Bank, EGear } from 'oldschooljs';
+import { Bank, EGear, itemID } from 'oldschooljs';
 import { describe, expect, it, test } from 'vitest';
 
 import type { UserFullGearSetup } from '@/lib/gear/types.js';
@@ -88,7 +88,7 @@ describe('GearBank', () => {
 	test('shares Avernic treads (max) across primary combat setups', () => {
 		const gear = makeTestGear();
 		gear.range.equip('Avernic treads (max)');
-		gear.melee.equip('Dragon boots');
+		gear.melee.equip('Echo boots');
 		const gb = new GearBank({
 			gear,
 			bank: new Bank(),
@@ -101,11 +101,21 @@ describe('GearBank', () => {
 		expect(gb.gear.mage.hasEquipped('Avernic treads (max)', false, false)).toBe(true);
 		expect(gb.gear.range.hasEquipped('Avernic treads (max)', false, false)).toBe(true);
 		expect(gb.gear.skilling.hasEquipped('Avernic treads (max)', false, false)).toBe(false);
-		expect(gb.gear.melee.hasEquipped('Dragon boots', false, false)).toBe(true);
-		expect(gb.gear.melee.allItemsBank().equals(new Bank().add('Dragon boots'))).toBe(true);
+		expect(gb.gear.melee.hasEquipped('Echo boots', false, false)).toBe(true);
+		expect(gb.gear.melee.allItemsBank().equals(new Bank().add('Echo boots'))).toBe(true);
 		expect(gb.gear.mage.allItemsBank().equals(new Bank())).toBe(true);
 		expect(gb.gear.range.allItemsBank().equals(new Bank().add('Avernic treads (max)'))).toBe(true);
-		expect(gb.gear.melee.stats.melee_strength).toBeGreaterThan(0);
+		expect(gb.gear.melee.stats).toEqual(new Gear({ feet: 'Echo boots' }).stats);
 		expect(gb.gear.mage.stats.attack_magic).toBeGreaterThan(0);
+		expect(gb.gear.mage.getForDisplay('feet')).toEqual({
+			item: itemID('Avernic treads (max)'),
+			quantity: 1,
+			isVirtual: true
+		});
+		expect(gb.gear.melee.getForDisplay('feet')).toEqual({
+			item: itemID('Echo boots'),
+			quantity: 1,
+			isVirtual: false
+		});
 	});
 });

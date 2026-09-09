@@ -178,6 +178,13 @@ export class Gear {
 		return this.setup[key];
 	}
 
+	public getForDisplay(key: EquipmentSlot | EquipmentSlotKey): (GearSlotItem & { isVirtual: boolean }) | null {
+		const item = this.setup[key];
+		if (item) return { ...item, isVirtual: false };
+		const virtualItem = this.virtualSetup[key];
+		return virtualItem ? { item: virtualItem, quantity: 1, isVirtual: true } : null;
+	}
+
 	public set(key: EquipmentSlot | EquipmentSlotKey, value: GearSlotItem | null) {
 		this.setup[key] = value;
 		this.stats = this.getStats();
@@ -213,10 +220,10 @@ export class Gear {
 		const values = new Set<number>();
 		for (const [slot, val] of Object.entries(this.setup) as [EquipmentSlotKey, GearSlotItem | null][]) {
 			const virtualItem = this.virtualSetup[slot];
-			if (virtualItem) {
-				values.add(virtualItem);
-			} else if (val?.item) {
+			if (val?.item) {
 				values.add(val.item);
+			} else if (virtualItem) {
+				values.add(virtualItem);
 			}
 		}
 
