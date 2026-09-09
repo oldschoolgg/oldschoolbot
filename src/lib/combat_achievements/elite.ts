@@ -3,7 +3,7 @@ import { EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
 import { anyoneDiedInTOARaid, isCertainMonsterTrip } from '@/lib/combat_achievements/caUtils.js';
 import type { CombatAchievement } from '@/lib/combat_achievements/combatAchievements.js';
-import { getDoomActivityDelveTreks, hasCompletedDoomDelveTrek } from '@/lib/doomOfMokhaiotl.js';
+import { getDoomActivityTreks, hasCompletedDoomDelveTrek } from '@/lib/doomOfMokhaiotl.js';
 import { Requirements } from '@/lib/structures/Requirements.js';
 import type {
 	ActivityTaskData,
@@ -1822,7 +1822,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 20,
 			hasChance: (data: ActivityTaskData) =>
-				data.type === 'DoomOfMokhaiotl' && hasCompletedDoomDelveTrek(getDoomActivityDelveTreks(data))
+				data.type === 'DoomOfMokhaiotl' && hasCompletedDoomDelveTrek(getDoomActivityTreks(data))
 		}
 	},
 	{
@@ -1834,7 +1834,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 15,
 			hasChance: (data: ActivityTaskData) =>
-				data.type === 'DoomOfMokhaiotl' && hasCompletedDoomDelveTrek(getDoomActivityDelveTreks(data))
+				data.type === 'DoomOfMokhaiotl' && hasCompletedDoomDelveTrek(getDoomActivityTreks(data))
 		}
 	},
 	{

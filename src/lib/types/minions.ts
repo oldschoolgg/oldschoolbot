@@ -545,12 +545,10 @@ export interface ColoTaskOptions extends ActivityTaskOptions {
 }
 
 // A Delve Trek is one complete Doom attempt from Delve 1 until cash-out, a unique stop, or death.
-export interface DoomActivityDelveTrekData {
+export interface DoomActivityTrekData {
 	dur: number;
 	dead: boolean;
 	lastDelve: number;
-	/** Legacy persisted name for the last in-game Delve reached. */
-	lastWave?: number;
 	loot?: ItemBank;
 	diedAt?: number;
 	ayak?: number;
@@ -559,10 +557,7 @@ export interface DoomActivityDelveTrekData {
 export interface DoomTaskOptions extends ActivityTaskOptions {
 	type: 'DoomOfMokhaiotl';
 	targetDelve: number;
-	delveTreks: DoomActivityDelveTrekData[];
-	/** Legacy persisted name for Delve Trek records created before the terminology correction. */
-	delves?: DoomActivityDelveTrekData[];
-	loot: ItemBank;
+	treks: DoomActivityTrekData[];
 	refund?: ItemBank;
 	refundAmmo?: ItemBank;
 	fakeDuration: number;

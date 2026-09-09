@@ -51,7 +51,7 @@ import {
 	deathChargeCastCost
 } from '@/lib/minions/functions/deathCharge.js';
 import type { Skills } from '@/lib/types/index.js';
-import type { DoomActivityDelveTrekData, DoomTaskOptions } from '@/lib/types/minions.js';
+import type { DoomActivityTrekData, DoomTaskOptions } from '@/lib/types/minions.js';
 import { autoDecantBank } from '@/lib/util/autoDecantBank.js';
 import { formatList, formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
@@ -209,14 +209,14 @@ interface DoomDelveTrekCostResult {
 	rangingUsed: number;
 }
 
-function doomResultFromActivityDelveTrek(delveTrek: DoomActivityDelveTrekData): DoomDelveTrekResult {
+function doomResultFromActivityTrek(trek: DoomActivityTrekData): DoomDelveTrekResult {
 	return {
-		diedAt: delveTrek.diedAt ?? null,
-		loot: delveTrek.loot ? new Bank(delveTrek.loot) : null,
-		lastDelve: delveTrek.lastDelve,
-		duration: delveTrek.dur,
+		diedAt: trek.diedAt ?? null,
+		loot: trek.loot ? new Bank(trek.loot) : null,
+		lastDelve: trek.lastDelve,
+		duration: trek.dur,
 		deathChances: [],
-		ayakChargesGained: delveTrek.ayak ?? 0
+		ayakChargesGained: trek.ayak ?? 0
 	};
 }
 
@@ -370,15 +370,12 @@ export function calculateDoomArrowsNeeded(duration: number): number {
 	return Math.max(1, Math.ceil((duration / Time.Hour) * DOOM_ARROWS_PER_HOUR));
 }
 
-export function getDoomActivityDelveTreks(data: DoomTaskOptions): DoomActivityDelveTrekData[] {
-	return (data.delveTreks ?? data.delves ?? []).map(delveTrek => ({
-		...delveTrek,
-		lastDelve: delveTrek.lastDelve ?? delveTrek.lastWave ?? 0
-	}));
+export function getDoomActivityTreks(data: DoomTaskOptions): DoomActivityTrekData[] {
+	return data.treks;
 }
 
-export function hasCompletedDoomDelveTrek(delveTreks: DoomActivityDelveTrekData[], targetDelve = 1): boolean {
-	return delveTreks.some(delveTrek => !delveTrek.dead && delveTrek.lastDelve >= targetDelve);
+export function hasCompletedDoomDelveTrek(treks: DoomActivityTrekData[], targetDelve = 1): boolean {
+	return treks.some(trek => !trek.dead && trek.lastDelve >= targetDelve);
 }
 
 function describeMissingSupplies(availableSupplies: Bank, cost: Bank): string {
@@ -851,7 +848,7 @@ export async function doomCommand(
 	const stats = await user.fetchStats();
 	const deepDelves = Number(stats.doom_deep_delves ?? 0);
 	const totalDelves = Number(stats.doom_total_delves ?? 0);
-	// The database column keeps its legacy name, but its keys represent individual in-game Delves.
+	// The existing database column name mentions waves, but its keys represent individual in-game Delves.
 	const delveCompletions = normaliseDoomDelveCompletions(
 		(stats as { doom_wave_completions?: unknown }).doom_wave_completions
 	);
@@ -940,39 +937,37 @@ export async function doomCommand(
 		return `You can't do that many Doom of Mohkaiotl Delve Treks! If you want to maximize your task length, then don't specify a quantity and you will do as many Delve Treks as you can by default.`;
 	}
 
-	const delveTreks: DoomActivityDelveTrekData[] = [];
+	const treks: DoomActivityTrekData[] = [];
 	let totalDuration = 0;
-	const delveTreksToAttempt = quantity ?? Number.POSITIVE_INFINITY;
+	const treksToAttempt = quantity ?? Number.POSITIVE_INFINITY;
 	const fakeDuration = quantity ? plannedTaskDuration(quantity) : maxTripLength;
-	while (delveTreks.length < delveTreksToAttempt) {
+	while (treks.length < treksToAttempt) {
 		delveTrekOptions.durationReductionPercent =
-			delveTreks.length < mokhaiotlWaystonesOwned
-				? durationReductionPercent
-				: durationReductionPercentWithoutWaystone;
-		const delveTrek = startDoomDelveTrek(delveTrekOptions);
-		const delveTrekDuration = Math.floor(delveTrek.duration);
+			treks.length < mokhaiotlWaystonesOwned ? durationReductionPercent : durationReductionPercentWithoutWaystone;
+		const trekResult = startDoomDelveTrek(delveTrekOptions);
+		const delveTrekDuration = Math.floor(trekResult.duration);
 		totalDuration += delveTrekDuration;
-		delveTreks.push({
+		treks.push({
 			dur: delveTrekDuration,
-			dead: delveTrek.diedAt !== null,
-			lastDelve: delveTrek.lastDelve,
-			loot: delveTrek.loot?.toJSON(),
-			diedAt: delveTrek.diedAt ?? undefined,
-			ayak: delveTrek.ayakChargesGained || undefined
+			dead: trekResult.diedAt !== null,
+			lastDelve: trekResult.lastDelve,
+			loot: trekResult.loot?.toJSON(),
+			diedAt: trekResult.diedAt ?? undefined,
+			ayak: trekResult.ayakChargesGained || undefined
 		});
 
 		if (totalDuration > maxTripLength) break;
 	}
 	// This shouldn't happen since the task always attempts at least one Delve Trek.
-	if (delveTreks.length === 0) {
+	if (treks.length === 0) {
 		void itx.reply({ content: 'Doom Error: No Delve Treks successfully added. Please report this.' });
 		throw new Error('Doom Error: No Delve Treks successfully added');
 	}
-	const DELETE_COPY_originalDelveTreks = delveTreks.map(delveTrek => ({
-		...delveTrek,
-		loot: delveTrek.loot ? { ...delveTrek.loot } : undefined
+	const DELETE_COPY_originalTreks = treks.map(trek => ({
+		...trek,
+		loot: trek.loot ? { ...trek.loot } : undefined
 	}));
-	let removedDelveTreks = false;
+	let removedTreks = false;
 	// Keep this target- and outcome-independent. Charging from actual Delve Trek results leaks outcomes and is gameable.
 	const fullDelveTrekCostResult: DoomDelveTrekResult = {
 		diedAt: null,
@@ -1038,38 +1033,38 @@ export async function doomCommand(
 			effectiveVenomCost
 		};
 	}
-	function logRemovedDelveTreks(title: string, color: string, list: DoomActivityDelveTrekData[]) {
+	function logRemovedTreks(title: string, color: string, list: DoomActivityTrekData[]) {
 		console.info(`${color}${title}\x1b[0m`);
-		for (const delveTrek of list) {
+		for (const trek of list) {
 			const cost = getDoomDelveTrekCost({
 				user,
 				state,
-				result: doomResultFromActivityDelveTrek(delveTrek),
+				result: doomResultFromActivityTrek(trek),
 				userMagicLevel,
 				venomProtection: { itemCost: new Bank() },
 				deepDelves,
 				totalDelves
 			}).cost;
 			console.info(
-				`${delveTrek.diedAt ? `Died at: ${delveTrek.diedAt} | ` : ''}Delve: ${delveTrek.lastDelve} | Duration: ${formatDuration(delveTrek.dur)} | Cost: ${cost}`
+				`${trek.diedAt ? `Died at: ${trek.diedAt} | ` : ''}Delve: ${trek.lastDelve} | Duration: ${formatDuration(trek.dur)} | Cost: ${cost}`
 			);
 		}
 	}
-	let estimate = buildEstimatedCost(delveTreks.length);
+	let estimate = buildEstimatedCost(treks.length);
 	if ('reason' in estimate && quantity)
 		return `You don't have enough supplies to complete this many Doom of Mokhaiotl Delve Treks. Missing: ${estimate.reason}`;
-	while ('reason' in estimate && delveTreks.length > 1) {
-		const removedDelveTrek = delveTreks.pop()!;
-		totalDuration -= removedDelveTrek.dur;
-		removedDelveTreks = true;
+	while ('reason' in estimate && treks.length > 1) {
+		const removedTrek = treks.pop()!;
+		totalDuration -= removedTrek.dur;
+		removedTreks = true;
 		console.info(`Delve Trek removed because: ${estimate.reason}`);
-		estimate = buildEstimatedCost(delveTreks.length);
+		estimate = buildEstimatedCost(treks.length);
 	}
 	if ('reason' in estimate)
 		return `You don't have enough supplies to complete a Doom of Mokhaiotl Delve Trek. Missing: ${estimate.reason}`;
-	if (removedDelveTreks) {
-		logRemovedDelveTreks('ORIGINAL LIST', '\x1b[33m', DELETE_COPY_originalDelveTreks);
-		logRemovedDelveTreks('NEW LIST', '\x1b[31m', delveTreks);
+	if (removedTreks) {
+		logRemovedTreks('ORIGINAL LIST', '\x1b[33m', DELETE_COPY_originalTreks);
+		logRemovedTreks('NEW LIST', '\x1b[31m', treks);
 	}
 	const {
 		cost: estimatedCost,
@@ -1084,11 +1079,11 @@ export async function doomCommand(
 	const actualVenomRemainders = new Bank();
 	const effectiveVenomCost = new Bank();
 
-	for (const delveTrek of delveTreks) {
+	for (const trek of treks) {
 		const delveTrekCost = getDoomDelveTrekCost({
 			user,
 			state,
-			result: doomResultFromActivityDelveTrek(delveTrek),
+			result: doomResultFromActivityTrek(trek),
 			userMagicLevel,
 			venomProtection: { itemCost: new Bank() },
 			deepDelves,
@@ -1103,8 +1098,8 @@ export async function doomCommand(
 		const delveTrekCostVenomProtection = takeDoomVenomProtection(
 			actualVenomSupplies,
 			actualVenomRemainders,
-			delveTrek.dur + Time.Second * 30,
-			delveTrek.diedAt ? 1 : 0
+			trek.dur + Time.Second * 30,
+			trek.diedAt ? 1 : 0
 		);
 		if (!delveTrekCostVenomProtection) {
 			return 'Doom Error: The estimated venom protection did not cover the simulated Delve Treks. Please report this.';
@@ -1146,7 +1141,7 @@ export async function doomCommand(
 		if (!estimatedCost.has(suppliesUsed)) {
 			const error = new Error('Doom: actual supplies exceeded the outcome-independent estimate');
 			void globalClient.sendDm(globalConfig.adminUserIDs[0], `${error.message} for ${user.id}.`);
-			Logging.logError(error, { estimatedCost, suppliesUsed, delveTreks });
+			Logging.logError(error, { estimatedCost, suppliesUsed, treks });
 		}
 		const refund = removedCost.clone().remove(suppliesUsed).add(venomItemsRefunded);
 		refundedSupplies.add(autoDecantBank(refund));
@@ -1179,11 +1174,6 @@ export async function doomCommand(
 		changeType: 'cost',
 		users: [{ id: user.id, cost: effectiveCost }]
 	});
-	const taskLoot = new Bank();
-	for (const delveTrek of delveTreks) {
-		if (!delveTrek.dead && delveTrek.loot) taskLoot.add(delveTrek.loot);
-	}
-
 	await ActivityManager.startTrip<DoomTaskOptions>({
 		userID: user.id,
 		channelId: itx.channelId,
@@ -1191,8 +1181,7 @@ export async function doomCommand(
 		fakeDuration,
 		type: 'DoomOfMokhaiotl',
 		targetDelve,
-		delveTreks,
-		loot: taskLoot.toJSON(),
+		treks,
 		refund: refundedSupplies.toJSON(),
 		refundAmmo: refundedAmmo.toJSON(),
 		stopOnUnique,
@@ -1200,7 +1189,7 @@ export async function doomCommand(
 	});
 
 	const quantityString = quantity
-		? `${delveTreks.length}x Delve Treks up to Delve **${targetDelve}**!`
+		? `${treks.length}x Delve Treks up to Delve **${targetDelve}**!`
 		: `Attempting as many Delve Treks as possible, each up to Delve ${targetDelve}.`;
 
 	return [

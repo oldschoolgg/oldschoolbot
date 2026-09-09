@@ -4,7 +4,7 @@ import { Bank, EMonster, type ItemBank } from 'oldschooljs';
 import {
 	calculateDoomXP,
 	DOOM_UNIQUE_ITEMS,
-	getDoomActivityDelveTreks,
+	getDoomActivityTreks,
 	normaliseDoomDelveCompletions
 } from '@/lib/doomOfMokhaiotl.js';
 import { trackLoot } from '@/lib/lootTrack.js';
@@ -15,26 +15,26 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 export const doomOfMokhaiotlTask: MinionTask = {
 	type: 'DoomOfMokhaiotl',
 	async run(data: DoomTaskOptions, { user, handleTripFinish }) {
-		const { channelId, targetDelve, duration, loot, refund, refundAmmo } = data;
-		const delveTreks = getDoomActivityDelveTreks(data);
+		const { channelId, targetDelve, duration, refund, refundAmmo } = data;
+		const treks = getDoomActivityTreks(data);
 		let aggregatedDeepDelves = 0;
 		let aggregatedDelvesCleared = 0;
 		let aggregatedDeepest = 0;
 		let aggregatedAyakCharges = 0;
 
-		for (const delveTrek of delveTreks) {
-			const delvesCleared = delveTrek.dead ? delveTrek.lastDelve - 1 : delveTrek.lastDelve;
+		for (const trek of treks) {
+			const delvesCleared = trek.dead ? trek.lastDelve - 1 : trek.lastDelve;
 			aggregatedDeepest = Math.max(aggregatedDeepest, delvesCleared);
 			aggregatedDelvesCleared += delvesCleared;
 			aggregatedDeepDelves += Math.max(0, delvesCleared - 7);
-			aggregatedAyakCharges += delveTrek.ayak ?? 0;
+			aggregatedAyakCharges += trek.ayak ?? 0;
 		}
 
 		const currentStats = await user.fetchStats();
 		const prevDeepest = Number(currentStats.doom_deepest_delve ?? 0);
 		const prevDeepDelves = Number(currentStats.doom_deep_delves ?? 0);
 		const prevTotal = Number(currentStats.doom_total_delves ?? 0);
-		// The database column keeps its legacy name, but its keys represent individual in-game Delves.
+		// The existing database column name mentions waves, but its keys represent individual in-game Delves.
 		const delveCompletions = normaliseDoomDelveCompletions(
 			(currentStats as { doom_wave_completions?: unknown }).doom_wave_completions
 		);
@@ -43,8 +43,8 @@ export const doomOfMokhaiotlTask: MinionTask = {
 		const newDeepDelves = prevDeepDelves + aggregatedDeepDelves;
 		const newTotal = prevTotal + aggregatedDelvesCleared;
 		const doomKcEarned = aggregatedDeepDelves;
-		for (const delveTrek of delveTreks) {
-			const delvesCleared = delveTrek.dead ? delveTrek.lastDelve - 1 : delveTrek.lastDelve;
+		for (const trek of treks) {
+			const delvesCleared = trek.dead ? trek.lastDelve - 1 : trek.lastDelve;
 			for (let delve = 1; delve <= delvesCleared; delve++) {
 				delveCompletions[delve] = (delveCompletions[delve] ?? 0) + 1;
 			}
@@ -102,7 +102,7 @@ export const doomOfMokhaiotlTask: MinionTask = {
 			]);
 		}
 
-		if (delveTreks.length === 1 && delveTreks[0].dead) {
+		if (treks.length === 1 && treks[0].dead) {
 			const kcSummary = buildKcSummary(newDeepest, newDeepDelves, newTotal);
 			const refundMessage =
 				refundedItems.length > 0
@@ -112,23 +112,26 @@ export const doomOfMokhaiotlTask: MinionTask = {
 			return handleTripFinish({
 				user,
 				channelId,
-				message: `${user} Your minion died at Delve **${delveTreks[0].diedAt ?? delveTreks[0].lastDelve}** during its Delve Trek and lost all loot.${refundMessage}\n${kcSummary}${xpMessage ? `\n${xpMessage}` : ''}`,
+				message: `${user} Your minion died at Delve **${treks[0].diedAt ?? treks[0].lastDelve}** during its Delve Trek and lost all loot.${refundMessage}\n${kcSummary}${xpMessage ? `\n${xpMessage}` : ''}`,
 				data
 			});
 		}
 
-		const lootBank = new Bank(loot);
+		const lootBank = new Bank();
+		for (const trek of treks) {
+			if (!trek.dead && trek.loot) lootBank.add(trek.loot);
+		}
 
 		const { previousCL, itemsAdded } = await user.transactItems({
 			itemsToAdd: lootBank,
 			collectionLog: true
 		});
 
-		const anyDeath = delveTreks.some(delveTrek => delveTrek.dead);
+		const anyDeath = treks.some(trek => trek.dead);
 
 		const uniqueLoot = lootBank.filter(item => DOOM_UNIQUE_ITEMS.includes(item.id));
 
-		let completionLine = `Your minion ${anyDeath ? 'attempted' : 'completed'} **${delveTreks.length}x** Doom of Mokhaiotl Delve Treks up to Delve **${targetDelve}**.\n`;
+		let completionLine = `Your minion ${anyDeath ? 'attempted' : 'completed'} **${treks.length}x** Doom of Mokhaiotl Delve Treks up to Delve **${targetDelve}**.\n`;
 		if (uniqueLoot.length > 0) {
 			completionLine += `\n${Emoji.Special}**Uniques received:** ${uniqueLoot}\n`;
 		}
@@ -157,18 +160,16 @@ export const doomOfMokhaiotlTask: MinionTask = {
 		});
 
 		const kcSummary = buildKcSummary(newDeepest, newDeepDelves, newTotal);
-		const delveTrekSummary = `\n${delveTreks
+		const trekSummary = `\n${treks
 			.map(
-				(delveTrek, index) =>
+				(trek, index) =>
 					`${
-						delveTrek.loot && DOOM_UNIQUE_ITEMS.some(id => new Bank(delveTrek.loot).has(id))
-							? `${Emoji.Purple} `
-							: ''
-					}Delve Trek ${index + 1}: ${delveTrek.dead ? `died at Delve **${delveTrek.diedAt ?? delveTrek.lastDelve}**` : `reached Delve **${delveTrek.lastDelve}**`}`
+						trek.loot && DOOM_UNIQUE_ITEMS.some(id => new Bank(trek.loot).has(id)) ? `${Emoji.Purple} ` : ''
+					}Delve Trek ${index + 1}: ${trek.dead ? `died at Delve **${trek.diedAt ?? trek.lastDelve}**` : `reached Delve **${trek.lastDelve}**`}`
 			)
 			.join('\n')}`;
 		const refundMessage = refundedItems.length > 0 ? `\n**Refunded supplies:** ${refundedItems}` : '';
-		const content = `${user} ${completionLine}${delveTrekSummary}${
+		const content = `${user} ${completionLine}${trekSummary}${
 			itemsAdded.length === 0 ? "\n\nYou didn't get any loot. Sorry. 😞\n" : ''
 		}${refundMessage}\n${kcSummary}${xpMessage ? `\n${xpMessage}` : ''}`;
 
@@ -184,7 +185,7 @@ export const doomOfMokhaiotlTask: MinionTask = {
 
 		const image = await makeBankImage({
 			bank: itemsAdded,
-			title: `Doom of Mokhaiotl - ${delveTreks.length}x Delve Treks`,
+			title: `Doom of Mokhaiotl - ${treks.length}x Delve Treks`,
 			user,
 			previousCL
 		});

@@ -27,9 +27,9 @@ The implementation should be understandable from its data: everything needed to 
 - If `quantity` is omitted, keep generating Delve Treks until the total simulated duration passes `maxTripLength`:
 
   ```ts
-  const delveTreksToAttempt = quantity ?? Number.POSITIVE_INFINITY;
+  const treksToAttempt = quantity ?? Number.POSITIVE_INFINITY;
 
-  while (delveTreks.length < delveTreksToAttempt) {
+  while (treks.length < treksToAttempt) {
     // Generate and append exactly one complete Delve Trek.
     if (totalDuration > maxTripLength) break;
   }
@@ -65,7 +65,7 @@ All random Doom outcomes are generated before `ActivityManager.startTrip()` writ
 Each Delve Trek record should contain:
 
 ```ts
-interface DoomActivityDelveTrekData {
+interface DoomActivityTrekData {
   dur: number;
   dead: boolean;
   lastDelve: number;
@@ -80,8 +80,7 @@ The Doom task data should contain at least:
 ```ts
 {
   targetDelve: number;
-  delveTreks: DoomActivityDelveTrekData[];
-  loot: ItemBank;
+  treks: DoomActivityTrekData[];
   refund?: ItemBank;
   refundAmmo?: ItemBank;
   fakeDuration: number;
@@ -91,14 +90,12 @@ The Doom task data should contain at least:
 
 Data invariants:
 
-- A successful Delve Trek stores all loot accumulated through its cleared Delves in `delveTrek.loot`.
+- A successful Delve Trek stores all loot accumulated through its cleared Delves in `trek.loot`.
 - A dead Delve Trek has no retained loot.
-- Top-level `loot` is the aggregate of all successful `delveTrek.loot` banks. This is the authoritative bank awarded at completion.
+- The completion activity aggregates all successful `trek.loot` banks and awards that combined loot.
 - The per-Trek loot is retained for auditing, summaries, unique-stop detection, and diagnosing task generation.
-- The completion activity reads and awards top-level `loot`. It must never roll regular loot, uniques, deaths, durations, or any other Doom outcome.
-- Do not treat the existence of `delveTrek.loot` as proof of a unique. Successful Delve Treks normally contain regular loot. Check the actual unique item IDs.
-- Do not regenerate missing loot for legacy rows during completion. A newly generated random result would not be the outcome stored when the task began.
-- New Activity rows use `delveTreks` and `lastDelve`. Completion retains a compatibility read for the former `delves` and `lastWave` names so already-running activities can finish safely.
+- The completion activity must never roll regular loot, uniques, deaths, durations, or any other Doom outcome.
+- Do not treat the existence of `trek.loot` as proof of a unique. Successful Delve Treks normally contain regular loot. Check the actual unique item IDs.
 
 ## Stop on unique
 
@@ -161,11 +158,7 @@ SELECT * FROM activity ORDER BY id DESC;
 
 Observed on 2026-09-08:
 
-- Activities `28278` through `28280` use the former `delves` field, which contains what are now called Delve Trek records.
-- Those rows have top-level aggregate `data.loot`.
 - Successful Delve Trek records contain their complete `loot`; dead Trek records do not.
-- The top-level loot equals the aggregate of successful Delve Trek loot in the inspected rows.
-- Older activities such as `28277` use the legacy `trips` field and contain no stored loot. That historical shape demonstrates the broken completion-time-loot design and should not be copied.
 - Recent target-17 tasks contain several roughly 8-to-19-minute Delve Treks inside one roughly 46-to-66-minute full task, confirming why per-Trek multi-hour supply estimates are incorrect.
 
 Do not put database credentials in this document, logs, source code, or responses.
