@@ -1269,7 +1269,21 @@ ${(
 	}
 ] as const;
 
-export async function statsCommand(user: MUser, type: string): Promise<SendableMessage> {
+export function dataPointNameAutocomplete(value: string) {
+	return dataPoints
+		.map(i => i.name)
+		.filter(i => (!value ? true : i.toLowerCase().includes(value.toLowerCase())))
+		.map(i => ({
+			name: i,
+			value: i
+		}));
+}
+
+export async function statsCommand(
+	user: MUser,
+	type: string,
+	options: { bypassPerkTier?: boolean } = {}
+): Promise<SendableMessage> {
 	const ratelimit = await Cache.tryRatelimit(user.id, 'stats_command');
 	if (!ratelimit.success) {
 		return `This command is on cooldown, you can use it again in ${formatDuration(ratelimit.timeRemainingMs)}.`;
@@ -1277,7 +1291,7 @@ export async function statsCommand(user: MUser, type: string): Promise<SendableM
 	const dataPoint = dataPoints.find(dp => stringMatches(dp.name, type));
 	if (!dataPoint) return 'Invalid stat name.';
 	const { perkTierNeeded } = dataPoint;
-	if (perkTierNeeded !== null && (await user.fetchPerkTier()) < perkTierNeeded) {
+	if (!options.bypassPerkTier && perkTierNeeded !== null && (await user.fetchPerkTier()) < perkTierNeeded) {
 		return `Sorry, you need to be a Tier ${perkTierNeeded - 1} Patron to see this stat.`;
 	}
 	const userStats = await fetchUserStats(user.id);

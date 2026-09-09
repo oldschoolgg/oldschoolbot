@@ -1,4 +1,4 @@
-import { dataPoints, statsCommand } from '@/mahoji/lib/abstracted_commands/statCommand.js';
+import { dataPointNameAutocomplete, statsCommand } from '@/mahoji/lib/abstracted_commands/statCommand.js';
 
 export const dataCommand = defineCommand({
 	name: 'data',
@@ -12,13 +12,7 @@ export const dataCommand = defineCommand({
 			name: 'name',
 			description: 'The data you want to see.',
 			autocomplete: async ({ value }: StringAutoComplete) => {
-				return dataPoints
-					.map(i => i.name)
-					.filter(i => (!value ? true : i.toLowerCase().includes(value.toLowerCase())))
-					.map(i => ({
-						name: i,
-						value: i
-					}));
+				return dataPointNameAutocomplete(value);
 			},
 			required: true
 		}
