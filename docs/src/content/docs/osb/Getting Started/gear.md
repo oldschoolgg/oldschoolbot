@@ -4,6 +4,8 @@ title: "Gear"
 
 Your minion has 8 gear setups: Melee, Mage, Range, Skilling, Misc, Wildy, Fashion, and Other. You can equip items in each setup depending on the activity you're doing. For example, after questing, to equip [[Barrows gloves]] into your Range setup, use [[/gear equip gear_setup\:Range item\:Barrows gloves]]. If you already had [[Mithril gloves]] equipped, it will be automatically unequipped.
 
+If [[Avernic treads (max)]] are equipped in any Melee, Mage, or Range setup, they count as equipped in all three of those setups for combat checks and gear stats.
+
 You can also save entire setups with [[/gearpresets]] for quick re-equipping. Some gear setups are locked to Tier 3 Patron or higher.
 
 ## Commands
