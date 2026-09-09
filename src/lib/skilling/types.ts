@@ -9,6 +9,7 @@ export const SkillsArray = [
 	'agility',
 	'cooking',
 	'fishing',
+	'sailing',
 	'mining',
 	'smithing',
 	'woodcutting',
