@@ -1,8 +1,24 @@
 import { Bank, EGear } from 'oldschooljs';
 import { describe, expect, it, test } from 'vitest';
 
+import type { UserFullGearSetup } from '@/lib/gear/types.js';
+import { ChargeBank } from '@/lib/structures/Bank.js';
+import { Gear } from '@/lib/structures/Gear.js';
 import { GearBank } from '@/lib/structures/GearBank.js';
 import { defaultSkillsAsXPObj, makeGearBank } from './utils.js';
+
+function makeTestGear(): UserFullGearSetup {
+	return {
+		melee: new Gear(),
+		mage: new Gear(),
+		range: new Gear(),
+		fashion: new Gear(),
+		wildy: new Gear(),
+		skilling: new Gear(),
+		misc: new Gear(),
+		other: new Gear()
+	};
+}
 
 describe('GearBank', () => {
 	it('should calculate combat level', () => {
@@ -67,5 +83,29 @@ describe('GearBank', () => {
 
 		gb1.gear.wildy.equip(EGear.ABYSSAL_WHIP);
 		expect(gb1.wildyGearCheck(EGear.ABYSSAL_WHIP, true)).toBe(true);
+	});
+
+	test('shares Avernic treads (max) across primary combat setups', () => {
+		const gear = makeTestGear();
+		gear.range.equip('Avernic treads (max)');
+		gear.melee.equip('Dragon boots');
+		const gb = new GearBank({
+			gear,
+			bank: new Bank(),
+			chargeBank: new ChargeBank(),
+			skillsAsXP: defaultSkillsAsXPObj,
+			minionName: 'Minion'
+		});
+
+		expect(gb.gear.melee.hasEquipped('Avernic treads (max)', false, false)).toBe(true);
+		expect(gb.gear.mage.hasEquipped('Avernic treads (max)', false, false)).toBe(true);
+		expect(gb.gear.range.hasEquipped('Avernic treads (max)', false, false)).toBe(true);
+		expect(gb.gear.skilling.hasEquipped('Avernic treads (max)', false, false)).toBe(false);
+		expect(gb.gear.melee.hasEquipped('Dragon boots', false, false)).toBe(true);
+		expect(gb.gear.melee.allItemsBank().equals(new Bank().add('Dragon boots'))).toBe(true);
+		expect(gb.gear.mage.allItemsBank().equals(new Bank())).toBe(true);
+		expect(gb.gear.range.allItemsBank().equals(new Bank().add('Avernic treads (max)'))).toBe(true);
+		expect(gb.gear.melee.stats.melee_strength).toBeGreaterThan(0);
+		expect(gb.gear.mage.stats.attack_magic).toBeGreaterThan(0);
 	});
 });
