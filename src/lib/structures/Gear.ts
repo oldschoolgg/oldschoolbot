@@ -15,7 +15,7 @@ import {
 import { notEmpty } from '@oldschoolgg/toolkit';
 import { Bank, type Item, Items, itemID, resolveItems } from 'oldschooljs';
 import type { EGear } from 'oldschooljs/EGear';
-import { clone, isDeepEqual } from 'remeda';
+import {clone, isDeepEqual} from 'remeda';
 
 import type { GearPreset } from '@/prisma/main.js';
 import { getSimilarItems, inverseSimilarItems } from '@/lib/data/similarItems.js';
@@ -169,11 +169,18 @@ export class Gear {
 		return clone(this.setup);
 	}
 
-	allItems(similar = false): number[] {
+	allItems(similar: true, withQuantities?: boolean): number[];
+	allItems(similar?: false, withQuantities?: false) : number[];
+	allItems(similar: false, withQuantities: true) : [number, number][];
+	allItems(similar = false, withQuantities = false): number[] | [number, number][] {
 		const values = new Set<number>();
+		const valuesWithQuantities: [number, number][] = [];
+		let returnQuantities = withQuantities && !similar;
+
 		for (const val of Object.values(this.setup)) {
 			if (val?.item) {
 				values.add(val.item);
+				valuesWithQuantities.push([val.item, val.quantity ?? 1]);
 			}
 		}
 
@@ -191,7 +198,7 @@ export class Gear {
 			}
 		}
 
-		return Array.from(values);
+		return returnQuantities ? valuesWithQuantities : Array.from(values);
 	}
 
 	allItemsBank() {
@@ -268,19 +275,15 @@ export class Gear {
 	}
 
 	toString() {
-		const allItems = this.allItems(false);
+		const allItems = this.allItems(false, true);
 		if (allItems.length === 0) {
 			return 'No items';
 		}
 
 		const items: string[] = [];
-		for (const slot of Object.values(this.setup)) {
-			if (!slot?.quantity) continue;
-
-			const qty = slot.quantity > 1 ? `${slot.quantity}x ` : '';
-			const name = Items.itemNameFromId(Number(slot.item)) ?? `Unknown Item? (${slot.item})`;
-
-			items.push(`${qty}${name}`);
+		for (const [item, qty] of allItems.sort((a,b) => a[0] - b[0])) {
+			const name = Items.itemNameFromId(Number(item)) ?? `Unknown Item? (${item})`;
+			items.push(`${qty > 1 ? `${qty}x ` : ''}${name}`);
 		}
 		return items.join(', ');
 	}

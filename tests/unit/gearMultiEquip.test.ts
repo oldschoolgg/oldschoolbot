@@ -85,7 +85,7 @@ describe('Multi-equip Gear Test', () => {
 		const result = gearEquipMultiImpl(testUser2, 'melee', testInput);
 		const resultGear = new Gear(result.equippedGear);
 		expect(result.equipBank!.toString()).toEqual('999x Dragon arrow, 1x Twisted bow');
-		expect(result.unequipBank!.toString()).toEqual('1x Dragonfire shield, 500x Rune arrow, 1x Zaryte crossbow');
+		expect(result.unequipBank!.toString()).toEqual('Dragonfire shield, 500x Rune arrow, Zaryte crossbow');
 		expect(result.skillFailBank!.toString()).toEqual('No items');
 		expect(resultGear.toString()).toEqual(
 			'Dragon platelegs, Dragon arrow, Armadyl helmet, Twisted bow, Dragon platebody'
