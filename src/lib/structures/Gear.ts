@@ -282,10 +282,6 @@ export class Gear {
 
 			items.push(`${qty}${name}`);
 		}
-
-		for (const item of allItems.sort((a, b) => a - b)) {
-			items.push(Items.itemNameFromId(item) ?? `Unknown Item? (${item})`);
-		}
 		return items.join(', ');
 	}
 

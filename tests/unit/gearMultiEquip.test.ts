@@ -164,7 +164,7 @@ describe('Multi-equip Gear Test', () => {
 		const resultGear = new Gear(result.equippedGear);
 		expect(result.equipBank!.toString()).toEqual('2.2k Dragon dart');
 		expect(result.unequipBank!.toString()).toEqual('1x Twisted bow');
-		expect(resultGear.toString()).toEqual('Dragon dart');
+		expect(resultGear.toString()).toEqual('2222x Dragon dart');
 
 		expect(resultGear.get('weapon')!.quantity).toEqual(2222);
 	});
@@ -189,7 +189,7 @@ describe('Multi-equip Gear Test', () => {
 		const resultGear = new Gear(result.equippedGear);
 		expect(result.equipBank!.toString()).toEqual('2.2k Dragon dart');
 		expect(result.unequipBank!.toString()).toEqual('500x Rune dart');
-		expect(resultGear.toString()).toEqual('Dragon dart');
+		expect(resultGear.toString()).toEqual('2222x Dragon dart');
 
 		expect(resultGear.get('weapon')!.quantity).toEqual(2222);
 	});
