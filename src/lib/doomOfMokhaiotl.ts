@@ -174,7 +174,7 @@ export const doomDelves: DelveEntry[] = Array.from({ length: MAX_DELVE }, (_, i)
 });
 
 function experienceScore(deepDelves: number, totalDelves: number): number {
-	return deepDelves * 2 + Math.floor(totalDelves / 10);
+	return totalDelves + deepDelves * 2;
 }
 
 type DoomUser = OSInteraction['user'];
@@ -669,9 +669,10 @@ function getDoomDelveCost(options: {
 	const delvesForCost = result.lastWave;
 	const fullDurationMinutes = result.duration / Time.Minute;
 	const score = experienceScore(deepDelves, totalDelves);
-	const experienceFactor = Math.min(score / 1000, 1);
-	const brewsPerMinute = Math.max(0.2, 0.6 - experienceFactor * 0.3);
-	const restoresPerMinute = Math.max(0.3, 0.3 + experienceFactor * 0.3);
+	const experienceFactor = Math.min(score / 20, 1);
+	const learningFactor = 1 - experienceFactor;
+	const brewsPerMinute = 0.2 + learningFactor * 0.6;
+	const restoresPerMinute = 0.1 + learningFactor * 0.3;
 	const brewsUsed = Math.min(10, Math.max(1, Math.ceil(fullDurationMinutes * brewsPerMinute)));
 	const restoresUsed = Math.min(10, Math.max(1, Math.ceil(fullDurationMinutes * restoresPerMinute)));
 	const rangingUsed = Math.min(10, Math.max(1, Math.ceil(delvesForCost / 5)));
@@ -806,7 +807,7 @@ function buildDoomDeathChanceLine(deathChances: number[]): string {
 
 export async function doomCommand(
 	itx: OSInteraction,
-	targetDelve: number,
+	targetDelve = MAX_DELVE,
 	stopOnUnique = true,
 	disableZcbBoost = false,
 	quantity?: number,

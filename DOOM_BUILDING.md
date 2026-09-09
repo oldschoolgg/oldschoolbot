@@ -19,6 +19,7 @@ The implementation should be understandable from its data: everything needed to 
 
 ## Task planning
 
+- `target_delve` is optional. When omitted, use `MAX_DELVE` as the internal ceiling so each delve continues until it receives a unique, dies, or reaches the supported maximum.
 - If the user supplies `quantity`, attempt that many delves unless the requested number exceeds the full task-length allowance or the user lacks supplies. Only reveal a maximum delve count when the user explicitly requested too many.
 - If `quantity` is omitted, keep generating delves until the total simulated duration passes `maxTripLength`:
 
@@ -116,6 +117,7 @@ Keep these concepts separate:
 Rules:
 
 - Estimate enough supplies for the planned full task without revealing deaths or early unique stops.
+- Brew and restore use has a steep learning premium. Count cleared levels as experience, give deep levels extra weight, and reach the experienced per-minute rates at roughly 20 experience points. Both costs must fall with experience.
 - Secretly calculate actual use from the stored delve outcomes.
 - Store all refunds in the Activity TaskData and return them only at completion.
 - Never rely on `Bank.remove()` underflow behavior as validation that accounting is correct. Explicitly verify the estimate covers simulated use.

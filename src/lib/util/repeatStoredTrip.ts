@@ -796,7 +796,7 @@ const tripHandlers: {
 		args: (data: DoomTaskOptions) => ({
 			doom: {
 				target_delve: data.targetDelve,
-				stop_on_unique: data.stopOnUnique ?? true,
+				stop_on_unique: data.stopOnUnique,
 				disable_zcb_boost: data.disableZcbBoost === true ? true : undefined
 			}
 		})

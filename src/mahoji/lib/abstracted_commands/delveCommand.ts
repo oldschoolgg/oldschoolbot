@@ -5,7 +5,7 @@ export const delvesCommand = defineCommand({
 	description: 'Send your minion to attempt a delve boss.',
 	attributes: {
 		requiresMinion: true,
-		examples: ['/delves doom target_delve:1']
+		examples: ['/delves doom']
 	},
 	options: [
 		{
@@ -16,8 +16,8 @@ export const delvesCommand = defineCommand({
 				{
 					type: 'Integer',
 					name: 'target_delve',
-					description: 'Which delve level your minion should target (1-30).',
-					required: true,
+					description: 'Target level (default: continue until a unique or death).',
+					required: false,
 					min_value: 1,
 					max_value: 30
 				},
@@ -47,7 +47,7 @@ export const delvesCommand = defineCommand({
 		if (options.doom) {
 			return doomCommand(
 				interaction,
-				options.doom.target_delve as number,
+				options.doom.target_delve as number | undefined,
 				options.doom.stop_on_unique ?? true,
 				Boolean((options.doom as { disable_zcb_boost?: boolean }).disable_zcb_boost),
 				options.doom.quantity as number | undefined,

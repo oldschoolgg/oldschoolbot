@@ -1549,6 +1549,18 @@ export const miscBossKillables: KillableMonster[] = [
 			},
 			{
 				[itemID('Lightbearer')]: 2
+			},
+			{
+				[itemID('Saradomin godsword')]: 5
+			},
+			{
+				[itemID('Elder maul')]: 5
+			},
+			{
+				[itemID('Emberlight')]: 3
+			},
+			{
+				[itemID('Purging staff')]: 3
 			}
 		],
 		equippedItemBoosts: [
