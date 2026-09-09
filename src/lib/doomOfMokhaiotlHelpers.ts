@@ -37,17 +37,17 @@ const DOOM_MELEE_XP_PER_HOUR = 5_000;
 
 const DOOM_BASE_DEATH_CHANCES = [3, 8, 13, 18, 23, 28, 48, 73, 75, 77, 79, 80, 81, 83, 85];
 const DOOM_LOWEST_DEATH_CHANCES = [3, 5, 7, 9, 11, 13, 15, 17];
-const DOOM_WAVE_LEARNING_COMPLETIONS = 10;
-const DOOM_EARLY_WAVE_DURATION = 1.75 * Time.Minute;
-const DOOM_MID_WAVE_DURATION = 2.5 * Time.Minute;
-const DOOM_DEEP_WAVE_DURATION = 2.35 * Time.Minute;
+const DOOM_DELVE_LEARNING_COMPLETIONS = 10;
+const DOOM_EARLY_DELVE_DURATION = 1.75 * Time.Minute;
+const DOOM_MID_DELVE_DURATION = 2.5 * Time.Minute;
+const DOOM_DEEP_DELVE_DURATION = 2.35 * Time.Minute;
 
 function calculateDoomDurationWeight(targetDelve: number): number {
 	let totalBase = 0;
 	for (let d = 1; d <= targetDelve; d++) {
-		if (d <= 5) totalBase += DOOM_EARLY_WAVE_DURATION;
-		else if (d <= 8) totalBase += DOOM_MID_WAVE_DURATION;
-		else totalBase += DOOM_DEEP_WAVE_DURATION;
+		if (d <= 5) totalBase += DOOM_EARLY_DELVE_DURATION;
+		else if (d <= 8) totalBase += DOOM_MID_DELVE_DURATION;
+		else totalBase += DOOM_DEEP_DELVE_DURATION;
 	}
 	return totalBase;
 }
@@ -63,7 +63,8 @@ const ARROW_TIER_IDS: { mod: number; ids: number[] }[] = [
 	{ mod: 0.12, ids: resolveItems(['Bronze arrow']) }
 ];
 
-export type DoomWaveCompletions = Record<number, number>;
+// Keys are individual in-game Delve numbers; values are the user's completions of each Delve.
+export type DoomDelveCompletions = Record<number, number>;
 export type DoomMeleePunishWeapon = 'noxious_halberd' | 'crystal_halberd' | 'dual_macuahuitl';
 export type DoomVenomProtectionOption = (typeof DOOM_VENOM_PROTECTION_OPTIONS)[number];
 export type DoomVenomProtectionPotionName = DoomVenomProtectionOption['potionName'];
@@ -103,15 +104,15 @@ export function calculateDoomEarlyDeathSupplyRefund(options: {
 	return refund;
 }
 
-export function normaliseDoomWaveCompletions(rawCompletions: unknown): DoomWaveCompletions {
+export function normaliseDoomDelveCompletions(rawCompletions: unknown): DoomDelveCompletions {
 	if (!rawCompletions || typeof rawCompletions !== 'object') return {};
-	const completions: DoomWaveCompletions = {};
-	for (const [rawWave, rawCount] of Object.entries(rawCompletions)) {
-		const wave = Number(rawWave);
+	const completions: DoomDelveCompletions = {};
+	for (const [rawDelve, rawCount] of Object.entries(rawCompletions)) {
+		const delve = Number(rawDelve);
 		const count = Number(rawCount);
-		if (!Number.isInteger(wave) || wave < 1 || wave > MAX_DELVE) continue;
+		if (!Number.isInteger(delve) || delve < 1 || delve > MAX_DELVE) continue;
 		if (!Number.isInteger(count) || count < 1) continue;
-		completions[wave] = count;
+		completions[delve] = count;
 	}
 	return completions;
 }
@@ -124,23 +125,23 @@ function getDoomLowestDeathChance(delve: number): number {
 	return DOOM_LOWEST_DEATH_CHANCES[delve - 8] ?? 20;
 }
 
-function getDoomWaveLearningProgress(delve: number, waveCompletions: DoomWaveCompletions): number {
-	return clamp((waveCompletions[delve] ?? 0) / DOOM_WAVE_LEARNING_COMPLETIONS, { min: 0, max: 1 });
+function getDoomDelveLearningProgress(delve: number, delveCompletions: DoomDelveCompletions): number {
+	return clamp((delveCompletions[delve] ?? 0) / DOOM_DELVE_LEARNING_COMPLETIONS, { min: 0, max: 1 });
 }
 
-function isDoomWaveLearned(delve: number, waveCompletions: DoomWaveCompletions): boolean {
-	return delve <= 7 && (waveCompletions[delve] ?? 0) >= delve;
+function isDoomDelveLearned(delve: number, delveCompletions: DoomDelveCompletions): boolean {
+	return delve <= 7 && (delveCompletions[delve] ?? 0) >= delve;
 }
 
-export function calculateDeathChance(delve: number, waveCompletions: DoomWaveCompletions = {}): number {
-	if (isDoomWaveLearned(delve, waveCompletions)) return 0;
+export function calculateDeathChance(delve: number, delveCompletions: DoomDelveCompletions = {}): number {
+	if (isDoomDelveLearned(delve, delveCompletions)) return 0;
 
 	const base = getDoomBaseDeathChance(delve);
 	let chance = base;
 
 	if (delve >= 8) {
 		const minimumChance = getDoomLowestDeathChance(delve);
-		const learningProgress = getDoomWaveLearningProgress(delve, waveCompletions);
+		const learningProgress = getDoomDelveLearningProgress(delve, delveCompletions);
 		const learnableChance = base - minimumChance;
 		chance = Math.max(minimumChance, base - learnableChance * learningProgress);
 	}
@@ -148,34 +149,34 @@ export function calculateDeathChance(delve: number, waveCompletions: DoomWaveCom
 	return clamp(chance, { min: 0.1, max: 95 });
 }
 
-export function calculateDoomDeathChances(targetDelve: number, waveCompletions: DoomWaveCompletions = {}): number[] {
-	return Array.from({ length: targetDelve }, (_, index) => calculateDeathChance(index + 1, waveCompletions));
+export function calculateDoomDeathChances(targetDelve: number, delveCompletions: DoomDelveCompletions = {}): number[] {
+	return Array.from({ length: targetDelve }, (_, index) => calculateDeathChance(index + 1, delveCompletions));
 }
 
-export function calculateDoomRunDeathChance(deathChances: number[]): {
+export function calculateDoomDelveTrekDeathChance(deathChances: number[]): {
 	deathChance: number;
-	expectedDeathWave: number | null;
+	expectedDeathDelve: number | null;
 } {
 	let survivalChance = 1;
 	let deathChance = 0;
-	let expectedDeathWave = 0;
+	let expectedDeathDelve = 0;
 
-	for (const [index, waveDeathChance] of deathChances.entries()) {
-		const chanceToDieHere = survivalChance * (waveDeathChance / 100);
+	for (const [index, delveDeathChance] of deathChances.entries()) {
+		const chanceToDieHere = survivalChance * (delveDeathChance / 100);
 		deathChance += chanceToDieHere;
-		expectedDeathWave += (index + 1) * chanceToDieHere;
-		survivalChance *= 1 - waveDeathChance / 100;
+		expectedDeathDelve += (index + 1) * chanceToDieHere;
+		survivalChance *= 1 - delveDeathChance / 100;
 	}
 
 	return {
 		deathChance: deathChance * 100,
-		expectedDeathWave: deathChance > 0 ? expectedDeathWave / deathChance : null
+		expectedDeathDelve: deathChance > 0 ? expectedDeathDelve / deathChance : null
 	};
 }
 
 export function calculateDoomWipeChanceBeforeTarget(deathChances: number[]): number {
 	if (deathChances.length <= 1) return 0;
-	return calculateDoomRunDeathChance(deathChances.slice(0, -1)).deathChance;
+	return calculateDoomDelveTrekDeathChance(deathChances.slice(0, -1)).deathChance;
 }
 
 export function formatDoomDeathChance(chance: number): string {
@@ -290,7 +291,8 @@ export function getDoomMeleePunishWeaponName(weapon: DoomMeleePunishWeapon): str
 	}
 }
 
-export function calculateDoomDelveDuration(
+// Calculates the duration of one complete Delve Trek through the requested individual Delves.
+export function calculateDoomDelveTrekDuration(
 	targetDelve: number,
 	hasTbow: boolean,
 	hasSBow: boolean,
@@ -347,19 +349,19 @@ export function applyDoomSkillBoost(skillsAsLevels: Required<Skills>, duration: 
 export function calculateDoomXP({
 	duration,
 	targetDelve,
-	totalWavesCleared,
+	totalDelvesCleared,
 	minimal = true
 }: {
 	duration: number;
 	targetDelve: number;
-	totalWavesCleared: number;
+	totalDelvesCleared: number;
 	minimal?: boolean;
 }) {
-	const completionRatio = clamp(totalWavesCleared / targetDelve, { min: 0, max: 1 });
+	const completionRatio = clamp(totalDelvesCleared / targetDelve, { min: 0, max: 1 });
 	const hours = duration / Time.Hour;
 	const xpMultiplier = hours * completionRatio;
 	const hitpointsXPPerHour = (DOOM_RANGED_XP_PER_HOUR + DOOM_MAGIC_XP_PER_HOUR + DOOM_MELEE_XP_PER_HOUR) / 3;
-	const debugId = `doom_xp duration[${duration}] target[${targetDelve}] cleared[${totalWavesCleared}]`;
+	const debugId = `doom_xp duration[${duration}] target[${targetDelve}] cleared[${totalDelvesCleared}]`;
 
 	return new XPBank()
 		.add('ranged', Math.floor(DOOM_RANGED_XP_PER_HOUR * xpMultiplier), {

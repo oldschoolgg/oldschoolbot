@@ -24,13 +24,13 @@ export const delvesCommand = defineCommand({
 				{
 					type: 'Boolean',
 					name: 'stop_on_unique',
-					description: 'Stop each delve early if you receive a unique drop (default: true).',
+					description: 'Stop each Delve Trek early if you receive a unique drop (default: true).',
 					required: false
 				},
 				{
 					type: 'Integer',
 					name: 'quantity',
-					description: 'How many Doom delves to attempt.',
+					description: 'How many Doom Delve Treks to attempt.',
 					required: false,
 					min_value: 1
 				},
