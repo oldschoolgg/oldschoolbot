@@ -2,7 +2,12 @@ import type { GearSetup } from '@oldschoolgg/gear';
 import type { IBirdhouseData, IBlowpipeData, IFarmingContract } from '@oldschoolgg/schemas';
 import type { ItemBank } from 'oldschooljs';
 
-import type { AutoFarmFilterEnum, bank_sort_method_enum, CropUpgradeType } from '@/prisma/main.js';
+import type {
+	AutoFarmFilterEnum,
+	bank_sort_method_enum,
+	CropUpgradeType,
+	zero_time_activity_type_enum
+} from '@/prisma/main.js';
 import type { PatchTypes } from '@/lib/skilling/skills/farming/index.js';
 import type { FarmingPatchSettingsKey } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { FarmingPreferredSeeds } from '@/lib/skilling/skills/farming/utils/types.js';
@@ -29,7 +34,11 @@ type PrismaIntArrayKeys =
 
 type PrismaStringArrayKeys = 'attack_style' | 'completed_achievement_diaries';
 
-type PrismaNullableIntKeys = 'minion_equippedPet' | 'gear_template';
+type PrismaNullableIntKeys =
+	| 'minion_equippedPet'
+	| 'gear_template'
+	| 'zero_time_activity_primary_item'
+	| 'zero_time_activity_fallback_item';
 
 type PrismaIntUpdateInput = number | { increment: number } | { decrement: number };
 
@@ -74,6 +83,8 @@ export type FullUserUpdateInput = Partial<
 		bank_sort_method: bank_sort_method_enum | null;
 		auto_farm_filter: AutoFarmFilterEnum;
 		minion_defaultCompostToUse: CropUpgradeType;
+		zero_time_activity_primary_type: zero_time_activity_type_enum | null;
+		zero_time_activity_fallback_type: zero_time_activity_type_enum | null;
 		minion_farmingPreferredContract: boolean;
 		minion_farmingPreferredSeeds: FarmingPreferredSeeds | null;
 	} & Record<PrismaIntArrayKeys, PrismaArrayUpdateInput<number>> &

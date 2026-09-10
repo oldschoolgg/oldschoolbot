@@ -1,3 +1,5 @@
+import { Items } from 'oldschooljs';
+
 import type { Fletchable } from '@/lib/skilling/types.js';
 import Arrows from './arrows.js';
 import Atlatl from './atlatl.js';
@@ -29,7 +31,7 @@ export const Fletchables: Fletchable[] = [
 	...Atlatl
 ];
 
-export const zeroTimeFletchables: Fletchable[] = [
+const zeroTimeFletchableCandidates: Fletchable[] = [
 	BroadArrows,
 	BroadBolts,
 	...Darts,
@@ -40,3 +42,18 @@ export const zeroTimeFletchables: Fletchable[] = [
 	...TippedDragonBolts,
 	...Javelins
 ];
+
+export const zeroTimeFletchables: Fletchable[] = zeroTimeFletchableCandidates.filter(fletchable => {
+	const outputItem = Items.getOrThrow(fletchable.id);
+	if (!outputItem.stackable) {
+		return false;
+	}
+
+	for (const [item] of fletchable.inputItems.items()) {
+		if (!item.stackable) {
+			return false;
+		}
+	}
+
+	return true;
+});
