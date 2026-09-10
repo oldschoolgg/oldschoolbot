@@ -208711,5 +208711,760 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false
+	},
+	"34068": {
+		"name": "Sawmill coupon (teak plank)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false,
+		"lowalch": 40,
+		"highalch": 60,
+		"cost": 100
+	},
+	"34070": {
+		"name": "Sawmill coupon (mahogany plank)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false,
+		"lowalch": 40,
+		"highalch": 60,
+		"cost": 100
+	},
+	"34072": {
+		"name": "Sawmill coupon (camphor plank)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false,
+		"lowalch": 40,
+		"highalch": 60,
+		"cost": 100
+	},
+	"34074": {
+		"name": "Sawmill coupon (ironwood plank)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false,
+		"lowalch": 40,
+		"highalch": 60,
+		"cost": 100
+	},
+	"34377": {
+		"name": "Tiny port coin bag",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34379": {
+		"name": "Small port coin bag",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34381": {
+		"name": "Medium port coin bag",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34383": {
+		"name": "Large port coin bag",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34385": {
+		"name": "Huge port coin bag",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34388": {
+		"name": "Big red button",
+		"members": true,
+		"equipable": false
+	},
+	"34390": {
+		"name": "Lanscape coins",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"stackable": true,
+		"equipable": false
+	},
+	"34401": {
+		"name": "Necklace of fangs",
+		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"equipable": true,
+		"lowalch": 20000,
+		"highalch": 30000,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": 0,
+			"attack_ranged": 12,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 0,
+			"ranged_strength": 1,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "neck",
+			"requirements": null
+		},
+		"cost": 50000,
+		"price": 78028
+	},
+	"34404": {
+		"name": "Air diamond",
+		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"equipable": false,
+		"lowalch": 8000,
+		"highalch": 12000,
+		"cost": 20000,
+		"price": 367000
+	},
+	"34407": {
+		"name": "Amulet of air",
+		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"equipable": true,
+		"lowalch": 8400,
+		"highalch": 12600,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": 10,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "neck",
+			"requirements": null
+		},
+		"cost": 21000,
+		"price": 374391
+	},
+	"34410": {
+		"name": "Water sapphire",
+		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"equipable": false,
+		"lowalch": 8000,
+		"highalch": 12000,
+		"cost": 20000,
+		"price": 283891
+	},
+	"34413": {
+		"name": "Amulet of water",
+		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"equipable": true,
+		"lowalch": 8400,
+		"highalch": 12600,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": 10,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "neck",
+			"requirements": null
+		},
+		"cost": 21000,
+		"price": 331746
+	},
+	"34416": {
+		"name": "Earth emerald",
+		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"equipable": false,
+		"lowalch": 8000,
+		"highalch": 12000,
+		"cost": 20000,
+		"price": 520000
+	},
+	"34419": {
+		"name": "Amulet of earth",
+		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"equipable": true,
+		"lowalch": 8400,
+		"highalch": 12600,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": 10,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "neck",
+			"requirements": null
+		},
+		"cost": 21000,
+		"price": 516862
+	},
+	"34422": {
+		"name": "Fire ruby",
+		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"equipable": false,
+		"lowalch": 8000,
+		"highalch": 12000,
+		"cost": 20000,
+		"price": 143259
+	},
+	"34425": {
+		"name": "Amulet of fire",
+		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"equipable": true,
+		"lowalch": 8400,
+		"highalch": 12600,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": 10,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "neck",
+			"requirements": null
+		},
+		"cost": 21000,
+		"price": 147500
+	},
+	"34428": {
+		"name": "Elemental amulet",
+		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"equipable": true,
+		"lowalch": 33600,
+		"highalch": 50400,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": 10,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "neck",
+			"requirements": null
+		},
+		"cost": 84000,
+		"price": 1574911
+	},
+	"34431": {
+		"name": "Labrador",
+		"members": true
+	},
+	"34433": {
+		"name": "Labrador",
+		"members": true
+	},
+	"34435": {
+		"name": "Labrador",
+		"members": true
+	},
+	"34437": {
+		"name": "Chihuahua",
+		"members": true
+	},
+	"34439": {
+		"name": "Chihuahua",
+		"members": true
+	},
+	"34441": {
+		"name": "Chihuahua",
+		"members": true
+	},
+	"34443": {
+		"name": "Border Collie",
+		"members": true
+	},
+	"34445": {
+		"name": "Border Collie",
+		"members": true
+	},
+	"34447": {
+		"name": "Border Collie",
+		"members": true
+	},
+	"34449": {
+		"name": "Corgi",
+		"members": true
+	},
+	"34451": {
+		"name": "Corgi",
+		"members": true
+	},
+	"34453": {
+		"name": "Corgi",
+		"members": true
+	},
+	"34455": {
+		"name": "Greyhound",
+		"members": true
+	},
+	"34457": {
+		"name": "Greyhound",
+		"members": true
+	},
+	"34459": {
+		"name": "Greyhound",
+		"members": true
+	},
+	"34461": {
+		"name": "Husky",
+		"members": true
+	},
+	"34463": {
+		"name": "Husky",
+		"members": true
+	},
+	"34465": {
+		"name": "Husky",
+		"members": true
+	},
+	"34467": {
+		"name": "Pug",
+		"members": true
+	},
+	"34469": {
+		"name": "Pug",
+		"members": true
+	},
+	"34471": {
+		"name": "Pug",
+		"members": true
+	},
+	"34473": {
+		"name": "Samoyed",
+		"members": true
+	},
+	"34475": {
+		"name": "Samoyed",
+		"members": true
+	},
+	"34477": {
+		"name": "Samoyed",
+		"members": true
+	},
+	"34479": {
+		"name": "Bernese Mountain Dog",
+		"members": true
+	},
+	"34481": {
+		"name": "Bernese Mountain Dog",
+		"members": true
+	},
+	"34483": {
+		"name": "Bernese Mountain Dog",
+		"members": true
+	},
+	"34485": {
+		"name": "Shiba",
+		"members": true
+	},
+	"34487": {
+		"name": "Shiba",
+		"members": true
+	},
+	"34489": {
+		"name": "Shiba",
+		"members": true
+	},
+	"34491": {
+		"name": "Spaniel",
+		"members": true
+	},
+	"34493": {
+		"name": "Spaniel",
+		"members": true
+	},
+	"34495": {
+		"name": "Spaniel",
+		"members": true
+	},
+	"34497": {
+		"name": "Yorkie",
+		"members": true
+	},
+	"34499": {
+		"name": "Yorkie",
+		"members": true
+	},
+	"34501": {
+		"name": "Yorkie",
+		"members": true
+	},
+	"34503": {
+		"name": "Labrador puppy",
+		"members": true
+	},
+	"34505": {
+		"name": "Labrador puppy",
+		"members": true
+	},
+	"34507": {
+		"name": "Labrador puppy",
+		"members": true
+	},
+	"34509": {
+		"name": "Husky puppy",
+		"members": true
+	},
+	"34511": {
+		"name": "Husky puppy",
+		"members": true
+	},
+	"34513": {
+		"name": "Husky puppy",
+		"members": true
+	},
+	"34515": {
+		"name": "Chihuahua puppy",
+		"members": true
+	},
+	"34517": {
+		"name": "Chihuahua puppy",
+		"members": true
+	},
+	"34519": {
+		"name": "Chihuahua puppy",
+		"members": true
+	},
+	"34521": {
+		"name": "Border Collie puppy",
+		"members": true
+	},
+	"34523": {
+		"name": "Border Collie puppy",
+		"members": true
+	},
+	"34525": {
+		"name": "Border Collie puppy",
+		"members": true
+	},
+	"34527": {
+		"name": "Corgi puppy",
+		"members": true
+	},
+	"34529": {
+		"name": "Corgi puppy",
+		"members": true
+	},
+	"34531": {
+		"name": "Corgi puppy",
+		"members": true
+	},
+	"34533": {
+		"name": "Greyhound puppy",
+		"members": true
+	},
+	"34535": {
+		"name": "Greyhound puppy",
+		"members": true
+	},
+	"34537": {
+		"name": "Greyhound puppy",
+		"members": true
+	},
+	"34539": {
+		"name": "Pug puppy",
+		"members": true
+	},
+	"34541": {
+		"name": "Pug puppy",
+		"members": true
+	},
+	"34543": {
+		"name": "Pug puppy",
+		"members": true
+	},
+	"34545": {
+		"name": "Samoyed puppy",
+		"members": true
+	},
+	"34547": {
+		"name": "Samoyed puppy",
+		"members": true
+	},
+	"34549": {
+		"name": "Samoyed puppy",
+		"members": true
+	},
+	"34551": {
+		"name": "Bernese Mountain Dog puppy",
+		"members": true
+	},
+	"34553": {
+		"name": "Bernese Mountain Dog puppy",
+		"members": true
+	},
+	"34555": {
+		"name": "Bernese Mountain Dog puppy",
+		"members": true
+	},
+	"34557": {
+		"name": "Shiba puppy",
+		"members": true
+	},
+	"34559": {
+		"name": "Shiba puppy",
+		"members": true
+	},
+	"34561": {
+		"name": "Shiba puppy",
+		"members": true
+	},
+	"34563": {
+		"name": "Spaniel puppy",
+		"members": true
+	},
+	"34567": {
+		"name": "Spaniel puppy",
+		"members": true
+	},
+	"34575": {
+		"name": "Shell",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
+	},
+	"34576": {
+		"name": "Shell",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
+	},
+	"34577": {
+		"name": "Shell",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
+	},
+	"34578": {
+		"name": "Shell",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
+	},
+	"34579": {
+		"name": "Shell",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
+	},
+	"34580": {
+		"name": "Shell",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
+	},
+	"34581": {
+		"name": "Shell",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
+	},
+	"34582": {
+		"name": "Shell",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
+	},
+	"34583": {
+		"name": "Shell",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
+	},
+	"34584": {
+		"name": "Weathered rosewood plank",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
+	},
+	"34585": {
+		"name": "Battered barrel",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
+	},
+	"34586": {
+		"name": "Sea-soaked bowstring",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
+	},
+	"34587": {
+		"name": "Instrument",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
+	},
+	"34589": {
+		"name": "Shell collection",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
+	},
+	"34591": {
+		"name": "Shell C",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
+	},
+	"34592": {
+		"name": "Shell D",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
+	},
+	"34593": {
+		"name": "Shell E",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
+	},
+	"34594": {
+		"name": "Shell F",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
+	},
+	"34595": {
+		"name": "Shell G",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
+	},
+	"34596": {
+		"name": "Shell A",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
+	},
+	"34597": {
+		"name": "Shell A#",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
+	},
+	"34598": {
+		"name": "Stray puppy",
+		"members": true
+	},
+	"34599": {
+		"name": "Stray puppy",
+		"members": true
+	},
+	"34600": {
+		"name": "Stray puppy",
+		"members": true
+	},
+	"34602": {
+		"name": "Stuffed dog",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false,
+		"lowalch": 120,
+		"highalch": 180,
+		"cost": 300
 	}
 }
