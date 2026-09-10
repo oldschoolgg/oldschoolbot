@@ -197107,7 +197107,9 @@
 			"magic_damage": 7,
 			"prayer": 2,
 			"slot": "hands",
-			"requirements": null
+			"requirements": {
+				"hitpoints": 90
+			}
 		},
 		"price": 121750002
 	},

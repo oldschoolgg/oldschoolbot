@@ -64,7 +64,12 @@ export const gwdKillables: KillableMonster[] = [
 		itemInBankBoosts: [
 			{
 				[itemID('Ranger boots')]: 3,
-				[itemID('Pegasian boots')]: 5
+				[itemID('Pegasian boots')]: 5,
+				[itemID('Avernic treads')]: 5,
+				[itemID('Avernic treads (pe)')]: 7,
+				[itemID('Avernic treads (pr)(pe)')]: 7,
+				[itemID('Avernic treads (pe)(et)')]: 7,
+				[itemID('Avernic treads (max)')]: 7
 			},
 			{
 				[itemID('Armadyl crossbow')]: 5,

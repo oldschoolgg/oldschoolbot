@@ -39,6 +39,7 @@ export async function minionKillCommand(
 	if (!name) return invalidMonsterMsg;
 
 	if (stringMatches(name, 'colosseum')) return colosseumCommand(interaction);
+	if (stringMatches(name, 'doom')) return 'Use `/delves doom` to fight the Doom of Mokhaiotl.';
 	if (stringMatches(name, 'nex')) return nexCommand(interaction, user, channelId, solo);
 	if (stringMatches(name, 'zalcano')) return zalcanoCommand(rng, user, channelId, inputQuantity);
 	if (stringMatches(name, 'tempoross')) return temporossCommand(user, channelId, inputQuantity);
@@ -47,8 +48,8 @@ export async function minionKillCommand(
 
 	let monster = findMonster(name);
 
-	const matchedRevenantMonster = revenantMonsters.find(monster =>
-		monster.aliases.some(alias => stringMatches(alias, name))
+	const matchedRevenantMonster = revenantMonsters.find(revenantMonster =>
+		revenantMonster.aliases.some(alias => stringMatches(alias, name))
 	);
 	if (matchedRevenantMonster) {
 		monster = matchedRevenantMonster;

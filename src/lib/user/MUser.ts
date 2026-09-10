@@ -7,7 +7,7 @@ import {
 	ZBlowpipeData,
 	ZFarmingContract
 } from '@oldschoolgg/schemas';
-import { calcWhatPercent, isObject, type PerkTier, UserError, uniqueArr } from '@oldschoolgg/toolkit';
+import { calcWhatPercent, cleanUsername, isObject, type PerkTier, UserError, uniqueArr } from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { Mutex } from 'async-mutex';
 import { cryptoRng } from 'node-rng/crypto';
@@ -69,6 +69,22 @@ import { hasSkillReqsRaw } from '@/lib/util/smallUtils.js';
 import { type TransactItemsArgs, transactItemsFromBank } from '@/lib/util/transactItemsFromBank.js';
 import type { JsonKeys } from '@/lib/util.js';
 import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
+
+type SpecialRemoveItemsOptions = {
+	isInWilderness?: boolean;
+	gearSlot?: GearSetupType;
+	avasDevice?: (typeof avasDevices)[number];
+};
+
+export interface SpecialRemoveItemsResult {
+	bankToRemove: Bank;
+	ammoToRemove: Bank;
+	gearSlot: GearSetupType;
+	gear: GearSetup;
+	gearChanged: boolean;
+	blowpipe?: IBlowpipeData;
+	realCost: Bank;
+}
 
 export class MUserClass extends BaseUser {
 	constructor(user: User) {
@@ -420,17 +436,23 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 		await handleNewCLItems({ itemsAdded: itemsToAdd, user: this, newCL: this.cl, previousCL });
 	}
 
-	async specialRemoveItems(bankToRemove: Bank, options?: { isInWilderness?: boolean }) {
+	calculateSpecialRemoveItems(bankToRemove: Bank, options?: SpecialRemoveItemsOptions): SpecialRemoveItemsResult {
+		console.log(`Special: ${bankToRemove.amount('Dragon arrow')}`);
 		bankToRemove = determineRunes(this, bankToRemove);
 		const bankRemove = new Bank();
+		const ammoToRemove = new Bank();
 		let dart: [Item, number] | null = null;
 		let ammoRemove: [Item, number] | null = null;
 
-		const gearKey = options?.isInWilderness ? 'wildy' : 'range';
+		const gearSlot = options?.gearSlot ?? (options?.isInWilderness ? 'wildy' : 'range');
 		const realCost = bankToRemove.clone();
-		const rangeGear = this.gear[gearKey];
-		const avasDevice = avasDevices.find(avas => rangeGear.hasEquipped(avas.item.id));
-		const updates: SafeUserUpdateInput & { blowpipe?: IBlowpipeData } = {};
+		const rangeGear = this.gear[gearSlot];
+		const avasDevice = options?.avasDevice ?? avasDevices.find(avas => rangeGear.hasEquipped(avas.item.id));
+		console.log(
+			`gearSlot: ${gearSlot} Avas: ${avasDevice?.item.name}\n\tReal Cost: ${realCost}n\n\tGear: ${rangeGear}`
+		);
+		const newGear = rangeGear.raw();
+		let newBlowpipe: IBlowpipeData | undefined;
 
 		for (const [item, quantity] of bankToRemove.items()) {
 			if (blowpipeDarts.includes(item)) {
@@ -460,32 +482,30 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 					`You have ${Items.itemNameFromId(equippedAmmo)} equipped as your range ammo, but you need: ${ammoRemove[0].name}.`
 				);
 			}
-			const newRangeGear: GearSetup = this.gear[gearKey].raw();
-			const ammo = newRangeGear.ammo?.quantity;
+			const ammo = newGear.ammo?.quantity;
 
 			const projectileCategory = Object.values(projectiles).find(i => i.items.includes(equippedAmmo));
 			if (avasDevice && projectileCategory?.savedByAvas) {
 				const ammoCopy = ammoRemove[1];
 				for (let i = 0; i < ammoCopy; i++) {
+					let ammoSaved = 0;
 					if (cryptoRng.percentChance(avasDevice.reduction)) {
-						ammoRemove[1]--;
-						realCost.remove(ammoRemove[0].id, 1);
+						ammoSaved++;
 					}
+					ammoRemove[1] -= ammoSaved;
+					realCost.remove(ammoRemove[0].id, ammoSaved);
 				}
 			}
 			if (!ammo || ammo < ammoRemove[1]) {
 				throw new UserError(
-					`Not enough ${ammoRemove[0].name} equipped in ${gearKey} gear, you need ${
+					`Not enough ${ammoRemove[0].name} equipped in ${gearSlot} gear, you need ${
 						ammoRemove?.[1]
 					} but you have only ${ammo}.`
 				);
 			}
-			newRangeGear.ammo!.quantity -= ammoRemove?.[1];
-			if (newRangeGear.ammo!.quantity <= 0) newRangeGear.ammo = null;
-			const gearUpdateData = this.getGearUpdateData([
-				{ setup: options?.isInWilderness ? 'wildy' : 'range', gear: newRangeGear }
-			]);
-			Object.assign(updates, gearUpdateData);
+			ammoToRemove.add(ammoRemove[0].id, ammoRemove[1]);
+			newGear.ammo!.quantity -= ammoRemove[1];
+			if (newGear.ammo!.quantity <= 0) newGear.ammo = null;
 		}
 
 		if (dart) {
@@ -518,23 +538,44 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 					`You don't have enough Zulrah's scales in your Toxic blowpipe, you need ${scales} but you have only ${rawBlowpipeData.scales}.`
 				);
 			}
-			const newBlowpipe = { ...this.getBlowpipe() };
+			newBlowpipe = { ...this.getBlowpipe() };
 			newBlowpipe.dartQuantity -= dart?.[1];
 			newBlowpipe.scales -= scales;
 			validateBlowpipeData(newBlowpipe);
-			updates.blowpipe = newBlowpipe;
 		}
 
 		if (bankRemove.length > 0) {
 			if (!this.bankWithGP.has(bankRemove)) {
 				throw new UserError(`You don't own: ${bankRemove.clone().remove(this.bankWithGP)}.`);
 			}
-			await this.transactItems({ itemsToRemove: bankRemove });
 		}
-		await this.update(updates);
-		return {
+		const removeResult = {
+			bankToRemove: bankRemove,
+			ammoToRemove,
+			gearSlot,
+			gear: newGear,
+			gearChanged: ammoToRemove.length > 0,
+			blowpipe: newBlowpipe,
 			realCost
 		};
+		return removeResult;
+	}
+
+	async applySpecialRemoveItemsResult(result: SpecialRemoveItemsResult) {
+		if (result.bankToRemove.length > 0) {
+			await this.transactItems({ itemsToRemove: result.bankToRemove });
+		}
+		const updates: FullUserUpdateInput = result.gearChanged
+			? this.getGearUpdateData([{ setup: result.gearSlot, gear: result.gear }])
+			: {};
+		if (result.blowpipe) updates.blowpipe = result.blowpipe;
+		await this.rawUpdate({ data: updates });
+	}
+
+	async specialRemoveItems(bankToRemove: Bank, options?: SpecialRemoveItemsOptions) {
+		const result = this.calculateSpecialRemoveItems(bankToRemove, options);
+		await this.applySpecialRemoveItemsResult(result);
+		return { realCost: result.realCost };
 	}
 
 	calculateAddItemsToCLUpdates({
@@ -814,6 +855,17 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 		});
 	}
 
+	async statsBankRemove(key: JsonKeys<UserStats>, bank: Bank): Promise<void> {
+		if (!key) throw new Error('No key provided to statsBankRemove');
+		const currentItemBank = ((await this.fetchUserStat(key)) ?? {}) as ItemBank;
+		if (!isObject(currentItemBank)) {
+			throw new Error(`Key ${key} is not an object.`);
+		}
+		await this.statsUpdate({
+			[key]: new Bank(currentItemBank).remove(bank).toJSON()
+		});
+	}
+
 	async updateGPTrackSetting(setting: 'gp_dice' | 'gp_luckypick' | 'gp_slots', amount: number) {
 		await this.statsUpdate({
 			[setting]: {
@@ -1022,16 +1074,19 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 	}
 }
 
-export async function srcMUserFetch(userID: string, updates?: Prisma.UserUpdateInput) {
+type MUserFetchCreateInput = Omit<Prisma.UserCreateInput, 'id'>;
+type MUserFetchUpdateInput = MUserFetchCreateInput & Omit<Prisma.UserUpdateInput, 'id'>;
+
+export async function srcMUserFetch(userID: string, updates?: MUserFetchUpdateInput) {
 	if (!isValidDiscordSnowflake(userID)) {
 		throw new Error(`Invalid userID: ${userID}`);
 	}
-	const user =
+	const createData = { ...updates, id: userID } satisfies Prisma.UserCreateInput;
+
+	let user =
 		updates !== undefined
 			? await prisma.user.upsert({
-					create: {
-						id: userID
-					},
+					create: createData,
 					update: updates,
 					where: {
 						id: userID
@@ -1041,6 +1096,24 @@ export async function srcMUserFetch(userID: string, updates?: Prisma.UserUpdateI
 
 	if (!user) {
 		return srcMUserFetch(userID, {});
+	}
+	if (
+		!user.username &&
+		!process.env.TEST &&
+		typeof globalClient !== 'undefined' &&
+		typeof globalClient.fetchUser === 'function'
+	) {
+		const discordUser = await globalClient.fetchUser(userID).catch(() => null);
+		if (discordUser?.username) {
+			user = await prisma.user.update({
+				where: {
+					id: userID
+				},
+				data: {
+					username: cleanUsername(discordUser.username)
+				}
+			});
+		}
 	}
 	return new MUserClass(user);
 }
