@@ -21,6 +21,11 @@ export interface DegradeableItem {
 		cost: Bank;
 		charges: number;
 	};
+	altChargeInput?: {
+		cost: Bank;
+		charges: number;
+		name: string;
+	};
 	unchargedItem?: Item;
 	convertOnCharge?: boolean;
 	emoji: string;
@@ -158,6 +163,26 @@ export const degradeableItems: DegradeableItem[] = [
 		unchargedItem: Items.getOrThrow("Tumeken's shadow (uncharged)"),
 		convertOnCharge: true,
 		emoji: '<:Tumekens_shadow:1068491239302901831>'
+	},
+	{
+		item: Items.getOrThrow('Eye of ayak'),
+		settingsKey: 'ayak_charges',
+		itemsToRefundOnBreak: new Bank().add('Eye of ayak (uncharged)').freeze(),
+		refundVariants: [],
+		setup: 'mage',
+		aliases: ['eye', 'ayak', 'eye of ayak', 'eoa', 'yak'],
+		chargeInput: {
+			cost: new Bank().add('Death rune', 2).add('Chaos rune', 1).freeze(),
+			charges: 1
+		},
+		altChargeInput: {
+			cost: new Bank().add('Demon tear', 1).freeze(),
+			charges: 10,
+			name: 'Demon tears'
+		},
+		unchargedItem: Items.getOrThrow('Eye of ayak (uncharged)'),
+		convertOnCharge: true,
+		emoji: ''
 	},
 	{
 		item: Items.getOrThrow('Blood essence (active)'),

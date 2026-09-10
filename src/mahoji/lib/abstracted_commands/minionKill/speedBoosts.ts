@@ -1,8 +1,8 @@
 import type { OffenceGearStat, PrimaryGearSetupType } from '@oldschoolgg/gear';
 import { calcWhatPercent, sumArr } from '@oldschoolgg/toolkit';
-import { Bank, type Item, Items, type Monster, MonsterAttribute, Monsters } from 'oldschooljs';
+import { Bank, EMonster, type Item, Items, type Monster, MonsterAttribute, Monsters } from 'oldschooljs';
 
-import type { PvMMethod } from '@/lib/constants.js';
+import { BitField, type PvMMethod } from '@/lib/constants.js';
 import { degradeableItems, degradeablePvmBoostItems } from '@/lib/degradeableItems.js';
 import {
 	boostCannon,
@@ -16,6 +16,14 @@ import {
 	SlayerActivityConstants
 } from '@/lib/minions/data/combatConstants.js';
 import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
+import {
+	calcDeathChargeCasts,
+	DEATH_CHARGE_MAGIC_LEVEL,
+	deathChargeCastCost,
+	formatDeathChargeBoost,
+	maxAffordableDeathChargeCasts,
+	scaleDeathChargeBoost
+} from '@/lib/minions/functions/deathCharge.js';
 import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { Consumable } from '@/lib/minions/types.js';
 import { calcPOHBoosts } from '@/lib/poh/index.js';
@@ -251,6 +259,22 @@ const blackMaskBoost: Boost = {
 	}
 };
 
+const riteOfVileTransferenceBoostByMonsterID: Record<number, number> = {
+	[Monsters.Yama.id]: 5,
+	[Monsters.Scurrius.id]: 5,
+	[Monsters.Amoxliatl.id]: 3,
+	[Monsters.Branda.id]: 5,
+	[Monsters.Eldric.id]: 5,
+	[Monsters.RoyalTitans.id]: 5,
+	[EMonster.NIGHTMARE]: 5,
+	[EMonster.PHOSANI_NIGHTMARE]: 5,
+	[Monsters.GrotesqueGuardians.id]: 5,
+	[Monsters.Cerberus.id]: 5,
+	[Monsters.Araxxor.id]: 7,
+	[Monsters.Hydra.id]: 3,
+	[Monsters.AlchemicalHydra.id]: 3
+};
+
 // if an array, only the highest applies
 export const mainBoostEffects: (Boost | Boost[])[] = [
 	{
@@ -264,6 +288,35 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 				});
 			}
 			return results;
+		}
+	},
+	{
+		description: 'Rite of vile transference boost',
+		run: ({ monster, bitfield, gearBank, addPostBoostEffect }) => {
+			if (!bitfield.includes(BitField.HasRiteOfVileTransference)) return null;
+			if (bitfield.includes(BitField.DisableRiteOfVileTransference)) return null;
+			if (gearBank.skillsAsLevels.magic < DEATH_CHARGE_MAGIC_LEVEL) return null;
+			if (maxAffordableDeathChargeCasts(gearBank.bank) < 1) return null;
+			const riteBoost = riteOfVileTransferenceBoostByMonsterID[monster.id];
+			if (riteBoost === undefined) return null;
+			addPostBoostEffect({
+				description: 'Rite of vile transference',
+				run: ({ duration, quantity, gearBank }) => {
+					const casts = calcDeathChargeCasts({
+						bank: gearBank.bank,
+						duration,
+						quantity
+					});
+					if (casts < 1) return null;
+					const scaledBoost = scaleDeathChargeBoost(riteBoost, casts, quantity);
+					return {
+						percentageReduction: scaledBoost,
+						itemCost: deathChargeCastCost(casts),
+						message: formatDeathChargeBoost(scaledBoost, casts)
+					};
+				}
+			});
+			return null;
 		}
 	},
 	{
@@ -339,7 +392,7 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 				};
 			}
 
-			if (isBursting && attackStyles.includes('magic')) {
+			if (isBursting && newAttackStyles.includes('magic')) {
 				return {
 					percentageReduction: boostIceBurst + virtusBoost,
 					consumables: [iceBurstConsumables],
@@ -393,7 +446,7 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 							degItem.charges({
 								killableMon: monster,
 								osjsMonster: osjsMon!,
-								totalHP: (osjsMon?.data.hitpoints ?? 100) * quantity,
+								totalHP: (monster.customMonsterHP ?? osjsMon?.data?.hitpoints ?? 100) * quantity,
 								duration
 							})
 						);

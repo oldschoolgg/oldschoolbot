@@ -93,6 +93,10 @@ describe('Sanity', () => {
 		expect(Items.getOrThrow('Ultor ring')!.equipment?.melee_strength).toEqual(12);
 	});
 
+	test('Confliction gauntlets require 90 Hitpoints to equip', () => {
+		expect(Items.getOrThrow('Confliction gauntlets').equipment?.requirements?.hitpoints).toEqual(90);
+	});
+
 	test('EMonster', () => {
 		expect(EMonster.NIGHTMARE).toEqual(9415);
 		expect(EMonster.ZALCANO).toEqual(9049);

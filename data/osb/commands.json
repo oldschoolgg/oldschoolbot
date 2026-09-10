@@ -1,6 +1,6 @@
 {
-	"hash": "a8acf93eb8ffd994da85886ad58879b4",
-	"date": "2026-07-07T15:16:46.854Z",
+	"hash": "9b29b44924ebc2dc533a5175198a1c6b",
+	"date": "2026-09-03T13:36:48.274Z",
 	"data": [
 		{
 			"name": "activities",
@@ -142,6 +142,12 @@
 			"desc": "View various pieces of data.",
 			"examples": ["/data name:Personal Activity Types"],
 			"subOptions": []
+		},
+		{
+			"name": "delves",
+			"desc": "Send your minion to attempt a delve boss.",
+			"examples": ["/delves doom target_delve:1"],
+			"subOptions": ["doom"]
 		},
 		{
 			"name": "drop",
@@ -544,11 +550,6 @@
 			"desc": "See your OSRS xp.",
 			"examples": ["/xp rsn:Magnaboy"],
 			"subOptions": []
-		},
-		{
-			"name": "zero_time_activity",
-			"desc": "Configure your preferred zero-time activities.",
-			"subOptions": ["clear", "overview", "set"]
 		}
 	]
 }

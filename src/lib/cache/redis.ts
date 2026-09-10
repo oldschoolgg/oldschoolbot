@@ -546,11 +546,11 @@ class CacheManager {
 		});
 		if (!stored) return null;
 
-		const webhook = ZWebhook.parse({
+		const webhook = {
 			id: stored.webhook_id,
 			token: stored.webhook_token,
 			channel_id: stored.channel_id
-		});
+		};
 		await this.setWebhook(webhook);
 		return webhook;
 	}

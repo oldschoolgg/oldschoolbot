@@ -27,46 +27,46 @@ export interface ZeroTimeActivityTaskOptions extends ActivityTaskOptions {
 
 export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
 	type:
-		| 'Questing'
-		| 'BarbarianAssault'
-		| 'ChampionsChallenge'
-		| 'MyNotes'
-		| 'AerialFishing'
-		| 'SoulWars'
-		| 'RoguesDenMaze'
-		| 'MageArena'
-		| 'MageTrainingArena'
-		| 'BlastFurnace'
-		| 'MageArena2'
-		| 'BigChompyBirdHunting'
-		| 'PestControl'
-		| 'TearsOfGuthix'
-		| 'LastManStanding'
-		| 'BirthdayEvent'
-		| 'TroubleBrewing'
-		| 'Easter'
-		| 'ShootingStars'
-		| 'HalloweenEvent'
-		| 'StrongholdOfSecurity'
-		| 'CombatRing'
-		| 'Revenants';
+	| 'Questing'
+	| 'BarbarianAssault'
+	| 'ChampionsChallenge'
+	| 'MyNotes'
+	| 'AerialFishing'
+	| 'SoulWars'
+	| 'RoguesDenMaze'
+	| 'MageArena'
+	| 'MageTrainingArena'
+	| 'BlastFurnace'
+	| 'MageArena2'
+	| 'BigChompyBirdHunting'
+	| 'PestControl'
+	| 'TearsOfGuthix'
+	| 'LastManStanding'
+	| 'BirthdayEvent'
+	| 'TroubleBrewing'
+	| 'Easter'
+	| 'ShootingStars'
+	| 'HalloweenEvent'
+	| 'StrongholdOfSecurity'
+	| 'CombatRing'
+	| 'Revenants';
 }
 
 export interface ActivityTaskOptionsWithQuantity extends ActivityTaskOptions {
 	type:
-		| 'VolcanicMine'
-		| 'Cyclops'
-		| 'ShootingStars'
-		| 'DriftNet'
-		| 'WealthCharging'
-		| 'GloryCharging'
-		| 'GloryUncharging'
-		| 'AerialFishing'
-		| 'FishingTrawler'
-		| 'CamdozaalFishing'
-		| 'CamdozaalMining'
-		| 'CamdozaalSmithing'
-		| 'MyNotes';
+	| 'VolcanicMine'
+	| 'Cyclops'
+	| 'ShootingStars'
+	| 'DriftNet'
+	| 'WealthCharging'
+	| 'GloryCharging'
+	| 'GloryUncharging'
+	| 'AerialFishing'
+	| 'FishingTrawler'
+	| 'CamdozaalFishing'
+	| 'CamdozaalMining'
+	| 'CamdozaalSmithing'
+	| 'MyNotes';
 	quantity: number;
 	// iQty is 'input quantity.' This is the number specified at command time, so we can accurately repeat such trips.
 	iQty?: number;
@@ -203,6 +203,7 @@ export interface MiningActivityTaskOptions extends ActivityTaskOptions {
 	fakeDurationMin: number;
 	oreID: number;
 	quantity: number;
+	minedQuantity?: number;
 	powermine: boolean;
 	iQty?: number;
 }
@@ -372,7 +373,7 @@ export interface FarmingStepTaskData {
 	currentDate: number;
 }
 
-export interface AutoFarmStepData extends FarmingStepTaskData {}
+export interface AutoFarmStepData extends FarmingStepTaskData { }
 
 export interface AutoFarmSummaryStep {
 	patchType: string;
@@ -422,20 +423,20 @@ interface MinigameActivityTaskOptions extends ActivityTaskOptions {
 
 export interface MinigameActivityTaskOptionsWithNoChanges extends MinigameActivityTaskOptions {
 	type:
-		| 'Wintertodt'
-		| 'TroubleBrewing'
-		| 'TearsOfGuthix'
-		| 'SoulWars'
-		| 'RoguesDenMaze'
-		| 'MageTrainingArena'
-		| 'LastManStanding'
-		| 'BigChompyBirdHunting'
-		| 'FishingTrawler'
-		| 'PestControl'
-		| 'BarbarianAssault'
-		| 'ChampionsChallenge'
-		| 'CastleWars'
-		| 'AgilityArena';
+	| 'Wintertodt'
+	| 'TroubleBrewing'
+	| 'TearsOfGuthix'
+	| 'SoulWars'
+	| 'RoguesDenMaze'
+	| 'MageTrainingArena'
+	| 'LastManStanding'
+	| 'BigChompyBirdHunting'
+	| 'FishingTrawler'
+	| 'PestControl'
+	| 'BarbarianAssault'
+	| 'ChampionsChallenge'
+	| 'CastleWars'
+	| 'AgilityArena';
 }
 
 export interface MahoganyHomesActivityTaskOptions extends MinigameActivityTaskOptions {
@@ -561,6 +562,27 @@ export interface ColoTaskOptions extends ActivityTaskOptions {
 	scytheCharges: number;
 	venatorBowCharges: number;
 	bloodFuryCharges: number;
+}
+
+// A Delve Trek is one complete Doom attempt from Delve 1 until cash-out, a unique stop, or death.
+export interface DoomActivityTrekData {
+	dur: number;
+	dead: boolean;
+	lastDelve: number;
+	loot?: ItemBank;
+	diedAt?: number;
+	ayak?: number;
+}
+
+export interface DoomTaskOptions extends ActivityTaskOptions {
+	type: 'DoomOfMokhaiotl';
+	targetDelve: number;
+	treks: DoomActivityTrekData[];
+	refund?: ItemBank;
+	refundAmmo?: ItemBank;
+	fakeDuration: number;
+	stopOnUnique?: boolean;
+	disableZcbBoost?: boolean;
 }
 
 type UserID = string;
@@ -742,4 +764,5 @@ export type ActivityTaskData =
 	| CutLeapingFishActivityTaskOptions
 	| CreateForestersRationsActivityTaskOptions
 	| ColoTaskOptions
-	| ZeroTimeActivityTaskOptions;
+	| ZeroTimeActivityTaskOptions
+	| DoomTaskOptions;

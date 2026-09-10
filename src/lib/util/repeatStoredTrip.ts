@@ -42,6 +42,7 @@ import type {
 	CreateForestersRationsActivityTaskOptions,
 	CutLeapingFishActivityTaskOptions,
 	DarkAltarOptions,
+	DoomTaskOptions,
 	EnchantingActivityTaskOptions,
 	FarmingActivityTaskOptions,
 	FiremakingActivityTaskOptions,
@@ -381,8 +382,8 @@ const tripHandlers: {
 		args: (data: FarmingActivityTaskOptions) =>
 			data.autoFarmed
 				? {
-						auto_farm: {}
-					}
+					auto_farm: {}
+				}
 				: {}
 	},
 	[activity_type_enum.FightCaves]: {
@@ -789,6 +790,16 @@ const tripHandlers: {
 	[activity_type_enum.ZeroTimeActivity]: {
 		commandName: 'zero_time_activity',
 		args: () => ({ overview: {} })
+	},
+	[activity_type_enum.DoomOfMokhaiotl]: {
+		commandName: 'delves',
+		args: (data: DoomTaskOptions) => ({
+			doom: {
+				target_delve: data.targetDelve,
+				stop_on_unique: data.stopOnUnique,
+				disable_zcb_boost: data.disableZcbBoost === true ? true : undefined
+			}
+		})
 	}
 } as const;
 
