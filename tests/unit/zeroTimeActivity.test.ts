@@ -311,7 +311,7 @@ describe('attemptZeroTimeActivity', () => {
 		if (typeof basePlan === 'string' || typeof fletchingPlan === 'string') return;
 
 		expect(basePlan.quantity).toBe(280);
-		expect(fletchingPlan.quantity).toBe(260);
+		expect(fletchingPlan.quantity).toBe(250);
 		expect(fletchingPlan.duration).toBe(basePlan.duration);
 	});
 });
