@@ -1,14 +1,14 @@
 import { createHash } from 'node:crypto';
 import { TextDecoder } from 'node:util';
 import {
-	type APIMessage,
 	type APIAttachment,
+	type APIMessage,
 	ButtonBuilder,
 	ButtonStyle,
 	EmbedBuilder,
 	SpecialResponse
 } from '@oldschoolgg/discord';
-import { Events, ellipsize } from '@oldschoolgg/toolkit';
+import {Events, ellipsize, UserError} from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import { filterOption } from '@/discord/index.js';
@@ -86,34 +86,43 @@ function validateJSONItemBank(json: unknown): ItemBank {
 function parseTradeFileBankContent({
 	optionName,
 	content,
-	inputBank
+	inputBank,
+	maxSize
 }: {
 	optionName: TradeFileOptionName;
 	content: string;
 	inputBank?: Bank;
+	maxSize?: number | undefined
 }): Bank | string {
 	const trimmedContent = content.trim();
 	if (!trimmedContent) {
-		return formatTradeFileError(optionName, 'Attachment content is empty.');
+		throw new UserError(formatTradeFileError(optionName, 'Attachment content is empty.'));
 	}
 
 	try {
 		if (trimmedContent[0] === '{') {
 			const parsedJSON = JSON.parse(trimmedContent);
-			return new Bank(validateJSONItemBank(parsedJSON)).filter(i => itemIsTradeable(i.id, true));
+			const jsBank = new Bank(validateJSONItemBank(parsedJSON)).filter(i => itemIsTradeable(i.id, true));
+			// Size to fit:
+			if (inputBank && !inputBank.has(jsBank)) {
+				const diffBank = jsBank.clone().remove(inputBank);
+				jsBank.remove(diffBank);
+			}
+			return jsBank;
 		}
 
 		return parseBank({
 			inputBank,
 			inputStr: trimmedContent,
 			flags: {},
+			maxSize,
 			noDuplicateItems: true
 		}).filter(i => itemIsTradeable(i.id, true));
 	} catch (err) {
-		return formatTradeFileParseError(
+		throw new UserError(formatTradeFileParseError(
 			optionName,
 			err instanceof Error ? err.message : 'Unknown parsing error.'
-		);
+		));
 	}
 }
 
@@ -170,7 +179,11 @@ async function downloadTradeAttachmentText(
 		const text = new TextDecoder('utf-8', { fatal: true }).decode(buffer);
 		if (hasBinaryTextCharacters(text)) {
 			return {
-				error: formatTradeFileError(optionName, 'The file must be plaintext UTF-8.', 'Binary data was detected.')
+				error: formatTradeFileError(
+					optionName,
+					'The file must be plaintext UTF-8.',
+					'Binary data was detected.'
+				)
 			};
 		}
 		return { text };
@@ -278,12 +291,7 @@ ${recipientUser.usernameOrMention} is considering trading back: ${targetOffer.di
 	return message;
 }
 
-function buildTradeCompletionResponse(
-	senderUser: MUser,
-	recipientUser: MUser,
-	itemsSent: Bank,
-	itemsReceived: Bank
-) {
+function buildTradeCompletionResponse(senderUser: MUser, recipientUser: MUser, itemsSent: Bank, itemsReceived: Bank) {
 	let synopsis = `Trade completed! ${senderUser.mention} sold ${itemsSent.toStringFull()} to ${
 		recipientUser.mention
 	} in return for ${itemsReceived.toStringFull()}.`;
@@ -449,7 +457,6 @@ export const tradeCommand = defineCommand({
 		}
 	],
 	run: async ({ interaction, user: senderUser, guildId, options }) => {
-
 		if (!guildId) return 'You can only run this in a server.';
 		const recipientUser = await mUserFetch(options.user.user.id);
 
@@ -469,6 +476,7 @@ export const tradeCommand = defineCommand({
 		const extraSettings = await ClientSettings.getExtraSettings();
 		let fileItemsSent: Bank | undefined;
 		let fileItemsReceived: Bank | undefined;
+		const tryAllowAll = extraSettings.tradeAllowAll;
 
 		if (options.send_file) {
 			const sendFileText = await downloadTradeAttachmentText('send_file', options.send_file);
@@ -501,13 +509,13 @@ export const tradeCommand = defineCommand({
 
 		function parseTradeBanks(maxSize: number) {
 			const parsedItemsSent =
-				(fileItemsSent ? new Bank(fileItemsSent) : undefined) ??
+				fileItemsSent  ??
 				(!options.search && !options.filter && !options.send && !options.all
 					? new Bank()
 					: parseBank({
 							inputBank: senderUser.bankWithGP,
 							inputStr: options.send,
-							maxSize: options.all === true ? undefined : maxSize,
+							maxSize: tryAllowAll && options.all ? undefined : maxSize,
 							flags: {},
 							filters: [options.filter],
 							search: options.search,
@@ -532,8 +540,8 @@ export const tradeCommand = defineCommand({
 			return { itemsSent: parsedItemsSent, itemsReceived: parsedItemsReceived };
 		}
 
-		let tradeMaxPull = extraSettings.tradeMaxPull ?? DEFAULT_TRADE_MAX_PULL;
-		let { itemsSent, itemsReceived } = parseTradeBanks(tradeMaxPull);
+		const tradeMaxPull = extraSettings.tradeMaxPull ?? DEFAULT_TRADE_MAX_PULL;
+		const { itemsSent, itemsReceived } = parseTradeBanks(tradeMaxPull);
 		const tradeTimeout = extraSettings.tradeTimeout * 1000;
 
 		if (itemsSent.items().some(i => !itemIsTradeable(i[0].id, true))) {
@@ -614,12 +622,7 @@ export const tradeCommand = defineCommand({
 			await ClientSettings.addToGPTaxBalance(senderUser, itemsSent.amount('Coins'));
 		}
 
-		const completionResponse = buildTradeCompletionResponse(
-			senderUser,
-			recipientUser,
-			itemsSent,
-			itemsReceived
-		);
+		const completionResponse = buildTradeCompletionResponse(senderUser, recipientUser, itemsSent, itemsReceived);
 		await interaction.editFollowUp(confirmationMessage.id, { ...completionResponse, clearAttachments: true });
 		return SpecialResponse.RespondedManually;
 	}

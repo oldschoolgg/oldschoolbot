@@ -389,8 +389,9 @@ const adminRunnableCommands: AdminRunnableCommand[] = [
 				name: 'actually_reset_ge',
 				description: `Must be \`actually_reset_ge\` but it won't work on production anyway.`,
 				required: true
-			}],
-		run: async ({ arg1, adminUser}) => {
+			}
+		],
+		run: async ({ arg1, adminUser }) => {
 			if (!adminUser.isAdmin) return 'You must be the owner to reset the grand exchange.';
 			if (globalConfig.isProduction) {
 				return 'You cannot reset the grand exchange on production no matter who you are.';

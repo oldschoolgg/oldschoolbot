@@ -59,7 +59,8 @@ export const ZExtraSettings = z
 		tradeEnableEmbed: z.boolean().default(false),
 		tradeMaxPull: z.number().int().positive().default(70),
 		tradeTimeout: z.number().int().positive().default(15),
-		tradeEmbedTimeout: z.number().int().positive().default(25)
+		tradeEmbedTimeout: z.number().int().positive().default(25),
+		tradeAllowAll: z.boolean().default(false)
 	})
 	.strict();
 
