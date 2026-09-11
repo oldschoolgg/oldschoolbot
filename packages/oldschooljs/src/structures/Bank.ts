@@ -7,6 +7,12 @@ import { Items } from './Items.js';
 const frozenErrorStr = 'Tried to mutate a frozen Bank.';
 
 type ItemResolvable = Item | string | number;
+type BankSortMethod = 'none' | 'id' | 'qty' | ((a: [Item, number], b: [Item, number]) => number);
+
+interface BankTrimSort {
+	method?: BankSortMethod;
+	direction?: 'asc' | 'desc';
+}
 
 function isValidBankQuantity(qty: number): boolean {
 	return typeof qty === 'number' && qty >= 1 && Number.isInteger(qty);
@@ -280,6 +286,43 @@ export class Bank {
 			}
 		}
 		return result;
+	}
+
+	public trim(size: number, sort?: BankTrimSort): this {
+		if (this.frozen) throw new Error(frozenErrorStr);
+		if (!Number.isInteger(size) || size < 0) {
+			throw new Error('Bank trim size must be a non-negative integer.');
+		}
+		if (this.length <= size) return this;
+		if (size === 0) {
+			this.map.clear();
+			return this;
+		}
+		if (sort === undefined || sort.method === 'none') {
+			let remaining = size;
+			for (const itemID of this.map.keys()) {
+				if (remaining-- === 0) this.map.delete(itemID);
+			}
+			return this;
+		}
+
+		const direction = sort.direction === 'desc' ? -1 : 1;
+		const items = this.items();
+		const method = sort.method ?? 'qty';
+		if (method === 'id') {
+			items.sort((a, b) => (a[0].id - b[0].id) * direction);
+		} else if (method === 'qty') {
+			items.sort((a, b) => (a[1] - b[1]) * direction);
+		} else {
+			items.sort((a, b) => method(a, b) * direction);
+		}
+
+		this.map.clear();
+		for (let i = 0; i < size && i < items.length; i++) {
+			const item = items[i];
+			this.map.set(item[0].id, item[1]);
+		}
+		return this;
 	}
 
 	public toString(): string {

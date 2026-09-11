@@ -8,8 +8,8 @@ import {
 	EmbedBuilder,
 	SpecialResponse
 } from '@oldschoolgg/discord';
-import {Events, ellipsize, UserError} from '@oldschoolgg/toolkit';
-import { Bank, type ItemBank } from 'oldschooljs';
+import { Events, ellipsize, isObject, UserError } from '@oldschoolgg/toolkit';
+import { Bank } from 'oldschooljs';
 
 import { filterOption } from '@/discord/index.js';
 import { ZItemBank } from '@/lib/structures/Bank.js';
@@ -40,7 +40,7 @@ function formatTradeFileError(optionName: TradeFileOptionName, message: string, 
 	return `${prefix}\n\n\`\`\`text\n${underlyingError}\n\`\`\``;
 }
 
-function formatTradeFileParseError(optionName: TradeFileOptionName, underlyingError?: string) {
+function formatTradeError(optionName: TradeFileOptionName, underlyingError?: string) {
 	const prefix = `I couldn't parse your ${optionName} attachment as an item bank.`;
 	if (!underlyingError) return prefix;
 	return `${prefix}\n\n\`\`\`text\n${underlyingError}\n\`\`\``;
@@ -54,36 +54,16 @@ function hasBinaryTextCharacters(text: string) {
 	return /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/u.test(text);
 }
 
-function assertJSONObject(value: unknown): asserts value is Record<string, unknown> {
-	if (typeof value !== 'object' || value === null || Array.isArray(value)) {
-		throw new Error('JSON item banks must be an object of item ID keys to quantities.');
+function bankFromJson(json: unknown): Bank {
+	if (!isObject(json)) {
+		throw new Error('JSON item banks must be a valid ItemBank object.');
 	}
+
+	const parsed = ZItemBank.parse(json);
+	return new Bank(parsed);
 }
 
-function assertJSONItemBankUsesIDKeys(bank: Record<string, unknown>) {
-	const nonIDKey = Object.keys(bank).find(key => !/^\d+$/.test(key));
-	if (nonIDKey) {
-		throw new Error('JSON item bank keys must be item IDs only.');
-	}
-}
-
-function validateJSONItemBank(json: unknown): ItemBank {
-	assertJSONObject(json);
-	assertJSONItemBankUsesIDKeys(json);
-	const parsed = ZItemBank.safeParse(json);
-	if (!parsed.success) {
-		throw new Error(
-			parsed.error.issues.map(issue => `${issue.path.join('.') || 'bank'}: ${issue.message}`).join('\n')
-		);
-	}
-	const parsedKeyCount = Object.keys(parsed.data).length;
-	if (parsedKeyCount !== Object.keys(json).length) {
-		throw new Error('JSON item bank contains unknown item IDs.');
-	}
-	return parsed.data;
-}
-
-function parseTradeFileBankContent({
+function parseTradeBank({
 	optionName,
 	content,
 	inputBank,
@@ -92,8 +72,8 @@ function parseTradeFileBankContent({
 	optionName: TradeFileOptionName;
 	content: string;
 	inputBank?: Bank;
-	maxSize?: number | undefined
-}): Bank | string {
+	maxSize: number;
+}): Bank {
 	const trimmedContent = content.trim();
 	if (!trimmedContent) {
 		throw new UserError(formatTradeFileError(optionName, 'Attachment content is empty.'));
@@ -102,7 +82,9 @@ function parseTradeFileBankContent({
 	try {
 		if (trimmedContent[0] === '{') {
 			const parsedJSON = JSON.parse(trimmedContent);
-			const jsBank = new Bank(validateJSONItemBank(parsedJSON)).filter(i => itemIsTradeable(i.id, true));
+			const jsBank = bankFromJson(parsedJSON)
+				.filter(i => itemIsTradeable(i.id, true))
+				.trim(maxSize);
 			// Size to fit:
 			if (inputBank && !inputBank.has(jsBank)) {
 				const diffBank = jsBank.clone().remove(inputBank);
@@ -119,10 +101,9 @@ function parseTradeFileBankContent({
 			noDuplicateItems: true
 		}).filter(i => itemIsTradeable(i.id, true));
 	} catch (err) {
-		throw new UserError(formatTradeFileParseError(
-			optionName,
-			err instanceof Error ? err.message : 'Unknown parsing error.'
-		));
+		throw new UserError(
+			formatTradeError(optionName, err instanceof Error ? err.message : 'Unknown parsing error.')
+		);
 	}
 }
 
@@ -477,28 +458,27 @@ export const tradeCommand = defineCommand({
 		let fileItemsSent: Bank | undefined;
 		let fileItemsReceived: Bank | undefined;
 		const tryAllowAll = extraSettings.tradeAllowAll;
+		const tradeMaxPull = extraSettings.tradeMaxPull ?? DEFAULT_TRADE_MAX_PULL;
 
 		if (options.send_file) {
 			const sendFileText = await downloadTradeAttachmentText('send_file', options.send_file);
 			if ('error' in sendFileText) return sendFileText.error;
-			const parsed = parseTradeFileBankContent({
+			fileItemsSent = parseTradeBank({
 				optionName: 'send_file',
 				content: sendFileText.text,
-				inputBank: senderUser.bankWithGP
+				inputBank: senderUser.bankWithGP,
+				maxSize: tradeMaxPull
 			});
-			if (typeof parsed === 'string') return parsed;
-			fileItemsSent = parsed;
 		}
 
 		if (options.receive_file) {
 			const receiveFileText = await downloadTradeAttachmentText('receive_file', options.receive_file);
 			if ('error' in receiveFileText) return receiveFileText.error;
-			const parsed = parseTradeFileBankContent({
+			fileItemsReceived = parseTradeBank({
 				optionName: 'receive_file',
-				content: receiveFileText.text
+				content: receiveFileText.text,
+				maxSize: tradeMaxPull
 			});
-			if (typeof parsed === 'string') return parsed;
-			fileItemsReceived = parsed;
 		}
 
 		function tradeConfirmationMsg(tradeTimeout: number) {
@@ -509,7 +489,7 @@ export const tradeCommand = defineCommand({
 
 		function parseTradeBanks(maxSize: number) {
 			const parsedItemsSent =
-				fileItemsSent  ??
+				fileItemsSent ??
 				(!options.search && !options.filter && !options.send && !options.all
 					? new Bank()
 					: parseBank({
@@ -540,7 +520,6 @@ export const tradeCommand = defineCommand({
 			return { itemsSent: parsedItemsSent, itemsReceived: parsedItemsReceived };
 		}
 
-		const tradeMaxPull = extraSettings.tradeMaxPull ?? DEFAULT_TRADE_MAX_PULL;
 		const { itemsSent, itemsReceived } = parseTradeBanks(tradeMaxPull);
 		const tradeTimeout = extraSettings.tradeTimeout * 1000;
 
