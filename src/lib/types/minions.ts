@@ -364,6 +364,9 @@ export interface AutoFarmSummaryStep {
 	patchType: string;
 	plantsName: string;
 	quantity: number;
+	harvestedName?: string;
+	harvestedQuantity?: number;
+	alive?: number;
 	xp: number;
 	bonusXp: number;
 	weeds: number;
