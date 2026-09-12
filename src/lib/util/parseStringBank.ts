@@ -130,6 +130,9 @@ interface ParseBankOptions {
 	filters?: (string | undefined)[];
 	search?: string;
 	maxSize?: number;
+	sort?: (a: [Item, number], b: [Item, number]) => number;
+	order?: 'asc' | 'desc';
+	limit?: boolean;
 	user?: MUser;
 	noDuplicateItems?: true;
 }
@@ -142,6 +145,9 @@ export function parseBank({
 	filters,
 	search,
 	maxSize,
+	sort,
+	order,
+	limit = true,
 	user,
 	noDuplicateItems = undefined
 }: ParseBankOptions): Bank {
@@ -149,7 +155,7 @@ export function parseBank({
 		const _bank = new Bank();
 		const strItems = parseStringBank(inputStr, inputBank, noDuplicateItems);
 		for (const [item, quantity] of strItems) {
-			if (maxSize && _bank.length >= maxSize) break;
+			if (limit && !sort && maxSize && _bank.length >= maxSize) break;
 			_bank.add(
 				item.id,
 				!quantity
@@ -159,7 +165,10 @@ export function parseBank({
 						: Math.max(0, Math.min(quantity, inputBank.amount(item.id) ?? 1))
 			);
 		}
-		return _bank;
+		return _bank.trim(
+			limit ? (maxSize ?? _bank.length) : _bank.length,
+			sort ? { method: sort, direction: order } : undefined
+		);
 	}
 
 	if (filters) {
@@ -172,5 +181,15 @@ export function parseBank({
 		flags.search = search;
 	}
 
-	return parseBankFromFlags({ bank: inputBank ?? new Bank(), flags, excludeItems, maxSize, user });
+	const bank = parseBankFromFlags({
+		bank: inputBank ?? new Bank(),
+		flags,
+		excludeItems,
+		maxSize: limit && !sort ? maxSize : undefined,
+		user
+	});
+	return bank.trim(
+		limit ? (maxSize ?? bank.length) : bank.length,
+		sort ? { method: sort, direction: order } : undefined
+	);
 }

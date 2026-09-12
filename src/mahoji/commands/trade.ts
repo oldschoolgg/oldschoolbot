@@ -71,6 +71,44 @@ function trimTradeBank(bank: Bank, maxSize: number | undefined, sort?: BankSortM
 	return bank.trim(maxSize ?? bank.length, tradeBankSort(sort, order));
 }
 
+export function parseTradeSource({
+	inputBank,
+	inputStr,
+	filters,
+	search,
+	maxSize,
+	sort,
+	order,
+	limit
+}: {
+	inputBank?: Bank;
+	inputStr?: string;
+	filters?: (string | undefined)[];
+	search?: string;
+	maxSize?: number;
+	sort?: BankSortMethod;
+	order?: TradeOrder;
+	limit: boolean;
+}): Bank {
+	return trimTradeBank(
+		parseBank({
+			inputBank,
+			inputStr,
+			flags: {},
+			filters,
+			search,
+			maxSize,
+			sort: tradeBankSort(sort, order)?.method,
+			order,
+			limit: false,
+			noDuplicateItems: true
+		}).filter(i => itemIsTradeable(i.id, true)),
+		limit ? maxSize : undefined,
+		sort,
+		order
+	);
+}
+
 function bankFromJson(json: unknown): Bank {
 	if (!isObject(json)) {
 		throw new Error('JSON item banks must be a valid ItemBank object.');
@@ -117,17 +155,7 @@ function parseTradeBank({
 			return jsBank;
 		}
 
-		return trimTradeBank(
-			parseBank({
-				inputBank,
-				inputStr: trimmedContent,
-				flags: {},
-				noDuplicateItems: true
-			}).filter(i => itemIsTradeable(i.id, true)),
-			maxSize,
-			sort,
-			order
-		);
+		return parseTradeSource({ inputBank, inputStr: trimmedContent, maxSize, sort, order, limit: true });
 	} catch (err) {
 		throw new UserError(
 			formatTradeError(optionName, err instanceof Error ? err.message : 'Unknown parsing error.')
@@ -547,31 +575,25 @@ export const tradeCommand = defineCommand({
 				fileItemsSent ??
 				(!options.search && !options.filter && !options.send && !options.all
 					? new Bank()
-					: trimTradeBank(
-							parseBank({
-								inputBank: senderUser.bankWithGP,
-								inputStr: options.send,
-								flags: {},
-								filters: [options.filter],
-								search: options.search,
-								noDuplicateItems: true
-							}).filter(i => itemIsTradeable(i.id, true)),
+					: parseTradeSource({
+							inputBank: senderUser.bankWithGP,
+							inputStr: options.send,
+							filters: [options.filter],
+							search: options.search,
 							maxSize,
-							options.sort,
-							options.order
-						));
+							sort: options.sort,
+							order: options.order,
+							limit: sendMaxSize !== undefined
+						}));
 			const parsedItemsReceived =
 				(fileItemsReceived ? new Bank(fileItemsReceived) : undefined) ??
-				trimTradeBank(
-					parseBank({
-						inputStr: options.receive,
-						flags: {},
-						noDuplicateItems: true
-					}).filter(i => itemIsTradeable(i.id, true)),
+				parseTradeSource({
+					inputStr: options.receive,
 					maxSize,
-					options.sort,
-					options.order
-				);
+					sort: options.sort,
+					order: options.order,
+					limit: true
+				});
 
 			if (options.price) {
 				const gp = mahojiParseNumber({ input: options.price, min: 1 });
