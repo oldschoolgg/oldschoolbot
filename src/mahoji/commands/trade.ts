@@ -11,7 +11,8 @@ import {
 import { Events, ellipsize, isObject, UserError } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { filterOption } from '@/discord/index.js';
+import { choicesOf, filterOption } from '@/discord/index.js';
+import { type BankSortMethod, BankSortMethods, sorts } from '@/lib/sorts.js';
 import { ZItemBank } from '@/lib/structures/Bank.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
@@ -33,6 +34,8 @@ const TradeConfirmationStopReason = {
 };
 type TradeFileOptionName = 'send_file' | 'receive_file';
 type TradeFileTextResult = { text: string } | { error: string };
+const TradeOrder = ['asc', 'desc'] as const;
+type TradeOrder = (typeof TradeOrder)[number];
 
 function formatTradeFileError(optionName: TradeFileOptionName, message: string, underlyingError?: string) {
 	const prefix = `I couldn't use your ${optionName} attachment. ${message}`;
@@ -51,7 +54,21 @@ function hasAllowedTradeFileExtension(attachment: APIAttachment) {
 }
 
 function hasBinaryTextCharacters(text: string) {
+	// biome-ignore lint/suspicious/noControlCharactersInRegex: these ranges intentionally detect binary control characters.
 	return /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/u.test(text);
+}
+
+function tradeBankSort(sort?: BankSortMethod, order: TradeOrder = 'desc') {
+	if (!sort) return undefined;
+	const comparator =
+		sort === 'name'
+			? sorts.name
+			: (a: Parameters<typeof sorts.value>[0], b: Parameters<typeof sorts.value>[1]) => -sorts[sort](a, b);
+	return { method: comparator, direction: order } as const;
+}
+
+function trimTradeBank(bank: Bank, maxSize: number | undefined, sort?: BankSortMethod, order?: TradeOrder): Bank {
+	return bank.trim(maxSize ?? bank.length, tradeBankSort(sort, order));
 }
 
 function bankFromJson(json: unknown): Bank {
@@ -67,12 +84,16 @@ function parseTradeBank({
 	optionName,
 	content,
 	inputBank,
-	maxSize
+	maxSize,
+	sort,
+	order
 }: {
 	optionName: TradeFileOptionName;
 	content: string;
 	inputBank?: Bank;
 	maxSize: number;
+	sort?: BankSortMethod;
+	order?: TradeOrder;
 }): Bank {
 	const trimmedContent = content.trim();
 	if (!trimmedContent) {
@@ -82,9 +103,12 @@ function parseTradeBank({
 	try {
 		if (trimmedContent[0] === '{') {
 			const parsedJSON = JSON.parse(trimmedContent);
-			const jsBank = bankFromJson(parsedJSON)
-				.filter(i => itemIsTradeable(i.id, true))
-				.trim(maxSize);
+			const jsBank = trimTradeBank(
+				bankFromJson(parsedJSON).filter(i => itemIsTradeable(i.id, true)),
+				maxSize,
+				sort,
+				order
+			);
 			// Size to fit:
 			if (inputBank && !inputBank.has(jsBank)) {
 				const diffBank = jsBank.clone().remove(inputBank);
@@ -93,13 +117,17 @@ function parseTradeBank({
 			return jsBank;
 		}
 
-		return parseBank({
-			inputBank,
-			inputStr: trimmedContent,
-			flags: {},
+		return trimTradeBank(
+			parseBank({
+				inputBank,
+				inputStr: trimmedContent,
+				flags: {},
+				noDuplicateItems: true
+			}).filter(i => itemIsTradeable(i.id, true)),
 			maxSize,
-			noDuplicateItems: true
-		}).filter(i => itemIsTradeable(i.id, true));
+			sort,
+			order
+		);
 	} catch (err) {
 		throw new UserError(
 			formatTradeError(optionName, err instanceof Error ? err.message : 'Unknown parsing error.')
@@ -435,6 +463,27 @@ export const tradeCommand = defineCommand({
 			name: 'all',
 			description: 'Send all matching items with no max limit.',
 			required: false
+		},
+		{
+			type: 'String',
+			name: 'sort',
+			description: 'Sort matching items before applying the max limit.',
+			required: false,
+			choices: choicesOf(BankSortMethods)
+		},
+		{
+			type: 'String',
+			name: 'order',
+			description: 'Sort order for the selected sort method.',
+			required: false,
+			choices: choicesOf(TradeOrder)
+		},
+		{
+			type: 'Integer',
+			name: 'max_size',
+			description: 'Maximum distinct items to trade, up to the configured limit.',
+			required: false,
+			min_value: 1
 		}
 	],
 	run: async ({ interaction, user: senderUser, guildId, options }) => {
@@ -459,6 +508,8 @@ export const tradeCommand = defineCommand({
 		let fileItemsReceived: Bank | undefined;
 		const tryAllowAll = extraSettings.tradeAllowAll;
 		const tradeMaxPull = extraSettings.tradeMaxPull ?? DEFAULT_TRADE_MAX_PULL;
+		const maxSize = Math.min(options.max_size ?? tradeMaxPull, tradeMaxPull);
+		const sendMaxSize = tryAllowAll && options.all && options.max_size === undefined ? undefined : maxSize;
 
 		if (options.send_file) {
 			const sendFileText = await downloadTradeAttachmentText('send_file', options.send_file);
@@ -467,7 +518,9 @@ export const tradeCommand = defineCommand({
 				optionName: 'send_file',
 				content: sendFileText.text,
 				inputBank: senderUser.bankWithGP,
-				maxSize: tradeMaxPull
+				maxSize,
+				sort: options.sort,
+				order: options.order
 			});
 		}
 
@@ -477,7 +530,9 @@ export const tradeCommand = defineCommand({
 			fileItemsReceived = parseTradeBank({
 				optionName: 'receive_file',
 				content: receiveFileText.text,
-				maxSize: tradeMaxPull
+				maxSize,
+				sort: options.sort,
+				order: options.order
 			});
 		}
 
@@ -487,28 +542,36 @@ export const tradeCommand = defineCommand({
 			)} seconds`;
 		}
 
-		function parseTradeBanks(maxSize: number) {
+		function parseTradeBanks(maxSize: number | undefined) {
 			const parsedItemsSent =
 				fileItemsSent ??
 				(!options.search && !options.filter && !options.send && !options.all
 					? new Bank()
-					: parseBank({
-							inputBank: senderUser.bankWithGP,
-							inputStr: options.send,
-							maxSize: tryAllowAll && options.all ? undefined : maxSize,
-							flags: {},
-							filters: [options.filter],
-							search: options.search,
-							noDuplicateItems: true
-						}).filter(i => itemIsTradeable(i.id, true)));
+					: trimTradeBank(
+							parseBank({
+								inputBank: senderUser.bankWithGP,
+								inputStr: options.send,
+								flags: {},
+								filters: [options.filter],
+								search: options.search,
+								noDuplicateItems: true
+							}).filter(i => itemIsTradeable(i.id, true)),
+							maxSize,
+							options.sort,
+							options.order
+						));
 			const parsedItemsReceived =
 				(fileItemsReceived ? new Bank(fileItemsReceived) : undefined) ??
-				parseBank({
-					inputStr: options.receive,
+				trimTradeBank(
+					parseBank({
+						inputStr: options.receive,
+						flags: {},
+						noDuplicateItems: true
+					}).filter(i => itemIsTradeable(i.id, true)),
 					maxSize,
-					flags: {},
-					noDuplicateItems: true
-				}).filter(i => itemIsTradeable(i.id, true));
+					options.sort,
+					options.order
+				);
 
 			if (options.price) {
 				const gp = mahojiParseNumber({ input: options.price, min: 1 });
@@ -520,7 +583,7 @@ export const tradeCommand = defineCommand({
 			return { itemsSent: parsedItemsSent, itemsReceived: parsedItemsReceived };
 		}
 
-		const { itemsSent, itemsReceived } = parseTradeBanks(tradeMaxPull);
+		const { itemsSent, itemsReceived } = parseTradeBanks(sendMaxSize);
 		const tradeTimeout = extraSettings.tradeTimeout * 1000;
 
 		if (itemsSent.items().some(i => !itemIsTradeable(i[0].id, true))) {

@@ -293,7 +293,8 @@ export class Bank {
 		if (!Number.isInteger(size) || size < 0) {
 			throw new Error('Bank trim size must be a non-negative integer.');
 		}
-		if (this.length <= size) return this;
+		const shouldSort = sort !== undefined && sort.method !== 'none';
+		if (this.length <= size && !shouldSort) return this;
 		if (size === 0) {
 			this.map.clear();
 			return this;
