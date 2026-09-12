@@ -25,6 +25,8 @@ model Activity {
   all_user_ids   BigInt[]           @default([])
 
   @@index([user_id, completed, finish_date])
+  @@index([type])
+  @@index([user_id, type])
   @@map("activity")
 }
 
