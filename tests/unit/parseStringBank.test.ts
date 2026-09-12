@@ -207,6 +207,18 @@ describe('Bank Parsers', () => {
 		expect(parseBank({ inputBank: bank, flags: { all: 'all' }, maxSize: 23 }).length).toEqual(23);
 	});
 
+	test('parseBank - unlimited all and file-style input', () => {
+		const bank = new Bank().add('Cannonball', 10).add('Coal', 20);
+
+		const all = parseBank({ inputBank: bank, maxSize: 1, limit: false });
+		expect(all.length).toEqual(2);
+		expect(all.amount('Cannonball')).toEqual(10);
+
+		const fileItems = parseBank({ inputBank: bank, inputStr: '2 2', maxSize: 70 });
+		expect(fileItems.length).toEqual(1);
+		expect(fileItems.amount('Cannonball')).toEqual(2);
+	});
+
 	test('parseBank - with no inputBank', async () => {
 		expect(parseBank({ inputBank: undefined, inputStr: '100 trout, 100 twisted bow' }).toJSON()).toEqual(
 			new Bank().add('Trout', 100).add('Twisted bow', 100).toJSON()

@@ -14,12 +14,11 @@ export async function refreshUserCache({
 	possibleTarget?: string;
 }) {
 	let refreshUser = user;
-	const shouldRefreshStaffGrantsSchedule = !possibleTarget?.trim() && user.isModOrAdmin;
-	let shouldRefreshExtraSettings = false;
+	let systemRefresh = false;
 
 	if (possibleTarget) {
 		possibleTarget = getIdFromMention(possibleTarget);
-		shouldRefreshExtraSettings = possibleTarget === globalConfig.clientID && (user.isAdmin || user.isGameHacker);
+		if (possibleTarget === globalConfig.clientID && (user.isAdmin || user.isGameHacker)) systemRefresh = true;
 		if (user.isMod || user.isAdmin) {
 			if (!isValidDiscordSnowflake(possibleTarget)) return 'Invalid user ID.';
 			if (possibleTarget === globalConfig.clientID) {
@@ -28,8 +27,6 @@ export async function refreshUserCache({
 				refreshUser = await mUserFetch(possibleTarget);
 				if (!refreshUser.hasMinion) return 'Target player does not have a minion.';
 			}
-		} else if (shouldRefreshExtraSettings) {
-			refreshUser = user;
 		} else return 'Ook';
 	}
 
@@ -42,11 +39,11 @@ export async function refreshUserCache({
 		updateGuildMember(refreshUser.id),
 		Cache.getRoboChimpUser(refreshUser.id, true),
 		roboChimpSyncData(refreshUser),
-		shouldRefreshStaffGrantsSchedule ? Cache.refreshStaffGrants() : Promise.resolve(),
-		shouldRefreshExtraSettings ? Cache.refreshExtraSettingsCache() : Promise.resolve()
+		systemRefresh ? Cache.refreshStaffGrants() : Promise.resolve(),
+		systemRefresh ? Cache.refreshExtraSettingsCache() : Promise.resolve()
 	]);
 	user.updateProperties();
 	return `${refreshUser}'s Caches updated successfully!${
-		shouldRefreshStaffGrantsSchedule ? ' Staff bestow schedule cache refreshed.' : ''
-	}${shouldRefreshExtraSettings ? ' Extra settings cache refreshed.' : ''}`;
+		systemRefresh ? ' Staff bestow schedule cache refreshed.' : ''
+	}${systemRefresh ? ' Extra settings cache refreshed.' : ''}`;
 }

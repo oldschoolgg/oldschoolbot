@@ -689,8 +689,6 @@ Date: ${dateFm(date)}`;
 			};
 		}
 
-		if (!isAdmin) return rng.pick(gifs);
-
 		// Unequip Items
 		if (options.player?.unequip_all_items) {
 			if (!isAdmin) {

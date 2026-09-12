@@ -130,6 +130,9 @@ interface ParseBankOptions {
 	filters?: (string | undefined)[];
 	search?: string;
 	maxSize?: number;
+	sort?: (a: [Item, number], b: [Item, number]) => number;
+	order?: 'asc' | 'desc';
+	limit?: boolean;
 	user?: MUser;
 	noDuplicateItems?: true;
 }

@@ -1023,7 +1023,6 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 
 		const res = await Promise.race([
 			mutex.runExclusive(async () => {
-				await this.sync();
 				return fn(this);
 			}),
 			timeoutPromise
