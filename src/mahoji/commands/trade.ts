@@ -1,28 +1,23 @@
-import { createHash } from 'node:crypto';
-import { TextDecoder } from 'node:util';
 import {
-	type APIAttachment,
 	type APIMessage,
 	ButtonBuilder,
 	ButtonStyle,
 	EmbedBuilder,
 	SpecialResponse
 } from '@oldschoolgg/discord';
-import { Events, ellipsize, isObject, UserError } from '@oldschoolgg/toolkit';
+import { Events, ellipsize } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { choicesOf, filterOption } from '@/discord/index.js';
 import { type BankSortMethod, BankSortMethods, sorts } from '@/lib/sorts.js';
-import { ZItemBank } from '@/lib/structures/Bank.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { tradePlayerItems } from '@/lib/util/tradePlayerItems.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 const DEFAULT_TRADE_MAX_PULL = 70;
+const MAX_TRADE_MESSAGE_LENGTH = 2000;
 const MAX_TRADE_SYNOPSIS_LENGTH = 1950;
-const EMBED_SIDE_LENGTH = 1800;
-const MAX_TRADE_FILE_BYTES = 2 * 1024 * 1024;
 const TradeConfirmationButtonID = {
 	Confirm: 'TRADE_CONFIRM',
 	Cancel: 'TRADE_CANCEL'
@@ -32,31 +27,8 @@ const TradeConfirmationStopReason = {
 	UserCancelled: 'user_cancelled',
 	Timeout: 'timeout'
 };
-type TradeFileOptionName = 'send_file' | 'receive_file';
-type TradeFileTextResult = { text: string } | { error: string };
 const TradeOrder = ['asc', 'desc'] as const;
 type TradeOrder = (typeof TradeOrder)[number];
-
-function formatTradeFileError(optionName: TradeFileOptionName, message: string, underlyingError?: string) {
-	const prefix = `I couldn't use your ${optionName} attachment. ${message}`;
-	if (!underlyingError) return prefix;
-	return `${prefix}\n\n\`\`\`text\n${underlyingError}\n\`\`\``;
-}
-
-function formatTradeError(optionName: TradeFileOptionName, underlyingError?: string) {
-	const prefix = `I couldn't parse your ${optionName} attachment as an item bank.`;
-	if (!underlyingError) return prefix;
-	return `${prefix}\n\n\`\`\`text\n${underlyingError}\n\`\`\``;
-}
-
-function hasAllowedTradeFileExtension(attachment: APIAttachment) {
-	return /\.(?:txt|json)$/i.test(attachment.filename);
-}
-
-function hasBinaryTextCharacters(text: string) {
-	// biome-ignore lint/suspicious/noControlCharactersInRegex: these ranges intentionally detect binary control characters.
-	return /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/u.test(text);
-}
 
 function tradeBankSort(sort?: BankSortMethod, order: TradeOrder = 'desc') {
 	if (!sort) return undefined;
@@ -109,231 +81,48 @@ export function parseTradeSource({
 	);
 }
 
-function bankFromJson(json: unknown): Bank {
-	if (!isObject(json)) {
-		throw new Error('JSON item banks must be a valid ItemBank object.');
-	}
-
-	const parsed = ZItemBank.parse(json);
-	return new Bank(parsed);
-}
-
-function parseTradeBank({
-	optionName,
-	content,
-	inputBank,
-	maxSize,
-	sort,
-	order
-}: {
-	optionName: TradeFileOptionName;
-	content: string;
-	inputBank?: Bank;
-	maxSize: number;
-	sort?: BankSortMethod;
-	order?: TradeOrder;
-}): Bank {
-	const trimmedContent = content.trim();
-	if (!trimmedContent) {
-		throw new UserError(formatTradeFileError(optionName, 'Attachment content is empty.'));
-	}
-
-	try {
-		if (trimmedContent[0] === '{') {
-			const parsedJSON = JSON.parse(trimmedContent);
-			const jsBank = trimTradeBank(
-				bankFromJson(parsedJSON).filter(i => itemIsTradeable(i.id, true)),
-				maxSize,
-				sort,
-				order
-			);
-			// Size to fit:
-			if (inputBank && !inputBank.has(jsBank)) {
-				const diffBank = jsBank.clone().remove(inputBank);
-				jsBank.remove(diffBank);
-			}
-			return jsBank;
-		}
-
-		return parseTradeSource({ inputBank, inputStr: trimmedContent, maxSize, sort, order, limit: true });
-	} catch (err) {
-		throw new UserError(
-			formatTradeError(optionName, err instanceof Error ? err.message : 'Unknown parsing error.')
-		);
-	}
-}
-
-async function downloadTradeAttachmentText(
-	optionName: TradeFileOptionName,
-	attachment: APIAttachment
-): Promise<TradeFileTextResult> {
-	if (!hasAllowedTradeFileExtension(attachment)) {
-		return { error: formatTradeFileError(optionName, 'The file must be a .txt or .json file.') };
-	}
-
-	if (attachment.size > MAX_TRADE_FILE_BYTES) {
-		return {
-			error: formatTradeFileError(
-				optionName,
-				'The file is over 2MB. Use item IDs instead of item names to make it smaller.'
-			)
-		};
-	}
-
-	let response: Response;
-	try {
-		response = await fetch(attachment.url);
-	} catch (err) {
-		return {
-			error: formatTradeFileError(
-				optionName,
-				"I couldn't download the file.",
-				err instanceof Error ? err.message : 'Unknown download error.'
-			)
-		};
-	}
-	if (!response.ok) {
-		return {
-			error: formatTradeFileError(
-				optionName,
-				"I couldn't download the file.",
-				`${response.status} ${response.statusText}`
-			)
-		};
-	}
-
-	const buffer = Buffer.from(await response.arrayBuffer());
-	if (buffer.length > MAX_TRADE_FILE_BYTES) {
-		return {
-			error: formatTradeFileError(
-				optionName,
-				'The downloaded file is over 2MB. Use item IDs instead of item names to make it smaller.'
-			)
-		};
-	}
-
-	try {
-		const text = new TextDecoder('utf-8', { fatal: true }).decode(buffer);
-		if (hasBinaryTextCharacters(text)) {
-			return {
-				error: formatTradeFileError(
-					optionName,
-					'The file must be plaintext UTF-8.',
-					'Binary data was detected.'
-				)
-			};
-		}
-		return { text };
-	} catch (err) {
-		return {
-			error: formatTradeFileError(
-				optionName,
-				'The file must be plaintext UTF-8.',
-				err instanceof Error ? err.message : 'Invalid UTF-8 content.'
-			)
-		};
-	}
-}
-
-function totalQuantityInBank(bank: Bank): number {
-	return bank.items().reduce((sum, [, qty]) => sum + qty, 0);
-}
-
-function formatBankItemSummary(bank: Bank): string {
-	return `${bank.length.toLocaleString()} different items, ${totalQuantityInBank(bank).toLocaleString()} total quantity`;
-}
-
-function tradeHash(bank: Bank): string {
-	const hash = createHash('sha256').update(bank.toString()).digest();
-	return (hash.readUInt32BE(0) % 1_000_000).toString().padStart(6, '0');
-}
-
-function formatTradeHash(itemsSent: Bank, itemsReceived: Bank) {
-	return `${tradeHash(itemsSent)} vs ${tradeHash(itemsReceived)}`;
-}
-
-function formatTradeItemSummary(senderUser: MUser, recipientUser: MUser, itemsSent: Bank, itemsReceived: Bank) {
-	const combinedBank = new Bank().add(itemsSent).add(itemsReceived);
-	return `Items: ${senderUser.usernameOrMention}: ${formatBankItemSummary(itemsSent)}; ${
-		recipientUser.usernameOrMention
-	}: ${formatBankItemSummary(itemsReceived)}; combined: ${formatBankItemSummary(combinedBank)}.`;
-}
-
-function formatTradeHashSummary(senderUser: MUser, recipientUser: MUser, itemsSent: Bank, itemsReceived: Bank) {
-	return `      *Trade Hash: ${formatTradeHash(itemsSent, itemsReceived)}*
-${formatTradeItemSummary(senderUser, recipientUser, itemsSent, itemsReceived)}`;
-}
-
 function tradeAllowedMentions(senderUser: MUser, recipientUser: MUser): BaseSendableMessage['allowedMentions'] {
 	return { users: [senderUser.id, recipientUser.id] };
 }
 
-function tradeOfferFileName(user: MUser): string {
-	return `${user.username}${user.id.slice(-4)}s_offer.txt`;
-}
-
-function buildTradeOfferDisplay(
-	user: MUser,
-	bankStr: string
-): { display: string; file?: { buffer: Buffer; name: string } } {
-	if (bankStr.length <= EMBED_SIDE_LENGTH) {
-		return { display: bankStr };
-	}
-	return {
-		display: ellipsize(bankStr, EMBED_SIDE_LENGTH),
-		file: {
-			buffer: Buffer.from(`${user.usernameOrMention} Offers:\n${bankStr}`),
-			name: tradeOfferFileName(user)
-		}
-	};
-}
-
-function tradeComposeEmbed(
+function buildTradeDetailsEmbed(
 	senderUser: MUser,
 	recipientUser: MUser,
 	itemsSent: Bank,
 	itemsReceived: Bank
-): BaseSendableMessage & { files?: NonNullable<BaseSendableMessage['files']> } {
-	const sourceOffer = buildTradeOfferDisplay(senderUser, itemsSent.toString());
-	const targetOffer = buildTradeOfferDisplay(recipientUser, itemsReceived.toString());
-	const files: NonNullable<BaseSendableMessage['files']> = [];
-	if (sourceOffer.file) files.push(sourceOffer.file);
-	if (targetOffer.file) files.push(targetOffer.file);
+): EmbedBuilder {
+	let description = `${senderUser.usernameOrMention} is offering:
+${itemsSent.toString()}
 
-	let description = `${senderUser.usernameOrMention} is offering: ${sourceOffer.display}
-
-${recipientUser.usernameOrMention} is considering trading back: ${targetOffer.display} in exchange.`;
+	${recipientUser.usernameOrMention} is offering:
+${itemsReceived.toString()}`;
 	if (description.length > 4096) description = ellipsize(description, 4096);
-	const message: BaseSendableMessage = {
-		content: `Initializing trade between ${senderUser.mention} and ${recipientUser.mention}.\n\nTrade Hash: ${formatTradeHash(
-			itemsSent,
-			itemsReceived
-		)}`,
-		embeds: [
-			new EmbedBuilder()
-				.setTitle('Trade Hash')
-				.setDescription(
-					`Verify the Trade Hash before confirming to make sure the contents did not change between trade attempts.\n\n${formatTradeHash(
-						itemsSent,
-						itemsReceived
-					)}`
-				),
-			new EmbedBuilder()
-				.setDescription(description)
-				.setTitle(`Trade between ${recipientUser.usernameOrMention} and ${senderUser.usernameOrMention}`)
-		],
-		allowedMentions: { users: [senderUser.id, recipientUser.id] }
+	return new EmbedBuilder()
+		.setDescription(description)
+		.setTitle(`Trade between ${recipientUser.usernameOrMention} and ${senderUser.usernameOrMention}`);
+}
+
+function buildTradeConfirmationMessage(
+	senderUser: MUser,
+	recipientUser: MUser,
+	itemsSent: Bank,
+	itemsReceived: Bank
+): BaseSendableMessage {
+	const content = `Hi ${recipientUser.mention}, ${senderUser.mention} would like to trade with you! Review the trade and click Yes to confirm, or No to cancel.`;
+	const details = `${senderUser.usernameOrMention} is offering:\n${itemsSent.toString()}\n\n${recipientUser.usernameOrMention} is offering:\n${itemsReceived.toString()}`;
+	if (`${content}\n\n${details}`.length <= MAX_TRADE_MESSAGE_LENGTH) {
+		return { content: `${content}\n\n${details}` };
+	}
+	return {
+		content,
+		embeds: [buildTradeDetailsEmbed(senderUser, recipientUser, itemsSent, itemsReceived)]
 	};
-	if (files.length > 0) message.files = files;
-	return message;
 }
 
 function buildTradeCompletionResponse(senderUser: MUser, recipientUser: MUser, itemsSent: Bank, itemsReceived: Bank) {
 	let synopsis = `Trade completed! ${senderUser.mention} sold ${itemsSent.toStringFull()} to ${
 		recipientUser.mention
 	} in return for ${itemsReceived.toStringFull()}.`;
-
-	synopsis += `\n\n${formatTradeHashSummary(senderUser, recipientUser, itemsSent, itemsReceived)}`;
 
 	synopsis += `You can now buy/sell items in the Grand Exchange: ${globalClient.mentionCommand('ge')}`;
 	const response: BaseSendableMessage = {
@@ -456,21 +245,9 @@ export const tradeCommand = defineCommand({
 			required: false
 		},
 		{
-			type: 'Attachment',
-			name: 'send_file',
-			description: 'A plaintext item bank file of items you want to send.',
-			required: false
-		},
-		{
 			type: 'String',
 			name: 'receive',
 			description: 'The items you want to receive from the other player.',
-			required: false
-		},
-		{
-			type: 'Attachment',
-			name: 'receive_file',
-			description: 'A plaintext item bank file of items you want to receive.',
 			required: false
 		},
 		{
@@ -525,54 +302,15 @@ export const tradeCommand = defineCommand({
 		if (recipientUser.id === senderUser.id) return "You can't trade yourself.";
 		if (options.user.user.bot) return "You can't trade a bot.";
 		if (await recipientUser.getIsLocked()) return 'That user is busy right now.';
-		if (options.send && options.send_file) return 'Use either send or send_file, not both.';
-		if (options.receive && options.receive_file) return 'Use either receive or receive_file, not both.';
-		if (options.send_file && (options.filter || options.search || options.all)) {
-			return 'You cannot use send_file with filter, search, or all.';
-		}
 
 		const extraSettings = await ClientSettings.getExtraSettings();
-		let fileItemsSent: Bank | undefined;
-		let fileItemsReceived: Bank | undefined;
 		const tryAllowAll = extraSettings.tradeAllowAll;
 		const tradeMaxPull = extraSettings.tradeMaxPull ?? DEFAULT_TRADE_MAX_PULL;
 		const maxSize = Math.min(options.max_size ?? tradeMaxPull, tradeMaxPull);
 		const sendMaxSize = tryAllowAll && options.all && options.max_size === undefined ? undefined : maxSize;
 
-		if (options.send_file) {
-			const sendFileText = await downloadTradeAttachmentText('send_file', options.send_file);
-			if ('error' in sendFileText) return sendFileText.error;
-			fileItemsSent = parseTradeBank({
-				optionName: 'send_file',
-				content: sendFileText.text,
-				inputBank: senderUser.bankWithGP,
-				maxSize,
-				sort: options.sort,
-				order: options.order
-			});
-		}
-
-		if (options.receive_file) {
-			const receiveFileText = await downloadTradeAttachmentText('receive_file', options.receive_file);
-			if ('error' in receiveFileText) return receiveFileText.error;
-			fileItemsReceived = parseTradeBank({
-				optionName: 'receive_file',
-				content: receiveFileText.text,
-				maxSize,
-				sort: options.sort,
-				order: options.order
-			});
-		}
-
-		function tradeConfirmationMsg(tradeTimeout: number) {
-			return `Hey ${recipientUser.mention}! ${senderUser.mention} would like to trade! See details above and confirm within ${Math.floor(
-				tradeTimeout / 1000
-			)} seconds`;
-		}
-
 		function parseTradeBanks(maxSize: number | undefined) {
 			const parsedItemsSent =
-				fileItemsSent ??
 				(!options.search && !options.filter && !options.send && !options.all
 					? new Bank()
 					: parseTradeSource({
@@ -586,7 +324,6 @@ export const tradeCommand = defineCommand({
 							limit: sendMaxSize !== undefined
 						}));
 			const parsedItemsReceived =
-				(fileItemsReceived ? new Bank(fileItemsReceived) : undefined) ??
 				parseTradeSource({
 					inputStr: options.receive,
 					maxSize,
@@ -622,17 +359,16 @@ export const tradeCommand = defineCommand({
 
 		const usersToConfirm = [recipientUser.id, senderUser.id];
 
-		await interaction.followUp(tradeComposeEmbed(senderUser, recipientUser, itemsSent, itemsReceived));
-		const confirmationContent = tradeConfirmationMsg(tradeTimeout);
+		const confirmationContent = buildTradeConfirmationMessage(senderUser, recipientUser, itemsSent, itemsReceived);
 		const confirmationMessage = await interaction.followUp({
-			content: confirmationContent,
+			...confirmationContent,
 			components: tradeConfirmationButtons(),
 			allowedMentions: tradeAllowedMentions(senderUser, recipientUser)
 		});
 		await confirmTradeFollowUp({
 			interaction,
 			message: confirmationMessage,
-			content: confirmationContent,
+			content: confirmationContent.content!,
 			users: usersToConfirm,
 			timeout: tradeTimeout
 		});
