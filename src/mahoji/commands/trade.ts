@@ -1,6 +1,4 @@
-import {
-	EmbedBuilder
-} from '@oldschoolgg/discord';
+import { EmbedBuilder } from '@oldschoolgg/discord';
 import { Events, ellipsize } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
@@ -37,8 +35,7 @@ export function parseTradeSource({
 	search,
 	maxSize,
 	sort,
-	order,
-	limit
+	order
 }: {
 	inputBank?: Bank;
 	inputStr?: string;
@@ -47,7 +44,6 @@ export function parseTradeSource({
 	maxSize?: number;
 	sort?: BankSortMethod;
 	order?: TradeOrder;
-	limit: boolean;
 }): Bank {
 	return trimTradeBank(
 		parseBank({
@@ -57,19 +53,12 @@ export function parseTradeSource({
 			filters,
 			search,
 			maxSize,
-			sort: tradeBankSort(sort, order)?.method,
-			order,
-			limit: false,
 			noDuplicateItems: true
 		}).filter(i => itemIsTradeable(i.id, true)),
-		limit ? maxSize : undefined,
+		maxSize,
 		sort,
 		order
 	);
-}
-
-function tradeAllowedMentions(senderUser: MUser, recipientUser: MUser): BaseSendableMessage['allowedMentions'] {
-	return { users: [senderUser.id, recipientUser.id] };
 }
 
 function buildTradeDetailsEmbed(
@@ -107,14 +96,12 @@ function buildTradeConfirmationMessage(
 }
 
 function buildTradeCompletionResponse(senderUser: MUser, recipientUser: MUser, itemsSent: Bank, itemsReceived: Bank) {
-	let synopsis = `Trade completed! ${senderUser.mention} sold ${itemsSent.toStringFull()} to ${
+	const synopsis = `Trade completed! ${senderUser.mention} sold ${itemsSent.toStringFull()} to ${
 		recipientUser.mention
 	} in return for ${itemsReceived.toStringFull()}.`;
 
-	synopsis += `You can now buy/sell items in the Grand Exchange: ${globalClient.mentionCommand('ge')}`;
 	const response: BaseSendableMessage = {
-		content: synopsis,
-		allowedMentions: tradeAllowedMentions(senderUser, recipientUser)
+		content: synopsis
 	};
 
 	if (synopsis.length > MAX_TRADE_SYNOPSIS_LENGTH) {
@@ -209,7 +196,7 @@ export const tradeCommand = defineCommand({
 
 		function parseTradeBanks(maxSize: number | undefined) {
 			const parsedItemsSent =
-				(!options.search && !options.filter && !options.send && !options.all
+				!options.search && !options.filter && !options.send && !options.all
 					? new Bank()
 					: parseTradeSource({
 							inputBank: senderUser.bankWithGP,
@@ -218,17 +205,14 @@ export const tradeCommand = defineCommand({
 							search: options.search,
 							maxSize,
 							sort: options.sort,
-							order: options.order,
-							limit: sendMaxSize !== undefined
-						}));
-			const parsedItemsReceived =
-				parseTradeSource({
-					inputStr: options.receive,
-					maxSize,
-					sort: options.sort,
-					order: options.order,
-					limit: true
-				});
+							order: options.order
+						});
+			const parsedItemsReceived = parseTradeSource({
+				inputStr: options.receive,
+				maxSize,
+				sort: options.sort,
+				order: options.order
+			});
 
 			if (options.price) {
 				const gp = mahojiParseNumber({ input: options.price, min: 1 });
