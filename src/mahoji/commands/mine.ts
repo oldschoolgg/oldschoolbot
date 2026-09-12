@@ -243,6 +243,9 @@ export const mineCommand = defineCommand({
 		if (ore.prayerLevel && user.skillsAsLevels.prayer < ore.prayerLevel) {
 			return `${user.minionName} needs ${ore.prayerLevel} Prayer to mine ${ore.name}.`;
 		}
+		if (ore.fixedRatePerHour && !pickaxes.some(pickaxe => user.gearBank.hasEquippedOrInBank(pickaxe.id))) {
+			return `You need a pickaxe equipped or in your bank to mine ${ore.name}.`;
+		}
 
 		// Check for daeyalt shard requirements.
 		const hasDaeyaltReqs = user.hasSkillReqs(sinsOfTheFatherSkillRequirements);

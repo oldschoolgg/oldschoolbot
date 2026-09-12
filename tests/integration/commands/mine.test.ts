@@ -37,7 +37,8 @@ describe('Mine Command', async () => {
 			levels: {
 				mining: 78,
 				prayer: 43
-			}
+			},
+			bank: new Bank().add('Rune pickaxe')
 		});
 
 		const res = await user.runCmdAndTrip(mineCommand, { name: 'infernal shale', quantity: 100 });
@@ -48,7 +49,7 @@ describe('Mine Command', async () => {
 		await user.bankAmountMatch('Crushed infernal shale', 100);
 	});
 
-	test('Infernal shale full trips are within the expected crushed shale rate', async () => {
+	test('requires a pickaxe for Infernal shale', async () => {
 		const user = await client.mockUser({
 			levels: {
 				mining: 78,
@@ -57,7 +58,22 @@ describe('Mine Command', async () => {
 			bank: new Bank()
 		});
 
+		const res = await user.runCommand(mineCommand, { name: 'infernal shale', quantity: 100 });
+		expect(res).toEqual('You need a pickaxe equipped or in your bank to mine Infernal shale.');
+	});
+
+	test('Infernal shale full trips are within the expected crushed shale rate', async () => {
+		const user = await client.mockUser({
+			levels: {
+				mining: 78,
+				prayer: 43
+			},
+			bank: new Bank().add('Rune pickaxe')
+		});
+
 		const res = await user.runCmdAndTrip(mineCommand, { name: 'infernal shale' });
+		expect(res.commandResult).toContain('is now mining Infernal shale');
+		expect(res.activityResult).not.toBeNull();
 		await user.sync();
 		const crushedShale = user.bank.amount('Crushed infernal shale');
 		const crushedShalePerHour = crushedShale / (res.activityResult!.duration / Time.Hour);
