@@ -1,9 +1,5 @@
 import {
-	type APIMessage,
-	ButtonBuilder,
-	ButtonStyle,
-	EmbedBuilder,
-	SpecialResponse
+	EmbedBuilder
 } from '@oldschoolgg/discord';
 import { Events, ellipsize } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
@@ -18,15 +14,6 @@ import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 const DEFAULT_TRADE_MAX_PULL = 70;
 const MAX_TRADE_MESSAGE_LENGTH = 2000;
 const MAX_TRADE_SYNOPSIS_LENGTH = 1950;
-const TradeConfirmationButtonID = {
-	Confirm: 'TRADE_CONFIRM',
-	Cancel: 'TRADE_CANCEL'
-};
-const TradeConfirmationStopReason = {
-	AllConfirmed: 'all_confirmed',
-	UserCancelled: 'user_cancelled',
-	Timeout: 'timeout'
-};
 const TradeOrder = ['asc', 'desc'] as const;
 type TradeOrder = (typeof TradeOrder)[number];
 
@@ -136,95 +123,6 @@ function buildTradeCompletionResponse(senderUser: MUser, recipientUser: MUser, i
 	}
 
 	return response;
-}
-
-function tradeConfirmationButtons(): ButtonBuilder[] {
-	return [
-		new ButtonBuilder()
-			.setCustomId(TradeConfirmationButtonID.Confirm)
-			.setLabel('Yes')
-			.setStyle(ButtonStyle.Success),
-		new ButtonBuilder().setCustomId(TradeConfirmationButtonID.Cancel).setLabel('No').setStyle(ButtonStyle.Danger)
-	];
-}
-
-async function confirmTradeFollowUp({
-	interaction,
-	message,
-	content,
-	users,
-	timeout
-}: {
-	interaction: MInteraction;
-	message: APIMessage;
-	content: string;
-	users: string[];
-	timeout: number;
-}): Promise<void> {
-	const confirms = new Set<string>();
-	const components = tradeConfirmationButtons();
-
-	return new Promise<void>((resolve, reject) => {
-		const collector = interaction.client.createInteractionCollector({
-			interaction,
-			messageId: message.id,
-			timeoutMs: timeout,
-			users,
-			maxCollected: Infinity
-		});
-
-		collector.on('collect', async buttonInteraction => {
-			if (buttonInteraction.customId === TradeConfirmationButtonID.Cancel) {
-				collector.stop(TradeConfirmationStopReason.UserCancelled);
-				return;
-			}
-
-			if (confirms.has(buttonInteraction.userId)) {
-				void buttonInteraction.reply({ ephemeral: true, content: `You have already confirmed.` });
-				return;
-			}
-
-			confirms.add(buttonInteraction.userId);
-
-			if (buttonInteraction.customId === TradeConfirmationButtonID.Confirm) {
-				void buttonInteraction.silentButtonAck();
-				if (confirms.size === users.length) {
-					collector.stop(TradeConfirmationStopReason.AllConfirmed);
-					resolve();
-					return;
-				}
-
-				const unconfirmedUsernames = await Promise.all(
-					users.filter(i => !confirms.has(i)).map(i => interaction.client.fetchUserUsername(i))
-				);
-				await interaction.editFollowUp(message.id, {
-					content: `${content}\n\n${confirms.size}/${users.length} confirmed. Waiting on ${unconfirmedUsernames.join(', ')}...`,
-					components,
-					allowedMentions: { users }
-				});
-			}
-		});
-
-		collector.on('end', async (collected, reason) => {
-			if (reason === TradeConfirmationStopReason.AllConfirmed) return resolve();
-			if (reason === TradeConfirmationStopReason.UserCancelled) {
-				await interaction.editFollowUp(message.id, {
-					content: `The confirmation was cancelled.`,
-					components: [],
-					embeds: []
-				});
-				return reject(new Error('SILENT_ERROR'));
-			}
-			if (reason === TradeConfirmationStopReason.Timeout || collected.size !== users.length) {
-				await interaction.editFollowUp(message.id, {
-					content: `You ran out of time to confirm.`,
-					components: [],
-					embeds: []
-				});
-				return reject(new Error('SILENT_ERROR'));
-			}
-		});
-	});
 }
 
 export const tradeCommand = defineCommand({
@@ -360,46 +258,24 @@ export const tradeCommand = defineCommand({
 		const usersToConfirm = [recipientUser.id, senderUser.id];
 
 		const confirmationContent = buildTradeConfirmationMessage(senderUser, recipientUser, itemsSent, itemsReceived);
-		const confirmationMessage = await interaction.followUp({
-			...confirmationContent,
-			components: tradeConfirmationButtons(),
-			allowedMentions: tradeAllowedMentions(senderUser, recipientUser)
-		});
-		await confirmTradeFollowUp({
-			interaction,
-			message: confirmationMessage,
+		await interaction.confirmation({
 			content: confirmationContent.content!,
+			embeds: confirmationContent.embeds,
 			users: usersToConfirm,
 			timeout: tradeTimeout
 		});
-		await interaction.editFollowUp(confirmationMessage.id, { content: 'Trade confirmed.', components: [] });
 
 		// Don't sync now because the tradePlayerItems syncs already
 		if (!recipientUser.owns(itemsReceived)) {
-			await interaction.editFollowUp(confirmationMessage.id, {
-				content: "They don't own those items.",
-				components: [],
-				clearAttachments: true
-			});
-			return SpecialResponse.RespondedManually;
+			return "They don't own those items.";
 		}
 		if (!senderUser.owns(itemsSent)) {
-			await interaction.editFollowUp(confirmationMessage.id, {
-				content: "You don't own those items.",
-				components: [],
-				clearAttachments: true
-			});
-			return SpecialResponse.RespondedManually;
+			return "You don't own those items.";
 		}
 
 		const { success, message } = await tradePlayerItems(senderUser, recipientUser, itemsSent, itemsReceived);
 		if (!success) {
-			await interaction.editFollowUp(confirmationMessage.id, {
-				content: `Trade failed because: ${message}`,
-				components: [],
-				clearAttachments: true
-			});
-			return SpecialResponse.RespondedManually;
+			return `Trade failed because: ${message}`;
 		}
 		await prisma.economyTransaction.create({
 			data: {
@@ -423,7 +299,6 @@ export const tradeCommand = defineCommand({
 		}
 
 		const completionResponse = buildTradeCompletionResponse(senderUser, recipientUser, itemsSent, itemsReceived);
-		await interaction.editFollowUp(confirmationMessage.id, { ...completionResponse, clearAttachments: true });
-		return SpecialResponse.RespondedManually;
+		return completionResponse;
 	}
 });
