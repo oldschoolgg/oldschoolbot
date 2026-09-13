@@ -12,6 +12,7 @@
 		"@astrojs/react": "^4.4.2",
 		"@lucide/astro": "^0.555.0",
 		"@mantine/hooks": "^8.3.9",
+		"@oldschoolgg/schemas": "workspace:*",
 		"@oldschoolgg/util": "workspace:*",
 		"@tailwindcss/vite": "^4.1.17",
 		"@tanstack/react-table": "^8.21.3",

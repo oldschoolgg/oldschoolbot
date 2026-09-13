@@ -286,6 +286,9 @@ importers:
       '@mantine/hooks':
         specifier: ^8.3.9
         version: 8.3.9(react@19.2.0)
+      '@oldschoolgg/schemas':
+        specifier: workspace:*
+        version: link:../schemas
       '@oldschoolgg/util':
         specifier: workspace:*
         version: link:../util
@@ -363,6 +366,9 @@ importers:
       '@octokit/graphql':
         specifier: ^8.1.1
         version: 8.2.2
+      '@oldschoolgg/schemas':
+        specifier: workspace:*
+        version: link:../schemas
       '@oldschoolgg/toolkit':
         specifier: workspace:*
         version: link:../toolkit

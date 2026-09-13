@@ -1,7 +1,5 @@
-import type { IBotType } from '@oldschoolgg/schemas';
+import type { FullMinionData, IBotType } from '@oldschoolgg/schemas';
 import type { ItemBank } from 'oldschooljs';
-
-import type { FullMinionData } from '@/http/api-types.js';
 
 export async function fetchFullMinionData(bot: IBotType, targetUserId: string): Promise<FullMinionData | null> {
 	const opt = { where: { id: targetUserId } } as const;
