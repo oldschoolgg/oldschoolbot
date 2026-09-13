@@ -1,7 +1,7 @@
+import type { SUserIdentity } from '@oldschoolgg/schemas';
 import { useEffect, useState } from 'react';
 
 import { api, globalState, type SimpleMinionInfo, type UsersMinionsResponse } from '@/lib/api.js';
-import type { SUserIdentity } from '../../../../../robochimp/src/http/api-types.js';
 
 type MinionWithIdentity = SimpleMinionInfo & {
 	user_id: string;
