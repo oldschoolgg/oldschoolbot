@@ -561,6 +561,7 @@ export interface DoomTaskOptions extends ActivityTaskOptions {
 	refund?: ItemBank;
 	refundAmmo?: ItemBank;
 	fakeDuration: number;
+	quantity?: number;
 	stopOnUnique?: boolean;
 	disableZcbBoost?: boolean;
 }

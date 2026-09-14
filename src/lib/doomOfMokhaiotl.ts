@@ -1184,6 +1184,7 @@ export async function doomCommand(
 		treks,
 		refund: refundedSupplies.toJSON(),
 		refundAmmo: refundedAmmo.toJSON(),
+		quantity,
 		stopOnUnique,
 		disableZcbBoost: state.zcbBoostDisabled || undefined
 	});
