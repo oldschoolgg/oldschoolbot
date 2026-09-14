@@ -1,5 +1,12 @@
 import type { GearSetupType } from '@oldschoolgg/gear';
-import { defaultGearSetup, type GearSetup, type GearStat, isValidGearSetup, isValidGearStat } from '@oldschoolgg/gear';
+import {
+	defaultGearSetup,
+	type GearSetup,
+	GearSetupTypes,
+	type GearStat,
+	isValidGearSetup,
+	isValidGearStat
+} from '@oldschoolgg/gear';
 import { PerkTier, stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
@@ -13,7 +20,6 @@ import { unEquipAllCommand } from '@/lib/minions/functions/unequipAllCommand.js'
 import { Gear } from '@/lib/structures/Gear.js';
 import calculateGearLostOnDeathWilderness from '@/lib/util/calculateGearLostOnDeathWilderness.js';
 import { gearEquipMultiImpl } from '@/lib/util/equipMulti.js';
-import { assert } from '@/lib/util/logError.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName: string): CommandResponse {
@@ -228,19 +234,25 @@ export async function gearUnequipCommand(
 	const currentEquippedGear = user.gear[gearSetup];
 	const currentGear = currentEquippedGear.raw();
 
-	const item = Items.getItem(itemToUnequip);
-	if (!item) return "That's not a valid item.";
-	if (!currentEquippedGear.hasEquipped(item.id, true, false))
-		return `You don't have that equipped in your ${gearSetup} setup.`;
 	if (!itemToUnequip) {
 		return "You don't have this item equipped!";
 	}
 
-	const { slot } = item.equipment!;
+	const item = Items.getItem(itemToUnequip);
+	if (!item) return "That's not a valid item.";
+	if (!item.equipment) return "That item can't be equipped.";
+	if (!currentEquippedGear.hasEquipped(item.id, true, false))
+		return `You don't have that equipped in your ${gearSetup} setup.`;
+
+	const { slot } = item.equipment;
 	const equippedInThisSlot = currentGear[slot];
-	assert(equippedInThisSlot !== null, `equippedInThisSlot should not be null: ${gearSetup} ${item.name}`, {
-		user_id: user.id
-	});
+	if (!equippedInThisSlot) {
+		const equippedInSetup = GearSetupTypes.find(setup => user.gear[setup].raw()[slot]?.item === item.id);
+		if (equippedInSetup) {
+			return `You can't unequip ${item.name} from your ${toTitleCase(gearSetup)} setup because they're shared from your ${toTitleCase(equippedInSetup)} setup. Unequip them from there instead.`;
+		}
+		return `You don't have that equipped in your ${gearSetup} setup.`;
+	}
 	const newGear = { ...currentGear };
 	newGear[slot] = null;
 
