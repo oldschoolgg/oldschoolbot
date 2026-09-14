@@ -11411,6 +11411,24 @@
 					"Zamorak egg",
 					"Zamorak hawk"
 				]
+			},
+			"elder_cache": {
+				"all_items": [
+					"Celestyte",
+					"Clue scroll (grandmaster)",
+					"Elder plank",
+					"Elder rune",
+					"Elder scroll piece",
+					"Elderflame arrowtips",
+					"Elderflame catalyst",
+					"Firaxyte",
+					"Oneiryte",
+					"Prismare",
+					"Starfire agate",
+					"Verdantyte"
+				],
+				"items": ["Elderflame catalyst"],
+				"kc_activity": {}
 			}
 		}
 	},
@@ -11518,6 +11536,10 @@
 					"Waddles",
 					"Wubbles"
 				],
+				"counts": false
+			},
+			"custom_pets_(dc_alt_art)": {
+				"items": ["Black swan", "Lydia", "Mona", "Radiant Magnabbit"],
 				"counts": false
 			},
 			"halloween_2021": {
@@ -11878,20 +11900,11 @@
 					"Archon gloves",
 					"Archon headdress",
 					"Archon tassets",
-					"Baguette",
 					"BSO Jumper",
-					"Chocolate bar",
-					"Coins",
-					"Draconic visage",
-					"Kebab",
-					"Magic logs",
 					"OSB Jumper",
-					"Paint box",
 					"Remy's chef hat",
 					"Skipper's tie",
-					"Spinach roll",
-					"Supply crate (s1)",
-					"Supply crate key (s1)"
+					"Supply crate (s1)"
 				],
 				"counts": false,
 				"kc_activity": {},
@@ -11899,15 +11912,9 @@
 			},
 			"birthday_crate_(s_2_)": {
 				"items": [
-					"Beer",
-					"Birthday balloons",
 					"Birthday crate (s2)",
 					"Birthday crate key (s2)",
-					"Cake",
 					"Cake partyhat",
-					"Chocolate bar",
-					"Chocolate bomb",
-					"Chocolate cake",
 					"Golden cape shard",
 					"Imperial cuirass",
 					"Imperial gloves",
@@ -11915,8 +11922,6 @@
 					"Imperial legs",
 					"Imperial sabatons",
 					"Koschei's toothpick",
-					"Paint box",
-					"Peach",
 					"Rubber flappy",
 					"Shelldon shield"
 				],
@@ -11926,8 +11931,6 @@
 			},
 			"spooky_crate_(s_3_)": {
 				"items": [
-					"Blood rune",
-					"Bones",
 					"Cob cap",
 					"Count Draynor bottoms",
 					"Count Draynor cape",
@@ -11937,16 +11940,12 @@
 					"Count Draynor torso",
 					"Demonic halloween mask",
 					"Ghostweave",
-					"Paint box",
-					"Pumpkin",
 					"Pumpkin peepers",
-					"Purple sweets",
 					"Spooky crate (s3)",
 					"Spooky crate key (s3)",
 					"Spooky dye",
 					"Spooky sombrero",
 					"Spooky spider parasol",
-					"Vial of blood",
 					"Voodoo doll"
 				],
 				"counts": false,
@@ -11955,7 +11954,6 @@
 			},
 			"festive_crate_(s_4_)": {
 				"items": [
-					"Carrot",
 					"Christmas cape (classic)",
 					"Christmas cape (rainbow)",
 					"Christmas cape (snowy tree)",
@@ -11966,8 +11964,6 @@
 					"Christmas pudding",
 					"Corn on the cob",
 					"Dougs' chocolate mud",
-					"Festive crate (s4)",
-					"Festive crate key (s4)",
 					"Festive partyhat",
 					"Frosty cape",
 					"Frosty parasol",
@@ -11990,18 +11986,15 @@
 			"easter_crate_(s_5_)": {
 				"items": [
 					"Bunny plushie",
-					"Carrot",
 					"Cute bunny cape",
 					"Easter breeches",
 					"Easter crate (s5)",
 					"Easter crate key (s5)",
-					"Easter egg",
 					"Easter jumper",
 					"Easter shoes",
 					"Easter tunic",
 					"Easter-egg delight",
 					"Easter-egg salad",
-					"Egg",
 					"Golden bunny ears"
 				],
 				"counts": false,
@@ -12010,15 +12003,12 @@
 			},
 			"birthday_crate_(s_6_)": {
 				"items": [
-					"Beer",
-					"Birthday balloons",
 					"Birthday crate (s6)",
 					"Birthday crate key (s6)",
 					"Blabberbeak jumper",
 					"Blueberry birthday cake",
 					"BSO banner",
 					"BSO flowers",
-					"Cake",
 					"Ceremonial boots",
 					"Ceremonial cape",
 					"Ceremonial hat",
@@ -12030,7 +12020,6 @@
 					"Hoppy plushie",
 					"Monkey cape",
 					"Offhand dice plushie",
-					"Paint box",
 					"Plopper nose",
 					"Raw plopper bacon",
 					"Rose tinted glasses",
@@ -12043,27 +12032,19 @@
 			},
 			"sinister_crate_(s_7_)": {
 				"items": [
-					"Blood rune",
 					"Bloody cloak",
-					"Bones",
 					"Dark cloak",
 					"Deathless victims",
 					"Ghostweave",
 					"Mortimer cape",
-					"Paint box",
-					"Pumpkin",
 					"Pumpkin cloak",
 					"Pumpkin sweater",
 					"Pumpkinhead boxhat",
 					"Purple cloak",
-					"Purple sweets",
 					"Puzzle box (kuro)",
-					"Sinister crate (s7)",
-					"Sinister crate key (s7)",
 					"Sinister sweater",
 					"Spooky dye",
 					"Venomous cloak",
-					"Vial of blood",
 					"White cloak",
 					"White hween mask"
 				],
@@ -12079,21 +12060,16 @@
 					"BSO earmuffs",
 					"BSO Santa hat",
 					"BSO socks",
-					"Cake",
 					"Christmas choc-stocking",
 					"Christmas dye",
 					"Cinnamon doughnut-ball",
 					"Dark beanie",
 					"Frosticle top",
-					"Frozen crate (s8)",
-					"Frozen crate key (s8)",
 					"Green beanie",
 					"Jolly beanie",
 					"Orange beanie",
 					"OSB beanie",
 					"OSB earmuffs",
-					"Paint box",
-					"Purple sweets",
 					"Skippers",
 					"White beanie"
 				],
@@ -12103,27 +12079,14 @@
 			},
 			"summer_crate_(s_9_)": {
 				"items": [
-					"Baguette",
 					"Beach pina colada",
 					"Beach sandals",
 					"Beachball shield",
-					"Cake",
-					"Clue scroll (elder)",
-					"Clue scroll (elite)",
-					"Clue scroll (grandmaster)",
-					"Clue scroll (master)",
 					"Coral bikini bottom",
 					"Coral bikini top",
-					"Elder scroll piece",
 					"Imitation Crab Hat",
-					"Kebab",
-					"Paint box",
 					"Palm board shorts",
-					"Purple sweets",
 					"Shell necklace",
-					"Spinach roll",
-					"Summer crate (s9)",
-					"Summer crate key (s9)",
 					"Summer partyhat",
 					"Whale floaty"
 				],
