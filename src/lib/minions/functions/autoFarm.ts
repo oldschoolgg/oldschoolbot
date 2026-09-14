@@ -125,7 +125,8 @@ export async function planAutoFarmTrip(
 			compostTier,
 			patches,
 			skippedPatchNamesDueToTripLength,
-			plannedSteps
+			plannedSteps,
+			quantity: request.quantity
 		});
 
 		totalDuration = selection.updatedTotalDuration;

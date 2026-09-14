@@ -18,6 +18,7 @@ import {
 	serializePreferredSeeds
 } from '@/lib/skilling/skills/farming/autoFarm/preferences.js';
 import { CompostTiers, Farming } from '@/lib/skilling/skills/farming/index.js';
+import { calcNumOfPatches } from '@/lib/skilling/skills/farming/utils/calcsFarming.js';
 import type { FarmingPatchName } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { FarmingSeedPreference } from '@/lib/skilling/skills/farming/utils/types.js';
 import { ContractOptions } from '@/lib/skilling/skills/farming/utils/types.js';
@@ -44,15 +45,13 @@ function formatPreference(preference: FarmingSeedPreference | undefined, autoFar
 			? 'not set (AllFarm: highest available)'
 			: 'not set (Replant: same crop only)';
 	}
-	if (preference.type === 'highest_available') {
-		return 'highest_available';
-	}
-	if (preference.type === 'empty') {
-		return 'empty';
-	}
-	const item = Items.getItem(preference.seedID);
-	const itemName = item?.name ?? `Item ${preference.seedID}`;
-	return `seed: ${itemName}`;
+	const preferenceText =
+		preference.type === 'highest_available'
+			? 'highest_available'
+			: preference.type === 'empty'
+				? 'empty'
+				: `seed: ${Items.getItem(preference.seedID)?.name ?? `Item ${preference.seedID}`}`;
+	return preference.quantity === undefined ? preferenceText : `${preferenceText}, quantity: ${preference.quantity}`;
 }
 
 function buildPreferencesEmbed(
@@ -193,6 +192,13 @@ export const farmingCommand = defineCommand({
 					description: "Preferred seed (item name, 'highest_available', or 'empty').",
 					required: false,
 					autocomplete: farmingPreferredSeedAutoComplete
+				},
+				{
+					type: 'Integer',
+					name: 'quantity',
+					description: 'The maximum number of patches to plant or replant.',
+					required: false,
+					min_value: 1
 				},
 				{
 					type: 'Boolean',
@@ -358,15 +364,16 @@ export const farmingCommand = defineCommand({
 			const responses: string[] = [];
 			const patchNameInput = options.set_preferred.patch as FarmingPatchName | undefined;
 			const seedInput = options.set_preferred.seed ?? undefined;
+			const quantityInput = options.set_preferred.quantity ?? undefined;
 			const preferContractInput = options.set_preferred.prefer_contract;
 			const resetAllInput = Boolean(options.set_preferred.reset_all);
 			const resetPatchInput = Boolean(options.set_preferred.reset_patch);
 
-			if (resetAllInput && (patchNameInput || seedInput || resetPatchInput)) {
-				return 'You cannot use reset_all with patch, seed, or reset_patch options.';
+			if (resetAllInput && (patchNameInput || seedInput || quantityInput !== undefined || resetPatchInput)) {
+				return 'You cannot use reset_all with patch, seed, quantity, or reset_patch options.';
 			}
-			if (resetPatchInput && seedInput) {
-				return 'You cannot use reset_patch with a seed option.';
+			if (resetPatchInput && (seedInput || quantityInput !== undefined)) {
+				return 'You cannot use reset_patch with a seed or quantity option.';
 			}
 			if (resetPatchInput && !patchNameInput) {
 				return 'You must provide a patch when clearing one saved preference.';
@@ -390,7 +397,7 @@ export const farmingCommand = defineCommand({
 				responses.push('Cleared all saved per-patch seed preferences.');
 			}
 
-			if (!patchNameInput && !seedInput && !resetAllInput && !resetPatchInput) {
+			if (!patchNameInput && !seedInput && quantityInput === undefined && !resetAllInput && !resetPatchInput) {
 				const embed = buildPreferencesEmbed(
 					patchesDetailed,
 					preferenceMap,
@@ -403,14 +410,24 @@ export const farmingCommand = defineCommand({
 				return { embeds: [embed] };
 			}
 
-			if (!patchNameInput && seedInput) {
-				return 'You must provide a patch when setting a seed preference.';
+			if (!patchNameInput && (seedInput || quantityInput !== undefined)) {
+				return 'You must provide a patch when setting a seed or quantity preference.';
 			}
 
 			if (patchNameInput) {
 				const patchData = patchesDetailed.find(patch => patch.patchName === patchNameInput);
 				if (!patchData) {
 					return 'Invalid patch.';
+				}
+				if (quantityInput !== undefined) {
+					const maximumQuantity = Math.max(
+						...getPlantsForPatch(patchData.patchName).map(
+							plant => calcNumOfPatches(plant, user, user.QP)[0]
+						)
+					);
+					if (!Number.isSafeInteger(quantityInput) || quantityInput < 1 || quantityInput > maximumQuantity) {
+						return `Quantity for ${patchData.friendlyName} must be between 1 and ${maximumQuantity}.`;
+					}
 				}
 
 				if (resetPatchInput) {
@@ -429,7 +446,7 @@ export const farmingCommand = defineCommand({
 					return responses.join('\n');
 				}
 
-				if (!seedInput) {
+				if (!seedInput && quantityInput === undefined) {
 					const summary = `${patchData.friendlyName} -> ${formatPreference(
 						preferenceMap.get(patchData.patchName),
 						autoFarmFilter
@@ -441,10 +458,25 @@ export const farmingCommand = defineCommand({
 					return summary;
 				}
 
-				const resolvedPreference = resolveSeedPreferenceInput(patchData.patchName, seedInput);
-				if (typeof resolvedPreference === 'string') {
-					return resolvedPreference;
+				let resolvedPreference = preferenceMap.get(patchData.patchName);
+				if (seedInput) {
+					const existingQuantity = resolvedPreference?.quantity;
+					const resolvedSeedPreference = resolveSeedPreferenceInput(patchData.patchName, seedInput);
+					if (typeof resolvedSeedPreference === 'string') {
+						return resolvedSeedPreference;
+					}
+					resolvedPreference =
+						existingQuantity === undefined
+							? resolvedSeedPreference
+							: { ...resolvedSeedPreference, quantity: existingQuantity };
 				}
+				if (!resolvedPreference) {
+					return 'You must set a seed preference before setting its quantity.';
+				}
+				resolvedPreference =
+					quantityInput === undefined
+						? resolvedPreference
+						: { ...resolvedPreference, quantity: quantityInput };
 
 				preferenceMap.set(patchData.patchName, resolvedPreference);
 				await user.update({

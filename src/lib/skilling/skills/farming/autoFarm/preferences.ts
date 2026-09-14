@@ -38,7 +38,7 @@ export function findPlantBySeedID(seedID: number, patchName: FarmingPatchName): 
 	return null;
 }
 
-function isValidPreferenceRecord(value: unknown): value is { type: string; seedID?: unknown } {
+function isValidPreferenceRecord(value: unknown): value is { type: string; seedID?: unknown; quantity?: unknown } {
 	return isRecord(value) && typeof value.type === 'string';
 }
 
@@ -47,18 +47,29 @@ export function normalizeSeedPreference(patchName: FarmingPatchName, value: unkn
 		return null;
 	}
 
+	const quantity =
+		value.quantity === undefined
+			? undefined
+			: typeof value.quantity === 'number' && Number.isSafeInteger(value.quantity) && value.quantity > 0
+				? value.quantity
+				: null;
+	if (quantity === null) {
+		return null;
+	}
+	const quantityData = quantity === undefined ? {} : { quantity };
+
 	if (value.type === 'highest_available') {
-		return { type: 'highest_available' };
+		return { type: 'highest_available', ...quantityData };
 	}
 	if (value.type === 'empty') {
-		return { type: 'empty' };
+		return { type: 'empty', ...quantityData };
 	}
 	if (value.type === 'seed' && typeof value.seedID === 'number') {
 		const plant = findPlantBySeedID(value.seedID, patchName);
 		if (!plant) {
 			return null;
 		}
-		return { type: 'seed', seedID: value.seedID };
+		return { type: 'seed', seedID: value.seedID, ...quantityData };
 	}
 	return null;
 }

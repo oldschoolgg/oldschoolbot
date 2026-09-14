@@ -34,6 +34,7 @@ export interface PlanRequest {
 	type: 'highest' | 'plant';
 	patch: IPatchDataDetailed;
 	plant?: Plant;
+	quantity?: number;
 }
 
 export interface BuildSummaryResult {
@@ -86,6 +87,7 @@ export function buildPlanRequests({
 }): PlanRequest[] {
 	const planRequests: PlanRequest[] = [];
 	for (const patch of patchesDetailed) {
+		const preferredQuantity = preferredSeeds.get(patch.patchName)?.quantity;
 		const resolved = resolveSeedForPatch({
 			patch,
 			preferContract,
@@ -100,7 +102,12 @@ export function buildPlanRequests({
 		}
 
 		if (resolved.type === 'plant') {
-			const planRequest: PlanRequest = { type: 'plant', patch, plant: resolved.plant };
+			const planRequest: PlanRequest = {
+				type: 'plant',
+				patch,
+				plant: resolved.plant,
+				quantity: preferredQuantity
+			};
 			if (resolved.reason === 'contract') {
 				planRequests.unshift(planRequest);
 			} else {
@@ -109,7 +116,7 @@ export function buildPlanRequests({
 			continue;
 		}
 
-		planRequests.push({ type: 'highest', patch });
+		planRequests.push({ type: 'highest', patch, quantity: preferredQuantity });
 	}
 
 	return planRequests;
@@ -197,7 +204,8 @@ export async function evaluateCandidateForPatch({
 	totalDuration,
 	totalCost,
 	compostTier,
-	patches
+	patches,
+	preferredQuantity
 }: {
 	user: MUser;
 	candidate: Plant;
@@ -208,11 +216,12 @@ export async function evaluateCandidateForPatch({
 	totalCost: Bank;
 	compostTier: CropUpgradeType;
 	patches: Record<FarmingPatchName, IPatchData>;
+	preferredQuantity?: number;
 }): Promise<CandidateEvaluationResult> {
 	const prepared = await prepareFarmingStep({
 		user,
 		plant: candidate,
-		quantity: null,
+		quantity: preferredQuantity ?? null,
 		pay: false,
 		patchDetailed: patch,
 		maxTripLength,
@@ -289,7 +298,8 @@ export async function selectCandidateForPatch({
 	compostTier,
 	patches,
 	skippedPatchNamesDueToTripLength,
-	plannedSteps
+	plannedSteps,
+	quantity: preferredQuantity
 }: {
 	user: MUser;
 	patch: IPatchDataDetailed;
@@ -302,6 +312,7 @@ export async function selectCandidateForPatch({
 	patches: Record<FarmingPatchName, IPatchData>;
 	skippedPatchNamesDueToTripLength: Set<string>;
 	plannedSteps: PlannedAutoFarmStep[];
+	quantity?: number;
 }): Promise<{
 	planned: boolean;
 	updatedTotalDuration: number;
@@ -323,7 +334,8 @@ export async function selectCandidateForPatch({
 			totalDuration: currentTotalDuration,
 			totalCost,
 			compostTier,
-			patches
+			patches,
+			preferredQuantity
 		});
 		if (!result.success) {
 			if (result.skippedTripLength) {
