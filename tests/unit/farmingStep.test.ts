@@ -23,7 +23,10 @@ describe('farmingStep tree fee handling', () => {
 		});
 		const addItemsToBankSpy = vi.spyOn(user, 'addItemsToBank').mockResolvedValue(undefined as any);
 		const removeItemsFromBankSpy = vi.spyOn(user, 'removeItemsFromBank').mockResolvedValue(undefined as any);
-		vi.spyOn(user, 'addXP').mockResolvedValue('');
+		vi.spyOn(user, 'addXP').mockImplementation(async params => {
+			params.amount *= 5;
+			return '';
+		});
 		vi.spyOn(user, 'update').mockResolvedValue(user);
 		vi.spyOn(user, 'statsBankUpdate').mockResolvedValue(undefined);
 		vi.spyOn(global.ClientSettings, 'updateBankSetting').mockResolvedValue();
@@ -91,5 +94,6 @@ describe('farmingStep tree fee handling', () => {
 		const refundArg = addItemsToBankSpy.mock.calls[0]?.[0] as { items: Bank } | undefined;
 		expect(refundArg?.items.amount('Coins')).toBe(200);
 		expect(result?.message).toContain('200 GP was refunded');
+		expect(result?.summary?.xp.totalFarming).toBe(Math.floor(result?.summary?.xp.checkHealth ?? 0) * 5);
 	});
 });

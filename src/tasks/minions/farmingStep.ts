@@ -103,6 +103,7 @@ interface AwardHarvestXPResult {
 	bonusXP: number;
 	farmingXPAmount: number;
 	woodcuttingXPAmount: number;
+	herbloreXPAmount: number;
 	xpMessages: Partial<Record<FarmingStepXPMessageSkill, string>>;
 	xpRes: string;
 	wcXP: string;
@@ -273,11 +274,12 @@ async function handlePlantingOnlyStep(options: PlantingOnlyOptions): Promise<Far
 	}
 
 	const farmingXPAmount = Math.floor(farmingXpReceived + bonusXP);
-	const farmingXPResult = await user.addXP({
+	const farmingXPParams = {
 		skillName: 'farming',
 		amount: farmingXPAmount,
 		duration
-	});
+	} as const;
+	const farmingXPResult = await user.addXP(farmingXPParams);
 	if (farmingXPResult.length > 0) {
 		message += `\n${farmingXPResult}`;
 	}
@@ -333,7 +335,7 @@ async function handlePlantingOnlyStep(options: PlantingOnlyOptions): Promise<Far
 			checkHealth: 0,
 			rake: rakeXp,
 			bonus: bonusXP,
-			totalFarming: farmingXPAmount,
+			totalFarming: Math.floor(farmingXPParams.amount),
 			woodcutting: 0,
 			herblore: 0
 		},
@@ -632,21 +634,25 @@ async function awardHarvestXP(options: {
 	const bonusXP = Math.floor((plantXp + harvestXp + checkHealthXp + rakeXp) * bonusXpMultiplier);
 	const farmingXPAmount = Math.floor(plantXp + harvestXp + checkHealthXp + rakeXp + bonusXP);
 	const woodcuttingXPAmount = Math.floor(woodcuttingXp);
-
-	const xpRes = await user.addXP({
+	const herbloreXPAmount = Math.floor(herbloreXp);
+	const farmingXPParams = {
 		skillName: 'farming',
 		duration,
 		amount: farmingXPAmount
-	});
-	const wcXP = await user.addXP({
+	} as const;
+	const woodcuttingXPParams = {
 		skillName: 'woodcutting',
 		amount: woodcuttingXPAmount
-	});
-	await user.addXP({
+	} as const;
+	const herbloreXPParams = {
 		skillName: 'herblore',
-		amount: Math.floor(herbloreXp),
+		amount: herbloreXPAmount,
 		source: 'CleaningHerbsWhileFarming'
-	});
+	} as const;
+
+	const xpRes = await user.addXP(farmingXPParams);
+	const wcXP = await user.addXP(woodcuttingXPParams);
+	await user.addXP(herbloreXPParams);
 
 	const xpMessages: Partial<Record<FarmingStepXPMessageSkill, string>> = {};
 	if (xpRes.length > 0) {
@@ -656,7 +662,15 @@ async function awardHarvestXP(options: {
 		xpMessages.woodcutting = wcXP;
 	}
 
-	return { bonusXP, farmingXPAmount, woodcuttingXPAmount, xpMessages, xpRes, wcXP };
+	return {
+		bonusXP,
+		farmingXPAmount: Math.floor(farmingXPParams.amount),
+		woodcuttingXPAmount: Math.floor(woodcuttingXPParams.amount),
+		herbloreXPAmount: Math.floor(herbloreXPParams.amount),
+		xpMessages,
+		xpRes,
+		wcXP
+	};
 }
 
 async function applySpecialFarmingLoot(options: {
@@ -1000,17 +1014,18 @@ export async function executeFarmingStep({
 		loot.add(woodcuttingOutcome.woodcuttingLoot);
 	}
 	const woodcuttingXp = woodcuttingOutcome.woodcuttingXp;
-	const { bonusXP, farmingXPAmount, woodcuttingXPAmount, xpMessages, xpRes, wcXP } = await awardHarvestXP({
-		user,
-		duration: data.duration,
-		plantXp,
-		harvestXp,
-		checkHealthXp,
-		rakeXp,
-		woodcuttingXp,
-		herbloreXp,
-		bonusXpMultiplier
-	});
+	const { bonusXP, farmingXPAmount, woodcuttingXPAmount, herbloreXPAmount, xpMessages, xpRes, wcXP } =
+		await awardHarvestXP({
+			user,
+			duration: data.duration,
+			plantXp,
+			harvestXp,
+			checkHealthXp,
+			rakeXp,
+			woodcuttingXp,
+			herbloreXp,
+			bonusXpMultiplier
+		});
 
 	const infoStr: string[] = [];
 	const xpBreakdownParts = [
@@ -1138,7 +1153,7 @@ export async function executeFarmingStep({
 			bonus: bonusXP,
 			totalFarming: farmingXPAmount,
 			woodcutting: woodcuttingXPAmount,
-			herblore: herbloreXp
+			herblore: herbloreXPAmount
 		},
 		xpMessages,
 		boosts: boosts.length > 0 ? [...boosts] : undefined,
