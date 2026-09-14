@@ -1,4 +1,5 @@
 import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { percentChance } from 'node-rng';
 import { Bank } from 'oldschooljs';
 
 import type { CropUpgradeType } from '@/prisma/main/enums.js';
@@ -136,6 +137,22 @@ export async function prepareFarmingStep({
 	}
 
 	const cost = inputItems.reduce((bank, [seed, qty]) => bank.add(seed.id, qty * quantityToDo), new Bank());
+
+	const hasScrollOfLife = user.owns('Scroll of life');
+	const hasFarmingMasterCape = user.hasEquippedOrInBank('Farming master cape');
+	let seedSavingPercent = 0;
+	if (hasScrollOfLife && hasFarmingMasterCape) seedSavingPercent = 50;
+	else if (hasScrollOfLife || hasFarmingMasterCape) seedSavingPercent = 15;
+	if (seedSavingPercent > 0) {
+		boostStr.push(`${seedSavingPercent}% less seeds used`);
+		for (const [seed] of inputItems) {
+			const amountCost = cost.amount(seed.id);
+			for (let i = 0; i < amountCost; i++) {
+				if (percentChance(seedSavingPercent)) cost.remove(seed.id, 1);
+			}
+		}
+	}
+
 	if (treeChopCost > 0) {
 		infoStr.push(formatTreeRemovalPreparation(treeChopCost));
 	}
