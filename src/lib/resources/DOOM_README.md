@@ -135,6 +135,7 @@ Rules:
 ### Arrows and other ammunition
 
 - Arrow estimation is task-level, based once on the full planned task duration.
+- Arrow availability checks must use the ammo stack equipped in the range setup, not the user's bank.
 - Actual arrow use is task-level, based once on the sum of retained Delve Trek durations.
 - Do not apply a one-hour or multi-hour arrow allowance to every Delve Trek.
 - Respect Ava-style physical ammunition savings when converting requested arrow use into physical loss and refunds.

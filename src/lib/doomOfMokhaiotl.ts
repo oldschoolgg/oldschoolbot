@@ -52,6 +52,7 @@ import {
 } from '@/lib/minions/functions/deathCharge.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { DoomActivityTrekData, DoomTaskOptions } from '@/lib/types/minions.js';
+import { arrows } from '@/lib/util/archery.js';
 import { autoDecantBank } from '@/lib/util/autoDecantBank.js';
 import { formatList, formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
@@ -194,6 +195,7 @@ interface DoomGearState {
 	meleePunishWeapon: DoomMeleePunishWeapon | null;
 	equippedArrowId: number | null;
 	equippedArrowName: string | null;
+	equippedArrowQuantity: number;
 	arrowMod: number;
 	hasMasori: boolean;
 	hasEliteVoid: boolean;
@@ -383,6 +385,22 @@ function describeMissingSupplies(availableSupplies: Bank, cost: Bank): string {
 	return `${missing}`;
 }
 
+function getDoomBankSupplyCost(state: DoomGearState, cost: Bank): Bank | string {
+	const bankCost = cost.clone();
+	if (state.equippedArrowId === null) return bankCost;
+
+	const arrowsNeeded = bankCost.amount(state.equippedArrowId);
+	if (arrowsNeeded === 0) return bankCost;
+
+	if (state.equippedArrowQuantity < arrowsNeeded) {
+		const arrowName = state.equippedArrowName ?? Items.itemNameFromId(state.equippedArrowId) ?? 'arrows';
+		return `not enough ${arrowName} equipped in your range setup, you need ${arrowsNeeded.toLocaleString()} but have only ${state.equippedArrowQuantity.toLocaleString()}`;
+	}
+
+	bankCost.remove(state.equippedArrowId, arrowsNeeded);
+	return bankCost;
+}
+
 function describeDoomVenomShortfall(availableSupplies: Bank, duration: number, wastedDoses: number): string {
 	return DOOM_VENOM_PROTECTION_OPTIONS.map(option => {
 		const dosesNeeded = wastedDoses + Math.ceil(duration / option.venomImmunityDuration);
@@ -457,9 +475,11 @@ function getDoomGearState(user: DoomUser, targetDelve: number, disableZcbBoost =
 	});
 
 	const equippedAmmo = user.gear.range.get('ammo');
-	const equippedArrowId: number | null = equippedAmmo?.item ?? null;
+	const equippedArrowId: number | null =
+		equippedAmmo && arrows.includes(equippedAmmo.item) ? equippedAmmo.item : null;
 	const equippedArrowName: string | null =
 		equippedArrowId !== null ? (Items.itemNameFromId(equippedArrowId) ?? null) : null;
+	const equippedArrowQuantity = equippedArrowId === null ? 0 : (equippedAmmo?.quantity ?? 0);
 
 	const hasMasori =
 		user.gear.range.hasEquipped('Masori mask (f)') &&
@@ -484,6 +504,7 @@ function getDoomGearState(user: DoomUser, targetDelve: number, disableZcbBoost =
 		meleePunishWeapon,
 		equippedArrowId,
 		equippedArrowName,
+		equippedArrowQuantity,
 		arrowMod: getDoomArrowMod(equippedArrowId),
 		hasMasori,
 		hasEliteVoid,
@@ -1020,10 +1041,14 @@ export async function doomCommand(
 				availableSupplies,
 				arrowEstimateDuration: index === 0 ? taskSupplyEstimateDuration : 0
 			});
-			if (!availableSupplies.has(delveTrekCost.cost)) {
-				return { reason: describeMissingSupplies(availableSupplies, delveTrekCost.cost) };
+			const bankCost = getDoomBankSupplyCost(state, delveTrekCost.cost);
+			if (typeof bankCost === 'string') {
+				return { reason: bankCost };
 			}
-			availableSupplies.remove(delveTrekCost.cost);
+			if (!availableSupplies.has(bankCost)) {
+				return { reason: describeMissingSupplies(availableSupplies, bankCost) };
+			}
+			availableSupplies.remove(bankCost);
 			cost.add(delveTrekCost.cost);
 		}
 
