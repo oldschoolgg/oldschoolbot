@@ -149,6 +149,19 @@
 		]
 	},
 	{
+		"main_item": "Avernic treads",
+		"similar_items": [
+			"Avernic treads",
+			"Avernic treads (et)",
+			"Avernic treads (max)",
+			"Avernic treads (pe)",
+			"Avernic treads (pe)(et)",
+			"Avernic treads (pr)",
+			"Avernic treads (pr)(et)",
+			"Avernic treads (pr)(pe)"
+		]
+	},
+	{
 		"main_item": "Avernic treads (et)",
 		"similar_items": [
 			"Avernic treads (et)",
