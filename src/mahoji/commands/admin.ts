@@ -533,7 +533,41 @@ interface ViewableThing {
 	choices?: string[];
 	run: (clientSettings: ClientStorage, _choice?: String, user?: MUser) => Promise<Bank | SendableMessage>;
 }
+
+const bso757xxItemIDs = Array.from({ length: 37 }, (_, index) => 75_700 + index);
+
 const viewableThings: ViewableThing[] = [
+	{
+		name: '757xx Lazy Box Items',
+		run: async (_clientSettings, _choice, user) => {
+			if (!user) return 'Unable to find the user receiving the items.';
+
+			const loot = new Bank();
+			for (const itemID of bso757xxItemIDs) loot.add(itemID);
+
+			const updatedUser = await prisma.$transaction(async tx => {
+				const currentUser = await tx.user.findUniqueOrThrow({ where: { id: user.id } });
+				const bank = new Bank(currentUser.bank as ItemBank).add(loot).toJSON();
+
+				return tx.user.update({
+					where: { id: user.id },
+					data: {
+						bank,
+						claimed_lazy_box: { increment: 1 }
+					}
+				});
+			});
+			user._updateRawUser(updatedUser);
+
+			return {
+				content: loot
+					.items()
+					.map(([item, quantity]) => `${item.name} x${quantity.toLocaleString()}`)
+					.join('\n'),
+				files: [await makeBankImage({ bank: loot, title: '757xx Lazy Box Items' })]
+			};
+		}
+	},
 	{
 		name: 'Lydia Quote',
 		run: async () => {

@@ -1,0 +1,97 @@
+import { Time } from '@oldschoolgg/toolkit';
+import { Bank } from 'oldschooljs';
+
+import { activity_type_enum } from '@/prisma/main/enums.js';
+import { recordDiscoBoxClaim, scoreDiscoFashion, type DiscoAesthetic, type DiscoClub } from '@/lib/bso/discoBloodbath.js';
+
+type DiscoStats = {
+	points: Record<DiscoAesthetic, number>;
+	trips: number;
+	raversal: DiscoClub[];
+};
+
+const route: DiscoClub[] = ['Money', 'Success', 'Fame', 'Glamour'];
+
+const emptyStats = (): DiscoStats => ({
+	points: { Futuristic: 0, Ragdoll: 0, 'Anti-Fashion': 0 },
+	trips: 0,
+	traversal: []
+});
+
+export const discoBloodbathTask: MinionTask = {
+	type: activity_type_enum.DiscoBloodbath,
+	async run(data: any, { user, handleTripFinish, rng }) {
+		const scored = scoreDiscoFashion(data.fashion);
+		const minutes = Math.floor(data.duration / Time.Minute);
+		const multiplier = minutes / 60;
+		const affected = Object.entries(scored.points)
+			.sort(([, a], [, b]) => b - a)
+			.slice(0, 2) as [DiscoAesthetic, number][];
+		const gained: Record<DiscoAesthetic, number> = { Futuristic: 0, Ragdoll: 0, 'Anti-Fashion': 0 };
+		for (const [aesthetic, points] of affected) {
+			const themeMultiplier = aesthetic === data.theme.good ? 1.25 : aesthetic === data.theme.bad ? 0.5 : 1;
+			gained[aesthetic] = Math.floor(points * multiplier * (data.popularity / 100) * themeMultiplier);
+		}
+
+		const oldStats = ((await user.fetchUserStat('disco_stats')) as Partial<DiscoStats>) ?? {};
+		const stats: DiscoStats = {
+			...emptyStats(),
+			...oldStats,
+			points: { ...emptyStats().points, ...(oldStats.points ?? {}) },
+			trips: (oldStats.trips ?? 0) + 1,
+			traversal: [...(oldStats.traversal ?? [])]
+		};
+		for (const aesthetic of Object.keys(gained) as DiscoAesthetic[]) stats.points[aesthetic] += gained[aesthetic];
+
+		const expectedNext = route[stats.traversal.length];
+		if (data.club === expectedNext) stats.traversal.push(data.club);
+		else if (data.club === route[0]) stats.traversal = [route[0]];
+		else stats.traversal = [];
+		await user.statsUpdate({ disco_stats: stats });
+
+		const loot = new Bank();
+		const totalScore = Object.values(scored.points).reduce((sum, points) => sum + points, 0);
+		const fashionLoot = Math.floor((totalScore * minutes) / 3000);
+		if (fashionLoot > 0) loot.add(rng.randInt(75703, 75736), fashionLoot);
+
+		if (stats.traversal.length === route.length && user.user.claimed_glamour_box === 0 && rng.roll(100)) {
+			const chase = rng.pick(['Skrink box', 'Skrod box'] as const);
+			loot.add(chase);
+			await user.update({ claimed_glamour_box: { increment: 1 } });
+			recordDiscoBoxClaim(chase);
+			stats.traversal = [];
+			await user.statsUpdate({ disco_stats: stats });
+		}
+
+		const { itemsAdded } = await user.transactItems({ collectionLog: true, itemsToAdd: loot });
+		const top = affected[0]?.[0];
+		const topMessage = top
+			? top === data.theme.good
+				? rng.pick([
+						`Your ${top} aesthetic owned the ${data.theme.name} vibe.`,
+						`The ${data.theme.name} crowd understood your ${top} look immediately.`,
+						`${top} was exactly the right kind of outrageous for ${data.theme.name}.`,
+						`Your ${top} styling was a smashing hit at ${data.theme.name}.`,
+						`The ${data.theme.name} room made space for your ${top} energy.`
+					])
+				: top === data.theme.bad
+					? rng.pick([
+							`Your ${top} aesthetic did NOT go over well with the ${data.theme.name} vibe.`,
+							`The ${data.theme.name} crowd was not ready for that much ${top}.`,
+							`${top} and ${data.theme.name} made a difficult pairing tonight.`,
+							`Your ${top} look bounced hard off the ${data.theme.name} mood.`,
+							`The ${data.theme.name} door staff had questions about your ${top} choices.`
+						])
+					: ''
+			: '';
+		const crowdMessage = data.popularity > 80 ? rng.pick(['It was packed.', 'The club was buzzing.', 'You could barely move through the crowd.']) : data.popularity <= 65 ? rng.pick(['The club felt dead.', 'There was too much room on the dance floor.', 'The crowd never really arrived.']) : 'The crowd was lively enough.';
+		const lure = rng.roll(10) ? ' Someone mentioned that the Disco Fever is still hot — have you claimed your Lazy box yet?' : '';
+		handleTripFinish({
+			user,
+			channelId: data.channelId,
+			message: { content: `${user.minionName} finished a ${minutes}-minute visit to ${data.club}.\n${topMessage}\n${crowdMessage}${lure}` },
+			data,
+			loot: itemsAdded
+		});
+	}
+};

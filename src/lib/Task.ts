@@ -2,6 +2,7 @@ import { bathhouseTask } from '@/lib/bso/tasks/bathhousesActivity.js';
 import { bonanzaTask } from '@/lib/bso/tasks/bonanzaActivity.js';
 import { brimstoneDistilleryTask } from '@/lib/bso/tasks/brimstoneDistilleryActivity.js';
 import { dominionTask } from '@/lib/bso/tasks/burningDominionActivity.js';
+import { discoBloodbathTask } from '@/lib/bso/tasks/discoBloodbathActivity.js';
 import { constructionContractsTask } from '@/lib/bso/tasks/constructionContractsActivity.js';
 import { disassemblingTask } from '@/lib/bso/tasks/disassemblingActivity.js';
 import { doaTask } from '@/lib/bso/tasks/doaActivity.js';
@@ -277,7 +278,8 @@ export const allTasks: MinionTask[] = [
 	turaelsTrialsTask,
 	dominionTask,
 	brimstoneDistilleryTask,
-	constructionContractsTask
+	constructionContractsTask,
+	discoBloodbathTask
 ];
 
 for (const a of Object.values(activity_type_enum)) {

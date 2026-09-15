@@ -5,6 +5,7 @@ import { syncCollectionLogSlotTable } from '@/lib/collection-log/databaseCl.js';
 import { badges, globalConfig } from '@/lib/constants.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { cacheGEPrices } from '@/lib/marketPrices.js';
+import { loadDiscoBoxCounts } from '@/lib/bso/discoBloodbath.js';
 
 async function updateBadgeTable() {
 	const badgesInDb = await prisma.badges.findMany();
@@ -41,6 +42,7 @@ export const preStartup = async () => {
 		GrandExchange.init(),
 		cacheGEPrices(),
 		syncCollectionLogSlotTable(),
+		loadDiscoBoxCounts(),
 		updateBadgeTable()
 	]);
 };

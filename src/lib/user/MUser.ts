@@ -1,4 +1,5 @@
 import { type UsingPetFunction, usingPet } from '@/lib/bso/bsoUtil.js';
+import { DISCO_EVENT_END_DATE, isDiscoEventActive, recordDiscoBoxClaim } from '@/lib/bso/discoBloodbath.js';
 import type { GodFavourBank, GodName } from '@/lib/bso/minigames/divineDominion.js';
 import { mysteriousStepData, mysteriousTrailTracks } from '@/lib/bso/mysteryTrail.js';
 import type { IMaterialBank } from '@/lib/bso/skills/invention/index.js';
@@ -287,6 +288,7 @@ RETURNING (monster_scores->>'${monsterID}')::int AS new_kc;
 	/** Claim the lifetime Cyr T5 promotion through the same queue as other bank writes. */
 	async claimLazyBox(bonusBox: 'Skrink box' | 'Skrod box' = 'Skrink box'): Promise<Bank> {
 		if (BOT_TYPE !== 'BSO') throw new UserError('This promotion can only be claimed in BSO.');
+		if (!isDiscoEventActive()) throw new UserError(`This promotion ended on ${DISCO_EVENT_END_DATE.toDateString()}.`);
 		if (bonusBox !== 'Skrink box' && bonusBox !== 'Skrod box') {
 			throw new UserError('Choose either a Skrink box or a Skrod box.');
 		}
@@ -335,6 +337,7 @@ RETURNING (monster_scores->>'${monsterID}')::int AS new_kc;
 				});
 			});
 			this._updateRawUser(newUser);
+			recordDiscoBoxClaim(bonusBox);
 			return loot;
 		});
 	}

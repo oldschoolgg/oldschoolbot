@@ -7,6 +7,7 @@ import { BitField, BOT_TYPE, Channel, MAX_TOTAL_LEVEL } from '@/lib/constants.js
 import { calcCLDetails } from '@/lib/data/Collections.js';
 import { HolidayItems } from '@/lib/data/holidayItems.js';
 import { getReclaimableItemsOfUser } from '@/lib/reclaimableItems.js';
+import { DISCO_EVENT_END_DATE, isDiscoEventActive } from '@/lib/bso/discoBloodbath.js';
 
 const independenceDay2Box = 'Independence Day 2 Box';
 const independenceDay2EndDate = new Date('2026-07-20T00:00:00.000Z');
@@ -43,8 +44,13 @@ function maxIndy2Boxes(user: MUser): number {
 const claimables = [
 	{
 		name: 'Lazy Mystery Box (T5 Promo)',
-		action: async (user: MUser) => {
-			const loot = await user.claimLazyBox();
+		hasRequirement: async (user: MUser): Promise<true | string> => {
+			if (!isDiscoEventActive()) return `This event ended on ${DISCO_EVENT_END_DATE.toDateString()}.`;
+			if (user.lazy_boxes_claimed > 0) return 'You already claimed your Lazy box!';
+			return true;
+		},
+		action: async (user: MUser, bonusBox?: string) => {
+			const loot = await user.claimLazyBox(bonusBox === 'Skrod box' ? 'Skrod box' : 'Skrink box');
 			return `You claimed ${loot}. Money, success, fame, glamour — your afterparty starts here.`;
 		}
 	},
@@ -192,6 +198,16 @@ export const claimCommand = defineCommand({
 						value: i.name
 					}));
 			}
+		},
+		{
+			type: 'String',
+			name: 'bonus_box',
+			description: 'Choose your club-kid chase box for the Lazy box promotion.',
+			required: false,
+			choices: [
+				{ name: 'Skrink box', value: 'Skrink box' },
+				{ name: 'Skrod box', value: 'Skrod box' }
+			]
 		}
 	],
 	run: async ({ options, user }) => {
@@ -221,7 +237,7 @@ ${dateFm(new Date(rawData.date))}`;
 			}
 		}
 
-		const result = await claimable.action(user);
+		const result = await claimable.action(user, options.bonus_box);
 		return result;
 	}
 });
