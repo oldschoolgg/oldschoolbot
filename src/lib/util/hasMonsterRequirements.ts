@@ -164,6 +164,7 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 			slayerKillsRemaining: null
 		});
 		if (consumablesCost.itemCost && !user.bank.has(consumablesCost.itemCost)) {
+			const missingItems = consumablesCost.itemCost.clone().remove(user.bank);
 			const items = Array.isArray(monster.itemCost) ? monster.itemCost : [monster.itemCost];
 			const messages: string[] = [];
 			for (const group of items) {
@@ -175,7 +176,7 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 			}
 			return [
 				false,
-				`You don't have the items needed to kill ${monster.name}. This monster requires (per kill) ${formatList(messages)}.`
+				`You don't have the items needed to kill ${monster.name}. You're missing: ${missingItems}. This monster requires (per kill) ${formatList(messages)}.`
 			];
 		}
 	}
