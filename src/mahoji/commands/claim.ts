@@ -42,6 +42,13 @@ function maxIndy2Boxes(user: MUser): number {
 
 const claimables = [
 	{
+		name: 'Lazy Mystery Box (T5 Promo)',
+		action: async (user: MUser) => {
+			const loot = await user.claimLazyBox();
+			return `You claimed ${loot}. Money, success, fame, glamour — your afterparty starts here.`;
+		}
+	},
+	{
 		name: independenceDay2Box,
 		hasRequirement: async (user: MUser): Promise<true | string> => {
 			if (BOT_TYPE !== 'BSO') {

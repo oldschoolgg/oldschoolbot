@@ -43,6 +43,7 @@ import { MUTEX_CACHE } from '@/lib/cache.js';
 import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
+import { BOT_TYPE } from '@/lib/constants.js';
 import { bossCLItems } from '@/lib/data/Collections.js';
 import { avasDevices } from '@/lib/data/CollectionsExport.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
@@ -57,7 +58,7 @@ import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { RemoveFoodFromUserParams } from '@/lib/minions/functions/removeFoodFromUser.js';
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import type { AddXpParams, ClueBank, KillableMonster } from '@/lib/minions/types.js';
-import { getPerkTierCached, getUsersPerkTier } from '@/lib/perkTiers.js';
+import { getPerkTierCached, getUsersPerkTier, RobochimpBitfieldEnum } from '@/lib/perkTiers.js';
 import { type MinigameName, type MinigameScore, Minigames } from '@/lib/settings/minigames.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { DetailedFarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
@@ -81,6 +82,7 @@ import { getKCByName } from '@/lib/util/getKCByName.js';
 import { hasMonsterRequirements } from '@/lib/util/hasMonsterRequirements.js';
 import { hasSkillReqsRaw } from '@/lib/util/smallUtils.js';
 import { type TransactItemsArgs, transactItemsFromBank } from '@/lib/util/transactItemsFromBank.js';
+import { userQueueFn } from '@/lib/util/userQueues.js';
 import type { JsonKeys } from '@/lib/util.js';
 import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 
@@ -280,6 +282,61 @@ RETURNING (monster_scores->>'${monsterID}')::int AS new_kc;
 `;
 		const res = await prisma.$queryRawUnsafe<{ new_kc: number }[]>(query);
 		return { newKC: res[0]?.new_kc ?? 0 };
+	}
+
+	/** Claim the lifetime Cyr T5 promotion through the same queue as other bank writes. */
+	async claimLazyBox(bonusBox: 'Skrink box' | 'Skrod box' = 'Skrink box'): Promise<Bank> {
+		if (BOT_TYPE !== 'BSO') throw new UserError('This promotion can only be claimed in BSO.');
+		if (bonusBox !== 'Skrink box' && bonusBox !== 'Skrod box') {
+			throw new UserError('Choose either a Skrink box or a Skrod box.');
+		}
+
+		return userQueueFn(this.id, async () => {
+			// Read the authoritative account directly: perk tiers and cached bits may be stale
+			// or include courtesy perks, other creators, or premium balance purchases.
+			const patron = await roboChimpClient.user.findUnique({
+				where: { id: BigInt(this.id) },
+				select: { bits: true, patreon_id: true }
+			});
+			if (!patron?.patreon_id || !patron.bits.includes(RobochimpBitfieldEnum.CyrTier5)) {
+				throw new UserError('You need an active Cyr Tier 5 Patreon subscription to claim this promotion.');
+			}
+
+			const loot = new Bank().add('Lazy Mystery Box').add(bonusBox);
+			const newUser = await prisma.$transaction(async tx => {
+				// The conditional increment also locks the user row until commit. A second
+				// process must recheck claimed_lazy_box after the first transaction finishes.
+				const claimed = await tx.user.updateMany({
+					where: { id: this.id, claimed_lazy_box: 0 },
+					data: { claimed_lazy_box: { increment: 1 } }
+				});
+				if (claimed.count !== 1) {
+					throw new UserError('You have already claimed your Lazy Mystery Box promotion.');
+				}
+
+				const currentUser = await tx.user.findUniqueOrThrow({ where: { id: this.id } });
+				const bank: ItemBank = new Bank(currentUser.bank as ItemBank).add(loot).toJSON();
+				const previousCL = await tx.jsonBank.findUnique({
+					where: { user_id_type: { user_id: this.id, type: 'CollectionLog' } }
+				});
+				const collectionLog = new Bank(previousCL?.bank as ItemBank | undefined).add(loot).toJSON();
+				await tx.jsonBank.upsert({
+					where: { user_id_type: { user_id: this.id, type: 'CollectionLog' } },
+					create: { user_id: this.id, type: 'CollectionLog', bank: collectionLog },
+					update: { bank: collectionLog }
+				});
+				return tx.user.update({
+					where: { id: this.id },
+					data: {
+						bank,
+						collectionLogBank: collectionLog,
+						temp_cl: new Bank(currentUser.temp_cl as ItemBank).add(loot).toJSON()
+					}
+				});
+			});
+			this._updateRawUser(newUser);
+			return loot;
+		});
 	}
 
 	public async addItemsToBank({

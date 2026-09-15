@@ -64,7 +64,74 @@ const HalloweenCrackerTable = new LootTable()
 	.add('Zombie cow plushie')
 	.add('Deathtouched tart');
 
+// Provisional promo tables: one reward per box, every non-box promo item at weight 1.
+// Keep separate table instances so each box can receive its own final loot design.
+const lazyPromoRewards = [
+	'Lazily rollers',
+	'Procrasti-crown',
+	'Snooze control',
+	'Resting rich face',
+	'Loaf lord loafers',
+	'Duvet dictator',
+	'Couch potato sceptre',
+	'Idle idol',
+	'Trust fund tiara',
+	'Gross domestic bling',
+	'Cheque mate',
+	'Executive excess',
+	'Velvet rope sceptre',
+	'Fame fatal',
+	'Glam slam platforms',
+	'Age of the thing',
+	'Disco bloodbath',
+	'Two hot to heart',
+	'Skrink mink',
+	'Afterparty afterlife',
+	'Fire dragon skull',
+	'Fire dragon poncho',
+	'Fire dragon greaves',
+	'Fire dragon boots',
+	'Chunky Hunky Mask',
+	'Chunky Hunky Boots',
+	'Chunky Hunky Mittens',
+	'Chunky Hunky bodysuit',
+	'Chunky Hunk leggings',
+	'Skrinkle',
+	'Count Napula',
+	'Cash meerkat',
+	'Disco infernowl',
+	'Slothario'
+] as const;
+
+function makeLazyPromoTable() {
+	const table = new LootTable();
+	for (const item of lazyPromoRewards) table.add(item, 1, 1);
+	return table;
+}
+
+export const LazyMysteryBoxTable = makeLazyPromoTable();
+export const SkrinkBoxTable = makeLazyPromoTable();
+export const SkrodBoxTable = makeLazyPromoTable();
+
 export const holidayOpenables: UnifiedOpenable[] = [
+	...(
+		[
+			['Lazy Mystery Box', LazyMysteryBoxTable],
+			['Skrink box', SkrinkBoxTable],
+			['Skrod box', SkrodBoxTable]
+		] as const
+	).map(
+		([name, table]): UnifiedOpenable => ({
+			name,
+			id: itemID(name),
+			openedItem: Items.getOrThrow(name),
+			aliases: [name.toLowerCase()],
+			output: table,
+			allItems: table.allItems,
+			excludeFromOpenAll: true,
+			smokeyApplies: false
+		})
+	),
 	{
 		name: 'Royal mystery box',
 		id: itemID('Royal mystery box'),
