@@ -126,6 +126,16 @@ describe('Items', () => {
 		expect(scep2.equipable).toEqual(true);
 		expect(scep2.equipment?.slot).toEqual(EquipmentSlot.Weapon);
 	}, 60_000);
+
+	test('Duplicate-name item variants inherit equipment data', () => {
+		const canonicalBandosGodsword = Items.get(11_804)!;
+		const bandosGodswordVariant = Items.get(21_060)!;
+
+		expect(bandosGodswordVariant.name).toEqual(canonicalBandosGodsword.name);
+		expect(bandosGodswordVariant.id).toEqual(21_060);
+		expect(bandosGodswordVariant.equipable).toEqual(true);
+		expect(bandosGodswordVariant.equipment).toEqual(canonicalBandosGodsword.equipment);
+	});
 });
 
 test('modifyItem', () => {

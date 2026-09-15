@@ -66,7 +66,18 @@ export function parseStringBank(str = '', inputBank?: Bank, noDuplicateItems?: t
 	for (let i = 0; i < split.length; i++) {
 		const [resItems, quantity] = parseQuantityAndItem(split[i], inputBank);
 		if (resItems !== undefined) {
-			for (const item of noDuplicateItems ? resItems.slice(0, 1) : resItems) {
+			const itemsToAdd =
+				noDuplicateItems && inputBank
+					? [
+							resItems.find(item => inputBank.amount(item.id) >= Math.max(quantity ?? 0, 1)) ??
+								resItems.find(item => inputBank.has(item.id)) ??
+								resItems[0]
+						]
+					: noDuplicateItems
+						? resItems.slice(0, 1)
+						: resItems;
+			for (const item of itemsToAdd) {
+				if (!item) continue;
 				if (currentIDs.has(item.id)) continue;
 				currentIDs.add(item.id);
 				items.push([item, quantity]);

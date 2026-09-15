@@ -170,6 +170,20 @@ describe('Bank Parsers', () => {
 		expect(res.amount(22_002)).toEqual(1);
 	});
 
+	test('parseBank - same item names with deduplication prefers owned variant', async () => {
+		const bandosGodswordVariant = 21_060;
+		const bank = new Bank().add(bandosGodswordVariant);
+		const res = parseBank({
+			inputBank: bank,
+			flags: {},
+			inputStr: 'bandos godsword',
+			noDuplicateItems: true
+		});
+
+		expect(res.length).toEqual(1);
+		expect(res.amount(bandosGodswordVariant)).toEqual(1);
+	});
+
 	test('parseBank - extra number', async () => {
 		const bank = new Bank().add('Coal', 5).add('3rd age platebody', 100).add('Egg', 3);
 		const res = parseBank({

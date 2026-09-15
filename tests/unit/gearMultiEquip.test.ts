@@ -193,4 +193,17 @@ describe('Multi-equip Gear Test', () => {
 
 		expect(resultGear.get('weapon')!.quantity).toEqual(2222);
 	});
+
+	test('multi-equip duplicate-name owned variant', () => {
+		const bandosGodswordVariant = 21_060;
+		const testUser6 = mockMUser({
+			skills_attack: convertLVLtoXP(99),
+			bank: new Bank().add(bandosGodswordVariant)
+		});
+		const result = gearEquipMultiImpl(testUser6, 'melee', 'bandos godsword');
+		const resultGear = new Gear(result.equippedGear);
+
+		expect(result.equipBank!.toJSON()).toEqual(new Bank().add(bandosGodswordVariant).toJSON());
+		expect(resultGear.get('2h')).toEqual({ item: bandosGodswordVariant, quantity: 1 });
+	});
 });
