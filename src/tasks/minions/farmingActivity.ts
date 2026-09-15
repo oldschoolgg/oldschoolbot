@@ -1,3 +1,7 @@
+import { type MaterialType, materialTypes } from '@/lib/bso/skills/invention/index.js';
+import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
+
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { Bank, toKMB } from 'oldschooljs';
 
 import { formatFarmingBoosts } from '@/lib/skilling/skills/farming/utils/farmingFormatters.js';
@@ -9,6 +13,85 @@ import { executeFarmingStep, type FarmingStepResult, type FarmingStepSummary } f
 function getPatchLabel(data: FarmingActivityTaskOptions): string {
 	const patchType = data.patchType as Partial<typeof data.patchType> & { friendlyName?: string; patchName?: string };
 	return data.patchName ?? patchType.friendlyName ?? patchType.patchName ?? 'patches';
+}
+
+function getMaterialTypeFromDisplayName(displayName: string): MaterialType | null {
+	const normalisedName = displayName.toLowerCase();
+	return materialTypes.find(type => type === normalisedName || toTitleCase(type) === displayName) ?? null;
+}
+
+function parseMaterialCostSegment(segment: string): { material: MaterialType; quantity: number } | null {
+	const match = segment.match(/^([\d,]+)x (.+)$/);
+	if (!match) return null;
+
+	const quantity = Number.parseInt(match[1].replace(/,/g, ''), 10);
+	const material = getMaterialTypeFromDisplayName(match[2]);
+	if (!material || Number.isNaN(quantity)) return null;
+
+	return { material, quantity };
+}
+
+function parseArcaneHarvesterBoost(
+	boost: string
+): { percent: string; materialCost: MaterialBank; notes: string[] } | null {
+	const match = boost.match(/^(\d+)% bonus yield from Arcane Harvester \((.+)\)$/);
+	if (!match) return null;
+
+	const messageParts = match[2].split(', ');
+	const firstPart = messageParts.shift();
+	if (!firstPart?.startsWith('Removed ')) return null;
+
+	const firstCost = parseMaterialCostSegment(firstPart.replace('Removed ', ''));
+	if (!firstCost) return null;
+
+	const materialCost = new MaterialBank();
+	const notes: string[] = [];
+	materialCost.add(firstCost.material, firstCost.quantity);
+
+	for (const part of messageParts) {
+		const cost = parseMaterialCostSegment(part);
+		if (cost) {
+			materialCost.add(cost.material, cost.quantity);
+		} else {
+			notes.push(part);
+		}
+	}
+
+	return { percent: match[1], materialCost, notes };
+}
+
+function formatAutoFarmBoosts(summary: AutoFarmSummary): string {
+	const boostSources = summary.boostSources ?? summary.boosts.map(boost => ({ boost }));
+	const arcaneHarvester = {
+		percent: '',
+		materialCost: new MaterialBank(),
+		notes: new Set<string>()
+	};
+	const boosts: string[] = [];
+
+	for (const { boost } of boostSources) {
+		const arcaneBoost = parseArcaneHarvesterBoost(boost);
+		if (!arcaneBoost) {
+			boosts.push(boost);
+			continue;
+		}
+
+		arcaneHarvester.percent = arcaneBoost.percent;
+		arcaneHarvester.materialCost.add(arcaneBoost.materialCost);
+		for (const note of arcaneBoost.notes) {
+			arcaneHarvester.notes.add(note);
+		}
+	}
+
+	if (arcaneHarvester.percent && arcaneHarvester.materialCost.values().length > 0) {
+		const notes = [...arcaneHarvester.notes];
+		const noteStr = notes.length > 0 ? `, ${notes.join(', ')}` : '';
+		boosts.push(
+			`${arcaneHarvester.percent}% bonus yield from Arcane Harvester (Removed ${arcaneHarvester.materialCost}${noteStr})`
+		);
+	}
+
+	return formatFarmingBoosts(boosts, { prefix: '', label: '**Boosts:**' });
 }
 
 function updateAutoFarmSummary({
@@ -32,6 +115,7 @@ function updateAutoFarmSummary({
 		totalLoot: {},
 		contractsCompleted: 0,
 		boosts: [],
+		boostSources: [],
 		attachmentMessages: [],
 		steps: []
 	};
@@ -48,6 +132,9 @@ function updateAutoFarmSummary({
 			boosts.add(boost);
 		}
 	}
+	const stepBoostSources = (stepSummary?.boosts ?? []).map(boost => ({
+		boost
+	}));
 
 	const lootBank = new Bank(baseSummary.totalLoot ?? {});
 	if (loot) {
@@ -69,6 +156,7 @@ function updateAutoFarmSummary({
 		totalLoot: lootBank.toJSON(),
 		contractsCompleted: baseSummary.contractsCompleted + (stepSummary?.contractCompleted ? 1 : 0),
 		boosts: [...boosts],
+		boostSources: [...(baseSummary.boostSources ?? []), ...stepBoostSources],
 		attachmentMessages: [
 			...(baseSummary.attachmentMessages ?? []),
 			...(stepSummary?.attachmentMessage ? [stepSummary.attachmentMessage] : [])
@@ -145,7 +233,7 @@ function buildCombinedAutoFarmMessage(user: MUser, summary: AutoFarmSummary): st
 		totalLoot.add('Weeds', summary.totalWeeds);
 	}
 
-	const boostLine = formatFarmingBoosts(summary.boosts, { prefix: '', label: '**Boosts:**' });
+	const boostLine = formatAutoFarmBoosts(summary);
 	if (boostLine) lines.push(boostLine);
 
 	return lines.join('\n');

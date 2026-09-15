@@ -401,6 +401,10 @@ export interface AutoFarmSummaryStep {
 	loot?: ItemBank;
 }
 
+export interface AutoFarmSummaryBoostSource {
+	boost: string;
+}
+
 export interface AutoFarmSummary {
 	totalXP: number;
 	totalBonusXP: number;
@@ -411,6 +415,7 @@ export interface AutoFarmSummary {
 	totalLoot?: ItemBank;
 	contractsCompleted: number;
 	boosts: string[];
+	boostSources?: AutoFarmSummaryBoostSource[];
 	attachmentMessages: string[];
 	steps: AutoFarmSummaryStep[];
 }

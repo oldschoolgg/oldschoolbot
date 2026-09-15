@@ -8,6 +8,7 @@ import type { IPatchData } from '../../src/lib/skilling/skills/farming/utils/typ
 import type { AutoFarmStepData, FarmingActivityTaskOptions } from '../../src/lib/types/minions.js';
 import * as handleTripFinishModule from '../../src/lib/util/handleTripFinish.js';
 import { farmingTask } from '../../src/tasks/minions/farmingActivity.js';
+import type { FarmingStepSummary } from '../../src/tasks/minions/farmingStep.js';
 import * as farmingStepModule from '../../src/tasks/minions/farmingStep.js';
 import { createTestUser, mockClient } from './util.js';
 
@@ -26,10 +27,12 @@ describe('farming task auto farm sequencing', () => {
 
 	async function runAutoFarmScenario({
 		combinedMode = false,
-		watermelonAlive = 8
+		watermelonAlive = 8,
+		includeArcaneHarvesterBoosts = false
 	}: {
 		combinedMode?: boolean;
 		watermelonAlive?: number;
+		includeArcaneHarvesterBoosts?: boolean;
 	} = {}) {
 		const user = await createTestUser();
 
@@ -47,6 +50,7 @@ describe('farming task auto farm sequencing', () => {
 				plantsName: 'Guam',
 				quantity: 4,
 				upgradeType: null,
+				patchName: 'herb',
 				payment: true,
 				treeChopFeePaid: 0,
 				treeChopFeePlanned: 0,
@@ -59,6 +63,7 @@ describe('farming task auto farm sequencing', () => {
 				plantsName: 'Watermelon',
 				quantity: 8,
 				upgradeType: null,
+				patchName: 'allotment',
 				payment: false,
 				treeChopFeePaid: 0,
 				treeChopFeePlanned: 0,
@@ -68,8 +73,29 @@ describe('farming task auto farm sequencing', () => {
 				duration: Time.Minute
 			}
 		];
+		if (includeArcaneHarvesterBoosts) {
+			plan.push({
+				plantsName: 'Yew',
+				quantity: 5,
+				upgradeType: null,
+				patchName: 'tree',
+				payment: false,
+				treeChopFeePaid: 0,
+				treeChopFeePlanned: 0,
+				patchType: basePatch,
+				planting: false,
+				currentDate: Date.now() + Time.Minute * 2,
+				duration: Time.Minute
+			});
+		}
 
-		const summaries = [
+		const arcaneHarvesterBoosts = [
+			'100% bonus yield from Arcane Harvester (Removed 15x Magic, 15x Organic)',
+			'100% bonus yield from Arcane Harvester (Removed 10x Magic, 10x Organic)',
+			'100% bonus yield from Arcane Harvester (Removed 5x Magic, 5x Organic)'
+		];
+
+		const summaries: FarmingStepSummary[] = [
 			{
 				planted: { itemName: 'Guam seed', quantity: 6 },
 				harvested: { itemName: 'Guam', quantity: 4, alive: 4, died: 0 },
@@ -85,7 +111,7 @@ describe('farming task auto farm sequencing', () => {
 					bonus: 0
 				},
 				xpMessages: { farming: 'You received 50 XP\nTake care of your plants.' },
-				boosts: ['Graceful'],
+				boosts: ['Graceful', ...(includeArcaneHarvesterBoosts ? [arcaneHarvesterBoosts[0]] : [])],
 				contractCompleted: true,
 				payNote: 'Paid 3x Tomatoes to keep the farmers happy.'
 			},
@@ -103,9 +129,27 @@ describe('farming task auto farm sequencing', () => {
 					bonus: 0
 				},
 				xpMessages: { herblore: 'You received 25 XP', woodcutting: 'Keep chopping!' },
-				boosts: ['Graceful']
+				boosts: ['Graceful', ...(includeArcaneHarvesterBoosts ? [arcaneHarvesterBoosts[1]] : [])]
 			}
 		];
+		if (includeArcaneHarvesterBoosts) {
+			summaries.push({
+				harvested: { itemName: 'Yew roots', quantity: 5, alive: 5, died: 0 },
+				duration: Time.Minute,
+				xp: {
+					totalFarming: 300,
+					woodcutting: 0,
+					herblore: 0,
+					planting: 0,
+					harvest: 0,
+					checkHealth: 0,
+					rake: 0,
+					bonus: 0
+				},
+				xpMessages: {},
+				boosts: ['Graceful', arcaneHarvesterBoosts[2]]
+			});
+		}
 
 		const results = [
 			{
@@ -119,6 +163,13 @@ describe('farming task auto farm sequencing', () => {
 				summary: summaries[1]
 			}
 		];
+		if (includeArcaneHarvesterBoosts) {
+			results.push({
+				message: 'Third step complete',
+				loot: new Bank().add('Yew roots', 5),
+				summary: summaries[2]
+			});
+		}
 
 		const executeSpy = vi.spyOn(farmingStepModule, 'executeFarmingStep').mockImplementation(async () => {
 			const result = results.shift();
@@ -253,5 +304,25 @@ describe('farming task auto farm sequencing', () => {
 		expect(messageContent).toContain('**Crop deaths:** Watermelon: 2 died.');
 		expect(messageContent).not.toContain('Guam');
 		expect(messageContent).not.toContain('6/8 survived');
+	});
+
+	it('combines Arcane Harvester boost costs in auto farm messaging', async () => {
+		const { executeSpy, handleTripFinishSpy } = await runAutoFarmScenario({
+			combinedMode: true,
+			includeArcaneHarvesterBoosts: true
+		});
+
+		expect(executeSpy).toHaveBeenCalledTimes(3);
+
+		const finalCall = handleTripFinishSpy.mock.calls[0]?.[0] as
+			| { message?: string | { content?: string; files?: SendableFile[] } }
+			| undefined;
+		const messageContent =
+			typeof finalCall?.message === 'string' ? finalCall.message : (finalCall?.message?.content ?? '');
+
+		expect(messageContent).toContain('100% bonus yield from Arcane Harvester (Removed 30x Magic, 30x Organic)');
+		expect(messageContent).not.toContain('Removed 15x Magic, 15x Organic');
+		expect(messageContent).not.toContain('Removed 10x Magic, 10x Organic');
+		expect(messageContent).not.toContain('Removed 5x Magic, 5x Organic');
 	});
 });
