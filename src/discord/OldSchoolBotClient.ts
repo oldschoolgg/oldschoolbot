@@ -266,7 +266,6 @@ export class OldSchoolBotClient extends DiscordClient {
 				return button;
 			});
 			allowedUsers ??= [interaction.userId];
-			await interaction.defer();
 			const msg = await interaction.replyWithResponse({
 				content,
 				components: buttons,

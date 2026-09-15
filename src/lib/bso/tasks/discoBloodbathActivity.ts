@@ -54,16 +54,24 @@ export const discoBloodbathTask: MinionTask = {
 		const fashionLoot = Math.floor((totalScore * minutes) / 3000);
 		if (fashionLoot > 0) loot.add(rng.randInt(75703, 75736), fashionLoot);
 
-		if (stats.traversal.length === route.length && user.user.claimed_glamour_box === 0 && rng.roll(100)) {
-			const chase = rng.pick(['Skrink box', 'Skrod box'] as const);
-			loot.add(chase);
-			await user.update({ claimed_glamour_box: { increment: 1 } });
-			recordDiscoBoxClaim(chase);
+		const completedRoute = stats.traversal.length === route.length;
+		const chase = completedRoute && user.user.claimed_glamour_box === 0 && rng.roll(100)
+			? rng.pick(['Skrink box', 'Skrod box'] as const)
+			: null;
+		if (completedRoute) {
 			stats.traversal = [];
 			await user.statsUpdate({ disco_stats: stats });
 		}
+		if (chase) {
+			loot.add(chase);
+		}
 
-		const { itemsAdded } = await user.transactItems({ collectionLog: true, itemsToAdd: loot });
+		const { itemsAdded } = await user.transactItems({
+			collectionLog: true,
+			itemsToAdd: loot,
+			otherUpdates: chase ? { claimed_glamour_box: { increment: 1 } } : undefined
+		});
+		if (chase) recordDiscoBoxClaim(chase);
 		const top = affected[0]?.[0];
 		const topMessage = top
 			? top === data.theme.good

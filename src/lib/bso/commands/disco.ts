@@ -2,7 +2,6 @@ import { Time } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
 import { activity_type_enum } from '@/prisma/main/enums.js';
-import { Cache } from '@/lib/cache.js';
 import { DISCO_AESTHETICS, DISCO_CLUBS, DISCO_CLUB_THEMES, DiscoItem, discoClubOrder, discoPopularity, isDiscoEventActive, scoreDiscoFashion } from '@/lib/bso/discoBloodbath.js';
 import { RobochimpBitfieldEnum } from '@/lib/perkTiers.js';
 
@@ -15,7 +14,7 @@ Visit a club to send your minion out for at least thirty minutes. Your Fashion g
 The clubs are:
 ${DISCO_CLUBS.map(club => `- **${club}** — ${DISCO_CLUB_THEMES[club].description}`).join('\n')}
 
-Use `/disco outfit` for your breakdown, `/disco check_item` for one item, `/disco inquire` to ask around, and `/disco stats` to see your progress.`;
+Use \`/disco outfit\` for your breakdown, \`/disco check_item\` for one item, \`/disco inquire\` to ask around, and \`/disco stats\` to see your progress.`;
 
 async function mayUseOutfit(user: MUser) {
 	if (user.perkTier >= 4) return true;
@@ -24,7 +23,7 @@ async function mayUseOutfit(user: MUser) {
 }
 
 function formatPoints(points: Record<(typeof DISCO_AESTHETICS)[number], number>) {
-	return DISCO_AESTHETICS.map(aesthetic => `**${aesthetic}**: ${points[aesthetic]}/500`).join('\n');
+	return DISCO_AESTHETICS.map(aesthetic => `**${aesthetic}**: ${points[aesthetic]}/500 (${((points[aesthetic] / 500) * 100).toFixed(1)}%)`).join('\n');
 }
 
 export const discoCommand = defineCommand({
@@ -54,7 +53,8 @@ export const discoCommand = defineCommand({
 					name: 'club_name',
 					description: 'The club to ask about.',
 					required: true,
-					choices: clubChoices()
+					autocomplete: async ({ value }: StringAutoComplete) =>
+						clubChoices().filter(choice => !value || choice.name.toLowerCase().includes(value.toLowerCase()))
 				}
 			]
 		},
@@ -68,7 +68,8 @@ export const discoCommand = defineCommand({
 					name: 'club_name',
 					description: 'The club to visit.',
 					required: true,
-					choices: clubChoices()
+					autocomplete: async ({ value }: StringAutoComplete) =>
+						clubChoices().filter(choice => !value || choice.name.toLowerCase().includes(value.toLowerCase()))
 				}
 			]
 		}
@@ -93,7 +94,26 @@ export const discoCommand = defineCommand({
 		if (options.stats) {
 			const stats = (await user.fetchUserStat('disco_stats')) as { points?: Record<string, number>; trips?: number };
 			const points = stats?.points ?? {};
-			return `**Disco Bloodbath stats**\nTrips completed: ${stats?.trips ?? 0}\n${DISCO_AESTHETICS.map(aesthetic => `**${aesthetic} Realm**: ${points[aesthetic] ?? 0}`).join('\n')}`;
+			const ranks = await Promise.all(
+				DISCO_AESTHETICS.map(async aesthetic => {
+					const value = points[aesthetic] ?? 0;
+					const [row] = await prisma.$queryRaw<{ rank: bigint }[]>`
+						SELECT COUNT(*) + 1 AS rank
+						FROM user_stats
+						WHERE COALESCE((disco_stats->'points'->>${aesthetic})::integer, 0) > ${value};
+					`;
+					const [king] = await prisma.$queryRaw<{ username: string | null }[]>`
+						SELECT u.username
+						FROM user_stats s
+						JOIN users u ON u.id = s.user_id::text
+						ORDER BY COALESCE((s.disco_stats->'points'->>${aesthetic})::integer, 0) DESC
+						LIMIT 1;
+					`;
+					return `**${aesthetic} Realm**: ${value} (${((value / 500) * 100).toFixed(1)}%, rank #${row?.rank ?? 1}; club king: ${king?.username ?? 'Unknown'})`;
+				})
+			);
+			const overall = DISCO_AESTHETICS.reduce((total, aesthetic) => total + (points[aesthetic] ?? 0), 0);
+			return `**Disco Bloodbath stats**\nTrips completed: ${stats?.trips ?? 0}\nOverall: ${overall}/1500 (${((overall / 1500) * 100).toFixed(1)}%)\n${ranks.join('\n')}`;
 		}
 
 		if (options.inquire) {
@@ -104,7 +124,7 @@ export const discoCommand = defineCommand({
 			return popularity >= 83
 				? `${club} is hot. Everyone worth knowing is talking about it.`
 				: popularity >= 66
-					? `${club} is getting attention. Your contacts are cautiously optimistic.`
+					? `${club} is getting attention. Might be worth a visit...`
 					: `${club} feels cold right now. Your contacts are not impressed.`;
 		}
 
