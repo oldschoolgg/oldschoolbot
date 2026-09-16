@@ -3,24 +3,21 @@ import { Items } from 'oldschooljs';
 
 import { activity_type_enum } from '@/prisma/main/enums.js';
 import { DISCO_AESTHETICS, DISCO_CLUBS, DISCO_CLUB_THEMES, DiscoItem, discoClubOrder, discoPopularity, isDiscoEventActive, scoreDiscoFashion } from '@/lib/bso/discoBloodbath.js';
+import { checkEntitlements } from '@/lib/bso/util/entitlementChecker.js';
 import { RobochimpBitfieldEnum } from '@/lib/perkTiers.js';
 
 const clubChoices = () => discoClubOrder().map(name => ({ name, value: name }));
 
-const helpText = `**Disco Bloodbath** is a limited-time club circuit for minions who understand that fashion is a weapon.
+const outfitEntitlements = [{ perkTier: 4 }, { bitfield: RobochimpBitfieldEnum.CyrTier2 }];
+
+const helpText = (canUseOutfit: boolean) => `**Disco Bloodbath** is a limited-time club circuit for minions who understand that fashion is a weapon.
 
 Visit a club to send your minion out for at least thirty minutes. Your Fashion gear determines your points, your top two Realms earn progress, and each club has its own hidden crowd and vibe. Completed visits can return strange fashion loot and very rarely a chase box.
 
 The clubs are:
 ${DISCO_CLUBS.map(club => `- **${club}** — ${DISCO_CLUB_THEMES[club].description}`).join('\n')}
 
-Use \`/disco outfit\` for your breakdown, \`/disco check_item\` for one item, \`/disco inquire\` to ask around, and \`/disco stats\` to see your progress.`;
-
-async function mayUseOutfit(user: MUser) {
-	if (user.perkTier >= 4) return true;
-	const roboChimpUser = await Cache.getRoboChimpUser(user.id);
-	return roboChimpUser.bits.includes(RobochimpBitfieldEnum.CyrTier2);
-}
+${canUseOutfit ? 'Use \`/disco outfit\` for your breakdown, or ' : 'Use '}\`/disco check_item\` to inspect one item.`;
 
 function formatPoints(points: Record<(typeof DISCO_AESTHETICS)[number], number>) {
 	return DISCO_AESTHETICS.map(aesthetic => `**${aesthetic}**: ${points[aesthetic]}/500 (${((points[aesthetic] / 500) * 100).toFixed(1)}%)`).join('\n');
@@ -76,7 +73,7 @@ export const discoCommand = defineCommand({
 	],
 	run: async ({ options, user, channelId }) => {
 		if (!isDiscoEventActive()) return 'The Disco Bloodbath has closed for the night.';
-		if (options.help) return helpText;
+		if (options.help) return helpText((await checkEntitlements(user, outfitEntitlements)).success);
 
 		if (options.check_item) {
 			const item = new DiscoItem(Items.getOrThrow(options.check_item.item));
@@ -84,8 +81,8 @@ export const discoCommand = defineCommand({
 		}
 
 		if (options.outfit) {
-			if (!(await mayUseOutfit(user))) {
-				return 'The `/disco outfit` mirror is a shameless plug for money. Support the club with Patreon Tier 3+ or Cyr Tier 2, or use `/disco check_item` one item at a time.';
+			if (!(await checkEntitlements(user, outfitEntitlements)).success) {
+				return 'This command requires Tier 3 Patreon or higher.';
 			}
 			const scored = scoreDiscoFashion(user.gear.fashion.raw());
 			return `${scored.items.map(({ slot, item }) => `**${slot}** — ${item.item.name}: ${item.aesthetics.join(' + ')} (${formatPoints(item.points)})`).join('\n')}\n\n**Totals**\n${formatPoints(scored.points)}`;

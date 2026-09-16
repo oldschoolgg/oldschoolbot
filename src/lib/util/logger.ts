@@ -114,7 +114,7 @@ function logError(args: string | Error | RichErrorLogArgs, ctx?: LogContext): vo
 
 	const unknownInteraction = 'code' in err && err.code === 10062;
 
-	if (!unknownInteraction && interaction) {
+	if (err instanceof UserError && !unknownInteraction && interaction) {
 		Logging.logDebug('UserError encountered, sending message to user.', {
 			error: err.message,
 			user_id: interaction.userId

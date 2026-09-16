@@ -269,7 +269,7 @@ async function onTierChange({
 							id: user.id
 						},
 						data: {
-							badges: user.badges.filter(b => b !== BadgesEnum.Patron && b !== BadgesEnum.LimitedPatron)
+							badges: user.badges.filter(b => b !== BadgesEnum.Patron)
 						}
 					});
 				}
