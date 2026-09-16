@@ -40,7 +40,7 @@ export async function interactionConfirmation(
 		new ButtonBuilder().setCustomId(InteractionID.CANCEL).setLabel('Cancel').setStyle(ButtonStyle.Secondary)
 	];
 
-	await interaction.defer({ ephemeral });
+	// await interaction.defer({ ephemeral });
 
 	await interaction.reply({
 		content: `${content}\n\nYou have ${Math.floor(timeout / 1000)} seconds to confirm.`,

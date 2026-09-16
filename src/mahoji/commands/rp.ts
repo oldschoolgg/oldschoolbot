@@ -110,7 +110,7 @@ async function handleStealItems({
 	if (items.length === 0) {
 		return `${userToStealFrom.mention} doesn't have those items, or they don't exist.`;
 	}
-	if (items.itemIDs.some(i => allDcSet.has(i) && customItems.includes(i))) {
+	if (!adminUser.isAdmin && items.itemIDs.some(i => allDcSet.has(i) && customItems.includes(i))) {
 		return `You cannot steal Discontinued Items, sorry!`;
 	}
 	await interaction.confirmation(
@@ -688,8 +688,6 @@ Date: ${dateFm(date)}`;
 				files: [{ buffer: gearImage, name: 'gear.png' }]
 			};
 		}
-
-		if (!isAdmin) return rng.pick(gifs);
 
 		// Unequip Items
 		if (options.player?.unequip_all_items) {

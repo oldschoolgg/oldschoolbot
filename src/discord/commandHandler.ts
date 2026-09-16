@@ -85,9 +85,7 @@ export async function rawCommandHandlerInner({
 			});
 
 		const requiresLock = Boolean('flags' in command && command.flags?.includes('REQUIRES_LOCK'));
-		if (requiresLock) {
-			await interaction.defer();
-		}
+
 		const response: Awaited<CommandResponse> = requiresLock
 			? await user.withLock(command.name, runClosure)
 			: await runClosure();
