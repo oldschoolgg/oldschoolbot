@@ -94,6 +94,11 @@ function formatAutoFarmBoosts(summary: AutoFarmSummary): string {
 	return formatFarmingBoosts(boosts, { prefix: '', label: '**Boosts:**' });
 }
 
+function extractXPBoostMessages(message: string | undefined): string[] {
+	if (!message) return [];
+	return message.match(/You received (?:\d+(?:\.\d+)?% bonus XP|bonus XP from)[^.]*\./g) ?? [];
+}
+
 function updateAutoFarmSummary({
 	existingSummary,
 	data,
@@ -116,6 +121,7 @@ function updateAutoFarmSummary({
 		contractsCompleted: 0,
 		boosts: [],
 		boostSources: [],
+		xpBoostMessages: [],
 		attachmentMessages: [],
 		steps: []
 	};
@@ -157,6 +163,10 @@ function updateAutoFarmSummary({
 		contractsCompleted: baseSummary.contractsCompleted + (stepSummary?.contractCompleted ? 1 : 0),
 		boosts: [...boosts],
 		boostSources: [...(baseSummary.boostSources ?? []), ...stepBoostSources],
+		xpBoostMessages: [
+			...(baseSummary.xpBoostMessages ?? []),
+			...extractXPBoostMessages(stepSummary?.xpMessages.farming)
+		],
 		attachmentMessages: [
 			...(baseSummary.attachmentMessages ?? []),
 			...(stepSummary?.attachmentMessage ? [stepSummary.attachmentMessage] : [])
@@ -208,6 +218,15 @@ function buildCombinedAutoFarmMessage(user: MUser, summary: AutoFarmSummary): st
 	}
 	if (xpParts.length > 0) {
 		lines.push(`**XP gained:** ${xpParts.join(', ')}.`);
+	}
+	if (summary.totalBonusXP > 0) {
+		lines.push(
+			`You received an additional ${summary.totalBonusXP.toLocaleString()} bonus XP from your farmer's outfit.`
+		);
+	}
+	const xpBoostMessages = [...new Set(summary.xpBoostMessages ?? [])];
+	if (xpBoostMessages.length > 0) {
+		lines.push(...xpBoostMessages);
 	}
 
 	if (summary.contractsCompleted > 0) {

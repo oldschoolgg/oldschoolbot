@@ -101,16 +101,19 @@ describe('farming task auto farm sequencing', () => {
 				harvested: { itemName: 'Guam', quantity: 4, alive: 4, died: 0 },
 				duration: Time.Minute,
 				xp: {
-					totalFarming: 100,
+					totalFarming: 104,
 					woodcutting: 0,
 					herblore: 0,
 					planting: 0,
 					harvest: 0,
 					checkHealth: 0,
 					rake: 0,
-					bonus: 0
+					bonus: 4
 				},
-				xpMessages: { farming: 'You received 50 XP\nTake care of your plants.' },
+				xpMessages: {
+					farming:
+						'You received 104 Farming XP. You received 8% bonus XP for having a Farming master cape. (6k/Hr)'
+				},
 				boosts: ['Graceful', ...(includeArcaneHarvesterBoosts ? [arcaneHarvesterBoosts[0]] : [])],
 				contractCompleted: true,
 				payNote: 'Paid 3x Tomatoes to keep the farmers happy.'
@@ -277,7 +280,9 @@ describe('farming task auto farm sequencing', () => {
 
 		expect(messageContent).not.toContain('Seed pack');
 		expect(messageContent).toContain('Woodcutting 100 XP (3k/Hr)');
-		expect(messageContent).toContain('Farming 300 XP (9k/Hr)');
+		expect(messageContent).toContain('Farming 304 XP (9k/Hr, +4 bonus)');
+		expect(messageContent).toContain("You received an additional 4 bonus XP from your farmer's outfit.");
+		expect(messageContent).toContain('You received 8% bonus XP for having a Farming master cape.');
 		expect(messageContent).not.toContain('**Crop deaths:**');
 		expect(messageContent).not.toContain('**Total loot:**');
 		expect(messageContent).not.toContain('**Patches farmed:**');

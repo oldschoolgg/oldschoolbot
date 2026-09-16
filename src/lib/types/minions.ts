@@ -416,6 +416,7 @@ export interface AutoFarmSummary {
 	contractsCompleted: number;
 	boosts: string[];
 	boostSources?: AutoFarmSummaryBoostSource[];
+	xpBoostMessages?: string[];
 	attachmentMessages: string[];
 	steps: AutoFarmSummaryStep[];
 }
