@@ -2,6 +2,7 @@ import { Time } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
 import { activity_type_enum } from '@/prisma/main/enums.js';
+import { generateDiscoOutfitImage } from '@/lib/bso/canvas/generateDiscoOutfitImage.js';
 import { DISCO_AESTHETICS, DISCO_CLUBS, DISCO_CLUB_THEMES, DiscoItem, discoClubOrder, discoPopularity, isDiscoEventActive, scoreDiscoFashion } from '@/lib/bso/discoBloodbath.js';
 import { checkEntitlements } from '@/lib/bso/util/entitlementChecker.js';
 import { RobochimpBitfieldEnum } from '@/lib/perkTiers.js';
@@ -21,6 +22,15 @@ ${canUseOutfit ? 'Use \`/disco outfit\` for your breakdown, or ' : 'Use '}\`/dis
 
 function formatPoints(points: Record<(typeof DISCO_AESTHETICS)[number], number>) {
 	return DISCO_AESTHETICS.map(aesthetic => `**${aesthetic}**: ${points[aesthetic]}/500 (${((points[aesthetic] / 500) * 100).toFixed(1)}%)`).join('\n');
+}
+
+function formatOutfitItem(item: DiscoItem) {
+	const points = DISCO_AESTHETICS.filter(aesthetic => item.points[aesthetic] !== 0).sort(
+		(a, b) => Math.abs(item.points[b]) - Math.abs(item.points[a])
+	);
+	return `**${item.item.name}**\n${points
+		.map(aesthetic => `${item.points[aesthetic] < 0 ? '**' : ''}${aesthetic}: ${item.points[aesthetic]}${item.points[aesthetic] < 0 ? '**' : ''}`)
+		.join('\n')}`;
 }
 
 export const discoCommand = defineCommand({
@@ -85,7 +95,10 @@ export const discoCommand = defineCommand({
 				return 'This command requires Tier 3 Patreon or higher.';
 			}
 			const scored = scoreDiscoFashion(user.gear.fashion.raw());
-			return `${scored.items.map(({ slot, item }) => `**${slot}** — ${item.item.name}: ${item.aesthetics.join(' + ')} (${formatPoints(item.points)})`).join('\n')}\n\n**Totals**\n${formatPoints(scored.points)}`;
+			return {
+				content: scored.items.map(({ item }) => formatOutfitItem(item)).join('\n\n'),
+				files: [{ name: 'disco-outfit.png', buffer: await generateDiscoOutfitImage({ items: scored.items, user }) }]
+			};
 		}
 
 		if (options.stats) {

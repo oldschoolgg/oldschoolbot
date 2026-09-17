@@ -20,6 +20,7 @@ export type BankBackground = {
 	skillsNeeded?: Skills;
 	transparent?: true;
 	owners?: string[];
+	preScaled?: boolean;
 	alternateImages?: { id: number }[];
 	storeBitField?: StoreBitfield;
 } & (
@@ -668,6 +669,17 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: false,
 		owners: ['310150823986593803']
+	},
+	{
+		id: 1009,
+		name: 'xSALTYxFUPAx CustomBG',
+		image: null,
+		hasPurple: true,
+		purpleImage: null,
+		transparent: true,
+		available: false,
+		preScaled: true,
+		owners: ['603327620234608661']
 	}
 ];
 
