@@ -68,6 +68,7 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { safeMessage } from '@/lib/util/smallUtils.js';
 import { makeGiveawayButtons } from '@/mahoji/commands/giveaway.js';
+import {BeachMysteryBoxTable, RoyalMysteryBoxTable} from "@/lib/bso/openables/tables.js";
 
 export const gifs = [
 	'https://tenor.com/view/angry-stab-monkey-knife-roof-gif-13841993',
@@ -538,6 +539,24 @@ const bso757xxItemIDs = Array.from({ length: 37 }, (_, index) => 75_700 + index)
 
 const viewableThings: ViewableThing[] = [
 	{
+		name: 'Beach Box Items',
+		run: async (_clientSettings, _choice, user) => {
+			if (!user) return 'Unable to find the user receiving the items.';
+
+			const loot = new Bank();
+			for (const itemID of BeachMysteryBoxTable.allItems) loot.add(itemID);
+			for (const itemID of RoyalMysteryBoxTable.allItems) loot.add(itemID);
+
+			return {
+				content: loot
+					.items()
+					.map(([item, quantity]) => `${item.name} x${quantity.toLocaleString()}`)
+					.join('\n'),
+				files: [await makeBankImage({ bank: loot, title: 'Patreon Box Items'})]
+			};
+		}
+	},
+	{
 		name: '757xx Lazy Box Items',
 		run: async (_clientSettings, _choice, user) => {
 			if (!user) return 'Unable to find the user receiving the items.';
@@ -545,19 +564,6 @@ const viewableThings: ViewableThing[] = [
 			const loot = new Bank();
 			for (const itemID of bso757xxItemIDs) loot.add(itemID);
 
-			const updatedUser = await prisma.$transaction(async tx => {
-				const currentUser = await tx.user.findUniqueOrThrow({ where: { id: user.id } });
-				const bank = new Bank(currentUser.bank as ItemBank).add(loot).toJSON();
-
-				return tx.user.update({
-					where: { id: user.id },
-					data: {
-						bank,
-						claimed_lazy_box: { increment: 1 }
-					}
-				});
-			});
-			user._updateRawUser(updatedUser);
 
 			return {
 				content: loot

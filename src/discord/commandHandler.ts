@@ -39,11 +39,6 @@ export async function rawCommandHandlerInner({
 	const user = interaction.user;
 	RawSQL.updateUserLastCommandDate({ userId: interaction.userId }).catch(err => Logging.logError(err));
 
-	// TODO: remove later
-	if (user.user.completed_achievement_diaries.length === 0) {
-		user.syncCompletedAchievementDiaries().catch(err => Logging.logError(err));
-	}
-
 	const shouldIgnoreBusy = user.isAdmin || ignoreUserIsBusy || busyImmuneCommands.includes(command.name);
 
 	if (!shouldIgnoreBusy && (await user.getIsLocked())) {

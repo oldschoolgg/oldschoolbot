@@ -671,7 +671,7 @@ const backgroundImages: BankBackground[] = [
 		owners: ['310150823986593803']
 	},
 	{
-		id: 1009,
+		id: 1019,
 		name: 'xSALTYxFUPAx CustomBG',
 		image: null,
 		hasPurple: true,

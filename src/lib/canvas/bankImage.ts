@@ -578,6 +578,7 @@ class BankImageTask {
 		} = this.getBgAndSprite({ ...opts, bankBackgroundId: bankBackgroundID });
 
 		const isTransparent = Boolean(bgImage.transparent);
+		const isPreScaled = bgImage.preScaled === true;
 
 		const isPurple: boolean =
 			flags.has('forceAllPurple') ||
@@ -602,7 +603,7 @@ class BankImageTask {
 
 		const ctx = canvas.ctx;
 
-		if (!isTransparent) {
+		if (!isTransparent && !isPreScaled) {
 			ctx.fillStyle = ctx.createPattern(bgSprite.repeatableBg, 'repeat')!;
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
 		}
@@ -613,7 +614,7 @@ class BankImageTask {
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
 		}
 
-		if (!hasBgSprite) {
+		if (!hasBgSprite && !isPreScaled) {
 			ctx.drawImage(
 				actualBackground,
 				resizeBg === -1 ? 0 : (canvas.width - actualBackground.width! * resizeBg) / 2,
@@ -635,7 +636,7 @@ class BankImageTask {
 		});
 
 		// Skips border if noBorder is set
-		if (!isTransparent && noBorder !== 1) {
+		if (!isTransparent && !isPreScaled && noBorder !== 1) {
 			canvas.drawBorder(bgSprite, bgImage.name === 'Default');
 		}
 
@@ -654,12 +655,23 @@ class BankImageTask {
 			user
 		);
 
-		const image = await canvas.toScaledOutput(2);
+		const image = isPreScaled
+			? await this.composePreScaledBackground(canvas, actualBackground)
+			: await canvas.toScaledOutput(2);
 
 		return {
 			image,
 			isTransparent
 		};
+	}
+
+	private async composePreScaledBackground(canvas: OSRSCanvas, background: CanvasImage | null) {
+		if (!background) throw new Error('Pre-scaled bank backgrounds must have an image.');
+
+		const output = new OSRSCanvas({ width: canvas.width * 2, height: canvas.height * 2 });
+		output.ctx.drawImage(background, 0, 0);
+		output.ctx.drawImage(canvas.getCanvas(), 0, 0, canvas.width, canvas.height, 0, 0, output.width, output.height);
+		return output.toBuffer();
 	}
 }
 
