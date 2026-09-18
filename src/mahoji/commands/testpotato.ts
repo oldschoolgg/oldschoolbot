@@ -503,6 +503,25 @@ export const testPotatoCommand = globalConfig.isProduction
 			options: [
 				{
 					type: 'Subcommand',
+					name: 'blacklist',
+					description: "Set a user's blacklist status for testing.",
+					options: [
+						{
+							type: 'User',
+							name: 'user',
+							description: 'The user to blacklist or unblacklist.',
+							required: true
+						},
+						{
+							type: 'Boolean',
+							name: 'enabled',
+							description: 'Whether the user should be blacklisted.',
+							required: true
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
 					name: 'party',
 					description: 'Test party'
 				},
@@ -887,6 +906,16 @@ export const testPotatoCommand = globalConfig.isProduction
 				if (globalConfig.isProduction) {
 					Logging.logError('Test command ran in production', { userID: user.id });
 					return 'This will never happen...';
+				}
+
+				if (options.blacklist) {
+					if (!user.isAdmin()) return 'Only bot admins can change the test blacklist.';
+					const { user: target, enabled } = options.blacklist;
+					if (enabled && target.user.id === user.id) {
+						return 'Use another account to blacklist yourself so you can still run the command to remove it.';
+					}
+					await Cache.setTestUserBlacklisted(target.user.id, enabled);
+					return `${enabled ? 'Blacklisted' : 'Unblacklisted'} ${userMention(target.user.id)} for testing.`;
 				}
 
 				if (options.party) {

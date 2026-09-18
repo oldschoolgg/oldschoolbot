@@ -517,6 +517,15 @@ class CacheManager {
 		return (await this.client.sismember(RedisKeys.BlacklistedUsers, id)) === 1;
 	}
 
+	async setTestUserBlacklisted(id: string, enabled: boolean): Promise<void> {
+		if (globalConfig.isProduction) throw new Error('Test blacklisting is unavailable in production.');
+		if (enabled) {
+			await this.client.sadd(RedisKeys.BlacklistedUsers, id);
+		} else {
+			await this.client.srem(RedisKeys.BlacklistedUsers, id);
+		}
+	}
+
 	async isGuildBlacklisted(id: string): Promise<boolean> {
 		return (await this.client.sismember(RedisKeys.BlacklistedGuilds, id)) === 1;
 	}
