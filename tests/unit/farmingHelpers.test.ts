@@ -1,4 +1,4 @@
-import { Bank, convertLVLtoXP } from 'oldschooljs';
+import { Bank, convertLVLtoXP, Items } from 'oldschooljs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 const getFarmingInfoFromUserMock = vi.fn();
@@ -94,15 +94,98 @@ describe('farming helpers', () => {
 	});
 
 	it('determines whether the auto farm button should be shown', async () => {
-		const readyPatches = [{ ready: true } as IPatchDataDetailed];
-		getFarmingInfoFromUserMock.mockReturnValueOnce({ patchesDetailed: readyPatches });
-
-		const result = await canShowAutoFarmButton(mockMUser());
-		expect(result).toBe(true);
+		const readyHerbPatch: IPatchDataDetailed = {
+			lastPlanted: 'Guam',
+			patchPlanted: true,
+			plantTime: Date.now(),
+			lastQuantity: 5,
+			lastUpgradeType: null,
+			lastPayment: false,
+			ready: true,
+			readyIn: 0,
+			readyAt: new Date('2020-01-01T00:00:00Z'),
+			patchName: 'herb',
+			friendlyName: 'Herb patch',
+			plant: Farming.Plants.find(plant => plant.name === 'Guam')!
+		};
+		const userWithSeeds = mockMUser({
+			bank: new Bank().add('Guam seed', 10),
+			skills_farming: convertLVLtoXP(10)
+		});
+		getFarmingInfoFromUserMock.mockReturnValueOnce({ patchesDetailed: [readyHerbPatch] });
+		await expect(canShowAutoFarmButton(userWithSeeds)).resolves.toBe(true);
 
 		getFarmingInfoFromUserMock.mockReturnValueOnce({ patchesDetailed: [{ ready: null } as IPatchDataDetailed] });
-		const resultWithoutReady = await canShowAutoFarmButton(mockMUser());
-		expect(resultWithoutReady).toBe(false);
+		await expect(canShowAutoFarmButton(mockMUser())).resolves.toBe(false);
+	});
+
+	describe('ready patches follow auto farm preferences', () => {
+		const readyHerbPatch: IPatchDataDetailed = {
+			lastPlanted: 'Guam',
+			patchPlanted: true,
+			plantTime: Date.now(),
+			lastQuantity: 5,
+			lastUpgradeType: null,
+			lastPayment: false,
+			ready: true,
+			readyIn: 0,
+			readyAt: new Date('2020-01-01T00:00:00Z'),
+			patchName: 'herb',
+			friendlyName: 'Herb patch',
+			plant: Farming.Plants.find(plant => plant.name === 'Guam')!
+		};
+
+		it('hides the button when the only ready patch is set to be left empty', () => {
+			const user = mockMUser({
+				bank: new Bank().add('Guam seed', 10),
+				skills_farming: convertLVLtoXP(10)
+			});
+			setFarmingPreferenceData(user, {
+				autoFarmFilter: AutoFarmFilterEnum.AllFarm,
+				preferredSeeds: { herb: { type: 'empty' } }
+			});
+			expect(canShowAutoFarmButtonForPatches(user, [readyHerbPatch])).toBe(false);
+		});
+
+		it('hides the button when the preferred seed for a ready patch is not owned', () => {
+			// Level is high enough for Marrentill, so the only thing missing is the seed itself
+			const user = mockMUser({
+				bank: new Bank().add('Guam seed', 10),
+				skills_farming: convertLVLtoXP(20)
+			});
+			setFarmingPreferenceData(user, {
+				preferredSeeds: { herb: { type: 'seed', seedID: Items.getOrThrow('Marrentill seed').id } }
+			});
+			expect(canShowAutoFarmButtonForPatches(user, [readyHerbPatch])).toBe(false);
+		});
+
+		it('hides the button when a ready patch has no seeds to replant', () => {
+			const user = mockMUser({
+				bank: new Bank(),
+				skills_farming: convertLVLtoXP(10)
+			});
+			expect(canShowAutoFarmButtonForPatches(user, [readyHerbPatch])).toBe(false);
+		});
+
+		it('shows the button when the preferred seed for a ready patch is owned', () => {
+			const user = mockMUser({
+				bank: new Bank().add('Marrentill seed', 10),
+				skills_farming: convertLVLtoXP(20)
+			});
+			setFarmingPreferenceData(user, {
+				preferredSeeds: { herb: { type: 'seed', seedID: Items.getOrThrow('Marrentill seed').id } }
+			});
+			expect(canShowAutoFarmButtonForPatches(user, [readyHerbPatch])).toBe(true);
+		});
+
+		it('shows the button in Replant mode when the ready crop can be replanted', () => {
+			const user = mockMUser({
+				bank: new Bank().add('Guam seed', 10),
+				skills_farming: convertLVLtoXP(10)
+			});
+			setFarmingPreferenceData(user, { autoFarmFilter: AutoFarmFilterEnum.Replant });
+			expect(canShowAutoFarmButtonForPatches(user, [readyHerbPatch])).toBe(true);
+		});
 	});
 
 	it('shows the auto farm button when AllFarm can plant an empty patch', async () => {
@@ -191,7 +274,11 @@ describe('farming helpers', () => {
 			friendlyName: 'Empty patch'
 		};
 
-		const result = userGrowingProgressStr([basePatch, growingPatch, emptyPatch], mockMUser());
+		const user = mockMUser({
+			bank: new Bank().add('Guam seed', 10),
+			skills_farming: convertLVLtoXP(10)
+		});
+		const result = userGrowingProgressStr([basePatch, growingPatch, emptyPatch], user);
 
 		const normalized = normalizeGrowingProgress(result);
 

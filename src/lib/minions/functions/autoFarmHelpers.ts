@@ -171,7 +171,10 @@ export async function tryRepeatPreviousTrip({
 		if (!fallbackTrip) {
 			return null;
 		}
-		const response = await repeatTrip(user, interaction as OSInteraction, fallbackTrip);
+		// Same finished-slayer-task check as the Repeat Trip button, so a completed task isn't silently repeated.
+		const response = await repeatTrip(user, interaction as OSInteraction, fallbackTrip, {
+			showSlayerTaskIntervention: true
+		});
 		if (response === SpecialResponse.SilentErrorResponse || response === SpecialResponse.PaginatedMessageResponse) {
 			return response;
 		}
