@@ -81,7 +81,7 @@ const lazyPromoRewards = [
 	'Executive excess',
 	'Velvet rope sceptre',
 	'Fame fatal',
-	'Glam slam platforms',
+	'Glam jam platformers',
 	'Age of the thing',
 	'Disco bloodbath',
 	'Two hot to heart',
@@ -98,7 +98,7 @@ const lazyPromoRewards = [
 	'Chunky Hunk leggings',
 	'Skrinkle',
 	'Count Napula',
-	'Cash meerkat',
+	'Premierekat',
 	'Disco infernowl',
 	'Slothario'
 ] as const;

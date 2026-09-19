@@ -15965,7 +15965,7 @@ setCustomItem(
 
 setCustomItem(
 	75_717,
-	'Glam slam platforms',
+	'Glam jam platformers',
 	'Leather boots',
 	{
 		// Step on the scene. Leave a crater.
@@ -16239,7 +16239,7 @@ setCustomItem(
 
 setCustomItem(
 	75_734,
-	'Cash meerkat',
+	'Premierekat',
 	'Sam',
 	{
 		// His portfolio is mostly shiny things.
