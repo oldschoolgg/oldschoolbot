@@ -239,6 +239,7 @@ class BankImageTask {
 	public treeImage!: CanvasImage;
 	public ready: boolean = false;
 
+	public blackEffect: Image | null = null;
 	public redEffect: Image | null = null;
 	public bananaEffect: Image | null = null;
 	public whiteEffect: Image | null = null;
@@ -258,6 +259,7 @@ class BankImageTask {
 		};
 
 		//Prepare to glow once more!
+		this.blackEffect = await loadImage(await fs.readFile('./src/lib/resources/images/black-glow.png'));
 		this.redEffect = await loadImage(await fs.readFile('./src/lib/resources/images/red-glow.png'));
 		this.bananaEffect = await loadImage(await fs.readFile('./src/lib/resources/images/banana-glow.png'));
 		this.whiteEffect = await loadImage(await fs.readFile('./src/lib/resources/images/white-glow.png'));
