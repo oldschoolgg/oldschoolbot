@@ -1,5 +1,5 @@
 // Paint source pixels directly into 32x32 RGBA buffers. Only review sheets enlarge.
-// pnpm exec node scripts/lazyPromoPixelArt.mjs [preview-directory]
+// pnpm exec node scripts/lazyPromoPixelArt.mjs [preview-directory] [item-id]
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
@@ -10,6 +10,8 @@ const iconDir=path.resolve('src/lib/resources/images/bso_icons');
 const previewDir=path.resolve(process.argv[2] ?? 'output/lazy-promo-pixels');
 await fs.mkdir(previewDir,{recursive:true});
 const ordered=[...sprites].sort((a,b)=>a.id-b.id);
+const selectedID=process.argv[3]===undefined?undefined:Number(process.argv[3]);
+if(selectedID!==undefined && !ordered.some(item=>item.id===selectedID))throw Error('Unknown selected item');
 if(ordered.length!==37 || ordered.some((item,i)=>item.id!==75700+i)) throw Error('Incomplete sprite inventory');
 const painted=[];
 for(const item of ordered) {
@@ -56,10 +58,11 @@ for(const item of ordered) {
  painted.push({item,target,png});
 }
 // Validate every map before replacing any icons.
-for(const {target,png} of painted)await fs.writeFile(target,png);
+for(const {item,target,png} of painted)if(selectedID===undefined || item.id===selectedID)await fs.writeFile(target,png);
 const tiles=[],bankTiles=[];
 for(const [i,{item,png}] of painted.entries()) {
  const doubled=await sharp(png).resize(64,64,{kernel:'nearest'}).toBuffer();
+ if(item.id===selectedID)await fs.writeFile(path.join(previewDir,`${item.id}-2x.png`),doubled);
  const x=(i%4)*220,y=Math.floor(i/4)*110;
  tiles.push({input:doubled,left:x+78,top:y+8});
  const label=Buffer.from(`<svg width="220" height="30"><text x="110" y="13" text-anchor="middle" fill="#efd29a" font-family="sans-serif" font-size="11">${item.id} · ${item.name}</text><text x="110" y="27" text-anchor="middle" fill="#bfb5a4" font-family="sans-serif" font-size="10">32×32 · 2× review</text></svg>`);
@@ -68,4 +71,4 @@ for(const [i,{item,png}] of painted.entries()) {
 }
 await sharp({create:{width:880,height:Math.ceil(painted.length/4)*110,channels:4,background:'#484336'}}).composite(tiles).png().toFile(path.join(previewDir,'lazy-32px-review.png'));
 await sharp({create:{width:928,height:440,channels:4,background:'#484336'}}).composite(bankTiles).png().toFile(path.join(previewDir,'lazy-bank-preview.png'));
-console.log('Saved 37 native 32x32 PNGs. Approved pixels retained; shadows bounded; 2x sheets rendered.');
+console.log(`Saved ${selectedID===undefined?'37 native 32x32 PNGs':`${selectedID} at native 32x32`}. Shadows bounded; 2x sheets rendered.`);
