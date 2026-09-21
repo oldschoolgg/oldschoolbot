@@ -258,7 +258,9 @@ describe('auto farm helpers', () => {
 		expect(repeatTrip).toHaveBeenCalledWith(
 			user,
 			baseInteraction,
-			expect.objectContaining({ type: activity_type_enum.ClueCompletion })
+			expect.objectContaining({ type: activity_type_enum.ClueCompletion }),
+			// Finished slayer tasks must go through the same intervention prompt as the Repeat Trip button
+			{ showSlayerTaskIntervention: true }
 		);
 		expect(response).toBe(
 			"There's no Farming crops that you have planted that are ready to be replanted or no seeds remaining.\n\nResuming previous trip"

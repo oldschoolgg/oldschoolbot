@@ -12,21 +12,33 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 	return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
-const plantsByPatch = new Map<FarmingPatchName, Plant[]>();
-const validPatchNames = new Set<FarmingPatchName>();
-for (const plant of plants) {
-	const patchName = plant.seedType as FarmingPatchName;
-	validPatchNames.add(patchName);
-	const list = plantsByPatch.get(patchName) ?? [];
-	list.push(plant);
-	plantsByPatch.set(patchName, list);
-}
-for (const list of plantsByPatch.values()) {
-	list.sort((a, b) => b.level - a.level);
+// Built lazily so this module can be imported from farmingHelpers without hitting the
+// farming/index.ts <-> farmingHelpers.ts import cycle before `plants` is initialised.
+let plantsByPatchCache: Map<FarmingPatchName, Plant[]> | null = null;
+let validPatchNamesCache: Set<FarmingPatchName> | null = null;
+
+function getPlantIndex() {
+	if (!plantsByPatchCache || !validPatchNamesCache) {
+		const plantsByPatch = new Map<FarmingPatchName, Plant[]>();
+		const validPatchNames = new Set<FarmingPatchName>();
+		for (const plant of plants) {
+			const patchName = plant.seedType as FarmingPatchName;
+			validPatchNames.add(patchName);
+			const list = plantsByPatch.get(patchName) ?? [];
+			list.push(plant);
+			plantsByPatch.set(patchName, list);
+		}
+		for (const list of plantsByPatch.values()) {
+			list.sort((a, b) => b.level - a.level);
+		}
+		plantsByPatchCache = plantsByPatch;
+		validPatchNamesCache = validPatchNames;
+	}
+	return { plantsByPatch: plantsByPatchCache, validPatchNames: validPatchNamesCache };
 }
 
 export function getPlantsForPatch(patchName: FarmingPatchName): Plant[] {
-	return plantsByPatch.get(patchName) ?? [];
+	return getPlantIndex().plantsByPatch.get(patchName) ?? [];
 }
 
 export function findPlantBySeedID(seedID: number, patchName: FarmingPatchName): Plant | null {
@@ -76,6 +88,7 @@ export function parsePreferredSeeds(raw: unknown): Map<FarmingPatchName, Farming
 		return result;
 	}
 
+	const { validPatchNames } = getPlantIndex();
 	for (const [key, value] of Object.entries(raw)) {
 		if (!isPatchName(key)) {
 			continue;
@@ -96,6 +109,7 @@ export function serializePreferredSeeds(
 	preferences: Map<FarmingPatchName, FarmingSeedPreference>
 ): FarmingPreferredSeeds {
 	const entries: [FarmingPatchName, FarmingSeedPreference][] = [];
+	const { validPatchNames } = getPlantIndex();
 	for (const [patchName, preference] of preferences) {
 		if (!validPatchNames.has(patchName)) {
 			continue;
