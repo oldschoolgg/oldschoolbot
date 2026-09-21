@@ -277,11 +277,12 @@ function taskToAutoFarmStep(data: FarmingActivityTaskOptions): AutoFarmStepData 
 
 function planIncludesCurrentTask(data: FarmingActivityTaskOptions, plan: AutoFarmStepData[]): boolean {
 	const firstStep = plan[0];
+	const patchNameMatches = !firstStep?.patchName || !data.patchName || firstStep.patchName === data.patchName;
 	return Boolean(
 		firstStep &&
 			firstStep.plantsName === data.plantsName &&
 			firstStep.currentDate === data.currentDate &&
-			firstStep.patchName === data.patchName
+			patchNameMatches
 	);
 }
 
