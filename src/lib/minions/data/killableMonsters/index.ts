@@ -50,7 +50,8 @@ const killableMonsters: KillableMonster[] = [
 				[itemID("Iban's staff")]: 5,
 				[itemID('Warped sceptre (uncharged)')]: 6,
 				[itemID('Harmonised nightmare staff')]: 7,
-				[itemID("Tumeken's shadow")]: 10
+				[itemID("Tumeken's shadow")]: 10,
+				[itemID('Eye of Ayak')]: 15
 			},
 			{ [itemID('Strange old lockpick')]: 7 }
 		],

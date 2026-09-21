@@ -13,6 +13,8 @@ const sulliuscepTable = new LootTable()
 	.oneIn(175, 'Unidentified large fossil')
 	.oneIn(700, 'Unidentified rare fossil');
 
+const infectedRootTable = new LootTable().add('Demon tear', 1, 15).add('Logs', 1, 2);
+
 const logs: Log[] = [
 	{
 		level: 1,
@@ -197,6 +199,23 @@ const logs: Log[] = [
 		petChance: 72_321,
 		qpRequired: 0,
 		clueScrollChance: 72_321
+	},
+	{
+		level: 80,
+		xp: 10,
+		id: itemID('Demon tear'),
+		lootTable: infectedRootTable,
+		name: 'Infected Roots',
+		aliases: ['infected', 'infected root', 'infected roots', 'demon tear'],
+		findNewTreeTime: 0,
+		bankingTime: 60,
+		slope: 0.13,
+		intercept: 9.47,
+		depletionChance: 0,
+		petChance: 0,
+		qpRequired: 70,
+		clueScrollChance: 0,
+		clueNestsOnly: true
 	},
 	{
 		level: 90,
