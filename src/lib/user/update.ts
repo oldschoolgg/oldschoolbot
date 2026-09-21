@@ -43,6 +43,7 @@ type PrismaIntKeys =
 	| 'carpenter_points'
 	| 'zeal_tokens'
 	| 'slayer_points'
+	| 'claimed_glamour_box'
 	| 'sacrificedValue'
 	| DegradeableItemColumns;
 
