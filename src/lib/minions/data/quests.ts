@@ -35,7 +35,8 @@ export enum QuestID {
 	TheFinalDawn = 15,
 	'Scrambled!' = 16,
 	ShadowsOfCustodia = 17,
-	TutorialIsland = 18
+	TutorialIsland = 18,
+	Pandemonium = 19
 }
 
 export const quests: Quest[] = [
@@ -453,6 +454,21 @@ export const quests: Quest[] = [
 			.add(995, 25),
 		calcTime: () => {
 			return Time.Minute * 7;
+		}
+	},
+	{
+		id: QuestID.Pandemonium,
+		qp: 1,
+		name: 'Pandemonium',
+		skillsRewards: {
+			sailing: 400
+		},
+		rewards: new Bank()
+			.add(32083, 25) // Sawmill coupon (wood plank)
+			.add('Repair kit', 2)
+			.add('Spyglass'),
+		calcTime: () => {
+			return Time.Minute * 5;
 		}
 	}
 ];
