@@ -1,5 +1,6 @@
+import type { ServiceStatus } from '@oldschoolgg/schemas';
+
 import { timeAgo } from '@/lib/utils.js';
-import type { ServiceStatus } from '../../../../../../robochimp/src/structures/ServiceManager.js';
 
 export function BotPreview(_b: ServiceStatus) {
 	const online = _b.active && _b.sub_state === 'running';

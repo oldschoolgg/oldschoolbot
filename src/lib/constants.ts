@@ -170,6 +170,8 @@ export enum BitField {
 	DisableBankFavorites = 56,
 	UnlimitedOpenUntil = 57,
 	Boring = 58,
+	HasRiteOfVileTransference = 59,
+	DisableRiteOfVileTransference = 60,
 
 	OriginalCyrSupporter = 199
 }
@@ -320,6 +322,16 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 
 	[BitField.HasDeadeyeScroll]: { name: 'Deadeye Scroll Used', protected: false, userConfigurable: false },
 	[BitField.HasMysticVigourScroll]: { name: 'Mystic Vigour Scroll Used', protected: false, userConfigurable: false },
+	[BitField.HasRiteOfVileTransference]: {
+		name: 'Rite of vile transference Used',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.DisableRiteOfVileTransference]: {
+		name: 'Disable Rite of vile transference boost',
+		protected: false,
+		userConfigurable: true
+	},
 	[BitField.ToggleAutoRummage]: { name: 'Auto Rummage Vale Offerings', protected: false, userConfigurable: true },
 	[BitField.WikiContributor]: { name: 'Wiki Contributor', protected: false, userConfigurable: false },
 	[BitField.UnlimitedGiveaways]: { name: 'Unlimited Giveaways', protected: false, userConfigurable: false },

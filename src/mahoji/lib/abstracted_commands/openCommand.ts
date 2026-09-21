@@ -23,6 +23,16 @@ export const OpenUntilItems = uniqueArr(allOpenables.map(i => i.allItems).flat(2
 		return 0;
 	});
 
+export function userOpenUntilItems(user: MUser) {
+	return OpenUntilItems.filter(item =>
+		allOpenables.some(openable => {
+			if (!openable.allItems.includes(item.id)) return false;
+			const canOpenUntil = openable.canOpenUntil?.({ user, item });
+			return canOpenUntil ? canOpenUntil === true : true;
+		})
+	);
+}
+
 export async function abstractedOpenUntilCommand(
 	rng: RNGProvider,
 	interaction: OSInteraction,
@@ -59,6 +69,10 @@ export async function abstractedOpenUntilCommand(
 
 	const amountOfThisOpenableOwned = user.bank.amount(openableItem.id);
 	if (amountOfThisOpenableOwned === 0) return "You don't own any of that item.";
+	const canOpenUntil = openable.canOpenUntil?.({ user, item: openUntil });
+	if (canOpenUntil && canOpenUntil !== true) {
+		return canOpenUntil;
+	}
 	if (!maxOpenQuantity) {
 		if (unlimitedEnabled) {
 			if (chatMessage) {
@@ -105,7 +119,15 @@ export async function abstractedOpenUntilCommand(
 	});
 	for (let i = 0; i < max; i++) {
 		cost.add(openable.openedItem.id);
-		const thisLoot = await getOpenableLoot({ openable, quantity: 1, user, rng, yielder });
+		const thisLoot = await getOpenableLoot({
+			openable,
+			quantity: 1,
+			user,
+			rng,
+			openedCountOffset: amountOpened,
+			previousLoot: loot,
+			yielder
+		});
 		loot.add(thisLoot.bank);
 		amountOpened++;
 		targetCount = loot.amount(openUntil.id);

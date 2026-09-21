@@ -1,7 +1,5 @@
-import type { IBotType } from '@oldschoolgg/schemas';
+import type { FullMinionData, IBotType } from '@oldschoolgg/schemas';
 import type { ItemBank } from 'oldschooljs';
-
-import type { FullMinionData } from '@/http/api-types.js';
 
 export async function fetchFullMinionData(bot: IBotType, targetUserId: string): Promise<FullMinionData | null> {
 	const opt = { where: { id: targetUserId } } as const;
@@ -119,6 +117,7 @@ export async function fetchFullMinionData(bot: IBotType, targetUserId: string): 
 			tum_shadow: botUser.tum_shadow_charges,
 			blood_essence: botUser.blood_essence_charges,
 			trident: botUser.trident_charges,
+			ayak: botUser.ayak_charges,
 			venator_bow: botUser.venator_bow_charges,
 			scythe_of_vitur: botUser.scythe_of_vitur_charges
 		},
