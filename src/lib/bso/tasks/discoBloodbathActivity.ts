@@ -13,7 +13,7 @@ import { activity_type_enum } from '@/prisma/main/enums.js';
 type DiscoStats = {
 	points: Record<DiscoAesthetic, number>;
 	trips: number;
-	raversal: DiscoClub[];
+	traversal: DiscoClub[];
 };
 
 const route: DiscoClub[] = ['Money', 'Success', 'Fame', 'Glamour'];

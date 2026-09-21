@@ -545,7 +545,7 @@ const purpleBankRolls = [
 	{ pet: 'Corgi', table: RoyalMysteryBoxTable },
 	{ pet: 'Snappy the Turtle', table: BeachMysteryBoxTable },
 	{ pet: 'Seer', table: FestivePresentTable }
-] as const;
+];
 
 const viewableThings: ViewableThing[] = [
 	{
