@@ -1,7 +1,7 @@
 import { bsoMinigamesCommand } from '@/lib/bso/commands/bsominigames.js';
 import { completionCommand } from '@/lib/bso/commands/completion.js';
-import { discoCommand } from '@/lib/bso/commands/disco.js';
 import { dgCommand } from '@/lib/bso/commands/dg.js';
+import { discoCommand } from '@/lib/bso/commands/disco.js';
 import { divinationCommand } from '@/lib/bso/commands/divination.js';
 import { dropRatesCommand } from '@/lib/bso/commands/droprates.js';
 import { icCommand } from '@/lib/bso/commands/ic.js';

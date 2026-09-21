@@ -1,8 +1,14 @@
+import {
+	type DiscoAesthetic,
+	type DiscoClub,
+	recordDiscoBoxClaim,
+	scoreDiscoFashion
+} from '@/lib/bso/discoBloodbath.js';
+
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { activity_type_enum } from '@/prisma/main/enums.js';
-import { recordDiscoBoxClaim, scoreDiscoFashion, type DiscoAesthetic, type DiscoClub } from '@/lib/bso/discoBloodbath.js';
 
 type DiscoStats = {
 	points: Record<DiscoAesthetic, number>;
@@ -55,9 +61,10 @@ export const discoBloodbathTask: MinionTask = {
 		if (fashionLoot > 0) loot.add(rng.randInt(75703, 75736), fashionLoot);
 
 		const completedRoute = stats.traversal.length === route.length;
-		const chase = completedRoute && user.user.claimed_glamour_box === 0 && rng.roll(100)
-			? rng.pick(['Skrink box', 'Skrod box'] as const)
-			: null;
+		const chase =
+			completedRoute && user.user.claimed_glamour_box === 0 && rng.roll(100)
+				? rng.pick(['Skrink box', 'Skrod box'] as const)
+				: null;
 		if (completedRoute) {
 			stats.traversal = [];
 			await user.statsUpdate({ disco_stats: stats });
@@ -92,12 +99,25 @@ export const discoBloodbathTask: MinionTask = {
 						])
 					: ''
 			: '';
-		const crowdMessage = data.popularity > 80 ? rng.pick(['It was packed.', 'The club was buzzing.', 'You could barely move through the crowd.']) : data.popularity <= 65 ? rng.pick(['The club felt dead.', 'There was too much room on the dance floor.', 'The crowd never really arrived.']) : 'The crowd was lively enough.';
-		const lure = rng.roll(10) ? ' Someone mentioned that the Disco Fever is still hot — have you claimed your Lazy box yet?' : '';
+		const crowdMessage =
+			data.popularity > 80
+				? rng.pick(['It was packed.', 'The club was buzzing.', 'You could barely move through the crowd.'])
+				: data.popularity <= 65
+					? rng.pick([
+							'The club felt dead.',
+							'There was too much room on the dance floor.',
+							'The crowd never really arrived.'
+						])
+					: 'The crowd was lively enough.';
+		const lure = rng.roll(10)
+			? ' Someone mentioned that the Disco Fever is still hot — have you claimed your Lazy box yet?'
+			: '';
 		handleTripFinish({
 			user,
 			channelId: data.channelId,
-			message: { content: `${user.minionName} finished a ${minutes}-minute visit to ${data.club}.\n${topMessage}\n${crowdMessage}${lure}` },
+			message: {
+				content: `${user.minionName} finished a ${minutes}-minute visit to ${data.club}.\n${topMessage}\n${crowdMessage}${lure}`
+			},
 			data,
 			loot: itemsAdded
 		});

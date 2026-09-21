@@ -288,7 +288,8 @@ RETURNING (monster_scores->>'${monsterID}')::int AS new_kc;
 	/** Claim the lifetime Cyr T5 promotion through the same queue as other bank writes. */
 	async claimLazyBox(bonusBox: 'Skrink box' | 'Skrod box' = 'Skrink box'): Promise<Bank> {
 		if (BOT_TYPE !== 'BSO') throw new UserError('This promotion can only be claimed in BSO.');
-		if (!isDiscoEventActive()) throw new UserError(`This promotion ended on ${DISCO_EVENT_END_DATE.toDateString()}.`);
+		if (!isDiscoEventActive())
+			throw new UserError(`This promotion ended on ${DISCO_EVENT_END_DATE.toDateString()}.`);
 		if (bonusBox !== 'Skrink box' && bonusBox !== 'Skrod box') {
 			throw new UserError('Choose either a Skrink box or a Skrod box.');
 		}

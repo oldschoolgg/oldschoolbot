@@ -1,27 +1,41 @@
+import { generateDiscoOutfitImage } from '@/lib/bso/canvas/generateDiscoOutfitImage.js';
+import {
+	DISCO_AESTHETICS,
+	DISCO_CLUB_THEMES,
+	DISCO_CLUBS,
+	DiscoItem,
+	discoClubOrder,
+	discoPopularity,
+	isDiscoEventActive,
+	scoreDiscoFashion
+} from '@/lib/bso/discoBloodbath.js';
+import { checkEntitlements } from '@/lib/bso/util/entitlementChecker.js';
+
 import { Time } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
 import { activity_type_enum } from '@/prisma/main/enums.js';
-import { generateDiscoOutfitImage } from '@/lib/bso/canvas/generateDiscoOutfitImage.js';
-import { DISCO_AESTHETICS, DISCO_CLUBS, DISCO_CLUB_THEMES, DiscoItem, discoClubOrder, discoPopularity, isDiscoEventActive, scoreDiscoFashion } from '@/lib/bso/discoBloodbath.js';
-import { checkEntitlements } from '@/lib/bso/util/entitlementChecker.js';
 import { RobochimpBitfieldEnum } from '@/lib/perkTiers.js';
 
 const clubChoices = () => discoClubOrder().map(name => ({ name, value: name }));
 
 const outfitEntitlements = [{ perkTier: 4 }, { bitfield: RobochimpBitfieldEnum.CyrTier2 }];
 
-const helpText = (canUseOutfit: boolean) => `**Disco Bloodbath** is a limited-time club circuit for minions who understand that fashion is a weapon.
+const helpText = (
+	canUseOutfit: boolean
+) => `**Disco Bloodbath** is a limited-time club circuit for minions who understand that fashion is a weapon.
 
 Visit a club to send your minion out for at least thirty minutes. Your Fashion gear determines your points, your top two Realms earn progress, and each club has its own hidden crowd and vibe. Completed visits can return strange fashion loot and very rarely a chase box.
 
 The clubs are:
 ${DISCO_CLUBS.map(club => `- **${club}** — ${DISCO_CLUB_THEMES[club].description}`).join('\n')}
 
-${canUseOutfit ? 'Use \`/disco outfit\` for your breakdown, or ' : 'Use '}\`/disco check_item\` to inspect one item.`;
+${canUseOutfit ? 'Use `/disco outfit` for your breakdown, or ' : 'Use '}\`/disco check_item\` to inspect one item.`;
 
 function formatPoints(points: Record<(typeof DISCO_AESTHETICS)[number], number>) {
-	return DISCO_AESTHETICS.map(aesthetic => `**${aesthetic}**: ${points[aesthetic]}/500 (${((points[aesthetic] / 500) * 100).toFixed(1)}%)`).join('\n');
+	return DISCO_AESTHETICS.map(
+		aesthetic => `**${aesthetic}**: ${points[aesthetic]}/500 (${((points[aesthetic] / 500) * 100).toFixed(1)}%)`
+	).join('\n');
 }
 
 function formatOutfitItem(item: DiscoItem) {
@@ -29,7 +43,10 @@ function formatOutfitItem(item: DiscoItem) {
 		(a, b) => Math.abs(item.points[b]) - Math.abs(item.points[a])
 	);
 	return `**${item.item.name}**\n${points
-		.map(aesthetic => `${item.points[aesthetic] < 0 ? '**' : ''}${aesthetic}: ${item.points[aesthetic]}${item.points[aesthetic] < 0 ? '**' : ''}`)
+		.map(
+			aesthetic =>
+				`${item.points[aesthetic] < 0 ? '**' : ''}${aesthetic}: ${item.points[aesthetic]}${item.points[aesthetic] < 0 ? '**' : ''}`
+		)
 		.join('\n')}`;
 }
 
@@ -61,7 +78,9 @@ export const discoCommand = defineCommand({
 					description: 'The club to ask about.',
 					required: true,
 					autocomplete: async ({ value }: StringAutoComplete) =>
-						clubChoices().filter(choice => !value || choice.name.toLowerCase().includes(value.toLowerCase()))
+						clubChoices().filter(
+							choice => !value || choice.name.toLowerCase().includes(value.toLowerCase())
+						)
 				}
 			]
 		},
@@ -76,7 +95,9 @@ export const discoCommand = defineCommand({
 					description: 'The club to visit.',
 					required: true,
 					autocomplete: async ({ value }: StringAutoComplete) =>
-						clubChoices().filter(choice => !value || choice.name.toLowerCase().includes(value.toLowerCase()))
+						clubChoices().filter(
+							choice => !value || choice.name.toLowerCase().includes(value.toLowerCase())
+						)
 				}
 			]
 		}
@@ -97,12 +118,17 @@ export const discoCommand = defineCommand({
 			const scored = scoreDiscoFashion(user.gear.fashion.raw());
 			return {
 				content: scored.items.map(({ item }) => formatOutfitItem(item)).join('\n\n'),
-				files: [{ name: 'disco-outfit.png', buffer: await generateDiscoOutfitImage({ items: scored.items, user }) }]
+				files: [
+					{ name: 'disco-outfit.png', buffer: await generateDiscoOutfitImage({ items: scored.items, user }) }
+				]
 			};
 		}
 
 		if (options.stats) {
-			const stats = (await user.fetchUserStat('disco_stats')) as { points?: Record<string, number>; trips?: number };
+			const stats = (await user.fetchUserStat('disco_stats')) as {
+				points?: Record<string, number>;
+				trips?: number;
+			};
 			const points = stats?.points ?? {};
 			const ranks = await Promise.all(
 				DISCO_AESTHETICS.map(async aesthetic => {
@@ -128,7 +154,8 @@ export const discoCommand = defineCommand({
 
 		if (options.inquire) {
 			const ratelimit = await Cache.tryRatelimit(user.id, 'disco_inquire');
-			if (!ratelimit.success) return 'If you keep asking, you are going to lose reputation faster than you earn it. Be a leader, not a follower.';
+			if (!ratelimit.success)
+				return 'If you keep asking, you are going to lose reputation faster than you earn it. Be a leader, not a follower.';
 			const club = options.inquire.club_name as (typeof DISCO_CLUBS)[number];
 			const popularity = discoPopularity(club);
 			return popularity >= 83

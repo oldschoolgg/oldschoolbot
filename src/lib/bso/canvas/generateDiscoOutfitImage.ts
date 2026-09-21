@@ -1,8 +1,9 @@
+import { DISCO_AESTHETICS, type DiscoAesthetic, type DiscoItem } from '@/lib/bso/discoBloodbath.js';
+
 import { promises as fs } from 'node:fs';
 
-import { DISCO_AESTHETICS, type DiscoAesthetic, type DiscoItem } from '@/lib/bso/discoBloodbath.js';
-import { type CanvasImage, loadImage } from '@/lib/canvas/canvasUtil.js';
 import { CanvasModule } from '@/lib/canvas/CanvasModule.js';
+import { type CanvasImage, loadImage } from '@/lib/canvas/canvasUtil.js';
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 
 const outfitTemplate = fs
@@ -57,7 +58,12 @@ function drawPanel(canvas: OSRSCanvas, x: number, y: number, width: number, heig
 	canvas.drawHollowSquare(x + 7, y + 7, width - 14, height - 14, '#282622');
 }
 
-function drawConnector(canvas: OSRSCanvas, from: [number, number], panel: [number, number, number, number], color: string) {
+function drawConnector(
+	canvas: OSRSCanvas,
+	from: [number, number],
+	panel: [number, number, number, number],
+	color: string
+) {
 	const { ctx } = canvas;
 	const [x, y] = from;
 	const [panelX, panelY, panelWidth, panelHeight] = panel;
@@ -113,7 +119,12 @@ export async function generateDiscoOutfitImage({
 		if (!panel || !position) continue;
 		const strongest = strongestAesthetic(scored.item);
 		if (strongest) {
-			drawConnector(canvas, [position[0] + 55, position[1] + 55], panel, colors[strongest][scored.item.points[strongest] < 0 ? 'negative' : 'positive']);
+			drawConnector(
+				canvas,
+				[position[0] + 55, position[1] + 55],
+				panel,
+				colors[strongest][scored.item.points[strongest] < 0 ? 'negative' : 'positive']
+			);
 		}
 	}
 

@@ -18,6 +18,7 @@ import {
 	validateStoredLeaguesTasks,
 	verifyLeaguesTasksForUser
 } from '@/lib/bso/leagues/leagues.js';
+import { BeachMysteryBoxTable, FestivePresentTable, RoyalMysteryBoxTable } from '@/lib/bso/openables/tables.js';
 import { getLydiaQuote } from '@/lib/bso/summerDays.js';
 
 import { dateFm, EmbedBuilder } from '@oldschoolgg/discord';
@@ -68,7 +69,6 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { safeMessage } from '@/lib/util/smallUtils.js';
 import { makeGiveawayButtons } from '@/mahoji/commands/giveaway.js';
-import {BeachMysteryBoxTable, RoyalMysteryBoxTable} from "@/lib/bso/openables/tables.js";
 
 export const gifs = [
 	'https://tenor.com/view/angry-stab-monkey-knife-roof-gif-13841993',
@@ -532,12 +532,36 @@ async function getAllTradedItems(giveUniques = false) {
 interface ViewableThing {
 	name: string;
 	choices?: string[];
-	run: (clientSettings: ClientStorage, _choice?: String, user?: MUser) => Promise<Bank | SendableMessage>;
+	run: (
+		clientSettings: ClientStorage,
+		_choice?: String,
+		user?: MUser,
+		rng?: RNGProvider
+	) => Promise<Bank | SendableMessage>;
 }
 
 const bso757xxItemIDs = Array.from({ length: 37 }, (_, index) => 75_700 + index);
+const purpleBankRolls = [
+	{ pet: 'Corgi', table: RoyalMysteryBoxTable },
+	{ pet: 'Snappy the Turtle', table: BeachMysteryBoxTable },
+	{ pet: 'Seer', table: FestivePresentTable }
+] as const;
 
 const viewableThings: ViewableThing[] = [
+	{
+		name: 'Purple Bank',
+		run: async (_clientSettings, _choice, user, rng) => {
+			if (!user || !rng) return 'Unable to find the user receiving the items.';
+
+			const { pet, table } = rng.pick(purpleBankRolls);
+			const loot = table.roll(5);
+			loot.add(pet);
+
+			return {
+				files: [await makeBankImage({ bank: loot, title: 'Purple Bank', user, previousCL: new Bank() })]
+			};
+		}
+	},
 	{
 		name: 'Beach Box Items',
 		run: async (_clientSettings, _choice, user) => {
@@ -552,7 +576,7 @@ const viewableThings: ViewableThing[] = [
 					.items()
 					.map(([item, quantity]) => `${item.name} x${quantity.toLocaleString()}`)
 					.join('\n'),
-				files: [await makeBankImage({ bank: loot, title: 'Patreon Box Items'})]
+				files: [await makeBankImage({ bank: loot, title: 'Patreon Box Items' })]
 			};
 		}
 	},
@@ -563,7 +587,6 @@ const viewableThings: ViewableThing[] = [
 
 			const loot = new Bank();
 			for (const itemID of bso757xxItemIDs) loot.add(itemID);
-
 
 			return {
 				content: loot
@@ -1526,7 +1549,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 				);
 			}
 			const clientSettings = await ClientSettings.fetch();
-			const res = await thing.run(clientSettings, options.view.choices, adminUser);
+			const res = await thing.run(clientSettings, options.view.choices, adminUser, rng);
 			if (!(res instanceof Bank)) return res;
 			return new MessageBuilder().addBankImage({
 				bank: res,

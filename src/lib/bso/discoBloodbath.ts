@@ -1,8 +1,7 @@
-import { createHash } from 'node:crypto';
-
-import { Items, type Item } from 'oldschooljs';
-
 import { cmbClothes } from '@/lib/bso/openables/cmb.js';
+
+import { createHash } from 'node:crypto';
+import { type Item, Items } from 'oldschooljs';
 
 export const DISCO_EVENT_END_DATE = new Date('2026-12-01T00:00:00.000Z');
 export const DISCO_CLUBS = [
@@ -21,21 +20,69 @@ export type DiscoClub = (typeof DISCO_CLUBS)[number];
 export const DISCO_AESTHETICS = ['Futuristic', 'Ragdoll', 'Anti-Fashion'] as const;
 export type DiscoAesthetic = (typeof DISCO_AESTHETICS)[number];
 
-export const DISCO_CLUB_THEMES: Record<DiscoClub, {
-	name: string;
-	description: string;
-	good: DiscoAesthetic;
-	bad: DiscoAesthetic;
-}> = {
-	Bloodbath: { name: 'Techno-Chic', description: 'Sleek, intentional, advanced, and polished.', good: 'Futuristic', bad: 'Anti-Fashion' },
-	Monster: { name: 'Synthetic', description: 'Controlled, geometric, engineered, and clean.', good: 'Futuristic', bad: 'Ragdoll' },
-	Keoki: { name: 'Lo-Fi', description: 'Raw, worn, deliberately unfashionable, and loud.', good: 'Anti-Fashion', bad: 'Futuristic' },
-	Skrinklada: { name: 'Austere', description: 'Understated, functional, stripped down, and sharp.', good: 'Anti-Fashion', bad: 'Ragdoll' },
-	'Two of Hearts': { name: 'Vaudeville', description: 'Handmade, theatrical, eccentric, and imperfect.', good: 'Ragdoll', bad: 'Futuristic' },
-	Fame: { name: 'Avant-Garde', description: 'Extravagant, performative, and impossible to ignore.', good: 'Ragdoll', bad: 'Anti-Fashion' },
-	Money: { name: 'Techno-Chic', description: 'Sleek, intentional, advanced, and polished.', good: 'Futuristic', bad: 'Anti-Fashion' },
-	Glamour: { name: 'Synthetic', description: 'Controlled, geometric, engineered, and clean.', good: 'Futuristic', bad: 'Ragdoll' },
-	Success: { name: 'Avant-Garde', description: 'Extravagant, performative, and impossible to ignore.', good: 'Ragdoll', bad: 'Anti-Fashion' }
+export const DISCO_CLUB_THEMES: Record<
+	DiscoClub,
+	{
+		name: string;
+		description: string;
+		good: DiscoAesthetic;
+		bad: DiscoAesthetic;
+	}
+> = {
+	Bloodbath: {
+		name: 'Techno-Chic',
+		description: 'Sleek, intentional, advanced, and polished.',
+		good: 'Futuristic',
+		bad: 'Anti-Fashion'
+	},
+	Monster: {
+		name: 'Synthetic',
+		description: 'Controlled, geometric, engineered, and clean.',
+		good: 'Futuristic',
+		bad: 'Ragdoll'
+	},
+	Keoki: {
+		name: 'Lo-Fi',
+		description: 'Raw, worn, deliberately unfashionable, and loud.',
+		good: 'Anti-Fashion',
+		bad: 'Futuristic'
+	},
+	Skrinklada: {
+		name: 'Austere',
+		description: 'Understated, functional, stripped down, and sharp.',
+		good: 'Anti-Fashion',
+		bad: 'Ragdoll'
+	},
+	'Two of Hearts': {
+		name: 'Vaudeville',
+		description: 'Handmade, theatrical, eccentric, and imperfect.',
+		good: 'Ragdoll',
+		bad: 'Futuristic'
+	},
+	Fame: {
+		name: 'Avant-Garde',
+		description: 'Extravagant, performative, and impossible to ignore.',
+		good: 'Ragdoll',
+		bad: 'Anti-Fashion'
+	},
+	Money: {
+		name: 'Techno-Chic',
+		description: 'Sleek, intentional, advanced, and polished.',
+		good: 'Futuristic',
+		bad: 'Anti-Fashion'
+	},
+	Glamour: {
+		name: 'Synthetic',
+		description: 'Controlled, geometric, engineered, and clean.',
+		good: 'Futuristic',
+		bad: 'Ragdoll'
+	},
+	Success: {
+		name: 'Avant-Garde',
+		description: 'Extravagant, performative, and impossible to ignore.',
+		good: 'Ragdoll',
+		bad: 'Anti-Fashion'
+	}
 };
 
 export let skrinkBoxesGivenOut = 0;
@@ -126,10 +173,11 @@ export function discoPopularity(club: DiscoClub, date = new Date()) {
 }
 
 export function discoClubOrder(date = new Date()): DiscoClub[] {
-	return [...DISCO_CLUBS].sort((a, b) => seededValue(`${discoHourSeed(date)}:${a}`) - seededValue(`${discoHourSeed(date)}:${b}`));
+	return [...DISCO_CLUBS].sort(
+		(a, b) => seededValue(`${discoHourSeed(date)}:${a}`) - seededValue(`${discoHourSeed(date)}:${b}`)
+	);
 }
 
 export function isDiscoEventActive(date = new Date()) {
 	return date.getTime() < DISCO_EVENT_END_DATE.getTime();
 }
-

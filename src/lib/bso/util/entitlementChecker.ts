@@ -1,4 +1,5 @@
 import { findGroupOfUser } from '@/lib/bso/util/findGroupOfUser.js';
+
 import { RobochimpBitfieldEnum } from '@/lib/perkTiers.js';
 import { srcMUserFetch } from '@/lib/user/MUser.js';
 
@@ -36,7 +37,9 @@ const robochimpTierBitfields = [
 
 function hasBitfieldEntitlement(ownedBitfields: number[], requiredBitfield: number) {
 	const tierBitfields = robochimpTierBitfields.find(bitfields => bitfields.includes(requiredBitfield));
-	const eligibleBitfields = tierBitfields ? tierBitfields.slice(tierBitfields.indexOf(requiredBitfield)) : [requiredBitfield];
+	const eligibleBitfields = tierBitfields
+		? tierBitfields.slice(tierBitfields.indexOf(requiredBitfield))
+		: [requiredBitfield];
 	return eligibleBitfields.some(bitfield => ownedBitfields.includes(bitfield));
 }
 

@@ -37,7 +37,13 @@ type RatelimitConfig = {
 	max: number;
 };
 
-type RatelimitType = 'random_events' | 'global_buttons' | 'stats_command' | 'disco_inquire' | 'delay_member_fetch' | 'delay_guild_fetch';
+type RatelimitType =
+	| 'random_events'
+	| 'global_buttons'
+	| 'stats_command'
+	| 'disco_inquire'
+	| 'delay_member_fetch'
+	| 'delay_guild_fetch';
 
 const RATELIMITS: Record<RatelimitType, RatelimitConfig> = {
 	global_buttons: { windowSeconds: 2, max: 1 },
