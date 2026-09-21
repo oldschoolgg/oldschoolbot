@@ -37,8 +37,7 @@ export async function minionKillCommand(
 	inputQuantity: number | undefined,
 	method: PvMMethod | undefined,
 	wilderness: boolean | undefined,
-	_solo: boolean | undefined,
-	onTask: boolean | undefined
+	_solo: boolean | undefined
 ): CommandResponse {
 	if (inputQuantity !== undefined && inputQuantity < 1) return 'Quantity must be greater than 0.';
 	if (await user.minionIsBusy()) {
@@ -91,8 +90,6 @@ export async function minionKillCommand(
 	}
 
 	const slayerInfo = await user.fetchSlayerInfo();
-
-	if (slayerInfo.assignedTask === null && onTask) return 'You are no longer on a slayer task for this monster!';
 
 	const pkEvasionExperience = await user.fetchUserStat('pk_evasion_exp');
 
@@ -183,9 +180,9 @@ export async function minionKillCommand(
 		died,
 		pkEncounters,
 		hasWildySupplies,
-		isInWilderness: result.isInWilderness === true ? true : undefined,
+		isInWilderness: result.isInWilderness ? true : undefined,
 		attackStyles: result.attackStyles,
-		onTask: slayerInfo.assignedTask !== null
+		onTask: result.isOnTask
 	});
 
 	let response = `${minionName} is now killing ${result.quantity}x ${monster.name}, ${dtdResult ? `using a <:deathtouched_dart:822674661967265843> **Deathtouched dart**, it'll take around ${formatTripDuration(user, Time.Second * 5)}` : `It'll take around ${formatTripDuration(user, result.duration)} to finish`}. Attack styles used: ${result.attackStyles.join(', ')}.`;

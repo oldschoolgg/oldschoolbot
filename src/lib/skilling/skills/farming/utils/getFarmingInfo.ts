@@ -2,8 +2,8 @@ import { formatDuration, Time, toTitleCase } from '@oldschoolgg/toolkit';
 
 import type { User } from '@/prisma/main.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
-import type { FarmingPatchName } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
-import { farmingPatchNames, findPlant } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
+import { type FarmingPatchName, farmingPatchNames } from '@/lib/skilling/skills/farming/utils/farming.shared.js';
+import { findPlant } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { IPatchData, IPatchDataDetailed } from '@/lib/skilling/skills/farming/utils/types.js';
 import { assert } from '@/lib/util/logError.js';
 
