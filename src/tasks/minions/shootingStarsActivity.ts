@@ -19,7 +19,9 @@ export const shootingStarTask: MinionTask = {
 			duration: data.duration
 		});
 
-		const str = `${user}, ${user.minionName} finished mining a size ${star.size} Crashed Star, there was ${
+		const str = `${user}, ${user.minionName} finished ${
+			data.hunted ? 'hunting and mining' : 'mining'
+		} a size ${star.size} Crashed Star, there was ${
 			usersWith - 1 || 'no'
 		} other players mining with you.\nYou received ${itemsToAdd}.\n${xpStr}`;
 		if (itemsToAdd.has('Rock golem')) {
