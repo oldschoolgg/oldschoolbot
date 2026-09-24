@@ -99,9 +99,9 @@ export const MediumRareTable: LootTable = new LootTable()
 	.add('Ancient mitre')
 	.add('Armadyl mitre')
 	.add('Bandos mitre')
-	.add('Saradomin cloak')
+	.add(10446) // Saradomin cloak
 	.add('Guthix cloak')
-	.add('Zamorak cloak')
+	.add(10450) // Zamorak cloak
 	.add('Ancient cloak')
 	.add('Armadyl cloak')
 	.add('Bandos cloak')
