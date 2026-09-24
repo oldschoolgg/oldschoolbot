@@ -9,8 +9,7 @@ const VyreTable = new LootTable({ limit: 132 })
 	.add('Blood rune', 4, 2)
 	.add('Diamond')
 	.add('Cooked mystery meat')
-	.oneIn(5000, 'Blood shard')
-	.tertiary(99_175, 'Rocky');
+	.oneIn(5000, 'Blood shard');
 
 export const Vyre: SimpleMonster = new SimpleMonster({
 	id: 9710,
