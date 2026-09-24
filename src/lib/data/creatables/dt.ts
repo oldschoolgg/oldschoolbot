@@ -2,6 +2,12 @@ import { Bank } from 'oldschooljs';
 
 import type { Createable } from '@/lib/data/createables.js';
 
+const BELLATOR_RING = 28_316;
+const ULTOR_RING = 28_307;
+const MAGUS_RING = 28_313;
+const VENATOR_RING = 28_310;
+const SOULREAPER_AXE = 28_338;
+
 const bellatorRing: Createable[] = [
 	{
 		name: 'Warrior icon',
@@ -16,7 +22,7 @@ const bellatorRing: Createable[] = [
 	{
 		name: 'Bellator ring',
 		inputItems: new Bank().add('Bellator icon').add('Chromium ingot', 3),
-		outputItems: new Bank().add('Bellator ring')
+		outputItems: new Bank().add(BELLATOR_RING)
 	}
 ];
 
@@ -34,7 +40,7 @@ const ultorRing: Createable[] = [
 	{
 		name: 'Ultor ring',
 		inputItems: new Bank().add('Ultor icon').add('Chromium ingot', 3),
-		outputItems: new Bank().add('Ultor ring')
+		outputItems: new Bank().add(ULTOR_RING)
 	}
 ];
 
@@ -52,7 +58,7 @@ const magusRing: Createable[] = [
 	{
 		name: 'Magus ring',
 		inputItems: new Bank().add('Magus icon').add('Chromium ingot', 3),
-		outputItems: new Bank().add('Magus ring')
+		outputItems: new Bank().add(MAGUS_RING)
 	}
 ];
 
@@ -70,7 +76,7 @@ const venatorRing: Createable[] = [
 	{
 		name: 'Venator ring',
 		inputItems: new Bank().add('Venator icon').add('Chromium ingot', 3),
-		outputItems: new Bank().add('Venator ring')
+		outputItems: new Bank().add(VENATOR_RING)
 	}
 ];
 
@@ -116,6 +122,6 @@ export const dtCreatables: Createable[] = [
 			.add("Executioner's axe head")
 			.add('Eye of the duke')
 			.add('Blood rune', 2000),
-		outputItems: new Bank().add('Soulreaper axe')
+		outputItems: new Bank().add(SOULREAPER_AXE)
 	}
 ];
