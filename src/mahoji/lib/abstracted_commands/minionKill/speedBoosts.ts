@@ -7,7 +7,8 @@ import {
 import { dwarvenBlessing } from '@/lib/bso/dwarvenBlessing.js';
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { gearstatToSetup, gorajanBoosts } from '@/lib/bso/gorajanGearBoost.js';
-import { InventionID } from '@/lib/bso/skills/invention/inventions.js';
+import { InventionID, inventionItemBoostRaw } from '@/lib/bso/skills/invention/inventions.js';
+import type { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
 import type { OffenceGearStat, PrimaryGearSetupType } from '@oldschoolgg/gear';
 import { calcWhatPercent, sumArr, Time } from '@oldschoolgg/toolkit';
@@ -21,6 +22,8 @@ import {
 	boostCannonMulti,
 	boostIceBarrage,
 	boostIceBurst,
+	boostSuperiorCannon,
+	boostSuperiorCannonMulti,
 	cannonMultiConsumables,
 	cannonSingleConsumables,
 	iceBarrageConsumables,
@@ -74,6 +77,7 @@ export type BoostResult = {
 	message?: string;
 	consumables?: Consumable[];
 	itemCost?: Bank;
+	materialCost?: MaterialBank;
 	charges?: ChargeBank;
 	changes?: { attackStyles?: AttackStyles[] } & CombatMethodOptions;
 	confirmation?: string;
@@ -101,9 +105,18 @@ export type Boost = {
 
 const oneSixthBoost = 16.67;
 
-const cannonBoost: Boost = {
+export const cannonBoost: Boost = {
 	description: 'Cannon',
-	run: ({ gearBank, monster, combatMethods, isOnTask, isInWilderness, disabledInventions, addInvention }) => {
+	run: ({
+		gearBank,
+		monster,
+		combatMethods,
+		isOnTask,
+		isInWilderness,
+		disabledInventions,
+		addInvention,
+		addPostBoostEffect
+	}) => {
 		const cannonResult = determineIfUsingCannon({
 			gearBank,
 			monster,
@@ -114,26 +127,46 @@ const cannonBoost: Boost = {
 		});
 		if (typeof cannonResult === 'string') return cannonResult;
 		if (!cannonResult.usingCannon) return null;
+		const usingSuperiorCannon = Boolean(cannonResult.canUseSuperiorCannon);
+		if (usingSuperiorCannon) {
+			addInvention(InventionID.SuperiorDwarfMultiCannon);
+			addPostBoostEffect({
+				description: 'Superior dwarf multicannon material cost',
+				run: ({ gearBank: postBoostGearBank, duration, disabledInventions: postBoostDisabledInventions }) => {
+					const inventionResult = inventionItemBoostRaw({
+						gearBank: postBoostGearBank,
+						inventionID: InventionID.SuperiorDwarfMultiCannon,
+						duration,
+						disabledInventions: postBoostDisabledInventions
+					});
+					if (!inventionResult.success || !inventionResult.materialCost) {
+						return "You don't have enough materials to use the Superior dwarf multicannon for this trip.";
+					}
+					return {
+						materialCost: inventionResult.materialCost,
+						message: `Using Superior dwarf multicannon (${inventionResult.messages.join(', ')})`
+					};
+				}
+			});
+		}
 		if (monster?.cannonMulti && cannonResult.cannonMulti) {
-			if (cannonResult.canUseSuperiorCannon) addInvention(InventionID.SuperiorDwarfMultiCannon);
 			return {
-				percentageReduction: boostCannonMulti,
-				consumables: [
-					cannonResult.canUseSuperiorCannon ? superiorCannonMultiConsumables : cannonMultiConsumables
-				],
-				message: `${boostCannonMulti}% for Cannon in multi`,
+				percentageReduction: usingSuperiorCannon ? boostSuperiorCannonMulti : boostCannonMulti,
+				consumables: [usingSuperiorCannon ? superiorCannonMultiConsumables : cannonMultiConsumables],
+				message: `${
+					usingSuperiorCannon ? boostSuperiorCannonMulti : boostCannonMulti
+				}% for ${usingSuperiorCannon ? 'Superior dwarf multicannon' : 'Cannon'} in multi`,
 				changes: {
 					cannonMulti: true
 				}
 			};
 		} else if (monster?.canCannon) {
-			if (cannonResult.canUseSuperiorCannon) addInvention(InventionID.SuperiorDwarfMultiCannon);
 			return {
-				percentageReduction: boostCannon,
-				consumables: [
-					cannonResult.canUseSuperiorCannon ? superiorCannonSingleConsumables : cannonSingleConsumables
-				],
-				message: `${boostCannon}% for Cannon in singles`
+				percentageReduction: usingSuperiorCannon ? boostSuperiorCannon : boostCannon,
+				consumables: [usingSuperiorCannon ? superiorCannonSingleConsumables : cannonSingleConsumables],
+				message: `${
+					usingSuperiorCannon ? boostSuperiorCannon : boostCannon
+				}% for ${usingSuperiorCannon ? 'Superior dwarf multicannon' : 'Cannon'} in singles`
 			};
 		}
 

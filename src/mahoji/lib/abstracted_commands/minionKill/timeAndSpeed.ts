@@ -1,3 +1,5 @@
+import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
+
 import {
 	calcWhatPercent,
 	increaseNumByPercent,
@@ -87,6 +89,7 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 
 	let currentTaskOptions: CombatMethodOptions = {};
 	const itemCost = new Bank();
+	const materialCost = new MaterialBank();
 	const charges = new ChargeBank();
 	const consumables: Consumable[] = [];
 	const confirmations: string[] = [];
@@ -126,6 +129,7 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 				timeToFinish = increaseNumByPercent(timeToFinish, boostResult.percentageIncrease);
 			}
 			if (boostResult.itemCost) itemCost.add(boostResult.itemCost);
+			if (boostResult.materialCost) materialCost.add(boostResult.materialCost);
 			if (boostResult.consumables) consumables.push(...boostResult.consumables);
 			if (boostResult.charges) charges.add(boostResult.charges);
 			if (boostResult.confirmation) confirmations.push(boostResult.confirmation);
@@ -151,6 +155,7 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 
 	const updateBank = new UpdateBank();
 	updateBank.itemCostBank.add(itemCost);
+	updateBank.materialsCostBank.add(materialCost);
 	updateBank.chargeBank.add(charges);
 
 	if (consumablesCost.itemCost) {
