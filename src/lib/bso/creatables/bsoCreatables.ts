@@ -908,6 +908,17 @@ const bsoItems: Createable[] = [
 		}
 	},
 	{
+		name: 'Frosty',
+		inputItems: new Bank({
+			Snowball: 50,
+			'Festive scarf': 1,
+			'Snowman top hat': 1
+		}),
+		outputItems: new Bank({
+			Frosty: 1
+		})
+	},
+	{
 		name: 'Crystal fishing rod',
 		inputItems: {
 			[itemID('Contest rod')]: 1,
@@ -1179,17 +1190,6 @@ const dragonBoneCreatables: Createable[] = [
 		}),
 		outputItems: new Bank({
 			'Royal dragon platebody': 1
-		})
-	},
-	{
-		name: 'Frosty',
-		inputItems: new Bank({
-			Snowball: 50,
-			'Festive scarf': 1,
-			'Snowman top hat': 1
-		}),
-		outputItems: new Bank({
-			Frosty: 1
 		})
 	}
 ];
