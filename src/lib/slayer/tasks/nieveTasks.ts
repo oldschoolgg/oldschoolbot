@@ -36,9 +36,27 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		amount: [3, 7],
 		extendedAmount: [20, 30],
 		extendedUnlockId: SlayerTaskUnlocksEnum.AdamindSomeMore,
-		weight: 2,
+		weight: 0,
 		monsters: [Monsters.AdamantDragon.id],
 		questPoints: 205,
+		unlocked: true
+	},
+	{
+		monster: Monsters.BronzeDragon,
+		amount: [30, 40],
+		weight: 12,
+		monsters: [
+			Monsters.BronzeDragon.id,
+			Monsters.IronDragon.id,
+			Monsters.SteelDragon.id,
+			Monsters.MithrilDragon.id,
+			Monsters.AdamantDragon.id,
+			Monsters.RuneDragon.id
+		],
+		extendedAmount: [150, 200],
+		extendedUnlockId: SlayerTaskUnlocksEnum.PedalToTheMetals,
+		combatLevel: 75,
+		questPoints: 34,
 		unlocked: true
 	},
 	{
@@ -283,7 +301,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		amount: [30, 60],
 		extendedAmount: [60, 100],
 		extendedUnlockId: SlayerTaskUnlocksEnum.PedalToTheMetals,
-		weight: 5,
+		weight: 0,
 		monsters: [Monsters.IronDragon.id],
 		combatLevel: 80,
 		questPoints: 34,
@@ -349,7 +367,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		amount: [4, 8],
 		extendedAmount: [25, 35],
 		extendedUnlockId: SlayerTaskUnlocksEnum.IReallyMithYou,
-		weight: 5,
+		weight: 0,
 		monsters: [Monsters.MithrilDragon.id],
 		unlocked: false
 	},
@@ -389,7 +407,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		amount: [3, 6],
 		extendedAmount: [30, 60],
 		extendedUnlockId: SlayerTaskUnlocksEnum.RUUUUUNE,
-		weight: 2,
+		weight: 0,
 		monsters: [Monsters.RuneDragon.id],
 		questPoints: 205,
 		unlocked: true
@@ -432,7 +450,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		amount: [30, 60],
 		extendedAmount: [40, 60],
 		extendedUnlockId: SlayerTaskUnlocksEnum.PedalToTheMetals,
-		weight: 5,
+		weight: 0,
 		monsters: [Monsters.SteelDragon.id],
 		levelRequirements: killableMonsters.find(k => k.id === Monsters.SteelDragon.id)?.levelRequirements,
 		combatLevel: 85,
