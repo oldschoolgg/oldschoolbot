@@ -9,6 +9,7 @@ import {
 import { Items, itemID, LootTable } from 'oldschooljs';
 
 import type { UnifiedOpenable } from '@/lib/openables.js';
+import {BSOItem} from "@/lib/bso/BSOItem.js";
 
 const christmasPetFoodTable = new LootTable()
 	.add('Pumpkinhead praline')
@@ -91,14 +92,13 @@ const lazyPromoRewards = [
 	'Fire dragon poncho',
 	'Fire dragon greaves',
 	'Fire dragon boots',
-	'Chunky Hunky Mask',
 	'Chunky Hunky Boots',
 	'Chunky Hunky Mittens',
 	'Chunky Hunky bodysuit',
 	'Chunky Hunk leggings',
 	'Skrinkle',
 	'Count Napula',
-	'Premierekat',
+	BSOItem.PREMIEREKAT,
 	'Disco infernowl',
 	'Slothario'
 ] as const;
