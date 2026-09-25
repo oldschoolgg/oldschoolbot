@@ -1,7 +1,7 @@
+import type { SUserIdentity } from '@oldschoolgg/schemas';
 import { useEffect, useState } from 'react';
 
 import { api } from '@/lib/api.js';
-import type { SUserIdentity } from '../../../robochimp/src/http/api-types.js';
 
 const resolved = new Map<string, SUserIdentity>();
 const inFlight = new Map<string, Promise<SUserIdentity>>();
