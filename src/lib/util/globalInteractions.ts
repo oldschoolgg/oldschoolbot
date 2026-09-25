@@ -8,6 +8,7 @@ import { giveawayCache } from '@/lib/cache.js';
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import { BitField } from '@/lib/constants.js';
 import { InteractionID } from '@/lib/InteractionID.js';
+import { quests } from '@/lib/minions/data/quests.js';
 import { toggleAutoRummage } from '@/lib/minions/data/valeTotems.js';
 import { type RunCommandArgs, runCommand } from '@/lib/settings/settings.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
@@ -346,6 +347,17 @@ async function globalButtonInteractionHandler({
 
 	if (await user.minionIsBusy()) {
 		return { content: `${user.minionName} is busy.`, ephemeral: true };
+	}
+
+	if (id.startsWith(`${InteractionID.Commands.StartQuest}_`)) {
+		const questID = Number(id.slice(`${InteractionID.Commands.StartQuest}_`.length));
+		const quest = quests.find(quest => quest.id === questID);
+		if (!quest) return { content: 'Invalid quest.', ephemeral: true };
+		return runCommand({
+			commandName: 'activities',
+			args: { quest: { name: quest.name } },
+			...options
+		});
 	}
 
 	if (id.startsWith('FARMING_PATRON_HARVEST_')) {
