@@ -12,6 +12,7 @@ import {
 import { allStashUnitsFlat, allStashUnitTiers } from '@/lib/clues/stashUnits.js';
 import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
 import { BitField, BitFieldData, globalConfig } from '@/lib/constants.js';
+import { allCollectionLogs, getCollectionItems } from '@/lib/data/Collections.js';
 import { spiritAnglerOutfit } from '@/lib/data/CollectionsExport.js';
 import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '@/lib/data/cox.js';
 import { leaguesCreatables } from '@/lib/data/creatables/leagueCreatables.js';
@@ -330,6 +331,26 @@ for (const food of Eatables.map(food => food.id)) {
 	foodPreset.addItem(food, 100_000);
 }
 
+const testpotatoCLSpawnChoices = [
+	{ name: 'Overall (Main Collection Log)', value: 'overall' },
+	{ name: 'Overall+', value: 'overall+' },
+	...Object.entries(allCollectionLogs).flatMap(([group, log]) => [
+		{ name: `${group} (Group)`, value: group },
+		...Object.entries(log.activities).map(([name, activity]) => ({
+			name: `${name} (${activity.items.length} Items)`,
+			value: name
+		}))
+	])
+];
+
+function bankFromItemIDs(itemIDs: Iterable<number>, qty: number) {
+	const bank = new Bank();
+	for (const id of new Set(itemIDs)) {
+		bank.add(id, qty);
+	}
+	return bank;
+}
+
 const anglerOutfit = resolveItems(['Angler hat', 'Angler top', 'Angler waders', 'Angler boots']);
 const fishingPreset = new Bank()
 	.add('Fish sack barrel')
@@ -575,6 +596,22 @@ export const testPotatoCommand = globalConfig.isProduction
 							type: 'Boolean',
 							name: 'collectionlog',
 							description: 'Add these items to your collection log?'
+						},
+						{
+							type: 'String',
+							name: 'cl',
+							description: 'Spawn all items from a collection log.',
+							autocomplete: async ({ value }: StringAutoComplete) =>
+								testpotatoCLSpawnChoices
+									.filter(i => i.name.toLowerCase().includes(value.toLowerCase()))
+									.slice(0, 25)
+						},
+						{
+							type: 'Integer',
+							name: 'qty',
+							description: 'Amount of each CL/specific item to spawn.',
+							min_value: 1,
+							max_value: 1_000_000
 						},
 						{
 							type: 'String',
@@ -1217,8 +1254,9 @@ export const testPotatoCommand = globalConfig.isProduction
 					return setXP(user, options.setxp.skill, options.setxp.xp);
 				}
 				if (options.spawn) {
-					const { preset, collectionlog, item, items } = options.spawn;
+					const { preset, collectionlog, cl, qty: clQty, item, items } = options.spawn;
 					const bankToGive = new Bank();
+					const quantity = clQty ?? 1;
 					if (preset) {
 						const actualPreset = spawnPresets.find(i => i[0] === preset);
 						if (!actualPreset) return 'Invalid preset';
@@ -1231,20 +1269,33 @@ export const testPotatoCommand = globalConfig.isProduction
 						}
 						bankToGive.add(b);
 					}
+					if (cl) {
+						const clSpawnChoice = testpotatoCLSpawnChoices.find(
+							i => i.value.toLowerCase() === cl.toLowerCase()
+						);
+						const clName =
+							clSpawnChoice?.value ??
+							(cl === 'boss_log' ? 'Bosses' : cl === 'createables' ? 'Creatables' : undefined);
+						if (!clName) return 'Invalid collection log.';
+						bankToGive.add(bankFromItemIDs(getCollectionItems(clName), quantity));
+					}
 					if (item) {
 						try {
-							bankToGive.add(Items.getOrThrow(item).id);
+							bankToGive.add(Items.getOrThrow(item).id, quantity);
 						} catch (err) {
 							return err as string;
 						}
 					}
 					if (items) {
-						for (const [i, qty] of parseStringBank(items, undefined, true)) {
-							bankToGive.add(i.id, qty || 1);
+						for (const [i, parsedQty] of parseStringBank(items, undefined, true)) {
+							bankToGive.add(i.id, parsedQty || 1);
 						}
 					}
 
-					await user.addItemsToBank({ items: bankToGive, collectionLog: Boolean(collectionlog) });
+					await user.addItemsToBank({
+						items: bankToGive,
+						collectionLog: Boolean(collectionlog) || Boolean(cl)
+					});
 					return `Spawned: ${bankToGive.toString().slice(0, 1800)}.`;
 				}
 
