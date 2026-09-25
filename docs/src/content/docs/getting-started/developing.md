@@ -69,6 +69,8 @@ pnpm exec tsx --tsconfig scripts/tsconfig.json scripts/itemsPostProcess.ts
 cd ../..
 ```
 
+Explicit IDs must be valid positive integers present in MOID, and the scraper still rejects known dummy, placeholder, clue, and other excluded items.
+
 After scraping, review the diff carefully. It should normally add new entries without deleting existing items. If the scraper rewrites JSON with spaces, reformat `item_data.json` back to the repo's tab-indented style before committing.
 
 For items that need bot icons or enum entries, add their IDs to `itemsMustBeInSpritesheet` in `scripts/spritesheet.ts`, then run:

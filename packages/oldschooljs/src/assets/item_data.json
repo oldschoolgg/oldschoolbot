@@ -203362,6 +203362,8 @@
 	"33093": {
 		"name": "Cow slippers (base)",
 		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
 		"equipable": true,
 		"lowalch": 400,
 		"highalch": 600,
@@ -203384,11 +203386,14 @@
 			"requirements": null
 		},
 		"cost": 1000,
-		"buy_limit": 4
+		"buy_limit": 4,
+		"price": 2274
 	},
 	"33096": {
 		"name": "Cow slippers",
 		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
 		"equipable": true,
 		"lowalch": 400,
 		"highalch": 600,
@@ -203415,6 +203420,8 @@
 	"33097": {
 		"name": "Cow slippers",
 		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
 		"equipable": true,
 		"lowalch": 400,
 		"highalch": 600,
@@ -203441,6 +203448,8 @@
 	"33098": {
 		"name": "Cow slippers",
 		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
 		"equipable": true,
 		"lowalch": 400,
 		"highalch": 600,
@@ -203521,6 +203530,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": true,
+		"lowalch": 140,
+		"highalch": 210,
 		"equipment": {
 			"attack_stab": 0,
 			"attack_slash": 0,
@@ -203546,6 +203557,8 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": true,
+		"lowalch": 140,
+		"highalch": 210,
 		"equipment": {
 			"attack_stab": 0,
 			"attack_slash": 0,
@@ -203575,7 +203588,7 @@
 		"highalch": 6,
 		"cost": 10,
 		"buy_limit": 13000,
-		"price": 182
+		"price": 183
 	},
 	"33109": {
 		"name": "Cooked t-bone steak",
@@ -203591,7 +203604,7 @@
 	"33112": {
 		"name": "Burnt t-bone steak",
 		"tradeable": true,
-		"tradeable_on_ge": true,
+		"tradeable_on_ge": false,
 		"equipable": false,
 		"lowalch": 4,
 		"highalch": 6,
@@ -204070,7 +204083,7 @@
 		},
 		"cost": 100000,
 		"buy_limit": 4,
-		"price": 10306
+		"price": 11153
 	},
 	"33266": {
 		"name": "Demonic robe bottom (t1)",
@@ -204399,7 +204412,7 @@
 			"requirements": null
 		},
 		"cost": 1000,
-		"price": 637117
+		"price": 552196
 	},
 	"33299": {
 		"name": "Demonic pacts banner",
@@ -204439,7 +204452,7 @@
 		"lowalch": 40000,
 		"highalch": 60000,
 		"cost": 100000,
-		"price": 1028321
+		"price": 1051759
 	},
 	"33305": {
 		"name": "Demonic axe ornament kit",
@@ -204450,7 +204463,7 @@
 		"lowalch": 40000,
 		"highalch": 60000,
 		"cost": 100000,
-		"price": 2280386
+		"price": 2240092
 	},
 	"33308": {
 		"name": "Demonic staff ornament kit",
@@ -204469,7 +204482,7 @@
 		"lowalch": 40000,
 		"highalch": 60000,
 		"cost": 100000,
-		"price": 854017
+		"price": 875424
 	},
 	"33332": {
 		"name": "Iban's staff (u) (o)",
@@ -204767,7 +204780,7 @@
 		"lowalch": 10000,
 		"highalch": 15000,
 		"cost": 25000,
-		"price": 298506
+		"price": 319907
 	},
 	"33362": {
 		"name": "Demonic pacts throne scroll",
@@ -204789,7 +204802,7 @@
 		"lowalch": 10000,
 		"highalch": 15000,
 		"cost": 25000,
-		"price": 2536057
+		"price": 2452115
 	},
 	"33368": {
 		"name": "Demonic pacts demon butler scroll",
@@ -204815,7 +204828,7 @@
 	"33424": {
 		"name": "Mission totem",
 		"tradeable": true,
-		"tradeable_on_ge": true,
+		"tradeable_on_ge": false,
 		"equipable": false
 	},
 	"33439": {
@@ -204939,7 +204952,7 @@
 		"lowalch": 80000,
 		"highalch": 120000,
 		"cost": 200000,
-		"price": 28093857
+		"price": 28300000
 	},
 	"33537": {
 		"name": "Garlic cocktail",
@@ -205177,7 +205190,7 @@
 			"requirements": null
 		},
 		"cost": 490,
-		"price": 425
+		"price": 421
 	},
 	"33595": {
 		"name": "Seeking dragon arrow",
@@ -205208,7 +205221,7 @@
 		},
 		"cost": 800,
 		"buy_limit": 11000,
-		"price": 2220
+		"price": 2253
 	},
 	"33601": {
 		"name": "Seeking broad arrows",
@@ -205339,7 +205352,7 @@
 		"lowalch": 96,
 		"highalch": 144,
 		"cost": 240,
-		"price": 1804
+		"price": 1795
 	},
 	"33627": {
 		"name": "Dull ancient medal",
@@ -205393,7 +205406,7 @@
 		},
 		"cost": 240000,
 		"buy_limit": 5,
-		"price": 52196425
+		"price": 52186959
 	},
 	"33634": {
 		"name": "Elder venator fang",
@@ -205414,7 +205427,7 @@
 		"lowalch": 80000,
 		"highalch": 120000,
 		"cost": 200000,
-		"price": 122410153
+		"price": 123000000
 	},
 	"33639": {
 		"name": "Necklace of rupture",
@@ -205444,38 +205457,11 @@
 		},
 		"cost": 242000,
 		"buy_limit": 8,
-		"price": 143152500
+		"price": 143927836
 	},
 	"33642": {
 		"name": "Maggot marquess",
 		"members": true
-	},
-	"33644": {
-		"name": "Dummy stymphike feather",
-		"tradeable": true,
-		"tradeable_on_ge": true,
-		"equipable": true,
-		"lowalch": 600,
-		"highalch": 900,
-		"equipment": {
-			"attack_stab": 0,
-			"attack_slash": 0,
-			"attack_crush": 0,
-			"attack_magic": 0,
-			"attack_ranged": 0,
-			"defence_stab": 0,
-			"defence_slash": 0,
-			"defence_crush": 0,
-			"defence_magic": 0,
-			"defence_ranged": 0,
-			"melee_strength": 0,
-			"ranged_strength": 0,
-			"magic_damage": 0,
-			"prayer": 0,
-			"slot": "weapon",
-			"requirements": null
-		},
-		"cost": 1500
 	},
 	"33651": {
 		"name": "Stymphike feather",
@@ -205537,7 +205523,7 @@
 		"highalch": 300,
 		"cost": 500,
 		"buy_limit": 10000,
-		"price": 1941
+		"price": 1937
 	},
 	"33663": {
 		"name": "Venator tooth",
@@ -205550,7 +205536,7 @@
 		"highalch": 150,
 		"cost": 250,
 		"buy_limit": 10000,
-		"price": 1207
+		"price": 1210
 	},
 	"33665": {
 		"name": "Maggot egg (base)",
@@ -208500,7 +208486,7 @@
 		},
 		"cost": 1250000,
 		"buy_limit": 100,
-		"price": 1505670
+		"price": 1522444
 	},
 	"34030": {
 		"name": "Jar of Light",
@@ -208533,16 +208519,6 @@
 		"highalch": 6,
 		"cost": 10,
 		"price": 31685
-	},
-	"34035": {
-		"name": "Placeholder",
-		"members": true,
-		"tradeable": true,
-		"tradeable_on_ge": true,
-		"equipable": false,
-		"lowalch": 500000,
-		"highalch": 750000,
-		"cost": 1250000
 	},
 	"34040": {
 		"name": "Mr McGroot",
@@ -208804,12 +208780,13 @@
 	"34388": {
 		"name": "Big red button",
 		"members": true,
+		"tradeable_on_ge": false,
 		"equipable": false
 	},
 	"34390": {
 		"name": "Lanscape coins",
 		"tradeable": true,
-		"tradeable_on_ge": true,
+		"tradeable_on_ge": false,
 		"stackable": true,
 		"equipable": false
 	},
@@ -208840,7 +208817,7 @@
 			"requirements": null
 		},
 		"cost": 50000,
-		"price": 72454
+		"price": 72804
 	},
 	"34404": {
 		"name": "Air diamond",
@@ -208880,7 +208857,7 @@
 			"requirements": null
 		},
 		"cost": 21000,
-		"price": 411781
+		"price": 392778
 	},
 	"34410": {
 		"name": "Water sapphire",
@@ -208920,7 +208897,7 @@
 			"requirements": null
 		},
 		"cost": 21000,
-		"price": 336297
+		"price": 301297
 	},
 	"34416": {
 		"name": "Earth emerald",
@@ -208931,7 +208908,7 @@
 		"lowalch": 8000,
 		"highalch": 12000,
 		"cost": 20000,
-		"price": 610001
+		"price": 629462
 	},
 	"34419": {
 		"name": "Amulet of earth",
@@ -209000,7 +208977,7 @@
 			"requirements": null
 		},
 		"cost": 21000,
-		"price": 124068
+		"price": 108522
 	},
 	"34428": {
 		"name": "Elemental amulet",
@@ -209029,7 +209006,7 @@
 			"requirements": null
 		},
 		"cost": 84000,
-		"price": 1568428
+		"price": 1561736
 	},
 	"34431": {
 		"name": "Labrador",

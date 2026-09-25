@@ -717,6 +717,9 @@ const itemsMustBeInSpritesheet: number[] = uniqueArr([
 	32930,
 	32932,
 	32934,
+	EItem.CRYSTAL_HALBERD_910_I,
+	EItem.ELDER_CHAOS_HOOD_OR,
+	EItem.ECHO_AHRIMS_HOOD,
 	33002,
 	33004,
 	33005,
@@ -947,12 +950,17 @@ async function main() {
 			console.log(`Missing ${imgName}. Downloading...`);
 			const errors: string[] = [];
 			for (const iconBaseUrl of iconBaseUrls) {
-				const dlResult = await downloadFile(`${iconBaseUrl}${item}.png`, imgName);
-				if (dlResult.status) {
-					errors.length = 0;
-					break;
+				const url = `${iconBaseUrl}${item}.png`;
+				try {
+					const dlResult = await downloadFile(url, imgName);
+					if (dlResult.status) {
+						errors.length = 0;
+						break;
+					}
+					errors.push(`${url} ${dlResult.msg}`);
+				} catch (error) {
+					errors.push(`${url} ${error instanceof Error ? error.message : String(error)}`);
 				}
-				errors.push(`${iconBaseUrl}${item}.png ${dlResult.msg}`);
 			}
 			if (errors.length > 0) {
 				isMissing = true;

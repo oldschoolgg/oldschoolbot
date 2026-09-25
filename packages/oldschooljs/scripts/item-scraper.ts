@@ -4,9 +4,9 @@ import { sleep } from '@oldschoolgg/toolkit';
 import wtf from 'wtf_wikipedia';
 
 import { type Item, Items } from '@/index.js';
-import { USELESS_ITEMS } from '@/structures/ItemsClass.js';
 import { pfetch } from './fetch.js';
 import { fetchPrices } from './fetchPrices.js';
+import { getItemExclusionReason, parseExplicitItemIDs } from './item-scraper-utils.js';
 import { ZWikiBucketItem } from './schemas.js';
 import type { MoidSourceItem } from './types.js';
 import { convertWikiJSONToItem } from './wikiparse.js';
@@ -149,7 +149,7 @@ async function fetchItemWikiPage(itemId: number, moidItem?: MoidSourceItem): Pro
 	const finalItem: Item = {
 		id: itemFromInfoBox.id,
 		name: variantName ?? itemFromInfoBox.name,
-		members: dataFromBucket.is_members_only ? true : undefined,
+		members: itemFromInfoBox.members,
 		tradeable: itemFromInfoBox.tradeable,
 		tradeable_on_ge: itemFromInfoBox.tradeable_on_ge,
 		stackable: itemFromInfoBox.stackable,
@@ -164,6 +164,7 @@ async function fetchItemWikiPage(itemId: number, moidItem?: MoidSourceItem): Pro
 }
 
 async function main() {
+	const explicitItemIDs = parseExplicitItemIDs(process.argv.slice(2));
 	const currentData = JSON.parse(await readFileSync('./src/assets/item_data.json', 'utf-8'));
 	const existingItemIDsMap = new Map(Object.keys(currentData).map(n => [Number(n), currentData[n]]));
 	const highestExistingItemID = Math.max(...existingItemIDsMap.keys());
@@ -171,43 +172,20 @@ async function main() {
 	const { moidSource, moidSourceMap } = await fetchMoidData();
 	const allPrices = await fetchPriceData();
 
-	const explicitItemIDs = process.argv.slice(2).map(Number).filter(Number.isInteger);
-	const itemIdsToProcess: number[] = explicitItemIDs;
-	if (itemIdsToProcess.length === 0) {
+	const itemIdsToProcess: number[] = [];
+	if (explicitItemIDs) {
+		for (const itemID of explicitItemIDs) {
+			const moidItem = moidSourceMap.get(itemID);
+			if (!moidItem) throw new Error(`Item ID ${itemID} was not found in MOID.`);
+			const exclusionReason = getItemExclusionReason(moidItem);
+			if (exclusionReason) throw new Error(`Refusing to scrape item ID ${itemID}: ${exclusionReason}.`);
+			itemIdsToProcess.push(itemID);
+		}
+	} else {
 		for (const item of moidSource) {
 			if (item.id <= highestExistingItemID) continue;
 			if (existingItemIDsMap.has(item.id)) continue;
-			if (item.name.trim().length === 0) continue;
-			if (item.name.toLowerCase() === 'null') continue;
-
-			if (['_riddle', '_skillguide_'].some(suffix => item.configName.toLowerCase().includes(suffix))) continue;
-			if (
-				[
-					'cargo_crate_',
-					'placeholder_',
-					'lost_schematic_',
-					'beta_',
-					'br_',
-					'fake_',
-					'cert_',
-					'poh_',
-					'raids_storage',
-					'bas_puzzle_',
-					'con_contract_',
-					'slayerguide_',
-					'nzone_',
-					'pvpa_'
-				].some(suffix => item.configName.toLowerCase().startsWith(suffix))
-			)
-				continue;
-			if (['_worn', '_dummy'].some(suffix => item.configName.toLowerCase().endsWith(suffix))) continue;
-			if (
-				['clue scroll', 'challenge scroll', 'casket', 'puzzle box', 'armour set'].some(str =>
-					item.name.toLowerCase().includes(str)
-				)
-			)
-				continue;
-			if (USELESS_ITEMS.includes(item.id)) continue;
+			if (getItemExclusionReason(item)) continue;
 			if (Items.has(item.id)) continue;
 			if (!isKnownSameNameVariant(item) && Items.getItem(item.name)) continue;
 			itemIdsToProcess.push(item.id);
