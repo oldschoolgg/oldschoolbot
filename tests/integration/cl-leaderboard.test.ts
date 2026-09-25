@@ -5,6 +5,7 @@ import { describe, expect, test } from 'vitest';
 import { allCollectionLogsFlat } from '../../src/lib/data/Collections.js';
 import { chambersOfXericCL } from '../../src/lib/data/CollectionsExport.js';
 import { fetchCLLeaderboard } from '../../src/lib/util/clLeaderboard.js';
+import { UserEventType } from '../../src/prisma/main/enums.js';
 import { createTestUser } from './util.js';
 
 describe('CL Leaderboard', () => {
@@ -19,6 +20,41 @@ describe('CL Leaderboard', () => {
 			});
 		}
 		await Promise.all([fetchCLLeaderboard]);
+	});
+
+	test('account filters apply to CL completion event users', async () => {
+		const items = new Set(chambersOfXericCL.slice(0, 2));
+		const cl_array = Array.from(items);
+		const main = await createTestUser(undefined, { cl_array });
+		const iron = await createTestUser(undefined, { cl_array, minion_ironman: true });
+
+		await prisma.userEvent.createMany({
+			data: [main, iron].map(user => ({
+				user_id: user.id,
+				type: UserEventType.CLCompletion,
+				collection_log_name: 'overall'
+			}))
+		});
+
+		const ironsOnly = await fetchCLLeaderboard({
+			ironmenOnly: true,
+			accountFilter: 'ironmen',
+			items,
+			resultLimit: 100,
+			clName: 'overall'
+		});
+		expect(ironsOnly.users.some(user => user.id === iron.id)).toBe(true);
+		expect(ironsOnly.users.some(user => user.id === main.id)).toBe(false);
+
+		const mainsOnly = await fetchCLLeaderboard({
+			ironmenOnly: false,
+			accountFilter: 'mains',
+			items,
+			resultLimit: 100,
+			clName: 'overall'
+		});
+		expect(mainsOnly.users.some(user => user.id === main.id)).toBe(true);
+		expect(mainsOnly.users.some(user => user.id === iron.id)).toBe(false);
 	});
 
 	test.skip('CL Leaderboard', async () => {
