@@ -50,10 +50,12 @@ const itemRenames = {
 	30968: `Dragon egg (Scrambled)`
 };
 for (const [id, newName] of Object.entries(itemRenames)) {
-	(items as any)[id as any].name = newName;
+	if ((items as any)[id]) {
+		(items as any)[id].name = newName;
+	}
 }
 
 const didChange = JSON.stringify(itemsCopy) !== JSON.stringify(items);
 if (didChange) {
-	writeFileSync('./src/assets/item_data.json', JSON.stringify(items, null, 4));
+	writeFileSync('./src/assets/item_data.json', `${JSON.stringify(items, null, '\t')}\n`);
 }

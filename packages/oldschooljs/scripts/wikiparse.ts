@@ -1,40 +1,19 @@
-import { EquipmentSlot, type Item, type ItemEquipment } from '@/index.js';
+import { EquipmentSlot } from '@oldschoolgg/gear';
+
+import type { Item, ItemEquipment } from '@/meta/item.js';
+
+interface WikiInfoboxValue {
+	text?: string;
+	number?: number;
+}
+
+type WikiInfobox = Record<string, WikiInfoboxValue | undefined>;
 
 interface WikiItemJSON {
 	title: string;
 	sections: Array<{
 		title: string;
-		infoboxes?: Array<{
-			// Main item properties
-			name?: { text: string };
-			id?: { text: string; number: number };
-			value?: { text: string; number: number };
-			weight?: { text: string; number: number };
-			members?: { text: string };
-			tradeable?: { text: string };
-			stackable?: { text: string };
-			equipable?: { text: string };
-
-			// Combat stats (if present)
-			astab?: { text: string; number: number };
-			aslash?: { text: string; number: number };
-			acrush?: { text: string; number: number };
-			amagic?: { text: string; number: number };
-			arange?: { text: string; number: number };
-			dstab?: { text: string; number: number };
-			dslash?: { text: string; number: number };
-			dcrush?: { text: string; number: number };
-			dmagic?: { text: string; number: number };
-			drange?: { text: string; number: number };
-			str?: { text: string; number: number };
-			rstr?: { text: string; number: number };
-			mdmg?: { text: string; number: number };
-			prayer?: { text: string; number: number };
-			slot?: { text: string };
-			speed?: { text: string; number: number };
-			attackrange?: { text: string; number: number };
-			combatstyle?: { text: string };
-		}>;
+		infoboxes?: WikiInfobox[];
 		templates?: Array<{
 			template?: string;
 			list?: string[];
@@ -87,16 +66,41 @@ function extractCombatStatsInfobox(sections: WikiItemJSON['sections']) {
 }
 
 function extractMainInfobox(sections: WikiItemJSON['sections']) {
-	for (const section of sections as any[]) {
+	for (const section of sections) {
 		if (section.infoboxes) {
 			for (const infobox of section.infoboxes) {
-				if (infobox.name || infobox.id || infobox['name1']) {
+				if (infobox.name || infobox.id || infobox.id1 || infobox.name1) {
 					return infobox;
 				}
 			}
 		}
 	}
 	return null;
+}
+
+function getInfoboxVariant(mainInfobox: WikiInfobox, itemID?: number): { id: number; suffix: string } | null {
+	if (itemID !== undefined) {
+		if (mainInfobox.id?.number === itemID) return { id: itemID, suffix: '' };
+
+		for (const [key, value] of Object.entries(mainInfobox)) {
+			const match = /^id(\d+)$/.exec(key);
+			if (match && value?.number === itemID) return { id: itemID, suffix: match[1]! };
+		}
+
+		if (mainInfobox.id?.text?.split(/\D+/).includes(String(itemID))) return { id: itemID, suffix: '' };
+		return null;
+	}
+
+	if (Number.isSafeInteger(mainInfobox.id?.number)) return { id: mainInfobox.id!.number!, suffix: '' };
+	for (const [key, value] of Object.entries(mainInfobox)) {
+		const match = /^id(\d+)$/.exec(key);
+		if (match && Number.isSafeInteger(value?.number)) return { id: value!.number!, suffix: match[1]! };
+	}
+	return null;
+}
+
+function getInfoboxValue(infobox: WikiInfobox, key: string, suffix: string): WikiInfoboxValue | undefined {
+	return infobox[`${key}${suffix}`] ?? infobox[key];
 }
 
 function extractWeaponData(sections: WikiItemJSON['sections']) {
@@ -121,28 +125,31 @@ function extractWeaponData(sections: WikiItemJSON['sections']) {
 	return null;
 }
 
-export function convertWikiJSONToItem(wikiJson: WikiItemJSON): Item | null {
-	const mainInfobox: any = extractMainInfobox(wikiJson.sections);
+export function convertWikiJSONToItem(wikiJson: WikiItemJSON, itemID?: number): Item | null {
+	const mainInfobox = extractMainInfobox(wikiJson.sections);
 	const combatInfobox = extractCombatStatsInfobox(wikiJson.sections);
 
-	if (!mainInfobox || !mainInfobox.id || !mainInfobox.name) {
-		return null;
-	}
+	if (!mainInfobox) return null;
 
-	const id = mainInfobox.id?.number || mainInfobox.id1?.number || 0;
-	const name = mainInfobox.name?.text || wikiJson.title;
-	const cost = mainInfobox.value?.number || 0;
-	const members = convertYesNoToBoolean(mainInfobox.members?.text);
-	const tradeable = convertYesNoToBoolean(mainInfobox.tradeable?.text);
-	const stackable = convertYesNoToBoolean(mainInfobox.stackable?.text);
-	const equipable = convertYesNoToBoolean(mainInfobox.equipable?.text);
+	const variant = getInfoboxVariant(mainInfobox, itemID);
+	if (variant === null) return null;
+	const { id, suffix } = variant;
+
+	const name = getInfoboxValue(mainInfobox, 'name', suffix)?.text || wikiJson.title;
+	const cost = getInfoboxValue(mainInfobox, 'value', suffix)?.number || 0;
+	const members = convertYesNoToBoolean(getInfoboxValue(mainInfobox, 'members', suffix)?.text);
+	const tradeable = convertYesNoToBoolean(getInfoboxValue(mainInfobox, 'tradeable', suffix)?.text);
+	const exchange = getInfoboxValue(mainInfobox, 'exchange', suffix)?.text?.toLowerCase();
+	const tradeableOnGE = exchange === 'yes' || exchange === 'dmm';
+	const stackable = convertYesNoToBoolean(getInfoboxValue(mainInfobox, 'stackable', suffix)?.text);
+	const equipable = convertYesNoToBoolean(getInfoboxValue(mainInfobox, 'equipable', suffix)?.text);
 
 	const item: Item = {
 		id,
 		name,
 		...(members === true && { members }),
 		tradeable,
-		tradeable_on_ge: tradeable,
+		tradeable_on_ge: tradeableOnGE,
 		// noteable: Boolean(moidData.notedId),
 		equipable: equipable as true | undefined,
 		cost,
@@ -159,35 +166,31 @@ export function convertWikiJSONToItem(wikiJson: WikiItemJSON): Item | null {
 		...(equipable && { equipable: true })
 	};
 
-	console.log({ mainInfobox, combatInfobox, equipable });
 	if (combatInfobox && equipable) {
-		function parseENum(
-			inp:
-				| {
-						text: string;
-						number: number;
-				  }
-				| undefined
-		) {
+		const equipmentInfobox = combatInfobox;
+		function parseENum(key: string) {
+			const inp = getInfoboxValue(equipmentInfobox, key, suffix);
 			return Number(inp?.text || inp?.number || 0);
 		}
 		const equipment: ItemEquipment = {
-			attack_stab: parseENum(combatInfobox.astab),
-			attack_slash: parseENum(combatInfobox.aslash),
-			attack_crush: parseENum(combatInfobox.acrush),
-			attack_magic: parseENum(combatInfobox.amagic),
-			attack_ranged: parseENum(combatInfobox.arange),
-			defence_stab: parseENum(combatInfobox.dstab),
-			defence_slash: parseENum(combatInfobox.dslash),
-			defence_crush: parseENum(combatInfobox.dcrush),
-			defence_magic: parseENum(combatInfobox.dmagic),
-			defence_ranged: parseENum(combatInfobox.drange),
-			melee_strength: parseENum(combatInfobox.str),
-			ranged_strength: parseENum(combatInfobox.rstr),
-			magic_damage: parseENum(combatInfobox.mdmg),
-			prayer: parseENum(combatInfobox.prayer),
+			attack_stab: parseENum('astab'),
+			attack_slash: parseENum('aslash'),
+			attack_crush: parseENum('acrush'),
+			attack_magic: parseENum('amagic'),
+			attack_ranged: parseENum('arange'),
+			defence_stab: parseENum('dstab'),
+			defence_slash: parseENum('dslash'),
+			defence_crush: parseENum('dcrush'),
+			defence_magic: parseENum('dmagic'),
+			defence_ranged: parseENum('drange'),
+			melee_strength: parseENum('str'),
+			ranged_strength: parseENum('rstr'),
+			magic_damage: parseENum('mdmg'),
+			prayer: parseENum('prayer'),
 			// @ts-expect-error
-			slot: combatInfobox.slot?.text ? mapSlotToEquipmentSlot(combatInfobox.slot.text)! : undefined,
+			slot: getInfoboxValue(equipmentInfobox, 'slot', suffix)?.text
+				? mapSlotToEquipmentSlot(getInfoboxValue(equipmentInfobox, 'slot', suffix)!.text!)
+				: undefined,
 			requirements: null
 		};
 
