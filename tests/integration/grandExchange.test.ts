@@ -227,4 +227,31 @@ Based on G.E data, we should have received ${data.totalTax} tax`;
 		expect(data.taxBank, 'LZ9').toEqual(totalTax);
 		expect(data.totalTax, 'M39').toEqual(totalTax);
 	});
+
+	test('allows special tradeables to be listed', async () => {
+		await GrandExchange.totalReset();
+		await GrandExchange.init();
+
+		const user = await createTestUser(new Bank().add('Coins', 1_000_000).add('Birthday present', 1));
+
+		const response = await user.runCommand(geCommand, {
+			sell: {
+				item: 'Birthday present',
+				quantity: 1,
+				price: 100_000
+			}
+		});
+
+		expect((response as { content: string }).content).toContain('Successfully created a listing to sell');
+
+		const listings = await prisma.gEListing.findMany({
+			where: {
+				user_id: user.id
+			}
+		});
+		expect(listings).toHaveLength(1);
+		expect(listings[0].item_id).toEqual(resolveItems(['Birthday present'])[0]);
+
+		await cancelUsersListings(user);
+	});
 });

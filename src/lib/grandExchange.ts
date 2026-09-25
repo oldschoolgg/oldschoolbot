@@ -295,7 +295,7 @@ class GrandExchangeSingleton {
 		}
 		if (user.isIronman) return { error: "You're an ironman." };
 		const item = Items.getItem(itemName);
-		if (!item || !itemIsTradeable(item.id) || !item.tradeable_on_ge || ['Coins'].includes(item.name)) {
+		if (!item || !itemIsTradeable(item.id) || ['Coins'].includes(item.name)) {
 			return {
 				error: "Hmm... That item is not tradeable on the Grand Exchange. It's possible it doesn't even exist, but if you think I'm writing a different message for every possibility think again."
 			};

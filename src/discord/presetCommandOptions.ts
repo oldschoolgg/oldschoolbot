@@ -10,6 +10,7 @@ import { type GlobalPreset, globalPresets } from '@/lib/gear/gearPresets.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { SkillsArray } from '@/lib/skilling/types.js';
 import { Gear } from '@/lib/structures/Gear.js';
+import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 
 export const filterOption = {
 	type: 'String',
@@ -28,7 +29,7 @@ export const filterOption = {
 
 export const itemArr = Items.array().map(i => ({ ...i, key: `${i.name.toLowerCase()}_${i.id}` }));
 
-export const tradeableItemArr = itemArr.filter(i => i.tradeable_on_ge);
+export const tradeableItemArr = itemArr.filter(i => itemIsTradeable(i.id));
 
 export const allEquippableItems = Items.array().filter(i => i.equipable && i.equipment?.slot);
 
