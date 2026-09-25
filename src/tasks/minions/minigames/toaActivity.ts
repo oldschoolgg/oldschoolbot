@@ -1,5 +1,8 @@
+import { CHINCANNON_MESSAGES } from '@/lib/bso/bsoConstants.js';
+
 import { bold } from '@oldschoolgg/discord';
 import { Emoji, Events, formatOrdinal, isObject, Time, uniqueArr } from '@oldschoolgg/toolkit';
+import { randArrItem } from 'node-rng';
 import { Bank, type ItemBank, ItemGroups, resolveItems } from 'oldschooljs';
 
 import { drawChestLootImage } from '@/lib/canvas/chestImage.js';
@@ -36,6 +39,7 @@ export const toaTask: MinionTask = {
 		const isSolo = detailedUsers[0].length === 1;
 		const allUsers = await Promise.all(detailedUsers[0].map(async u => mUserFetch(u.id)));
 		const leaderSoloUser = allUsers[0];
+		const chinCannonUsed = data.cc != null;
 
 		const previousCLs = allUsers.map(i => i.cl.clone());
 
@@ -49,11 +53,29 @@ export const toaTask: MinionTask = {
 				})
 			)
 		);
+
+		let messages: string[] = [];
+
+		// construct a message for the failed attempts
+		let failedAttempts: number = 0;
+		for (let i = 0; i < quantity; i++) {
+			if (wipedRooms[i] !== null) {
+				failedAttempts++;
+			}
+		}
+
+		const failedAttemptsMessage: string = `Your team wiped in ${failedAttempts}/${quantity} of your Tombs of Amascut trips!`;
+
+		if (failedAttempts > 0) {
+			messages.push(failedAttemptsMessage);
+		}
+
+		// if all failed directly end here
 		if (wipedRooms.every(i => i !== null)) {
 			return handleTripFinish({
 				user: allUsers[0],
 				channelId,
-				message: `${allUsers.map(i => i.toString()).join(' ')} Your team wiped in the Tombs of Amascut!`,
+				message: `${allUsers.map(i => i.toString()).join(' ')}\n${failedAttemptsMessage}`,
 				data
 			});
 		}
@@ -69,8 +91,6 @@ export const toaTask: MinionTask = {
 				kc: await user.fetchMinigameScore('tombs_of_amascut')
 			});
 		}
-
-		let messages: string[] = [];
 
 		const itemsAddedTeamLoot = new TeamLoot();
 
@@ -104,6 +124,11 @@ export const toaTask: MinionTask = {
 			}
 			messages.push(...raidLoot.messages);
 		}
+
+		if (chinCannonUsed) {
+			messages.push(`**${randArrItem(CHINCANNON_MESSAGES)}**`);
+		}
+
 		messages = uniqueArr(messages);
 		const successfulRaidCount = getSuccessfulTOARaidCount({ quantity, wipedRooms });
 		const minigameIncrementResult = await Promise.all(
@@ -138,6 +163,7 @@ export const toaTask: MinionTask = {
 			}
 
 			let str = 'Nothing';
+			const currentStats = await user.fetchStats();
 			if (!chincannonUser) {
 				const { itemsAdded } = await user.transactItems({
 					itemsToAdd: totalLoot.get(userID),
@@ -146,7 +172,6 @@ export const toaTask: MinionTask = {
 
 				itemsAddedTeamLoot.add(userID, itemsAdded);
 
-				const currentStats = await user.fetchStats();
 				await user.statsUpdate({
 					toa_raid_levels_bank: new Bank()
 						.add(currentStats.toa_raid_levels_bank as ItemBank)
@@ -178,21 +203,19 @@ export const toaTask: MinionTask = {
 					);
 				}
 				str = isPurple ? `${Emoji.Purple} ||${itemsAdded}||` : itemsAdded.toString();
-			}
+			} else {
+				await user.statsUpdate({
+					toa_raid_levels_bank: new Bank()
+						.add(currentStats.toa_raid_levels_bank as ItemBank)
+						.add(raidLevel, successfulRaidCount)
+						.toJSON(),
+					total_toa_duration_minutes: {
+						increment: Math.floor(duration / Time.Minute)
+					}
+				});
 
-			const currentStats = await user.fetchStats();
-			await user.statsUpdate({
-				toa_raid_levels_bank: new Bank()
-					.add(currentStats.toa_raid_levels_bank as ItemBank)
-					.add(raidLevel, quantity)
-					.toJSON(),
-				total_toa_duration_minutes: {
-					increment: Math.floor(duration / Time.Minute)
-				},
-				toa_loot: !chincannonUser
-					? new Bank(currentStats.toa_loot as ItemBank).add(totalLoot.get(userID)).toJSON()
-					: undefined
-			});
+				user.statsBankUpdate('chincannon_destroyed_loot_bank', totalLoot.get(userID));
+			}
 
 			const deathStr = deaths === 0 ? '' : new Array(deaths).fill(Emoji.Skull).join(' ');
 			if (!chincannonUser) {
