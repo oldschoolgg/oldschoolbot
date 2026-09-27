@@ -18,7 +18,7 @@
 		"decimal.js": "^10.6.0",
 		"deep-object-diff": "^1.1.9",
 		"deepmerge": "4.3.1",
-		"node-rng": "^0.0.3",
+		"node-rng": "workspace:*",
 		"math-expression-evaluator": "^1.3.14",
 		"emoji-regex": "^10.6.0"
 	},

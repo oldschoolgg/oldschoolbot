@@ -1,0 +1,34 @@
+* text eol=lf
+
+# source code
+*.json text
+*.svg text
+*.txt text
+*.sh text
+
+# git config
+.gitattributes text
+.gitignore text
+.gitconfig text
+
+# misc config
+*.yaml text
+*.yml text
+.editorconfig text
+
+*.md text
+LICENSE text
+AUTHORS text
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.gz binary
+*.zip binary
+*.ttf binary
+*.eot binary
+*.woff binary
+*.webp binary 
+*.woff2 binary 
