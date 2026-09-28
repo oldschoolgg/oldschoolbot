@@ -3,6 +3,7 @@ import { sleep } from '@oldschoolgg/toolkit';
 import { Bank, SimpleTable, toKMB } from 'oldschooljs';
 import { chunk } from 'remeda';
 
+import { createGamble, settleGamble } from '@/lib/gambling.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 interface Button {
@@ -110,6 +111,7 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`;
 	}
 
 	await user.transactItems({ itemsToRemove: new Bank().add('Coins', amount) });
+	const gamble = await createGamble({ user_id: user.id, game: 'slots', bet_amount: amount });
 	const buttonsToShow = getButtons(rng);
 	const chunkedButtons = chunk(buttonsToShow, 3);
 
@@ -147,6 +149,11 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`;
 			: `You won ${toKMB(amountReceived)}!`;
 
 	await user.transactItems({ itemsToAdd: new Bank().add('Coins', amountReceived), collectionLog: false });
+	await settleGamble(gamble.id, {
+		won: amountReceived > 0,
+		profit_loss: amountReceived - amount,
+		payout_amount: amountReceived
+	});
 	await ClientSettings.updateClientGPTrackSetting('gp_slots', amountReceived - amount);
 	await user.updateGPTrackSetting('gp_slots', amountReceived - amount);
 

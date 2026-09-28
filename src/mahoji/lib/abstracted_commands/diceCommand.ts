@@ -1,5 +1,6 @@
 import { Bank, toKMB } from 'oldschooljs';
 
+import { createGamble, settleGamble } from '@/lib/gambling.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 export async function diceCommand(rng: RNGProvider, user: MUser, interaction: MInteraction, diceamount?: string) {
@@ -28,9 +29,7 @@ export async function diceCommand(rng: RNGProvider, user: MUser, interaction: MI
 	if (amount > gp) return "You don't have enough GP.";
 	const won = roll >= 50;
 	const amountToAdd = won ? amount : -amount;
-
-	await ClientSettings.updateClientGPTrackSetting('gp_dice', amountToAdd);
-	await user.updateGPTrackSetting('gp_dice', amountToAdd);
+	const gamble = await createGamble({ user_id: user.id, game: 'dice', bet_amount: amount });
 
 	if (won) {
 		await user.statsUpdate({
@@ -43,6 +42,9 @@ export async function diceCommand(rng: RNGProvider, user: MUser, interaction: MI
 		});
 		await user.removeItemsFromBank(new Bank().add('Coins', amount));
 	}
+	await settleGamble(gamble.id, { won, profit_loss: amountToAdd, payout_amount: won ? amount : 0 });
+	await ClientSettings.updateClientGPTrackSetting('gp_dice', amountToAdd);
+	await user.updateGPTrackSetting('gp_dice', amountToAdd);
 
 	let resultStr = `${user.badgedUsername} rolled **${roll}** on the percentile dice, and you ${
 		won ? 'won' : 'lost'
@@ -51,6 +53,5 @@ export async function diceCommand(rng: RNGProvider, user: MUser, interaction: MI
 		await user.addItemsToBank({ items: new Bank().add('Gamblers bag'), collectionLog: true });
 		resultStr += `\n\nYou received a **Gamblers Bag**.`;
 	}
-
 	return resultStr;
 }

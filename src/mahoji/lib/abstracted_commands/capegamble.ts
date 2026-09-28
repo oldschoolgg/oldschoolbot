@@ -2,6 +2,7 @@ import { Events, formatOrdinal } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
+import { createGamble, settleGamble } from '@/lib/gambling.js';
 
 export async function capeGambleStatsCommand(user: MUser) {
 	const stats = await user.fetchStats();
@@ -93,8 +94,20 @@ export async function capeGambleCommand(
 	const pet = src.success.loot;
 	const gotPet = rng.roll(chance);
 	const loot = gotPet ? new Bank().add(pet.id) : undefined;
+	const gamble = await createGamble({
+		user_id: user.id,
+		game: 'item',
+		bet_amount: 1,
+		bet_item_id: item.id
+	});
 
 	await user.transactItems({ itemsToAdd: loot, itemsToRemove: new Bank().add(item.id), collectionLog: true });
+	await settleGamble(gamble.id, {
+		won: gotPet,
+		profit_loss: gotPet ? 0 : -1,
+		payout_amount: gotPet ? 1 : 0,
+		payout_item_id: gotPet ? pet.id : undefined
+	});
 	if (gotPet) {
 		globalClient.emit(
 			Events.ServerNotification,

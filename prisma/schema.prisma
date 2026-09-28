@@ -336,6 +336,7 @@ enum bank_sort_method_enum {
 model User {
   claimed_lazy_box    Int       @default(0)
   claimed_glamour_box Int       @default(0)
+  gambles             Gamble[]
   id                  String    @id @db.VarChar(19)
   last_command_date   DateTime? @db.Timestamp(6)
   minion_bought_date  DateTime? @db.Timestamp(6)
@@ -542,6 +543,30 @@ model User {
 
   @@index([id, last_command_date])
   @@map("users")
+}
+
+model Gamble {
+	id Int @id @default(autoincrement())
+
+	user_id String @db.VarChar(19)
+	user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+	game        String @db.VarChar(32)
+	bet_amount  BigInt
+	bet_item_id Int?
+
+	payout_amount  BigInt @default(0)
+	payout_item_id Int?
+
+	won         Boolean  @default(false)
+	profit_loss BigInt?
+
+	created_at DateTime  @default(now()) @db.Timestamp(6)
+	settled_at DateTime? @db.Timestamp(6)
+
+	@@index([user_id, created_at])
+	@@index([game, created_at])
+	@@map("gamble")
 }
 
 model MortimerTricks {
