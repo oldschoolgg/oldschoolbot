@@ -202,7 +202,7 @@ export const activitiesCommand = defineCommand({
 							!value ? true : p.name.toLowerCase().includes(value.toLowerCase())
 						).map(p => ({ name: p.name, value: p.name }));
 					},
-					required: true
+					required: false
 				},
 				{
 					type: 'Integer',
@@ -211,6 +211,12 @@ export const activitiesCommand = defineCommand({
 					required: false,
 					min_value: 1,
 					max_value: 4
+				},
+				{
+					type: 'Boolean',
+					name: 'all',
+					description: 'Decant all potions that can be decanted to this dose.',
+					required: false
 				}
 			]
 		},
@@ -513,7 +519,7 @@ export const activitiesCommand = defineCommand({
 	run: async ({ options, channelId, user, interaction, rng }) => {
 		// Minion can be busy
 		if (options.decant) {
-			return decantCommand(user, options.decant.potion_name, options.decant.dose);
+			return decantCommand(user, options.decant.potion_name, options.decant.dose, options.decant.all);
 		}
 		if (options.charge?.item === 'glory_exchange') {
 			return unchargeGloriesCommand(user, channelId, options.charge.quantity, true);
