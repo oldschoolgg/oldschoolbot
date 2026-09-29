@@ -1,7 +1,9 @@
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import decantPotionFromBank from '../../src/lib/minions/functions/decantPotionFromBank.js';
+import decantPotionFromBank, {
+	decantAllPotionsFromBank
+} from '../../src/lib/minions/functions/decantPotionFromBank.js';
 
 describe('decantPotionFromBank', () => {
 	test('decantPotionFromBank', () => {
@@ -139,6 +141,82 @@ describe('decantPotionFromBank', () => {
 				'Extended antifire mix (2)': 333,
 				'Extended antifire mix (1)': 1
 			})
+		});
+	});
+
+	test('decantAllPotionsFromBank', () => {
+		const userBank = new Bank({
+			'Magic potion (3)': 1000,
+			'Defence potion (4)': 733,
+			'Defence potion (3)': 233,
+			'Defence potion (1)': 8,
+			'Attack potion (2)': 1000,
+			'Strength potion (1)': 1000,
+			'Prayer mix (2)': 1000,
+			'Extended antifire mix (1)': 667
+		});
+
+		expect(decantAllPotionsFromBank(userBank, 4)).toMatchObject({
+			potionsToAdd: new Bank({
+				'Magic potion (4)': 750,
+				'Defence potion (4)': 176,
+				'Defence potion (3)': 1,
+				'Attack potion (4)': 500,
+				'Strength potion (4)': 250
+			}),
+			potionsToRemove: new Bank({
+				'Magic potion (3)': 1000,
+				'Defence potion (3)': 233,
+				'Defence potion (1)': 8,
+				'Attack potion (2)': 1000,
+				'Strength potion (1)': 1000
+			}),
+			sumOfPots: 3241,
+			potionNames: ['Attack potion', 'Strength potion', 'Defence potion', 'Magic potion'],
+			finalUserBank: new Bank({
+				'Magic potion (4)': 750,
+				'Defence potion (4)': 909,
+				'Defence potion (3)': 1,
+				'Attack potion (4)': 500,
+				'Strength potion (4)': 250,
+				'Prayer mix (2)': 1000,
+				'Extended antifire mix (1)': 667
+			})
+		});
+
+		expect(decantAllPotionsFromBank(userBank, 2)).toMatchObject({
+			potionsToAdd: new Bank({
+				'Magic potion (2)': 1500,
+				'Defence potion (2)': 1819,
+				'Defence potion (1)': 1,
+				'Strength potion (2)': 500,
+				'Extended antifire mix (2)': 333,
+				'Extended antifire mix (1)': 1
+			}),
+			potionsToRemove: new Bank({
+				'Magic potion (3)': 1000,
+				'Defence potion (4)': 733,
+				'Defence potion (3)': 233,
+				'Defence potion (1)': 8,
+				'Strength potion (1)': 1000,
+				'Extended antifire mix (1)': 667
+			}),
+			sumOfPots: 3641,
+			potionNames: ['Strength potion', 'Defence potion', 'Magic potion', 'Extended antifire mix'],
+			finalUserBank: new Bank({
+				'Magic potion (2)': 1500,
+				'Defence potion (2)': 1819,
+				'Defence potion (1)': 1,
+				'Attack potion (2)': 1000,
+				'Strength potion (2)': 500,
+				'Prayer mix (2)': 1000,
+				'Extended antifire mix (2)': 333,
+				'Extended antifire mix (1)': 1
+			})
+		});
+
+		expect(decantAllPotionsFromBank(new Bank({ 'Prayer mix (1)': 10 }), 4)).toEqual({
+			error: "You don't have any potions that can be decanted to 4-dose."
 		});
 	});
 });
