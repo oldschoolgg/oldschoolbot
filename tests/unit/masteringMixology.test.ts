@@ -5,6 +5,7 @@ import { herbloreItems } from '@/lib/data/filterables.js';
 import {
 	calcMixologyContractBasePoints,
 	calcMixologyHandInPoints,
+	getMixologyContractCost,
 	getMixologyContractDuration,
 	masteringMixologyBuyables,
 	mixologyContracts,
@@ -39,6 +40,17 @@ describe('Mastering Mixology', () => {
 		expect(mixologyHerbs).toContainEqual({ name: 'Irit potion (unf)', paste: 'Aga', quantity: 30 });
 		expect(mixologyHerbs).toContainEqual({ name: 'Torstol potion (unf)', paste: 'Aga', quantity: 44 });
 		expect(new Set(mixologyHerbs.map(herb => herb.name)).size).toEqual(mixologyHerbs.length);
+	});
+
+	test('contract paste costs match the in-game amounts', () => {
+		const costOf = (name: string) =>
+			getMixologyContractCost(mixologyContracts.find(c => c.name === name)!.pasteSequence);
+
+		expect(costOf('Mammoth-Might Mix')).toEqual(new Bank().add('Mox paste', 30));
+		expect(costOf('Mystic Mana Amalgam')).toEqual(new Bank().add('Mox paste', 20).add('Aga paste', 10));
+		expect(costOf('MegaLite Liquid')).toEqual(new Bank().add('Mox paste', 10).add('Lye paste', 20));
+		// Contracts using all three pastes cost 20 of each, not 10
+		expect(costOf('MixALot')).toEqual(new Bank().add('Mox paste', 20).add('Aga paste', 20).add('Lye paste', 20));
 	});
 
 	test('contracts use three paste batches and valid requirements', () => {

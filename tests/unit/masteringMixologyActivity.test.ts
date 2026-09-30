@@ -9,8 +9,8 @@ const originalMUserFetch = global.mUserFetch;
 const originalClientSettings = global.ClientSettings;
 const handleTripFinishMock = vi.fn();
 
-function makeMixologyUser() {
-	const bank = new Bank().add('Mox paste', 30).add('Lye paste', 30).add('Aga paste', 30);
+function makeMixologyUser(startingBank?: Bank) {
+	const bank = startingBank ?? new Bank().add('Mox paste', 30).add('Lye paste', 30).add('Aga paste', 30);
 
 	return {
 		id: '123',
@@ -65,9 +65,10 @@ describe('Mastering Mixology activity', () => {
 
 		expect(user.removeItemsFromBank).toHaveBeenCalledTimes(3);
 		expect(user.incrementMinigameScore).toHaveBeenCalledWith('mastering_mixology', 3);
+		// 3 contracts x (190 base + 14 processing bonus)
 		expect(user.addXP).toHaveBeenCalledWith({
 			skillName: 'herblore',
-			amount: 570,
+			amount: 612,
 			duration: expect.any(Number),
 			source: 'MasteringMixology'
 		});
@@ -86,6 +87,34 @@ describe('Mastering Mixology activity', () => {
 				channelId: 'test-channel',
 				message: expect.stringContaining('earning 84 points')
 			})
+		);
+	});
+
+	test('doubles the XP and points of a contract when digweed is found', async () => {
+		const user = makeMixologyUser(new Bank().add('Mox paste', 30));
+		global.mUserFetch = vi.fn(async () => user) as typeof mUserFetch;
+
+		await MasteringMixologyContractTask.run(
+			{
+				type: 'MasteringMixologyContract',
+				userID: user.id,
+				channelId: 'test-channel',
+				duration: 1,
+				quantity: 1,
+				minigameID: 'mastering_mixology'
+			} as MasteringMixologyContractActivityTaskOptions,
+			{
+				user,
+				handleTripFinish: handleTripFinishMock,
+				rng: { roll: () => true } as unknown as RNGProvider
+			}
+		);
+
+		// (190 base + 14 processing) x2 for digweed
+		expect(user.addXP).toHaveBeenCalledWith(expect.objectContaining({ skillName: 'herblore', amount: 408 }));
+		expect(user.update).toHaveBeenCalledWith(expect.objectContaining({ mixology_mox_points: { increment: 40 } }));
+		expect(handleTripFinishMock).toHaveBeenCalledWith(
+			expect.objectContaining({ message: expect.stringContaining('1x Digweed') })
 		);
 	});
 });

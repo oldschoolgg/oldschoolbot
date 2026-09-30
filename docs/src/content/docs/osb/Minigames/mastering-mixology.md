@@ -18,6 +18,12 @@ Completing contracts grants Herblore XP and Mixology points which can be spent o
 
 Contracts are handed in in batches of up to three. Completing **2** contracts in a batch gives **20%** more points, and completing **3** contracts in a batch gives **40%** more points.
 
+Each contract uses **30** paste (3 batches of 10), except contracts using all three paste types, which use **20** of each for a total of **60**.
+
+Every potion is processed before being handed in, giving **14** bonus Herblore XP on top of the contract's base XP.
+
+**Digweed** is occasionally found while working (roughly once every 7 minutes), and doubles both the XP and the points from that potion.
+
 Example point rewards:
 
 - **Alco-AugmentAtor** - awards 20 Aga points.

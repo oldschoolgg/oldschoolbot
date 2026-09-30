@@ -151,7 +151,7 @@ export async function MasteringMixologyContractStartCommand(user: MUser, channel
 		return currentLevel >= c.requiredLevel && user.bank.has(cost);
 	}).length;
 	if (totalAvailable === 0) {
-		return `You're out of paste! Each contract requires 30 paste (3 batches of 10). \nCreate more using ${globalClient.mentionCommand(
+		return `You're out of paste! Each contract requires 30 paste (3 batches of 10), or 60 for contracts using all three pastes. \nCreate more using ${globalClient.mentionCommand(
 			'minigames',
 			'mastering_mixology',
 			'create'

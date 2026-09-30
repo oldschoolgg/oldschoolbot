@@ -1,18 +1,20 @@
 import { Bank } from 'oldschooljs';
 
-import type { MixologyPoints } from '../../../lib/minions/data/masteringMixology.js';
+import type { MixologyPaste, MixologyPoints } from '../../../lib/minions/data/masteringMixology.js';
 import {
 	calcMixologyContractBasePoints,
 	calcMixologyHandInPoints,
 	createMixologyPoints,
 	getMixologyContractCost,
 	getMixologyContractDuration,
+	getMixologyContractPasteCounts,
 	masteringMixologyWeightedRandom,
 	mixologyContractBatchSize,
 	mixologyContractDuration,
 	mixologyContracts,
+	mixologyDigweedSpawnRate,
 	mixologyHerbs,
-	mixologyPastePerPotionStep
+	mixologyProcessingBonusXP
 } from '../../../lib/minions/data/masteringMixology.js';
 import type {
 	MasteringMixologyContractActivityTaskOptions,
@@ -59,6 +61,9 @@ export const MasteringMixologyContractTask: MinionTask = {
 		const { userID, channelId, quantity } = data;
 		const user = await mUserFetch(userID);
 		const tripFinish = options?.handleTripFinish ?? handleTripFinish;
+		const rng = options?.rng;
+		const digweedChance = Math.round(mixologyDigweedSpawnRate / mixologyContractDuration);
+		let digweedsUsed = 0;
 		let completed = 0;
 		let totalXP = 0;
 		const pointsEarned = createMixologyPoints();
@@ -101,18 +106,28 @@ export const MasteringMixologyContractTask: MinionTask = {
 			await user.removeItemsFromBank(cost);
 			totalCost.add(cost);
 
-			for (const paste of contract.pasteSequence) {
-				pasteUsage[paste] += mixologyPastePerPotionStep;
+			const pasteCounts = getMixologyContractPasteCounts(contract.pasteSequence);
+			for (const paste of Object.keys(pasteCounts) as MixologyPaste[]) {
+				pasteUsage[paste] += pasteCounts[paste];
 			}
 
-			currentHandInBatch.push(calcMixologyContractBasePoints(contract.pasteSequence));
+			// Digweed doubles the XP and points from a single potion
+			const gotDigweed = typeof rng?.roll === 'function' && rng.roll(digweedChance);
+			if (gotDigweed) digweedsUsed++;
+
+			const basePoints = calcMixologyContractBasePoints(contract.pasteSequence);
+			currentHandInBatch.push(
+				gotDigweed ? { Mox: basePoints.Mox * 2, Lye: basePoints.Lye * 2, Aga: basePoints.Aga * 2 } : basePoints
+			);
 			if (currentHandInBatch.length === mixologyContractBatchSize) addHandInBatchPoints();
 
 			const contractDuration = getMixologyContractDuration(mixologyContractDuration);
 
 			actualDuration += contractDuration;
 
-			totalXP += contract.xp;
+			// Potions are processed at the Alembic/Agitator/Retort before hand-in for bonus XP
+			const contractXP = contract.xp + mixologyProcessingBonusXP;
+			totalXP += gotDigweed ? contractXP * 2 : contractXP;
 			completed++;
 		}
 		addHandInBatchPoints();
@@ -153,7 +168,12 @@ export const MasteringMixologyContractTask: MinionTask = {
 
 		const finalMsg = [
 			`${user.minionName} completed ${completed} contract${completed === 1 ? '' : 's'}, earning ${totalPoints} points (${pointsInline}). ${xpRes}`,
-			`**Paste Used:** ${pasteSummary}`
+			`**Paste Used:** ${pasteSummary}`,
+			...(digweedsUsed > 0
+				? [
+						`You found ${digweedsUsed}x Digweed, doubling the XP and points from ${digweedsUsed === 1 ? 'that potion' : 'those potions'}.`
+					]
+				: [])
 		].join('\n');
 
 		return tripFinish({ user, channelId, message: finalMsg, data });

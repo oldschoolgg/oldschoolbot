@@ -6,6 +6,8 @@ export type MixologyPoints = Record<MixologyPaste, number>;
 
 export const mixologyPastePerPotionStep = 10;
 export const mixologyContractBatchSize = 3;
+export const mixologyProcessingBonusXP = 14;
+export const mixologyDigweedSpawnRate = Time.Minute * 7;
 export const mixologyTwoOrderBonus = 1.2;
 export const mixologyThreeOrderBonus = 1.4;
 export const mixologyHerbUseDuration = Time.Second * 0.72;
@@ -165,7 +167,9 @@ export function createMixologyPoints(): MixologyPoints {
 
 export function getMixologyContractPasteCounts(pasteSequence: readonly MixologyPaste[]): MixologyPoints {
 	const counts = createMixologyPoints();
-	for (const paste of pasteSequence) counts[paste] += mixologyPastePerPotionStep;
+	// Contracts using all three pastes cost double per step (MixALot is 20/20/20, not 10/10/10)
+	const perStep = new Set(pasteSequence).size === 3 ? mixologyPastePerPotionStep * 2 : mixologyPastePerPotionStep;
+	for (const paste of pasteSequence) counts[paste] += perStep;
 	return counts;
 }
 
