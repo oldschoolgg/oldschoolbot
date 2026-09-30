@@ -66,33 +66,31 @@ const HalloweenCrackerTable = new LootTable()
 
 export const LazyMysteryBoxTable = new LootTable()
 	.add('Two of Hearts')
-	.add('Skrink mink')
-	.add('Count Napula')
-	.add('Idle idol');
+
+	.add('Idle idol')
+	.add('Trust fund tiara')
+	.add('Count Napula');
+
 export const SkrinkBoxTable = new LootTable()
 	.add('Disco bloodbath')
 	.add('Skrinkle')
+	.add('Skrink mink')
 	.add('Resting rich face')
-	.add('Fire dragon skull')
-	.add('Fire dragon poncho')
-	.add('Fire dragon greaves')
-	.add('Fire dragon boots')
-	.add('Chunky Hunky Boots')
-	.add('Chunky Hunky Mittens')
-	.add('Chunky Hunky bodysuit')
-	.add('Chunky Hunk leggings');
+	.add('Lazily rollers')
+	// Note: Partyhat should be rare / chase, so depending on box rarity, this numbe                                                                                                                                                                                                                                                          r might change a lot
+	.tertiary(10, 'Premierekat')
+	.tertiary(50, 'Procrasti-Partyhat');
+
+
 export const SkrodBoxTable = new LootTable()
 	.add('Disco bloodbath')
 	.add('Disco infernowl')
 	.add('Afterparty afterlife')
 	.add('Glam jam platformers')
-	.add('Fire dragon poncho')
-	.add('Fire dragon greaves')
-	.add('Fire dragon boots')
-	.add('Chunky Hunky Boots')
-	.add('Chunky Hunky Mittens')
-	.add('Chunky Hunky bodysuit')
-	.add('Chunky Hunk leggings');
+	.add('Couch potato sceptre')
+	// Note: Partyhat should be rare / chase, so depending on box rarity, this number might change a lot
+	.tertiary(10, 'Premierekat')
+	.tertiary(50, 'Procrasti-Partyhat');
 
 export const holidayOpenables: UnifiedOpenable[] = [
 	...(
