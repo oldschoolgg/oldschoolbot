@@ -18,6 +18,11 @@ import {
 	validateStoredLeaguesTasks,
 	verifyLeaguesTasksForUser
 } from '@/lib/bso/leagues/leagues.js';
+import {
+	LazyMysteryBoxTable,
+	SkrodBoxTable,
+	SkrinkBoxTable
+} from '@/lib/bso/openables/holidayOpenables.js';
 import { BeachMysteryBoxTable, FestivePresentTable, RoyalMysteryBoxTable } from '@/lib/bso/openables/tables.js';
 import { getLydiaQuote } from '@/lib/bso/summerDays.js';
 
@@ -52,6 +57,8 @@ import {
 import { giveawayCache } from '@/lib/cache.js';
 import { BadgesEnum, BitField, BitFieldData, badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
 import { customItems } from '@/lib/customItems/util.js';
+import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
+import { canvasToBuffer, createCanvas } from '@/lib/canvas/canvasUtil.js';
 import { allDcSet } from '@/lib/data/Collections.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { syncCustomPrices } from '@/lib/preStartup.js';
@@ -547,7 +554,66 @@ const purpleBankRolls = [
 	{ pet: 'Seer', table: FestivePresentTable }
 ];
 
+async function generateDiscoPreviewImage(): Promise<SendableFile> {
+	const sections = [
+		{ name: 'Lazy mystery box', table: LazyMysteryBoxTable },
+		{ name: 'Skrink Box', table: SkrinkBoxTable },
+		{ name: 'Skrod Box', table: SkrodBoxTable }
+	];
+	const maxItems = Math.max(...sections.map(section => section.table.allItems.length));
+	const padding = 20;
+	const cellWidth = 148;
+	const sectionWidth = maxItems * cellWidth;
+	const headerHeight = 48;
+	const itemHeight = 132;
+	const sectionHeight = headerHeight + itemHeight;
+	const canvas = createCanvas(sectionWidth + padding * 2, sectionHeight * sections.length + padding * 2);
+	const ctx = canvas.getContext('2d');
+
+	ctx.fillStyle = '#151020';
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+	for (const [sectionIndex, section] of sections.entries()) {
+		const y = padding + sectionIndex * sectionHeight;
+		ctx.fillStyle = sectionIndex === 0 ? '#362051' : sectionIndex === 1 ? '#1d4052' : '#542734';
+		ctx.fillRect(padding, y, sectionWidth, headerHeight);
+		ctx.fillStyle = '#241d2d';
+		ctx.fillRect(padding, y + headerHeight, sectionWidth, itemHeight);
+		ctx.fillStyle = '#ffffff';
+		ctx.font = 'bold 24px sans-serif';
+		ctx.textAlign = 'center';
+		ctx.textBaseline = 'middle';
+		ctx.fillText(section.name, canvas.width / 2, y + headerHeight / 2);
+
+		for (const [itemIndex, itemID] of section.table.allItems.entries()) {
+			const item = Items.getOrThrow(itemID);
+			const x = padding + itemIndex * cellWidth;
+			const image = await OSRSCanvas.getItemImage({ itemID });
+			const iconSize = 72;
+			ctx.drawImage(image, x + (cellWidth - iconSize) / 2, y + headerHeight + 10, iconSize, iconSize);
+			ctx.fillStyle = '#ffffff';
+			ctx.font = '15px sans-serif';
+			const words = item.name.split(' ');
+			const lines: string[] = [];
+			for (const word of words) {
+				const line = lines.at(-1);
+				if (!line || ctx.measureText(`${line} ${word}`).width > cellWidth - 10) lines.push(word);
+				else lines[lines.length - 1] = `${line} ${word}`;
+			}
+			for (const [lineIndex, line] of lines.entries()) {
+				ctx.fillText(line, x + cellWidth / 2, y + headerHeight + 96 + lineIndex * 17);
+			}
+		}
+	}
+
+	return { buffer: await canvasToBuffer(canvas), name: 'disco-preview.png' };
+}
+
 const viewableThings: ViewableThing[] = [
+	{
+		name: 'Disco Preview',
+		run: async () => ({ files: [await generateDiscoPreviewImage()] })
+	},
 	{
 		name: 'Purple Bank',
 		run: async (_clientSettings, _choice, user, rng) => {

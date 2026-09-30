@@ -15779,7 +15779,7 @@ setCustomItem(
 setCustomItem(
 	75_705,
 	'Snooze control',
-	'Diamond sceptre',
+	'Rune sword',
 	{
 		// Absolute power over absolutely nothing.
 		tradeable: false,
@@ -15796,7 +15796,7 @@ setCustomItem(
 setCustomItem(
 	75_706,
 	'Resting rich face',
-	"Sam's hat",
+	"Rune full helm",
 	{
 		// Beauty sleep has a controlling interest.
 		tradeable: false,
@@ -15847,7 +15847,7 @@ setCustomItem(
 setCustomItem(
 	75_709,
 	'Couch potato sceptre',
-	'Diamond sceptre',
+	'Rune sword',
 	{
 		// Rules from the comfort of the couch.
 		tradeable: false,
@@ -15864,7 +15864,7 @@ setCustomItem(
 setCustomItem(
 	75_710,
 	'Idle idol',
-	'Liber tea',
+	'Rune sword',
 	{
 		// Worship the work you didn't put in.
 		tradeable: false,
@@ -15915,7 +15915,7 @@ setCustomItem(
 setCustomItem(
 	75_713,
 	'Cheque mate',
-	'Diamond sceptre',
+	'Rune sword',
 	{
 		// Your move. Your money. Your majesty.
 		tradeable: false,
@@ -15949,7 +15949,7 @@ setCustomItem(
 setCustomItem(
 	75_715,
 	'Velvet rope sceptre',
-	'Diamond sceptre',
+	'Rune sword',
 	{
 		// Your name isn't down, darling.
 		tradeable: false,
@@ -15965,8 +15965,8 @@ setCustomItem(
 
 setCustomItem(
 	75_716,
-	'Fame fatal',
-	'Liber tea',
+	'Fame fatale',
+	'Rune sword',
 	{
 		// Fifteen minutes? Make it an eternity.
 		tradeable: false,
@@ -16000,7 +16000,7 @@ setCustomItem(
 setCustomItem(
 	75_718,
 	'Age of the thing',
-	'Diamond sceptre',
+	'Rune sword',
 	{
 		// Money. Success. Fame. Glamour. The age has found its thing.
 		tradeable: false,
@@ -16068,7 +16068,7 @@ setCustomItem(
 setCustomItem(
 	75_722,
 	'Afterparty afterlife',
-	'Liber tea',
+	'Rune sword',
 	{
 		// The cat's still asleep. The clock begs to differ.
 		tradeable: false,
@@ -16221,7 +16221,7 @@ setCustomItem(
 setCustomItem(
 	75_732,
 	'Skrinkle',
-	'Sam',
+	'Herbi',
 	{
 		// Our lovechild. Your tiny velvet-rope tyrant.
 		tradeable: false,
@@ -16239,7 +16239,7 @@ setCustomItem(
 setCustomItem(
 	75_733,
 	'Count Napula',
-	'Sam',
+	'Herbi',
 	{
 		// Sleeps all day. Still overdressed for the night.
 		tradeable: false,
@@ -16257,7 +16257,7 @@ setCustomItem(
 setCustomItem(
 	75_734,
 	'Premierekat',
-	'Sam',
+	'Herbi',
 	{
 		// His portfolio is mostly shiny things.
 		tradeable: false,
@@ -16275,7 +16275,7 @@ setCustomItem(
 setCustomItem(
 	75_735,
 	'Disco infernowl',
-	'Sam',
+	'Herbi',
 	{
 		// Burns up the dance floor, then asks who.
 		tradeable: false,
@@ -16293,7 +16293,7 @@ setCustomItem(
 setCustomItem(
 	75_736,
 	'Slothario',
-	'Sam',
+	'Herbi',
 	{
 		// A slow mover with very fast charm.
 		tradeable: false,
