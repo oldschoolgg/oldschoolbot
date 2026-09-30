@@ -5,7 +5,6 @@ import {
 	getNextDoubleLootUsageReset,
 	isDoubleLootActive
 } from '@/lib/bso/doubleLoot.js';
-import { getGuthixianCacheInterval, userHasDoneCurrentGuthixianCache } from '@/lib/bso/minigames/guthixianCache.js';
 import { allIronmanMbTables, allMbTables } from '@/lib/bso/openables/mysteryBoxes.js';
 
 import { bold, dateFm, EmbedBuilder, time } from '@oldschoolgg/discord';
@@ -35,19 +34,12 @@ interface CooldownFnParams {
 
 const cooldownTimers: {
 	name: string;
-	timeStamp: (user: MUser, stats: { last_daily_timestamp: bigint; last_tears_of_guthix_timestamp: bigint }) => number;
+	timeStamp: (user: MUser, stats: { last_daily_timestamp: bigint; last_tears_of_guthix_timestamp: bigint; last_guthixian_cache_timestamp: bigint }) => number;
 	cd: number | ((args: CooldownFnParams) => number);
 	command: [string] | [string, string] | [string, string, string];
 	utcReset: boolean;
 	nextReset?: (lastDone: number) => number;
 }[] = [
-	{
-		name: 'Tears of Guthix',
-		timeStamp: (_, stats) => Number(stats.last_tears_of_guthix_timestamp),
-		cd: CONSTANTS.TEARS_OF_GUTHIX_CD,
-		command: ['minigames', 'tears_of_guthix', 'start'],
-		utcReset: true
-	},
 	{
 		name: 'Daily',
 		timeStamp: (_, stats) => Number(stats.last_daily_timestamp),
@@ -92,11 +84,25 @@ const cooldownTimers: {
 		nextReset: getNextDoubleLootUsageReset
 	},
 	{
+		name: 'Tears of Guthix',
+		timeStamp: (_, stats) => Number(stats.last_tears_of_guthix_timestamp),
+		cd: CONSTANTS.TEARS_OF_GUTHIX_CD,
+		command: ['minigames', 'tears_of_guthix', 'start'],
+		utcReset: true
+	},
+	{
 		name: 'Balthazars Big Bonanza',
 		timeStamp: (user: MUser) => Number(user.user.last_bonanza_date),
-		cd: Time.Day * 7,
+		cd: CONSTANTS.BALTHAZARS_BIG_BONANZA_CD,
 		command: ['bsominigames', 'balthazars_big_bonanza', 'start'],
-		utcReset: false
+		utcReset: true
+	},
+	{
+		name: 'Guthixian Cache',
+		timeStamp: (_, stats) => Number(stats.last_guthixian_cache_timestamp),
+		cd: CONSTANTS.GUTHIX_CACHE_CD,
+		command: ['bsominigames', 'guthixian_cache', 'join'],
+		utcReset: true
 	}
 ];
 
@@ -265,14 +271,6 @@ const mentionCommands: MentionCommand[] = [
 					return bold(`${cd.name}: Ready ${mentionCommand(cd.command[0], cd.command[1], cd.command[2])}`);
 				})
 				.join('\n');
-
-			const currentGuthixCacheInterval = getGuthixianCacheInterval();
-			content += '\n';
-			if (await userHasDoneCurrentGuthixianCache(user)) {
-				content += `Guthixian Cache: ${time(currentGuthixCacheInterval.end)}`;
-			} else {
-				content += bold(`Guthixian Cache: Ready ${mentionCommand('bsominigames', 'guthixian_cache', 'join')}`);
-			}
 
 			if (isDoubleLootActive()) {
 				const date = new Date(DOUBLE_LOOT_FINISH_TIME_CACHE);
