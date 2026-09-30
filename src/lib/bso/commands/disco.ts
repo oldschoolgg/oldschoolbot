@@ -1,10 +1,10 @@
 import { generateDiscoOutfitImage } from '@/lib/bso/canvas/generateDiscoOutfitImage.js';
 import {
 	DISCO_AESTHETICS,
-	DISCO_CLUB_THEMES,
 	DISCO_CLUBS,
 	DiscoItem,
 	discoClubOrder,
+	discoClubTheme,
 	discoPopularity,
 	isDiscoEventActive,
 	scoreDiscoFashion
@@ -16,6 +16,7 @@ import { Items } from 'oldschooljs';
 
 import { activity_type_enum } from '@/prisma/main/enums.js';
 import { RobochimpBitfieldEnum } from '@/lib/perkTiers.js';
+import type { DiscoBloodbathActivityTaskOptions } from '@/lib/types/minions.js';
 
 const clubChoices = () => discoClubOrder().map(name => ({ name, value: name }));
 
@@ -25,10 +26,10 @@ const helpText = (
 	canUseOutfit: boolean
 ) => `**Disco Bloodbath** is a limited-time club circuit for minions who understand that fashion is a weapon.
 
-Visit a club to send your minion out for at least thirty minutes. Your Fashion gear determines your points, your top two Realms earn progress, and each club has its own hidden crowd and vibe. Completed visits can return strange fashion loot and very rarely a chase box.
+Visit a club to send your minion out for at least thirty minutes. Your Fashion gear determines your points, and your top two Realms gain or lose progress depending on the party's vibe. Each club's crowd and theme change throughout the event. Use \`/disco inquire\` for a tip from your contacts, and \`/disco stats\` to track your rank. Completed visits can return strange fashion loot and very rarely a chase box.
 
 The clubs are:
-${DISCO_CLUBS.map(club => `- **${club}** — ${DISCO_CLUB_THEMES[club].description}`).join('\n')}
+${DISCO_CLUBS.map(club => `- **${club}** — ${discoClubTheme(club).name}: ${discoClubTheme(club).description}`).join('\n')}
 
 ${canUseOutfit ? 'Use `/disco outfit` for your breakdown, or ' : 'Use '}\`/disco check_item\` to inspect one item.`;
 
@@ -107,7 +108,9 @@ export const discoCommand = defineCommand({
 		if (options.help) return helpText((await checkEntitlements(user, outfitEntitlements)).success);
 
 		if (options.check_item) {
-			const item = new DiscoItem(Items.getOrThrow(options.check_item.item));
+			const resolved = Items.getItem(options.check_item.item);
+			if (!resolved) return 'I could not find that item. Check the item name and try again.';
+			const item = new DiscoItem(resolved);
 			return `**${item.item.name}**\nAesthetics: ${item.aesthetics.join(', ')}\n${formatPoints(item.points)}`;
 		}
 
@@ -119,7 +122,10 @@ export const discoCommand = defineCommand({
 			return {
 				content: scored.items.map(({ item }) => formatOutfitItem(item)).join('\n\n'),
 				files: [
-					{ name: 'disco-outfit.png', buffer: await generateDiscoOutfitImage({ items: scored.items, user }) }
+					{
+						name: 'disco-outfit.png',
+						buffer: await generateDiscoOutfitImage({ items: scored.items, user })
+					}
 				]
 			};
 		}
@@ -142,17 +148,20 @@ export const discoCommand = defineCommand({
 						SELECT u.username
 						FROM user_stats s
 						JOIN users u ON u.id = s.user_id::text
-						ORDER BY COALESCE((s.disco_stats->'points'->>${aesthetic})::integer, 0) DESC
+						WHERE COALESCE((s.disco_stats->'points'->>${aesthetic})::integer, 0) > 0
+						ORDER BY COALESCE((s.disco_stats->'points'->>${aesthetic})::integer, 0) DESC, u.id
 						LIMIT 1;
 					`;
-					return `**${aesthetic} Realm**: ${value} (${((value / 500) * 100).toFixed(1)}%, rank #${row?.rank ?? 1}; club king: ${king?.username ?? 'Unknown'})`;
+					return `**${aesthetic} Realm**: ${value} points (rank #${row?.rank ?? 1}; club king: ${king?.username ?? 'Unclaimed'})`;
 				})
 			);
 			const overall = DISCO_AESTHETICS.reduce((total, aesthetic) => total + (points[aesthetic] ?? 0), 0);
-			return `**Disco Bloodbath stats**\nTrips completed: ${stats?.trips ?? 0}\nOverall: ${overall}/1500 (${((overall / 1500) * 100).toFixed(1)}%)\n${ranks.join('\n')}`;
+			return `**Disco Bloodbath stats**\nTrips completed: ${stats?.trips ?? 0}\nOverall: ${overall} points\n${ranks.join('\n')}`;
 		}
 
 		if (options.inquire) {
+			if (!DISCO_CLUBS.includes(options.inquire.club_name as (typeof DISCO_CLUBS)[number]))
+				return 'Choose a club from the suggestions.';
 			const ratelimit = await Cache.tryRatelimit(user.id, 'disco_inquire');
 			if (!ratelimit.success)
 				return 'If you keep asking, you are going to lose reputation faster than you earn it. Be a leader, not a follower.';
@@ -166,11 +175,13 @@ export const discoCommand = defineCommand({
 		}
 
 		if (options.visit) {
+			if (!DISCO_CLUBS.includes(options.visit.club_name as (typeof DISCO_CLUBS)[number]))
+				return 'Choose a club from the suggestions.';
 			if (await user.minionIsBusy()) return `${user.minionName} is currently busy.`;
 			const club = options.visit.club_name as (typeof DISCO_CLUBS)[number];
-			const theme = DISCO_CLUB_THEMES[club];
+			const theme = discoClubTheme(club);
 			const popularity = discoPopularity(club);
-			await ActivityManager.startTrip({
+			await ActivityManager.startTrip<DiscoBloodbathActivityTaskOptions>({
 				userID: user.id,
 				channelId,
 				duration: 30 * Time.Minute,
@@ -179,7 +190,7 @@ export const discoCommand = defineCommand({
 				popularity,
 				theme: { name: theme.name, good: theme.good, bad: theme.bad },
 				fashion: user.gear.fashion.raw()
-			} as any);
+			});
 			return `${user.minionName} is heading to ${club}. The visit will take at least 30 minutes.`;
 		}
 

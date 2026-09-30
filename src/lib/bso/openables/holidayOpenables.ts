@@ -1,3 +1,4 @@
+import { BSOItem } from '@/lib/bso/BSOItem.js';
 import {
 	BeachMysteryBoxTable,
 	IndependenceBoxTable,
@@ -9,7 +10,6 @@ import {
 import { Items, itemID, LootTable } from 'oldschooljs';
 
 import type { UnifiedOpenable } from '@/lib/openables.js';
-import {BSOItem} from "@/lib/bso/BSOItem.js";
 
 const christmasPetFoodTable = new LootTable()
 	.add('Pumpkinhead praline')
@@ -65,53 +65,35 @@ const HalloweenCrackerTable = new LootTable()
 	.add('Zombie cow plushie')
 	.add('Deathtouched tart');
 
-// Provisional promo tables: one reward per box, every non-box promo item at weight 1.
-// Keep separate table instances so each box can receive its own final loot design.
-const lazyPromoRewards = [
-	'Lazily rollers',
-	'Procrasti-crown',
-	'Snooze control',
-	'Resting rich face',
-	'Loaf lord loafers',
-	'Duvet dictator',
-	'Couch potato sceptre',
-	'Idle idol',
-	'Trust fund tiara',
-	'Gross domestic bling',
-	'Cheque mate',
-	'Executive excess',
-	'Velvet rope sceptre',
-	'Fame fatal',
-	'Glam jam platformers',
-	'Age of the thing',
-	'Disco bloodbath',
-	'Two hot to heart',
-	'Skrink mink',
-	'Afterparty afterlife',
-	'Fire dragon skull',
-	'Fire dragon poncho',
-	'Fire dragon greaves',
-	'Fire dragon boots',
-	'Chunky Hunky Boots',
-	'Chunky Hunky Mittens',
-	'Chunky Hunky bodysuit',
-	'Chunky Hunk leggings',
-	'Skrinkle',
-	'Count Napula',
-	BSOItem.PREMIEREKAT,
-	'Disco infernowl',
-	'Slothario'
-] as const;
-
-function makeLazyPromoTable() {
-	const table = new LootTable();
-	for (const item of lazyPromoRewards) table.add(item, 1, 1);
-	return table;
-}
-
-export const LazyMysteryBoxTable = makeLazyPromoTable();
-export const SkrinkBoxTable = makeLazyPromoTable();
-export const SkrodBoxTable = makeLazyPromoTable();
+export const LazyMysteryBoxTable = new LootTable()
+	.add('Two of Hearts')
+	.add('Skrink mink')
+	.add('Count Napula')
+	.add('Idle idol');
+export const SkrinkBoxTable = new LootTable()
+	.add('Disco bloodbath')
+	.add('Skrinkle')
+	.add('Resting rich face')
+	.add('Fire dragon skull')
+	.add('Fire dragon poncho')
+	.add('Fire dragon greaves')
+	.add('Fire dragon boots')
+	.add('Chunky Hunky Boots')
+	.add('Chunky Hunky Mittens')
+	.add('Chunky Hunky bodysuit')
+	.add('Chunky Hunk leggings');
+export const SkrodBoxTable = new LootTable()
+	.add('Disco bloodbath')
+	.add('Disco infernowl')
+	.add('Afterparty afterlife')
+	.add('Fire dragon skull')
+	.add('Fire dragon poncho')
+	.add('Fire dragon greaves')
+	.add('Fire dragon boots')
+	.add('Chunky Hunky Boots')
+	.add('Chunky Hunky Mittens')
+	.add('Chunky Hunky bodysuit')
+	.add('Chunky Hunk leggings');
 
 export const holidayOpenables: UnifiedOpenable[] = [
 	...(
@@ -129,7 +111,7 @@ export const holidayOpenables: UnifiedOpenable[] = [
 			output: table,
 			allItems: table.allItems,
 			excludeFromOpenAll: true,
-			smokeyApplies: false
+			smokeyApplies: true
 		})
 	),
 	{

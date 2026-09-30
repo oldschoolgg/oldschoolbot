@@ -546,27 +546,27 @@ model User {
 }
 
 model Gamble {
-	id Int @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
-	user_id String @db.VarChar(19)
-	user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id String @db.VarChar(19)
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
-	game        String @db.VarChar(32)
-	bet_amount  BigInt
-	bet_item_id Int?
+  game        String @db.VarChar(32)
+  bet_amount  BigInt
+  bet_item_id Int?
 
-	payout_amount  BigInt @default(0)
-	payout_item_id Int?
+  payout_amount  BigInt @default(0)
+  payout_item_id Int?
 
-	won         Boolean  @default(false)
-	profit_loss BigInt?
+  won         Boolean @default(false)
+  profit_loss BigInt?
 
-	created_at DateTime  @default(now()) @db.Timestamp(6)
-	settled_at DateTime? @db.Timestamp(6)
+  created_at DateTime  @default(now()) @db.Timestamp(6)
+  settled_at DateTime? @db.Timestamp(6)
 
-	@@index([user_id, created_at])
-	@@index([game, created_at])
-	@@map("gamble")
+  @@index([user_id, created_at])
+  @@index([game, created_at])
+  @@map("gamble")
 }
 
 model MortimerTricks {

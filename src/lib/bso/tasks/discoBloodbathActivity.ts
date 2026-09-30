@@ -9,6 +9,7 @@ import { Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { activity_type_enum } from '@/prisma/main/enums.js';
+import type { DiscoBloodbathActivityTaskOptions } from '@/lib/types/minions.js';
 
 type DiscoStats = {
 	points: Record<DiscoAesthetic, number>;
@@ -26,7 +27,7 @@ const emptyStats = (): DiscoStats => ({
 
 export const discoBloodbathTask: MinionTask = {
 	type: activity_type_enum.DiscoBloodbath,
-	async run(data: any, { user, handleTripFinish, rng }) {
+	async run(data: DiscoBloodbathActivityTaskOptions, { user, handleTripFinish, rng }) {
 		const scored = scoreDiscoFashion(data.fashion);
 		const minutes = Math.floor(data.duration / Time.Minute);
 		const multiplier = minutes / 60;
@@ -35,7 +36,7 @@ export const discoBloodbathTask: MinionTask = {
 			.slice(0, 2) as [DiscoAesthetic, number][];
 		const gained: Record<DiscoAesthetic, number> = { Futuristic: 0, Ragdoll: 0, 'Anti-Fashion': 0 };
 		for (const [aesthetic, points] of affected) {
-			const themeMultiplier = aesthetic === data.theme.good ? 1.25 : aesthetic === data.theme.bad ? 0.5 : 1;
+			const themeMultiplier = aesthetic === data.theme.good ? 1.25 : aesthetic === data.theme.bad ? -0.5 : 1;
 			gained[aesthetic] = Math.floor(points * multiplier * (data.popularity / 100) * themeMultiplier);
 		}
 
@@ -50,25 +51,36 @@ export const discoBloodbathTask: MinionTask = {
 		for (const aesthetic of Object.keys(gained) as DiscoAesthetic[]) stats.points[aesthetic] += gained[aesthetic];
 
 		const expectedNext = route[stats.traversal.length];
-		if (data.club === expectedNext) stats.traversal.push(data.club);
-		else if (data.club === route[0]) stats.traversal = [route[0]];
+		if (minutes >= 30 && data.club === expectedNext) stats.traversal.push(data.club as DiscoClub);
+		else if (minutes >= 30 && data.club === route[0]) stats.traversal = [route[0]];
 		else stats.traversal = [];
-		await user.statsUpdate({ disco_stats: stats });
 
 		const loot = new Bank();
 		const totalScore = Object.values(scored.points).reduce((sum, points) => sum + points, 0);
 		const fashionLoot = Math.floor((totalScore * minutes) / 3000);
-		if (fashionLoot > 0) loot.add(rng.randInt(75703, 75736), fashionLoot);
+		if (fashionLoot > 0) {
+			loot.add(
+				rng.pick([
+					'Velvet rope sceptre',
+					'Fame fatal',
+					'Glam jam platformers',
+					'Age of the thing',
+					'Two of Hearts'
+				]),
+				fashionLoot
+			);
+		}
 
 		const completedRoute = stats.traversal.length === route.length;
+		const routeReward = completedRoute && user.user.claimed_glamour_box === 0;
 		const chase =
-			completedRoute && user.user.claimed_glamour_box === 0 && rng.roll(100)
-				? rng.pick(['Skrink box', 'Skrod box'] as const)
+			routeReward || (minutes >= 30 && totalScore > 0 && rng.roll(1000))
+				? rng.pick<'Skrink box' | 'Skrod box'>(['Skrink box', 'Skrod box'])
 				: null;
 		if (completedRoute) {
 			stats.traversal = [];
-			await user.statsUpdate({ disco_stats: stats });
 		}
+		await user.statsUpdate({ disco_stats: stats });
 		if (chase) {
 			loot.add(chase);
 		}
@@ -76,10 +88,10 @@ export const discoBloodbathTask: MinionTask = {
 		const { itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot,
-			otherUpdates: chase ? { claimed_glamour_box: { increment: 1 } } : undefined
+			otherUpdates: routeReward ? { claimed_glamour_box: { increment: 1 } } : undefined
 		});
 		if (chase) recordDiscoBoxClaim(chase);
-		const top = affected[0]?.[0];
+		const top = affected[0]?.[1] > 0 ? affected[0][0] : undefined;
 		const topMessage = top
 			? top === data.theme.good
 				? rng.pick([
@@ -112,13 +124,19 @@ export const discoBloodbathTask: MinionTask = {
 		const lure = rng.roll(10)
 			? ' Someone mentioned that the Disco Fever is still hot — have you claimed your Lazy box yet?'
 			: '';
-		handleTripFinish({
+		const pointSummary = affected
+			.map(
+				([aesthetic]) =>
+					`${aesthetic}: ${gained[aesthetic] >= 0 ? '+' : ''}${gained[aesthetic]} (${stats.points[aesthetic]} total)`
+			)
+			.join('\n');
+		await handleTripFinish({
 			user,
 			channelId: data.channelId,
 			message: {
-				content: `${user.minionName} finished a ${minutes}-minute visit to ${data.club}.\n${topMessage}\n${crowdMessage}${lure}`
+				content: `${user.minionName} finished a ${minutes}-minute visit to ${data.club}.\n${topMessage}\n${crowdMessage}${lure}\n\n**Realm points**\n${pointSummary}${totalScore === 0 ? '\nYour Fashion gear scored no points. Try `/disco check_item` to plan your outfit.' : ''}${itemsAdded.length > 0 ? `\n\n**Loot:** ${itemsAdded}` : ''}`
 			},
-			data,
+			data: { ...data, cantBeDoubled: true },
 			loot: itemsAdded
 		});
 	}

@@ -16033,7 +16033,7 @@ setCustomItem(
 
 setCustomItem(
 	75_720,
-	'Two hot to heart',
+	'Two of Hearts',
 	'Bronze kiteshield',
 	{
 		// Two hearts. One dangerously good hand.

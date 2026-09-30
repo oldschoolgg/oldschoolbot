@@ -585,7 +585,7 @@ const viewableThings: ViewableThing[] = [
 		run: async (_clientSettings, _choice, user) => {
 			if (!user) return 'Unable to find the user receiving the items.';
 
-			let loot = new Bank();
+			const loot = new Bank();
 			for (const itemID of bso757xxItemIDs) loot.add(itemID);
 
 			return {
@@ -593,7 +593,9 @@ const viewableThings: ViewableThing[] = [
 					.items()
 					.map(([item, quantity]) => `${item.name} x${quantity.toLocaleString()}`)
 					.join('\n'),
-				files: [await makeBankImage({ bank: loot, title: '757xx Lazy Box Items', flags: { names: 'show_names' }})]
+				files: [
+					await makeBankImage({ bank: loot, title: '757xx Lazy Box Items', flags: { names: 'show_names' } })
+				]
 			};
 		}
 	},

@@ -178,6 +178,10 @@ export function discoClubOrder(date = new Date()): DiscoClub[] {
 	);
 }
 
+export function discoClubTheme(club: DiscoClub, date = new Date()) {
+	return DISCO_CLUB_THEMES[DISCO_CLUBS[discoClubOrder(date).indexOf(club)]];
+}
+
 export function isDiscoEventActive(date = new Date()) {
 	return date.getTime() < DISCO_EVENT_END_DATE.getTime();
 }

@@ -6,7 +6,6 @@ on:
       - master
   pull_request:
 
-
 jobs:
   unit_tests:
     name: Node v${{ matrix.node_version }} - ${{ matrix.os }}
