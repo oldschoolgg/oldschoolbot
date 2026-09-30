@@ -24,9 +24,7 @@
 		"name": "Amylase pack",
 		"id": 12641,
 		"opened_item": "Amylase pack",
-		"all_items": [
-			"Amylase crystal"
-		]
+		"all_items": ["Amylase crystal"]
 	},
 	{
 		"name": "Apprentice potion pack",
@@ -93,17 +91,13 @@
 		"name": "Bale of flax",
 		"id": 31045,
 		"opened_item": "Bale of flax",
-		"all_items": [
-			"Flax"
-		]
+		"all_items": ["Flax"]
 	},
 	{
 		"name": "Barrel of demonic tallow (full)",
 		"id": 30795,
 		"opened_item": "Barrel of demonic tallow (full)",
-		"all_items": [
-			"Demonic tallow"
-		]
+		"all_items": ["Demonic tallow"]
 	},
 	{
 		"name": "Bird nest",
@@ -145,10 +139,7 @@
 		"id": 11918,
 		"opened_item": "Birthday present",
 		"emoji": "<:birthdayPresent:680041979710668880>",
-		"all_items": [
-			"Slice of birthday cake",
-			"War ship"
-		]
+		"all_items": ["Slice of birthday cake", "War ship"]
 	},
 	{
 		"name": "Black key black",
@@ -656,11 +647,7 @@
 		"name": "Cache of runes",
 		"id": 27293,
 		"opened_item": "Cache of runes",
-		"all_items": [
-			"Blood rune",
-			"Death rune",
-			"Soul rune"
-		]
+		"all_items": ["Blood rune", "Death rune", "Soul rune"]
 	},
 	{
 		"name": "Casket",
@@ -1009,9 +996,7 @@
 		"name": "Giant egg sac(full)",
 		"id": 23517,
 		"opened_item": "Giant egg sac(full)",
-		"all_items": [
-			"Red spiders' eggs"
-		]
+		"all_items": ["Red spiders' eggs"]
 	},
 	{
 		"name": "Gold key black",
@@ -1342,11 +1327,7 @@
 		"id": 21293,
 		"opened_item": "Infernal eel",
 		"emoji": "<:Casket:365003978678730772>",
-		"all_items": [
-			"Lava scale shard",
-			"Onyx bolt tips",
-			"Tokkul"
-		]
+		"all_items": ["Lava scale shard", "Onyx bolt tips", "Tokkul"]
 	},
 	{
 		"name": "Intricate pouch",
@@ -2159,13 +2140,7 @@
 		"name": "Muddy chest",
 		"id": 991,
 		"opened_item": "Muddy key",
-		"all_items": [
-			"Chaos rune",
-			"Death rune",
-			"Law rune",
-			"Mithril bar",
-			"Uncut ruby"
-		]
+		"all_items": ["Chaos rune", "Death rune", "Law rune", "Mithril bar", "Uncut ruby"]
 	},
 	{
 		"name": "Mystery box",
@@ -2247,22 +2222,13 @@
 		"name": "Nest box (empty)",
 		"id": 12792,
 		"opened_item": "Nest box (empty)",
-		"all_items": [
-			"Bird nest"
-		]
+		"all_items": ["Bird nest"]
 	},
 	{
 		"name": "Nest box (ring)",
 		"id": 12794,
 		"opened_item": "Nest box (ring)",
-		"all_items": [
-			"Bird nest",
-			"Diamond ring",
-			"Emerald ring",
-			"Gold ring",
-			"Ruby ring",
-			"Sapphire ring"
-		]
+		"all_items": ["Bird nest", "Diamond ring", "Emerald ring", "Gold ring", "Ruby ring", "Sapphire ring"]
 	},
 	{
 		"name": "Nest box (seeds)",
@@ -2364,21 +2330,13 @@
 		"name": "Olive oil pack",
 		"id": 12857,
 		"opened_item": "Olive oil pack",
-		"all_items": [
-			"Olive oil(4)"
-		]
+		"all_items": ["Olive oil(4)"]
 	},
 	{
 		"name": "Ore pack (Giant's Foundry)",
 		"id": 27019,
 		"opened_item": "Ore pack (Giant's Foundry)",
-		"all_items": [
-			"Adamantite ore",
-			"Coal",
-			"Iron ore",
-			"Mithril ore",
-			"Runite ore"
-		]
+		"all_items": ["Adamantite ore", "Coal", "Iron ore", "Mithril ore", "Runite ore"]
 	},
 	{
 		"name": "Ore pack (Volcanic Mine)",
@@ -3507,9 +3465,7 @@
 		"id": 27897,
 		"opened_item": "Scaly blue dragonhide",
 		"emoji": "<:Casket:365003978678730772>",
-		"all_items": [
-			"Blue dragon scale"
-		]
+		"all_items": ["Blue dragon scale"]
 	},
 	{
 		"name": "Seed pack",
@@ -3856,9 +3812,7 @@
 		"name": "Soft clay pack",
 		"id": 12009,
 		"opened_item": "Soft clay pack",
-		"all_items": [
-			"Soft clay"
-		]
+		"all_items": ["Soft clay"]
 	},
 	{
 		"name": "Spoils of war",

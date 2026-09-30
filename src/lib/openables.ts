@@ -111,11 +111,11 @@ export interface UnifiedOpenable {
 	id: number;
 	openedItem: Item;
 	output:
-	| LootTable
-	| ((args: OpenArgs) => Promise<{
-		bank: Bank;
-		message?: string;
-	}>);
+		| LootTable
+		| ((args: OpenArgs) => Promise<{
+				bank: Bank;
+				message?: string;
+		  }>);
 	emoji?: string;
 	aliases: string[];
 	allItems: number[];
@@ -188,8 +188,9 @@ for (const clueTier of ClueTiers) {
 				loot.add(await batchYieldClues(table, mimicNumber));
 			}
 
-			const message = `${quantity}x ${currentClueTier.name} Clue Casket${quantity > 1 ? 's' : ''} ${mimicNumber > 0 ? `with ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''
-				}`;
+			const message = `${quantity}x ${currentClueTier.name} Clue Casket${quantity > 1 ? 's' : ''} ${
+				mimicNumber > 0 ? `with ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''
+			}`;
 
 			// TODO: We need a way to separate rolling the loot from the server notifications
 			// With a really big opening, it can take a while to finish, and it can still fail
