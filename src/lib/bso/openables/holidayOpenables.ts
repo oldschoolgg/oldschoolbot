@@ -79,7 +79,7 @@ export const SkrinkBoxTable = new LootTable()
 	.add('Lazily rollers')
 	// Note: Partyhat should be rare / chase, so depending on box rarity, this numbe                                                                                                                                                                                                                                                          r might change a lot
 	.tertiary(10, 'Premierekat')
-	.tertiary(50, 'Procrasti-Partyhat');
+	.tertiary(50, 'Partytimehat');
 
 
 export const SkrodBoxTable = new LootTable()
@@ -90,7 +90,7 @@ export const SkrodBoxTable = new LootTable()
 	.add('Couch potato sceptre')
 	// Note: Partyhat should be rare / chase, so depending on box rarity, this number might change a lot
 	.tertiary(10, 'Premierekat')
-	.tertiary(50, 'Procrasti-Partyhat');
+	.tertiary(50, 'Partytimehat');
 
 export const holidayOpenables: UnifiedOpenable[] = [
 	...(

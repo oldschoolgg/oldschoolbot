@@ -569,6 +569,7 @@ async function generateDiscoPreviewImage(): Promise<SendableFile> {
 	const sectionHeight = headerHeight + itemHeight;
 	const canvas = createCanvas(sectionWidth + padding * 2, sectionHeight * sections.length + padding * 2);
 	const ctx = canvas.getContext('2d');
+	ctx.imageSmoothingEnabled = false;
 
 	ctx.fillStyle = '#151020';
 	ctx.fillRect(0, 0, canvas.width, canvas.height);

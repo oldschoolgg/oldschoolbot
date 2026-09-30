@@ -15761,7 +15761,7 @@ setCustomItem(
 
 setCustomItem(
 	75_704,
-	'Procrasti-partyhat',
+	'Partytimehat',
 	'Diamond crown',
 	{
 		// Heavy is the head that puts it off until tomorrow.
