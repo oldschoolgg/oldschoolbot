@@ -11,7 +11,7 @@ import {
 } from '@/lib/bitFieldUtils.js';
 import { allStashUnitsFlat, allStashUnitTiers } from '@/lib/clues/stashUnits.js';
 import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
-import { BitFieldData, globalConfig } from '@/lib/constants.js';
+import { BitField, BitFieldData, globalConfig } from '@/lib/constants.js';
 import { spiritAnglerOutfit } from '@/lib/data/CollectionsExport.js';
 import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '@/lib/data/cox.js';
 import { leaguesCreatables } from '@/lib/data/creatables/leagueCreatables.js';
@@ -97,6 +97,83 @@ for (const gear of Items.resolveItems([
 	coloRange.equip(Items.getOrThrow(gear));
 }
 
+const yamaMelee = new Gear();
+for (const gear of Items.resolveItems([
+	'Torva full helm',
+	'Infernal cape',
+	'Amulet of rancour',
+	'Torva platebody',
+	'Torva platelegs',
+	'Ferocious gloves',
+	'Avernic defender',
+	'Primordial boots',
+	'Ultor ring',
+	'Emberlight'
+])) {
+	yamaMelee.equip(Items.getOrThrow(gear));
+}
+
+const yamaMage = new Gear();
+for (const gear of Items.resolveItems([
+	'Ancestral hat',
+	'Imbued zamorak cape',
+	'Occult necklace',
+	'Ancestral robe top',
+	'Ancestral robe bottom',
+	'Tormented bracelet',
+	'Eternal boots',
+	'Magus ring',
+	'Purging staff'
+])) {
+	yamaMage.equip(Items.getOrThrow(gear));
+}
+
+const doomMelee = new Gear();
+for (const gear of Items.resolveItems([
+	'Torva full helm',
+	'Infernal cape',
+	'Amulet of rancour',
+	'Torva platebody',
+	'Torva platelegs',
+	'Ferocious gloves',
+	'Avernic treads',
+	'Ultor ring',
+	'Noxious halberd'
+])) {
+	doomMelee.equip(Items.getOrThrow(gear));
+}
+
+const doomRange = new Gear();
+for (const gear of Items.resolveItems([
+	"Dizana's quiver",
+	'Masori mask (f)',
+	'Necklace of anguish',
+	'Masori body (f)',
+	'Masori chaps (f)',
+	'Zaryte vambraces',
+	'Avernic treads',
+	'Venator ring',
+	'Dragon arrow',
+	'Twisted bow'
+])) {
+	doomRange.equip(Items.getOrThrow(gear));
+}
+
+const doomMage = new Gear();
+for (const gear of Items.resolveItems([
+	'Ancestral hat',
+	'Imbued zamorak cape',
+	'Occult necklace',
+	'Ancestral robe top',
+	'Ancestral robe bottom',
+	'Tormented bracelet',
+	'Avernic treads',
+	'Magus ring',
+	'Eye of ayak'
+])) {
+	doomMage.equip(Items.getOrThrow(gear));
+}
+
 const gearPresets = [
 	{
 		name: 'Cox',
@@ -115,6 +192,18 @@ const gearPresets = [
 		melee: coloMelee,
 		range: coloRange,
 		mage: coloRange
+	},
+	{
+		name: 'Yama',
+		melee: yamaMelee,
+		range: COXMaxRangeGear,
+		mage: yamaMage
+	},
+	{
+		name: 'Doom',
+		melee: doomMelee,
+		range: doomRange,
+		mage: doomMage
 	}
 ];
 
@@ -294,6 +383,70 @@ const runePreset = new Bank()
 	.add('Smoke rune', MAX_INT_JAVA)
 	.add('Steam rune', MAX_INT_JAVA);
 
+const bossingPreset = new Bank()
+	.add(runePreset)
+	.add(foodPreset)
+	.add(potionsPreset)
+	.add('Rune pouch')
+	.add('Blood rune', 100_000_000)
+	.add('Death rune', 100_000_000)
+	.add('Water rune', 100_000_000)
+	.add('Fire rune', 100_000_000)
+	.add('Soul rune', 100_000_000)
+	.add('Aether rune', 100_000_000)
+	.add('Saradomin brew(4)', 100_000_000)
+	.add('Super restore(4)', 100_000_000)
+	.add('Stamina potion(4)', 100_000_000)
+	.add('Super combat potion(4)', 100_000_000)
+	.add('Ranging potion(4)', 100_000_000)
+	.add('Cooked karambwan', 100_000_000)
+	.add('Coins', 100_000_000);
+
+const yamaPreset = new Bank()
+	.add(bossingPreset)
+	.add('Purging staff')
+	.add('Emberlight')
+	.add('Burning claws')
+	.add('Lightbearer')
+	.add('Amulet of rancour')
+	.add('Infernal cape')
+	.add('Ferocious gloves')
+	.add('Oathplate shards', 1000)
+	.add('Oathplate helm')
+	.add('Oathplate chest')
+	.add('Oathplate legs');
+
+const doomPreset = new Bank()
+	.add(bossingPreset)
+	.add('Dexterous prayer scroll')
+	.add('Noxious halberd')
+	.add('Crystal halberd')
+	.add('Dual macuahuitl')
+	.add('Crystal shard', 100_000)
+	.add('Darklight')
+	.add('Arclight')
+	.add('Emberlight')
+	.add('Purging staff')
+	.add('Eye of ayak')
+	.add('Scorching bow')
+	.add('Twisted bow')
+	.add('Zaryte crossbow')
+	.add('Ruby bolts (e)', 100_000)
+	.add('Ruby dragon bolts (e)', 100_000)
+	.add('Dragon arrow', 100_000)
+	.add('Mokhaiotl waystone')
+	.add('Masori mask (f)')
+	.add('Masori body (f)')
+	.add('Masori chaps (f)')
+	.add('Zaryte vambraces')
+	.add("Dizana's quiver")
+	.add('Necklace of anguish')
+	.add('Avernic treads')
+	.add('Anti-venom+(4)', 100_000)
+	.add('Extended anti-venom+(4)', 100_000);
+
+const doomYamaPreset = new Bank().add(doomPreset).add(yamaPreset);
+
 const shadesPreset = new Bank().add('Olive oil(4)', 100_000).add('Sacred oil(4)', 100_000);
 for (const log of shadesLogs) {
 	shadesPreset.add(log.normalLog.id, 100_000);
@@ -329,6 +482,10 @@ const spawnPresets = [
 	['food', foodPreset],
 	['runes', runePreset],
 	['herblore', herblorePreset],
+	['bossing', bossingPreset],
+	['doom', doomPreset],
+	['yama', yamaPreset],
+	['doom-yama', doomYamaPreset],
 	['shades', shadesPreset]
 ] as const;
 
@@ -347,891 +504,883 @@ const thingsToWipe = [
 export const testPotatoCommand = globalConfig.isProduction
 	? null
 	: defineCommand({
-			name: 'testpotato',
-			description: 'Commands for making testing easier and faster.',
-			options: [
-				{
-					type: 'Subcommand',
-					name: 'party',
-					description: 'Test party'
-				},
-				{
-					type: 'Subcommand',
-					name: 'ping',
-					description: 'Test pinging',
-					options: [
-						{
-							type: 'Boolean',
-							name: 'should_ping',
-							description: 'should it ping or not',
-							required: true
+		name: 'testpotato',
+		description: 'Commands for making testing easier and faster.',
+		options: [
+			{
+				type: 'Subcommand',
+				name: 'party',
+				description: 'Test party'
+			},
+			{
+				type: 'Subcommand',
+				name: 'ping',
+				description: 'Test pinging',
+				options: [
+					{
+						type: 'Boolean',
+						name: 'should_ping',
+						description: 'should it ping or not',
+						required: true
+					}
+				]
+			},
+			{
+				type: 'Subcommand',
+				name: 'confirmation',
+				description: 'Test confirmations',
+				options: [
+					{
+						type: 'Boolean',
+						name: 'ephemeral',
+						description: 'Only you can see the response (default false)',
+						required: false
+					},
+					{
+						type: 'User',
+						name: 'other_person',
+						description: 'Other person who must confirm too (optional',
+						required: false
+					},
+					{
+						type: 'User',
+						name: 'another_person',
+						description: 'Another person who must confirm too (optional',
+						required: false
+					}
+				]
+			},
+			{
+				type: 'Subcommand',
+				name: 'wipe',
+				description: 'Wipe/reset a part of your account.',
+				options: [
+					{
+						type: 'String',
+						name: 'thing',
+						description: 'The thing you want to wipe.',
+						required: true,
+						autocomplete: async () => {
+							return thingsToWipe.map(i => ({ name: i, value: i }));
 						}
-					]
-				},
-				{
-					type: 'Subcommand',
-					name: 'confirmation',
-					description: 'Test confirmations',
-					options: [
-						{
-							type: 'Boolean',
-							name: 'ephemeral',
-							description: 'Only you can see the response (default false)',
-							required: false
-						},
-						{
-							type: 'User',
-							name: 'other_person',
-							description: 'Other person who must confirm too (optional',
-							required: false
-						},
-						{
-							type: 'User',
-							name: 'another_person',
-							description: 'Another person who must confirm too (optional',
-							required: false
+					}
+				]
+			},
+			{
+				type: 'Subcommand',
+				name: 'spawn',
+				description: 'Spawn stuff.',
+				options: [
+					{
+						type: 'String',
+						name: 'preset',
+						description: 'Choose from some preset things to spawn.',
+						choices: spawnPresets.map(i => ({ name: i[0], value: i[0] }))
+					},
+					{
+						type: 'Boolean',
+						name: 'collectionlog',
+						description: 'Add these items to your collection log?'
+					},
+					{
+						type: 'String',
+						name: 'item',
+						description: 'Spawn a specific item',
+						autocomplete: async ({ value }: StringAutoComplete) => {
+							if (!value)
+								return [{ name: 'Type something!', value: itemID('Twisted bow').toString() }];
+							return Items.filter(item => item.name.toLowerCase().includes(value.toLowerCase())).map(
+								i => ({
+									name: `${i.name} (ID: ${i.id})`,
+									value: i.id.toString()
+								})
+							);
 						}
-					]
-				},
-				{
-					type: 'Subcommand',
-					name: 'wipe',
-					description: 'Wipe/reset a part of your account.',
-					options: [
-						{
-							type: 'String',
-							name: 'thing',
-							description: 'The thing you want to wipe.',
-							required: true,
-							autocomplete: async () => {
-								return thingsToWipe.map(i => ({ name: i, value: i }));
-							}
+					},
+					{
+						type: 'String',
+						name: 'items',
+						description: 'Spawn many items at once using a bank string.'
+					}
+				]
+			},
+			{
+				type: 'Subcommand',
+				name: 'setxp',
+				description: 'Set skill kc.',
+				options: [
+					{
+						type: 'String',
+						name: 'skill',
+						description: 'The skill.',
+						required: true,
+						choices: [
+							{ name: 'All skills', value: 'all' },
+							...Object.values(Skills).map(s => ({ name: s.name, value: s.id }))
+						]
+					},
+					{
+						type: 'Integer',
+						name: 'xp',
+						description: 'The xp you want.',
+						required: true,
+						min_value: 1,
+						max_value: 200_000_000
+					}
+				]
+			},
+			{
+				type: 'Subcommand',
+				name: 'setminigamekc',
+				description: 'Set minigame kc.',
+				options: [
+					{
+						type: 'String',
+						name: 'minigame',
+						description: 'The minigame you want to set your KC for.',
+						required: true,
+						autocomplete: async ({ value }: StringAutoComplete) => {
+							return [
+								{ name: 'All minigames', value: 'all' },
+								...Minigames.filter(i => {
+									if (!value) return true;
+									return [i.name.toLowerCase(), i.aliases].some(alias =>
+										alias.includes(value.toLowerCase())
+									);
+								}).map(i => ({
+									name: i.name,
+									value: i.column
+								}))
+							].filter(i =>
+								!value
+									? true
+									: i.name.toLowerCase().includes(value.toLowerCase()) ||
+									i.value.includes(value.toLowerCase())
+							);
 						}
-					]
-				},
-				{
-					type: 'Subcommand',
-					name: 'spawn',
-					description: 'Spawn stuff.',
-					options: [
-						{
-							type: 'String',
-							name: 'preset',
-							description: 'Choose from some preset things to spawn.',
-							choices: spawnPresets.map(i => ({ name: i[0], value: i[0] }))
-						},
-						{
-							type: 'Boolean',
-							name: 'collectionlog',
-							description: 'Add these items to your collection log?'
-						},
-						{
-							type: 'String',
-							name: 'item',
-							description: 'Spawn a specific item',
-							autocomplete: async ({ value }: StringAutoComplete) => {
-								if (!value)
-									return [{ name: 'Type something!', value: itemID('Twisted bow').toString() }];
-								return Items.filter(item => item.name.toLowerCase().includes(value.toLowerCase())).map(
-									i => ({
-										name: `${i.name} (ID: ${i.id})`,
-										value: i.id.toString()
-									})
-								);
-							}
-						},
-						{
-							type: 'String',
-							name: 'items',
-							description: 'Spawn many items at once using a bank string.'
+					},
+					{
+						type: 'Integer',
+						name: 'kc',
+						description: 'The minigame KC you want.',
+						required: true,
+						min_value: 0,
+						max_value: 10_000
+					}
+				]
+			},
+			{
+				type: 'Subcommand',
+				name: 'reset',
+				description: 'Reset things',
+				options: [
+					{
+						type: 'String',
+						name: 'thing',
+						description: 'The thing to reset.',
+						required: true,
+						choices: thingsToReset.map(i => ({ name: i.name, value: i.name }))
+					}
+				]
+			},
+			{
+				type: 'Subcommand',
+				name: 'gear',
+				description: 'Spawn and equip gear for a particular thing',
+				options: [
+					{
+						type: 'String',
+						name: 'thing',
+						description: 'The thing to spawn gear for.',
+						required: true,
+						choices: gearPresets.map(i => ({ name: i.name, value: i.name }))
+					}
+				]
+			},
+			{
+				type: 'Subcommand',
+				name: 'max',
+				description: 'Set all your stats to the maximum level, and get max QP.'
+			},
+			{
+				type: 'Subcommand',
+				name: 'bitfield',
+				description: 'Manage your bitfields',
+				options: [
+					{
+						type: 'String',
+						name: 'add',
+						description: 'The bitfield to add',
+						required: false,
+						autocomplete: async ({ value }: StringAutoComplete) => {
+							return Object.entries(BitFieldData)
+								.filter(bf =>
+									!value ? true : bf[1].name.toLowerCase().includes(value.toLowerCase())
+								)
+								.map(i => ({ name: i[1].name, value: i[0] }));
 						}
-					]
-				},
-				{
-					type: 'Subcommand',
-					name: 'setxp',
-					description: 'Set skill kc.',
-					options: [
-						{
-							type: 'String',
-							name: 'skill',
-							description: 'The skill.',
-							required: true,
-							choices: [
-								{ name: 'All skills', value: 'all' },
-								...Object.values(Skills).map(s => ({ name: s.name, value: s.id }))
-							]
-						},
-						{
-							type: 'Integer',
-							name: 'xp',
-							description: 'The xp you want.',
-							required: true,
-							min_value: 1,
-							max_value: 200_000_000
+					},
+					{
+						type: 'String',
+						name: 'remove',
+						description: 'The bitfield to remove',
+						required: false,
+						autocomplete: async ({ value }: StringAutoComplete) => {
+							return Object.entries(BitFieldData)
+								.filter(bf =>
+									!value ? true : bf[1].name.toLowerCase().includes(value.toLowerCase())
+								)
+								.map(i => ({ name: i[1].name, value: i[0] }));
 						}
-					]
-				},
-				{
-					type: 'Subcommand',
-					name: 'setminigamekc',
-					description: 'Set minigame kc.',
-					options: [
-						{
-							type: 'String',
-							name: 'minigame',
-							description: 'The minigame you want to set your KC for.',
-							required: true,
-							autocomplete: async ({ value }: StringAutoComplete) => {
-								return [
-									{ name: 'All minigames', value: 'all' },
-									...Minigames.filter(i => {
+					}
+				]
+			},
+			{
+				type: 'Subcommand',
+				name: 'setmonsterkc',
+				description: 'Set monster kc.',
+				options: [
+					{
+						type: 'String',
+						name: 'monster',
+						description: 'The monster you want to set your KC for.',
+						required: true,
+						autocomplete: async ({ value }: StringAutoComplete) => {
+							return [
+								{ name: 'All monsters', value: 'all' },
+								...effectiveMonsters
+									.filter(i => {
 										if (!value) return true;
 										return [i.name.toLowerCase(), i.aliases].some(alias =>
 											alias.includes(value.toLowerCase())
 										);
-									}).map(i => ({
+									})
+									.map(i => ({
 										name: i.name,
-										value: i.column
+										value: i.name
 									}))
-								].filter(i =>
-									!value
-										? true
-										: i.name.toLowerCase().includes(value.toLowerCase()) ||
-											i.value.includes(value.toLowerCase())
-								);
-							}
-						},
-						{
-							type: 'Integer',
-							name: 'kc',
-							description: 'The minigame KC you want.',
-							required: true,
-							min_value: 0,
-							max_value: 10_000
+							].filter(i =>
+								!value
+									? true
+									: i.name.toLowerCase().includes(value.toLowerCase()) ||
+									i.value.toLowerCase().includes(value.toLowerCase())
+							);
 						}
-					]
-				},
-				{
-					type: 'Subcommand',
-					name: 'reset',
-					description: 'Reset things',
-					options: [
-						{
-							type: 'String',
-							name: 'thing',
-							description: 'The thing to reset.',
-							required: true,
-							choices: thingsToReset.map(i => ({ name: i.name, value: i.name }))
-						}
-					]
-				},
-				{
-					type: 'Subcommand',
-					name: 'gear',
-					description: 'Spawn and equip gear for a particular thing',
-					options: [
-						{
-							type: 'String',
-							name: 'thing',
-							description: 'The thing to spawn gear for.',
-							required: true,
-							choices: gearPresets.map(i => ({ name: i.name, value: i.name }))
-						}
-					]
-				},
-				{
-					type: 'Subcommand',
-					name: 'max',
-					description: 'Set all your stats to the maximum level, and get max QP.'
-				},
-				{
-					type: 'Subcommand',
-					name: 'bitfield',
-					description: 'Manage your bitfields',
-					options: [
-						{
-							type: 'String',
-							name: 'add',
-							description: 'The bitfield to add',
-							required: false,
-							autocomplete: async ({ value }: StringAutoComplete) => {
-								return Object.entries(BitFieldData)
-									.filter(bf =>
-										!value ? true : bf[1].name.toLowerCase().includes(value.toLowerCase())
-									)
-									.map(i => ({ name: i[1].name, value: i[0] }));
-							}
-						},
-						{
-							type: 'String',
-							name: 'remove',
-							description: 'The bitfield to remove',
-							required: false,
-							autocomplete: async ({ value }: StringAutoComplete) => {
-								return Object.entries(BitFieldData)
-									.filter(bf =>
-										!value ? true : bf[1].name.toLowerCase().includes(value.toLowerCase())
-									)
-									.map(i => ({ name: i[1].name, value: i[0] }));
-							}
-						}
-					]
-				},
-				{
-					type: 'Subcommand',
-					name: 'setmonsterkc',
-					description: 'Set monster kc.',
-					options: [
-						{
-							type: 'String',
-							name: 'monster',
-							description: 'The monster you want to set your KC for.',
-							required: true,
-							autocomplete: async ({ value }: StringAutoComplete) => {
-								return [
-									{ name: 'All monsters', value: 'all' },
-									...effectiveMonsters
-										.filter(i => {
-											if (!value) return true;
-											return [i.name.toLowerCase(), i.aliases].some(alias =>
-												alias.includes(value.toLowerCase())
-											);
-										})
-										.map(i => ({
-											name: i.name,
-											value: i.name
-										}))
-								].filter(i =>
-									!value
-										? true
-										: i.name.toLowerCase().includes(value.toLowerCase()) ||
-											i.value.toLowerCase().includes(value.toLowerCase())
-								);
-							}
-						},
-						{
-							type: 'Integer',
-							name: 'kc',
-							description: 'The monster KC you want.',
-							required: true,
-							min_value: 0,
-							max_value: 10_000
-						}
-					]
-				},
-				{
-					type: 'Subcommand',
-					name: 'irontoggle',
-					description: 'Toggle being an ironman on/off.'
-				},
-				{
-					type: 'Subcommand',
-					name: 'forcegrow',
-					description: 'Force a plant to grow.',
-					options: [
-						{
-							type: 'String',
-							name: 'patch_name',
-							description: 'The patches you want to force grow.',
-							required: true,
-							choices: [
-								{ name: 'All patches', value: 'all' },
-								{ name: 'Birdhouses', value: 'birdhouses' },
-								...farmingPatchNames.map(i => ({ name: i, value: i }))
-							]
-						}
-					]
-				},
-				{
-					type: 'Subcommand',
-					name: 'set',
-					description: 'Set something',
-					options: [
-						{
-							type: 'Integer',
-							name: 'qp',
-							description: 'Set your quest points.',
-							required: false,
-							min_value: 0,
-							max_value: MAX_QP
-						},
-						{
-							type: 'Boolean',
-							name: 'all_ca_tasks',
-							description: 'Finish all CA tasks.',
-							required: false
-						}
-					]
-				},
-				{
-					type: 'Subcommand',
-					name: 'get_code',
-					description: 'Get your secret code for the test dashboard',
-					options: []
-				},
-				{
-					type: 'Subcommand',
-					name: 'bingo_tools',
-					description: 'Bingo tools',
-					options: [
-						{
-							type: 'String',
-							name: 'start_bingo',
-							description: 'Make your bingo start now.',
-							required: true,
-							autocomplete: async ({ value, userId }: StringAutoComplete) => {
-								const bingos = await fetchBingosThatUserIsInvolvedIn(userId);
-								return bingos
-									.map(i => new BingoManager(i))
-									.filter(b => b.creatorID === userId || b.organizers.includes(userId))
-									.filter(bingo => (!value ? true : bingo.id.toString() === value))
-									.map(bingo => ({ name: bingo.title, value: bingo.id.toString() }));
-							}
-						}
-					]
-				},
-				{
-					type: 'Subcommand',
-					name: 'setslayertask',
-					description: 'Set slayer task.',
-					options: [
-						{
-							type: 'String',
-							name: 'master',
-							description: 'The master you wish to set your task.',
-							required: true,
-							choices: slayerMasterChoices
-						},
-						{
-							type: 'String',
-							name: 'monster',
-							description: 'The monster you want to set your task as.',
-							required: true,
-							autocomplete: async ({ value }: StringAutoComplete) => {
-								const filteredMonsters = [...new Set(allSlayerMonsters)].filter(monster => {
-									if (!value) return true;
-									return [monster.name.toLowerCase(), ...monster.aliases].some(aliases =>
-										aliases.includes(value.toLowerCase())
-									);
-								});
-								return filteredMonsters.map(monster => ({
-									name: monster.name,
-									value: monster.name
-								}));
-							}
-						},
-						{
-							type: 'Integer',
-							name: 'quantity',
-							description: 'The task quantity you want to assign.',
-							required: false,
-							min_value: 0,
-							max_value: 1000
-						}
-					]
-				}
-			],
-			run: async ({ options, user, interaction, rng }) => {
-				if (globalConfig.isProduction) {
-					Logging.logError('Test command ran in production', { userID: user.id });
-					return 'This will never happen...';
-				}
-
-				if (options.party) {
-					const party = await globalClient.makeParty({
-						interaction,
-						maxSize: 5,
-						minSize: 2,
-						message: `Join the party!`,
-						leader: user,
-						ironmanAllowed: true
-					});
-					return `The party has now started with the following users: ${party.map(i => i.username).join(', ')}`;
-				}
-				if (options.ping) {
-					return {
-						content: `${userMention(user.id)} hi`,
-						allowedMentions: { users: options.ping.should_ping ? [user.id] : [] }
-					};
-				}
-				if (options.confirmation) {
-					const ephemeral = options.confirmation.ephemeral ?? false;
-					const users = [user.id];
-					if (options.confirmation.other_person) users.push(options.confirmation.other_person.user.id);
-					if (options.confirmation.another_person) users.push(options.confirmation.another_person.user.id);
-					if (ephemeral && users.length > 1) {
-						return 'You cannot have multiple people confirm on an ephemeral message.';
+					},
+					{
+						type: 'Integer',
+						name: 'kc',
+						description: 'The monster KC you want.',
+						required: true,
+						min_value: 0,
+						max_value: 10_000
 					}
-					await interaction.confirmation({
-						content: `This is a normal confirmation. Users who must confirm: ${users.map(i => `<@${i}>`).join(', ')}`,
-						users,
-						// @ts-expect-error
-						ephemeral
-					});
-					return interaction.makePaginatedMessage({
-						ephemeral: true,
-						pages: [
-							() => ({
-								embeds: [
-									new EmbedBuilder()
-										.setTitle(`Page 1`)
-										.setImage(`https://cdn.oldschool.gg/monkey/${rng.randInt(1, 39)}.webp`)
-								]
-							}),
-							() => ({
-								embeds: [
-									new EmbedBuilder()
-										.setTitle(`Page 2`)
-										.setImage(`https://cdn.oldschool.gg/monkey/${rng.randInt(1, 39)}.webp`)
-								]
-							}),
-							() => ({
-								embeds: [
-									new EmbedBuilder()
-										.setTitle(`Page 3`)
-										.setImage(`https://cdn.oldschool.gg/monkey/${rng.randInt(1, 39)}.webp`)
-								]
-							}),
-							() => ({
-								embeds: [
-									new EmbedBuilder()
-										.setTitle(`Page 4`)
-										.setImage(`https://cdn.oldschool.gg/monkey/${rng.randInt(1, 39)}.webp`)
-								]
-							})
+				]
+			},
+			{
+				type: 'Subcommand',
+				name: 'irontoggle',
+				description: 'Toggle being an ironman on/off.'
+			},
+			{
+				type: 'Subcommand',
+				name: 'forcegrow',
+				description: 'Force a plant to grow.',
+				options: [
+					{
+						type: 'String',
+						name: 'patch_name',
+						description: 'The patches you want to force grow.',
+						required: true,
+						choices: [
+							{ name: 'All patches', value: 'all' },
+							{ name: 'Birdhouses', value: 'birdhouses' },
+							...farmingPatchNames.map(i => ({ name: i, value: i }))
 						]
+					}
+				]
+			},
+			{
+				type: 'Subcommand',
+				name: 'set',
+				description: 'Set something',
+				options: [
+					{
+						type: 'Integer',
+						name: 'qp',
+						description: 'Set your quest points.',
+						required: false,
+						min_value: 0,
+						max_value: MAX_QP
+					},
+					{
+						type: 'Boolean',
+						name: 'all_ca_tasks',
+						description: 'Finish all CA tasks.',
+						required: false
+					}
+				]
+			},
+			{
+				type: 'Subcommand',
+				name: 'get_code',
+				description: 'Get your secret code for the test dashboard',
+				options: []
+			},
+			{
+				type: 'Subcommand',
+				name: 'bingo_tools',
+				description: 'Bingo tools',
+				options: [
+					{
+						type: 'String',
+						name: 'start_bingo',
+						description: 'Make your bingo start now.',
+						required: true,
+						autocomplete: async ({ value, userId }: StringAutoComplete) => {
+							const bingos = await fetchBingosThatUserIsInvolvedIn(userId);
+							return bingos
+								.map(i => new BingoManager(i))
+								.filter(b => b.creatorID === userId || b.organizers.includes(userId))
+								.filter(bingo => (!value ? true : bingo.id.toString() === value))
+								.map(bingo => ({ name: bingo.title, value: bingo.id.toString() }));
+						}
+					}
+				]
+			},
+			{
+				type: 'Subcommand',
+				name: 'setslayertask',
+				description: 'Set slayer task.',
+				options: [
+					{
+						type: 'String',
+						name: 'master',
+						description: 'The master you wish to set your task.',
+						required: true,
+						choices: slayerMasterChoices
+					},
+					{
+						type: 'String',
+						name: 'monster',
+						description: 'The monster you want to set your task as.',
+						required: true,
+						autocomplete: async ({ value }: StringAutoComplete) => {
+							const filteredMonsters = [...new Set(allSlayerMonsters)].filter(monster => {
+								if (!value) return true;
+								return [monster.name.toLowerCase(), ...monster.aliases].some(aliases =>
+									aliases.includes(value.toLowerCase())
+								);
+							});
+							return filteredMonsters.map(monster => ({
+								name: monster.name,
+								value: monster.name
+							}));
+						}
+					},
+					{
+						type: 'Integer',
+						name: 'quantity',
+						description: 'The task quantity you want to assign.',
+						required: false,
+						min_value: 0,
+						max_value: 1000
+					}
+				]
+			}
+		],
+		run: async ({ options, user, interaction, rng }) => {
+			if (globalConfig.isProduction) {
+				Logging.logError('Test command ran in production', { userID: user.id });
+				return 'This will never happen...';
+			}
+
+			if (options.party) {
+				const party = await globalClient.makeParty({
+					interaction,
+					maxSize: 5,
+					minSize: 2,
+					message: `Join the party!`,
+					leader: user,
+					ironmanAllowed: true
+				});
+				return `The party has now started with the following users: ${party.map(i => i.username).join(', ')}`;
+			}
+			if (options.ping) {
+				return {
+					content: `${userMention(user.id)} hi`,
+					allowedMentions: { users: options.ping.should_ping ? [user.id] : [] }
+				};
+			}
+			if (options.confirmation) {
+				const ephemeral = options.confirmation.ephemeral ?? false;
+				const users = [user.id];
+				if (options.confirmation.other_person) users.push(options.confirmation.other_person.user.id);
+				if (options.confirmation.another_person) users.push(options.confirmation.another_person.user.id);
+				if (ephemeral && users.length > 1) {
+					return 'You cannot have multiple people confirm on an ephemeral message.';
+				}
+				await interaction.confirmation({
+					content: `This is a normal confirmation. Users who must confirm: ${users.map(i => `<@${i}>`).join(', ')}`,
+					users,
+					// @ts-expect-error
+					ephemeral
+				});
+				return interaction.makePaginatedMessage({
+					ephemeral: true,
+					pages: [
+						() => ({
+							embeds: [
+								new EmbedBuilder()
+									.setTitle(`Page 1`)
+									.setImage(`https://cdn.oldschool.gg/monkey/${rng.randInt(1, 39)}.webp`)
+							]
+						}),
+						() => ({
+							embeds: [
+								new EmbedBuilder()
+									.setTitle(`Page 2`)
+									.setImage(`https://cdn.oldschool.gg/monkey/${rng.randInt(1, 39)}.webp`)
+							]
+						}),
+						() => ({
+							embeds: [
+								new EmbedBuilder()
+									.setTitle(`Page 3`)
+									.setImage(`https://cdn.oldschool.gg/monkey/${rng.randInt(1, 39)}.webp`)
+							]
+						}),
+						() => ({
+							embeds: [
+								new EmbedBuilder()
+									.setTitle(`Page 4`)
+									.setImage(`https://cdn.oldschool.gg/monkey/${rng.randInt(1, 39)}.webp`)
+							]
+						})
+					]
+				});
+			}
+
+			if (options.bitfield) {
+				if (!options.bitfield.add && !options.bitfield.remove) {
+					return 'you must choose a valid bitfield from either add or remove';
+				}
+				const aor = () => Boolean(options.bitfield!.add);
+
+				const bitInput = options.bitfield.add ?? options.bitfield.remove!;
+				const bit = getBitFieldData(bitInput);
+				const action: 'add' | 'remove' = aor() ? 'add' : 'remove';
+				if (!bit) return listBitFields(user);
+				const canManipulate = bitfieldCanUserManipulate({ user, bit });
+				if (canManipulate !== true) return canManipulate;
+				return changeBitFieldForUser(user, bit.bit, action);
+			}
+			if (options.bingo_tools) {
+				if (options.bingo_tools.start_bingo) {
+					const bingo = await prisma.bingo.findFirst({
+						where: {
+							id: Number(options.bingo_tools.start_bingo),
+							creator_id: user.id
+						}
 					});
+					if (!bingo) return 'Invalid bingo.';
+					await prisma.bingo.update({
+						where: {
+							id: bingo.id
+						},
+						data: {
+							start_date: new Date()
+						}
+					});
+					return 'Your bingo start date has been set to this moment, so it has just started.';
 				}
+			}
 
-				if (options.bitfield) {
-					if (!options.bitfield.add && !options.bitfield.remove) {
-						return 'you must choose a valid bitfield from either add or remove';
-					}
-					const aor = () => Boolean(options.bitfield!.add);
-
-					const bitInput = options.bitfield.add ?? options.bitfield.remove!;
-					const bit = getBitFieldData(bitInput);
-					const action: 'add' | 'remove' = aor() ? 'add' : 'remove';
-					if (!bit) return listBitFields(user);
-					const canManipulate = bitfieldCanUserManipulate({ user, bit });
-					if (canManipulate !== true) return canManipulate;
-					return changeBitFieldForUser(user, bit.bit, action);
-				}
-				if (options.bingo_tools) {
-					if (options.bingo_tools.start_bingo) {
-						const bingo = await prisma.bingo.findFirst({
-							where: {
-								id: Number(options.bingo_tools.start_bingo),
-								creator_id: user.id
-							}
-						});
-						if (!bingo) return 'Invalid bingo.';
-						await prisma.bingo.update({
-							where: {
-								id: bingo.id
-							},
-							data: {
-								start_date: new Date()
-							}
-						});
-						return 'Your bingo start date has been set to this moment, so it has just started.';
-					}
-				}
-
-				if (options.set) {
-					const { qp } = options.set;
-					if (qp) {
-						await user.update({
-							QP: qp
-						});
-						return `Set your QP to ${qp}.`;
-					}
-					if (options.set.all_ca_tasks) {
-						await user.update({
-							completed_ca_task_ids: Object.values(CombatAchievements).flatMap(i =>
-								i.tasks.map(t => t.id)
-							)
-						});
-						return 'Finished all CA tasks.';
-					}
-				}
-				if (options.irontoggle) {
-					const current = user.isIronman;
+			if (options.set) {
+				const { qp } = options.set;
+				if (qp) {
 					await user.update({
-						minion_ironman: !current
+						QP: qp
 					});
-					return `You now ${!current ? 'ARE' : 'ARE NOT'} an ironman.`;
+					return `Set your QP to ${qp}.`;
 				}
-				if (options.wipe) {
-					const { thing } = options.wipe;
-					if (thing === 'birdhouses') {
-						await user.updateBirdhouseData({
-							lastPlaced: null,
-							birdhousePlaced: false,
-							birdhouseTime: 0
-						});
-						return 'Reset your birdhouses.';
-					}
-					if (thing === 'giveaways') {
-						await prisma.giveaway.deleteMany({
-							where: {
-								user_id: user.id
-							}
-						});
-						return 'Wiped all your giveaways (no refunds given).';
-					}
-					if (thing === 'cooldowns') {
-						await user.update({
-							gambling_lockout_expiry: null
-						});
-						await prisma.userStats.upsert({
-							where: {
-								user_id: BigInt(user.id)
-							},
-							update: {
-								last_daily_timestamp: Date.now() - Time.Day,
-								last_tears_of_guthix_timestamp: Date.now() - Time.Day * 2
-							},
-							create: {
-								user_id: BigInt(user.id)
-							}
-						});
-						return 'Reset all your daily/TOG cooldowns, gambling lockout.';
-					}
-					if (thing === 'kc') {
-						await user.statsUpdate({
-							monster_scores: {}
-						});
-						return 'Reset all your KCs.';
-					}
-					if (thing === 'buypayout') {
-						await prisma.botItemSell.deleteMany({
-							where: {
-								user_id: user.id
-							}
-						});
-						return 'Deleted all your buy payout records, so you have no tax rate accumulated.';
-					}
-					if (thing === 'bank') {
-						await user.update({
-							// @ts-expect-error
-							bank: {}
-						});
-						return 'Reset your bank.';
-					}
-					if (thing === 'cl') {
-						await user.update({
-							// @ts-expect-error
-							collectionLogBank: {},
-							temp_cl: {}
-						});
-						await prisma.userStats.update({
-							where: {
-								user_id: BigInt(user.id)
-							},
-							data: {
-								cl_array: [],
-								cl_array_length: 0
-							}
-						});
-						return 'Reset your collection log.';
-					}
-					if (thing === 'combat_achievements') {
-						await user.update({
-							completed_ca_task_ids: []
-						});
-						return 'Reset your combat achievements.';
-					}
-					if (thing === 'quests') {
-						await prisma.user.update({
-							where: {
-								id: user.id
-							},
-							data: {
-								finished_quest_ids: [],
-								collectionLogBank: {}
-							}
-						});
-						return `Your QP, and completed quests, have been reset. You can set your QP to a certain number using ${globalClient.mentionCommand(
-							'testpotato',
-							'set'
-						)}.`;
-					}
-					return 'Invalid thing to reset.';
+				if (options.set.all_ca_tasks) {
+					await user.update({
+						completed_ca_task_ids: Object.values(CombatAchievements).flatMap(i =>
+							i.tasks.map(t => t.id)
+						)
+					});
+					return 'Finished all CA tasks.';
 				}
-				if (options.max) {
-					await getPOH(user.id);
-					await prisma.playerOwnedHouse.update({
+			}
+			if (options.irontoggle) {
+				const current = user.isIronman;
+				await user.update({
+					minion_ironman: !current
+				});
+				return `You now ${!current ? 'ARE' : 'ARE NOT'} an ironman.`;
+			}
+			if (options.wipe) {
+				const { thing } = options.wipe;
+				if (thing === 'birdhouses') {
+					await user.updateBirdhouseData({
+						lastPlaced: null,
+						birdhousePlaced: false,
+						birdhouseTime: 0
+					});
+					return 'Reset your birdhouses.';
+				}
+				if (thing === 'giveaways') {
+					await prisma.giveaway.deleteMany({
 						where: {
 							user_id: user.id
-						},
-						data: {
-							pool: 29_241
 						}
 					});
-					await roboChimpClient.user.upsert({
+					return 'Wiped all your giveaways (no refunds given).';
+				}
+				if (thing === 'cooldowns') {
+					await user.update({
+						gambling_lockout_expiry: null
+					});
+					await prisma.userStats.upsert({
 						where: {
-							id: BigInt(user.id)
-						},
-						create: {
-							id: BigInt(user.id),
-							leagues_points_balance_osb: 25_000
+							user_id: BigInt(user.id)
 						},
 						update: {
-							leagues_points_balance_osb: {
-								increment: 25_000
-							}
+							last_daily_timestamp: Date.now() - Time.Day,
+							last_tears_of_guthix_timestamp: Date.now() - Time.Day * 2
+						},
+						create: {
+							user_id: BigInt(user.id)
 						}
 					});
-					await user.addItemsToBank({
-						items: new Bank()
-							.add('Rune pouch')
-							.add('Blood rune', 100_000_000)
-							.add('Death rune', 100_000_000)
-							.add('Blood rune', 100_000_000)
-							.add('Water rune', 100_000_000)
-							.add('Saradomin brew(4)', 100_000_000)
-							.add('Super restore(4)', 100_000_000)
-							.add('Stamina potion(4)', 100_000_000)
-							.add('Super combat potion(4)', 100_000_000)
-							.add('Cooked karambwan', 100_000_000)
-							.add('Ranging potion(4)', 100_000_000)
-							.add('Coins', 100_000_000)
-							.add('Shark', 100_000_000)
-							.add('Vial of blood', 100_000_000)
-							.add('Rune pouch')
-							.add('Zamorakian spear')
-							.add('Dragon warhammer')
-							.add('Bandos godsword')
-							.add('Toxic blowpipe')
-							.add(runePreset)
-							.add(foodPreset)
-							.add(potionsPreset)
-							.add(usables)
+					return 'Reset all your daily/TOG cooldowns, gambling lockout.';
+				}
+				if (thing === 'kc') {
+					await user.statsUpdate({
+						monster_scores: {}
 					});
-
-					await user.updateGear([
-						{ setup: 'melee', gear: COXMaxMeleeGear.raw() },
-						{ setup: 'range', gear: COXMaxRangeGear.raw() },
-						{ setup: 'mage', gear: COXMaxMageGear.raw() }
-					]);
-
-					await user.rawUpdate({
+					return 'Reset all your KCs.';
+				}
+				if (thing === 'buypayout') {
+					await prisma.botItemSell.deleteMany({
+						where: {
+							user_id: user.id
+						}
+					});
+					return 'Deleted all your buy payout records, so you have no tax rate accumulated.';
+				}
+				if (thing === 'bank') {
+					await user.update({
+						// @ts-expect-error
+						bank: {}
+					});
+					return 'Reset your bank.';
+				}
+				if (thing === 'cl') {
+					await user.update({
+						// @ts-expect-error
+						collectionLogBank: {},
+						temp_cl: {}
+					});
+					await prisma.userStats.update({
+						where: {
+							user_id: BigInt(user.id)
+						},
 						data: {
-							GP: 5000000000,
-							slayer_points: 100000,
-							tentacle_charges: 10000,
-							sang_charges: 10000,
-							trident_charges: 10000,
-							serp_helm_charges: 10000,
-							blood_fury_charges: 10000,
-							tum_shadow_charges: 10000,
-							blood_essence_charges: 10000,
-							ash_sanctifier_charges: 10000,
-							celestial_ring_charges: 10000,
-							scythe_of_vitur_charges: 10000,
-							venator_bow_charges: 10000,
-							blowpipe: {
-								scales: 100000,
-								dartQuantity: 100000,
-								dartID: itemID('Dragon dart')
-							},
-							finished_quest_ids: quests.map(q => q.id)
+							cl_array: [],
+							cl_array_length: 0
 						}
 					});
-					await giveMaxStats(user);
-					return 'Fully maxed your account, stocked your bank, charged all chargeable items.';
+					return 'Reset your collection log.';
 				}
-				if (options.gear) {
-					const gear = gearPresets.find(i => stringMatches(i.name, options.gear?.thing))!;
-
-					for (const type of ['melee', 'range', 'mage'] as const) {
-						const currentGear = gear[type];
-						const ammo = currentGear.get('ammo');
-						if (ammo && Items.getItem(ammo.item)?.stackable) {
-							currentGear.set('ammo', { ...ammo, quantity: 10_000 });
+				if (thing === 'combat_achievements') {
+					await user.update({
+						completed_ca_task_ids: []
+					});
+					return 'Reset your combat achievements.';
+				}
+				if (thing === 'quests') {
+					await prisma.user.update({
+						where: {
+							id: user.id
+						},
+						data: {
+							finished_quest_ids: [],
+							collectionLogBank: {}
+						}
+					});
+					return `Your QP, and completed quests, have been reset. You can set your QP to a certain number using ${globalClient.mentionCommand(
+						'testpotato',
+						'set'
+					)}.`;
+				}
+				return 'Invalid thing to reset.';
+			}
+			if (options.max) {
+				await getPOH(user.id);
+				await prisma.playerOwnedHouse.update({
+					where: {
+						user_id: user.id
+					},
+					data: {
+						pool: 29_241
+					}
+				});
+				await roboChimpClient.user.upsert({
+					where: {
+						id: BigInt(user.id)
+					},
+					create: {
+						id: BigInt(user.id),
+						leagues_points_balance_osb: 25_000
+					},
+					update: {
+						leagues_points_balance_osb: {
+							increment: 25_000
 						}
 					}
+				});
+				await user.addItemsToBank({
+					items: new Bank()
+						.add(doomYamaPreset)
+						.add('Vial of blood', 100_000_000)
+						.add('Zamorakian spear')
+						.add('Dragon warhammer')
+						.add('Bandos godsword')
+						.add('Toxic blowpipe')
+						.add(usables)
+				});
 
-					await user.updateGear([
-						{ setup: 'melee', gear: gear.melee.raw() },
-						{ setup: 'range', gear: gear.range.raw() },
-						{ setup: 'mage', gear: gear.mage.raw() }
-					]);
+				await user.updateGear([
+					{ setup: 'melee', gear: COXMaxMeleeGear.raw() },
+					{ setup: 'range', gear: COXMaxRangeGear.raw() },
+					{ setup: 'mage', gear: COXMaxMageGear.raw() }
+				]);
 
-					return gearViewCommand(user, 'all', false);
+				await user.rawUpdate({
+					data: {
+						GP: 5000000000,
+						slayer_points: 100000,
+						tentacle_charges: 10000,
+						sang_charges: 10000,
+						trident_charges: 10000,
+						serp_helm_charges: 10000,
+						blood_fury_charges: 10000,
+						tum_shadow_charges: 10000,
+						ayak_charges: 10000,
+						blood_essence_charges: 10000,
+						ash_sanctifier_charges: 10000,
+						celestial_ring_charges: 10000,
+						scythe_of_vitur_charges: 10000,
+						venator_bow_charges: 10000,
+						blowpipe: {
+							scales: 100000,
+							dartQuantity: 100000,
+							dartID: itemID('Dragon dart')
+						},
+						finished_quest_ids: quests.map(q => q.id),
+						bitfield: [
+							...new Set([
+								...user.bitfield,
+								BitField.HasDexScroll,
+								BitField.HasRiteOfVileTransference
+							])
+						]
+					}
+				});
+				await giveMaxStats(user);
+				return 'Fully maxed your account, stocked your bank, charged all chargeable items.';
+			}
+			if (options.gear) {
+				const gear = gearPresets.find(i => stringMatches(i.name, options.gear?.thing))!;
+
+				for (const type of ['melee', 'range', 'mage'] as const) {
+					const currentGear = gear[type];
+					const ammo = currentGear.get('ammo');
+					if (ammo && Items.getItem(ammo.item)?.stackable) {
+						currentGear.set('ammo', { ...ammo, quantity: 10_000 });
+					}
 				}
-				if (options.reset) {
-					const resettable = thingsToReset.find(i => i.name === options.reset?.thing);
-					if (!resettable) return 'Invalid thing to reset.';
-					return resettable.run(user);
-				}
-				if (options.setminigamekc) {
-					return setMinigameKC(user, options.setminigamekc.minigame, options.setminigamekc.kc);
-				}
-				if (options.setxp) {
-					return setXP(user, options.setxp.skill, options.setxp.xp);
-				}
-				if (options.spawn) {
-					const { preset, collectionlog, item, items } = options.spawn;
-					const bankToGive = new Bank();
-					if (preset) {
-						const actualPreset = spawnPresets.find(i => i[0] === preset);
-						if (!actualPreset) return 'Invalid preset';
-						let b = actualPreset[1];
-						if (actualPreset[0] === 'random') {
-							b = new Bank();
-							for (let i = 0; i < 1000; i++) {
-								b.add(Items.random().id);
-							}
+
+				await user.updateGear([
+					{ setup: 'melee', gear: gear.melee.raw() },
+					{ setup: 'range', gear: gear.range.raw() },
+					{ setup: 'mage', gear: gear.mage.raw() }
+				]);
+
+				return gearViewCommand(user, 'all', false);
+			}
+			if (options.reset) {
+				const resettable = thingsToReset.find(i => i.name === options.reset?.thing);
+				if (!resettable) return 'Invalid thing to reset.';
+				return resettable.run(user);
+			}
+			if (options.setminigamekc) {
+				return setMinigameKC(user, options.setminigamekc.minigame, options.setminigamekc.kc);
+			}
+			if (options.setxp) {
+				return setXP(user, options.setxp.skill, options.setxp.xp);
+			}
+			if (options.spawn) {
+				const { preset, collectionlog, item, items } = options.spawn;
+				const bankToGive = new Bank();
+				if (preset) {
+					const actualPreset = spawnPresets.find(i => i[0] === preset);
+					if (!actualPreset) return 'Invalid preset';
+					let b = actualPreset[1];
+					if (actualPreset[0] === 'random') {
+						b = new Bank();
+						for (let i = 0; i < 1000; i++) {
+							b.add(Items.random().id);
 						}
-						bankToGive.add(b);
 					}
-					if (item) {
-						try {
-							bankToGive.add(Items.getOrThrow(item).id);
-						} catch (err) {
-							return err as string;
-						}
+					bankToGive.add(b);
+				}
+				if (item) {
+					try {
+						bankToGive.add(Items.getOrThrow(item).id);
+					} catch (err) {
+						return err as string;
 					}
-					if (items) {
-						for (const [i, qty] of parseStringBank(items, undefined, true)) {
-							bankToGive.add(i.id, qty || 1);
-						}
+				}
+				if (items) {
+					for (const [i, qty] of parseStringBank(items, undefined, true)) {
+						bankToGive.add(i.id, qty || 1);
 					}
-
-					await user.addItemsToBank({ items: bankToGive, collectionLog: Boolean(collectionlog) });
-					return `Spawned: ${bankToGive.toString().slice(0, 1800)}.`;
 				}
 
-				if (options.setmonsterkc) {
-					if (options.setmonsterkc.monster.toLowerCase() === 'all') {
-						const kc = options.setmonsterkc.kc ?? 1;
-						const stats = await user.fetchStats();
-						await user.statsUpdate({
-							monster_scores: {
-								...(stats.monster_scores as Record<string, number>),
-								...Object.fromEntries(effectiveMonsters.map(mon => [mon.id, kc]))
-							}
-						});
-						return `Set all ${effectiveMonsters.length} monster KCs to ${kc}.`;
-					}
-					const monster = effectiveMonsters.find(m =>
-						stringMatches(m.name, options.setmonsterkc?.monster ?? '')
-					);
-					if (!monster) return 'Invalid monster';
+				await user.addItemsToBank({ items: bankToGive, collectionLog: Boolean(collectionlog) });
+				return `Spawned: ${bankToGive.toString().slice(0, 1800)}.`;
+			}
+
+			if (options.setmonsterkc) {
+				if (options.setmonsterkc.monster.toLowerCase() === 'all') {
+					const kc = options.setmonsterkc.kc ?? 1;
 					const stats = await user.fetchStats();
 					await user.statsUpdate({
 						monster_scores: {
-							...(stats.monster_scores as Record<string, unknown>),
-							[monster.id]: options.setmonsterkc?.kc ?? 1
+							...(stats.monster_scores as Record<string, number>),
+							...Object.fromEntries(effectiveMonsters.map(mon => [mon.id, kc]))
 						}
 					});
-					return `Set your ${monster.name} KC to ${options.setmonsterkc.kc ?? 1}.`;
+					return `Set all ${effectiveMonsters.length} monster KCs to ${kc}.`;
 				}
-
-				if (options.forcegrow) {
-					if (options.forcegrow.patch_name === 'birdhouses') {
-						const birdhouseData = user.fetchBirdhouseData();
-						await user.updateBirdhouseData({
-							...birdhouseData,
-							birdhouseTime: Date.now() - Time.Month
-						});
-						return 'Your birdhouses have been forced to be fully grown.';
+				const monster = effectiveMonsters.find(m =>
+					stringMatches(m.name, options.setmonsterkc?.monster ?? '')
+				);
+				if (!monster) return 'Invalid monster';
+				const stats = await user.fetchStats();
+				await user.statsUpdate({
+					monster_scores: {
+						...(stats.monster_scores as Record<string, unknown>),
+						[monster.id]: options.setmonsterkc?.kc ?? 1
 					}
-					const farmingDetails = await getFarmingInfoFromUser(user);
-					const { patch_name } = options.forcegrow;
-					const patchesToGrow =
-						patch_name === 'all'
-							? farmingDetails.patchesDetailed.filter(patch => patch.plant)
-							: farmingDetails.patchesDetailed.filter(
-									patch => patch.patchName === patch_name && patch.plant
-								);
-					if (patchesToGrow.length === 0) {
-						return patch_name === 'all'
-							? 'You have nothing planted in any patches.'
-							: 'You have nothing planted there.';
-					}
-					const now = Date.now();
-					const updates: SafeUserUpdateInput = Object.fromEntries(
-						patchesToGrow.map(patch => [
-							getFarmingKeyFromName(patch.patchName),
-							{
-								...farmingDetails.patches[patch.patchName],
-								plantTime: now - Time.Month
-							}
-						])
-					);
-
-					await user.update(updates);
-					return userGrowingProgressStr((await getFarmingInfoFromUser(user)).patchesDetailed, user);
-				}
-
-				if (options.setslayertask) {
-					const usersTask = await user.fetchSlayerInfo();
-
-					const { monster, master } = options.setslayertask;
-
-					const selectedMonster = allSlayerMonsters.find(m => stringMatches(m.name, monster));
-					const selectedMaster = slayerMasters.find(
-						sm => stringMatches(master, sm.name) || sm.aliases.some(alias => stringMatches(master, alias))
-					);
-					if (!selectedMaster || !selectedMonster) return 'Invalid slayer master or monster.';
-
-					// Set quantity to 50 if user doesn't assign a quantity
-					const quantity = options.setslayertask?.quantity ?? 50;
-
-					const assignedTask = selectedMaster.tasks.find(m => m.monster.id === selectedMonster.id)!;
-
-					if (!assignedTask) {
-						const possibleMasters = slayerMasters
-							.filter(m => m.tasks.some(t => t.monster.id === selectedMonster?.id))
-							.map(m => m.name);
-
-						const suggestion =
-							possibleMasters.length > 0
-								? ` (${possibleMasters.join(', ')} can${possibleMasters.length > 1 ? '' : ' also'} assign this monster.)`
-								: '';
-
-						return `${selectedMaster.name} cannot assign ${selectedMonster.name}.${suggestion}`;
-					}
-
-					// Update an existing slayer task for the user
-					if (usersTask.currentTask?.id) {
-						await prisma.slayerTask.update({
-							where: {
-								id: usersTask.currentTask?.id
-							},
-							data: {
-								quantity,
-								quantity_remaining: quantity,
-								slayer_master_id: selectedMaster.id,
-								monster_id: selectedMonster.id,
-								skipped: false
-							}
-						});
-					} else {
-						// Create a new slayer task for the user
-						await prisma.slayerTask.create({
-							data: {
-								user_id: user.id,
-								quantity,
-								quantity_remaining: quantity,
-								slayer_master_id: selectedMaster.id,
-								monster_id: selectedMonster.id,
-								skipped: false
-							}
-						});
-					}
-
-					await user.update({
-						slayer_last_task: selectedMonster.id
-					});
-
-					return `You set your slayer task to ${selectedMonster.name} using ${selectedMaster.name}.`;
-				}
-
-				return 'Nothin!';
+				});
+				return `Set your ${monster.name} KC to ${options.setmonsterkc.kc ?? 1}.`;
 			}
-		});
+
+			if (options.forcegrow) {
+				if (options.forcegrow.patch_name === 'birdhouses') {
+					const birdhouseData = user.fetchBirdhouseData();
+					await user.updateBirdhouseData({
+						...birdhouseData,
+						birdhouseTime: Date.now() - Time.Month
+					});
+					return 'Your birdhouses have been forced to be fully grown.';
+				}
+				const farmingDetails = await getFarmingInfoFromUser(user);
+				const { patch_name } = options.forcegrow;
+				const patchesToGrow =
+					patch_name === 'all'
+						? farmingDetails.patchesDetailed.filter(patch => patch.plant)
+						: farmingDetails.patchesDetailed.filter(
+							patch => patch.patchName === patch_name && patch.plant
+						);
+				if (patchesToGrow.length === 0) {
+					return patch_name === 'all'
+						? 'You have nothing planted in any patches.'
+						: 'You have nothing planted there.';
+				}
+				const now = Date.now();
+				const updates: SafeUserUpdateInput = Object.fromEntries(
+					patchesToGrow.map(patch => [
+						getFarmingKeyFromName(patch.patchName),
+						{
+							...farmingDetails.patches[patch.patchName],
+							plantTime: now - Time.Month
+						}
+					])
+				);
+
+				await user.update(updates);
+				return userGrowingProgressStr((await getFarmingInfoFromUser(user)).patchesDetailed, user);
+			}
+
+			if (options.setslayertask) {
+				const usersTask = await user.fetchSlayerInfo();
+
+				const { monster, master } = options.setslayertask;
+
+				const selectedMonster = allSlayerMonsters.find(m => stringMatches(m.name, monster));
+				const selectedMaster = slayerMasters.find(
+					sm => stringMatches(master, sm.name) || sm.aliases.some(alias => stringMatches(master, alias))
+				);
+				if (!selectedMaster || !selectedMonster) return 'Invalid slayer master or monster.';
+
+				// Set quantity to 50 if user doesn't assign a quantity
+				const quantity = options.setslayertask?.quantity ?? 50;
+
+				const assignedTask = selectedMaster.tasks.find(m => m.monster.id === selectedMonster.id)!;
+
+				if (!assignedTask) {
+					const possibleMasters = slayerMasters
+						.filter(m => m.tasks.some(t => t.monster.id === selectedMonster?.id))
+						.map(m => m.name);
+
+					const suggestion =
+						possibleMasters.length > 0
+							? ` (${possibleMasters.join(', ')} can${possibleMasters.length > 1 ? '' : ' also'} assign this monster.)`
+							: '';
+
+					return `${selectedMaster.name} cannot assign ${selectedMonster.name}.${suggestion}`;
+				}
+
+				// Update an existing slayer task for the user
+				if (usersTask.currentTask?.id) {
+					await prisma.slayerTask.update({
+						where: {
+							id: usersTask.currentTask?.id
+						},
+						data: {
+							quantity,
+							quantity_remaining: quantity,
+							slayer_master_id: selectedMaster.id,
+							monster_id: selectedMonster.id,
+							skipped: false
+						}
+					});
+				} else {
+					// Create a new slayer task for the user
+					await prisma.slayerTask.create({
+						data: {
+							user_id: user.id,
+							quantity,
+							quantity_remaining: quantity,
+							slayer_master_id: selectedMaster.id,
+							monster_id: selectedMonster.id,
+							skipped: false
+						}
+					});
+				}
+
+				await user.update({
+					slayer_last_task: selectedMonster.id
+				});
+
+				return `You set your slayer task to ${selectedMonster.name} using ${selectedMaster.name}.`;
+			}
+
+			return 'Nothin!';
+		}
+	});

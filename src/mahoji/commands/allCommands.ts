@@ -82,6 +82,7 @@ import { triviaCommand } from '@/mahoji/commands/trivia.js';
 import { mahojiUseCommand } from '@/mahoji/commands/use.js';
 import { wikiCommand } from '@/mahoji/commands/wiki.js';
 import { xpCommand } from '@/mahoji/commands/xp.js';
+import { delvesCommand } from '@/mahoji/lib/abstracted_commands/delveCommand.js';
 
 export const allCommandsDONTIMPORT: AnyCommand[] = [
 	adminCommand,
@@ -165,7 +166,8 @@ export const allCommandsDONTIMPORT: AnyCommand[] = [
 	collectionLogCommand,
 	gearPresetsCommand,
 	statsCommand,
-	xpCommand
+	xpCommand,
+	delvesCommand
 ];
 
 if (!globalConfig.isProduction && testPotatoCommand) {
