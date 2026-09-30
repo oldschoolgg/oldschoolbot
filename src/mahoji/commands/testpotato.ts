@@ -881,7 +881,7 @@ export const testPotatoCommand = globalConfig.isProduction
 							update: {
 								last_daily_timestamp: Date.now() - Time.Day,
 								last_tears_of_guthix_timestamp: Date.now() - Time.Day * 10,
-								last_guthixian_cache_timestamp: Date.now() - Time.Day * 2,
+								last_guthixian_cache_timestamp: Date.now() - Time.Day * 2
 							},
 							create: {
 								user_id: BigInt(user.id)
