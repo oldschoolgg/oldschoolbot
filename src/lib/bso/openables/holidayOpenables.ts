@@ -1,4 +1,3 @@
-import { BSOItem } from '@/lib/bso/BSOItem.js';
 import {
 	BeachMysteryBoxTable,
 	IndependenceBoxTable,
@@ -86,7 +85,7 @@ export const SkrodBoxTable = new LootTable()
 	.add('Disco bloodbath')
 	.add('Disco infernowl')
 	.add('Afterparty afterlife')
-	.add('Fire dragon skull')
+	.add('Glam jam platformers')
 	.add('Fire dragon poncho')
 	.add('Fire dragon greaves')
 	.add('Fire dragon boots')
