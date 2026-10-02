@@ -1,7 +1,7 @@
+import type { FullMinionData } from '@oldschoolgg/schemas';
 import { useEffect, useState } from 'react';
 
 import { api, globalState } from '@/lib/api.js';
-import type { FullMinionData } from '../../../../robochimp/src/http/api-types.js';
 import { MinionInfo } from './Account/MinionInfo.js';
 import { MinionSelector } from './Account/MinionSelector.js';
 import { EconomyTransactions } from './Account/Staff/EconomyTransactions.js';

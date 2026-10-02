@@ -166,6 +166,12 @@ export enum BitField {
 	ServerSupport = 52,
 	DisabledPassiveImplings = 53,
 	DisableAutoFarmButton = 54,
+	DisableBankWeights = 55,
+	DisableBankFavorites = 56,
+	UnlimitedOpenUntil = 57,
+	Boring = 58,
+	HasRiteOfVileTransference = 59,
+	DisableRiteOfVileTransference = 60,
 
 	OriginalCyrSupporter = 199
 }
@@ -217,6 +223,17 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 		name: 'Free T1 Perks for Maxed in OSB/BSO',
 		protected: false,
 		userConfigurable: false
+	},
+	[BitField.DisableBankWeights]: { name: 'Disable Bank Weight Sorting', protected: false, userConfigurable: true },
+	[BitField.DisableBankFavorites]: {
+		name: 'Disable Bank Favorite Sort Priority',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.UnlimitedOpenUntil]: {
+		name: 'OpenUntil unlimited by default (P)',
+		protected: false,
+		userConfigurable: true
 	},
 
 	[BitField.AlwaysSmallBank]: { name: 'Always Use Small Banks', protected: false, userConfigurable: true },
@@ -305,10 +322,21 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 
 	[BitField.HasDeadeyeScroll]: { name: 'Deadeye Scroll Used', protected: false, userConfigurable: false },
 	[BitField.HasMysticVigourScroll]: { name: 'Mystic Vigour Scroll Used', protected: false, userConfigurable: false },
+	[BitField.HasRiteOfVileTransference]: {
+		name: 'Rite of vile transference Used',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.DisableRiteOfVileTransference]: {
+		name: 'Disable Rite of vile transference boost',
+		protected: false,
+		userConfigurable: true
+	},
 	[BitField.ToggleAutoRummage]: { name: 'Auto Rummage Vale Offerings', protected: false, userConfigurable: true },
 	[BitField.WikiContributor]: { name: 'Wiki Contributor', protected: false, userConfigurable: false },
 	[BitField.UnlimitedGiveaways]: { name: 'Unlimited Giveaways', protected: false, userConfigurable: false },
-	[BitField.ServerSupport]: { name: 'Server Support', protected: true, userConfigurable: false }
+	[BitField.ServerSupport]: { name: 'Server Support', protected: true, userConfigurable: false },
+	[BitField.Boring]: { name: 'Boring', protected: true, userConfigurable: false }
 } as const;
 
 export const BadgesEnum = {
