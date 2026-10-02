@@ -75,6 +75,7 @@ export interface ShootingStarsOptions extends ActivityTaskOptions {
 	usersWith: number;
 	totalXp: number;
 	lootItems: ItemBank;
+	hunted?: boolean;
 }
 interface ActivityTaskOptionsWithUsers extends ActivityTaskOptions {
 	users: string[];

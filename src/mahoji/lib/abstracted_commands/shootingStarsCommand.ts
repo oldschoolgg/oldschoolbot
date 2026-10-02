@@ -163,16 +163,19 @@ export async function shootingStarsCommand({
 	rng,
 	channelId,
 	user,
-	star: _star
+	star: _star,
+	hunted = false
 }: {
 	rng: RNGProvider;
 	channelId: string;
 	user: MUser;
 	star: ShootingStars | Star;
+	hunted?: boolean;
 }): Promise<string> {
 	const skills = user.skillsAsLevels;
 	const boosts = [];
 	const star: Star = ('dustAvailable' in _star ? _star : starSizes.find(s => s.size === _star.size))!;
+	const miningEfficiency = hunted ? 0.75 : 1;
 
 	let miningLevel = skills.mining;
 
@@ -210,7 +213,7 @@ export async function shootingStarsCommand({
 			quantity: Math.round(s.dustAvailable / usersWith),
 			gearBank: user.gearBank,
 			ore: star,
-			ticksBetweenRolls: currentPickaxe.ticksBetweenRolls,
+			ticksBetweenRolls: currentPickaxe.ticksBetweenRolls / miningEfficiency,
 			glovesEffect: 0,
 			armourEffect: 0,
 			miningCapeEffect: 0,
@@ -254,18 +257,49 @@ export async function shootingStarsCommand({
 		usersWith,
 		totalXp,
 		type: 'ShootingStars',
-		size: star.size
+		size: star.size,
+		hunted
 	});
 
-	let str = `${user.minionName} is now mining a size ${star.size} Crashed Star with ${
+	let str = `${user.minionName} is now ${
+		hunted ? 'hunting and mining' : 'mining'
+	} a size ${star.size} Crashed Star with ${
 		usersWith - 1 || 'no'
 	} other players! The trip will return in about ${formatTripDuration(user, duration)}.`;
+
+	if (hunted) {
+		boosts.push('as your minion is actively hunting Crashed Stars, they mine at 75% efficiency');
+	}
 
 	if (boosts.length > 0) {
 		str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 	}
 
 	return str;
+}
+
+export function rollShootingStar(miningLevel: number) {
+	const eligibleStars = starSizes.filter(i => i.chance > 0 && i.level <= miningLevel);
+	if (eligibleStars.length === 0) return null;
+	const shootingStarTable = new SimpleTable<Star>();
+	for (const star of eligibleStars) shootingStarTable.add(star, star.chance);
+	return shootingStarTable.roll();
+}
+
+export async function huntCrashedStarsCommand({
+	rng,
+	channelId,
+	user
+}: {
+	rng: RNGProvider;
+	channelId: string;
+	user: MUser;
+}) {
+	const star = rollShootingStar(user.skillsAsLevels.mining);
+	if (!star) {
+		return `${user.minionName} needs at least 20 Mining to hunt Crashed Stars.`;
+	}
+	return shootingStarsCommand({ rng, channelId, user, star, hunted: true });
 }
 
 const activitiesCantGetStars: activity_type_enum[] = [
@@ -301,14 +335,11 @@ export async function handleTriggerShootingStar({
 }) {
 	if (activitiesCantGetStars.includes(data.type)) return;
 	const miningLevel = user.skillsAsLevels.mining;
-	const eligibleStars = starSizes.filter(i => i.chance > 0 && i.level <= miningLevel);
 	const minutes = Math.floor(data.duration / Time.Minute);
 	if (minutes < 1) return;
 	const baseChance = Math.floor(540 / minutes);
 	if (!rng.roll(baseChance)) return;
-	const shootingStarTable = new SimpleTable<Star>();
-	for (const star of eligibleStars) shootingStarTable.add(star, star.chance);
-	const star = shootingStarTable.roll();
+	const star = rollShootingStar(miningLevel);
 	if (!star) return;
 
 	// Got a star
