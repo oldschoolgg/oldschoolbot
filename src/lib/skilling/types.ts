@@ -287,7 +287,9 @@ export interface Plant {
 	herbXp?: number;
 	herbLvl?: number;
 	outputLogs?: number;
+	outputLogsQuantity?: number;
 	outputRoots?: number;
+	logDepletionChance?: number;
 	treeWoodcuttingLevel?: number;
 	fixedOutputAmount?: number;
 	variableYield?: boolean;
@@ -308,7 +310,7 @@ export interface Plant {
 	defaultNumOfPatches: number;
 	canPayFarmer: boolean;
 	canCompostPatch: boolean;
-	canCompostandPay: boolean;
+	canCompostAndPay: boolean;
 	additionalPatchesByQP: number[][];
 	additionalPatchesByFarmLvl: number[][];
 	additionalPatchesByFarmGuildAndLvl: number[][];

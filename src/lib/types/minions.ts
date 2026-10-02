@@ -370,17 +370,63 @@ export interface InfernoOptions extends ActivityTaskOptions {
 	isEmergedZuk: boolean;
 }
 
-export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
-	type: 'Farming';
+export interface FarmingStepTaskData {
+	duration: number;
 	pid?: number;
 	plantsName: string | null;
 	quantity: number;
 	upgradeType: CropUpgradeType | null;
+	patchName?: string;
 	payment?: boolean;
+	treeChopFeePaid?: number;
+	treeChopFeePlanned?: number;
 	patchType: IPatchData;
 	planting: boolean;
 	currentDate: number;
+}
+
+export interface AutoFarmStepData extends FarmingStepTaskData {}
+
+export interface AutoFarmSummaryStep {
+	patchType: string;
+	plantsName: string;
+	quantity: number;
+	harvestedName?: string;
+	harvestedQuantity?: number;
+	alive?: number;
+	xp: number;
+	bonusXp: number;
+	weeds: number;
+	duration: number;
+	loot?: ItemBank;
+}
+
+export interface AutoFarmSummaryBoostSource {
+	boost: string;
+}
+
+export interface AutoFarmSummary {
+	totalXP: number;
+	totalBonusXP: number;
+	totalWeeds: number;
+	totalDuration: number;
+	totalWoodcuttingXP: number;
+	totalHerbloreXP: number;
+	totalLoot?: ItemBank;
+	contractsCompleted: number;
+	boosts: string[];
+	boostSources?: AutoFarmSummaryBoostSource[];
+	xpBoostMessages?: string[];
+	attachmentMessages: string[];
+	steps: AutoFarmSummaryStep[];
+}
+
+export interface FarmingActivityTaskOptions extends ActivityTaskOptions, FarmingStepTaskData {
+	type: 'Farming';
 	autoFarmed: boolean;
+	autoFarmPlan?: AutoFarmStepData[];
+	autoFarmCombined?: boolean;
+	autoFarmSummary?: AutoFarmSummary;
 }
 
 export interface BirdhouseActivityTaskOptions extends ActivityTaskOptions {

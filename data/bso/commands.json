@@ -1,6 +1,6 @@
 {
-	"hash": "48b5ecb44e44016aa297e88d2f14f183",
-	"date": "2026-07-18T08:10:52.812Z",
+	"hash": "b246090e90c0570b1210fa09caa6fb4b",
+	"date": "2026-09-14T08:40:48.845Z",
 	"data": [
 		{
 			"name": "activities",
@@ -189,6 +189,7 @@
 				"default_compost",
 				"harvest",
 				"plant",
+				"set_preferred",
 				"tithe_farm"
 			]
 		},
@@ -517,7 +518,7 @@
 		{
 			"name": "rp",
 			"desc": "Admin tools second set",
-			"subOptions": ["player", "user_event"]
+			"subOptions": ["bestow", "player", "user_event"]
 		},
 		{
 			"name": "runecraft",

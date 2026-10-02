@@ -97,3 +97,13 @@ export async function titheFarmShopCommand(
 
 	return `You purchased ${loot} for ${cost} Tithe Farm points.`;
 }
+
+export async function titheFarmShopInfoCommand(user: MUser) {
+	const { tithe_farm_points: titheFarmPoints } = await user.fetchStats();
+
+	const priceList = TitheFarmBuyables.map(
+		buyable => `- ${buyable.name}: ${buyable.titheFarmPoints.toLocaleString()} points`
+	).join('\n');
+
+	return `${user}, you currently have **${titheFarmPoints.toLocaleString()} Tithe Farm points**.\n\n**Tithe Farm reward costs:**\n${priceList}`;
+}

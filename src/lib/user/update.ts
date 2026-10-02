@@ -7,6 +7,7 @@ import type { ItemBank } from 'oldschooljs';
 import type { AutoFarmFilterEnum, bank_sort_method_enum, CropUpgradeType, Prisma } from '@/prisma/main.js';
 import type { PatchTypes } from '@/lib/skilling/skills/farming/index.js';
 import type { FarmingPatchSettingsKey } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
+import type { FarmingPreferredSeeds } from '@/lib/skilling/skills/farming/utils/types.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { DegradeableItemColumns, GearColumns } from '@/lib/user/userTypes.js';
 
@@ -109,6 +110,8 @@ export type FullUserUpdateInput = Partial<
 		auto_farm_filter: AutoFarmFilterEnum;
 		minion_defaultCompostToUse: CropUpgradeType;
 		bso_mystery_trail_current_step_id: number;
+		minion_farmingPreferredContract: boolean;
+		minion_farmingPreferredSeeds: FarmingPreferredSeeds | null;
 	} & Record<PrismaIntArrayKeys, PrismaArrayUpdateInput<number>> &
 		Record<PrismaStringArrayKeys, PrismaArrayUpdateInput<string>> &
 		Record<PrismaNullableIntKeys, number | null> &

@@ -151,6 +151,15 @@ const thingsToReset = [
 	}
 ];
 
+const allSkillsChoice = {
+	name: 'All skills',
+	value: 'all'
+};
+const skillChoices = Object.values(Skills).map(skill => ({
+	name: skill.name,
+	value: skill.id
+}));
+
 async function setMinigameKC(user: MUser, _minigame: string, kc: number) {
 	const minigame = Minigames.find(m => m.column === _minigame.toLowerCase());
 	if (!minigame) return 'No kc set because invalid minigame.';
@@ -166,7 +175,21 @@ async function setMinigameKC(user: MUser, _minigame: string, kc: number) {
 }
 
 async function setXP(user: MUser, skillName: string, xp: number) {
-	const skill = Object.values(Skills).find(c => c.id === skillName);
+	if (stringMatches(skillName, allSkillsChoice.value) || stringMatches(skillName, allSkillsChoice.name)) {
+		const updates: SafeUserUpdateInput = {};
+		for (const skill of Object.values(Skills)) {
+			updates[`skills_${skill.id}`] = xp;
+		}
+		await user.update(updates);
+		return `Set all skills XP to ${xp}.`;
+	}
+
+	const skill = Object.values(Skills).find(
+		skill =>
+			stringMatches(skill.id, skillName) ||
+			stringMatches(skill.name, skillName) ||
+			skill.aliases.some(alias => stringMatches(alias, skillName))
+	);
 	if (!skill) return 'No xp set because invalid skill.';
 	await user.update({
 		[`skills_${skill.id}`]: xp
@@ -451,13 +474,25 @@ export const testPotatoCommand = globalConfig.isProduction
 				{
 					type: 'Subcommand',
 					name: 'setxp',
-					description: 'Set skill kc.',
+					description: 'Set skill XP.',
 					options: [
 						{
 							type: 'String',
 							name: 'skill',
 							description: 'The skill.',
-							required: true
+							required: true,
+							autocomplete: async ({ value }: StringAutoComplete) => {
+								return [allSkillsChoice, ...skillChoices]
+									.filter(choice => {
+										if (!value) return true;
+										return (
+											stringMatches(choice.name, value) ||
+											stringMatches(choice.value, value) ||
+											choice.name.toLowerCase().includes(value.toLowerCase())
+										);
+									})
+									.slice(0, 25);
+							}
 						},
 						{
 							type: 'Integer',
@@ -465,7 +500,7 @@ export const testPotatoCommand = globalConfig.isProduction
 							description: 'The xp you want.',
 							required: true,
 							min_value: 1,
-							max_value: 200_000_000
+							max_value: MAX_XP
 						}
 					]
 				},
@@ -617,11 +652,11 @@ export const testPotatoCommand = globalConfig.isProduction
 						{
 							type: 'String',
 							name: 'patch_name',
-							description: 'The patches you want to harvest.',
+							description: 'The patches you want to force grow.',
 							required: true,
 							choices: [
-								{ name: 'Birdhouses', value: 'birdhouses' },
 								{ name: 'All patches', value: 'all' },
+								{ name: 'Birdhouses', value: 'birdhouses' },
 								...farmingPatchNames.map(i => ({ name: i, value: i }))
 							]
 						}
@@ -1145,7 +1180,7 @@ export const testPotatoCommand = globalConfig.isProduction
 					);
 
 					await user.update(updates);
-					return userGrowingProgressStr((await getFarmingInfoFromUser(user)).patchesDetailed);
+					return userGrowingProgressStr((await getFarmingInfoFromUser(user)).patchesDetailed, user);
 				}
 
 				if (options.setslayertask) {
