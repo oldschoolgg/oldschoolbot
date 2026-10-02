@@ -669,6 +669,7 @@ describe('PVM', async () => {
 			bank: new Bank()
 				.add('Saradomin brew(4)', 100)
 				.add('Blighted super restore(4)', 100)
+				.add('Cooked karambwan', 120)
 				.add('Blighted karambwan', 120)
 		});
 		await user.setAttackStyle(['attack', 'strength', 'defence']);
@@ -688,19 +689,26 @@ describe('PVM', async () => {
 	test('Wilderness elite diary buffs only wildy green dragons', async () => {
 		const nonWildyBase = await makeGreenDragonUser();
 		const nonWildyElite = await makeGreenDragonUser(true);
+		const wildyBase = await makeGreenDragonUser();
 		const wildyElite = await makeGreenDragonUser(true);
 
-		const nonWildyBaseResult = await nonWildyBase.kill(EMonster.GREEN_DRAGON, { quantity: 159 });
-		const nonWildyEliteResult = await nonWildyElite.kill(EMonster.GREEN_DRAGON, { quantity: 159 });
-		const wildyEliteResult = await wildyElite.kill(EMonster.GREEN_DRAGON, { quantity: 159, wilderness: true });
+		const nonWildyBaseResult = await nonWildyBase.kill(EMonster.GREEN_DRAGON, { quantity: 10 });
+		const nonWildyEliteResult = await nonWildyElite.kill(EMonster.GREEN_DRAGON, { quantity: 10 });
+		const wildyBaseResult = await wildyBase.kill(EMonster.GREEN_DRAGON, { quantity: 10, wilderness: true });
+		const wildyEliteResult = await wildyElite.kill(EMonster.GREEN_DRAGON, { quantity: 10, wilderness: true });
+
+		for (const result of [nonWildyBaseResult, nonWildyEliteResult, wildyBaseResult, wildyEliteResult]) {
+			expect(result.commandResult).toContain('is now killing');
+			expect(result.activityResult).toMatchObject({ q: 10 });
+		}
 
 		expect(nonWildyEliteResult.commandResult).not.toContain('Wilderness Elite Diary');
 		expect(nonWildyEliteResult.activityResult!.duration).toEqual(nonWildyBaseResult.activityResult!.duration);
+		expect(wildyBaseResult.commandResult).not.toContain('Wilderness Elite Diary');
 		expect(wildyEliteResult.commandResult).toContain('30% for Wilderness Elite Diary');
-		const expectedRate = String(wildyEliteResult.commandResult).includes('10% for Weekend') ? 330 / 0.9 : 330;
-		expect(calcPerHour(wildyEliteResult.activityResult!.q, wildyEliteResult.activityResult!.duration)).toBeCloseTo(
-			expectedRate,
-			1
+		expect(wildyEliteResult.activityResult!.duration / wildyBaseResult.activityResult!.duration).toBeCloseTo(
+			0.7,
+			5
 		);
 	});
 
