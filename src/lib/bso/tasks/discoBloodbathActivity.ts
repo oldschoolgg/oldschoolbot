@@ -140,7 +140,7 @@ export const discoBloodbathTask: MinionTask = {
 			user,
 			channelId: data.channelId,
 			message: {
-				content: `${user.minionName} finished a ${minutes}-minute ${data.isRave ? 'rave' : 'visit'} to ${data.club}.\n${topMessage}\n${crowdMessage}${storyEnding ? `\n\n${storyEnding}` : ''}${lure}\n\n**Realm points**\n${pointSummary}${totalScore === 0 ? '\nYour Fashion gear scored no points. Try `/disco check_item` to plan your outfit.' : ''}${chase ? `\n\n🎉 **SKRINK/SKROD BOX DROP!** 🎉\nThe crowd erupts: ${chase}!` : ''}${itemsAdded.length > 0 ? `\n\n**Loot:** ${itemsAdded}` : ''}`
+				content: `${user.mention}, ${user.minionName} finished a ${minutes}-minute ${data.isRave ? 'rave' : 'visit'} to ${data.club}.\n${topMessage}\n${crowdMessage}${storyEnding ? `\n\n${storyEnding}` : ''}${lure}\n\n**Realm points**\n${pointSummary}${totalScore === 0 ? '\nYour Fashion gear scored no points. Try `/disco check_item` to plan your outfit.' : ''}${chase ? `\n\n🎉 **SKRINK/SKROD BOX DROP!** 🎉\nThe crowd erupts: ${chase}!` : ''}${itemsAdded.length > 0 ? `\n\n**Loot:** ${itemsAdded}` : ''}`
 			},
 			data: { ...data, cantBeDoubled: true },
 			loot: itemsAdded
