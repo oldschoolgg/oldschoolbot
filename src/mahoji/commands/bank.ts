@@ -4,6 +4,8 @@ import type { Bank } from 'oldschooljs';
 import { chunk } from 'remeda';
 
 import { choicesOf, filterOption, itemOption } from '@/discord/index.js';
+import { discoBankPointEntitlements } from '@/lib/bso/discoBankPoints.js';
+import { checkEntitlements } from '@/lib/bso/util/entitlementChecker.js';
 import type { BankFlag } from '@/lib/canvas/bankImage.js';
 import { bankFlags } from '@/lib/canvas/bankImage.js';
 import { PerkTier } from '@/lib/constants.js';
@@ -110,6 +112,12 @@ export const bankCommand = defineCommand({
 
 		if (options.flag) mahojiFlags.push(options.flag);
 		if (options.flag_extra) mahojiFlags.push(options.flag_extra);
+		if (
+			mahojiFlags.includes('show_disco_points') &&
+			!(await checkEntitlements(user, discoBankPointEntitlements)).success
+		) {
+			return 'This flag requires Tier 3 Patreon or higher.';
+		}
 		if (options.page && options.item) {
 			options.item = `${options.page} ${options.item}`.trim();
 			options.page = undefined;

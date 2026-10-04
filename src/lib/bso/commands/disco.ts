@@ -9,6 +9,7 @@ import {
 	isDiscoEventActive,
 	scoreDiscoFashion
 } from '@/lib/bso/discoBloodbath.js';
+import { discoBankPointEntitlements } from '@/lib/bso/discoBankPoints.js';
 import { checkEntitlements } from '@/lib/bso/util/entitlementChecker.js';
 
 import { Time } from '@oldschoolgg/toolkit';
@@ -16,15 +17,12 @@ import { Items } from 'oldschooljs';
 
 import { activity_type_enum } from '@/prisma/main/enums.js';
 import { BitField } from '@/lib/constants.js';
-import { RobochimpBitfieldEnum } from '@/lib/perkTiers.js';
 import type { DiscoBloodbathActivityTaskOptions } from '@/lib/types/minions.js';
 
 const clubChoices = () => discoClubOrder().map(name => ({ name, value: name }));
 
-const outfitEntitlements = [{ perkTier: 3 }, { bitfield: RobochimpBitfieldEnum.CyrTier0 }];
-
 const helpText = (
-	canUseOutfit: boolean
+	canUseDiscoBankPoints: boolean
 ) => `**Disco Bloodbath** is a limited-time club circuit for minions who understand that fashion is a weapon.
 
 **Use \`/disco visit\` to send your minion on a trip.** Visits take at least thirty minutes. Your Fashion gear determines your points, and your top two Realms gain or lose progress depending on the party's vibe. Each club's crowd and theme change throughout the event. Use \`/disco inquire\` for a tip from your contacts, and \`/disco stats\` to track your rank. Completed visits can return strange fashion loot and very rarely a chase box.
@@ -32,7 +30,11 @@ const helpText = (
 The clubs are:
 ${DISCO_CLUBS.map(club => `- **${club}** — ${discoClubTheme(club).name}: ${discoClubTheme(club).description}`).join('\n')}
 
-${canUseOutfit ? 'Use `/disco outfit` for your breakdown, or ' : 'Use '}\`/disco check_item\` to inspect one item.`;
+Use \`/disco outfit\` for your Fashion-gear breakdown, or \`/disco check_item\` to inspect one item.${
+	canUseDiscoBankPoints
+		? '\n\nUse `/bank flag:show_disco_points` or `/bank flag_extra:show_disco_points` to show Disco points below bank items.'
+		: ''
+}`;
 
 function formatPoints(points: Record<(typeof DISCO_AESTHETICS)[number], number>) {
 	return DISCO_AESTHETICS.map(
@@ -118,7 +120,7 @@ export const discoCommand = defineCommand({
 			});
 			return 'You have started Disco Bloodbath. You really need to read `/disco help`.\n\n4 `/gearpresets` slots have been permanently added to your account. Created empty presets: `discofuture`, `discoragdoll`, `discoanti`. Use `/gearpresets help`.';
 		}
-		if (options.help) return helpText((await checkEntitlements(user, outfitEntitlements)).success);
+		if (options.help) return helpText((await checkEntitlements(user, discoBankPointEntitlements)).success);
 
 		if (options.check_item) {
 			const resolved = Items.getItem(options.check_item.item);
@@ -128,9 +130,6 @@ export const discoCommand = defineCommand({
 		}
 
 		if (options.outfit) {
-			if (!(await checkEntitlements(user, outfitEntitlements)).success) {
-				return 'This command requires Tier 3 Patreon or higher.';
-			}
 			const scored = scoreDiscoFashion(user.gear.fashion.raw());
 			return {
 				content: scored.items.map(({ item }) => formatOutfitItem(item)).join('\n\n'),
