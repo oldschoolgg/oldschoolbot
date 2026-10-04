@@ -1,5 +1,6 @@
 import { ButtonBuilder, ButtonStyle, EmbedBuilder } from '@oldschoolgg/discord';
 import { Time } from '@oldschoolgg/toolkit';
+import { createHash } from 'node:crypto';
 
 import { DISCO_AESTHETICS, type DiscoAesthetic, isDiscoEventActive } from '@/lib/bso/discoBloodbath.js';
 import type { OSInteraction } from '@/lib/structures/OSInteraction.js';
@@ -29,6 +30,14 @@ function ravePalette(slug: string) {
 	return ravePalettes.find(palette => palette.slug === slug);
 }
 
+function createRaveId(userId: string) {
+	return createHash('sha256')
+		.update(`${userId}${Date.now()}`)
+		.digest('base64')
+		.replace(/[^a-zA-Z0-9]/g, '')
+		.substr(6, 6);
+}
+
 export async function discoHandler({
 	data,
 	user,
@@ -53,6 +62,8 @@ export async function discoHandler({
 	});
 	const validPresetNames = new Set(presets.map(preset => preset.name));
 	const raveName = rave.aesthetics.join(' + ');
+	const raveId = createRaveId(user.id);
+	await Cache.createDiscoRave(user.id, raveId);
 	embeds.push(
 		new EmbedBuilder()
 			.setColor(rave.color)
@@ -67,14 +78,14 @@ export async function discoHandler({
 		if (!validPresetNames.has(preset)) continue;
 		components.push(
 			new ButtonBuilder()
-				.setCustomId(`DISCO_RAVE_${user.id}_${preset}_${rave.slug}`)
+				.setCustomId(`DISCO_RAVE_${user.id}_${raveId}_${preset}_${rave.slug}`)
 				.setLabel(`Go in ${aesthetic}`)
 				.setStyle(ButtonStyle.Primary)
 		);
 	}
 	components.push(
 		new ButtonBuilder()
-			.setCustomId(`DISCO_RAVE_${user.id}_current_${rave.slug}`)
+			.setCustomId(`DISCO_RAVE_${user.id}_${raveId}_current_${rave.slug}`)
 			.setLabel('Go as you are')
 			.setStyle(ButtonStyle.Success)
 	);
@@ -85,10 +96,8 @@ export async function handleDiscoRaveButton(
 	id: string,
 	interaction: OSInteraction
 ): Promise<CommandResponse> {
-	const [, , invitedUserID, ...choiceAndSlug] = id.split('_');
-	const slug = choiceAndSlug.pop();
-	const choice = choiceAndSlug.join('_');
-	if (!invitedUserID || !choice || !slug || user.id !== invitedUserID) {
+	const [, , invitedUserID, raveId, choice, slug] = id.split('_');
+	if (!invitedUserID || !raveId || !choice || !slug || user.id !== invitedUserID) {
 		return { content: 'This rave invite is not for you.', ephemeral: true };
 	}
 	if (!isDiscoEventActive() || !user.bloodbathEventStarted) {
@@ -97,6 +106,9 @@ export async function handleDiscoRaveButton(
 	if (await user.minionIsBusy()) return { content: 'Your minion is busy.', ephemeral: true };
 	const rave = ravePalette(slug);
 	if (!rave) return { content: 'This rave invite is invalid.', ephemeral: true };
+	if (!(await Cache.consumeDiscoRave(user.id, raveId))) {
+		return { content: 'This rave invite was already used or expired.', ephemeral: true };
+	}
 
 	if (choice !== 'current') {
 		if (!Object.values(presetForAesthetic).includes(choice)) {
@@ -118,6 +130,7 @@ export async function handleDiscoRaveButton(
 		theme: { name: `${rave.aesthetics.join(' + ')} Rave`, good: themeAesthetic, bad: themeAesthetic },
 		fashion: user.gear.fashion.raw(),
 		isRave: true,
+		raveId,
 		raveAesthetics: [...rave.aesthetics],
 		effectiveDuration
 	});

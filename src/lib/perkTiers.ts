@@ -131,6 +131,7 @@ export async function getUsersPerkTier({
 	user: MUser;
 	forceNoCache?: boolean;
 }): Promise<PerkTier> {
+	const hotTierBeforeRefresh = forceNoCache ? getPerkTierCached(user.id) : null;
 	if (!forceNoCache) {
 		// We want a way to force a cache refresh
 		// Otherwise, we look for a cached tier:
@@ -203,6 +204,15 @@ export async function getUsersPerkTier({
 	// Server boosting perk has been eliminated
 	const tier = Math.max(...eligibleTiers, 0);
 	setHotCache(user.id, tier);
+	if (forceNoCache) {
+		if (hotTierBeforeRefresh === tier) return tier;
+
+		const redisTier = await Cache.getPerkTier(user.id);
+		if (redisTier !== tier) {
+			await Cache.setPerkTier(user.id, tier);
+		}
+		return tier;
+	}
 	await Cache.setPerkTier(user.id, tier);
 	return tier;
 }

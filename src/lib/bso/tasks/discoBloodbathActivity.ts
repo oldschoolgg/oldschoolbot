@@ -76,6 +76,7 @@ export const discoBloodbathTask: MinionTask = {
 		if (completedRoute) {
 			stats.traversal = [];
 		}
+		if (data.isRave && data.raveId) await Cache.deleteDiscoRave(user.id, data.raveId);
 		await user.statsUpdate({ disco_stats: stats });
 		if (chase) {
 			loot.add(chase);

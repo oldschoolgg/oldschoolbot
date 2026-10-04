@@ -29,6 +29,7 @@ export interface DiscoBloodbathActivityTaskOptions extends ActivityTaskOptions {
 	theme: { name: string; good: string; bad: string };
 	fashion: Record<string, { item: number; quantity?: number } | null>;
 	isRave?: boolean;
+	raveId?: string;
 	raveAesthetics?: string[];
 	effectiveDuration?: number;
 }

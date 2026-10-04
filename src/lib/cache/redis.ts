@@ -318,6 +318,18 @@ class CacheManager {
 		await this.client.del(RedisKeys.Global.PerkTier(userId));
 	}
 
+	async createDiscoRave(userId: string, raveId: string): Promise<void> {
+		await this.client.set(`bso:${userId}:${raveId}`, '1', 'EX', TTL.Hour);
+	}
+
+	async consumeDiscoRave(userId: string, raveId: string): Promise<boolean> {
+		return (await this.client.del(`bso:${userId}:${raveId}`)) === 1;
+	}
+
+	async deleteDiscoRave(userId: string, raveId: string): Promise<void> {
+		await this.client.del(`bso:${userId}:${raveId}`);
+	}
+
 	// Users
 	async getUserLockStatus(userId: string): Promise<LockStatus> {
 		const status = await this.getString(BotKeys.User.LockStatus(userId));
