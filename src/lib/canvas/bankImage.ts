@@ -1,5 +1,6 @@
 import { BSOItem } from '@/lib/bso/BSOItem.js';
 import { bsoShortNameMap } from '@/lib/bso/bsoShortNameMap.js';
+import { getDiscoBankPointLines } from '@/lib/bso/discoBankPoints.js';
 
 import { existsSync } from 'node:fs';
 import * as fs from 'node:fs/promises';
@@ -36,6 +37,10 @@ const itemSize = 32;
 const distanceFromTop = 32;
 
 const { floor, ceil } = Math;
+
+function bankItemRowHeight(compact: boolean, spacer: number, verticalSpacer: number) {
+	return floor((itemSize + spacer / 2) * (compact ? 0.9 : 1.08)) + verticalSpacer;
+}
 
 const i = itemID;
 const forcedShortNameMap = new Map<number, string>([
@@ -224,6 +229,7 @@ export const bankFlags = [
 	'show_id',
 	'show_names',
 	'show_weights',
+	'show_disco_points',
 	'show_all',
 	'wide',
 	'invention_xp'
@@ -381,8 +387,9 @@ class BankImageTask {
 	) {
 		let xLoc = 0;
 		let yLoc = compact ? 5 : 0;
+		const rowHeight = bankItemRowHeight(compact, spacer, verticalSpacer);
 		for (let i = 0; i < items.length; i++) {
-			if (i % itemsPerRow === 0) yLoc += floor((itemSize + spacer / 2) * (compact ? 0.9 : 1.08)) + verticalSpacer;
+			if (i % itemsPerRow === 0) yLoc += rowHeight;
 			// For some reason, it starts drawing at -2 so we compensate that
 			// Adds the border width
 			// Adds distance from side
@@ -425,6 +432,7 @@ class BankImageTask {
 			});
 
 			let bottomItemText: string | number | null = null;
+			const discoPointLines = mahojiFlags?.includes('show_disco_points') ? getDiscoBankPointLines(item) : [];
 
 			if (flags.has('sv') || mahojiFlags?.includes('show_price')) {
 				bottomItemText = (item.price ?? 0) * quantity;
@@ -440,12 +448,21 @@ class BankImageTask {
 				bottomItemText = marketPriceOrBotPrice(item.id) * quantity;
 			}
 
-			const forcedShortName = forcedShortNameMap.get(item.id);
+			const forcedShortName = discoPointLines.length === 0 ? forcedShortNameMap.get(item.id) : undefined;
 			if (forcedShortName && !bottomItemText) {
 				bottomItemText = forcedShortName.toUpperCase();
 			}
 
-			if (bottomItemText) {
+			if (discoPointLines.length > 0 && !bottomItemText) {
+				for (const [line, point] of discoPointLines.entries()) {
+					c.drawText({
+						text: point.text,
+						x: floor(xLoc - 1),
+						y: yLoc + distanceFromTop - 1 + line * 14,
+						color: point.color
+					});
+				}
+			} else if (bottomItemText) {
 				const text =
 					typeof bottomItemText === 'number' ? toKMB(bottomItemText) : bottomItemText.toString().slice(0, 8);
 				c.drawText({
@@ -560,6 +577,10 @@ class BankImageTask {
 		}
 
 		if (items.length > 500 && !flags.has('nc')) compact = true;
+		const discoPointLineCount = opts.mahojiFlags?.includes('show_disco_points')
+			? Math.max(1, ...items.map(([item]) => getDiscoBankPointLines(item).length))
+			: 1;
+		const verticalSpacer = (discoPointLineCount - 1) * 14;
 
 		const itemWidthSize = compact ? 12 + 21 : 36 + 21;
 
@@ -568,7 +589,7 @@ class BankImageTask {
 		const itemsPerRow = floor((width - 6 * 2) / itemWidthSize);
 		const canvasHeight =
 			floor(
-				floor(ceil(items.length / itemsPerRow) * floor((itemSize + spacer / 2) * (compact ? 0.9 : 1.08))) +
+				floor(ceil(items.length / itemsPerRow) * bankItemRowHeight(compact, spacer, verticalSpacer)) +
 					itemSize * 1.5
 			) - 2;
 
@@ -653,7 +674,7 @@ class BankImageTask {
 			currentCL,
 			opts.mahojiFlags,
 			weightings,
-			undefined,
+			verticalSpacer,
 			user
 		);
 

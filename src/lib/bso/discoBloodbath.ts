@@ -20,6 +20,18 @@ export type DiscoClub = (typeof DISCO_CLUBS)[number];
 export const DISCO_AESTHETICS = ['Futuristic', 'Ragdoll', 'Anti-Fashion'] as const;
 export type DiscoAesthetic = (typeof DISCO_AESTHETICS)[number];
 
+export const DISCO_AESTHETIC_COLORS: Record<DiscoAesthetic, { positive: string; negative: string }> = {
+	Futuristic: { positive: '#00d8e8', negative: '#123c71' },
+	Ragdoll: { positive: '#ff78bd', negative: '#c93570' },
+	'Anti-Fashion': { positive: '#d6ff38', negative: '#91b300' }
+};
+
+export const DISCO_AESTHETIC_SHORT_NAMES: Record<DiscoAesthetic, string> = {
+	Futuristic: 'F',
+	Ragdoll: 'R',
+	'Anti-Fashion': 'A'
+};
+
 export const DISCO_CLUB_THEMES: Record<
 	DiscoClub,
 	{
