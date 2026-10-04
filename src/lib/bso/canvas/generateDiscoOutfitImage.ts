@@ -1,4 +1,8 @@
-import { DISCO_AESTHETICS, type DiscoAesthetic, type DiscoItem } from '@/lib/bso/discoBloodbath.js';
+import {
+	DISCO_AESTHETIC_COLORS,
+	DISCO_AESTHETICS,
+	type DiscoItem
+} from '@/lib/bso/discoBloodbath.js';
 
 import { promises as fs } from 'node:fs';
 
@@ -9,12 +13,6 @@ import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 const outfitTemplate = fs
 	.readFile('./src/lib/resources/images/gear_templates/disco_outfit_template-v1.png')
 	.then(loadImage);
-
-const colors: Record<DiscoAesthetic, { positive: string; negative: string }> = {
-	Futuristic: { positive: '#00d8e8', negative: '#123c71' },
-	Ragdoll: { positive: '#ff78bd', negative: '#c93570' },
-	'Anti-Fashion': { positive: '#d6ff38', negative: '#91b300' }
-};
 
 const slotPositions: Record<string, [number, number]> = {
 	head: [716, 178],
@@ -95,7 +93,7 @@ function drawLegend(canvas: OSRSCanvas) {
 			y: 1008,
 			center: true,
 			font: 'TinyPixel',
-			color: colors[entry.aesthetic][entry.positive ? 'positive' : 'negative'],
+			color: DISCO_AESTHETIC_COLORS[entry.aesthetic][entry.positive ? 'positive' : 'negative'],
 			scale: 1.2
 		});
 	}
@@ -153,7 +151,7 @@ export async function generateDiscoOutfitImage({
 				canvas,
 				[position[0] + 55, position[1] + 55],
 				panel,
-				colors[strongest][scored.item.points[strongest] < 0 ? 'negative' : 'positive']
+				DISCO_AESTHETIC_COLORS[strongest][scored.item.points[strongest] < 0 ? 'negative' : 'positive']
 			);
 		}
 	}
@@ -174,18 +172,17 @@ export async function generateDiscoOutfitImage({
 			(a, b) => Math.abs(scored.item.points[b]) - Math.abs(scored.item.points[a])
 		);
 		const compactPanel = panel[3] <= 100;
-		const hasThreeScores = points.length > 2;
-		const textScale = hasThreeScores ? 1.75 : 2.75;
-		const lineHeight = hasThreeScores ? 30 : compactPanel ? 32 : 45;
-		const firstLineY = panelY + (hasThreeScores ? 34 : compactPanel ? 40 : 50);
+		const textScale = 2.75;
+		const lineHeight = 45;
+		const firstLineY = panelY + (compactPanel ? 40 : 50);
 		for (const [line, aesthetic] of points.entries()) {
 			const value = scored.item.points[aesthetic];
 			drawScaledText(canvas, {
 				text: `${aesthetic}: ${value}`,
 				x: panelX + 20,
 				y: firstLineY + line * lineHeight,
-				font: value < 0 ? 'Bold' : 'Compact',
-				color: colors[aesthetic][value < 0 ? 'negative' : 'positive'],
+				font: 'Bold',
+				color: DISCO_AESTHETIC_COLORS[aesthetic][value < 0 ? 'negative' : 'positive'],
 				maxWidth: panelWidth - 40,
 				scale: textScale
 			});
