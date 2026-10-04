@@ -1,7 +1,7 @@
 import { checkElderClueRequirements } from '@/lib/bso/elderClueRequirements.js';
 
-import type { ButtonBuilder } from '@oldschoolgg/discord';
-import { Emoji, notEmpty, stringMatches, uniqueArr } from '@oldschoolgg/toolkit';
+import { EmbedBuilder, type ButtonBuilder } from '@oldschoolgg/discord';
+import { ellipsize, Emoji, notEmpty, stringMatches, uniqueArr } from '@oldschoolgg/toolkit';
 import { percentChance } from 'node-rng';
 import { cryptoRng } from 'node-rng/crypto';
 import { Bank, Items, itemID, resolveItems } from 'oldschooljs';
@@ -234,11 +234,9 @@ async function finalizeOpening({
 	const perkTier = await user.fetchPerkTier();
 	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier, user);
 
+	const resultText = `You have now opened a total of ${openedStr}
+${messages.join(', ')}`.trim();
 	const response = new MessageBuilder()
-		.setContent(
-			`You have now opened a total of ${openedStr}
-${messages.join(', ')}`.trim()
-		)
 		.addBankImage({
 			bank: loot,
 			title:
@@ -250,6 +248,16 @@ ${messages.join(', ')}`.trim()
 			mahojiFlags: user.bitfield.includes(BitField.DisableOpenableNames) ? undefined : ['show_names']
 		})
 		.addComponents(components);
+
+	if (resultText.length < 2000) {
+		response.setContent(resultText);
+	} else if (resultText.length < 4000) {
+		response.addEmbed(new EmbedBuilder().setDescription(resultText));
+	} else {
+		response
+			.setContent(ellipsize(resultText, 1950))
+			.addFile({ name: 'open-results.txt', buffer: Buffer.from(resultText) });
+	}
 
 	return response;
 }
