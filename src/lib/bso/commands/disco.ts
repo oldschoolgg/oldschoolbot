@@ -1,4 +1,5 @@
 import { generateDiscoOutfitImage } from '@/lib/bso/canvas/generateDiscoOutfitImage.js';
+import { discoBankPointEntitlements } from '@/lib/bso/discoBankPoints.js';
 import {
 	DISCO_AESTHETICS,
 	DISCO_CLUBS,
@@ -7,11 +8,10 @@ import {
 	discoClubTheme,
 	discoHalloweenStory,
 	discoPopularity,
-	isDiscoHalloween,
 	isDiscoEventActive,
+	isDiscoHalloween,
 	scoreDiscoFashion
 } from '@/lib/bso/discoBloodbath.js';
-import { discoBankPointEntitlements } from '@/lib/bso/discoBankPoints.js';
 import { checkEntitlements } from '@/lib/bso/util/entitlementChecker.js';
 
 import { Time } from '@oldschoolgg/toolkit';
@@ -60,7 +60,34 @@ export const discoCommand = defineCommand({
 	name: 'disco',
 	description: 'Enter the Disco Bloodbath club circuit.',
 	options: [
-		{ type: 'Subcommand', name: 'party', description: 'Join the Disco Bloodbath event.' },
+		{
+			type: 'Subcommand',
+			name: 'party',
+			description: 'Send your minion to a club to visit (or crash) the party!',
+			options: [
+				{
+					type: 'String',
+					name: 'club_name',
+					description: 'The club to visit.',
+					required: true,
+					autocomplete: async ({ value }: StringAutoComplete) =>
+						clubChoices().filter(
+							choice => !value || choice.name.toLowerCase().includes(value.toLowerCase())
+						)
+				},
+				{
+					type: 'String',
+					name: 'crash',
+					description: 'Crash the party?',
+					choices: [
+						{ name: 'Crash!', value: 'crash' },
+						{ name: 'Party!', value: 'party' },
+						{ name: 'Host!', value: 'host' }
+					]
+				}
+			]
+		},
+		{ type: 'Subcommand', name: 'start', description: 'Join the Disco Bloodbath event.' },
 		{ type: 'Subcommand', name: 'help', description: 'Learn how the club circuit works.' },
 		{ type: 'Subcommand', name: 'stats', description: 'View your Realm progress and club rank.' },
 		{
@@ -90,28 +117,11 @@ export const discoCommand = defineCommand({
 						)
 				}
 			]
-		},
-		{
-			type: 'Subcommand',
-			name: 'visit',
-			description: 'Send your minion to a club for a completed visit.',
-			options: [
-				{
-					type: 'String',
-					name: 'club_name',
-					description: 'The club to visit.',
-					required: true,
-					autocomplete: async ({ value }: StringAutoComplete) =>
-						clubChoices().filter(
-							choice => !value || choice.name.toLowerCase().includes(value.toLowerCase())
-						)
-				}
-			]
 		}
 	],
 	run: async ({ options, user, channelId }) => {
 		if (!isDiscoEventActive()) return 'The Disco Bloodbath has closed for the night.';
-		if (options.party) {
+		if (options.start) {
 			await user.update({
 				bloodbath_event_started: true,
 				bitfield: [...new Set([...user.bitfield, BitField.DiscoBloodbathGearPresetSlots])]
@@ -188,11 +198,11 @@ export const discoCommand = defineCommand({
 					: `${club} feels cold right now. Your contacts are not impressed.`;
 		}
 
-		if (options.visit) {
-			if (!DISCO_CLUBS.includes(options.visit.club_name as (typeof DISCO_CLUBS)[number]))
+		if (options.party) {
+			if (!DISCO_CLUBS.includes(options.party.club_name as (typeof DISCO_CLUBS)[number]))
 				return 'Choose a club from the suggestions.';
 			if (await user.minionIsBusy()) return `${user.minionName} is currently busy.`;
-			const club = options.visit.club_name as (typeof DISCO_CLUBS)[number];
+			const club = options.party.club_name as (typeof DISCO_CLUBS)[number];
 			const theme = discoClubTheme(club);
 			const popularity = discoPopularity(club);
 			await ActivityManager.startTrip<DiscoBloodbathActivityTaskOptions>({

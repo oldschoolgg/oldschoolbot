@@ -1,7 +1,7 @@
 import { checkElderClueRequirements } from '@/lib/bso/elderClueRequirements.js';
 
-import { EmbedBuilder, type ButtonBuilder } from '@oldschoolgg/discord';
-import { ellipsize, Emoji, notEmpty, stringMatches, uniqueArr } from '@oldschoolgg/toolkit';
+import { type ButtonBuilder, EmbedBuilder } from '@oldschoolgg/discord';
+import { Emoji, ellipsize, notEmpty, stringMatches, uniqueArr } from '@oldschoolgg/toolkit';
 import { percentChance } from 'node-rng';
 import { cryptoRng } from 'node-rng/crypto';
 import { Bank, Items, itemID, resolveItems } from 'oldschooljs';

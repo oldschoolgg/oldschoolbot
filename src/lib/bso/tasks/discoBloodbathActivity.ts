@@ -72,9 +72,7 @@ export const discoBloodbathTask: MinionTask = {
 		const completedRoute = stats.traversal.length === route.length;
 		const routeReward = completedRoute && user.user.claimed_glamour_box === 0;
 		const chase =
-			routeReward || rng.roll(50)
-				? rng.pick<'Skrink box' | 'Skrod box'>(['Skrink box', 'Skrod box'])
-				: null;
+			routeReward || rng.roll(50) ? rng.pick<'Skrink box' | 'Skrod box'>(['Skrink box', 'Skrod box']) : null;
 		if (completedRoute) {
 			stats.traversal = [];
 		}

@@ -1,5 +1,5 @@
-import { ItemContracts } from '@/lib/bso/itemContracts.js';
 import { handleDiscoRaveButton } from '@/lib/bso/discoHandler.js';
+import { ItemContracts } from '@/lib/bso/itemContracts.js';
 import { repeatTameTrip } from '@/lib/bso/tames/tameTasks.js';
 
 import { type APIMessageComponentInteraction, SpecialResponse } from '@oldschoolgg/discord';

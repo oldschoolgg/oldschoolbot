@@ -1,4 +1,5 @@
 import { tearsOfGuthixIronmanReqs, tearsOfGuthixSkillReqs } from '@/lib/bso/commands/tearsOfGuthixCommand.js';
+import { discoHandler } from '@/lib/bso/discoHandler.js';
 import { handleCrateSpawns } from '@/lib/bso/handleCrateSpawns.js';
 import { gods } from '@/lib/bso/minigames/divineDominion.js';
 import { mysteriousStepData } from '@/lib/bso/mysteryTrail.js';
@@ -9,7 +10,7 @@ import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skil
 import { RuneTable, WilvusTable, WoodTable } from '@/lib/bso/tables/seedTable.js';
 import { DougTable, PekyTable } from '@/lib/bso/tables/sharedTables.js';
 
-import { type ButtonBuilder, type EmbedBuilder, bold } from '@oldschoolgg/discord';
+import { type ButtonBuilder, bold, type EmbedBuilder } from '@oldschoolgg/discord';
 import { getNextUTCReset, notEmpty, Time } from '@oldschoolgg/toolkit';
 import { MathRNG, randArrItem, randInt, roll } from 'node-rng';
 import { cryptoRng } from 'node-rng/crypto';
@@ -18,7 +19,6 @@ import { Bank, EItem, itemID, toKMB } from 'oldschooljs';
 import { activity_type_enum } from '@/prisma/main.js';
 import type { MessageBuilderClass } from '@/discord/MessageBuilder.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
-import { discoHandler } from '@/lib/bso/discoHandler.js';
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';
 import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements.js';
 import { BitField, CONSTANTS, PerkTier } from '@/lib/constants.js';

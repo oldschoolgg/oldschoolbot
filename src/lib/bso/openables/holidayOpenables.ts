@@ -81,7 +81,6 @@ export const SkrinkBoxTable = new LootTable()
 	.tertiary(10, 'Premierekat')
 	.tertiary(50, 'Partytimehat');
 
-
 export const SkrodBoxTable = new LootTable()
 	.add('Disco bloodbath')
 	.add('Disco infernowl')

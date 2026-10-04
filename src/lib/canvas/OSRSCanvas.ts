@@ -463,13 +463,7 @@ export class OSRSCanvas {
 		glow = handleSlayerMaskGlow({ itemID, user, glow });
 
 		if (glow) {
-			this.drawGlowingBlur(
-				destX + drawWidth / 2,
-				destY + drawHeight / 2,
-				glow.radius,
-				glow.color,
-				glow.blur
-			);
+			this.drawGlowingBlur(destX + drawWidth / 2, destY + drawHeight / 2, glow.radius, glow.color, glow.blur);
 		}
 
 		if (outline) {

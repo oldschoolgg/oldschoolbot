@@ -18,11 +18,7 @@ import {
 	validateStoredLeaguesTasks,
 	verifyLeaguesTasksForUser
 } from '@/lib/bso/leagues/leagues.js';
-import {
-	LazyMysteryBoxTable,
-	SkrodBoxTable,
-	SkrinkBoxTable
-} from '@/lib/bso/openables/holidayOpenables.js';
+import { LazyMysteryBoxTable, SkrinkBoxTable, SkrodBoxTable } from '@/lib/bso/openables/holidayOpenables.js';
 import { BeachMysteryBoxTable, FestivePresentTable, RoyalMysteryBoxTable } from '@/lib/bso/openables/tables.js';
 import { getLydiaQuote } from '@/lib/bso/summerDays.js';
 
@@ -55,10 +51,10 @@ import {
 	listBitFields
 } from '@/lib/bitFieldUtils.js';
 import { giveawayCache } from '@/lib/cache.js';
+import { canvasToBuffer, createCanvas } from '@/lib/canvas/canvasUtil.js';
+import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 import { BadgesEnum, BitField, BitFieldData, badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
 import { customItems } from '@/lib/customItems/util.js';
-import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
-import { canvasToBuffer, createCanvas } from '@/lib/canvas/canvasUtil.js';
 import { allDcSet } from '@/lib/data/Collections.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { syncCustomPrices } from '@/lib/preStartup.js';

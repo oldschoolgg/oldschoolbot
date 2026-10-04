@@ -1,6 +1,6 @@
+import { DISCO_AESTHETICS, type DiscoAesthetic } from '@/lib/bso/discoBloodbath.js';
 import { bsoItemContractDonationGivenLb, bsoItemContractLb } from '@/lib/bso/leaderboards/itemContractsLb.js';
 import { bsoTamesHatchedLb } from '@/lib/bso/leaderboards/tamesHatchedLb.js';
-import { DISCO_AESTHETICS, type DiscoAesthetic } from '@/lib/bso/discoBloodbath.js';
 
 import { calcWhatPercent, formatDuration, stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
 import { convertXPtoLVL } from 'oldschooljs';

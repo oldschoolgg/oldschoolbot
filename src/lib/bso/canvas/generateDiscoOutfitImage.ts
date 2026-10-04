@@ -1,8 +1,4 @@
-import {
-	DISCO_AESTHETIC_COLORS,
-	DISCO_AESTHETICS,
-	type DiscoItem
-} from '@/lib/bso/discoBloodbath.js';
+import { DISCO_AESTHETIC_COLORS, DISCO_AESTHETICS, type DiscoItem } from '@/lib/bso/discoBloodbath.js';
 
 import { promises as fs } from 'node:fs';
 

@@ -1,11 +1,12 @@
+import { discoBankPointEntitlements } from '@/lib/bso/discoBankPoints.js';
+import { checkEntitlements } from '@/lib/bso/util/entitlementChecker.js';
+
 import { codeBlock, EmbedBuilder } from '@oldschoolgg/discord';
 import { Emoji } from '@oldschoolgg/toolkit';
 import type { Bank } from 'oldschooljs';
 import { chunk } from 'remeda';
 
 import { choicesOf, filterOption, itemOption } from '@/discord/index.js';
-import { discoBankPointEntitlements } from '@/lib/bso/discoBankPoints.js';
-import { checkEntitlements } from '@/lib/bso/util/entitlementChecker.js';
 import type { BankFlag } from '@/lib/canvas/bankImage.js';
 import { bankFlags } from '@/lib/canvas/bankImage.js';
 import { PerkTier } from '@/lib/constants.js';
@@ -128,7 +129,7 @@ export const bankCommand = defineCommand({
 			return `You have no items or GP yet ${Emoji.Sad} You can get some GP by using the \`/minion daily\` command, and you can get items by sending your minion to do tasks.`;
 		}
 
-		const bank = parseBank({
+		let bank = parseBank({
 			inputBank: baseBank,
 			flags: {
 				search: options.search,
@@ -138,6 +139,9 @@ export const bankCommand = defineCommand({
 			user,
 			filters: options.filter ? [options.filter] : []
 		});
+		if (mahojiFlags.includes('show_disco_points')) {
+			bank = bank.filter(item => Boolean(item.equipable) && Boolean(item.equipment?.slot));
+		}
 
 		if (bank.length === 0) {
 			return 'No items found.';

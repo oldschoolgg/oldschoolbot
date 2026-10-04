@@ -15796,7 +15796,7 @@ setCustomItem(
 setCustomItem(
 	75_706,
 	'Resting rich face',
-	"Rune full helm",
+	'Rune full helm',
 	{
 		// Beauty sleep has a controlling interest.
 		tradeable: false,

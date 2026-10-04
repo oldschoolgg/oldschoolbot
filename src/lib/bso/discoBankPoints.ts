@@ -1,14 +1,15 @@
-import type { Item } from 'oldschooljs';
-
 import {
 	DISCO_AESTHETIC_COLORS,
 	DISCO_AESTHETIC_SHORT_NAMES,
 	DISCO_AESTHETICS,
 	DiscoItem
 } from '@/lib/bso/discoBloodbath.js';
+import type { Entitlement } from '@/lib/bso/util/entitlementChecker.js';
+
+import type { Item } from 'oldschooljs';
+
 import { PerkTier } from '@/lib/constants.js';
 import { RobochimpBitfieldEnum } from '@/lib/perkTiers.js';
-import type { Entitlement } from '@/lib/bso/util/entitlementChecker.js';
 
 // Disco Bloodbath-only /bank subtext. Remove this file and its caller after the event.
 export const discoBankPointEntitlements = [

@@ -345,6 +345,14 @@ const thingsToWipe = [
 	'giveaways'
 ] as const;
 
+const unspawnableItemIDs = [
+	itemID('Idle idol'),
+	itemID('Trust fund tiara'),
+	itemID('Two of Hearts'),
+	itemID('Count Napula'),
+	itemID('Lazy box')
+];
+
 export const testPotatoCommand = globalConfig.isProduction
 	? null
 	: defineCommand({
@@ -433,12 +441,14 @@ export const testPotatoCommand = globalConfig.isProduction
 							autocomplete: async ({ value }: StringAutoComplete) => {
 								if (!value)
 									return [{ name: 'Type something!', value: itemID('Twisted bow').toString() }];
-								return Items.filter(item => item.name.toLowerCase().includes(value.toLowerCase())).map(
-									i => ({
-										name: `${i.name} (ID: ${i.id})`,
-										value: i.id.toString()
-									})
-								);
+								return Items.filter(
+									item =>
+										item.name.toLowerCase().includes(value.toLowerCase()) &&
+										!unspawnableItemIDs.includes(item.id)
+								).map(i => ({
+									name: `${i.name} (ID: ${i.id})`,
+									value: i.id.toString()
+								}));
 							}
 						},
 						{
@@ -1091,6 +1101,8 @@ export const testPotatoCommand = globalConfig.isProduction
 							bankToGive.add(i.id, qty || 1);
 						}
 					}
+					const unspawnableItem = unspawnableItemIDs.find(itemID => bankToGive.has(itemID));
+					if (unspawnableItem) return `${Items.getOrThrow(unspawnableItem).name} cannot be spawned.`;
 
 					await user.addItemsToBank({ items: bankToGive, collectionLog: Boolean(collectionlog) });
 					return `Spawned: ${bankToGive.toString().slice(0, 500)}.`;

@@ -1,8 +1,9 @@
+import { DISCO_AESTHETICS, type DiscoAesthetic, isDiscoEventActive } from '@/lib/bso/discoBloodbath.js';
+
+import { createHash } from 'node:crypto';
 import { ButtonBuilder, ButtonStyle, EmbedBuilder } from '@oldschoolgg/discord';
 import { Time } from '@oldschoolgg/toolkit';
-import { createHash } from 'node:crypto';
 
-import { DISCO_AESTHETICS, type DiscoAesthetic, isDiscoEventActive } from '@/lib/bso/discoBloodbath.js';
 import type { OSInteraction } from '@/lib/structures/OSInteraction.js';
 import type { DiscoBloodbathActivityTaskOptions } from '@/lib/types/minions.js';
 import type { TripFinishEffectOptions } from '@/lib/util/handleTripFinish.js';
@@ -38,19 +39,8 @@ function createRaveId(userId: string) {
 		.substr(6, 6);
 }
 
-export async function discoHandler({
-	data,
-	user,
-	components,
-	embeds,
-	rng
-}: TripFinishEffectOptions) {
-	if (
-		!isDiscoEventActive() ||
-		!user.bloodbathEventStarted ||
-		(data.type === 'DiscoBloodbath' && data.isRave)
-	)
-		return;
+export async function discoHandler({ data, user, components, embeds, rng }: TripFinishEffectOptions) {
+	if (!isDiscoEventActive() || !user.bloodbathEventStarted || (data.type === 'DiscoBloodbath' && data.isRave)) return;
 
 	const minutes = Math.floor(data.duration / Time.Minute);
 	if (minutes < 1 || !Array.from({ length: minutes }).some(() => rng.roll(75))) return;

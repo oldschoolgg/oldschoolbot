@@ -34,56 +34,46 @@ export const DISCO_AESTHETIC_SHORT_NAMES: Record<DiscoAesthetic, string> = {
 
 const DISCO_HALLOWEEN_STORIES: Record<DiscoClub, { setup: string; resolution: string }> = {
 	Bloodbath: {
-		setup:
-			'🩸 *Act III begins with the house lights dead and the red spotlight fixed on an empty throne. Somewhere beneath the bass, a heartbeat is keeping time.*',
+		setup: '🩸 *Act III begins with the house lights dead and the red spotlight fixed on an empty throne. Somewhere beneath the bass, a heartbeat is keeping time.*',
 		resolution:
 			'🦇 *The throne remains empty, but the heartbeat stops when you leave. In the silence, the crowd finally remembers whose blood was on the dance floor.*'
 	},
 	Monster: {
-		setup:
-			'👹 *The monster behind the velvet curtain has learned every dancer’s name. It asks for yours as the third act starts.*',
+		setup: '👹 *The monster behind the velvet curtain has learned every dancer’s name. It asks for yours as the third act starts.*',
 		resolution:
 			'🕸️ *The curtain opens onto an empty room, except for your name stitched into the lining. The monster applauds from somewhere inside the walls.*'
 	},
 	Keoki: {
-		setup:
-			'👻 *Act III arrives with Keoki’s last record playing backward. A pale figure waits beside the booth, holding a photograph that has not been taken yet.*',
+		setup: '👻 *Act III arrives with Keoki’s last record playing backward. A pale figure waits beside the booth, holding a photograph that has not been taken yet.*',
 		resolution:
 			'🕯️ *The photograph develops in your hand: the room is empty, and you are dancing alone. The figure bows as the needle lifts.*'
 	},
 	Skrinklada: {
-		setup:
-			'🕷️ *At Skrinklada, the webbing over the speakers trembles when Act III begins. Each strand hums with a voice asking the dancers to stay until morning.*',
+		setup: '🕷️ *At Skrinklada, the webbing over the speakers trembles when Act III begins. Each strand hums with a voice asking the dancers to stay until morning.*',
 		resolution:
 			'🦇 *The webbing tears without a sound, and everyone swears they were never afraid. One silver thread is still tied around your wrist.*'
 	},
 	'Two of Hearts': {
-		setup:
-			'💔 *The third act begins with two heartbeats coming through the monitors, one too slow and one too fast. Neither belongs to the person beside you.*',
+		setup: '💔 *The third act begins with two heartbeats coming through the monitors, one too slow and one too fast. Neither belongs to the person beside you.*',
 		resolution:
 			'🕯️ *The music resolves into a single pulse, then nothing. At the bar, two untouched drinks continue to sweat in the dark.*'
 	},
 	Fame: {
-		setup:
-			'🎭 *Act III opens with every mirror at Fame showing a different face wearing your clothes. The applause starts before anyone has performed.*',
-		resolution:
-			'👁️ *When the mirrors go black, one reflection keeps clapping. It smiles only after you turn away.*'
+		setup: '🎭 *Act III opens with every mirror at Fame showing a different face wearing your clothes. The applause starts before anyone has performed.*',
+		resolution: '👁️ *When the mirrors go black, one reflection keeps clapping. It smiles only after you turn away.*'
 	},
 	Money: {
-		setup:
-			'🪙 *The third act begins when the coins on the bar start whispering their previous owners’ last wishes. The cashier counts them twice, then locks the door.*',
+		setup: '🪙 *The third act begins when the coins on the bar start whispering their previous owners’ last wishes. The cashier counts them twice, then locks the door.*',
 		resolution:
 			'⚰️ *At closing, every coin has vanished except one beneath your shoe. It is warm, and it bears the date of tomorrow.*'
 	},
 	Glamour: {
-		setup:
-			'🦇 *Act III begins when Glamour’s chandeliers dim and every guest’s shadow slips loose. They gather beneath the stage, waiting for the next song.*',
+		setup: '🦇 *Act III begins when Glamour’s chandeliers dim and every guest’s shadow slips loose. They gather beneath the stage, waiting for the next song.*',
 		resolution:
 			'🕸️ *The shadows return to their owners one by one, all except yours. It lingers beneath the stage and keeps dancing after the lights rise.*'
 	},
 	Success: {
-		setup:
-			'🏆 *The final act starts with a trophy presented to someone who never came home. Its polished surface shows the audience wearing funeral masks.*',
+		setup: '🏆 *The final act starts with a trophy presented to someone who never came home. Its polished surface shows the audience wearing funeral masks.*',
 		resolution:
 			'👻 *The trophy cracks as the final note fades, and a cold hand takes it from the stage. The crowd cheers as if it has been waiting years.*'
 	}
