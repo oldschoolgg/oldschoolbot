@@ -66,6 +66,7 @@ export async function interactionHandler(client: OldSchoolBotClient, itx: APIInt
 	}
 
 	if (itx.type === InteractionType.ApplicationCommand && itx.data.type === ApplicationCommandType.ChatInput) {
+		await fullUser.fetchPerkTier({ forceNoCache: true });
 		const chatInputItx = itx as APIChatInputApplicationCommandInteraction;
 		const d: IChatInputCommandInteraction = {
 			id: itx.id,

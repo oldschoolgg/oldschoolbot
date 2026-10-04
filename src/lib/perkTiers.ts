@@ -178,7 +178,7 @@ export async function getUsersPerkTier({
 	}
 	// END TODO
 
-	const roboChimpCached = await Cache.getRoboChimpUser(user.id);
+	const roboChimpCached = await Cache.getRoboChimpUser(user.id, forceNoCache);
 	if (roboChimpCached) {
 		eligibleTiers.push(roboChimpCached.perk_tier);
 		if (
