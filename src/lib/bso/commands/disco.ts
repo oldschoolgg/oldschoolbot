@@ -21,7 +21,7 @@ import type { DiscoBloodbathActivityTaskOptions } from '@/lib/types/minions.js';
 
 const clubChoices = () => discoClubOrder().map(name => ({ name, value: name }));
 
-const outfitEntitlements = [{ perkTier: 4 }, { bitfield: RobochimpBitfieldEnum.CyrTier2 }];
+const outfitEntitlements = [{ perkTier: 3 }, { bitfield: RobochimpBitfieldEnum.CyrTier0 }];
 
 const helpText = (
 	canUseOutfit: boolean

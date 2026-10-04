@@ -89,15 +89,45 @@ function drawLegend(canvas: OSRSCanvas) {
 	]);
 	for (const [index, entry] of entries.entries()) {
 		const x = 500 + index * 92;
-		canvas.drawText({
+		drawScaledText(canvas, {
 			text: `${entry.aesthetic} ${entry.positive ? '+' : '-'}`,
 			x: x + 36,
-			y: 1015,
+			y: 1008,
 			center: true,
 			font: 'TinyPixel',
-			color: colors[entry.aesthetic][entry.positive ? 'positive' : 'negative']
+			color: colors[entry.aesthetic][entry.positive ? 'positive' : 'negative'],
+			scale: 1.2
 		});
 	}
+}
+
+function drawScaledText(
+	canvas: OSRSCanvas,
+	{
+		text,
+		x,
+		y,
+		font,
+		color,
+		scale,
+		center = false,
+		maxWidth
+	}: {
+		text: string;
+		x: number;
+		y: number;
+		font: 'Compact' | 'Bold' | 'TinyPixel';
+		color: string;
+		scale: number;
+		center?: boolean;
+		maxWidth?: number;
+	}
+) {
+	canvas.ctx.save();
+	canvas.ctx.translate(x, y);
+	canvas.ctx.scale(scale, scale);
+	canvas.drawText({ text, x: 0, y: 0, font, color, center, maxWidth: maxWidth && maxWidth / scale });
+	canvas.ctx.restore();
 }
 
 export async function generateDiscoOutfitImage({
@@ -133,19 +163,26 @@ export async function generateDiscoOutfitImage({
 		const position = slotPositions[scored.slot];
 		if (!panel || !position) continue;
 		const [panelX, panelY, panelWidth] = panel;
-		await canvas.drawItemIDSprite({ itemID: scored.item.item.id, x: position[0] + 10, y: position[1] + 12, user });
+		await canvas.drawItemIDSprite({
+			itemID: scored.item.item.id,
+			x: position[0] + 9,
+			y: position[1] + 9,
+			size: { width: 92, height: 92 },
+			user
+		});
 		const points = DISCO_AESTHETICS.filter(aesthetic => scored.item.points[aesthetic] !== 0).sort(
 			(a, b) => Math.abs(scored.item.points[b]) - Math.abs(scored.item.points[a])
 		);
 		for (const [line, aesthetic] of points.entries()) {
 			const value = scored.item.points[aesthetic];
-			canvas.drawText({
+			drawScaledText(canvas, {
 				text: `${aesthetic}: ${value}`,
 				x: panelX + 20,
-				y: panelY + 42 + line * 28,
+				y: panelY + 42 + line * 32,
 				font: value < 0 ? 'Bold' : 'Compact',
 				color: colors[aesthetic][value < 0 ? 'negative' : 'positive'],
-				maxWidth: panelWidth - 40
+				maxWidth: panelWidth - 40,
+				scale: 1.5
 			});
 		}
 	}

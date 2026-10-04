@@ -1,6 +1,7 @@
 import {
 	type DiscoAesthetic,
 	type DiscoClub,
+	isDiscoHalloween,
 	recordDiscoBoxClaim,
 	scoreDiscoFashion
 } from '@/lib/bso/discoBloodbath.js';
@@ -109,15 +110,22 @@ export const discoBloodbathTask: MinionTask = {
 					: ''
 			: '';
 		const crowdMessage =
-			data.popularity > 80
-				? rng.pick(['It was packed.', 'The club was buzzing.', 'You could barely move through the crowd.'])
-				: data.popularity <= 65
-					? rng.pick([
-							'The club felt dead.',
-							'There was too much room on the dance floor.',
-							'The crowd never really arrived.'
-						])
-					: 'The crowd was lively enough.';
+			isDiscoHalloween() && rng.roll(30)
+				? rng.pick([
+						'The strobe lights briefly revealed something with too many legs.',
+						'A chill ran through the crowd when the bass dropped.',
+						'The dance floor creaked like an old coffin.',
+						'Nobody knew who put the skeleton behind the decks.'
+					])
+				: data.popularity > 80
+					? rng.pick(['It was packed.', 'The club was buzzing.', 'You could barely move through the crowd.'])
+					: data.popularity <= 65
+						? rng.pick([
+								'The club felt dead.',
+								'There was too much room on the dance floor.',
+								'The crowd never really arrived.'
+							])
+						: 'The crowd was lively enough.';
 		const lure = rng.roll(10)
 			? ' Someone mentioned that the Disco Fever is still hot — have you claimed your Lazy box yet?'
 			: '';

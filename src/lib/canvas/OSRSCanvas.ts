@@ -398,6 +398,7 @@ export class OSRSCanvas {
 		y,
 		outline,
 		iconPackId = this.iconPackId ?? undefined,
+		size,
 		quantity,
 		textColor,
 		glow,
@@ -410,6 +411,7 @@ export class OSRSCanvas {
 		y: number;
 		outline?: { outlineColor: string; alpha: number };
 		iconPackId?: IconPackID;
+		size?: { width: number; height: number };
 		quantity?: number;
 		textColor?: string;
 		glow?: {
@@ -422,8 +424,12 @@ export class OSRSCanvas {
 		effect?: Image | undefined;
 	}) {
 		const itemIcon: Image | Canvas = await OSRSCanvas.getItemImage({ itemID, iconPackId });
-		const destX = Math.floor(x + (this.itemSize.width - itemIcon.width) / 2);
-		const destY = Math.floor(y + (this.itemSize.height - itemIcon.height) / 2);
+		const targetSize = size ?? this.itemSize;
+		const scale = size ? Math.min(targetSize.width / itemIcon.width, targetSize.height / itemIcon.height) : 1;
+		const drawWidth = Math.round(itemIcon.width * scale);
+		const drawHeight = Math.round(itemIcon.height * scale);
+		const destX = Math.floor(x + (targetSize.width - drawWidth) / 2);
+		const destY = Math.floor(y + (targetSize.height - drawHeight) / 2);
 		let customImage: Image | null = null;
 
 		if (user && show_paints !== false) {
@@ -440,23 +446,26 @@ export class OSRSCanvas {
 			itemIcon.height,
 			destX,
 			destY,
-			itemIcon.width,
-			itemIcon.height
+			drawWidth,
+			drawHeight
 		] as const;
 
 		if (effect) {
-			const centerX = destX + itemIcon.width / 2;
-			const centerY = destY + itemIcon.height / 2;
-			const effectX = centerX - effect.width / 2;
-			const effectY = centerY - effect.height / 2;
-			this.ctx.drawImage(effect, effectX, effectY, effect.width, effect.height);
+			const centerX = destX + drawWidth / 2;
+			const centerY = destY + drawHeight / 2;
+			const effectScale = size ? Math.min(drawWidth / effect.width, drawHeight / effect.height) : 1;
+			const effectWidth = Math.round(effect.width * effectScale);
+			const effectHeight = Math.round(effect.height * effectScale);
+			const effectX = centerX - effectWidth / 2;
+			const effectY = centerY - effectHeight / 2;
+			this.ctx.drawImage(effect, effectX, effectY, effectWidth, effectHeight);
 		}
 		glow = handleSlayerMaskGlow({ itemID, user, glow });
 
 		if (glow) {
 			this.drawGlowingBlur(
-				destX + itemIcon.width / 2,
-				destY + itemIcon.height / 2,
+				destX + drawWidth / 2,
+				destY + drawHeight / 2,
 				glow.radius,
 				glow.color,
 				glow.blur

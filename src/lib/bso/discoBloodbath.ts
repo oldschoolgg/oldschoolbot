@@ -185,3 +185,7 @@ export function discoClubTheme(club: DiscoClub, date = new Date()) {
 export function isDiscoEventActive(date = new Date()) {
 	return date.getTime() < DISCO_EVENT_END_DATE.getTime();
 }
+
+export function isDiscoHalloween(date = new Date()) {
+	return date.getUTCMonth() === 9;
+}
