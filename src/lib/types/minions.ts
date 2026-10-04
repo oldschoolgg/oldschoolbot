@@ -28,6 +28,9 @@ export interface DiscoBloodbathActivityTaskOptions extends ActivityTaskOptions {
 	popularity: number;
 	theme: { name: string; good: string; bad: string };
 	fashion: Record<string, { item: number; quantity?: number } | null>;
+	isRave?: boolean;
+	raveAesthetics?: string[];
+	effectiveDuration?: number;
 }
 
 export type BeachCombingMethod = 'Surfing' | 'BeachCombing' | 'BuildSandcastles' | 'PickupTrash';

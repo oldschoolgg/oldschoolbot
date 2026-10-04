@@ -44,7 +44,7 @@ import { MUTEX_CACHE } from '@/lib/cache.js';
 import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
-import { BOT_TYPE } from '@/lib/constants.js';
+import { BOT_TYPE, BitField } from '@/lib/constants.js';
 import { bossCLItems } from '@/lib/data/Collections.js';
 import { avasDevices } from '@/lib/data/CollectionsExport.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
@@ -175,7 +175,11 @@ export class MUserClass extends BaseUser {
 	}
 
 	async calcMaxGearPresets() {
-		return this.perkTier * 2 + 4;
+		return this.perkTier * 2 + 4 + (this.bitfield.includes(BitField.DiscoBloodbathGearPresetSlots) ? 4 : 0);
+	}
+
+	get bloodbathEventStarted() {
+		return Boolean(this.user.bloodbath_event_started);
 	}
 
 	get perkTier() {

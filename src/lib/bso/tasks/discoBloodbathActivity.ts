@@ -30,13 +30,22 @@ export const discoBloodbathTask: MinionTask = {
 	async run(data: DiscoBloodbathActivityTaskOptions, { user, handleTripFinish, rng }) {
 		const scored = scoreDiscoFashion(data.fashion);
 		const minutes = Math.floor(data.duration / Time.Minute);
-		const multiplier = minutes / 60;
+		const effectiveMinutes = Math.floor((data.effectiveDuration ?? data.duration) / Time.Minute);
+		const multiplier = effectiveMinutes / 60;
 		const affected = Object.entries(scored.points)
 			.sort(([, a], [, b]) => b - a)
 			.slice(0, 2) as [DiscoAesthetic, number][];
 		const gained: Record<DiscoAesthetic, number> = { Futuristic: 0, Ragdoll: 0, 'Anti-Fashion': 0 };
 		for (const [aesthetic, points] of affected) {
-			const themeMultiplier = aesthetic === data.theme.good ? 1.25 : aesthetic === data.theme.bad ? -0.5 : 1;
+			const themeMultiplier = data.isRave
+				? data.raveAesthetics?.includes(aesthetic)
+					? 1.25
+					: 1
+				: aesthetic === data.theme.good
+					? 1.25
+					: aesthetic === data.theme.bad
+						? -0.5
+						: 1;
 			gained[aesthetic] = Math.floor(points * multiplier * (data.popularity / 100) * themeMultiplier);
 		}
 
@@ -51,8 +60,8 @@ export const discoBloodbathTask: MinionTask = {
 		for (const aesthetic of Object.keys(gained) as DiscoAesthetic[]) stats.points[aesthetic] += gained[aesthetic];
 
 		const expectedNext = route[stats.traversal.length];
-		if (minutes >= 30 && data.club === expectedNext) stats.traversal.push(data.club as DiscoClub);
-		else if (minutes >= 30 && data.club === route[0]) stats.traversal = [route[0]];
+		if (!data.isRave && minutes >= 30 && data.club === expectedNext) stats.traversal.push(data.club as DiscoClub);
+		else if (!data.isRave && minutes >= 30 && data.club === route[0]) stats.traversal = [route[0]];
 		else stats.traversal = [];
 
 		const loot = new Bank();
@@ -74,7 +83,7 @@ export const discoBloodbathTask: MinionTask = {
 		const completedRoute = stats.traversal.length === route.length;
 		const routeReward = completedRoute && user.user.claimed_glamour_box === 0;
 		const chase =
-			routeReward || (minutes >= 30 && totalScore > 0 && rng.roll(1000))
+			routeReward || rng.roll(50)
 				? rng.pick<'Skrink box' | 'Skrod box'>(['Skrink box', 'Skrod box'])
 				: null;
 		if (completedRoute) {
@@ -134,7 +143,7 @@ export const discoBloodbathTask: MinionTask = {
 			user,
 			channelId: data.channelId,
 			message: {
-				content: `${user.minionName} finished a ${minutes}-minute visit to ${data.club}.\n${topMessage}\n${crowdMessage}${lure}\n\n**Realm points**\n${pointSummary}${totalScore === 0 ? '\nYour Fashion gear scored no points. Try `/disco check_item` to plan your outfit.' : ''}${itemsAdded.length > 0 ? `\n\n**Loot:** ${itemsAdded}` : ''}`
+				content: `${user.minionName} finished a ${minutes}-minute ${data.isRave ? 'rave' : 'visit'} to ${data.club}.\n${topMessage}\n${crowdMessage}${lure}\n\n**Realm points**\n${pointSummary}${totalScore === 0 ? '\nYour Fashion gear scored no points. Try `/disco check_item` to plan your outfit.' : ''}${chase ? `\n\n🎉 **SKRINK/SKROD BOX DROP!** 🎉\nThe crowd erupts: ${chase}!` : ''}${itemsAdded.length > 0 ? `\n\n**Loot:** ${itemsAdded}` : ''}`
 			},
 			data: { ...data, cantBeDoubled: true },
 			loot: itemsAdded

@@ -9,7 +9,7 @@ import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skil
 import { RuneTable, WilvusTable, WoodTable } from '@/lib/bso/tables/seedTable.js';
 import { DougTable, PekyTable } from '@/lib/bso/tables/sharedTables.js';
 
-import { type ButtonBuilder, bold } from '@oldschoolgg/discord';
+import { type ButtonBuilder, type EmbedBuilder, bold } from '@oldschoolgg/discord';
 import { getNextUTCReset, notEmpty, Time } from '@oldschoolgg/toolkit';
 import { MathRNG, randArrItem, randInt, roll } from 'node-rng';
 import { cryptoRng } from 'node-rng/crypto';
@@ -18,6 +18,7 @@ import { Bank, EItem, itemID, toKMB } from 'oldschooljs';
 import { activity_type_enum } from '@/prisma/main.js';
 import type { MessageBuilderClass } from '@/discord/MessageBuilder.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { discoHandler } from '@/lib/bso/discoHandler.js';
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';
 import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements.js';
 import { BitField, CONSTANTS, PerkTier } from '@/lib/constants.js';
@@ -52,12 +53,13 @@ const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
 	'ClueCompletion'
 ];
 
-interface TripFinishEffectOptions {
+export interface TripFinishEffectOptions {
 	data: ActivityTaskData;
 	user: MUser;
 	loot: Bank | null;
 	messages: string[];
 	components: ButtonBuilder[];
+	embeds: EmbedBuilder[];
 	lastDailyTimestamp: bigint | null;
 	lastTearsOfGuthixTimestamp: bigint | null;
 	perkTier: PerkTier;
@@ -91,6 +93,10 @@ const tripFinishEffects: TripFinishEffect[] = [
 			}
 			return {};
 		}
+	},
+	{
+		name: 'Disco Bloodbath Raves',
+		fn: discoHandler
 	},
 	{
 		name: 'Implings',
@@ -698,6 +704,7 @@ export async function handleTripFinish(
 	const messages: string[] = inputMessages ?? [];
 
 	const components: ButtonBuilder[] = [];
+	const embeds: EmbedBuilder[] = [];
 	components.push(makeRepeatTripButton());
 
 	const portents = await getAllPortentCharges(user);
@@ -712,6 +719,7 @@ export async function handleTripFinish(
 			user,
 			loot: loot ?? null,
 			components,
+			embeds,
 			messages,
 			portents,
 			lastDailyTimestamp: last_daily_timestamp,
@@ -729,7 +737,6 @@ export async function handleTripFinish(
 			duration
 		});
 	}
-
 	if (itemsToAddWithCL.length > 0 || itemsToRemove.length > 0) {
 		await user.transactItems({ itemsToAdd: itemsToAddWithCL, collectionLog: true, itemsToRemove });
 	}
@@ -745,6 +752,7 @@ export async function handleTripFinish(
 	if (components.length > 0) {
 		message.addComponents(components);
 	}
+	for (const embed of embeds) message.addEmbed(embed);
 
 	message.addAllowedUserMentions([user.id]);
 	if ('users' in data) {

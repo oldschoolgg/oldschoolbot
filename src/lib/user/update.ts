@@ -65,7 +65,7 @@ type PrismaNullableStringKeys =
 	| 'slayer_remember_master'
 	| 'icon_pack_id';
 
-type PrismaBooleanKeys = 'minion_defaultPay' | 'minion_ironman' | 'minion_hasBought';
+type PrismaBooleanKeys = 'minion_defaultPay' | 'minion_ironman' | 'minion_hasBought' | 'bloodbath_event_started';
 
 type BSOUserUpdateInput = {
 	magic_words_guessed: string[];

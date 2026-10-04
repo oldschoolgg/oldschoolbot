@@ -258,9 +258,17 @@ export const gearPresetsCommand = defineCommand({
 					}
 				}
 			]
+		},
+		{
+			type: 'Subcommand',
+			name: 'help',
+			description: 'Learn how to use gear presets.'
 		}
 	],
 	run: async ({ options, user, interaction }) => {
+		if (options.help) {
+			return 'Use `/gearpresets create` to save a named loadout, `/gearpresets edit` to change it, and `/gearpresets equip` to put it in a gear setup. Presets can be deleted with `/gearpresets delete`; `/gearpresets view` previews one. Disco Bloodbath creates empty Fashion presets you can fill: `disco_future`, `disco_ragdoll`, and `disco_anti`.';
+		}
 		if (options.create) {
 			return createOrEditGearSetup(
 				user,

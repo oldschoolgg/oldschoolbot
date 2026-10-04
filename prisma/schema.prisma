@@ -336,6 +336,7 @@ enum bank_sort_method_enum {
 model User {
   claimed_lazy_box    Int       @default(0)
   claimed_glamour_box Int       @default(0)
+  bloodbath_event_started Boolean?
   gambles             Gamble[]
   id                  String    @id @db.VarChar(19)
   last_command_date   DateTime? @db.Timestamp(6)

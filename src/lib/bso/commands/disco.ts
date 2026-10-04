@@ -15,6 +15,7 @@ import { Time } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
 import { activity_type_enum } from '@/prisma/main/enums.js';
+import { BitField } from '@/lib/constants.js';
 import { RobochimpBitfieldEnum } from '@/lib/perkTiers.js';
 import type { DiscoBloodbathActivityTaskOptions } from '@/lib/types/minions.js';
 
@@ -55,6 +56,7 @@ export const discoCommand = defineCommand({
 	name: 'disco',
 	description: 'Enter the Disco Bloodbath club circuit.',
 	options: [
+		{ type: 'Subcommand', name: 'start', description: 'Join the Disco Bloodbath event.' },
 		{ type: 'Subcommand', name: 'help', description: 'Learn how the club circuit works.' },
 		{ type: 'Subcommand', name: 'stats', description: 'View your Realm progress and club rank.' },
 		{
@@ -105,6 +107,17 @@ export const discoCommand = defineCommand({
 	],
 	run: async ({ options, user, channelId }) => {
 		if (!isDiscoEventActive()) return 'The Disco Bloodbath has closed for the night.';
+		if (options.start) {
+			await user.update({
+				bloodbath_event_started: true,
+				bitfield: [...new Set([...user.bitfield, BitField.DiscoBloodbathGearPresetSlots])]
+			});
+			await prisma.gearPreset.createMany({
+				data: ['disco_future', 'disco_ragdoll', 'disco_anti'].map(name => ({ user_id: user.id, name })),
+				skipDuplicates: true
+			});
+			return 'You have started Disco Bloodbath. You really need to read `/disco help`.\n\n4 `/gearpresets` slots have been permanently added to your account. Created empty presets: `disco_future`, `disco_ragdoll`, `disco_anti`. Use `/gearpresets help`.';
+		}
 		if (options.help) return helpText((await checkEntitlements(user, outfitEntitlements)).success);
 
 		if (options.check_item) {

@@ -218,7 +218,8 @@ export enum BitField {
 	HasHalloweenWallkit = 234,
 	HasEarnedRiftGuardianFromStar = 235,
 	DisablePaints = 236,
-	DisableGlowEffects = 238
+	DisableGlowEffects = 238,
+	DiscoBloodbathGearPresetSlots = 239
 }
 
 export interface IBitFieldData {
@@ -284,6 +285,11 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 	[BitField.PermanentIronman]: { name: 'Permanent Ironman', protected: false, userConfigurable: false },
 	[BitField.HasLeaguesOneMinuteLengthBoost]: {
 		name: 'Leagues One Minute Trip Length Boost',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.DiscoBloodbathGearPresetSlots]: {
+		name: 'Disco Bloodbath Gear Preset Slots',
 		protected: false,
 		userConfigurable: false
 	},

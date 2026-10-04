@@ -1,4 +1,5 @@
 import { ItemContracts } from '@/lib/bso/itemContracts.js';
+import { handleDiscoRaveButton } from '@/lib/bso/discoHandler.js';
 import { repeatTameTrip } from '@/lib/bso/tames/tameTasks.js';
 
 import { type APIMessageComponentInteraction, SpecialResponse } from '@oldschoolgg/discord';
@@ -249,6 +250,7 @@ async function globalButtonInteractionHandler({
 	}
 
 	const user = interaction.user;
+	if (id.startsWith('DISCO_RAVE_')) return handleDiscoRaveButton(user, id, interaction);
 	if (id.includes(InteractionID.Commands.RepeatTrip)) return repeatTripHandler(user, id, interaction);
 
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
