@@ -113,10 +113,10 @@ export const discoCommand = defineCommand({
 				bitfield: [...new Set([...user.bitfield, BitField.DiscoBloodbathGearPresetSlots])]
 			});
 			await prisma.gearPreset.createMany({
-				data: ['disco_future', 'disco_ragdoll', 'disco_anti'].map(name => ({ user_id: user.id, name })),
+				data: ['discofuture', 'discoragdoll', 'discoanti'].map(name => ({ user_id: user.id, name })),
 				skipDuplicates: true
 			});
-			return 'You have started Disco Bloodbath. You really need to read `/disco help`.\n\n4 `/gearpresets` slots have been permanently added to your account. Created empty presets: `disco_future`, `disco_ragdoll`, `disco_anti`. Use `/gearpresets help`.';
+			return 'You have started Disco Bloodbath. You really need to read `/disco help`.\n\n4 `/gearpresets` slots have been permanently added to your account. Created empty presets: `discofuture`, `discoragdoll`, `discoanti`. Use `/gearpresets help`.';
 		}
 		if (options.help) return helpText((await checkEntitlements(user, outfitEntitlements)).success);
 

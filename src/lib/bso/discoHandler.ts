@@ -20,9 +20,9 @@ const ravePalettes: RavePalette[] = [
 ];
 
 const presetForAesthetic: Record<DiscoAesthetic, string> = {
-	Futuristic: 'disco_future',
-	Ragdoll: 'disco_ragdoll',
-	'Anti-Fashion': 'disco_anti'
+	Futuristic: 'discofuture',
+	Ragdoll: 'discoragdoll',
+	'Anti-Fashion': 'discoanti'
 };
 
 function ravePalette(slug: string) {
