@@ -27,7 +27,7 @@ const helpText = (
 	canUseOutfit: boolean
 ) => `**Disco Bloodbath** is a limited-time club circuit for minions who understand that fashion is a weapon.
 
-Visit a club to send your minion out for at least thirty minutes. Your Fashion gear determines your points, and your top two Realms gain or lose progress depending on the party's vibe. Each club's crowd and theme change throughout the event. Use \`/disco inquire\` for a tip from your contacts, and \`/disco stats\` to track your rank. Completed visits can return strange fashion loot and very rarely a chase box.
+**Use \`/disco visit\` to send your minion on a trip.** Visits take at least thirty minutes. Your Fashion gear determines your points, and your top two Realms gain or lose progress depending on the party's vibe. Each club's crowd and theme change throughout the event. Use \`/disco inquire\` for a tip from your contacts, and \`/disco stats\` to track your rank. Completed visits can return strange fashion loot and very rarely a chase box.
 
 The clubs are:
 ${DISCO_CLUBS.map(club => `- **${club}** — ${discoClubTheme(club).name}: ${discoClubTheme(club).description}`).join('\n')}
@@ -56,7 +56,7 @@ export const discoCommand = defineCommand({
 	name: 'disco',
 	description: 'Enter the Disco Bloodbath club circuit.',
 	options: [
-		{ type: 'Subcommand', name: 'start', description: 'Join the Disco Bloodbath event.' },
+		{ type: 'Subcommand', name: 'party', description: 'Join the Disco Bloodbath event.' },
 		{ type: 'Subcommand', name: 'help', description: 'Learn how the club circuit works.' },
 		{ type: 'Subcommand', name: 'stats', description: 'View your Realm progress and club rank.' },
 		{
@@ -107,7 +107,7 @@ export const discoCommand = defineCommand({
 	],
 	run: async ({ options, user, channelId }) => {
 		if (!isDiscoEventActive()) return 'The Disco Bloodbath has closed for the night.';
-		if (options.start) {
+		if (options.party) {
 			await user.update({
 				bloodbath_event_started: true,
 				bitfield: [...new Set([...user.bitfield, BitField.DiscoBloodbathGearPresetSlots])]

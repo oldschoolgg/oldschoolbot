@@ -12,8 +12,8 @@ const outfitTemplate = fs
 
 const colors: Record<DiscoAesthetic, { positive: string; negative: string }> = {
 	Futuristic: { positive: '#00d8e8', negative: '#123c71' },
-	Ragdoll: { positive: '#ff4f9a', negative: '#7a1730' },
-	'Anti-Fashion': { positive: '#b8ec00', negative: '#405800' }
+	Ragdoll: { positive: '#ff78bd', negative: '#c93570' },
+	'Anti-Fashion': { positive: '#d6ff38', negative: '#91b300' }
 };
 
 const slotPositions: Record<string, [number, number]> = {
@@ -173,16 +173,21 @@ export async function generateDiscoOutfitImage({
 		const points = DISCO_AESTHETICS.filter(aesthetic => scored.item.points[aesthetic] !== 0).sort(
 			(a, b) => Math.abs(scored.item.points[b]) - Math.abs(scored.item.points[a])
 		);
+		const compactPanel = panel[3] <= 100;
+		const hasThreeScores = points.length > 2;
+		const textScale = hasThreeScores ? 1.75 : 2.75;
+		const lineHeight = hasThreeScores ? 30 : compactPanel ? 32 : 45;
+		const firstLineY = panelY + (hasThreeScores ? 34 : compactPanel ? 40 : 50);
 		for (const [line, aesthetic] of points.entries()) {
 			const value = scored.item.points[aesthetic];
 			drawScaledText(canvas, {
 				text: `${aesthetic}: ${value}`,
 				x: panelX + 20,
-				y: panelY + 42 + line * 32,
+				y: firstLineY + line * lineHeight,
 				font: value < 0 ? 'Bold' : 'Compact',
 				color: colors[aesthetic][value < 0 ? 'negative' : 'positive'],
 				maxWidth: panelWidth - 40,
-				scale: 1.5
+				scale: textScale
 			});
 		}
 	}

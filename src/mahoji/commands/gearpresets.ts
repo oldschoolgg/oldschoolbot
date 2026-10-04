@@ -225,6 +225,12 @@ export const gearPresetsCommand = defineCommand({
 							.map(i => ({ name: i.name, value: i.name }));
 					}
 				},
+				{
+					...gearSetupOption,
+					required: false,
+					name: 'copy_setup',
+					description: 'Pick a setup to copy over this preset.'
+				},
 				...slotOptions,
 				{
 					type: 'String',
@@ -284,7 +290,7 @@ export const gearPresetsCommand = defineCommand({
 		if (options.edit) {
 			return createOrEditGearSetup(
 				user,
-				undefined,
+				options.edit.copy_setup,
 				options.edit.gear_preset,
 				true,
 				options.edit,
