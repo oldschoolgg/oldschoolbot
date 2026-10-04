@@ -66,19 +66,6 @@ export const discoBloodbathTask: MinionTask = {
 
 		const loot = new Bank();
 		const totalScore = Object.values(scored.points).reduce((sum, points) => sum + points, 0);
-		const fashionLoot = Math.floor((totalScore * minutes) / 3000);
-		if (fashionLoot > 0) {
-			loot.add(
-				rng.pick([
-					'Velvet rope sceptre',
-					'Fame fatal',
-					'Glam jam platformers',
-					'Age of the thing',
-					'Two of Hearts'
-				]),
-				fashionLoot
-			);
-		}
 
 		const completedRoute = stats.traversal.length === route.length;
 		const routeReward = completedRoute && user.user.claimed_glamour_box === 0;
