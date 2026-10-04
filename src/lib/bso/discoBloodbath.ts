@@ -32,50 +32,73 @@ export const DISCO_AESTHETIC_SHORT_NAMES: Record<DiscoAesthetic, string> = {
 	'Anti-Fashion': 'A'
 };
 
-const DISCO_HALLOWEEN_STORIES: Record<DiscoClub, { setup: string; resolution: string }> = {
+const DISCO_HALLOWEEN_STORIES: Record<DiscoClub, { moment: string; endings: string[] }> = {
 	Bloodbath: {
-		setup: '🩸 *Act III begins with the house lights dead and the red spotlight fixed on an empty throne. Somewhere beneath the bass, a heartbeat is keeping time.*',
-		resolution:
-			'🦇 *The throne remains empty, but the heartbeat stops when you leave. In the silence, the crowd finally remembers whose blood was on the dance floor.*'
+		moment:
+			'🩸 *The house lights die and a red spotlight finds an empty throne. Somewhere beneath the bass, a heartbeat is keeping time.*',
+		endings: [
+			'🦇 *The heartbeat stops when you leave. In the silence, the crowd remembers whose blood was on the dance floor.*',
+			'🪩 *The throne coughs up a disco ball, which rolls directly into coat check. Nobody claims it.*'
+		]
 	},
 	Monster: {
-		setup: '👹 *The monster behind the velvet curtain has learned every dancer’s name. It asks for yours as the third act starts.*',
-		resolution:
-			'🕸️ *The curtain opens onto an empty room, except for your name stitched into the lining. The monster applauds from somewhere inside the walls.*'
+		moment:
+			'👹 *Behind the velvet curtain, something has learned every dancer’s name. It asks for yours.*',
+		endings: [
+			'🕸️ *The curtain opens onto an empty room, except for your name stitched into the lining. Something applauds inside the walls.*',
+			'🎟️ *The curtain parts to reveal a bouncer with a clipboard. You are denied entry for wearing the wrong shoes.*'
+		]
 	},
 	Keoki: {
-		setup: '👻 *Act III arrives with Keoki’s last record playing backward. A pale figure waits beside the booth, holding a photograph that has not been taken yet.*',
-		resolution:
+		moment:
+			'👻 *Keoki’s last record plays backward. A pale figure waits beside the booth, holding a photograph that has not been taken yet.*',
+		endings: [
 			'🕯️ *The photograph develops in your hand: the room is empty, and you are dancing alone. The figure bows as the needle lifts.*'
+		]
 	},
 	Skrinklada: {
-		setup: '🕷️ *At Skrinklada, the webbing over the speakers trembles when Act III begins. Each strand hums with a voice asking the dancers to stay until morning.*',
-		resolution:
-			'🦇 *The webbing tears without a sound, and everyone swears they were never afraid. One silver thread is still tied around your wrist.*'
+		moment:
+			'🕷️ *The webbing over Skrinklada’s speakers trembles. Each strand hums with a voice asking the dancers to stay until morning.*',
+		endings: [
+			'🦇 *The webbing tears without a sound, and everyone swears they were never afraid. One silver thread remains tied around your wrist.*',
+			'🕸️ *A tiny spider lowers itself onto the DJ booth and requests the next song. Everyone obeys.*'
+		]
 	},
 	'Two of Hearts': {
-		setup: '💔 *The third act begins with two heartbeats coming through the monitors, one too slow and one too fast. Neither belongs to the person beside you.*',
-		resolution:
-			'🕯️ *The music resolves into a single pulse, then nothing. At the bar, two untouched drinks continue to sweat in the dark.*'
+		moment:
+			'💔 *Two heartbeats come through the monitors, one too slow and one too fast. Neither belongs to the person beside you.*',
+		endings: [
+			'🕯️ *The music narrows to a single pulse, then nothing. At the bar, two untouched drinks continue to sweat in the dark.*',
+			'💘 *A bartender unplugs the monitors and apologizes: the haunted heart-rate machine has been double-booked.*'
+		]
 	},
 	Fame: {
-		setup: '🎭 *Act III opens with every mirror at Fame showing a different face wearing your clothes. The applause starts before anyone has performed.*',
-		resolution: '👁️ *When the mirrors go black, one reflection keeps clapping. It smiles only after you turn away.*'
+		moment:
+			'🎭 *Every mirror at Fame shows a different face wearing your clothes. Applause starts before anyone has performed.*',
+		endings: ['👁️ *The mirrors go black, but one reflection keeps clapping. It smiles only after you turn away.*']
 	},
 	Money: {
-		setup: '🪙 *The third act begins when the coins on the bar start whispering their previous owners’ last wishes. The cashier counts them twice, then locks the door.*',
-		resolution:
-			'⚰️ *At closing, every coin has vanished except one beneath your shoe. It is warm, and it bears the date of tomorrow.*'
+		moment:
+			'🪙 *Coins on the bar begin whispering their previous owners’ last wishes. The cashier counts them twice, then locks the door.*',
+		endings: [
+			'⚰️ *At closing, every coin has vanished except one beneath your shoe. It is warm, and it bears tomorrow’s date.*',
+			'💸 *The coins stop whispering once the cashier adds a service charge. They do not stop complaining.*'
+		]
 	},
 	Glamour: {
-		setup: '🦇 *Act III begins when Glamour’s chandeliers dim and every guest’s shadow slips loose. They gather beneath the stage, waiting for the next song.*',
-		resolution:
-			'🕸️ *The shadows return to their owners one by one, all except yours. It lingers beneath the stage and keeps dancing after the lights rise.*'
+		moment:
+			'🦇 *Glamour’s chandeliers dim and every guest’s shadow slips loose. They gather beneath the stage, waiting for the next song.*',
+		endings: [
+			'🕸️ *The shadows return to their owners one by one, all except yours. It remains beneath the stage, dancing after the lights rise.*'
+		]
 	},
 	Success: {
-		setup: '🏆 *The final act starts with a trophy presented to someone who never came home. Its polished surface shows the audience wearing funeral masks.*',
-		resolution:
-			'👻 *The trophy cracks as the final note fades, and a cold hand takes it from the stage. The crowd cheers as if it has been waiting years.*'
+		moment:
+			'🏆 *A trophy is presented to someone who never came home. Its polished surface shows the audience wearing funeral masks.*',
+		endings: [
+			'👻 *The trophy cracks as the music fades, and a cold hand takes it from the stage. The crowd cheers as if it has waited years.*',
+			'🥈 *The trophy’s ghost accepts second place, then demands a rematch at karaoke.*'
+		]
 	}
 };
 

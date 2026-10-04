@@ -350,7 +350,7 @@ const unspawnableItemIDs = [
 	itemID('Trust fund tiara'),
 	itemID('Two of Hearts'),
 	itemID('Count Napula'),
-	itemID('Lazy box')
+	itemID('Lazy mystery box')
 ];
 
 export const testPotatoCommand = globalConfig.isProduction

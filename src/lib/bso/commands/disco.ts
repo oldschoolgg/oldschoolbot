@@ -216,9 +216,7 @@ export const discoCommand = defineCommand({
 				fashion: user.gear.fashion.raw()
 			});
 			const story = isDiscoHalloween() ? discoHalloweenStory(club) : null;
-			return `${user.minionName} is heading to ${club}. The visit will take at least 30 minutes.${
-				story ? `\n\n${story.setup}\n\n📺 *We'll return after these messages.*` : ''
-			}`;
+			return `${user.minionName} is heading to ${club}. The visit will take at least 30 minutes.${story ? `\n\n${story.moment}` : ''}`;
 		}
 
 		return 'Choose a Disco Bloodbath option.';
