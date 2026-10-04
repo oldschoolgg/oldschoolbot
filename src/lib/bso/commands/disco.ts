@@ -5,7 +5,9 @@ import {
 	DiscoItem,
 	discoClubOrder,
 	discoClubTheme,
+	discoHalloweenStory,
 	discoPopularity,
+	isDiscoHalloween,
 	isDiscoEventActive,
 	scoreDiscoFashion
 } from '@/lib/bso/discoBloodbath.js';
@@ -203,7 +205,10 @@ export const discoCommand = defineCommand({
 				theme: { name: theme.name, good: theme.good, bad: theme.bad },
 				fashion: user.gear.fashion.raw()
 			});
-			return `${user.minionName} is heading to ${club}. The visit will take at least 30 minutes.`;
+			const story = isDiscoHalloween() ? discoHalloweenStory(club) : null;
+			return `${user.minionName} is heading to ${club}. The visit will take at least 30 minutes.${
+				story ? `\n\n${story.setup}\n\n📺 *We'll return after these messages.*` : ''
+			}`;
 		}
 
 		return 'Choose a Disco Bloodbath option.';

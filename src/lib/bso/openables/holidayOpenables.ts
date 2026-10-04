@@ -77,7 +77,7 @@ export const SkrinkBoxTable = new LootTable()
 	.add('Skrink mink')
 	.add('Resting rich face')
 	.add('Lazily rollers')
-	// Note: Partyhat should be rare / chase, so depending on box rarity, this numbe                                                                                                                                                                                                                                                          r might change a lot
+	// Note: Partyhat should be rare / chase, so depending on box rarity, this number might change a lot
 	.tertiary(10, 'Premierekat')
 	.tertiary(50, 'Partytimehat');
 

@@ -1,6 +1,7 @@
 import {
 	type DiscoAesthetic,
 	type DiscoClub,
+	discoHalloweenStory,
 	isDiscoHalloween,
 	recordDiscoBoxClaim,
 	scoreDiscoFashion
@@ -129,6 +130,7 @@ export const discoBloodbathTask: MinionTask = {
 		const lure = rng.roll(10)
 			? ' Someone mentioned that the Disco Fever is still hot — have you claimed your Lazy box yet?'
 			: '';
+		const story = isDiscoHalloween() ? discoHalloweenStory(data.club) : null;
 		const pointSummary = affected
 			.map(
 				([aesthetic]) =>
@@ -139,7 +141,7 @@ export const discoBloodbathTask: MinionTask = {
 			user,
 			channelId: data.channelId,
 			message: {
-				content: `${user.minionName} finished a ${minutes}-minute ${data.isRave ? 'rave' : 'visit'} to ${data.club}.\n${topMessage}\n${crowdMessage}${lure}\n\n**Realm points**\n${pointSummary}${totalScore === 0 ? '\nYour Fashion gear scored no points. Try `/disco check_item` to plan your outfit.' : ''}${chase ? `\n\n🎉 **SKRINK/SKROD BOX DROP!** 🎉\nThe crowd erupts: ${chase}!` : ''}${itemsAdded.length > 0 ? `\n\n**Loot:** ${itemsAdded}` : ''}`
+				content: `${user.minionName} finished a ${minutes}-minute ${data.isRave ? 'rave' : 'visit'} to ${data.club}.\n${topMessage}\n${crowdMessage}${story ? `\n\n${story.resolution}` : ''}${lure}\n\n**Realm points**\n${pointSummary}${totalScore === 0 ? '\nYour Fashion gear scored no points. Try `/disco check_item` to plan your outfit.' : ''}${chase ? `\n\n🎉 **SKRINK/SKROD BOX DROP!** 🎉\nThe crowd erupts: ${chase}!` : ''}${itemsAdded.length > 0 ? `\n\n**Loot:** ${itemsAdded}` : ''}`
 			},
 			data: { ...data, cantBeDoubled: true },
 			loot: itemsAdded
