@@ -4,7 +4,7 @@ import { cryptoRng } from 'node-rng/crypto';
 
 import { convertAPIOptionsToCommandOptions } from '@/discord/index.js';
 import { preCommand } from '@/discord/preCommand.js';
-import { busyImmuneCommands, SILENT_ERROR } from '@/lib/constants.js';
+import { BitField, busyImmuneCommands, SILENT_ERROR } from '@/lib/constants.js';
 import { RawSQL } from '@/lib/rawSql.js';
 
 export async function rawCommandHandlerInner({
@@ -37,6 +37,9 @@ export async function rawCommandHandlerInner({
 		}
 	}
 	const user = interaction.user;
+	if (command.flags?.includes('GAMBLING_BANNED') && user.bitfield.includes(BitField.BannedFromGambling)) {
+		return 'You are barred from gambling.';
+	}
 	RawSQL.updateUserLastCommandDate({ userId: interaction.userId }).catch(err => Logging.logError(err));
 
 	const shouldIgnoreBusy = user.isAdmin || ignoreUserIsBusy || busyImmuneCommands.includes(command.name);

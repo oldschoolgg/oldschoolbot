@@ -218,6 +218,7 @@ export enum BitField {
 	HasHalloweenWallkit = 234,
 	HasEarnedRiftGuardianFromStar = 235,
 	DisablePaints = 236,
+	BannedFromGambling = 237,
 	DisableGlowEffects = 238,
 	DiscoBloodbathGearPresetSlots = 239
 }
@@ -525,6 +526,11 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 		name: 'Disable Paints',
 		protected: false,
 		userConfigurable: true
+	},
+	[BitField.BannedFromGambling]: {
+		name: 'Banned from Gambling',
+		protected: false,
+		userConfigurable: false
 	},
 	[BitField.DisableGlowEffects]: {
 		name: 'Disable Glow Effects',

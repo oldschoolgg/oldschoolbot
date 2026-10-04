@@ -8,6 +8,7 @@ import { Workers } from '@/lib/workers/index.js';
 
 export const finishCommand = defineCommand({
 	name: 'finish',
+	flags: ['GAMBLING_BANNED'],
 	description: 'Simulate finishing a CL.',
 	options: [
 		{

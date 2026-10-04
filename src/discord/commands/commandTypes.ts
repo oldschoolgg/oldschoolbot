@@ -64,7 +64,7 @@ export type CommandRunOptions<TOpts = {}> = {
 	rng: RNGProvider;
 };
 
-type CommandFlag = 'REQUIRES_LOCK';
+type CommandFlag = 'REQUIRES_LOCK' | 'GAMBLING_BANNED';
 
 export type AnyCommand = Readonly<{
 	name: string;
