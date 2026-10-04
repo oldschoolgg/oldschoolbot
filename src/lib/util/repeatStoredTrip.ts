@@ -102,6 +102,12 @@ import { giantsFoundryAlloys } from '@/mahoji/lib/abstracted_commands/giantsFoun
 import puroOptions from '@/mahoji/lib/abstracted_commands/puroPuroCommand.js';
 
 export const taskCanBeRepeated = (activity: Activity) => {
+	if (
+		activity.type === activity_type_enum.DiscoBloodbath &&
+		(activity.data as { isRave?: boolean }).isRave
+	) {
+		return false;
+	}
 	return !(
 		[
 			activity_type_enum.TearsOfGuthix,

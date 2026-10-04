@@ -85,7 +85,9 @@ export async function handleDiscoRaveButton(
 	id: string,
 	interaction: OSInteraction
 ): Promise<CommandResponse> {
-	const [, , invitedUserID, choice, slug] = id.split('_');
+	const [, , invitedUserID, ...choiceAndSlug] = id.split('_');
+	const slug = choiceAndSlug.pop();
+	const choice = choiceAndSlug.join('_');
 	if (!invitedUserID || !choice || !slug || user.id !== invitedUserID) {
 		return { content: 'This rave invite is not for you.', ephemeral: true };
 	}
