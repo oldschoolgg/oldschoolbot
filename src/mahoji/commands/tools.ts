@@ -5,7 +5,7 @@ import { findGroupOfUser } from '@/lib/bso/util/findGroupOfUser.js';
 import { repairBrokenItemsFromUser } from '@/lib/bso/util/repairBrokenItems.js';
 
 import { EmbedBuilder, userMention } from '@oldschoolgg/discord';
-import { formatDuration, PerkTier, stringMatches, stringSearch, Time } from '@oldschoolgg/toolkit';
+import { formatDuration, isValidHexColor, PerkTier, stringMatches, stringSearch, Time } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, ItemGroups, Items, resolveItems, ToBUniqueTable } from 'oldschooljs';
 
 import type { Activity } from '@/prisma/main.js';
@@ -22,6 +22,7 @@ import { Minigames } from '@/lib/settings/minigames.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
 import { isGroupActivity, isNexActivity, isRaidsActivity, isTOBOrTOAActivity } from '@/lib/util/activityTypeCheck.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { RobochimpBitfieldEnum } from '@/lib/perkTiers.js';
 import { asyncGzip, parseStaticTimeInterval, patronMsg, staticTimeIntervals } from '@/lib/util/smallUtils.js';
 import {
 	stashUnitBuildAllCommand,
@@ -803,6 +804,46 @@ async function patronTriggerDoubleLoot(user: MUser) {
 	return `Added ${formatDuration(time)} of double loot.`;
 }
 
+const cyrTier5PlusBits = [
+	RobochimpBitfieldEnum.CyrTier5,
+	RobochimpBitfieldEnum.CyrTier6,
+	RobochimpBitfieldEnum.CyrTier7
+] as const;
+
+async function hasCyrTier5Plus(user: MUser) {
+	const patron = await Cache.getRoboChimpUser(user.id, true);
+	return patron.bits.some(bit => cyrTier5PlusBits.includes(bit as (typeof cyrTier5PlusBits)[number]));
+}
+
+async function purpleColorConfig(user: MUser, color?: string) {
+	if (!(await hasCyrTier5Plus(user))) return 'You need Cyr Tier 5 or higher to change this setting.';
+	if (color === 'reset') {
+		await user.update({ bank_bg_purple_color: null });
+		return 'Reset your collection log highlight color.';
+	}
+	if (!color) {
+		return user.user.bank_bg_purple_color
+			? `Your collection log highlight color is \`${user.user.bank_bg_purple_color}\`.`
+			: 'Your collection log highlight color is the default purple.';
+	}
+
+	color = color.toUpperCase();
+	if (!isValidHexColor(color)) {
+		return "That's not a valid hex color. It needs to be 7 characters long, starting with '#', for example: #4E42F5.";
+	}
+	await user.update({ bank_bg_purple_color: color });
+	return `Your collection log highlight color is now \`${color}\`.`;
+}
+
+async function purpleGlowConfig(user: MUser, enabled?: boolean) {
+	if (!(await hasCyrTier5Plus(user))) return 'You need Cyr Tier 5 or higher to change this setting.';
+	if (enabled === undefined) {
+		return user.user.bank_bg_purple_glow ? 'Your collection log highlight glow is enabled.' : 'Your collection log highlight glow is disabled.';
+	}
+	await user.update({ bank_bg_purple_glow: enabled || null });
+	return `Your collection log highlight glow is ${enabled ? 'enabled' : 'disabled'}.`;
+}
+
 export const toolsCommand = defineCommand({
 	name: 'tools',
 	description: 'Various tools and miscellaneous commands.',
@@ -812,6 +853,32 @@ export const toolsCommand = defineCommand({
 			description: 'Tools that only patrons can use.',
 			type: 'SubcommandGroup',
 			options: [
+				{
+					type: 'Subcommand',
+					name: 'purple_color',
+					description: 'Set your new collection log item highlight color.',
+					options: [
+						{
+							type: 'String',
+							name: 'color',
+							description: 'A hex color, or reset for the default purple.',
+							required: false
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'purple_glow',
+					description: 'Toggle the glow around new collection log items.',
+					options: [
+						{
+							type: 'Boolean',
+							name: 'enabled',
+							description: 'Enable or disable the glow.',
+							required: false
+						}
+					]
+				},
 				{
 					type: 'Subcommand',
 					name: 'clue_gains',
@@ -1119,6 +1186,9 @@ export const toolsCommand = defineCommand({
 
 		if (options.patron) {
 			const { patron } = options;
+
+			if (patron.purple_color) return purpleColorConfig(user, patron.purple_color.color);
+			if (patron.purple_glow) return purpleGlowConfig(user, patron.purple_glow.enabled);
 
 			if (patron.clue_gains) {
 				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);

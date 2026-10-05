@@ -25,6 +25,7 @@ import { filterableTypes } from '@/lib/data/filterables.js';
 import { marketPriceOfBank, marketPriceOrBotPrice } from '@/lib/marketPrices.js';
 import backgroundImages, { type BankBackground } from '@/lib/minions/data/bankBackgrounds.js';
 import { type FlagMap, type Flags, OverrideStatus } from '@/lib/minions/types.js';
+import { RobochimpBitfieldEnum } from '@/lib/perkTiers.js';
 import { type BankSortMethod, BankSortMethods, sorts } from '@/lib/sorts.js';
 import { XPLamps } from '@/mahoji/lib/abstracted_commands/lampCommand.js';
 
@@ -37,6 +38,18 @@ const itemSize = 32;
 const distanceFromTop = 32;
 
 const { floor, ceil } = Math;
+
+type CollectionLogHighlight = {
+	color: string;
+	glow: boolean;
+};
+
+const cyrTier4PlusBits = [
+	RobochimpBitfieldEnum.CyrTier4,
+	RobochimpBitfieldEnum.CyrTier5,
+	RobochimpBitfieldEnum.CyrTier6,
+	RobochimpBitfieldEnum.CyrTier7
+] as const;
 
 function bankItemRowHeight(compact: boolean, spacer: number, verticalSpacer: number) {
 	return floor((itemSize + spacer / 2) * (compact ? 0.9 : 1.08)) + verticalSpacer;
@@ -383,7 +396,8 @@ class BankImageTask {
 		mahojiFlags: BankFlag[] | undefined,
 		weightings: Readonly<ItemBank> | undefined,
 		verticalSpacer = 0,
-		user?: MUser
+		user?: MUser,
+		collectionLogHighlight?: CollectionLogHighlight
 	) {
 		let xLoc = 0;
 		let yLoc = compact ? 5 : 0;
@@ -418,14 +432,19 @@ class BankImageTask {
 			}
 
 			const effect = user?.bitfield.includes(BitField.DisableGlowEffects) ? undefined : this.effects.get(item.id);
+			const highlightColor = collectionLogHighlight?.color ?? OSRSCanvas.COLORS.PURPLE;
 
 			await c.drawItemIDSprite({
 				itemID: item.id,
 				x: xLoc,
 				y: yLoc,
-				outline: isNewCLItem ? { outlineColor: '#ac7fff', alpha: 1 } : undefined,
+				outline: isNewCLItem ? { outlineColor: highlightColor, alpha: 1 } : undefined,
 				quantity,
-				textColor: isNewCLItem ? OSRSCanvas.COLORS.PURPLE : undefined,
+				textColor: isNewCLItem ? highlightColor : undefined,
+				glow:
+					isNewCLItem && collectionLogHighlight?.glow
+						? { color: highlightColor, radius: 18, blur: 4 }
+						: undefined,
 				user,
 				override_show_paints: paintOverride,
 				effect
@@ -610,6 +629,16 @@ class BankImageTask {
 				items.some(([item]) => !currentCL.has(item.id) && allCLItems.has(item.id)));
 
 		const useSmallBank = user ? (hasBgSprite ? true : user.bitfield.includes(BitField.AlwaysSmallBank)) : true;
+		const roboChimpUser = user ? await Cache.getRoboChimpUser(user.id) : null;
+		const canUseCustomCollectionLogHighlight = Boolean(
+			roboChimpUser?.bits.some(bit => cyrTier4PlusBits.includes(bit as (typeof cyrTier4PlusBits)[number]))
+		);
+		const collectionLogHighlight: CollectionLogHighlight = {
+			color: canUseCustomCollectionLogHighlight
+				? (user?.user.bank_bg_purple_color ?? OSRSCanvas.COLORS.PURPLE)
+				: OSRSCanvas.COLORS.PURPLE,
+			glow: canUseCustomCollectionLogHighlight && user?.user.bank_bg_purple_glow === true
+		};
 
 		const canvas = new OSRSCanvas({
 			width,
@@ -675,7 +704,8 @@ class BankImageTask {
 			opts.mahojiFlags,
 			weightings,
 			verticalSpacer,
-			user
+			user,
+			collectionLogHighlight
 		);
 
 		const image = isPreScaled

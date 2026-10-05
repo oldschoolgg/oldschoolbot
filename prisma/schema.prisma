@@ -385,6 +385,8 @@ model User {
   minion_icon                String?            @map("minion.icon")
   minion_name                String?            @map("minion.name") @db.Text()
   bank_bg_hex                String?
+  bank_bg_purple_color       String?
+  bank_bg_purple_glow        Boolean?
   bankBackground             Int                @default(1)
   attack_style               String[]           @default([])
   combat_options             Int[]              @default([])
