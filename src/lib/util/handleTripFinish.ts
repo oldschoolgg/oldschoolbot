@@ -41,6 +41,7 @@ import {
 
 const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
 	'GroupMonsterKilling',
+	'Yama',
 	'MonsterKilling',
 	'Raids',
 	'ClueCompletion'

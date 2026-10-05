@@ -1141,6 +1141,7 @@ enum activity_type_enum {
   Cooking
   MonsterKilling
   GroupMonsterKilling
+  Yama
   ClueCompletion
   Fishing
   Mining
@@ -1195,6 +1196,7 @@ enum activity_type_enum {
   RoguesDenMaze
   KalphiteKing
   Gauntlet
+  DoomOfMokhaiotl
   Dungeoneering
   CastleWars
   MageArena

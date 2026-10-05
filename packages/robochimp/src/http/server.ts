@@ -6,12 +6,15 @@ import { attachUser } from '@/http/middlewares.js';
 import { discordServer } from '@/http/servers/discord.js';
 import { oauthHonoServer } from '@/http/servers/oauth.js';
 import { userServer } from '@/http/servers/users.js';
-import { webhooksServer } from '@/http/servers/webhooks.js';
 import type { HonoServerGeneric } from '@/http/serverUtil.js';
 import { staffServer } from '@/http/staff/staff.js';
 import { globalConfig } from '../constants.js';
 
 export async function startServer(port: number) {
+	const { webhooksServer } =
+		process.env.DEBUG === '1'
+			? await import('@/http/servers/webhooks.debug.js')
+			: await import('@/http/servers/webhooks.js');
 	const app = new Hono<HonoServerGeneric>();
 
 	app.use(
@@ -27,7 +30,7 @@ export async function startServer(port: number) {
 	app.use('*', async (c, next) => {
 		c.set('prisma', roboChimpClient);
 		c.set('client', globalClient);
-		console.log(`${c.req.method} ${c.req.url}`);
+		console.log(`Webhooks: ${c.req.method} ${c.req.path} ${c.req.url}`);
 		return next();
 	});
 

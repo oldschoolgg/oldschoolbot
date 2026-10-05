@@ -3,9 +3,9 @@ import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { applyPremiumTimeGrant, calculatePremiumTimeGrant, fetchPremiumTimeBalance } from '@/lib/premiumTime.js';
 import { Bits, cyrTiers, type PatronTier } from '@/util.js';
 
-const cyrTier4PlusBits = [Bits.CyrPatronTier4, Bits.CyrPatronTier5, Bits.CyrPatronTier6, Bits.CyrPatronTier7] as const;
-const cyrTier5PlusBits = [Bits.CyrPatronTier5, Bits.CyrPatronTier6, Bits.CyrPatronTier7] as const;
-const cyrTier6PlusBits = [Bits.CyrPatronTier6, Bits.CyrPatronTier7] as const;
+const cyrTier4PlusBits = [Bits.CyrTier4, Bits.CyrTier5, Bits.CyrTier6, Bits.CyrTier7] as const;
+const cyrTier5PlusBits = [Bits.CyrTier5, Bits.CyrTier6, Bits.CyrTier7] as const;
+const cyrTier6PlusBits = [Bits.CyrTier6, Bits.CyrTier7] as const;
 
 type GiftTier = { tier: PatronTier; duration: number };
 
@@ -85,7 +85,7 @@ export const perksCommand = defineCommand({
 			});
 
 			await interaction.confirmation(
-				`Donate 1 week of Cyr Tier ${giftTier.tier.number} perks to ${targetUser.mention}? This uses your monthly Patreon gift, it will reset on the 1st.`
+				`Donate ${formatDuration(giftTier.duration)} of Cyr Tier ${giftTier.tier.number} perks to ${targetUser.mention}? This uses your monthly Patreon gift, it will reset on the 1st.`
 			);
 
 			await roboChimpClient.$transaction(async tx => {
@@ -106,7 +106,7 @@ export const perksCommand = defineCommand({
 
 			await Promise.all([globalClient.fetchRUser(targetUser.id), globalClient.fetchRUser(user.id)]);
 
-			return `Donated 1 week of Cyr Tier ${giftTier.tier.number} patron to ${targetUser.mention}. They have ${formatDuration(
+			return `Donated ${formatDuration(giftTier.duration)} of Cyr Tier ${giftTier.tier.number} patron to ${targetUser.mention}. They have ${formatDuration(
 				grant.remainingTime
 			)} remaining.`;
 		}

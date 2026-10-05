@@ -1,19 +1,18 @@
 import { userMention } from '@oldschoolgg/discord';
+import {
+	getPerkTierEx,
+	getPerkTierDisplay as getSharedDisplay,
+	getPerkTierDetails as getSharedPerks,
+	type PerkTier
+} from '@oldschoolgg/toolkit';
 import { RedisKeys } from '@oldschoolgg/util';
 import type { Prisma, User } from '@prisma/robochimp';
 
-import { redis } from '@/lib/redis.js';
-import { Bits, formatUserPaidTiers, type PatronTier, tiers } from '@/util.js';
+import { redis, rUserTTL } from '@/lib/redis.js';
+import { Bits, type PatronTier, tiers } from '@/util.js';
 
-export type RUserGroupUser = Pick<
-	User,
-	'id' | 'bits' | 'perk_tier' | 'premium_balance_tier' | 'premium_balance_expiry_date'
->;
-
-function activeTempPerkTier(user: Pick<User, 'premium_balance_tier' | 'premium_balance_expiry_date'>) {
-	if (!user.premium_balance_tier || !user.premium_balance_expiry_date) return 0;
-	return Number(user.premium_balance_expiry_date) > Date.now() ? user.premium_balance_tier : 0;
-}
+export type RUserGroupUser = Pick<User, 'id' | 'bits'> &
+	Partial<Pick<User, 'premium_balance_tier' | 'premium_balance_expiry_date'>>;
 
 export class RUser {
 	private _user: User;
@@ -29,6 +28,10 @@ export class RUser {
 		return [...new Set(this._groupUsers.flatMap(u => u.bits))] as Bits[];
 	}
 
+	get patreonBits(): Bits[] {
+		return this.bits;
+	}
+
 	get leaguesPointsTotal(): number {
 		return this._user.leagues_points_total;
 	}
@@ -37,8 +40,35 @@ export class RUser {
 		return this._user.github_id;
 	}
 
-	get perkTierRaw(): number {
-		return Math.max(0, ...this._groupUsers.flatMap(u => [u.perk_tier ?? 0, activeTempPerkTier(u)]));
+	private get activePremium(): { tier: number; expiry: bigint } | null {
+		return this.premiumEntitlements[0] ?? null;
+	}
+
+	get premiumEntitlements(): Array<{ tier: number; expiry: bigint }> {
+		const now = Date.now();
+		return this._groupUsers
+			.flatMap(user => {
+				if (!user.premium_balance_tier || !user.premium_balance_expiry_date) return [];
+				if (Number(user.premium_balance_expiry_date) <= now) return [];
+				return [{ tier: user.premium_balance_tier, expiry: user.premium_balance_expiry_date }];
+			})
+			.sort((a, b) => b.tier - a.tier || Number(b.expiry - a.expiry));
+	}
+
+	get premiumTier(): number | null {
+		return this.activePremium?.tier ?? null;
+	}
+
+	get premiumExpiry(): bigint | null {
+		return this.activePremium?.expiry ?? null;
+	}
+
+	get perkTierDetails() {
+		return getSharedPerks(this);
+	}
+
+	get perkTierRaw(): PerkTier {
+		return getPerkTierEx(this);
 	}
 
 	get perkTier(): PatronTier | null {
@@ -47,11 +77,7 @@ export class RUser {
 	}
 
 	get perkTierDisplay(): string {
-		const paidTierDisplay = formatUserPaidTiers(this.bits);
-		if (paidTierDisplay !== 'None') {
-			return paidTierDisplay;
-		}
-		return this.perkTierRaw > 0 ? `Perk Tier ${this.perkTierRaw}` : 'None';
+		return getSharedDisplay(this);
 	}
 
 	public isSupport(): boolean {
@@ -86,6 +112,10 @@ export class RUser {
 		return this._user.patreon_id;
 	}
 
+	get cyrPatreonId(): string | null {
+		return this._user.cyr_patreon_id;
+	}
+
 	get mention(): `<@${string}>` {
 		return userMention(this._user.id.toString());
 	}
@@ -104,7 +134,6 @@ export class RUser {
 			select: {
 				id: true,
 				bits: true,
-				perk_tier: true,
 				premium_balance_tier: true,
 				premium_balance_expiry_date: true
 			}
@@ -130,7 +159,7 @@ export class RUser {
 			},
 			data
 		});
-		redis.set(RedisKeys.RoboChimpUser(this.id), JSON.stringify(newUser));
+		redis.set(RedisKeys.RoboChimpUser(this.id), JSON.stringify(newUser), 'EX', rUserTTL());
 		this._user = newUser;
 		this._groupUsers = await fetchRUserGroupUsers(newUser);
 		return this;
@@ -170,17 +199,13 @@ export class RUser {
 }
 
 export async function fetchRUserGroupUsers(
-	user: Pick<
-		User,
-		'id' | 'bits' | 'perk_tier' | 'premium_balance_tier' | 'premium_balance_expiry_date' | 'user_group_id'
-	>
+	user: Pick<User, 'id' | 'bits' | 'premium_balance_tier' | 'premium_balance_expiry_date' | 'user_group_id'>
 ): Promise<RUserGroupUser[]> {
 	if (!user.user_group_id) {
 		return [
 			{
 				id: user.id,
 				bits: user.bits,
-				perk_tier: user.perk_tier,
 				premium_balance_tier: user.premium_balance_tier,
 				premium_balance_expiry_date: user.premium_balance_expiry_date
 			}
@@ -194,7 +219,6 @@ export async function fetchRUserGroupUsers(
 		select: {
 			id: true,
 			bits: true,
-			perk_tier: true,
 			premium_balance_tier: true,
 			premium_balance_expiry_date: true
 		},
