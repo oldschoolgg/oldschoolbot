@@ -40,7 +40,6 @@ export async function interactionHandler(client: OldSchoolBotClient, itx: APIInt
 	}
 
 	const fullUser = await mUserFetch(userId);
-                s
 	// Button
 	if (itx.type === InteractionType.MessageComponent && itx.data.component_type === ComponentType.Button) {
 		const d: IButtonInteraction = {

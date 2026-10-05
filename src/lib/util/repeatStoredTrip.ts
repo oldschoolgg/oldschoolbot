@@ -221,7 +221,7 @@ const tripHandlers: {
 	},
 	[activity_type_enum.DiscoBloodbath]: {
 		commandName: 'disco',
-		args: (data: DiscoBloodbathActivityTaskOptions) => ({ visit: { club_name: data.club } })
+		args: (data: DiscoBloodbathActivityTaskOptions) => ({ party: { club_name: data.club } })
 	},
 	[activity_type_enum.BirthdayEvent]: {
 		commandName: 'm',
