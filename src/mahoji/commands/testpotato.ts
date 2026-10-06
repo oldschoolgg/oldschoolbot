@@ -11,7 +11,7 @@ import {
 } from '@/lib/bitFieldUtils.js';
 import { allStashUnitsFlat, allStashUnitTiers } from '@/lib/clues/stashUnits.js';
 import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
-import { BitFieldData, globalConfig } from '@/lib/constants.js';
+import { BitField, BitFieldData, globalConfig } from '@/lib/constants.js';
 import { spiritAnglerOutfit } from '@/lib/data/CollectionsExport.js';
 import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '@/lib/data/cox.js';
 import { leaguesCreatables } from '@/lib/data/creatables/leagueCreatables.js';
@@ -96,6 +96,83 @@ for (const gear of Items.resolveItems([
 	coloRange.equip(Items.getOrThrow(gear));
 }
 
+const yamaMelee = new Gear();
+for (const gear of Items.resolveItems([
+	'Torva full helm',
+	'Infernal cape',
+	'Amulet of rancour',
+	'Torva platebody',
+	'Torva platelegs',
+	'Ferocious gloves',
+	'Avernic defender',
+	'Primordial boots',
+	'Ultor ring',
+	'Emberlight'
+])) {
+	yamaMelee.equip(Items.getOrThrow(gear));
+}
+
+const yamaMage = new Gear();
+for (const gear of Items.resolveItems([
+	'Ancestral hat',
+	'Imbued zamorak cape',
+	'Occult necklace',
+	'Ancestral robe top',
+	'Ancestral robe bottom',
+	'Tormented bracelet',
+	'Eternal boots',
+	'Magus ring',
+	'Purging staff'
+])) {
+	yamaMage.equip(Items.getOrThrow(gear));
+}
+
+const doomMelee = new Gear();
+for (const gear of Items.resolveItems([
+	'Torva full helm',
+	'Infernal cape',
+	'Amulet of rancour',
+	'Torva platebody',
+	'Torva platelegs',
+	'Ferocious gloves',
+	'Avernic treads',
+	'Ultor ring',
+	'Noxious halberd'
+])) {
+	doomMelee.equip(Items.getOrThrow(gear));
+}
+
+const doomRange = new Gear();
+for (const gear of Items.resolveItems([
+	"Dizana's quiver",
+	'Masori mask (f)',
+	'Necklace of anguish',
+	'Masori body (f)',
+	'Masori chaps (f)',
+	'Zaryte vambraces',
+	'Avernic treads',
+	'Venator ring',
+	'Dragon arrow',
+	'Twisted bow'
+])) {
+	doomRange.equip(Items.getOrThrow(gear));
+}
+
+const doomMage = new Gear();
+for (const gear of Items.resolveItems([
+	'Ancestral hat',
+	'Imbued zamorak cape',
+	'Occult necklace',
+	'Ancestral robe top',
+	'Ancestral robe bottom',
+	'Tormented bracelet',
+	'Avernic treads',
+	'Magus ring',
+	'Eye of ayak'
+])) {
+	doomMage.equip(Items.getOrThrow(gear));
+}
+
 const gearPresets = [
 	{
 		name: 'Cox',
@@ -114,6 +191,18 @@ const gearPresets = [
 		melee: coloMelee,
 		range: coloRange,
 		mage: coloRange
+	},
+	{
+		name: 'Yama',
+		melee: yamaMelee,
+		range: COXMaxRangeGear,
+		mage: yamaMage
+	},
+	{
+		name: 'Doom',
+		melee: doomMelee,
+		range: doomRange,
+		mage: doomMage
 	}
 ];
 
@@ -289,6 +378,70 @@ const runePreset = new Bank()
 	.add('Smoke rune', MAX_INT_JAVA)
 	.add('Steam rune', MAX_INT_JAVA);
 
+const bossingPreset = new Bank()
+	.add(runePreset)
+	.add(foodPreset)
+	.add(potionsPreset)
+	.add('Rune pouch')
+	.add('Blood rune', 100_000_000)
+	.add('Death rune', 100_000_000)
+	.add('Water rune', 100_000_000)
+	.add('Fire rune', 100_000_000)
+	.add('Soul rune', 100_000_000)
+	.add('Aether rune', 100_000_000)
+	.add('Saradomin brew(4)', 100_000_000)
+	.add('Super restore(4)', 100_000_000)
+	.add('Stamina potion(4)', 100_000_000)
+	.add('Super combat potion(4)', 100_000_000)
+	.add('Ranging potion(4)', 100_000_000)
+	.add('Cooked karambwan', 100_000_000)
+	.add('Coins', 100_000_000);
+
+const yamaPreset = new Bank()
+	.add(bossingPreset)
+	.add('Purging staff')
+	.add('Emberlight')
+	.add('Burning claws')
+	.add('Lightbearer')
+	.add('Amulet of rancour')
+	.add('Infernal cape')
+	.add('Ferocious gloves')
+	.add('Oathplate shards', 1000)
+	.add('Oathplate helm')
+	.add('Oathplate chest')
+	.add('Oathplate legs');
+
+const doomPreset = new Bank()
+	.add(bossingPreset)
+	.add('Dexterous prayer scroll')
+	.add('Noxious halberd')
+	.add('Crystal halberd')
+	.add('Dual macuahuitl')
+	.add('Crystal shard', 100_000)
+	.add('Darklight')
+	.add('Arclight')
+	.add('Emberlight')
+	.add('Purging staff')
+	.add('Eye of ayak')
+	.add('Scorching bow')
+	.add('Twisted bow')
+	.add('Zaryte crossbow')
+	.add('Ruby bolts (e)', 100_000)
+	.add('Ruby dragon bolts (e)', 100_000)
+	.add('Dragon arrow', 100_000)
+	.add('Mokhaiotl waystone')
+	.add('Masori mask (f)')
+	.add('Masori body (f)')
+	.add('Masori chaps (f)')
+	.add('Zaryte vambraces')
+	.add("Dizana's quiver")
+	.add('Necklace of anguish')
+	.add('Avernic treads')
+	.add('Anti-venom+(4)', 100_000)
+	.add('Extended anti-venom+(4)', 100_000);
+
+const doomYamaPreset = new Bank().add(doomPreset).add(yamaPreset);
+
 const shadesPreset = new Bank().add('Olive oil(4)', 100_000).add('Sacred oil(4)', 100_000);
 for (const log of shadesLogs) {
 	shadesPreset.add(log.normalLog.id, 100_000);
@@ -323,6 +476,10 @@ const spawnPresets = [
 	['potions', potionsPreset],
 	['food', foodPreset],
 	['runes', runePreset],
+	['bossing', bossingPreset],
+	['doom', doomPreset],
+	['yama', yamaPreset],
+	['doom-yama', doomYamaPreset],
 	['shades', shadesPreset]
 ] as const;
 
@@ -980,28 +1137,12 @@ export const testPotatoCommand = globalConfig.isProduction
 					});
 					await user.addItemsToBank({
 						items: new Bank()
-							.add('Rune pouch')
-							.add('Blood rune', 100_000_000)
-							.add('Death rune', 100_000_000)
-							.add('Blood rune', 100_000_000)
-							.add('Water rune', 100_000_000)
-							.add('Saradomin brew(4)', 100_000_000)
-							.add('Super restore(4)', 100_000_000)
-							.add('Stamina potion(4)', 100_000_000)
-							.add('Super combat potion(4)', 100_000_000)
-							.add('Cooked karambwan', 100_000_000)
-							.add('Ranging potion(4)', 100_000_000)
-							.add('Coins', 100_000_000)
-							.add('Shark', 100_000_000)
+							.add(doomYamaPreset)
 							.add('Vial of blood', 100_000_000)
-							.add('Rune pouch')
 							.add('Zamorakian spear')
 							.add('Dragon warhammer')
 							.add('Bandos godsword')
 							.add('Toxic blowpipe')
-							.add(runePreset)
-							.add(foodPreset)
-							.add(potionsPreset)
 							.add(usables)
 					});
 
@@ -1021,6 +1162,7 @@ export const testPotatoCommand = globalConfig.isProduction
 							serp_helm_charges: 10000,
 							blood_fury_charges: 10000,
 							tum_shadow_charges: 10000,
+							ayak_charges: 10000,
 							blood_essence_charges: 10000,
 							ash_sanctifier_charges: 10000,
 							celestial_ring_charges: 10000,
@@ -1031,7 +1173,14 @@ export const testPotatoCommand = globalConfig.isProduction
 								dartQuantity: 100000,
 								dartID: itemID('Dragon dart')
 							},
-							finished_quest_ids: quests.map(q => q.id)
+							finished_quest_ids: quests.map(q => q.id),
+							bitfield: [
+								...new Set([
+									...user.bitfield,
+									BitField.HasDexScroll,
+									BitField.HasRiteOfVileTransference
+								])
+							]
 						}
 					});
 					await giveMaxStats(user);

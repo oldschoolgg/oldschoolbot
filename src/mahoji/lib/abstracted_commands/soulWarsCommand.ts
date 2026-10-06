@@ -156,13 +156,14 @@ export async function soulWarsBuyCommand(user: MUser, input = '', quantity?: num
 	if (!quantity) {
 		quantity = 1;
 	}
-	quantity = Math.max(1, quantity);
 
 	if (!Number.isNaN(Number.parseInt(possibleItemName[0]))) {
 		quantity = Number(possibleItemName.shift());
 	}
 
 	input = possibleItemName.join(' ');
+
+	quantity = Math.max(1, quantity);
 
 	const item = soulWarsBuyables.find(i => stringMatches(input, i.item.name));
 	if (!item) {

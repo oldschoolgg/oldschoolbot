@@ -19,7 +19,7 @@ import { choicesOf, itemOption } from '@/discord/index.js';
 import { MessageBuilder } from '@/discord/MessageBuilder.js';
 import { CanvasModule } from '@/lib/canvas/CanvasModule.js';
 import { ItemIconPacks } from '@/lib/canvas/iconPacks.js';
-import { BitField, BitFieldData, PerkTier, SEVEN_DAYS } from '@/lib/constants.js';
+import { BitField, BitFieldData, SEVEN_DAYS } from '@/lib/constants.js';
 import { Eatables } from '@/lib/data/eatables.js';
 import { CombatOptionsArray } from '@/lib/minions/data/combatConstants.js';
 import { birdhouseSeeds } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
@@ -27,7 +27,7 @@ import { autoslayChoices, slayerMasterChoices } from '@/lib/slayer/constants.js'
 import { setDefaultAutoslay, setDefaultSlayerMaster } from '@/lib/slayer/slayerUtil.js';
 import { BankSortMethods, isValidBankSortMethod } from '@/lib/sorts.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
-import { isValidNickname, patronMsg } from '@/lib/util/smallUtils.js';
+import { isValidNickname } from '@/lib/util/smallUtils.js';
 import { toggleBitfield } from '@/lib/util.js';
 
 type ExtendedBitFieldDataa = (typeof BitFieldData)[BitField] & {
@@ -127,9 +127,8 @@ async function favFoodConfig(
 	}
 	const currentFavorites = user.user.favorite_food;
 	const item = Items.getItem(itemToAdd ?? itemToRemove);
-	const currentItems = `Your current favorite food is: ${
-		currentFavorites.length === 0 ? 'None' : currentFavorites.map(i => Items.itemNameFromId(i)).join(', ')
-	}.`;
+	const currentItems = `Your current favorite food is: ${currentFavorites.length === 0 ? 'None' : currentFavorites.map(i => Items.itemNameFromId(i)).join(', ')
+		}.`;
 	if (!item) return currentItems;
 	if (!Eatables.some(i => i.id === item.id)) return "That's not a valid item.";
 
@@ -158,14 +157,13 @@ async function favItemConfig(
 	}
 	const currentFavorites = user.user.favoriteItems;
 	const item = Items.getItem(itemToAdd ?? itemToRemove);
-	const currentItems = `Your current favorite items are: ${
-		currentFavorites.length === 0
-			? 'None'
-			: currentFavorites
-					.map(i => Items.itemNameFromId(i))
-					.join(', ')
-					.slice(0, 1500)
-	}.`;
+	const currentItems = `Your current favorite items are: ${currentFavorites.length === 0
+		? 'None'
+		: currentFavorites
+			.map(i => Items.itemNameFromId(i))
+			.join(', ')
+			.slice(0, 1500)
+		}.`;
 
 	if (!item) return currentItems;
 	if (itemToAdd) {
@@ -270,9 +268,8 @@ async function favBhSeedsConfig(
 		}
 	}
 
-	const currentItems = `Your current favorite items are: ${
-		currentFavorites.length === 0 ? 'None' : currentFavorites.map(i => Items.itemNameFromId(i)).join(', ')
-	}.`;
+	const currentItems = `Your current favorite items are: ${currentFavorites.length === 0 ? 'None' : currentFavorites.map(i => Items.itemNameFromId(i)).join(', ')
+		}.`;
 	return currentItems;
 }
 
@@ -285,11 +282,6 @@ async function bankSortConfig(
 ): CommandResponse {
 	const currentMethod = user.user.bank_sort_method;
 	const currentWeightingBank = new Bank(user.user.bank_sort_weightings as ItemBank);
-
-	const perkTier = await user.fetchPerkTier();
-	if (perkTier < PerkTier.Two) {
-		return patronMsg(PerkTier.Two);
-	}
 
 	if (!sortMethod && !addWeightingBank && !removeWeightingBank && !resetWeightingBank) {
 		const sortStr = currentMethod
