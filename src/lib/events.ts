@@ -299,7 +299,7 @@ const mentionCommands: MentionCommand[] = [
 			if (!activity) {
 				return { content: "Couldn't find any trip to repeat.", components };
 			}
-			const interaction = createMentionInteraction({ user, message });
+			const interaction = await createMentionInteraction({ user, message });
 			return repeatTrip(user, interaction, activity);
 		}
 	}

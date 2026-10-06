@@ -1,5 +1,5 @@
 import { InteractionType } from '@oldschoolgg/discord';
-import type { IInteractionResponse, IMessage } from '@oldschoolgg/schemas';
+import type { IInteractionResponse, IMember, IMessage } from '@oldschoolgg/schemas';
 import { MathRNG } from 'node-rng';
 
 import type { OSInteraction } from '@/lib/structures/OSInteraction.js';
@@ -16,13 +16,14 @@ class MentionCommandInteraction {
 	userId: string;
 	channelId: string;
 	guildId?: string;
-	member: null = null;
+	member: IMember | null;
 
-	constructor({ user, message }: { user: MUser; message: IMessage }) {
+	constructor({ user, message, member }: { user: MUser; message: IMessage; member: IMember | null }) {
 		this.user = user;
 		this.userId = user.id;
 		this.channelId = message.channel_id;
 		this.guildId = message.guild_id ?? undefined;
+		this.member = member;
 		this.rawInteraction = {
 			guild_id: message.guild_id ?? undefined,
 			channel_id: message.channel_id,
@@ -80,6 +81,18 @@ class MentionCommandInteraction {
 	}
 }
 
-export function createMentionInteraction({ user, message }: { user: MUser; message: IMessage }): OSInteraction {
-	return new MentionCommandInteraction({ user, message }) as unknown as OSInteraction;
+export async function createMentionInteraction({
+	user,
+	message
+}: {
+	user: MUser;
+	message: IMessage;
+}): Promise<OSInteraction> {
+	const member = message.guild_id
+		? await Cache.getMember({ guildId: message.guild_id, userId: user.id, externalServer: true })
+		: null;
+	if (message.guild_id && !member) {
+		throw new Error("Couldn't verify your server membership. Please try again.");
+	}
+	return new MentionCommandInteraction({ user, message, member }) as unknown as OSInteraction;
 }
