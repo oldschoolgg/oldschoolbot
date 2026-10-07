@@ -2,6 +2,7 @@ import { EmbedBuilder } from '@oldschoolgg/discord';
 import { Items, toKMB } from 'oldschooljs';
 
 import { itemOption } from '@/discord/index.js';
+import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { sellPriceOfItem } from '@/mahoji/commands/sell.js';
 
 export const priceCommand = defineCommand({
@@ -9,7 +10,7 @@ export const priceCommand = defineCommand({
 	description: 'Looks up the price of an item.',
 	options: [
 		{
-			...itemOption(item => Boolean(item.tradeable_on_ge)),
+			...itemOption(item => itemIsTradeable(item.id)),
 			name: 'item',
 			required: true
 		}

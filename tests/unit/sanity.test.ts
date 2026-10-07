@@ -4,6 +4,7 @@ import { Bank, EMonster, Items, itemID } from 'oldschooljs';
 import { clamp } from 'remeda';
 import { describe, expect, test } from 'vitest';
 
+import { tradeableItemArr } from '@/discord/presetCommandOptions.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import Buyables from '../../src/lib/data/buyables/buyables.js';
 import { marketPriceOfBank } from '../../src/lib/marketPrices.js';
@@ -21,8 +22,17 @@ describe('Sanity', () => {
 		expect(itemID('Frozen key')).toEqual(26_356);
 		expect(itemID('Clue box')).toEqual(12_789);
 		expect(itemID('Beige pumpkin (happy)')).toEqual(30246);
-		expect(itemIsTradeable(itemID('Black santa hat'))).toEqual(true);
-		expect(itemIsTradeable(itemID('Inverted santa hat'))).toEqual(true);
+		for (const itemName of [
+			'Slice of birthday cake',
+			'War ship',
+			'Birthday present',
+			'Black santa hat',
+			'Inverted santa hat'
+		]) {
+			const id = itemID(itemName);
+			expect(itemIsTradeable(id)).toEqual(true);
+			expect(tradeableItemArr.some(i => i.id === id)).toEqual(true);
+		}
 		expect(itemIsTradeable(itemID('Santa hat'))).toEqual(true);
 		expect(itemIsTradeable(itemID('Trailblazer tool ornament kit'))).toEqual(false);
 		expect(itemIsTradeable(itemID('Twisted horns'))).toEqual(false);
