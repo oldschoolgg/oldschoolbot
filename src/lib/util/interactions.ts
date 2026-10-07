@@ -3,6 +3,7 @@ import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import { EmojiId } from '@/lib/data/emojis.js';
 import { InteractionID } from '@/lib/InteractionID.js';
+import { type QuestID, quests } from '@/lib/minions/data/quests.js';
 
 export function makeOpenCasketButton(tier: ClueTier) {
 	const name: Uppercase<ClueTier['name']> = tier.name.toUpperCase() as Uppercase<ClueTier['name']>;
@@ -68,6 +69,23 @@ export function makeBirdHouseTripButton() {
 		.setLabel('Birdhouse Run')
 		.setStyle(ButtonStyle.Secondary)
 		.setEmoji({ id: EmojiId.BirdsNest });
+}
+
+export function makeStartQuestButton(questID: QuestID) {
+	const quest = quests.find(quest => quest.id === questID);
+	if (!quest) throw new Error(`Invalid quest ID: ${questID}`);
+	return new ButtonBuilder()
+		.setCustomId(`${InteractionID.Commands.StartQuest}_${questID}`)
+		.setLabel('Start Quest')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji({ id: EmojiId.QuestIcon });
+}
+
+export function makeStartQuestResponse(content: string, questID: QuestID) {
+	return {
+		content,
+		components: [makeStartQuestButton(questID)]
+	};
 }
 
 export function makeAutoSlayButton() {

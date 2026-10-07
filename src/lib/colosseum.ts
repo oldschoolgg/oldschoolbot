@@ -22,6 +22,7 @@ import { QuestID } from '@/lib/minions/data/quests.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { ColoTaskOptions } from '@/lib/types/minions.js';
+import { makeStartQuestResponse } from '@/lib/util/interactions.js';
 import { formatList, formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 function combinedChance(percentages: number[]): number {
@@ -465,10 +466,13 @@ export async function colosseumCommand(itx: OSInteraction) {
 	}
 
 	if (!user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
-		return `You need to complete the "Children of the Sun" quest before you can enter the Colosseum. Send your minion to do the quest using: ${globalClient.mentionCommand(
-			'activities',
-			'quest'
-		)}.`;
+		return makeStartQuestResponse(
+			`You need to complete the "Children of the Sun" quest before you can enter the Colosseum. Send your minion to do the quest using: ${globalClient.mentionCommand(
+				'activities',
+				'quest'
+			)}.`,
+			QuestID.ChildrenOfTheSun
+		);
 	}
 
 	const skillReqs: Skills = {

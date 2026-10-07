@@ -2,7 +2,7 @@ import { bold } from '@oldschoolgg/discord';
 import { objectEntries, Time } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
-import { quests } from '@/lib/minions/data/quests.js';
+import { type QuestID, quests } from '@/lib/minions/data/quests.js';
 import type { Consumable, KillableMonster } from '@/lib/minions/types.js';
 import { formatItemReqs, formatList, hasSkillReqs, readableStatName } from '@/lib/util/smallUtils.js';
 import { getItemCostFromConsumables } from '@/mahoji/lib/abstracted_commands/minionKill/handleConsumables.js';
@@ -48,7 +48,10 @@ function formatItemCosts(consumable: Consumable, timeToFinish: number) {
 	return str.join('');
 }
 
-export function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
+export function hasMonsterRequirements(
+	user: MUser,
+	monster: KillableMonster
+): [true] | [false, string] | [false, string, QuestID] {
 	if (monster.qpRequired && user.QP < monster.qpRequired) {
 		return [
 			false,
@@ -63,7 +66,8 @@ export function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
 				false,
 				`You need to have completed the ${bold(
 					quests.find(i => i.id === incompleteQuest)!.name
-				)} quest to kill ${monster.name}.`
+				)} quest to kill ${monster.name}.`,
+				incompleteQuest
 			];
 		}
 	}
