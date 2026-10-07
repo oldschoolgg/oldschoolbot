@@ -1,6 +1,6 @@
 {
-	"hash": "a226dbfd7b7a19ca06ed8ef2b2c1ab48",
-	"date": "2026-06-24T14:26:27.285Z",
+	"hash": "eeae2c97e29460b2268192b6b08244c6",
+	"date": "2026-08-21T11:22:21.665Z",
 	"data": [
 		{
 			"id": 2,
@@ -1946,7 +1946,7 @@
 		{
 			"id": 142005,
 			"name": "Elder Mimic",
-			"base_kill_time_ms": 24000000,
+			"base_kill_time_ms": 15000000,
 			"is_wildy": false,
 			"is_slayer_only": false,
 			"can_be_pked": false,

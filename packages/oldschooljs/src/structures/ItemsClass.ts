@@ -70,16 +70,35 @@ export class ItemsSingleton extends Collection<number, Item> {
 
 	constructor(items: ItemCollection) {
 		super();
+		const duplicateNameItems: Map<string, Item[]> = new Map();
 
 		for (const [id, item] of Object.entries(items)) {
 			const numID = Number.parseInt(id);
 
 			if (USELESS_ITEMS.includes(numID)) continue;
-			this.set(numID, { id: Number(id), ...item });
+			const fullItem = { id: Number(id), ...item };
+			this.set(numID, fullItem);
 
 			const cleanName = cleanString(item.name);
+			const itemsWithThisName = duplicateNameItems.get(cleanName) ?? [];
+			itemsWithThisName.push(fullItem);
+			duplicateNameItems.set(cleanName, itemsWithThisName);
 			if (!this.itemNameMap.has(cleanName)) {
 				this.itemNameMap.set(cleanName, numID);
+			}
+		}
+
+		for (const itemsWithSameName of duplicateNameItems.values()) {
+			if (itemsWithSameName.length < 2) continue;
+			const itemWithEquipment = itemsWithSameName.find(item => item.equipment);
+			if (!itemWithEquipment?.equipment) continue;
+			for (const item of itemsWithSameName) {
+				if (item.equipment) continue;
+				this.set(item.id, {
+					...item,
+					equipable: itemWithEquipment.equipable,
+					equipment: { ...itemWithEquipment.equipment }
+				});
 			}
 		}
 	}
