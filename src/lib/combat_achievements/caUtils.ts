@@ -13,11 +13,28 @@ interface CombatAchievementGroup {
 	tasks: CombatAchievement[];
 }
 
+export function formatCombatAchievementDetails(task: CombatAchievement) {
+	const lines = [`Activity: ${task.monster}`];
+	if (task.details) lines.push(`Details: ${task.details}`);
+
+	if ('rng' in task) {
+		lines.push(`Chance per kill: 1/${task.rng.chancePerKill} (when all requirements are met).`);
+	} else if ('requirements' in task) {
+		const requirements = task.requirements.requirements.flatMap(req => task.requirements.formatRequirement(req));
+		lines.push(`Requirements: ${requirements.join('; ')}`, 'Claim with /ca claim once the requirements are met.');
+	} else if ('notPossible' in task) {
+		lines.push('This task cannot currently be completed in the bot.');
+	}
+
+	return lines.join('\n');
+}
+
 export const buildCombatAchievementsResult = (
 	completedTaskIDs: Set<number>,
 	combatAchievements: CombatAchievementGroup,
 	type: CAViewType,
-	maxContentLength: number
+	maxContentLength: number,
+	detailed = false
 ) => {
 	const { name, tasks } = combatAchievements;
 	let result = `Combat Achievement tasks for ${name}:\n\n`;
@@ -37,7 +54,9 @@ export const buildCombatAchievementsResult = (
 		if (type === 'complete' && !completedTaskIDs.has(task.id)) continue;
 		if (type === 'incomplete' && completedTaskIDs.has(task.id)) continue;
 		const completionStatus = completedTaskIDs.has(task.id) ? 'Completed' : 'Incomplete';
-		result += `Name: ${task.name}\nDescription: ${task.desc}\nStatus: ${completionStatus}\n\n`;
+		result += `Name: ${task.name}\nDescription: ${task.desc}\nStatus: ${completionStatus}\n`;
+		if (detailed) result += `${formatCombatAchievementDetails(task)}\n`;
+		result += '\n';
 	}
 
 	return {

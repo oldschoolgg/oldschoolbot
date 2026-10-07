@@ -1,7 +1,7 @@
 import { calcWhatPercent, objectEntries } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { buildCombatAchievementsResult } from '@/lib/combat_achievements/caUtils.js';
+import { buildCombatAchievementsResult, formatCombatAchievementDetails } from '@/lib/combat_achievements/caUtils.js';
 import type { CombatAchievement } from '@/lib/combat_achievements/combatAchievements.js';
 import {
 	allCAMonsterNames,
@@ -41,6 +41,12 @@ export const caCommand = defineCommand({
 					name: 'type',
 					description: 'What do you want to view?',
 					choices: viewTypes.map(i => ({ name: i, value: i })),
+					required: false
+				},
+				{
+					type: 'Boolean',
+					name: 'detailed',
+					description: 'Show completion chances, requirements and bot-specific tips.',
 					required: false
 				}
 			]
@@ -133,7 +139,8 @@ export const caCommand = defineCommand({
 					completedTaskIDs,
 					{ name: `${selectedMonster}`, tasks: tasksForSelectedMonster },
 					tasksView,
-					maxContentLength
+					maxContentLength,
+					options.view.detailed
 				);
 				return result;
 			}
@@ -152,6 +159,7 @@ export const caCommand = defineCommand({
 						continue;
 					}
 					result += `${caToPlayerString(task, user)}\n`;
+					if (options.view.detailed) result += `${formatCombatAchievementDetails(task)}\n\n`;
 				}
 				result += '\n\n';
 			}
