@@ -289,7 +289,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		existsInCatacombs: true,
-		difficultyRating: 3,
+		difficultyRating: 1,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		qpRequired: 0,
 		healAmountNeeded: 25,

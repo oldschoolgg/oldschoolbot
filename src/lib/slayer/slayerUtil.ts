@@ -267,6 +267,9 @@ export async function calcMaxBlockedTasks(user: MUser) {
 export function getCommonTaskName(task: Monster) {
 	let commonName = task.name;
 	switch (task.id) {
+		case Monsters.BronzeDragon.id:
+			commonName = 'Metal Dragon';
+			break;
 		case Monsters.KalphiteWorker.id:
 			commonName = 'Kalphite';
 			break;
