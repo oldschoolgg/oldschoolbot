@@ -79,6 +79,9 @@ function updateAutoFarmSummary({
 				patchType: getPatchLabel(data),
 				plantsName,
 				quantity: stepQuantity,
+				harvestedName: stepSummary?.harvested?.itemName,
+				harvestedQuantity: stepSummary?.harvested?.quantity,
+				alive: stepSummary?.harvested?.alive,
 				xp: xpTotal,
 				bonusXp: bonusXP,
 				weeds,
@@ -122,6 +125,19 @@ function buildCombinedAutoFarmMessage(user: MUser, summary: AutoFarmSummary): st
 	if (summary.contractsCompleted > 0) {
 		const suffix = summary.contractsCompleted === 1 ? '' : 's';
 		lines.push(`Completed ${summary.contractsCompleted.toLocaleString()} farming contract${suffix}.`);
+	}
+
+	const survivalLines = summary.steps.flatMap(step => {
+		if (!step.harvestedName || step.harvestedQuantity === undefined || step.alive === undefined) {
+			return [];
+		}
+		if (step.alive >= step.harvestedQuantity) {
+			return [];
+		}
+		return `${step.harvestedName}: ${(step.harvestedQuantity - step.alive).toLocaleString()} died`;
+	});
+	if (survivalLines.length > 0) {
+		lines.push(`**Crop deaths:** ${survivalLines.join('; ')}.`);
 	}
 
 	const totalLoot = new Bank(summary.totalLoot ?? {});
