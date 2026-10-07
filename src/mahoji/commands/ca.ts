@@ -145,7 +145,9 @@ export const caCommand = defineCommand({
 				return result;
 			}
 
-			let result = '';
+			let result = options.view.detailed
+				? 'Descriptions are from OSRS; bot completion chances and requirements are shown separately.\n\n'
+				: '';
 
 			for (const group of Object.values(CombatAchievements)) {
 				result += `${group.name} (${group.tasks.filter(i => completedTaskIDs.has(i.id)).length}/${

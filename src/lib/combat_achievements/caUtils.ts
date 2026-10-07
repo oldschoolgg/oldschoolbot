@@ -15,10 +15,10 @@ interface CombatAchievementGroup {
 
 export function formatCombatAchievementDetails(task: CombatAchievement) {
 	const lines = [`Activity: ${task.monster}`];
-	if (task.details) lines.push(`Details: ${task.details}`);
+	if (task.details) lines.push(`Bot details: ${task.details}`);
 
 	if ('rng' in task) {
-		lines.push(`Chance per kill: 1/${task.rng.chancePerKill} (when all requirements are met).`);
+		lines.push(`Chance per kill: 1/${task.rng.chancePerKill} (automatic bot completion).`);
 	} else if ('requirements' in task) {
 		const requirements = task.requirements.requirements.flatMap(req => task.requirements.formatRequirement(req));
 		lines.push(`Requirements: ${requirements.join('; ')}`, 'Claim with /ca claim once the requirements are met.');
@@ -54,7 +54,7 @@ export const buildCombatAchievementsResult = (
 		if (type === 'complete' && !completedTaskIDs.has(task.id)) continue;
 		if (type === 'incomplete' && completedTaskIDs.has(task.id)) continue;
 		const completionStatus = completedTaskIDs.has(task.id) ? 'Completed' : 'Incomplete';
-		result += `Name: ${task.name}\nDescription: ${task.desc}\nStatus: ${completionStatus}\n`;
+		result += `Name: ${task.name}\n${detailed ? 'OSRS description' : 'Description'}: ${task.desc}\nStatus: ${completionStatus}\n`;
 		if (detailed) result += `${formatCombatAchievementDetails(task)}\n`;
 		result += '\n';
 	}

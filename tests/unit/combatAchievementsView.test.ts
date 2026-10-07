@@ -29,15 +29,26 @@ describe('Detailed combat achievement views', () => {
 	test('shows chance and equipment tips, including guaranteed chances', () => {
 		const result = viewTasks([getTask('Defence? What Defence?')]);
 		expect(result).toMatchObject({
-			content: expect.stringContaining('Chance per kill: 1/1 (when all requirements are met).')
+			content: expect.stringContaining('Chance per kill: 1/1 (automatic bot completion).')
 		});
-		expect(result).toMatchObject({ content: expect.stringContaining('Details: You must be training Magic.') });
+		expect(result).toMatchObject({ content: expect.stringContaining('Bot details: You must be training Magic.') });
+	});
+
+	test('distinguishes the OSRS time target from random bot completion', () => {
+		const result = viewTasks([getTask('Amoxliatl Speed-Chaser')]);
+		expect(result).toMatchObject({
+			content: expect.stringContaining('OSRS description: Kill Amoxliatl in less than 30 seconds.')
+		});
+		expect(result).toMatchObject({
+			content: expect.stringContaining('Chance per kill: 1/120 (automatic bot completion).')
+		});
+		expect(result).toMatchObject({ content: expect.not.stringContaining('when all requirements are met') });
 	});
 
 	test('shows solo restrictions and their activity', () => {
 		const result = formatCombatAchievementDetails(getTask('Perfect Olm (Solo)'));
 		expect(result).toContain('Activity: Chambers of Xeric');
-		expect(result).toContain('Details: Solo trip required.');
+		expect(result).toContain('Bot details: Solo trip required.');
 		expect(result).toContain('Chance per kill: 1/44');
 	});
 
@@ -81,7 +92,7 @@ describe('Detailed combat achievement views', () => {
 		expect(typeof result).toBe('object');
 		if (typeof result === 'string') throw new Error(result);
 		expect(result.files?.[0].name).toBe('caBoss.txt');
-		expect(result.files?.[0].buffer.toString()).toContain('Details: You must be training Magic.');
+		expect(result.files?.[0].buffer.toString()).toContain('Bot details: You must be training Magic.');
 	});
 
 	test('explains tasks that cannot be completed', () => {
@@ -116,6 +127,7 @@ describe('Detailed combat achievement views', () => {
 		const content = result.files?.[0]?.buffer.toString();
 		expect(content).toContain('Chance per kill:');
 		expect(content).toContain('Activity: Tombs of Amascut');
+		expect(content).toContain(name ? 'OSRS description:' : 'Descriptions are from OSRS;');
 		expect(content).not.toMatch(/(?:Name: |Completed .*?)Tomb Raider(?:\n| -)/);
 	});
 });
