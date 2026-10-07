@@ -39,6 +39,7 @@ describe('MUser.test', () => {
 			prayer: 1,
 			ranged: 1,
 			runecraft: 1,
+			sailing: 1,
 			slayer: 1,
 			smithing: 1,
 			strength: 1,

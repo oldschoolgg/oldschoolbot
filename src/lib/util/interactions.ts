@@ -62,6 +62,13 @@ export function makeTearsOfGuthixButton() {
 		.setEmoji({ name: '🐍' });
 }
 
+export function makeStartQuestButton(questName: string) {
+	return new ButtonBuilder()
+		.setCustomId(`${InteractionID.Commands.StartQuest}_${questName}`)
+		.setLabel('Start Quest')
+		.setStyle(ButtonStyle.Secondary);
+}
+
 export function makeBirdHouseTripButton() {
 	return new ButtonBuilder()
 		.setCustomId(InteractionID.Commands.DoBirdHouseRun)

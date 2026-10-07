@@ -103,6 +103,19 @@
 		"prerequisites_quests": [3]
 	},
 	{
+		"id": 19,
+		"qp": 1,
+		"name": "Pandemonium",
+		"skills_rewards": {
+			"sailing": 400
+		},
+		"rewards": {
+			"31803": 1,
+			"31964": 2,
+			"32083": 25
+		}
+	},
+	{
 		"id": 6,
 		"qp": 2,
 		"name": "Perilous Moons",

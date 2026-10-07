@@ -34,7 +34,11 @@ export const lvlCommand = defineCommand({
 			return error;
 		}
 
-		const res = player.skills[options.skill];
+		if (options.skill === 'sailing') {
+			return 'Sailing is not available on OSRS hiscores yet.';
+		}
+
+		const res = player.skills[options.skill as keyof typeof player.skills];
 		let str = `**${options.rsn}**'s ${options.skill} level is **${res.level}** and is`;
 
 		if (res.level < 99) {

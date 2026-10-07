@@ -337,6 +337,15 @@ async function globalButtonInteractionHandler({
 		});
 	}
 
+	if (id.startsWith(`${InteractionID.Commands.StartQuest}_`)) {
+		const questName = id.slice(`${InteractionID.Commands.StartQuest}_`.length);
+		return runCommand({
+			commandName: 'activities',
+			args: { quest: { name: questName } },
+			...options
+		});
+	}
+
 	if (id === InteractionID.Open.BeginnerCasket) return openCasket('Beginner');
 	if (id === InteractionID.Open.EasyCasket) return openCasket('Easy');
 	if (id === InteractionID.Open.MediumCasket) return openCasket('Medium');
