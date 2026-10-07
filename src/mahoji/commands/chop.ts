@@ -2,7 +2,7 @@ import { increaseNumByPercent, reduceNumByPercent, stringMatches } from '@oldsch
 import { Items, itemID, resolveItems } from 'oldschooljs';
 
 import { determineWoodcuttingTime } from '@/lib/skilling/functions/determineWoodcuttingTime.js';
-import Woodcutting from '@/lib/skilling/skills/woodcutting/woodcutting.js';
+import Woodcutting, { type ForestryType } from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import type { WoodcuttingActivityTaskOptions } from '@/lib/types/minions.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
@@ -97,10 +97,11 @@ export const chopCommand = defineCommand({
 			required: false
 		},
 		{
-			type: 'Boolean',
+			type: 'String',
 			name: 'forestry_events',
-			description: 'Set this to true to participate in forestry events. (default false, optional).',
-			required: false
+			description: 'false, normal, or ent_scouting (scouts ent events for eggs) (default false, optional).',
+			required: false,
+			choices: Woodcutting.forestryType.map(i => ({ name: i, value: i }))
 		},
 		{
 			type: 'String',
@@ -120,9 +121,10 @@ export const chopCommand = defineCommand({
 
 		if (!log) return "That's not a valid log to chop.";
 
-		let { quantity, powerchop, forestry_events, twitchers_gloves } = options;
+		let { quantity, powerchop, twitchers_gloves } = options;
 
 		const skills = user.skillsAsLevels;
+		let forestry_events: ForestryType = (options.forestry_events ?? 'false') as ForestryType;
 
 		if (skills.woodcutting < log.level) {
 			return `${user.minionName} needs ${log.level} Woodcutting to chop ${log.name}.`;
@@ -142,25 +144,37 @@ export const chopCommand = defineCommand({
 		let wcLvl = skills.woodcutting;
 		const farmingLvl = user.skillsAsLevels.farming;
 
-		// Redwood logs, logs, sulliuscep, farming patches, woodcutting guild don't spawn forestry events
-		if (!forestry_events || resolveItems(['Redwood logs', 'Logs']).includes(log.id) || log.lootTable) {
-			forestry_events = false;
+		// Handle blocking or allowing forestry events, ent_scouting can still be done with these log types
+		const forestryBlocked = resolveItems(['Redwood logs', 'Logs']).includes(log.id) || Boolean(log.lootTable);
+		if (forestryBlocked && forestry_events === 'normal') {
+			forestry_events = 'false';
+		}
+
+		if (forestry_events === 'false') {
 			// Invisible wc boost for woodcutting guild
 			if (skills.woodcutting >= 60 && log.wcGuild) {
 				boosts.push('+7 invisible WC lvls at the Woodcutting guild');
 				wcLvl += 7;
 			}
+
 			// 1.5 tick hardwood at 92 wc, 1.5t is only possible at farming patches
 			if (skills.woodcutting >= 92) {
 				if (resolveItems('Teak logs').includes(log.id) && farmingLvl >= 35) {
 					boosts.push('1.5t woodcutting teak trees with 92+ wc & 35+ farming');
 				}
+
 				if (resolveItems('Mahogany logs').includes(log.id) && farmingLvl >= 55) {
 					boosts.push('1.5t woodcutting mahogany trees with 92+ wc & 55+ farming');
 				}
 			}
-		} else {
-			boosts.push('Participating in Forestry events');
+		}
+
+		if (forestry_events === 'normal') {
+			boosts.push('Participating in Forestry events. (-15% logs/xp)');
+		} else if (forestry_events === 'ent_scouting') {
+			boosts.push(
+				'Participating in Forestry events & ent scouting. (avg 8 ent events scouted per hour) (-40% normal events, -30% logs/xp)'
+			);
 		}
 
 		// Default bronze axe, last in the array
@@ -223,6 +237,7 @@ export const chopCommand = defineCommand({
 			quantity: newQuantity,
 			iQty: options.quantity ? options.quantity : undefined,
 			powerchopping: powerchop === true ? true : undefined,
+			forestryBlocked,
 			forestry: forestry_events,
 			twitchers: twitchers_gloves,
 			duration,
