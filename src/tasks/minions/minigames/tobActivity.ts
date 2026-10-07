@@ -3,7 +3,13 @@ import { Bank } from 'oldschooljs';
 
 import { drawChestLootImage } from '@/lib/canvas/chestImage.js';
 import { tobMetamorphPets } from '@/lib/data/CollectionsExport.js';
-import { TOBRooms, TOBUniques, TOBUniquesToAnnounce } from '@/lib/data/tob.js';
+import {
+	FAKE_TOB_HOST_ID,
+	TOB_FAKE_MASS_PURPLE_KC_CUTOFF,
+	TOBRooms,
+	TOBUniques,
+	TOBUniquesToAnnounce
+} from '@/lib/data/tob.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { resolveAttackStyles } from '@/lib/minions/functions/index.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
@@ -44,6 +50,7 @@ export const tobTask: MinionTask = {
 	async run(data: TheatreOfBloodTaskOptions, { handleTripFinish, rng }) {
 		const { channelId, users, hardMode, leader, wipedRooms, duration, deaths: allDeaths, quantity } = data;
 		const allUsers = await Promise.all(users.map(async u => mUserFetch(u)));
+		const allUserMinigames = await Promise.all(allUsers.map(user => user.fetchMinigames()));
 		const minigameID = hardMode ? 'tob_hard' : 'tob';
 		const allTag = allUsers.map(u => u.toString()).join('');
 		const teamsLoot = new TeamLoot([]);
@@ -61,19 +68,32 @@ export const tobTask: MinionTask = {
 			totalXPCounts[user.id] = new XPCounter();
 		}
 
-		for (let i = 0; i < quantity; i++) {
-			raidId = i + 1;
-			const deaths = allDeaths[i];
-			const wipedRoom = wipedRooms[i];
-			const tobUsers = users.map((i, index) => ({ id: i, deaths: deaths[index] }));
+		for (let raidIndex = 0; raidIndex < quantity; raidIndex++) {
+			raidId = raidIndex + 1;
+			const deaths = allDeaths[raidIndex];
+			const wipedRoom = wipedRooms[raidIndex];
+			const tobUsers = users.map((userID, index) => ({ id: userID, deaths: deaths[index] }));
 			if (data.solo) {
 				tobUsers.push({ id: miniID(3), deaths: [] });
 				tobUsers.push({ id: miniID(3), deaths: [] });
+			} else if (data.isFakeMass) {
+				tobUsers.push({ id: FAKE_TOB_HOST_ID, deaths: deaths[users.length] ?? [] });
 			}
 
 			const result = TheatreOfBlood.complete({
 				hardMode,
 				team: tobUsers,
+				uniqueEligibleUserIDs: data.isFakeMass
+					? [
+							...allUsers
+								.filter(
+									(_, index) =>
+										hardMode || allUserMinigames[index].tob < TOB_FAKE_MASS_PURPLE_KC_CUTOFF
+								)
+								.map(u => u.id),
+							FAKE_TOB_HOST_ID
+						]
+					: undefined,
 				rng
 			});
 
@@ -105,7 +125,7 @@ export const tobTask: MinionTask = {
 
 			for (const [userID, _userLoot] of Object.entries(result.loot)) {
 				if (data.solo && userID !== leader) continue;
-				const user = allUsers.find(i => i.id === userID);
+				const user = allUsers.find(u => u.id === userID);
 				if (!user) continue;
 				const userDeaths = deaths[users.indexOf(user.id)];
 
@@ -149,7 +169,7 @@ export const tobTask: MinionTask = {
 					);
 				}
 				const deathStr =
-					userDeaths.length === 0 ? '' : `${Emoji.Skull}(${userDeaths.map(i => TOBRooms[i].name)})`;
+					userDeaths.length === 0 ? '' : `${Emoji.Skull}(${userDeaths.map(roomID => TOBRooms[roomID].name)})`;
 
 				const lootStr = userLoot.remove('Coins', 100_000).toString();
 				const str = isPurple ? `${Emoji.Purple} ||${lootStr.padEnd(30, ' ')}||` : `${lootStr}`;
