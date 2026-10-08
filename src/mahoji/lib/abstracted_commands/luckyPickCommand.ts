@@ -3,6 +3,7 @@ import { Bank, toKMB } from 'oldschooljs';
 import { chunk } from 'remeda';
 
 import { EmojiId } from '@/lib/data/emojis.js';
+import { trackGamblingTransaction } from '@/lib/util/gambling.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 const buttons: Button[] = [
@@ -157,6 +158,12 @@ export async function luckyPickCommand(
 	if (amountReceived > 0) {
 		await user.addItemsToBank({ items: new Bank().add('Coins', amountReceived) });
 	}
+	await trackGamblingTransaction({
+		userID: user.id,
+		type: 'lucky_pick',
+		amountStaked: amount,
+		pnl: amountReceived - amount
+	});
 	await ClientSettings.updateClientGPTrackSetting('gp_luckypick', amountReceived - amount);
 	await user.updateGPTrackSetting('gp_luckypick', amountReceived - amount);
 	const content =
