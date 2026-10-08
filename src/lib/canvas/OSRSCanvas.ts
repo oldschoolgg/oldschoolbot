@@ -421,7 +421,7 @@ export class OSRSCanvas {
 		};
 		user?: MUser | null | undefined;
 		override_show_paints?: boolean | undefined;
-		effect?: Image | undefined;
+		effect?: Image | Canvas | undefined;
 	}) {
 		const itemIcon: Image | Canvas = await OSRSCanvas.getItemImage({ itemID, iconPackId });
 		const targetSize = size ?? this.itemSize;
@@ -467,7 +467,7 @@ export class OSRSCanvas {
 		}
 
 		if (outline) {
-			drawImageWithOutline(this.ctx, ...args);
+			drawImageWithOutline(this.ctx, ...args, outline.outlineColor);
 		} else {
 			this.ctx.drawImage(...args);
 		}

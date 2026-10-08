@@ -14,6 +14,8 @@ import {
 	type BaseCanvasArgs,
 	type BGSpriteName,
 	CanvasImage,
+	createCanvas,
+	type Canvas,
 	getClippedRegion,
 	type IBgSprite,
 	loadImage
@@ -38,11 +40,6 @@ const itemSize = 32;
 const distanceFromTop = 32;
 
 const { floor, ceil } = Math;
-
-type CollectionLogHighlight = {
-	color: string;
-	glow: boolean;
-};
 
 const cyrTier4PlusBits = [
 	RobochimpBitfieldEnum.CyrTier4,
@@ -268,6 +265,7 @@ class BankImageTask {
 	public octoBubblesEffect: Image | null = null;
 
 	public effects: Map<number, Image> = new Map();
+	private customPurpleEffects = new Map<string, Canvas>();
 
 	async init() {
 		await CanvasModule.waitTillReady();
@@ -357,6 +355,21 @@ class BankImageTask {
 		);
 	}
 
+	private getCustomPurpleEffect(color: string) {
+		const cached = this.customPurpleEffects.get(color);
+		if (cached) return cached;
+
+		const canvas = createCanvas(this.whiteEffect!.width, this.whiteEffect!.height);
+		const ctx = canvas.getContext('2d');
+		ctx.imageSmoothingEnabled = false;
+		ctx.drawImage(this.whiteEffect!, 0, 0);
+		ctx.globalCompositeOperation = 'source-in';
+		ctx.fillStyle = color;
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+		this.customPurpleEffects.set(color, canvas);
+		return canvas;
+	}
+
 	getBgAndSprite({ bankBackgroundId, farmingContract }: BaseCanvasArgs = {}) {
 		const background = this.backgroundImages.find(i => i.id === bankBackgroundId) ?? this.backgroundImages[0];
 		const isFarmingContractReadyToHarvest = Boolean(
@@ -397,7 +410,7 @@ class BankImageTask {
 		weightings: Readonly<ItemBank> | undefined,
 		verticalSpacer = 0,
 		user?: MUser,
-		collectionLogHighlight?: CollectionLogHighlight
+		customPurple?: { color: string; glow: boolean }
 	) {
 		let xLoc = 0;
 		let yLoc = compact ? 5 : 0;
@@ -432,7 +445,9 @@ class BankImageTask {
 			}
 
 			const effect = user?.bitfield.includes(BitField.DisableGlowEffects) ? undefined : this.effects.get(item.id);
-			const highlightColor = collectionLogHighlight?.color ?? OSRSCanvas.COLORS.PURPLE;
+			const highlightColor = customPurple?.color ?? OSRSCanvas.COLORS.PURPLE;
+			const customPurpleEffect =
+				isNewCLItem && customPurple?.glow ? this.getCustomPurpleEffect(highlightColor) : undefined;
 
 			await c.drawItemIDSprite({
 				itemID: item.id,
@@ -441,13 +456,9 @@ class BankImageTask {
 				outline: isNewCLItem ? { outlineColor: highlightColor, alpha: 1 } : undefined,
 				quantity,
 				textColor: isNewCLItem ? highlightColor : undefined,
-				glow:
-					isNewCLItem && collectionLogHighlight?.glow
-						? { color: highlightColor, radius: 18, blur: 4 }
-						: undefined,
 				user,
 				override_show_paints: paintOverride,
-				effect
+				effect: customPurpleEffect ?? effect
 			});
 
 			let bottomItemText: string | number | null = null;
@@ -630,14 +641,14 @@ class BankImageTask {
 
 		const useSmallBank = user ? (hasBgSprite ? true : user.bitfield.includes(BitField.AlwaysSmallBank)) : true;
 		const roboChimpUser = user ? await Cache.getRoboChimpUser(user.id) : null;
-		const canUseCustomCollectionLogHighlight = Boolean(
+		const canUseCustomPurple = Boolean(
 			roboChimpUser?.bits.some(bit => cyrTier4PlusBits.includes(bit as (typeof cyrTier4PlusBits)[number]))
 		);
-		const collectionLogHighlight: CollectionLogHighlight = {
-			color: canUseCustomCollectionLogHighlight
+		const customPurple = {
+			color: canUseCustomPurple
 				? (user?.user.bank_bg_purple_color ?? OSRSCanvas.COLORS.PURPLE)
 				: OSRSCanvas.COLORS.PURPLE,
-			glow: canUseCustomCollectionLogHighlight && user?.user.bank_bg_purple_glow === true
+			glow: canUseCustomPurple && user?.user.bank_bg_purple_glow === true
 		};
 
 		const canvas = new OSRSCanvas({
@@ -705,7 +716,7 @@ class BankImageTask {
 			weightings,
 			verticalSpacer,
 			user,
-			collectionLogHighlight
+			customPurple
 		);
 
 		const image = isPreScaled

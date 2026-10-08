@@ -690,6 +690,17 @@ const backgroundImages: BankBackground[] = [
 		owners: ['1536284057086984192'],
 		hasPurple: true,
 		purpleImage: null,
+	},
+	{
+		id: 1021,
+		name: 'Xavier',
+		image: null,
+		available: false,
+		transparent: true,
+		preScaled: true,
+		owners: ['304309559068196867'],
+		hasPurple: true,
+		purpleImage: null,
 	}
 ];
 
