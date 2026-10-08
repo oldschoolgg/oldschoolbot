@@ -172,6 +172,7 @@ export enum BitField {
 	Boring = 58,
 	HasRiteOfVileTransference = 59,
 	DisableRiteOfVileTransference = 60,
+	ZeroTimeActivitiesPaused = 61,
 
 	OriginalCyrSupporter = 199
 }
@@ -336,7 +337,12 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 	[BitField.WikiContributor]: { name: 'Wiki Contributor', protected: false, userConfigurable: false },
 	[BitField.UnlimitedGiveaways]: { name: 'Unlimited Giveaways', protected: false, userConfigurable: false },
 	[BitField.ServerSupport]: { name: 'Server Support', protected: true, userConfigurable: false },
-	[BitField.Boring]: { name: 'Boring', protected: true, userConfigurable: false }
+	[BitField.Boring]: { name: 'Boring', protected: true, userConfigurable: false },
+	[BitField.ZeroTimeActivitiesPaused]: {
+		name: 'Zero-time Activities Paused',
+		protected: false,
+		userConfigurable: false
+	}
 } as const;
 
 export const BadgesEnum = {

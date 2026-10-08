@@ -1,12 +1,15 @@
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, convertLVLtoXP, Items } from 'oldschooljs';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 
+import { BitField } from '../../src/lib/constants.js';
 import { zeroTimeFletchables } from '../../src/lib/skilling/skills/fletching/fletchables/index.js';
 import { SlayerTaskUnlocksEnum } from '../../src/lib/slayer/slayerUnlocks.js';
 import {
 	attemptZeroTimeActivity,
+	getZeroTimeActivityPreferences,
 	getZeroTimeFletchTime,
+	prepareZeroTimeActivityTrip,
 	type ZeroTimeActivityPreference
 } from '../../src/lib/util/zeroTimeActivity.js';
 import { timePerAlch } from '../../src/mahoji/lib/abstracted_commands/alchCommand.js';
@@ -18,6 +21,35 @@ import {
 import { mockMUser } from './userutil.js';
 
 describe('attemptZeroTimeActivity', () => {
+	test('paused preferences remain visible but cannot consume supplies or prepare a trip', async () => {
+		const user = mockMUser({
+			bank: new Bank().add('Steel dart tip', 500).add('Feather', 500),
+			skills_fletching: convertLVLtoXP(75),
+			bitfield: [BitField.ZeroTimeActivitiesPaused]
+		});
+		user._updateRawUser({
+			...user.user,
+			zero_time_activity_primary_type: 'fletch',
+			zero_time_activity_primary_item: Items.getOrThrow('Steel dart').id
+		});
+		const removeItems = vi.spyOn(user, 'removeItemsFromBank');
+
+		expect(getZeroTimeActivityPreferences(user)).toEqual([]);
+		const preferences = getZeroTimeActivityPreferences(user, { includePaused: true });
+		expect(preferences).toHaveLength(1);
+		const trip = await prepareZeroTimeActivityTrip({
+			user,
+			preferences,
+			duration: Time.Minute,
+			removeItems: true
+		});
+		expect(trip.fletchResult).toBeNull();
+		expect(trip.alchResult).toBeNull();
+		expect(trip.zeroTimePreferenceRole).toBeNull();
+		expect(removeItems).not.toHaveBeenCalled();
+		removeItems.mockRestore();
+	});
+
 	test('alching success', () => {
 		const item = Items.getOrThrow('Yew longbow');
 		const duration = timePerAlch * 50;

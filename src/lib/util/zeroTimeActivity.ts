@@ -2,6 +2,7 @@ import { Time } from '@oldschoolgg/toolkit';
 import { Bank, type Item, Items } from 'oldschooljs';
 
 import type { zero_time_activity_type_enum } from '@/prisma/main/enums.js';
+import { BitField } from '@/lib/constants.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { timePerAlch, timePerAlchAgility } from '../../mahoji/lib/abstracted_commands/alchCommand.js';
 import Arrows from '../skilling/skills/fletching/fletchables/arrows.js';
@@ -151,7 +152,14 @@ export function formatZeroTimePreference(preference: ZeroTimeActivityPreference)
 	return `${roleLabel}: ${describeZeroTimePreference(preference)}`;
 }
 
-export function getZeroTimeActivityPreferences(user: MUser): ZeroTimePreferenceList {
+export function getZeroTimeActivityPreferences(
+	user: MUser,
+	{ includePaused = false }: { includePaused?: boolean } = {}
+): ZeroTimePreferenceList {
+	if (!includePaused && user.bitfield.includes(BitField.ZeroTimeActivitiesPaused)) {
+		return [];
+	}
+
 	const preferences: ZeroTimePreferenceList = [];
 	const { user: raw } = user;
 
@@ -511,7 +519,7 @@ export async function prepareZeroTimeActivityTrip(
 	const infoMessages: string[] = [];
 	let zeroTimePreferenceRole: ZeroTimePreferenceRole | null = null;
 
-	if (options.preferences.length === 0) {
+	if (options.preferences.length === 0 || options.user.bitfield.includes(BitField.ZeroTimeActivitiesPaused)) {
 		return { fletchResult, alchResult, infoMessages, zeroTimePreferenceRole };
 	}
 

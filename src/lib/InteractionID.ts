@@ -46,6 +46,8 @@ export const InteractionID = {
 		NewSlayerTask: 'NEW_SLAYER_TASK',
 		DoBirdHouseRun: 'DO_BIRDHOUSE_RUN',
 		ToggleAutoRummage: 'TOGGLE_AUTO_RUMMAGE',
+		SwapZeroTimeActivities: 'ZERO_TIME_ACTIVITY_SWAP',
+		ToggleZeroTimeActivities: 'ZERO_TIME_ACTIVITY_TOGGLE',
 		// Farming
 		FarmingContractEasier: 'FARMING_CONTRACT_EASIER',
 		AutoFarmingContract: 'AUTO_FARMING_CONTRACT',

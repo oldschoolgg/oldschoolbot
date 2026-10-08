@@ -19,6 +19,42 @@ function extractResponseText(response: unknown): string {
 }
 
 describe('laps command', () => {
+	test('pause skips zero-time activities on new trips and resume restores them', async () => {
+		const user = await createTestUser(new Bank().add('Steel dart tip', 1000).add('Feather', 1000), {
+			skills_agility: convertLVLtoXP(50),
+			skills_fletching: convertLVLtoXP(75),
+			minion_hasBought: true,
+			zero_time_activity_primary_type: 'fletch',
+			zero_time_activity_primary_item: Items.getOrThrow('Steel dart').id
+		});
+		await user.runCommand(zeroTimeActivityCommand, { pause: {} });
+		const pausedResponse = await user.runCommand(lapsCommand, {
+			name: 'Gnome Stronghold Agility Course',
+			quantity: 1
+		});
+		expect(extractResponseText(pausedResponse)).not.toContain('fletching');
+		await user.sync();
+		expect(user.bank.amount('Feather')).toBe(1000);
+		expect(user.bank.amount('Steel dart tip')).toBe(1000);
+		const pausedTrip = await user.runActivity();
+		expect(pausedTrip).toBeTruthy();
+		expect(pausedTrip).not.toHaveProperty('fletch');
+
+		await user.runCommand(zeroTimeActivityCommand, { resume: {} });
+		const resumedResponse = await user.runCommand(lapsCommand, {
+			name: 'Gnome Stronghold Agility Course',
+			quantity: 1
+		});
+		expect(extractResponseText(resumedResponse)).toContain('fletching');
+		await user.sync();
+		expect(user.bank.amount('Feather')).toBeLessThan(1000);
+		await user.runCommand(zeroTimeActivityCommand, { pause: {} });
+		const resumedTrip = await user.runActivity();
+		expect(resumedTrip).toHaveProperty('fletch');
+		await user.sync();
+		expect(user.bank.amount('Steel dart')).toBeGreaterThan(0);
+	});
+
 	test('formats zero-time info messages on separate lines', async () => {
 		const fletchable = zeroTimeFletchables.find(item => item.name === 'Steel dart');
 		expect(fletchable).toBeDefined();

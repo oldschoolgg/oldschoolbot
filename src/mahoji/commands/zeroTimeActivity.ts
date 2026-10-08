@@ -1,6 +1,9 @@
+import { ButtonBuilder, ButtonStyle, InteractionType, SpecialResponse } from '@oldschoolgg/discord';
 import { stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
+import { BitField } from '../../lib/constants.js';
+import { InteractionID } from '../../lib/InteractionID.js';
 import { zeroTimeFletchables } from '../../lib/skilling/skills/fletching/fletchables/index.js';
 import { SlayerRewardsShop, type SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks.js';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil.js';
@@ -258,12 +261,19 @@ function parseFletchableInput(
 }
 
 function buildOverview(user: MUser): string {
-	const preferences = getZeroTimeActivityPreferences(user);
+	const preferences = getZeroTimeActivityPreferences(user, { includePaused: true });
+	const paused = user.bitfield.includes(BitField.ZeroTimeActivitiesPaused);
+	const lines: string[] = [];
+	const status = `Status: ${paused ? 'Paused' : 'Live'}`;
+
 	if (preferences.length === 0) {
-		return 'You have no zero-time activity configured. Use `/zero_time_activity set` to create a primary (and optional fallback) preference.';
+		lines.push(
+			'You have no zero-time activity configured. Use `/zero_time_activity set` to create a primary (and optional fallback) preference.'
+		);
+		lines.push('', status);
+		return lines.join('\n');
 	}
 
-	const lines: string[] = [];
 	for (const preference of preferences) {
 		const label = formatZeroTimePreference(preference);
 
@@ -277,7 +287,12 @@ function buildOverview(user: MUser): string {
 		});
 
 		if (outcome.result) {
-			lines.push(`${label} -- Ready`);
+			const result = outcome.result;
+			const supplies = result.type === 'alch' ? result.bankToRemove : result.itemsToRemove;
+			const outputMultiple = result.type === 'fletch' ? (result.fletchable.outputMultiple ?? 1) : 1;
+			const capacity = (user.bank.fits(supplies) * outputMultiple).toLocaleString('en-GB');
+			const output = result.type === 'alch' ? `casts of ${result.item.name}` : result.fletchable.name;
+			lines.push(`${label} -- ${paused ? 'Paused' : 'Ready'} (supplies for ${capacity} ${output})`);
 			continue;
 		}
 
@@ -293,7 +308,31 @@ function buildOverview(user: MUser): string {
 		lines.push('Fallback: Not set -- Set it with `/zero_time_activity set fallback_type:`.');
 	}
 
+	lines.push('', status);
 	return lines.join('\n');
+}
+
+function buildOverviewMessage(user: MUser): BaseSendableMessage {
+	const paused = user.bitfield.includes(BitField.ZeroTimeActivitiesPaused);
+	const components: ButtonBuilder[] = [];
+	if (user.user.zero_time_activity_primary_type && user.user.zero_time_activity_fallback_type) {
+		components.push(
+			new ButtonBuilder()
+				.setCustomId(`${InteractionID.Commands.SwapZeroTimeActivities}_${user.id}`)
+				.setLabel('Swap')
+				.setStyle(ButtonStyle.Secondary)
+		);
+	}
+	components.push(
+		new ButtonBuilder()
+			.setCustomId(`${InteractionID.Commands.ToggleZeroTimeActivities}_${user.id}`)
+			.setLabel(paused ? 'Resume' : 'Pause')
+			.setStyle(ButtonStyle.Secondary)
+	);
+	return {
+		content: buildOverview(user),
+		components
+	};
 }
 
 export const zeroTimeActivityCommand = defineCommand({
@@ -347,23 +386,79 @@ export const zeroTimeActivityCommand = defineCommand({
 		},
 		{
 			type: 'Subcommand',
+			name: 'swap',
+			description: 'Swap your primary and fallback zero-time activities.'
+		},
+		{
+			type: 'Subcommand',
+			name: 'pause',
+			description: 'Toggle zero-time activities between live and paused, keeping your preferences.'
+		},
+		{
+			type: 'Subcommand',
+			name: 'resume',
+			description: 'Resume zero-time activities using your saved preferences.'
+		},
+		{
+			type: 'Subcommand',
 			name: 'clear',
 			description: 'Clear your zero-time activity preferences.'
 		}
 	],
-	run: async ({ options, userId }) => {
+	run: async ({ options, userId, interaction }) => {
 		const user = await mUserFetch(userId);
 
-		if (!options.overview && !options.set && !options.clear) {
-			return buildOverview(user);
+		if (!options.overview && !options.set && !options.clear && !options.swap && !options.pause && !options.resume) {
+			return buildOverviewMessage(user);
 		}
 
 		if (options.overview) {
-			return buildOverview(user);
+			return buildOverviewMessage(user);
+		}
+
+		if (options.pause || options.resume) {
+			const paused = user.bitfield.includes(BitField.ZeroTimeActivitiesPaused);
+			const shouldPause = Boolean(options.pause) && !paused;
+			if (shouldPause) {
+				await user.update({ bitfield: { push: BitField.ZeroTimeActivitiesPaused } });
+			} else if (paused) {
+				await user.update({ bitfield: user.bitfield.filter(bit => bit !== BitField.ZeroTimeActivitiesPaused) });
+			}
+			const refreshedUser = await mUserFetch(userId);
+			if (interaction.rawInteraction.type === InteractionType.MessageComponent) {
+				await interaction.update(buildOverviewMessage(refreshedUser));
+				return SpecialResponse.RespondedManually;
+			}
+			return `${shouldPause ? 'Paused' : 'Resumed'} zero-time activities for new trips. Your preferences have been kept.\n${buildOverview(refreshedUser)}`;
+		}
+
+		if (options.swap) {
+			const {
+				zero_time_activity_primary_type,
+				zero_time_activity_primary_item,
+				zero_time_activity_fallback_type,
+				zero_time_activity_fallback_item
+			} = user.user;
+			if (!zero_time_activity_primary_type || !zero_time_activity_fallback_type) {
+				return 'Set both a primary and fallback activity with `/zero_time_activity set` before swapping them.';
+			}
+			await user.update({
+				zero_time_activity_primary_type: zero_time_activity_fallback_type,
+				zero_time_activity_primary_item: zero_time_activity_fallback_item,
+				zero_time_activity_fallback_type: zero_time_activity_primary_type,
+				zero_time_activity_fallback_item: zero_time_activity_primary_item
+			});
+			const refreshedUser = await mUserFetch(userId);
+			if (interaction.rawInteraction.type === InteractionType.MessageComponent) {
+				await interaction.update(buildOverviewMessage(refreshedUser));
+				return SpecialResponse.RespondedManually;
+			}
+			return `Swapped your primary and fallback zero-time activities.\n${buildOverview(refreshedUser)}`;
 		}
 
 		if (options.clear) {
 			await user.update({
+				bitfield: user.bitfield.filter(bit => bit !== BitField.ZeroTimeActivitiesPaused),
 				zero_time_activity_primary_type: null,
 				zero_time_activity_primary_item: null,
 				zero_time_activity_fallback_type: null,
@@ -547,7 +642,12 @@ export const zeroTimeActivityCommand = defineCommand({
 			await user.update(updateData);
 
 			const refreshedUser = await mUserFetch(userId);
-			const summaryLines = getZeroTimeActivityPreferences(refreshedUser).map(formatZeroTimePreference);
+			const summaryLines = getZeroTimeActivityPreferences(refreshedUser, { includePaused: true }).map(
+				formatZeroTimePreference
+			);
+			if (refreshedUser.bitfield.includes(BitField.ZeroTimeActivitiesPaused)) {
+				summaryLines.push('Zero-time activities are paused. Resume with `/zero_time_activity pause`.');
+			}
 
 			return `Saved your zero-time preferences.\n${summaryLines.join('\n')}`;
 		}

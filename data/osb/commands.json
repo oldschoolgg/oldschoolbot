@@ -1,6 +1,6 @@
 {
-	"hash": "c43891bb387c0657aed96e1284b6df5e",
-	"date": "2026-09-10T11:03:48.432Z",
+	"hash": "cfe55c666dc9134c52a4801566e70d1d",
+	"date": "2026-10-08T11:47:22.254Z",
 	"data": [
 		{
 			"name": "activities",
@@ -554,7 +554,7 @@
 		{
 			"name": "zero_time_activity",
 			"desc": "Configure your preferred zero-time activities.",
-			"subOptions": ["clear", "overview", "set"]
+			"subOptions": ["clear", "overview", "pause", "resume", "set", "swap"]
 		}
 	]
 }

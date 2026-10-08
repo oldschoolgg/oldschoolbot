@@ -6,10 +6,12 @@ Zero-time activities let your minion cast High Alchemy or fletch stackable ammun
 
 ## Configuring `/zero_time_activity`
 
-- Use [[/zero_time_activity overview]] to see your saved preferences, readiness, and any blockers.
+- Use [[/zero_time_activity overview]] to see your saved preferences, readiness, supply capacity, and any blockers. Capacity shows how many outputs your current bank supplies can produce, or how many alchs you can cast. Automatic alching names the selected favourite; the selection can change depending on the trip.
 - Configure your primary preference with [[/zero_time_activity set primary_type\:alch]] or [[/zero_time_activity set primary_type\:fletch primary_item\:"Rune dart"]]. Autocomplete now lists every valid fletchable alongside the required level and Slayer unlocks.
 - Add a fallback with [[/zero_time_activity set primary_type\:alch fallback_type\:fletch fallback_item\:"Rune dart"]] so trips automatically swap to the next viable option if the primary setup is unavailable.
 - Keep `Alch (automatic favourites)` stocked by adding favourite alchs via [[/config user favorite_alchs add\:Rune platebody]].
+- Use [[/zero_time_activity swap]] or the **Swap** button on your overview to exchange your primary and fallback activities, including their items. Both must be configured first. The button refreshes your overview and can only be used by you.
+- Your overview ends with **Status: Live** or **Status: Paused**. Use its **Pause**/**Resume** button or [[/zero_time_activity pause]] to switch between the two while keeping your preferences. [[/zero_time_activity resume]] also restores live status. Changes apply to new trips; trips already underway finish normally, and editing or swapping preferences keeps the current status.
 - Remove everything with [[/zero_time_activity clear]].
 
 Only one zero-time action runs per trip, but the fallback preference means you rarely waste a lap. Supplies are withdrawn when the trip begins, and any automatic switch highlights the reason (for example, “Primary alch: You're missing resources… Falling back to Fletch Rune dart.”).
