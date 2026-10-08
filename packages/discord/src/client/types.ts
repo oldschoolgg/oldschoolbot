@@ -33,6 +33,7 @@ export type BaseSendableMessage = {
 	embeds?: EmbedBuilder[];
 	allowedMentions?: RESTPostAPIChannelMessageJSONBody['allowed_mentions'];
 	files?: (SendableFile | undefined)[];
+	clearAttachments?: boolean;
 	ephemeral?: boolean;
 	threadId?: string;
 	withResponse?: boolean;
@@ -84,7 +85,8 @@ export async function sendableMsgToApiCreate({ msg }: { msg: SendableMessage }):
 		embeds: msg.embeds?.map(embed => embed.toJSON()),
 		flags: msg.ephemeral ? MessageFlags.Ephemeral : undefined,
 		allowed_mentions: merge(DEFAULT_ALLOWED_MENTIONS, msg.allowedMentions),
-		message_reference: msg.messageReference
+		message_reference: msg.messageReference,
+		attachments: msg.clearAttachments ? [] : undefined
 	};
 
 	if ('files' in msg && msg.files && msg.files.length > 0) {

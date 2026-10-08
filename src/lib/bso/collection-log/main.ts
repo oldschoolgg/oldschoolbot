@@ -1,5 +1,7 @@
 import { Items, resolveItems } from 'oldschooljs';
 
+import { getSimilarItems } from '@/lib/data/similarItems.js';
+
 export const tameGearCL = Items.resolveItems([
 	'Dragon igne armor',
 	'Barrows igne armor',
@@ -113,6 +115,11 @@ export const discontinuedCustomPetsCL = resolveItems([
 	'Patricia',
 	'Sam'
 ]);
+
+// Real all dc pets:
+export const allDiscontinuedPets = [...new Set([...discontinuedCustomPetsCL.flatMap(getSimilarItems)])];
+// Should be just alt art pets here:
+export const discontinuedCustomPetsAltArt = allDiscontinuedPets.filter(p => !discontinuedCustomPetsCL.includes(p));
 
 export const kingGoldemarCL = resolveItems([
 	'Broken dwarven warhammer',

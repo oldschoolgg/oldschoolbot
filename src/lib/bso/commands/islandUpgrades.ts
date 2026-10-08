@@ -109,7 +109,6 @@ export const PASSIVE_YIELD_TABLES: Record<SkillCategory, PassiveYieldEntry[]> = 
 		{ item: 'Coal', minLevel: 30, tierCeiling: 1, ratePerHour: 300 },
 		{ item: 'Gold ore', minLevel: 40, tierCeiling: 1, ratePerHour: 80 },
 		{ item: 'Mithril ore', minLevel: 55, tierCeiling: 2, ratePerHour: 70 },
-		{ item: 'Lovakite ore', minLevel: 65, tierCeiling: 3, ratePerHour: 60 },
 		{ item: 'Adamantite ore', minLevel: 70, tierCeiling: 2, ratePerHour: 55 },
 		{ item: 'Obsidian shards', minLevel: 80, tierCeiling: 3, ratePerHour: 30 },
 		{ item: 'Runite ore', minLevel: 85, tierCeiling: 3, ratePerHour: 30 },
@@ -223,7 +222,7 @@ function tierRelevanceFactor(itemMinLevel: number, tier: number): number {
 	return 0.08;
 }
 
-function getAccumulationEntries(
+export function getAccumulationEntries(
 	category: SkillCategory,
 	tier: number,
 	skillLevel: number
@@ -278,7 +277,7 @@ export function calculateAccumulatedYields(
 		for (let roll = 0; roll < rollsPerTick; roll++) {
 			const item = weightedPick(entries, rand);
 			const baseQty = 1 + Math.floor(rand() * 3);
-			const qty = Math.max(1, Math.floor(baseQty * rateMultiplier));
+			const qty = Math.max(1, Math.floor(baseQty * 2.25 * rateMultiplier));
 			totals.set(item, (totals.get(item) ?? 0) + qty);
 		}
 	}
@@ -353,7 +352,6 @@ const MAINTENANCE_BASE_QTY: Record<string, number> = {
 	'Mithril ore': 3_000,
 	'Gold ore': 2_000,
 	'Granite (500g)': 2_500,
-	'Lovakite ore': 2_000,
 	'Soft clay': 4_000,
 	'Bronze pickaxe': 10,
 	'Dragon pickaxe': 1,
@@ -392,8 +390,8 @@ const MAINTENANCE_BASE_QTY: Record<string, number> = {
 };
 
 const MAINTENANCE_ITEM_CAPS: Partial<Record<string, number>> = {
-	'Sentinel core': 50,
-	'Verdant heart': 50,
+	'Sentinel core': 1,
+	'Verdant heart': 1,
 	'Empyrean shards': 25
 };
 
@@ -446,7 +444,7 @@ export function getWeeklyMaintenanceDemand(
 	const bank = new Bank();
 	for (const itemName of chosen) {
 		const baseQty = MAINTENANCE_BASE_QTY[itemName] ?? 500;
-		const rawQty = Math.max(1, Math.round((baseQty * mult * catMult) / 50) * 50);
+		const rawQty = Math.max(1, Math.round((baseQty * mult * catMult * 0.5) / 50) * 50);
 		const cap = MAINTENANCE_ITEM_CAPS[itemName];
 		const qty = cap !== undefined ? Math.min(rawQty, cap) : rawQty;
 		bank.add(itemName, qty);
@@ -1475,11 +1473,26 @@ export function getNextUpgradeForCategory(
 	return upgradeDefinitions[category].find(t => t.tier === current + 1) ?? null;
 }
 
+export function getUpgradeCost(upgrade: UpgradeTier, isIronman: boolean = false): Bank {
+	if (!isIronman) return upgrade.cost;
+	const cost = new Bank();
+	for (const [item, qty] of upgrade.cost.items()) {
+		if (item.name === 'Coins') {
+			cost.add(item.id, Math.floor(qty / 10));
+		} else {
+			cost.add(item.id, qty);
+		}
+	}
+	return cost;
+}
+
 export function getContributionProgress(
 	nextUpgrade: UpgradeTier,
-	contributions: Partial<Record<string, number>>
+	contributions: Partial<Record<string, number>>,
+	isIronman: boolean = false
 ): number {
-	const costItems = nextUpgrade.cost.items();
+	const cost = getUpgradeCost(nextUpgrade, isIronman);
+	const costItems = cost.items();
 	const totalCostItems = costItems.reduce((s: number, [, q]: [unknown, number]) => s + q, 0);
 	if (totalCostItems === 0) return 0;
 	let contributed = 0;
@@ -1491,17 +1504,24 @@ export function getContributionProgress(
 
 export function isContributionComplete(
 	nextUpgrade: UpgradeTier,
-	contributions: Partial<Record<string, number>>
+	contributions: Partial<Record<string, number>>,
+	isIronman: boolean = false
 ): boolean {
-	for (const [item, qty] of nextUpgrade.cost.items()) {
+	const cost = getUpgradeCost(nextUpgrade, isIronman);
+	for (const [item, qty] of cost.items()) {
 		if ((contributions[item.id.toString()] ?? 0) < qty) return false;
 	}
 	return true;
 }
 
-export function getRemainingCost(nextUpgrade: UpgradeTier, contributions: Partial<Record<string, number>>): Bank {
+export function getRemainingCost(
+	nextUpgrade: UpgradeTier,
+	contributions: Partial<Record<string, number>>,
+	isIronman: boolean = false
+): Bank {
+	const cost = getUpgradeCost(nextUpgrade, isIronman);
 	const remaining = new Bank();
-	for (const [item, qty] of nextUpgrade.cost.items()) {
+	for (const [item, qty] of cost.items()) {
 		const still = qty - (contributions[item.id.toString()] ?? 0);
 		if (still > 0) remaining.add(item.id, still);
 	}

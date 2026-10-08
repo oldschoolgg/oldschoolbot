@@ -223,7 +223,7 @@ function generateMiddlingLoot(recipe: ContractRecipe, successfulContracts: numbe
 	const supplyQty = Math.floor(successfulContracts * 0.3);
 	if (supplyQty > 0) {
 		if (supplyRoll < 0.35) {
-			loot.add('Steel nail', supplyQty * randInt(5, 15));
+			loot.add('Steel nails', supplyQty * randInt(5, 15));
 		} else if (supplyRoll < 0.6) {
 			loot.add('Ball of wool', supplyQty * randInt(2, 6));
 		} else if (supplyRoll < 0.8) {

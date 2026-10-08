@@ -159,6 +159,7 @@ export async function soulWarsBuyCommand(user: MUser, input = '', quantity?: num
 	if (!Number.isNaN(Number.parseInt(possibleItemName[0]))) {
 		quantity = Number(possibleItemName.shift());
 	}
+	quantity = Math.max(1, quantity);
 
 	input = possibleItemName.join(' ');
 

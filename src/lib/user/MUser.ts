@@ -182,8 +182,13 @@ export class MUserClass extends BaseUser {
 		return getPerkTierCached(this.id) !== null;
 	}
 
-	async fetchPerkTier({ forceNoCache }: { forceNoCache?: boolean } = {}): Promise<0 | PerkTier> {
+	async fetchPerkTier({ forceNoCache }: { forceNoCache?: boolean } = {}): Promise<PerkTier> {
 		return await getUsersPerkTier({ user: this, forceNoCache });
+	}
+	get premiumTier(): PerkTier | null {
+		// TODO: Replace this with the actual Tier associated with the best entitlement.
+		const cached = getPerkTierCached(this.id);
+		return cached !== null ? Math.max(0, cached - 1) : null;
 	}
 
 	hasMonsterRequirements(monster: KillableMonster) {
@@ -237,6 +242,7 @@ WHERE user_id = ${this.id};`;
 		}
 		const stats = await this.fetchStats();
 		const opens = new Bank(stats.openable_scores as ItemBank);
+		const collectionLog = await this.fetchCL();
 
 		// Actual clues are only ones that you have: received in your cl, completed in trips, and opened.
 		const actualClues = new Bank();
@@ -245,7 +251,7 @@ WHERE user_id = ${this.id};`;
 			const clueTier = ClueTiers.find(i => i.id === item.id)!;
 			actualClues.add(
 				clueTier.scrollID,
-				Math.min(qtyCompleted, this.cl.amount(clueTier.scrollID), opens.amount(clueTier.id))
+				Math.min(qtyCompleted, collectionLog.amount(clueTier.scrollID), opens.amount(clueTier.id))
 			);
 		}
 
@@ -705,7 +711,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 	}
 
 	async checkBankBackground() {
-		if (this.isModOrAdmin()) {
+		if (this.isModOrAdmin) {
 			return;
 		}
 		const resetBackground = async () => {
@@ -1018,7 +1024,6 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 
 		const res = await Promise.race([
 			mutex.runExclusive(async () => {
-				await this.sync();
 				return fn(this);
 			}),
 			timeoutPromise

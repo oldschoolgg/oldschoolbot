@@ -197,6 +197,14 @@ export class BaseInteraction {
 		return this.sendWebhookEdit('@original', options);
 	}
 
+	async editFollowUp(
+		messageId: string,
+		options: EditMessageOptions
+	): Promise<RESTPostAPIInteractionCallbackWithResponseResult> {
+		if (!this._deferred && !this._replied) throw new Error('InteractionNotReplied');
+		return this.sendWebhookEdit(messageId, options);
+	}
+
 	async deleteReply(message: string | '@original' = '@original'): Promise<void> {
 		if (!this._deferred && !this._replied) throw new Error('InteractionNotReplied');
 		await this.rest.delete(Routes.webhookMessage(this.applicationId, this.token, message), { auth: false });

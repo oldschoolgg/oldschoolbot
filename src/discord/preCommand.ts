@@ -63,7 +63,7 @@ export async function preCommand({
 		})
 		.catch(err => Logging.logError({ err, interaction, context: logContext }));
 
-	if (user.isAdmin()) return;
+	if (user.isAdmin) return;
 
 	const start = performance.now();
 	const inhibitResult = await runInhibitors({

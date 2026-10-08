@@ -6,6 +6,7 @@ import {
 	akumuCL,
 	araxxorCL,
 	customPetsCL,
+	discontinuedCustomPetsAltArt,
 	discontinuedCustomPetsCL,
 	divineDominionCL,
 	divinersOutfit,
@@ -78,6 +79,7 @@ import {
 	ChambersOfXeric,
 	Clues,
 	EItem,
+	ElderHoard,
 	EMonster,
 	type ItemBank,
 	ItemGroups,
@@ -141,6 +143,7 @@ import {
 	diariesCL,
 	distilleryCL,
 	dukeSucellusCL,
+	elderCacheCL,
 	emergedZukInfernoCL,
 	expertCapesCL,
 	type FormatProgressFunction,
@@ -1683,6 +1686,15 @@ export const allCollectionLogs: ICollection = {
 			'Divine Dominion': {
 				alias: ['dd', 'divine dominion'],
 				items: divineDominionCL
+			},
+			'Elder Cache': {
+				alias: ['elder cache', 'elder sigil', 'cache'],
+				allItems: ElderHoard.table.allItems,
+				items: elderCacheCL,
+				kcActivity: {
+					Default: async (_, __, { openableScores }) => openableScores.amount(75_043)
+				},
+				fmtProg: ({ stats }) => `${stats.openableScores.amount(75_043)} Opened`
 			}
 		}
 	},
@@ -1757,6 +1769,11 @@ export const allCollectionLogs: ICollection = {
 			'Custom Pets (Discontinued)': {
 				alias: ['dcpets', 'disc custom pet', 'dcpet', 'dcp', 'discontinued custom pet'],
 				items: discontinuedCustomPetsCL,
+				counts: false
+			},
+			'Custom Pets (DC Alt Art)': {
+				alias: ['dcpaa', 'dcpalts', 'dyed dcp', 'dyed dcps', 'discontinued dyed pets', 'shiny dcp', 'sdcp'],
+				items: discontinuedCustomPetsAltArt,
 				counts: false
 			},
 			'Halloween 2021': {
@@ -2083,7 +2100,9 @@ for (const crate of keyCrates) {
 	allCollectionLogs.Discontinued.activities[crate.item.name] = {
 		alias: [crate.item.name.toLowerCase()],
 		items: resolveItems([crate.item.id, crate.key.id, ...crate.table.allItems]).filter(
-			i => !Items.getOrThrow(i).customItemData?.isSecret
+			i =>
+				Items.getOrThrow(i).customItemData?.isDiscontinued === true &&
+				!Items.getOrThrow(i).customItemData?.isSecret
 		),
 		counts: false,
 		kcActivity: {
@@ -2427,3 +2446,9 @@ export const allCollectionLogsFlat = Object.values(allCollectionLogs).flatMap(i 
 export const bossCLItems = Object.values({
 	...allCollectionLogs.PvM.activities
 }).flatMap(i => i.items);
+
+export const allDcSet = new Set(
+	Object.values({
+		...allCollectionLogs.Discontinued.activities
+	}).flatMap(i => i.items)
+);

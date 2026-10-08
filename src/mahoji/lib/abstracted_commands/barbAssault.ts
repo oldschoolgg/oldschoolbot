@@ -119,6 +119,7 @@ export async function barbAssaultBuyCommand(interaction: MInteraction, user: MUs
 	if (!quantity) {
 		quantity = 1;
 	}
+	quantity = Math.max(1, quantity);
 
 	const { item, cost } = buyable;
 	const stats = await user.fetchStats();

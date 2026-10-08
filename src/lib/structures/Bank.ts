@@ -1,8 +1,13 @@
 import { GeneralBank, type GeneralBankType } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
+import * as z from 'zod';
 
 import { type DegradeableItem, degradeableItems } from '@/lib/degradeableItems.js';
 import { assert } from '@/lib/util/logError.js';
+
+export const ZRawItemBank = z.record(z.string(), z.number().int().positive());
+
+export const ZItemBank = ZRawItemBank.transform(bank => Bank.withSanitizedValues(bank).toJSON());
 
 export class ChargeBank extends GeneralBank<DegradeableItem['settingsKey']> {
 	constructor(initialBank?: GeneralBankType<DegradeableItem['settingsKey']>) {

@@ -49,7 +49,7 @@ export async function spawnLampCommand(user: MUser, interaction: MInteraction): 
 	if (globalConfig.isProduction && interaction.guildId !== globalConfig.supportServerID) {
 		return 'You can only use this command in the support server.';
 	}
-	const [lampIsReady, reason] = user.isAdmin() ? [true, ''] : await spawnLampIsReady(user, interaction.channelId);
+	const [lampIsReady, reason] = user.isAdmin ? [true, ''] : await spawnLampIsReady(user, interaction.channelId);
 	if (!lampIsReady && reason) return reason;
 
 	const group = await findGroupOfUser(user.id);
@@ -131,7 +131,7 @@ export async function giveBox(user: MUser, _recipient: MahojiUserOption) {
 	const difference = currentDate - lastDate;
 
 	// If no user or not an owner and can not send one yet, show time till next box.
-	if (difference < giveBoxResetTime && !user.isAdmin()) {
+	if (difference < giveBoxResetTime && !user.isAdmin) {
 		return `You can give another box in ${formatDuration(giveBoxResetTime - difference)}`;
 	}
 
