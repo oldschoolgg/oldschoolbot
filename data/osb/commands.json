@@ -207,7 +207,7 @@
 		{
 			"name": "gamble",
 			"desc": "Partake in various gambling activities.",
-			"subOptions": ["dice", "duel", "give_random_item", "hot_cold", "item", "lucky_pick", "slots"]
+			"subOptions": ["dice", "duel", "give_random_item", "high_roller", "hot_cold", "item", "lucky_pick", "slots"]
 		},
 		{
 			"name": "ge",
