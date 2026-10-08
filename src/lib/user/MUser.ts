@@ -437,7 +437,6 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 	}
 
 	calculateSpecialRemoveItems(bankToRemove: Bank, options?: SpecialRemoveItemsOptions): SpecialRemoveItemsResult {
-		console.log(`Special: ${bankToRemove.amount('Dragon arrow')}`);
 		bankToRemove = determineRunes(this, bankToRemove);
 		const bankRemove = new Bank();
 		const ammoToRemove = new Bank();
@@ -448,9 +447,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 		const realCost = bankToRemove.clone();
 		const rangeGear = this.gear[gearSlot];
 		const avasDevice = options?.avasDevice ?? avasDevices.find(avas => rangeGear.hasEquipped(avas.item.id));
-		console.log(
-			`gearSlot: ${gearSlot} Avas: ${avasDevice?.item.name}\n\tReal Cost: ${realCost}n\n\tGear: ${rangeGear}`
-		);
+
 		const newGear = rangeGear.raw();
 		let newBlowpipe: IBlowpipeData | undefined;
 

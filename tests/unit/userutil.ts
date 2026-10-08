@@ -37,6 +37,7 @@ export interface MockUserArgs {
 	GP?: number;
 	bitfield?: BitField[];
 	slayer_unlocks?: SlayerTaskUnlocksEnum[];
+	favorite_alchables?: number[];
 	id?: string;
 }
 
@@ -81,6 +82,7 @@ const mockUser = (overrides?: MockUserArgs): User => {
 		GP: overrides?.GP ?? 0,
 		bitfield: overrides?.bitfield ?? [],
 		slayer_unlocks: overrides?.slayer_unlocks ?? [],
+		favorite_alchables: overrides?.favorite_alchables ?? [],
 		username: 'Magnaboy',
 		QP: overrides?.QP ?? 0,
 		sacrificedValue: 0,

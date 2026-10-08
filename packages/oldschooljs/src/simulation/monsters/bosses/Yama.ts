@@ -42,7 +42,7 @@ const YamaTable = new LootTable()
 	.tertiary(30, 'Clue scroll (elite)')
 	.tertiary(2500, 'Yami');
 
-export const Yama = new SimpleMonster({
+export const Yama: SimpleMonster = new SimpleMonster({
 	id: 14176,
 	name: 'Yama',
 	table: YamaTable,

@@ -195,7 +195,22 @@ describe('Open Command', async () => {
 		await user.bankAmountMatch('Rite of vile transference', 1);
 	});
 
-	test('Dossier converts rite rolls to scrolls if rite is already owned/used', async () => {
+	test('Dossier converts rite rolls to scrolls if rite is currently in the bank', async () => {
+		mockMathRandom(0.82);
+		const user = await createTestUser();
+		await user.addItemsToBank({ items: new Bank().add('Rite of vile transference', 1), collectionLog: true });
+		await user.addItemsToBank({ items: new Bank().add('Dossier', 1) });
+		await user.incrementKC(Monsters.Yama.id, 100);
+
+		await user.runCommand(openCommand, { name: 'dossier' });
+		await user.bankAmountMatch('Rite of vile transference', 1);
+		await user.sync();
+		const scrolls = user.bank.amount('Chasm teleport scroll');
+		expect(scrolls).toBeGreaterThanOrEqual(15);
+		expect(scrolls).toBeLessThanOrEqual(18);
+	});
+
+	test('Dossier can award rite again if previous rite is no longer in the bank', async () => {
 		mockMathRandom(0.82);
 		const user = await createTestUser();
 		await user.addItemsToBank({ items: new Bank().add('Rite of vile transference', 1), collectionLog: true });
@@ -204,14 +219,12 @@ describe('Open Command', async () => {
 		await user.incrementKC(Monsters.Yama.id, 100);
 
 		await user.runCommand(openCommand, { name: 'dossier' });
-		await user.bankAmountMatch('Rite of vile transference', 0);
+		await user.bankAmountMatch('Rite of vile transference', 1);
 		await user.sync();
-		const scrolls = user.bank.amount('Chasm teleport scroll');
-		expect(scrolls).toBeGreaterThanOrEqual(15);
-		expect(scrolls).toBeLessThanOrEqual(18);
+		expect(user.bank.amount('Chasm teleport scroll')).toBe(0);
 	});
 
-	test('Dossier converts rite rolls to scrolls if rite was already used via bitfield', async () => {
+	test('Dossier can award rite if rite was already used via bitfield and none is in the bank', async () => {
 		mockMathRandom(0.82);
 		const user = await createTestUser();
 		await user.update({
@@ -223,20 +236,14 @@ describe('Open Command', async () => {
 		await user.incrementKC(Monsters.Yama.id, 100);
 
 		await user.runCommand(openCommand, { name: 'dossier' });
-		await user.bankAmountMatch('Rite of vile transference', 0);
+		await user.bankAmountMatch('Rite of vile transference', 1);
 		await user.sync();
-		const scrolls = user.bank.amount('Chasm teleport scroll');
-		expect(scrolls).toBeGreaterThanOrEqual(15);
-		expect(scrolls).toBeLessThanOrEqual(18);
+		expect(user.bank.amount('Chasm teleport scroll')).toBe(0);
 	});
 
-	test('Dossier open until rejects rite if rite was already used via bitfield', async () => {
+	test('Dossier open until rejects rite if rite is currently in the bank', async () => {
 		const user = await createTestUser();
-		await user.update({
-			bitfield: {
-				push: BitField.HasRiteOfVileTransference
-			}
-		});
+		await user.addItemsToBank({ items: new Bank().add('Rite of vile transference', 1) });
 		await user.addItemsToBank({ items: new Bank().add('Dossier', 1) });
 
 		const res = await user.runCommand(openCommand, {
@@ -245,7 +252,7 @@ describe('Open Command', async () => {
 		});
 
 		expect(res).toEqual(
-			"You can't open until Rite of vile transference, because you have already received or used it."
+			"You can't open until Rite of vile transference, because you already have one in your bank."
 		);
 		await user.bankAmountMatch('Dossier', 1);
 	});

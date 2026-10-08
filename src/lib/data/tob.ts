@@ -184,9 +184,9 @@ export const TOBMaxMageGear = constructGearSetup({
 	neck: 'Occult necklace',
 	body: 'Ancestral robe top',
 	cape: 'Imbued saradomin cape',
-	hands: 'Confliction gauntlets',
+	hands: 'Tormented bracelet',
 	legs: 'Ancestral robe bottom',
-	feet: 'Avernic treads (max)',
+	feet: 'Eternal boots',
 	weapon: 'Kodai wand',
 	shield: 'Arcane spirit shield',
 	ring: 'Magus ring'
@@ -199,7 +199,7 @@ export const TOBMaxRangeGear = constructGearSetup({
 	cape: "Ava's assembler",
 	hands: 'Void knight gloves',
 	legs: 'Elite void robe',
-	feet: 'Avernic treads (max)',
+	feet: 'Pegasian boots',
 	'2h': 'Twisted bow',
 	ring: 'Venator ring',
 	ammo: 'Dragon arrow'
@@ -212,7 +212,7 @@ export const TOBMaxMeleeGear = constructGearSetup({
 	cape: 'Infernal cape',
 	hands: 'Ferocious gloves',
 	legs: 'Torva platelegs',
-	feet: 'Avernic treads (max)',
+	feet: 'Primordial boots',
 	'2h': 'Scythe of vitur',
 	ring: 'Ultor ring'
 });
@@ -239,11 +239,15 @@ export function calculateTOBUserGearPercents(user: MUser) {
 		['attack_stab', 'attack_slash', 'attack_crush', 'attack_ranged'],
 		false
 	);
+	const avernicTreadsGearScoreBoost = user.hasEquippedOrInBank('Avernic treads') ? 3 : 0;
+	const boostedMelee = Math.min(100, melee + avernicTreadsGearScoreBoost);
+	const boostedRange = Math.min(100, range + avernicTreadsGearScoreBoost);
+	const boostedMage = Math.min(100, mage + avernicTreadsGearScoreBoost);
 	return {
-		melee,
-		range,
-		mage,
-		total: (melee + range + mage) / 3
+		melee: boostedMelee,
+		range: boostedRange,
+		mage: boostedMage,
+		total: (boostedMelee + boostedRange + boostedMage) / 3
 	};
 }
 

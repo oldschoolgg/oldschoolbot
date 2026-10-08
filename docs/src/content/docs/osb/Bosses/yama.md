@@ -10,7 +10,7 @@ The generated [Monsters](/osb/monsters/#yama) page lists Yama's current costs, r
 
 Yama drops [[Dossier]], [[Forgotten lockbox]], [[Oathplate shards]], [[Soulflame horn]], Oathplate pieces, [[Chasm teleport scroll]], [[Barrel of demonic tallow (full)]], and [[Yami]].
 
-[[Dossier]] and [[Forgotten lockbox]] can be opened with [[/open]]. Dossier has dry protection for [[Rite of vile transference]] on the first Dossier opened after 100 Yama KC, provided the rite has not already been owned or used. After the rite is already owned or used, duplicate rite rolls are converted into [[Chasm teleport scroll]] instead.
+[[Dossier]] and [[Forgotten lockbox]] can be opened with [[/open]]. Dossier has dry protection for [[Rite of vile transference]] on the first Dossier opened after 100 Yama KC, provided you do not currently have a rite in your bank. Duplicate rite rolls while you already have one in your bank, or within the same opening batch, are converted into [[Chasm teleport scroll]] instead.
 
 Use [[/use item\:Rite of vile transference]] to unlock its PvM boosts.
 

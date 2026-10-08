@@ -31,6 +31,76 @@ describe('PVM', async () => {
 		);
 	});
 
+	it('does not count bolts as Doom arrows in the range setup check', async () => {
+		const user = await client.mockUser({
+			maxed: true,
+			rangeGear: resolveItems([
+				'Masori mask (f)',
+				'Necklace of anguish',
+				'Masori body (f)',
+				"Ava's assembler",
+				'Zaryte vambraces',
+				'Masori chaps (f)',
+				'Avernic treads',
+				'Twisted bow',
+				'Dragon bolts'
+			])
+		});
+		await user.update({
+			bitfield: {
+				push: BitField.HasDexScroll
+			},
+			finished_quest_ids: [QuestID.TheFinalDawn]
+		});
+
+		const result = await user.runCommand(delvesCommand, { doom: { target_delve: 1, check: true } });
+		expect(typeof result).toBe('string');
+		if (typeof result !== 'string') throw new Error('Expected Doom check result to be a string.');
+		const arrowLine = result.split('\n').find(line => line.includes('Arrows equipped in your range setup.'));
+
+		expect(arrowLine?.startsWith(String.fromCodePoint(0x274c))).toBe(true);
+	});
+
+	it('uses Doom arrows from the range setup without requiring a duplicate bank stack', async () => {
+		const user = await client.mockUser({
+			maxed: true,
+			rangeGear: resolveItems([
+				'Masori mask (f)',
+				'Necklace of anguish',
+				'Masori body (f)',
+				"Ava's assembler",
+				'Zaryte vambraces',
+				'Masori chaps (f)',
+				'Avernic treads',
+				'Twisted bow',
+				'Dragon arrow'
+			]),
+			bank: new Bank()
+				.add('Anti-venom+(4)', 100)
+				.add('Emberlight')
+				.add('Eye of ayak')
+				.add('Noxious halberd')
+				.add('Ranging potion(4)', 100)
+				.add('Saradomin brew(4)', 100)
+				.add('Super restore(4)', 100)
+		});
+		await user.update({
+			ayak_charges: 100,
+			bitfield: {
+				push: BitField.HasDexScroll
+			},
+			finished_quest_ids: [QuestID.TheFinalDawn]
+		});
+		user.gear.range.equip('Dragon arrow', 5000);
+		await user.update({ gear_range: user.gear.range.raw() } as Parameters<typeof user.update>[0]);
+
+		const result = await user.runCommand(delvesCommand, { doom: { target_delve: 1, quantity: 1 } });
+
+		expect(result).toContain('is now fighting the **Doom of Mokhaiotl**');
+		await user.bankAmountMatch('Dragon arrow', 0);
+		expect(user.gear.range.get('ammo')?.item).toBe(itemID('Dragon arrow'));
+	});
+
 	it('lists charged Eye of ayak on Doom trips', async () => {
 		const user = await client.mockUser({
 			maxed: true,
