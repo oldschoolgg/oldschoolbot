@@ -289,6 +289,10 @@ function buildOverview(user: MUser): string {
 		}
 	}
 
+	if (!preferences.some(preference => preference.role === 'fallback')) {
+		lines.push('Fallback: Not set -- Set it with `/zero_time_activity set fallback_type:`.');
+	}
+
 	return lines.join('\n');
 }
 
