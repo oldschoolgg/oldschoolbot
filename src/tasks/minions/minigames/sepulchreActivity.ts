@@ -167,8 +167,9 @@ export const sepulchreTask: MinionTask = {
 		}
 
 		const fallbackNote = zeroTimePreferenceRole === 'fallback' ? ' (fallback preference)' : '';
-		let str = `${user}, ${user.minionName} finished doing the Hallowed Sepulchre ${quantity}x times (floor ${floors[0]
-			}-${floors[floors.length - 1]}), and opened ${numCoffinsOpened}x coffins.\n\n${xpRes}\n${thievingXpRes}`;
+		let str = `${user}, ${user.minionName} finished doing the Hallowed Sepulchre ${quantity}x times (floor ${
+			floors[0]
+		}-${floors[floors.length - 1]}), and opened ${numCoffinsOpened}x coffins.\n\n${xpRes}\n${thievingXpRes}`;
 		if (completedFloor5 && !canOpenGrandCoffin) {
 			str += `\n${user.minionName} did not open Floor 5's Grand Coffin because it requires 84 Thieving or 92 Agility.`;
 		}
