@@ -172,6 +172,7 @@ export enum BitField {
 	Boring = 58,
 	HasRiteOfVileTransference = 59,
 	DisableRiteOfVileTransference = 60,
+	ZeroTimeActivitiesPaused = 61,
 
 	OriginalCyrSupporter = 199
 }
@@ -336,7 +337,12 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 	[BitField.WikiContributor]: { name: 'Wiki Contributor', protected: false, userConfigurable: false },
 	[BitField.UnlimitedGiveaways]: { name: 'Unlimited Giveaways', protected: false, userConfigurable: false },
 	[BitField.ServerSupport]: { name: 'Server Support', protected: true, userConfigurable: false },
-	[BitField.Boring]: { name: 'Boring', protected: true, userConfigurable: false }
+	[BitField.Boring]: { name: 'Boring', protected: true, userConfigurable: false },
+	[BitField.ZeroTimeActivitiesPaused]: {
+		name: 'Zero-time Activities Paused',
+		protected: false,
+		userConfigurable: false
+	}
 } as const;
 
 export const BadgesEnum = {
@@ -490,7 +496,8 @@ export const DEPRECATED_ACTIVITY_TYPES: activity_type_enum[] = [
 	activity_type_enum.HalloweenEvent,
 	activity_type_enum.BlastFurnace, // During the slash command migration this moved to under the smelting activity
 	activity_type_enum.Revenants, // This is now under monsterActivity
-	activity_type_enum.KourendFavour // Kourend favor activity was removed
+	activity_type_enum.KourendFavour, // Kourend favor activity was removed
+	activity_type_enum.ZeroTimeActivity // Handled immediately, no minion task needed
 ];
 
 export const CONSTANTS = {

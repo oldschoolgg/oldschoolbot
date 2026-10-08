@@ -1,8 +1,10 @@
 import { Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
+import { XpGainSource } from '@/prisma/main/enums.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { raimentBonus } from '@/lib/skilling/functions/calcsRunecrafting.js';
+import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
 import Runecraft, { ouraniaAltarTables } from '@/lib/skilling/skills/runecraft.js';
 import type { OuraniaAltarOptions } from '@/lib/types/minions.js';
 import { skillingPetDropRate } from '@/lib/util.js';
@@ -10,14 +12,19 @@ import { skillingPetDropRate } from '@/lib/util.js';
 const ouraniaAltarTask: MinionTask = {
 	type: 'OuraniaAltar',
 	async run(data: OuraniaAltarOptions, { user, handleTripFinish, rng }) {
-		const { quantity, channelId, duration, daeyalt } = data;
+		const { quantity, channelId, duration, daeyalt, fletch, zeroTimePreferenceRole } = data;
 
 		const lvl = user.skillsAsLevels.runecraft;
 		const loot = new Bank();
+		const zeroTimeLoot = new Bank();
 		const hasArdyMedium = user.hasDiary('ardougne.medium');
 		const { petDropRate } = skillingPetDropRate(user, 'runecraft', 1_487_213);
 		const selectedLootTable = ouraniaAltarTables[Math.min(Math.floor(lvl / 10), 10)];
 		let totalXp = 0;
+		let fletchable: (typeof zeroTimeFletchables)[number] | undefined;
+		let fletchQuantity = 0;
+		const fletchingLoot = new Bank();
+		let fletchXpRes = '';
 
 		for (let i = 0; i < quantity; i++) {
 			const essenceLoot = selectedLootTable.roll();
@@ -35,6 +42,27 @@ const ouraniaAltarTask: MinionTask = {
 		}
 
 		if (daeyalt) totalXp *= 1.5;
+
+		if (fletch && fletch.qty > 0) {
+			fletchable = zeroTimeFletchables.find(item => item.id === fletch.id);
+			if (!fletchable) {
+				throw new Error(`Fletchable id ${fletch.id} not found for Ourania Altar.`);
+			}
+
+			fletchQuantity = fletch.qty;
+			const quantityToGive = fletchable.outputMultiple
+				? fletchQuantity * fletchable.outputMultiple
+				: fletchQuantity;
+			fletchingLoot.add(fletchable.id, quantityToGive);
+			zeroTimeLoot.add(fletchingLoot);
+
+			fletchXpRes = await user.addXP({
+				skillName: 'fletching',
+				amount: fletchQuantity * fletchable.xp,
+				duration,
+				source: XpGainSource.ZeroTimeActivity
+			});
+		}
 
 		let diaryQuantity = 0;
 		let raimentQuantity = 0;
@@ -64,7 +92,15 @@ const ouraniaAltarTask: MinionTask = {
 			diaryQuantity > 0 ? `\n${diaryQuantity} bonus runes for completing the medium Ardougne diary.` : ''
 		}${
 			raimentQuantity > 0 ? `\n${raimentQuantity} bonus runes from the Raiments of the eye outfit.` : ''
-		} ${xpRes}`;
+		} ${xpRes}${
+			fletchable && fletchQuantity > 0
+				? `\nYou also fletched ${fletchQuantity}${
+						fletchable.outputMultiple ? ' sets of' : ''
+					} ${fletchable.name}${
+						zeroTimePreferenceRole === 'fallback' ? ' (fallback preference)' : ''
+					} and received ${fletchingLoot}. ${fletchXpRes}.`
+				: ''
+		}`;
 
 		if (loot.has('Rift guardian')) {
 			globalClient.emit(
@@ -81,6 +117,29 @@ const ouraniaAltarTask: MinionTask = {
 			collectionLog: true,
 			itemsToAdd: loot
 		});
+
+		if (zeroTimeLoot.length > 0) {
+			await user.transactItems({
+				collectionLog: true,
+				itemsToAdd: zeroTimeLoot
+			});
+
+			await trackLoot({
+				totalLoot: zeroTimeLoot,
+				id: 'zeroTimeLoot',
+				type: 'Skilling',
+				changeType: 'loot',
+				duration,
+				kc: quantity,
+				users: [
+					{
+						id: user.id,
+						duration,
+						loot: zeroTimeLoot
+					}
+				]
+			});
+		}
 
 		await ClientSettings.updateBankSetting('ourania_loot', loot);
 		await trackLoot({

@@ -273,6 +273,22 @@ async function globalButtonInteractionHandler({
 		ignoreUserIsBusy: true
 	};
 
+	const zeroTimeButton = [
+		InteractionID.Commands.SwapZeroTimeActivities,
+		InteractionID.Commands.ToggleZeroTimeActivities
+	].find(buttonID => id.startsWith(`${buttonID}_`));
+	if (zeroTimeButton) {
+		const ownerID = id.slice(zeroTimeButton.length + 1);
+		if (ownerID !== user.id) {
+			return { content: 'You can only change activities from your own zero-time overview.', ephemeral: true };
+		}
+		return runCommand({
+			commandName: 'zero_time_activity',
+			args: zeroTimeButton === InteractionID.Commands.SwapZeroTimeActivities ? { swap: {} } : { pause: {} },
+			...options
+		});
+	}
+
 	const timeSinceMessage = Date.now() - interaction.createdTimestamp;
 	if (timeSinceMessage > Time.Day) {
 		Logging.logDebug(`${user.id} clicked Diff[${formatDuration(timeSinceMessage)}] Button[${id}]`);

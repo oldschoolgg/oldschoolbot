@@ -23,14 +23,14 @@ For max efficiency spam quantity 1 trips when close to leveling up.
 1. [[/minigames agility_arena start]] (for diary)
 1. [[/minigames rogues_den start]] (gear for thieving)
 
-## Agility Alching
+## Zero-time Activities While Training
 
-You can alch items while training Agility.
+Read the [Zero-time Activities guide](/osb/miscellaneous/zero-time-activities) for complete setup instructions before you start running laps.
 
-1. Select all the items you want to be alched while training: [[/config user favorite_alchs add\:Rune platebody]]
-1. After selecting your "Favorite alchable items" (favalchs), start a laps trip with `alch:True`, for example: [[/laps name\:Ardougne Rooftop Course alch\:True]]
+- [[/zero_time_activity set primary_type\:alch]] performs roughly 277 High Alchemy casts per hour while you train Agility. Leaving `primary_item` blank lets the bot choose from your favourite alchs at the start of every trip.
+- Pair that with [[/zero_time_activity set primary_type\:alch fallback_type\:fletch fallback_item\:"Rune dart"]] so laps automatically fall back to fletching when supplies or course rules block alching—the trip result will call out the reason for the swap.
 
-It will pick the highest alch-value item from your list of favorites to alch.
+Once configured, simply send [[/laps]] commands—zero-time actions happen automatically alongside your runs. Remember that the Ape Atoll course blocks alching because of the greegree requirement, although zero-time fletching still works there.
 
 ## Graceful
 
