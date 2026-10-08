@@ -446,7 +446,7 @@ async function globalButtonInteractionHandler({
 			});
 		}
 		case InteractionID.Commands.NewSlayerTask: {
-			return slayerNewTaskCommand({ user, interaction, showButtons: true });
+			return slayerNewTaskCommand({ user, interaction, showButtons: true, ephemeralButtonResponse: false });
 		}
 		case InteractionID.Commands.DoShootingStar: {
 			const validStar = await prisma.shootingStars.findFirst({

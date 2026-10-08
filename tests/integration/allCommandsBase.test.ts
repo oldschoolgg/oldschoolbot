@@ -158,7 +158,7 @@ async function createUserWithBaseStats(baseLevel: number) {
 			cape: "Blessed dizana's quiver",
 			hands: 'Zaryte vambraces',
 			legs: 'Masori chaps (f)',
-			feet: 'Pegasian boots',
+			feet: 'Avernic treads (max)',
 			'2h': 'Twisted bow',
 			ring: 'Venator ring',
 			ammo: 'Dragon arrow'
@@ -170,7 +170,7 @@ async function createUserWithBaseStats(baseLevel: number) {
 			cape: 'Imbued saradomin cape',
 			hands: 'Tormented bracelet',
 			legs: 'Ancestral robe bottom',
-			feet: 'Eternal boots',
+			feet: 'Avernic treads (max)',
 			'2h': "Tumeken's shadow",
 			ring: 'Magus ring'
 		}).raw();
@@ -181,7 +181,7 @@ async function createUserWithBaseStats(baseLevel: number) {
 			cape: 'Infernal cape',
 			hands: 'Ferocious gloves',
 			legs: 'Torva platelegs',
-			feet: 'Primordial boots',
+			feet: 'Avernic treads (max)',
 			'2h': 'Scythe of vitur',
 			ring: 'Ultor ring'
 		}).raw();
