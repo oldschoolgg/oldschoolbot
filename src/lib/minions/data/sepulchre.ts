@@ -86,7 +86,7 @@ export const sepulchreFloors = [
 	{
 		number: 4,
 		petChance: 4000,
-		agilityLevel: 82,
+		agilityLevel: 77,
 		xp: 2625,
 		time: Time.Minute * 2.2,
 		lockpickCoffinChance: 800,
@@ -100,7 +100,7 @@ export const sepulchreFloors = [
 	{
 		number: 5,
 		petChance: 2000,
-		agilityLevel: 92,
+		agilityLevel: 87,
 		xp: 5850,
 		time: Time.Minute * 3.75,
 		lockpickCoffinChance: 600,

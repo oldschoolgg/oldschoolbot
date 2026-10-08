@@ -1,6 +1,6 @@
 {
-	"hash": "9a7fc68fb1910606a01bfa31a63edbb9",
-	"date": "2026-08-27T08:28:47.353Z",
+	"hash": "27a3bd240d4d63b1ec5a25f2d70cf03a",
+	"date": "2026-09-09T11:55:21.667Z",
 	"data": [
 		{
 			"name": "activities",
@@ -142,6 +142,12 @@
 			"desc": "View various pieces of data.",
 			"examples": ["/data name:Personal Activity Types"],
 			"subOptions": []
+		},
+		{
+			"name": "delves",
+			"desc": "Send your minion to attempt a delve boss.",
+			"examples": ["/delves doom"],
+			"subOptions": ["doom"]
 		},
 		{
 			"name": "drop",
