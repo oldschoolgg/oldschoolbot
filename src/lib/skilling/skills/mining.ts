@@ -242,6 +242,21 @@ const ores: Ore[] = [
 		aliases: ['addy', 'adamant', 'adamant ore', 'adamantite']
 	},
 	{
+		level: 78,
+		prayerLevel: 43,
+		xp: 22.5,
+		id: 30_846,
+		name: 'Infernal shale',
+		respawnTime: 0,
+		bankingTime: 0,
+		slope: 0,
+		intercept: 100,
+		aliases: ['infernal', 'shale', 'crushed infernal shale'],
+		outputId: 30_848,
+		outputMultiplier: 1.3,
+		fixedRatePerHour: [1500, 1700]
+	},
+	{
 		level: 85,
 		xp: 125,
 		id: 451,
@@ -305,8 +320,8 @@ const prospectorItems: ItemBank = {
 	[itemID('Prospector boots')]: 0.2
 };
 
-export const prospectorItemsArr = Object.entries(prospectorItems).map(([itemID, bonus]) => ({
-	id: Number.parseInt(itemID),
+export const prospectorItemsArr = Object.entries(prospectorItems).map(([itemIDString, bonus]) => ({
+	id: Number.parseInt(itemIDString),
 	boostPercent: bonus
 }));
 

@@ -31,6 +31,12 @@ export interface LootTableItem {
 export interface OneInItems extends LootTableItem {
 	chance: number;
 }
+
+export type LootTableRollMethod = 'add' | 'every' | 'oneIn' | 'tertiary';
+export type LootTableRollByMethod<T extends LootTableRollMethod> = T extends 'oneIn' | 'tertiary'
+	? OneInItems
+	: LootTableItem;
+
 export function isArrayOfItemTuples(x: readonly unknown[]): x is [string, (number | number[])?][] {
 	return Array.isArray(x[0]);
 }
@@ -78,6 +84,17 @@ export default class LootTable {
 		newTable.allItems = [...this.allItems];
 
 		return newTable;
+	}
+
+	public getRollByMethod<T extends LootTableRollMethod>(method: T): LootTableRollByMethod<T>[] {
+		const rolls = {
+			add: this.table,
+			every: this.everyItems,
+			oneIn: this.oneInItems,
+			tertiary: this.tertiaryItems
+		};
+
+		return [...rolls[method]] as LootTableRollByMethod<T>[];
 	}
 
 	private resolveName(name: string): number {

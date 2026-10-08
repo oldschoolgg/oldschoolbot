@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:16-alpine
+    image: postgres:17-trixie
     command: >
       -c max_connections=1000
       -c fsync=off
@@ -10,6 +10,8 @@ services:
     container_name: osb_database
     ports:
       - "5435:5435"
+    volumes:
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -49,7 +51,9 @@ services:
       redis:
         condition: service_healthy
     environment:
+      NODE_OPTIONS: --max-old-space-size=2048
       ROBOCHIMP_DATABASE_URL: postgresql://postgres:postgres@db:5435/robochimp_integration_test?connection_limit=10&pool_timeout=0&schema=public
-      DATABASE_URL: postgresql://postgres:postgres@db:5435/osb_integration_test?connection_limit=10&pool_timeout=0&schema=public
+      DATABASE_URL: postgresql://postgres:postgres@db:5435/integration_test?connection_limit=10&pool_timeout=0&schema=public
       REDIS_HOST: redis
       REDIS_PORT: 6379
+      PGPASSWORD: postgres

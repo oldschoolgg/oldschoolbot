@@ -3,6 +3,12 @@ import { UserError } from '@oldschoolgg/toolkit';
 import { cancelUsersListings } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
 
 export async function migrateUser(_source: string | MUser, _dest: string | MUser): Promise<string | true> {
+	const deletedUserId = '456226577798135808';
+	if (_source === deletedUserId || _dest === deletedUserId) {
+		throw new UserError(
+			`This is not a real user ID, it's the BS user ID that discord replaces deleted user's with, sorry. You need the real user ID to find your data.`
+		);
+	}
 	const sourceUser = typeof _source === 'string' ? await mUserFetch(_source) : _source;
 	const destUser = typeof _dest === 'string' ? await mUserFetch(_dest) : _dest;
 
@@ -17,10 +23,7 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	transactions.push(prisma.$executeRaw`SET CONSTRAINTS ALL DEFERRED`);
 
 	// Delete Queries
-	// Slayer task must come before new_user since it's linked to new_users 500 IQ.
 	transactions.push(prisma.slayerTask.deleteMany({ where: { user_id: destUser.id } }));
-
-	transactions.push(prisma.newUser.deleteMany({ where: { id: destUser.id } }));
 
 	transactions.push(prisma.gearPreset.deleteMany({ where: { user_id: destUser.id } }));
 	transactions.push(prisma.giveaway.deleteMany({ where: { user_id: destUser.id } }));
@@ -56,7 +59,6 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 
 	// Update queries:
 	transactions.push(prisma.user.updateMany({ where: { id: sourceUser.id }, data: { id: destUser.id } }));
-	transactions.push(prisma.newUser.updateMany({ where: { id: sourceUser.id }, data: { id: destUser.id } }));
 
 	transactions.push(
 		prisma.bingo.updateMany({ where: { creator_id: sourceUser.id }, data: { creator_id: destUser.id } })

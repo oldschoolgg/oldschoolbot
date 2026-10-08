@@ -8,6 +8,7 @@ title: "Fishing"
 - [Klik](/bso/custom-items/pets#miscellaneous-pets) - Cooks caught fish when equipped (No cooking xp granted)
 - Raw Rocktails - Caught at 120 fishing
 - Tackle boxes - Increases length of fishing trips according to tier of tackle box, obtained from Fishing Contest
+- Shark Tooth Necklace - 5% Speed boost to Fishing
 - [Mecha Rod](/bso/skills/invention/#inventions)- 45% Speed boost to Fishing
 
 ### Optimal Gear Setup

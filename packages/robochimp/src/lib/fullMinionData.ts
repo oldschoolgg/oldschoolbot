@@ -1,7 +1,5 @@
-import type { IBotType } from '@oldschoolgg/schemas';
+import type { FullMinionData, IBotType } from '@oldschoolgg/schemas';
 import type { ItemBank } from 'oldschooljs';
-
-import type { FullMinionData } from '@/http/api-types.js';
 
 export async function fetchFullMinionData(bot: IBotType, targetUserId: string): Promise<FullMinionData | null> {
 	const opt = { where: { id: targetUserId } } as const;
@@ -35,6 +33,49 @@ export async function fetchFullMinionData(bot: IBotType, targetUserId: string): 
 			}
 		}
 	}
+
+	const currentActivity =
+		bot === 'osb'
+			? await osbClient.activity.findFirst({
+					where: {
+						OR: [
+							{
+								user_id: BigInt(targetUserId)
+							},
+							{
+								all_user_ids: {
+									has: BigInt(targetUserId)
+								}
+							}
+						],
+						completed: false
+					},
+					orderBy: { finish_date: 'desc' }
+				})
+			: await bsoClient.activity.findFirst({
+					where: {
+						OR: [
+							{
+								user_id: BigInt(targetUserId)
+							},
+							{
+								all_user_ids: {
+									has: BigInt(targetUserId)
+								}
+							}
+						],
+						completed: false
+					},
+					orderBy: { finish_date: 'desc' }
+				});
+	const currentActivityName =
+		currentActivity &&
+		typeof currentActivity.data === 'object' &&
+		currentActivity.data !== null &&
+		'name' in currentActivity.data &&
+		typeof (currentActivity.data as { name?: unknown }).name === 'string'
+			? (currentActivity.data as { name: string }).name
+			: (currentActivity?.type ?? 'Unknown activity');
 
 	const response: FullMinionData = {
 		user_id: botUser.id,
@@ -76,6 +117,7 @@ export async function fetchFullMinionData(bot: IBotType, targetUserId: string): 
 			tum_shadow: botUser.tum_shadow_charges,
 			blood_essence: botUser.blood_essence_charges,
 			trident: botUser.trident_charges,
+			ayak: botUser.ayak_charges,
 			venator_bow: botUser.venator_bow_charges,
 			scythe_of_vitur: botUser.scythe_of_vitur_charges
 		},
@@ -106,7 +148,15 @@ export async function fetchFullMinionData(bot: IBotType, targetUserId: string): 
 			default_compost: botUser.minion_defaultCompostToUse,
 			attack_style: botUser.attack_style,
 			combat_options: botUser.combat_options
-		}
+		},
+
+		current_activity: currentActivity
+			? {
+					name: currentActivityName,
+					started_at: currentActivity.start_date.toISOString(),
+					finishes_at: currentActivity.finish_date.toISOString()
+				}
+			: null
 	};
 	return response;
 }

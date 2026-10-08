@@ -49,18 +49,22 @@ function compressOptions(options: CommandOptions) {
 	return newOptions;
 }
 
-export function getInteractionOptionsForLog({ command, interaction }: { command: string; interaction: MInteraction }) {
-	if (['bank', 'bs'].includes(command)) {
-		return undefined;
-	}
+export function getInteractionOptionsForLog({
+	interaction,
+	options
+}: {
+	command: string;
+	interaction: MInteraction;
+	options: CommandOptions;
+}) {
 	if (interaction.rawInteraction.type !== InteractionType.ApplicationCommand) {
 		return undefined;
 	}
-	const options = convertAPIOptionsToCommandOptions({
+	const inferredOptions = convertAPIOptionsToCommandOptions({
 		guildId: interaction.rawInteraction.guild_id,
 		options: interaction.rawInteraction.data.options ?? [],
 		resolvedObjects: interaction.rawInteraction.data.resolved
 	});
-	const compressed = compressOptions(options);
-	return compressed;
+
+	return compressOptions(inferredOptions ?? options);
 }

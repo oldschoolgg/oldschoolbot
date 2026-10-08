@@ -1,4 +1,5 @@
 import { type APIChatInputApplicationCommandInteraction, SpecialResponse } from '@oldschoolgg/discord';
+import { UserError } from '@oldschoolgg/toolkit';
 import { cryptoRng } from 'node-rng/crypto';
 
 import { convertAPIOptionsToCommandOptions } from '@/discord/index.js';
@@ -86,11 +87,24 @@ export async function rawCommandHandlerInner({
 			: await runClosure();
 		return response;
 	} catch (err) {
+		if (err instanceof UserError) {
+			await interaction.reply({ content: err.message });
+			return SpecialResponse.RespondedManually;
+		}
 		if ((err as Error).message === SILENT_ERROR) return SpecialResponse.SilentErrorResponse;
+		const date = new Date();
 		Logging.logError({
 			err: err as Error,
-			interaction,
-			context: { command: command.name, options: JSON.stringify(options) }
+			context: {
+				type: 'COMMAND_ERROR',
+				user_id: interaction.userId,
+				command_name: command.name,
+				channel_id: interaction.channelId,
+				guild_id: interaction.guildId,
+				datetime: date.toISOString(),
+				timestamp: date.getTime(),
+				options: JSON.stringify(options)
+			}
 		});
 		return {
 			content: `An error occurred while running this command.`

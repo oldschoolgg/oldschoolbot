@@ -64,6 +64,7 @@ model User {
   perk_tier                   Int     @default(0)
   premium_balance_tier        Int?
   premium_balance_expiry_date BigInt?
+  last_patreon_gift           BigInt?
 
   user_group_id String?    @db.Uuid
   userGroup     UserGroup? @relation(fields: [user_group_id], references: [id])

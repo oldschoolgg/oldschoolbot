@@ -7,7 +7,7 @@
 		"esModuleInterop": true,
 		"importHelpers": false,
 		"incremental": true,
-		"lib": ["es2024", "ESNext.Array", "ESNext.Collection", "ESNext.Iterator", "ESNext.Promise"],
+		"lib": ["es2024", "esnext"],
 		"module": "nodenext",
 		"moduleResolution": "node16",
 		"newLine": "lf",

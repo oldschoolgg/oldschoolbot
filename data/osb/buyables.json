@@ -2951,14 +2951,14 @@
 	},
 	{
 		"name": "Olive oil pack",
-		"gp_cost": 2670,
+		"gp_cost": 27000,
 		"output_items": {
 			"12857": 1
 		}
 	},
 	{
 		"name": "Olive oil(4)",
-		"gp_cost": 220,
+		"gp_cost": 270,
 		"output_items": {
 			"3422": 1
 		}
@@ -2988,6 +2988,14 @@
 		},
 		"output_items": {
 			"22844": 1
+		}
+	},
+	{
+		"name": "Pestle and mortar",
+		"gp_cost": 10000,
+		"ironman_price": 128,
+		"output_items": {
+			"233": 1
 		}
 	},
 	{

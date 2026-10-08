@@ -52,6 +52,12 @@
 		"all_items": ["Flax"]
 	},
 	{
+		"name": "Barrel of demonic tallow (full)",
+		"id": 30795,
+		"opened_item": "Barrel of demonic tallow (full)",
+		"all_items": ["Demonic tallow"]
+	},
+	{
 		"name": "Bird nest",
 		"id": 5070,
 		"opened_item": "Bird nest",
@@ -618,6 +624,24 @@
 		]
 	},
 	{
+		"name": "Castle wars supply crate",
+		"id": 30690,
+		"opened_item": "Castle wars supply crate",
+		"all_items": [
+			"Blighted ancient ice sack",
+			"Blighted anglerfish",
+			"Blighted karambwan",
+			"Blighted manta ray",
+			"Blighted super restore(4)",
+			"Blighted vengeance sack",
+			"Castle wars arrow",
+			"Castle wars bolts",
+			"Castle wars ticket",
+			"Rune arrow",
+			"Rune javelin"
+		]
+	},
+	{
 		"name": "Chest (moon key)",
 		"id": 30109,
 		"opened_item": "Moon key",
@@ -699,6 +723,26 @@
 			"Rune javelin heads",
 			"Rune scimitar",
 			"Yew seed"
+		]
+	},
+	{
+		"name": "Dossier",
+		"id": 30803,
+		"opened_item": "Dossier",
+		"all_items": [
+			"Chasm teleport scroll",
+			"Contract of bloodied blows",
+			"Contract of catalyst acquisition",
+			"Contract of divine severance",
+			"Contract of familiar acquisition",
+			"Contract of forfeit breath",
+			"Contract of glyphic attenuation",
+			"Contract of harmony acquisition",
+			"Contract of oathplate acquisition",
+			"Contract of sensory clouding",
+			"Contract of shard acquisition",
+			"Contract of worm acquisition",
+			"Rite of vile transference"
 		]
 	},
 	{
@@ -840,6 +884,22 @@
 			"Soul rune",
 			"Steam rune",
 			"Water rune"
+		]
+	},
+	{
+		"name": "Forgotten lockbox",
+		"id": 30763,
+		"opened_item": "Forgotten lockbox",
+		"all_items": [
+			"Coins",
+			"Dragon bolts (unf)",
+			"Dragon dart",
+			"Dragon platelegs",
+			"Dragon plateskirt",
+			"Oathplate chest",
+			"Oathplate helm",
+			"Oathplate legs",
+			"Oathplate shards"
 		]
 	},
 	{
@@ -2202,6 +2262,12 @@
 			"Uncut opal",
 			"Zogre bones"
 		]
+	},
+	{
+		"name": "Olive oil pack",
+		"id": 12857,
+		"opened_item": "Olive oil pack",
+		"all_items": ["Olive oil(4)"]
 	},
 	{
 		"name": "Ore pack (Giant's Foundry)",

@@ -1,6 +1,7 @@
 import { Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
+import { MessageBuilder } from '@/discord/MessageBuilder.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { Thieving } from '@/lib/skilling/skills/thieving/index.js';
 import type { Stealable } from '@/lib/skilling/skills/thieving/stealables.js';

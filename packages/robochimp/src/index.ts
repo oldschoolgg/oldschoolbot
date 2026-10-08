@@ -51,7 +51,9 @@ async function main() {
 		await syncTop20(15 * 1000);
 	}, 1000 * 15);
 
-	await startServer(globalConfig.httpPort);
+	if (process.env.ENABLE_WEB_SERVER === '1') {
+		await startServer(globalConfig.httpPort);
+	}
 	await syncBlacklists();
 }
 

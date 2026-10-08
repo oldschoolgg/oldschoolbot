@@ -16,10 +16,11 @@ webhooksServer.post('/patreon', async c => {
 		return httpErr.BAD_REQUEST({ message: 'Missing body' });
 	}
 
+	console.log('Patreon webhook coming in...');
 	const isVerified = verifyPatreonSecret(raw, signature);
 	if (!isVerified) return httpErr.BAD_REQUEST({ message: 'Unverified' });
+	console.log('Verified! Syncing patreon...');
 
-	// biome-ignore lint/nursery/noFloatingPromises:-
 	patreonTask.run().then(res => {
 		if (res) {
 			console.log(res.join('\n').slice(0, 1950));

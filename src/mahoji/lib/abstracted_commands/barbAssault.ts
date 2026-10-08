@@ -12,6 +12,7 @@ import {
 import { Bank, Items, itemID } from 'oldschooljs';
 import { clamp } from 'remeda';
 
+import { MessageBuilder } from '@/discord/MessageBuilder.js';
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';
 import { degradeItem } from '@/lib/degradeableItems.js';
 import { countUsersWithItemInCl } from '@/lib/rawSql.js';
@@ -130,6 +131,7 @@ export async function barbAssaultBuyCommand(interaction: MInteraction, user: MUs
 	if (!quantity) {
 		quantity = 1;
 	}
+	quantity = Math.max(1, quantity);
 
 	const { item, cost } = buyable;
 	const stats = await user.fetchStats();

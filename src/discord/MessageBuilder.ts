@@ -4,7 +4,7 @@ import chatHeadImage, { type HeadKey } from '@/lib/canvas/chatHeadImage.js';
 import { type DrawChestLootImageOptions, drawChestLootImage } from '@/lib/canvas/chestImage.js';
 import { type MakeBankImageOptions, makeBankImage } from '@/lib/util/makeBankImage.js';
 
-export class MessageBuilderClass {
+export class MessageBuilder {
 	private _message: BaseSendableMessage;
 	private chatHeadImagePromise?: Promise<SendableFile>;
 	private bankImagePromise?: Promise<SendableFile>;
@@ -83,7 +83,7 @@ export class MessageBuilderClass {
 		return this;
 	}
 
-	async merge(message: MessageBuilderClass | string) {
+	async merge(message: MessageBuilder | string) {
 		if (typeof message === 'string') {
 			this.addContent(message);
 			return this;
@@ -118,9 +118,3 @@ export class MessageBuilderClass {
 		return this._message;
 	}
 }
-
-declare global {
-	var MessageBuilder: typeof MessageBuilderClass;
-}
-
-global.MessageBuilder = MessageBuilderClass;

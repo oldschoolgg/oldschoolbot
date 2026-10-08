@@ -35,6 +35,7 @@ export type SkillNameType = (typeof SkillsArray)[number];
 
 export interface Ore {
 	level: number;
+	prayerLevel?: number;
 	xp: number;
 	id: number;
 	name: string;
@@ -46,6 +47,9 @@ export interface Ore {
 	minerals?: number;
 	clueScrollChance?: number;
 	aliases?: string[];
+	outputId?: number;
+	outputMultiplier?: number;
+	fixedRatePerHour?: [number, number];
 }
 
 export interface Log {
@@ -176,6 +180,7 @@ export interface SmithedItem {
 	timeToUse: number;
 	outputMultiple: number;
 	qpRequired?: number;
+	addToCl?: boolean;
 }
 
 export interface Craftable {
@@ -275,7 +280,9 @@ export interface Plant {
 	herbXp?: number;
 	herbLvl?: number;
 	outputLogs?: number;
+	outputLogsQuantity?: number;
 	outputRoots?: number;
+	logDepletionChance?: number;
 	treeWoodcuttingLevel?: number;
 	fixedOutputAmount?: number;
 	variableYield?: boolean;
@@ -296,7 +303,7 @@ export interface Plant {
 	defaultNumOfPatches: number;
 	canPayFarmer: boolean;
 	canCompostPatch: boolean;
-	canCompostandPay: boolean;
+	canCompostAndPay: boolean;
 	additionalPatchesByQP: number[][];
 	additionalPatchesByFarmLvl: number[][];
 	additionalPatchesByFarmGuildAndLvl: number[][];

@@ -3,8 +3,11 @@ import type Openable from '@/structures/Openable.js';
 import type { SimpleOpenable } from '@/structures/SimpleOpenable.js';
 import { BrimstoneChest } from './BrimstoneChest.js';
 import { Casket } from './Casket.js';
+import { CastleWarsSupplyCrate } from './CastleWarsSupplyCrate.js';
 import { CrystalChest } from './CrystalChest.js';
+import { Dossier } from './Dossier.js';
 import { ElvenCrystalChest } from './ElvenCrystalChest.js';
+import { ForgottenLockbox } from './ForgottenLockbox.js';
 import { GiantEggSacFull } from './GiantEggSacFull.js';
 import { GrubbyChest } from './GrubbyChest.js';
 import { BronzeHAMChest, IronHAMChest, SilverHAMChest, SteelHAMChest } from './HAMStoreRoomChests.js';
@@ -49,6 +52,8 @@ export {
 	SteelHAMChest,
 	Casket,
 	CrystalChest,
+	Dossier,
+	ForgottenLockbox,
 	ElvenCrystalChest,
 	GrubbyChest,
 	MuddyChest,
@@ -77,7 +82,8 @@ export {
 	AdeptSack,
 	ExpertSack,
 	MasterSack,
-	ZombiePiratesLocker
+	ZombiePiratesLocker,
+	CastleWarsSupplyCrate
 };
 
 const openablesObject: Record<string, SimpleOpenable> = {
@@ -92,6 +98,8 @@ const openablesObject: Record<string, SimpleOpenable> = {
 	SteelHAMChest,
 	Casket,
 	CrystalChest,
+	Dossier,
+	ForgottenLockbox,
 	ElvenCrystalChest,
 	GrubbyChest,
 	MuddyChest,
@@ -119,7 +127,8 @@ const openablesObject: Record<string, SimpleOpenable> = {
 	BasicSack,
 	AdeptSack,
 	ExpertSack,
-	MasterSack
+	MasterSack,
+	CastleWarsSupplyCrate
 };
 
 const allMonsters: [number, Openable][] = Object.values(openablesObject).map(openable => [openable.id, openable]);

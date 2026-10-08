@@ -1,6 +1,6 @@
 {
-	"hash": "d8ca20e29c86281066b822803297e84e",
-	"date": "2026-05-08T10:09:36.390Z",
+	"hash": "27a3bd240d4d63b1ec5a25f2d70cf03a",
+	"date": "2026-09-09T11:55:21.667Z",
 	"data": [
 		{
 			"name": "activities",
@@ -144,6 +144,12 @@
 			"subOptions": []
 		},
 		{
+			"name": "delves",
+			"desc": "Send your minion to attempt a delve boss.",
+			"examples": ["/delves doom"],
+			"subOptions": ["doom"]
+		},
+		{
 			"name": "drop",
 			"desc": "Drop items from your bank.",
 			"examples": ["/drop items:10 trout, 5 coal"],
@@ -177,6 +183,7 @@
 				"default_compost",
 				"harvest",
 				"plant",
+				"set_preferred",
 				"tithe_farm"
 			]
 		},
@@ -286,6 +293,7 @@
 				"clues",
 				"combat_achievements",
 				"farming_contracts",
+				"giants_foundry",
 				"global",
 				"gp",
 				"hunter_catches",
@@ -347,8 +355,6 @@
 				"gnome_restaurant",
 				"gotr",
 				"lms",
-				"mage_arena",
-				"mage_arena_2",
 				"mage_training_arena",
 				"mahogany_homes",
 				"nmz",

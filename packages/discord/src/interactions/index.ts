@@ -1,5 +1,6 @@
 export * from './apiInteractionParse.js';
 export * from './BaseInteraction.js';
+export * from './buttonPrompt.js';
 export * from './confirmation.js';
 export * from './interactionCollector.js';
 export * from './MInteraction.js';

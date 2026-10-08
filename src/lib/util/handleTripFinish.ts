@@ -4,7 +4,8 @@ import { cryptoRng } from 'node-rng/crypto';
 import { Bank, EItem } from 'oldschooljs';
 
 import type { activity_type_enum } from '@/prisma/main/enums.js';
-import type { MessageBuilderClass } from '@/discord/MessageBuilder.js';
+import { MessageBuilder } from '@/discord/MessageBuilder.js';
+import { resolveSendable } from '@/discord/utils.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';
 import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements.js';
@@ -12,11 +13,13 @@ import { BitField, CONSTANTS, PerkTier } from '@/lib/constants.js';
 import { handleGrowablePetGrowth } from '@/lib/growablePets.js';
 import { handlePassiveImplings } from '@/lib/implings.js';
 import { triggerRandomEvent } from '@/lib/randomEvents.js';
+import { canShowAutoFarmButton } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { MUserClass } from '@/lib/user/MUser.js';
 import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
 import {
 	makeAutoContractButton,
+	makeAutoFarmButton,
 	makeAutoRummageToggleButton,
 	makeAutoSlayButton,
 	makeBirdHouseTripButton,
@@ -146,6 +149,16 @@ const tripFinishEffects: TripFinishEffect[] = [
 		}
 	},
 	{
+		name: 'Autofarm Button',
+		requiredPerkTier: PerkTier.Two,
+		fn: async ({ user, components }) => {
+			if (user.bitfield.includes(BitField.DisableAutoFarmButton)) return;
+			const canShow = await canShowAutoFarmButton(user);
+			if (!canShow) return;
+			components.push(makeAutoFarmButton());
+		}
+	},
+	{
 		name: 'Claim Daily Button',
 		requiredPerkTier: PerkTier.Two,
 		fn: async ({ user, components }) => {
@@ -214,7 +227,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 	}
 ];
 
-type OSBSendableMessage = string | MessageBuilderClass | BaseSendableMessage;
+type OSBSendableMessage = string | MessageBuilder | BaseSendableMessage;
 
 export async function handleTripFinish(
 	user: MUser,
@@ -317,10 +330,9 @@ export async function handleTripFinish(
 	if (itemsToAddWithCL.length > 0 || itemsToRemove.length > 0) {
 		await user.transactItems({ itemsToAdd: itemsToAddWithCL, collectionLog: true, itemsToRemove });
 	}
-
-	if (_messages) messages.push(..._messages);
-	if (messages.length > 0) {
-		message.addContent(`\n**Messages:** ${messages.join(', ')}`);
+	const displayedMessages = messages.map(msg => msg.trim()).filter(msg => msg.length > 0);
+	if (displayedMessages.length > 0) {
+		message.addContent(`\n**Messages:** ${displayedMessages.join(', ')}`);
 	}
 
 	message.addContent(displayCluesAndPets(user, loot));
@@ -334,5 +346,12 @@ export async function handleTripFinish(
 		message.addAllowedUserMentions(data.users);
 	}
 
-	await globalClient.sendMessageOrWebhook(channelId, message);
+	try {
+		await globalClient.sendMessageOrWebhook(channelId, message);
+	} catch (_err: unknown) {
+		const err = _err as Error;
+		const context = { channelId, username: user.logName, userId: user.id, activity: data.type };
+		const msg = await resolveSendable(message);
+		Logging.logError(err, { context, msg });
+	}
 }

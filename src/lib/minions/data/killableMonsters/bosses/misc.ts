@@ -1,5 +1,6 @@
 import { GearStat } from '@oldschoolgg/gear';
 import { Time } from '@oldschoolgg/toolkit';
+import { roll } from 'node-rng';
 import { Bank, deepResolveItems, itemID, Monsters, resolveItems } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
@@ -92,7 +93,12 @@ export const miscBossKillables: KillableMonster[] = [
 		itemInBankBoosts: [
 			{
 				[itemID('Ranger boots')]: 2,
-				[itemID('Pegasian boots')]: 4
+				[itemID('Pegasian boots')]: 4,
+				[itemID('Avernic treads')]: 4,
+				[itemID('Avernic treads (pe)')]: 6,
+				[itemID('Avernic treads (pr)(pe)')]: 6,
+				[itemID('Avernic treads (pe)(et)')]: 6,
+				[itemID('Avernic treads (max)')]: 6
 			},
 			{
 				[itemID('Warped sceptre (uncharged)')]: 1,
@@ -100,7 +106,8 @@ export const miscBossKillables: KillableMonster[] = [
 				[itemID('Trident of the swamp')]: 3,
 				[itemID('Sanguinesti staff')]: 4,
 				[itemID('Harmonised nightmare staff')]: 5,
-				[itemID("Tumeken's shadow")]: 8
+				[itemID("Tumeken's shadow")]: 8,
+				[itemID('Eye of ayak')]: 10
 			},
 			{
 				[itemID('Barrows gloves')]: 3
@@ -266,8 +273,16 @@ export const miscBossKillables: KillableMonster[] = [
 				gearSetup: 'melee'
 			},
 			{
-				items: [{ boostPercent: 1, itemID: itemID('Primordial boots') }],
-				gearSetup: 'melee'
+				items: [
+					{ boostPercent: 2, itemID: itemID('Avernic treads (max)') },
+					{ boostPercent: 2, itemID: itemID('Avernic treads (pr)(et)') },
+					{ boostPercent: 2, itemID: itemID('Avernic treads (pr)(pe)') },
+					{ boostPercent: 2, itemID: itemID('Avernic treads (pr)') },
+					{ boostPercent: 1, itemID: itemID('Avernic treads') },
+					{ boostPercent: 1, itemID: itemID('Primordial boots') }
+				],
+				gearSetup: 'melee',
+				required: false
 			}
 		],
 		degradeableItemUsage: [
@@ -501,15 +516,32 @@ export const miscBossKillables: KillableMonster[] = [
 				gearSetup: 'range'
 			},
 			{
-				items: [{ boostPercent: 5, itemID: itemID('Tormented bracelet') }],
+				items: [
+					{ boostPercent: 5, itemID: itemID('Confliction gauntlets') },
+					{ boostPercent: 3, itemID: itemID('Tormented bracelet') }
+				],
 				gearSetup: 'mage'
 			},
 			{
-				items: [{ boostPercent: 3, itemID: itemID('Pegasian boots') }],
+				items: [
+					{ boostPercent: 5, itemID: itemID('Avernic treads (max)') },
+					{ boostPercent: 5, itemID: itemID('Avernic treads (pe)(et)') },
+					{ boostPercent: 5, itemID: itemID('Avernic treads (pr)(pe)') },
+					{ boostPercent: 5, itemID: itemID('Avernic treads (pe)') },
+					{ boostPercent: 3, itemID: itemID('Avernic treads') },
+					{ boostPercent: 3, itemID: itemID('Pegasian boots') }
+				],
 				gearSetup: 'range'
 			},
 			{
-				items: [{ boostPercent: 3, itemID: itemID('Eternal boots') }],
+				items: [
+					{ boostPercent: 5, itemID: itemID('Avernic treads (max)') },
+					{ boostPercent: 5, itemID: itemID('Avernic treads (pe)(et)') },
+					{ boostPercent: 5, itemID: itemID('Avernic treads (pr)(et)') },
+					{ boostPercent: 5, itemID: itemID('Avernic treads (et)') },
+					{ boostPercent: 3, itemID: itemID('Avernic treads') },
+					{ boostPercent: 3, itemID: itemID('Eternal boots') }
+				],
 				gearSetup: 'mage'
 			}
 		],
@@ -657,9 +689,16 @@ export const miscBossKillables: KillableMonster[] = [
 				required: true
 			},
 			{
-				items: resolveItems(['Primordial boots']).map(id => ({ boostPercent: 2, itemID: id })),
+				items: [
+					{ boostPercent: 3, itemID: itemID('Avernic treads (max)') },
+					{ boostPercent: 3, itemID: itemID('Avernic treads (pr)(et)') },
+					{ boostPercent: 3, itemID: itemID('Avernic treads (pr)(pe)') },
+					{ boostPercent: 3, itemID: itemID('Avernic treads (pr)') },
+					{ boostPercent: 2, itemID: itemID('Avernic treads') },
+					{ boostPercent: 2, itemID: itemID('Primordial boots') }
+				],
 				gearSetup: 'melee',
-				required: true
+				required: false
 			}
 		],
 		itemInBankBoosts: [
@@ -838,7 +877,14 @@ export const miscBossKillables: KillableMonster[] = [
 				required: false
 			},
 			{
-				items: resolveItems(['Primordial boots']).map(id => ({ boostPercent: 2, itemID: id })),
+				items: [
+					{ boostPercent: 7, itemID: itemID('Avernic treads (max)') },
+					{ boostPercent: 7, itemID: itemID('Avernic treads (pr)(et)') },
+					{ boostPercent: 7, itemID: itemID('Avernic treads (pr)(pe)') },
+					{ boostPercent: 7, itemID: itemID('Avernic treads (pr)') },
+					{ boostPercent: 5, itemID: itemID('Avernic treads') },
+					{ boostPercent: 5, itemID: itemID('Primordial boots') }
+				],
 				gearSetup: 'melee',
 				required: false
 			}
@@ -920,6 +966,7 @@ export const miscBossKillables: KillableMonster[] = [
 		table: Monsters.Amoxliatl,
 		requiredQuests: [QuestID.TheHeartOfDarkness],
 		qpRequired: 100,
+		difficultyRating: 4,
 		deathProps: {
 			hardness: 0.2,
 			steepness: 0.99
@@ -972,7 +1019,14 @@ export const miscBossKillables: KillableMonster[] = [
 				required: false
 			},
 			{
-				items: resolveItems(['Primordial boots']).map(id => ({ boostPercent: 5, itemID: id })),
+				items: [
+					{ boostPercent: 7, itemID: itemID('Avernic treads (max)') },
+					{ boostPercent: 7, itemID: itemID('Avernic treads (pr)(et)') },
+					{ boostPercent: 7, itemID: itemID('Avernic treads (pr)(pe)') },
+					{ boostPercent: 7, itemID: itemID('Avernic treads (pr)') },
+					{ boostPercent: 5, itemID: itemID('Avernic treads') },
+					{ boostPercent: 5, itemID: itemID('Primordial boots') }
+				],
 				gearSetup: 'melee',
 				required: false
 			}
@@ -1004,7 +1058,7 @@ export const miscBossKillables: KillableMonster[] = [
 			defence: 65,
 			hitpoints: 65
 		},
-		attackStyleToUse: GearStat.AttackSlash,
+		attackStyleToUse: GearStat.AttackCrush,
 		attackStylesUsed: [GearStat.AttackMagic],
 		defaultAttackStyles: ['attack'],
 		healAmountNeeded: 40 * 10,
@@ -1052,10 +1106,12 @@ export const miscBossKillables: KillableMonster[] = [
 		name: Monsters.Branda.name,
 		aliases: Monsters.Branda.aliases,
 		timeToFinish: Time.Minute * 2.5,
-		respawnTime: 500,
+		respawnTime: Time.Second * 10,
 		table: Monsters.Branda,
+		wildy: false,
+		difficultyRating: 8,
 		deathProps: {
-			hardness: 0.2,
+			hardness: 0.1,
 			steepness: 0.99
 		},
 		equippedItemBoosts: [
@@ -1180,13 +1236,15 @@ export const miscBossKillables: KillableMonster[] = [
 				[GearStat.AttackMagic]: 70
 			}
 		},
-		specialLoot: ({ loot, user }) => {
-			if (
-				user &&
-				loot.has('Mystic vigour prayer scroll') &&
-				user.bitfield.includes(BitField.HasMysticVigourScroll)
-			) {
-				loot.set('Mystic vigour prayer scroll', 0);
+		specialLoot: ({ loot, ownedItems, quantity, bitfield }) => {
+			const hasScroll = ownedItems.has('Mystic vigour prayer scroll');
+			const hasBitfield = bitfield?.includes(BitField.HasMysticVigourScroll);
+			if (hasScroll || hasBitfield) return;
+			for (let i = 0; i < quantity; i++) {
+				if (roll(150)) {
+					loot.add('Mystic vigour prayer scroll');
+					break;
+				}
 			}
 		}
 	},
@@ -1195,10 +1253,12 @@ export const miscBossKillables: KillableMonster[] = [
 		name: Monsters.Eldric.name,
 		aliases: Monsters.Eldric.aliases,
 		timeToFinish: Time.Minute * 2.5,
-		respawnTime: 500,
+		respawnTime: Time.Second * 10,
 		table: Monsters.Eldric,
+		wildy: false,
+		difficultyRating: 8,
 		deathProps: {
-			hardness: 0.2,
+			hardness: 0.1,
 			steepness: 0.99
 		},
 		equippedItemBoosts: [
@@ -1323,9 +1383,15 @@ export const miscBossKillables: KillableMonster[] = [
 				[GearStat.AttackMagic]: 70
 			}
 		},
-		specialLoot: ({ loot, user }) => {
-			if (user && loot.has('Deadeye prayer scroll') && user.bitfield.includes(BitField.HasDeadeyeScroll)) {
-				loot.set('Deadeye vigour prayer scroll', 0);
+		specialLoot: ({ loot, ownedItems, quantity, bitfield }) => {
+			const hasScroll = ownedItems.has('Deadeye prayer scroll');
+			const hasBitfield = bitfield?.includes(BitField.HasDeadeyeScroll);
+			if (hasScroll || hasBitfield) return;
+			for (let i = 0; i < quantity; i++) {
+				if (roll(150)) {
+					loot.add('Deadeye prayer scroll');
+					break;
+				}
 			}
 		}
 	},
@@ -1334,10 +1400,12 @@ export const miscBossKillables: KillableMonster[] = [
 		name: Monsters.RoyalTitans.name,
 		aliases: Monsters.RoyalTitans.aliases,
 		timeToFinish: Time.Minute * 2.5,
-		respawnTime: 500,
+		respawnTime: Time.Second * 10,
 		table: Monsters.RoyalTitans,
+		wildy: false,
+		difficultyRating: 8,
 		deathProps: {
-			hardness: 0.2,
+			hardness: 0.1,
 			steepness: 0.99
 		},
 		equippedItemBoosts: [
@@ -1462,5 +1530,102 @@ export const miscBossKillables: KillableMonster[] = [
 				[GearStat.AttackMagic]: 70
 			}
 		}
+	},
+	{
+		id: Monsters.Yama.id,
+		name: Monsters.Yama.name,
+		aliases: Monsters.Yama.aliases,
+		timeToFinish: Time.Minute * 5.63,
+		respawnTime: 5000,
+		table: Monsters.Yama,
+		customMonsterHP: 2500,
+		difficultyRating: 10,
+		notifyDrops: resolveItems(['Yami']),
+		itemsRequired: resolveItems(['Purging staff', 'Emberlight']),
+		qpRequired: 115,
+		itemInBankBoosts: [
+			{
+				[itemID('Burning claws')]: 3
+			},
+			{
+				[itemID('Lightbearer')]: 2
+			},
+			{
+				[itemID('Saradomin godsword')]: 5
+			},
+			{
+				[itemID('Elder maul')]: 5
+			}
+		],
+		equippedItemBoosts: [
+			{
+				gearSetup: 'melee',
+				items: [
+					{ boostPercent: 5, itemID: itemID('Amulet of rancour') },
+					{ boostPercent: 3, itemID: itemID('Amulet of torture') }
+				]
+			},
+			{
+				gearSetup: 'melee',
+				items: [
+					{ boostPercent: 4, itemID: itemID('Infernal cape') },
+					{ boostPercent: 2, itemID: itemID('Fire cape') }
+				]
+			},
+			{
+				gearSetup: 'melee',
+				items: [
+					{ boostPercent: 4, itemID: itemID('Ferocious gloves') },
+					{ boostPercent: 2, itemID: itemID('Barrows gloves') }
+				]
+			}
+		],
+		levelRequirements: {
+			prayer: 70,
+			attack: 80,
+			strength: 80,
+			defence: 70,
+			magic: 82
+		},
+		healAmountNeeded: 20 * 35,
+		minimumHealAmount: 20,
+		attackStyleToUse: GearStat.AttackSlash,
+		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackMagic, GearStat.AttackRanged],
+		defaultAttackStyles: ['attack', 'magic', 'ranged'],
+		deathProps: {
+			hardness: 0.25,
+			steepness: 0.995
+		},
+		pohBoosts: {
+			pool: {
+				'Ornate rejuvenation pool': 10,
+				'Fancy rejuvenation pool': 10,
+				'Rejuvenation pool': 10
+			}
+		},
+		itemCost: [
+			{
+				itemCost: new Bank().add('Cosmic rune').add('Soul rune'),
+				qtyPerMinute: 0.5,
+				isRuneCost: true
+			},
+			{
+				itemCost: new Bank().add('Fire rune', 7).add('Soul rune', 2),
+				qtyPerKillRange: [8, 12],
+				isRuneCost: true
+			},
+			{
+				itemCost: new Bank().add('Saradomin brew(4)'),
+				qtyPerKill: 0.6
+			},
+			{
+				itemCost: new Bank().add('Super restore(4)'),
+				qtyPerKill: 0.5
+			},
+			{
+				itemCost: new Bank().add('Super combat potion(4)'),
+				qtyPerKill: 0.2
+			}
+		]
 	}
 ];

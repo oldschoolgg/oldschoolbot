@@ -28,8 +28,7 @@ export async function minionKillCommand(
 	inputQuantity: number | undefined,
 	method: PvMMethod | undefined,
 	wilderness: boolean | undefined,
-	solo: boolean | undefined,
-	onTask: boolean | undefined
+	solo: boolean | undefined
 ): CommandResponse {
 	if (inputQuantity !== undefined && inputQuantity < 1) return 'Quantity must be greater than 0.';
 	if (await user.minionIsBusy()) {
@@ -40,6 +39,7 @@ export async function minionKillCommand(
 	if (!name) return invalidMonsterMsg;
 
 	if (stringMatches(name, 'colosseum')) return colosseumCommand(interaction);
+	if (stringMatches(name, 'doom')) return 'Use `/delves doom` to fight the Doom of Mokhaiotl.';
 	if (stringMatches(name, 'nex')) return nexCommand(interaction, user, channelId, solo);
 	if (stringMatches(name, 'zalcano')) return zalcanoCommand(rng, user, channelId, inputQuantity);
 	if (stringMatches(name, 'tempoross')) return temporossCommand(user, channelId, inputQuantity);
@@ -48,8 +48,8 @@ export async function minionKillCommand(
 
 	let monster = findMonster(name);
 
-	const matchedRevenantMonster = revenantMonsters.find(monster =>
-		monster.aliases.some(alias => stringMatches(alias, name))
+	const matchedRevenantMonster = revenantMonsters.find(revenantMonster =>
+		revenantMonster.aliases.some(alias => stringMatches(alias, name))
 	);
 	if (matchedRevenantMonster) {
 		monster = matchedRevenantMonster;
@@ -63,8 +63,6 @@ export async function minionKillCommand(
 	}
 
 	const slayerInfo = await user.fetchSlayerInfo();
-
-	if (slayerInfo.assignedTask === null && onTask) return 'You are no longer on a slayer task for this monster!';
 
 	const pkEvasionExperience = await user.fetchUserStat('pk_evasion_exp');
 
@@ -148,9 +146,9 @@ export async function minionKillCommand(
 		died,
 		pkEncounters,
 		hasWildySupplies,
-		isInWilderness: result.isInWilderness === true ? true : undefined,
+		isInWilderness: result.isInWilderness ? true : undefined,
 		attackStyles: result.attackStyles,
-		onTask: slayerInfo.assignedTask !== null
+		onTask: result.isOnTask
 	});
 	let response = `${minionName} is now killing ${result.quantity}x ${monster.name}, it'll take around ${formatTripDuration(
 		user,

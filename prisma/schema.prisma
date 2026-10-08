@@ -25,6 +25,8 @@ model Activity {
   all_user_ids   BigInt[]           @default([])
 
   @@index([user_id, completed, finish_date])
+  @@index([type])
+  @@index([user_id, type])
   @@map("activity")
 }
 
@@ -133,8 +135,11 @@ model ClientStorage {
   ourania_loot                 Json     @default("{}") @db.Json
   colo_cost                    Json     @default("{}") @db.Json
   colo_loot                    Json     @default("{}") @db.Json
+  doom_cost                    Json     @default("{}") @db.Json
+  doom_loot                    Json     @default("{}") @db.Json
   vt_cost                      Json     @default("{}") @db.Json
   vt_loot                      Json     @default("{}") @db.Json
+  shutdown                     Boolean  @default(false)
 
   grand_exchange_is_locked Boolean @default(false)
   grand_exchange_total_tax BigInt  @default(0)
@@ -222,18 +227,6 @@ model Guild {
   @@map("guilds")
 }
 
-model NewUser {
-  id            String @id @db.VarChar(19)
-  pizazz_points Int    @default(0)
-
-  // Relations
-  minigame_id  Int?         @unique
-  minigame     Minigame?    @relation(fields: [minigame_id], references: [id])
-  slayer_tasks SlayerTask[]
-
-  @@map("new_users")
-}
-
 model PlayerOwnedHouse {
   user_id            String @id @db.VarChar(19)
   background_id      Int    @default(1)
@@ -267,9 +260,9 @@ model SlayerTask {
   monster_id         Int
   skipped            Boolean
   user_id            String   @db.VarChar(19)
-  new_user           NewUser  @relation(fields: [user_id], references: [id])
+  user               User     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: Cascade, map: "FK_slayer_tasks_user_id_users_id")
 
-  @@index([user_id, quantity_remaining])
+  @@index([user_id, quantity_remaining], map: "slayer_task_quantity_remaining")
   @@map("slayer_tasks")
 }
 
@@ -282,35 +275,35 @@ enum bank_sort_method_enum {
 }
 
 model User {
-  id                          String    @id @db.VarChar(19)
-  last_command_date           DateTime? @db.Timestamp(6)
-  minion_bought_date          DateTime? @db.Timestamp(6)
-  minion_hasBought            Boolean   @default(false) @map("minion.hasBought")
-  minion_ironman              Boolean   @default(false) @map("minion.ironman")
-  premium_balance_tier        Int?
-  premium_balance_expiry_date BigInt?
+  id                 String    @id @db.VarChar(19)
+  last_command_date  DateTime? @db.Timestamp(6)
+  minion_bought_date DateTime? @db.Timestamp(6)
+  minion_hasBought   Boolean   @default(false) @map("minion.hasBought")
+  minion_ironman     Boolean   @default(false) @map("minion.ironman")
 
   RSN  String?
   pets Json    @default("{}") @db.Json
 
   sacrificedValue BigInt @default(0)
 
-  GP                     BigInt    @default(0)
-  QP                     Int       @default(0)
-  bank                   Json      @default("{}") @db.Json
-  collectionLogBank      Json      @default("{}") @db.JsonB
-  blowpipe               Json      @default("{\"scales\":0,\"dartID\":null,\"dartQuantity\":0}") @db.Json
-  slayer_unlocks         Int[]     @default([]) @map("slayer.unlocks")
-  slayer_blocked_ids     Int[]     @default([]) @map("slayer.blocked_ids")
-  slayer_last_task       Int       @default(0) @map("slayer.last_task")
-  badges                 Int[]     @default([])
-  bitfield               Int[]     @default([])
-  temp_cl                Json      @default("{}") @db.Json
-  last_temp_cl_reset     DateTime? @db.Timestamp(6)
-  minion_equippedPet     Int?      @map("minion.equippedPet")
-  minion_farmingContract Json?     @map("minion.farmingContract") @db.Json
-  minion_birdhouseTraps  Json?     @map("minion.birdhouseTraps") @db.Json
-  finished_quest_ids     Int[]     @default([])
+  GP                              BigInt    @default(0)
+  QP                              Int       @default(0)
+  bank                            Json      @default("{}") @db.Json
+  collectionLogBank               Json      @default("{}") @db.JsonB
+  blowpipe                        Json      @default("{\"scales\":0,\"dartID\":null,\"dartQuantity\":0}") @db.Json
+  slayer_unlocks                  Int[]     @default([]) @map("slayer.unlocks")
+  slayer_blocked_ids              Int[]     @default([]) @map("slayer.blocked_ids")
+  slayer_last_task                Int       @default(0) @map("slayer.last_task")
+  badges                          Int[]     @default([])
+  bitfield                        Int[]     @default([])
+  temp_cl                         Json      @default("{}") @db.Json
+  last_temp_cl_reset              DateTime? @db.Timestamp(6)
+  minion_equippedPet              Int?      @map("minion.equippedPet")
+  minion_farmingContract          Json?     @map("minion.farmingContract") @db.Json
+  minion_farmingPreferredContract Boolean   @default(false) @map("minion.farmingPreferredContract")
+  minion_farmingPreferredSeeds    Json?     @map("minion.farmingPreferredSeeds") @db.Json
+  minion_birdhouseTraps           Json?     @map("minion.birdhouseTraps") @db.Json
+  finished_quest_ids              Int[]     @default([])
 
   // Relations
   farmedCrops    FarmedCrop[]
@@ -382,6 +375,7 @@ model User {
   serp_helm_charges      Int @default(0)
   blood_fury_charges     Int @default(0)
   tum_shadow_charges     Int @default(0)
+  ayak_charges           Int @default(0)
   blood_essence_charges  Int @default(0)
   trident_charges        Int @default(0)
   venator_bow_charges    Int @default(0)
@@ -426,6 +420,8 @@ model User {
   geListings        GEListing[]
   bingo_participant BingoParticipant[]
   bingo             Bingo[]
+  minigame          Minigame?
+  slayer_tasks      SlayerTask[]
 
   gift_boxes_owned   GiftBox[] @relation("gift_boxes_owned")
   gift_boxes_created GiftBox[] @relation("gift_boxes_created")
@@ -433,7 +429,8 @@ model User {
   cl_array                      Int[]    @default([])
   completed_achievement_diaries String[] @default([])
 
-  gear_template Int? @db.SmallInt
+  gear_template Int?           @db.SmallInt
+  notifications Notification[]
 
   @@index([id, last_command_date])
   @@map("users")
@@ -565,8 +562,10 @@ model Minigame {
   shades_of_morton        Int    @default(0)
   tombs_of_amascut        Int    @default(0)
   colosseum               Int    @default(0)
+  doom_of_mokhaiotl       Int    @default(0)
+  pizazz_points           Int    @default(0)
 
-  new_user NewUser?
+  user User @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: Cascade, map: "FK_minigames_user_id_users_id")
 
   @@index([user_id])
   @@map("minigames")
@@ -771,6 +770,13 @@ model UserStats {
   colo_kc_bank   Json @default("{}") @db.Json
   colo_max_glory Int?
 
+  doom_cost             Json @default("{}") @db.Json
+  doom_loot             Json @default("{}") @db.Json
+  doom_deepest_delve    Int  @default(0)
+  doom_deep_delves      Int  @default(0)
+  doom_total_delves     Int  @default(0)
+  doom_wave_completions Json @default("{}") @db.Json
+
   quivers_sacrificed Int @default(0)
 
   recently_killed_monsters Int[] @default([])
@@ -956,6 +962,7 @@ enum activity_type_enum {
   CamdozaalSmithing
   MyNotes
   Colosseum
+  DoomOfMokhaiotl
   CreateForestersRations
   Buy
 }
@@ -1254,6 +1261,7 @@ enum command_name_enum {
   decant
   defaultfarming
   defender
+  delves
   diary
   dice
   dicebank
@@ -1542,6 +1550,9 @@ model ShootingStars {
 
 enum SystemLogsType {
   ERROR
+  USER_ERROR
+  DEBUG
+  CLOCK
 }
 
 model SystemLogs {
@@ -1549,8 +1560,10 @@ model SystemLogs {
 
   date DateTime @default(now())
 
-  type SystemLogsType
-  data Json           @db.JsonB
+  type  SystemLogsType
+  msg   String?
+  stack String?
+  data  Json           @default("{}") @db.JsonB
 
   @@map("system_logs")
 }
@@ -1576,4 +1589,19 @@ model UserLog {
 
   @@index([user_id, date])
   @@map("user_logs")
+}
+
+model Notification {
+  id Int @id @default(autoincrement())
+
+  user_id        String    @db.VarChar(19)
+  user           User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  message        String
+  reminded_count Int       @default(0)
+  next_reminder  DateTime?
+  mention        Boolean   @default(false)
+  reply          Boolean   @default(true)
+  ephermeral     Boolean   @default(false)
+  on_return      Boolean   @default(false)
+  meta_data      Json?     @db.JsonB
 }
