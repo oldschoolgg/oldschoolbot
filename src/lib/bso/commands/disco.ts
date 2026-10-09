@@ -168,8 +168,6 @@ export const discoCommand = defineCommand({
 		}
 
 		if (options.search) {
-			const entitlement = await checkEntitlements(user, discoBankPointEntitlements);
-			if (!entitlement.success) return 'This requires Tier 3 membership, or **any** Cyr tier.';
 			const ratelimit = await Cache.tryRatelimit(user.id, 'disco_bank_search');
 			if (!ratelimit.success) return 'You need to wait before searching your bank again.';
 

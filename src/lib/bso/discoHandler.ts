@@ -1,4 +1,4 @@
-import { DISCO_AESTHETICS, type DiscoAesthetic, isDiscoEventActive } from '@/lib/bso/discoBloodbath.js';
+import { DISCO_AESTHETICS, DiscoItem, type DiscoAesthetic, isDiscoEventActive } from '@/lib/bso/discoBloodbath.js';
 
 import { createHash } from 'node:crypto';
 import { ButtonBuilder, ButtonStyle, EmbedBuilder } from '@oldschoolgg/discord';
@@ -48,9 +48,44 @@ export async function discoHandler({ data, user, components, embeds, rng }: Trip
 	const rave = rng.pick(ravePalettes);
 	const presets = await prisma.gearPreset.findMany({
 		where: { user_id: user.id, name: { in: Object.values(presetForAesthetic) } },
-		select: { name: true }
+		select: {
+			name: true,
+			two_handed: true,
+			body: true,
+			cape: true,
+			feet: true,
+			hands: true,
+			head: true,
+			legs: true,
+			neck: true,
+			ring: true,
+			shield: true,
+			weapon: true
+		}
 	});
-	const validPresetNames = new Set(presets.map(preset => preset.name));
+	const validPresetNames = new Set<string>();
+	for (const preset of presets) {
+		for (const itemID of [
+			preset.two_handed,
+			preset.body,
+			preset.cape,
+			preset.feet,
+			preset.hands,
+			preset.head,
+			preset.legs,
+			preset.neck,
+			preset.ring,
+			preset.shield,
+			preset.weapon
+		]) {
+			if (!itemID) continue;
+			const item = new DiscoItem(itemID);
+			if (DISCO_AESTHETICS.some(aesthetic => item.points[aesthetic] > 0)) {
+				validPresetNames.add(preset.name);
+				break;
+			}
+		}
+	}
 	const raveName = rave.aesthetics.join(' + ');
 	const raveId = createRaveId(user.id);
 	await Cache.createDiscoRave(user.id, raveId);
