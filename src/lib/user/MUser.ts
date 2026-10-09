@@ -305,7 +305,10 @@ RETURNING (monster_scores->>'${monsterID}')::int AS new_kc;
 				where: { id: BigInt(this.id) },
 				select: { bits: true, patreon_id: true }
 			});
-			if (!patron?.patreon_id || !patron.bits.includes(RobochimpBitfieldEnum.CyrTier5)) {
+			if (!patron) {
+				throw new UserError('You need an active Cyr Tier 5 Patreon subscription to claim this promotion.');
+			}
+			if (!(patron.bits.includes(RobochimpBitfieldEnum.CyrTier5) || patron.bits.includes(RobochimpBitfieldEnum.CyrTier6))) {
 				throw new UserError('You need an active Cyr Tier 5 Patreon subscription to claim this promotion.');
 			}
 
@@ -327,7 +330,7 @@ RETURNING (monster_scores->>'${monsterID}')::int AS new_kc;
 					where: { user_id_type: { user_id: this.id, type: 'CollectionLog' } }
 				});
 				const collectionLog = new Bank(previousCL?.bank as ItemBank | undefined).add(loot).toJSON();
-/*	JsonBank isn't in use currently.
+				/*	JsonBank isn't in use currently.
 				await tx.jsonBank.upsert({
 					where: { user_id_type: { user_id: this.id, type: 'CollectionLog' } },
 					create: { user_id: this.id, type: 'CollectionLog', bank: collectionLog },

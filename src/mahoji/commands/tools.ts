@@ -17,12 +17,12 @@ import { gnomeRestaurantCL, guardiansOfTheRiftCL, shadesOfMorttonCL } from '@/li
 import pets from '@/lib/data/pets.js';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
 import { allOpenables, type UnifiedOpenable } from '@/lib/openables.js';
+import { RobochimpBitfieldEnum } from '@/lib/perkTiers.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
 import { isGroupActivity, isNexActivity, isRaidsActivity, isTOBOrTOAActivity } from '@/lib/util/activityTypeCheck.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { RobochimpBitfieldEnum } from '@/lib/perkTiers.js';
 import { asyncGzip, parseStaticTimeInterval, patronMsg, staticTimeIntervals } from '@/lib/util/smallUtils.js';
 import {
 	stashUnitBuildAllCommand,
@@ -838,7 +838,9 @@ async function purpleColorConfig(user: MUser, color?: string) {
 async function purpleGlowConfig(user: MUser, enabled?: boolean) {
 	if (!(await hasCyrTier5Plus(user))) return 'You need Cyr Tier 5 or higher to change this setting.';
 	if (enabled === undefined) {
-		return user.user.bank_bg_purple_glow ? 'Your collection log highlight glow is enabled.' : 'Your collection log highlight glow is disabled.';
+		return user.user.bank_bg_purple_glow
+			? 'Your collection log highlight glow is enabled.'
+			: 'Your collection log highlight glow is disabled.';
 	}
 	await user.update({ bank_bg_purple_glow: enabled || null });
 	return `Your collection log highlight glow is ${enabled ? 'enabled' : 'disabled'}.`;

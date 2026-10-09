@@ -1,7 +1,7 @@
 import { cmbClothes } from '@/lib/bso/openables/cmb.js';
 
 import { createHash } from 'node:crypto';
-import {type Item, Items, LootTable} from 'oldschooljs';
+import { type Item, Items, LootTable } from 'oldschooljs';
 
 export const DISCO_EVENT_END_DATE = new Date('2026-12-01T00:00:00.000Z');
 export const DISCO_CLUBS = [
@@ -17,7 +17,6 @@ export const DISCO_CLUBS = [
 ] as const;
 export type DiscoClub = (typeof DISCO_CLUBS)[number];
 
-
 export const discoTreatTable = new LootTable()
 	.add('Candy teeth', 1, 350)
 	.add('Toffeet', 1, 240)
@@ -28,7 +27,6 @@ export const discoTreatTable = new LootTable()
 	.add('Goblinfinger soup', 1, 180)
 	.add("Choc'rock", 1, 7)
 	.add('Roosted newt', 1, 2);
-
 
 export const DISCO_AESTHETICS = ['Futuristic', 'Ragdoll', 'Anti-Fashion'] as const;
 export type DiscoAesthetic = (typeof DISCO_AESTHETICS)[number];
@@ -47,67 +45,58 @@ export const DISCO_AESTHETIC_SHORT_NAMES: Record<DiscoAesthetic, string> = {
 
 const DISCO_HALLOWEEN_STORIES: Record<DiscoClub, { moment: string; endings: string[] }> = {
 	Bloodbath: {
-		moment:
-			'🩸 *The house lights die and a red spotlight finds an empty throne. Somewhere beneath the bass, a heartbeat is keeping time.*',
+		moment: '🩸 *The house lights die and a red spotlight finds an empty throne. Somewhere beneath the bass, a heartbeat is keeping time.*',
 		endings: [
 			'🦇 *The heartbeat stops when you leave. In the silence, the crowd remembers whose blood was on the dance floor.*',
 			'🪩 *The throne coughs up a disco ball, which rolls directly into coat check. Nobody claims it.*'
 		]
 	},
 	Monster: {
-		moment:
-			'👹 *Behind the velvet curtain, something has learned every dancer’s name. It asks for yours.*',
+		moment: '👹 *Behind the velvet curtain, something has learned every dancer’s name. It asks for yours.*',
 		endings: [
 			'🕸️ *The curtain opens onto an empty room, except for your name stitched into the lining. Something applauds inside the walls.*',
 			'🎟️ *The curtain parts to reveal a bouncer with a clipboard. You are denied entry for wearing the wrong shoes.*'
 		]
 	},
 	Keoki: {
-		moment:
-			'👻 *Keoki’s last record plays backward. A pale figure waits beside the booth, holding a photograph that has not been taken yet.*',
+		moment: '👻 *Keoki’s last record plays backward. A pale figure waits beside the booth, holding a photograph that has not been taken yet.*',
 		endings: [
 			'🕯️ *The photograph develops in your hand: the room is empty, and you are dancing alone. The figure bows as the needle lifts.*'
 		]
 	},
 	Skrinklada: {
-		moment:
-			'🕷️ *The webbing over Skrinklada’s speakers trembles. Each strand hums with a voice asking the dancers to stay until morning.*',
+		moment: '🕷️ *The webbing over Skrinklada’s speakers trembles. Each strand hums with a voice asking the dancers to stay until morning.*',
 		endings: [
 			'🦇 *The webbing tears without a sound, and everyone swears they were never afraid. One silver thread remains tied around your wrist.*',
 			'🕸️ *A tiny spider lowers itself onto the DJ booth and requests the next song. Everyone obeys.*'
 		]
 	},
 	'Two of Hearts': {
-		moment:
-			'💔 *Two heartbeats come through the monitors, one too slow and one too fast. Neither belongs to the person beside you.*',
+		moment: '💔 *Two heartbeats come through the monitors, one too slow and one too fast. Neither belongs to the person beside you.*',
 		endings: [
 			'🕯️ *The music narrows to a single pulse, then nothing. At the bar, two untouched drinks continue to sweat in the dark.*',
 			'💘 *A bartender unplugs the monitors and apologizes: the haunted heart-rate machine has been double-booked.*'
 		]
 	},
 	Fame: {
-		moment:
-			'🎭 *Every mirror at Fame shows a different face wearing your clothes. Applause starts before anyone has performed.*',
+		moment: '🎭 *Every mirror at Fame shows a different face wearing your clothes. Applause starts before anyone has performed.*',
 		endings: ['👁️ *The mirrors go black, but one reflection keeps clapping. It smiles only after you turn away.*']
 	},
 	Money: {
-		moment:
-			'🪙 *Coins on the bar begin whispering their previous owners’ last wishes. The cashier counts them twice, then locks the door.*',
+		moment: '🪙 *Coins on the bar begin whispering their previous owners’ last wishes. The cashier counts them twice, then locks the door.*',
 		endings: [
 			'⚰️ *At closing, every coin has vanished except one beneath your shoe. It is warm, and it bears tomorrow’s date.*',
 			'💸 *The coins stop whispering once the cashier adds a service charge. They do not stop complaining.*'
 		]
 	},
 	Glamour: {
-		moment:
-			'🦇 *Glamour’s chandeliers dim and every guest’s shadow slips loose. They gather beneath the stage, waiting for the next song.*',
+		moment: '🦇 *Glamour’s chandeliers dim and every guest’s shadow slips loose. They gather beneath the stage, waiting for the next song.*',
 		endings: [
 			'🕸️ *The shadows return to their owners one by one, all except yours. It remains beneath the stage, dancing after the lights rise.*'
 		]
 	},
 	Success: {
-		moment:
-			'🏆 *A trophy is presented to someone who never came home. Its polished surface shows the audience wearing funeral masks.*',
+		moment: '🏆 *A trophy is presented to someone who never came home. Its polished surface shows the audience wearing funeral masks.*',
 		endings: [
 			'👻 *The trophy cracks as the music fades, and a cold hand takes it from the stage. The crowd cheers as if it has waited years.*',
 			'🥈 *The trophy’s ghost accepts second place, then demands a rematch at karaoke.*'

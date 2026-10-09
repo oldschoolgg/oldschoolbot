@@ -46,7 +46,7 @@ export const discoBloodbathTask: MinionTask = {
 				: aesthetic === data.theme.good
 					? 1.75
 					: aesthetic === data.theme.bad
-						? -.5
+						? -0.5
 						: 1;
 			gained[aesthetic] = Math.floor(points * multiplier * (data.popularity / 100) * themeMultiplier);
 		}
@@ -64,15 +64,13 @@ export const discoBloodbathTask: MinionTask = {
 
 		if (!data.isRave) {
 			if (minutes < 30) {
-			 	stats.traversal = [];
+				stats.traversal = [];
 			} else {
 				const expectedNext = route[stats.traversal.length];
 				if (data.club === expectedNext) {
 					stats.traversal.push(data.club as DiscoClub);
-				}
-				else stats.traversal = [];
+				} else stats.traversal = [];
 			}
-
 		}
 		const loot = new Bank();
 		const theoreticalMax = Math.floor((effectiveMinutes * 7500) / 60);
@@ -89,11 +87,11 @@ export const discoBloodbathTask: MinionTask = {
 		}
 
 		const completedRoute = stats.traversal.length === route.length;
-		let rate = 20 * 60; // start with 1 per 20 hours
+		const rate = 20 * 60; // start with 1 per 20 hours
 
 		for (let i = 0; i < minutes; i++) {
 			if (rng.roll(rate)) {
-				const box = (rng.roll(2)) ? 'Skrink box' : 'Skrod box';
+				const box = rng.roll(2) ? 'Skrink box' : 'Skrod box';
 				loot.add(box);
 				glamourBoxes++;
 			}
@@ -101,12 +99,11 @@ export const discoBloodbathTask: MinionTask = {
 		const awardPrize = completedRoute && user.user.claimed_glamour_box === 0;
 
 		if (awardPrize) {
-			loot.add((rng.roll(2)) ? 'Skrink box' : 'Skrod box');
+			loot.add(rng.roll(2) ? 'Skrink box' : 'Skrod box');
 		}
 
 		if (data.isRave && data.raveId) await Cache.deleteDiscoRave(user.id, data.raveId);
 		await user.statsUpdate({ disco_stats: stats });
-
 
 		const { itemsAdded } = await user.transactItems({
 			collectionLog: true,
@@ -161,7 +158,8 @@ export const discoBloodbathTask: MinionTask = {
 				([aesthetic]) =>
 					`${aesthetic}: ${gained[aesthetic] >= 0 ? '+' : ''}${gained[aesthetic]} (${stats.points[aesthetic]} total)`
 			)
-			.join('\n');		await handleTripFinish({
+			.join('\n');
+		await handleTripFinish({
 			user,
 
 			channelId: data.channelId,

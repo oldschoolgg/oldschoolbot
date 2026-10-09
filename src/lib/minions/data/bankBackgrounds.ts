@@ -689,7 +689,7 @@ const backgroundImages: BankBackground[] = [
 		transparent: true,
 		owners: ['1536284057086984192'],
 		hasPurple: true,
-		purpleImage: null,
+		purpleImage: null
 	},
 	{
 		id: 1021,
@@ -700,7 +700,7 @@ const backgroundImages: BankBackground[] = [
 		preScaled: true,
 		owners: ['304309559068196867'],
 		hasPurple: true,
-		purpleImage: null,
+		purpleImage: null
 	}
 ];
 

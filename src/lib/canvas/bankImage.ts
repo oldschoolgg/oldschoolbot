@@ -13,9 +13,9 @@ import { CanvasModule } from '@/lib/canvas/CanvasModule.js';
 import {
 	type BaseCanvasArgs,
 	type BGSpriteName,
+	type Canvas,
 	CanvasImage,
 	createCanvas,
-	type Canvas,
 	getClippedRegion,
 	type IBgSprite,
 	loadImage
