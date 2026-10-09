@@ -1,6 +1,3 @@
-import { discoBankPointEntitlements } from '@/lib/bso/discoBankPoints.js';
-import { checkEntitlements } from '@/lib/bso/util/entitlementChecker.js';
-
 import { codeBlock, EmbedBuilder } from '@oldschoolgg/discord';
 import { Emoji } from '@oldschoolgg/toolkit';
 import type { Bank } from 'oldschooljs';
@@ -113,12 +110,6 @@ export const bankCommand = defineCommand({
 
 		if (options.flag) mahojiFlags.push(options.flag);
 		if (options.flag_extra) mahojiFlags.push(options.flag_extra);
-		if (
-			mahojiFlags.includes('show_disco_points') &&
-			!(await checkEntitlements(user, discoBankPointEntitlements)).success
-		) {
-			return 'This flag requires Tier 3 Patreon or higher.';
-		}
 		if (options.page && options.item) {
 			options.item = `${options.page} ${options.item}`.trim();
 			options.page = undefined;
