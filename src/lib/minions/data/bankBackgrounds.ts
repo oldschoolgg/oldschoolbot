@@ -534,7 +534,8 @@ const backgroundImages: BankBackground[] = [
 		name: 'Smokikyu Halloween',
 		image: null,
 		available: true,
-		preScaled: true
+		preScaled: true,
+		transparent: true
 	},
 	{
 		id: 1000,
