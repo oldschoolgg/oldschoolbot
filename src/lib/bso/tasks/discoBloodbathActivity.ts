@@ -81,7 +81,6 @@ export const discoBloodbathTask: MinionTask = {
 			for (let i = 0; i < 10; i++) {
 				if (rng.percentChance(tenChances)) {
 					loot.add(DiscoNormalLoot.roll());
-					glamourBoxes++;
 				}
 			}
 		}
