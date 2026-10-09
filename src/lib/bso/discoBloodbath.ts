@@ -3,7 +3,7 @@ import { cmbClothes } from '@/lib/bso/openables/cmb.js';
 import { createHash } from 'node:crypto';
 import { type Item, Items, LootTable } from 'oldschooljs';
 
-export const DISCO_EVENT_END_DATE = new Date('2026-11-061T00:00:00.000Z');
+export const DISCO_EVENT_END_DATE = new Date('2026-11-06T00:00:00.000Z');
 export const holidayOpenableItemIDs = new Set<number>();
 export const DISCO_CLUBS = [
 	'Bloodbath',
