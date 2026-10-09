@@ -99,6 +99,7 @@ export const discoBloodbathTask: MinionTask = {
 
 		if (awardPrize) {
 			loot.add(rng.roll(2) ? 'Skrink box' : 'Skrod box');
+			glamourBoxes++;
 		}
 
 		if (data.isRave && data.raveId) await Cache.deleteDiscoRave(user.id, data.raveId);
