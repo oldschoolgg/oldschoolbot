@@ -159,5 +159,5 @@ export async function handleDiscoRaveButton(
 		raveAesthetics: [...rave.aesthetics],
 		effectiveDuration
 	});
-	return { content: `${user.minionName} is going to the rave. It ends in 10 minutes.`, ephemeral: true };
+	return { content: `${user.minionName} is going to the rave. It ends in 10 minutes.` };
 }

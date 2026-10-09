@@ -153,7 +153,7 @@ export const discoBloodbathTask: MinionTask = {
 							])
 						: 'The crowd was lively enough.';
 		const lure = rng.roll(10)
-			? ' Someone mentioned that the Disco Fever is still hot — have you claimed your Lazy box yet?'
+			? ' Someone mentioned that the Disco Fever is still hot... they were dead wrong 💀'
 			: '';
 		const story = isDiscoHalloween() ? discoHalloweenStory(data.club) : null;
 		const storyEnding = story ? rng.pick(story.endings) : null;
