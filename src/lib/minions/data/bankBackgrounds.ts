@@ -530,6 +530,12 @@ const backgroundImages: BankBackground[] = [
 		perkTierNeeded: PerkTier.Four
 	},
 	{
+		id: 509,
+		name: 'Smokikyu Halloween',
+		image: null,
+		available: true
+	},
+	{
 		id: 1000,
 		name: 'Kiddo CustomBG',
 		image: null,

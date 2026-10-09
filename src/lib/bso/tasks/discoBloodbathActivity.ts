@@ -2,6 +2,7 @@ import {
 	type DiscoAesthetic,
 	type DiscoClub,
 	discoHalloweenStory,
+	discoTreatTable,
 	isDiscoHalloween,
 	scoreDiscoFashion
 } from '@/lib/bso/discoBloodbath.js';
@@ -79,6 +80,9 @@ export const discoBloodbathTask: MinionTask = {
 		const tenChances = efficiency * 10;
 		if (!data.isRave) {
 			for (let i = 0; i < 10; i++) {
+				if (rng.percentChance(tenChances * 2)) {
+					loot.add(discoTreatTable.roll());
+				}
 				if (rng.percentChance(tenChances)) {
 					loot.add(DiscoNormalLoot.roll());
 				}

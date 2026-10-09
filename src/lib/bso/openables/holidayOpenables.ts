@@ -1,3 +1,4 @@
+import { holidayOpenableItemIDs } from '@/lib/bso/discoBloodbath.js';
 import {
 	BeachMysteryBoxTable,
 	IndependenceBoxTable,
@@ -180,3 +181,7 @@ export const holidayOpenables: UnifiedOpenable[] = [
 		smokeyApplies: false
 	}
 ];
+
+for (const { allItems } of holidayOpenables) {
+	for (const itemID of allItems) holidayOpenableItemIDs.add(itemID);
+}

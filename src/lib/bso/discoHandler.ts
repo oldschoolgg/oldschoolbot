@@ -1,4 +1,4 @@
-import { DISCO_AESTHETICS, DiscoItem, type DiscoAesthetic, isDiscoEventActive } from '@/lib/bso/discoBloodbath.js';
+import { DISCO_AESTHETICS, type DiscoAesthetic, DiscoItem, isDiscoEventActive } from '@/lib/bso/discoBloodbath.js';
 
 import { createHash } from 'node:crypto';
 import { ButtonBuilder, ButtonStyle, EmbedBuilder } from '@oldschoolgg/discord';

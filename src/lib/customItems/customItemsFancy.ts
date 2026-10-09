@@ -711,7 +711,7 @@ setCustomItem(
 setCustomItem(
 	50_484,
 	"Pharaoh's ankh (green)",
-	'Bronze full helm',
+	'Bronze sword',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
@@ -831,7 +831,7 @@ setCustomItem(
 setCustomItem(
 	50_494,
 	'Wushanko skirt (blue)',
-	'Bronze platebody',
+	'Bronze platelegs',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
@@ -939,7 +939,7 @@ setCustomItem(
 setCustomItem(
 	50_503,
 	'Silken skirt (blue)',
-	'Bronze platebody',
+	'Bronze platelegs',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
@@ -1491,7 +1491,7 @@ setCustomItem(
 setCustomItem(
 	50_550,
 	'Werewolf paws (red, male)',
-	'Leather gloves',
+	'Leather boots',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
@@ -2248,7 +2248,7 @@ setCustomItem(
 setCustomItem(
 	70_073,
 	'Pink disco boots',
-	'Bronze gloves',
+	'Bronze boots',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
@@ -2296,7 +2296,7 @@ setCustomItem(
 setCustomItem(
 	70_077,
 	'Green disco boots',
-	'Bronze gloves',
+	'Bronze boots',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
@@ -2344,7 +2344,7 @@ setCustomItem(
 setCustomItem(
 	70_081,
 	'Blue disco boots',
-	'Bronze gloves',
+	'Bronze boots',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true

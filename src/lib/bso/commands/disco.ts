@@ -1,6 +1,7 @@
 import { generateDiscoOutfitImage } from '@/lib/bso/canvas/generateDiscoOutfitImage.js';
 import { discoBankPointEntitlements } from '@/lib/bso/discoBankPoints.js';
 import {
+	DISCO_AESTHETIC_SHORT_NAMES,
 	DISCO_AESTHETICS,
 	DISCO_CLUBS,
 	DiscoItem,
@@ -43,10 +44,12 @@ ${DISCO_CLUBS.map(club => {
 	return `- **${theme.club}** — ${theme.name}: ${theme.description}`;
 }).join('\n')}
 
-Use ${mentionCommand('disco','outfit')} for your Fashion-gear breakdown, or ${mentionCommand('disco', 'check_item')} to inspect one item.${
-	canUseDiscoBankPoints ? `
+Use ${mentionCommand('disco', 'outfit')} for your Fashion-gear breakdown, or ${mentionCommand('disco', 'check_item')} to inspect one item.${
+	canUseDiscoBankPoints
+		? `
 
-Use ${mentionCommand('disco', 'search')} to search your bank for the best Disco points.` : ''
+Use ${mentionCommand('disco', 'search')} to search your bank for the best Disco points.`
+		: ''
 }`;
 
 function formatPoints(points: Record<(typeof DISCO_AESTHETICS)[number], number>) {
@@ -123,6 +126,12 @@ export const discoCommand = defineCommand({
 					description: 'The aesthetic to search for.',
 					required: true,
 					choices: DISCO_AESTHETICS.map(aesthetic => ({ name: aesthetic, value: aesthetic }))
+				},
+				{
+					type: 'Boolean',
+					name: 'combined',
+					description: 'Sort by combined Disco points.',
+					required: false
 				}
 			]
 		},
@@ -175,13 +184,27 @@ export const discoCommand = defineCommand({
 			if (!ratelimit.success) return 'You need to wait before searching your bank again.';
 
 			const aesthetic = options.search.aesthetic as (typeof DISCO_AESTHETICS)[number];
+			const combined = options.search.combined ?? false;
 			const results = user.bank
 				.items()
 				.filter(([item]) => Boolean(item.equipable) && Boolean(item.equipment?.slot))
-				.map(([item]) => ({ name: item.name, points: new DiscoItem(item).points[aesthetic] }))
-				.sort((a, b) => b.points - a.points || a.name.localeCompare(b.name))
+				.map(([item]) => ({ name: item.name, points: new DiscoItem(item).points }))
+				.sort((a, b) => {
+					const aScore = combined
+						? DISCO_AESTHETICS.reduce((total, realm) => total + a.points[realm], 0)
+						: a.points[aesthetic];
+					const bScore = combined
+						? DISCO_AESTHETICS.reduce((total, realm) => total + b.points[realm], 0)
+						: b.points[aesthetic];
+					return bScore - aScore || a.name.localeCompare(b.name);
+				})
 				.slice(0, 100)
-				.map(result => `${result.name}: ${result.points}`);
+				.map(
+					result =>
+						`${result.name}, ${DISCO_AESTHETICS.filter(realm => result.points[realm] !== 0)
+							.map(realm => `${DISCO_AESTHETIC_SHORT_NAMES[realm]}: ${result.points[realm]}`)
+							.join(', ')}`
+				);
 			if (results.length === 0) return 'You have no equippable items in your bank.';
 
 			const pages = Array.from({ length: Math.ceil(results.length / 10) }, (_, index) => ({

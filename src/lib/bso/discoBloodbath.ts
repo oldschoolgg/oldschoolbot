@@ -3,7 +3,8 @@ import { cmbClothes } from '@/lib/bso/openables/cmb.js';
 import { createHash } from 'node:crypto';
 import { type Item, Items, LootTable } from 'oldschooljs';
 
-export const DISCO_EVENT_END_DATE = new Date('2026-12-01T00:00:00.000Z');
+export const DISCO_EVENT_END_DATE = new Date('2026-11-061T00:00:00.000Z');
+export const holidayOpenableItemIDs = new Set<number>();
 export const DISCO_CLUBS = [
 	'Bloodbath',
 	'Monster',
@@ -236,6 +237,9 @@ export class DiscoItem {
 		const negativeAesthetic = DISCO_AESTHETICS[byteSum(bytes) % 4] as DiscoAesthetic | undefined;
 		if (negativeAesthetic && this.points[negativeAesthetic] === 0) {
 			this.points[negativeAesthetic] = -byteSum(bytes) % (cmb ? 0x3f : 0x5f);
+		}
+		if (holidayOpenableItemIDs.has(this.item.id)) {
+			for (const aesthetic of DISCO_AESTHETICS) this.points[aesthetic] *= 2;
 		}
 	}
 }

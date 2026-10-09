@@ -195,11 +195,7 @@ export const bankCommand = defineCommand({
 
 		const bankSize = Math.ceil(bank.length / 56);
 
-		if (
-			mahojiFlags.includes('show_all') ||
-			mahojiFlags.includes('wide') ||
-			bankSize === 1
-		) {
+		if (mahojiFlags.includes('show_all') || mahojiFlags.includes('wide') || bankSize === 1) {
 			return result;
 		}
 
