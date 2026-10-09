@@ -41,12 +41,12 @@ export const discoBloodbathTask: MinionTask = {
 		for (const [aesthetic, points] of affected) {
 			const themeMultiplier = data.isRave
 				? data.raveAesthetics?.includes(aesthetic)
-					? 1.25
-					: 1
+					? 2
+					: 1.25
 				: aesthetic === data.theme.good
-					? 1.25
+					? 1.75
 					: aesthetic === data.theme.bad
-						? -0.5
+						? -.75
 						: 1;
 			gained[aesthetic] = Math.floor(points * multiplier * (data.popularity / 100) * themeMultiplier);
 		}
@@ -60,7 +60,7 @@ export const discoBloodbathTask: MinionTask = {
 			traversal: [...(oldStats.traversal ?? [])]
 		};
 		for (const aesthetic of Object.keys(gained) as DiscoAesthetic[]) stats.points[aesthetic] += gained[aesthetic];
-
+		const theoreticalMax = Math.floor((minutes * 7500) / 60)	;
 		const expectedNext = route[stats.traversal.length];
 		if (!data.isRave && minutes >= 30 && data.club === expectedNext) stats.traversal.push(data.club as DiscoClub);
 		else if (!data.isRave && minutes >= 30 && data.club === route[0]) stats.traversal = [route[0]];
@@ -71,8 +71,11 @@ export const discoBloodbathTask: MinionTask = {
 
 		const completedRoute = stats.traversal.length === route.length;
 		const routeReward = completedRoute && user.user.claimed_glamour_box === 0;
+		// Don't give extra boxes until reward route is unlocked.
+		const rate = data.isRave && user.user.claimed_glamour_box >= 1 ? user.user.claimed_glamour_box * 50 : data.isRave ? 100 : 250;
+		const raveReward = rng.roll(rate);
 		const chase =
-			routeReward || rng.roll(50) ? rng.pick<'Skrink box' | 'Skrod box'>(['Skrink box', 'Skrod box']) : null;
+			routeReward || raveReward ? rng.pick<'Skrink box' | 'Skrod box'>(['Skrink box', 'Skrod box']) : null;
 		if (completedRoute) {
 			stats.traversal = [];
 		}
@@ -135,9 +138,9 @@ export const discoBloodbathTask: MinionTask = {
 				([aesthetic]) =>
 					`${aesthetic}: ${gained[aesthetic] >= 0 ? '+' : ''}${gained[aesthetic]} (${stats.points[aesthetic]} total)`
 			)
-			.join('\n');
-		await handleTripFinish({
+			.join('\n');		await handleTripFinish({
 			user,
+
 			channelId: data.channelId,
 			message: {
 				content: `${user.mention}, ${user.minionName} finished a ${minutes}-minute ${data.isRave ? 'rave' : 'visit'} to ${data.club}.\n${topMessage}\n${crowdMessage}${storyEnding ? `\n\n${storyEnding}` : ''}${lure}\n\n**Realm points**\n${pointSummary}${totalScore === 0 ? '\nYour Fashion gear scored no points. Try `/disco check_item` to plan your outfit.' : ''}${chase ? `\n\n🎉 **SKRINK/SKROD BOX DROP!** 🎉\nThe crowd erupts: ${chase}!` : ''}${itemsAdded.length > 0 ? `\n\n**Loot:** ${itemsAdded}` : ''}`

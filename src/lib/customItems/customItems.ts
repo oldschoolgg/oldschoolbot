@@ -16081,7 +16081,6 @@ setCustomItem(
 	},
 	1_000_000
 );
-
 setCustomItem(
 	75_723,
 	'Fire dragon skull',
@@ -16101,54 +16100,37 @@ setCustomItem(
 
 setCustomItem(
 	75_724,
-	'Fire dragon poncho',
-	'Bronze platebody',
+	'10% Pumpkinhead pie',
+	'Coal',
 	{
-		// Wings for making an entrance; padding for making an exit.
-		tradeable: false,
-		tradeable_on_ge: false,
 		customItemData: {
 			isSecret: true,
 			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
+			isDiscontinued: true
 		}
 	},
-	1_000_000
+	50_000
 );
-
 setCustomItem(
 	75_725,
-	'Fire dragon greaves',
-	'Bronze platelegs',
+	'Smorkey painting',
+	'Coal',
 	{
-		// A little fire in your stride.
-		tradeable: false,
-		tradeable_on_ge: false,
 		customItemData: {
 			isSecret: true,
 			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
+			isDiscontinued: true
 		}
 	},
-	1_000_000
+	5_000_000
 );
 
-setCustomItem(
-	75_726,
-	'Fire dragon boots',
-	'Leather boots',
-	{
-		// All the claws, none of the commute.
-		tradeable: false,
-		tradeable_on_ge: false,
-		customItemData: {
-			isSecret: true,
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
-		}
-	},
-	1_000_000
-);
+
+
+setCustomItem(75_726, 'Roosted newt', 'Coal', {customItemData: {
+		isSecret: true,
+		isDiscontinued: true,
+		cantDropFromMysteryBoxes: true}}, 10_000);
 
 setCustomItem(
 	75_728,

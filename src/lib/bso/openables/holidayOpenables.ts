@@ -64,12 +64,18 @@ const HalloweenCrackerTable = new LootTable()
 	.add('Zombie cow plushie')
 	.add('Deathtouched tart');
 
-export const LazyMysteryBoxTable = new LootTable();
-/*	.add('Two of Hearts')
-
+export const LazyMysteryBoxTable = new LootTable()
+	.add('Two of Hearts')
 	.add('Idle idol')
 	.add('Trust fund tiara')
-	.add('Count Napula');*/
+	.add('Count Napula');
+
+export const DiscoNormalLoot = new LootTable()
+	.add('Smorkey painting')
+	.add('10% Pumpkinhead pie')
+	.add('Roosted newt')
+	.tertiary(50, 'Slothario')
+	.tertiary(100, new LootTable().add('Skrink box').add('Skrod Box'));
 
 export const SkrinkBoxTable = new LootTable()
 	.add('Disco bloodbath')

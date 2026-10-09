@@ -327,11 +327,12 @@ RETURNING (monster_scores->>'${monsterID}')::int AS new_kc;
 					where: { user_id_type: { user_id: this.id, type: 'CollectionLog' } }
 				});
 				const collectionLog = new Bank(previousCL?.bank as ItemBank | undefined).add(loot).toJSON();
+/*	JsonBank isn't in use currently.
 				await tx.jsonBank.upsert({
 					where: { user_id_type: { user_id: this.id, type: 'CollectionLog' } },
 					create: { user_id: this.id, type: 'CollectionLog', bank: collectionLog },
 					update: { bank: collectionLog }
-				});
+				});*/
 				return tx.user.update({
 					where: { id: this.id },
 					data: {

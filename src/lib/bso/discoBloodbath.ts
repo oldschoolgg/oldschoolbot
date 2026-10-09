@@ -1,7 +1,7 @@
 import { cmbClothes } from '@/lib/bso/openables/cmb.js';
 
 import { createHash } from 'node:crypto';
-import { type Item, Items } from 'oldschooljs';
+import {type Item, Items, LootTable} from 'oldschooljs';
 
 export const DISCO_EVENT_END_DATE = new Date('2026-12-01T00:00:00.000Z');
 export const DISCO_CLUBS = [
@@ -16,6 +16,19 @@ export const DISCO_CLUBS = [
 	'Success'
 ] as const;
 export type DiscoClub = (typeof DISCO_CLUBS)[number];
+
+
+export const discoTreatTable = new LootTable()
+	.add('Candy teeth', 1, 350)
+	.add('Toffeet', 1, 240)
+	.add('Chocolified skull', 1, 240)
+	.add('Rotten sweets', 1, 240)
+	.add('Hairyfloss', 1, 240)
+	.add('Eyescream', 1, 180)
+	.add('Goblinfinger soup', 1, 180)
+	.add("Choc'rock", 1, 7)
+	.add('Roosted newt', 1, 2);
+
 
 export const DISCO_AESTHETICS = ['Futuristic', 'Ragdoll', 'Anti-Fashion'] as const;
 export type DiscoAesthetic = (typeof DISCO_AESTHETICS)[number];
