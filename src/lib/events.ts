@@ -21,6 +21,7 @@ import { CONSTANTS, globalConfig } from '@/lib/constants.js';
 import { customItems } from '@/lib/customItems/util.js';
 import { roboChimpSyncData } from '@/lib/roboChimp.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
+import { isSecretItemIDQuery } from '@/lib/bso/util/isSecretItemQuery.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { minionStatsEmbed } from '@/lib/util/minionStatsEmbed.js';
 import { refreshUserCache } from '@/lib/util/refreshCache.js';
@@ -178,11 +179,11 @@ const mentionCommands: MentionCommand[] = [
 		name: 'is',
 		aliases: ['is'],
 		description: 'Searches for items.',
-		run: async ({ components, user, content }: MentionCommandOptions) => {
+		run: async ({ user, content }: MentionCommandOptions) => {
 			const items = Items.filter(
 				i =>
 					[i.id.toString(), i.name.toLowerCase()].includes(content.toLowerCase()) &&
-					!i.customItemData?.isSecret
+					!isSecretItemIDQuery(i, content)
 			).array();
 			if (items.length === 0) return { content: 'No results for that item.' };
 
@@ -217,7 +218,7 @@ const mentionCommands: MentionCommand[] = [
 				str += `\n...and ${items.length - 5} others`;
 			}
 
-			return { embeds: [new EmbedBuilder().setDescription(str)], components };
+			return { embeds: [new EmbedBuilder().setDescription(str)] };
 		}
 	},
 	{

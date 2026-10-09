@@ -2,6 +2,7 @@ import { EmbedBuilder } from '@oldschoolgg/discord';
 import { Items, toKMB } from 'oldschooljs';
 
 import { itemOption } from '@/discord/index.js';
+import { isSecretItemIDQuery } from '@/lib/bso/util/isSecretItemQuery.js';
 import { sellPriceOfItem } from '@/mahoji/commands/sell.js';
 
 export const priceCommand = defineCommand({
@@ -16,7 +17,7 @@ export const priceCommand = defineCommand({
 	],
 	run: async ({ options }) => {
 		const item = Items.getItem(options.item);
-		if (!item || item.customItemData?.isSecret) return "Couldn't find that item.";
+		if (!item || isSecretItemIDQuery(item, options.item)) return "Couldn't find that item.";
 
 		const { basePrice: priceOfItem } = sellPriceOfItem(item);
 
