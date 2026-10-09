@@ -308,7 +308,12 @@ RETURNING (monster_scores->>'${monsterID}')::int AS new_kc;
 			if (!patron) {
 				throw new UserError('You need an active Cyr Tier 5 Patreon subscription to claim this promotion.');
 			}
-			if (!(patron.bits.includes(RobochimpBitfieldEnum.CyrTier5) || patron.bits.includes(RobochimpBitfieldEnum.CyrTier6))) {
+			if (
+				!(
+					patron.bits.includes(RobochimpBitfieldEnum.CyrTier5) ||
+					patron.bits.includes(RobochimpBitfieldEnum.CyrTier6)
+				)
+			) {
 				throw new UserError('You need an active Cyr Tier 5 Patreon subscription to claim this promotion.');
 			}
 

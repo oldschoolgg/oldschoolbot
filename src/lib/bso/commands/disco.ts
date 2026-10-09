@@ -40,8 +40,10 @@ const helpText = (
 The clubs are:
 ${DISCO_CLUBS.map(club => `- **${club}** — ${discoClubTheme(club).name}: ${discoClubTheme(club).description}`).join('\n')}
 
-Use \`/disco outfit\` for your Fashion-gear breakdown, or \`/disco check_item\` to inspect one item.${
-	canUseDiscoBankPoints ? '\n\nUse `/disco search` to search your bank for the best Disco points.' : ''
+Use ${mentionCommand('disco','outfit')} for your Fashion-gear breakdown, or ${mentionCommand('disco', 'check_item')} to inspect one item.${
+	canUseDiscoBankPoints ? `
+
+Use ${mentionCommand('disco', 'search')} to search your bank for the best Disco points.` : ''
 }`;
 
 function formatPoints(points: Record<(typeof DISCO_AESTHETICS)[number], number>) {
