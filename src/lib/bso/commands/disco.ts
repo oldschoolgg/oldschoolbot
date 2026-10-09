@@ -22,7 +22,7 @@ import { mentionCommand } from '@/discord/utils.js';
 import { BitField } from '@/lib/constants.js';
 import type { DiscoBloodbathActivityTaskOptions } from '@/lib/types/minions.js';
 
-const clubChoices = () => discoClubOrder().map(name => ({ name, value: name }));
+const clubChoices = () => discoClubOrder().map((name, index) => ({ name, value: DISCO_CLUBS[index] }));
 
 const helpText = (
 	canUseDiscoBankPoints: boolean
@@ -38,7 +38,10 @@ const helpText = (
 *Completed visits can return strange fashion loot and very rarely a chase box*.
 
 The clubs are:
-${DISCO_CLUBS.map(club => `- **${club}** — ${discoClubTheme(club).name}: ${discoClubTheme(club).description}`).join('\n')}
+${DISCO_CLUBS.map(club => {
+	const theme = discoClubTheme(club);
+	return `- **${theme.club}** — ${theme.name}: ${theme.description}`;
+}).join('\n')}
 
 Use ${mentionCommand('disco','outfit')} for your Fashion-gear breakdown, or ${mentionCommand('disco', 'check_item')} to inspect one item.${
 	canUseDiscoBankPoints ? `
@@ -236,12 +239,13 @@ export const discoCommand = defineCommand({
 			if (!ratelimit.success)
 				return 'If you keep asking, you are going to lose reputation faster than you earn it. Be a leader, not a follower.';
 			const club = options.inquire.club_name as (typeof DISCO_CLUBS)[number];
-			const popularity = discoPopularity(club);
+			const theme = discoClubTheme(club);
+			const popularity = discoPopularity(theme.club);
 			return popularity >= 83
-				? `${club} is hot. Everyone worth knowing is talking about it.`
+				? `${theme.club} is hot. Everyone worth knowing is talking about it.`
 				: popularity >= 66
-					? `${club} is getting attention. Might be worth a visit...`
-					: `${club} feels cold right now. Your contacts are not impressed.`;
+					? `${theme.club} is getting attention. Might be worth a visit...`
+					: `${theme.club} feels cold right now. Your contacts are not impressed.`;
 		}
 
 		if (options.party) {
@@ -250,19 +254,19 @@ export const discoCommand = defineCommand({
 			if (await user.minionIsBusy()) return `${user.minionName} is currently busy.`;
 			const club = options.party.club_name as (typeof DISCO_CLUBS)[number];
 			const theme = discoClubTheme(club);
-			const popularity = discoPopularity(club);
+			const popularity = discoPopularity(theme.club);
 			await ActivityManager.startTrip<DiscoBloodbathActivityTaskOptions>({
 				userID: user.id,
 				channelId,
 				duration: 30 * Time.Minute,
 				type: activity_type_enum.DiscoBloodbath,
-				club,
+				club: theme.club,
 				popularity,
 				theme: { name: theme.name, good: theme.good, bad: theme.bad },
 				fashion: user.gear.fashion.raw()
 			});
-			const story = isDiscoHalloween() ? discoHalloweenStory(club) : null;
-			return `${user.minionName} is heading to ${club}. The visit will take at least 30 minutes.${story ? `\n\n${story.moment}` : ''}`;
+			const story = isDiscoHalloween() ? discoHalloweenStory(theme.club) : null;
+			return `${user.minionName} is heading to ${theme.club}. The visit will take at least 30 minutes.${story ? `\n\n${story.moment}` : ''}`;
 		}
 
 		return 'Choose a Disco Bloodbath option.';

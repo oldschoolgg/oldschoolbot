@@ -258,7 +258,7 @@ function seededValue(seed: string) {
 }
 
 export function discoHourSeed(date = new Date()) {
-	return new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours() % 6).getTime();
+	return new Date(date.getFullYear(), date.getMonth(), date.getDate(), Math.floor(date.getHours() / 4) * 4).getTime();
 }
 
 export function discoPopularity(club: DiscoClub, date = new Date()) {
@@ -272,7 +272,7 @@ export function discoClubOrder(date = new Date()): DiscoClub[] {
 }
 
 export function discoClubTheme(club: DiscoClub, date = new Date()) {
-	return DISCO_CLUB_THEMES[DISCO_CLUBS[discoClubOrder(date).indexOf(club)]];
+	return DISCO_CLUB_THEMES[discoClubOrder(date)[DISCO_CLUBS.indexOf(club)]];
 }
 
 export function isDiscoEventActive(date = new Date()) {
