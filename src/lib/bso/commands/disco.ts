@@ -103,6 +103,20 @@ export const discoCommand = defineCommand({
 		},
 		{
 			type: 'Subcommand',
+			name: 'search',
+			description: 'Find your best bank items for an aesthetic.',
+			options: [
+				{
+					type: 'String',
+					name: 'aesthetic',
+					description: 'The aesthetic to search for.',
+					required: true,
+					choices: DISCO_AESTHETICS.map(aesthetic => ({ name: aesthetic, value: aesthetic }))
+				}
+			]
+		},
+		{
+			type: 'Subcommand',
 			name: 'inquire',
 			description: 'Ask your contacts what they think of a club.',
 			options: [
@@ -119,7 +133,7 @@ export const discoCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ options, user, channelId }) => {
+	run: async ({ options, user, channelId, interaction }) => {
 		if (!isDiscoEventActive()) return 'The Disco Bloodbath has closed for the night.';
 		if (options.start) {
 			await user.update({
@@ -139,6 +153,28 @@ export const discoCommand = defineCommand({
 			if (!resolved) return 'I could not find that item. Check the item name and try again.';
 			const item = new DiscoItem(resolved);
 			return `**${item.item.name}**\nAesthetics: ${item.aesthetics.join(', ')}\n${formatPoints(item.points)}`;
+		}
+
+		if (options.search) {
+			const entitlement = await checkEntitlements(user, discoBankPointEntitlements);
+			if (!entitlement.success) return 'This requires Tier 3 membership, or **any** Cyr tier.';
+			const ratelimit = await Cache.tryRatelimit(user.id, 'disco_bank_search');
+			if (!ratelimit.success) return 'You need to wait before searching your bank again.';
+
+			const aesthetic = options.search.aesthetic as (typeof DISCO_AESTHETICS)[number];
+			const results = user.bank
+				.items()
+				.filter(([item]) => Boolean(item.equipable) && Boolean(item.equipment?.slot))
+				.map(([item]) => ({ name: item.name, points: new DiscoItem(item).points[aesthetic] }))
+				.sort((a, b) => b.points - a.points || a.name.localeCompare(b.name))
+				.slice(0, 100)
+				.map(result => `${result.name}: ${result.points}`);
+			if (results.length === 0) return 'You have no equippable items in your bank.';
+
+			const pages = Array.from({ length: Math.ceil(results.length / 10) }, (_, index) => ({
+				content: results.slice(index * 10, (index + 1) * 10).join('\n')
+			}));
+			return interaction.makePaginatedMessage({ pages });
 		}
 
 		if (options.outfit) {
