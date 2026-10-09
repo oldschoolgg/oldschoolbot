@@ -27,14 +27,14 @@ const helpText = (
 	canUseDiscoBankPoints: boolean
 ) => `**Disco Bloodbath** is a limited-time club circuit for minions who understand that fashion is a weapon.
 
-**Use \`/disco visit\` to send your minion on a trip.** Visits take at least thirty minutes. Your Fashion gear determines your points, and your top two Realms gain or lose progress depending on the party's vibe. Each club's crowd and theme change throughout the event. Use \`/disco inquire\` for a tip from your contacts, and \`/disco stats\` to track your rank. Completed visits can return strange fashion loot and very rarely a chase box.
+**Use \`/disco visit\` to send your minion on a trip.** Visits take at least thirty minutes. Your Fashion gear determines your points, and your top two Realms gain or lose progress depending on the party's vibe. Each club's crowd and theme change throughout the event. Use \`/disco inquire\` for a tip from your contacts, \`/bank flag:show_disco_points\` to show the Aesthetic points for each item in your bank, and \`/disco stats\` to track your rank. Completed visits can return strange fashion loot and very rarely a chase box.
 
 The clubs are:
 ${DISCO_CLUBS.map(club => `- **${club}** — ${discoClubTheme(club).name}: ${discoClubTheme(club).description}`).join('\n')}
 
 Use \`/disco outfit\` for your Fashion-gear breakdown, or \`/disco check_item\` to inspect one item.${
 	canUseDiscoBankPoints
-		? '\n\nUse `/bank flag:show_disco_points` or `/bank flag_extra:show_disco_points` to show Disco points below bank items.'
+		? '\n\nUse `/disco search` to search your bank for the best Disco points.'
 		: ''
 }`;
 
