@@ -198,11 +198,6 @@ export async function loadDiscoBoxCounts() {
 	skrodBoxesGivenOut = Number(counts?.skrod ?? 0);
 }
 
-export function recordDiscoBoxClaim(box: 'Skrink box' | 'Skrod box') {
-	if (box === 'Skrink box') skrinkBoxesGivenOut++;
-	else skrodBoxesGivenOut++;
-}
-
 function hashBytes(value: string): number[] {
 	return [...createHash('md5').update(value).digest()];
 }

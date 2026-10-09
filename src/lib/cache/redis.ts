@@ -43,7 +43,8 @@ type RatelimitType =
 	| 'stats_command'
 	| 'disco_inquire'
 	| 'delay_member_fetch'
-	| 'delay_guild_fetch';
+	| 'delay_guild_fetch'
+	| 'disco_bank_search';
 
 const RATELIMITS: Record<RatelimitType, RatelimitConfig> = {
 	global_buttons: { windowSeconds: 2, max: 1 },
@@ -51,7 +52,8 @@ const RATELIMITS: Record<RatelimitType, RatelimitConfig> = {
 	stats_command: { windowSeconds: 5, max: 1 },
 	disco_inquire: { windowSeconds: TTL.Minute * 30, max: 3 },
 	delay_member_fetch: { windowSeconds: 5 * 60, max: 1 },
-	delay_guild_fetch: { windowSeconds: 5 * 60, max: 1 }
+	delay_guild_fetch: { windowSeconds: 5 * 60, max: 1 },
+	disco_bank_search: { windowSeconds: TTL.Minute * 15, max: 4 }
 } as const;
 
 const BotKeys = RedisKeys[BOT_TYPE];

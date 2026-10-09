@@ -1,5 +1,5 @@
 import { type UsingPetFunction, usingPet } from '@/lib/bso/bsoUtil.js';
-import { DISCO_EVENT_END_DATE, isDiscoEventActive, recordDiscoBoxClaim } from '@/lib/bso/discoBloodbath.js';
+import { DISCO_EVENT_END_DATE, isDiscoEventActive } from '@/lib/bso/discoBloodbath.js';
 import type { GodFavourBank, GodName } from '@/lib/bso/minigames/divineDominion.js';
 import { mysteriousStepData, mysteriousTrailTracks } from '@/lib/bso/mysteryTrail.js';
 import type { IMaterialBank } from '@/lib/bso/skills/invention/index.js';
@@ -343,7 +343,6 @@ RETURNING (monster_scores->>'${monsterID}')::int AS new_kc;
 				});
 			});
 			this._updateRawUser(newUser);
-			recordDiscoBoxClaim(bonusBox);
 			return loot;
 		});
 	}

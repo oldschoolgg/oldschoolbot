@@ -3,9 +3,9 @@ import {
 	type DiscoClub,
 	discoHalloweenStory,
 	isDiscoHalloween,
-	recordDiscoBoxClaim,
 	scoreDiscoFashion
 } from '@/lib/bso/discoBloodbath.js';
+import { DiscoNormalLoot } from '@/lib/bso/openables/holidayOpenables.js';
 
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
@@ -46,7 +46,7 @@ export const discoBloodbathTask: MinionTask = {
 				: aesthetic === data.theme.good
 					? 1.75
 					: aesthetic === data.theme.bad
-						? -.75
+						? -.5
 						: 1;
 			gained[aesthetic] = Math.floor(points * multiplier * (data.popularity / 100) * themeMultiplier);
 		}
@@ -59,38 +59,61 @@ export const discoBloodbathTask: MinionTask = {
 			trips: (oldStats.trips ?? 0) + 1,
 			traversal: [...(oldStats.traversal ?? [])]
 		};
+		let glamourBoxes = 0;
 		for (const aesthetic of Object.keys(gained) as DiscoAesthetic[]) stats.points[aesthetic] += gained[aesthetic];
-		const theoreticalMax = Math.floor((minutes * 7500) / 60)	;
-		const expectedNext = route[stats.traversal.length];
-		if (!data.isRave && minutes >= 30 && data.club === expectedNext) stats.traversal.push(data.club as DiscoClub);
-		else if (!data.isRave && minutes >= 30 && data.club === route[0]) stats.traversal = [route[0]];
-		else stats.traversal = [];
 
+		if (!data.isRave) {
+			if (minutes < 30) {
+			 	stats.traversal = [];
+			} else {
+				const expectedNext = route[stats.traversal.length];
+				if (data.club === expectedNext) {
+					stats.traversal.push(data.club as DiscoClub);
+				}
+				else stats.traversal = [];
+			}
+
+		}
 		const loot = new Bank();
-		const totalScore = Object.values(scored.points).reduce((sum, points) => sum + points, 0);
+		const theoreticalMax = Math.floor((effectiveMinutes * 7500) / 60);
+		const totalScore = Object.values(gained).reduce((sum, points) => sum + points, 0);
+		const efficiency = totalScore / theoreticalMax;
+		const tenChances = efficiency * 10;
+		if (!data.isRave) {
+			for (let i = 0; i < 10; i++) {
+				if (rng.percentChance(tenChances)) {
+					loot.add(DiscoNormalLoot.roll());
+					glamourBoxes++;
+				}
+			}
+		}
 
 		const completedRoute = stats.traversal.length === route.length;
-		const routeReward = completedRoute && user.user.claimed_glamour_box === 0;
-		// Don't give extra boxes until reward route is unlocked.
-		const rate = data.isRave && user.user.claimed_glamour_box >= 1 ? user.user.claimed_glamour_box * 50 : data.isRave ? 100 : 250;
-		const raveReward = rng.roll(rate);
-		const chase =
-			routeReward || raveReward ? rng.pick<'Skrink box' | 'Skrod box'>(['Skrink box', 'Skrod box']) : null;
-		if (completedRoute) {
-			stats.traversal = [];
+		let rate = 20 * 60; // start with 1 per 20 hours
+
+		for (let i = 0; i < minutes; i++) {
+			if (rng.roll(rate)) {
+				const box = (rng.roll(2)) ? 'Skrink box' : 'Skrod box';
+				loot.add(box);
+				glamourBoxes++;
+			}
 		}
+		const awardPrize = completedRoute && user.user.claimed_glamour_box === 0;
+
+		if (awardPrize) {
+			loot.add((rng.roll(2)) ? 'Skrink box' : 'Skrod box');
+		}
+
 		if (data.isRave && data.raveId) await Cache.deleteDiscoRave(user.id, data.raveId);
 		await user.statsUpdate({ disco_stats: stats });
-		if (chase) {
-			loot.add(chase);
-		}
+
 
 		const { itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot,
-			otherUpdates: routeReward ? { claimed_glamour_box: { increment: 1 } } : undefined
+			otherUpdates: awardPrize ? { claimed_glamour_box: { increment: 1 } } : undefined
 		});
-		if (chase) recordDiscoBoxClaim(chase);
+
 		const top = affected[0]?.[1] > 0 ? affected[0][0] : undefined;
 		const topMessage = top
 			? top === data.theme.good
@@ -143,7 +166,7 @@ export const discoBloodbathTask: MinionTask = {
 
 			channelId: data.channelId,
 			message: {
-				content: `${user.mention}, ${user.minionName} finished a ${minutes}-minute ${data.isRave ? 'rave' : 'visit'} to ${data.club}.\n${topMessage}\n${crowdMessage}${storyEnding ? `\n\n${storyEnding}` : ''}${lure}\n\n**Realm points**\n${pointSummary}${totalScore === 0 ? '\nYour Fashion gear scored no points. Try `/disco check_item` to plan your outfit.' : ''}${chase ? `\n\n🎉 **SKRINK/SKROD BOX DROP!** 🎉\nThe crowd erupts: ${chase}!` : ''}${itemsAdded.length > 0 ? `\n\n**Loot:** ${itemsAdded}` : ''}`
+				content: `${user.mention}, ${user.minionName} finished a ${minutes}-minute ${data.isRave ? 'rave' : 'visit'} to ${data.club}.\n${topMessage}\n${crowdMessage}${storyEnding ? `\n\n${storyEnding}` : ''}${lure}\n\n**Realm points**\n${pointSummary}${totalScore === 0 ? '\nYour Fashion gear scored no points. Try `/disco check_item` to plan your outfit.' : ''}${glamourBoxes > 0 ? `\n\n🎉 **SKRINK/SKROD BOX DROP!** 🎉\nThe crowd erupts!` : ''}${itemsAdded.length > 0 ? `\n\n**Loot:** ${itemsAdded}` : ''}`
 			},
 			data: { ...data, cantBeDoubled: true },
 			loot: itemsAdded
