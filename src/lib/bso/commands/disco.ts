@@ -18,6 +18,7 @@ import { Time } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
 import { activity_type_enum } from '@/prisma/main/enums.js';
+import { mentionCommand } from '@/discord/utils.js';
 import { BitField } from '@/lib/constants.js';
 import type { DiscoBloodbathActivityTaskOptions } from '@/lib/types/minions.js';
 
@@ -27,15 +28,20 @@ const helpText = (
 	canUseDiscoBankPoints: boolean
 ) => `**Disco Bloodbath** is a limited-time club circuit for minions who understand that fashion is a weapon.
 
-**Use \`/disco visit\` to send your minion on a trip.** Visits take at least thirty minutes. Your Fashion gear determines your points, and your top two Realms gain or lose progress depending on the party's vibe. Each club's crowd and theme change throughout the event. Use \`/disco inquire\` for a tip from your contacts, \`/bank flag:show_disco_points\` to show the Aesthetic points for each item in your bank, and \`/disco stats\` to track your rank. Completed visits can return strange fashion loot and very rarely a chase box.
+⭐ Use ${mentionCommand('disco', 'party')} to send your minion on a trip. Visits take at least thirty minutes.
+- Your Fashion gear determines your points, and your top two Realms gain or lose progress depending on the party's vibe.
+- Each club's crowd and theme *change throughout the event*.
+- Use ${mentionCommand('disco', 'inquire')} for a tip from your contacts
+💡 The ${mentionCommand('bank')} command can show you the Aesthetic points for each item in your bank: \`/bank flag:show_disco_points\`
+- ${mentionCommand('disco', 'stats')} to track your rank.
+
+*Completed visits can return strange fashion loot and very rarely a chase box*.
 
 The clubs are:
 ${DISCO_CLUBS.map(club => `- **${club}** — ${discoClubTheme(club).name}: ${discoClubTheme(club).description}`).join('\n')}
 
 Use \`/disco outfit\` for your Fashion-gear breakdown, or \`/disco check_item\` to inspect one item.${
-	canUseDiscoBankPoints
-		? '\n\nUse `/disco search` to search your bank for the best Disco points.'
-		: ''
+	canUseDiscoBankPoints ? '\n\nUse `/disco search` to search your bank for the best Disco points.' : ''
 }`;
 
 function formatPoints(points: Record<(typeof DISCO_AESTHETICS)[number], number>) {
@@ -144,7 +150,11 @@ export const discoCommand = defineCommand({
 				data: ['discofuture', 'discoragdoll', 'discoanti'].map(name => ({ user_id: user.id, name })),
 				skipDuplicates: true
 			});
-			return 'You have started Disco Bloodbath. You really need to read `/disco help`.\n\n4 `/gearpresets` slots have been permanently added to your account. Created empty presets: `discofuture`, `discoragdoll`, `discoanti`. Use `/gearpresets help`.';
+			return `You have started Disco Bloodbath. You really need to read ${mentionCommand('disco', 'help')}.
+
+4 \`/gearpresets\` slots have been permanently added to your account. Created empty presets: \`discofuture\`, \`discoragdoll\`, \`discoanti\`. Use \`/gearpresets help\`.
+
+‼️ **Use ${mentionCommand('disco', 'party')}** to send trips**`;
 		}
 		if (options.help) return helpText((await checkEntitlements(user, discoBankPointEntitlements)).success);
 
