@@ -109,8 +109,9 @@ export function discoHalloweenStory(club: string) {
 }
 
 export const DISCO_CLUB_THEMES: Record<
-	DiscoClub,
+	(typeof DISCO_CLUBS)[number],
 	{
+		club: (typeof DISCO_CLUBS)[number];
 		name: string;
 		description: string;
 		good: DiscoAesthetic;
@@ -118,54 +119,63 @@ export const DISCO_CLUB_THEMES: Record<
 	}
 > = {
 	Bloodbath: {
+		club: 'Bloodbath',
 		name: 'Techno-Chic',
 		description: 'Sleek, intentional, advanced, and polished.',
 		good: 'Futuristic',
 		bad: 'Anti-Fashion'
 	},
 	Monster: {
+		club: 'Monster',
 		name: 'Synthetic',
 		description: 'Controlled, geometric, engineered, and clean.',
 		good: 'Futuristic',
 		bad: 'Ragdoll'
 	},
 	Keoki: {
+		club: 'Keoki',
 		name: 'Lo-Fi',
 		description: 'Raw, worn, deliberately unfashionable, and loud.',
 		good: 'Anti-Fashion',
 		bad: 'Futuristic'
 	},
 	Skrinklada: {
+		club: 'Skrinklada',
 		name: 'Austere',
 		description: 'Understated, functional, stripped down, and sharp.',
 		good: 'Anti-Fashion',
 		bad: 'Ragdoll'
 	},
 	'Two of Hearts': {
+		club: 'Two of Hearts',
 		name: 'Vaudeville',
 		description: 'Handmade, theatrical, eccentric, and imperfect.',
 		good: 'Ragdoll',
 		bad: 'Futuristic'
 	},
 	Fame: {
+		club: 'Fame',
 		name: 'Avant-Garde',
 		description: 'Extravagant, performative, and impossible to ignore.',
 		good: 'Ragdoll',
 		bad: 'Anti-Fashion'
 	},
 	Money: {
+		club: 'Money',
 		name: 'Techno-Chic',
 		description: 'Sleek, intentional, advanced, and polished.',
 		good: 'Futuristic',
 		bad: 'Anti-Fashion'
 	},
 	Glamour: {
+		club: 'Glamour',
 		name: 'Synthetic',
 		description: 'Controlled, geometric, engineered, and clean.',
 		good: 'Futuristic',
 		bad: 'Ragdoll'
 	},
 	Success: {
+		club: 'Success',
 		name: 'Avant-Garde',
 		description: 'Extravagant, performative, and impossible to ignore.',
 		good: 'Ragdoll',
@@ -248,7 +258,7 @@ function seededValue(seed: string) {
 }
 
 export function discoHourSeed(date = new Date()) {
-	return new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours()).getTime();
+	return new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours() % 6).getTime();
 }
 
 export function discoPopularity(club: DiscoClub, date = new Date()) {
