@@ -113,7 +113,7 @@ export const holidayOpenables: UnifiedOpenable[] = [
 			output: table,
 			allItems: table.allItems,
 			excludeFromOpenAll: true,
-			smokeyApplies: true
+			smokeyApplies: name !== 'Lazy Mystery Box'
 		})
 	),
 	{
