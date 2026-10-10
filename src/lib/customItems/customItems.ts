@@ -15282,7 +15282,7 @@ setCustomItem(
 	75_043,
 	'Elder sigil',
 	'Coal',
-	{ tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } },
+	{ tradeable: false, customItemData: { cantDropFromMysteryBoxes: true } },
 	10_000_000
 );
 setCustomItem(

@@ -370,7 +370,7 @@ export function rollArchonLoot(
 	const ringRate = Math.max(1, Math.floor(ringBaseRate / (1 + uniqueBonus)));
 	if (roll(ringRate)) uniqueLoot.add('Prismare ring (u)');
 
-	const ichorBaseRate = tier === 1 ? 2000 : tier === 2 ? 1500 : 1000;
+	const ichorBaseRate = tier === 1 ? 1500 : tier === 2 ? 1250 : 750;
 	const ichorRate = Math.max(1, Math.floor(ichorBaseRate / (1 + uniqueBonus)));
 	if (roll(ichorRate)) uniqueLoot.add("Archon's ichor");
 
