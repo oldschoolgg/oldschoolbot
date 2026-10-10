@@ -27,6 +27,21 @@ const presetForAesthetic: Record<DiscoAesthetic, string> = {
 	'Anti-Fashion': 'discoanti'
 };
 
+const presetSlots = [
+	['two_handed', '2h'],
+	['body', 'body'],
+	['cape', 'cape'],
+	['feet', 'feet'],
+	['hands', 'hands'],
+	['head', 'head'],
+	['legs', 'legs'],
+	['neck', 'neck'],
+	['ring', 'ring'],
+	['shield', 'shield'],
+	['weapon', 'weapon'],
+	['ammo', 'ammo']
+] as const;
+
 function ravePalette(slug: string) {
 	return ravePalettes.find(palette => palette.slug === slug);
 }
@@ -50,6 +65,8 @@ export async function discoHandler({ data, user, components, embeds, rng }: Trip
 		where: { user_id: user.id, name: { in: Object.values(presetForAesthetic) } },
 		select: {
 			name: true,
+			ammo: true,
+			ammo_qty: true,
 			two_handed: true,
 			body: true,
 			cape: true,
@@ -64,7 +81,11 @@ export async function discoHandler({ data, user, components, embeds, rng }: Trip
 		}
 	});
 	const validPresetNames = new Set<string>();
+	const currentPresetNames = new Set<string>();
+	const ineligiblePresetNames = new Set<string>();
+	const fashion = user.gear.fashion.raw();
 	for (const preset of presets) {
+		let eligible = false;
 		for (const itemID of [
 			preset.two_handed,
 			preset.body,
@@ -81,26 +102,61 @@ export async function discoHandler({ data, user, components, embeds, rng }: Trip
 			if (!itemID) continue;
 			const item = new DiscoItem(itemID);
 			if (DISCO_AESTHETICS.some(aesthetic => item.points[aesthetic] > 0)) {
-				validPresetNames.add(preset.name);
+				eligible = true;
 				break;
 			}
 		}
+		if (!eligible) {
+			ineligiblePresetNames.add(preset.name);
+			continue;
+		}
+		validPresetNames.add(preset.name);
+
+		let isCurrentFashion = true;
+		for (const [presetSlot, fashionSlot] of presetSlots) {
+			const expectedItem = preset[presetSlot];
+			const equippedItem = fashion[fashionSlot];
+			if (
+				(equippedItem?.item ?? null) !== expectedItem ||
+				(fashionSlot === 'ammo' && expectedItem !== null && (equippedItem?.quantity ?? 1) !== (preset.ammo_qty ?? 1))
+			) {
+				isCurrentFashion = false;
+				break;
+			}
+		}
+		if (isCurrentFashion) currentPresetNames.add(preset.name);
 	}
 	const raveName = rave.aesthetics.join(' + ');
 	const raveId = createRaveId(user.id);
 	await Cache.createDiscoRave(user.id, raveId);
+	const missingPresetNames = Object.values(presetForAesthetic).filter(
+		preset => !presets.some(existingPreset => existingPreset.name === preset)
+	);
+	const currentPresetLabel = [...currentPresetNames].map(name => name.replace('disco', '')).join(', ');
+	const description = [
+		`A **${raveName}** rave starts now. It lasts 10 minutes but awards points as a full trip.\n\nChoosing an aesthetic changes your Fashion gear to that gear preset before your minion goes.`,
+		currentPresetNames.size > 0
+			? `You are already dressed in your ${currentPresetLabel} outfit. Choose **Let's Go! (${currentPresetLabel})** to keep it on.`
+			: null,
+		...Array.from(ineligiblePresetNames, name =>
+			`Your \`${name}\` preset is not ready for a rave; give it an equipable item with a positive Disco score.`
+		),
+		validPresetNames.size === 0
+			? '⚡ **No Disco outfit is ready for an instant switch.** Your Disco presets appear as instant-equip buttons once an eligible outfit is available.'
+			: missingPresetNames.length > 0
+				? `Tip: restore ${missingPresetNames.map(name => `\`${name}\``).join(', ')} to keep every instant outfit switch ready for the next rave.`
+				: null
+	].filter((section): section is string => Boolean(section));
 	embeds.push(
 		new EmbedBuilder()
 			.setColor(rave.color)
 			.setTitle('Rave invite')
-			.setDescription(
-				`A **${raveName}** rave starts now. It lasts 10 minutes but awards points as a full trip.\n\nChoosing an aesthetic changes your Fashion gear to that gear preset before your minion goes.`
-			)
+			.setDescription(description.join('\n\n'))
 	);
 
 	for (const aesthetic of DISCO_AESTHETICS) {
 		const preset = presetForAesthetic[aesthetic];
-		if (!validPresetNames.has(preset)) continue;
+		if (!validPresetNames.has(preset) || currentPresetNames.has(preset)) continue;
 		components.push(
 			new ButtonBuilder()
 				.setCustomId(`DISCO_RAVE_${user.id}_${raveId}_${preset}_${rave.slug}`)
@@ -111,7 +167,7 @@ export async function discoHandler({ data, user, components, embeds, rng }: Trip
 	components.push(
 		new ButtonBuilder()
 			.setCustomId(`DISCO_RAVE_${user.id}_${raveId}_current_${rave.slug}`)
-			.setLabel('Go as you are')
+			.setLabel(currentPresetLabel ? `Let's Go! (${currentPresetLabel})` : 'Let\'s Go!')
 			.setStyle(ButtonStyle.Success)
 	);
 }

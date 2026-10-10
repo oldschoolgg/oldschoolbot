@@ -50,7 +50,7 @@ const RATELIMITS: Record<RatelimitType, RatelimitConfig> = {
 	global_buttons: { windowSeconds: 2, max: 1 },
 	random_events: { windowSeconds: TTL.Hour * 3, max: 5 },
 	stats_command: { windowSeconds: 5, max: 1 },
-	disco_inquire: { windowSeconds: TTL.Minute * 30, max: 3 },
+	disco_inquire: { windowSeconds: TTL.Minute * 30, max: 5 },
 	delay_member_fetch: { windowSeconds: 5 * 60, max: 1 },
 	delay_guild_fetch: { windowSeconds: 5 * 60, max: 1 },
 	disco_bank_search: { windowSeconds: TTL.Minute * 15, max: 4 }

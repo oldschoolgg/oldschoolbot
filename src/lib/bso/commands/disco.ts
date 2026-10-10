@@ -24,6 +24,7 @@ import { BitField } from '@/lib/constants.js';
 import type { DiscoBloodbathActivityTaskOptions } from '@/lib/types/minions.js';
 
 const clubChoices = () => discoClubOrder().map((name, index) => ({ name, value: DISCO_CLUBS[index] }));
+const discoPresetNames = ['discofuture', 'discoragdoll', 'discoanti'] as const;
 
 const helpText = (
 	canUseDiscoBankPoints: boolean
@@ -156,12 +157,32 @@ export const discoCommand = defineCommand({
 	run: async ({ options, user, channelId, interaction }) => {
 		if (!isDiscoEventActive()) return 'The Disco Bloodbath has closed for the night.';
 		if (options.start) {
+			const presets = await prisma.gearPreset.findMany({ where: { user_id: user.id }, select: { name: true } });
+			const missingPresets = discoPresetNames.filter(name => !presets.some(preset => preset.name === name));
+			if (user.bloodbathEventStarted) {
+				if (missingPresets.length === 0) return 'You have already joined the Disco Bloodbath and your three Disco presets are ready.';
+
+				const availableSlots = (await user.calcMaxGearPresets()) - presets.length;
+				if (availableSlots < missingPresets.length) {
+					return `You have already joined the Disco Bloodbath, but ${missingPresets.map(name => `\`${name}\``).join(', ')} ${missingPresets.length === 1 ? 'is' : 'are'} missing. You need ${missingPresets.length - Math.max(availableSlots, 0)} more gear preset ${missingPresets.length - Math.max(availableSlots, 0) === 1 ? 'slot' : 'slots'} to restore them.`;
+				}
+
+				await interaction.confirmation(
+					`You already joined the Disco Bloodbath. Restore the missing preset${missingPresets.length === 1 ? '' : 's'}: ${missingPresets.map(name => `\`${name}\``).join(', ')}?`
+				);
+				await prisma.gearPreset.createMany({
+					data: missingPresets.map(name => ({ user_id: user.id, name })),
+					skipDuplicates: true
+				});
+				return `Restored ${missingPresets.map(name => `\`${name}\``).join(', ')}.`;
+			}
+
 			await user.update({
 				bloodbath_event_started: true,
 				bitfield: [...new Set([...user.bitfield, BitField.DiscoBloodbathGearPresetSlots])]
 			});
 			await prisma.gearPreset.createMany({
-				data: ['discofuture', 'discoragdoll', 'discoanti'].map(name => ({ user_id: user.id, name })),
+				data: discoPresetNames.map(name => ({ user_id: user.id, name })),
 				skipDuplicates: true
 			});
 			return `You have started Disco Bloodbath. You really need to read ${mentionCommand('disco', 'help')}.
