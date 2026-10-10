@@ -2394,8 +2394,8 @@ export const LMSBuyables: LMSBuyable[] = [
 ];
 
 export const shootingStarsCL = resolveItems(['Celestial ring (uncharged)', 'Star fragment']);
-export const archonCL = resolveItems(['Prismare ring (u)', 'Empyrean shards', "Archon's ichor"]);
-export const elderCacheCL = resolveItems(['Elderflame catalyst']);
+export const archonCL = resolveItems(['Prismare ring (u)', 'Empyrean shards', "Archon's ichor", 'Archibald']);
+export const elderCacheCL = resolveItems(['Elderflame catalyst', 'Archon relic']);
 export const skillingMiscCL = resolveItems([
 	'Prospector helmet',
 	'Prospector jacket',

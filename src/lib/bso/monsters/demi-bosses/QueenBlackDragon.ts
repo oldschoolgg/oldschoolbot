@@ -3,7 +3,15 @@ import type { CustomMonster } from '@/lib/bso/monsters/CustomMonster.js';
 
 import { GearStat } from '@oldschoolgg/gear';
 import { Time } from '@oldschoolgg/toolkit';
-import { deepResolveItems, itemID, LootTable, Monsters, RareDropTable, resolveItems } from 'oldschooljs';
+import {
+	deepResolveItems,
+	itemID,
+	LootTable,
+	MonsterAttribute,
+	Monsters,
+	RareDropTable,
+	resolveItems
+} from 'oldschooljs';
 
 import { HighSeedPackTable } from '@/lib/data/seedPackTables.js';
 
@@ -59,7 +67,10 @@ export const QueenBlackDragon: CustomMonster = {
 			prayer: 3
 		}
 	},
-	itemsRequired: deepResolveItems([['Dragonfire shield', 'Dragonfire ward']]),
+	itemsRequired: deepResolveItems([
+		['Dragonfire shield', 'Dragonfire ward', 'Dragonbane aegis', 'Ancient wyvern shield']
+	]),
+	customMonsterData: { attributes: [MonsterAttribute.Dragon, MonsterAttribute.Fiery] },
 	respawnTime: Time.Second * 20,
 	levelRequirements: {
 		prayer: 70,

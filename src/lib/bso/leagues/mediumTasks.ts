@@ -10,13 +10,7 @@ import { sumArr } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
-import {
-	archonCL,
-	barrowsChestCL,
-	chambersOfXericCL,
-	cyclopsCL,
-	theatreOfBLoodCL
-} from '@/lib/data/CollectionsExport.js';
+import { barrowsChestCL, chambersOfXericCL, cyclopsCL, theatreOfBLoodCL } from '@/lib/data/CollectionsExport.js';
 import { implings } from '@/lib/implings.js';
 import Darts from '@/lib/skilling/skills/fletching/fletchables/darts.js';
 import Javelins from '@/lib/skilling/skills/fletching/fletchables/javelins.js';
@@ -1141,13 +1135,6 @@ export const mediumTasks: Task[] = [
 		name: 'Kill Orrodil',
 		has: async args => {
 			return leaguesHasKC(args, Orrodil, 1);
-		}
-	},
-	{
-		id: 1161,
-		name: 'Finish the Archon CL',
-		has: async ({ cl }) => {
-			return archonCL.every(c => cl.has(c));
 		}
 	}
 ];

@@ -11,8 +11,8 @@ export function calculateDwarvenBlessingPotsNeeded(duration: number) {
 }
 
 export function calculateVitriolicCurseElixirsNeeded(duration: number) {
-	const oneMinIncrements = Math.ceil(duration / Time.Minute);
-	return Math.max(1, oneMinIncrements);
+	const sixMinIncrements = Math.ceil(duration / (Time.Minute * 6));
+	return Math.max(1, sixMinIncrements);
 }
 
 export function dwarvenBlessing({

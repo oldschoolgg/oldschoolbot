@@ -1,8 +1,12 @@
+import { getBossSpeedBonus, getGlobalBossSpeedBonus } from '@/lib/bso/commands/islandUpgrades.js';
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+
 import { Items } from 'oldschooljs';
 
 import reducedTimeFromKC from '@/lib/minions/functions/reducedTimeFromKC.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 import { calcPOHBoosts } from '@/lib/poh/index.js';
+import { readState } from '@/mahoji/commands/islandupgrade.js';
 import { resolveAvailableItemBoosts } from '@/mahoji/mahojiSettings.js';
 
 export interface PlayerBoostDetail {
@@ -62,16 +66,48 @@ export default async function reducedTimeForGroup(
 		}
 
 		if (monster.equippedItemBoosts) {
+			let empyreanBoostPercent = 0;
 			for (const boostSet of monster.equippedItemBoosts) {
 				const equipped = boostSet.items.find(item =>
 					user.gearBank.gear[boostSet.gearSetup].hasEquipped(item.itemID)
 				);
 				if (equipped) {
 					const itemName = Items.itemNameFromId(equipped.itemID) ?? `Item ${equipped.itemID}`;
-					personalBoosts.push({ name: itemName, percent: equipped.boostPercent });
+					if (itemName.toLowerCase().startsWith('empyrean ')) {
+						empyreanBoostPercent += equipped.boostPercent;
+					} else {
+						personalBoosts.push({ name: itemName, percent: equipped.boostPercent });
+					}
 					totalIndividualBoostPercent += equipped.boostPercent;
 				}
 			}
+			if (empyreanBoostPercent > 0) {
+				personalBoosts.push({
+					name: 'Empyrean outfit (10% per piece)',
+					percent: empyreanBoostPercent
+				});
+			}
+		}
+
+		const { upgrades, maintenance, assignment } = readState(user);
+		const isIslandBoss = [
+			EBSOMonster.ORYM,
+			EBSOMonster.ORRODIL,
+			EBSOMonster.CRYSTALLINE_SENTINEL,
+			EBSOMonster.FUNGAL_BEHEMOTH,
+			EBSOMonster.ELDER_MIMIC,
+			EBSOMonster.BURNING_DOMINION
+		].includes(monster.id);
+		const islandBossBonus = isIslandBoss
+			? getBossSpeedBonus(upgrades, maintenance, assignment)
+			: getGlobalBossSpeedBonus(upgrades, maintenance, assignment);
+		if (islandBossBonus > 0) {
+			const percent = islandBossBonus * 100;
+			personalBoosts.push({
+				name: isIslandBoss ? 'Warcamp Fortifications' : 'Grand Conduit - Warcamp',
+				percent
+			});
+			totalIndividualBoostPercent += percent;
 		}
 
 		const totalPersonalPercent = personalBoosts.reduce((sum, b) => sum + b.percent, 0);
@@ -94,7 +130,8 @@ export default async function reducedTimeForGroup(
 		return `${p.username}: ${p.teamMultiplier.toFixed(2)}x team bonus, ${p.totalPersonalPercent.toFixed(1)}% personal (${boostLines})`;
 	});
 
-	const individualBoostMultiplier = 1 + totalIndividualBoostPercent / 100;
+	const avgIndividualBoostPercent = users.length > 0 ? totalIndividualBoostPercent / users.length : 0;
+	const individualBoostMultiplier = 1 + avgIndividualBoostPercent / 100;
 	const finalMultiplier = teamSpeedMultiplier * individualBoostMultiplier;
 
 	const reducedTime = Math.max(Math.floor(monster.timeToFinish / finalMultiplier), monster.respawnTime!);

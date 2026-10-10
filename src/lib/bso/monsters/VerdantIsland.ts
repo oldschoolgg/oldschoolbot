@@ -191,10 +191,6 @@ export const FungalBehemothLootTable = new LootTable()
 	.add('Mort myre fungus', [15, 40])
 	.add('Crushed nest', [8, 22])
 
-	.add('Prayer potion(4)', [5, 15])
-	.add('Super combat potion(4)', [3, 10])
-	.add('Super restore(4)', [4, 12])
-
 	.add('Ancient cap', [25, 75])
 	.add('Colossal stem', [25, 75])
 	.add('Brimstone spore', [25, 75])
@@ -226,7 +222,6 @@ export const OrymLootTable = new LootTable()
 	.tertiary(50, IslandTable5x)
 	.tertiary(50, IslandGemTable5x)
 
-	.add('Anti-venom (4)', [20, 55])
 	.add('Black dragonhide', [200, 400])
 	.add('Blue dragonhide', [300, 500])
 	.add('Red dragonhide', [250, 450])
@@ -282,9 +277,6 @@ export const OrrodilLootTable = new LootTable()
 	.tertiary(50, IslandTable5x)
 	.tertiary(50, IslandGemTable5x)
 
-	.add('Enhanced super restore', [1, 30])
-	.add('Enhanced saradomin brew', [1, 30])
-
 	.add('Black dragonhide', [100, 400])
 	.add('Blue dragonhide', [200, 500])
 	.add('Red dragonhide', [150, 450])
@@ -328,22 +320,22 @@ export const BurningDominionLootTable = new LootTable()
 	.every('Primordial Bones', [4, 10])
 	.every('Primordial Scales', [24, 100])
 
-	.tertiary(75, 'Clue scroll (grandmaster)')
-	.tertiary(100, 'Elder scroll piece')
-	.tertiary(125, 'Elder sigil fragment (1)')
-	.tertiary(125, 'Elder sigil fragment (2)')
-	.tertiary(125, 'Elder sigil fragment (3)')
+	.tertiary(100, 'Clue scroll (grandmaster)')
+	.tertiary(125, 'Elder scroll piece')
+	.tertiary(175, 'Elder sigil fragment (1)')
+	.tertiary(175, 'Elder sigil fragment (2)')
+	.tertiary(175, 'Elder sigil fragment (3)')
 
-	.tertiary(750, 'Primordial heartstring')
-	.tertiary(750, 'Primordial spine')
+	.tertiary(1500, 'Primordial heartstring')
+	.tertiary(1500, 'Primordial spine')
 
-	.tertiary(1500, 'Sacrilegious flask')
-	.tertiary(1500, 'Forsaken tear')
-	.tertiary(3000, 'Orylin')
+	.tertiary(3000, 'Sacrilegious flask')
+	.tertiary(3000, 'Forsaken tear')
+	.tertiary(5000, 'Orylin')
 
-	.tertiary(1500, 'Shattered pendant')
-	.tertiary(1500, 'Celestial flame')
-	.tertiary(3000, 'Orrodin')
+	.tertiary(3000, 'Shattered pendant')
+	.tertiary(3000, 'Celestial flame')
+	.tertiary(5000, 'Orrodin')
 
 	.tertiary(20, RareDropTable)
 	.tertiary(4, IslandTable)
@@ -352,10 +344,6 @@ export const BurningDominionLootTable = new LootTable()
 	.tertiary(20, IslandGemTable3x)
 	.tertiary(40, IslandTable5x)
 	.tertiary(40, IslandGemTable5x)
-
-	.add('Anti-venom (4)', [30, 75])
-	.add('Enhanced super restore', [1, 30])
-	.add('Enhanced saradomin brew', [1, 30])
 
 	.add('Black dragonhide', [300, 800])
 	.add('Blue dragonhide', [500, 1000])
@@ -408,7 +396,7 @@ export const CrystallineSentinel: CustomMonster = {
 	table: CrystallineSentinelLootTable,
 	difficultyRating: 3,
 	qpRequired: 500,
-	healAmountNeeded: 80 * 40,
+	healAmountNeeded: 20 * 20,
 	attackStyleToUse: GearStat.AttackSlash,
 	attackStylesUsed: [GearStat.AttackSlash],
 	levelRequirements: {
@@ -465,22 +453,8 @@ export const CrystallineSentinel: CustomMonster = {
 	setupsUsed: ['melee', 'range'],
 	equippedItemBoosts: [
 		{
-			gearSetup: 'range',
+			gearSetup: 'melee',
 			items: [{ boostPercent: 25, itemID: itemID('Vitrolic curse') }]
-		},
-		{
-			gearSetup: 'range',
-			items: [
-				{ boostPercent: 10, itemID: itemID('Elderflame arrow') },
-				{ boostPercent: 10, itemID: itemID('Elderflame bow') }
-			]
-		},
-		{
-			gearSetup: 'range',
-			items: [
-				{ boostPercent: 7, itemID: itemID('Elderflame arrow') },
-				{ boostPercent: 7, itemID: itemID('Starfire bow') }
-			]
 		},
 		{
 			gearSetup: 'melee',
@@ -500,7 +474,7 @@ export const FungalBehemoth: CustomMonster = {
 	table: FungalBehemothLootTable,
 	difficultyRating: 4,
 	qpRequired: 750,
-	healAmountNeeded: 120 * 50,
+	healAmountNeeded: 20 * 30,
 	attackStyleToUse: GearStat.AttackSlash,
 	attackStylesUsed: [GearStat.AttackSlash],
 	levelRequirements: {
@@ -557,22 +531,8 @@ export const FungalBehemoth: CustomMonster = {
 	setupsUsed: ['melee', 'range'],
 	equippedItemBoosts: [
 		{
-			gearSetup: 'range',
+			gearSetup: 'melee',
 			items: [{ boostPercent: 25, itemID: itemID('Vitrolic curse') }]
-		},
-		{
-			gearSetup: 'range',
-			items: [
-				{ boostPercent: 10, itemID: itemID('Elderflame arrow') },
-				{ boostPercent: 10, itemID: itemID('Elderflame bow') }
-			]
-		},
-		{
-			gearSetup: 'range',
-			items: [
-				{ boostPercent: 7, itemID: itemID('Elderflame arrow') },
-				{ boostPercent: 7, itemID: itemID('Starfire bow') }
-			]
 		},
 		{
 			gearSetup: 'melee',
@@ -628,12 +588,6 @@ export const ElderMimic: CustomMonster = {
 		magic: 120,
 		ranged: 120
 	},
-	deathProps: {
-		hardness: 0,
-		steepness: 0,
-		lowestDeathChance: 0,
-		highestDeathChance: 0
-	},
 	minimumHealAmount: 18,
 	allItems: resolveItems(['Elder mimic casket']),
 	minimumGearRequirements: {
@@ -659,8 +613,9 @@ export const ElderMimic: CustomMonster = {
 			.add('Elder mimic casket (locked)', 1),
 		qtyPerKill: 1
 	},
+	tameCantKill: true,
 	groupKillable: false,
-	setupsUsed: ['melee']
+	setupsUsed: ['melee', 'range']
 };
 
 export const Orym: CustomMonster = {
@@ -729,7 +684,7 @@ export const Orym: CustomMonster = {
 		if (hasMaxedIgne) return null;
 		return 'You need to have a maxed Igne Tame (best gear, all fed items) to fight Orym.';
 	},
-	setupsUsed: ['melee'],
+	setupsUsed: ['melee', 'range'],
 	equippedItemBoosts: [
 		{
 			gearSetup: 'melee',
@@ -812,7 +767,7 @@ export const Orrodil: CustomMonster = {
 		if (hasMaxedIgne) return null;
 		return 'You need to have a maxed Igne Tame (best gear, all fed items) to fight Orrodil.';
 	},
-	setupsUsed: ['melee'],
+	setupsUsed: ['melee', 'range'],
 	equippedItemBoosts: [
 		{
 			gearSetup: 'melee',
@@ -886,8 +841,8 @@ export const BurningDominionTemplate: CustomMonster = {
 	itemCost: {
 		itemCost: new Bank()
 			.add('Super combat potion(4)')
-			.add('Heat res. brew', 3)
-			.add('Heat res. restore')
+			.add('Enhanced saradomin brew', 3)
+			.add('Enhanced super restore')
 			.add('Brimstone elixir', 3)
 			.add('Enhanced stamina potion'),
 		qtyPerKill: 1
@@ -913,9 +868,29 @@ export const BurningDominionTemplate: CustomMonster = {
 		{
 			gearSetup: 'melee',
 			items: [{ boostPercent: 7, itemID: itemID('Searcrown band') }]
+		},
+		{
+			gearSetup: 'melee',
+			items: [{ boostPercent: 10, itemID: itemID('Empyrean greathelm') }]
+		},
+		{
+			gearSetup: 'melee',
+			items: [{ boostPercent: 10, itemID: itemID('Empyrean greatplate') }]
+		},
+		{
+			gearSetup: 'melee',
+			items: [{ boostPercent: 10, itemID: itemID('Empyrean greatgreaves') }]
+		},
+		{
+			gearSetup: 'melee',
+			items: [{ boostPercent: 10, itemID: itemID('Empyrean greatgauntlets') }]
+		},
+		{
+			gearSetup: 'melee',
+			items: [{ boostPercent: 10, itemID: itemID('Empyrean greatsabaton') }]
 		}
 	],
-	groupKillable: true
+	groupKillable: false
 };
 
 export const VerdantIslandMonsters = {

@@ -1,5 +1,4 @@
 import type { NewBossOptions } from '@/lib/bso/bsoTypes.js';
-import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
 import { BurningDominionTemplate } from '@/lib/bso/monsters/VerdantIsland.js';
 import type { BossUser } from '@/lib/bso/structures/Boss.js';
 
@@ -62,32 +61,43 @@ function splitLoot(loot: Bank): { uniques: Bank; regular: Bank } {
 	return { uniques, regular };
 }
 
-function formatLootSection(loot: Bank, hasUnique: boolean): string {
+function formatLootSection(loot: Bank, hasUnique: boolean, maxCharBudget: number = 750): string {
 	const { uniques, regular } = splitLoot(loot);
 	const parts: string[] = [];
 
 	if (hasUnique) {
 		for (const [item, qty] of uniques.items()) {
-			parts.push(`**${item.name}${qty > 1 ? ` x${qty}` : ''}**`);
+			parts.push(`__**[${item.name}${qty > 1 ? ` x${qty}` : ''}]**__`);
 		}
 	}
 
-	const regularStr = regular.toString();
-	if (regularStr) parts.push(regularStr);
+	const regularItems = regular.items();
+	let currentLen = parts.join(', ').length;
+	let includedCount = 0;
 
-	const combined = parts.join(', ');
-	const cap = 3700;
-	const truncated =
-		combined.length > cap ? `${combined.substring(0, combined.lastIndexOf(',', cap))}, *(truncated)*` : combined;
+	for (const [item, qty] of regularItems) {
+		const itemStr = `${item.name}${qty > 1 ? ` x${qty}` : ''}`;
+		if (currentLen + itemStr.length + 30 > maxCharBudget) {
+			break;
+		}
+		parts.push(itemStr);
+		currentLen += itemStr.length + 2;
+		includedCount++;
+	}
 
-	return `||${truncated}||`;
+	if (includedCount < regularItems.length) {
+		const remaining = regularItems.length - includedCount;
+		parts.push(`*(+${remaining} other items)*`);
+	}
+
+	return `||${parts.join(', ')}||`;
 }
 
 export const dominionTask: MinionTask = {
 	type: 'BurningDominion',
 	async run(data: NewBossOptions, { handleTripFinish, rng }) {
 		const { channelId, users: idArr, duration, bossUsers: _bossUsers, quantity, userID } = data;
-		const wrongFoodDeaths: MUser[] = [];
+		const missingHeatResUsers = new Set<string>();
 		const deaths: Record<string, { user: MUser; qty: number }> = {};
 		const bossUsers: BossUser[] = await Promise.all(
 			_bossUsers.map(async u => ({
@@ -99,14 +109,16 @@ export const dominionTask: MinionTask = {
 
 		const teamLoot = new TeamLoot([]);
 
+		for (const { user, itemsToRemove } of bossUsers) {
+			if (itemsToRemove.has('Saradomin brew(4)') || itemsToRemove.has('Super restore(4)')) {
+				missingHeatResUsers.add(user.id);
+			}
+		}
+
 		for (let i = 0; i < quantity; i++) {
-			for (const { user, deathChance, itemsToRemove } of bossUsers) {
-				let dead = false;
-				if (itemsToRemove.has('Saradomin brew(4)')) {
-					wrongFoodDeaths.push(user);
-					dead = true;
-				}
-				if (dead || rng.percentChance(deathChance)) {
+			for (const { user, deathChance } of bossUsers) {
+				const isMissingHeatRes = missingHeatResUsers.has(user.id);
+				if (isMissingHeatRes || rng.percentChance(deathChance)) {
 					if (deaths[user.id]) deaths[user.id].qty++;
 					else deaths[user.id] = { qty: 1, user };
 				}
@@ -114,15 +126,6 @@ export const dominionTask: MinionTask = {
 		}
 
 		const tagAll = bossUsers.map(u => u.user.toString()).join(', ');
-
-		if (wrongFoodDeaths.length === bossUsers.length * quantity) {
-			return handleTripFinish({
-				user: bossUsers[0].user,
-				channelId,
-				message: `${tagAll}\n\nYour team began the fight against Orym and Orrodil, but your supplies could not keep pace with both dragons - with no proper provisions left, your entire team perished in the Burning Dominion.`,
-				data
-			});
-		}
 
 		if (sumArr(Object.values(deaths).map(d => d.qty)) === idArr.length * quantity) {
 			return handleTripFinish({
@@ -165,8 +168,8 @@ export const dominionTask: MinionTask = {
 			const newKC = await user.getKC(BurningDominionTemplate.id);
 
 			if (userSuccessfulKills === 0) {
-				const deathMsg = wrongFoodDeaths.includes(user)
-					? 'Had no proper supplies'
+				const deathMsg = missingHeatResUsers.has(user.id)
+					? 'Missing heat resistance'
 					: rng
 							.shuffle([...methodsOfDeath])
 							.slice(0, userDeaths)
@@ -180,7 +183,6 @@ export const dominionTask: MinionTask = {
 			}
 
 			const loot = new Bank().add(BurningDominionTemplate.table.roll(userSuccessfulKills));
-			if (isDoubleLootActive(duration)) loot.multiply(2);
 
 			teamLoot.add(user.id, loot);
 			totalLoot.add(loot);
@@ -198,8 +200,8 @@ export const dominionTask: MinionTask = {
 
 			let header = `${hasUnique ? `${Emoji.Purple} ` : ''}${user}: **+${userSuccessfulKills} KC** (${userSuccessfulKills}/${quantity} kills, KC: ${newKC})`;
 			if (userDeaths > 0) {
-				const deathMsg = wrongFoodDeaths.includes(user)
-					? 'Had no proper supplies'
+				const deathMsg = missingHeatResUsers.has(user.id)
+					? 'Missing heat resistance'
 					: rng
 							.shuffle([...methodsOfDeath])
 							.slice(0, Math.min(userDeaths, 3))
@@ -207,7 +209,8 @@ export const dominionTask: MinionTask = {
 				header += ` - died ${userDeaths}x: *${deathMsg}*`;
 			}
 
-			const lootSection = formatLootSection(loot, hasUnique);
+			const perUserBudget = Math.max(300, Math.floor(4500 / bossUsers.length));
+			const lootSection = formatLootSection(loot, hasUnique, perUserBudget);
 			embeds.push(new EmbedBuilder().setDescription(`${header}\n${lootSection}`));
 
 			announceLoot({
@@ -236,6 +239,15 @@ export const dominionTask: MinionTask = {
 				duration
 			}))
 		});
+
+		const totalEmbedChars = embeds.reduce((sum, e) => sum + (e.data.description?.length ?? 0), 0);
+		if (totalEmbedChars > 5500) {
+			for (const embed of embeds) {
+				if (embed.data.description && embed.data.description.length > 500) {
+					embed.setDescription(`${embed.data.description.substring(0, 480)}...*(truncated)*||`);
+				}
+			}
+		}
 
 		return handleTripFinish({
 			user: bossUsers[0].user,

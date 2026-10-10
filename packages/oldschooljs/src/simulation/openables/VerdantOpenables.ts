@@ -55,19 +55,19 @@ export const GemstoneCore: SimpleOpenable = new SimpleOpenable({
 });
 
 const ElderHoardBase: LootTable = new LootTable()
-	.add(75_051, 1, 10)
-	.add(75_052, 1, 10)
-	.add(75_053, 1, 10)
-	.add(75_054, 1, 10)
-	.add(75_055, 1, 10)
-	.add(75_056, 1, 1)
-	.add(50_021, randInt(1, 250), 4)
-	.add(50_018, randInt(1, 25), 4)
-	.add(75_021, randInt(1, 50), 2)
-	.add(75_048, 1, 1)
-	.add(73_128, 1, 1)
-	.add(19_837, 1, 1);
-// .add(75_047, 1, 1) | Archon Relic
+	.add(75_051, 1, 100)
+	.add(75_052, 1, 100)
+	.add(75_053, 1, 100)
+	.add(75_054, 1, 100)
+	.add(75_055, 1, 100)
+	.add(75_056, 1, 10)
+	.add(50_021, randInt(1, 250), 40)
+	.add(50_018, randInt(1, 25), 40)
+	.add(75_021, randInt(1, 50), 20)
+	.add(75_048, 1, 10)
+	.add(73_128, 1, 10)
+	.add(19_837, 1, 10)
+	.add(75_047, 1, 11);
 
 const ElderHoardTable: LootTable = new LootTable().every(ElderHoardBase, randInt(3, 6));
 

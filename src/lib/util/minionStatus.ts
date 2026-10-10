@@ -1,4 +1,7 @@
 import type {
+	ArchonOptions,
+	BrimstoneDistilleryTaskOptions,
+	ConstructionContractsTaskOptions,
 	DisassembleTaskOptions,
 	DOAOptions,
 	DungeoneeringOptions,
@@ -54,6 +57,7 @@ import type {
 	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
+	ArchaicMiningActivityTaskOptions,
 	BeachCombingActivityTaskOptions,
 	BossActivityTaskOptions,
 	BuryingActivityTaskOptions,
@@ -423,7 +427,19 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 		}
 
 		case 'ArchaicMining': {
-			return `${name} is currently mining Archaic minerals. ${formattedDuration}`;
+			const data = currentTask as ArchaicMiningActivityTaskOptions;
+			const typeName = data.miningType === 'dragonbone' ? 'dragonbone mining' : 'crystalline mining';
+			return `${name} is currently doing ${typeName}. ${formattedDuration}`;
+		}
+
+		case 'BrimstoneDistillery': {
+			const data = currentTask as BrimstoneDistilleryTaskOptions;
+			return `${name} is currently distilling ${data.quantity}x ${data.recipe} in the Brimstone Distillery. ${formattedDuration}`;
+		}
+
+		case 'ConstructionContracts': {
+			const data = currentTask as ConstructionContractsTaskOptions;
+			return `${name} is currently completing ${data.quantity}x ${data.recipe} contracts. ${formattedDuration}`;
 		}
 
 		case 'CamdozaalMining': {
@@ -738,6 +754,16 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 		}
 		case 'Ignecarus': {
 			return `${name} is currently killing Ignecarus. ${formattedDuration}`;
+		}
+		case 'Archon': {
+			const data = currentTask as ArchonOptions;
+			const tierNames: Record<number, string> = {
+				1: 'Shrouded Archon',
+				2: 'Ascendant Archon',
+				3: 'Apotheotic Archon'
+			};
+			const tierName = tierNames[data.tier] ?? 'Archon';
+			return `${name} is currently fighting the ${tierName}. ${formattedDuration}`;
 		}
 		case 'KibbleMaking': {
 			return `${name} is currently making Kibble. ${formattedDuration}`;

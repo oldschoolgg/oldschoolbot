@@ -16,8 +16,7 @@ export const constructionContractsTask: MinionTask = {
 		const xpResults = await user.addXP({
 			skillName: 'construction',
 			amount: constructionXP,
-			duration,
-			minimal: true
+			duration
 		});
 
 		const existing = (user.user.construction_stats ?? {}) as Record<string, number>;
@@ -33,7 +32,7 @@ export const constructionContractsTask: MinionTask = {
 		return handleTripFinish({
 			user,
 			channelId,
-			message: `${user}, your minion finished crafting ${quantity}x ${recipe} at Construction Contracts.\n**Your Construction Contracts KC is now ${newScore}**.\n\n${loot}\n\n${xpResults}${flavorMessage}`,
+			message: `${user}, your minion finished crafting ${quantity}x ${recipe} at Construction Contracts.\n**Your Construction Contracts KC is now ${newScore}**.\n\n**Rewards:** ${loot.length > 0 ? loot : 'None'}\n\n${xpResults}${flavorMessage}`,
 			data,
 			loot
 		});

@@ -1,9 +1,21 @@
 [
 	{
+		"name": "Adolescent gemscale",
+		"id": 75058,
+		"opened_item": "Adolescent gemscale",
+		"all_items": ["Celestyte", "Firaxyte", "Oneiryte", "Prismare", "Starfire agate", "Verdantyte"]
+	},
+	{
 		"name": "Amylase pack",
 		"id": 12641,
 		"opened_item": "Amylase pack",
 		"all_items": ["Amylase crystal"]
+	},
+	{
+		"name": "Ancient gemscale",
+		"id": 75060,
+		"opened_item": "Ancient gemscale",
+		"all_items": ["Celestyte", "Firaxyte", "Oneiryte", "Prismare", "Starfire agate", "Verdantyte"]
 	},
 	{
 		"name": "Baby impling",
@@ -1182,6 +1194,7 @@
 		"id": 75043,
 		"opened_item": "Elder sigil",
 		"all_items": [
+			"Archon relic",
 			"Celestyte",
 			"Clue scroll (grandmaster)",
 			"Elder plank",
@@ -1195,6 +1208,12 @@
 			"Starfire agate",
 			"Verdantyte"
 		]
+	},
+	{
+		"name": "Elder gemscale",
+		"id": 75061,
+		"opened_item": "Elder gemscale",
+		"all_items": ["Celestyte", "Firaxyte", "Oneiryte", "Prismare", "Starfire agate", "Verdantyte"]
 	},
 	{
 		"name": "Elder mimic casket",
@@ -1217,6 +1236,9 @@
 			"Air battlestaff",
 			"Air orb",
 			"Akumu mask",
+			"Ancient cap",
+			"Ancient verdant logs",
+			"Ancient verdant plank",
 			"Apple parasol",
 			"Athelas seed",
 			"Average lamp",
@@ -1224,6 +1246,7 @@
 			"Blabberbeak",
 			"Blood dye",
 			"Blueberry parasol",
+			"Brimstone spore",
 			"Clothing Mystery Box",
 			"Clue bag",
 			"Clue hunter boots",
@@ -1234,12 +1257,16 @@
 			"Coal",
 			"Coconut parasol",
 			"Coins",
+			"Colossal stem",
 			"Commander boots",
 			"Commander cap",
 			"Commander gloves",
 			"Commander top",
 			"Commander trousers",
+			"Crystalline ore",
+			"Crystalline plank",
 			"Deathtouched dart",
+			"Dense Crystal shard",
 			"Detective hat",
 			"Detective pants",
 			"Detective trenchcoat",
@@ -1247,6 +1274,7 @@
 			"Dharok's helm",
 			"Dharok's platebody",
 			"Dharok's platelegs",
+			"Diluted brimstone",
 			"Dragon bones",
 			"Dwarven blessing",
 			"Earth battlestaff",
@@ -1263,6 +1291,7 @@
 			"First age robe bottom",
 			"First age robe top",
 			"First age tiara",
+			"Gem Infused ore",
 			"Gold ore",
 			"Gold stone spirit",
 			"Grape parasol",
@@ -1275,6 +1304,8 @@
 			"Huge lamp",
 			"Ice dye",
 			"Ignecarus mask",
+			"Ignilace",
+			"Ignilace seed",
 			"Inventors tools",
 			"Karil's coif",
 			"Karil's crossbow",
@@ -1283,6 +1314,7 @@
 			"Large lamp",
 			"Lava battlestaff",
 			"Lemon parasol",
+			"Living bark",
 			"Lord marshal boots",
 			"Lord marshal cap",
 			"Lord marshal gloves",
@@ -1293,6 +1325,7 @@
 			"Malygos mask",
 			"Mithril stone spirit",
 			"Monkey nuts",
+			"Myconid plank",
 			"Mysterious seed",
 			"Octo",
 			"Pet Mystery Box",
@@ -1336,6 +1369,8 @@
 			"Verac's flail",
 			"Verac's helm",
 			"Verac's plateskirt",
+			"Verdant logs",
+			"Verdant plank",
 			"Water battlestaff",
 			"Water orb",
 			"Watermelon parasol",
@@ -2224,7 +2259,6 @@
 			"Builder's trousers",
 			"Bulging sack",
 			"Bullet arrow",
-			"Buried firmament",
 			"Burning amulet(1)",
 			"Burning amulet(2)",
 			"Burning amulet(3)",
@@ -4817,7 +4851,6 @@
 			"Staff of the dead (LMS)",
 			"Staff of water",
 			"Stale baguette",
-			"Starfire bow",
 			"Starter bow",
 			"Starter staff",
 			"Starter sword",
@@ -6302,6 +6335,12 @@
 		]
 	},
 	{
+		"name": "Juvenile gemscale",
+		"id": 75057,
+		"opened_item": "Juvenile gemscale",
+		"all_items": ["Celestyte", "Firaxyte", "Oneiryte", "Prismare", "Starfire agate", "Verdantyte"]
+	},
+	{
 		"name": "Large egg",
 		"id": 73178,
 		"opened_item": "Large egg",
@@ -7100,6 +7139,12 @@
 			"Splitbark gauntlets",
 			"Tooth half of key"
 		]
+	},
+	{
+		"name": "Mature gemscale",
+		"id": 75059,
+		"opened_item": "Mature gemscale",
+		"all_items": ["Celestyte", "Firaxyte", "Oneiryte", "Prismare", "Starfire agate", "Verdantyte"]
 	},
 	{
 		"name": "Monkey crate",
@@ -10866,7 +10911,6 @@
 			"Bullseye lantern",
 			"Bullseye lantern (empty)",
 			"Bullseye lantern (unf)",
-			"Buried firmament",
 			"Burning amulet(1)",
 			"Burning amulet(2)",
 			"Burning amulet(3)",
@@ -12870,7 +12914,6 @@
 			"Priest gown",
 			"Primordial boots",
 			"Primordial crystal",
-			"Prismare ring (u)",
 			"Proboscis",
 			"Proselyte cuisse",
 			"Proselyte harness f",
@@ -13634,7 +13677,6 @@
 			"Stamina potion(2)",
 			"Stamina potion(3)",
 			"Stamina potion(4)",
-			"Starfire bow",
 			"Statius's full helm",
 			"Statius's platebody",
 			"Statius's platelegs",

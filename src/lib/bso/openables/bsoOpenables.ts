@@ -217,3 +217,41 @@ for (const crate of keyCrates) {
 		smokeyApplies: false
 	});
 }
+
+const gemscaleGemTable = new LootTable()
+	.add('Celestyte')
+	.add('Verdantyte')
+	.add('Starfire agate')
+	.add('Oneiryte')
+	.add('Firaxyte');
+
+export const gemscaleTables = {
+	juvenile: new LootTable().every(gemscaleGemTable, [2, 4]).tertiary(50, 'Prismare'),
+	adolescent: new LootTable().every(gemscaleGemTable, [4, 7]).tertiary(50, 'Prismare'),
+	mature: new LootTable().every(gemscaleGemTable, [6, 10]).tertiary(50, 'Prismare'),
+	ancient: new LootTable().every(gemscaleGemTable, [10, 16]).tertiary(50, 'Prismare'),
+	elder: new LootTable().every(gemscaleGemTable, [15, 25]).tertiary(50, 'Prismare')
+};
+
+const gemscales = [
+	{ name: 'Juvenile gemscale', table: gemscaleTables.juvenile },
+	{ name: 'Adolescent gemscale', table: gemscaleTables.adolescent },
+	{ name: 'Mature gemscale', table: gemscaleTables.mature },
+	{ name: 'Ancient gemscale', table: gemscaleTables.ancient },
+	{ name: 'Elder gemscale', table: gemscaleTables.elder }
+];
+
+for (const scale of gemscales) {
+	const id = itemID(scale.name);
+	const item = Items.get(id);
+	if (item) {
+		bsoOpenables.push({
+			name: scale.name,
+			id: item.id,
+			openedItem: item,
+			aliases: [scale.name.toLowerCase()],
+			output: scale.table,
+			allItems: scale.table.allItems
+		});
+	}
+}

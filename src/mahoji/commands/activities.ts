@@ -185,8 +185,16 @@ export const activitiesCommand = defineCommand({
 				{
 					type: 'String',
 					name: 'fish_type',
-					description: 'The type of gemscale (Juvenile, Adolescent, Mature, Ancient, Elder) to break down.',
-					required: false
+					description: 'The type of gemscale to break down (optional, defaults to all).',
+					required: false,
+					choices: [
+						{ name: 'All Gemscales (Breakdown Everything)', value: 'all' },
+						{ name: 'Juvenile gemscale (Tier 1)', value: 'Juvenile gemscale' },
+						{ name: 'Adolescent gemscale (Tier 2)', value: 'Adolescent gemscale' },
+						{ name: 'Mature gemscale (Tier 3)', value: 'Mature gemscale' },
+						{ name: 'Ancient gemscale (Tier 4)', value: 'Ancient gemscale' },
+						{ name: 'Elder gemscale (Tier 5)', value: 'Elder gemscale' }
+					]
 				},
 				{
 					type: 'Integer',
@@ -202,6 +210,19 @@ export const activitiesCommand = defineCommand({
 			name: 'ancient_mycology',
 			description: 'Harvest Ancient Myconid growth',
 			options: [
+				{
+					type: 'String',
+					name: 'growth',
+					description: 'The specific growth/wood tier to target (optional, defaults to highest available).',
+					required: false,
+					choices: [
+						{ name: 'Verdant logs (Level 95)', value: 'Verdant logs' },
+						{ name: 'Ancient cap (Level 100)', value: 'Ancient cap' },
+						{ name: 'Colossal stem (Level 105)', value: 'Colossal stem' },
+						{ name: 'Living bark (Level 110)', value: 'Living bark' },
+						{ name: 'Ancient verdant logs (Level 115)', value: 'Ancient verdant logs' }
+					]
+				},
 				{
 					type: 'Integer',
 					name: 'quantity',
@@ -641,6 +662,13 @@ export const activitiesCommand = defineCommand({
 		}
 		if (options.inferno?.action === 'stats') return infernoStatsCommand({ rng, user });
 		if (options.birdhouses?.action === 'check') return birdhouseCheckCommand(user);
+		if (options.gemstone_fishing?.action === 'breakdown') {
+			return gemscaleBreakdownCommand(
+				user,
+				options.gemstone_fishing.fish_type,
+				options.gemstone_fishing.quantity
+			);
+		}
 
 		// Minion must be free
 		const isBusy = await user.minionIsBusy();
@@ -701,17 +729,15 @@ export const activitiesCommand = defineCommand({
 			return camdozaalCommand(rng, user, channelId, options.camdozaal.action, options.camdozaal.quantity);
 		}
 		if (options.gemstone_fishing) {
-			if (options.gemstone_fishing.action === 'breakdown') {
-				return gemscaleBreakdownCommand(
-					user,
-					options.gemstone_fishing.fish_type,
-					options.gemstone_fishing.quantity
-				);
-			}
 			return gemstoneFishingCommand(user, channelId, options.gemstone_fishing.quantity);
 		}
 		if (options.ancient_mycology) {
-			return ancientMycologyCommand(user, channelId, options.ancient_mycology.quantity);
+			return ancientMycologyCommand(
+				user,
+				channelId,
+				options.ancient_mycology.quantity,
+				options.ancient_mycology.growth
+			);
 		}
 		if (options.archaic_mining) {
 			const { type, quantity } = options.archaic_mining;

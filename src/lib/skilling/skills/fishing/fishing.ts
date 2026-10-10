@@ -517,53 +517,53 @@ export interface GemstoneFish {
 export const gemstoneFishes: GemstoneFish[] = [
 	{
 		name: 'Juvenile gemscale',
-		id: 75057,
-		level: 20,
-		xp: 150,
+		id: 75_057,
+		level: 90,
+		xp: 250,
 		petChance: 426_954,
-		clueScrollChance: 870_000,
+		clueScrollChance: 0,
 		bait: null,
-		timeToFish: 12
+		timeToFish: 2.2
 	},
 	{
 		name: 'Adolescent gemscale',
-		id: 75058,
-		level: 40,
-		xp: 450,
+		id: 75_058,
+		level: 95,
+		xp: 350,
 		petChance: 426_954,
-		clueScrollChance: 870_000,
+		clueScrollChance: 0,
 		bait: null,
-		timeToFish: 14
+		timeToFish: 2.5
 	},
 	{
 		name: 'Mature gemscale',
-		id: 75059,
-		level: 60,
-		xp: 950,
+		id: 75_059,
+		level: 100,
+		xp: 480,
 		petChance: 426_954,
-		clueScrollChance: 870_000,
+		clueScrollChance: 0,
 		bait: null,
-		timeToFish: 16
+		timeToFish: 2.8
 	},
 	{
 		name: 'Ancient gemscale',
-		id: 75060,
-		level: 80,
-		xp: 2100,
+		id: 75_060,
+		level: 105,
+		xp: 650,
 		petChance: 426_954,
-		clueScrollChance: 870_000,
+		clueScrollChance: 0,
 		bait: null,
-		timeToFish: 18
+		timeToFish: 3.2
 	},
 	{
 		name: 'Elder gemscale',
-		id: 75061,
-		level: 120,
-		xp: 4500,
+		id: 75_061,
+		level: 110,
+		xp: 900,
 		petChance: 426_954,
-		clueScrollChance: 870_000,
+		clueScrollChance: 0,
 		bait: null,
-		timeToFish: 20
+		timeToFish: 3.8
 	}
 ];
 

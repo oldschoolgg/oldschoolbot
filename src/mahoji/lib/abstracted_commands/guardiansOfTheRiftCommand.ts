@@ -1,4 +1,6 @@
-import { Time } from '@oldschoolgg/toolkit';
+import { defaultMaintenanceTimestamps, getGlobalMinigameBonus } from '@/lib/bso/commands/islandUpgrades.js';
+
+import { reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items, itemID } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
@@ -19,7 +21,20 @@ export async function guardiansOfTheRiftStartCommand(
 		return 'You need 27 Runecraft to access the Temple of the Eye.';
 	}
 
-	const timePerGame = Time.Minute * 10;
+	let timePerGame = Time.Minute * 10;
+	const boosts = [];
+
+	const rawUpgrades = (user.user.island_upgrades ?? {}) as any;
+	const islandMaint = rawUpgrades.maintenance ?? defaultMaintenanceTimestamps;
+	const islandAssign = rawUpgrades.assignment ?? null;
+	const globalMinigameBonus = getGlobalMinigameBonus(rawUpgrades, islandMaint, islandAssign);
+	if (globalMinigameBonus > 0) {
+		timePerGame = reduceNumByPercent(timePerGame, globalMinigameBonus * 100);
+		boosts.push(
+			`${(globalMinigameBonus * 100).toFixed(0)}% faster games from Grand Conduit (Settlement Infrastructure)`
+		);
+	}
+
 	const maxTripLength = await user.calcMaxTripLength('GuardiansOfTheRift');
 	const quantity = Math.floor(maxTripLength / timePerGame);
 	const duration = quantity * timePerGame;
@@ -40,7 +55,6 @@ export async function guardiansOfTheRiftStartCommand(
 		if (bank.has(pouch.id)) inventorySize += pouch.capacity - 1;
 		if (bank.has(pouch.id) && pouch.id === itemID('Colossal pouch')) break;
 	}
-	const boosts = [];
 	// Default bronze pickaxe, last in the array
 	let currentPickaxe = pickaxes[pickaxes.length - 1];
 	boosts.push(

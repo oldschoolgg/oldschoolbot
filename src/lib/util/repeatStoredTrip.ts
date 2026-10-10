@@ -40,6 +40,7 @@ import type {
 	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
+	AncientMycologyActivityTaskOptions,
 	AnimatedArmourActivityTaskOptions,
 	ArchaicMiningActivityTaskOptions,
 	BossActivityTaskOptions,
@@ -295,8 +296,11 @@ const tripHandlers: {
 	},
 	[activity_type_enum.AncientMycology]: {
 		commandName: 'activities',
-		args: (data: ActivityTaskOptionsWithQuantity) => ({
-			ancient_mycology: { quantity: data.iQty }
+		args: (data: AncientMycologyActivityTaskOptions | ActivityTaskOptionsWithQuantity) => ({
+			ancient_mycology: {
+				growth: (data as AncientMycologyActivityTaskOptions).woodName,
+				quantity: data.iQty
+			}
 		})
 	},
 	[activity_type_enum.ArchaicMining]: {
@@ -821,9 +825,9 @@ const tripHandlers: {
 		})
 	},
 	[activity_type_enum.BurningDominion]: {
-		commandName: 'mass',
+		commandName: 'k',
 		args: () => ({
-			monster: 'burning dominion'
+			name: 'Burning Dominion'
 		})
 	},
 	[activity_type_enum.KibbleMaking]: {
