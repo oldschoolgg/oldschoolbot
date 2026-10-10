@@ -1,8 +1,9 @@
+import { isSecretItemIDQuery } from '@/lib/bso/util/isSecretItemQuery.js';
+
 import { EmbedBuilder } from '@oldschoolgg/discord';
 import { Items, toKMB } from 'oldschooljs';
 
 import { itemOption } from '@/discord/index.js';
-import { isSecretItemIDQuery } from '@/lib/bso/util/isSecretItemQuery.js';
 import { sellPriceOfItem } from '@/mahoji/commands/sell.js';
 
 export const priceCommand = defineCommand({

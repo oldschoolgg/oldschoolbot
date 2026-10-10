@@ -7,6 +7,7 @@ import {
 } from '@/lib/bso/doubleLoot.js';
 import { getGuthixianCacheInterval, userHasDoneCurrentGuthixianCache } from '@/lib/bso/minigames/guthixianCache.js';
 import { allIronmanMbTables, allMbTables } from '@/lib/bso/openables/mysteryBoxes.js';
+import { isSecretItemIDQuery } from '@/lib/bso/util/isSecretItemQuery.js';
 
 import { bold, dateFm, EmbedBuilder, time } from '@oldschoolgg/discord';
 import type { IMessage } from '@oldschoolgg/schemas';
@@ -21,7 +22,6 @@ import { CONSTANTS, globalConfig } from '@/lib/constants.js';
 import { customItems } from '@/lib/customItems/util.js';
 import { roboChimpSyncData } from '@/lib/roboChimp.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
-import { isSecretItemIDQuery } from '@/lib/bso/util/isSecretItemQuery.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { minionStatsEmbed } from '@/lib/util/minionStatsEmbed.js';
 import { refreshUserCache } from '@/lib/util/refreshCache.js';

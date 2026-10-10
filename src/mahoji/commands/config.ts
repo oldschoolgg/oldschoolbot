@@ -1,4 +1,5 @@
 import { Inventions } from '@/lib/bso/skills/invention/inventions.js';
+import { isSecretItemIDQuery } from '@/lib/bso/util/isSecretItemQuery.js';
 
 import { bold, EmbedBuilder, inlineCode } from '@oldschoolgg/discord';
 import { ECombatOption, type IGuild } from '@oldschoolgg/schemas';
@@ -28,7 +29,6 @@ import { birdhouseSeeds } from '@/lib/skilling/skills/hunter/birdHouseTrapping.j
 import { autoslayChoices, slayerMasterChoices } from '@/lib/slayer/constants.js';
 import { setDefaultAutoslay, setDefaultSlayerMaster } from '@/lib/slayer/slayerUtil.js';
 import { BankSortMethods, isValidBankSortMethod } from '@/lib/sorts.js';
-import { isSecretItemIDQuery } from '@/lib/bso/util/isSecretItemQuery.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
 import { toggleBitfield } from '@/lib/util.js';

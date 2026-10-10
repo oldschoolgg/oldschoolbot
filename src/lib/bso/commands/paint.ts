@@ -1,5 +1,6 @@
 import { renderPaintGrid } from '@/lib/bso/canvas/renderPaintGrid.js';
 import { getPaintedItemImage } from '@/lib/bso/paintColors.js';
+import { isSecretItemIDQuery } from '@/lib/bso/util/isSecretItemQuery.js';
 
 import { Bank, Items } from 'oldschooljs';
 
@@ -36,7 +37,7 @@ export const paintCommand = defineCommand({
 	],
 	run: async ({ user, options, interaction }) => {
 		const item = Items.getItem(options.item);
-		if (!item) {
+		if (!item || isSecretItemIDQuery(item, options.item)) {
 			return "That's not a valid item.";
 		}
 

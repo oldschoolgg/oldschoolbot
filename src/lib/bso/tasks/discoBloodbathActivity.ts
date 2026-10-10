@@ -2,11 +2,11 @@ import {
 	type DiscoAesthetic,
 	type DiscoClub,
 	discoHalloweenStory,
-	discoTreatTable,
 	isDiscoHalloween,
 	scoreDiscoFashion
 } from '@/lib/bso/discoBloodbath.js';
 import { DiscoNormalLoot } from '@/lib/bso/openables/holidayOpenables.js';
+import { treatTable } from '@/lib/bso/pumpkinHead.js';
 
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
@@ -81,7 +81,7 @@ export const discoBloodbathTask: MinionTask = {
 		if (!data.isRave) {
 			for (let i = 0; i < 10; i++) {
 				if (rng.percentChance(tenChances * 2)) {
-					loot.add(discoTreatTable.roll());
+					loot.add(treatTable.roll());
 				}
 				if (rng.percentChance(tenChances)) {
 					loot.add(DiscoNormalLoot.roll());
@@ -109,7 +109,7 @@ export const discoBloodbathTask: MinionTask = {
 		if (data.isRave && data.raveId) await Cache.deleteDiscoRave(user.id, data.raveId);
 		await user.statsUpdate({ disco_stats: stats });
 
-		const { itemsAdded } = await user.transactItems({
+		const { itemsAdded, previousCL } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot,
 			otherUpdates: awardPrize ? { claimed_glamour_box: { increment: 1 } } : undefined
@@ -163,13 +163,21 @@ export const discoBloodbathTask: MinionTask = {
 					`${aesthetic}: ${gained[aesthetic] >= 0 ? '+' : ''}${gained[aesthetic]} (${stats.points[aesthetic]} total)`
 			)
 			.join('\n');
+		const message = new MessageBuilder().setContent(
+			`${user.mention}, ${user.minionName} finished a ${minutes}-minute ${data.isRave ? 'rave' : 'visit'} to ${data.club}.\n${topMessage}\n${crowdMessage}${storyEnding ? `\n\n${storyEnding}` : ''}${lure}\n\n**Realm points**\n${pointSummary}${totalScore === 0 ? '\nYour Fashion gear scored no points. Try `/disco check_item` to plan your outfit.' : ''}${glamourBoxes > 0 ? `\n\n🎉 **SKRINK/SKROD BOX DROP!** 🎉\nThe crowd erupts!` : ''}${itemsAdded.length > 0 ? `\n\n**Loot:** ${itemsAdded}` : ''}`
+		);
+		if (itemsAdded.length > 0) {
+			message.addBankImage({
+				bank: itemsAdded,
+				title: 'Disco Bloodbath Loot',
+				user,
+				previousCL
+			});
+		}
 		await handleTripFinish({
 			user,
-
 			channelId: data.channelId,
-			message: {
-				content: `${user.mention}, ${user.minionName} finished a ${minutes}-minute ${data.isRave ? 'rave' : 'visit'} to ${data.club}.\n${topMessage}\n${crowdMessage}${storyEnding ? `\n\n${storyEnding}` : ''}${lure}\n\n**Realm points**\n${pointSummary}${totalScore === 0 ? '\nYour Fashion gear scored no points. Try `/disco check_item` to plan your outfit.' : ''}${glamourBoxes > 0 ? `\n\n🎉 **SKRINK/SKROD BOX DROP!** 🎉\nThe crowd erupts!` : ''}${itemsAdded.length > 0 ? `\n\n**Loot:** ${itemsAdded}` : ''}`
-			},
+			message,
 			data: { ...data, cantBeDoubled: true },
 			loot: itemsAdded
 		});

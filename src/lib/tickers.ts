@@ -10,7 +10,7 @@ import { MathRNG } from 'node-rng';
 import { Prisma, type User } from '@/prisma/main.js';
 import { resolveBotSendableMessage } from '@/discord/utils.js';
 import { analyticsTick } from '@/lib/analytics.js';
-import { Channel, globalConfig } from '@/lib/constants.js';
+import { BitField, Channel, globalConfig } from '@/lib/constants.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { cacheGEPrices } from '@/lib/marketPrices.js';
 import { collectMetrics } from '@/lib/metrics.js';
@@ -140,8 +140,29 @@ export const tickers: {
 		interval: Time.Minute * 3.5,
 		timer: null,
 		cb: async () => {
+			const totalStart = process.hrtime.bigint();
 			const basePlantTime = 1_626_556_507_451;
 			const now = Date.now();
+			const usersOldBitFieldStart = process.hrtime.bigint();
+			const oldPatreonUsers = await prisma.user.findMany({
+				where: {
+					AND: [
+						{
+							bitfield: {
+								hasSome: [
+									BitField.PatronTier3,
+									BitField.PatronTier4,
+									BitField.PatronTier5,
+									BitField.PatronTier6
+								]
+							}
+						},
+						{ NOT: { bitfield: { has: BitField.DisabledFarmingReminders } } }
+					]
+				},
+				select: { id: true }
+			});
+			const usersOldBitFieldNs = process.hrtime.bigint() - usersOldBitFieldStart;
 			const magnaTierBits = [10, 11, 12, 13] as const;
 			const cyrTierBits = [19, 20, 21, 22, 23] as const;
 			const tierByBit = new Map<number, number>([
@@ -155,6 +176,7 @@ export const tickers: {
 				[22, 7],
 				[23, 7]
 			]);
+			const usersRobochimpStart = process.hrtime.bigint();
 			const robochimpUsers = await roboChimpClient.user.findMany({
 				where: {
 					OR: [
@@ -172,19 +194,24 @@ export const tickers: {
 					premium_balance_expiry_date: true
 				}
 			});
-			const eligibleUsers = robochimpUsers.map(user => ({
-				id: user.id.toString(),
-				perkTier: Math.max(
-					user.premium_balance_expiry_date !== null &&
-						Number(user.premium_balance_expiry_date) > now &&
-						user.premium_balance_tier !== null
-						? user.premium_balance_tier
-						: 0,
-					...user.bits.map(bit => tierByBit.get(bit) ?? 0)
-				),
-				isCyr: user.bits.some(bit => cyrTierBits.includes(bit as (typeof cyrTierBits)[number]))
-			}));
-			console.log(eligibleUsers);
+			const usersRobochimpNs = process.hrtime.bigint() - usersRobochimpStart;
+			const eligiblesStart = process.hrtime.bigint();
+			const eligibleUsers = [
+				...robochimpUsers.map(user => ({
+					id: user.id.toString(),
+					perkTier: Math.max(
+						user.premium_balance_expiry_date !== null &&
+							Number(user.premium_balance_expiry_date) > now &&
+							user.premium_balance_tier !== null
+							? user.premium_balance_tier
+							: 0,
+						...user.bits.map(bit => tierByBit.get(bit) ?? 0)
+					),
+					isCyr: user.bits.some(bit => cyrTierBits.includes(bit as (typeof cyrTierBits)[number]))
+				})),
+				...oldPatreonUsers.map(user => ({ id: user.id, perkTier: 3, isCyr: false }))
+			].filter((user, index, users) => users.findIndex(other => other.id === user.id) === index);
+			const eligiblesNs = process.hrtime.bigint() - eligiblesStart;
 			const keys = [
 				'farmingPatches.herb',
 				'farmingPatches.fruit tree',
@@ -206,8 +233,8 @@ export const tickers: {
 				'farmingPatches.mushroom',
 				'farmingPatches.belladonna'
 			];
+			const tempTableStart = process.hrtime.bigint();
 			const users = await prisma.$transaction(async tx => {
-
 				if (eligibleUsers.length === 0) return [];
 				await tx.$executeRaw`
 					CREATE TEMPORARY TABLE farming_reminder_entitlements (
@@ -240,18 +267,20 @@ export const tickers: {
 					]::int[])
 					AND (
 						${Prisma.raw(
-							keys.map(_key => `("${_key}" IS NOT NULL AND NOT "${_key}"::jsonb ? 'wasReminded')`).join(' OR ')
+							keys
+								.map(_key => `("${_key}" IS NOT NULL AND NOT "${_key}"::jsonb ? 'wasReminded')`)
+								.join(' OR ')
 						)}
 					)
 					ORDER BY random()
 					LIMIT 10
 				`;
 			});
-			console.log(users);
+			const tempTableNs = process.hrtime.bigint() - tempTableStart;
+			const loopStart = process.hrtime.bigint();
 			for (const u of users) {
 				const user = new MUserClass(u);
 				const { patches } = Farming.getFarmingInfoFromUser(user);
-
 				const patchesReadyToHarvest: FarmingPatchName[] = [];
 				for (const patchType of Farming.farmingPatchNames) {
 					const patch = patches[patchType];
@@ -284,9 +313,7 @@ export const tickers: {
 				}
 
 				const content = `The following farming patches are ready to be harvested: ${patchesReadyToHarvest.join(', ')}.`;
-				if (!globalConfig.isProduction) {
-					console.log(user.id, content);
-				} else {
+				if (globalConfig.isProduction) {
 					await globalClient.sendDm(user.id, {
 						content,
 						components: [
@@ -304,6 +331,11 @@ export const tickers: {
 					});
 				}
 			}
+			const loopNs = process.hrtime.bigint() - loopStart;
+			const totalNs = process.hrtime.bigint() - totalStart;
+			Logging.logDebug(
+				`Queries: UsersOldBitField: ${usersOldBitFieldNs}\tUsersRobochimp: ${usersRobochimpNs}\tTempTableNs: ${tempTableNs}\tElligiblesNs: ${eligiblesNs} LoopNs: ${loopNs} TotalNs: ${totalNs}`
+			);
 		}
 	},
 	{

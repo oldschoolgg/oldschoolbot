@@ -65,6 +65,7 @@ import {
 	OrymLootTable
 } from '@/lib/bso/monsters/VerdantIsland.js';
 import { cmbClothes } from '@/lib/bso/openables/cmb.js';
+import { DiscoNormalLoot, SkrinkBoxTable, SkrodBoxTable } from '@/lib/bso/openables/holidayOpenables.js';
 import { PaintBoxTable } from '@/lib/bso/paintColors.js';
 import { pumpkinHeadUniqueTable } from '@/lib/bso/pumpkinHead.js';
 import { divinationEnergies, portents } from '@/lib/bso/skills/divination.js';
@@ -1932,6 +1933,25 @@ export const allCollectionLogs: ICollection = {
 					BSOItem.PUMPKINMAN_CARD,
 					BSOItem.NIGHTMARE
 				])
+			},
+			'Skrink box': {
+				items: SkrinkBoxTable.allItems,
+				counts: false
+			},
+			'Skrod box': {
+				items: SkrodBoxTable.allItems,
+				counts: false
+			},
+			'Halloween 2026': {
+				alias: ['disco', 'Halloween 2026', 'Disco Bloodbath'],
+				items: uniqueArr([
+					Items.getOrThrow('Skrink box').id,
+					...SkrinkBoxTable.allItems,
+					Items.getOrThrow('Skrod box').id,
+					...SkrodBoxTable.allItems,
+					...DiscoNormalLoot.allItems
+				]),
+				counts: false
 			},
 			'Halloween Cracker': {
 				items: resolveItems([
