@@ -242,6 +242,7 @@ WHERE user_id = ${this.id};`;
 		}
 		const stats = await this.fetchStats();
 		const opens = new Bank(stats.openable_scores as ItemBank);
+		const collectionLog = await this.fetchCL();
 
 		// Actual clues are only ones that you have: received in your cl, completed in trips, and opened.
 		const actualClues = new Bank();
@@ -250,7 +251,7 @@ WHERE user_id = ${this.id};`;
 			const clueTier = ClueTiers.find(i => i.id === item.id)!;
 			actualClues.add(
 				clueTier.scrollID,
-				Math.min(qtyCompleted, this.cl.amount(clueTier.scrollID), opens.amount(clueTier.id))
+				Math.min(qtyCompleted, collectionLog.amount(clueTier.scrollID), opens.amount(clueTier.id))
 			);
 		}
 
@@ -1023,7 +1024,6 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 
 		const res = await Promise.race([
 			mutex.runExclusive(async () => {
-				await this.sync();
 				return fn(this);
 			}),
 			timeoutPromise

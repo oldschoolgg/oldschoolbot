@@ -12,7 +12,7 @@ export const RedisKeys = {
 			Ratelimit: (id: string, type: string): string => `osb:user:${id.toString()}:ratelimit:${type}`
 		},
 		Global: {
-			StaffBestowSchedule: 'osb:global:staff_bestow_refill_schedule',
+			StaffGrantsSchedule: 'osb:global:staff_bestow_refill_schedule',
 			ExtraClientSettings: 'osb:global:client_storage_extra_settings'
 		},
 		GuildSettings: (id: string): string => `osb:guild:${id.toString()}:settings`,
@@ -27,7 +27,7 @@ export const RedisKeys = {
 			Ratelimit: (id: string, type: string): string => `bso:user:${id.toString()}:ratelimit:${type}`
 		},
 		Global: {
-			StaffBestowSchedule: 'bso:global:staff_bestow_refill_schedule',
+			StaffGrantsSchedule: 'bso:global:staff_bestow_refill_schedule',
 			ExtraClientSettings: 'bso:global:client_storage_extra_settings'
 		},
 		GuildSettings: (id: string): string => `bso:guild:${id.toString()}:settings`,

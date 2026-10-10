@@ -49,8 +49,8 @@ export function oriEffect({
 	}
 	let newQuantity = quantity;
 
-	if (duration > Time.Minute * 5) {
-		// Original boost for 5+ minute task:
+	if (duration > Time.Minute * 5 || quantity >= 8) {
+		// Original boost for 5+ minute task, or >= 8 kills.
 		newQuantity = Math.ceil(increaseNumByPercent(quantity, 25));
 	} else {
 		// 25% chance at extra kill otherwise:

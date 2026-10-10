@@ -24,6 +24,13 @@ interface CreateListingArgs {
 	type: GEListingType;
 }
 
+const gePerkTierSlotBoosts = [
+	[PerkTier.Two, 3],
+	[PerkTier.Three, 3],
+	[PerkTier.Four, 6],
+	...[PerkTier.Five, PerkTier.Six, PerkTier.Seven].map(tier => [tier, 2])
+] as const;
+
 function validateNumber(num: number) {
 	if (num < 0 || Number.isNaN(num) || !Number.isInteger(num) || num >= Number.MAX_SAFE_INTEGER) {
 		throw new Error(`Invalid number: ${num}.`);
@@ -155,21 +162,11 @@ class GrandExchangeSingleton {
 					name: `${num.toLocaleString()} Leagues Points`,
 					amount: 1
 				})),
-				{
-					has: async (user: MUser) => (await user.fetchPerkTier()) >= PerkTier.Four,
-					name: 'Tier 3 Patron',
-					amount: 8
-				},
-				{
-					has: async (user: MUser) => (await user.fetchPerkTier()) >= PerkTier.Three,
-					name: 'Tier 2 Patron',
-					amount: 4
-				},
-				{
-					has: async (user: MUser) => (await user.fetchPerkTier()) >= PerkTier.Two,
-					name: 'Tier 1 Patron',
-					amount: 2
-				}
+				...gePerkTierSlotBoosts.map(([tier, amount]) => ({
+					has: async (user: MUser) => (await user.fetchPerkTier()) >= tier,
+					name: `Perk Tier ${tier}`,
+					amount
+				}))
 			]
 		}
 	};
@@ -1005,9 +1002,7 @@ Difference: ${shouldHave.difference(currentBank)}`);
 			grand_exchange_tax_bank: 0,
 			grand_exchange_total_tax: 0
 		});
-		await prisma.gEBank.deleteMany();
-		await prisma.gETransaction.deleteMany();
-		await prisma.gEListing.deleteMany();
+		await prisma.$executeRaw`TRUNCATE TABLE "ge_bank", "ge_transaction", "ge_listing" RESTART IDENTITY;`;
 	}
 }
 

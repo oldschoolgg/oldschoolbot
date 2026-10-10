@@ -85,15 +85,17 @@ export async function rawCommandHandlerInner({
 			});
 
 		const requiresLock = Boolean('flags' in command && command.flags?.includes('REQUIRES_LOCK'));
-		if (requiresLock) {
-			await interaction.defer();
-		}
+
 		const response: Awaited<CommandResponse> = requiresLock
 			? await user.withLock(command.name, runClosure)
 			: await runClosure();
 		return response;
 	} catch (err) {
 		if ((err as Error).message === SILENT_ERROR) return SpecialResponse.SilentErrorResponse;
+		if (err instanceof UserError) {
+			await interaction.reply({ content: err.message });
+			return SpecialResponse.RespondedManually;
+		}
 		const date = new Date();
 		Logging.logError({
 			err: err as Error,
@@ -108,7 +110,6 @@ export async function rawCommandHandlerInner({
 				options: JSON.stringify(options)
 			}
 		});
-		if (err instanceof UserError) return SpecialResponse.RespondedManually;
 		return {
 			content: `An error occurred while running this command.`
 		};

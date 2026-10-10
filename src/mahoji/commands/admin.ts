@@ -35,6 +35,7 @@ import {
 	Time,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
+import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { gracefulExit } from 'exit-hook';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
@@ -47,21 +48,26 @@ import {
 	getBitFieldData,
 	listBitFields
 } from '@/lib/bitFieldUtils.js';
+import { giveawayCache } from '@/lib/cache.js';
 import { BadgesEnum, BitField, BitFieldData, badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
 import { customItems } from '@/lib/customItems/util.js';
 import { allDcSet } from '@/lib/data/Collections.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { syncCustomPrices } from '@/lib/preStartup.js';
 import { countUsersWithItemInCl } from '@/lib/rawSql.js';
-import { type StaffBestowSchedule, ZStrictStaffBestowSchedule } from '@/lib/settings/misc.js';
 import { sorts } from '@/lib/sorts.js';
-import { runStaffBestowReplenishment, type StaffBestowPeriod, StaffBestowPeriods } from '@/lib/staffBestow.js';
+import {
+	runStaffBestowReplenishment,
+	type StaffBestowPeriod,
+	type StaffGrants,
+	ZStaffGrants
+} from '@/lib/staffBestow.js';
 import { dmCyrAudit, makeArgAuditFiles, sendCyrCriticalBotLog } from '@/lib/util/cyrAudit.js';
+import { generateGiveawayContent } from '@/lib/util/giveaway.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { safeMessage } from '@/lib/util/smallUtils.js';
 import { makeGiveawayButtons } from '@/mahoji/commands/giveaway.js';
-import {isValidDiscordSnowflake} from "@oldschoolgg/util";
 
 export const gifs = [
 	'https://tenor.com/view/angry-stab-monkey-knife-roof-gif-13841993',
@@ -161,7 +167,7 @@ interface AdminRunnableCommand {
 	name: string;
 	description: string;
 	args: AdminRunnableCommandArg[];
-	run: (options: { arg1?: string; arg2?: string; adminUser: MUser, rng: RNGProvider }) => Promise<SendableMessage>;
+	run: (options: { arg1?: string; arg2?: string; adminUser: MUser; rng: RNGProvider }) => Promise<SendableMessage>;
 }
 
 async function findUsersWithLotteryTickets() {
@@ -189,19 +195,22 @@ ${args}
 Set \`exec: true\` to execute this command.`;
 }
 
-function findDiscontinuedStaffBestowItems(schedule: StaffBestowSchedule) {
+function findDiscontinuedStaffBestowItems(schedule: StaffGrants) {
 	const found = new Map<number, string[]>();
 
-	for (const [source, limits] of Object.entries(schedule)) {
-		for (const period of StaffBestowPeriods) {
-			for (const itemID of Object.keys(limits[period])) {
-				const id = Number(itemID);
-				if (!allDcSet.has(id) || !customItems.includes(id)) continue;
-				const item = Items.getItem(id);
-				const itemName = item ? `${item.name} (${id})` : itemID;
-				const locations = found.get(id) ?? [];
-				locations.push(`${source}.${period}: ${itemName}`);
-				found.set(id, locations);
+	for (const [period, sources] of Object.entries(schedule)) {
+		if (!sources) continue;
+		for (const [source, drops] of Object.entries(sources)) {
+			for (const [dropIndex, drop] of drops.entries()) {
+				for (const itemID of Object.keys(drop.bank)) {
+					const id = Number(itemID);
+					if (!allDcSet.has(id) || !customItems.includes(id)) continue;
+					const item = Items.getItem(id);
+					const itemName = item ? `${item.name} (${id})` : itemID;
+					const locations = found.get(id) ?? [];
+					locations.push(`${period}.${source}[${dropIndex}].bank: ${itemName}`);
+					found.set(id, locations);
+				}
 			}
 		}
 	}
@@ -225,25 +234,24 @@ const adminRunnableCommands: AdminRunnableCommand[] = [
 			if (!isValidDiscordSnowflake(arg1)) {
 				return 'Not a valid User ID';
 			}
-			if (!adminUser.isAdmin && ! adminUser.isGameHacker)
-			{
+			if (!adminUser.isAdmin && !adminUser.isGameHacker) {
 				return rng.pick(gifs);
 			}
 			const user = await mUserFetch(arg1);
-			if (!user.isMod && !user.isContributor && !user.isContributor) {
+			if (!user.isMod && !user.isContributor && !user.isWikiContrib) {
 				return `That player can't bestow items on anyone`;
 			}
 
 			return {
 				files: [
 					await makeBankImage({
-						bank: new Bank(user.user.rp_rewards_left as ItemBank),
+						bank: new Bank((user.user.rp_bestow_bank ?? {}) as ItemBank),
 						title: `${user.username}'s Bestow Bank`
 					})
 				]
 			};
 		}
-	} ,
+	},
 	{
 		name: 'trigger_bestow_cycle',
 		description: 'Triggers one of the staff bestow replenishment cycles.',
@@ -254,18 +262,18 @@ const adminRunnableCommands: AdminRunnableCommand[] = [
 				required: true
 			}
 		],
-		run: async ({ arg1, adminUser }) => {
+		run: async ({ arg1, adminUser, rng }) => {
 			if (!arg1) return "Missing cycle - If you don't know how, you shouldn't be using this!";
 			if (!['hourly', 'daily', 'weekly', 'monthly'].includes(arg1))
 				return 'Invalid cycle; must be one of "hourly", "daily", "weekly", "monthly"!';
 			const period = arg1 as StaffBestowPeriod;
-			const files = makeArgAuditFiles({name: 'cycle', data: arg1});
+			const files = makeArgAuditFiles({ name: 'cycle', data: arg1 });
 			const body = `${adminUser.logName} ran /admin run trigger_bestow_cycle with exec: true for cycle ${period}.`;
 			await Promise.all([
 				dmCyrAudit(`# **Staff Bestow Cycle Triggered**\n${body}`, files),
 				sendCyrCriticalBotLog('Staff Bestow Cycle Triggered', body, files)
 			]);
-			await runStaffBestowReplenishment([period]);
+			await runStaffBestowReplenishment([period], rng);
 			return `Triggered staff bestow replenishment cycle: ${period}`;
 		}
 	},
@@ -288,14 +296,14 @@ const adminRunnableCommands: AdminRunnableCommand[] = [
 				return `Failed to parse bestow limits JSON: ${(err as Error).message}`;
 			}
 
-			let staffBestowSchedule: StaffBestowSchedule;
+			let StaffGrantsSchedule: StaffGrants;
 			try {
-				staffBestowSchedule = ZStrictStaffBestowSchedule.parse(parsedInput);
+				StaffGrantsSchedule = ZStaffGrants.parse(parsedInput);
 			} catch (err) {
 				return `Invalid bestow replenish limits: ${(err as Error).message}`;
 			}
 
-			const discontinuedItemsFound = findDiscontinuedStaffBestowItems(staffBestowSchedule);
+			const discontinuedItemsFound = findDiscontinuedStaffBestowItems(StaffGrantsSchedule);
 			if (discontinuedItemsFound.length > 0) {
 				const files = makeArgAuditFiles({
 					name: 'bestow_replenish_limits',
@@ -311,17 +319,17 @@ const adminRunnableCommands: AdminRunnableCommand[] = [
 
 			await prisma.$executeRaw`
 				UPDATE "clientStorage"
-				SET staff_bestow_limits = ${JSON.stringify(staffBestowSchedule)}::jsonb
+				SET staff_bestow_limits = ${JSON.stringify(StaffGrantsSchedule)}::jsonb
 				WHERE id = ${globalConfig.clientID}
 			`;
-			await Cache.refreshStaffBestowScheduleCache();
+			await Cache.refreshStaffGrants();
 			await dmCyrAudit(
 				`${adminUser.logName} ran /admin run set_bestow_limits and updated the staff bestow limits.`,
-				makeArgAuditFiles({ name: 'new_limits', data: arg1}                                                                                                                                                                                                                        )
+				makeArgAuditFiles({ name: 'new_limits', data: arg1 })
 			);
 
 			return safeMessage(
-				`Updated staff bestow limits and refreshed the cache.\n${JSON.stringify(staffBestowSchedule, null, 4)}`,
+				`Updated staff bestow limits and refreshed the cache.\n${JSON.stringify(StaffGrantsSchedule, null, 4)}`,
 				'staff-bestow-limits.json'
 			);
 		}
@@ -346,10 +354,11 @@ const adminRunnableCommands: AdminRunnableCommand[] = [
 			};
 			const totalTicketsFound = usersWithTickets.reduce((sum, user) => sum + toBigInt(user.quantity), 0n);
 
-			await globalClient.sendMessage(globalConfig.adminUserIDs[0], {
-				content: `Lottery ticket cleanup report. Found ${totalTicketsFound.toLocaleString()}x ${LOTTERY_TICKET_ITEM.name} in ${usersWithTickets.length.toLocaleString()} users.bank records. Cleanup is being executed now.`,
-				files: [file]
-			});
+			await sendCyrCriticalBotLog(
+				'Lottery ticket cleanup report',
+				`Found ${totalTicketsFound.toLocaleString()}x ${LOTTERY_TICKET_ITEM.name} in ${usersWithTickets.length.toLocaleString()} users.bank records. Cleanup is being executed now.`,
+				[file]
+			);
 
 			let removedUsers = 0;
 			let removedTickets = 0;
@@ -370,6 +379,26 @@ const adminRunnableCommands: AdminRunnableCommand[] = [
 				content: `Removed ${removedTickets.toLocaleString()}x ${LOTTERY_TICKET_ITEM.name} from ${removedUsers.toLocaleString()} users. CSV report sent to Cyr.`,
 				files: [file]
 			};
+		}
+	},
+	{
+		name: 'reset_grand_exchange',
+		description: 'Reset the grand exchange.',
+		args: [
+			{
+				name: 'actually_reset_ge',
+				description: `Must be \`actually_reset_ge\` but it won't work on production anyway.`,
+				required: true
+			}
+		],
+		run: async ({ arg1, adminUser }) => {
+			if (!adminUser.isAdmin) return 'You must be the owner to reset the grand exchange.';
+			if (globalConfig.isProduction) {
+				return 'You cannot reset the grand exchange on production no matter who you are.';
+			}
+			if (arg1 !== 'actually_reset_ge') return 'Missing confirmation.';
+			await GrandExchange.totalReset();
+			return 'Reset the grand exchange.';
 		}
 	},
 	{
@@ -1197,9 +1226,29 @@ export const adminCommand = defineCommand({
 			]
 		},
 		{
-			type: 'Subcommand',
-			name: 'fix_giveaways',
-			description: 'Re-add Join/Leave buttons to all active giveaways.'
+			type: 'SubcommandGroup',
+			name: 'giveaway',
+			description: 'Admin giveaway management commands.',
+			options: [
+				{
+					type: 'Subcommand',
+					name: 'fix_buttons',
+					description: 'Re-add Join/Leave buttons to all active giveaways.'
+				},
+				{
+					type: 'Subcommand',
+					name: 'allow_irons',
+					description: 'Toggle whether ironmen can join a giveaway.',
+					options: [
+						{
+							type: 'String',
+							name: 'message_id',
+							description: 'The message ID of the giveaway.',
+							required: true
+						}
+					]
+				}
+			]
 		}
 	],
 	run: async ({ options, userId, interaction, guildId, rng }) => {
@@ -1362,7 +1411,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 			if (!isGameHacker) {
 				return rng.pick(gifs);
 			}
-			if (globalConfig.isProduction && interaction.channelId !== Channel.CyrCommandsChannel) {
+			if (globalConfig.isProduction && !isAdmin && interaction.channelId !== Channel.CyrCommandsChannel) {
 				return `You can only use this command in <#${Channel.CyrCommandsChannel}>.`;
 			}
 			const items = parseBank({ inputStr: options.give_items.items, noDuplicateItems: true });
@@ -1384,7 +1433,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 					}`
 				};
 				await globalClient.sendMessage(Channel.BotLogs, auditMessage);
-				await globalClient.sendMessage(globalConfig.adminUserIDs[0], auditMessage);
+				await dmCyrAudit(auditMessage.content);
 
 				await targetUser.addItemsToBank({ items, collectionLog: false });
 				return `Gave ${items} to ${targetUser.mention}`;
@@ -1402,7 +1451,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 				}`
 			};
 			await globalClient.sendMessage(Channel.BotLogs, auditMessage);
-			await globalClient.sendMessage(globalConfig.adminUserIDs[0], auditMessage);
+			await dmCyrAudit(auditMessage.content);
 
 			if (targetUser) {
 				await addToLotteryBank(targetUser, items);
@@ -1616,7 +1665,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 			);
 		}
 
-		if (options.fix_giveaways) {
+		if (options.giveaway?.fix_buttons) {
 			const giveaways = await prisma.giveaway.findMany({
 				where: {
 					completed: false
@@ -1641,7 +1690,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 					failed++;
 					errors.push(`${giveaway.id}: ${(err as Error).message}`);
 					Logging.logError(err as Error, {
-						command: 'admin_fix_giveaways',
+						command: 'admin_giveaway_fix_buttons',
 						giveaway_id: giveaway.id,
 						channel_id: giveaway.channel_id,
 						message_id: giveaway.message_id
@@ -1654,6 +1703,53 @@ ${META_CONSTANTS.RENDERED_STR}`
 				response += `\n\nFirst errors:\n${errors.slice(0, 10).join('\n')}`;
 			}
 			return response;
+		}
+
+		if (options.giveaway?.allow_irons) {
+			const { message_id: messageID } = options.giveaway.allow_irons;
+			if (!isValidDiscordSnowflake(messageID)) {
+				return 'Invalid message ID.';
+			}
+
+			const giveaway = await prisma.giveaway.findFirst({
+				where: {
+					message_id: messageID
+				}
+			});
+			if (!giveaway) return 'No giveaway found for that message ID.';
+			if (giveaway.completed) return 'That giveaway has already finished.';
+
+			const updatedGiveaway = await prisma.giveaway.update({
+				where: {
+					id: giveaway.id
+				},
+				data: {
+					allow_ironmen: !giveaway.allow_ironmen
+				}
+			});
+			giveawayCache.set(updatedGiveaway.id, updatedGiveaway);
+			const ironmanStatus = updatedGiveaway.allow_ironmen ? 'enabled' : 'disabled';
+
+			try {
+				await globalClient.editMessage(updatedGiveaway.channel_id, updatedGiveaway.message_id, {
+					content: generateGiveawayContent(
+						updatedGiveaway.user_id,
+						updatedGiveaway.finish_date,
+						updatedGiveaway.users_entered,
+						updatedGiveaway.allow_ironmen
+					)
+				});
+			} catch (err) {
+				Logging.logError(err as Error, {
+					command: 'admin_giveaway_allow_irons',
+					giveaway_id: updatedGiveaway.id,
+					channel_id: updatedGiveaway.channel_id,
+					message_id: updatedGiveaway.message_id
+				});
+				return `Ironmen are now ${ironmanStatus} for this giveaway, but I failed to edit the giveaway message.`;
+			}
+
+			return `Ironmen are now ${ironmanStatus} for giveaway message ${updatedGiveaway.message_id}.`;
 		}
 
 		if (options.item_stats) {

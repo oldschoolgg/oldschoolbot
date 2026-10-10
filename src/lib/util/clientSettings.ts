@@ -2,7 +2,7 @@ import { Bank, type ItemBank } from 'oldschooljs';
 
 import type { ClientStorage, Prisma } from '@/prisma/main.js';
 import { globalConfig } from '@/lib/constants.js';
-import type { IExtraSettings } from '@/lib/settings/misc.js';
+import type { IExtraSettings } from '@/lib/staffBestow.js';
 
 async function mahojiClientSettingsFetch(select?: Prisma.ClientStorageSelect) {
 	const clientSettings = await prisma.clientStorage.findFirst({

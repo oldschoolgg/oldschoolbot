@@ -70,7 +70,7 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 
 	const action = split[1] === 'ENTER' ? 'ENTER' : 'LEAVE';
 
-	if (user.isIronman) {
+	if (user.isIronman && !giveaway.allow_ironmen) {
 		return {
 			content: 'You are an ironman, you cannot enter giveaways.',
 			ephemeral: true
@@ -88,7 +88,7 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 				ephemeral: true
 			};
 		}
-		await prisma.giveaway.update({
+		const updatedGiveaway = await prisma.giveaway.update({
 			where: {
 				id: giveaway.id
 			},
@@ -98,7 +98,8 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 				}
 			}
 		});
-		updateGiveawayMessage(giveaway);
+		giveawayCache.set(updatedGiveaway.id, updatedGiveaway);
+		updateGiveawayMessage(updatedGiveaway);
 		return { content: 'You are now entered in this giveaway.', ephemeral: true };
 	}
 	if (!giveaway.users_entered.includes(user.id)) {
@@ -107,7 +108,7 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 			ephemeral: true
 		};
 	}
-	await prisma.giveaway.update({
+	const updatedGiveaway = await prisma.giveaway.update({
 		where: {
 			id: giveaway.id
 		},
@@ -115,7 +116,8 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 			users_entered: uniqueArr(removeFromArr(giveaway.users_entered, user.id))
 		}
 	});
-	updateGiveawayMessage(giveaway);
+	giveawayCache.set(updatedGiveaway.id, updatedGiveaway);
+	updateGiveawayMessage(updatedGiveaway);
 	return { content: 'You left the giveaway.', ephemeral: true };
 }
 
