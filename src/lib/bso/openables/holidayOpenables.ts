@@ -74,6 +74,7 @@ export const LazyMysteryBoxTable = new LootTable()
 export const DiscoNormalLoot = new LootTable()
 	.add('Smorkey painting')
 	.add('10% Pumpkinhead pie')
+	.add('Roosted newt')
 	.tertiary(50, 'Slothario')
 	.tertiary(100, new LootTable().add('Skrink box').add('Skrod Box'));
 
