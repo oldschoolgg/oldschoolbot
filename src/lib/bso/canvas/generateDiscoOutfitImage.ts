@@ -98,19 +98,19 @@ const routes: Record<string, Route> = {
 	},
 	shield: {
 		side: 'right',
-		panelIndex: 1,
+		panelIndex: 2,
 		points: [
-			[1061, 330],
-			[938, 330],
-			[840, 428]
+			[1061, 480],
+			[950, 480]
 		]
 	},
 	body: {
 		side: 'right',
-		panelIndex: 2,
+		panelIndex: 1,
 		points: [
-			[1061, 480],
-			[826, 480]
+			[1061, 330],
+			[938, 330],
+			[816, 428]
 		]
 	},
 	legs: {
