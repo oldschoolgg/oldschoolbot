@@ -160,7 +160,8 @@ export const discoCommand = defineCommand({
 			const presets = await prisma.gearPreset.findMany({ where: { user_id: user.id }, select: { name: true } });
 			const missingPresets = discoPresetNames.filter(name => !presets.some(preset => preset.name === name));
 			if (user.bloodbathEventStarted) {
-				if (missingPresets.length === 0) return 'You have already joined the Disco Bloodbath and your three Disco presets are ready.';
+				if (missingPresets.length === 0)
+					return 'You have already joined the Disco Bloodbath and your three Disco presets are ready.';
 
 				const availableSlots = (await user.calcMaxGearPresets()) - presets.length;
 				if (availableSlots < missingPresets.length) {

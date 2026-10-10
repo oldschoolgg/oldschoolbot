@@ -51,7 +51,12 @@ const claimables = [
 			return true;
 		},
 		action: async (user: MUser, bonusBox?: string) => {
-			const loot = await user.claimLazyBox(bonusBox === 'Skrod box' ? 'Skrod box' : 'Skrink box');
+			const box = bonusBox
+				? bonusBox === 'Skrink box'
+					? 'Skrink box'
+					: 'Skrod box'
+				: MathRNG.pick<'Skrink box' | 'Skrod box'>(['Skrod box', 'Skrink box']);
+			const loot = await user.claimLazyBox(box);
 			return `You claimed ${loot}. Money, success, fame, glamour — your afterparty starts here.`;
 		}
 	},

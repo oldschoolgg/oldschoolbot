@@ -43,16 +43,94 @@ const panelPositions: Record<Side, Panel[]> = {
 // These intentionally meet the equipment frames off-centre. Matching the
 // stepped, diagonal joins keeps the panel layout from looking mechanically centred.
 const routes: Record<string, Route> = {
-	head: { side: 'left', panelIndex: 0, points: [[475, 164], [641, 164], [716, 236]] },
-	cape: { side: 'left', panelIndex: 1, points: [[475, 322], [551, 322], [590, 386]] },
-	weapon: { side: 'left', panelIndex: 2, points: [[475, 480], [590, 480]] },
-	hands: { side: 'left', panelIndex: 3, points: [[475, 644], [544, 644], [590, 725]] },
-	feet: { side: 'left', panelIndex: 4, points: [[475, 837], [760, 837], [770, 779]] },
-	neck: { side: 'right', panelIndex: 0, points: [[1061, 168], [916, 168], [816, 332]] },
-	shield: { side: 'right', panelIndex: 1, points: [[1061, 330], [938, 330], [840, 428]] },
-	body: { side: 'right', panelIndex: 2, points: [[1061, 480], [826, 480]] },
-	legs: { side: 'right', panelIndex: 3, points: [[1061, 637], [942, 637], [816, 590]] },
-	ring: { side: 'right', panelIndex: 4, points: [[1061, 814], [1016, 716], [950, 716]] }
+	head: {
+		side: 'left',
+		panelIndex: 0,
+		points: [
+			[475, 164],
+			[641, 164],
+			[716, 236]
+		]
+	},
+	cape: {
+		side: 'left',
+		panelIndex: 1,
+		points: [
+			[475, 322],
+			[551, 322],
+			[590, 386]
+		]
+	},
+	weapon: {
+		side: 'left',
+		panelIndex: 2,
+		points: [
+			[475, 480],
+			[590, 480]
+		]
+	},
+	hands: {
+		side: 'left',
+		panelIndex: 3,
+		points: [
+			[475, 644],
+			[544, 644],
+			[590, 725]
+		]
+	},
+	feet: {
+		side: 'left',
+		panelIndex: 4,
+		points: [
+			[475, 837],
+			[760, 837],
+			[770, 779]
+		]
+	},
+	neck: {
+		side: 'right',
+		panelIndex: 0,
+		points: [
+			[1061, 168],
+			[916, 168],
+			[816, 332]
+		]
+	},
+	shield: {
+		side: 'right',
+		panelIndex: 1,
+		points: [
+			[1061, 330],
+			[938, 330],
+			[840, 428]
+		]
+	},
+	body: {
+		side: 'right',
+		panelIndex: 2,
+		points: [
+			[1061, 480],
+			[826, 480]
+		]
+	},
+	legs: {
+		side: 'right',
+		panelIndex: 3,
+		points: [
+			[1061, 637],
+			[942, 637],
+			[816, 590]
+		]
+	},
+	ring: {
+		side: 'right',
+		panelIndex: 4,
+		points: [
+			[1061, 814],
+			[1016, 716],
+			[950, 716]
+		]
+	}
 };
 
 function routeForSlot(slot: string) {
@@ -193,7 +271,8 @@ export async function generateDiscoOutfitImage({
 			);
 		}
 	}
-	for (const [slot, route] of Object.entries(routes)) drawConnector(canvas, route, routeColors.get(slot) ?? '#969693');
+	for (const [slot, route] of Object.entries(routes))
+		drawConnector(canvas, route, routeColors.get(slot) ?? '#969693');
 	for (const panels of Object.values(panelPositions)) {
 		for (const panel of panels) drawPanel(canvas, ...panel);
 	}

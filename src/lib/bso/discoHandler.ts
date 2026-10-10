@@ -114,11 +114,11 @@ export async function discoHandler({ data, user, components, embeds, rng }: Trip
 
 		let isCurrentFashion = true;
 		for (const [presetSlot, fashionSlot] of presetSlots) {
+			if (fashionSlot === 'ammo') continue;
 			const expectedItem = preset[presetSlot];
 			const equippedItem = fashion[fashionSlot];
 			if (
-				(equippedItem?.item ?? null) !== expectedItem ||
-				(fashionSlot === 'ammo' && expectedItem !== null && (equippedItem?.quantity ?? 1) !== (preset.ammo_qty ?? 1))
+				(equippedItem?.item ?? null) !== expectedItem
 			) {
 				isCurrentFashion = false;
 				break;
@@ -138,8 +138,10 @@ export async function discoHandler({ data, user, components, embeds, rng }: Trip
 		currentPresetNames.size > 0
 			? `You are already dressed in your ${currentPresetLabel} outfit. Choose **Let's Go! (${currentPresetLabel})** to keep it on.`
 			: null,
-		...Array.from(ineligiblePresetNames, name =>
-			`Your \`${name}\` preset is not ready for a rave; give it an equipable item with a positive Disco score.`
+		...Array.from(
+			ineligiblePresetNames,
+			name =>
+				`Your \`${name}\` preset is not ready for a rave; give it an equipable item with a positive Disco score.`
 		),
 		validPresetNames.size === 0
 			? '⚡ **No Disco outfit is ready for an instant switch.** Your Disco presets appear as instant-equip buttons once an eligible outfit is available.'
@@ -148,10 +150,7 @@ export async function discoHandler({ data, user, components, embeds, rng }: Trip
 				: null
 	].filter((section): section is string => Boolean(section));
 	embeds.push(
-		new EmbedBuilder()
-			.setColor(rave.color)
-			.setTitle('Rave invite')
-			.setDescription(description.join('\n\n'))
+		new EmbedBuilder().setColor(rave.color).setTitle('Rave invite').setDescription(description.join('\n\n'))
 	);
 
 	for (const aesthetic of DISCO_AESTHETICS) {
@@ -167,7 +166,7 @@ export async function discoHandler({ data, user, components, embeds, rng }: Trip
 	components.push(
 		new ButtonBuilder()
 			.setCustomId(`DISCO_RAVE_${user.id}_${raveId}_current_${rave.slug}`)
-			.setLabel(currentPresetLabel ? `Let's Go! (${currentPresetLabel})` : 'Let\'s Go!')
+			.setLabel(currentPresetLabel ? `Let's Go! (${currentPresetLabel})` : "Let's Go!")
 			.setStyle(ButtonStyle.Success)
 	);
 }
