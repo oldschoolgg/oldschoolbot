@@ -1,36 +1,36 @@
 interface CreateGambleOptions {
-	user_id: string;
+	userId: string;
 	game: string;
-	bet_amount: number;
-	bet_item_id?: number;
+	betAmount: number;
+	betItemId?: number;
 }
 
 interface SettleGambleOptions {
 	won: boolean;
-	profit_loss: number;
-	payout_amount?: number;
-	payout_item_id?: number;
+	profitLoss: number;
+	payoutAmount?: number;
+	payoutItemId?: number;
 }
 
-export function createGamble({ user_id, game, bet_amount, bet_item_id }: CreateGambleOptions) {
+export function createGamble({ userId, game, betAmount, betItemId }: CreateGambleOptions) {
 	return prisma.gamble.create({
 		data: {
-			user_id,
+			user_id: userId,
 			game,
-			bet_amount: BigInt(bet_amount),
-			bet_item_id
+			bet_amount: BigInt(betAmount),
+			bet_item_id: betItemId
 		}
 	});
 }
 
-export function settleGamble(id: number, { won, profit_loss, payout_amount = 0, payout_item_id }: SettleGambleOptions) {
+export function settleGamble(id: number, { won, profitLoss, payoutAmount = 0, payoutItemId }: SettleGambleOptions) {
 	return prisma.gamble.update({
 		where: { id },
 		data: {
 			won,
-			profit_loss: BigInt(profit_loss),
-			payout_amount: BigInt(payout_amount),
-			payout_item_id,
+			profit_loss: BigInt(profitLoss),
+			payout_amount: BigInt(payoutAmount),
+			payout_item_id: payoutItemId,
 			settled_at: new Date()
 		}
 	});

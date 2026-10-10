@@ -14,6 +14,7 @@ export interface MakeBankImageOptions {
 	user?: MUser;
 	previousCL?: Bank;
 	showNewCL?: boolean;
+	showValue?: boolean;
 	mahojiFlags?: BankFlag[];
 	iconPackId?: IconPackID;
 }
@@ -26,6 +27,7 @@ export async function makeBankImage({
 	previousCL,
 	spoiler,
 	showNewCL = false,
+	showValue = true,
 	flags = {},
 	mahojiFlags = [],
 	iconPackId
@@ -36,7 +38,7 @@ export async function makeBankImage({
 	const { image } = await bankImageTask.generateBankImage({
 		bank,
 		title,
-		showValue: true,
+		showValue,
 		flags: realFlags,
 		user,
 		collectionLog: previousCL,

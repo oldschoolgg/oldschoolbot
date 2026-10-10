@@ -244,8 +244,6 @@ export const gambleCommand = defineCommand({
 					type: 'gri'
 				}
 			});
-			const debug = new Bank();
-			for (const t of bank) debug.add(t[0].id);
 
 			return `You gave ${qty.toLocaleString()}x ${item.name} to ${recipientuser.usernameOrMention}.`;
 		}

@@ -29,7 +29,7 @@ export async function diceCommand(rng: RNGProvider, user: MUser, interaction: MI
 	if (amount > gp) return "You don't have enough GP.";
 	const won = roll >= 50;
 	const amountToAdd = won ? amount : -amount;
-	const gamble = await createGamble({ user_id: user.id, game: 'dice', bet_amount: amount });
+	const gamble = await createGamble({ userId: user.id, game: 'dice', betAmount: amount });
 
 	if (won) {
 		await user.statsUpdate({
@@ -42,7 +42,7 @@ export async function diceCommand(rng: RNGProvider, user: MUser, interaction: MI
 		});
 		await user.removeItemsFromBank(new Bank().add('Coins', amount));
 	}
-	await settleGamble(gamble.id, { won, profit_loss: amountToAdd, payout_amount: won ? amount : 0 });
+	await settleGamble(gamble.id, { won, profitLoss: amountToAdd, payoutAmount: won ? amount : 0 });
 	await ClientSettings.updateClientGPTrackSetting('gp_dice', amountToAdd);
 	await user.updateGPTrackSetting('gp_dice', amountToAdd);
 

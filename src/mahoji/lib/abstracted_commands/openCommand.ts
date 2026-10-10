@@ -236,16 +236,23 @@ async function finalizeOpening({
 
 	const resultText = `You have now opened a total of ${openedStr}
 ${messages.join(', ')}`.trim();
+	const gamblingBanned = user.bitfield.includes(BitField.BannedFromGambling);
+	const title =
+		openables.length === 1
+			? `Loot from ${cost.amount(openables[0].openedItem.id)}x ${openables[0].name}`
+			: 'Loot From Opening';
 	const response = new MessageBuilder()
 		.addBankImage({
 			bank: loot,
-			title:
-				openables.length === 1
-					? `Loot from ${cost.amount(openables[0].openedItem.id)}x ${openables[0].name}`
-					: 'Loot From Opening',
+			title: gamblingBanned ? 'Loot From Opening' : title,
 			user,
 			previousCL,
-			mahojiFlags: user.bitfield.includes(BitField.DisableOpenableNames) ? undefined : ['show_names']
+			showValue: !gamblingBanned,
+			mahojiFlags: gamblingBanned
+				? ['show_names']
+				: user.bitfield.includes(BitField.DisableOpenableNames)
+					? undefined
+					: ['show_names']
 		})
 		.addComponents(components);
 

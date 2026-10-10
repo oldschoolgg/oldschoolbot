@@ -95,18 +95,18 @@ export async function capeGambleCommand(
 	const gotPet = rng.roll(chance);
 	const loot = gotPet ? new Bank().add(pet.id) : undefined;
 	const gamble = await createGamble({
-		user_id: user.id,
+		userId: user.id,
 		game: 'item',
-		bet_amount: 1,
-		bet_item_id: item.id
+		betAmount: 1,
+		betItemId: item.id
 	});
 
 	await user.transactItems({ itemsToAdd: loot, itemsToRemove: new Bank().add(item.id), collectionLog: true });
 	await settleGamble(gamble.id, {
 		won: gotPet,
-		profit_loss: gotPet ? 0 : -1,
-		payout_amount: gotPet ? 1 : 0,
-		payout_item_id: gotPet ? pet.id : undefined
+		profitLoss: gotPet ? 0 : -1,
+		payoutAmount: gotPet ? 1 : 0,
+		payoutItemId: gotPet ? pet.id : undefined
 	});
 	if (gotPet) {
 		globalClient.emit(

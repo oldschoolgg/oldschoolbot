@@ -111,7 +111,7 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`;
 	}
 
 	await user.transactItems({ itemsToRemove: new Bank().add('Coins', amount) });
-	const gamble = await createGamble({ user_id: user.id, game: 'slots', bet_amount: amount });
+	const gamble = await createGamble({ userId: user.id, game: 'slots', betAmount: amount });
 	const buttonsToShow = getButtons(rng);
 	const chunkedButtons = chunk(buttonsToShow, 3);
 
@@ -151,8 +151,8 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`;
 	await user.transactItems({ itemsToAdd: new Bank().add('Coins', amountReceived), collectionLog: false });
 	await settleGamble(gamble.id, {
 		won: amountReceived > 0,
-		profit_loss: amountReceived - amount,
-		payout_amount: amountReceived
+		profitLoss: amountReceived - amount,
+		payoutAmount: amountReceived
 	});
 	await ClientSettings.updateClientGPTrackSetting('gp_slots', amountReceived - amount);
 	await user.updateGPTrackSetting('gp_slots', amountReceived - amount);
