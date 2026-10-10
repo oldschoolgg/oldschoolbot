@@ -29,8 +29,7 @@ type Panel = [number, number, number, number];
 type Route = {
 	side: Side;
 	panelIndex: number;
-	laneX: number;
-	port: [number, number];
+	points: [number, number][];
 };
 
 const PANEL_WIDTH = 450;
@@ -41,19 +40,19 @@ const panelPositions: Record<Side, Panel[]> = {
 	right: PANEL_YS.map(y => [1061, y, PANEL_WIDTH, PANEL_HEIGHT])
 };
 
-// Each side keeps its own lanes. The route order mirrors the slot order, so no
-// connector needs to cross the centre line or another connector.
+// These intentionally meet the equipment frames off-centre. Matching the
+// stepped, diagonal joins keeps the panel layout from looking mechanically centred.
 const routes: Record<string, Route> = {
-	head: { side: 'left', panelIndex: 0, laneX: 505, port: [716, 233] },
-	cape: { side: 'left', panelIndex: 1, laneX: 525, port: [590, 355] },
-	weapon: { side: 'left', panelIndex: 2, laneX: 545, port: [590, 480] },
-	hands: { side: 'left', panelIndex: 3, laneX: 565, port: [590, 725] },
-	feet: { side: 'left', panelIndex: 4, laneX: 585, port: [716, 692] },
-	neck: { side: 'right', panelIndex: 0, laneX: 955, port: [826, 355] },
-	shield: { side: 'right', panelIndex: 1, laneX: 975, port: [950, 447] },
-	body: { side: 'right', panelIndex: 2, laneX: 995, port: [826, 480] },
-	legs: { side: 'right', panelIndex: 3, laneX: 1015, port: [826, 603] },
-	ring: { side: 'right', panelIndex: 4, laneX: 1035, port: [950, 725] }
+	head: { side: 'left', panelIndex: 0, points: [[475, 164], [641, 164], [716, 236]] },
+	cape: { side: 'left', panelIndex: 1, points: [[475, 322], [551, 322], [590, 386]] },
+	weapon: { side: 'left', panelIndex: 2, points: [[475, 480], [590, 480]] },
+	hands: { side: 'left', panelIndex: 3, points: [[475, 644], [544, 644], [590, 725]] },
+	feet: { side: 'left', panelIndex: 4, points: [[475, 837], [760, 837], [770, 779]] },
+	neck: { side: 'right', panelIndex: 0, points: [[1061, 168], [916, 168], [816, 332]] },
+	shield: { side: 'right', panelIndex: 1, points: [[1061, 330], [938, 330], [840, 428]] },
+	body: { side: 'right', panelIndex: 2, points: [[1061, 480], [826, 480]] },
+	legs: { side: 'right', panelIndex: 3, points: [[1061, 637], [942, 637], [816, 590]] },
+	ring: { side: 'right', panelIndex: 4, points: [[1061, 814], [1016, 716], [950, 716]] }
 };
 
 function routeForSlot(slot: string) {
@@ -101,21 +100,16 @@ function drawPanel(canvas: OSRSCanvas, x: number, y: number, width: number, heig
 	drawChamferedRect(canvas, x + 10, y + 10, width - 20, height - 20, 8, '#282622', 2);
 }
 
-function drawConnector(canvas: OSRSCanvas, route: Route, color: string, width: number) {
+function drawConnector(canvas: OSRSCanvas, route: Route, color: string) {
 	const { ctx } = canvas;
-	const [panelX, panelY, panelWidth, panelHeight] = panelPositions[route.side][route.panelIndex];
-	const panelXEdge = route.side === 'left' ? panelX + panelWidth : panelX;
-	const panelYCenter = panelY + panelHeight / 2;
 	ctx.save();
 	ctx.strokeStyle = color;
-	ctx.lineWidth = width;
+	ctx.lineWidth = 5;
 	ctx.lineCap = 'butt';
 	ctx.lineJoin = 'miter';
 	ctx.beginPath();
-	ctx.moveTo(panelXEdge, panelYCenter);
-	ctx.lineTo(route.laneX, panelYCenter);
-	ctx.lineTo(route.laneX, route.port[1]);
-	ctx.lineTo(route.port[0], route.port[1]);
+	ctx.moveTo(...route.points[0]);
+	for (const point of route.points.slice(1)) ctx.lineTo(...point);
 	ctx.stroke();
 	ctx.restore();
 }
@@ -189,23 +183,19 @@ export async function generateDiscoOutfitImage({
 	const canvas = new OSRSCanvas({ width: template.width, height: template.height });
 	canvas.ctx.drawImage(template, 0, 0);
 
-	for (const route of Object.values(routes)) drawConnector(canvas, route, '#969693', 5);
-	for (const panels of Object.values(panelPositions)) {
-		for (const panel of panels) drawPanel(canvas, ...panel);
-	}
-
+	const routeColors = new Map<string, string>();
 	for (const scored of items) {
-		const route = routeForSlot(scored.slot);
-		if (!route || !slotPositions[scored.slot]) continue;
 		const strongest = strongestAesthetic(scored.item);
 		if (strongest) {
-			drawConnector(
-				canvas,
-				route,
-				DISCO_AESTHETIC_COLORS[strongest][scored.item.points[strongest] < 0 ? 'negative' : 'positive'],
-				3
+			routeColors.set(
+				scored.slot === '2h' ? 'weapon' : scored.slot,
+				DISCO_AESTHETIC_COLORS[strongest][scored.item.points[strongest] < 0 ? 'negative' : 'positive']
 			);
 		}
+	}
+	for (const [slot, route] of Object.entries(routes)) drawConnector(canvas, route, routeColors.get(slot) ?? '#969693');
+	for (const panels of Object.values(panelPositions)) {
+		for (const panel of panels) drawPanel(canvas, ...panel);
 	}
 
 	for (const scored of items) {
