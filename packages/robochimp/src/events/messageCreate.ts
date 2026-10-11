@@ -3,7 +3,6 @@ import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 
 import { getInfoStrOfUser } from '@/lib/messageCommands.js';
 import { botReactHandler } from './messageCreate/botReactHandler.js';
-import { grandExchangeHandler } from './messageCreate/grandExchangeHandler.js';
 import { voteReactionHandler } from './messageCreate/voteReactionHandler.js';
 
 async function tagHandler(msg: IMessage): Promise<void> {
@@ -47,7 +46,6 @@ async function userInfo(msg: IMessage) {
 const messageHandlers: ((msg: IMessage) => Promise<unknown>)[] = [
 	userInfo,
 	botReactHandler,
-	grandExchangeHandler,
 	voteReactionHandler,
 	tagHandler
 ];
