@@ -50,6 +50,7 @@ async function addPatreonTime(
 	const currentBalanceRemaining = Math.max(0, Number(currentUser.premium_balance_expiry_date ?? 0) - Date.now());
 
 	if (
+		currentBalanceRemaining > 0 &&
 		currentBalanceTier !== null &&
 		(currentBalanceTier !== tier || Boolean(currentUser.premium_balance_is_cyr) !== isCyr)
 	) {
