@@ -258,32 +258,6 @@ export const rpCommand = defineCommand({
 				},
 				{
 					type: 'Subcommand',
-					name: 'add_patron_time',
-					description: 'Give user temporary patron time.',
-					options: [
-						{
-							type: 'User',
-							name: 'user',
-							description: 'The user.',
-							required: true
-						},
-						{
-							type: 'Integer',
-							name: 'tier',
-							description: 'The tier to give.',
-							required: true,
-							choices: choicesOf([1, 2, 3, 4, 5, 6])
-						},
-						{
-							type: 'String',
-							name: 'time',
-							description: 'The time.',
-							required: true
-						}
-					]
-				},
-				{
-					type: 'Subcommand',
 					name: 'unequip_all_items',
 					description: 'Force unequip all items from a user.',
 					options: [
