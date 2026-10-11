@@ -12,7 +12,7 @@ import { redis, rUserTTL } from '@/lib/redis.js';
 import { Bits, type PatronTier, tiers } from '@/util.js';
 
 export type RUserGroupUser = Pick<User, 'id' | 'bits'> &
-	Partial<Pick<User, 'premium_balance_tier' | 'premium_balance_expiry_date'>>;
+	Partial<Pick<User, 'premium_balance_tier' | 'premium_balance_is_cyr' | 'premium_balance_expiry_date'>>;
 
 export class RUser {
 	private _user: User;
@@ -44,13 +44,19 @@ export class RUser {
 		return this.premiumEntitlements[0] ?? null;
 	}
 
-	get premiumEntitlements(): Array<{ tier: number; expiry: bigint }> {
+	get premiumEntitlements(): Array<{ tier: number; isCyr: boolean; expiry: bigint }> {
 		const now = Date.now();
 		return this._groupUsers
 			.flatMap(user => {
 				if (!user.premium_balance_tier || !user.premium_balance_expiry_date) return [];
 				if (Number(user.premium_balance_expiry_date) <= now) return [];
-				return [{ tier: user.premium_balance_tier, expiry: user.premium_balance_expiry_date }];
+				return [
+					{
+						tier: user.premium_balance_tier,
+						isCyr: Boolean(user.premium_balance_is_cyr),
+						expiry: user.premium_balance_expiry_date
+					}
+				];
 			})
 			.sort((a, b) => b.tier - a.tier || Number(b.expiry - a.expiry));
 	}
@@ -135,6 +141,7 @@ export class RUser {
 				id: true,
 				bits: true,
 				premium_balance_tier: true,
+				premium_balance_is_cyr: true,
 				premium_balance_expiry_date: true
 			}
 		});
@@ -199,7 +206,15 @@ export class RUser {
 }
 
 export async function fetchRUserGroupUsers(
-	user: Pick<User, 'id' | 'bits' | 'premium_balance_tier' | 'premium_balance_expiry_date' | 'user_group_id'>
+	user: Pick<
+		User,
+		| 'id'
+		| 'bits'
+		| 'premium_balance_tier'
+		| 'premium_balance_is_cyr'
+		| 'premium_balance_expiry_date'
+		| 'user_group_id'
+	>
 ): Promise<RUserGroupUser[]> {
 	if (!user.user_group_id) {
 		return [
@@ -207,6 +222,7 @@ export async function fetchRUserGroupUsers(
 				id: user.id,
 				bits: user.bits,
 				premium_balance_tier: user.premium_balance_tier,
+				premium_balance_is_cyr: user.premium_balance_is_cyr,
 				premium_balance_expiry_date: user.premium_balance_expiry_date
 			}
 		];
@@ -220,6 +236,7 @@ export async function fetchRUserGroupUsers(
 			id: true,
 			bits: true,
 			premium_balance_tier: true,
+			premium_balance_is_cyr: true,
 			premium_balance_expiry_date: true
 		},
 		orderBy: {

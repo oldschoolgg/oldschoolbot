@@ -24,13 +24,22 @@ function availableTiersString() {
 	return tierChoices.map(tier => `${tier.name}: \`${tier.value}\``).join('\n');
 }
 
-async function addPatreonTime(timeMs: number, tier: number, userToGive: RUser, interaction: MInteraction) {
+async function addPatreonTime(
+	timeMs: number,
+	tier: number,
+	isCyr: boolean,
+	userToGive: RUser,
+	interaction: MInteraction
+) {
 	if (!validatePremiumTimeGrant(timeMs, tier)) return 'Invalid input.';
 
 	const currentUser = await fetchPremiumTimeBalance(userToGive.id);
 	const currentBalanceTier = currentUser.premium_balance_tier;
 
-	if (currentBalanceTier !== null && currentBalanceTier !== tier) {
+	if (
+		currentBalanceTier !== null &&
+		(currentBalanceTier !== tier || Boolean(currentUser.premium_balance_is_cyr) !== isCyr)
+	) {
 		await interaction.confirmation(
 			`❗They already have **__Tier: ${currentBalanceTier - 1}__** (||PerkTier: ${currentBalanceTier}||), this will replace the existing balance entirely, are you sure?`
 		);
@@ -39,7 +48,7 @@ async function addPatreonTime(timeMs: number, tier: number, userToGive: RUser, i
 		`🤔❓Are you sure you want to add ${formatDuration(timeMs)} of **__Tier ${tier - 1}__** premium perks to ${userToGive.mention}?`
 	);
 
-	const grant = await grantPremiumTime({ userID: userToGive.id, timeMs, tier });
+	const grant = await grantPremiumTime({ userID: userToGive.id, timeMs, tier, isCyr });
 
 	return `Gave ${formatPremiumTimeGrant(grant)} Perks to ${userToGive.mention}. They have ${formatDuration(
 		grant.remainingTime
@@ -156,6 +165,12 @@ export const chimpCommand = defineCommand({
 							name: 'time',
 							description: 'The time.',
 							required: true
+						},
+						{
+							type: 'Boolean',
+							name: 'is_cyr',
+							description: 'Grant Cyr perks.',
+							required: false
 						}
 					]
 				}
@@ -281,9 +296,15 @@ export const chimpCommand = defineCommand({
 		}
 		if (!user.isAdmin()) return 'Ook?';
 		if (options.patreon?.add_time) {
-			const { tier, time, user: targetUser } = options.patreon.add_time;
+			const { tier, time, is_cyr, user: targetUser } = options.patreon.add_time;
 			const ms = parseDuration(time);
-			return addPatreonTime(ms, Number(tier), await globalClient.fetchRUser(targetUser.user.id), interaction);
+			return addPatreonTime(
+				ms,
+				Number(tier),
+				Boolean(is_cyr),
+				await globalClient.fetchRUser(targetUser.user.id),
+				interaction
+			);
 		}
 		if (options.patreon?.change_tier) {
 			const changeTier = options.patreon.change_tier;

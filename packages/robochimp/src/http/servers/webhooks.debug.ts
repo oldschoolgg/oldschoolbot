@@ -70,6 +70,7 @@ function barebonesUser(id: string, debugUsername?: string): DebugUser {
 		testing_points_balance: 0,
 		perk_tier: PerkTier.Zero,
 		premium_balance_tier: null,
+		premium_balance_is_cyr: null,
 		premium_balance_expiry_date: null,
 		last_patreon_gift: null,
 		user_group_id: null,

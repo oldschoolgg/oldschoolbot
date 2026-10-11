@@ -29,6 +29,7 @@ export const ZRoboChimpUser = z.object({
 	testing_points_balance: z.number(),
 	perk_tier: z.number().int(),
 	premium_balance_tier: z.number().int().nullable(),
+	premium_balance_is_cyr: z.boolean().nullable(),
 	premium_balance_expiry_date: ZNullableBigInt,
 	last_patreon_gift: ZNullableBigInt,
 	user_group_id: z.string().nullable()

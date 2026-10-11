@@ -100,9 +100,11 @@ export type PerkTierEntitlement = PatreonPerk | PremiumPerk | LocalPerk;
 export type PerkTierInput = {
 	patreonBits: number[] | null | undefined;
 	premiumTier?: PerkTier | number | null;
+	premiumIsCyr?: boolean | null;
 	premiumExpiry?: bigint | number | Date | null;
 	premiumEntitlements?: Array<{
 		tier: PerkTier | number | null | undefined;
+		isCyr?: boolean | null | undefined;
 		expiry: bigint | number | Date | null | undefined;
 	}>;
 };
@@ -223,14 +225,42 @@ export function formatUserPaidTiers(bits: number[] | null | undefined): string {
 	return labels.length === 0 ? 'None' : labels.join(', ');
 }
 
-export function getCyrTripBonus(bits: number[] | null | undefined): number {
-	if (!bits || bits.length === 0) return PerkTier.Zero;
-	const highestTier = cyrTiers.find(tier => bits.includes(tier.bit))?.number;
-	if (highestTier === undefined) return PerkTier.Zero;
-	if (highestTier >= 3) return 15 * 60 * 1000;
-	if (highestTier === 2) return 10 * 60 * 1000;
-	if (highestTier === 1) return 6 * 60 * 1000;
-	return 3 * 60 * 1000;
+function premiumEntitlements(user: PerkTierInput, now = Date.now()) {
+	const temporaryEntitlement =
+		user.premiumTier && user.premiumExpiry
+			? [{ tier: user.premiumTier, isCyr: user.premiumIsCyr, expiry: user.premiumExpiry }]
+			: [];
+	const entitlements = [...(user.premiumEntitlements ?? []), ...temporaryEntitlement];
+
+	return entitlements.filter((premium, index) => {
+		const expiry = normalizeExpiry(premium.expiry);
+		if (!premium.tier || !expiry || expiry <= now) return false;
+		return (
+			entitlements.findIndex(
+				other => other.tier === premium.tier && other.isCyr === premium.isCyr && other.expiry === premium.expiry
+			) === index
+		);
+	});
+}
+
+export function hasCyrPerkTier(user: PerkTierInput, minimumTier: PerkTier | number, now: number = Date.now()): boolean {
+	if (cyrTiers.some(tier => tier.perkTier >= minimumTier && user.patreonBits?.includes(tier.bit))) return true;
+
+	return premiumEntitlements(user, now).some(premium => {
+		const expiry = normalizeExpiry(premium.expiry);
+		if (!premium.isCyr || !premium.tier || !expiry) return false;
+		return premium.tier >= minimumTier && expiry > now;
+	});
+}
+
+export function getCyrTripBonus(user: PerkTierInput | number[]): number {
+	// TODO: Make BonusMinute and Original Patron +2 minutes calculated here.
+	const input = Array.isArray(user) ? { patreonBits: user } : user;
+	if (hasCyrPerkTier(input, PerkTier.Four)) return 15 * 60 * 1000;
+	if (hasCyrPerkTier(input, PerkTier.Three)) return 10 * 60 * 1000;
+	if (hasCyrPerkTier(input, PerkTier.Two)) return 6 * 60 * 1000;
+	if (hasCyrPerkTier(input, PerkTier.One)) return 3 * 60 * 1000;
+	return PerkTier.Zero;
 }
 
 export function getPerkTierDetails(user: PerkTierInput, options: PerkTierOptions = {}): PerkTierEntitlement[] {
@@ -243,10 +273,7 @@ export function getPerkTierDetails(user: PerkTierInput, options: PerkTierOptions
 		patronTier: tier.number
 	}));
 
-	const premiumEntitlements =
-		user.premiumEntitlements ??
-		(user.premiumTier && user.premiumExpiry ? [{ tier: user.premiumTier, expiry: user.premiumExpiry }] : []);
-	for (const premium of premiumEntitlements) {
+	for (const premium of premiumEntitlements(user, now)) {
 		const premiumExpiry = normalizeExpiry(premium.expiry);
 		if (premium.tier && premiumExpiry && premiumExpiry > now) {
 			details.push({

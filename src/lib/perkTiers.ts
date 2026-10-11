@@ -87,6 +87,7 @@ function userPerkInput(roboUser: RobochimpUser, patreonBits: number[] = roboUser
 	return {
 		patreonBits,
 		premiumTier: roboUser.premium_balance_tier,
+		premiumIsCyr: roboUser.premium_balance_is_cyr,
 		premiumExpiry: roboUser.premium_balance_expiry_date
 	};
 }
@@ -135,6 +136,7 @@ export async function getUsersPerkTier({
 				{
 					patreonBits: roboChimpCached.bits,
 					premiumTier: roboChimpCached.premium_balance_tier,
+					premiumIsCyr: roboChimpCached.premium_balance_is_cyr,
 					premiumExpiry: roboChimpCached.premium_balance_expiry_date
 				},
 				options

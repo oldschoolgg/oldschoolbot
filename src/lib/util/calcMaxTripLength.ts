@@ -16,7 +16,15 @@ export function calcMaxTripLengthSync(user: MUser, roboUser: RobochimpUser, acti
 	const perkTier = user.perkTier;
 	const roboBits = roboUser.bits;
 	let max = Time.Minute * 30;
-	max += Math.max(patronMaxTripBonus(perkTier), getCyrTripBonus(roboBits));
+	max += Math.max(
+		patronMaxTripBonus(perkTier),
+		getCyrTripBonus({
+			patreonBits: roboBits,
+			premiumTier: roboUser.premium_balance_tier,
+			premiumIsCyr: roboUser.premium_balance_is_cyr,
+			premiumExpiry: roboUser.premium_balance_expiry_date
+		})
+	);
 
 	if (roboBits.includes(RobochimpBitfieldEnum.BonusMinute)) {
 		max += Time.Minute * 3;

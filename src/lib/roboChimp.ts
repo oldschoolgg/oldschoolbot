@@ -10,7 +10,10 @@ import { RobochimpBitfieldEnum } from '@/lib/perkTiers.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
 
 export type RobochimpUser = User;
-type RoboChimpPerkData = Pick<RobochimpUser, 'bits' | 'premium_balance_tier' | 'premium_balance_expiry_date'>;
+type RoboChimpPerkData = Pick<
+	RobochimpUser,
+	'bits' | 'premium_balance_tier' | 'premium_balance_is_cyr' | 'premium_balance_expiry_date'
+>;
 
 function bestPremium(users: RoboChimpPerkData[]) {
 	const now = Date.now();
@@ -33,6 +36,7 @@ function mergeRoboChimpPerks(users: RobochimpUser[]): RobochimpUser[] {
 		...user,
 		bits,
 		premium_balance_tier: premium?.premium_balance_tier ?? null,
+		premium_balance_is_cyr: premium?.premium_balance_is_cyr ?? null,
 		premium_balance_expiry_date: premium?.premium_balance_expiry_date ?? null
 	}));
 }

@@ -7,7 +7,7 @@ import {
 	ZBlowpipeData,
 	ZFarmingContract
 } from '@oldschoolgg/schemas';
-import { calcWhatPercent, cleanUsername, isObject, type PerkTier, UserError, uniqueArr } from '@oldschoolgg/toolkit';
+import { calcWhatPercent, cleanUsername, isObject, PerkTier, UserError, uniqueArr } from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { Mutex } from 'async-mutex';
 import { cryptoRng } from 'node-rng/crypto';

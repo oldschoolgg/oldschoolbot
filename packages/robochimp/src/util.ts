@@ -9,7 +9,7 @@ import {
 } from '@oldschoolgg/toolkit';
 
 export type { PaidTierSource, PatronTier } from '@oldschoolgg/toolkit';
-export { formatUserPaidTiers, getPatronTierLabel, getUserPaidTiers } from '@oldschoolgg/toolkit';
+export { formatUserPaidTiers, getPatronTierLabel, getUserPaidTiers, hasCyrPerkTier } from '@oldschoolgg/toolkit';
 
 export const Bits = RoboChimpBit;
 export type Bits = RoboChimpBitValue;
