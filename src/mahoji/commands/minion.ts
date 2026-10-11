@@ -21,7 +21,7 @@ import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js'
 import { blowpipeCommand, blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
 import { degradeableItemsCommand } from '@/lib/minions/functions/degradeableItemsCommand.js';
 import { allPossibleStyles, trainCommand } from '@/lib/minions/functions/trainCommand.js';
-import { getRoboChimpPaidTierDisplay } from '@/lib/perkTiers.js';
+import { formatUserPaidTiers } from '@oldschoolgg/toolkit';
 import { Minigames } from '@/lib/settings/minigames.js';
 import creatures from '@/lib/skilling/skills/hunter/creatures/index.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
@@ -97,7 +97,10 @@ export async function getUserInfo(user: MUser) {
 			? roboChimpUser.premium_balance_tier
 			: 0;
 
-	let perkTierDisplay = getRoboChimpPaidTierDisplay(roboChimpUser, { perkTier: roboChimpUser.perk_tier });
+	let perkTierDisplay = formatUserPaidTiers(roboChimpUser.bits);
+	if (perkTierDisplay === 'None' && roboChimpUser.perk_tier > 0) {
+		perkTierDisplay = `Perk Tier ${roboChimpUser.perk_tier}`;
+	}
 	if (
 		roboChimpUser.premium_balance_tier &&
 		roboChimpUser.premium_balance_expiry_date &&

@@ -48,6 +48,7 @@ export enum Emoji {
 	MinigameIcon = '<:minigameIcon:630400565070921761>',
 	Warning = '⚠️',
 	Ironman = '<:ironman:626647335900020746>',
+	Seer = '<:seer:924198628191531030>',
 	Firemaking = '<:firemaking:630911040175210518>',
 	Crafting = '<:crafting:630911040460161047>',
 	EasterEgg = '<:easterEgg:695473553314938920>',
@@ -63,6 +64,7 @@ export enum Emoji {
 	Green = '🟩',
 	Blue = '🟦',
 	Orange = '🟧',
+	Special = '✨',
 	Thieving = '<:thieving:630910829352452123>',
 	Hunter = '<:hunter:630911040166559784>',
 	Ely = '<:ely:784453586033049630>',
@@ -111,7 +113,6 @@ export enum Emoji {
 	Invention = '<:Invention:936219232146980874>',
 	BSO = '<:BSO:863823820435619890>',
 	Kuro = '<:kuro:1032277900579319888>',
-	Seer = '<:seer:924198628191531030>',
 	SOTWTrophy = '<:SOTWtrophy:842938096097820693>',
 	ClueScroll = '<:Clue_scroll:365003979840552960>',
 

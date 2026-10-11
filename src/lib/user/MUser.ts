@@ -59,7 +59,8 @@ import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { RemoveFoodFromUserParams } from '@/lib/minions/functions/removeFoodFromUser.js';
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import type { AddXpParams, ClueBank, KillableMonster } from '@/lib/minions/types.js';
-import { getPerkTierCached, getUsersPerkTier, RobochimpBitfieldEnum } from '@/lib/perkTiers.js';
+import { RoboChimpBit } from '@oldschoolgg/toolkit';
+import { getPerkTierCached, getUsersPerkTier } from '@/lib/perkTiers.js';
 import { type MinigameName, type MinigameScore, Minigames } from '@/lib/settings/minigames.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { DetailedFarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
@@ -310,8 +311,8 @@ RETURNING (monster_scores->>'${monsterID}')::int AS new_kc;
 			}
 			if (
 				!(
-					patron.bits.includes(RobochimpBitfieldEnum.CyrTier5) ||
-					patron.bits.includes(RobochimpBitfieldEnum.CyrTier6)
+					patron.bits.includes(RoboChimpBit.CyrTier5) ||
+					patron.bits.includes(RoboChimpBit.CyrTier6)
 				)
 			) {
 				throw new UserError('You need an active Cyr Tier 5 Patreon subscription to claim this promotion.');

@@ -1,6 +1,6 @@
 import { findGroupOfUser } from '@/lib/bso/util/findGroupOfUser.js';
 
-import { RobochimpBitfieldEnum } from '@/lib/perkTiers.js';
+import { RoboChimpBit } from '@oldschoolgg/toolkit';
 import { srcMUserFetch } from '@/lib/user/MUser.js';
 
 export type Entitlement = {
@@ -14,24 +14,24 @@ export type EntitlementCheckResult = {
 	entitlement: Partial<Entitlement> | null;
 };
 
-const robochimpTierBitfields = [
+const robochimpTierBitfields: number[][] = [
 	[
-		RobochimpBitfieldEnum.CyrTier0,
-		RobochimpBitfieldEnum.CyrTier1,
-		RobochimpBitfieldEnum.CyrTier2,
-		RobochimpBitfieldEnum.CyrTier3,
-		RobochimpBitfieldEnum.CyrTier4,
-		RobochimpBitfieldEnum.CyrTier5,
-		RobochimpBitfieldEnum.CyrTier6,
-		RobochimpBitfieldEnum.CyrTier7
+		RoboChimpBit.CyrTier0,
+		RoboChimpBit.CyrTier1,
+		RoboChimpBit.CyrTier2,
+		RoboChimpBit.CyrTier3,
+		RoboChimpBit.CyrTier4,
+		RoboChimpBit.CyrTier5,
+		RoboChimpBit.CyrTier6,
+		RoboChimpBit.CyrTier7
 	],
 	[
-		RobochimpBitfieldEnum.MagnaTier1,
-		RobochimpBitfieldEnum.MagnaTier2,
-		RobochimpBitfieldEnum.MagnaTier3,
-		RobochimpBitfieldEnum.MagnaTier4,
-		RobochimpBitfieldEnum.MagnaTier5,
-		RobochimpBitfieldEnum.MagnaTier6
+		RoboChimpBit.MagnaTier1,
+		RoboChimpBit.MagnaTier2,
+		RoboChimpBit.MagnaTier3,
+		RoboChimpBit.MagnaTier4,
+		RoboChimpBit.MagnaTier5,
+		RoboChimpBit.MagnaTier6
 	]
 ];
 

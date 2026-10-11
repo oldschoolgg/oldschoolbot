@@ -1,3 +1,4 @@
+import type { SUserIdentity } from '@oldschoolgg/schemas';
 import {
 	type ISimpleMinionInfo,
 	type IUserMinionConfigPatchPayload,
@@ -9,7 +10,6 @@ import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import type { DiscordUser } from '@prisma/robochimp';
 import { Hono } from 'hono';
 
-import type { SUserIdentity } from '@/http/api-types.js';
 import { type HonoServerGeneric, httpErr, httpRes } from '@/http/serverUtil.js';
 import { fetchFullMinionData } from '@/lib/fullMinionData.js';
 

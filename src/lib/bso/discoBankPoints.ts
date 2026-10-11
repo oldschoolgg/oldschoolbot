@@ -9,12 +9,12 @@ import type { Entitlement } from '@/lib/bso/util/entitlementChecker.js';
 import type { Item } from 'oldschooljs';
 
 import { PerkTier } from '@/lib/constants.js';
-import { RobochimpBitfieldEnum } from '@/lib/perkTiers.js';
+import { RoboChimpBit } from '@oldschoolgg/toolkit';
 
 // Disco Bloodbath-only /bank subtext. Remove this file and its caller after the event.
 export const discoBankPointEntitlements = [
 	{ perkTier: PerkTier.Three },
-	{ bitfield: RobochimpBitfieldEnum.CyrTier0 }
+	{ bitfield: RoboChimpBit.CyrTier0 }
 ] satisfies Partial<Entitlement>[];
 
 export function getDiscoBankPointLines(item: Item) {

@@ -7,13 +7,16 @@ export const validPremiumTimeTiers = [1, 2, 3, 4, 5, 6, 7] as const;
 
 export type PremiumTimeBalance = {
 	premium_balance_tier: number | null;
+	premium_balance_is_cyr?: boolean | null;
 	premium_balance_expiry_date: bigint | null;
+	is_active?: boolean | null;
 };
 
 export type PremiumTimeGrant = {
 	expiryTime: number;
 	remainingTime: number;
 	tier: number;
+	isCyr: boolean;
 	timeMs: number;
 };
 
@@ -26,39 +29,53 @@ export function validatePremiumTimeGrant(timeMs: number, tier: number) {
 }
 
 export async function fetchPremiumTimeBalance(userID: bigint): Promise<PremiumTimeBalance> {
-	return roboChimpClient.user.findUniqueOrThrow({
+	const premiumTime: PremiumTimeBalance = await roboChimpClient.user.findUniqueOrThrow({
 		where: {
 			id: userID
 		},
 		select: {
 			premium_balance_tier: true,
+			premium_balance_is_cyr: true,
 			premium_balance_expiry_date: true
 		}
 	});
+	// Check is the premium balance is still active; expired perks don't clear these fields, so we must check:
+	if ((premiumTime.premium_balance_expiry_date ?? 0) > Date.now() && premiumTime.premium_balance_tier) {
+		premiumTime.is_active = true;
+	}
+	return premiumTime;
 }
 
 export function calculatePremiumTimeGrant({
 	currentBalance,
 	timeMs,
 	tier,
+	isCyr = false,
 	now = Date.now()
 }: {
 	currentBalance: PremiumTimeBalance;
 	timeMs: number;
 	tier: number;
+	isCyr?: boolean;
 	now?: number;
 }): PremiumTimeGrant {
-	const currentBalanceTime =
+	const currentExpiryDate =
 		currentBalance.premium_balance_expiry_date === null ? null : Number(currentBalance.premium_balance_expiry_date);
+
+	// If not yet expired and the tier/source match, time stacks; otherwise it resets.
 	const expiryTime =
-		currentBalanceTime !== null && tier === currentBalance.premium_balance_tier
-			? currentBalanceTime + timeMs
+		currentExpiryDate &&
+		now < currentExpiryDate &&
+		tier === currentBalance.premium_balance_tier &&
+		isCyr === Boolean(currentBalance.premium_balance_is_cyr)
+			? currentExpiryDate + timeMs
 			: now + timeMs;
 
 	return {
 		expiryTime,
 		remainingTime: expiryTime - now,
 		tier,
+		isCyr,
 		timeMs
 	};
 }
@@ -66,6 +83,7 @@ export function calculatePremiumTimeGrant({
 export function premiumTimeGrantUpdate(grant: PremiumTimeGrant) {
 	return {
 		premium_balance_tier: grant.tier,
+		premium_balance_is_cyr: grant.isCyr,
 		premium_balance_expiry_date: grant.expiryTime
 	};
 }
@@ -91,11 +109,13 @@ export async function grantPremiumTime({
 	userID,
 	timeMs,
 	tier,
+	isCyr = false,
 	now = Date.now()
 }: {
 	userID: bigint;
 	timeMs: number;
 	tier: number;
+	isCyr?: boolean;
 	now?: number;
 }) {
 	if (!validatePremiumTimeGrant(timeMs, tier)) {
@@ -103,13 +123,14 @@ export async function grantPremiumTime({
 	}
 
 	const currentBalance = await fetchPremiumTimeBalance(userID);
-	const grant = calculatePremiumTimeGrant({ currentBalance, timeMs, tier, now });
+	const grant = calculatePremiumTimeGrant({ currentBalance, timeMs, tier, isCyr, now });
 
 	await applyPremiumTimeGrant({ userID, grant });
 	await globalClient.fetchRUser(userID);
 	return grant;
 }
 
-export function formatPremiumTimeGrant(grant: PremiumTimeGrant) {
-	return `${formatDuration(grant.timeMs)} of Tier ${grant.tier}`;
+export function formatPremiumTimeGrant(grant: PremiumTimeGrant, displayPremium = true) {
+	const displayTier = displayPremium ? grant.tier - 1 : grant.tier;
+	return `${formatDuration(grant.timeMs)} of Tier ${displayTier}`;
 }

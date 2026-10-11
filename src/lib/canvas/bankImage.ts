@@ -27,7 +27,7 @@ import { filterableTypes } from '@/lib/data/filterables.js';
 import { marketPriceOfBank, marketPriceOrBotPrice } from '@/lib/marketPrices.js';
 import backgroundImages, { type BankBackground } from '@/lib/minions/data/bankBackgrounds.js';
 import { type FlagMap, type Flags, OverrideStatus } from '@/lib/minions/types.js';
-import { RobochimpBitfieldEnum } from '@/lib/perkTiers.js';
+import { RoboChimpBit } from '@oldschoolgg/toolkit';
 import { type BankSortMethod, BankSortMethods, sorts } from '@/lib/sorts.js';
 import { XPLamps } from '@/mahoji/lib/abstracted_commands/lampCommand.js';
 
@@ -42,10 +42,10 @@ const distanceFromTop = 32;
 const { floor, ceil } = Math;
 
 const cyrTier4PlusBits = [
-	RobochimpBitfieldEnum.CyrTier4,
-	RobochimpBitfieldEnum.CyrTier5,
-	RobochimpBitfieldEnum.CyrTier6,
-	RobochimpBitfieldEnum.CyrTier7
+	RoboChimpBit.CyrTier4,
+	RoboChimpBit.CyrTier5,
+	RoboChimpBit.CyrTier6,
+	RoboChimpBit.CyrTier7
 ] as const;
 
 function bankItemRowHeight(compact: boolean, spacer: number, verticalSpacer: number) {

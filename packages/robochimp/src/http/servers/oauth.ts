@@ -1,11 +1,11 @@
 import { discordAuth } from '@hono/oauth-providers/discord';
+import type { AuthenticatedUser } from '@oldschoolgg/schemas';
 import { Time } from '@oldschoolgg/toolkit';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Hono } from 'hono';
 import { deleteCookie, setCookie } from 'hono/cookie';
 
 import { globalConfig } from '@/constants.js';
-import type { AuthenticatedUser } from '@/http/api-types.js';
 import { type HonoServerGeneric, httpErr, httpRes } from '@/http/serverUtil.js';
 import { encryptToken } from '@/modules/encryption.js';
 

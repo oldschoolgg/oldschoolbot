@@ -17,7 +17,7 @@ import { gnomeRestaurantCL, guardiansOfTheRiftCL, shadesOfMorttonCL } from '@/li
 import pets from '@/lib/data/pets.js';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
 import { allOpenables, type UnifiedOpenable } from '@/lib/openables.js';
-import { RobochimpBitfieldEnum } from '@/lib/perkTiers.js';
+import { RoboChimpBit } from '@oldschoolgg/toolkit';
 import type { MinigameName } from '@/lib/settings/minigames.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
@@ -805,9 +805,9 @@ async function patronTriggerDoubleLoot(user: MUser) {
 }
 
 const cyrTier5PlusBits = [
-	RobochimpBitfieldEnum.CyrTier5,
-	RobochimpBitfieldEnum.CyrTier6,
-	RobochimpBitfieldEnum.CyrTier7
+	RoboChimpBit.CyrTier5,
+	RoboChimpBit.CyrTier6,
+	RoboChimpBit.CyrTier7
 ] as const;
 
 async function hasCyrTier5Plus(user: MUser) {
