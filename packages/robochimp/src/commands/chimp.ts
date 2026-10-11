@@ -47,13 +47,14 @@ async function addPatreonTime(
 
 	const currentUser = await fetchPremiumTimeBalance(userToGive.id);
 	const currentBalanceTier = currentUser.premium_balance_tier;
+	const currentBalanceRemaining = Math.max(0, Number(currentUser.premium_balance_expiry_date ?? 0) - Date.now());
 
 	if (
 		currentBalanceTier !== null &&
 		(currentBalanceTier !== tier || Boolean(currentUser.premium_balance_is_cyr) !== isCyr)
 	) {
 		await interaction.confirmation(
-			`❗They already have **__Tier: ${currentBalanceTier - 1}__** (||PerkTier: ${currentBalanceTier}||), this will replace the existing balance entirely, are you sure?`
+			`❗They already have **__Tier: ${currentBalanceTier - 1}__** (||PerkTier: ${currentBalanceTier}||) with ${formatDuration(currentBalanceRemaining)} remaining, this will replace the existing balance entirely, are you sure?`
 		);
 	}
 	await interaction.confirmation(
