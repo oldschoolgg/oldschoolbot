@@ -6,6 +6,7 @@ import {
 	FormattedCustomEmoji,
 	formatDuration,
 	formatOrdinal,
+	formatUserPaidTiers,
 	notEmpty,
 	roboChimpCLRankQuery
 } from '@oldschoolgg/toolkit';
@@ -21,7 +22,6 @@ import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js'
 import { blowpipeCommand, blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
 import { degradeableItemsCommand } from '@/lib/minions/functions/degradeableItemsCommand.js';
 import { allPossibleStyles, trainCommand } from '@/lib/minions/functions/trainCommand.js';
-import { formatUserPaidTiers } from '@oldschoolgg/toolkit';
 import { Minigames } from '@/lib/settings/minigames.js';
 import creatures from '@/lib/skilling/skills/hunter/creatures/index.js';
 import { Skills } from '@/lib/skilling/skills/index.js';

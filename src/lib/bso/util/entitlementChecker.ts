@@ -1,6 +1,7 @@
 import { findGroupOfUser } from '@/lib/bso/util/findGroupOfUser.js';
 
 import { RoboChimpBit } from '@oldschoolgg/toolkit';
+
 import { srcMUserFetch } from '@/lib/user/MUser.js';
 
 export type Entitlement = {

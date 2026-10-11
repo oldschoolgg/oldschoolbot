@@ -5,7 +5,15 @@ import { findGroupOfUser } from '@/lib/bso/util/findGroupOfUser.js';
 import { repairBrokenItemsFromUser } from '@/lib/bso/util/repairBrokenItems.js';
 
 import { EmbedBuilder, userMention } from '@oldschoolgg/discord';
-import { formatDuration, isValidHexColor, PerkTier, stringMatches, stringSearch, Time } from '@oldschoolgg/toolkit';
+import {
+	formatDuration,
+	isValidHexColor,
+	PerkTier,
+	RoboChimpBit,
+	stringMatches,
+	stringSearch,
+	Time
+} from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, ItemGroups, Items, resolveItems, ToBUniqueTable } from 'oldschooljs';
 
 import type { Activity } from '@/prisma/main.js';
@@ -17,7 +25,6 @@ import { gnomeRestaurantCL, guardiansOfTheRiftCL, shadesOfMorttonCL } from '@/li
 import pets from '@/lib/data/pets.js';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
 import { allOpenables, type UnifiedOpenable } from '@/lib/openables.js';
-import { RoboChimpBit } from '@oldschoolgg/toolkit';
 import type { MinigameName } from '@/lib/settings/minigames.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
@@ -804,11 +811,7 @@ async function patronTriggerDoubleLoot(user: MUser) {
 	return `Added ${formatDuration(time)} of double loot.`;
 }
 
-const cyrTier5PlusBits = [
-	RoboChimpBit.CyrTier5,
-	RoboChimpBit.CyrTier6,
-	RoboChimpBit.CyrTier7
-] as const;
+const cyrTier5PlusBits = [RoboChimpBit.CyrTier5, RoboChimpBit.CyrTier6, RoboChimpBit.CyrTier7] as const;
 
 async function hasCyrTier5Plus(user: MUser) {
 	const patron = await Cache.getRoboChimpUser(user.id, true);

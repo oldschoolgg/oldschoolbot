@@ -1,7 +1,5 @@
-import { Time } from '@oldschoolgg/toolkit';
+import { formatUserPaidTiers, getCyrTripBonus, Time } from '@oldschoolgg/toolkit';
 import { describe, expect, test } from 'vitest';
-
-import { formatUserPaidTiers, getCyrTripBonus } from '@oldschoolgg/toolkit';
 
 describe('perk tier helpers', () => {
 	test('formats robochimp paid tier labels', () => {

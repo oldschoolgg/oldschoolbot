@@ -21,7 +21,15 @@ import {
 	ZBlowpipeData,
 	ZFarmingContract
 } from '@oldschoolgg/schemas';
-import { calcWhatPercent, isObject, type PerkTier, Time, UserError, uniqueArr } from '@oldschoolgg/toolkit';
+import {
+	calcWhatPercent,
+	isObject,
+	type PerkTier,
+	RoboChimpBit,
+	Time,
+	UserError,
+	uniqueArr
+} from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { Mutex } from 'async-mutex';
 import { randArrItem, SeedableRNG } from 'node-rng';
@@ -59,7 +67,6 @@ import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { RemoveFoodFromUserParams } from '@/lib/minions/functions/removeFoodFromUser.js';
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import type { AddXpParams, ClueBank, KillableMonster } from '@/lib/minions/types.js';
-import { RoboChimpBit } from '@oldschoolgg/toolkit';
 import { getPerkTierCached, getUsersPerkTier } from '@/lib/perkTiers.js';
 import { type MinigameName, type MinigameScore, Minigames } from '@/lib/settings/minigames.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
@@ -309,12 +316,7 @@ RETURNING (monster_scores->>'${monsterID}')::int AS new_kc;
 			if (!patron) {
 				throw new UserError('You need an active Cyr Tier 5 Patreon subscription to claim this promotion.');
 			}
-			if (
-				!(
-					patron.bits.includes(RoboChimpBit.CyrTier5) ||
-					patron.bits.includes(RoboChimpBit.CyrTier6)
-				)
-			) {
+			if (!(patron.bits.includes(RoboChimpBit.CyrTier5) || patron.bits.includes(RoboChimpBit.CyrTier6))) {
 				throw new UserError('You need an active Cyr Tier 5 Patreon subscription to claim this promotion.');
 			}
 

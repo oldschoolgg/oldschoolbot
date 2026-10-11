@@ -4,7 +4,7 @@ import { getDiscoBankPointLines } from '@/lib/bso/discoBankPoints.js';
 
 import { existsSync } from 'node:fs';
 import * as fs from 'node:fs/promises';
-import { cleanString, generateHexColorForCashStack, sumArr, UserError } from '@oldschoolgg/toolkit';
+import { cleanString, generateHexColorForCashStack, RoboChimpBit, sumArr, UserError } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, itemID, toKMB } from 'oldschooljs';
 import { chunk } from 'remeda';
 import type { Image } from 'skia-canvas';
@@ -27,7 +27,6 @@ import { filterableTypes } from '@/lib/data/filterables.js';
 import { marketPriceOfBank, marketPriceOrBotPrice } from '@/lib/marketPrices.js';
 import backgroundImages, { type BankBackground } from '@/lib/minions/data/bankBackgrounds.js';
 import { type FlagMap, type Flags, OverrideStatus } from '@/lib/minions/types.js';
-import { RoboChimpBit } from '@oldschoolgg/toolkit';
 import { type BankSortMethod, BankSortMethods, sorts } from '@/lib/sorts.js';
 import { XPLamps } from '@/mahoji/lib/abstracted_commands/lampCommand.js';
 

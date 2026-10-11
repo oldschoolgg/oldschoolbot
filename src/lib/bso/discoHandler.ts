@@ -117,9 +117,7 @@ export async function discoHandler({ data, user, components, embeds, rng }: Trip
 			if (fashionSlot === 'ammo') continue;
 			const expectedItem = preset[presetSlot];
 			const equippedItem = fashion[fashionSlot];
-			if (
-				(equippedItem?.item ?? null) !== expectedItem
-			) {
+			if ((equippedItem?.item ?? null) !== expectedItem) {
 				isCurrentFashion = false;
 				break;
 			}

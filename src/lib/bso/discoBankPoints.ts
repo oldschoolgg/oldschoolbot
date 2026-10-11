@@ -6,10 +6,10 @@ import {
 } from '@/lib/bso/discoBloodbath.js';
 import type { Entitlement } from '@/lib/bso/util/entitlementChecker.js';
 
+import { RoboChimpBit } from '@oldschoolgg/toolkit';
 import type { Item } from 'oldschooljs';
 
 import { PerkTier } from '@/lib/constants.js';
-import { RoboChimpBit } from '@oldschoolgg/toolkit';
 
 // Disco Bloodbath-only /bank subtext. Remove this file and its caller after the event.
 export const discoBankPointEntitlements = [
