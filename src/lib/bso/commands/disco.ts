@@ -1,4 +1,5 @@
 import { generateDiscoOutfitImage } from '@/lib/bso/canvas/generateDiscoOutfitImage.js';
+import { generateDiscoLeaderboardImage } from '@/lib/bso/canvas/generateDiscoLeaderboardImage.js';
 import { discoBankPointEntitlements } from '@/lib/bso/discoBankPoints.js';
 import {
 	DISCO_AESTHETIC_SHORT_NAMES,
@@ -19,6 +20,7 @@ import { Time } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
 import { activity_type_enum } from '@/prisma/main/enums.js';
+import { Prisma } from '@/prisma/main.js';
 import { mentionCommand } from '@/discord/utils.js';
 import { BitField } from '@/lib/constants.js';
 import type { DiscoBloodbathActivityTaskOptions } from '@/lib/types/minions.js';
@@ -105,6 +107,7 @@ export const discoCommand = defineCommand({
 		{ type: 'Subcommand', name: 'start', description: 'Join the Disco Bloodbath event.' },
 		{ type: 'Subcommand', name: 'help', description: 'Learn how the club circuit works.' },
 		{ type: 'Subcommand', name: 'stats', description: 'View your Realm progress and club rank.' },
+		{ type: 'Subcommand', name: 'leaderboard', description: 'View the Disco Bloodbath leaders.' },
 		{
 			type: 'Subcommand',
 			name: 'outfit',
@@ -275,6 +278,63 @@ export const discoCommand = defineCommand({
 			);
 			const overall = DISCO_AESTHETICS.reduce((total, aesthetic) => total + (points[aesthetic] ?? 0), 0);
 			return `**Disco Bloodbath stats**\nTrips completed: ${stats?.trips ?? 0}\nOverall: ${overall} points\n${ranks.join('\n')}`;
+		}
+
+		if (options.leaderboard) {
+			const ratelimit = await Cache.tryRatelimit(user.id, 'disco_leaderboard');
+			if (!ratelimit.success) return 'The Disco Bloodbath leaderboard can only be viewed once every 10 minutes.';
+
+			const score = (aesthetics: readonly (typeof DISCO_AESTHETICS)[number][]) =>
+				aesthetics
+					.map(aesthetic => `COALESCE((s.disco_stats->'points'->>'${aesthetic}')::integer, 0)`)
+					.join(' + ');
+			const findLeader = async (label: string, aesthetics: readonly (typeof DISCO_AESTHETICS)[number][]) => {
+				const total = score(aesthetics);
+				const [leader] = await prisma.$queryRaw<
+					{
+						username: string | null;
+						score: number;
+						points: Record<(typeof DISCO_AESTHETICS)[number], number>;
+					}[]
+				>`
+					SELECT
+						u.username,
+						(${Prisma.raw(total)})::integer AS score,
+						jsonb_build_object(
+							'Futuristic', COALESCE((s.disco_stats->'points'->>'Futuristic')::integer, 0),
+							'Ragdoll', COALESCE((s.disco_stats->'points'->>'Ragdoll')::integer, 0),
+							'Anti-Fashion', COALESCE((s.disco_stats->'points'->>'Anti-Fashion')::integer, 0)
+						) AS points
+					FROM user_stats s
+					JOIN users u ON u.id = s.user_id::text
+					WHERE (${Prisma.raw(total)}) > 0
+					ORDER BY score DESC, u.id
+					LIMIT 1;
+				`;
+				return {
+					label,
+					username: leader?.username ?? null,
+					score: leader?.score ?? 0,
+					points: leader?.points ?? { Futuristic: 0, Ragdoll: 0, 'Anti-Fashion': 0 }
+				};
+			};
+			const [overall, ...leaders] = await Promise.all([
+				findLeader('Overall', DISCO_AESTHETICS),
+				findLeader('Chrome Wreckers', ['Anti-Fashion', 'Futuristic']),
+				findLeader('Ragged Renegades', ['Ragdoll', 'Anti-Fashion']),
+				findLeader('Neon Plushies', ['Futuristic', 'Ragdoll']),
+				findLeader('Futuristic', ['Futuristic']),
+				findLeader('Ragdoll', ['Ragdoll']),
+				findLeader('Anti-Fashion', ['Anti-Fashion'])
+			]);
+			return {
+				files: [
+					{
+						name: 'disco-bloodbath-leaders.png',
+						buffer: await generateDiscoLeaderboardImage({ overall, leaders })
+					}
+				]
+			};
 		}
 
 		if (options.inquire) {
