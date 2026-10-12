@@ -118,6 +118,27 @@ export const discoBloodbathTask: MinionTask = {
 			itemsToAdd: loot,
 			otherUpdates: awardPrize ? { claimed_glamour_box: { increment: 1 } } : undefined
 		});
+		const activity = await prisma.activity.findUniqueOrThrow({
+			where: { id: data.id },
+			select: { start_date: true, finish_date: true }
+		});
+		await prisma.discoBloodbathTrip.create({
+			data: {
+				activity_id: data.id,
+				user_id: user.id,
+				total_points_worn: scored.points,
+				actual_duration: activity.finish_date.getTime() - activity.start_date.getTime(),
+				calculated_duration: data.duration,
+				effective_duration: data.effectiveDuration ?? data.duration,
+				points_earned: gained,
+				point_totals: stats.points,
+				loot: itemsAdded.length > 0 ? itemsAdded.toJSON() : null,
+				club: data.club,
+				good_aesthetics: data.isRave ? (data.raveAesthetics ?? []) : [data.theme.good],
+				bad_aesthetics: data.isRave ? [] : [data.theme.bad],
+				is_rave: data.isRave ?? false
+			}
+		});
 
 		const top = affected[0]?.[1] > 0 ? affected[0][0] : undefined;
 		const topMessage = top

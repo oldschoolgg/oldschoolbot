@@ -370,6 +370,7 @@ model User {
   // Relations
   farmedCrops    FarmedCrop[]
   botItemSell    BotItemSell[]
+  discoBloodbathTrips DiscoBloodbathTrip[]
   pinnedTrip     PinnedTrip[]
   historicalData HistoricalData[]
   minigame       Minigame?
@@ -571,6 +572,28 @@ model Gamble {
   @@index([user_id, created_at])
   @@index([game, created_at])
   @@map("gamble")
+}
+
+model DiscoBloodbathTrip {
+  id                  Int      @id @default(autoincrement())
+  activity_id         Int      @unique
+  user_id             String   @db.VarChar(19)
+  user                User     @relation(fields: [user_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  timestamp           DateTime @default(now()) @db.Timestamp(6)
+  total_points_worn   Json     @db.JsonB
+  actual_duration     Int
+  calculated_duration Int
+  effective_duration  Int
+  points_earned       Json     @db.JsonB
+  point_totals        Json     @db.JsonB
+  loot                Json?    @db.JsonB
+  club                String
+  good_aesthetics     String[]
+  bad_aesthetics      String[]
+  is_rave             Boolean  @default(false)
+
+  @@index([user_id, timestamp])
+  @@map("disco_bloodbath_trip")
 }
 
 model MortimerTricks {
