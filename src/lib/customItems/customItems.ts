@@ -15692,6 +15692,22 @@ setCustomItem(
 
 /** Loyalty Box **/
 setCustomItem(
+	75_698,
+	'Boo’ala',
+	'Herbi',
+	{
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isPet: true,
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
 	75_699,
 	'Fealty Mystery Box',
 	'Mystery box',

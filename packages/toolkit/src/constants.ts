@@ -87,6 +87,7 @@ export enum Emoji {
 	CombatAchievements = '<:combatAchievements:1145015804040065184>',
 	Stopwatch = '⏱️',
 	Smokey = '<:Smokey:886284971914969149>',
+	Booala = '<:kool_ala:1559015952216236093>',
 	ItemContract = '<:Item_contract:988422348434718812>',
 	// Badges,
 	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',

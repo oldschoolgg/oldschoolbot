@@ -1102,7 +1102,8 @@ export const testPotatoCommand = globalConfig.isProduction
 						}
 					}
 					const unspawnableItem = unspawnableItemIDs.find(itemID => bankToGive.has(itemID));
-					if (!user.isAdmin && unspawnableItem) return `${Items.getOrThrow(unspawnableItem).name} cannot be spawned.`;
+					if (!user.isAdmin && unspawnableItem)
+						return `${Items.getOrThrow(unspawnableItem).name} cannot be spawned.`;
 
 					await user.addItemsToBank({ items: bankToGive, collectionLog: Boolean(collectionlog) });
 					return `Spawned: ${bankToGive.toString().slice(0, 500)}.`;
