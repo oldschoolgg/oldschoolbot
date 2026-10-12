@@ -13,37 +13,10 @@ export type DiscoOverallLeader = DiscoLeaderboardEntry & {
 	points: Record<(typeof DISCO_AESTHETICS)[number], number>;
 };
 
-function drawScaledText(
-	canvas: OSRSCanvas,
-	{
-		text,
-		x,
-		y,
-		color,
-		scale,
-		center = false,
-		font = 'Bold'
-	}: {
-		text: string;
-		x: number;
-		y: number;
-		color: string;
-		scale: number;
-		center?: boolean;
-		font?: 'Bold' | 'Compact' | 'TinyPixel';
-	}
-) {
-	canvas.ctx.save();
-	canvas.ctx.translate(x, y);
-	canvas.ctx.scale(scale, scale);
-	canvas.drawText({ text, x: 0, y: 0, color, center, font });
-	canvas.ctx.restore();
-}
-
-function trimText(canvas: OSRSCanvas, text: string, maxWidth: number, scale: number) {
-	if (canvas.measureTextWidth(text, 'Bold') * scale <= maxWidth) return text;
+function trimText(canvas: OSRSCanvas, text: string, maxWidth: number) {
+	if (canvas.measureTextWidth(text, 'Bold') <= maxWidth) return text;
 	let trimmed = text;
-	while (trimmed.length > 1 && canvas.measureTextWidth(`${trimmed}…`, 'Bold') * scale > maxWidth) {
+	while (trimmed.length > 1 && canvas.measureTextWidth(`${trimmed}…`, 'Bold') > maxWidth) {
 		trimmed = trimmed.slice(0, -1);
 	}
 	return `${trimmed}…`;
@@ -85,7 +58,14 @@ function drawTrophy(canvas: OSRSCanvas, x: number, y: number, size: number, glow
 	ctx.restore();
 }
 
-function drawCard(canvas: OSRSCanvas, entry: DiscoLeaderboardEntry, x: number, y: number, width: number, height: number) {
+function drawCard(
+	canvas: OSRSCanvas,
+	entry: DiscoLeaderboardEntry,
+	x: number,
+	y: number,
+	width: number,
+	height: number
+) {
 	const { ctx } = canvas;
 	ctx.save();
 	ctx.fillStyle = 'rgba(28, 27, 24, 0.88)';
@@ -97,30 +77,27 @@ function drawCard(canvas: OSRSCanvas, entry: DiscoLeaderboardEntry, x: number, y
 	ctx.lineWidth = 2;
 	ctx.strokeRect(x + 8, y + 8, width - 16, height - 16);
 	ctx.restore();
-	drawTrophy(canvas, x + width / 2, y + 13, 54);
-	drawScaledText(canvas, {
+	drawTrophy(canvas, x + width / 2, y + 5, 27);
+	canvas.drawText({
 		text: entry.label,
 		x: x + width / 2,
-		y: y + 84,
+		y: y + 41,
 		color: '#ffcf4c',
-		scale: 1.05,
 		center: true,
 		font: 'TinyPixel'
 	});
-	drawScaledText(canvas, {
-		text: trimText(canvas, entry.username ?? 'Unclaimed', width - 22, 1.35),
+	canvas.drawText({
+		text: trimText(canvas, entry.username ?? '???', width - 22),
 		x: x + width / 2,
-		y: y + 112,
+		y: y + 57,
 		color: '#f3ead1',
-		scale: 1.35,
 		center: true
 	});
-	drawScaledText(canvas, {
+	canvas.drawText({
 		text: entry.score.toLocaleString(),
 		x: x + width / 2,
-		y: y + 139,
+		y: y + 73,
 		color: '#fff44f',
-		scale: 1.25,
 		center: true
 	});
 }
@@ -137,62 +114,62 @@ export async function generateDiscoLeaderboardImage({
 		bankImageTask.ready = true;
 	}
 	const { sprite } = bankImageTask.getBgAndSprite({ bankBackgroundId: 1 });
-	const canvas = new OSRSCanvas({ width: 1000, height: 890, sprite });
+	const canvas = new OSRSCanvas({ width: 500, height: 400, sprite });
 	canvas.drawBackgroundPattern(sprite);
+	canvas.ctx.imageSmoothingEnabled = false;
+	canvas.drawBorder(sprite);
 
-	drawScaledText(canvas, {
-		text: 'Disco Bloodbath Leaders!',
-		x: 500,
-		y: 44,
-		color: '#ff9d22',
-		scale: 2.25,
-		center: true
-	});
+	canvas.drawTitleText({ text: 'Disco Bloodbath Leaders!', x: 250, y: 22, center: true });
 
 	const { ctx } = canvas;
 	ctx.fillStyle = 'rgba(23, 22, 19, 0.9)';
-	ctx.fillRect(90, 80, 820, 198);
+	ctx.fillRect(45, 34, 410, 94);
 	ctx.strokeStyle = '#efc84c';
-	ctx.lineWidth = 4;
-	ctx.strokeRect(93, 83, 814, 192);
-	drawTrophy(canvas, 500, 88, 115, true);
-	drawScaledText(canvas, {
-		text: trimText(canvas, overall.username ?? 'Unclaimed', 520, 2),
-		x: 500,
-		y: 205,
+	ctx.lineWidth = 2;
+	ctx.strokeRect(46, 35, 408, 92);
+	drawTrophy(canvas, 250, 38, 55, true);
+	canvas.drawText({
+		text: trimText(canvas, overall.username ?? '???', 260),
+		x: 250,
+		y: 100,
 		color: '#fff3c4',
-		scale: 2,
 		center: true
 	});
-	drawScaledText(canvas, {
+	canvas.drawText({
 		text: `${overall.score.toLocaleString()} combined points`,
-		x: 500,
-		y: 235,
+		x: 250,
+		y: 111,
 		color: '#fff44f',
-		scale: 1.45,
 		center: true
 	});
 	const pointText = DISCO_AESTHETICS.map(
 		aesthetic => `${aesthetic}: ${overall.points[aesthetic].toLocaleString()}`
 	).join('     ');
-	drawScaledText(canvas, {
-		text: pointText,
-		x: 500,
-		y: 263,
-		color: '#d9cead',
-		scale: 0.87,
-		center: true,
-		font: 'TinyPixel'
-	});
+	canvas.drawText({ text: pointText, x: 250, y: 121, color: '#d9cead', center: true, font: 'TinyPixel' });
 
-	const cardWidth = 286;
-	const cardHeight = 174;
+	const cardWidth = 143;
+	const cardHeight = 82;
 	for (const [index, entry] of leaders.entries()) {
 		const row = Math.floor(index / 3);
 		const column = index % 3;
-		drawCard(canvas, entry, 55 + column * 315, 322 + row * 214, cardWidth, cardHeight);
+		drawCard(canvas, entry, 28 + column * 157, 142 + row * 92, cardWidth, cardHeight);
 	}
 
-	canvas.drawBorder(sprite);
-	return canvas.toScaledOutput(1);
+	const winners = new Set(
+		[overall, ...leaders].flatMap(entry => (entry.username ? [entry.username.toLowerCase()] : []))
+	);
+	if (winners.size > 1) {
+		canvas.drawText({
+			text: 'Only 1 prize will be awarded per player. If a player wins more than 1 category, the next-highest player will win one of the prizes.',
+			x: 250,
+			y: 340,
+			color: '#f3ead1',
+			font: 'Compact',
+			center: true,
+			maxWidth: 420,
+			lineHeight: 16
+		});
+	}
+
+	return canvas.toScaledOutput(2);
 }

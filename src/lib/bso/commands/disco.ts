@@ -1,11 +1,11 @@
-import { generateDiscoOutfitImage } from '@/lib/bso/canvas/generateDiscoOutfitImage.js';
 import { generateDiscoLeaderboardImage } from '@/lib/bso/canvas/generateDiscoLeaderboardImage.js';
+import { generateDiscoOutfitImage } from '@/lib/bso/canvas/generateDiscoOutfitImage.js';
 import { discoBankPointEntitlements } from '@/lib/bso/discoBankPoints.js';
 import {
 	DISCO_AESTHETIC_SHORT_NAMES,
 	DISCO_AESTHETICS,
-	DISCO_CLUBS,
 	DISCO_CLUB_THEMES,
+	DISCO_CLUBS,
 	DiscoItem,
 	discoClubOrder,
 	discoHalloweenStory,
@@ -42,10 +42,12 @@ const helpText = (
 *Completed visits can return strange fashion loot and very rarely a chase box*.
 
 The clubs are:
-${discoClubOrder().map(club => {
-	const theme = DISCO_CLUB_THEMES[club];
-	return `- **${theme.club}** — ${theme.name}: ${theme.description}`;
-}).join('\n')}
+${discoClubOrder()
+	.map(club => {
+		const theme = DISCO_CLUB_THEMES[club];
+		return `- **${theme.club}** — ${theme.name}: ${theme.description}`;
+	})
+	.join('\n')}
 
 Use ${mentionCommand('disco', 'outfit')} for your Fashion-gear breakdown, or ${mentionCommand('disco', 'check_item')} to inspect one item.${
 	canUseDiscoBankPoints
@@ -282,7 +284,7 @@ export const discoCommand = defineCommand({
 
 		if (options.leaderboard) {
 			const ratelimit = await Cache.tryRatelimit(user.id, 'disco_leaderboard');
-			if (!ratelimit.success) return 'The Disco Bloodbath leaderboard can only be viewed once every 10 minutes.';
+			if (!user.isAdmin && !ratelimit.success) return 'The Disco Bloodbath leaderboard can only be viewed once every 10 minutes.';
 
 			const score = (aesthetics: readonly (typeof DISCO_AESTHETICS)[number][]) =>
 				aesthetics
@@ -348,18 +350,20 @@ export const discoCommand = defineCommand({
 			const theme = DISCO_CLUB_THEMES[club];
 			const popularity = discoPopularity(theme.club);
 			let msg = `☠️ ${theme.club} is like the Crypt keeper.... Dead. But in a bad way. 🪦`;
-			if (popularity > 50) msg = `💀 It's better than.... bad?  Your contacts are not impressed by ${theme.club}.`;
+			if (popularity > 50)
+				msg = `💀 It's better than.... bad?  Your contacts are not impressed by ${theme.club}.`;
 			if (popularity > 70) msg = `${theme.club} is getting attention. Might be worth a visit...`;
 			if (popularity > 83) msg = `🐦‍🔥${theme.club} is hot. Everyone worth knowing is talking about it.🔥`;
-			if (popularity >= 100) msg = `🦄🎉 ${theme.club} is a FREAKING **UNICORN**! You __**HAVE**__ to be there!.🎉🎉🎉`;
+			if (popularity >= 100)
+				msg = `🦄🎉 ${theme.club} is a FREAKING **UNICORN**! You __**HAVE**__ to be there!.🎉🎉🎉`;
 			return msg;
 		}
 
 		if (options.party) {
-			if (!DISCO_CLUBS.includes(options.party.club_name as (typeof DISCO_CLUBS)[number]))
-				return 'Choose a club from the suggestions.';
+			const { party } = options;
+			const club = DISCO_CLUBS.find(club => club.toLowerCase() === party.club_name.toLowerCase());
+			if (!club) return 'Choose a club from the suggestions.';
 			if (await user.minionIsBusy()) return `${user.minionName} is currently busy.`;
-			const club = options.party.club_name as (typeof DISCO_CLUBS)[number];
 			const theme = DISCO_CLUB_THEMES[club];
 			const popularity = discoPopularity(theme.club);
 			await ActivityManager.startTrip<DiscoBloodbathActivityTaskOptions>({
