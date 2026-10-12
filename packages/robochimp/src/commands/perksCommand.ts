@@ -33,16 +33,14 @@ function getGiftTier(user: {
 
 	let duration = Time.Week;
 	let tier: PatronTier | null = null;
-
+	if (hasCyrPerkTier(perkInput, cyrTier4.perkTier)) {
+		tier = cyrTier2;
+	}
 	if (hasCyrPerkTier(perkInput, cyrTier5.perkTier)) {
 		tier = cyrTier3;
 		if (hasCyrPerkTier(perkInput, cyrTier6.perkTier)) {
 			duration = Time.Day * 14;
 		}
-	}
-
-	if (hasCyrPerkTier(perkInput, cyrTier4.perkTier)) {
-		tier = cyrTier2;
 	}
 
 	return tier ? { tier, duration, isCyr: true } : null;
