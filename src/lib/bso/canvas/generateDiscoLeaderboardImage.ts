@@ -24,7 +24,10 @@ function trimText(canvas: OSRSCanvas, text: string, maxWidth: number) {
 
 function drawTrophy(canvas: OSRSCanvas, x: number, y: number, size: number, glow = false) {
 	const { ctx } = canvas;
-	if (glow) canvas.drawGlowingBlur(x, y + size * 0.43, size * 0.42, '#ffcb3d', size * 0.3, 1.5);
+	if (glow) {
+		canvas.drawGlowingBlur(x, y + size * 0.43, size * 0.42, '#ffcb3d', size * 0.3, 1.5);
+		ctx.filter = 'none';
+	}
 	ctx.save();
 	ctx.translate(x, y);
 	ctx.scale(size / 100, size / 100);
@@ -138,7 +141,7 @@ export async function generateDiscoLeaderboardImage({
 	canvas.drawText({
 		text: `${overall.score.toLocaleString()} combined points`,
 		x: 250,
-		y: 111,
+		y: 112,
 		color: '#fff44f',
 		center: true
 	});
