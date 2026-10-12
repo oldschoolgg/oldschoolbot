@@ -15693,7 +15693,7 @@ setCustomItem(
 /** Loyalty Box **/
 setCustomItem(
 	75_698,
-	"Boo’ala",
+	"Boo'ala",
 	'Herbi',
 	{
 		tradeable: false,
