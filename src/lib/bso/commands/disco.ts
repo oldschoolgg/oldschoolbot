@@ -38,6 +38,7 @@ const helpText = (
 - Use ${mentionCommand('disco', 'inquire')} for a tip from your contacts
 💡 The ${mentionCommand('bank')} command can show you the Aesthetic points for each item in your bank: \`/bank flag:show_disco_points\`
 - ${mentionCommand('disco', 'stats')} to track your rank.
+- Use ${mentionCommand('disco', 'leaderboard')} to see the event leaders.
 
 *Completed visits can return strange fashion loot and very rarely a chase box*.
 
