@@ -137,15 +137,6 @@ export const holidayOpenables: UnifiedOpenable[] = [
 		})
 	),
 	{
-		name: 'Fealty Mystery Box',
-		id: itemID('Fealty Mystery Box'),
-		openedItem: Items.getOrThrow('Fealty Mystery Box'),
-		aliases: ['fealty mystery box'],
-		output: FealtyBoxTable,
-		allItems: FealtyBoxTable.allItems,
-		excludeFromOpenAll: true
-	},
-	{
 		name: 'Royal mystery box',
 		id: itemID('Royal mystery box'),
 		openedItem: Items.getOrThrow('Royal mystery box'),
