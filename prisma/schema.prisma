@@ -335,6 +335,7 @@ enum bank_sort_method_enum {
 
 model User {
   claimed_lazy_box        Int       @default(0)
+  fealty_box_claimed      Boolean?
   claimed_glamour_box     Int       @default(0)
   bloodbath_event_started Boolean?
   gambles                 Gamble[]

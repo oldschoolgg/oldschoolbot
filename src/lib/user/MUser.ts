@@ -307,6 +307,7 @@ RETURNING (monster_scores->>'${monsterID}')::int AS new_kc;
 		}
 
 		return userQueueFn(this.id, async () => {
+			let loot = new Bank();
 			// Read the authoritative account directly: perk tiers and cached bits may be stale
 			// or include courtesy perks, other creators, or premium balance purchases.
 			const patron = await roboChimpClient.user.findUnique({
@@ -320,19 +321,30 @@ RETURNING (monster_scores->>'${monsterID}')::int AS new_kc;
 				throw new UserError('You need an active Cyr Tier 5 Patreon subscription to claim this promotion.');
 			}
 
-			const loot = new Bank().add('Lazy Mystery Box').add(bonusBox);
 			const newUser = await prisma.$transaction(async tx => {
-				// The conditional increment also locks the user row until commit. A second
-				// process must recheck claimed_lazy_box after the first transaction finishes.
-				const claimed = await tx.user.updateMany({
-					where: { id: this.id, claimed_lazy_box: 0 },
-					data: { claimed_lazy_box: { increment: 1 } }
+				// Claim Fealty first to lock the user row. This lets previously issued Lazy
+				// boxes receive Fealty without allowing a second Fealty claim.
+				const claimedFealty = await tx.user.updateMany({
+					where: { id: this.id, fealty_box_claimed: null },
+					data: { fealty_box_claimed: true }
 				});
-				if (claimed.count !== 1) {
-					throw new UserError('You have already claimed your Lazy Mystery Box promotion.');
+				if (claimedFealty.count !== 1) {
+					throw new UserError('You have already claimed your Fealty Mystery Box promotion.');
 				}
 
 				const currentUser = await tx.user.findUniqueOrThrow({ where: { id: this.id } });
+				loot = new Bank().add('Fealty Mystery Box');
+				if (currentUser.claimed_lazy_box === 0) {
+					const claimedLazy = await tx.user.updateMany({
+						where: { id: this.id, claimed_lazy_box: 0 },
+						data: { claimed_lazy_box: { increment: 1 } }
+					});
+					if (claimedLazy.count !== 1) {
+						throw new UserError('You have already claimed your Lazy Mystery Box promotion.');
+					}
+					loot.add('Lazy Mystery Box').add(bonusBox);
+				}
+
 				const bank: ItemBank = new Bank(currentUser.bank as ItemBank).add(loot).toJSON();
 				const previousCL = await tx.jsonBank.findUnique({
 					where: { user_id_type: { user_id: this.id, type: 'CollectionLog' } }

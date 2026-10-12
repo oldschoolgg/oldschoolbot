@@ -47,7 +47,7 @@ const claimables = [
 		name: 'Lazy Mystery Box (T5 Promo)',
 		hasRequirement: async (user: MUser): Promise<true | string> => {
 			if (!isDiscoEventActive()) return `This event ended on ${DISCO_EVENT_END_DATE.toDateString()}.`;
-			if (user.lazy_boxes_claimed > 0) return 'You already claimed your Lazy box!';
+			if (user.user.fealty_box_claimed) return 'You already claimed your Fealty box!';
 			return true;
 		},
 		action: async (user: MUser, bonusBox?: string) => {
