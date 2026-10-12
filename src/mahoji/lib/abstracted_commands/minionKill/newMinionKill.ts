@@ -3,6 +3,7 @@ import {
 	defaultIslandUpgrades,
 	defaultMaintenanceTimestamps,
 	getBossSpeedBonus,
+	getGlobalBossSpeedBonus,
 	type IslandUpgradeTiers
 } from '@/lib/bso/commands/islandUpgrades.js';
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
@@ -10,7 +11,7 @@ import type { InventionID } from '@/lib/bso/skills/invention/inventions.js';
 
 import type { ECombatOption } from '@oldschoolgg/schemas';
 import { formatDuration, increaseNumByPercent, isWeekend, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
-import { EItem, Items, Monsters } from 'oldschooljs';
+import { EItem, Items, itemID, Monsters } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
 import * as z from 'zod';
 
@@ -243,7 +244,24 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 		if (gearBank.gear.wildy.get('ammo')?.item !== BSOItem.HELLFIRE_ARROW) {
 			return `You need Hellfire arrows equipped to kill ${monster.name} with a Hellfire bow.`;
 		}
+		const equippedAmmo = gearBank.gear.wildy.get('ammo')?.quantity ?? 0;
+		if (equippedAmmo < arrowsNeeded) {
+			return `You need ${arrowsNeeded}x Hellfire arrows equipped to kill ${monster.name}, but you only have ${equippedAmmo}x equipped.`;
+		}
 		speedDurationResult.updateBank.itemCostBank.add(BSOItem.HELLFIRE_ARROW, arrowsNeeded);
+	}
+
+	if (
+		gearBank.gear.range.hasEquipped('Elderflame arrow') &&
+		gearBank.gear.range.hasEquipped(['Elderflame bow', 'Starfire bow']) &&
+		(monster.setupsUsed?.includes('range') || primaryStyle === 'range')
+	) {
+		const arrowsNeeded = Math.ceil(duration / (Time.Second * 13));
+		const equippedAmmo = gearBank.gear.range.get('ammo')?.quantity ?? 0;
+		if (equippedAmmo < arrowsNeeded) {
+			return `You need ${arrowsNeeded}x Elderflame arrows equipped in your range gear to kill ${quantity}x ${monster.name}, but you only have ${equippedAmmo}x equipped.`;
+		}
+		speedDurationResult.updateBank.itemCostBank.add(itemID('Elderflame arrow'), arrowsNeeded);
 	}
 
 	for (const effect of [...postBoostEffects, ...ephemeralPostTripEffects]) {
@@ -298,13 +316,14 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 	const islandUpgrades = args.islandUpgrades ?? defaultIslandUpgrades;
 	const islandMaint = (args.islandUpgrades as any)?.maintenance ?? defaultMaintenanceTimestamps;
 	const islandAssignment = (args.islandUpgrades as any)?.assignment ?? null;
-	const islandBossBonus = islandBossIDs.includes(monster.id)
+	const isIslandBoss = islandBossIDs.includes(monster.id);
+	const islandBossBonus = isIslandBoss
 		? getBossSpeedBonus(islandUpgrades, islandMaint, islandAssignment)
-		: 0;
+		: getGlobalBossSpeedBonus(islandUpgrades, islandMaint, islandAssignment);
 	if (islandBossBonus > 0) {
 		duration = reduceNumByPercent(duration, islandBossBonus * 100);
 		speedDurationResult.messages.push(
-			`${(islandBossBonus * 100).toFixed(0)}% faster kills (Warcamp Fortifications)`
+			`${(islandBossBonus * 100).toFixed(0)}% faster kills (${isIslandBoss ? 'Warcamp Fortifications' : 'Grand Conduit - Warcamp'})`
 		);
 	}
 
@@ -312,10 +331,6 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 
 	speedDurationResult.updateBank.itemCostBank.freeze();
 	speedDurationResult.updateBank.itemLootBank.freeze();
-
-	if (speedDurationResult.updateBank.itemCostBank.length > 0) {
-		speedDurationResult.messages.push(`Removing items: ${speedDurationResult.updateBank.itemCostBank}`);
-	}
 
 	if (monster.deathProps) {
 		const deathChance = calculateSimpleMonsterDeathChance({ ...monster.deathProps, currentKC: args.monsterKC });

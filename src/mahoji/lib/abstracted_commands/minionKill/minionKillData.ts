@@ -4,6 +4,11 @@ import type { GearBank } from '@/lib/structures/GearBank.js';
 
 export const dragonHunterWeapons = [
 	{
+		item: Items.getOrThrow('Dragonbane glaive'),
+		attackStyle: 'melee',
+		boost: 25
+	},
+	{
 		item: Items.getOrThrow('Dragon hunter lance'),
 		attackStyle: 'melee',
 		boost: 15

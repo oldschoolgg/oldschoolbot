@@ -1,4 +1,13 @@
+import {
+	defaultIslandContributions,
+	defaultIslandUpgrades,
+	defaultLastCollected,
+	defaultMaintenanceTimestamps,
+	type IslandUpgradeTiers,
+	type UpgradeCategory
+} from '@/lib/bso/commands/islandUpgrades.js';
 import { elderRequiredClueCLItems, elderSherlockItems } from '@/lib/bso/elderClueRequirements.js';
+import { type Nursery, TameSpeciesID, tameFeedableItems } from '@/lib/bso/tames/tames.js';
 
 import { EmbedBuilder, userMention } from '@oldschoolgg/discord';
 import { noOp, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
@@ -104,6 +113,54 @@ for (const gear of Items.resolveItems([
 	coloRange.equip(Items.getOrThrow(gear));
 }
 
+const islandMelee = new Gear();
+for (const gear of Items.resolveItems([
+	'Empyrean greathelm',
+	'Empyrean greatplate',
+	'Empyrean greatgreaves',
+	'Empyrean greatgauntlets',
+	'Empyrean greatsabaton',
+	'Dragonbane glaive',
+	'Dragonbane aegis',
+	'Searcrown band',
+	"Brawler's hook necklace",
+	'TzKal cape'
+])) {
+	islandMelee.equip(Items.getOrThrow(gear));
+}
+
+const islandRange = new Gear();
+for (const gear of Items.resolveItems([
+	'Gorajan archer helmet',
+	'Gorajan archer top',
+	'Gorajan archer legs',
+	'Gorajan archer gloves',
+	'Gorajan archer boots',
+	'Elderflame bow',
+	'Elderflame arrow',
+	'Ring of piercing (i)',
+	'Farsight snapshot necklace',
+	'Tidal collector (i)'
+])) {
+	islandRange.equip(Items.getOrThrow(gear));
+}
+
+const islandMage = new Gear();
+for (const gear of Items.resolveItems([
+	'Gorajan occult helmet',
+	'Gorajan occult top',
+	'Gorajan occult legs',
+	'Gorajan occult gloves',
+	'Gorajan occult boots',
+	'Void staff',
+	'Abyssal tome',
+	'Spellbound ring (i)',
+	'Arcane blast necklace',
+	'Vasa cloak'
+])) {
+	islandMage.equip(Items.getOrThrow(gear));
+}
+
 const gearPresets = [
 	{
 		name: 'ToB',
@@ -116,8 +173,260 @@ const gearPresets = [
 		melee: coloMelee,
 		range: coloRange,
 		mage: coloRange
+	},
+	{
+		name: 'Island',
+		melee: islandMelee,
+		range: islandRange,
+		mage: islandMage
 	}
 ];
+
+const ALL_ISLAND_CATEGORIES: UpgradeCategory[] = [
+	'boss',
+	'megaboss',
+	'minigame',
+	'gathering',
+	'prismare',
+	'conduit',
+	'logistics',
+	'fishing',
+	'mining',
+	'woodcutting',
+	'divination',
+	'farming'
+];
+
+async function maxTameForUser(user: MUser): Promise<string> {
+	const newNursery: Nursery = {
+		egg: null,
+		eggsHatched: 5,
+		hasFuel: false
+	};
+	await user.update({ nursery: newNursery });
+
+	const fedBank = new Bank();
+	for (const feedable of tameFeedableItems) {
+		if (feedable.tameSpeciesCanBeFedThis.includes(TameSpeciesID.Igne)) {
+			fedBank.add(feedable.item.id);
+		}
+	}
+
+	const tames = await prisma.tame.findMany({ where: { user_id: user.id } });
+	let igneTame = tames.find(t => t.species_id === TameSpeciesID.Igne);
+
+	if (igneTame) {
+		await prisma.tame.update({
+			where: { id: igneTame.id },
+			data: {
+				growth_stage: 'adult',
+				growth_percent: 100,
+				equipped_primary: itemID('Gorajan igne claws'),
+				equipped_armor: itemID('Gorajan igne armor'),
+				fed_items: fedBank.toJSON(),
+				max_combat_level: 100,
+				max_artisan_level: 100,
+				max_support_level: 100,
+				max_gatherer_level: 100
+			}
+		});
+	} else {
+		igneTame = await prisma.tame.create({
+			data: {
+				user_id: user.id,
+				species_id: TameSpeciesID.Igne,
+				growth_stage: 'adult',
+				growth_percent: 100,
+				species_variant: 1,
+				max_total_loot: {},
+				fed_items: fedBank.toJSON(),
+				equipped_primary: itemID('Gorajan igne claws'),
+				equipped_armor: itemID('Gorajan igne armor'),
+				max_combat_level: 100,
+				max_artisan_level: 100,
+				max_support_level: 100,
+				max_gatherer_level: 100,
+				nickname: 'Igne'
+			}
+		});
+	}
+
+	await user.update({ selected_tame: igneTame.id });
+	return `Nursery built and Igne Tame (ID: ${igneTame.id}) fully maxed.`;
+}
+
+async function maxIslandUpgrades(user: MUser): Promise<string> {
+	const maxedUpgrades: IslandUpgradeTiers = {
+		boss: 5,
+		megaboss: 5,
+		minigame: 5,
+		gathering: 5,
+		prismare: 5,
+		conduit: 5,
+		logistics: 5,
+		fishing: 5,
+		mining: 5,
+		woodcutting: 5,
+		divination: 5,
+		farming: 5
+	};
+	const maintainedAll: Record<string, number> = {};
+	const now = Date.now();
+	for (const cat of ALL_ISLAND_CATEGORIES) {
+		maintainedAll[cat] = now;
+	}
+	await user.update({
+		island_upgrades: {
+			...maxedUpgrades,
+			contributions: defaultIslandContributions,
+			maintenance: maintainedAll,
+			assignment: null,
+			lastCollected: defaultLastCollected,
+			lifetimeCollected: {}
+		} as any
+	});
+	return 'Fully maintained and upgraded all Verdant camps.';
+}
+
+async function resetIslandUpgrades(user: MUser): Promise<string> {
+	await user.update({
+		island_upgrades: {
+			...defaultIslandUpgrades,
+			contributions: defaultIslandContributions,
+			maintenance: defaultMaintenanceTimestamps,
+			assignment: null,
+			lastCollected: defaultLastCollected,
+			lifetimeCollected: {}
+		} as any
+	});
+	return 'Reset all Verdant Island upgrades, contributions, maintenance timestamps, and assignments to default.';
+}
+
+const islandPreset = new Bank();
+for (const itemName of [
+	'Crystalline ore',
+	'Dense crystal shard',
+	'Gem infused ore',
+	'Celestyte',
+	'Starfire agate',
+	'Verdantyte',
+	'Oneiryte',
+	'Firaxyte',
+	'Prismare',
+	'Verdant logs',
+	'Ancient cap',
+	'Colossal stem',
+	'Living bark',
+	'Ancient verdant logs',
+	'Verdant plank',
+	'Ancient verdant plank',
+	'Crystalline plank',
+	'Myconid plank',
+	'Sentinel core',
+	'Starfire bow (u)',
+	'Verdant heart',
+	'Prolific twine',
+	'Primordial heartstring',
+	'Primordial spine',
+	'Primordial scales',
+	'Primordial bones',
+	'Sacrilegious flask',
+	'Forsaken tear',
+	'Shattered pendant',
+	'Celestial flame',
+	'Elder scroll piece',
+	'Elder sigil fragment (1)',
+	'Elder sigil fragment (2)',
+	'Elder sigil fragment (3)',
+	'Elder sigil',
+	'Empyrean shards',
+	'Elderflame catalyst',
+	'Elderflame arrow',
+	'Elderflame arrowtips',
+	'Elder mimic casket',
+	'Elder mimic casket (locked)',
+	'Prismare ring (u)',
+	'Prismare ring',
+	'Starfire bow',
+	'Elderflame bow',
+	'Dragonbane glaive',
+	'Dragonbane aegis',
+	'Celestial pendant',
+	'Vitrolic curse',
+	'Searcrown band',
+	'Empyrean greathelm',
+	'Empyrean greatplate',
+	'Empyrean greatgreaves',
+	'Empyrean greatgauntlets',
+	'Empyrean greatsabaton',
+	"Combatant's cape",
+	'Brimstone spore',
+	'Diluted brimstone',
+	'Ignilace seed',
+	'Ignilace',
+	'Korulsi seed',
+	'Grimy korulsi',
+	'Korulsi',
+	'Athelas seed',
+	'Athelas',
+	'Spirit weed seed',
+	'Spirit weed',
+	'Avocado seed',
+	'Avocado',
+	'Mango seed',
+	'Mango',
+	'Lychee seed',
+	'Lychee',
+	'Advax berry seed',
+	'Advax berry',
+	'Grand crystal acorn',
+	'Mysterious seed',
+	'Ivy seed',
+	'Heat res. brew',
+	'Heat res. restore',
+	'Heat res. vial',
+	'Enhanced super restore',
+	'Enhanced saradomin brew',
+	'Enhanced stamina potion',
+	'Enhanced divine water',
+	'Brimstone elixir',
+	"Dragon's fury",
+	'Divination potion',
+	'Super combat potion(4)',
+	'Gemstone bundle',
+	'Gemstone satchel',
+	'Gemstone core',
+	'Orylin',
+	'Orrodin',
+	'Sedryn',
+	'Bamyr',
+	'Dwarven bar',
+	'Sun-metal bar',
+	'Dark animica',
+	'Gorajan shards'
+]) {
+	islandPreset.add(itemName, 1_000_000);
+}
+islandPreset.add('Coins', 1_000_000_000_000);
+
+async function maxIslandAccount(user: MUser): Promise<string> {
+	const tameResult = await maxTameForUser(user);
+	const upgradeResult = await maxIslandUpgrades(user);
+
+	await user.updateGear([
+		{ setup: 'melee', gear: islandMelee.raw() },
+		{ setup: 'range', gear: islandRange.raw() },
+		{ setup: 'mage', gear: islandMage.raw() }
+	]);
+
+	await user.addItemsToBank({ items: islandPreset });
+
+	return `**Verdant Island Fully Maxed!**
+- ${tameResult}
+- ${upgradeResult}
+- **Gear:** Equipped BiS Melee, Range, and Mage.
+- **Bank:** Spawned 1M of all Island materials and 1T coins!`;
+}
 
 const thingsToReset = [
 	{
@@ -147,6 +456,12 @@ const thingsToReset = [
 				}
 			});
 			return 'Reset your bank.';
+		}
+	},
+	{
+		name: 'Island Upgrades',
+		run: async (user: MUser) => {
+			return resetIslandUpgrades(user);
 		}
 	}
 ];
@@ -330,7 +645,8 @@ const spawnPresets = [
 	['stashunits', allStashUnitItems],
 	['potions', potionsPreset],
 	['food', foodPreset],
-	['runes', runePreset]
+	['runes', runePreset],
+	['island', islandPreset]
 ] as const;
 
 const thingsToWipe = [
@@ -536,6 +852,17 @@ export const testPotatoCommand = globalConfig.isProduction
 					type: 'Subcommand',
 					name: 'elder',
 					description: 'Spawn the Elder clue requirements.'
+				},
+				{
+					type: 'Subcommand',
+					name: 'max_island',
+					description:
+						'Max your Igne tame, build nursery, max island upgrades, equip BiS gear, and spawn island items.'
+				},
+				{
+					type: 'Subcommand',
+					name: 'reset_island',
+					description: 'Reset your Verdant Island upgrades, contributions, maintenance, and assignments.'
 				},
 				{
 					type: 'Subcommand',
@@ -1057,6 +1384,12 @@ export const testPotatoCommand = globalConfig.isProduction
 					const resettable = thingsToReset.find(i => i.name === options.reset?.thing);
 					if (!resettable) return 'Invalid thing to reset.';
 					return resettable.run(user);
+				}
+				if (options.max_island) {
+					return maxIslandAccount(user);
+				}
+				if (options.reset_island) {
+					return resetIslandUpgrades(user);
 				}
 				if (options.setminigamekc) {
 					return setMinigameKC(user, options.setminigamekc.minigame, options.setminigamekc.kc);

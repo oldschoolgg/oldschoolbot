@@ -1234,6 +1234,79 @@ for (const bone of divineWaterBones) {
 	});
 }
 
+const verdantUniquesRevertables: Createable[] = [
+	{
+		name: 'Revert sentinel core',
+		inputItems: new Bank({ 'Sentinel core': 1 }),
+		outputItems: new Bank({ 'Diluted brimstone': 50 }),
+		requiredSkills: { herblore: 120 },
+		noCl: true
+	},
+	{
+		name: 'Revert verdant heart',
+		inputItems: new Bank({ 'Verdant heart': 1 }),
+		outputItems: new Bank({ 'Diluted brimstone': 50 }),
+		requiredSkills: { herblore: 120 },
+		noCl: true
+	},
+	{
+		name: 'Revert prolific twine',
+		inputItems: new Bank({ 'Prolific twine': 1 }),
+		outputItems: new Bank({ 'Diluted brimstone': 50 }),
+		requiredSkills: { herblore: 120 },
+		noCl: true
+	},
+	{
+		name: 'Revert primordial spine',
+		inputItems: new Bank({ 'Primordial spine': 1 }),
+		outputItems: new Bank({ 'Diluted brimstone': 100 }),
+		requiredSkills: { herblore: 120 },
+		noCl: true
+	},
+	{
+		name: 'Revert primordial heartstring',
+		inputItems: new Bank({ 'Primordial heartstring': 1 }),
+		outputItems: new Bank({ 'Diluted brimstone': 100 }),
+		requiredSkills: { herblore: 120 },
+		noCl: true
+	},
+	{
+		name: 'Revert sacrilegious flask',
+		inputItems: new Bank({ 'Sacrilegious flask': 1 }),
+		outputItems: new Bank({ 'Diluted brimstone': 100 }),
+		requiredSkills: { herblore: 120 },
+		noCl: true
+	},
+	{
+		name: 'Revert forsaken tear',
+		inputItems: new Bank({ 'Forsaken tear': 1 }),
+		outputItems: new Bank({ 'Diluted brimstone': 100 }),
+		requiredSkills: { herblore: 120 },
+		noCl: true
+	},
+	{
+		name: 'Revert shattered pendant',
+		inputItems: new Bank({ 'Shattered pendant': 1 }),
+		outputItems: new Bank({ 'Diluted brimstone': 100 }),
+		requiredSkills: { herblore: 120 },
+		noCl: true
+	},
+	{
+		name: 'Revert celestial flame',
+		inputItems: new Bank({ 'Celestial flame': 1 }),
+		outputItems: new Bank({ 'Diluted brimstone': 100 }),
+		requiredSkills: { herblore: 120 },
+		noCl: true
+	},
+	{
+		name: 'Revert starfire bow (u)',
+		inputItems: new Bank({ 'Starfire bow (u)': 1 }),
+		outputItems: new Bank({ 'Diluted brimstone': 150 }),
+		requiredSkills: { herblore: 120 },
+		noCl: true
+	}
+];
+
 export const bsoCreatables: Createable[] = [
 	...bsoItems,
 	...chaoticCreatables,
@@ -1251,6 +1324,7 @@ export const bsoCreatables: Createable[] = [
 	...moktangCreatables,
 	...tameCreatables,
 	...bsoShadesOfMortonCreatables,
+	...verdantUniquesRevertables,
 	{
 		name: 'Golden cape',
 		inputItems: new Bank().add('Golden cape shard', 7),
@@ -1544,7 +1618,8 @@ export const bsoCreatables: Createable[] = [
 			'Prismare ring': 1
 		}),
 		outputItems: new Bank({
-			'Prismare ring (u)': 1
+			'Prismare ring (u)': 1,
+			'First age ring': 1
 		})
 	},
 	{

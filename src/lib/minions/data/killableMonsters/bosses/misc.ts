@@ -65,10 +65,6 @@ export const miscBossKillables: KillableMonster[] = [
 				[itemID('Dragon claws')]: 8
 			},
 			{
-				[itemID('Dragon hunter lance')]: 15,
-				[itemID('Dragon hunter crossbow')]: 15
-			},
-			{
 				[itemID('Lightbearer')]: 1
 			}
 		],
@@ -385,30 +381,47 @@ export const miscBossKillables: KillableMonster[] = [
 		emoji: '<:Prince_black_dragon:324127378538364928>',
 		wildy: true,
 
-		difficultyRating: 6,
 		itemsRequired: deepResolveItems([
-			['Dragonfire shield', 'Anti-dragon shield'],
-			['Zaryte bow', 'Armadyl crossbow', 'Rune crossbow', 'Twisted bow', 'Dragon hunter crossbow'],
+			['Dragonfire shield', 'Anti-dragon shield', 'Dragonbane aegis', 'Dragonfire ward'],
+			[
+				'Zaryte bow',
+				'Armadyl crossbow',
+				'Rune crossbow',
+				'Twisted bow',
+				'Dragon hunter crossbow',
+				'Dragon hunter lance',
+				'Dragonbane glaive',
+				'Abyssal whip',
+				'Fang',
+				"Osmumten's fang",
+				'Scythe of vitur'
+			],
 			[
 				'Pernix body',
 				"Black d'hide body",
 				"Black d'hide body (g)",
 				"Black d'hide body (t)",
-				"Karil's leathertop"
+				"Karil's leathertop",
+				'Bandos chestplate',
+				'Torva platebody',
+				'Empyrean greatplate'
 			],
 			[
 				'Pernix chaps',
 				"Black d'hide chaps",
 				"Black d'hide chaps (g)",
 				"Black d'hide chaps (t)",
-				"Karil's leatherskirt"
+				"Karil's leatherskirt",
+				'Bandos tassets',
+				'Torva platelegs',
+				'Empyrean greatgreaves'
 			]
 		]),
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
-				[itemID('Armadyl crossbow')]: 6,
-				[itemID('Twisted bow')]: 10
+				[itemID('Twisted bow')]: 10,
+				[itemID('Armadyl crossbow')]: 6
 			}
 		],
 		defaultAttackStyles: ['ranged'],

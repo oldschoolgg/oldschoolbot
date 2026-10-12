@@ -4,49 +4,64 @@ import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 import { Emoji, Events, Time } from '@oldschoolgg/toolkit';
 import { LootTable } from 'oldschooljs';
 
-import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
 import Woodcutting from '@/lib/skilling/skills/woodcutting/woodcutting.js';
-import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import type { AncientMycologyActivityTaskOptions } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { skillingPetDropRate } from '@/lib/util.js';
+import {
+	type AncientWood,
+	ancientMycologyWoods,
+	findAncientWood
+} from '@/mahoji/lib/abstracted_commands/ancientMycologyCommand.js';
 
-interface AncientWood {
-	id: number;
-	name: string;
-	level: number;
-	xp: number;
-	petChance: number;
-	clueScrollChance?: number;
+function generateAllTiersMycologyTable(currentWcLevel: number): LootTable {
+	const mycologyTable = new LootTable();
+	const availableWoods = ancientMycologyWoods.filter(w => currentWcLevel >= w.level);
+
+	for (const wood of availableWoods) {
+		switch (wood.name) {
+			case 'Ancient verdant logs':
+				mycologyTable.add(wood.id, 1, 1);
+				break;
+			case 'Living bark':
+				mycologyTable.add(wood.id, 1, 2);
+				break;
+			case 'Colossal stem':
+				mycologyTable.add(wood.id, 1, 3);
+				break;
+			case 'Ancient cap':
+				mycologyTable.add(wood.id, 1, 4);
+				break;
+			case 'Verdant logs':
+			default:
+				mycologyTable.add(wood.id, 1, 5);
+				break;
+		}
+	}
+
+	return mycologyTable;
 }
 
-const ancientMycologyWoods: AncientWood[] = [
-	{ id: 75026, name: 'Verdant logs', level: 95, xp: 300, petChance: 100000, clueScrollChance: 500000 },
-	{ id: 75028, name: 'Ancient cap', level: 100, xp: 350, petChance: 100000 },
-	{ id: 75029, name: 'Colossal stem', level: 105, xp: 400, petChance: 100000 },
-	{ id: 75027, name: 'Living bark', level: 110, xp: 600, petChance: 100000 },
-	{ id: 75026, name: 'Ancient verdant logs', level: 950, xp: 180, petChance: 100000 }
-];
+function generateSpecificMycologyTable(targetWood: AncientWood): LootTable {
+	const mycologyTable = new LootTable();
 
-const verdantLogs = ancientMycologyWoods.find((w: AncientWood) => w.name === 'Verdant logs')!;
-const ancientCap = ancientMycologyWoods.find((w: AncientWood) => w.name === 'Ancient cap')!;
-const colossalStem = ancientMycologyWoods.find((w: AncientWood) => w.name === 'Colossal stem')!;
-const livingBark = ancientMycologyWoods.find((w: AncientWood) => w.name === 'Living bark')!;
-const ancientVerdantLogs = ancientMycologyWoods.find((w: AncientWood) => w.name === 'Ancient verdant logs')!;
-
-function generateAncientMycologyTable(currentWcLevel: number): LootTable {
-	const mycologyTable = new LootTable().add(verdantLogs.id, 1, 5);
-
-	if (currentWcLevel >= ancientCap.level) {
-		mycologyTable.add(ancientCap.id, 1, 4);
-	}
-	if (currentWcLevel >= colossalStem.level) {
-		mycologyTable.add(colossalStem.id, 1, 3);
-	}
-	if (currentWcLevel >= livingBark.level) {
-		mycologyTable.add(livingBark.id, 1, 2);
-	}
-	if (currentWcLevel >= ancientVerdantLogs.level) {
-		mycologyTable.add(ancientVerdantLogs.id, 1, 1);
+	switch (targetWood.name) {
+		case 'Ancient verdant logs':
+			mycologyTable.add(targetWood.id, 1, 1).add(new LootTable(), 1, 8);
+			break;
+		case 'Living bark':
+			mycologyTable.add(targetWood.id, 1, 1).add(new LootTable(), 1, 4);
+			break;
+		case 'Colossal stem':
+			mycologyTable.add(targetWood.id, 1, 1).add(new LootTable(), 1, 2);
+			break;
+		case 'Ancient cap':
+			mycologyTable.add(targetWood.id, 1, 1).add(new LootTable(), 1, 1);
+			break;
+		case 'Verdant logs':
+		default:
+			mycologyTable.add(targetWood.id, 1, 3).add(new LootTable(), 1, 1);
+			break;
 	}
 
 	return mycologyTable;
@@ -54,17 +69,33 @@ function generateAncientMycologyTable(currentWcLevel: number): LootTable {
 
 export const ancientMycologyTask: MinionTask = {
 	type: 'AncientMycology',
-	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
-		const { channelId, quantity, duration } = data;
+	async run(data: AncientMycologyActivityTaskOptions, { user, handleTripFinish, rng }) {
+		const { channelId, quantity, duration, woodName } = data;
 		const currentWcLevel = user.skillsAsLevels.woodcutting;
 
-		const mycologyTable = generateAncientMycologyTable(currentWcLevel);
+		const availableWoods = ancientMycologyWoods.filter(w => currentWcLevel >= w.level);
+		const targetWood = (woodName ? findAncientWood(woodName) : null) ?? availableWoods[availableWoods.length - 1];
 
-		let woodcuttingXP = 0;
+		const mycologyTable = woodName
+			? generateSpecificMycologyTable(targetWood)
+			: generateAllTiersMycologyTable(currentWcLevel);
+
+		let woodcuttingXP = quantity * targetWood.xp;
 		const loot = mycologyTable.roll(quantity);
 
-		for (const wood of ancientMycologyWoods) {
-			woodcuttingXP += loot.amount(wood.id) * wood.xp;
+		if (woodName) {
+			loot.multiply(3.5);
+		}
+
+		const sporeRate = woodName ? 10 : 33;
+		let spores = 0;
+		for (let i = 0; i < quantity; i++) {
+			if (rng.roll(sporeRate)) {
+				spores++;
+			}
+		}
+		if (spores > 0) {
+			loot.add('Brimstone spore', spores);
 		}
 
 		let bonusXP = 0;
@@ -88,8 +119,15 @@ export const ancientMycologyTask: MinionTask = {
 			}
 		}
 
-		if (user.hasEquippedOrInBank('Woodcutting master cape')) {
-			loot.multiply(2);
+		const hasWcMasterCape =
+			user.hasEquippedOrInBank('Woodcutting master cape') ||
+			user.hasEquippedOrInBank('Woodcutting master cape (inverted)');
+
+		let lootMultiplier = 1;
+		if (hasWcMasterCape) lootMultiplier *= 2;
+
+		if (lootMultiplier > 1) {
+			loot.multiply(lootMultiplier);
 		}
 
 		const xpRes = await user.addXP({
@@ -99,21 +137,14 @@ export const ancientMycologyTask: MinionTask = {
 			source: 'AncientMycology'
 		});
 
-		let str = `${user}, ${user.minionName} finished harvesting Ancient Myconid growths! ${xpRes}`;
+		let str = `${user}, ${user.minionName} finished harvesting Ancient Myconid growths${woodName ? ` (${targetWood.name})` : ''}! ${xpRes}`;
+
+		if (hasWcMasterCape) {
+			str += '\n**2x loot for Woodcutting master cape.**';
+		}
 
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
-		}
-
-		const clueScrollChance = verdantLogs.clueScrollChance;
-		if (clueScrollChance) {
-			const strungRabbitFoot = user.hasEquipped('Strung rabbit foot');
-			addSkillingClueToLoot(rng, user, 'woodcutting', quantity, clueScrollChance, loot, false, strungRabbitFoot);
-
-			if (strungRabbitFoot) {
-				str +=
-					'\nYour Strung rabbit foot necklace increases the chance of receiving bird egg nests and ring nests.';
-			}
 		}
 
 		if (duration >= MIN_LENGTH_FOR_PET) {
@@ -126,7 +157,7 @@ export const ancientMycologyTask: MinionTask = {
 			}
 		}
 
-		const { petDropRate } = skillingPetDropRate(user, 'woodcutting', verdantLogs.petChance);
+		const { petDropRate } = skillingPetDropRate(user, 'woodcutting', targetWood.petChance);
 		if (rng.roll(Math.ceil(petDropRate / quantity))) {
 			loot.add('Beaver');
 			globalClient.emit(
@@ -142,7 +173,7 @@ export const ancientMycologyTask: MinionTask = {
 
 		const image = await makeBankImage({
 			bank: itemsAdded,
-			title: `Loot From ${quantity}x Ancient Myconid growths`,
+			title: `Loot From ${quantity}x ${woodName ? targetWood.name : 'Ancient Mycology'}`,
 			user,
 			previousCL
 		});

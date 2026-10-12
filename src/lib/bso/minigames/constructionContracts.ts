@@ -272,10 +272,6 @@ function generateRewardsFromPool(totalQualityPoints: number, recipeWeight: numbe
 		}
 	}
 
-	if (roll(100000)) {
-		loot.add('Bamyr', 1);
-	}
-
 	const rewardBudget = Math.floor((totalQualityPoints / 100) * (1 + rarityBonus));
 	let remainingBudget = rewardBudget;
 
@@ -467,6 +463,10 @@ export function calculateContractsResult(data: ConstructionContractsTaskOptions)
 	const primaryLoot = generateRewardsFromPool(totalQualityPoints, recipe.rewardWeight, rarityBonus);
 	const middlingLoot = generateMiddlingLoot(recipe, successfulContracts);
 	const totalLoot = new Bank().add(primaryLoot).add(middlingLoot);
+
+	if (roll(100000 / data.quantity)) {
+		totalLoot.add('Bamyr', 1);
+	}
 
 	const petDropped = totalLoot.has('Bamyr');
 

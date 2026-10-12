@@ -1033,6 +1033,17 @@ export const baseFilters: Filterable[] = [
 		name: 'Seasonal Creates',
 		aliases: ['crates'],
 		items: () => keyCrates.flatMap(i => [i.item.id, i.key.id])
+	},
+	{
+		name: 'Verdant Island',
+		aliases: ['verdant', 'verdant island', 'vi'],
+		items: () => {
+			const items: number[] = [];
+			for (let i = 75_001; i <= 75_081; i++) {
+				items.push(i);
+			}
+			return items;
+		}
 	}
 ];
 

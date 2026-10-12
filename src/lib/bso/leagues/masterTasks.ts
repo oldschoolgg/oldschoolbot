@@ -19,7 +19,7 @@ import { sumArr } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, LuckyImpling, resolveItems } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
-import { all3rdAgeItems, chambersOfXericCL, godWarsDungeonCL } from '@/lib/data/CollectionsExport.js';
+import { all3rdAgeItems, archonCL, chambersOfXericCL, godWarsDungeonCL } from '@/lib/data/CollectionsExport.js';
 import { implings } from '@/lib/implings.js';
 import { ashes } from '@/lib/skilling/skills/prayer.js';
 import { slayerUnlockableRewards } from '@/lib/slayer/slayerUnlocks.js';
@@ -1178,11 +1178,30 @@ export const masterTasks: Task[] = [
 	},
 	{
 		id: 4162,
-		name: 'Max out all Verdant Island Camp upgrades',
+		name: 'Max out all Verdant Island upgrades (excluding Grand Conduit)',
 		has: async ({ user }) => {
 			const raw = (user.user.island_upgrades ?? {}) as Record<string, unknown>;
-			const categories: UpgradeCategory[] = ['boss', 'megaboss', 'minigame', 'gathering', 'prismare'];
+			const categories: UpgradeCategory[] = [
+				'boss',
+				'megaboss',
+				'minigame',
+				'gathering',
+				'prismare',
+				'logistics',
+				'fishing',
+				'mining',
+				'woodcutting',
+				'divination',
+				'farming'
+			];
 			return categories.every(cat => (raw[cat] ?? 0) === 5);
+		}
+	},
+	{
+		id: 1161,
+		name: 'Finish the Archon CL',
+		has: async ({ cl }) => {
+			return archonCL.every(c => cl.has(c));
 		}
 	}
 ];

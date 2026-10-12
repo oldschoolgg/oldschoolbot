@@ -11,7 +11,7 @@ export const projectiles = {
 			'Elderflame arrow'
 		]),
 		savedByAvas: true,
-		weapons: resolveItems(['Twisted bow'])
+		weapons: resolveItems(['Twisted bow', 'Elderflame bow', 'Starfire bow'])
 	},
 	ogreArrow: {
 		items: resolveItems(['Ogre Arrow']),

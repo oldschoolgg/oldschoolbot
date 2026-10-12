@@ -101,7 +101,7 @@ export function makeArchonButton(tier: 1 | 2 | 3) {
 		.setCustomId('DO_ARCHON')
 		.setLabel(`Fight the ${name}`)
 		.setEmoji({ name: '⚔️' })
-		.setStyle(ButtonStyle.Secondary);
+		.setStyle(ButtonStyle.Danger);
 }
 
 export function makeTameRepeatTripButton() {
@@ -148,5 +148,13 @@ export function makeFishingContestButton() {
 		.setCustomId(InteractionID.Commands.DoFishingContest)
 		.setLabel('Fishing Contest')
 		.setEmoji({ id: EmojiId.Fishing })
+		.setStyle(ButtonStyle.Secondary);
+}
+
+export function makeCollectAllCampsButton() {
+	return new ButtonBuilder()
+		.setCustomId(InteractionID.Commands.CollectAllCamps)
+		.setLabel('Collect All Camps')
+		.setEmoji({ name: '🏕️' })
 		.setStyle(ButtonStyle.Secondary);
 }

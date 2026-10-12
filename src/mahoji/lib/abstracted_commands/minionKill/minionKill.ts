@@ -1,3 +1,4 @@
+import { burningDominionCommand } from '@/lib/bso/commands/dominionCommand.js';
 import { igneCommand } from '@/lib/bso/commands/igneCommand.js';
 import { defaultIslandUpgrades, type IslandUpgradeTiers } from '@/lib/bso/commands/islandUpgrades.js';
 import { kgCommand } from '@/lib/bso/commands/kgCommand.js';
@@ -71,7 +72,7 @@ export async function minionKillCommand(
 		return vasaCommand(interaction, user, channelId, inputQuantity);
 	}
 	if (['burning dominion', 'dominion', 'burning'].some(i => name.toLowerCase().includes(i))) {
-		return 'Orym and Orrodil cannot be fought alone! You need a team to challenge the Burning Dominion. Use `/mass monster: Burning Dominion` instead.';
+		return burningDominionCommand(interaction, user, channelId, name, inputQuantity);
 	}
 
 	let monster = findMonster(name);
