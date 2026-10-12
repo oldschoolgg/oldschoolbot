@@ -13,7 +13,6 @@ import type {
 	TinkeringWorkshopOptions,
 	TuraelsTrialsOptions
 } from '@/lib/bso/bsoTypes.js';
-import { DISCO_CLUBS, discoClubOrder } from '@/lib/bso/discoBloodbath.js';
 import { kibbles } from '@/lib/bso/kibble.js';
 import { divinationEnergies, memoryHarvestTypes } from '@/lib/bso/skills/divination.js';
 
@@ -223,7 +222,7 @@ const tripHandlers: {
 	[activity_type_enum.DiscoBloodbath]: {
 		commandName: 'disco',
 		args: (data: DiscoBloodbathActivityTaskOptions) => ({
-			party: { club_name: DISCO_CLUBS[discoClubOrder().indexOf(data.club as (typeof DISCO_CLUBS)[number])] }
+			party: { club_name: data.club }
 		})
 	},
 	[activity_type_enum.BirthdayEvent]: {

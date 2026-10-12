@@ -49,6 +49,7 @@ export const discoBloodbathTask: MinionTask = {
 					: aesthetic === data.theme.bad
 						? -0.5
 						: 1;
+			data.popularity *= 1.2;
 			gained[aesthetic] = Math.floor(points * multiplier * (data.popularity / 100) * themeMultiplier);
 		}
 
@@ -135,13 +136,12 @@ export const discoBloodbathTask: MinionTask = {
 						])
 					: ''
 			: '';
-		const crowdMessage =
-			isDiscoHalloween() && rng.roll(30)
+		const crowdMessage = rng.roll(30)
 				? rng.pick([
-						'The strobe lights briefly revealed something with too many legs.',
-						'A chill ran through the crowd when the bass dropped.',
-						'The dance floor creaked like an old coffin.',
-						'Nobody knew who put the skeleton behind the decks.'
+						'🕸️ The strobe lights briefly revealed something with too many legs.🕷️',
+						'😱 A chill ran through the crowd when the bass dropped.🪝🐟 It was a literal dead fish...',
+						'👻The dance floor creaked like an old coffin.⚰️',
+						'🩻Nobody knew who put the skeleton behind the decks.☠️'
 					])
 				: data.popularity > 80
 					? rng.pick(['It was packed.', 'The club was buzzing.', 'You could barely move through the crowd.'])
@@ -151,7 +151,7 @@ export const discoBloodbathTask: MinionTask = {
 								'There was too much room on the dance floor.',
 								'The crowd never really arrived.'
 							])
-						: 'The crowd was lively enough.';
+						: 'The crowd was still breathing at least :D';
 		const lure = rng.roll(10)
 			? ' Someone mentioned that the Disco Fever is still hot... they were dead wrong 💀'
 			: '';

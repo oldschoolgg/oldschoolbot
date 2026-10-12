@@ -152,10 +152,10 @@ export const DISCO_CLUB_THEMES: Record<
 	},
 	Money: {
 		club: 'Money',
-		name: 'Techno-Chic',
-		description: 'Sleek, intentional, advanced, and polished.',
-		good: 'Futuristic',
-		bad: 'Anti-Fashion'
+		name: 'Lo-Fi',
+		description: 'Raw, worn, deliberately unfashionable, and loud.',
+		good: 'Anti-Fashion',
+		bad: 'Futuristic'
 	},
 	Glamour: {
 		club: 'Glamour',
@@ -255,17 +255,13 @@ export function discoHourSeed(date = new Date()) {
 }
 
 export function discoPopularity(club: DiscoClub, date = new Date()) {
-	return 50 + (seededValue(`${discoHourSeed(date)}:${club}`) % 51);
+	return 30 + (seededValue(`${discoHourSeed(date)}:${club}`) % 75);
 }
 
 export function discoClubOrder(date = new Date()): DiscoClub[] {
 	return [...DISCO_CLUBS].sort(
 		(a, b) => seededValue(`${discoHourSeed(date)}:${a}`) - seededValue(`${discoHourSeed(date)}:${b}`)
 	);
-}
-
-export function discoClubTheme(club: DiscoClub, date = new Date()) {
-	return DISCO_CLUB_THEMES[discoClubOrder(date)[DISCO_CLUBS.indexOf(club)]];
 }
 
 export function isDiscoEventActive(date = new Date()) {

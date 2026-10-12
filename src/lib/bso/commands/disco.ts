@@ -4,9 +4,9 @@ import {
 	DISCO_AESTHETIC_SHORT_NAMES,
 	DISCO_AESTHETICS,
 	DISCO_CLUBS,
+	DISCO_CLUB_THEMES,
 	DiscoItem,
 	discoClubOrder,
-	discoClubTheme,
 	discoHalloweenStory,
 	discoPopularity,
 	isDiscoEventActive,
@@ -23,7 +23,7 @@ import { mentionCommand } from '@/discord/utils.js';
 import { BitField } from '@/lib/constants.js';
 import type { DiscoBloodbathActivityTaskOptions } from '@/lib/types/minions.js';
 
-const clubChoices = () => discoClubOrder().map((name, index) => ({ name, value: DISCO_CLUBS[index] }));
+const clubChoices = () => discoClubOrder().map(club => ({ name: club, value: club }));
 const discoPresetNames = ['discofuture', 'discoragdoll', 'discoanti'] as const;
 
 const helpText = (
@@ -32,7 +32,7 @@ const helpText = (
 
 ⭐ Use ${mentionCommand('disco', 'party')} to send your minion on a trip. Visits take at least thirty minutes.
 - Your Fashion gear determines your points, and your top two Realms gain or lose progress depending on the party's vibe.
-- Each club's crowd and theme *change throughout the event*.
+- A day is every 4 hours, and that's how often the crowd/popularity changes. (*At 00:00, 04:00, etc.*)
 - Use ${mentionCommand('disco', 'inquire')} for a tip from your contacts
 💡 The ${mentionCommand('bank')} command can show you the Aesthetic points for each item in your bank: \`/bank flag:show_disco_points\`
 - ${mentionCommand('disco', 'stats')} to track your rank.
@@ -40,8 +40,8 @@ const helpText = (
 *Completed visits can return strange fashion loot and very rarely a chase box*.
 
 The clubs are:
-${DISCO_CLUBS.map(club => {
-	const theme = discoClubTheme(club);
+${discoClubOrder().map(club => {
+	const theme = DISCO_CLUB_THEMES[club];
 	return `- **${theme.club}** — ${theme.name}: ${theme.description}`;
 }).join('\n')}
 
@@ -147,7 +147,7 @@ export const discoCommand = defineCommand({
 					description: 'The club to ask about.',
 					required: true,
 					autocomplete: async ({ value }: StringAutoComplete) =>
-						clubChoices().filter(
+						DISCO_CLUBS.map(club => ({ name: club, value: club })).filter(
 							choice => !value || choice.name.toLowerCase().includes(value.toLowerCase())
 						)
 				}
@@ -281,16 +281,18 @@ export const discoCommand = defineCommand({
 			if (!DISCO_CLUBS.includes(options.inquire.club_name as (typeof DISCO_CLUBS)[number]))
 				return 'Choose a club from the suggestions.';
 			const ratelimit = await Cache.tryRatelimit(user.id, 'disco_inquire');
-			if (!ratelimit.success)
+			if (!ratelimit.success) {
 				return 'If you keep asking, you are going to lose reputation faster than you earn it. Be a leader, not a follower.';
+			}
 			const club = options.inquire.club_name as (typeof DISCO_CLUBS)[number];
-			const theme = discoClubTheme(club);
+			const theme = DISCO_CLUB_THEMES[club];
 			const popularity = discoPopularity(theme.club);
-			return popularity >= 83
-				? `${theme.club} is hot. Everyone worth knowing is talking about it.`
-				: popularity >= 66
-					? `${theme.club} is getting attention. Might be worth a visit...`
-					: `${theme.club} feels cold right now. Your contacts are not impressed.`;
+			let msg = `☠️ ${theme.club} is like the Crypt keeper.... Dead. But in a bad way. 🪦`;
+			if (popularity > 50) msg = `💀 It's better than.... bad?  Your contacts are not impressed by ${theme.club}.`;
+			if (popularity > 70) msg = `${theme.club} is getting attention. Might be worth a visit...`;
+			if (popularity > 83) msg = `🐦‍🔥${theme.club} is hot. Everyone worth knowing is talking about it.🔥`;
+			if (popularity >= 100) msg = `🦄🎉 ${theme.club} is a FREAKING **UNICORN**! You __**HAVE**__ to be there!.🎉🎉🎉`;
+			return msg;
 		}
 
 		if (options.party) {
@@ -298,7 +300,7 @@ export const discoCommand = defineCommand({
 				return 'Choose a club from the suggestions.';
 			if (await user.minionIsBusy()) return `${user.minionName} is currently busy.`;
 			const club = options.party.club_name as (typeof DISCO_CLUBS)[number];
-			const theme = discoClubTheme(club);
+			const theme = DISCO_CLUB_THEMES[club];
 			const popularity = discoPopularity(theme.club);
 			await ActivityManager.startTrip<DiscoBloodbathActivityTaskOptions>({
 				userID: user.id,
