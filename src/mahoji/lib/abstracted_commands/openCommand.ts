@@ -303,6 +303,13 @@ export async function abstractedOpenCommand(
 			if (!user.owns(tmpCost)) return `You don't own ${tmpCost}`;
 		}
 	}
+	if (interaction) {
+		for (const openable of openables) {
+			if (!openable.alwaysConfirm) continue;
+			const quantity = typeof _quantity === 'string' ? user.bank.amount(openable.openedItem.id) : _quantity;
+			await interaction.confirmation(`‼️ Are you sure you want to open ${quantity}x ${openable.name}?`);
+		}
+	}
 
 	const elderError = await checkElderCasketOpenable(user, openables);
 	if (elderError) return elderError;

@@ -119,6 +119,7 @@ export interface UnifiedOpenable {
 	smokeyApplies?: boolean;
 	excludeLootFromBoxes?: boolean;
 	excludeFromOpenAll?: true;
+	alwaysConfirm?: boolean;
 	extraCostPerOpen?: Bank;
 	trickableItems?: number[];
 }

@@ -98,10 +98,11 @@ export const SkrodBoxTable = new LootTable()
 	.tertiary(10, 'Premierekat')
 	.tertiary(50, 'Partytimehat');
 
+export const FealtyBoxTable = new LootTable().add('Chill').add('Gross domestic bling').add('Millionaire mink');
+
 export const holidayOpenables: UnifiedOpenable[] = [
 	...(
 		[
-			['Lazy Mystery Box', LazyMysteryBoxTable],
 			['Skrink box', SkrinkBoxTable],
 			['Skrod box', SkrodBoxTable]
 		] as const
@@ -114,9 +115,36 @@ export const holidayOpenables: UnifiedOpenable[] = [
 			output: table,
 			allItems: table.allItems,
 			excludeFromOpenAll: true,
-			smokeyApplies: name !== 'Lazy Mystery Box'
+			smokeyApplies: true
 		})
 	),
+	...(
+		[
+			['Lazy Mystery Box', LazyMysteryBoxTable],
+			['Fealty Mystery Box', FealtyBoxTable]
+		] as const
+	).map(
+		([name, table]): UnifiedOpenable => ({
+			name,
+			id: itemID(name),
+			openedItem: Items.getOrThrow(name),
+			aliases: [name.toLowerCase()],
+			output: table,
+			allItems: table.allItems,
+			excludeFromOpenAll: true,
+			smokeyApplies: false,
+			alwaysConfirm: true
+		})
+	),
+	{
+		name: 'Fealty Mystery Box',
+		id: itemID('Fealty Mystery Box'),
+		openedItem: Items.getOrThrow('Fealty Mystery Box'),
+		aliases: ['fealty mystery box'],
+		output: FealtyBoxTable,
+		allItems: FealtyBoxTable.allItems,
+		excludeFromOpenAll: true
+	},
 	{
 		name: 'Royal mystery box',
 		id: itemID('Royal mystery box'),
@@ -124,7 +152,8 @@ export const holidayOpenables: UnifiedOpenable[] = [
 		aliases: ['royal mystery box'],
 		output: RoyalMysteryBoxTable,
 		allItems: RoyalMysteryBoxTable.allItems,
-		excludeFromOpenAll: true
+		excludeFromOpenAll: true,
+		alwaysConfirm: true
 	},
 	{
 		name: 'Beach mystery box',
@@ -133,7 +162,8 @@ export const holidayOpenables: UnifiedOpenable[] = [
 		aliases: ['Beach mystery box'],
 		output: BeachMysteryBoxTable,
 		allItems: BeachMysteryBoxTable.allItems,
-		excludeFromOpenAll: true
+		excludeFromOpenAll: true,
+		alwaysConfirm: true
 	},
 	{
 		name: 'Independence box',
@@ -142,7 +172,8 @@ export const holidayOpenables: UnifiedOpenable[] = [
 		aliases: ['independence box'],
 		output: IndependenceBoxTable,
 		allItems: IndependenceBoxTable.allItems,
-		excludeFromOpenAll: true
+		excludeFromOpenAll: true,
+		alwaysConfirm: true
 	},
 	{
 		name: 'Independence Day 2 Box',
@@ -151,7 +182,8 @@ export const holidayOpenables: UnifiedOpenable[] = [
 		aliases: ['independence day 2 box', 'id2 box'],
 		output: IndependenceDay2BoxTable,
 		allItems: IndependenceDay2BoxTable.allItems,
-		excludeFromOpenAll: true
+		excludeFromOpenAll: true,
+		alwaysConfirm: true
 	},
 	{
 		name: 'Spooky box',

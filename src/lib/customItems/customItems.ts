@@ -15690,6 +15690,23 @@ setCustomItem(
 	10_000
 );
 
+/** Loyalty Box **/
+setCustomItem(
+	75_699,
+	'Fealty Mystery Box',
+	'Mystery box',
+	{
+		// A royal invitation to do absolutely nothing. Preferably in diamonds.
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
 /** Lazy T5 promotion: money, success, fame, glamour, and a well-earned nap. */
 setCustomItem(
 	75_700,
@@ -15917,7 +15934,7 @@ setCustomItem(
 
 setCustomItem(
 	75_714,
-	'Executive excess',
+	'Millionaire mink',
 	'Bronze platebody',
 	{
 		// Dressed for a hostile takeover of the dance floor.
@@ -16060,15 +16077,16 @@ setCustomItem(
 );
 setCustomItem(
 	75_723,
-	'Fire dragon skull',
-	'Bronze full helm',
+	'Chill',
+	'Herbi',
 	{
 		// A plush fire dragon hood with a ferociously cozy bite.
 		tradeable: false,
 		tradeable_on_ge: false,
 		customItemData: {
 			isSecret: true,
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isPet: true
 		}
 	},
 	1_000_000
