@@ -24,10 +24,7 @@ function trimText(canvas: OSRSCanvas, text: string, maxWidth: number) {
 
 function drawTrophy(canvas: OSRSCanvas, x: number, y: number, size: number, glow = false) {
 	const { ctx } = canvas;
-	if (glow) {
-		canvas.drawGlowingBlur(x, y + size * 0.43, size * 0.42, '#ffcb3d', size * 0.3, 1.5);
-		ctx.filter = 'none';
-	}
+	if (glow) canvas.drawGlowingBlur(x, y + size * 0.43, size * 0.42, '#ffcb3d', size * 0.3, 1.5);
 	ctx.save();
 	ctx.translate(x, y);
 	ctx.scale(size / 100, size / 100);
@@ -70,6 +67,7 @@ function drawCard(
 	height: number
 ) {
 	const { ctx } = canvas;
+	const centerX = Math.round(x + width / 2);
 	ctx.save();
 	ctx.fillStyle = 'rgba(28, 27, 24, 0.88)';
 	ctx.fillRect(x, y, width, height);
@@ -80,10 +78,10 @@ function drawCard(
 	ctx.lineWidth = 2;
 	ctx.strokeRect(x + 8, y + 8, width - 16, height - 16);
 	ctx.restore();
-	drawTrophy(canvas, x + width / 2, y + 5, 27);
+	drawTrophy(canvas, centerX, y + 5, 27);
 	canvas.drawText({
 		text: entry.label,
-		x: x + width / 2,
+		x: centerX,
 		y: y + 41,
 		color: '#ffcf4c',
 		center: true,
@@ -91,14 +89,14 @@ function drawCard(
 	});
 	canvas.drawText({
 		text: trimText(canvas, entry.username ?? '???', width - 22),
-		x: x + width / 2,
+		x: centerX,
 		y: y + 57,
 		color: '#f3ead1',
 		center: true
 	});
 	canvas.drawText({
 		text: entry.score.toLocaleString(),
-		x: x + width / 2,
+		x: centerX,
 		y: y + 73,
 		color: '#fff44f',
 		center: true
