@@ -334,7 +334,9 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 
 	if (monster.deathProps) {
 		const deathChance = calculateSimpleMonsterDeathChance({ ...monster.deathProps, currentKC: args.monsterKC });
-		speedDurationResult.messages.push(`${deathChance.toFixed(1)}% chance of death`);
+		if (deathChance > 0) {
+			speedDurationResult.messages.push(`${deathChance.toFixed(1)}% chance of death`);
+		}
 	}
 
 	const result = newMinionKillReturnSchema.parse({
