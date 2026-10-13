@@ -93,6 +93,21 @@
 		"prerequisites_quests": [3]
 	},
 	{
+		"id": 19,
+		"qp": 2,
+		"name": "Fallen From Grace",
+		"skill_reqs": {
+			"crafting": 60,
+			"mining": 53,
+			"runecraft": 47
+		},
+		"skills_rewards": {
+			"crafting": 10000,
+			"mining": 5000,
+			"runecraft": 5000
+		}
+	},
+	{
 		"id": 11,
 		"qp": 1,
 		"name": "Meat And Greet",

@@ -1627,5 +1627,110 @@ export const miscBossKillables: KillableMonster[] = [
 				qtyPerKill: 0.2
 			}
 		]
+	},
+	{
+		id: Monsters.MadAngel.id,
+		name: Monsters.MadAngel.name,
+		aliases: Monsters.MadAngel.aliases,
+		// Wiki money making guide: 40 kills/hour with mid-level gear, 60-70 with high-end gear (reached via boosts below)
+		timeToFinish: Time.Minute * 1.5,
+		// 26 ticks
+		respawnTime: Time.Second * 15.6,
+		table: Monsters.MadAngel,
+		requiredQuests: [QuestID.FallenFromGrace],
+		difficultyRating: 5,
+		notifyDrops: resolveItems(['Aggy', 'Jar of Light']),
+		// Ranked per the wiki strategy guide; granite hammer is best due to the golembane effect
+		equippedItemBoosts: [
+			{
+				items: [
+					{ boostPercent: 15, itemID: itemID('Granite hammer') },
+					{ boostPercent: 12, itemID: itemID("Inquisitor's mace") },
+					{ boostPercent: 12, itemID: itemID('Soulreaper axe') },
+					{ boostPercent: 8, itemID: itemID("Osmumten's fang") },
+					{ boostPercent: 8, itemID: itemID('Noxious halberd') },
+					{ boostPercent: 8, itemID: itemID('Abyssal bludgeon') },
+					{ boostPercent: 5, itemID: itemID('Dual macuahuitl') },
+					{ boostPercent: 5, itemID: itemID('Zamorakian hasta') }
+				],
+				gearSetup: 'melee',
+				required: false
+			},
+			{
+				items: [
+					{ boostPercent: 5, itemID: itemID("Inquisitor's hauberk") },
+					{ boostPercent: 4, itemID: itemID('Torva platebody') },
+					{ boostPercent: 4, itemID: itemID('Oathplate chest') },
+					{ boostPercent: 2, itemID: itemID('Bandos chestplate') }
+				],
+				gearSetup: 'melee',
+				required: false
+			},
+			{
+				items: [
+					{ boostPercent: 5, itemID: itemID("Inquisitor's plateskirt") },
+					{ boostPercent: 4, itemID: itemID('Torva platelegs') },
+					{ boostPercent: 4, itemID: itemID('Oathplate legs') },
+					{ boostPercent: 2, itemID: itemID('Bandos tassets') }
+				],
+				gearSetup: 'melee',
+				required: false
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Amulet of rancour') },
+					{ boostPercent: 2, itemID: itemID('Amulet of torture') }
+				],
+				gearSetup: 'melee',
+				required: false
+			},
+			{
+				items: [
+					{ boostPercent: 3, itemID: itemID('Infernal cape') },
+					{ boostPercent: 1, itemID: itemID('Fire cape') }
+				],
+				gearSetup: 'melee',
+				required: false
+			},
+			{
+				items: [
+					{ boostPercent: 3, itemID: itemID('Ferocious gloves') },
+					{ boostPercent: 1, itemID: itemID('Barrows gloves') }
+				],
+				gearSetup: 'melee',
+				required: false
+			},
+			{
+				items: [
+					{ boostPercent: 3, itemID: itemID('Ultor ring') },
+					{ boostPercent: 1, itemID: itemID('Berserker ring (i)') }
+				],
+				gearSetup: 'melee',
+				required: false
+			}
+		],
+		// Wiki strategy guide minimums: 60 Attack/Strength, 43 Prayer for protection prayers
+		levelRequirements: {
+			prayer: 43,
+			attack: 60,
+			strength: 60
+		},
+		// Weak to crush; attacks with melee (sword) and magic
+		attackStyleToUse: GearStat.AttackCrush,
+		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackMagic],
+		defaultAttackStyles: ['attack'],
+		// ~1 food per kill with mid-level gear (wiki money making guide)
+		healAmountNeeded: 20 * 4,
+		// Wiki money making guide inputs per kill
+		itemCost: [
+			{
+				itemCost: new Bank().add('Prayer potion(4)'),
+				qtyPerKill: 0.5
+			},
+			{
+				itemCost: new Bank().add('Super combat potion(4)'),
+				qtyPerKill: 0.25
+			}
+		]
 	}
 ];

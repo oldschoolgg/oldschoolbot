@@ -4510,6 +4510,178 @@
 		"attack_styles_used": ["attack_slash"]
 	},
 	{
+		"id": 16305,
+		"name": "Mad Angel",
+		"time_to_finish": 90000,
+		"respawn_time": 15600,
+		"required_quests": [19],
+		"difficulty_rating": 5,
+		"notify_drops": ["Aggy", "Jar of Light"],
+		"equipped_item_boosts": [
+			{
+				"items": [
+					{
+						"boost_percent": 15,
+						"item_id": 21742
+					},
+					{
+						"boost_percent": 12,
+						"item_id": 24417
+					},
+					{
+						"boost_percent": 12,
+						"item_id": 25484
+					},
+					{
+						"boost_percent": 8,
+						"item_id": 26219
+					},
+					{
+						"boost_percent": 8,
+						"item_id": 29796
+					},
+					{
+						"boost_percent": 8,
+						"item_id": 13263
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 28997
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 11889
+					}
+				],
+				"gear_setup": "melee",
+				"required": false
+			},
+			{
+				"items": [
+					{
+						"boost_percent": 5,
+						"item_id": 24420
+					},
+					{
+						"boost_percent": 4,
+						"item_id": 26384
+					},
+					{
+						"boost_percent": 4,
+						"item_id": 30753
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 11832
+					}
+				],
+				"gear_setup": "melee",
+				"required": false
+			},
+			{
+				"items": [
+					{
+						"boost_percent": 5,
+						"item_id": 24421
+					},
+					{
+						"boost_percent": 4,
+						"item_id": 26386
+					},
+					{
+						"boost_percent": 4,
+						"item_id": 30756
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 11834
+					}
+				],
+				"gear_setup": "melee",
+				"required": false
+			},
+			{
+				"items": [
+					{
+						"boost_percent": 4,
+						"item_id": 29801
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 19553
+					}
+				],
+				"gear_setup": "melee",
+				"required": false
+			},
+			{
+				"items": [
+					{
+						"boost_percent": 3,
+						"item_id": 21295
+					},
+					{
+						"boost_percent": 1,
+						"item_id": 6570
+					}
+				],
+				"gear_setup": "melee",
+				"required": false
+			},
+			{
+				"items": [
+					{
+						"boost_percent": 3,
+						"item_id": 22981
+					},
+					{
+						"boost_percent": 1,
+						"item_id": 7462
+					}
+				],
+				"gear_setup": "melee",
+				"required": false
+			},
+			{
+				"items": [
+					{
+						"boost_percent": 3,
+						"item_id": 25485
+					},
+					{
+						"boost_percent": 1,
+						"item_id": 11773
+					}
+				],
+				"gear_setup": "melee",
+				"required": false
+			}
+		],
+		"level_requirements": {
+			"prayer": 43,
+			"attack": 60,
+			"strength": 60
+		},
+		"attack_style_to_use": "attack_crush",
+		"attack_styles_used": ["attack_slash", "attack_magic"],
+		"default_attack_styles": ["attack"],
+		"heal_amount_needed": 80,
+		"item_cost": [
+			{
+				"item_cost": {
+					"2434": 1
+				},
+				"qty_per_kill": 0.5
+			},
+			{
+				"item_cost": {
+					"12695": 1
+				},
+				"qty_per_kill": 0.25
+			}
+		]
+	},
+	{
 		"id": 2844,
 		"name": "Magic axe",
 		"time_to_finish": 20000,

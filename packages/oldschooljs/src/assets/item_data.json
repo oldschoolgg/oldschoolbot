@@ -202956,5 +202956,61 @@
 			"requirements": null
 		},
 		"cost": 50
+	},
+	"34027": {
+		"name": "Hallowfell",
+		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"equipable": true,
+		"cost": 1250000,
+		"lowalch": 500000,
+		"highalch": 750000,
+		"buy_limit": 100,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 117,
+			"attack_crush": 25,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 110,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 4,
+			"slot": "2h",
+			"requirements": {
+				"attack": 75
+			}
+		},
+		"weapon": {
+			"attack_speed": 6,
+			"weapon_type": "2h_sword"
+		}
+	},
+	"34030": {
+		"name": "Jar of Light",
+		"members": true,
+		"cost": 200000,
+		"lowalch": 80000,
+		"highalch": 120000
+	},
+	"34033": {
+		"name": "Ardeaglais teleport",
+		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"stackable": true,
+		"cost": 10,
+		"lowalch": 4,
+		"highalch": 6
+	},
+	"34042": {
+		"name": "Aggy",
+		"members": true
 	}
 }

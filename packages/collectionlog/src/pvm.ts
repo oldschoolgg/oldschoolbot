@@ -16,3 +16,8 @@ export const Yama = {
 		EItem.BARREL_OF_DEMONIC_TALLOW_FULL
 	]
 };
+
+export const MadAngel = {
+	name: 'Mad Angel',
+	items: [EItem.AGGY, EItem.HALLOWFELL, EItem.ARDEAGLAIS_TELEPORT, EItem.GRANITE_DUST, EItem.JAR_OF_LIGHT]
+};

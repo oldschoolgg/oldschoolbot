@@ -758,6 +758,14 @@ const pets: Pet[] = [
 		type: 'SKILL',
 		altNames: ['SOUP', 'SAILING'],
 		formatFinish: (num: number) => `You had to complete ${fm(num)} Sailing activities to get Soup! :pet:`
+	},
+	{
+		id: 67,
+		chance: 2000,
+		name: 'Aggy',
+		type: 'BOSS',
+		altNames: ['AGGY', 'MADANGEL'],
+		formatFinish: (num: number) => `You had to defeat the Mad Angel ${fm(num)} times to get Aggy! :pet:`
 	}
 ];
 
