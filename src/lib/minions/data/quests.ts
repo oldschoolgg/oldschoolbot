@@ -35,7 +35,8 @@ export enum QuestID {
 	TheFinalDawn = 15,
 	'Scrambled!' = 16,
 	ShadowsOfCustodia = 17,
-	TutorialIsland = 18
+	TutorialIsland = 18,
+	FallenFromGrace = 19
 }
 
 export const quests: Quest[] = [
@@ -422,6 +423,29 @@ export const quests: Quest[] = [
 		calcTime: (user: MUser) => {
 			let duration = Time.Minute * 8;
 			if (user.combatLevel < 50) {
+				duration += Time.Minute * 2;
+			}
+			return duration;
+		}
+	},
+	{
+		id: QuestID.FallenFromGrace,
+		qp: 2,
+		name: 'Fallen From Grace',
+		// Also requires 62 Sailing and Pandemonium in-game, neither of which exist in the bot.
+		skillReqs: {
+			crafting: 60,
+			mining: 53,
+			runecraft: 47
+		},
+		skillsRewards: {
+			crafting: 10_000,
+			mining: 5000,
+			runecraft: 5000
+		},
+		calcTime: (user: MUser) => {
+			let duration = Time.Minute * 8;
+			if (user.combatLevel < 75) {
 				duration += Time.Minute * 2;
 			}
 			return duration;

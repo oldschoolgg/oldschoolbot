@@ -153,6 +153,7 @@ export const krilTsutsarothCL = resolveItems([
 	'Zamorak hilt',
 	...ItemGroups.godWarsDungeonGodswordShards
 ]);
+export const madAngelCL = resolveItems(['Granite dust', 'Hallowfell', 'Ardeaglais teleport', 'Aggy', 'Jar of Light']);
 export const commanderZilyanaCL = resolveItems([
 	'Pet zilyana',
 	'Armadyl crossbow',
@@ -1441,7 +1442,8 @@ export const allPetsCL = resolveItems([
 	'Moxi',
 	'Bran',
 	'Yami',
-	'Dom'
+	'Dom',
+	'Aggy'
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',

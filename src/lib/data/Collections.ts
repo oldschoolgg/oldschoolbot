@@ -84,6 +84,7 @@ import {
 	kreeArraCL,
 	krilTsutsarothCL,
 	lastManStandingCL,
+	madAngelCL,
 	magicTrainingArenaCL,
 	mahoganyHomesCL,
 	miscellaneousCL,
@@ -449,6 +450,12 @@ export const allCollectionLogs: ICollection = {
 				allItems: Monsters.KrilTsutsaroth.allItems,
 				items: krilTsutsarothCL,
 				fmtProg: kcProg(Monsters.KrilTsutsaroth)
+			},
+			'Mad Angel': {
+				alias: Monsters.MadAngel.aliases,
+				allItems: Monsters.MadAngel.allItems,
+				items: madAngelCL,
+				fmtProg: kcProg(Monsters.MadAngel)
 			},
 			Nex: {
 				alias: ['nex'],

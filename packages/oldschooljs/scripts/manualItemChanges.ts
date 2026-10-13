@@ -43,5 +43,13 @@ export const itemChanges: Record<number, DeepPartial<Item>> = {
 				attack: 50
 			}
 		}
+	},
+	// Hallowfell
+	34027: {
+		equipment: {
+			requirements: {
+				attack: 75
+			}
+		}
 	}
 };

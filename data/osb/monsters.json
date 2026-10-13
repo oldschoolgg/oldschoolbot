@@ -1,6 +1,6 @@
 {
-	"hash": "b58feb26a6a6a6af6dd279f4b5055286",
-	"date": "2026-09-09T11:55:21.673Z",
+	"hash": "b8896d785fd0f48119c01ed7d8832577",
+	"date": "2026-10-13T17:51:47.691Z",
 	"data": [
 		{
 			"id": 2,
@@ -3344,6 +3344,23 @@
 				["Elemental shield", "Mind shield", "Dragonfire shield", "Dragonfire ward", "Ancient wyvern shield"]
 			],
 			"qp_required": 2,
+			"item_in_bank_boosts": [],
+			"can_barrage": false,
+			"can_chin": false,
+			"can_cannon": false,
+			"cannon_multi": false
+		},
+		{
+			"id": 16305,
+			"name": "Mad Angel",
+			"base_kill_time_ms": 90000,
+			"respawn_time_ms": 15600,
+			"is_wildy": false,
+			"is_slayer_only": false,
+			"can_be_pked": false,
+			"is_wildy_multi": false,
+			"items_required": [],
+			"qp_required": 0,
 			"item_in_bank_boosts": [],
 			"can_barrage": false,
 			"can_chin": false,
