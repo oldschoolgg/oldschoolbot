@@ -19,5 +19,5 @@ export const Yama = {
 
 export const MadAngel = {
 	name: 'Mad Angel',
-	items: [EItem.GRANITE_DUST, EItem.HALLOWFELL, EItem.ARDEAGLAIS_TELEPORT, EItem.AGGY, EItem.JAR_OF_LIGHT]
+	items: [EItem.AGGY, EItem.HALLOWFELL, EItem.ARDEAGLAIS_TELEPORT, EItem.GRANITE_DUST, EItem.JAR_OF_LIGHT]
 };
