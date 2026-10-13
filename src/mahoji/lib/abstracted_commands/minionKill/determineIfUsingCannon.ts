@@ -1,4 +1,4 @@
-import { canAffordInventionBoostRaw, InventionID } from '@/lib/bso/skills/invention/inventions.js';
+import { InventionID, inventionItemBoostRaw } from '@/lib/bso/skills/invention/inventions.js';
 
 import { Time } from '@oldschoolgg/toolkit';
 import { Monsters } from 'oldschooljs';
@@ -69,16 +69,14 @@ export function determineIfUsingCannon({
 		}
 	}
 
-	const { canAfford } = canAffordInventionBoostRaw(
-		gearBank.materials,
-		InventionID.SuperiorDwarfMultiCannon,
-		Time.Hour
-	);
-	const canUseSuperiorCannon = !(
-		disabledInventions.includes(InventionID.SuperiorDwarfMultiCannon) && hasSuperiorCannon
-	)
-		? canAfford
-		: false;
+	const canUseSuperiorCannon =
+		hasSuperiorCannon &&
+		inventionItemBoostRaw({
+			gearBank,
+			inventionID: InventionID.SuperiorDwarfMultiCannon,
+			duration: Time.Hour,
+			disabledInventions
+		}).success;
 
 	return {
 		usingCannon,
