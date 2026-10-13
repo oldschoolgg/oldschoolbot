@@ -2,6 +2,7 @@ import { calcPercentOfNum, calcWhatPercent, Time } from '@oldschoolgg/toolkit';
 
 import type { activity_type_enum } from '@/prisma/main/enums.js';
 import { PerkTier } from '@/lib/constants.js';
+import { getCyrTripBonus, getRoboChimpGroupPaidBits } from '@/lib/perkTiers.js';
 
 export function patronMaxTripBonus(perkTier: PerkTier | 0) {
 	if (perkTier === PerkTier.Two) return Time.Minute * 3;
@@ -12,8 +13,9 @@ export function patronMaxTripBonus(perkTier: PerkTier | 0) {
 
 export async function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
 	const perkTier = await user.fetchPerkTier();
+	const groupPaidBits = await getRoboChimpGroupPaidBits(user.id);
 	let max = Time.Minute * 30;
-	max += patronMaxTripBonus(perkTier);
+	max += Math.max(patronMaxTripBonus(perkTier), getCyrTripBonus(groupPaidBits));
 
 	switch (activity) {
 		case 'Nightmare':

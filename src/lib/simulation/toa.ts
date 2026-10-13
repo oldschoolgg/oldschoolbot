@@ -22,7 +22,6 @@ import { clamp } from 'remeda';
 import { type Minigame, XpGainSource } from '@/prisma/main.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { degradeItem } from '@/lib/degradeableItems.js';
-import type { UserFullGearSetup } from '@/lib/gear/types.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import {
@@ -198,11 +197,17 @@ const BOW_ARROWS_NEEDED = 150;
 const ALLOWED_DARTS = ['Adamant dart', 'Rune dart', 'Amethyst dart', 'Dragon dart'].map(n => Items.getOrThrow(n));
 const BLOOD_FURY_CHARGES_PER_RAID = 150;
 const TUMEKEN_SHADOW_PER_RAID = 150;
+interface RaidGearSetupPercents {
+	melee: number;
+	range: number;
+	mage: number;
+	total: number;
+}
 const toaRequirements: {
 	name: string;
 	doesMeet: (options: {
 		user: MUser;
-		gearStats: GearSetupPercents;
+		gearStats: RaidGearSetupPercents;
 		allItemsOwned: Bank;
 		quantity: number;
 	}) => string | true;
@@ -805,7 +810,7 @@ function calculateTotalEffectiveness({
 }: {
 	totalKC: number;
 	totalAttempts: number;
-	gearStats: GearSetupPercents;
+	gearStats: RaidGearSetupPercents;
 	skillsAsLevels: Skills;
 	randomNess: boolean;
 	rng: RNGProvider;
@@ -907,13 +912,8 @@ function calcSetupPercent(
 	return totalPercent;
 }
 
-interface GearSetupPercents {
-	melee: number;
-	range: number;
-	mage: number;
-	total: number;
-}
-function calculateUserGearPercents(gear: UserFullGearSetup, raidLevel: number): GearSetupPercents {
+function calculateUserGearPercents(user: MUser, raidLevel: number): RaidGearSetupPercents {
+	const { gear } = user;
 	const maxMelee = raidLevel < 300 ? maxMeleeLessThan300Gear : maxMeleeOver300Gear;
 	const melee = calcSetupPercent(
 		maxMelee.stats,
@@ -936,11 +936,15 @@ function calculateUserGearPercents(gear: UserFullGearSetup, raidLevel: number): 
 		['attack_stab', 'attack_slash', 'attack_crush', 'attack_ranged'],
 		false
 	);
+	const avernicTreadsGearScoreBoost = user.hasEquippedOrInBank('Avernic treads') ? 3 : 0;
+	const boostedMelee = Math.min(100, melee + avernicTreadsGearScoreBoost);
+	const boostedRange = Math.min(100, range + avernicTreadsGearScoreBoost);
+	const boostedMage = Math.min(100, mage + avernicTreadsGearScoreBoost);
 	return {
-		melee,
-		range,
-		mage,
-		total: (melee + range + mage) / 3
+		melee: boostedMelee,
+		range: boostedRange,
+		mage: boostedMage,
+		total: (boostedMelee + boostedRange + boostedMage) / 3
 	};
 }
 
@@ -1022,7 +1026,7 @@ async function checkTOAUser(
 		return [true, `${user.usernameOrMention} doesn't have a minion`];
 	}
 
-	const setupPercents = calculateUserGearPercents(user.gear, raidLevel);
+	const setupPercents = calculateUserGearPercents(user, raidLevel);
 	const reqResults = toaRequirements.map(i => ({
 		...i,
 		result: i.doesMeet({ user, gearStats: setupPercents, allItemsOwned: user.allItemsOwned, quantity })
@@ -1237,7 +1241,7 @@ export async function toaStartCommand(
 			const effectiveCost = realCost.clone();
 			totalCost.add(effectiveCost);
 
-			const { total } = calculateUserGearPercents(u.gear, raidLevel);
+			const { total } = calculateUserGearPercents(u, raidLevel);
 
 			const gearMarker = users.length > 5 ? 'Gear: ' : Emoji.Gear;
 			const boostsMarker = users.length > 5 ? 'Boosts: ' : Emoji.CombatSword;
@@ -1356,7 +1360,7 @@ function createTOATeam({
 	const messages: string[] = [];
 
 	for (const { user, toaAttempts, minigameScores } of team) {
-		const gearStats = calculateUserGearPercents(user.gear, raidLevel);
+		const gearStats = calculateUserGearPercents(user, raidLevel);
 		const totalAttempts = toaAttempts;
 		const totalKC = minigameScores.tombs_of_amascut;
 		const effectiveness = calculateTotalEffectiveness({
@@ -1411,7 +1415,7 @@ function createTOATeam({
 		let userPercentChange = 0;
 
 		// Reduce time for gear
-		const gearPercents = calculateUserGearPercents(u.user.gear, raidLevel);
+		const gearPercents = calculateUserGearPercents(u.user, raidLevel);
 		const gearPercentBoost = calcPerc(gearPercents.total, speedReductionForGear);
 		userPercentChange += gearPercentBoost;
 
@@ -1588,7 +1592,7 @@ function calculateBoostString(user: MUser) {
 }
 
 export async function toaHelpCommand(user: MUser, channelId: string) {
-	const gearStats = calculateUserGearPercents(user.gear, 300);
+	const gearStats = calculateUserGearPercents(user, 300);
 	const stats = await user.fetchStats();
 	const { entryKC, normalKC, expertKC, totalKC } = getToaKCs(stats.toa_raid_levels_bank);
 

@@ -1,6 +1,8 @@
-import { Bank } from 'oldschooljs';
+import { Emoji } from '@oldschoolgg/toolkit';
+import { Bank, Monsters } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
+import { BitField } from '../../../src/lib/constants.js';
 import { openCommand } from '../../../src/mahoji/commands/open.js';
 import { createTestUser, mockClient, mockMathRandom } from '../util.js';
 
@@ -38,14 +40,69 @@ describe('Open Command', async () => {
 		mockMathRandom(0.1);
 		const user = await createTestUser();
 		await user.addItemsToBank({ items: new Bank().add('Reward casket (beginner)', 10) });
-		await user.runCommand(openCommand, {
+		const result = await user.runCommand(openCommand, {
 			name: 'reward casket (beginner)',
 			quantity: 2,
 			open_until: 'Fire rune',
 			result_quantity: 100
 		});
+		expect(result).toMatchObject({
+			content: expect.not.stringContaining("You didn't specify a quantity")
+		});
 		await user.bankAmountMatch('Reward casket (beginner)', 8);
 		await user.openedBankMatch(new Bank().add('Reward casket (beginner)', 2));
+	});
+
+	test('Open until defaults to opening one without quantity', async () => {
+		mockMathRandom(0.1);
+		const user = await createTestUser();
+		await user.addItemsToBank({ items: new Bank().add('Reward casket (beginner)', 10) });
+		const result = await user.runCommand(openCommand, {
+			name: 'reward casket (beginner)',
+			open_until: 'Fire rune',
+			result_quantity: 1000
+		});
+		expect(result).toMatchObject({
+			content: expect.stringContaining('You opened 1x Reward casket (beginner)')
+		});
+		await user.bankAmountMatch('Reward casket (beginner)', 9);
+		await user.openedBankMatch(new Bank().add('Reward casket (beginner)', 1));
+	});
+
+	test('Open until uses unlimited default for patrons with the toggle', async () => {
+		mockMathRandom(0.1);
+		const user = await createTestUser();
+		await user.givePatronTier(1);
+		await user.update({ bitfield: { push: BitField.UnlimitedOpenUntil } });
+		await user.addItemsToBank({ items: new Bank().add('Reward casket (beginner)', 10) });
+		const result = await user.runCommand(openCommand, {
+			name: 'reward casket (beginner)',
+			open_until: 'Fire rune',
+			result_quantity: 1000
+		});
+		expect(result).toMatchObject({
+			content: expect.stringContaining(
+				`${Emoji.Seer} You didn't specify a quantity, so Open Until is using your unlimited default`
+			)
+		});
+	});
+
+	test('Open until uses unlimited default for Cyr original patrons with the toggle', async () => {
+		mockMathRandom(0.1);
+		const user = await createTestUser();
+		await user.update({ bitfield: { push: BitField.OriginalCyrSupporter } });
+		await user.update({ bitfield: { push: BitField.UnlimitedOpenUntil } });
+		await user.addItemsToBank({ items: new Bank().add('Reward casket (beginner)', 10) });
+		const result = await user.runCommand(openCommand, {
+			name: 'reward casket (beginner)',
+			open_until: 'Fire rune',
+			result_quantity: 1000
+		});
+		expect(result).toMatchObject({
+			content: expect.stringContaining(
+				`${Emoji.Seer} You didn't specify a quantity, so Open Until is using your unlimited default`
+			)
+		});
 	});
 
 	test('Open until rejects invalid item', async () => {
@@ -115,5 +172,102 @@ describe('Open Command', async () => {
 			name: 'all'
 		});
 		expect(res).toEqual('You have no openable items.');
+	});
+
+	test('Dossier guarantees rite on first open after 100 Yama KC', async () => {
+		mockMathRandom(0);
+		const user = await createTestUser();
+		await user.addItemsToBank({ items: new Bank().add('Dossier', 1) });
+		await user.incrementKC(Monsters.Yama.id, 100);
+
+		await user.runCommand(openCommand, { name: 'dossier' });
+		await user.bankAmountMatch('Rite of vile transference', 1);
+	});
+
+	test('Dossier guarantees rite after 100 Yama KC even with prior dossier opens', async () => {
+		mockMathRandom(0);
+		const user = await createTestUser();
+		await user.addItemsToBank({ items: new Bank().add('Dossier', 2) });
+		await user.runCommand(openCommand, { name: 'dossier' });
+		await user.incrementKC(Monsters.Yama.id, 100);
+
+		await user.runCommand(openCommand, { name: 'dossier' });
+		await user.bankAmountMatch('Rite of vile transference', 1);
+	});
+
+	test('Dossier converts rite rolls to scrolls if rite is currently in the bank', async () => {
+		mockMathRandom(0.82);
+		const user = await createTestUser();
+		await user.addItemsToBank({ items: new Bank().add('Rite of vile transference', 1), collectionLog: true });
+		await user.addItemsToBank({ items: new Bank().add('Dossier', 1) });
+		await user.incrementKC(Monsters.Yama.id, 100);
+
+		await user.runCommand(openCommand, { name: 'dossier' });
+		await user.bankAmountMatch('Rite of vile transference', 1);
+		await user.sync();
+		const scrolls = user.bank.amount('Chasm teleport scroll');
+		expect(scrolls).toBeGreaterThanOrEqual(15);
+		expect(scrolls).toBeLessThanOrEqual(18);
+	});
+
+	test('Dossier can award rite again if previous rite is no longer in the bank', async () => {
+		mockMathRandom(0.82);
+		const user = await createTestUser();
+		await user.addItemsToBank({ items: new Bank().add('Rite of vile transference', 1), collectionLog: true });
+		await user.removeItemsFromBank(new Bank().add('Rite of vile transference', 1));
+		await user.addItemsToBank({ items: new Bank().add('Dossier', 1) });
+		await user.incrementKC(Monsters.Yama.id, 100);
+
+		await user.runCommand(openCommand, { name: 'dossier' });
+		await user.bankAmountMatch('Rite of vile transference', 1);
+		await user.sync();
+		expect(user.bank.amount('Chasm teleport scroll')).toBe(0);
+	});
+
+	test('Dossier can award rite if rite was already used via bitfield and none is in the bank', async () => {
+		mockMathRandom(0.82);
+		const user = await createTestUser();
+		await user.update({
+			bitfield: {
+				push: BitField.HasRiteOfVileTransference
+			}
+		});
+		await user.addItemsToBank({ items: new Bank().add('Dossier', 1) });
+		await user.incrementKC(Monsters.Yama.id, 100);
+
+		await user.runCommand(openCommand, { name: 'dossier' });
+		await user.bankAmountMatch('Rite of vile transference', 1);
+		await user.sync();
+		expect(user.bank.amount('Chasm teleport scroll')).toBe(0);
+	});
+
+	test('Dossier open until rejects rite if rite is currently in the bank', async () => {
+		const user = await createTestUser();
+		await user.addItemsToBank({ items: new Bank().add('Rite of vile transference', 1) });
+		await user.addItemsToBank({ items: new Bank().add('Dossier', 1) });
+
+		const res = await user.runCommand(openCommand, {
+			name: 'dossier',
+			open_until: 'Rite of vile transference'
+		});
+
+		expect(res).toEqual(
+			"You can't open until Rite of vile transference, because you already have one in your bank."
+		);
+		await user.bankAmountMatch('Dossier', 1);
+	});
+
+	test('Dossier converts extra rite rolls in the same opening batch to scrolls', async () => {
+		mockMathRandom(0.82);
+		const user = await createTestUser();
+		await user.addItemsToBank({ items: new Bank().add('Dossier', 2) });
+		await user.incrementKC(Monsters.Yama.id, 100);
+
+		await user.runCommand(openCommand, { name: 'dossier', quantity: 2 });
+		await user.bankAmountMatch('Rite of vile transference', 1);
+		await user.sync();
+		const scrolls = user.bank.amount('Chasm teleport scroll');
+		expect(scrolls).toBeGreaterThanOrEqual(15);
+		expect(scrolls).toBeLessThanOrEqual(18);
 	});
 });

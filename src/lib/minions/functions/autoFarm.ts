@@ -1,121 +1,52 @@
-import { ButtonBuilder, ButtonStyle, SpecialResponse } from '@oldschoolgg/discord';
+import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
 import { Emoji, formatDuration } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { CropUpgradeType } from '@/prisma/main/enums.js';
-import { AutoFarmFilterEnum, activity_type_enum } from '@/prisma/main/enums.js';
+import { AutoFarmFilterEnum } from '@/prisma/main/enums.js';
+import { MessageBuilder } from '@/discord/MessageBuilder.js';
 import { InteractionID } from '@/lib/InteractionID.js';
 import { allFarm, replant } from '@/lib/minions/functions/autoFarmFilters.js';
 import {
-	getPlantsForPatch,
-	parsePreferredSeeds,
-	resolveSeedForPatch
-} from '@/lib/skilling/skills/farming/autoFarm/preferences.js';
+	buildAutoFarmPlan,
+	buildFallbackPlantsByPatch,
+	buildPlanRequests,
+	buildSummaryForStep,
+	type PlannedAutoFarmStep,
+	selectCandidateForPatch,
+	tryRepeatPreviousTrip
+} from '@/lib/minions/functions/autoFarmHelpers.js';
+import { getPlantsForPatch, parsePreferredSeeds } from '@/lib/skilling/skills/farming/autoFarm/preferences.js';
 import { plants } from '@/lib/skilling/skills/farming/index.js';
 import { formatFarmingBoosts, formatItemsUsed } from '@/lib/skilling/skills/farming/utils/farmingFormatters.js';
 import type { FarmingPatchName } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { IPatchData, IPatchDataDetailed } from '@/lib/skilling/skills/farming/utils/types.js';
-import type { Plant } from '@/lib/skilling/types.js';
 import type { AutoFarmStepData, FarmingActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
-import { fetchRepeatTrips, repeatTrip } from '@/lib/util/repeatStoredTrip.js';
-import { prepareFarmingStep } from './farmingTripHelpers.js';
 
-interface PlannedAutoFarmStep {
-	plant: Plant;
-	quantity: number;
-	duration: number;
-	upgradeType: CropUpgradeType | null;
-	didPay: boolean;
-	treeChopFee: number;
-	patch: IPatchData;
-	patchName: FarmingPatchName;
-	friendlyName: string;
-	info: string[];
-	boosts: string[];
-}
-
-interface PlanRequest {
-	type: 'highest' | 'plant';
-	patch: IPatchDataDetailed;
-	plant?: Plant;
-}
-
-interface BuildSummaryResult {
-	summaryLine: string;
-	extraInfoLines: string[];
-}
-
-function shouldHideInfoLine(line: string): boolean {
-	const normalized = line.toLowerCase();
-	return (
-		normalized.startsWith('you are treating your patches with') ||
-		normalized.startsWith('you are paying a nearby farmer') ||
-		normalized.startsWith('you may need to pay a nearby farmer')
-	);
-}
-
-function buildSummaryForStep(index: number, step: PlannedAutoFarmStep): BuildSummaryResult {
-	const extraInfoLines = step.info
-		.filter(infoLine => !shouldHideInfoLine(infoLine))
-		.map(infoLine => `${step.friendlyName}: ${infoLine}`);
-
-	return {
-		summaryLine: `${index + 1}. ${step.friendlyName}: ${step.quantity.toLocaleString()}x ${step.plant.name}`,
-		extraInfoLines
-	};
-}
-
-async function tryRepeatPreviousTrip({
-	user,
-	interaction,
-	errorString
-}: {
-	user: MUser;
-	interaction: MInteraction;
+export interface PrepareAutoFarmResult {
+	plannedSteps: PlannedAutoFarmStep[];
+	totalDuration: number;
+	totalCost: Bank;
+	maxTripLength: number;
+	skippedDueToTripLength: boolean;
+	skippedPatchNamesDueToTripLength: string[];
+	firstPrepareError: string | null;
 	errorString: string;
-}): Promise<CommandResponse | null> {
-	try {
-		const repeatableTrips = await fetchRepeatTrips(user);
-		const fallbackTrip = repeatableTrips.find(trip => trip.type !== activity_type_enum.Farming);
-		if (!fallbackTrip) {
-			return null;
-		}
-		const response = await repeatTrip(user, interaction as OSInteraction, fallbackTrip);
-		if (response === SpecialResponse.SilentErrorResponse || response === SpecialResponse.PaginatedMessageResponse) {
-			return response;
-		}
-		if (typeof response === 'string') {
-			return `${errorString}\n\n${response}`;
-		}
-		if (response && typeof response === 'object' && 'content' in response && typeof response.content === 'string') {
-			return { ...response, content: `${errorString}\n\n${response.content}` };
-		}
-		return response;
-	} catch (err) {
-		Logging.logError(err as Error);
-		return null;
-	}
+	autoFarmPlan: AutoFarmStepData[];
 }
 
-export async function autoFarm(
+export async function planAutoFarmTrip(
 	user: MUser,
 	patchesDetailed: IPatchDataDetailed[],
-	patches: Record<FarmingPatchName, IPatchData>,
-	interaction: MInteraction
-) {
-	if (await user.minionIsBusy()) {
-		return 'Your minion must not be busy to use this command.';
-	}
-
+	patches: Record<FarmingPatchName, IPatchData>
+): Promise<PrepareAutoFarmResult> {
 	const farmingLevel = user.skillsAsLevels.farming;
-
 	const autoFarmFilter = user.autoFarmFilter ?? AutoFarmFilterEnum.AllFarm;
 	const preferContract = Boolean(user.user.minion_farmingPreferredContract);
 	const preferredSeeds = parsePreferredSeeds(user.user.minion_farmingPreferredSeeds);
-
 	const baseBank = user.bank.clone().add('Coins', user.GP);
 
 	const eligiblePlants = [...plants]
@@ -155,18 +86,7 @@ export async function autoFarm(
 	const patchesByName = new Map<FarmingPatchName, IPatchDataDetailed>(
 		patchesDetailed.map(patch => [patch.patchName, patch])
 	);
-	const fallbackPlantsByPatch = new Map<FarmingPatchName, Plant>();
-	for (const plant of eligiblePlants) {
-		const patchName = plant.seedType as FarmingPatchName;
-		if (fallbackPlantsByPatch.has(patchName)) {
-			continue;
-		}
-		const patch = patchesByName.get(patchName);
-		if (!patch || patch.ready === false) {
-			continue;
-		}
-		fallbackPlantsByPatch.set(patchName, plant);
-	}
+	const fallbackPlantsByPatch = buildFallbackPlantsByPatch(eligiblePlants, patchesByName);
 
 	const contract = user.farmingContract();
 	const hasActiveContract = Boolean(contract.contract?.hasContract);
@@ -176,34 +96,14 @@ export async function autoFarm(
 				(contract.contract?.plantToGrow ? plants.find(pl => pl.name === contract.contract?.plantToGrow) : null))
 			: null;
 
-	const planRequests: PlanRequest[] = [];
-	for (const patch of patchesDetailed) {
-		const resolved = resolveSeedForPatch({
-			patch,
-			preferContract,
-			hasActiveContract,
-			contractPlant: contractPlant ?? null,
-			preferences: preferredSeeds,
-			fallbackPlant: fallbackPlantsByPatch.get(patch.patchName) ?? null
-		});
-
-		if (!resolved) {
-			continue;
-		}
-
-		if (resolved.type === 'plant') {
-			const planRequest: PlanRequest = { type: 'plant', patch, plant: resolved.plant };
-			if (resolved.reason === 'contract') {
-				// Always attempt the contract patch first when contract priority is enabled.
-				planRequests.unshift(planRequest);
-			} else {
-				planRequests.push(planRequest);
-			}
-			continue;
-		}
-
-		planRequests.push({ type: 'highest', patch });
-	}
+	const planRequests = buildPlanRequests({
+		patchesDetailed,
+		preferredSeeds,
+		preferContract,
+		hasActiveContract,
+		contractPlant: contractPlant ?? null,
+		fallbackPlantsByPatch
+	});
 
 	for (const request of planRequests) {
 		const patch = request.patch;
@@ -214,83 +114,64 @@ export async function autoFarm(
 			continue;
 		}
 
-		let planned = false;
-		const errorsForPatch: string[] = [];
-		for (const candidate of levelEligibleCandidates) {
-			const prepared = await prepareFarmingStep({
-				user,
-				plant: candidate,
-				quantity: null,
-				pay: false,
-				patchDetailed: patch,
-				maxTripLength,
-				availableBank: remainingBank,
-				compostTier
-			});
-			if (!prepared.success) {
-				errorsForPatch.push(prepared.error);
-				continue;
-			}
+		const selection = await selectCandidateForPatch({
+			user,
+			patch,
+			candidates: levelEligibleCandidates,
+			maxTripLength,
+			remainingBank,
+			totalDuration,
+			totalCost,
+			compostTier,
+			patches,
+			skippedPatchNamesDueToTripLength,
+			plannedSteps
+		});
 
-			const { quantity, duration, cost, upgradeType, didPay, infoStr, boostStr, treeChopFee } = prepared.data;
-			if (quantity <= 0 || duration <= 0) {
-				continue;
-			}
-			if (duration > maxTripLength) {
-				errorsForPatch.push(
-					`${user.minionName} can't go on trips longer than ${formatDuration(maxTripLength)}.`
-				);
-				continue;
-			}
-			const totalCoinCost = cost.amount('Coins') + treeChopFee;
-			if (totalCoinCost > 0 && remainingBank.amount('Coins') < totalCoinCost) {
-				errorsForPatch.push(`You don't own ${new Bank().add('Coins', totalCoinCost)}.`);
-				continue;
-			}
-			if (!remainingBank.has(cost)) {
-				errorsForPatch.push(`You don't own ${cost}.`);
-				continue;
-			}
-			if (totalDuration + duration > maxTripLength) {
-				skippedDueToTripLength = true;
-				skippedPatchNamesDueToTripLength.add(patch.friendlyName);
-				continue;
-			}
-			const patchData = patches[patch.patchName];
-			if (!patchData) {
-				errorsForPatch.push(`Unable to resolve patch data for ${patch.friendlyName}.`);
-				break;
-			}
-
-			remainingBank.remove(cost);
-			if (treeChopFee > 0) {
-				const treeFeeBank = new Bank().add('Coins', treeChopFee);
-				remainingBank.remove(treeFeeBank);
-				totalCost.add(treeFeeBank);
-			}
-			totalCost.add(cost);
-			totalDuration += duration;
-			plannedSteps.push({
-				plant: candidate,
-				quantity,
-				duration,
-				upgradeType,
-				didPay,
-				treeChopFee,
-				patch: patchData,
-				patchName: patch.patchName,
-				friendlyName: patch.friendlyName,
-				info: infoStr,
-				boosts: boostStr
-			});
-			planned = true;
-			break;
-		}
-
-		if (!planned && errorsForPatch.length > 0 && !firstPrepareError) {
-			firstPrepareError = errorsForPatch[0];
+		totalDuration = selection.updatedTotalDuration;
+		skippedDueToTripLength = skippedDueToTripLength || selection.skippedDueToTripLength;
+		if (!selection.planned && selection.firstError && !firstPrepareError) {
+			firstPrepareError = selection.firstError;
 		}
 	}
+
+	const autoFarmPlan = buildAutoFarmPlan(plannedSteps, Date.now());
+
+	return {
+		plannedSteps,
+		totalDuration,
+		totalCost,
+		maxTripLength,
+		skippedDueToTripLength,
+		skippedPatchNamesDueToTripLength: [...skippedPatchNamesDueToTripLength],
+		firstPrepareError,
+		errorString,
+		autoFarmPlan
+	};
+}
+
+export async function autoFarm(
+	user: MUser,
+	patchesDetailed: IPatchDataDetailed[],
+	patches: Record<FarmingPatchName, IPatchData>,
+	interaction: MInteraction
+) {
+	if (await user.minionIsBusy()) {
+		return 'Your minion must not be busy to use this command.';
+	}
+
+	const planning = await planAutoFarmTrip(user, patchesDetailed, patches);
+	const {
+		plannedSteps,
+		totalDuration,
+		totalCost,
+		maxTripLength,
+		skippedDueToTripLength,
+		skippedPatchNamesDueToTripLength,
+		firstPrepareError,
+		errorString,
+		autoFarmPlan
+	} = planning;
 
 	if (plannedSteps.length === 0) {
 		if (firstPrepareError !== null) {
@@ -313,26 +194,6 @@ export async function autoFarm(
 		}
 
 		return noCropsResponse;
-	}
-
-	const autoFarmPlan: AutoFarmStepData[] = [];
-	const planningStartTime = Date.now();
-	let accumulatedDuration = 0;
-	for (const step of plannedSteps) {
-		autoFarmPlan.push({
-			plantsName: step.plant.name,
-			quantity: step.quantity,
-			upgradeType: step.upgradeType,
-			patchName: step.patchName,
-			payment: step.didPay,
-			treeChopFeePaid: step.treeChopFee,
-			treeChopFeePlanned: step.treeChopFee,
-			patchType: step.patch,
-			planting: true,
-			currentDate: planningStartTime + accumulatedDuration,
-			duration: step.duration
-		});
-		accumulatedDuration += step.duration;
 	}
 
 	const firstStep = autoFarmPlan[0];
@@ -424,7 +285,7 @@ ${infoDetails.join('\n')}`;
 
 	response += formatFarmingBoosts(uniqueBoosts, { label: '**Boosts**:', suffix: '' });
 	if (skippedDueToTripLength) {
-		const skippedPatches = [...skippedPatchNamesDueToTripLength];
+		const skippedPatches = skippedPatchNamesDueToTripLength;
 		const skippedPatchStr =
 			skippedPatches.length > 0
 				? `Skipped due to trip length: ${skippedPatches.join(', ')}.`

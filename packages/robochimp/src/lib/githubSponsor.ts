@@ -109,7 +109,7 @@ export interface GithubSponsorsWebhookData {
 }
 
 export function verifyGithubSecret(body: string, signature?: string | string[]): boolean {
-	if (!signature) {
+	if (!signature || !globalConfig.githubWebhookSecret) {
 		return false;
 	}
 	const hmac = createHmac('sha1', globalConfig.githubWebhookSecret);

@@ -60,7 +60,7 @@ export function serializeSnapshotItem(item: any): any {
 		}
 
 		// Item arrays
-		const notItemKeys = ['burn_kourend_bonus'];
+		const notItemKeys = ['burn_kourend_bonus', 'fixed_rate_per_hour'];
 		const definitelyItemKeys = ['items', 'all_items'];
 		if (
 			Array.isArray(value) &&

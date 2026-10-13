@@ -16,6 +16,9 @@ import {
 	type WorkerShardingStrategyOptions
 } from '@discordjs/ws';
 
+export type FetchedShardStatus = WebSocketShardStatus | null;
+const FetchStatusTimeout = 1500;
+
 export class OSBWorkerShardingStrategy implements IShardingStrategy {
 	private readonly manager: WebSocketManager;
 	private readonly options: WorkerShardingStrategyOptions;
@@ -68,12 +71,21 @@ export class OSBWorkerShardingStrategy implements IShardingStrategy {
 	}
 
 	async fetchStatus(): Promise<any> {
-		const statuses = new Map<number, WebSocketShardStatus>();
+		const statuses = new Map<number, FetchedShardStatus>();
 		for (const [shardId, worker] of this.workerByShardId.entries()) {
 			const nonce = Math.random();
 			const promise = new Promise<WebSocketShardStatus>(resolve => this.fetchStatusPromises.set(nonce, resolve));
 			worker.postMessage({ op: WorkerSendPayloadOp.FetchStatus, shardId, nonce } satisfies WorkerSendPayload);
-			statuses.set(shardId, await promise);
+			let timeout: NodeJS.Timeout | null = null;
+			const timeoutPromise = new Promise<null>(resolve => {
+				timeout = setTimeout(() => {
+					this.fetchStatusPromises.delete(nonce);
+					resolve(null);
+				}, FetchStatusTimeout);
+			});
+			const status = await Promise.race([promise, timeoutPromise]);
+			if (timeout) clearTimeout(timeout);
+			statuses.set(shardId, status);
 		}
 		return statuses;
 	}

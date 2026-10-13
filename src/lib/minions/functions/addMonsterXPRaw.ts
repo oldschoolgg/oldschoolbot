@@ -1,4 +1,4 @@
-import { type Monster, Monsters, NIGHTMARES_HP } from 'oldschooljs';
+import { EMonster, type Monster, Monsters, NIGHTMARES_HP } from 'oldschooljs';
 
 import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '@/lib/minions/data/combatConstants.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
@@ -8,7 +8,8 @@ import { XPBank } from '@/lib/structures/XPBank.js';
 
 const miscHpMap: Record<number, number> = {
 	9415: NIGHTMARES_HP,
-	3127: 250
+	3127: 250,
+	[EMonster.DOOM_OF_MOKHAIOTL]: 675
 };
 
 export interface AddMonsterXpParams {

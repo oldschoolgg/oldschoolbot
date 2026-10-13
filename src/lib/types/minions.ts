@@ -6,6 +6,7 @@ import type { SlayerActivityConstants } from '@/lib/minions/data/combatConstants
 import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
 import type { UnderwaterAgilityThievingTrainingSkill } from '@/lib/skilling/skills/agility.js';
+import type { CookingMethodEnum } from '@/lib/skilling/skills/cooking/cooking.js';
 import type { IPatchData } from '@/lib/skilling/skills/farming/utils/types.js';
 import type { SharkLureQuantity } from '@/lib/skilling/skills/fishing/fishingUtil.js';
 import type { TwitcherGloves } from '@/lib/skilling/skills/woodcutting/woodcutting.js';
@@ -124,6 +125,7 @@ export interface CookingActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Cooking';
 	cookableID: number;
 	quantity: number;
+	method?: CookingMethodEnum;
 }
 
 export interface ConstructionActivityTaskOptions extends ActivityTaskOptions {
@@ -186,6 +188,7 @@ export interface MiningActivityTaskOptions extends ActivityTaskOptions {
 	fakeDurationMin: number;
 	oreID: number;
 	quantity: number;
+	minedQuantity?: number;
 	powermine: boolean;
 	iQty?: number;
 }
@@ -541,6 +544,28 @@ export interface ColoTaskOptions extends ActivityTaskOptions {
 	bloodFuryCharges: number;
 }
 
+// A Delve Trek is one complete Doom attempt from Delve 1 until cash-out, a unique stop, or death.
+export interface DoomActivityTrekData {
+	dur: number;
+	dead: boolean;
+	lastDelve: number;
+	loot?: ItemBank;
+	diedAt?: number;
+	ayak?: number;
+}
+
+export interface DoomTaskOptions extends ActivityTaskOptions {
+	type: 'DoomOfMokhaiotl';
+	targetDelve: number;
+	treks: DoomActivityTrekData[];
+	refund?: ItemBank;
+	refundAmmo?: ItemBank;
+	fakeDuration: number;
+	quantity?: number;
+	stopOnUnique?: boolean;
+	disableZcbBoost?: boolean;
+}
+
 type UserID = string;
 type Points = number;
 type RoomIDsDiedAt = number[];
@@ -719,4 +744,5 @@ export type ActivityTaskData =
 	| MinigameActivityTaskOptionsWithNoChanges
 	| CutLeapingFishActivityTaskOptions
 	| CreateForestersRationsActivityTaskOptions
-	| ColoTaskOptions;
+	| ColoTaskOptions
+	| DoomTaskOptions;

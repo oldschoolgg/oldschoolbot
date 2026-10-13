@@ -17,6 +17,7 @@ import { SlayerActivityConstants } from '@/lib/minions/data/combatConstants.js';
 import { autocompleteMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { runCommand } from '@/lib/settings/settings.js';
 import { courses } from '@/lib/skilling/skills/agility.js';
+import { CookingMethodEnum } from '@/lib/skilling/skills/cooking/cooking.js';
 import {
 	ensureValidStoredFishingTripIdentifier,
 	FISHING_REWORK_MESSAGE,
@@ -41,6 +42,7 @@ import type {
 	CreateForestersRationsActivityTaskOptions,
 	CutLeapingFishActivityTaskOptions,
 	DarkAltarOptions,
+	DoomTaskOptions,
 	EnchantingActivityTaskOptions,
 	FarmingActivityTaskOptions,
 	FiremakingActivityTaskOptions,
@@ -317,7 +319,10 @@ const tripHandlers: {
 	[activity_type_enum.Cooking]: {
 		commandName: 'cook',
 		args: (data: CookingActivityTaskOptions) => ({
-			name: Items.itemNameFromId(data.cookableID),
+			name:
+				data.method === CookingMethodEnum.KarambwanShop
+					? 'Karambwan Shop Cook + Drop'
+					: Items.itemNameFromId(data.cookableID),
 			quantity: data.quantity
 		})
 	},
@@ -785,6 +790,17 @@ const tripHandlers: {
 		args: () => ({
 			name: 'colosseum'
 		})
+	},
+	[activity_type_enum.DoomOfMokhaiotl]: {
+		commandName: 'delves',
+		args: (data: DoomTaskOptions) => ({
+			doom: {
+				target_delve: data.targetDelve,
+				quantity: data.quantity,
+				stop_on_unique: data.stopOnUnique,
+				disable_zcb_boost: data.disableZcbBoost === true ? true : undefined
+			}
+		})
 	}
 } as const;
 
@@ -918,7 +934,12 @@ async function handleSlayerTaskFinishedPrompt(
 	const actionInteraction = toOSInteraction(selectedInteraction, interaction, user);
 
 	if (selectedInteraction.customId === SlayerTaskFinishedPromptID.NewTask) {
-		const response = await slayerNewTaskCommand({ user, interaction: actionInteraction, showButtons: true });
+		const response = await slayerNewTaskCommand({
+			user,
+			interaction: actionInteraction,
+			showButtons: true,
+			ephemeralButtonResponse: false
+		});
 		await replyToCollectedButton(actionInteraction, response);
 		return SpecialResponse.RespondedManually;
 	}

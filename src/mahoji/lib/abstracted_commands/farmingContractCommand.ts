@@ -2,7 +2,7 @@ import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
 import type { IFarmingContract, IFarmingContractDifficultyLevel } from '@oldschoolgg/schemas';
 import { toTitleCase } from '@oldschoolgg/toolkit';
 
-import type { MessageBuilderClass } from '@/discord/MessageBuilder.js';
+import { MessageBuilder } from '@/discord/MessageBuilder.js';
 import { EmojiId } from '@/lib/data/emojis.js';
 import { Farming, plants } from '@/lib/skilling/skills/farming/index.js';
 import { getPlantToGrow } from '@/lib/skilling/skills/farming/utils/calcFarmingContracts.js';
@@ -32,10 +32,7 @@ function formatNewContractContent(plantName: string, difficulty: IFarmingContrac
 	return `Your new farming contract is: ${plantName} (${toTitleCase(difficulty)} contract)`;
 }
 
-export async function farmingContractCommand(
-	user: MUser,
-	input?: ContractOption
-): Promise<string | MessageBuilderClass> {
+export async function farmingContractCommand(user: MUser, input?: ContractOption): Promise<string | MessageBuilder> {
 	const farmingLevel = user.skillsAsLevels.farming;
 	const currentContract: IFarmingContract = user.fetchFarmingContract();
 	const plant = currentContract.hasContract ? Farming.findPlant(currentContract.plantToGrow) : null;
@@ -186,7 +183,7 @@ function bestFarmingContractUserCanDo(user: MUser) {
 		.find(a => user.skillLevel('farming') >= a[1])?.[0] as ContractOption | undefined;
 }
 
-export async function autoContract(interaction: OSInteraction): Promise<string | MessageBuilderClass> {
+export async function autoContract(interaction: OSInteraction): Promise<string | MessageBuilder> {
 	const { user, rng } = interaction;
 	const contract = user.farmingContract();
 	const plant = contract.contract ? Farming.findPlant(contract.contract.plantToGrow) : null;

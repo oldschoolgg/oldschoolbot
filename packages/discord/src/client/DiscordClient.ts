@@ -1,6 +1,16 @@
 import { makeURLSearchParams, REST } from '@discordjs/rest';
 import { CompressionMethod, WebSocketManager, WebSocketShardEvents, WorkerShardingStrategy } from '@discordjs/ws';
-import type { IChannel, IInteraction, IMember, IMessage, IRichMember, IRole, IWebhook } from '@oldschoolgg/schemas';
+import {
+	type IChannel,
+	type IInteraction,
+	type IMember,
+	type IMessage,
+	type IRichMember,
+	type IRole,
+	type IWebhook,
+	ZCreateWebhook,
+	ZWebhook
+} from '@oldschoolgg/schemas';
 import { uniqueArr } from '@oldschoolgg/util';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
@@ -36,6 +46,7 @@ import {
 } from '../interactions/interactionCollector.js';
 import type { MInteraction } from '../interactions/MInteraction.js';
 import { type PermissionKey, Permissions } from '../Permissions.js';
+import { imageFileToDataUri } from '../util.js';
 import {
 	type DiscordClientEventsMap,
 	type DiscordClientOptions,
@@ -179,8 +190,7 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 	}
 
 	private async fetchCommands() {
-		const commands = (await this.rest.get(this.apiCommandsRoute())) as APIApplicationCommand[];
-		this.applicationCommands = commands;
+		this.applicationCommands = (await this.rest.get(this.apiCommandsRoute())) as APIApplicationCommand[];
 	}
 
 	async memberHasPermissions(member: IMember, perms: PermissionKey[]): Promise<boolean> {
@@ -202,13 +212,15 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 		return res as IMessage;
 	}
 
-	async createWebhook(channelId: string): Promise<APIWebhook> {
-		const data = await this.rest.post(Routes.channelWebhooks(channelId), {
-			body: {
-				name: this.application!.name
-			}
+	async createWebhook(channelId: string, imagePath?: string): Promise<IWebhook> {
+		const requestBody = ZCreateWebhook.parse({
+			name: this.application!.name,
+			avatar: imagePath ? await imageFileToDataUri(imagePath) : undefined
 		});
-		return data as APIWebhook;
+		const data: unknown = await this.rest.post(Routes.channelWebhooks(channelId), {
+			body: requestBody
+		});
+		return ZWebhook.parse(data);
 	}
 
 	async fetchWebhooks(channelId: string): Promise<APIWebhook[]> {
@@ -216,17 +228,18 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 		return data as APIWebhook[];
 	}
 
-	async sendWebhook(webhook: IWebhook, rawMessage: SendableMessage): Promise<void> {
+	async sendWebhook(webhook: IWebhook, rawMessage: SendableMessage): Promise<IMessage> {
 		const { files, message } = await this.sendableMsgToApiCreate(rawMessage);
 		const query = makeURLSearchParams({
 			wait: true
 		});
-		await this.rest.post(Routes.webhook(webhook.id, webhook.token), {
+		const res = await this.rest.post(Routes.webhook(webhook.id, webhook.token), {
 			body: message,
 			query,
 			files: files ?? undefined,
 			auth: false
 		});
+		return res as IMessage;
 	}
 
 	async sendMessage(channelId: string, rawMessage: SendableMessage): Promise<IMessage> {
@@ -408,12 +421,20 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 		messageId: string;
 		emojiId: string;
 	}): Promise<void> {
-		// Handle format like: :SkyStare:718251514899988488
-		if (emojiId.includes(':')) {
-			emojiId = emojiId.split(':').slice(-1)[0];
+		// Handle wide variety of formats like: :SkyStare:718251514899988488
+		const emojiRegex = /^(?:<|<(a))?:?(\w+:\d+)>?$/;
+		const matches = emojiId.match(emojiRegex);
+		if (matches) {
+			emojiId = `${matches[1] === 'a' ? 'a:' : ''}${matches[2]}`;
 		}
+
 		const route = Routes.channelMessageOwnReaction(channelId, messageId, encodeURIComponent(emojiId));
-		await this.rest.put(route);
+		try {
+			await this.rest.put(route);
+		} catch (err) {
+			console.log(`Emoji React Error: Emoji ID: ${emojiId}\nroute\n${route}\nError: ${err}`);
+			throw err;
+		}
 	}
 
 	apiInteractionParse(itx: APIInteraction): Promise<MInteraction | undefined> {

@@ -294,6 +294,10 @@ const Potions = [
 		items: resolveItems(['Forgotten brew(1)', 'Forgotten brew(2)', 'Forgotten brew(3)', 'Forgotten brew(4)'])
 	},
 	{
+		name: 'Surge potion',
+		items: resolveItems(['Surge potion(1)', 'Surge potion(2)', 'Surge potion(3)', 'Surge potion(4)'])
+	},
+	{
 		name: 'Attack mix',
 		items: resolveItems(['Attack mix(1)', 'Attack mix(2)'])
 	},
