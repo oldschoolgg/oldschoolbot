@@ -184,9 +184,6 @@ export async function handleDiscoRaveButton(
 	if (await user.minionIsBusy()) return { content: 'Your minion is busy.', ephemeral: true };
 	const rave = ravePalette(slug);
 	if (!rave) return { content: 'This rave invite is invalid.', ephemeral: true };
-	if (!(await Cache.consumeDiscoRave(user.id, raveId))) {
-		return { content: 'This rave invite was already used or expired.', ephemeral: true };
-	}
 
 	if (choice !== 'current') {
 		if (!Object.values(presetForAesthetic).includes(choice)) {
@@ -194,6 +191,10 @@ export async function handleDiscoRaveButton(
 		}
 		const result = await gearPresetEquipCommand(user, 'fashion', choice);
 		if (typeof result === 'string') return { content: result, ephemeral: true };
+	}
+
+	if (!(await Cache.consumeDiscoRave(user.id, raveId))) {
+		return { content: 'This rave invite was already used or expired.', ephemeral: true };
 	}
 
 	const effectiveDuration = await user.calcMaxTripLength('DiscoBloodbath');
