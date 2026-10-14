@@ -487,7 +487,7 @@ export const discoCommand = defineCommand({
 				isCrashing: party.crash === 'crash'
 			});
 			const story = isDiscoHalloween() ? discoHalloweenStory(theme.club) : null;
-			return `${user.minionName} is heading to ${theme.club}. The visit will take at least 30 minutes.${party.crash === 'crash' ? `\n\n${user.minionName} is crashing the party, even though they weren't invited.` : ''}${story ? `\n\n${story.moment}` : ''}`;
+			return `${user.minionName} is heading to ${theme.club}. The visit will take at least 30 minutes.${party.crash === 'crash' ? `\n\nThey're crashing the party, even though they weren't invited.` : ''}${story ? `\n\n${story.moment}` : ''}`;
 		}
 
 		return 'Choose a Disco Bloodbath option.';
