@@ -220,6 +220,138 @@ function drawLegend(canvas: OSRSCanvas) {
 	}
 }
 
+function drawSupernova(canvas: OSRSCanvas, x: number, y: number) {
+	const { ctx } = canvas;
+	const rays = [
+		[-92, -27],
+		[-54, -42],
+		[-20, -68],
+		[20, -68],
+		[54, -42],
+		[92, -27],
+		[78, 8],
+		[96, 28],
+		[45, 28],
+		[20, 51],
+		[-20, 51],
+		[-45, 28],
+		[-96, 28],
+		[-78, 8]
+	] as const;
+
+	ctx.save();
+	ctx.globalAlpha = 0.42;
+	ctx.fillStyle = '#f0e7ca';
+	ctx.beginPath();
+	for (const [index, [rayX, rayY]] of rays.entries()) {
+		const next = rays[(index + 1) % rays.length];
+		ctx.moveTo(x, y);
+		ctx.lineTo(x + rayX, y + rayY);
+		ctx.lineTo(x + next[0] * 0.58, y + next[1] * 0.58);
+	}
+	ctx.fill();
+	ctx.globalAlpha = 0.85;
+	ctx.strokeStyle = '#fff6d8';
+	ctx.lineWidth = 2;
+	ctx.beginPath();
+	ctx.arc(x, y, 38, 0, Math.PI * 2);
+	ctx.stroke();
+	ctx.restore();
+}
+
+function drawTotalNode(
+	canvas: OSRSCanvas,
+	{ label, value, x, y, color, emphasized = false }: {
+		label: string;
+		value: number;
+		x: number;
+		y: number;
+		color: string;
+		emphasized?: boolean;
+	}
+) {
+	const width = emphasized ? 182 : 156;
+	const height = emphasized ? 66 : 54;
+	const { ctx } = canvas;
+	ctx.save();
+	ctx.globalAlpha = emphasized ? 0.95 : 0.88;
+	ctx.fillStyle = '#252522';
+	ctx.fillRect(x - width / 2, y - height / 2, width, height);
+	ctx.restore();
+	drawChamferedRect(canvas, x - width / 2, y - height / 2, width, height, 10, '#171717', 5);
+	drawChamferedRect(canvas, x - width / 2 + 5, y - height / 2 + 5, width - 10, height - 10, 7, color, 2);
+	drawScaledText(canvas, {
+		text: label,
+		x,
+		y: y - (emphasized ? 8 : 5),
+		center: true,
+		font: 'Bold',
+		color: '#f0e7ca',
+		scale: emphasized ? 1.65 : 1.35
+	});
+	drawScaledText(canvas, {
+		text: String(value),
+		x,
+		y: y + (emphasized ? 22 : 18),
+		center: true,
+		font: 'Bold',
+		color,
+		scale: emphasized ? 2.25 : 1.8
+	});
+}
+
+function drawOutfitTotals(canvas: OSRSCanvas, points: Record<(typeof DISCO_AESTHETICS)[number], number>) {
+	const center: [number, number] = [768, 119];
+	const nodes = [
+		{ aesthetic: 'Futuristic', x: 558, y: 49 },
+		{ aesthetic: 'Ragdoll', x: 768, y: 31 },
+		{ aesthetic: 'Anti-Fashion', x: 978, y: 49 }
+	] as const;
+	const { ctx } = canvas;
+
+	ctx.save();
+	ctx.lineWidth = 3;
+	ctx.globalAlpha = 0.8;
+	for (const node of nodes) {
+		ctx.strokeStyle = DISCO_AESTHETIC_COLORS[node.aesthetic][points[node.aesthetic] < 0 ? 'negative' : 'positive'];
+		ctx.beginPath();
+		ctx.moveTo(node.x, node.y + 28);
+		ctx.lineTo(center[0], center[1] - 22);
+		ctx.stroke();
+	}
+	ctx.restore();
+
+	drawSupernova(canvas, ...center);
+	for (const node of nodes) {
+		drawTotalNode(canvas, {
+			label: node.aesthetic,
+			value: points[node.aesthetic],
+			x: node.x,
+			y: node.y,
+			color: DISCO_AESTHETIC_COLORS[node.aesthetic][points[node.aesthetic] < 0 ? 'negative' : 'positive']
+		});
+	}
+	drawTotalNode(canvas, {
+		label: 'Combined',
+		value: Object.values(points).reduce((total, value) => total + value, 0),
+		x: center[0],
+		y: center[1],
+		color: '#fff6d8',
+		emphasized: true
+	});
+}
+
+function totalOutfitPoints(items: { item: DiscoItem }[]) {
+	const totals = Object.fromEntries(DISCO_AESTHETICS.map(aesthetic => [aesthetic, 0])) as Record<
+		(typeof DISCO_AESTHETICS)[number],
+		number
+	>;
+	for (const { item } of items) {
+		for (const aesthetic of DISCO_AESTHETICS) totals[aesthetic] += item.points[aesthetic];
+	}
+	return totals;
+}
+
 function drawScaledText(
 	canvas: OSRSCanvas,
 	{
@@ -260,6 +392,7 @@ export async function generateDiscoOutfitImage({
 	const template: CanvasImage = await outfitTemplate;
 	const canvas = new OSRSCanvas({ width: template.width, height: template.height });
 	canvas.ctx.drawImage(template, 0, 0);
+	drawOutfitTotals(canvas, totalOutfitPoints(items));
 
 	const routeColors = new Map<string, string>();
 	for (const scored of items) {
