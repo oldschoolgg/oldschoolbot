@@ -96,7 +96,6 @@ import { underwaterAgilityThievingTask } from '@/tasks/minions/underwaterActivit
 import { vmTask } from '@/tasks/minions/volcanicMineActivity.js';
 import { wealthChargeTask } from '@/tasks/minions/wealthChargingActivity.js';
 import { woodcuttingTask } from '@/tasks/minions/woodcuttingActivity.js';
-import { yamaTask } from '@/tasks/minions/yamaActivity.js';
 
 type MinionTaskRunOptions = {
 	user: MUser;
@@ -133,7 +132,6 @@ export const allTasks: MinionTask[] = [
 	castleWarsTask,
 	championsChallengeTask,
 	chompHuntTask,
-	yamaTask,
 	fightCavesTask,
 	gauntletTask,
 	gnomeResTask,

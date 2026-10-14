@@ -508,11 +508,6 @@ export const testPotatoCommand = globalConfig.isProduction
 				},
 				{
 					type: 'Subcommand',
-					name: 'duo',
-					description: 'Test duo'
-				},
-				{
-					type: 'Subcommand',
 					name: 'ping',
 					description: 'Test pinging',
 					options: [
@@ -904,17 +899,6 @@ export const testPotatoCommand = globalConfig.isProduction
 						ironmanAllowed: true
 					});
 					return `The party has now started with the following users: ${party.map(i => i.username).join(', ')}`;
-				}
-				if (options.duo) {
-					const duo = await globalClient.makeDuo({
-						interaction,
-						message: 'Join the duo!',
-						leader: user,
-						ironmanAllowed: true
-					});
-					return duo
-						? `The duo has now started with the following users: ${duo.map(i => i.username).join(', ')}`
-						: 'The duo was cancelled.';
 				}
 				if (options.ping) {
 					return {

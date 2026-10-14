@@ -82,7 +82,6 @@ import type {
 	UnderwaterAgilityThievingTaskOptions,
 	ValeTotemsActivityTaskOptions,
 	WoodcuttingActivityTaskOptions,
-	YamaActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '@/lib/types/minions.js';
 import { giantsFoundryAlloys } from '@/mahoji/lib/abstracted_commands/giantsFoundryCommand.js';
@@ -132,7 +131,7 @@ type MockedCommandOptions = {
 
 const tripHandlers: {
 	[K in keyof ActivityMap]: {
-		commandName: string | ((data: ActivityMap[K]) => string);
+		commandName: string;
 		args: (data: ActivityMap[K]) => MockedCommandOptions;
 	};
 } = {
@@ -443,14 +442,6 @@ const tripHandlers: {
 		commandName: 'mass',
 		args: (data: GroupMonsterActivityTaskOptions) => ({
 			monster: autocompleteMonsters.find(i => i.id === data.mi)?.name ?? data.mi.toString()
-		})
-	},
-	[activity_type_enum.Yama]: {
-		commandName: 'k',
-		args: (data: YamaActivityTaskOptions) => ({
-			name: 'Yama',
-			quantity: data.iQty,
-			solo: data.solo
 		})
 	},
 	[activity_type_enum.Herblore]: {
@@ -1007,10 +998,8 @@ export async function repeatTrip(
 		}
 		throw err;
 	}
-	const commandName =
-		typeof handler.commandName === 'function' ? handler.commandName(args as any) : handler.commandName;
 	return runCommand({
-		commandName,
+		commandName: handler.commandName,
 		isContinue: true,
 		args: commandArgs,
 		interaction,
