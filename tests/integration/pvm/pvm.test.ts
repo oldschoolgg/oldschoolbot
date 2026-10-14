@@ -698,6 +698,7 @@ describe('PVM', async () => {
 		const user = await client.mockUser({
 			maxed: true,
 			QP: 300,
+			finishedQuestIds: [QuestID.AKingdomDivided],
 			meleeGear: resolveItems(['Scythe of vitur']),
 			bank: new Bank()
 				.add('Anglerfish', 100)
@@ -726,6 +727,7 @@ describe('PVM', async () => {
 		const user = await client.mockUser({
 			maxed: true,
 			QP: 300,
+			finishedQuestIds: [QuestID.AKingdomDivided],
 			meleeGear: resolveItems(['Amulet of rancour', 'Infernal cape', 'Ferocious gloves']),
 			bank: new Bank()
 				.add('Shark', 1000)
@@ -763,6 +765,7 @@ describe('PVM', async () => {
 		const user = await client.mockUser({
 			maxed: true,
 			QP: 300,
+			finishedQuestIds: [QuestID.AKingdomDivided],
 			bank: new Bank()
 				.add('Anglerfish', 100)
 				.add('Saradomin brew(4)', 100)
