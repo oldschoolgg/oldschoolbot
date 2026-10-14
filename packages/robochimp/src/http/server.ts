@@ -21,7 +21,7 @@ export async function startServer(port: number) {
 		cors({
 			origin: globalConfig.frontendUrl,
 			allowMethods: ['GET', 'POST', 'OPTIONS'],
-			allowHeaders: ['Content-Type', 'x-patreon-signature', 'x-hub-signature'],
+			allowHeaders: ['Content-Type', 'x-patreon-signature', 'x-hub-signature', 'x-cyr-payment-signature'],
 			credentials: true
 		})
 	);
