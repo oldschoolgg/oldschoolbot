@@ -32,6 +32,7 @@ export interface DiscoBloodbathActivityTaskOptions extends ActivityTaskOptions {
 	raveId?: string;
 	raveAesthetics?: string[];
 	effectiveDuration?: number;
+	isCrashing?: boolean;
 }
 
 export type BeachCombingMethod = 'Surfing' | 'BeachCombing' | 'BuildSandcastles' | 'PickupTrash';

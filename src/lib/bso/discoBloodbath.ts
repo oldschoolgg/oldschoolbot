@@ -209,14 +209,15 @@ export class DiscoItem {
 	readonly aesthetics: DiscoAesthetic[];
 	readonly points: Record<DiscoAesthetic, number>;
 
-	constructor(item: Item | number | string) {
+	constructor(item: Item | number | string, options?: { hashSeed?: string }) {
 		this.item = typeof item === 'object' ? item : Items.getOrThrow(item);
 		this.name = this.item.name.toLowerCase();
 		const cmb = cmbClothes.includes(this.item.id);
-		const bytes = hashBytes(this.name);
-		const words = this.name.split(/\s+/).filter(Boolean);
-		const first = aestheticFromWord(words[0] ?? this.name);
-		const second = aestheticFromWord(words[1] ?? words[0] ?? this.name);
+		const hashSeed = options?.hashSeed ?? this.name;
+		const bytes = hashBytes(hashSeed);
+		const words = hashSeed.split(/\s+/).filter(Boolean);
+		const first = aestheticFromWord(words[0] ?? hashSeed);
+		const second = aestheticFromWord(words[1] ?? words[0] ?? hashSeed);
 		this.aesthetics = [...new Set([first, second])];
 		this.points = { Futuristic: 0, Ragdoll: 0, 'Anti-Fashion': 0 };
 

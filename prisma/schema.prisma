@@ -368,13 +368,13 @@ model User {
   finished_quest_ids     Int[]     @default([])
 
   // Relations
-  farmedCrops    FarmedCrop[]
-  botItemSell    BotItemSell[]
+  farmedCrops         FarmedCrop[]
+  botItemSell         BotItemSell[]
   discoBloodbathTrips DiscoBloodbathTrip[]
-  pinnedTrip     PinnedTrip[]
-  historicalData HistoricalData[]
-  minigame       Minigame?
-  slayer_tasks   SlayerTask[]
+  pinnedTrip          PinnedTrip[]
+  historicalData      HistoricalData[]
+  minigame            Minigame?
+  slayer_tasks        SlayerTask[]
 
   // Configs/Settings
   minion_defaultCompostToUse CropUpgradeType    @default(compost) @map("minion.defaultCompostToUse")

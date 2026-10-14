@@ -18,14 +18,34 @@ type DiscoStats = {
 	points: Record<DiscoAesthetic, number>;
 	trips: number;
 	traversal: DiscoClub[];
+	routeCompletions: number;
 };
 
 const route: DiscoClub[] = ['Money', 'Success', 'Fame', 'Glamour'];
 
+function routeResetMessageForDepth(depth: number, rng: { pick<T>(items: readonly T[]): T }) {
+	if (depth === route.length - 1) {
+		return 'NO!!! You were so close! Oh well, I’m sure you’ll get there next time...';
+	}
+	if (depth === 2)
+		return rng.pick([
+			'Oooh you hear a voice whispering above the bass, it sounds like it’s disappointed...',
+			'For a second, the bass drops out and something sighs above the dance floor...'
+		]);
+	if (depth === 1)
+		return rng.pick([
+			'You get a feeling like you just missed something, but you weren’t really close anyway...',
+			'The lights flicker like they were waiting for you to do something else...'
+		]);
+	if (depth > 0) return 'Something about the route feels wrong, but the beat keeps going...';
+	else return '';
+}
+
 const emptyStats = (): DiscoStats => ({
 	points: { Futuristic: 0, Ragdoll: 0, 'Anti-Fashion': 0 },
 	trips: 0,
-	traversal: []
+	traversal: [],
+	routeCompletions: 0
 });
 
 export const discoBloodbathTask: MinionTask = {
@@ -52,6 +72,28 @@ export const discoBloodbathTask: MinionTask = {
 			data.popularity *= 1.2;
 			gained[aesthetic] = Math.floor(points * multiplier * (data.popularity / 100) * themeMultiplier);
 		}
+		let crashMessage = '';
+		if (data.isCrashing) {
+			const goodAestheticScore = scored.points[data.theme.good as DiscoAesthetic] ?? 0;
+			const crashSuccessChance = Math.min(100, (goodAestheticScore / 500) * data.popularity);
+			const crashedWithStyle = rng.percentChance(crashSuccessChance);
+			for (const aesthetic of Object.keys(gained) as DiscoAesthetic[]) {
+				gained[aesthetic] = Math.floor(gained[aesthetic] * (crashedWithStyle ? 2 : 0.5));
+			}
+			crashMessage = crashedWithStyle
+				? rng.pick([
+						'You crashed the party with style, and somehow everyone loved it.',
+						'Nobody invited you, but your look turned the crash into the main event.',
+						'You slipped past the door staff and owned the dance floor anyway.',
+						'Your uninvited entrance was so stylish that the crowd doubled down on it.'
+					])
+				: rng.pick([
+						'You crashed the party, but the crowd was not having it.',
+						'The door staff noticed. The crowd noticed. Nobody was impressed.',
+						'Your uninvited entrance landed with a thud instead of a beat drop.',
+						'You crashed the party, but your look could not save the moment.'
+					]);
+		}
 
 		const oldStats = ((await user.fetchUserStat('disco_stats')) as Partial<DiscoStats>) ?? {};
 		const stats: DiscoStats = {
@@ -59,19 +101,25 @@ export const discoBloodbathTask: MinionTask = {
 			...oldStats,
 			points: { ...emptyStats().points, ...(oldStats.points ?? {}) },
 			trips: (oldStats.trips ?? 0) + 1,
-			traversal: [...(oldStats.traversal ?? [])]
+			traversal: [...(oldStats.traversal ?? [])],
+			routeCompletions: oldStats.routeCompletions ?? 0
 		};
 		let glamourBoxes = 0;
 		for (const aesthetic of Object.keys(gained) as DiscoAesthetic[]) stats.points[aesthetic] += gained[aesthetic];
+		let routeResetMessage = '';
 
 		if (!data.isRave) {
 			if (minutes < 30) {
+				if (stats.traversal.length > 0)
+					routeResetMessage = routeResetMessageForDepth(stats.traversal.length, rng);
 				stats.traversal = [];
 			} else {
 				const expectedNext = route[stats.traversal.length];
 				if (data.club === expectedNext) {
 					stats.traversal.push(data.club);
 				} else {
+					if (stats.traversal.length > 0)
+						routeResetMessage = routeResetMessageForDepth(stats.traversal.length, rng);
 					if (data.club === route[0]) stats.traversal = [data.club];
 					else stats.traversal = [];
 				}
@@ -94,6 +142,7 @@ export const discoBloodbathTask: MinionTask = {
 		}
 
 		const completedRoute = stats.traversal.length === route.length;
+		if (completedRoute) stats.routeCompletions++;
 		const rate = 20 * 60; // start with 1 per 20 hours
 
 		for (let i = 0; i < minutes; i++) {
@@ -132,7 +181,7 @@ export const discoBloodbathTask: MinionTask = {
 				effective_duration: data.effectiveDuration ?? data.duration,
 				points_earned: gained,
 				point_totals: stats.points,
-				loot: itemsAdded.length > 0 ? itemsAdded.toJSON() : null,
+				loot: itemsAdded.length > 0 ? itemsAdded.toJSON() : undefined,
 				club: data.club,
 				good_aesthetics: data.isRave ? (data.raveAesthetics ?? []) : [data.theme.good],
 				bad_aesthetics: data.isRave ? [] : [data.theme.bad],
@@ -187,8 +236,13 @@ export const discoBloodbathTask: MinionTask = {
 					`${aesthetic}: ${gained[aesthetic] >= 0 ? '+' : ''}${gained[aesthetic]} (${stats.points[aesthetic]} total)`
 			)
 			.join('\n');
+		const routeCompletionMessage = completedRoute
+			? stats.routeCompletions === 1
+				? '**You completed the route, congrats!** 🎉'
+				: `**You completed the route ${stats.routeCompletions} times!** You can't get any more boxes :p 🎉`
+			: '';
 		const message = new MessageBuilder().setContent(
-			`${user.mention}, ${user.minionName} finished a ${minutes}-minute ${data.isRave ? 'rave' : 'visit'} to ${data.club}.\n${topMessage}\n${crowdMessage}${storyEnding ? `\n\n${storyEnding}` : ''}${lure}\n\n**Realm points**\n${pointSummary}${totalScore === 0 ? '\nYour Fashion gear scored no points. Try `/disco check_item` to plan your outfit.' : ''}${glamourBoxes > 0 ? `\n\n🎉 **SKRINK/SKROD BOX DROP!** 🎉\nThe crowd erupts!` : ''}${itemsAdded.length > 0 ? `\n\n**Loot:** ${itemsAdded}` : ''}`
+			`${user.mention}, ${user.minionName} finished a ${minutes}-minute ${data.isRave ? 'rave' : 'visit'} to ${data.club}.\n${topMessage}\n${crowdMessage}${crashMessage ? `\n${crashMessage}` : ''}${storyEnding ? `\n\n${storyEnding}` : ''}${lure}\n\n**Realm points**\n${pointSummary}${totalScore === 0 ? '\nYour Fashion gear scored no points. Try `/disco check_item` to plan your outfit.' : ''}${routeCompletionMessage ? `\n\n📢 ${routeCompletionMessage}\n` : ''}${glamourBoxes > 0 ? `\n\n🎉 **SKRINK/SKROD BOX DROP!** 🎉\nThe crowd erupts!` : ''}${itemsAdded.length > 0 ? `\n\n**Loot:** ${itemsAdded}` : ''}${routeResetMessage ? `\n\n***🔑${routeResetMessage}***\n` : ''}`
 		);
 		if (itemsAdded.length > 0) {
 			message.addBankImage({
