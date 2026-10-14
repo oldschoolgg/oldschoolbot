@@ -130,14 +130,13 @@ export const discoBloodbathTask: MinionTask = {
 		const totalScore = Object.values(gained).reduce((sum, points) => sum + points, 0);
 		const efficiency = totalScore / theoreticalMax;
 		const tenChances = efficiency * 10;
-		if (!data.isRave) {
-			for (let i = 0; i < 10; i++) {
-				if (rng.percentChance(tenChances * 2)) {
-					loot.add(treatTable.roll());
-				}
-				if (rng.percentChance(tenChances)) {
-					loot.add(DiscoNormalLoot.roll());
-				}
+
+		for (let i = 0; i < 10; i++) {
+			if (rng.percentChance(tenChances * 2)) {
+				loot.add(treatTable.roll());
+			}
+			if (rng.percentChance(tenChances)) {
+				loot.add(DiscoNormalLoot.roll());
 			}
 		}
 
@@ -145,7 +144,7 @@ export const discoBloodbathTask: MinionTask = {
 		if (completedRoute) stats.routeCompletions++;
 		const rate = 20 * 60; // start with 1 per 20 hours
 
-		for (let i = 0; i < minutes; i++) {
+		for (let i = 0; i < effectiveMinutes; i++) {
 			if (rng.roll(rate)) {
 				const box = rng.roll(2) ? 'Skrink box' : 'Skrod box';
 				loot.add(box);
