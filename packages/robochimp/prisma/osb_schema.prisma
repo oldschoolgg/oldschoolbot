@@ -863,7 +863,6 @@ enum activity_type_enum {
   Cooking
   MonsterKilling
   GroupMonsterKilling
-  Yama
   ClueCompletion
   Fishing
   Mining

@@ -635,10 +635,8 @@ export const allCollectionLogs: ICollection = {
 				}
 			},
 			Yama: {
-				alias: Monsters.Yama.aliases,
-				allItems: uniqueArr([...yamaCL, ...Monsters.Yama.allItems]),
 				items: yamaCL,
-				fmtProg: kcProg(Monsters.Yama)
+				allItems: Monsters.Yama.allItems
 			},
 			Zalcano: { items: zalcanoCL, fmtProg: ({ stats }) => `${stats.kcBank[EMonster.ZALCANO] ?? 0} KC` },
 			Zulrah: {

@@ -513,25 +513,6 @@ export interface GroupMonsterActivityTaskOptions extends Omit<MonsterActivityTas
 	users: string[];
 }
 
-export interface YamaActivityTaskOptions extends ActivityTaskOptions {
-	type: 'Yama';
-	quantity: number;
-	iQty?: number;
-	leader: string;
-	users: string[];
-	solo?: boolean;
-	perKillTime: number;
-	teamMembers: YamaTeamMember[];
-}
-
-export interface YamaTeamMember {
-	id: string;
-	contribution: number;
-	deathChance: number;
-	kc: number;
-	attackStyles: AttackStyles[];
-}
-
 export interface RaidsOptions extends ActivityTaskOptionsWithUsers {
 	type: 'Raids';
 	leader: string;
@@ -699,7 +680,6 @@ export type ActivityTaskData =
 	| CollectingOptions
 	| RaidsOptions
 	| GauntletOptions
-	| YamaActivityTaskOptions
 	| CastingActivityTaskOptions
 	| EnchantingActivityTaskOptions
 	| ConstructionActivityTaskOptions
