@@ -1695,6 +1695,7 @@ enum command_name_enum {
   invite
   ironman
   is
+  island
   islandupgrade
   itemtrivia
   jmodcomments

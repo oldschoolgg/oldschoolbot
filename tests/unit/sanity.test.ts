@@ -4,8 +4,10 @@ import { Bank, EMonster, Items, itemID } from 'oldschooljs';
 import { clamp } from 'remeda';
 import { describe, expect, test } from 'vitest';
 
+import { command_name_enum } from '@/prisma/main/enums.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { SkillsArray } from '@/lib/skilling/types.js';
+import { allCommandsDONTIMPORT } from '@/mahoji/commands/allCommands.js';
 import Buyables from '../../src/lib/data/buyables/buyables.js';
 import { marketPriceOfBank } from '../../src/lib/marketPrices.js';
 import { allOpenables } from '../../src/lib/openables.js';
@@ -13,6 +15,13 @@ import itemIsTradeable from '../../src/lib/util/itemIsTradeable.js';
 import { BingoTrophies } from '../../src/mahoji/lib/bingo/BingoManager.js';
 
 describe('Sanity', () => {
+	test('all registered commands can be logged', () => {
+		const missingCommands = allCommandsDONTIMPORT
+			.map(command => command.name)
+			.filter(name => !Object.hasOwn(command_name_enum, name));
+		expect(missingCommands).toEqual([]);
+	});
+
 	test('misc', () => {
 		expect(itemID('Phoenix')).toEqual(20_693);
 		expect(itemID('Kalphite princess')).toEqual(12_647);
