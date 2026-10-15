@@ -5,6 +5,16 @@ import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js'
 import { Minigames } from '@/lib/settings/minigames.js';
 import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
 
+export async function getBirdhouseRunKC(userID: string) {
+	return prisma.activity.count({
+		where: {
+			user_id: BigInt(userID),
+			type: 'Birdhouse',
+			completed: true
+		}
+	});
+}
+
 export async function getKCByName(user: MUser, kcName: string): Promise<[string, number] | [null, 0]> {
 	const mon = effectiveMonsters.find(
 		mon => stringMatches(mon.name, kcName) || mon.aliases.some(alias => stringMatches(alias, kcName))
@@ -30,9 +40,13 @@ export async function getKCByName(user: MUser, kcName: string): Promise<[string,
 		[['superior', 'superiors', 'superior slayer monster'], stats.slayer_superior_count],
 		[['tithe farm', 'Tithe farm', 'tithefarm', 'tithe'], stats.tithe_farms_completed]
 	];
-	const res = special.find(s => s[0].includes(kcName));
+	const res = special.find(s => s[0].some(alias => stringMatches(alias, kcName)));
 	if (res) {
 		return [res[0][0], res[1]];
+	}
+
+	if (stringMatches('birdhouses', kcName)) {
+		return ['birdhouses', await getBirdhouseRunKC(user.id)];
 	}
 
 	return [null, 0];
@@ -76,6 +90,12 @@ export async function getAllKillCounts(user: MUser): Promise<AllKillCountEntry[]
 			type: 'Hunter'
 		});
 	}
+
+	result.push({
+		name: 'Birdhouse runs',
+		amount: await getBirdhouseRunKC(user.id),
+		type: 'Hunter'
+	});
 
 	result.push({
 		name: 'Superior slayer monsters',

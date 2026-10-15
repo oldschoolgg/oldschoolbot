@@ -74,6 +74,11 @@ test('Birdhouses', async () => {
 		expect(plantingYewRes2.data).toMatchObject({
 			message: expect.stringContaining('finished placing 4x Yew bird house and collecting 4x full Bird house')
 		});
+		expect(
+			await global.prisma!.activity.count({
+				where: { user_id: BigInt(user.id), type: 'Birdhouse', completed: true }
+			})
+		).toEqual(2);
 		await user.sync();
 
 		expect(user.fetchBirdhouseData()).toMatchObject({
