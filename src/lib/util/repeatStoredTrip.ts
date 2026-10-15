@@ -222,7 +222,7 @@ const tripHandlers: {
 	[activity_type_enum.DiscoBloodbath]: {
 		commandName: 'disco',
 		args: (data: DiscoBloodbathActivityTaskOptions) => ({
-			party: { club_name: data.club, crash: data.isCrashing ? 'crash' : undefined }
+			party: { club_name: data.club, crash: undefined }
 		})
 	},
 	[activity_type_enum.BirthdayEvent]: {

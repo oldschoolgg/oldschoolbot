@@ -73,24 +73,6 @@ Use ${mentionCommand('disco', 'search')} to search your bank for the best Disco 
 		: ''
 }`;
 
-function formatPoints(points: Record<(typeof DISCO_AESTHETICS)[number], number>) {
-	return DISCO_AESTHETICS.map(
-		aesthetic => `**${aesthetic}**: ${points[aesthetic]}/500 (${((points[aesthetic] / 500) * 100).toFixed(1)}%)`
-	).join('\n');
-}
-
-function formatOutfitItem(item: DiscoItem) {
-	const points = DISCO_AESTHETICS.filter(aesthetic => item.points[aesthetic] !== 0).sort(
-		(a, b) => Math.abs(item.points[b]) - Math.abs(item.points[a])
-	);
-	return `**${item.item.name}**\n${points
-		.map(
-			aesthetic =>
-				`${item.points[aesthetic] < 0 ? '**' : ''}${aesthetic}: ${item.points[aesthetic]}${item.points[aesthetic] < 0 ? '**' : ''}`
-		)
-		.join('\n')}`;
-}
-
 export const discoCommand = defineCommand({
 	name: 'disco',
 	description: 'Enter the Disco Bloodbath club circuit.',
@@ -144,12 +126,6 @@ export const discoCommand = defineCommand({
 					choices: autoEquipChoices.map(({ name, value }) => ({ name, value }))
 				}
 			]
-		},
-		{
-			type: 'Subcommand',
-			name: 'check_item',
-			description: 'Check one item’s Disco scoring.',
-			options: [{ type: 'String', name: 'item', description: 'The item to inspect.', required: true }]
 		},
 		{
 			type: 'Subcommand',
@@ -229,13 +205,6 @@ export const discoCommand = defineCommand({
 		}
 		if (options.help) return helpText((await checkEntitlements(user, discoBankPointEntitlements)).success);
 
-		if (options.check_item) {
-			const resolved = Items.getItem(options.check_item.item);
-			if (!resolved) return 'I could not find that item. Check the item name and try again.';
-			const item = new DiscoItem(resolved);
-			return `**${item.item.name}**\nAesthetics: ${item.aesthetics.join(', ')}\n${formatPoints(item.points)}`;
-		}
-
 		if (options.search) {
 			const ratelimit = await Cache.tryRatelimit(user.id, 'disco_bank_search');
 			if (!ratelimit.success) return 'You need to wait before searching your bank again.';
@@ -273,9 +242,6 @@ export const discoCommand = defineCommand({
 		if (options.outfit) {
 			const scored = scoreDiscoFashion(user.gear.fashion.raw());
 			return {
-				content: `**Outfit totals**\n${formatPoints(scored.points)}\n\n${scored.items
-					.map(({ item }) => formatOutfitItem(item))
-					.join('\n\n')}`,
 				files: [
 					{
 						name: 'disco-outfit.png',

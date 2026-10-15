@@ -4,6 +4,7 @@ import { createHash } from 'node:crypto';
 import { type Item, Items } from 'oldschooljs';
 
 export const DISCO_EVENT_END_DATE = new Date('2026-11-06T00:00:00.000Z');
+export const DISCO_POINT_REWORK_DATE = new Date('2026-10-16T06:00:00.000Z');
 export const holidayOpenableItemIDs = new Set<number>();
 export const DISCO_CLUBS = [
 	'Bloodbath',
@@ -246,8 +247,13 @@ export function scoreDiscoFashion(fashion: Record<string, { item: number; quanti
 			rawPoints[aesthetic] += Math.min(item.points[aesthetic], 500);
 		}
 	}
-	for (const aesthetic of DISCO_AESTHETICS) points[aesthetic] = Math.max(0, Math.min(500, rawPoints[aesthetic]));
-	return { points, items };
+	for (const aesthetic of DISCO_AESTHETICS) {
+		points[aesthetic] =
+			new Date() >= DISCO_POINT_REWORK_DATE
+				? (rawPoints[aesthetic] / 2500) * 500
+				: Math.max(0, Math.min(500, rawPoints[aesthetic]));
+	}
+	return { points, items, rawPoints };
 }
 
 function seededValue(seed: string) {

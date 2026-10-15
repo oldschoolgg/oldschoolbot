@@ -590,6 +590,8 @@ model DiscoBloodbathTrip {
   club                String
   good_aesthetics     String[]
   bad_aesthetics      String[]
+  is_crashing         Boolean  @default(false)
+  popularity          Int?
   is_rave             Boolean  @default(false)
 
   @@index([user_id, timestamp])
