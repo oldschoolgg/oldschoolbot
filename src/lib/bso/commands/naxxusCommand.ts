@@ -17,7 +17,7 @@ import { checkUserCanUseDegradeableItem, degradeablePvmBoostItems, degradeItem }
 import { trackLoot } from '@/lib/lootTrack.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
-import { readState } from '@/mahoji/commands/islandupgrade.js';
+import { readState } from '@/mahoji/lib/abstracted_commands/islandCommand.js';
 
 const bisMageGear = new Gear({
 	head: 'Gorajan occult helmet', // 20

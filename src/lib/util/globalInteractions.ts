@@ -16,11 +16,11 @@ import { type RunCommandArgs, runCommand } from '@/lib/settings/settings.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import { updateGiveawayMessage } from '@/lib/util/giveaway.js';
 import { fetchRepeatTrips, repeatTrip } from '@/lib/util/repeatStoredTrip.js';
-import { collectAllIslandCamps } from '@/mahoji/commands/islandupgrade.js';
 import { archonCommand } from '@/mahoji/lib/abstracted_commands/archonCommand.js';
 import { autoSlayCommand } from '@/mahoji/lib/abstracted_commands/autoSlayCommand.js';
 import { cancelGEListingCommand } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
 import { autoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
+import { collectAllIslandCamps } from '@/mahoji/lib/abstracted_commands/islandCommand.js';
 import { shootingStarsCommand } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
 import { slayerNewTaskCommand } from '@/mahoji/lib/abstracted_commands/slayerTaskCommand.js';
 
