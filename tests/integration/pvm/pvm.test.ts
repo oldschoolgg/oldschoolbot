@@ -649,6 +649,69 @@ describe('PVM', async () => {
 		expect(user.bank.amount('Cannonball')).toBeGreaterThan(100_000 - 500);
 	});
 
+	async function makeGreenDragonUser(hasWildyEliteDiary = false) {
+		const meleeGear = resolveItems([
+			'Dragon hunter lance',
+			'Anti-dragon shield',
+			'Torva full helm',
+			'Torva platebody',
+			'Torva platelegs',
+			'Infernal cape',
+			'Amulet of torture',
+			'Ferocious gloves',
+			'Primordial boots',
+			'Berserker ring (i)'
+		]);
+		const user = await client.mockUser({
+			maxed: true,
+			meleeGear,
+			wildyGear: meleeGear,
+			bank: new Bank()
+				.add('Saradomin brew(4)', 100)
+				.add('Blighted super restore(4)', 100)
+				.add('Cooked karambwan', 120)
+				.add('Blighted karambwan', 120)
+		});
+		await user.setAttackStyle(['attack', 'strength', 'defence']);
+		await user.statsUpdate({
+			monster_scores: {
+				[Monsters.GreenDragon.id]: 1_000_000
+			}
+		});
+		if (hasWildyEliteDiary) {
+			await user.update({
+				completed_achievement_diaries: ['wilderness.elite']
+			});
+		}
+		return user;
+	}
+
+	test('Wilderness elite diary buffs only wildy green dragons', async () => {
+		const nonWildyBase = await makeGreenDragonUser();
+		const nonWildyElite = await makeGreenDragonUser(true);
+		const wildyBase = await makeGreenDragonUser();
+		const wildyElite = await makeGreenDragonUser(true);
+
+		const nonWildyBaseResult = await nonWildyBase.kill(EMonster.GREEN_DRAGON, { quantity: 10 });
+		const nonWildyEliteResult = await nonWildyElite.kill(EMonster.GREEN_DRAGON, { quantity: 10 });
+		const wildyBaseResult = await wildyBase.kill(EMonster.GREEN_DRAGON, { quantity: 10, wilderness: true });
+		const wildyEliteResult = await wildyElite.kill(EMonster.GREEN_DRAGON, { quantity: 10, wilderness: true });
+
+		for (const result of [nonWildyBaseResult, nonWildyEliteResult, wildyBaseResult, wildyEliteResult]) {
+			expect(result.commandResult).toContain('is now killing');
+			expect(result.activityResult).toMatchObject({ q: 10 });
+		}
+
+		expect(nonWildyEliteResult.commandResult).not.toContain('Wilderness Elite Diary');
+		expect(nonWildyEliteResult.activityResult!.duration).toEqual(nonWildyBaseResult.activityResult!.duration);
+		expect(wildyBaseResult.commandResult).not.toContain('Wilderness Elite Diary');
+		expect(wildyEliteResult.commandResult).toContain('30% for Wilderness Elite Diary');
+		expect(wildyEliteResult.activityResult!.duration / wildyBaseResult.activityResult!.duration).toBeCloseTo(
+			0.7,
+			5
+		);
+	});
+
 	it('should give a scythe boost and deduct charges', async () => {
 		const user = await makeAraxxorUser();
 		await user.equip('melee', [
