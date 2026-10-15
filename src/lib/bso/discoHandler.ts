@@ -197,7 +197,7 @@ export async function handleDiscoRaveButton(
 		return { content: 'This rave invite was already used or expired.', ephemeral: true };
 	}
 
-	const effectiveDuration = await user.calcMaxTripLength('DiscoBloodbath');
+	const effectiveDuration =  Math.min(Time.Minute * 60, await user.calcMaxTripLength('DiscoBloodbath'));
 	const themeAesthetic = rave.aesthetics[0];
 	await ActivityManager.startTrip<DiscoBloodbathActivityTaskOptions>({
 		userID: user.id,

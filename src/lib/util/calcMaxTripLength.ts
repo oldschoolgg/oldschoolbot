@@ -47,7 +47,8 @@ export async function calcMaxTripLength(user: MUser, activity?: activity_type_en
 		case 'TombsOfAmascut':
 		case 'Pickpocket':
 		case 'SoulWars':
-		case 'Cyclops': {
+		case 'Cyclops':
+		case 'DiscoBloodbath': {
 			masterHPCapeBoost = 20;
 			regularHPBoost = true;
 			break;
@@ -91,18 +92,6 @@ export async function calcMaxTripLength(user: MUser, activity?: activity_type_en
 			}
 			if (user.usingPet('Shelldon')) {
 				max *= 1.25;
-			}
-			break;
-		}
-		case 'BeachCombing': {
-			if (user.usingPet('Patricia')) {
-				max *= 2;
-			}
-			if (user.usingPet('Partycrab')) {
-				max += Time.Minute * 30;
-			}
-			if (user.usingPet('Shelldon')) {
-				max += Time.Minute * 25;
 			}
 			break;
 		}

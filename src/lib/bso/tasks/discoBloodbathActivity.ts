@@ -69,13 +69,12 @@ export const discoBloodbathTask: MinionTask = {
 					: aesthetic === data.theme.bad
 						? -0.5
 						: 1;
-			data.popularity *= 1.2;
 			gained[aesthetic] = Math.floor(points * multiplier * (data.popularity / 100) * themeMultiplier);
 		}
 		let crashMessage = '';
 		if (data.isCrashing) {
 			const goodAestheticScore = scored.points[data.theme.good as DiscoAesthetic] ?? 0;
-			const crashSuccessChance = Math.min(100, (goodAestheticScore / 500) * data.popularity);
+			const crashSuccessChance = Math.min(95, (goodAestheticScore / 3500) * data.popularity);
 			const crashedWithStyle = rng.percentChance(crashSuccessChance);
 			for (const aesthetic of Object.keys(gained) as DiscoAesthetic[]) {
 				gained[aesthetic] = Math.floor(gained[aesthetic] * (crashedWithStyle ? 2 : 0.5));
@@ -109,24 +108,18 @@ export const discoBloodbathTask: MinionTask = {
 		let routeResetMessage = '';
 
 		if (!data.isRave) {
-			if (minutes < 30) {
+			const expectedNext = route[stats.traversal.length];
+			if (data.club === expectedNext) {
+				stats.traversal.push(data.club);
+			} else {
 				if (stats.traversal.length > 0)
 					routeResetMessage = routeResetMessageForDepth(stats.traversal.length, rng);
-				stats.traversal = [];
-			} else {
-				const expectedNext = route[stats.traversal.length];
-				if (data.club === expectedNext) {
-					stats.traversal.push(data.club);
-				} else {
-					if (stats.traversal.length > 0)
-						routeResetMessage = routeResetMessageForDepth(stats.traversal.length, rng);
-					if (data.club === route[0]) stats.traversal = [data.club];
-					else stats.traversal = [];
-				}
+				if (data.club === route[0]) stats.traversal = [data.club];
+				else stats.traversal = [];
 			}
 		}
 		const loot = new Bank();
-		const theoreticalMax = Math.floor((effectiveMinutes * 7500) / 60);
+		const theoreticalMax = Math.floor((effectiveMinutes * 3750) / 60);
 		const totalScore = Object.values(gained).reduce((sum, points) => sum + points, 0);
 		const efficiency = totalScore / theoreticalMax;
 		const tenChances = efficiency * 10;

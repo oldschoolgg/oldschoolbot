@@ -236,14 +236,17 @@ export class DiscoItem {
 
 export function scoreDiscoFashion(fashion: Record<string, { item: number; quantity?: number } | null>) {
 	const points: Record<DiscoAesthetic, number> = { Futuristic: 0, Ragdoll: 0, 'Anti-Fashion': 0 };
+	const rawPoints = { ... points };
 	const items: { item: DiscoItem; slot: string }[] = [];
 	for (const [slot, equipped] of Object.entries(fashion)) {
 		if (!equipped || slot === 'ammo') continue;
 		const item = new DiscoItem(equipped.item);
 		items.push({ item, slot });
-		for (const aesthetic of DISCO_AESTHETICS) points[aesthetic] += item.points[aesthetic];
+		for (const aesthetic of DISCO_AESTHETICS) {
+			rawPoints[aesthetic] += Math.min(item.points[aesthetic], 500);
+		}
 	}
-	for (const aesthetic of DISCO_AESTHETICS) points[aesthetic] = Math.max(0, Math.min(500, points[aesthetic]));
+	for (const aesthetic of DISCO_AESTHETICS) points[aesthetic] = Math.max(0, Math.min(500, rawPoints[aesthetic]));
 	return { points, items };
 }
 
@@ -256,7 +259,7 @@ export function discoHourSeed(date = new Date()) {
 }
 
 export function discoPopularity(club: DiscoClub, date = new Date()) {
-	return 30 + (seededValue(`${discoHourSeed(date)}:${club}`) % 75);
+	return 44 + (seededValue(`${discoHourSeed(date)}:${club}`) % 75);
 }
 
 export function discoClubOrder(date = new Date()): DiscoClub[] {

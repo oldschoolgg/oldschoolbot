@@ -459,11 +459,11 @@ export const discoCommand = defineCommand({
 			const theme = DISCO_CLUB_THEMES[club];
 			const popularity = discoPopularity(theme.club);
 			let msg = `☠️ ${theme.club} is like the Crypt keeper.... Dead. But in a bad way. 🪦`;
-			if (popularity > 50)
+			if (popularity > 54)
 				msg = `💀 It's better than.... bad?  Your contacts are not impressed by ${theme.club}.`;
-			if (popularity > 70) msg = `${theme.club} is getting attention. Might be worth a visit...`;
-			if (popularity > 83) msg = `🐦‍🔥${theme.club} is hot. Everyone worth knowing is talking about it.🔥`;
-			if (popularity >= 100)
+			if (popularity > 89) msg = `${theme.club} is getting attention. Might be worth a visit...`;
+			if (popularity > 97) msg = `🐦‍🔥${theme.club} is hot. Everyone worth knowing is talking about it.🔥`;
+			if (popularity >= 114)
 				msg = `🦄🎉 ${theme.club} is a FREAKING **UNICORN**! You __**HAVE**__ to be there!.🎉🎉🎉`;
 			return msg;
 		}
