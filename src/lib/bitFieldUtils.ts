@@ -26,6 +26,7 @@ export function getBitFieldData<T extends IBitFieldData = IBitFieldData>(
 	};
 }
 
+// Type guard, this one mostly useful on an array filter since it's just !== false.
 export function validateBitFieldReturn<T extends IBitFieldData = IBitFieldData>(
 	bit: BitFieldReturnData<T>
 ): bit is Exclude<BitFieldReturnData<T>, false> {
@@ -49,7 +50,7 @@ export function bitfieldCanUserManipulate<T extends IBitFieldData = IBitFieldDat
 	}
 	if (user.isAdmin()) return true;
 	if (bit.data.protected) {
-		return 'OOK! OOK!You cannot modify this bit -- ook ook';
+		return 'Silly monkey... kicks are for trids!';
 	}
 	if (!globalConfig.isProduction || user.isMod()) return true;
 	if (target) {

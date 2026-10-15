@@ -302,6 +302,7 @@ export async function mockUser(
 		mageLevel: number;
 		wildyGear: number[];
 		meleeGear: number[];
+		finishedQuestIds: number[];
 		slayerLevel: number;
 		venatorBowCharges: number;
 		bank: Bank;
@@ -344,6 +345,7 @@ export async function mockUser(
 		gear_melee: options.meleeGear ? (meleeGear.raw() as Prisma.InputJsonValue) : undefined,
 		gear_range: options.rangeGear ? (rangeGear.raw() as Prisma.InputJsonValue) : undefined,
 		venator_bow_charges: options.venatorBowCharges,
+		finished_quest_ids: options.finishedQuestIds,
 		QP: options.QP,
 		minion_hasBought: true
 	});
