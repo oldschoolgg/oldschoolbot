@@ -77,7 +77,7 @@ export const discoBloodbathTask: MinionTask = {
 		let crashMessage = '';
 		if (data.isCrashing) {
 			const goodAestheticScore = scored.points[data.theme.good as DiscoAesthetic] ?? 0;
-			const crashSuccessChance = Math.min(95, (goodAestheticScore / 3500) * data.popularity);
+			const crashSuccessChance = Math.min(95, (goodAestheticScore / 3000) * data.popularity);
 			const crashedWithStyle = rng.percentChance(crashSuccessChance);
 			for (const aesthetic of Object.keys(gained) as DiscoAesthetic[]) {
 				gained[aesthetic] = Math.floor(gained[aesthetic] * (crashedWithStyle ? 2 : 0.5));
@@ -110,6 +110,9 @@ export const discoBloodbathTask: MinionTask = {
 		for (const aesthetic of Object.keys(gained) as DiscoAesthetic[]) stats.points[aesthetic] += gained[aesthetic];
 		let routeResetMessage = '';
 
+		let completedRoute = false;
+		let awardPrize = false;
+
 		if (!data.isRave) {
 			const expectedNext = route[stats.traversal.length];
 			if (data.club === expectedNext) {
@@ -120,6 +123,10 @@ export const discoBloodbathTask: MinionTask = {
 				if (data.club === route[0]) stats.traversal = [data.club];
 				else stats.traversal = [];
 			}
+			completedRoute = stats.traversal.length === route.length;
+			if (completedRoute) stats.routeCompletions++;
+
+			awardPrize = completedRoute && user.user.claimed_glamour_box === 0;
 		}
 		const loot = new Bank();
 		const theoreticalMax = Math.floor((effectiveMinutes * 3750) / 60);
@@ -136,8 +143,6 @@ export const discoBloodbathTask: MinionTask = {
 			}
 		}
 
-		const completedRoute = stats.traversal.length === route.length;
-		if (completedRoute) stats.routeCompletions++;
 		const rate = 20 * 60; // start with 1 per 20 hours
 
 		for (let i = 0; i < effectiveMinutes; i++) {
@@ -147,7 +152,6 @@ export const discoBloodbathTask: MinionTask = {
 				glamourBoxes++;
 			}
 		}
-		const awardPrize = completedRoute && user.user.claimed_glamour_box === 0;
 
 		if (awardPrize) {
 			loot.add(rng.roll(2) ? 'Skrink box' : 'Skrod box');
