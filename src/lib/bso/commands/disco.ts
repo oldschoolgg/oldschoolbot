@@ -1,6 +1,5 @@
 import { generateDiscoLeaderboardImage } from '@/lib/bso/canvas/generateDiscoLeaderboardImage.js';
 import { generateDiscoOutfitImage } from '@/lib/bso/canvas/generateDiscoOutfitImage.js';
-import { discoBankPointEntitlements } from '@/lib/bso/discoBankPoints.js';
 import {
 	DISCO_AESTHETIC_SHORT_NAMES,
 	DISCO_AESTHETICS,
@@ -14,11 +13,10 @@ import {
 	isDiscoHalloween,
 	scoreDiscoFashion
 } from '@/lib/bso/discoBloodbath.js';
-import { checkEntitlements } from '@/lib/bso/util/entitlementChecker.js';
 
 import { defaultGearSetup } from '@oldschoolgg/gear';
 import { Time } from '@oldschoolgg/toolkit';
-import { Bank, Items } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 
 import { activity_type_enum } from '@/prisma/main/enums.js';
 import { Prisma } from '@/prisma/main.js';
@@ -43,9 +41,7 @@ function corruptDiscoHashSeed(name: string) {
 	return `${name.slice(0, index)}${Math.floor(Math.random() * 10)}${name.slice(index)}`;
 }
 
-const helpText = (
-	canUseDiscoBankPoints: boolean
-) => `**Disco Bloodbath** is a limited-time club circuit for minions who understand that fashion is a weapon.
+const helpText = () => `**Disco Bloodbath** is a limited-time club circuit for minions who understand that fashion is a weapon.
 
 ⭐ Use ${mentionCommand('disco', 'party')} to send your minion on a trip. Visits take at least thirty minutes.
 - Your Fashion gear determines your points, and your top two Realms gain or lose progress depending on the party's vibe.
@@ -65,13 +61,8 @@ ${discoClubOrder()
 	})
 	.join('\n')}
 
-Use ${mentionCommand('disco', 'outfit')} for your Fashion-gear breakdown, or ${mentionCommand('disco', 'check_item')} to inspect one item.${
-	canUseDiscoBankPoints
-		? `
-
-Use ${mentionCommand('disco', 'search')} to search your bank for the best Disco points.`
-		: ''
-}`;
+Use ${mentionCommand('disco', 'outfit')} for your Fashion-gear breakdown.
+Use ${mentionCommand('disco', 'search')} to search your bank for the best Disco points.`;
 
 export const discoCommand = defineCommand({
 	name: 'disco',
@@ -203,7 +194,7 @@ export const discoCommand = defineCommand({
 
 ‼️ **Use ${mentionCommand('disco', 'party')}** to send trips**`;
 		}
-		if (options.help) return helpText((await checkEntitlements(user, discoBankPointEntitlements)).success);
+		if (options.help) return helpText();
 
 		if (options.search) {
 			const ratelimit = await Cache.tryRatelimit(user.id, 'disco_bank_search');
