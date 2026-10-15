@@ -25,10 +25,12 @@ import { BitField, CONSTANTS, PerkTier } from '@/lib/constants.js';
 import { handleGrowablePetGrowth } from '@/lib/growablePets.js';
 import { handlePassiveImplings } from '@/lib/implings.js';
 import { triggerRandomEvent } from '@/lib/randomEvents.js';
+import { canShowAutoFarmButton } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { MUserClass } from '@/lib/user/MUser.js';
 import {
 	makeAutoContractButton,
+	makeAutoFarmButton,
 	makeAutoRummageToggleButton,
 	makeAutoSlayButton,
 	makeBirdHouseTripButton,
@@ -40,11 +42,11 @@ import {
 	makeTearsOfGuthixButton
 } from '@/lib/util/interactions.js';
 import { hasSkillReqs, perHourChance } from '@/lib/util/smallUtils.js';
-import { readState } from '@/mahoji/commands/islandupgrade.js';
 import { alching } from '@/mahoji/commands/laps.js';
 import { handleTriggerArchon } from '@/mahoji/lib/abstracted_commands/archonCommand.js';
 import { isUsersDailyReady } from '@/mahoji/lib/abstracted_commands/dailyCommand.js';
 import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
+import { readState } from '@/mahoji/lib/abstracted_commands/islandCommand.js';
 import { handleTriggerShootingStar } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
 
 const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
@@ -529,6 +531,16 @@ const tripFinishEffects: TripFinishEffect[] = [
 			const canRun = Boolean(await canRunAutoContract(user));
 			if (!canRun) return;
 			components.push(makeAutoContractButton());
+		}
+	},
+	{
+		name: 'Autofarm Button',
+		requiredPerkTier: PerkTier.Two,
+		fn: async ({ user, components }) => {
+			if (user.bitfield.includes(BitField.DisableAutoFarmButton)) return;
+			const canShow = await canShowAutoFarmButton(user);
+			if (!canShow) return;
+			components.push(makeAutoFarmButton());
 		}
 	},
 	{

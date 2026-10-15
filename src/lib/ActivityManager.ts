@@ -10,6 +10,27 @@ import type { ActivityTaskData } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
+function getActivityLogSummary(activity: Activity): string {
+	if (activity.type !== 'Farming') {
+		return '';
+	}
+	const data = activity.data as Record<string, unknown> | null;
+	if (!data || typeof data !== 'object') {
+		return '';
+	}
+
+	const plantsName =
+		typeof data.plantsName === 'string' && data.plantsName.length > 0 ? data.plantsName : 'Unknown crop';
+	const quantity = typeof data.quantity === 'number' ? data.quantity.toLocaleString() : null;
+
+	const parts = [quantity ? `${plantsName} x${quantity}` : plantsName].filter(Boolean);
+
+	if (parts.length === 0) {
+		return '';
+	}
+	return `: ${parts.join(' ')}`;
+}
+
 class SActivityManager {
 	private async getGuildIdForActivityError(channelId: string): Promise<string | null> {
 		try {
@@ -46,12 +67,18 @@ class SActivityManager {
 	}
 
 	async completeActivity(_activity: Activity): Promise<void> {
-		Logging.logDebug(`Completing activity ${_activity.id} of type ${_activity.type}`, {
-			type: 'ACTIVITY',
-			activity_type: _activity.type,
-			data: _activity.data,
-			user_id: _activity.user_id
-		});
+		const user = await mUserFetch(_activity.user_id.toString());
+		const summary = getActivityLogSummary(_activity);
+		Logging.logDebug(
+			`Completing activity ${_activity.id} (${_activity.type}${summary}) for ${user.username}[${user.id}]`,
+			{
+				type: 'ACTIVITY',
+				activity_type: _activity.type,
+				data: _activity.data,
+				user_id: _activity.user_id,
+				username: user.username
+			}
+		);
 		const activity = this.convertStoredActivityToFlatActivity(_activity);
 
 		if (_activity.completed) {
@@ -64,8 +91,6 @@ class SActivityManager {
 			Logging.logError(new Error('Missing task'));
 			return;
 		}
-
-		const user = await mUserFetch(activity.userID);
 
 		try {
 			await task.run(
