@@ -250,7 +250,7 @@ export function scoreDiscoFashion(fashion: Record<string, { item: number; quanti
 	for (const aesthetic of DISCO_AESTHETICS) {
 		points[aesthetic] =
 			new Date() >= DISCO_POINT_REWORK_DATE
-				? (rawPoints[aesthetic] / 1750) * 500
+				? (rawPoints[aesthetic] / 1500) * 500
 				: Math.max(0, Math.min(500, rawPoints[aesthetic]));
 	}
 	return { points, items, rawPoints };

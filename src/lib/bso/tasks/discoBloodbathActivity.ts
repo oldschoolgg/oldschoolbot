@@ -24,7 +24,7 @@ type DiscoStats = {
 
 const route: DiscoClub[] = ['Money', 'Success', 'Fame', 'Glamour'];
 const discoPointReworkReminderEnds = new Date(DISCO_POINT_REWORK_DATE.getTime() + Time.Day);
-const discoPointReworkAnnouncement = `📢 The accidental 500 point cap will be reworked starting <t:${Math.floor(DISCO_POINT_REWORK_DATE.getTime() / 1000)}:R>. Points will be downscaled so the race stays fair: 1750 points in an aesthetic will equal 500 base points.`;
+const discoPointReworkAnnouncement = `📢 The accidental 500 point cap will be reworked starting <t:${Math.floor(DISCO_POINT_REWORK_DATE.getTime() / 1000)}:R>. Points will be downscaled so the race stays fair: 1,500 points in an aesthetic will equal 500 base points.`;
 
 function routeResetMessageForDepth(depth: number, rng: { pick<T>(items: readonly T[]): T }) {
 	if (depth === route.length - 1) {
