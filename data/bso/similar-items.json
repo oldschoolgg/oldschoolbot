@@ -113,7 +113,12 @@
 	},
 	{
 		"main_item": "Ancient wyvern shield",
-		"similar_items": ["Ancient wyvern shield", "Uncharged ancient wyvern shield"]
+		"similar_items": [
+			"Ancient wyvern shield",
+			"Dragonbane aegis",
+			"Dragonbane aegis (archaic)",
+			"Uncharged ancient wyvern shield"
+		]
 	},
 	{
 		"main_item": "Angler boots",

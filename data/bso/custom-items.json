@@ -2022,8 +2022,7 @@
 		},
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -2147,6 +2146,16 @@
 		}
 	},
 	{
+		"id": 75082,
+		"name": "Archibald",
+		"members": true,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true
+		},
+		"price": 1000000
+	},
+	{
 		"id": 71439,
 		"name": "Archon boots",
 		"members": true,
@@ -2180,8 +2189,7 @@
 		},
 		"price": 10000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -2217,8 +2225,7 @@
 		},
 		"price": 10000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -2248,8 +2255,7 @@
 			"requirements": null
 		},
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		},
 		"price": 10000
 	},
@@ -2286,24 +2292,22 @@
 		},
 		"price": 10000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
 		"id": 75047,
 		"name": "Archon relic",
-		"tradeable": false,
+		"tradeable": true,
 		"tradeable_on_ge": true,
 		"noteable": true,
 		"cost": 45,
 		"lowalch": 18,
 		"highalch": 27,
 		"buy_limit": 13000,
-		"price": 1,
+		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isSuperUntradeable": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -2339,13 +2343,12 @@
 		},
 		"price": 10000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
 		"id": 75074,
-		"name": "Archon's Ichor",
+		"name": "Archon's ichor",
 		"tradeable": true,
 		"tradeable_on_ge": true,
 		"noteable": true,
@@ -2602,8 +2605,7 @@
 		},
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -4628,8 +4630,7 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -5621,8 +5622,7 @@
 		},
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -5673,8 +5673,7 @@
 		},
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -5689,8 +5688,7 @@
 		"buy_limit": 13000,
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -5726,8 +5724,7 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -5763,8 +5760,7 @@
 		},
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -5801,8 +5797,7 @@
 		},
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -5917,8 +5912,7 @@
 		"buy_limit": 13000,
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -6002,6 +5996,8 @@
 		"tradeable_on_ge": true,
 		"price": 10000,
 		"customItemData": {
+			"isSuperUntradeable": true,
+			"cantBeSacrificed": true,
 			"cantDropFromMysteryBoxes": true
 		}
 	},
@@ -6953,8 +6949,7 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -6986,8 +6981,7 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -7023,8 +7017,7 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -7060,8 +7053,7 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -7097,8 +7089,7 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -7691,8 +7682,7 @@
 		},
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -7756,8 +7746,7 @@
 		},
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -7789,8 +7778,7 @@
 		},
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -7822,8 +7810,7 @@
 		},
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -7838,8 +7825,7 @@
 		"buy_limit": 13000,
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -7854,8 +7840,7 @@
 		"buy_limit": 13000,
 		"price": 10000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -7891,8 +7876,7 @@
 		},
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -7928,8 +7912,7 @@
 		},
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -7965,8 +7948,7 @@
 		},
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -7981,8 +7963,7 @@
 		"buy_limit": 13000,
 		"price": 50000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -8155,8 +8136,7 @@
 		"buy_limit": 13000,
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -9755,8 +9735,7 @@
 		"buy_limit": 13000,
 		"price": 50000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -10426,8 +10405,7 @@
 		},
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -10601,8 +10579,7 @@
 		},
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -10780,8 +10757,7 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -11097,8 +11073,7 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -12008,8 +11983,7 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -12675,8 +12649,7 @@
 		"buy_limit": 13000,
 		"price": 50000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -16020,8 +15993,7 @@
 		},
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -16619,8 +16591,7 @@
 		},
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -16657,8 +16628,7 @@
 		},
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -16694,8 +16664,7 @@
 		},
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -16710,8 +16679,7 @@
 		"buy_limit": 13000,
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -16726,8 +16694,7 @@
 		"buy_limit": 13000,
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -17396,8 +17363,7 @@
 		"buy_limit": 13000,
 		"price": 10000000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isSuperUntradeable": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -17412,8 +17378,7 @@
 		"buy_limit": 13000,
 		"price": 10000000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isSuperUntradeable": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -17428,8 +17393,7 @@
 		"buy_limit": 13000,
 		"price": 10000000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isSuperUntradeable": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -17579,8 +17543,7 @@
 		"buy_limit": 13000,
 		"price": 10000000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isSuperUntradeable": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -18149,8 +18112,7 @@
 		"tradeable_on_ge": false,
 		"tradeable": false,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isSuperUntradeable": true
+			"cantDropFromMysteryBoxes": true
 		},
 		"price": 300000000
 	},
@@ -18226,8 +18188,7 @@
 		},
 		"price": 300000000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isSuperUntradeable": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -18303,8 +18264,7 @@
 		},
 		"price": 300000000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isSuperUntradeable": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -18380,8 +18340,7 @@
 		},
 		"price": 300000000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isSuperUntradeable": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -18458,8 +18417,7 @@
 		},
 		"price": 300000000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isSuperUntradeable": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -19592,8 +19550,7 @@
 		},
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -20995,8 +20952,7 @@
 		},
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -23104,8 +23060,7 @@
 		},
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -25119,8 +25074,7 @@
 		"buy_limit": 13000,
 		"price": 50000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -25289,8 +25243,7 @@
 		},
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -27341,8 +27294,7 @@
 		"buy_limit": 13000,
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -29142,8 +29094,7 @@
 		},
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -31961,8 +31912,7 @@
 		"buy_limit": 13000,
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -32151,8 +32101,7 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -32389,8 +32338,7 @@
 		},
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -34195,8 +34143,7 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -35284,8 +35231,7 @@
 		},
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -35433,8 +35379,7 @@
 		},
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -35470,8 +35415,7 @@
 		},
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -35507,8 +35451,7 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -35782,8 +35725,7 @@
 		"buy_limit": 13000,
 		"price": 50000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -36995,8 +36937,7 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -37237,8 +37178,7 @@
 		"buy_limit": 13000,
 		"price": 50000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -37351,8 +37291,7 @@
 		"buy_limit": 13000,
 		"price": 50000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -37974,8 +37913,7 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -38078,8 +38016,7 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -38094,8 +38031,7 @@
 		"buy_limit": 13000,
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -38110,8 +38046,7 @@
 		"buy_limit": 13000,
 		"price": 50000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -38321,8 +38256,7 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -38429,8 +38363,7 @@
 		"buy_limit": 13000,
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -39126,8 +39059,7 @@
 		"buy_limit": 13000,
 		"price": 1000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -39366,8 +39298,7 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -39807,8 +39738,7 @@
 		"buy_limit": 13000,
 		"price": 50000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -39823,8 +39753,7 @@
 		"buy_limit": 13000,
 		"price": 50000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -43185,8 +43114,7 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -43536,8 +43464,7 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -43574,8 +43501,7 @@
 		},
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -46785,8 +46711,7 @@
 		"buy_limit": 13000,
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -50205,8 +50130,7 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -52857,8 +52781,7 @@
 		},
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -52890,8 +52813,7 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -52927,8 +52849,7 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -53699,8 +53620,7 @@
 		"buy_limit": 13000,
 		"price": 50000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isDiscontinued": true
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{

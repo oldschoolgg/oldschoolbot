@@ -1,9 +1,21 @@
 [
 	{
+		"name": "Adolescent gemscale",
+		"id": 75058,
+		"opened_item": "Adolescent gemscale",
+		"all_items": ["Celestyte", "Firaxyte", "Oneiryte", "Prismare", "Starfire agate", "Verdantyte"]
+	},
+	{
 		"name": "Amylase pack",
 		"id": 12641,
 		"opened_item": "Amylase pack",
 		"all_items": ["Amylase crystal"]
+	},
+	{
+		"name": "Ancient gemscale",
+		"id": 75060,
+		"opened_item": "Ancient gemscale",
+		"all_items": ["Celestyte", "Firaxyte", "Oneiryte", "Prismare", "Starfire agate", "Verdantyte"]
 	},
 	{
 		"name": "Baby impling",
@@ -1182,6 +1194,7 @@
 		"id": 75043,
 		"opened_item": "Elder sigil",
 		"all_items": [
+			"Archon relic",
 			"Celestyte",
 			"Clue scroll (grandmaster)",
 			"Elder plank",
@@ -1195,6 +1208,12 @@
 			"Starfire agate",
 			"Verdantyte"
 		]
+	},
+	{
+		"name": "Elder gemscale",
+		"id": 75061,
+		"opened_item": "Elder gemscale",
+		"all_items": ["Celestyte", "Firaxyte", "Oneiryte", "Prismare", "Starfire agate", "Verdantyte"]
 	},
 	{
 		"name": "Elder mimic casket",
@@ -6316,6 +6335,12 @@
 		]
 	},
 	{
+		"name": "Juvenile gemscale",
+		"id": 75057,
+		"opened_item": "Juvenile gemscale",
+		"all_items": ["Celestyte", "Firaxyte", "Oneiryte", "Prismare", "Starfire agate", "Verdantyte"]
+	},
+	{
 		"name": "Large egg",
 		"id": 73178,
 		"opened_item": "Large egg",
@@ -7114,6 +7139,12 @@
 			"Splitbark gauntlets",
 			"Tooth half of key"
 		]
+	},
+	{
+		"name": "Mature gemscale",
+		"id": 75059,
+		"opened_item": "Mature gemscale",
+		"all_items": ["Celestyte", "Firaxyte", "Oneiryte", "Prismare", "Starfire agate", "Verdantyte"]
 	},
 	{
 		"name": "Monkey crate",

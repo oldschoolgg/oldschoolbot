@@ -1,4 +1,5 @@
 import { scriptImageGenerator } from '@/lib/bso/canvas/scriptImages.js';
+import { getTier, isCategoryMaintained } from '@/lib/bso/commands/islandUpgrades.js';
 import { addToDoubleLootTimer } from '@/lib/bso/doubleLoot.js';
 import { allDyes, dyedItems } from '@/lib/bso/dyedItems.js';
 import { mysteriousStepData } from '@/lib/bso/mysteryTrail.js';
@@ -12,7 +13,10 @@ import { Bank, type Item, Items, resolveItems } from 'oldschooljs';
 
 import { gearImages } from '@/lib/canvas/gearImageData.js';
 import { BitField } from '@/lib/constants.js';
+import { makeArchonButton } from '@/lib/util/interactions.js';
 import { assert } from '@/lib/util/logError.js';
+import { readState } from '@/mahoji/commands/islandupgrade.js';
+import { archonPresentations, getEligibleTier } from '@/mahoji/lib/abstracted_commands/archonCommand.js';
 import { flowerTable } from '@/mahoji/lib/abstracted_commands/hotColdCommand.js';
 
 const easterUseTrollItemIDs = new Set([Items.getOrThrow('Magnegg').id, Items.getOrThrow('Wabbit eggs').id]);
@@ -737,6 +741,41 @@ Lay one to rest in the morning haze,
 In its yield, your path will blaze.`)}
 
 This looks like a treasure trail. ${minionMessage}`;
+	}
+});
+
+usables.push({
+	items: [Items.getOrThrow('Archon relic')],
+	run: async (user: MUser) => {
+		if (await user.minionIsBusy()) return 'Your minion is busy.';
+
+		const tier = getEligibleTier(user);
+		if (tier === null) {
+			return 'You need at least level 120 in a combat skill (Attack, Strength, Defence, Ranged, Magic, Hitpoints) to attract an Archon.';
+		}
+
+		const { upgrades, maintenance } = readState(user);
+		const megabossTier = getTier(upgrades, 'megaboss');
+		if (megabossTier < 1 || !isCategoryMaintained(maintenance, 'megaboss', Date.now())) {
+			return 'You need an Archon Sanctum (Tier 1+) built on Verdant Island to summon an Archon.';
+		}
+
+		await user.removeItemsFromBank(new Bank().add('Archon relic', 1));
+
+		await prisma.archonEvent.create({
+			data: {
+				user_id: user.id,
+				tier,
+				expires_at: new Date(Date.now() + Time.Minute * 20),
+				has_been_done: false
+			}
+		});
+
+		const presentation = archonPresentations[tier];
+		return {
+			content: `You crushed an **Archon relic**! A **${presentation.name}** has emerged from the void and awaits battle.`,
+			components: [makeArchonButton(tier)]
+		};
 	}
 });
 

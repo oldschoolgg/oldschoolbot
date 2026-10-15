@@ -1478,8 +1478,8 @@
 		"item_cost": {
 			"item_cost": {
 				"12695": 1,
-				"50026": 3,
-				"50027": 1,
+				"70004": 3,
+				"70005": 1,
 				"70006": 1,
 				"75006": 3
 			},
@@ -1515,9 +1515,54 @@
 						"item_id": 75017
 					}
 				]
+			},
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 10,
+						"item_id": 75065
+					}
+				]
+			},
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 10,
+						"item_id": 75066
+					}
+				]
+			},
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 10,
+						"item_id": 75067
+					}
+				]
+			},
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 10,
+						"item_id": 75068
+					}
+				]
+			},
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 10,
+						"item_id": 75069
+					}
+				]
 			}
 		],
-		"group_killable": true
+		"group_killable": false
 	},
 	{
 		"id": 6503,
@@ -2659,7 +2704,7 @@
 		"table": {},
 		"difficulty_rating": 3,
 		"qp_required": 500,
-		"heal_amount_needed": 3200,
+		"heal_amount_needed": 400,
 		"attack_style_to_use": "attack_slash",
 		"attack_styles_used": ["attack_slash"],
 		"level_requirements": {
@@ -2750,37 +2795,11 @@
 		"setups_used": ["melee", "range"],
 		"equipped_item_boosts": [
 			{
-				"gear_setup": "range",
+				"gear_setup": "melee",
 				"items": [
 					{
 						"boost_percent": 25,
 						"item_id": 75003
-					}
-				]
-			},
-			{
-				"gear_setup": "range",
-				"items": [
-					{
-						"boost_percent": 10,
-						"item_id": 75020
-					},
-					{
-						"boost_percent": 10,
-						"item_id": 75016
-					}
-				]
-			},
-			{
-				"gear_setup": "range",
-				"items": [
-					{
-						"boost_percent": 7,
-						"item_id": 75020
-					},
-					{
-						"boost_percent": 7,
-						"item_id": 75049
 					}
 				]
 			},
@@ -3478,12 +3497,6 @@
 			"magic": 120,
 			"ranged": 120
 		},
-		"death_props": {
-			"hardness": 0,
-			"steepness": 0,
-			"lowest_death_chance": 0,
-			"highest_death_chance": 0
-		},
 		"minimum_heal_amount": 18,
 		"all_items": ["Elder mimic casket"],
 		"minimum_gear_requirements": {
@@ -3536,8 +3549,9 @@
 			},
 			"qty_per_kill": 1
 		},
+		"tame_cant_kill": true,
 		"group_killable": false,
-		"setups_used": ["melee"]
+		"setups_used": ["melee", "range"]
 	},
 	{
 		"id": 5295,
@@ -3774,7 +3788,7 @@
 		"table": {},
 		"difficulty_rating": 4,
 		"qp_required": 750,
-		"heal_amount_needed": 6000,
+		"heal_amount_needed": 600,
 		"attack_style_to_use": "attack_slash",
 		"attack_styles_used": ["attack_slash"],
 		"level_requirements": {
@@ -3865,37 +3879,11 @@
 		"setups_used": ["melee", "range"],
 		"equipped_item_boosts": [
 			{
-				"gear_setup": "range",
+				"gear_setup": "melee",
 				"items": [
 					{
 						"boost_percent": 25,
 						"item_id": 75003
-					}
-				]
-			},
-			{
-				"gear_setup": "range",
-				"items": [
-					{
-						"boost_percent": 10,
-						"item_id": 75020
-					},
-					{
-						"boost_percent": 10,
-						"item_id": 75016
-					}
-				]
-			},
-			{
-				"gear_setup": "range",
-				"items": [
-					{
-						"boost_percent": 7,
-						"item_id": 75020
-					},
-					{
-						"boost_percent": 7,
-						"item_id": 75049
 					}
 				]
 			},
@@ -4996,12 +4984,11 @@
 		"time_to_finish": 186000,
 		"emoji": "<:Prince_black_dragon:324127378538364928>",
 		"wildy": true,
-		"difficulty_rating": 6,
 		"items_required": [
-			[11283, 1540],
-			[2832, 11785, 9185, 20997, 21012],
-			[605, 2503, 12381, 12385, 4736],
-			[4272, 2497, 12383, 12387, 4738]
+			[11283, 1540, 75002, 22002],
+			[2832, 11785, 9185, 20997, 21012, 22978, 75001, 4151, 24254, 26219, 22325],
+			[605, 2503, 12381, 12385, 4736, 11832, 709, 75066],
+			[4272, 2497, 12383, 12387, 4738, 11834, 2404, 75067]
 		],
 		"qp_required": 0,
 		"item_in_bank_boosts": [
@@ -5341,19 +5328,13 @@
 		},
 		"item_in_bank_boosts": [
 			{
-				"11806": 5
-			},
-			{
-				"13576": 5
-			},
-			{
-				"11804": 5
-			},
-			{
+				"11804": 5,
+				"11806": 5,
+				"13576": 5,
 				"73072": 10
 			}
 		],
-		"items_required": [[1540, 24214]],
+		"items_required": [[1540, 24214, 11283, 75002, 22002]],
 		"group_killable": true,
 		"respawn_time": 20000,
 		"level_requirements": {
@@ -5921,7 +5902,7 @@
 		},
 		"tame_cant_kill": true,
 		"items_required": ["Combatant's cape"],
-		"setups_used": ["melee"],
+		"setups_used": ["melee", "range"],
 		"equipped_item_boosts": [
 			{
 				"gear_setup": "melee",
@@ -6033,7 +6014,7 @@
 		},
 		"tame_cant_kill": true,
 		"items_required": ["Combatant's cape"],
-		"setups_used": ["melee"],
+		"setups_used": ["melee", "range"],
 		"equipped_item_boosts": [
 			{
 				"gear_setup": "melee",
@@ -6462,7 +6443,10 @@
 				"prayer": 3
 			}
 		},
-		"items_required": [[11283, 22002]],
+		"items_required": [[11283, 22002, 75002, 21633]],
+		"custom_monster_data": {
+			"attributes": ["dragon", "fiery"]
+		},
 		"respawn_time": 20000,
 		"level_requirements": {
 			"prayer": 70,
@@ -11273,10 +11257,6 @@
 				"13576": 13,
 				"13652": 8,
 				"26374": 18
-			},
-			{
-				"21012": 15,
-				"22978": 15
 			},
 			{
 				"25975": 1

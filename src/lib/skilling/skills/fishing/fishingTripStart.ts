@@ -1,4 +1,5 @@
 import { BSOItem } from '@/lib/bso/BSOItem.js';
+import { defaultMaintenanceTimestamps, getGlobalGatheringSpeedBonus } from '@/lib/bso/commands/islandUpgrades.js';
 import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 
 import { Time } from '@oldschoolgg/toolkit';
@@ -444,6 +445,17 @@ export async function calcFishingTripStart({
 
 	if (fish.name === 'Dark crab' && hasWildyEliteDiary) {
 		boosts.push('Increased dark crab catch rate from Elite Wilderness Diary');
+	}
+
+	const rawUpgrades = (gearBank.island_upgrades ?? {}) as any;
+	const islandMaint = rawUpgrades.maintenance ?? defaultMaintenanceTimestamps;
+	const islandAssign = rawUpgrades.assignment ?? null;
+	const globalGatherBonus = getGlobalGatheringSpeedBonus(rawUpgrades, islandMaint, islandAssign);
+	if (globalGatherBonus > 0) {
+		tripSpeedMultiplier *= 1 + globalGatherBonus;
+		boosts.push(
+			`${(globalGatherBonus * 100).toFixed(0)}% faster fishing for Grand Conduit (Expedition Outfitters)`
+		);
 	}
 
 	if (isUsingSpiritFlakes) {

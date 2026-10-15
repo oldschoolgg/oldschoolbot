@@ -1,4 +1,5 @@
 import { IVY_MAX_TRIP_LENGTH_BOOST } from '@/lib/bso/bsoConstants.js';
+import { defaultMaintenanceTimestamps, getGlobalGatheringSpeedBonus } from '@/lib/bso/commands/islandUpgrades.js';
 import { InventionID, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 
 import { formatDuration, increaseNumByPercent, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
@@ -256,6 +257,17 @@ export const chopCommand = defineCommand({
 			}
 		} else {
 			boosts.push('**Powerchopping**');
+		}
+
+		const rawUpgrades = (user.user.island_upgrades ?? {}) as any;
+		const islandMaint = rawUpgrades.maintenance ?? defaultMaintenanceTimestamps;
+		const islandAssign = rawUpgrades.assignment ?? null;
+		const globalGatherBonus = getGlobalGatheringSpeedBonus(rawUpgrades, islandMaint, islandAssign);
+		if (globalGatherBonus > 0) {
+			axeMultiplier *= 1 + globalGatherBonus;
+			boosts.push(
+				`${(globalGatherBonus * 100).toFixed(0)}% faster chopping for Grand Conduit (Expedition Outfitters)`
+			);
 		}
 
 		// Calculate the time it takes to chop specific quantity or as many as possible

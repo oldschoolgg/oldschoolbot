@@ -6,13 +6,15 @@ export type UpgradeCategory =
 	| 'minigame'
 	| 'gathering'
 	| 'prismare'
+	| 'conduit'
+	| 'logistics'
 	| 'fishing'
 	| 'mining'
 	| 'woodcutting'
 	| 'divination'
 	| 'farming';
 
-export type AssignableCategory = Exclude<UpgradeCategory, 'megaboss' | 'prismare'>;
+export type AssignableCategory = Exclude<UpgradeCategory, 'megaboss' | 'prismare' | 'conduit' | 'logistics'>;
 
 export type SkillCategory = 'fishing' | 'mining' | 'woodcutting' | 'divination' | 'farming';
 
@@ -97,6 +99,11 @@ export const PASSIVE_YIELD_TABLES: Record<SkillCategory, PassiveYieldEntry[]> = 
 		{ item: 'Raw manta ray', minLevel: 81, tierCeiling: 4, ratePerHour: 34 },
 		{ item: 'Raw anglerfish', minLevel: 82, tierCeiling: 4, ratePerHour: 35 },
 		{ item: 'Raw dark crab', minLevel: 85, tierCeiling: 4, ratePerHour: 32 },
+		{ item: 'Juvenile gemscale', minLevel: 90, tierCeiling: 4, ratePerHour: 24 },
+		{ item: 'Adolescent gemscale', minLevel: 100, tierCeiling: 4, ratePerHour: 20 },
+		{ item: 'Mature gemscale', minLevel: 105, tierCeiling: 5, ratePerHour: 16 },
+		{ item: 'Elder gemscale', minLevel: 110, tierCeiling: 5, ratePerHour: 12 },
+		{ item: 'Ancient gemscale', minLevel: 115, tierCeiling: 5, ratePerHour: 8 },
 		{ item: 'Raw rocktail', minLevel: 120, tierCeiling: 5, ratePerHour: 15 }
 	],
 
@@ -113,14 +120,15 @@ export const PASSIVE_YIELD_TABLES: Record<SkillCategory, PassiveYieldEntry[]> = 
 		{ item: 'Obsidian shards', minLevel: 80, tierCeiling: 3, ratePerHour: 30 },
 		{ item: 'Runite ore', minLevel: 85, tierCeiling: 3, ratePerHour: 30 },
 		{ item: 'Amethyst', minLevel: 92, tierCeiling: 4, ratePerHour: 25 },
+		{ item: 'Crystalline ore', minLevel: 90, tierCeiling: 4, ratePerHour: 45 },
+		{ item: 'Gem Infused ore', minLevel: 100, tierCeiling: 5, ratePerHour: 30 },
+		{ item: 'Dense crystal shard', minLevel: 110, tierCeiling: 5, ratePerHour: 25 },
 		{ item: 'Dark animica', minLevel: 105, tierCeiling: 5, ratePerHour: 25 },
 		{ item: 'Firaxyte', minLevel: 110, tierCeiling: 5, ratePerHour: 25 },
 		{ item: 'Verdantyte', minLevel: 110, tierCeiling: 5, ratePerHour: 25 },
 		{ item: 'Oneiryte', minLevel: 110, tierCeiling: 5, ratePerHour: 25 },
 		{ item: 'Starfire agate', minLevel: 110, tierCeiling: 5, ratePerHour: 25 },
-		{ item: 'Celestyte', minLevel: 110, tierCeiling: 5, ratePerHour: 25 },
-		{ item: 'Crystalline ore', minLevel: 88, tierCeiling: 4, ratePerHour: 22 },
-		{ item: 'Dense crystal shard', minLevel: 94, tierCeiling: 5, ratePerHour: 15 }
+		{ item: 'Celestyte', minLevel: 110, tierCeiling: 5, ratePerHour: 25 }
 	],
 
 	woodcutting: [
@@ -134,9 +142,12 @@ export const PASSIVE_YIELD_TABLES: Record<SkillCategory, PassiveYieldEntry[]> = 
 		{ item: 'Yew logs', minLevel: 60, tierCeiling: 2, ratePerHour: 65 },
 		{ item: 'Magic logs', minLevel: 75, tierCeiling: 3, ratePerHour: 45 },
 		{ item: 'Redwood logs', minLevel: 90, tierCeiling: 4, ratePerHour: 30 },
+		{ item: 'Verdant logs', minLevel: 95, tierCeiling: 4, ratePerHour: 40 },
+		{ item: 'Ancient cap', minLevel: 100, tierCeiling: 4, ratePerHour: 30 },
 		{ item: 'Elder logs', minLevel: 105, tierCeiling: 4, ratePerHour: 28 },
-		{ item: 'Verdant logs', minLevel: 100, tierCeiling: 4, ratePerHour: 25 },
-		{ item: 'Ancient verdant logs', minLevel: 110, tierCeiling: 5, ratePerHour: 16 }
+		{ item: 'Colossal stem', minLevel: 105, tierCeiling: 5, ratePerHour: 25 },
+		{ item: 'Living bark', minLevel: 110, tierCeiling: 5, ratePerHour: 20 },
+		{ item: 'Ancient verdant logs', minLevel: 115, tierCeiling: 5, ratePerHour: 15 }
 	],
 
 	divination: [
@@ -173,25 +184,37 @@ export const PASSIVE_YIELD_TABLES: Record<SkillCategory, PassiveYieldEntry[]> = 
 		{ item: 'White berries', minLevel: 59, tierCeiling: 2, ratePerHour: 55 },
 		{ item: 'Snapdragon', minLevel: 62, tierCeiling: 3, ratePerHour: 38 },
 		{ item: 'Poison ivy berries', minLevel: 70, tierCeiling: 3, ratePerHour: 45 },
+		{ item: 'Ivy seed', minLevel: 70, tierCeiling: 3, ratePerHour: 8 },
 		{ item: 'Dwarf weed', minLevel: 79, tierCeiling: 3, ratePerHour: 30 },
 		{ item: 'Dragon fruit', minLevel: 81, tierCeiling: 4, ratePerHour: 25 },
 		{ item: 'Torstol', minLevel: 85, tierCeiling: 4, ratePerHour: 20 },
 		{ item: 'Blood orange', minLevel: 92, tierCeiling: 5, ratePerHour: 18 },
+		{ item: 'Blood orange seed', minLevel: 92, tierCeiling: 5, ratePerHour: 6 },
+		{ item: 'Brimstone spore', minLevel: 93, tierCeiling: 5, ratePerHour: 20 },
+		{ item: 'Ignilace seed', minLevel: 95, tierCeiling: 5, ratePerHour: 6 },
+		{ item: 'Ignilace', minLevel: 95, tierCeiling: 5, ratePerHour: 18 },
 		{ item: 'Avocado', minLevel: 99, tierCeiling: 5, ratePerHour: 16 },
+		{ item: 'Avocado seed', minLevel: 99, tierCeiling: 5, ratePerHour: 6 },
 		{ item: 'Spirit weed', minLevel: 99, tierCeiling: 5, ratePerHour: 15 },
+		{ item: 'Spirit weed seed', minLevel: 99, tierCeiling: 5, ratePerHour: 6 },
 		{ item: 'Athelas', minLevel: 99, tierCeiling: 5, ratePerHour: 15 },
+		{ item: 'Athelas seed', minLevel: 99, tierCeiling: 5, ratePerHour: 6 },
+		{ item: 'Mysterious seed', minLevel: 99, tierCeiling: 5, ratePerHour: 4 },
 		{ item: 'Mango', minLevel: 105, tierCeiling: 5, ratePerHour: 14 },
+		{ item: 'Mango seed', minLevel: 105, tierCeiling: 5, ratePerHour: 6 },
 		{ item: 'Grimy korulsi', minLevel: 110, tierCeiling: 5, ratePerHour: 12 },
+		{ item: 'Korulsi seed', minLevel: 110, tierCeiling: 5, ratePerHour: 6 },
 		{ item: 'Lychee', minLevel: 111, tierCeiling: 5, ratePerHour: 12 },
+		{ item: 'Lychee seed', minLevel: 111, tierCeiling: 5, ratePerHour: 6 },
 		{ item: 'Advax berry', minLevel: 111, tierCeiling: 5, ratePerHour: 12 },
+		{ item: 'Advax berry seed', minLevel: 111, tierCeiling: 5, ratePerHour: 6 },
 		{ item: 'Crystal shard', minLevel: 115, tierCeiling: 5, ratePerHour: 30 },
-		{ item: 'Mystery box', minLevel: 120, tierCeiling: 5, ratePerHour: 2 },
-		{ item: 'Living bark', minLevel: 88, tierCeiling: 4, ratePerHour: 18 },
-		{ item: 'Brimstone spore', minLevel: 93, tierCeiling: 5, ratePerHour: 12 }
+		{ item: 'Grand crystal acorn', minLevel: 115, tierCeiling: 5, ratePerHour: 4 },
+		{ item: 'Mystery box', minLevel: 120, tierCeiling: 5, ratePerHour: 2 }
 	]
 };
 
-export const PASSIVE_TICK_MS = 20 * 60 * 1000;
+export const PASSIVE_TICK_MS = 15 * 60 * 1000;
 
 function hashString(str: string): number {
 	let hash = 0x811c9dc5;
@@ -266,7 +289,7 @@ export function calculateAccumulatedYields(
 
 	const userSeed = (hashString(userId) * 2654435761 + hashString(category)) >>> 0;
 
-	const rollsPerTick = tier;
+	const rollsPerTick = [0, 2, 4, 7, 11, 16][tier] ?? tier;
 
 	const totals = new Map<string, number>();
 
@@ -276,8 +299,8 @@ export function calculateAccumulatedYields(
 
 		for (let roll = 0; roll < rollsPerTick; roll++) {
 			const item = weightedPick(entries, rand);
-			const baseQty = 1 + Math.floor(rand() * 3);
-			const qty = Math.max(1, Math.floor(baseQty * 2.25 * rateMultiplier));
+			const baseQty = 1 + Math.floor(rand() * 4);
+			const qty = Math.max(1, Math.floor(baseQty * 3.0 * rateMultiplier));
 			totals.set(item, (totals.get(item) ?? 0) + qty);
 		}
 	}
@@ -392,7 +415,23 @@ const MAINTENANCE_BASE_QTY: Record<string, number> = {
 const MAINTENANCE_ITEM_CAPS: Partial<Record<string, number>> = {
 	'Sentinel core': 1,
 	'Verdant heart': 1,
-	'Empyrean shards': 25
+	'Celestial flame': 1,
+	'Elderflame catalyst': 1,
+	'Sacrilegious flask': 1,
+	'Shattered pendant': 1,
+	'Forsaken tear': 1,
+	'Primordial spine': 1,
+	'Primordial heartstring': 1,
+	'Empyrean shards': 25,
+	Prismare: 5,
+	'Dense crystal shard': 100,
+	'Dense Crystal shard': 100,
+	'Ancient verdant logs': 200,
+	'Living bark': 150,
+	'Ancient cap': 100,
+	'Colossal stem': 100,
+	'Diluted brimstone': 50,
+	'Raw rocktail': 200
 };
 
 function tierMultiplier(tier: number): number {
@@ -419,9 +458,16 @@ export function getWeeklyMaintenanceDemand(
 	category: UpgradeCategory,
 	tier: number,
 	userId: string,
-	now: number = Date.now()
+	now: number = Date.now(),
+	logisticsDiscount: number = 0
 ): MaintenanceDemand {
-	if (tier === 0) return { bank: new Bank(), flavorText: '', weekNumber: 0 };
+	if (tier === 0 || category === 'conduit') {
+		return {
+			bank: new Bank(),
+			flavorText: 'The Grand Conduit is permanent and requires no maintenance.',
+			weekNumber: 0
+		};
+	}
 
 	const weekNumber = Math.floor(now / MAINTENANCE_WINDOW_MS);
 	const seed = (weekNumber * 2654435761 + hashString(category) + hashString(userId)) >>> 0;
@@ -440,13 +486,26 @@ export function getWeeklyMaintenanceDemand(
 	}
 	const chosen = shuffled.slice(0, itemCount);
 
-	const catMult = CATEGORY_MAINTENANCE_MULTIPLIER[category];
+	const catMult = CATEGORY_MAINTENANCE_MULTIPLIER[category] ?? 1;
+	const clampedDiscount = Math.min(0.15, Math.max(0, logisticsDiscount));
 	const bank = new Bank();
 	for (const itemName of chosen) {
 		const baseQty = MAINTENANCE_BASE_QTY[itemName] ?? 500;
-		const rawQty = Math.max(1, Math.round((baseQty * mult * catMult * 0.5) / 50) * 50);
-		const cap = MAINTENANCE_ITEM_CAPS[itemName];
-		const qty = cap !== undefined ? Math.min(rawQty, cap) : rawQty;
+		let rawQty = baseQty * mult * catMult * 0.5;
+		const cap = MAINTENANCE_ITEM_CAPS[itemName] ?? MAINTENANCE_ITEM_CAPS[itemName.toLowerCase()];
+		if (cap !== undefined) {
+			rawQty = Math.min(rawQty, cap);
+		}
+		const discounted = rawQty * (1 - clampedDiscount);
+
+		let qty: number;
+		if (discounted >= 5000) {
+			qty = Math.max(1, Math.round(discounted / 50) * 50);
+		} else if (discounted >= 500) {
+			qty = Math.max(1, Math.round(discounted / 10) * 10);
+		} else {
+			qty = Math.max(1, Math.round(discounted));
+		}
 		bank.add(itemName, qty);
 	}
 
@@ -535,6 +594,32 @@ export const upgradeCategoryMeta: Record<UpgradeCategory, UpgradeCategoryMeta> =
 			'Something in the alignment has shifted. The scholars are frantic.'
 		]
 	},
+	conduit: {
+		label: 'Grand Conduit',
+		locationName: 'the Grand Conduit',
+		flavorIntro:
+			"Project the island's ancient conduits across the world, extending your facilities' power globally.",
+		maintenanceFlavorLines: [
+			'The conduits are humming faintly. Crystals need recalibrating.',
+			'Resonance with the mainland is fluctuating. Feed the conduit.',
+			'Ancient circuits are overheating. Supply cooling materials.',
+			'The grand array needs fresh attunement materials this week.',
+			'Conduit channels are flickering. The scholars require components.'
+		]
+	},
+	logistics: {
+		label: 'Supply Depot',
+		locationName: 'the Supply Depot',
+		flavorIntro:
+			'Coordinate island supply chains, sharpen tools, and reduce maintenance burdens across all facilities.',
+		maintenanceFlavorLines: [
+			'Quartermaster reports supply line wear. Replenish the depot.',
+			'Tool racks and sorting stations require fresh maintenance supplies.',
+			'The distribution network is strained. Bring repair materials.',
+			'Depot workers need replacement parts for automated carts.',
+			'Storage vaults need reinforcing before the next shipment.'
+		]
+	},
 	fishing: {
 		label: 'Fishing Docks',
 		locationName: 'the Fishing Docks',
@@ -605,11 +690,13 @@ const CATEGORY_MAINTENANCE_MULTIPLIER: Record<UpgradeCategory, number> = {
 	minigame: 3,
 	gathering: 3,
 	prismare: 0.2,
-	fishing: 2,
-	mining: 2,
-	woodcutting: 2,
-	divination: 2,
-	farming: 2
+	conduit: 0,
+	logistics: 0.2,
+	fishing: 0.7,
+	mining: 0.7,
+	woodcutting: 0.7,
+	divination: 0.7,
+	farming: 0.7
 };
 
 export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
@@ -1029,6 +1116,210 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		}
 	],
 
+	conduit: [
+		{
+			tier: 1,
+			cost: new Bank()
+				.add('Coins', 50_000_000_000)
+				.add('Celestial flame', 1)
+				.add('Elderflame catalyst', 1)
+				.add('Sacrilegious flask', 1)
+				.add('Sentinel core', 2)
+				.add('Verdant heart', 1)
+				.add('Dense Crystal shard', 30_000)
+				.add('Verdant logs', 50_000)
+				.add('Crystalline ore', 25_000)
+				.add('Juvenile gemscale', 5_000)
+				.add('Brimstone spore', 20_000)
+				.add('Ancient energy', 10_000)
+				.add('Myconid plank', 20_000)
+				.add('Empyrean shards', 250),
+			name: 'Grand Conduit I',
+			description:
+				'Greater conduits established. 20% of Warcamp, Settlement, and Expedition bonuses apply globally.',
+			bonus: '20% global effectiveness from your Warcamp, Settlement, and Expedition',
+			flavorText: 'The island pulses with power that reaches across the seas.'
+		},
+		{
+			tier: 2,
+			cost: new Bank()
+				.add('Coins', 100_000_000_000)
+				.add('Celestial flame', 1)
+				.add('Elderflame catalyst', 1)
+				.add('Sacrilegious flask', 1)
+				.add('Shattered pendant', 1)
+				.add('Sentinel core', 4)
+				.add('Verdant heart', 2)
+				.add('Dense Crystal shard', 30_000)
+				.add('Ancient verdant logs', 50_000)
+				.add('Gem Infused ore', 50_000)
+				.add('Adolescent gemscale', 5_000)
+				.add('Living bark', 20_000)
+				.add('Ancient cap', 20_000)
+				.add('Verdant plank', 25_000)
+				.add('Diluted brimstone', 20_000)
+				.add('Firaxyte', 5_000)
+				.add('Verdantyte', 5_000)
+				.add('Empyrean shards', 250),
+			name: 'Grand Conduit II',
+			description: 'Amplified relays. 40% of Warcamp, Settlement, and Expedition bonuses apply globally.',
+			bonus: '40% global effectiveness from your Warcamp, Settlement, and Expedition',
+			flavorText: 'Mainland outposts report sudden, unexplainable surges of vitality.'
+		},
+		{
+			tier: 3,
+			cost: new Bank()
+				.add('Coins', 150_000_000_000)
+				.add('Celestial flame', 1)
+				.add('Elderflame catalyst', 1)
+				.add('Forsaken tear', 1)
+				.add('Sentinel core', 7)
+				.add('Verdant heart', 4)
+				.add('Dense Crystal shard', 50_000)
+				.add('Ancient verdant logs', 75_000)
+				.add('Mature gemscale', 5_000)
+				.add('Colossal stem', 35_000)
+				.add('Crystalline plank', 20_000)
+				.add('Ignilace', 15_000)
+				.add('Elder rune', 10_000)
+				.add('Oneiryte', 5_000)
+				.add('Starfire agate', 5_000)
+				.add('Celestyte', 5_000)
+				.add('Prismare', 250)
+				.add('Empyrean shards', 250),
+			name: 'Grand Conduit III',
+			description: 'Focus refined. 60% of Warcamp, Settlement, and Expedition bonuses apply globally.',
+			bonus: '60% global effectiveness from your Warcamp, Settlement, and Expedition',
+			flavorText: "The sky itself seems tethered to the island's spire."
+		},
+		{
+			tier: 4,
+			cost: new Bank()
+				.add('Coins', 200_000_000_000)
+				.add('Celestial flame', 1)
+				.add('Elderflame catalyst', 1)
+				.add('Primordial spine', 1)
+				.add('Primordial heartstring', 1)
+				.add('Sentinel core', 10)
+				.add('Verdant heart', 6)
+				.add('Dense Crystal shard', 50_000)
+				.add('Ancient verdant logs', 100_000)
+				.add('Elder gemscale', 5_000)
+				.add('Living bark', 50_000)
+				.add('Crystalline plank', 30_000)
+				.add('Verdant plank', 30_000)
+				.add('Ignilace', 30_000)
+				.add('Elder plank', 15_000)
+				.add('Prismare', 500)
+				.add('Empyrean shards', 250),
+			name: 'Grand Conduit IV',
+			description: 'Tether locked. 80% of Warcamp, Settlement, and Expedition bonuses apply globally.',
+			bonus: '80% global effectiveness from your Warcamp, Settlement, and Expedition',
+			flavorText: 'Distance is meaningless. The island is everywhere.'
+		},
+		{
+			tier: 5,
+			cost: new Bank()
+				.add('Coins', 250_000_000_000)
+				.add('Celestial flame', 1)
+				.add('Elderflame catalyst', 1)
+				.add('Sacrilegious flask', 2)
+				.add('Shattered pendant', 2)
+				.add('Forsaken tear', 2)
+				.add('Sentinel core', 12)
+				.add('Verdant heart', 7)
+				.add('Dense Crystal shard', 50_000)
+				.add('Ancient verdant logs', 200_000)
+				.add('Ancient gemscale', 5_000)
+				.add('Living bark', 75_000)
+				.add('Ancient cap', 125_000)
+				.add('Colossal stem', 125_000)
+				.add('Crystalline plank', 75_000)
+				.add('Verdant plank', 75_000)
+				.add('Myconid plank', 75_000)
+				.add('Ignilace', 50_000)
+				.add('Elder plank', 25_000)
+				.add('Elder rune', 50_000)
+				.add('Prismare', 1000)
+				.add('Empyrean shards', 500),
+			name: 'Grand Conduit V',
+			description: 'Total Harmony. 100% of Warcamp, Settlement, and Expedition bonuses apply globally.',
+			bonus: '100% global effectiveness from your Warcamp, Settlement, and Expedition',
+			flavorText: 'The ancient island and the mainland are now one unified realm.'
+		}
+	],
+
+	logistics: [
+		{
+			tier: 1,
+			cost: new Bank()
+				.add('Coins', 2_000_000_000)
+				.add('Runite bar', 5_000)
+				.add('Crystalline plank', 2_000)
+				.add('Verdant plank', 1_000),
+			name: 'Supply Depot I',
+			description: 'Basic logistics depot built. Maintenance costs reduced by 3%.',
+			bonus: '-3% weekly maintenance demand across all facilities',
+			flavorText: 'Centralised sorting keeps the waste down.'
+		},
+		{
+			tier: 2,
+			cost: new Bank()
+				.add('Coins', 4_000_000_000)
+				.add('Runite bar', 10_000)
+				.add('Crystalline plank', 5_000)
+				.add('Verdant plank', 2_500)
+				.add('Dense Crystal shard', 1_000),
+			name: 'Supply Depot II',
+			description: 'Refined distribution lines. Maintenance costs reduced by 6%.',
+			bonus: '-6% weekly maintenance demand across all facilities',
+			flavorText: 'Tools are resharpened instead of replaced.'
+		},
+		{
+			tier: 3,
+			cost: new Bank()
+				.add('Coins', 6_000_000_000)
+				.add('Runite bar', 15_000)
+				.add('Crystalline plank', 10_000)
+				.add('Verdant plank', 5_000)
+				.add('Dense Crystal shard', 2_500)
+				.add('Sentinel core', 1),
+			name: 'Supply Depot III',
+			description: 'Automated packing stations. Maintenance costs reduced by 9%.',
+			bonus: '-9% weekly maintenance demand across all facilities',
+			flavorText: 'Guided carts keep supply lines running on time.'
+		},
+		{
+			tier: 4,
+			cost: new Bank()
+				.add('Coins', 8_000_000_000)
+				.add('Runite bar', 20_000)
+				.add('Crystalline plank', 15_000)
+				.add('Verdant plank', 10_000)
+				.add('Dense Crystal shard', 5_000)
+				.add('Sentinel core', 2),
+			name: 'Supply Depot IV',
+			description: 'Bulk material processing. Maintenance costs reduced by 12%.',
+			bonus: '-12% weekly maintenance demand across all facilities',
+			flavorText: 'Bulk supplies are processed on-site, minimising loss.'
+		},
+		{
+			tier: 5,
+			cost: new Bank()
+				.add('Coins', 10_000_000_000)
+				.add('Runite bar', 30_000)
+				.add('Crystalline plank', 25_000)
+				.add('Verdant plank', 15_000)
+				.add('Dense Crystal shard', 10_000)
+				.add('Sentinel core', 3)
+				.add('Verdant heart', 1),
+			name: 'Supply Depot V',
+			description: 'Self-sustaining supply chain. Maintenance costs reduced by 15%.',
+			bonus: '-15% weekly maintenance demand across all facilities',
+			flavorText: "The island's logistics operate like clockwork."
+		}
+	],
+
 	fishing: [
 		{
 			tier: 1,
@@ -1395,6 +1686,8 @@ export type IslandUpgradeTiers = {
 	minigame: number;
 	gathering: number;
 	prismare: number;
+	conduit: number;
+	logistics: number;
 	fishing: number;
 	mining: number;
 	woodcutting: number;
@@ -1420,6 +1713,8 @@ export const defaultIslandUpgrades: IslandUpgradeTiers = {
 	minigame: 0,
 	gathering: 0,
 	prismare: 0,
+	conduit: 0,
+	logistics: 0,
 	fishing: 0,
 	mining: 0,
 	woodcutting: 0,
@@ -1433,6 +1728,8 @@ export const defaultIslandContributions: IslandUpgradeContributions = {
 	minigame: {},
 	gathering: {},
 	prismare: {},
+	conduit: {},
+	logistics: {},
 	fishing: {},
 	mining: {},
 	woodcutting: {},
@@ -1446,6 +1743,8 @@ export const defaultMaintenanceTimestamps: IslandMaintenanceTimestamps = {
 	minigame: 0,
 	gathering: 0,
 	prismare: 0,
+	conduit: 0,
+	logistics: 0,
 	fishing: 0,
 	mining: 0,
 	woodcutting: 0,
@@ -1488,42 +1787,38 @@ export function getUpgradeCost(upgrade: UpgradeTier, isIronman: boolean = false)
 
 export function getContributionProgress(
 	nextUpgrade: UpgradeTier,
-	contributions: Partial<Record<string, number>>,
+	contributed: Partial<Record<string, number>>,
 	isIronman: boolean = false
-): number {
+): { item: string; contributed: number; required: number; complete: boolean }[] {
 	const cost = getUpgradeCost(nextUpgrade, isIronman);
-	const costItems = cost.items();
-	const totalCostItems = costItems.reduce((s: number, [, q]: [unknown, number]) => s + q, 0);
-	if (totalCostItems === 0) return 0;
-	let contributed = 0;
-	for (const [item, qty] of costItems) {
-		contributed += Math.min(contributions[item.id.toString()] ?? 0, qty);
-	}
-	return Math.floor((contributed / totalCostItems) * 100);
+	return cost.items().map(([item, reqQty]) => {
+		const done = (contributed[item.id.toString()] ?? 0) + (contributed[item.name] ?? 0);
+		return {
+			item: item.name,
+			contributed: Math.min(done, reqQty),
+			required: reqQty,
+			complete: done >= reqQty
+		};
+	});
 }
 
 export function isContributionComplete(
 	nextUpgrade: UpgradeTier,
-	contributions: Partial<Record<string, number>>,
+	contributed: Partial<Record<string, number>>,
 	isIronman: boolean = false
 ): boolean {
-	const cost = getUpgradeCost(nextUpgrade, isIronman);
-	for (const [item, qty] of cost.items()) {
-		if ((contributions[item.id.toString()] ?? 0) < qty) return false;
-	}
-	return true;
+	return getContributionProgress(nextUpgrade, contributed, isIronman).every(p => p.complete);
 }
 
 export function getRemainingCost(
 	nextUpgrade: UpgradeTier,
-	contributions: Partial<Record<string, number>>,
+	contributed: Partial<Record<string, number>>,
 	isIronman: boolean = false
 ): Bank {
-	const cost = getUpgradeCost(nextUpgrade, isIronman);
 	const remaining = new Bank();
-	for (const [item, qty] of cost.items()) {
-		const still = qty - (contributions[item.id.toString()] ?? 0);
-		if (still > 0) remaining.add(item.id, still);
+	for (const p of getContributionProgress(nextUpgrade, contributed, isIronman)) {
+		const diff = p.required - p.contributed;
+		if (diff > 0) remaining.add(p.item, diff);
 	}
 	return remaining;
 }
@@ -1533,8 +1828,9 @@ export function isCategoryMaintained(
 	category: UpgradeCategory,
 	now: number = Date.now()
 ): boolean {
-	const last = timestamps[category] ?? 0;
-	return last > 0 && now - last < MAINTENANCE_WINDOW_MS;
+	if (category === 'conduit') return true;
+	const maintainedAt = timestamps[category] ?? 0;
+	return now - maintainedAt < MAINTENANCE_WINDOW_MS;
 }
 
 export function maintenanceTimeRemaining(
@@ -1542,9 +1838,10 @@ export function maintenanceTimeRemaining(
 	category: UpgradeCategory,
 	now: number = Date.now()
 ): number {
-	const last = timestamps[category] ?? 0;
-	if (last === 0) return 0;
-	return Math.max(0, last + MAINTENANCE_WINDOW_MS - now);
+	if (category === 'conduit') return Infinity;
+	const maintainedAt = timestamps[category] ?? 0;
+	const remaining = MAINTENANCE_WINDOW_MS - (now - maintainedAt);
+	return Math.max(0, remaining);
 }
 
 export function formatDuration(ms: number): string {
@@ -1649,4 +1946,56 @@ export function getMegabossLootBonus(
 	const tier = getTier(u, 'megaboss');
 	if (tier === 0 || (t && !isCategoryMaintained(t, 'megaboss'))) return 0;
 	return applyAssignmentMultiplier([0, 0, 0.1, 0.2, 0.35, 0.5][tier] ?? 0, 'megaboss', resolveAssignment(t, a));
+}
+
+export function getMegabossUniqueBonus(
+	u: Partial<IslandUpgradeTiers>,
+	t?: IslandMaintenanceTimestamps,
+	a?: AssignableCategory | null
+): number {
+	const tier = getTier(u, 'megaboss');
+	if (tier === 0 || (t && !isCategoryMaintained(t, 'megaboss'))) return 0;
+	return applyAssignmentMultiplier([0, 0, 0.1, 0.3, 0.6, 1.0][tier] ?? 0, 'megaboss', resolveAssignment(t, a));
+}
+
+export function getGlobalBossSpeedBonus(
+	u: Partial<IslandUpgradeTiers>,
+	t?: IslandMaintenanceTimestamps,
+	a?: AssignableCategory | null
+): number {
+	const conduitTier = getTier(u, 'conduit');
+	if (conduitTier === 0) return 0;
+	const warcampBonus = getBossSpeedBonus(u, t, a);
+	return warcampBonus * (conduitTier * 0.2);
+}
+
+export function getGlobalMinigameBonus(
+	u: Partial<IslandUpgradeTiers>,
+	t?: IslandMaintenanceTimestamps,
+	a?: AssignableCategory | null
+): number {
+	const conduitTier = getTier(u, 'conduit');
+	if (conduitTier === 0) return 0;
+	const settlementBonus = getMinigameRewardBonus(u, t, a);
+	return settlementBonus * (conduitTier * 0.2);
+}
+
+export function getGlobalGatheringSpeedBonus(
+	u: Partial<IslandUpgradeTiers>,
+	t?: IslandMaintenanceTimestamps,
+	a?: AssignableCategory | null
+): number {
+	const conduitTier = getTier(u, 'conduit');
+	if (conduitTier === 0) return 0;
+	const expeditionBonus = getGatheringSpeedBonus(u, t, a);
+	return expeditionBonus * (conduitTier * 0.2);
+}
+
+export function getLogisticsMaintenanceDiscount(
+	u: Partial<IslandUpgradeTiers>,
+	t?: IslandMaintenanceTimestamps
+): number {
+	const logisticsTier = getTier(u, 'logistics');
+	if (logisticsTier === 0 || (t && !isCategoryMaintained(t, 'logistics'))) return 0;
+	return Math.min(0.15, logisticsTier * 0.03);
 }
