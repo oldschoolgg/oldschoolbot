@@ -23,7 +23,7 @@ async function tagHandler(msg: IMessage): Promise<void> {
 }
 
 async function userInfo(msg: IMessage) {
-	const regex = /^\.(?:<@!?)?\d+>?\s*$/;
+	const regex = /^(<@969542224058654790>\s*)?\.\d+$/;
 	if (!regex.test(msg.content)) return;
 	const user = await globalClient.fetchRUser(msg.author_id);
 	if (!user) return;
