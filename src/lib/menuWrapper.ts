@@ -24,7 +24,9 @@ export async function doMenuWrapper<M extends object = {}>({
 	formatter?: (val: number) => string;
 	render?: (user: LeaderboardUser<M>, username: string) => string;
 }) {
-	const chunked = chunk(users, LB_PAGE_SIZE);
+	const blacklistedUsers = await Cache.getAllBlacklistedUsers();
+	const visibleUsers = blacklistedUsers.size === 0 ? users : users.filter(user => !blacklistedUsers.has(user.id));
+	const chunked = chunk(visibleUsers, LB_PAGE_SIZE);
 	const pages: PaginatedPages = [];
 	for (let c = 0; c < chunked.length; c++) {
 		const makePage = async () => {
