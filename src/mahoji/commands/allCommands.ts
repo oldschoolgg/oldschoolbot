@@ -82,6 +82,7 @@ import { triviaCommand } from '@/mahoji/commands/trivia.js';
 import { mahojiUseCommand } from '@/mahoji/commands/use.js';
 import { wikiCommand } from '@/mahoji/commands/wiki.js';
 import { xpCommand } from '@/mahoji/commands/xp.js';
+import { zeroTimeActivityCommand } from '@/mahoji/commands/zeroTimeActivity.js';
 import { delvesCommand } from '@/mahoji/lib/abstracted_commands/delveCommand.js';
 
 export const allCommandsDONTIMPORT: AnyCommand[] = [
@@ -167,6 +168,7 @@ export const allCommandsDONTIMPORT: AnyCommand[] = [
 	gearPresetsCommand,
 	statsCommand,
 	xpCommand,
+	zeroTimeActivityCommand,
 	delvesCommand
 ];
 
