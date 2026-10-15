@@ -8,6 +8,13 @@ export function isCertainMonsterTrip(monsterID: number) {
 		data.type === 'MonsterKilling' && (data as MonsterActivityTaskOptions).mi === monsterID;
 }
 
+export function getCombatAchievementRollQuantity(data: ActivityTaskData): number {
+	if (data.type === 'DoomOfMokhaiotl') return data.treks.length;
+	if ('q' in data) return data.q;
+	if ('quantity' in data && data.quantity) return data.quantity;
+	return 1;
+}
+
 interface CombatAchievementGroup {
 	name: string;
 	tasks: CombatAchievement[];
