@@ -128,31 +128,31 @@ const unobtainableEmirsArenaGear: number[] = [
 	26736 // Saika's shroud (l)
 ];
 
-export const unobtainableLeaguesItems: number[] = Items.resolveItems([
-	'Amulet of the monarchs',
-	'The dogsword',
-	'Drygore blowpipe',
-	'Emperor ring',
-	"Devil's element",
-	"Nature's reprisal",
-	'Gloves of the damned',
-	'Crystal blessing',
-	'Sunlight spear',
-	'Sunlit bracers',
-	'Thunder khopesh',
-	'Thousand-dragon ward',
-	'Crystal dagger (perfected)',
-	"Nature's reprisal (uncharged)",
-	"Corrupted tumeken's shadow",
-	'Corrupted voidwaker',
-	'Corrupted dragon claws',
-	'Corrupted armadyl godsword',
-	'Corrupted twisted bow',
-	'Corrupted scythe of vitur',
-	'Corrupted scythe of vitur (uncharged)',
-	'Corrupted dark bow',
-	'Corrupted volatile nightmare staff'
-]);
+export const unobtainableLeaguesItems: number[] = [
+	30376, // Amulet of the monarchs
+	30367, // The dogsword
+	30374, // Drygore blowpipe
+	30378, // Emperor ring
+	30371, // Devil's element
+	30390, // Nature's reprisal
+	30380, // Gloves of the damned
+	30384, // Crystal blessing
+	30369, // Sunlight spear
+	30386, // Sunlit bracers
+	30388, // Thunder khopesh
+	30382, // Thousand-dragon ward
+	30340, // Crystal dagger (perfected)
+	30392, // Nature's reprisal (uncharged)
+	28547, // Corrupted tumeken's shadow
+	28531, // Corrupted voidwaker
+	28534, // Corrupted dragon claws
+	28537, // Corrupted armadyl godsword
+	28540, // Corrupted twisted bow
+	28543, // Corrupted scythe of vitur
+	28545, // Corrupted scythe of vitur (uncharged)
+	29599, // Corrupted dark bow
+	29602 // Corrupted volatile nightmare staff
+];
 
 const unobtainableBountyHunterGear: number[] = Items.resolveItems([
 	27831, // Vesta's chainbody (bh)
