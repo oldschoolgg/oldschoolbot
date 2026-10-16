@@ -2,6 +2,7 @@ import { giveBox, spawnBoxCommand, spawnLampCommand } from '@/lib/bso/commands/s
 import { addToDoubleLootTimer, hasUsedDoubleLootThisMonth } from '@/lib/bso/doubleLoot.js';
 import { keyCrates } from '@/lib/bso/keyCrates.js';
 import { findGroupOfUser } from '@/lib/bso/util/findGroupOfUser.js';
+import { checkEntitlements } from '@/lib/bso/util/entitlementChecker.js';
 import { repairBrokenItemsFromUser } from '@/lib/bso/util/repairBrokenItems.js';
 
 import { EmbedBuilder, userMention } from '@oldschoolgg/discord';
@@ -811,15 +812,10 @@ async function patronTriggerDoubleLoot(user: MUser) {
 	return `Added ${formatDuration(time)} of double loot.`;
 }
 
-const cyrTier5PlusBits = [RoboChimpBit.CyrTier5, RoboChimpBit.CyrTier6, RoboChimpBit.CyrTier7] as const;
-
-async function hasCyrTier5Plus(user: MUser) {
-	const patron = await Cache.getRoboChimpUser(user.id, true);
-	return patron.bits.some(bit => cyrTier5PlusBits.includes(bit as (typeof cyrTier5PlusBits)[number]));
-}
-
 async function purpleColorConfig(user: MUser, color?: string) {
-	if (!(await hasCyrTier5Plus(user))) return 'You need Cyr Tier 5 or higher to change this setting.';
+	if (!(await checkEntitlements(user, [{ bitfield: RoboChimpBit.CyrTier5 }])).success) {
+		return 'You need Cyr Tier 5 or higher to change this setting.';
+	}
 	if (color === 'reset') {
 		await user.update({ bank_bg_purple_color: null });
 		return 'Reset your collection log highlight color.';
@@ -839,7 +835,9 @@ async function purpleColorConfig(user: MUser, color?: string) {
 }
 
 async function purpleGlowConfig(user: MUser, enabled?: boolean) {
-	if (!(await hasCyrTier5Plus(user))) return 'You need Cyr Tier 5 or higher to change this setting.';
+	if (!(await checkEntitlements(user, [{ bitfield: RoboChimpBit.CyrTier5 }])).success) {
+		return 'You need Cyr Tier 5 or higher to change this setting.';
+	}
 	if (enabled === undefined) {
 		return user.user.bank_bg_purple_glow
 			? 'Your collection log highlight glow is enabled.'
