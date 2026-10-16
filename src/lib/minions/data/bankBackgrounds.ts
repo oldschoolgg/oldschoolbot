@@ -690,7 +690,7 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 1020,
-		name: 'Osceola',
+		name: 'Osceola CustomBG',
 		image: null,
 		available: false,
 		transparent: true,
@@ -700,7 +700,7 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 1021,
-		name: 'Xavier',
+		name: 'Xavier CustomBG',
 		image: null,
 		available: false,
 		transparent: true,
@@ -711,7 +711,7 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 1022,
-		name: 'Bubblzz',
+		name: 'Bubblzz CustomBG',
 		image: null,
 		available: false,
 		transparent: true,
@@ -722,11 +722,21 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 1023,
-		name: 'Sabir',
+		name: 'Sabir CustomBG',
 		image: null,
 		available: false,
 		preScaled: true,
 		owners: ['229709567594987522'],
+		hasPurple: true,
+		purpleImage: null
+	},
+	{
+		id: 1024,
+		name: 'Fried Apple CustomBG',
+		image: null,
+		available: false,
+		preScaled: true,
+		owners: ['974037681396912258'],
 		hasPurple: true,
 		purpleImage: null
 	}
