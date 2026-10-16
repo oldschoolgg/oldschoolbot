@@ -1,4 +1,15 @@
-import { DISCO_AESTHETICS, type DiscoAesthetic, DiscoItem, isDiscoEventActive } from '@/lib/bso/discoBloodbath.js';
+import {
+	DISCO_AESTHETICS,
+	DISCO_CLUB_THEMES,
+	DISCO_CLUBS,
+	type DiscoAesthetic,
+	type DiscoClub,
+	DiscoItem,
+	discoHalloweenStory,
+	discoPopularity,
+	isDiscoEventActive,
+	isDiscoHalloween
+} from '@/lib/bso/discoBloodbath.js';
 
 import { createHash } from 'node:crypto';
 import { ButtonBuilder, ButtonStyle, EmbedBuilder } from '@oldschoolgg/discord';
@@ -54,19 +65,11 @@ function createRaveId(userId: string) {
 		.substr(6, 6);
 }
 
-export async function discoHandler({ data, user, components, embeds, rng }: TripFinishEffectOptions) {
-	if (!isDiscoEventActive() || !user.bloodbathEventStarted || (data.type === 'DiscoBloodbath' && data.isRave)) return;
-
-	const minutes = Math.floor(data.duration / Time.Minute);
-	if (minutes < 1 || !Array.from({ length: minutes }).some(() => rng.roll(75))) return;
-
-	const rave = rng.pick(ravePalettes);
+async function discoPresetAvailability(user: MUser) {
 	const presets = await prisma.gearPreset.findMany({
 		where: { user_id: user.id, name: { in: Object.values(presetForAesthetic) } },
 		select: {
 			name: true,
-			ammo: true,
-			ammo_qty: true,
 			two_handed: true,
 			body: true,
 			cape: true,
@@ -85,8 +88,7 @@ export async function discoHandler({ data, user, components, embeds, rng }: Trip
 	const ineligiblePresetNames = new Set<string>();
 	const fashion = user.gear.fashion.raw();
 	for (const preset of presets) {
-		let eligible = false;
-		for (const itemID of [
+		const eligible = [
 			preset.two_handed,
 			preset.body,
 			preset.cape,
@@ -98,32 +100,56 @@ export async function discoHandler({ data, user, components, embeds, rng }: Trip
 			preset.ring,
 			preset.shield,
 			preset.weapon
-		]) {
-			if (!itemID) continue;
-			const item = new DiscoItem(itemID);
-			if (DISCO_AESTHETICS.some(aesthetic => item.points[aesthetic] > 0)) {
-				eligible = true;
-				break;
-			}
-		}
+		].some(itemID => itemID && DISCO_AESTHETICS.some(aesthetic => new DiscoItem(itemID).points[aesthetic] > 0));
 		if (!eligible) {
 			ineligiblePresetNames.add(preset.name);
 			continue;
 		}
 		validPresetNames.add(preset.name);
-
-		let isCurrentFashion = true;
-		for (const [presetSlot, fashionSlot] of presetSlots) {
-			if (fashionSlot === 'ammo') continue;
-			const expectedItem = preset[presetSlot];
-			const equippedItem = fashion[fashionSlot];
-			if ((equippedItem?.item ?? null) !== expectedItem) {
-				isCurrentFashion = false;
-				break;
-			}
+		if (
+			presetSlots.every(([presetSlot, fashionSlot]) =>
+				fashionSlot === 'ammo' ? true : (fashion[fashionSlot]?.item ?? null) === preset[presetSlot]
+			)
+		) {
+			currentPresetNames.add(preset.name);
 		}
-		if (isCurrentFashion) currentPresetNames.add(preset.name);
 	}
+	return { presets, validPresetNames, currentPresetNames, ineligiblePresetNames };
+}
+
+export async function discoInquiryPresetButtons(user: MUser, club: DiscoClub) {
+	const { validPresetNames, currentPresetNames } = await discoPresetAvailability(user);
+	const clubIndex = DISCO_CLUBS.indexOf(club);
+	const buttons: ButtonBuilder[] = [];
+	for (const aesthetic of DISCO_AESTHETICS) {
+		const preset = presetForAesthetic[aesthetic];
+		if (!validPresetNames.has(preset) || currentPresetNames.has(preset)) continue;
+		buttons.push(
+			new ButtonBuilder()
+				.setCustomId(`DISCO_INQUIRE_${user.id}_${clubIndex}_${preset}`)
+				.setLabel(`Go in ${aesthetic}`)
+				.setStyle(ButtonStyle.Primary)
+		);
+	}
+	const currentPresetLabel = [...currentPresetNames].map(name => name.replace('disco', '')).join(', ');
+	buttons.push(
+		new ButtonBuilder()
+			.setCustomId(`DISCO_INQUIRE_${user.id}_${clubIndex}_current`)
+			.setLabel(currentPresetLabel ? `Let's Go! (${currentPresetLabel})` : "Let's Go!")
+			.setStyle(ButtonStyle.Success)
+	);
+	return buttons;
+}
+
+export async function discoHandler({ data, user, components, embeds, rng }: TripFinishEffectOptions) {
+	if (!isDiscoEventActive() || !user.bloodbathEventStarted || (data.type === 'DiscoBloodbath' && data.isRave)) return;
+
+	const minutes = Math.floor(data.duration / Time.Minute);
+	if (minutes < 1 || !Array.from({ length: minutes }).some(() => rng.roll(75))) return;
+
+	const rave = rng.pick(ravePalettes);
+	const { presets, validPresetNames, currentPresetNames, ineligiblePresetNames } =
+		await discoPresetAvailability(user);
 	const raveName = rave.aesthetics.join(' + ');
 	const raveId = createRaveId(user.id);
 	await Cache.createDiscoRave(user.id, raveId);
@@ -197,7 +223,7 @@ export async function handleDiscoRaveButton(
 		return { content: 'This rave invite was already used or expired.', ephemeral: true };
 	}
 
-	const effectiveDuration =  Math.min(Time.Minute * 60, await user.calcMaxTripLength('DiscoBloodbath'));
+	const effectiveDuration = Math.min(Time.Minute * 60, await user.calcMaxTripLength('DiscoBloodbath'));
 	const themeAesthetic = rave.aesthetics[0];
 	await ActivityManager.startTrip<DiscoBloodbathActivityTaskOptions>({
 		userID: user.id,
@@ -214,4 +240,47 @@ export async function handleDiscoRaveButton(
 		effectiveDuration
 	});
 	return { content: `${user.minionName} is going to the rave. It ends in 10 minutes.` };
+}
+
+export async function handleDiscoInquireButton(
+	user: MUser,
+	id: string,
+	interaction: OSInteraction
+): Promise<CommandResponse> {
+	const [, , invitedUserID, clubIndexString, choice] = id.split('_');
+	const club = DISCO_CLUBS[Number(clubIndexString)];
+	if (!invitedUserID || !choice || user.id !== invitedUserID || !club) {
+		return { content: 'This club invite is invalid.', ephemeral: true };
+	}
+	if (!isDiscoEventActive()) return { content: 'The Disco Bloodbath has closed for the night.', ephemeral: true };
+	if (await user.minionIsBusy()) return { content: 'Your minion is busy.', ephemeral: true };
+
+	if (choice !== 'current') {
+		if (!Object.values(presetForAesthetic).includes(choice)) {
+			return { content: 'This Disco outfit is invalid.', ephemeral: true };
+		}
+		const { validPresetNames, currentPresetNames } = await discoPresetAvailability(user);
+		if (!validPresetNames.has(choice) || currentPresetNames.has(choice)) {
+			return { content: 'This Disco outfit is no longer ready.', ephemeral: true };
+		}
+		const result = await gearPresetEquipCommand(user, 'fashion', choice);
+		if (typeof result === 'string') return { content: result, ephemeral: true };
+	}
+
+	const theme = DISCO_CLUB_THEMES[club];
+	await ActivityManager.startTrip<DiscoBloodbathActivityTaskOptions>({
+		userID: user.id,
+		channelId: interaction.channelId,
+		duration: Time.Minute * 30,
+		type: 'DiscoBloodbath',
+		club: theme.club,
+		popularity: discoPopularity(theme.club),
+		theme: { name: theme.name, good: theme.good, bad: theme.bad },
+		fashion: user.gear.fashion.raw(),
+		isCrashing: false
+	});
+	const story = isDiscoHalloween() ? discoHalloweenStory(theme.club) : null;
+	return {
+		content: `${user.minionName} is heading to ${theme.club}. The visit will take at least 30 minutes.${story ? `\n\n${story.moment}` : ''}`
+	};
 }

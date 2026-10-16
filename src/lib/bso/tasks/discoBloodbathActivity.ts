@@ -1,8 +1,8 @@
 import {
+	DISCO_POINT_REWORK_DATE,
 	type DiscoAesthetic,
 	type DiscoClub,
 	discoHalloweenStory,
-	DISCO_POINT_REWORK_DATE,
 	isDiscoHalloween,
 	scoreDiscoFashion
 } from '@/lib/bso/discoBloodbath.js';
@@ -24,7 +24,7 @@ type DiscoStats = {
 
 const route: DiscoClub[] = ['Money', 'Success', 'Fame', 'Glamour'];
 const discoPointReworkReminderEnds = new Date(DISCO_POINT_REWORK_DATE.getTime() + Time.Day);
-const discoPointReworkAnnouncement = `📢 The accidental 500 point cap will be reworked starting <t:${Math.floor(DISCO_POINT_REWORK_DATE.getTime() / 1000)}:R>. Points will be downscaled so the race stays fair: 1,500 points in an aesthetic will equal 500 base points.`;
+const discoPointReworkAnnouncement = `📢 The accidental 500 point cap was reworked <t:${Math.floor(DISCO_POINT_REWORK_DATE.getTime() / 1000)}:R>. Points will be downscaled so the race stays fair: 1,500 points in an aesthetic will equal 500 base points.`;
 
 function routeResetMessageForDepth(depth: number, rng: { pick<T>(items: readonly T[]): T }) {
 	if (depth === route.length - 1) {
@@ -84,16 +84,16 @@ export const discoBloodbathTask: MinionTask = {
 			}
 			crashMessage = crashedWithStyle
 				? rng.pick([
-						'You crashed the party with style, and somehow everyone loved it.',
-						'Nobody invited you, but your look turned the crash into the main event.',
-						'You slipped past the door staff and owned the dance floor anyway.',
-						'Your uninvited entrance was so stylish that the crowd doubled down on it.'
+						'🏆 You crashed the party with style, and somehow everyone loved it.',
+						'🚀 Nobody invited you, but your look turned the crash into the main event.',
+						'📈 You slipped past the door staff and owned the dance floor anyway.',
+						'🎯 Your uninvited entrance was so stylish that the crowd doubled down on it.'
 					])
 				: rng.pick([
-						'You crashed the party, but the crowd was not having it.',
-						'The door staff noticed. The crowd noticed. Nobody was impressed.',
-						'Your uninvited entrance landed with a thud instead of a beat drop.',
-						'You crashed the party, but your look could not save the moment.'
+						'☠️ You crashed the party, but the crowd was not having it.',
+						'💀 The door staff noticed. The crowd noticed. Nobody was impressed.',
+						'💀 Your uninvited entrance landed with a thud instead of a beat drop.',
+						'☠️ You crashed the party, but your look could not save the moment.'
 					]);
 		}
 
@@ -218,17 +218,19 @@ export const discoBloodbathTask: MinionTask = {
 					'🩻Nobody knew who put the skeleton behind the decks.☠️'
 				])
 			: data.popularity > 80
-				? rng.pick(['It was packed.', 'The club was buzzing.', 'You could barely move through the crowd.'])
+				? rng.pick([
+						'🤯 It was packed.',
+						'🐝 The club was buzzing.',
+						'🫠 𖨆𐀪𖠋𐀪𐀪 You could barely 𖨆𐀪𖠋 move 𖠋𐀪𐀪 through the 𐀪𖠋 crowd 𖨆.'
+					])
 				: data.popularity <= 65
 					? rng.pick([
-							'The club felt dead.',
-							'There was too much room on the dance floor.',
-							'The crowd never really arrived.'
+							'🪦 The club felt dead.',
+							'🕸️🕷️ There was too much room on the dance floor.',
+							'🦗 The crowd never really arrived.'
 						])
-					: 'The crowd was still breathing at least :D';
-		const lure = rng.roll(10)
-			? ' Someone mentioned that the Disco Fever is still hot... they were dead wrong 💀'
-			: '';
+					: '❤️‍🩹 The crowd was still breathing at least :D';
+		const lure = rng.roll(10) ? ' Someone mentioned that Disco is still "in"... they were dead wrong 💀' : '';
 		const story = isDiscoHalloween() ? discoHalloweenStory(data.club) : null;
 		const storyEnding = story ? rng.pick(story.endings) : null;
 		const pointSummary = affected
@@ -239,10 +241,11 @@ export const discoBloodbathTask: MinionTask = {
 			.join('\n');
 		const routeCompletionMessage = completedRoute
 			? stats.routeCompletions === 1
-				? '**You completed the route, congrats!** 🎉'
+				? '**You completed the route 1 time! Congrats!** 🎉'
 				: `**You completed the route ${stats.routeCompletions} times!** You can't get any more boxes :p 🎉`
 			: '';
-		const pointReworkMessage = new Date() < discoPointReworkReminderEnds ? `\n\n${discoPointReworkAnnouncement}` : '';
+		const pointReworkMessage =
+			new Date() < discoPointReworkReminderEnds ? `\n\n${discoPointReworkAnnouncement}` : '';
 		const message = new MessageBuilder().setContent(
 			`${user.mention}, ${user.minionName} finished a ${minutes}-minute ${data.isRave ? 'rave' : 'visit'} to ${data.club}.\n${topMessage}\n${crowdMessage}${crashMessage ? `\n${crashMessage}` : ''}${storyEnding ? `\n\n${storyEnding}` : ''}${lure}\n\n**Realm points**\n${pointSummary}${totalScore === 0 ? '\nYour Fashion gear scored no points. Try `/disco check_item` to plan your outfit.' : ''}${routeCompletionMessage ? `\n\n📢 ${routeCompletionMessage}\n` : ''}${pointReworkMessage}${glamourBoxes > 0 ? `\n\n🎉 **SKRINK/SKROD BOX DROP!** 🎉\nThe crowd erupts!` : ''}${itemsAdded.length > 0 ? `\n\n**Loot:** ${itemsAdded}` : ''}${routeResetMessage ? `\n\n***🔑${routeResetMessage}***\n` : ''}`
 		);

@@ -13,7 +13,9 @@ import {
 	isDiscoHalloween,
 	scoreDiscoFashion
 } from '@/lib/bso/discoBloodbath.js';
+import { discoInquiryPresetButtons } from '@/lib/bso/discoHandler.js';
 
+import type { ButtonBuilder } from '@oldschoolgg/discord';
 import { defaultGearSetup } from '@oldschoolgg/gear';
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
@@ -27,7 +29,6 @@ import type { DiscoBloodbathActivityTaskOptions } from '@/lib/types/minions.js';
 const clubChoices = () => discoClubOrder().map(club => ({ name: club, value: club }));
 const discoPresetNames = ['discofuture', 'discoragdoll', 'discoanti'] as const;
 const autoEquipChoices = [
-	{ name: 'Combined', value: 'combined', aesthetics: DISCO_AESTHETICS },
 	{ name: 'Futuristic + Ragdoll', value: 'futuristic_ragdoll', aesthetics: ['Futuristic', 'Ragdoll'] },
 	{ name: 'Futuristic + Anti-Fashion', value: 'futuristic_anti', aesthetics: ['Futuristic', 'Anti-Fashion'] },
 	{ name: 'Ragdoll + Anti-Fashion', value: 'ragdoll_anti', aesthetics: ['Ragdoll', 'Anti-Fashion'] },
@@ -41,7 +42,8 @@ function corruptDiscoHashSeed(name: string) {
 	return `${name.slice(0, index)}${Math.floor(Math.random() * 10)}${name.slice(index)}`;
 }
 
-const helpText = () => `**Disco Bloodbath** is a limited-time club circuit for minions who understand that fashion is a weapon.
+const helpText =
+	() => `**Disco Bloodbath** is a limited-time club circuit for minions who understand that fashion is a weapon.
 
 ⭐ Use ${mentionCommand('disco', 'party')} to send your minion on a trip. Visits take at least thirty minutes.
 - Your Fashion gear determines your points, and your top two Realms gain or lose progress depending on the party's vibe.
@@ -388,9 +390,9 @@ export const discoCommand = defineCommand({
 			};
 			const [overall, ...leaders] = await Promise.all([
 				findLeader('Overall', DISCO_AESTHETICS),
-				findLeader('Chrome Wreckers', ['Anti-Fashion', 'Futuristic']),
-				findLeader('Ragged Renegades', ['Ragdoll', 'Anti-Fashion']),
-				findLeader('Neon Plushies', ['Futuristic', 'Ragdoll']),
+				findLeader('Chrome Wreckers (F+A)', ['Anti-Fashion', 'Futuristic']),
+				findLeader('Ragged Renegades (A+R)', ['Ragdoll', 'Anti-Fashion']),
+				findLeader('Neon Plushies (F+R)', ['Futuristic', 'Ragdoll']),
 				findLeader('Futuristic', ['Futuristic']),
 				findLeader('Ragdoll', ['Ragdoll']),
 				findLeader('Anti-Fashion', ['Anti-Fashion'])
@@ -406,13 +408,14 @@ export const discoCommand = defineCommand({
 		}
 
 		if (options.inquire) {
-			if (!DISCO_CLUBS.includes(options.inquire.club_name as (typeof DISCO_CLUBS)[number]))
-				return 'Choose a club from the suggestions.';
+			const { inquire } = options;
+			const club = DISCO_CLUBS.find(club => club.toLowerCase() === inquire.club_name.toLowerCase());
+			if (!club) return 'Choose a club from the suggestions.';
+
 			const ratelimit = await Cache.tryRatelimit(user.id, 'disco_inquire');
 			if (!ratelimit.success) {
 				return 'If you keep asking, you are going to lose reputation faster than you earn it. Be a leader, not a follower.';
 			}
-			const club = options.inquire.club_name as (typeof DISCO_CLUBS)[number];
 			const theme = DISCO_CLUB_THEMES[club];
 			const popularity = discoPopularity(theme.club);
 			let msg = `☠️ ${theme.club} is like the Crypt keeper.... Dead. But in a bad way. 🪦`;
@@ -422,7 +425,8 @@ export const discoCommand = defineCommand({
 			if (popularity > 97) msg = `🐦‍🔥${theme.club} is hot. Everyone worth knowing is talking about it.🔥`;
 			if (popularity >= 114)
 				msg = `🦄🎉 ${theme.club} is a FREAKING **UNICORN**! You __**HAVE**__ to be there!.🎉🎉🎉`;
-			return msg;
+			const components: ButtonBuilder[] = await discoInquiryPresetButtons(user, club);
+			return { content: msg, components };
 		}
 
 		if (options.party) {

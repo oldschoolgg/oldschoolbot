@@ -237,7 +237,7 @@ export class DiscoItem {
 
 export function scoreDiscoFashion(fashion: Record<string, { item: number; quantity?: number } | null>) {
 	const points: Record<DiscoAesthetic, number> = { Futuristic: 0, Ragdoll: 0, 'Anti-Fashion': 0 };
-	const rawPoints = { ... points };
+	const rawPoints = { ...points };
 	const items: { item: DiscoItem; slot: string }[] = [];
 	for (const [slot, equipped] of Object.entries(fashion)) {
 		if (!equipped || slot === 'ammo') continue;
@@ -250,7 +250,7 @@ export function scoreDiscoFashion(fashion: Record<string, { item: number; quanti
 	for (const aesthetic of DISCO_AESTHETICS) {
 		points[aesthetic] =
 			new Date() >= DISCO_POINT_REWORK_DATE
-				? (rawPoints[aesthetic] / 1500) * 500
+				? Math.ceil((rawPoints[aesthetic] / 1500) * 500)
 				: Math.max(0, Math.min(500, rawPoints[aesthetic]));
 	}
 	return { points, items, rawPoints };

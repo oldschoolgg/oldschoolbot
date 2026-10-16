@@ -261,24 +261,33 @@ function drawSupernova(canvas: OSRSCanvas, x: number, y: number) {
 
 function drawTotalNode(
 	canvas: OSRSCanvas,
-	{ label, value, x, y, color, emphasized = false }: {
+	{
+		label,
+		value,
+		x,
+		y,
+		color,
+		emphasized = false,
+		faded = false
+	}: {
 		label: string;
 		value: number;
 		x: number;
 		y: number;
 		color: string;
 		emphasized?: boolean;
+		faded?: boolean;
 	}
 ) {
 	const width = emphasized ? 182 : 156;
 	const height = emphasized ? 66 : 54;
 	const { ctx } = canvas;
 	ctx.save();
-	ctx.globalAlpha = emphasized ? 0.95 : 0.88;
+	ctx.globalAlpha = faded ? 0.32 : emphasized ? 0.95 : 0.88;
 	ctx.fillStyle = '#252522';
 	ctx.fillRect(x - width / 2, y - height / 2, width, height);
 	ctx.restore();
-	drawChamferedRect(canvas, x - width / 2, y - height / 2, width, height, 10, '#171717', 5);
+	drawChamferedRect(canvas, x - width / 2, y - height / 2, width, height, 10, faded ? '#4b4b49' : '#171717', 5);
 	drawChamferedRect(canvas, x - width / 2 + 5, y - height / 2 + 5, width - 10, height - 10, 7, color, 2);
 	drawScaledText(canvas, {
 		text: label,
@@ -286,7 +295,7 @@ function drawTotalNode(
 		y: y - (emphasized ? 8 : 5),
 		center: true,
 		font: 'Bold',
-		color: '#f0e7ca',
+		color: faded ? '#8a8a85' : '#f0e7ca',
 		scale: emphasized ? 1.65 : 1.35
 	});
 	drawScaledText(canvas, {
@@ -301,41 +310,47 @@ function drawTotalNode(
 }
 
 function drawOutfitTotals(canvas: OSRSCanvas, points: Record<(typeof DISCO_AESTHETICS)[number], number>) {
-	const center: [number, number] = [768, 119];
 	const nodes = [
 		{ aesthetic: 'Futuristic', x: 558, y: 49 },
 		{ aesthetic: 'Ragdoll', x: 768, y: 31 },
 		{ aesthetic: 'Anti-Fashion', x: 978, y: 49 }
 	] as const;
 	const { ctx } = canvas;
+	const topAesthetics = [...nodes].sort((a, b) => points[b.aesthetic] - points[a.aesthetic]).slice(0, 2);
+	const activeAesthetics = new Set(topAesthetics.map(node => node.aesthetic));
 
 	ctx.save();
 	ctx.lineWidth = 3;
 	ctx.globalAlpha = 0.8;
 	for (const node of nodes) {
+		if (!activeAesthetics.has(node.aesthetic)) continue;
 		ctx.strokeStyle = DISCO_AESTHETIC_COLORS[node.aesthetic][points[node.aesthetic] < 0 ? 'negative' : 'positive'];
 		ctx.beginPath();
 		ctx.moveTo(node.x, node.y + 28);
-		ctx.lineTo(center[0], center[1] - 22);
+		ctx.lineTo(768, 97);
 		ctx.stroke();
 	}
 	ctx.restore();
 
-	drawSupernova(canvas, ...center);
+	drawSupernova(canvas, 768, 119);
 	for (const node of nodes) {
+		const active = activeAesthetics.has(node.aesthetic);
 		drawTotalNode(canvas, {
 			label: node.aesthetic,
 			value: points[node.aesthetic],
 			x: node.x,
 			y: node.y,
-			color: DISCO_AESTHETIC_COLORS[node.aesthetic][points[node.aesthetic] < 0 ? 'negative' : 'positive']
+			color: active
+				? DISCO_AESTHETIC_COLORS[node.aesthetic][points[node.aesthetic] < 0 ? 'negative' : 'positive']
+				: '#777772',
+			faded: !active
 		});
 	}
 	drawTotalNode(canvas, {
-		label: 'Combined',
-		value: Object.values(points).reduce((total, value) => total + value, 0),
-		x: center[0],
-		y: center[1],
+		label: 'Top 2',
+		value: topAesthetics.reduce((total, node) => total + points[node.aesthetic], 0),
+		x: 768,
+		y: 119,
 		color: '#fff6d8',
 		emphasized: true
 	});
