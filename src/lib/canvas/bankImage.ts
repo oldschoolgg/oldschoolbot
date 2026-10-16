@@ -266,6 +266,9 @@ class BankImageTask {
 	public effects: Map<number, Image> = new Map();
 	private customPurpleEffects = new Map<string, Canvas>();
 
+	constructor() {
+		void this.init();
+	}
 	async init() {
 		await CanvasModule.waitTillReady();
 		const colors: Record<BGSpriteName, string> = {
