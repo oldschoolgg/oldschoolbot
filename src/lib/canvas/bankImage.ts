@@ -410,15 +410,17 @@ class BankImageTask {
 		currentCL: Bank | undefined,
 		mahojiFlags: BankFlag[] | undefined,
 		weightings: Readonly<ItemBank> | undefined,
-		verticalSpacer = 0,
+		rowVerticalSpacers: number[] = [],
 		user?: MUser,
 		customPurple?: { color: string; glow: boolean }
 	) {
 		let xLoc = 0;
 		let yLoc = compact ? 5 : 0;
-		const rowHeight = bankItemRowHeight(compact, spacer, verticalSpacer);
 		for (let i = 0; i < items.length; i++) {
-			if (i % itemsPerRow === 0) yLoc += rowHeight;
+			if (i % itemsPerRow === 0) {
+				const row = floor(i / itemsPerRow);
+				yLoc += bankItemRowHeight(compact, spacer, row === 0 ? 0 : (rowVerticalSpacers[row - 1] ?? 0));
+			}
 			// For some reason, it starts drawing at -2 so we compensate that
 			// Adds the border width
 			// Adds distance from side
@@ -489,8 +491,8 @@ class BankImageTask {
 				for (const [line, point] of discoPointLines.entries()) {
 					c.drawText({
 						text: point.text,
-						x: floor(xLoc - 1),
-						y: yLoc + distanceFromTop - 1 + line * 14,
+						x: floor(xLoc + itemSize - 1 - c.measureTextWidth(point.text)),
+						y: yLoc + distanceFromTop - 10 + line * 9,
 						color: point.color
 					});
 				}
@@ -609,19 +611,23 @@ class BankImageTask {
 		}
 
 		if (items.length > 500 && !flags.has('nc')) compact = true;
-		const discoPointLineCount = opts.mahojiFlags?.includes('show_disco_points')
-			? Math.max(1, ...items.map(([item]) => getDiscoBankPointLines(item).length))
-			: 1;
-		const verticalSpacer = (discoPointLineCount - 1) * 14;
-
 		const itemWidthSize = compact ? 12 + 21 : 36 + 21;
 
 		let width = wide ? 5 + 6 + 20 + ceil(Math.sqrt(items.length)) * itemWidthSize : 488;
 		if (width < 488) width = 488;
 		const itemsPerRow = floor((width - 6 * 2) / itemWidthSize);
+		const rowVerticalSpacers = opts.mahojiFlags?.includes('show_disco_points')
+			? chunk(items, itemsPerRow).map(row => {
+				const pointCount = Math.max(1, ...row.map(([item]) => getDiscoBankPointLines(item).length));
+				return Math.max(0, (pointCount - 1) * 8 - 15);
+			})
+			: [];
 		const canvasHeight =
 			floor(
-				floor(ceil(items.length / itemsPerRow) * bankItemRowHeight(compact, spacer, verticalSpacer)) +
+				floor(
+					ceil(items.length / itemsPerRow) * bankItemRowHeight(compact, spacer, 0) +
+						sumArr(rowVerticalSpacers)
+				) +
 					itemSize * 1.5
 			) - 2;
 
@@ -716,7 +722,7 @@ class BankImageTask {
 			currentCL,
 			opts.mahojiFlags,
 			weightings,
-			verticalSpacer,
+			rowVerticalSpacers,
 			user,
 			customPurple
 		);
