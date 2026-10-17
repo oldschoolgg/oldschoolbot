@@ -28,6 +28,11 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	transactions.push(prisma.playerOwnedHouse.deleteMany({ where: { user_id: destUser.id } }));
 	transactions.push(prisma.pinnedTrip.deleteMany({ where: { user_id: destUser.id } }));
 	transactions.push(prisma.reclaimableItem.deleteMany({ where: { user_id: destUser.id } }));
+	transactions.push(prisma.gamble.deleteMany({ where: { user_id: destUser.id } }));
+	transactions.push(prisma.userEvent.deleteMany({ where: { user_id: destUser.id } }));
+	transactions.push(prisma.tableBank.deleteMany({ where: { user_id: destUser.id } }));
+	transactions.push(prisma.jsonBank.deleteMany({ where: { user_id: destUser.id } }));
+	transactions.push(prisma.shootingStars.deleteMany({ where: { user_id: destUser.id } }));
 
 	transactions.push(prisma.activity.deleteMany({ where: { user_id: BigInt(destUser.id) } }));
 	transactions.push(prisma.xPGain.deleteMany({ where: { user_id: BigInt(destUser.id) } }));
@@ -38,16 +43,21 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	transactions.push(prisma.stashUnit.deleteMany({ where: { user_id: BigInt(destUser.id) } }));
 	transactions.push(prisma.bingoParticipant.deleteMany({ where: { user_id: destUser.id } }));
 	transactions.push(prisma.userCounter.deleteMany({ where: { user_id: BigInt(destUser.id) } }));
+	transactions.push(prisma.userLog.deleteMany({ where: { user_id: BigInt(destUser.id) } }));
 
 	// BSO: Delete target
 	transactions.push(prisma.tameActivity.deleteMany({ where: { user_id: destUser.id } }));
 	transactions.push(prisma.tame.deleteMany({ where: { user_id: destUser.id } }));
 	transactions.push(prisma.fishingContestCatch.deleteMany({ where: { user_id: BigInt(destUser.id) } }));
+	transactions.push(prisma.portent.deleteMany({ where: { user_id: destUser.id } }));
 
 	// BSO Event: (The update commands are later...)
 	transactions.push(
 		prisma.mortimerTricks.deleteMany({ where: { OR: [{ trickster_id: destUser.id }, { target_id: destUser.id }] } })
 	);
+	transactions.push(prisma.halloweenEvent.deleteMany({ where: { user_id: destUser.id } }));
+	transactions.push(prisma.archonEvent.deleteMany({ where: { user_id: destUser.id } }));
+	transactions.push(prisma.discoBloodbathTrip.deleteMany({ where: { user_id: destUser.id } }));
 
 	// For tables that aren't deleted, we often have to convert from target => source first to avoid FK errors, or null
 	transactions.push(
@@ -57,6 +67,12 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	// Without this, the user_id will be set to null when the Key'd users row is deleted:
 	transactions.push(
 		prisma.gEListing.updateMany({ where: { user_id: destUser.id }, data: { user_id: sourceUser.id } })
+	);
+	transactions.push(
+		prisma.giftBox.updateMany({ where: { creator_id: destUser.id }, data: { creator_id: sourceUser.id } })
+	);
+	transactions.push(
+		prisma.giftBox.updateMany({ where: { owner_id: destUser.id }, data: { owner_id: sourceUser.id } })
 	);
 
 	// Delete destUser.id user:
@@ -101,6 +117,29 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	);
 	transactions.push(
 		prisma.reclaimableItem.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } })
+	);
+	transactions.push(prisma.gamble.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } }));
+	transactions.push(
+		prisma.discoBloodbathTrip.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } })
+	);
+	transactions.push(prisma.portent.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } }));
+	transactions.push(
+		prisma.userEvent.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } })
+	);
+	transactions.push(
+		prisma.tableBank.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } })
+	);
+	transactions.push(
+		prisma.halloweenEvent.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } })
+	);
+	transactions.push(
+		prisma.archonEvent.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } })
+	);
+	transactions.push(
+		prisma.jsonBank.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } })
+	);
+	transactions.push(
+		prisma.shootingStars.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } })
 	);
 
 	transactions.push(
@@ -196,6 +235,18 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 			data: { user_id: BigInt(destUser.id) }
 		})
 	);
+	transactions.push(
+		prisma.userLog.updateMany({
+			where: { user_id: BigInt(sourceUser.id) },
+			data: { user_id: BigInt(destUser.id) }
+		})
+	);
+	transactions.push(
+		prisma.giftBox.updateMany({ where: { creator_id: sourceUser.id }, data: { creator_id: destUser.id } })
+	);
+	transactions.push(
+		prisma.giftBox.updateMany({ where: { owner_id: sourceUser.id }, data: { owner_id: destUser.id } })
+	);
 
 	// Update Users in group activities:
 	const updateUsers = `UPDATE activity
@@ -204,6 +255,11 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 		|| CONCAT('{"leader":"', REPLACE(data->>'leader', '${sourceUser.id}', '${destUser.id}'), '"}')::jsonb
 	WHERE (data->'users')::jsonb ? '${sourceUser.id}'`;
 	transactions.push(prisma.$queryRawUnsafe(updateUsers));
+
+	const updateAllUserIDs = `UPDATE activity
+	SET all_user_ids = ARRAY_REPLACE(all_user_ids, ${sourceUser.id}::bigint, ${destUser.id}::bigint)
+	WHERE ${sourceUser.id}::bigint = ANY(all_user_ids)`;
+	transactions.push(prisma.$queryRawUnsafe(updateAllUserIDs));
 
 	try {
 		await prisma.$transaction(transactions);

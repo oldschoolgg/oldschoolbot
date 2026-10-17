@@ -410,17 +410,14 @@ class BankImageTask {
 		currentCL: Bank | undefined,
 		mahojiFlags: BankFlag[] | undefined,
 		weightings: Readonly<ItemBank> | undefined,
-		rowVerticalSpacers: number[] = [],
+		verticalSpacer = 0,
 		user?: MUser,
 		customPurple?: { color: string; glow: boolean }
 	) {
 		let xLoc = 0;
 		let yLoc = compact ? 5 : 0;
 		for (let i = 0; i < items.length; i++) {
-			if (i % itemsPerRow === 0) {
-				const row = floor(i / itemsPerRow);
-				yLoc += bankItemRowHeight(compact, spacer, row === 0 ? 0 : (rowVerticalSpacers[row - 1] ?? 0));
-			}
+			if (i % itemsPerRow === 0) yLoc += bankItemRowHeight(compact, spacer, verticalSpacer);
 			// For some reason, it starts drawing at -2 so we compensate that
 			// Adds the border width
 			// Adds distance from side
@@ -458,7 +455,7 @@ class BankImageTask {
 				x: xLoc,
 				y: yLoc,
 				outline: isNewCLItem ? { outlineColor: highlightColor, alpha: 1 } : undefined,
-				quantity,
+				quantity: mahojiFlags?.includes('show_disco_points') ? undefined : quantity,
 				textColor: isNewCLItem ? highlightColor : undefined,
 				user,
 				override_show_paints: paintOverride,
@@ -492,7 +489,7 @@ class BankImageTask {
 					c.drawText({
 						text: point.text,
 						x: floor(xLoc + itemSize - 1 - c.measureTextWidth(point.text)),
-						y: yLoc + distanceFromTop - 10 + line * 9,
+						y: yLoc + distanceFromTop - 13 + line * 10,
 						color: point.color
 					});
 				}
@@ -616,20 +613,8 @@ class BankImageTask {
 		let width = wide ? 5 + 6 + 20 + ceil(Math.sqrt(items.length)) * itemWidthSize : 488;
 		if (width < 488) width = 488;
 		const itemsPerRow = floor((width - 6 * 2) / itemWidthSize);
-		const rowVerticalSpacers = opts.mahojiFlags?.includes('show_disco_points')
-			? chunk(items, itemsPerRow).map(row => {
-				const pointCount = Math.max(1, ...row.map(([item]) => getDiscoBankPointLines(item).length));
-				return Math.max(0, (pointCount - 1) * 8 - 15);
-			})
-			: [];
 		const canvasHeight =
-			floor(
-				floor(
-					ceil(items.length / itemsPerRow) * bankItemRowHeight(compact, spacer, 0) +
-						sumArr(rowVerticalSpacers)
-				) +
-					itemSize * 1.5
-			) - 2;
+			floor(floor(ceil(items.length / itemsPerRow) * bankItemRowHeight(compact, spacer, 0)) + itemSize * 1.5) - 2;
 
 		const {
 			sprite: bgSprite,
@@ -722,7 +707,7 @@ class BankImageTask {
 			currentCL,
 			opts.mahojiFlags,
 			weightings,
-			rowVerticalSpacers,
+			undefined,
 			user,
 			customPurple
 		);

@@ -48,7 +48,7 @@ type RatelimitType =
 	| 'disco_leaderboard';
 
 const RATELIMITS: Record<RatelimitType, RatelimitConfig> = {
-	global_buttons: { windowSeconds: 2, max: 1 },
+	global_buttons: { windowSeconds: 2, max: 3 },
 	random_events: { windowSeconds: TTL.Hour * 3, max: 5 },
 	stats_command: { windowSeconds: 5, max: 1 },
 	disco_inquire: { windowSeconds: TTL.Minute * 30, max: 5 },

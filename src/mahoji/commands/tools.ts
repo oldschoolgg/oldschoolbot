@@ -1,8 +1,8 @@
 import { giveBox, spawnBoxCommand, spawnLampCommand } from '@/lib/bso/commands/spawnBoxLampCommand.js';
 import { addToDoubleLootTimer, hasUsedDoubleLootThisMonth } from '@/lib/bso/doubleLoot.js';
 import { keyCrates } from '@/lib/bso/keyCrates.js';
-import { findGroupOfUser } from '@/lib/bso/util/findGroupOfUser.js';
 import { checkEntitlements } from '@/lib/bso/util/entitlementChecker.js';
+import { findGroupOfUser } from '@/lib/bso/util/findGroupOfUser.js';
 import { repairBrokenItemsFromUser } from '@/lib/bso/util/repairBrokenItems.js';
 
 import { EmbedBuilder, userMention } from '@oldschoolgg/discord';
