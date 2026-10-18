@@ -1,3 +1,5 @@
+import '@/lib/cache/redis.js';
+
 import { BSOItem } from '@/lib/bso/BSOItem.js';
 import { maxMelee } from '@/lib/bso/depthsOfAtlantis.js';
 
@@ -14,7 +16,8 @@ import { baseSnapshotPath } from '../../testConstants.js';
 import { mockMUser } from '../userutil.js';
 
 describe('BSO Slayer Mask Glowing', async () => {
-	await bankImageTask.ready;
+	await bankImageTask.waitTillReady();
+	await Cache.waitTillReady();
 
 	test('Gear', async () => {
 		const user = mockMUser();

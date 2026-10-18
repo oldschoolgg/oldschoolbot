@@ -68,7 +68,7 @@ describe('RUser', async () => {
 		]);
 
 		expect(user.perkTierRaw).toBe(PerkTier.Three);
-		expect(user.perkTierDisplay).toContain('Temp Tier: **Tier 2**');
+		expect(user.perkTierDisplay).toContain('Temporary: **Tier 2**');
 	});
 
 	test('displays all unexpired premium tiers from linked users', () => {
@@ -89,8 +89,8 @@ describe('RUser', async () => {
 		]);
 
 		expect(user.perkTierRaw).toBe(PerkTier.Six);
-		expect(user.perkTierDisplay).toContain('Temp Tier: **Tier 5**');
-		expect(user.perkTierDisplay).toContain('Temp Tier: Tier 2');
+		expect(user.perkTierDisplay).toContain('Temporary: **Tier 5**');
+		expect(user.perkTierDisplay).toContain('Temporary: Tier 2');
 	});
 
 	test('globalMastery', async () => {

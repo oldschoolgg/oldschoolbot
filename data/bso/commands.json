@@ -1,6 +1,6 @@
 {
-	"hash": "f51bd4e15cdeacc707319c857767bb65",
-	"date": "2026-08-22T06:29:43.750Z",
+	"hash": "16ce6ce1d4bda5bd998d5a09fcb90563",
+	"date": "2026-10-18T15:33:53.934Z",
 	"data": [
 		{
 			"name": "activities",
@@ -161,6 +161,21 @@
 			"subOptions": ["buy", "start", "stats"]
 		},
 		{
+			"name": "disco",
+			"desc": "Enter the Disco Bloodbath club circuit.",
+			"subOptions": [
+				"auto_equip",
+				"help",
+				"inquire",
+				"leaderboard",
+				"outfit",
+				"party",
+				"search",
+				"start",
+				"stats"
+			]
+		},
+		{
 			"name": "divination",
 			"desc": "The divination skill.",
 			"subOptions": ["charge_portent", "harvest_memories", "portent", "toggle_portent"]
@@ -227,7 +242,7 @@
 		{
 			"name": "gearpresets",
 			"desc": "Manage, equip, unequip your gear presets.",
-			"subOptions": ["create", "delete", "edit", "equip", "view"]
+			"subOptions": ["create", "delete", "edit", "equip", "help", "view"]
 		},
 		{
 			"name": "gift",
@@ -320,6 +335,7 @@
 				"clues",
 				"combat_achievements",
 				"completion",
+				"disco",
 				"farming_contracts",
 				"global",
 				"gp",
@@ -518,7 +534,7 @@
 		{
 			"name": "rp",
 			"desc": "Admin tools second set",
-			"subOptions": ["player", "user_event"]
+			"subOptions": ["bestow", "player", "user_event"]
 		},
 		{
 			"name": "runecraft",

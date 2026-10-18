@@ -36,9 +36,7 @@ describe('perk tiers', () => {
 		};
 
 		expect(getPerkTierEx(input, { now })).toBe(PerkTier.Five);
-		expect(getPerkTierDisplay(input, { now })).toBe(
-			'Temp Tier: **Tier 4** (Expires: 1970-01-01T00:00:11.000Z, 10 seconds remaining)'
-		);
+		expect(getPerkTierDisplay(input, { now })).toBe('Temporary: **Tier 4** (Expires: <t:11:R>)');
 	});
 
 	test('formats multiple unexpired premium tier entitlements', () => {
@@ -54,7 +52,7 @@ describe('perk tiers', () => {
 
 		expect(getPerkTierEx(input, { now })).toBe(PerkTier.Five);
 		expect(getPerkTierDisplay(input, { now })).toBe(
-			'Temp Tier: **Tier 4** (Expires: 1970-01-01T00:00:11.000Z, 10 seconds remaining), Temp Tier: Tier 2 (Expires: 1970-01-01T00:00:21.000Z, 20 seconds remaining)'
+			'Temporary: **Tier 4** (Expires: <t:11:R>), Temporary: Tier 2 (Expires: <t:21:R>)'
 		);
 	});
 

@@ -252,7 +252,9 @@ class BankImageTask {
 	public _bgSpriteData: CanvasImage = new CanvasImage();
 	public bgSpriteList: Record<string, IBgSprite> = {};
 	public treeImage!: CanvasImage;
-	public ready: boolean = false;
+	private readonly initPromise: Promise<void>;
+	private initStarting = false;
+	public ready = false;
 
 	public blackEffect: Image | null = null;
 	public redEffect: Image | null = null;
@@ -266,10 +268,17 @@ class BankImageTask {
 	public effects: Map<number, Image> = new Map();
 	private customPurpleEffects = new Map<string, Canvas>();
 
-	constructor() {
-		void this.init();
+	async waitTillReady() {
+		await this.initPromise;
 	}
-	async init() {
+	constructor() {
+		this.initPromise = this.init();
+	}
+	private async init() {
+		if (this.initStarting) {
+			return this.initPromise;
+		}
+		this.initStarting = true;
 		await CanvasModule.waitTillReady();
 		const colors: Record<BGSpriteName, string> = {
 			default: '#655741',
@@ -520,7 +529,6 @@ class BankImageTask {
 	): Promise<BankImageResult> {
 		if (!this.ready) {
 			await this.init();
-			this.ready = true;
 		}
 		let { user, collectionLog, title = '', showValue = true } = opts;
 		const bank = opts.bank.clone();

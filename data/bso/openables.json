@@ -68,7 +68,8 @@
 		"id": 47521,
 		"opened_item": "Beach mystery box",
 		"all_items": ["Beach ball", "Crab hat", "Ice cream", "Snappy the Turtle", "Water balloon"],
-		"exclude_from_open_all": true
+		"exclude_from_open_all": true,
+		"always_confirm": true
 	},
 	{
 		"name": "Bird nest",
@@ -5594,6 +5595,15 @@
 		]
 	},
 	{
+		"name": "Fealty Mystery Box",
+		"id": 75699,
+		"opened_item": "Fealty Mystery Box",
+		"all_items": ["Chill", "Gross domestic bling", "Millionaire mink"],
+		"exclude_from_open_all": true,
+		"smokey_applies": false,
+		"always_confirm": true
+	},
+	{
 		"name": "Festive crate (s4)",
 		"id": 72016,
 		"opened_item": "Festive crate (s4)",
@@ -6235,14 +6245,16 @@
 		"id": 48211,
 		"opened_item": "Independence box",
 		"all_items": ["Fireworks", "Liber tea", "Sam's hat"],
-		"exclude_from_open_all": true
+		"exclude_from_open_all": true,
+		"always_confirm": true
 	},
 	{
 		"name": "Independence Day 2 Box",
 		"id": 48231,
 		"opened_item": "Independence Day 2 Box",
 		"all_items": ["Alien green card", "Liber-ray-tor", "Sam", "Stars and Stripeship"],
-		"exclude_from_open_all": true
+		"exclude_from_open_all": true,
+		"always_confirm": true
 	},
 	{
 		"name": "Infernal eel",
@@ -6379,6 +6391,15 @@
 			"Uncut diamond",
 			"Uncut ruby"
 		]
+	},
+	{
+		"name": "Lazy Mystery Box",
+		"id": 75700,
+		"opened_item": "Lazy Mystery Box",
+		"all_items": ["Count Napula", "Idle idol", "Trust fund tiara", "Two of Hearts"],
+		"exclude_from_open_all": true,
+		"smokey_applies": false,
+		"always_confirm": true
 	},
 	{
 		"name": "Lucky impling",
@@ -9167,7 +9188,8 @@
 		"id": 47502,
 		"opened_item": "Royal mystery box",
 		"all_items": ["Corgi", "Diamond crown", "Diamond sceptre"],
-		"exclude_from_open_all": true
+		"exclude_from_open_all": true,
+		"always_confirm": true
 	},
 	{
 		"name": "Scaly blue dragonhide",
@@ -9520,6 +9542,38 @@
 		},
 		"exclude_from_open_all": true,
 		"smokey_applies": false
+	},
+	{
+		"name": "Skrink box",
+		"id": 75701,
+		"opened_item": "Skrink box",
+		"all_items": [
+			"Disco bloodbath",
+			"Lazily rollers",
+			"Partytimehat",
+			"Premierekat",
+			"Resting rich face",
+			"Skrink mink",
+			"Skrinkle"
+		],
+		"exclude_from_open_all": true,
+		"smokey_applies": true
+	},
+	{
+		"name": "Skrod box",
+		"id": 75702,
+		"opened_item": "Skrod box",
+		"all_items": [
+			"Afterparty afterlife",
+			"Couch potato sceptre",
+			"Disco bloodbath",
+			"Disco infernowl",
+			"Glam jam platformers",
+			"Partytimehat",
+			"Premierekat"
+		],
+		"exclude_from_open_all": true,
+		"smokey_applies": true
 	},
 	{
 		"name": "Spoils of war",

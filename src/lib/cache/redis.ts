@@ -67,10 +67,15 @@ type GuildUpdateInput = Partial<IGuild> & {
 
 class CacheManager {
 	private client: Redis;
+	private readyPromise = Promise.withResolvers<void>();
 
+	async waitTillReady() {
+		return this.readyPromise;
+	}
 	constructor() {
 		if (globalConfig.isProduction) {
 			this.client = new Redis();
+			this.client.on('ready', () => this.readyPromise.resolve());
 		} else {
 			try {
 				const host: string = process.env.REDIS_HOST ?? 'localhost';
@@ -79,10 +84,13 @@ class CacheManager {
 				redis.on('error', () => {
 					redis.disconnect();
 					this.client = new MockedRedis() as any as Redis;
+					this.readyPromise.resolve();
 				});
+				redis.on('ready', () => this.readyPromise.resolve());
 				this.client = redis;
 			} catch {
 				this.client = new MockedRedis() as any as Redis;
+				this.readyPromise.resolve();
 			}
 		}
 	}
