@@ -223,6 +223,13 @@ export interface MiningActivityTaskOptions extends ActivityTaskOptions {
 	iQty?: number;
 }
 
+export interface AncientMycologyActivityTaskOptions extends ActivityTaskOptions {
+	type: 'AncientMycology';
+	woodName?: string;
+	quantity: number;
+	iQty?: number;
+}
+
 export interface ArchaicMiningActivityTaskOptions extends ActivityTaskOptions {
 	type: 'ArchaicMining';
 	miningType: 'dragonbone' | 'crystalline';
@@ -739,6 +746,7 @@ export type ActivityTaskData =
 	| FiremakingActivityTaskOptions
 	| FishingActivityTaskOptions
 	| MiningActivityTaskOptions
+	| AncientMycologyActivityTaskOptions
 	| ArchaicMiningActivityTaskOptions
 	| MotherlodeMiningActivityTaskOptions
 	| PlunderActivityTaskOptions

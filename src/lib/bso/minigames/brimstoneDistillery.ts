@@ -111,6 +111,30 @@ export const DistilleryRecipes: DistilleryRecipe[] = [
 		brimstoneMultiplier: 1.2
 	},
 	{
+		name: 'Super combat potion(4)',
+		output: Items.getOrThrow('Super combat potion(4)'),
+		ingredients: [
+			{ item: Items.getOrThrow('Super attack(4)'), quantity: 1 },
+			{ item: Items.getOrThrow('Super defence(4)'), quantity: 1 },
+			{ item: Items.getOrThrow('Super strength(4)'), quantity: 1 },
+			{ item: Items.getOrThrow('Torstol'), quantity: 1 }
+		],
+		herbloreLevel: 115,
+		xpMultiplier: 1.2,
+		brimstoneMultiplier: 1.2
+	},
+	{
+		name: 'Super antifire potion(4)',
+		output: Items.getOrThrow('Super antifire potion(4)'),
+		ingredients: [
+			{ item: Items.getOrThrow('Antifire potion(4)'), quantity: 1 },
+			{ item: Items.getOrThrow('Crushed superior dragon bones'), quantity: 1 }
+		],
+		herbloreLevel: 115,
+		xpMultiplier: 1.2,
+		brimstoneMultiplier: 1.2
+	},
+	{
 		name: 'Enhanced Super Restore',
 		output: Items.getOrThrow('Enhanced super restore'),
 		ingredients: [

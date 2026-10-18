@@ -15282,42 +15282,42 @@ setCustomItem(
 	75_043,
 	'Elder sigil',
 	'Coal',
-	{ tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } },
+	{ tradeable: false, customItemData: { cantDropFromMysteryBoxes: true } },
 	10_000_000
 );
 setCustomItem(
 	75_044,
 	'Elder sigil fragment (1)',
 	'Coal',
-	{ tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } },
+	{ tradeable: false, customItemData: { cantDropFromMysteryBoxes: true } },
 	10_000_000
 );
 setCustomItem(
 	75_045,
 	'Elder sigil fragment (2)',
 	'Coal',
-	{ tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } },
+	{ tradeable: false, customItemData: { cantDropFromMysteryBoxes: true } },
 	10_000_000
 );
 setCustomItem(
 	75_046,
 	'Elder sigil fragment (3)',
 	'Coal',
-	{ tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } },
+	{ tradeable: false, customItemData: { cantDropFromMysteryBoxes: true } },
 	10_000_000
 );
 setCustomItem(
 	75_047,
 	'Archon relic',
 	'Coal',
-	{ tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } },
-	1
+	{ tradeable: true, customItemData: { cantDropFromMysteryBoxes: true } },
+	500_000
 );
 setCustomItem(
 	75_048,
 	'Elderflame catalyst',
 	'Coal',
-	{ tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } },
+	{ tradeable: false, customItemData: { cantDropFromMysteryBoxes: true } },
 	10_000_000
 );
 
@@ -15634,10 +15634,10 @@ setCustomItem(
 	75_073,
 	'Buried firmament',
 	'Abyssal cape',
-	{ customItemData: { cantDropFromMysteryBoxes: true } },
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true, cantDropFromMysteryBoxes: true } },
 	10_000
 );
-setCustomItem(75_074, "Archon's Ichor", 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000);
+setCustomItem(75_074, "Archon's ichor", 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000);
 
 //archaic dyes
 setCustomItem(

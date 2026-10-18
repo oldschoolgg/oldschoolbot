@@ -1,5 +1,6 @@
 import { BSOItem } from '@/lib/bso/BSOItem.js';
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
+import { ASSIGNMENT_TRIP_COSTS, ASSIGNMENT_TRIP_ITEM, getActiveAssignment } from '@/lib/bso/commands/islandUpgrades.js';
 import { tearsOfGuthixIronmanReqs, tearsOfGuthixSkillReqs } from '@/lib/bso/commands/tearsOfGuthixCommand.js';
 import { DISCO_EVENT_END_DATE, isDiscoEventActive } from '@/lib/bso/discoBloodbath.js';
 import { discoHandler } from '@/lib/bso/discoHandler.js';
@@ -43,6 +44,7 @@ import {
 	makeTearsOfGuthixButton
 } from '@/lib/util/interactions.js';
 import { hasSkillReqs, perHourChance } from '@/lib/util/smallUtils.js';
+import { readState } from '@/mahoji/commands/islandupgrade.js';
 import { alching } from '@/mahoji/commands/laps.js';
 import { handleTriggerArchon } from '@/mahoji/lib/abstracted_commands/archonCommand.js';
 import { isUsersDailyReady } from '@/mahoji/lib/abstracted_commands/dailyCommand.js';
@@ -660,6 +662,67 @@ const tripFinishEffects: TripFinishEffect[] = [
 			return {
 				itemsToAddWithCL: mysteriousLoot
 			};
+		}
+	},
+	{
+		name: 'Island Worker Focus Cost',
+		fn: async ({ user, data, messages }) => {
+			const { maintenance, assignment } = readState(user);
+			if (!assignment) return;
+			const active = getActiveAssignment(assignment, maintenance, Date.now());
+			if (!active) return;
+
+			const isBoss =
+				active === 'boss' &&
+				[
+					'MonsterKilling',
+					'GroupMonsterKilling',
+					'BossEvent',
+					'BurningDominion',
+					'Archon',
+					'KalphiteKing',
+					'Moktang',
+					'Naxxus',
+					'VasaMagus',
+					'Ignecarus',
+					'KingGoldemar'
+				].includes(data.type);
+
+			const isMinigame =
+				active === 'minigame' &&
+				[
+					'Minigame',
+					'BarbarianAssault',
+					'GiantsFoundry',
+					'GuardiansOfTheRift',
+					'PestControl',
+					'FistOfGuthix',
+					'MonkeyRumble',
+					'StealingCreation',
+					'TinkeringWorkshop',
+					'BaxtorianBathhouses',
+					'OuraniaDeliveryService',
+					'TuraelsTrials'
+				].includes(data.type);
+
+			const isGathering =
+				active === 'gathering' &&
+				['Mining', 'ArchaicMining', 'Woodcutting', 'AncientMycology', 'Fishing', 'GemstoneFishing'].includes(
+					data.type
+				);
+
+			if (!isBoss && !isMinigame && !isGathering) return;
+
+			const costItem = ASSIGNMENT_TRIP_ITEM[active];
+			const costQty = ASSIGNMENT_TRIP_COSTS[active];
+			const costBank = new Bank().add(costItem, costQty);
+
+			if (user.owns(costBank)) {
+				messages.push(`Focused workers: Removed ${costQty}x ${costItem}`);
+				return {
+					itemsToRemove: costBank
+				};
+			}
 		}
 	}
 ];

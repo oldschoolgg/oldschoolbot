@@ -1,12 +1,11 @@
 import type { ArchonEventOptions, ArchonOptions } from '@/lib/bso/bsoTypes.js';
-import {
-	defaultIslandUpgrades,
-	getMegabossLootBonus,
-	type IslandUpgradeTiers
-} from '@/lib/bso/commands/islandUpgrades.js';
+import { getMegabossLootBonus, getMegabossUniqueBonus } from '@/lib/bso/commands/islandUpgrades.js';
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 
+import { roll } from 'node-rng';
 import { Bank } from 'oldschooljs';
 
+import { readState } from '@/mahoji/commands/islandupgrade.js';
 import {
 	archonPresentations,
 	getUniquesForTier,
@@ -21,20 +20,33 @@ export const archonTask: MinionTask = {
 		const presentation = archonPresentations[tier];
 		const penalty = tierGearPenalty[tier];
 
-		const islandUpgrades = (user.user.island_upgrades as IslandUpgradeTiers) ?? defaultIslandUpgrades;
-		const lootBonus = getMegabossLootBonus(islandUpgrades);
+		const { upgrades, maintenance, assignment } = readState(user);
+		const lootBonus = getMegabossLootBonus(upgrades, maintenance, assignment);
+		const uniqueBonus = getMegabossUniqueBonus(upgrades, maintenance, assignment);
 
 		const gearMultiplier = penalty.floor + ((gearScore ?? 0) / 100) * (penalty.ceiling - penalty.floor);
 
 		const effectiveRegularMultiplier = gearMultiplier * (1 + lootBonus);
 
-		const lootResults = users.map(() => rollArchonLoot(tier, effectiveRegularMultiplier));
+		const lootResults = users.map(() => rollArchonLoot(tier, effectiveRegularMultiplier, uniqueBonus));
 
 		const { regularLoot: realRegularLoot, uniqueLoot: realUniqueLoot } = lootResults[0];
 		const realUserLoot = new Bank().add(realRegularLoot).add(realUniqueLoot);
 
 		const uniquesForTier = getUniquesForTier(tier);
 		const messages: string[] = [];
+
+		if (user.usingPet('Archibald')) {
+			realUserLoot.multiply(2);
+			messages.push('Archibald doubled your Archon loot!');
+		}
+
+		const baseArchibaldRate = tier === 1 ? 4000 : tier === 2 ? 3000 : 2000;
+		const archibaldRate = Math.max(1, Math.floor(baseArchibaldRate / (1 + uniqueBonus)));
+		if (roll(archibaldRate)) {
+			realUserLoot.add('Archibald');
+			messages.push("You have a funny feeling you're now responsible for something.");
+		}
 
 		if (isSolo) {
 			await user.transactItems({ itemsToAdd: realUserLoot, collectionLog: true });
@@ -50,11 +62,19 @@ export const archonTask: MinionTask = {
 			}
 
 			if (lootBonus > 0) {
-				messages.push(`Archon Sanctum upgrade bonus: **+${(lootBonus * 100).toFixed(0)}%** to regular loot.`);
+				messages.push(`Archon Sanctum bonus: **+${(lootBonus * 100).toFixed(0)}%** regular loot.`);
+			}
+			if (uniqueBonus > 0) {
+				messages.push(`Archon Sanctum bonus: **+${(uniqueBonus * 100).toFixed(0)}%** unique chance.`);
 			}
 
 			const effectiveGearPct = (gearMultiplier * 100).toFixed(1);
-			messages.push(`Gear effectiveness: **${effectiveGearPct}%** (floor: ${(penalty.floor * 100).toFixed(0)}%)`);
+			messages.push(
+				`Gear effectiveness: **${effectiveGearPct}%** (floor: ${(penalty.floor * 100).toFixed(0)}%, scales regular loot)`
+			);
+
+			const totalLootMultiplierPct = (effectiveRegularMultiplier * 100).toFixed(1);
+			messages.push(`Net regular loot: **${totalLootMultiplierPct}%** of base rolls.`);
 		} else {
 			for (let i = 0; i < users.length; i++) {
 				const userId = users[i];
@@ -64,6 +84,17 @@ export const archonTask: MinionTask = {
 				await recipient.transactItems({ itemsToAdd: combinedLoot, collectionLog: true });
 			}
 		}
+
+		const monsterId = {
+			1: EBSOMonster.ARCHON_TIER_1,
+			2: EBSOMonster.ARCHON_TIER_2,
+			3: EBSOMonster.ARCHON_TIER_3
+		}[tier];
+
+		await user.incrementKC(monsterId, 1);
+
+		const newKC = await user.getKC(monsterId);
+		messages.push(`Your ${presentation.name} kill count is now **${newKC}**.`);
 
 		const numOthers = users.length - 1;
 

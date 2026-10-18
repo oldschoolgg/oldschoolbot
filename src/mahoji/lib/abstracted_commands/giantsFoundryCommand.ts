@@ -1,3 +1,5 @@
+import { defaultMaintenanceTimestamps, getGlobalMinigameBonus } from '@/lib/bso/commands/islandUpgrades.js';
+
 import { calcWhatPercent, formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
@@ -194,6 +196,15 @@ export async function giantsFoundryStartCommand(
 	if (user.hasEquippedOrInBank('Smithing master cape')) {
 		timePerSection = reduceNumByPercent(timePerSection, 15);
 		boosts.push('15% for Smithing mastery');
+	}
+
+	const rawUpgrades = (user.user.island_upgrades ?? {}) as any;
+	const islandMaint = rawUpgrades.maintenance ?? defaultMaintenanceTimestamps;
+	const islandAssign = rawUpgrades.assignment ?? null;
+	const globalMinigameBonus = getGlobalMinigameBonus(rawUpgrades, islandMaint, islandAssign);
+	if (globalMinigameBonus > 0) {
+		timePerSection = reduceNumByPercent(timePerSection, globalMinigameBonus * 100);
+		boosts.push(`${(globalMinigameBonus * 100).toFixed(0)}% faster from Grand Conduit (Settlement Infrastructure)`);
 	}
 
 	const maxTripLength = await user.calcMaxTripLength('GiantsFoundry');

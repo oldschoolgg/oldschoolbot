@@ -13,7 +13,7 @@ export const brimstoneDistilleryTask: MinionTask = {
 
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 
-		const xpResults = await user.addXP({ skillName: 'herblore', amount: herbloreXP, duration, minimal: true });
+		const xpResults = await user.addXP({ skillName: 'herblore', amount: herbloreXP, duration });
 
 		const existing = (user.user.distillery_stats ?? {}) as Record<string, number>;
 		await user.update({
