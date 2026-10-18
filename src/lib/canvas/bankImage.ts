@@ -641,7 +641,7 @@ class BankImageTask {
 				items.some(([item]) => !currentCL.has(item.id) && allCLItems.has(item.id)));
 
 		const useSmallBank = user ? (hasBgSprite ? true : user.bitfield.includes(BitField.AlwaysSmallBank)) : true;
-		const roboChimpUser = user ? await Cache.getRoboChimpUser(user.id) : null;
+		const roboChimpUser = user ? await user.fetchRobochimpUser() : null;
 		const canUseCustomPurple = Boolean(
 			roboChimpUser?.bits.some(bit => cyrTier4PlusBits.includes(bit as (typeof cyrTier4PlusBits)[number]))
 		);
