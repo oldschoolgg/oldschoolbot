@@ -330,6 +330,7 @@ export enum HunterTechniqueEnum {
 
 export interface Creature {
 	tier?: RumourOption[];
+	rumourLevel?: number;
 	name: string;
 	id: number;
 	aliases: string[];

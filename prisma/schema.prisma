@@ -305,7 +305,7 @@ model User {
   minion_birdhouseTraps           Json?     @map("minion.birdhouseTraps") @db.Json
   finished_quest_ids              Int[]     @default([])
 
-  // Maps rumour tiers to blocked creature IDs. Missing tiers are unblocked.
+  // Maps guild hunters to blocked creature IDs. Missing hunters are unblocked.
   rumour_blocked_ids Json @default("{}") @db.Json
 
   // Relations

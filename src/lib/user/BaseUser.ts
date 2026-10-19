@@ -14,7 +14,11 @@ import { allPetIDs } from '@/lib/data/CollectionsExport.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
 import type { UserFullGearSetup } from '@/lib/gear/types.js';
 import type { AttackStyles } from '@/lib/minions/functions/index.js';
-import type { RumourBlockList } from '@/lib/skilling/skills/hunter/rumours/util.js';
+import {
+	normaliseRumourBlockList,
+	type RumourBlockList,
+	type RumourOption
+} from '@/lib/skilling/skills/hunter/rumours/util.js';
 import type { BankSortMethod } from '@/lib/sorts.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
 import { Gear } from '@/lib/structures/Gear.js';
@@ -171,7 +175,9 @@ export class BaseUser {
 	}
 
 	get rumourBlockList(): Readonly<RumourBlockList> {
-		return this.user.rumour_blocked_ids as RumourBlockList;
+		return normaliseRumourBlockList(
+			this.user.rumour_blocked_ids as RumourBlockList & Partial<Record<RumourOption, number>>
+		);
 	}
 
 	get isIronman() {

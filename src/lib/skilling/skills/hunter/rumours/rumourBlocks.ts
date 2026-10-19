@@ -1,14 +1,21 @@
-import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
+import { stringMatches } from '@oldschoolgg/toolkit';
 
 import creatures from '@/lib/skilling/skills/hunter/creatures/index.js';
-import { type RumourOption, RumourOptions, tierToHunterLevel } from '@/lib/skilling/skills/hunter/rumours/util.js';
+import {
+	canAssignRumour,
+	getRumourHunter,
+	type RumourHunterID,
+	RumourHunters,
+	tierToHunterLevel
+} from '@/lib/skilling/skills/hunter/rumours/util.js';
 
-export async function rumourBlock(user: MUser, tier: RumourOption, creature: string) {
+export async function rumourBlock(user: MUser, hunterID: RumourHunterID, creature: string) {
+	const hunter = getRumourHunter(hunterID);
 	const blockList = { ...user.rumourBlockList };
-	const blockedTask = blockList[tier];
+	const blockedTask = blockList[hunter.id];
 
-	if (user.skillsAsLevels.hunter < tierToHunterLevel[tier]) {
-		return `You need level ${tierToHunterLevel[tier]} hunter to block creatures in the ${tier} slot.`;
+	if (user.skillsAsLevels.hunter < tierToHunterLevel[hunter.tier]) {
+		return `You need level ${tierToHunterLevel[hunter.tier]} Hunter to block creatures with ${hunter.label}.`;
 	}
 
 	const resolvedCreature = creatures.find(c =>
@@ -18,15 +25,19 @@ export async function rumourBlock(user: MUser, tier: RumourOption, creature: str
 
 	if (!resolvedCreature) return "That's not a valid creature.";
 
-	if (!resolvedCreature.tier?.some(t => t === tier)) {
-		return `That creature is not part of the ${tier} tier.`;
+	if (!canAssignRumour(hunter, resolvedCreature)) {
+		return `${hunter.label} cannot assign that creature.`;
+	}
+	const levelRequired = resolvedCreature.rumourLevel ?? resolvedCreature.level;
+	if (user.skillsAsLevels.hunter < levelRequired) {
+		return `You need level ${levelRequired} Hunter to block ${resolvedCreature.name}.`;
 	}
 
 	if (Object.values(blockList).includes(resolvedCreature.id)) return 'That creature is already blocked.';
 
-	blockList[tier] = resolvedCreature.id;
+	blockList[hunter.id] = resolvedCreature.id;
 
-	let str = `You have blocked ${resolvedCreature.name}.`;
+	let str = `You have blocked ${resolvedCreature.name} with ${hunter.label}.`;
 
 	if (blockedCreature) {
 		str += ` You have unblocked ${blockedCreature.name}`;
@@ -46,13 +57,13 @@ export async function rumourUnblock(user: MUser, creature: string) {
 
 	if (!resolvedCreature) return "That's not a valid creature.";
 
-	const blockedTier = RumourOptions.find(tier => blockList[tier] === resolvedCreature.id);
+	const blockedHunter = RumourHunters.find(hunter => blockList[hunter.id] === resolvedCreature.id);
 
-	if (blockedTier === undefined) {
-		return `${resolvedCreature.name} is not blocked in any tier.`;
+	if (blockedHunter === undefined) {
+		return `${resolvedCreature.name} is not blocked with any hunter.`;
 	}
 
-	delete blockList[blockedTier];
+	delete blockList[blockedHunter.id];
 
 	const str = `You have unblocked ${resolvedCreature.name}.`;
 
@@ -65,19 +76,19 @@ export async function rumourBlockList(user: MUser) {
 	const blockList = user.rumourBlockList;
 
 	if (Object.keys(blockList).length === 0) {
-		return 'You may block one creature of each tier from appearing in rumours of any tier. You currently have no creatures blocked.';
+		return 'You may hold one blocked creature with each guild hunter. Use another hunter to complete rumours while those creatures are blocked. You currently have no creatures blocked.';
 	}
 
 	let str = 'You have the following creatures blocked:';
 
-	for (const tier of RumourOptions) {
+	for (const hunter of RumourHunters) {
 		let creatureName = 'None';
 
-		const creature = creatures.find(c => c.id === blockList[tier]);
+		const creature = creatures.find(c => c.id === blockList[hunter.id]);
 
 		if (creature) creatureName = creature.name;
 
-		str += `\n${toTitleCase(tier)}: ${creatureName}`;
+		str += `\n${hunter.label}: ${creatureName}`;
 	}
 
 	return str;

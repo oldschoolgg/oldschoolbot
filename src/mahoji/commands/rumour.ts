@@ -1,7 +1,7 @@
 import creatures from '@/lib/skilling/skills/hunter/creatures/index.js';
 import { rumourBlock, rumourBlockList, rumourUnblock } from '@/lib/skilling/skills/hunter/rumours/rumourBlocks.js';
 import { rumourCount, rumoursCommand } from '@/lib/skilling/skills/hunter/rumours/rumours.js';
-import { RumourOptions } from '@/lib/skilling/skills/hunter/rumours/util.js';
+import { RumourHunters } from '@/lib/skilling/skills/hunter/rumours/util.js';
 
 export const rumourCommand = defineCommand({
 	name: 'rumours',
@@ -9,7 +9,7 @@ export const rumourCommand = defineCommand({
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		examples: ['/rumours start tier:novice']
+		examples: ['/rumours start tier:aco']
 	},
 	options: [
 		{
@@ -21,9 +21,10 @@ export const rumourCommand = defineCommand({
 				{
 					type: 'String',
 					name: 'tier',
-					description: 'The rumour tier you wish to be assigned. (Will default to the highest tier)',
+					description:
+						'The guild hunter to complete rumours with. Defaults to a hunter of the highest available tier.',
 					required: false,
-					choices: RumourOptions.map(i => ({ value: i, name: i }))
+					choices: RumourHunters.map(hunter => ({ value: hunter.id, name: hunter.label }))
 				}
 			]
 		},
@@ -36,15 +37,15 @@ export const rumourCommand = defineCommand({
 				{
 					type: 'Subcommand',
 					name: 'block',
-					description: 'Block a creature in a certain tier from appearing in any tier of rumour.',
+					description: 'Hold a creature with one guild hunter to block it from appearing with the others.',
 					required: false,
 					options: [
 						{
 							type: 'String',
 							name: 'tier',
-							description: 'The tier of the block slot you want to use.',
+							description: 'The guild hunter who will hold the blocked creature.',
 							required: true,
-							choices: RumourOptions.map(i => ({ value: i, name: i }))
+							choices: RumourHunters.map(hunter => ({ value: hunter.id, name: hunter.label }))
 						},
 						{
 							type: 'String',

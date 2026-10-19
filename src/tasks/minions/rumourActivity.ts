@@ -1,10 +1,10 @@
-import { Events } from '@oldschoolgg/toolkit';
-import { Bank, ECreature } from 'oldschooljs';
+import { Events, Time } from '@oldschoolgg/toolkit';
+import { Bank, ECreature, toKMB } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
 import { generateHerbiTable } from '@/lib/skilling/functions/calcsHunter.js';
 import creatures from '@/lib/skilling/skills/hunter/creatures/index.js';
-import type { RumourOption } from '@/lib/skilling/skills/hunter/rumours/util.js';
+import { getRumourHunter, type RumourOption } from '@/lib/skilling/skills/hunter/rumours/util.js';
 import { HunterTechniqueEnum } from '@/lib/skilling/types.js';
 import { RumourTierBank } from '@/lib/structures/Bank.js';
 import type { RumourActivityTaskOptions } from '@/lib/types/minions.js';
@@ -16,8 +16,9 @@ export const rumourTask: MinionTask = {
 		const { tier, quantity, rumours, channelId, duration } = data;
 		const currentLevel = user.skillLevel('hunter');
 		const currentHerbLevel = user.skillLevel('herblore');
+		const hunterLabel = data.hunter ? getRumourHunter(data.hunter).label : tier;
 
-		let str = `${user}, ${user.minionName} finished completing ${quantity} ${tier} rumours.\nThey caught: `;
+		let str = `${user}, ${user.minionName} finished completing ${quantity} ${hunterLabel} rumours.\nThey caught: `;
 		let xpStr = '';
 		let chinPetSource = '';
 
@@ -129,12 +130,18 @@ export const rumourTask: MinionTask = {
 			amount: huntXP,
 			duration
 		});
+		// The XP helper omits its message at the XP cap, but rumours still earn tracked XP.
+		if (!xpStr) {
+			const xpPerHour = duration > 0 ? Math.floor((huntXP * Time.Hour) / duration / 1000) * 1000 : 0;
+			xpStr = `You earned ${Math.floor(huntXP).toLocaleString()} Hunter XP (${toKMB(xpPerHour)} XP/h).`;
+		}
 
-		xpStr += await user.addXP({
+		const herbloreXPMessage = await user.addXP({
 			skillName: 'herblore',
 			amount: herbXP,
 			duration
 		});
+		if (herbloreXPMessage) xpStr += `\n${herbloreXPMessage}`;
 
 		await user.transactItems({
 			collectionLog: true,
