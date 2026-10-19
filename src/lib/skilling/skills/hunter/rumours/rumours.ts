@@ -1,4 +1,4 @@
-import { formatDuration, Time, toTitleCase } from '@oldschoolgg/toolkit';
+import { Time, toTitleCase } from '@oldschoolgg/toolkit';
 import { MathRNG } from 'node-rng';
 
 import { QuestID } from '@/lib/minions/data/quests.js';
@@ -13,6 +13,7 @@ import {
 import { type Creature, HunterTechniqueEnum } from '@/lib/skilling/types.js';
 import { RumourTierBank } from '@/lib/structures/Bank.js';
 import type { RumourActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 const hunterTechniqueToRate: Partial<Record<HunterTechniqueEnum, number>> = {
 	[HunterTechniqueEnum.BirdSnaring]: 20,
@@ -48,7 +49,7 @@ export async function rumoursCommand(user: MUser, channelId: string, input?: Rum
 		duration,
 		type: 'Rumour'
 	});
-	return `${user.minionName} is now completing ${tier} tier rumours. It'll return in ${formatDuration(duration)}.`;
+	return `${user.minionName} is now completing ${tier} tier rumours. It'll return ${formatTripDuration(user, duration)}.`;
 }
 
 function generateRumourTasks(user: MUser, tier: RumourOption, maxLength: number): Rumour[] {
