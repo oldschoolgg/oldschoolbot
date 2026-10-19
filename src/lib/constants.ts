@@ -172,7 +172,7 @@ export enum BitField {
 	Boring = 58,
 	HasRiteOfVileTransference = 59,
 	DisableRiteOfVileTransference = 60,
-  CompostWarning = 61
+	CompostWarning = 61,
 
 
 	OriginalCyrSupporter = 199
