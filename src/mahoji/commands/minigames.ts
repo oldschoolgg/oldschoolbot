@@ -1292,7 +1292,6 @@ export const minigamesCommand = defineCommand({
 		if (options.gauntlet?.start) {
 			return gauntletCommand(rng, user, channelId, options.gauntlet.start.corrupted ? 'corrupted' : 'normal');
 		}
-
 		/**
 		 *
 		 * Mage Training Arena

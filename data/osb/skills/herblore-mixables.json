@@ -1205,6 +1205,17 @@
 		"bank_time_per_potion": 0.088
 	},
 	{
+		"item": "Surge potion(3)",
+		"level": 81,
+		"xp": 185,
+		"input_items": {
+			"111": 1,
+			"30800": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.3
+	},
+	{
 		"item": "Tarromin",
 		"level": 11,
 		"xp": 5,

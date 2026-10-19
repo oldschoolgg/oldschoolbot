@@ -188,6 +188,7 @@ export interface MiningActivityTaskOptions extends ActivityTaskOptions {
 	fakeDurationMin: number;
 	oreID: number;
 	quantity: number;
+	minedQuantity?: number;
 	powermine: boolean;
 	iQty?: number;
 }
@@ -512,6 +513,25 @@ export interface GroupMonsterActivityTaskOptions extends Omit<MonsterActivityTas
 	users: string[];
 }
 
+export interface YamaActivityTaskOptions extends ActivityTaskOptions {
+	type: 'Yama';
+	quantity: number;
+	iQty?: number;
+	leader: string;
+	users: string[];
+	solo?: boolean;
+	perKillTime: number;
+	teamMembers: YamaTeamMember[];
+}
+
+export interface YamaTeamMember {
+	id: string;
+	contribution: number;
+	deathChance: number;
+	kc: number;
+	attackStyles: AttackStyles[];
+}
+
 export interface RaidsOptions extends ActivityTaskOptionsWithUsers {
 	type: 'Raids';
 	leader: string;
@@ -541,6 +561,28 @@ export interface ColoTaskOptions extends ActivityTaskOptions {
 	scytheCharges: number;
 	venatorBowCharges: number;
 	bloodFuryCharges: number;
+}
+
+// A Delve Trek is one complete Doom attempt from Delve 1 until cash-out, a unique stop, or death.
+export interface DoomActivityTrekData {
+	dur: number;
+	dead: boolean;
+	lastDelve: number;
+	loot?: ItemBank;
+	diedAt?: number;
+	ayak?: number;
+}
+
+export interface DoomTaskOptions extends ActivityTaskOptions {
+	type: 'DoomOfMokhaiotl';
+	targetDelve: number;
+	treks: DoomActivityTrekData[];
+	refund?: ItemBank;
+	refundAmmo?: ItemBank;
+	fakeDuration: number;
+	quantity?: number;
+	stopOnUnique?: boolean;
+	disableZcbBoost?: boolean;
 }
 
 type UserID = string;
@@ -657,6 +699,7 @@ export type ActivityTaskData =
 	| CollectingOptions
 	| RaidsOptions
 	| GauntletOptions
+	| YamaActivityTaskOptions
 	| CastingActivityTaskOptions
 	| EnchantingActivityTaskOptions
 	| ConstructionActivityTaskOptions
@@ -721,4 +764,5 @@ export type ActivityTaskData =
 	| MinigameActivityTaskOptionsWithNoChanges
 	| CutLeapingFishActivityTaskOptions
 	| CreateForestersRationsActivityTaskOptions
-	| ColoTaskOptions;
+	| ColoTaskOptions
+	| DoomTaskOptions;

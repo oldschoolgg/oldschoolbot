@@ -1,6 +1,6 @@
 import type { ButtonBuilder } from '@oldschoolgg/discord';
-import { SimpleTable, Time } from '@oldschoolgg/toolkit';
-import { Bank, Items } from 'oldschooljs';
+import { Time } from '@oldschoolgg/toolkit';
+import { Bank, Items, SimpleTable } from 'oldschooljs';
 
 import type { activity_type_enum } from '@/prisma/main/enums.js';
 import type { ShootingStars } from '@/prisma/main.js';

@@ -1,5 +1,5 @@
-import { calcPercentOfNum, normal, SimpleTable } from '@oldschoolgg/toolkit';
-import { Bank, convertXPtoLVL, itemID, LootTable, resolveItems } from 'oldschooljs';
+import { calcPercentOfNum, normal } from '@oldschoolgg/toolkit';
+import { Bank, convertXPtoLVL, itemID, LootTable, resolveItems, SimpleTable } from 'oldschooljs';
 
 import { MAX_LEVEL, MAX_XP } from '@/lib/constants.js';
 import type { LevelRequirements } from '@/lib/skilling/types.js';

@@ -42,6 +42,7 @@ import type {
 	CreateForestersRationsActivityTaskOptions,
 	CutLeapingFishActivityTaskOptions,
 	DarkAltarOptions,
+	DoomTaskOptions,
 	EnchantingActivityTaskOptions,
 	FarmingActivityTaskOptions,
 	FiremakingActivityTaskOptions,
@@ -81,6 +82,7 @@ import type {
 	UnderwaterAgilityThievingTaskOptions,
 	ValeTotemsActivityTaskOptions,
 	WoodcuttingActivityTaskOptions,
+	YamaActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '@/lib/types/minions.js';
 import { giantsFoundryAlloys } from '@/mahoji/lib/abstracted_commands/giantsFoundryCommand.js';
@@ -130,7 +132,7 @@ type MockedCommandOptions = {
 
 const tripHandlers: {
 	[K in keyof ActivityMap]: {
-		commandName: string;
+		commandName: string | ((data: ActivityMap[K]) => string);
 		args: (data: ActivityMap[K]) => MockedCommandOptions;
 	};
 } = {
@@ -441,6 +443,14 @@ const tripHandlers: {
 		commandName: 'mass',
 		args: (data: GroupMonsterActivityTaskOptions) => ({
 			monster: autocompleteMonsters.find(i => i.id === data.mi)?.name ?? data.mi.toString()
+		})
+	},
+	[activity_type_enum.Yama]: {
+		commandName: 'k',
+		args: (data: YamaActivityTaskOptions) => ({
+			name: 'Yama',
+			quantity: data.iQty,
+			solo: data.solo
 		})
 	},
 	[activity_type_enum.Herblore]: {
@@ -789,6 +799,17 @@ const tripHandlers: {
 		args: () => ({
 			name: 'colosseum'
 		})
+	},
+	[activity_type_enum.DoomOfMokhaiotl]: {
+		commandName: 'delves',
+		args: (data: DoomTaskOptions) => ({
+			doom: {
+				target_delve: data.targetDelve,
+				quantity: data.quantity,
+				stop_on_unique: data.stopOnUnique,
+				disable_zcb_boost: data.disableZcbBoost === true ? true : undefined
+			}
+		})
 	}
 } as const;
 
@@ -922,7 +943,12 @@ async function handleSlayerTaskFinishedPrompt(
 	const actionInteraction = toOSInteraction(selectedInteraction, interaction, user);
 
 	if (selectedInteraction.customId === SlayerTaskFinishedPromptID.NewTask) {
-		const response = await slayerNewTaskCommand({ user, interaction: actionInteraction, showButtons: true });
+		const response = await slayerNewTaskCommand({
+			user,
+			interaction: actionInteraction,
+			showButtons: true,
+			ephemeralButtonResponse: false
+		});
 		await replyToCollectedButton(actionInteraction, response);
 		return SpecialResponse.RespondedManually;
 	}
@@ -981,8 +1007,10 @@ export async function repeatTrip(
 		}
 		throw err;
 	}
+	const commandName =
+		typeof handler.commandName === 'function' ? handler.commandName(args as any) : handler.commandName;
 	return runCommand({
-		commandName: handler.commandName,
+		commandName,
 		isContinue: true,
 		args: commandArgs,
 		interaction,

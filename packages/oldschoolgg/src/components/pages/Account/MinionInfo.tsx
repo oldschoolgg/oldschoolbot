@@ -1,8 +1,8 @@
+import type { FullMinionData } from '@oldschoolgg/schemas';
 import { useEffect, useState } from 'react';
 
 import { BankImage } from '@/components/BankImage/BankImage.js';
 import { UserIndentity } from '@/components/UserIdentity.js';
-import type { FullMinionData } from '../../../../../robochimp/src/http/api-types.js';
 
 function formatTimestamp(timestamp: string | null) {
 	if (!timestamp) {

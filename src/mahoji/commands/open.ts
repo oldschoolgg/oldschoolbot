@@ -5,7 +5,7 @@ import { allOpenables, allOpenablesIDs } from '@/lib/openables.js';
 import {
 	abstractedOpenCommand,
 	abstractedOpenUntilCommand,
-	OpenUntilItems
+	userOpenUntilItems
 } from '@/mahoji/lib/abstracted_commands/openCommand.js';
 
 export const openCommand = defineCommand({
@@ -46,12 +46,15 @@ export const openCommand = defineCommand({
 			name: 'open_until',
 			description: 'Keep opening items until you get this item.',
 			required: false,
-			autocomplete: async ({ value }: StringAutoComplete) => {
-				if (!value) return OpenUntilItems.map(i => ({ name: i.name, value: i.name }));
-				return OpenUntilItems.filter(i => i.name.toLowerCase().includes(value.toLowerCase())).map(i => ({
-					name: i.name,
-					value: i.name
-				}));
+			autocomplete: async ({ value, user }: StringAutoComplete) => {
+				const openUntilItems = userOpenUntilItems(user);
+				if (!value) return openUntilItems.map(i => ({ name: i.name, value: i.name }));
+				return openUntilItems
+					.filter(i => i.name.toLowerCase().includes(value.toLowerCase()))
+					.map(i => ({
+						name: i.name,
+						value: i.name
+					}));
 			}
 		},
 		{

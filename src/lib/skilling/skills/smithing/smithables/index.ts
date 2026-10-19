@@ -5,5 +5,6 @@ import Iron from './iron.js';
 import Mithril from './mithril.js';
 import Rune from './rune.js';
 import Steel from './steel.js';
+import Yama from './yama.js';
 
-export default [...Adamant, ...Bronze, ...Gold, ...Iron, ...Mithril, ...Rune, ...Steel];
+export default [...Adamant, ...Bronze, ...Gold, ...Iron, ...Mithril, ...Rune, ...Steel, ...Yama];

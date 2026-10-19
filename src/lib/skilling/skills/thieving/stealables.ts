@@ -1,5 +1,5 @@
 import { Time } from '@oldschoolgg/toolkit';
-import { LootTable, Monsters } from 'oldschooljs';
+import { LootTable, Monsters, UncommonSeedDropTable } from 'oldschooljs';
 
 import { QuestID } from '@/lib/minions/data/quests.js';
 
@@ -29,16 +29,17 @@ const {
 
 export interface Stealable {
 	name: string;
-	type: 'pickpockable' | 'stall';
+	type: 'pickpockable' | 'stall' | 'chest';
 	aliases?: string[];
 	level: number;
 	xp: number;
 	qpRequired?: number;
+	prayerLevelRequired?: number;
 	fireCapeRequired?: boolean;
 	requiredQuests?: QuestID[];
 	table: LootTable;
 	id: number;
-	petChance: number;
+	petChance?: number;
 	// Stall properties
 	respawnTime?: number;
 	lootPercent?: number;
@@ -49,6 +50,18 @@ export interface Stealable {
 	intercept?: number;
 	customTickRate?: number;
 }
+
+const boltTipTable = new LootTable()
+	.add('Opal bolt tips', [4, 12], 6)
+	.add('Pearl bolt tips', [4, 12], 6)
+	.add('Diamond bolt tips', [4, 12], 6)
+	.add('Ruby bolt tips', [4, 12], 4)
+	.add('Dragonstone bolt tips', [4, 12], 4)
+	.add('Emerald bolt tips', [4, 12], 3)
+	.add('Jade bolt tips', [4, 12], 2)
+	.add('Topaz bolt tips', [4, 12], 2)
+	.add('Sapphire bolt tips', [4, 12], 2)
+	.add('Onyx bolt tips', [4, 12], 2);
 
 const stalls: Stealable[] = [
 	{
@@ -687,4 +700,218 @@ const pickpocketables: Stealable[] = [
 	}
 ];
 
-export const stealables: Stealable[] = [...stalls, ...pickpocketables];
+const chests: Stealable[] = [
+	{
+		name: '10 coin chest',
+		type: 'chest',
+		level: 13,
+		xp: 7.8,
+		table: new LootTable().every('Coins', 10),
+		id: 11735,
+		respawnTime: Time.Second * 15
+	},
+	{
+		name: 'Nature rune chest',
+		type: 'chest',
+		level: 28,
+		xp: 25,
+		table: new LootTable().every('Nature rune').every('Coins', 3),
+		id: 11736,
+		respawnTime: Time.Second * 15
+	},
+	{
+		name: 'Isle of Souls chest',
+		type: 'chest',
+		level: 28,
+		xp: 150,
+		table: new LootTable()
+			.add('Coins', [90, 190], 20)
+			.add('Feather', [30, 80], 20)
+			.add('Grimy guam leaf', [1, 2], 20)
+			.add('Nature rune', [1, 2], 20)
+			.add('Death rune', [1, 2], 20)
+			.add('Mind rune', [1, 10], 15)
+			.add('Grimy lantadyme', 1, 12)
+			.add('Grimy ranarr weed', 1, 10)
+			.add('Uncut sapphire', [1, 2], 8)
+			.add('Uncut emerald', [1, 2], 8)
+			.add('Chocolate bar', 1, 6)
+			.add('Bird snare', [1, 2], 6)
+			.add('Box trap', [1, 2], 6)
+			.add('Uncut ruby', [1, 2], 6)
+			.add('Mithril pickaxe', 1, 6)
+			.add('Mithril axe', 1, 6)
+			.add('Uncut diamond', [1, 2], 4)
+			.add('Adamant scimitar', 1, 4)
+			.add('Clue scroll (medium)', 1, 2)
+			.add('Dark key', 1, 1)
+			.add(new LootTable(), 1, 34),
+		id: 40739,
+		respawnTime: Time.Second * 1.2,
+		slope: 0.007042,
+		intercept: 0.005917,
+		stunTime: Time.Second * 30
+	},
+	{
+		name: 'Aldarin Villas chest',
+		type: 'chest',
+		level: 36,
+		xp: 200,
+		table: new LootTable()
+			.add('Clue scroll (medium)', 1, 1)
+			.add('Coins', [100, 200], 49)
+			.add('Coins', [250, 500], 25)
+			.add('Coins', [600, 1200], 9)
+			.add('Silver bar', 1, 8)
+			.add('Gold bar', 1, 8)
+			.add('Uncut sapphire', 1, 4)
+			.add('Uncut emerald', 1, 3)
+			.add('Uncut ruby', 1, 2)
+			.add('Uncut diamond', 1, 1)
+			.add('Spinach roll', 1, 10)
+			.add('Blessed bone shards', [10, 20], 5)
+			.add('Eclipse red', 1, 5)
+			.add(UncommonSeedDropTable, 1, 10),
+		id: 54773,
+		respawnTime: Time.Second * 12,
+		slope: 0.005952,
+		intercept: 0.0982,
+		stunTime: Time.Second * 5
+	},
+	{
+		name: '50 coin chest',
+		type: 'chest',
+		level: 43,
+		xp: 125,
+		table: new LootTable().every('Coins', 50),
+		id: 11737,
+		respawnTime: Time.Second * 15
+	},
+	{
+		name: 'Steel arrowtips chest',
+		type: 'chest',
+		level: 47,
+		xp: 150,
+		table: new LootTable().every('Steel arrowtips', 5).every('Coins', 20),
+		id: 11742,
+		respawnTime: Time.Second * 15
+	},
+	{
+		name: 'Dorgesh-Kaan average chest',
+		type: 'chest',
+		level: 52,
+		xp: 200,
+		table: new LootTable()
+			.add('Coins', [1, 250], 3)
+			.add('Oil lantern', 1, 1)
+			.add('Bullseye lantern', 1, 1)
+			.add(5014, 1, 1) // Mining Helmet
+			.add('Cave goblin wire', 1, 1),
+		id: 22697,
+		respawnTime: Time.Second * 15
+	},
+	{
+		name: 'Blood runes chest',
+		type: 'chest',
+		level: 59,
+		xp: 250,
+		table: new LootTable().every('Blood rune', 2).every('Coins', 500),
+		id: 11738,
+		respawnTime: Time.Second * 15
+	},
+	{
+		name: 'Stone chest',
+		type: 'chest',
+		level: 64,
+		xp: 280,
+		table: new LootTable()
+			.add('Coins', [20, 260], 100)
+			.add('Lizardman fang', 1, 85)
+			.add('Xerician fabric', 1, 66)
+			.add('Uncut sapphire', 1, 12)
+			.add('Uncut ruby', 1, 8)
+			.add('Clue scroll (medium)', 1, 3)
+			.add("Xeric's talisman (inert)", 1, 1)
+			.add(boltTipTable, 1, 10)
+			.add(UncommonSeedDropTable, 1, 15),
+		id: 34429,
+		respawnTime: Time.Second * 12,
+		slope: 0.008369,
+		intercept: -0.1254,
+		stunTime: Time.Second * 5
+	},
+	{
+		name: 'Ardougne Castle chest',
+		type: 'chest',
+		level: 72,
+		xp: 500,
+		table: new LootTable()
+			.every('Raw shark', 1)
+			.every('Coins', 1000)
+			.every('Adamantite ore', 1)
+			.every('Uncut sapphire', 1),
+		id: 11739,
+		respawnTime: Time.Second * 15
+	},
+	{
+		name: 'Dorgesh-Kaan rich chest',
+		type: 'chest',
+		level: 78,
+		xp: 650,
+		table: new LootTable()
+			.add('Coins', [1, 250], 3)
+			.add('Uncut sapphire', 1, 1)
+			.add('Uncut emerald', 1, 1)
+			.add('Uncut ruby', 1, 1)
+			.add('Uncut diamond', 1, 1)
+			.add('Uncut opal', 1, 1)
+			.add('Uncut jade', 1, 1)
+			.add('Uncut red topaz', 1, 1)
+			.add('Bullseye lantern', 1, 1)
+			.add(5014, 1, 1) // Mining Helmet
+			.add('Frog-leather chaps', 1, 1)
+			.add('Frog-leather body', 1, 1)
+			.add('Iron bar', 1, 1)
+			.add('Cave goblin wire', 1, 1)
+			.add('Light orb', 1, 1)
+			.add('Empty light orb', 1, 1),
+		id: 22681,
+		respawnTime: Time.Second * 15
+	},
+	{
+		name: "Rogues' Castle chest",
+		type: 'chest',
+		level: 84,
+		xp: 701.7,
+		prayerLevelRequired: 43,
+		table: new LootTable()
+			.add('Nature rune', 30, 11)
+			.add("Red spiders' eggs", 4, 10)
+			.add('Law rune', 30, 10)
+			.add('Coal', 15, 8)
+			.add('Coins', 3375, 6)
+			.add('Vile ashes', 11, 3)
+			.add('Uncut diamond', 2, 3)
+			.add('Uncut diamond', 3, 2)
+			.add('Uncut emerald', 7, 2)
+			.add('Blighted ancient ice sack', 9, 2)
+			.add('Prayer potion(2)', 1, 2)
+			.add('Iron ore', 30, 1)
+			.add('Chaos rune', 45, 1)
+			.add('Death rune', 37, 1)
+			.add('Blighted manta ray', 15, 1)
+			.add('Blighted anglerfish', 11, 1)
+			.add('Uncut sapphire', 11, 1)
+			.add('Dragonstone', 2, 1),
+		id: 14774,
+		respawnTime: Time.Second * 9.3
+	}
+];
+
+export const stealables: Stealable[] = [...stalls, ...pickpocketables, ...chests];
+
+for (const entity of stealables) {
+	if (!entity.table) {
+		console.error(`Warning! No table for ${entity.name}.`);
+	}
+}
