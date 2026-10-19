@@ -21,8 +21,12 @@ const hunterOutfit = new Map([
 	[itemID('Guild hunter boots'), 0.2]
 ]);
 
+export function hasFullHunterOutfit(user: MUser): boolean {
+	return user.hasEquipped([...hunterOutfit.keys()], true);
+}
+
 export function hunterOutfitBonus(user: MUser): number {
-	if (user.hasEquipped([...hunterOutfit.keys()], true)) return 2.5;
+	if (hasFullHunterOutfit(user)) return 2.5;
 	let bonus = 0;
 	for (const [id, value] of hunterOutfit) if (user.hasEquipped(id)) bonus += value;
 	return bonus;

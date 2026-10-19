@@ -8,6 +8,7 @@ import { getRumourHunter, type RumourOption } from '@/lib/skilling/skills/hunter
 import { HunterTechniqueEnum } from '@/lib/skilling/types.js';
 import { RumourTierBank } from '@/lib/structures/Bank.js';
 import type { RumourActivityTaskOptions } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
 export const rumourTask: MinionTask = {
@@ -120,9 +121,13 @@ export const rumourTask: MinionTask = {
 
 		const newTotalRumours = rumoursCompleted.total;
 
-		if (oldTotalRumours < 10 && newTotalRumours >= 10) totalLoot.add('Basic quetzal whistle blueprint');
-		if (oldTotalRumours < 100 && newTotalRumours >= 100) totalLoot.add('Torn enhanced quetzal whistle blueprint');
-		if (oldTotalRumours < 250 && newTotalRumours >= 250) totalLoot.add('Torn perfected quetzal whistle blueprint');
+		const milestoneLoot = new Bank();
+		if (oldTotalRumours < 10 && newTotalRumours >= 10) milestoneLoot.add('Basic quetzal whistle blueprint');
+		if (oldTotalRumours < 100 && newTotalRumours >= 100)
+			milestoneLoot.add('Torn enhanced quetzal whistle blueprint');
+		if (oldTotalRumours < 250 && newTotalRumours >= 250)
+			milestoneLoot.add('Torn perfected quetzal whistle blueprint');
+		totalLoot.add(milestoneLoot);
 
 		huntXP += (user.skillsAsLevels.hunter + 5) * (tier === 'master' ? 60 : tier === 'expert' ? 55 : 50) * quantity;
 		xpStr = await user.addXP({
@@ -143,7 +148,7 @@ export const rumourTask: MinionTask = {
 		});
 		if (herbloreXPMessage) xpStr += `\n${herbloreXPMessage}`;
 
-		await user.transactItems({
+		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: totalLoot
 		});
@@ -151,6 +156,8 @@ export const rumourTask: MinionTask = {
 		str += `\n${xpStr}`;
 
 		str += `\nYour minion has now completed a total of ${rumoursCompleted.amount(tier)} ${tier} rumours.`;
+		str += `\nTotal rumours completed: **${newTotalRumours.toLocaleString()}**.`;
+		if (milestoneLoot.length > 0) str += `\n**Milestone rewards:** ${milestoneLoot}.`;
 
 		if (totalLoot.amount('Baby chinchompa') > 0 || totalLoot.amount('Herbi') > 0) {
 			str += "\n\n**You have a funny feeling like you're being followed....**";
@@ -164,6 +171,12 @@ export const rumourTask: MinionTask = {
 			);
 		}
 
-		handleTripFinish({ user, channelId, message: str, data, loot: totalLoot });
+		const image = await makeBankImage({
+			bank: itemsAdded,
+			title: `Loot from ${quantity}x ${hunterLabel} rumours`,
+			user,
+			previousCL
+		});
+		return handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data, loot: itemsAdded });
 	}
 };

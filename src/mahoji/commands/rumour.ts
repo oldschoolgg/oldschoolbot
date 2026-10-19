@@ -1,3 +1,5 @@
+import { toTitleCase } from '@oldschoolgg/toolkit';
+
 import creatures from '@/lib/skilling/skills/hunter/creatures/index.js';
 import { rumourBlock, rumourBlockList, rumourUnblock } from '@/lib/skilling/skills/hunter/rumours/rumourBlocks.js';
 import { rumourCount, rumoursCommand } from '@/lib/skilling/skills/hunter/rumours/rumours.js';
@@ -76,20 +78,16 @@ export const rumourCommand = defineCommand({
 							description: 'The creature to unblock',
 							required: true,
 							autocomplete: async ({ value, user }: StringAutoComplete) => {
-								const blockList = Object.values(user.rumourBlockList);
-								if (blockList.length === 0) {
-									return [];
-								}
+								const blockList = user.rumourBlockList;
+								return RumourHunters.flatMap(hunter => {
+									const creature = creatures.find(c => c.id === blockList[hunter.id]);
+									if (!creature) return [];
 
-								const blockedCreatures = blockList
-									.map(cId => creatures.find(c => c.id === cId))
-									.filter(c => c !== undefined);
+									const name = `${creature.name} (${toTitleCase(hunter.id)})`;
+									if (value && !name.toLowerCase().includes(value.toLowerCase())) return [];
 
-								return blockedCreatures
-									.filter(c => (!value ? true : c.name.toLowerCase().includes(value.toLowerCase())))
-									.map(c => {
-										return { name: c.name, value: c.name };
-									});
+									return [{ name, value: creature.name }];
+								});
 							}
 						}
 					]

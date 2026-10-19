@@ -53,6 +53,29 @@ async function farmingContractLb(interaction: MInteraction, ironmanOnly: boolean
 	});
 }
 
+async function rumoursLb(interaction: MInteraction, ironmanOnly: boolean) {
+	const list = await prisma.$queryRaw<{ id: string; score: bigint }[]>`
+		SELECT us.user_id::text AS id, totals.score
+		FROM user_stats us
+		INNER JOIN users u ON u.id = us.user_id::text
+		CROSS JOIN LATERAL (
+			SELECT COALESCE(SUM(value::bigint), 0)::bigint AS score
+			FROM jsonb_each_text(us.rumours::jsonb)
+		) totals
+		WHERE totals.score > 0
+		  AND (${ironmanOnly} = false OR u."minion.ironman" = true)
+		ORDER BY totals.score DESC, us.user_id ASC
+		LIMIT 2000;
+	`;
+	return doMenuWrapper({
+		ironmanOnly,
+		interaction,
+		users: list.map(user => ({ id: user.id, score: Number(user.score) })),
+		title: 'Hunter Rumours Leaderboard',
+		formatter: score => `${score.toLocaleString()} rumours completed`
+	});
+}
+
 async function infernoLb(interaction: MInteraction) {
 	const res = await prisma.$queryRawUnsafe<{ user_id: string; duration: number }[]>(
 		`SELECT user_id, duration
@@ -643,6 +666,12 @@ export const leaderboardCommand = defineCommand({
 		},
 		{
 			type: 'Subcommand',
+			name: 'rumours',
+			description: 'Check the total Hunter Rumours completion leaderboard.',
+			options: [ironmanOnlyOption]
+		},
+		{
+			type: 'Subcommand',
 			name: 'inferno',
 			description: 'Check the inferno leaderboard.'
 		},
@@ -881,6 +910,10 @@ export const leaderboardCommand = defineCommand({
 
 		if (options.farming_contracts) {
 			return farmingContractLb(interaction, Boolean(options.farming_contracts.ironmen_only));
+		}
+
+		if (options.rumours) {
+			return rumoursLb(interaction, Boolean(options.rumours.ironmen_only));
 		}
 
 		if (options.inferno) {
