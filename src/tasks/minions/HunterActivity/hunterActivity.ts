@@ -6,7 +6,7 @@ import { MAX_LEVEL } from '@/lib/constants.js';
 import { hasWildyHuntGearEquipped } from '@/lib/gear/functions/hasWildyHuntGearEquipped.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { calcLootXPHunting, generateHerbiTable } from '@/lib/skilling/functions/calcsHunter.js';
-import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
+import Hunter, { hunterOutfitBonus } from '@/lib/skilling/skills/hunter/hunter.js';
 import type { HunterActivityTaskOptions } from '@/lib/types/minions.js';
 import { PeakTier } from '@/lib/util/peaks.js';
 import { skillingPetDropRate } from '@/lib/util.js';
@@ -59,6 +59,7 @@ export const hunterTask: MinionTask = {
 			usingStaminaPotion,
 			graceful,
 			experienceScore,
+			outfitMod: hunterOutfitBonus(user),
 			rng
 		});
 

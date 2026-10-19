@@ -21,7 +21,7 @@
 		"output_items": {
 			"13069": 1
 		},
-		"qp_required": 328,
+		"qp_required": 330,
 		"gp_cost": 99000
 	},
 	{
@@ -2396,6 +2396,14 @@
 		}
 	},
 	{
+		"name": "Jaguar fur",
+		"gp_cost": 3000,
+		"required_quests": [3],
+		"output_items": {
+			"29218": 1
+		}
+	},
+	{
 		"name": "Jester Outfit",
 		"output_items": {
 			"10836": 1,
@@ -2784,6 +2792,17 @@
 		"ironman_price": 1000,
 		"output_items": {
 			"299": 1
+		}
+	},
+	{
+		"name": "Mixed hide base",
+		"gp_cost": 20000,
+		"skills_needed": {
+			"hunter": 46
+		},
+		"required_quests": [3],
+		"output_items": {
+			"29292": 1
 		}
 	},
 	{
@@ -3275,7 +3294,7 @@
 			"9813": 1,
 			"9814": 1
 		},
-		"qp_required": 328,
+		"qp_required": 330,
 		"gp_cost": 99000
 	},
 	{
@@ -3283,7 +3302,7 @@
 		"output_items": {
 			"13068": 1
 		},
-		"qp_required": 328,
+		"qp_required": 330,
 		"gp_cost": 99000
 	},
 	{

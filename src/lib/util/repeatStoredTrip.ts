@@ -67,6 +67,7 @@ import type {
 	PickpocketActivityTaskOptions,
 	PuroPuroActivityTaskOptions,
 	RaidsOptions,
+	RumourActivityTaskOptions,
 	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,
 	ScatteringActivityTaskOptions,
@@ -474,6 +475,10 @@ const tripHandlers: {
 			name: data.rationName,
 			quantity: data.quantity
 		})
+	},
+	[activity_type_enum.Rumour]: {
+		commandName: 'rumours',
+		args: (data: RumourActivityTaskOptions) => ({ start: { tier: data.tier } })
 	},
 	[activity_type_enum.Hunter]: {
 		commandName: 'hunt',

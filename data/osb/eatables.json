@@ -64,9 +64,25 @@
 		"heal_amount": 7
 	},
 	{
+		"name": "Cooked barb-tailed kebbit",
+		"id": 29131,
+		"heal_amount": 12
+	},
+	{
 		"name": "Cooked chicken",
 		"id": 2140,
 		"heal_amount": 3
+	},
+	{
+		"name": "Cooked dashing kebbit",
+		"id": 29134,
+		"heal_amount": 23,
+		"pvm_boost": 3
+	},
+	{
+		"name": "Cooked graahk",
+		"id": 29149,
+		"heal_amount": 14
 	},
 	{
 		"name": "Cooked karambwan",
@@ -74,9 +90,43 @@
 		"heal_amount": 18
 	},
 	{
+		"name": "Cooked kyatt",
+		"id": 29152,
+		"heal_amount": 17,
+		"pvm_boost": 1
+	},
+	{
+		"name": "Cooked larupia",
+		"id": 29146,
+		"heal_amount": 11
+	},
+	{
 		"name": "Cooked meat",
 		"id": 2142,
 		"heal_amount": 3
+	},
+	{
+		"name": "Cooked moonlight antelope",
+		"id": 29143,
+		"heal_amount": 26,
+		"pvm_boost": 4
+	},
+	{
+		"name": "Cooked pyre fox",
+		"id": 29137,
+		"heal_amount": 19,
+		"pvm_boost": 2
+	},
+	{
+		"name": "Cooked sunlight antelope",
+		"id": 29140,
+		"heal_amount": 21,
+		"pvm_boost": 2
+	},
+	{
+		"name": "Cooked wild kebbit",
+		"id": 29128,
+		"heal_amount": 8
 	},
 	{
 		"name": "Curry",

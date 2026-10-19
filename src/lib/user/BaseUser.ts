@@ -14,6 +14,7 @@ import { allPetIDs } from '@/lib/data/CollectionsExport.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
 import type { UserFullGearSetup } from '@/lib/gear/types.js';
 import type { AttackStyles } from '@/lib/minions/functions/index.js';
+import type { RumourBlockList } from '@/lib/skilling/skills/hunter/rumours/util.js';
 import type { BankSortMethod } from '@/lib/sorts.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
 import { Gear } from '@/lib/structures/Gear.js';
@@ -25,6 +26,7 @@ import { canAlchItem, timePerAlch, timePerAlchAgility } from '@/mahoji/lib/abstr
 const USER_DEFAULTS = {
 	slayer_unlocks: [],
 	slayer_blocked_ids: [],
+	rumour_blocked_ids: {},
 	badges: [],
 	bitfield: [],
 	temp_cl: {},
@@ -166,6 +168,10 @@ export class BaseUser {
 
 	get combatOptions() {
 		return this.user.combat_options as readonly ECombatOption[];
+	}
+
+	get rumourBlockList(): Readonly<RumourBlockList> {
+		return this.user.rumour_blocked_ids as RumourBlockList;
 	}
 
 	get isIronman() {

@@ -25,6 +25,18 @@
 		"burnt_cookable": "Burnt anglerfish"
 	},
 	{
+		"level": 32,
+		"xp": 106,
+		"id": 29131,
+		"name": "Barb-tailed kebbit",
+		"input_cookables": {
+			"29101": 1
+		},
+		"stop_burn_at": 63,
+		"burn_kourend_bonus": [60, 56, 56, 56],
+		"burnt_cookable": "Burnt kebbit"
+	},
+	{
 		"level": 43,
 		"xp": 130,
 		"id": 365,
@@ -108,6 +120,31 @@
 		"burnt_cookable": "Burnt dark crab"
 	},
 	{
+		"level": 82,
+		"xp": 215,
+		"id": 29134,
+		"name": "Dashing kebbit",
+		"input_cookables": {
+			"29107": 1
+		},
+		"stop_burn_at": 99,
+		"burnt_cookable": "Burnt kebbit",
+		"rumours_required": 50
+	},
+	{
+		"level": 41,
+		"xp": 124,
+		"id": 29149,
+		"name": "Graahk",
+		"input_cookables": {
+			"29119": 1
+		},
+		"stop_burn_at": 75,
+		"burn_kourend_bonus": [71, 67, 67, 67],
+		"burnt_cookable": "Burnt large beast",
+		"rumours_required": 25
+	},
+	{
 		"level": 5,
 		"xp": 50,
 		"id": 347,
@@ -141,6 +178,31 @@
 		},
 		"stop_burn_at": 68,
 		"burnt_cookable": "Jug of bad wine"
+	},
+	{
+		"level": 51,
+		"xp": 143,
+		"id": 29152,
+		"name": "Kyatt",
+		"input_cookables": {
+			"29125": 1
+		},
+		"stop_burn_at": 80,
+		"burn_kourend_bonus": [76, 71, 71, 71],
+		"burnt_cookable": "Burnt large beast",
+		"rumours_required": 25
+	},
+	{
+		"level": 31,
+		"xp": 92,
+		"id": 29146,
+		"name": "Larupia",
+		"input_cookables": {
+			"29122": 1
+		},
+		"stop_burn_at": 59,
+		"burn_kourend_bonus": [55, 51, 51, 51],
+		"burnt_cookable": "Burnt large beast"
 	},
 	{
 		"level": 40,
@@ -192,6 +254,18 @@
 		"burnt_cookable": "Burnt monkfish"
 	},
 	{
+		"level": 92,
+		"xp": 220,
+		"id": 29143,
+		"name": "Moonlight antelope",
+		"input_cookables": {
+			"29113": 1
+		},
+		"stop_burn_at": 99,
+		"burnt_cookable": "Burnt antelope",
+		"rumours_required": 50
+	},
+	{
 		"level": 20,
 		"xp": 80,
 		"id": 351,
@@ -202,6 +276,19 @@
 		"stop_burn_at": 54,
 		"burn_kourend_bonus": [50, 50, 50, 50],
 		"burnt_cookable": "Burnt fish"
+	},
+	{
+		"level": 59,
+		"xp": 154,
+		"id": 29137,
+		"name": "Pyre fox",
+		"input_cookables": {
+			"29110": 1
+		},
+		"stop_burn_at": 92,
+		"burn_kourend_bonus": [87, 82, 82, 82],
+		"burnt_cookable": "Burnt fox meat",
+		"rumours_required": 25
 	},
 	{
 		"level": 35,
@@ -288,6 +375,19 @@
 		"burnt_cookable": "Burnt meat"
 	},
 	{
+		"level": 68,
+		"xp": 175,
+		"id": 29140,
+		"name": "Sunlight antelope",
+		"input_cookables": {
+			"29116": 1
+		},
+		"stop_burn_at": 92,
+		"burn_kourend_bonus": [95, 82, 82, 82],
+		"burnt_cookable": "Burnt antelope",
+		"rumours_required": 50
+	},
+	{
 		"level": 45,
 		"xp": 140,
 		"id": 373,
@@ -323,6 +423,18 @@
 		"stop_burn_at": 63,
 		"burn_kourend_bonus": [59, 59, 59, 59],
 		"burnt_cookable": "Burnt fish"
+	},
+	{
+		"level": 23,
+		"xp": 73,
+		"id": 29128,
+		"name": "Wild kebbit",
+		"input_cookables": {
+			"29104": 1
+		},
+		"stop_burn_at": 50,
+		"burn_kourend_bonus": [47, 43, 43, 43],
+		"burnt_cookable": "Burnt kebbit"
 	},
 	{
 		"level": 65,

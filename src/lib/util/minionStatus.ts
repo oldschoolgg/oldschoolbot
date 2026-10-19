@@ -67,6 +67,7 @@ import type {
 	PickpocketActivityTaskOptions,
 	PlunderActivityTaskOptions,
 	RaidsOptions,
+	RumourActivityTaskOptions,
 	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,
 	ScatteringActivityTaskOptions,
@@ -482,6 +483,11 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 			return `${name} is currently hunting ${
 				crystalImpling ? creature?.name : `${data.quantity}x ${creature?.name}`
 			}. ${formattedDuration}`;
+		}
+
+		case 'Rumour': {
+			const data = currentTask as RumourActivityTaskOptions;
+			return `${name} is currently completing ${data.quantity} ${data.tier} Hunter Rumours. ${formattedDuration}`;
 		}
 
 		case 'Birdhouse': {
