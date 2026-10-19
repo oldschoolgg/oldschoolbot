@@ -174,7 +174,6 @@ export enum BitField {
 	DisableRiteOfVileTransference = 60,
 	CompostWarning = 61,
 
-
 	OriginalCyrSupporter = 199
 }
 
