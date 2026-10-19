@@ -1,6 +1,6 @@
 {
-	"hash": "8a921ab38e8c27f313e165a4d64b4f1e",
-	"date": "2026-10-19T15:04:35.716Z",
+	"hash": "bb1db2ef0f3d188fa5ea84425ad8e04c",
+	"date": "2026-10-19T17:09:20.865Z",
 	"data": [
 		{
 			"name": "activities",
@@ -298,6 +298,7 @@
 				"minigames",
 				"movers",
 				"opens",
+				"rumours",
 				"sacrifice",
 				"skills"
 			]
@@ -459,7 +460,7 @@
 		{
 			"name": "rumours",
 			"desc": "Various commands related to completing Hunter Rumours.",
-			"examples": ["/rumours start tier:novice"],
+			"examples": ["/rumours start tier:aco"],
 			"subOptions": ["count", "manage", "start"]
 		},
 		{

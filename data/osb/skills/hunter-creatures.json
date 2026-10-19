@@ -277,6 +277,7 @@
 		"name": "Moonlight moth",
 		"id": 48,
 		"level": 75,
+		"rumour_level": 85,
 		"hunter_xp": 84,
 		"items_consumed": {
 			"10012": 1
@@ -457,6 +458,7 @@
 		"name": "Sunlight moth",
 		"id": 46,
 		"level": 65,
+		"rumour_level": 75,
 		"hunter_xp": 74,
 		"items_consumed": {
 			"10012": 1

@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import './setup.js';
 
+import * as lootTrackModule from '@/lib/lootTrack.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
 import creatures from '@/lib/skilling/skills/hunter/creatures/index.js';
 import { hunterOutfitBonus } from '@/lib/skilling/skills/hunter/hunter.js';
@@ -15,14 +16,9 @@ import {
 	normaliseRumourBlockList
 } from '@/lib/skilling/skills/hunter/rumours/util.js';
 import type { RumourActivityTaskOptions } from '@/lib/types/minions.js';
-import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import * as bankImageModule from '@/lib/util/makeBankImage.js';
 import { rumourTask } from '@/tasks/minions/rumourActivity.js';
 import { mockMUser } from './userutil.js';
-
-vi.mock('@/lib/lootTrack.js', () => ({ trackLoot: vi.fn(async () => undefined) }));
-vi.mock('@/lib/util/makeBankImage.js', () => ({
-	makeBankImage: vi.fn(async () => ({ name: 'bank.png', buffer: Buffer.from('bank') }))
-}));
 
 type RumourTrip = Omit<RumourActivityTaskOptions, 'id' | 'finishDate'>;
 
@@ -222,6 +218,10 @@ describe('Hunter Rumours trip rewards', () => {
 		[100, null],
 		[250, null]
 	] as const)('handles milestones after %i total rumours', async (oldTotal, blueprint) => {
+		// Setup already imports the task, so spy on its existing dependencies.
+		vi.spyOn(lootTrackModule, 'trackLoot').mockResolvedValue(undefined);
+		const image = { name: 'bank.png', buffer: Buffer.from('bank') };
+		const makeBankImage = vi.spyOn(bankImageModule, 'makeBankImage').mockResolvedValue(image);
 		const user = makeUser();
 		Object.assign(user.user, { skills_hunter: 200_000_000n });
 		user.updateProperties();
@@ -273,8 +273,9 @@ describe('Hunter Rumours trip rewards', () => {
 		expect(user.addXP).toHaveBeenCalledWith({ skillName: 'hunter', amount: earnedXP, duration: data.duration });
 		expect(message.content).toContain(`${earnedXP.toLocaleString()} Hunter XP (`);
 		expect(message.content).toContain('XP/h)');
-		expect(makeBankImage).toHaveBeenCalledWith(expect.objectContaining({ bank: loot }));
-		expect(message.files).toHaveLength(1);
+		expect(makeBankImage).toHaveBeenCalledTimes(1);
+		expect(makeBankImage.mock.calls[0][0].bank.toJSON()).toEqual(loot.toJSON());
+		expect(message.files).toEqual([image]);
 		if (blueprint) {
 			expect(loot.amount(blueprint)).toBe(1);
 			expect(message.content).toContain('**Milestone rewards:**');
