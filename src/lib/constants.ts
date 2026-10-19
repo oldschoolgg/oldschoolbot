@@ -172,6 +172,7 @@ export enum BitField {
 	Boring = 58,
 	HasRiteOfVileTransference = 59,
 	DisableRiteOfVileTransference = 60,
+	CompostWarning = 61,
 
 	OriginalCyrSupporter = 199
 }
@@ -276,6 +277,11 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 	},
 	[BitField.DisableAutoFarmButton]: {
 		name: 'Disable Auto Farm Button',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.CompostWarning]: {
+		name: 'Compost Warning',
 		protected: false,
 		userConfigurable: true
 	},
