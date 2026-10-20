@@ -3,7 +3,11 @@ import { Bank, EMonster, Monsters } from 'oldschooljs';
 
 import { isCertainMonsterTrip } from '@/lib/combat_achievements/caUtils.js';
 import type { CombatAchievement } from '@/lib/combat_achievements/combatAchievements.js';
-import { getDoomActivityTreks, hasCompletedDoomDelveTrek } from '@/lib/doomOfMokhaiotl.js';
+import {
+	getDoomActivityTreks,
+	hasCompletedDoomDelveTrek,
+	hasCompletedDoomDelveTrekWithinDuration
+} from '@/lib/doomOfMokhaiotl.js';
 import { Requirements } from '@/lib/structures/Requirements.js';
 import type {
 	ActivityTaskData,
@@ -1380,8 +1384,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 			chancePerKill: 1,
 			hasChance: (data: ActivityTaskData) =>
 				data.type === 'DoomOfMokhaiotl' &&
-				hasCompletedDoomDelveTrek(getDoomActivityTreks(data), 8) &&
-				data.duration < Time.Minute * 7.25
+				hasCompletedDoomDelveTrekWithinDuration(getDoomActivityTreks(data), 8, Time.Minute * 7.25)
 		}
 	},
 	{

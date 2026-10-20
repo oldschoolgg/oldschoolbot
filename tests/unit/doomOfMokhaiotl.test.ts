@@ -1,8 +1,17 @@
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 
-import { calculateDoomArrowsNeeded, startDoomDelveTrek } from '@/lib/doomOfMokhaiotl.js';
+import { getCombatAchievementRollQuantity } from '@/lib/combat_achievements/caUtils.js';
+import {
+	allCombatAchievementTasks,
+	combatAchievementTripEffect
+} from '@/lib/combat_achievements/combatAchievements.js';
+import {
+	calculateDoomArrowsNeeded,
+	hasCompletedDoomDelveTrekWithinDuration,
+	startDoomDelveTrek
+} from '@/lib/doomOfMokhaiotl.js';
 import {
 	calculateDeathChance,
 	calculateDoomDelveTrekDeathChance,
@@ -16,6 +25,7 @@ import {
 	selectDoomMeleePunishWeapon,
 	selectDoomVenomProtection
 } from '@/lib/doomOfMokhaiotlHelpers.js';
+import type { DoomTaskOptions } from '@/lib/types/minions.js';
 
 function fixedDurationRollRng(roll: number): RNGProvider {
 	return {
@@ -130,6 +140,110 @@ describe('Doom of Mokhaiotl', () => {
 			maxKcAndStatsDurationMultiplier;
 
 		expect(delveEightFastDuration).toBeLessThan(Time.Minute * 7.25);
+	});
+
+	test('Doom speed achievements can be completed by a fast Delve Trek in a longer task', () => {
+		expect(
+			hasCompletedDoomDelveTrekWithinDuration(
+				[
+					{
+						dur: Time.Minute * 8,
+						dead: false,
+						lastDelve: 8
+					},
+					{
+						dur: Time.Minute * 11,
+						dead: false,
+						lastDelve: 8
+					}
+				],
+				8,
+				Time.Minute * 10
+			)
+		).toBe(true);
+	});
+
+	test('Doom speed achievements ignore dead or incomplete Delve Treks', () => {
+		expect(
+			hasCompletedDoomDelveTrekWithinDuration(
+				[
+					{
+						dur: Time.Minute * 6,
+						dead: true,
+						lastDelve: 8,
+						diedAt: 8
+					},
+					{
+						dur: Time.Minute * 6,
+						dead: false,
+						lastDelve: 7
+					}
+				],
+				8,
+				Time.Minute * 7.25
+			)
+		).toBe(false);
+	});
+
+	test('uses every stored Delve Trek as a combat achievement roll for max trips', () => {
+		const activity = {
+			userID: '123',
+			duration: Time.Minute * 30,
+			id: 1,
+			finishDate: Date.now(),
+			channelId: '456',
+			type: 'DoomOfMokhaiotl',
+			targetDelve: 8,
+			treks: [
+				{ dur: Time.Minute * 8, dead: false, lastDelve: 8 },
+				{ dur: Time.Minute * 9, dead: false, lastDelve: 8 },
+				{ dur: Time.Minute * 10, dead: false, lastDelve: 8 }
+			],
+			fakeDuration: Time.Minute * 30
+		} satisfies DoomTaskOptions;
+
+		expect(getCombatAchievementRollQuantity(activity)).toBe(3);
+	});
+
+	test('can award several combat achievements, including Perfect Doom, from a max trip', async () => {
+		const activity = {
+			userID: '123',
+			duration: Time.Minute * 24,
+			id: 1,
+			finishDate: Date.now(),
+			channelId: '456',
+			type: 'DoomOfMokhaiotl',
+			targetDelve: 8,
+			treks: [
+				{ dur: Time.Minute * 8, dead: false, lastDelve: 8 },
+				{ dur: Time.Minute * 8, dead: false, lastDelve: 8 },
+				{ dur: Time.Minute * 8, dead: false, lastDelve: 8 }
+			],
+			fakeDuration: Time.Minute * 24
+		} satisfies DoomTaskOptions;
+		const update = vi.fn().mockResolvedValue(undefined);
+		const outstandingDoomAchievementIDs = [3113, 3114, 3117];
+		const user = {
+			user: {
+				completed_ca_task_ids: allCombatAchievementTasks
+					.map(task => task.id)
+					.filter(id => !outstandingDoomAchievementIDs.includes(id))
+			},
+			update
+		} as unknown as MUser;
+		const messages: string[] = [];
+
+		await combatAchievementTripEffect({
+			data: activity,
+			messages,
+			user,
+			rng: { roll: () => true } as unknown as RNGProvider
+		});
+
+		const awardedIDs = update.mock.calls[0][0].completed_ca_task_ids.push;
+		expect(awardedIDs).toHaveLength(3);
+		expect(awardedIDs).toContain(3113);
+		expect(messages[0]).toContain('Perfect Doom');
 	});
 
 	test('scales early unique stop duration by completed delve weight', () => {
