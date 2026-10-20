@@ -17,13 +17,12 @@ import { Time } from '@oldschoolgg/toolkit';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { omit } from 'remeda';
 
-import { makeDuo } from '@/discord/interaction/makeDuo.js';
 import { makeParty } from '@/discord/interaction/makeParty.js';
 import { mentionCommand, resolveBotSendableMessage, resolveSendable } from '@/discord/utils.js';
 import { DISCORD_USER_IDS_INSERTED_CACHE } from '@/lib/cache.js';
 import { globalConfig } from '@/lib/constants.js';
 import { ReactEmoji } from '@/lib/data/emojis.js';
-import type { MakeDuoOptions, MakePartyOptions } from '@/lib/types/index.js';
+import type { MakePartyOptions } from '@/lib/types/index.js';
 import { allCommandsDONTIMPORT } from '@/mahoji/commands/allCommands.js';
 import type { FetchedShardStatus } from './OSBWorkerShardingStrategy.js';
 
@@ -413,10 +412,6 @@ export class OldSchoolBotClient extends DiscordClient {
 
 	async makeParty(options: MakePartyOptions): Promise<MUser[]> {
 		return makeParty(options);
-	}
-
-	async makeDuo(options: MakeDuoOptions): Promise<MUser[] | null> {
-		return makeDuo(options);
 	}
 
 	async reactToMsg({
