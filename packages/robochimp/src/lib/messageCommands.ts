@@ -7,14 +7,7 @@ export async function getInfoStrOfUser(roboChimpUser: RUser) {
 	const djsUser = await globalClient.fetchUser(roboChimpUser.id.toString()).catch(() => null);
 
 	const linkedAccounts = await roboChimpUser.findGroup();
-	let tier = roboChimpUser.perkTierDisplay;
-
-	if (roboChimpUser.patreonId) {
-		tier += ' Patreon';
-	}
-	if (roboChimpUser.githubId) {
-		tier += ' Github';
-	}
+	const tier = roboChimpUser.perkTierDisplay;
 
 	const isBlacklisted =
 		(await roboChimpClient.blacklistedEntity.count({

@@ -21,33 +21,76 @@ describe('RUser', async () => {
 	test('perkTier', async () => {
 		const user = mockUser();
 		expect(typeof user.id).toBe('bigint');
-		expect(user.perkTierRaw).toBe(0);
+		expect(user.perkTierRaw).toBe(PerkTier.Zero);
 		expect(user.perkTier).toBe(null);
 
-		await user.update({ perk_tier: PerkTier.Four });
+		await user.update({ bits: [Bits.MagnaTier3], perk_tier: PerkTier.Two });
 		expect(user.perkTierRaw).toBe(4);
 		expect(user.perkTier).not.toBe(null);
 		expect(user.perkTier?.perkTier).toBe(4);
-		expect(user.perkTier?.bit).toBe(Bits.MagnaPatronTier3);
+		expect(user.perkTier?.bit).toBe(Bits.MagnaTier3);
 	});
 
 	test('aggregates linked user bits and highest perk tier', async () => {
 		const rawUser = {
 			id: 1n,
-			bits: [Bits.PatronTier1],
+			bits: [Bits.MagnaTier1],
 			perk_tier: PerkTier.Two,
 			user_group_id: 'group-id'
 		} as User;
 		const user = new RUser(rawUser, [
-			{ id: 1n, bits: [Bits.MagnaPatronTier1, Bits.Trusted], perk_tier: PerkTier.Two },
-			{ id: 2n, bits: [Bits.CyrPatronTier1, Bits.Trusted], perk_tier: PerkTier.Three }
+			{ id: 1n, bits: [Bits.MagnaTier1, Bits.Trusted] },
+			{ id: 2n, bits: [Bits.CyrTier1, Bits.Trusted] }
+		]);
+
+		expect(user.perkTierRaw).toBe(PerkTier.Two);
+		expect(user.perkTier?.bit).toBe(Bits.MagnaTier1);
+		expect(user.perkTierDisplay).toBe('Cyr Tier 1, Magna Tier 1');
+		expect(user.bits).toEqual([Bits.MagnaTier1, Bits.Trusted, Bits.CyrTier1]);
+		expect(await user.findGroup()).toEqual(['1', '2']);
+	});
+
+	test('uses highest unexpired premium tier from linked users', () => {
+		const now = BigInt(Date.now());
+		const user = new RUser({ id: 1n, bits: [], user_group_id: 'group-id' } as User, [
+			{
+				id: 1n,
+				bits: [],
+				premium_balance_tier: PerkTier.Six,
+				premium_balance_expiry_date: now - 1n
+			},
+			{
+				id: 2n,
+				bits: [],
+				premium_balance_tier: PerkTier.Three,
+				premium_balance_expiry_date: now + 60_000n
+			}
 		]);
 
 		expect(user.perkTierRaw).toBe(PerkTier.Three);
-		expect(user.perkTier?.bit).toBe(Bits.MagnaPatronTier2);
-		expect(user.perkTierDisplay).toBe('Cyr Tier 1, Magna Tier 1');
-		expect(user.bits).toEqual([Bits.MagnaPatronTier1, Bits.Trusted, Bits.CyrPatronTier1]);
-		expect(await user.findGroup()).toEqual(['1', '2']);
+		expect(user.perkTierDisplay).toContain('Temp Tier: **Tier 2**');
+	});
+
+	test('displays all unexpired premium tiers from linked users', () => {
+		const now = BigInt(Date.now());
+		const user = new RUser({ id: 1n, bits: [], user_group_id: 'group-id' } as User, [
+			{
+				id: 1n,
+				bits: [],
+				premium_balance_tier: PerkTier.Six,
+				premium_balance_expiry_date: now + 30_000n
+			},
+			{
+				id: 2n,
+				bits: [],
+				premium_balance_tier: PerkTier.Three,
+				premium_balance_expiry_date: now + 60_000n
+			}
+		]);
+
+		expect(user.perkTierRaw).toBe(PerkTier.Six);
+		expect(user.perkTierDisplay).toContain('Temp Tier: **Tier 5**');
+		expect(user.perkTierDisplay).toContain('Temp Tier: Tier 2');
 	});
 
 	test('globalMastery', async () => {

@@ -82,6 +82,7 @@ import type {
 	TOAOptions,
 	ValeTotemsActivityTaskOptions,
 	WoodcuttingActivityTaskOptions,
+	YamaActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '@/lib/types/minions.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
@@ -114,6 +115,11 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 			return `${name} is currently killing ${data.q}x ${monster?.name} with a party of ${
 				data.users.length
 			}. ${formattedDuration}`;
+		}
+
+		case 'Yama': {
+			const data = currentTask as YamaActivityTaskOptions;
+			return `${name} is currently ${data.solo ? 'soloing' : 'duoing'} ${data.quantity}x Yama. ${formattedDuration}`;
 		}
 
 		case 'ClueCompletion': {
@@ -555,7 +561,6 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 				data.corrupted ? 'Corrupted' : 'Normal'
 			} Gauntlet. ${formattedDuration}`;
 		}
-
 		case 'CastleWars': {
 			const data = currentTask as MinigameActivityTaskOptionsWithNoChanges;
 			return `${name} is currently doing ${data.quantity}x Castle Wars games. ${formattedDuration}`;

@@ -1,6 +1,7 @@
 export const botServiceChoices = [
 	{ name: 'OSB', value: 'osb' },
-	{ name: 'BSO', value: 'bso' }
+	{ name: 'BSO', value: 'bso' },
+	{ name: 'Neo', value: 'neo' }
 ] as const;
 
 export type BotService = (typeof botServiceChoices)[number]['value'];
@@ -14,12 +15,20 @@ export async function setBotShutdown(bot: BotService, shutdown: boolean) {
 		await osbClient.clientStorage.updateMany({ data: { shutdown } });
 		return;
 	}
+	if (bot === 'neo') {
+		await neoClient.clientStorage.updateMany({ data: { shutdown } });
+		return;
+	}
 	await bsoClient.clientStorage.updateMany({ data: { shutdown } });
 }
 
 export async function getBotShutdown(bot: BotService) {
 	if (bot === 'osb') {
 		const settings = await osbClient.clientStorage.findFirst({ select: { shutdown: true } });
+		return settings?.shutdown ?? false;
+	}
+	if (bot === 'neo') {
+		const settings = await neoClient.clientStorage.findFirst({ select: { shutdown: true } });
 		return settings?.shutdown ?? false;
 	}
 	const settings = await bsoClient.clientStorage.findFirst({ select: { shutdown: true } });
