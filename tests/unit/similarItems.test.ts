@@ -155,9 +155,15 @@ describe('Gear', () => {
 		expect(new Gear({ feet: 'Avernic treads (max)' }).hasEquipped('Avernic treads (pr)')).toEqual(true);
 		expect(new Gear({ feet: 'Avernic treads (pr)(pe)' }).hasEquipped('Avernic treads (pe)')).toEqual(true);
 		expect(new Gear({ feet: 'Avernic treads (pe)(et)' }).hasEquipped('Avernic treads (et)')).toEqual(true);
-		expect(new Gear({ feet: 'Avernic treads' }).hasEquipped('Primordial boots')).toEqual(true);
-		expect(new Gear({ feet: 'Avernic treads' }).hasEquipped('Pegasian boots')).toEqual(true);
-		expect(new Gear({ feet: 'Avernic treads' }).hasEquipped('Eternal boots')).toEqual(true);
+		expect(new Gear({ feet: 'Avernic treads' }).hasEquipped('Primordial boots')).toEqual(false);
+		expect(new Gear({ feet: 'Avernic treads' }).hasEquipped('Pegasian boots')).toEqual(false);
+		expect(new Gear({ feet: 'Avernic treads' }).hasEquipped('Eternal boots')).toEqual(false);
+		expect(new Gear({ feet: 'Avernic treads (pr)' }).hasEquipped('Primordial boots')).toEqual(true);
+		expect(new Gear({ feet: 'Avernic treads (pr)(pe)' }).hasEquipped('Primordial boots')).toEqual(true);
+		expect(new Gear({ feet: 'Avernic treads (pe)' }).hasEquipped('Pegasian boots')).toEqual(true);
+		expect(new Gear({ feet: 'Avernic treads (pe)(et)' }).hasEquipped('Pegasian boots')).toEqual(true);
+		expect(new Gear({ feet: 'Avernic treads (et)' }).hasEquipped('Eternal boots')).toEqual(true);
+		expect(new Gear({ feet: 'Avernic treads (pr)(et)' }).hasEquipped('Eternal boots')).toEqual(true);
 	});
 
 	test('toa', () => {
