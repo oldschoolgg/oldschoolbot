@@ -9,7 +9,11 @@
 		"slope": 0.11,
 		"intercept": -0.53,
 		"pet_chance": 59328,
-		"clue_scroll_chance": 59328
+		"clue_scroll_chance": 59328,
+		"moon_key_half_catch_rate": {
+			"numerator": 1,
+			"denominator": 395
+		}
 	},
 	{
 		"level": 92,
@@ -34,7 +38,11 @@
 		"slope": 1.06,
 		"intercept": 49.33,
 		"pet_chance": 741600,
-		"clue_scroll_chance": 741600
+		"clue_scroll_chance": 741600,
+		"moon_key_half_catch_rate": {
+			"numerator": 1,
+			"denominator": 4944
+		}
 	},
 	{
 		"level": 30,
@@ -47,7 +55,11 @@
 		"intercept": 5.83,
 		"pet_chance": 296640,
 		"minerals": 60,
-		"clue_scroll_chance": 296640
+		"clue_scroll_chance": 296640,
+		"moon_key_half_catch_rate": {
+			"numerator": 1,
+			"denominator": 1937
+		}
 	},
 	{
 		"level": 1,
@@ -59,7 +71,11 @@
 		"slope": 1.06,
 		"intercept": 49.33,
 		"pet_chance": 741600,
-		"clue_scroll_chance": 741600
+		"clue_scroll_chance": 741600,
+		"moon_key_half_catch_rate": {
+			"numerator": 1,
+			"denominator": 4944
+		}
 	},
 	{
 		"level": 60,
@@ -93,7 +109,11 @@
 		"slope": 0.28,
 		"intercept": 2.15,
 		"pet_chance": 296640,
-		"clue_scroll_chance": 296640
+		"clue_scroll_chance": 296640,
+		"moon_key_half_catch_rate": {
+			"numerator": 1,
+			"denominator": 1977
+		}
 	},
 	{
 		"level": 45,
@@ -132,7 +152,11 @@
 		"intercept": 42.5,
 		"pet_chance": 741600,
 		"minerals": 100,
-		"clue_scroll_chance": 741600
+		"clue_scroll_chance": 741600,
+		"moon_key_half_catch_rate": {
+			"numerator": 1,
+			"denominator": 4944
+		}
 	},
 	{
 		"level": 55,
@@ -144,7 +168,11 @@
 		"slope": 0.2,
 		"intercept": 0.59,
 		"pet_chance": 148320,
-		"clue_scroll_chance": 148320
+		"clue_scroll_chance": 148320,
+		"moon_key_half_catch_rate": {
+			"numerator": 1,
+			"denominator": 988
+		}
 	},
 	{
 		"level": 30,
@@ -176,7 +204,11 @@
 		"slope": 0.08,
 		"intercept": -0.85,
 		"pet_chance": 42377,
-		"clue_scroll_chance": 42377
+		"clue_scroll_chance": 42377,
+		"moon_key_half_catch_rate": {
+			"numerator": 1,
+			"denominator": 282
+		}
 	},
 	{
 		"level": 1,
@@ -210,7 +242,11 @@
 		"slope": 0.7,
 		"intercept": 9,
 		"pet_chance": 741600,
-		"clue_scroll_chance": 741600
+		"clue_scroll_chance": 741600,
+		"moon_key_half_catch_rate": {
+			"numerator": 1,
+			"denominator": 4944
+		}
 	},
 	{
 		"level": 64,
@@ -232,7 +268,11 @@
 		"slope": 1.06,
 		"intercept": 49.33,
 		"pet_chance": 741600,
-		"clue_scroll_chance": 741600
+		"clue_scroll_chance": 741600,
+		"moon_key_half_catch_rate": {
+			"numerator": 1,
+			"denominator": 4944
+		}
 	},
 	{
 		"level": 22,

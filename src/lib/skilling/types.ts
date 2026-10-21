@@ -46,6 +46,7 @@ export interface Ore {
 	petChance?: number;
 	minerals?: number;
 	clueScrollChance?: number;
+	moonKeyHalfCatchRate?: MoonKeyHalfCatchRate;
 	aliases?: string[];
 	outputId?: number;
 	outputMultiplier?: number;
@@ -69,6 +70,7 @@ export interface Log {
 	petChance?: number;
 	qpRequired: number;
 	clueScrollChance?: number;
+	moonKeyHalfCatchRate?: MoonKeyHalfCatchRate;
 	clueNestsOnly?: boolean;
 }
 
