@@ -204105,28 +204105,178 @@
 		"equipable": false
 	},
 	"33149": {
-		"name": "Archibald"
+		"name": "Archibald",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"33151": {
-		"name": "Archibald"
+		"name": "Archibald",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": true,
+		"equipment": {
+			"attack_stab": -100,
+			"attack_slash": -100,
+			"attack_crush": -50,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": -10,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "2h",
+			"requirements": null
+		}
 	},
 	"33153": {
-		"name": "Archibald"
+		"name": "Archibald",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": true,
+		"equipment": {
+			"attack_stab": -100,
+			"attack_slash": -100,
+			"attack_crush": -50,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": -10,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "2h",
+			"requirements": null
+		}
 	},
 	"33155": {
-		"name": "Archibald"
+		"name": "Archibald",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": true,
+		"equipment": {
+			"attack_stab": -100,
+			"attack_slash": -100,
+			"attack_crush": -50,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": -10,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "2h",
+			"requirements": null
+		}
 	},
 	"33157": {
-		"name": "Archibald"
+		"name": "Archibald",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": true,
+		"equipment": {
+			"attack_stab": -100,
+			"attack_slash": -100,
+			"attack_crush": -50,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": -10,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "2h",
+			"requirements": null
+		}
 	},
 	"33159": {
-		"name": "Archibald"
+		"name": "Archibald",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": true,
+		"equipment": {
+			"attack_stab": -100,
+			"attack_slash": -100,
+			"attack_crush": -50,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": -10,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "2h",
+			"requirements": null
+		}
 	},
 	"33161": {
-		"name": "Archibald"
+		"name": "Archibald",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": true,
+		"equipment": {
+			"attack_stab": -100,
+			"attack_slash": -100,
+			"attack_crush": -50,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": -10,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "2h",
+			"requirements": null
+		}
 	},
 	"33163": {
-		"name": "Archibald"
+		"name": "Archibald",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": true,
+		"equipment": {
+			"attack_stab": -100,
+			"attack_slash": -100,
+			"attack_crush": -50,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": -10,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "2h",
+			"requirements": null
+		}
 	},
 	"33218": {
 		"name": "Knapsack (barbarian)",
@@ -204530,7 +204680,7 @@
 		},
 		"cost": 100000,
 		"buy_limit": 4,
-		"price": 22840
+		"price": 14998
 	},
 	"33266": {
 		"name": "Demonic robe bottom (t1)",
@@ -204560,7 +204710,7 @@
 		},
 		"cost": 100000,
 		"buy_limit": 4,
-		"price": 24286
+		"price": 11600
 	},
 	"33269": {
 		"name": "Demonic boots (t1)",
@@ -204590,7 +204740,7 @@
 		},
 		"cost": 100000,
 		"buy_limit": 4,
-		"price": 13833
+		"price": 5111
 	},
 	"33272": {
 		"name": "Demonic hood (t2)",
@@ -204620,7 +204770,7 @@
 		},
 		"cost": 100000,
 		"buy_limit": 4,
-		"price": 376401
+		"price": 306639
 	},
 	"33275": {
 		"name": "Demonic robe top (t2)",
@@ -204650,7 +204800,7 @@
 		},
 		"cost": 100000,
 		"buy_limit": 4,
-		"price": 50050
+		"price": 94475
 	},
 	"33278": {
 		"name": "Demonic robe bottom (t2)",
@@ -204680,7 +204830,7 @@
 		},
 		"cost": 100000,
 		"buy_limit": 4,
-		"price": 25500
+		"price": 34088
 	},
 	"33281": {
 		"name": "Demonic boots (t2)",
@@ -204710,7 +204860,7 @@
 		},
 		"cost": 100000,
 		"buy_limit": 4,
-		"price": 81000
+		"price": 57631
 	},
 	"33284": {
 		"name": "Demonic hood (t3)",
@@ -204740,7 +204890,7 @@
 		},
 		"cost": 100000,
 		"buy_limit": 4,
-		"price": 3511821
+		"price": 3474250
 	},
 	"33287": {
 		"name": "Demonic robe top (t3)",
@@ -204770,7 +204920,7 @@
 		},
 		"cost": 100000,
 		"buy_limit": 4,
-		"price": 368618
+		"price": 381415
 	},
 	"33290": {
 		"name": "Demonic robe bottom (t3)",
@@ -204800,7 +204950,7 @@
 		},
 		"cost": 100000,
 		"buy_limit": 4,
-		"price": 272827
+		"price": 267500
 	},
 	"33293": {
 		"name": "Demonic boots (t3)",
@@ -204830,7 +204980,7 @@
 		},
 		"cost": 100000,
 		"buy_limit": 4,
-		"price": 115515
+		"price": 75379
 	},
 	"33296": {
 		"name": "Demonic sceptre",
@@ -204859,7 +205009,7 @@
 			"requirements": null
 		},
 		"cost": 1000,
-		"price": 663427
+		"price": 630398
 	},
 	"33299": {
 		"name": "Demonic pacts banner",
@@ -204888,7 +205038,7 @@
 			"requirements": null
 		},
 		"cost": 1000,
-		"price": 68000
+		"price": 60394
 	},
 	"33302": {
 		"name": "Demonic skin contract",
@@ -204899,7 +205049,7 @@
 		"lowalch": 40000,
 		"highalch": 60000,
 		"cost": 100000,
-		"price": 804465
+		"price": 771334
 	},
 	"33305": {
 		"name": "Demonic axe ornament kit",
@@ -204910,7 +205060,7 @@
 		"lowalch": 40000,
 		"highalch": 60000,
 		"cost": 100000,
-		"price": 1622500
+		"price": 1601354
 	},
 	"33308": {
 		"name": "Demonic staff ornament kit",
@@ -204918,7 +205068,7 @@
 		"tradeable": true,
 		"tradeable_on_ge": true,
 		"equipable": false,
-		"price": 139399
+		"price": 149102
 	},
 	"33311": {
 		"name": "Demonic trident ornament kit",
@@ -204929,7 +205079,7 @@
 		"lowalch": 40000,
 		"highalch": 60000,
 		"cost": 100000,
-		"price": 853209
+		"price": 699830
 	},
 	"33314": {
 		"name": "Trident of the Swamp (o)",
@@ -205314,7 +205464,7 @@
 		"lowalch": 40000,
 		"highalch": 60000,
 		"cost": 100000,
-		"price": 117500
+		"price": 94247
 	},
 	"33345": {
 		"name": "Demonic pacts dragon trophy",
@@ -205500,7 +205650,7 @@
 		"lowalch": 10000,
 		"highalch": 15000,
 		"cost": 25000,
-		"price": 261176
+		"price": 300000
 	},
 	"33362": {
 		"name": "Demonic pacts throne scroll",
@@ -205522,7 +205672,7 @@
 		"lowalch": 10000,
 		"highalch": 15000,
 		"cost": 25000,
-		"price": 1924080
+		"price": 1721807
 	},
 	"33368": {
 		"name": "Demonic pacts demon butler scroll",
@@ -205533,7 +205683,7 @@
 		"lowalch": 10000,
 		"highalch": 15000,
 		"cost": 25000,
-		"price": 987500
+		"price": 758536
 	},
 	"33382": {
 		"name": "Immaculate mole skin",
@@ -206064,7 +206214,7 @@
 		"lowalch": 80000,
 		"highalch": 120000,
 		"cost": 200000,
-		"price": 28196229
+		"price": 25276997
 	},
 	"33537": {
 		"name": "Garlic cocktail",
@@ -206212,7 +206362,7 @@
 			"requirements": null
 		},
 		"cost": 32,
-		"price": 879
+		"price": 878
 	},
 	"33577": {
 		"name": "Seeking adamant arrow",
@@ -206242,7 +206392,7 @@
 			"requirements": null
 		},
 		"cost": 80,
-		"price": 139
+		"price": 230
 	},
 	"33583": {
 		"name": "Seeking rune arrow",
@@ -206272,7 +206422,7 @@
 			"requirements": null
 		},
 		"cost": 400,
-		"price": 282
+		"price": 402
 	},
 	"33589": {
 		"name": "Seeking amethyst arrow",
@@ -206302,7 +206452,7 @@
 			"requirements": null
 		},
 		"cost": 490,
-		"price": 509
+		"price": 539
 	},
 	"33595": {
 		"name": "Seeking dragon arrow",
@@ -206333,7 +206483,7 @@
 		},
 		"cost": 800,
 		"buy_limit": 11000,
-		"price": 2385
+		"price": 2561
 	},
 	"33601": {
 		"name": "Seeking broad arrows",
@@ -206464,7 +206614,7 @@
 		"lowalch": 96,
 		"highalch": 144,
 		"cost": 240,
-		"price": 1521
+		"price": 1113
 	},
 	"33627": {
 		"name": "Dull ancient medal",
@@ -206518,7 +206668,7 @@
 		},
 		"cost": 240000,
 		"buy_limit": 5,
-		"price": 62249998
+		"price": 53270026
 	},
 	"33634": {
 		"name": "Elder venator fang",
@@ -206539,7 +206689,7 @@
 		"lowalch": 80000,
 		"highalch": 120000,
 		"cost": 200000,
-		"price": 129000000
+		"price": 143637000
 	},
 	"33639": {
 		"name": "Necklace of rupture",
@@ -206569,11 +206719,14 @@
 		},
 		"cost": 242000,
 		"buy_limit": 8,
-		"price": 142250000
+		"price": 158731524
 	},
 	"33642": {
 		"name": "Maggot marquess",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"33651": {
 		"name": "Stymphike feather",
@@ -206585,7 +206738,7 @@
 		"lowalch": 4,
 		"highalch": 7,
 		"cost": 12,
-		"price": 28
+		"price": 37
 	},
 	"33653": {
 		"name": "Stymphike carcass",
@@ -206616,7 +206769,7 @@
 		"highalch": 102000,
 		"cost": 170000,
 		"buy_limit": 4500,
-		"price": 101126
+		"price": 103024
 	},
 	"33659": {
 		"name": "Grapevine",
@@ -206636,7 +206789,7 @@
 		"highalch": 300,
 		"cost": 500,
 		"buy_limit": 10000,
-		"price": 1861
+		"price": 1956
 	},
 	"33663": {
 		"name": "Venator tooth",
@@ -206649,7 +206802,7 @@
 		"highalch": 150,
 		"cost": 250,
 		"buy_limit": 10000,
-		"price": 1150
+		"price": 851
 	},
 	"33665": {
 		"name": "Maggot egg (base)",
@@ -208093,7 +208246,7 @@
 		"tradeable": true,
 		"tradeable_on_ge": true,
 		"equipable": false,
-		"price": 2059
+		"price": 5000
 	},
 	"33827": {
 		"name": "Ancient sceptre (l) (broken)",
@@ -208246,7 +208399,7 @@
 			"requirements": null
 		},
 		"cost": 50000,
-		"price": 39741
+		"price": 51955
 	},
 	"33848": {
 		"name": "Noble robe top",
@@ -208275,7 +208428,7 @@
 			"requirements": null
 		},
 		"cost": 50000,
-		"price": 36866
+		"price": 36867
 	},
 	"33851": {
 		"name": "Noble robe top",
@@ -208304,7 +208457,7 @@
 			"requirements": null
 		},
 		"cost": 50000,
-		"price": 120101
+		"price": 29359
 	},
 	"33854": {
 		"name": "Noble robe top",
@@ -208362,7 +208515,7 @@
 			"requirements": null
 		},
 		"cost": 40000,
-		"price": 30647
+		"price": 40000
 	},
 	"33860": {
 		"name": "Wyrmscraig noble skirt",
@@ -208391,7 +208544,7 @@
 			"requirements": null
 		},
 		"cost": 40000,
-		"price": 284753
+		"price": 292156
 	},
 	"33863": {
 		"name": "Wyrmscraig noble skirt",
@@ -208420,7 +208573,7 @@
 			"requirements": null
 		},
 		"cost": 40000,
-		"price": 29828
+		"price": 22498
 	},
 	"33866": {
 		"name": "Wyrmscraig noble skirt",
@@ -208449,7 +208602,7 @@
 			"requirements": null
 		},
 		"cost": 40000,
-		"price": 78753
+		"price": 39278
 	},
 	"33869": {
 		"name": "Wyrmscraig noble skirt",
@@ -208478,7 +208631,7 @@
 			"requirements": null
 		},
 		"cost": 40000,
-		"price": 36129
+		"price": 50000
 	},
 	"33872": {
 		"name": "Wyrmscraig noble skirt",
@@ -208507,7 +208660,7 @@
 			"requirements": null
 		},
 		"cost": 40000,
-		"price": 31831
+		"price": 35941
 	},
 	"33875": {
 		"name": "Wyrmscraig noble skirt",
@@ -208536,7 +208689,7 @@
 			"requirements": null
 		},
 		"cost": 40000,
-		"price": 29137
+		"price": 100000
 	},
 	"33878": {
 		"name": "Wyrmscraig shoes",
@@ -208565,7 +208718,7 @@
 			"requirements": null
 		},
 		"cost": 10000,
-		"price": 4069
+		"price": 9999
 	},
 	"33881": {
 		"name": "Wyrmscraig boots",
@@ -208594,7 +208747,7 @@
 			"requirements": null
 		},
 		"cost": 10000,
-		"price": 12000
+		"price": 11942
 	},
 	"33884": {
 		"name": "Wyrmscraig villager robe top",
@@ -208681,7 +208834,7 @@
 			"requirements": null
 		},
 		"cost": 500,
-		"price": 2000
+		"price": 15681
 	},
 	"33893": {
 		"name": "Wyrmscraig villager robe top",
@@ -208913,7 +209066,7 @@
 			"requirements": null
 		},
 		"cost": 400,
-		"price": 714
+		"price": 3128
 	},
 	"33917": {
 		"name": "Wyrmscraig villager robe bottom",
@@ -208971,7 +209124,7 @@
 			"requirements": null
 		},
 		"cost": 400,
-		"price": 900
+		"price": 831
 	},
 	"33923": {
 		"name": "Wyrmscraig villager robe bottom",
@@ -209000,7 +209153,7 @@
 			"requirements": null
 		},
 		"cost": 400,
-		"price": 868
+		"price": 6684
 	},
 	"33926": {
 		"name": "Wyrmscraig villager robe bottom",
@@ -209377,7 +209530,7 @@
 			"requirements": null
 		},
 		"cost": 500,
-		"price": 754
+		"price": 12500
 	},
 	"33965": {
 		"name": "Wyrmscraig villager robe top",
@@ -209696,7 +209849,7 @@
 			"requirements": null
 		},
 		"cost": 400,
-		"price": 1000
+		"price": 3156
 	},
 	"33998": {
 		"name": "Wyrmscraig villager work skirt",
@@ -209888,7 +210041,7 @@
 		"lowalch": 4,
 		"highalch": 6,
 		"cost": 10,
-		"price": 90
+		"price": 71
 	},
 	"34020": {
 		"name": "Sunstone",
@@ -209942,7 +210095,7 @@
 		},
 		"cost": 1250000,
 		"buy_limit": 100,
-		"price": 1935293
+		"price": 1342347
 	},
 	"34030": {
 		"name": "Jar of Light",
@@ -209974,15 +210127,21 @@
 		"lowalch": 4,
 		"highalch": 6,
 		"cost": 10,
-		"price": 28432
+		"price": 28638
 	},
 	"34040": {
 		"name": "Mr McGroot",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34042": {
 		"name": "Aggy",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34044": {
 		"name": "Large hat",
@@ -210219,6 +210378,30 @@
 		"stackable": true,
 		"equipable": false
 	},
+	"34081": {
+		"name": "Medium port reward bag (cairn isle)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34083": {
+		"name": "Large port reward bag (cairn isle)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34085": {
+		"name": "Huge port reward bag (cairn isle)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
 	"34087": {
 		"name": "Tiny port reward bag (entrana)",
 		"members": true,
@@ -210227,8 +210410,80 @@
 		"stackable": true,
 		"equipable": false
 	},
+	"34089": {
+		"name": "Small port reward bag (entrana)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34091": {
+		"name": "Medium port reward bag (entrana)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34093": {
+		"name": "Large port reward bag (entrana)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34095": {
+		"name": "Huge port reward bag (entrana)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34097": {
+		"name": "Tiny port reward bag (neitiznot)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34099": {
+		"name": "Small port reward bag (neitiznot)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
 	"34101": {
 		"name": "Medium port reward bag (neitiznot)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34103": {
+		"name": "Large port reward bag (neitiznot)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34105": {
+		"name": "Huge port reward bag (neitiznot)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34107": {
+		"name": "Tiny port reward bag (jatizso)",
 		"members": true,
 		"tradeable": false,
 		"tradeable_on_ge": false,
@@ -210251,8 +210506,40 @@
 		"stackable": true,
 		"equipable": false
 	},
+	"34113": {
+		"name": "Large port reward bag (jatizso)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34115": {
+		"name": "Huge port reward bag (jatizso)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
 	"34117": {
 		"name": "Tiny port reward bag (hosidius)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34119": {
+		"name": "Small port reward bag (hosidius)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34121": {
+		"name": "Medium port reward bag (hosidius)",
 		"members": true,
 		"tradeable": false,
 		"tradeable_on_ge": false,
@@ -210267,8 +210554,24 @@
 		"stackable": true,
 		"equipable": false
 	},
+	"34125": {
+		"name": "Huge port reward bag (hosidius)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
 	"34127": {
 		"name": "Tiny port reward bag (sunset coast)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34129": {
+		"name": "Small port reward bag (sunset coast)",
 		"members": true,
 		"tradeable": false,
 		"tradeable_on_ge": false,
@@ -210291,6 +210594,30 @@
 		"stackable": true,
 		"equipable": false
 	},
+	"34135": {
+		"name": "Huge port reward bag (sunset coast)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34137": {
+		"name": "Tiny port reward bag (piscatoris)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34139": {
+		"name": "Small port reward bag (piscatoris)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
 	"34141": {
 		"name": "Medium port reward bag (piscatoris)",
 		"members": true,
@@ -210301,6 +210628,22 @@
 	},
 	"34143": {
 		"name": "Large port reward bag (piscatoris)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34145": {
+		"name": "Huge port reward bag (piscatoris)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34147": {
+		"name": "Tiny port reward bag (etceteria)",
 		"members": true,
 		"tradeable": false,
 		"tradeable_on_ge": false,
@@ -210363,6 +210706,38 @@
 		"stackable": true,
 		"equipable": false
 	},
+	"34163": {
+		"name": "Large port reward bag (ruins of unkah)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34165": {
+		"name": "Huge port reward bag (ruins of unkah)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34167": {
+		"name": "Tiny port reward bag (lunar isle)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34169": {
+		"name": "Small port reward bag (lunar isle)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
 	"34171": {
 		"name": "Medium port reward bag (lunar isle)",
 		"members": true,
@@ -210387,6 +210762,14 @@
 		"stackable": true,
 		"equipable": false
 	},
+	"34177": {
+		"name": "Tiny port reward bag (corsair cove)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
 	"34179": {
 		"name": "Small port reward bag (corsair cove)",
 		"members": true,
@@ -210405,6 +210788,30 @@
 	},
 	"34183": {
 		"name": "Large port reward bag (corsair cove)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34185": {
+		"name": "Huge port reward bag (corsair cove)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34187": {
+		"name": "Tiny port reward bag (prifddinas)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34189": {
+		"name": "Small port reward bag (prifddinas)",
 		"members": true,
 		"tradeable": false,
 		"tradeable_on_ge": false,
@@ -210467,6 +210874,22 @@
 		"stackable": true,
 		"equipable": false
 	},
+	"34205": {
+		"name": "Huge port reward bag (lands end)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34207": {
+		"name": "Tiny port reward bag (aldarin)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
 	"34209": {
 		"name": "Small port reward bag (aldarin)",
 		"members": true,
@@ -210493,6 +210916,14 @@
 	},
 	"34215": {
 		"name": "Huge port reward bag (aldarin)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34217": {
+		"name": "Tiny port reward bag (summer shore)",
 		"members": true,
 		"tradeable": false,
 		"tradeable_on_ge": false,
@@ -210547,6 +210978,38 @@
 		"stackable": true,
 		"equipable": false
 	},
+	"34231": {
+		"name": "Medium port reward bag (musa point)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34233": {
+		"name": "Large port reward bag (musa point)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34235": {
+		"name": "Huge port reward bag (musa point)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34237": {
+		"name": "Tiny port reward bag (rellekka)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
 	"34239": {
 		"name": "Small port reward bag (rellekka)",
 		"members": true,
@@ -210573,6 +211036,14 @@
 	},
 	"34245": {
 		"name": "Huge port reward bag (rellekka)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34247": {
+		"name": "Tiny port reward bag (void knights outpost)",
 		"members": true,
 		"tradeable": false,
 		"tradeable_on_ge": false,
@@ -210629,6 +211100,30 @@
 	},
 	"34261": {
 		"name": "Medium port reward bag (the pandemonium)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34263": {
+		"name": "Large port reward bag (the pandemonium)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34265": {
+		"name": "Huge port reward bag (the pandemonium)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34267": {
+		"name": "Tiny port reward bag (red rock)",
 		"members": true,
 		"tradeable": false,
 		"tradeable_on_ge": false,
@@ -210699,6 +211194,30 @@
 		"stackable": true,
 		"equipable": false
 	},
+	"34285": {
+		"name": "Huge port reward bag (brimhaven)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34287": {
+		"name": "Tiny port reward bag (port tyras)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34289": {
+		"name": "Small port reward bag (port tyras)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
 	"34291": {
 		"name": "Medium port reward bag (port tyras)",
 		"members": true,
@@ -210755,6 +211274,22 @@
 		"stackable": true,
 		"equipable": false
 	},
+	"34305": {
+		"name": "Huge port reward bag (catherby)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34307": {
+		"name": "Tiny port reward bag (civitas illa fortis)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
 	"34309": {
 		"name": "Small port reward bag (civitas illa fortis)",
 		"members": true,
@@ -210773,6 +211308,14 @@
 	},
 	"34313": {
 		"name": "Large port reward bag (civitas illa fortis)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34315": {
+		"name": "Huge port reward bag (civitas illa fortis)",
 		"members": true,
 		"tradeable": false,
 		"tradeable_on_ge": false,
@@ -210843,6 +211386,38 @@
 		"stackable": true,
 		"equipable": false
 	},
+	"34333": {
+		"name": "Large port reward bag (port khazard)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34335": {
+		"name": "Huge port reward bag (port khazard)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34337": {
+		"name": "Tiny port reward bag (deepfin point)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34339": {
+		"name": "Small port reward bag (deepfin point)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
 	"34341": {
 		"name": "Medium port reward bag (deepfin point)",
 		"members": true,
@@ -210899,6 +211474,14 @@
 		"stackable": true,
 		"equipable": false
 	},
+	"34355": {
+		"name": "Huge port reward bag (port sarim)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
 	"34357": {
 		"name": "Tiny port reward bag (port piscarilius)",
 		"members": true,
@@ -210925,6 +211508,22 @@
 	},
 	"34363": {
 		"name": "Large port reward bag (port piscarilius)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34365": {
+		"name": "Huge port reward bag (port piscarilius)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": false
+	},
+	"34367": {
+		"name": "Tiny port reward bag (port roberts)",
 		"members": true,
 		"tradeable": false,
 		"tradeable_on_ge": false,
@@ -211043,7 +211642,7 @@
 			"requirements": null
 		},
 		"cost": 50000,
-		"price": 39923
+		"price": 35892
 	},
 	"34404": {
 		"name": "Air diamond",
@@ -211054,7 +211653,7 @@
 		"lowalch": 8000,
 		"highalch": 12000,
 		"cost": 20000,
-		"price": 357462
+		"price": 295000
 	},
 	"34407": {
 		"name": "Amulet of air",
@@ -211083,7 +211682,7 @@
 			"requirements": null
 		},
 		"cost": 21000,
-		"price": 438443
+		"price": 283427
 	},
 	"34410": {
 		"name": "Water sapphire",
@@ -211094,7 +211693,7 @@
 		"lowalch": 8000,
 		"highalch": 12000,
 		"cost": 20000,
-		"price": 217500
+		"price": 170000
 	},
 	"34413": {
 		"name": "Amulet of water",
@@ -211123,7 +211722,7 @@
 			"requirements": null
 		},
 		"cost": 21000,
-		"price": 290592
+		"price": 213935
 	},
 	"34416": {
 		"name": "Earth emerald",
@@ -211134,7 +211733,7 @@
 		"lowalch": 8000,
 		"highalch": 12000,
 		"cost": 20000,
-		"price": 469980
+		"price": 428819
 	},
 	"34419": {
 		"name": "Amulet of earth",
@@ -211163,7 +211762,7 @@
 			"requirements": null
 		},
 		"cost": 21000,
-		"price": 574706
+		"price": 457073
 	},
 	"34422": {
 		"name": "Fire ruby",
@@ -211174,7 +211773,7 @@
 		"lowalch": 8000,
 		"highalch": 12000,
 		"cost": 20000,
-		"price": 186342
+		"price": 106227
 	},
 	"34425": {
 		"name": "Amulet of fire",
@@ -211203,7 +211802,7 @@
 			"requirements": null
 		},
 		"cost": 21000,
-		"price": 145595
+		"price": 125141
 	},
 	"34428": {
 		"name": "Elemental amulet",
@@ -211232,279 +211831,504 @@
 			"requirements": null
 		},
 		"cost": 84000,
-		"price": 1090616
+		"price": 799809
 	},
 	"34431": {
 		"name": "Labrador",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34433": {
 		"name": "Labrador",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34435": {
 		"name": "Labrador",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34437": {
 		"name": "Chihuahua",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34439": {
 		"name": "Chihuahua",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34441": {
 		"name": "Chihuahua",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34443": {
-		"name": "Border Collie",
-		"members": true
+		"name": "Border collie",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34445": {
-		"name": "Border Collie",
-		"members": true
+		"name": "Border collie",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34447": {
-		"name": "Border Collie",
-		"members": true
+		"name": "Border collie",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34449": {
 		"name": "Corgi",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34451": {
 		"name": "Corgi",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34453": {
 		"name": "Corgi",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34455": {
 		"name": "Greyhound",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34457": {
 		"name": "Greyhound",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34459": {
 		"name": "Greyhound",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34461": {
 		"name": "Husky",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34463": {
 		"name": "Husky",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34465": {
 		"name": "Husky",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34467": {
 		"name": "Pug",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34469": {
 		"name": "Pug",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34471": {
 		"name": "Pug",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34473": {
 		"name": "Samoyed",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34475": {
 		"name": "Samoyed",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34477": {
 		"name": "Samoyed",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34479": {
-		"name": "Bernese Mountain Dog",
-		"members": true
+		"name": "Bernese mountain dog",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34481": {
-		"name": "Bernese Mountain Dog",
-		"members": true
+		"name": "Bernese mountain dog",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34483": {
-		"name": "Bernese Mountain Dog",
-		"members": true
+		"name": "Bernese mountain dog",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34485": {
 		"name": "Shiba",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34487": {
 		"name": "Shiba",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34489": {
 		"name": "Shiba",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34491": {
 		"name": "Spaniel",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34493": {
 		"name": "Spaniel",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34495": {
 		"name": "Spaniel",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34497": {
 		"name": "Yorkie",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34499": {
 		"name": "Yorkie",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34501": {
 		"name": "Yorkie",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34503": {
 		"name": "Labrador puppy",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34505": {
 		"name": "Labrador puppy",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34507": {
 		"name": "Labrador puppy",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34509": {
 		"name": "Husky puppy",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34511": {
 		"name": "Husky puppy",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34513": {
 		"name": "Husky puppy",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34515": {
 		"name": "Chihuahua puppy",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34517": {
 		"name": "Chihuahua puppy",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34519": {
 		"name": "Chihuahua puppy",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34521": {
-		"name": "Border Collie puppy",
-		"members": true
+		"name": "Border collie puppy",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34523": {
-		"name": "Border Collie puppy",
-		"members": true
+		"name": "Border collie puppy",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34525": {
-		"name": "Border Collie puppy",
-		"members": true
+		"name": "Border collie puppy",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34527": {
 		"name": "Corgi puppy",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34529": {
 		"name": "Corgi puppy",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34531": {
 		"name": "Corgi puppy",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34533": {
 		"name": "Greyhound puppy",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34535": {
 		"name": "Greyhound puppy",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34537": {
 		"name": "Greyhound puppy",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34539": {
 		"name": "Pug puppy",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34541": {
 		"name": "Pug puppy",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34543": {
 		"name": "Pug puppy",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34545": {
 		"name": "Samoyed puppy",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34547": {
 		"name": "Samoyed puppy",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34549": {
 		"name": "Samoyed puppy",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34551": {
-		"name": "Bernese Mountain Dog puppy",
-		"members": true
+		"name": "Bernese mountain dog puppy",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34553": {
-		"name": "Bernese Mountain Dog puppy",
-		"members": true
+		"name": "Bernese mountain dog puppy",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34555": {
-		"name": "Bernese Mountain Dog puppy",
-		"members": true
+		"name": "Bernese mountain dog puppy",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34557": {
 		"name": "Shiba puppy",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34559": {
 		"name": "Shiba puppy",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34561": {
 		"name": "Shiba puppy",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34563": {
 		"name": "Spaniel puppy",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34567": {
 		"name": "Spaniel puppy",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
+	},
+	"34569": {
+		"name": "Yorkie puppy",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
+	},
+	"34571": {
+		"name": "Yorkie puppy",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
+	},
+	"34573": {
+		"name": "Yorkie puppy",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34575": {
 		"name": "Shell",
@@ -211655,15 +212479,24 @@
 	},
 	"34598": {
 		"name": "Stray puppy",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34599": {
 		"name": "Stray puppy",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34600": {
 		"name": "Stray puppy",
-		"members": true
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
 	},
 	"34602": {
 		"name": "Stuffed dog",
@@ -211776,7 +212609,7 @@
 		"lowalch": 12,
 		"highalch": 19,
 		"cost": 32,
-		"price": 205
+		"price": 387
 	},
 	"34633": {
 		"name": "Imbued ancient cape",
@@ -211882,6 +212715,20 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"stackable": true,
+		"equipable": false
+	},
+	"34646": {
+		"name": "Orion",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
+	},
+	"34648": {
+		"name": "Orion",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
 		"equipable": false
 	},
 	"34657": {
@@ -212055,7 +212902,7 @@
 		"highalch": 600,
 		"cost": 1000,
 		"buy_limit": 100,
-		"price": 763
+		"price": 1266
 	},
 	"34671": {
 		"name": "Fragment of living earth",
@@ -212105,7 +212952,8 @@
 		"equipable": false,
 		"lowalch": 1200000,
 		"highalch": 1800000,
-		"cost": 3000000
+		"cost": 3000000,
+		"price": 1070025000
 	},
 	"34681": {
 		"name": "Ascension crossbows",
@@ -212133,7 +212981,158 @@
 			"slot": "2h",
 			"requirements": null
 		},
-		"cost": 4000000
+		"cost": 4000000,
+		"price": 798944779
+	},
+	"34684": {
+		"name": "Ascension bolts",
+		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"stackable": true,
+		"equipable": true,
+		"lowalch": 230,
+		"highalch": 345,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 0,
+			"ranged_strength": 53,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "ammo",
+			"requirements": null
+		},
+		"cost": 575,
+		"price": 250
+	},
+	"34690": {
+		"name": "Diamond ascension bolts",
+		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"stackable": true,
+		"equipable": true,
+		"lowalch": 400,
+		"highalch": 600,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 0,
+			"ranged_strength": 58,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "ammo",
+			"requirements": null
+		},
+		"cost": 1000,
+		"price": 427
+	},
+	"34696": {
+		"name": "Diamond ascension bolts (e)",
+		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"stackable": true,
+		"equipable": true,
+		"lowalch": 412,
+		"highalch": 618,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 0,
+			"ranged_strength": 58,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "ammo",
+			"requirements": null
+		},
+		"cost": 1030,
+		"price": 632
+	},
+	"34702": {
+		"name": "Onyx ascension bolts",
+		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"stackable": true,
+		"equipable": true,
+		"lowalch": 5620,
+		"highalch": 8430,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 0,
+			"ranged_strength": 58,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "ammo",
+			"requirements": null
+		},
+		"cost": 14050,
+		"price": 8524
+	},
+	"34708": {
+		"name": "Onyx ascension bolts (e)",
+		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"stackable": true,
+		"equipable": true,
+		"lowalch": 6380,
+		"highalch": 9570,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 0,
+			"ranged_strength": 58,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "ammo",
+			"requirements": null
+		},
+		"cost": 15950,
+		"price": 8907
 	},
 	"34715": {
 		"name": "Obligator (base)",
@@ -212189,7 +213188,8 @@
 			"slot": "2h",
 			"requirements": null
 		},
-		"cost": 4000000
+		"cost": 4000000,
+		"price": 3828349710
 	},
 	"34719": {
 		"name": "Rondache",
@@ -212217,12 +213217,15 @@
 			"slot": "shield",
 			"requirements": null
 		},
-		"cost": 4000000
+		"cost": 4000000,
+		"price": 115950002
 	},
 	"34722": {
-		"name": "archivist's folio",
+		"name": "Archivist's folio (inert)",
 		"members": true,
+		"tradeable": false,
 		"tradeable_on_ge": false,
+		"equipable": false,
 		"lowalch": 200,
 		"highalch": 300,
 		"cost": 500
@@ -212287,14 +213290,22 @@
 			"melee_strength": 0,
 			"ranged_strength": 0,
 			"magic_damage": 15,
-			"prayer": 0,
+			"prayer": 2,
 			"slot": "2h",
 			"requirements": null
 		},
-		"cost": 4000000
+		"cost": 4000000,
+		"price": 151050626
 	},
 	"34729": {
 		"name": "Alliance log",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false
+	},
+	"34730": {
+		"name": "Leftovers",
 		"members": true,
 		"tradeable": false,
 		"tradeable_on_ge": false,

@@ -65,11 +65,12 @@ function extractCombatStatsInfobox(sections: WikiItemJSON['sections']) {
 	return null;
 }
 
-function extractMainInfobox(sections: WikiItemJSON['sections']) {
+function extractMainInfobox(sections: WikiItemJSON['sections'], itemID?: number) {
 	for (const section of sections) {
 		if (section.infoboxes) {
 			for (const infobox of section.infoboxes) {
 				if (infobox.name || infobox.id || infobox.id1 || infobox.name1) {
+					if (itemID !== undefined && getInfoboxVariant(infobox, itemID) === null) continue;
 					return infobox;
 				}
 			}
@@ -84,7 +85,9 @@ function getInfoboxVariant(mainInfobox: WikiInfobox, itemID?: number): { id: num
 
 		for (const [key, value] of Object.entries(mainInfobox)) {
 			const match = /^id(\d+)$/.exec(key);
-			if (match && value?.number === itemID) return { id: itemID, suffix: match[1]! };
+			if (match && (value?.number === itemID || value?.text?.split(/\D+/).includes(String(itemID)))) {
+				return { id: itemID, suffix: match[1]! };
+			}
 		}
 
 		if (mainInfobox.id?.text?.split(/\D+/).includes(String(itemID))) return { id: itemID, suffix: '' };
@@ -126,7 +129,7 @@ function extractWeaponData(sections: WikiItemJSON['sections']) {
 }
 
 export function convertWikiJSONToItem(wikiJson: WikiItemJSON, itemID?: number): Item | null {
-	const mainInfobox = extractMainInfobox(wikiJson.sections);
+	const mainInfobox = extractMainInfobox(wikiJson.sections, itemID);
 	const combatInfobox = extractCombatStatsInfobox(wikiJson.sections);
 
 	if (!mainInfobox) return null;
