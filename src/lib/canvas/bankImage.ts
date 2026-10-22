@@ -562,7 +562,7 @@ class BankImageTask {
 			ctx.drawImage(
 				actualBackground,
 				(canvas.width - drawWidth) / 2,
-				resizeBg === -1 ? (canvas.height - drawHeight) / 2 : 0,
+				isTransparent ? 0 : (canvas.height - drawHeight) / 2,
 				drawWidth,
 				drawHeight
 			);
