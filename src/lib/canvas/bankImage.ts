@@ -536,7 +536,7 @@ class BankImageTask {
 		const bgFrameHeight = actualBackground ? actualBackground.height! * bgFrameScale : 331;
 		let resizeBg = -1;
 		if (!wide && !isTransparent && actualBackground && canvasHeight > 331) {
-			resizeBg = Math.min(1440, canvasHeight) / bgFrameHeight;
+			resizeBg = canvasHeight / bgFrameHeight;
 		}
 
 		const ctx = canvas.ctx;
