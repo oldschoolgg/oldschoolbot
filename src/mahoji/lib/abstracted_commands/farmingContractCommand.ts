@@ -7,9 +7,9 @@ import { EmojiId } from '@/lib/data/emojis.js';
 import { Farming, plants } from '@/lib/skilling/skills/farming/index.js';
 import { getPlantToGrow } from '@/lib/skilling/skills/farming/utils/calcFarmingContracts.js';
 import type { ContractOption } from '@/lib/skilling/skills/farming/utils/types.js';
+import { makeAutoContractButton } from '@/lib/util/interactions.js';
 import { farmingPlantCommand, harvestCommand } from '@/mahoji/lib/abstracted_commands/farmingCommand.js';
 import { abstractedOpenCommand } from '@/mahoji/lib/abstracted_commands/openCommand.js';
-import { makeAutoContractButton } from '@/lib/util/interactions.js';
 
 function makeEasierFarmingContractButton() {
 	return new ButtonBuilder()
@@ -167,7 +167,9 @@ export async function farmingContractCommand(
 			`Please could you grow a ${plantToGrow} for us? I'll reward you once you have checked its health.`
 		)
 		.addComponents(
-			input !== 'easy' ? [makeEasierFarmingContractButton(), makeAutoContractButton()] : [makeAutoContractButton()]
+			input !== 'easy'
+				? [makeEasierFarmingContractButton(), makeAutoContractButton()]
+				: [makeAutoContractButton()]
 		);
 	return response;
 }
