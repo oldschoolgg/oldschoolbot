@@ -7,6 +7,7 @@ import { EmojiId } from '@/lib/data/emojis.js';
 import { Farming, plants } from '@/lib/skilling/skills/farming/index.js';
 import { getPlantToGrow } from '@/lib/skilling/skills/farming/utils/calcFarmingContracts.js';
 import type { ContractOption } from '@/lib/skilling/skills/farming/utils/types.js';
+import { makeAutoContractButton } from '@/lib/util/interactions.js';
 import { farmingPlantCommand, harvestCommand } from '@/mahoji/lib/abstracted_commands/farmingCommand.js';
 import { abstractedOpenCommand } from '@/mahoji/lib/abstracted_commands/openCommand.js';
 
@@ -105,7 +106,11 @@ export async function farmingContractCommand(
 					'jane',
 					`I suppose you were too chicken for the challenge. Please could you grow a ${plantToGrow} instead for us? I'll reward you once you have checked its health.`
 				)
-				.addComponents(newContractLevel !== 'easy' ? [makeEasierFarmingContractButton()] : undefined);
+				.addComponents(
+					newContractLevel !== 'easy'
+						? [makeEasierFarmingContractButton(), makeAutoContractButton()]
+						: [makeAutoContractButton()]
+				);
 
 			return response;
 		}
@@ -120,7 +125,9 @@ export async function farmingContractCommand(
 				`Your current contract (${currentContract.difficultyLevel}) is to grow ${currentContract.plantToGrow}. Please come back when you have finished this contract first.${easierStr}`
 			)
 			.addComponents(
-				currentContract.difficultyLevel !== 'easy' ? [makeEasierFarmingContractButton()] : undefined
+				currentContract.difficultyLevel !== 'easy'
+					? [makeEasierFarmingContractButton(), makeAutoContractButton()]
+					: [makeAutoContractButton()]
 			);
 
 		return response;
@@ -159,7 +166,11 @@ export async function farmingContractCommand(
 			'jane',
 			`Please could you grow a ${plantToGrow} for us? I'll reward you once you have checked its health.`
 		)
-		.addComponents(input !== 'easy' ? [makeEasierFarmingContractButton()] : undefined);
+		.addComponents(
+			input !== 'easy'
+				? [makeEasierFarmingContractButton(), makeAutoContractButton()]
+				: [makeAutoContractButton()]
+		);
 	return response;
 }
 
