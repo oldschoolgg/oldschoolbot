@@ -247,12 +247,12 @@ export const giveawayCommand = defineCommand({
 				return Emoji.RedX;
 			}
 
-			const perkTier = await user.fetchPerkTier();
+			const listPerkTier = await user.fetchPerkTier();
 
 			const lines = giveaways.map(
 				(g: Giveaway) =>
 					`${
-						perkTier >= patronFeatures.ShowEnteredInGiveawayList.tier ? `${getEmoji(g)} ` : ''
+						listPerkTier >= patronFeatures.ShowEnteredInGiveawayList.tier ? `${getEmoji(g)} ` : ''
 					}[${toKMB(marketPriceOfBank(new Bank(g.loot as ItemBank)))} giveaway ending ${time(
 						g.finish_date,
 						'R'
