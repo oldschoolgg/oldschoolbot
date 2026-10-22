@@ -885,5 +885,16 @@ export const hardCombatAchievements: CombatAchievement[] = [
 				isCertainMonsterTrip(Monsters.Eldric.id)(data) ||
 				isCertainMonsterTrip(Monsters.RoyalTitans.id)(data)
 		}
+	},
+	{
+		id: 275,
+		name: 'Smarter than a Cow',
+		type: 'mechanical',
+		monster: 'Brutus',
+		desc: 'Kill Brutus without being attacked.',
+		rng: {
+			chancePerKill: 25,
+			hasChance: isCertainMonsterTrip(Monsters.Brutus.id)
+		}
 	}
 ];
