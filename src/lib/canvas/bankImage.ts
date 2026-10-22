@@ -529,7 +529,7 @@ class BankImageTask {
 
 		const actualBackground = isPurple && bgImage.hasPurple ? bgImage.purpleImage! : backgroundImage;
 		let resizeBg = -1;
-		if (!wide && !useSmallBank && !isTransparent && actualBackground && canvasHeight > 331) {
+		if (!wide && !isTransparent && actualBackground && canvasHeight > 331) {
 			resizeBg = Math.min(1440, canvasHeight) / actualBackground.height;
 		}
 
