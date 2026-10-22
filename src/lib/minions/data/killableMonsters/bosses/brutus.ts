@@ -13,7 +13,7 @@ export const brutusKillables: KillableMonster[] = [
 		aliases: Monsters.Brutus.aliases,
 		table: Monsters.Brutus,
 		// Targets ~250 kills/hour off task with max KC/stats, cowbell, charged gear and no food.
-		timeToFinish: Time.Second * 25.065,
+		timeToFinish: Time.Second * 25,
 		respawnTime: Time.Second * 21.6,
 		requiredQuests: [QuestID.TheIdesOfMilk],
 		qpRequired: 0,
@@ -34,7 +34,8 @@ export const brutusKillables: KillableMonster[] = [
 		name: Monsters.DemonicBrutus.name,
 		aliases: Monsters.DemonicBrutus.aliases,
 		table: Monsters.DemonicBrutus,
-		timeToFinish: Time.Minute * 6,
+		// Targets ~12 kills/hour with max KC/stats, Scythe, rancour and anglerfish, before weekends.
+		timeToFinish: Time.Second * 573,
 		respawnTime: Time.Second * 21.6,
 		requiredQuests: [QuestID.TheIdesOfMilk, QuestID.DesertTreasureII],
 		qpRequired: 0,
@@ -46,7 +47,7 @@ export const brutusKillables: KillableMonster[] = [
 		// Demonic Brutus heals for another 487 HP after his initial 750 HP phase.
 		customMonsterHP: 1237,
 		healAmountNeeded: 300,
-		minimumHealAmount: 40,
+		minimumHealAmount: 20,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackMagic, GearStat.AttackRanged],
 		levelRequirements: {
