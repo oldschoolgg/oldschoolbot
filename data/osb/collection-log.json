@@ -2727,19 +2727,6 @@
 				]
 			},
 			"yama": {
-				"items": [
-					"Barrel of demonic tallow (full)",
-					"Chasm teleport scroll",
-					"Dossier",
-					"Forgotten lockbox",
-					"Oathplate chest",
-					"Oathplate helm",
-					"Oathplate legs",
-					"Oathplate shards",
-					"Rite of vile transference",
-					"Soulflame horn",
-					"Yami"
-				],
 				"all_items": [
 					"Aether catalyst",
 					"Barrel of demonic tallow (full)",
@@ -2763,6 +2750,7 @@
 					"Onyx bolt tips",
 					"Pineapple pizza",
 					"Prayer potion(3)",
+					"Rite of vile transference",
 					"Ruby",
 					"Rune chainbody",
 					"Rune platebody",
@@ -2775,6 +2763,19 @@
 					"Wrath rune",
 					"Yami",
 					"Zamorak mix(2)"
+				],
+				"items": [
+					"Barrel of demonic tallow (full)",
+					"Chasm teleport scroll",
+					"Dossier",
+					"Forgotten lockbox",
+					"Oathplate chest",
+					"Oathplate helm",
+					"Oathplate legs",
+					"Oathplate shards",
+					"Rite of vile transference",
+					"Soulflame horn",
+					"Yami"
 				]
 			},
 			"zalcano": {
