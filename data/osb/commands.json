@@ -1,6 +1,6 @@
 {
-	"hash": "bb1db2ef0f3d188fa5ea84425ad8e04c",
-	"date": "2026-10-19T17:09:20.865Z",
+	"hash": "27a3bd240d4d63b1ec5a25f2d70cf03a",
+	"date": "2026-09-09T11:55:21.667Z",
 	"data": [
 		{
 			"name": "activities",
@@ -298,7 +298,6 @@
 				"minigames",
 				"movers",
 				"opens",
-				"rumours",
 				"sacrifice",
 				"skills"
 			]
@@ -456,12 +455,6 @@
 			"name": "rp",
 			"desc": "Admin tools second set",
 			"subOptions": ["player", "roles", "user_event"]
-		},
-		{
-			"name": "rumours",
-			"desc": "Various commands related to completing Hunter Rumours.",
-			"examples": ["/rumours start tier:aco"],
-			"subOptions": ["count", "manage", "start"]
 		},
 		{
 			"name": "runecraft",

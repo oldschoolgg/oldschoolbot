@@ -863,17 +863,6 @@
 		"tick_rate": 0.13
 	},
 	{
-		"name": "Moonlight antler bolts",
-		"id": 28878,
-		"level": 72,
-		"xp": 12,
-		"input_items": {
-			"29171": 1
-		},
-		"output_multiple": 12,
-		"tick_rate": 3
-	},
-	{
 		"name": "Oak arrow shaft",
 		"id": 52,
 		"level": 15,
@@ -1316,17 +1305,6 @@
 			"19584": 1
 		},
 		"tick_rate": 0.13
-	},
-	{
-		"name": "Sunlight antler bolts",
-		"id": 28872,
-		"level": 62,
-		"xp": 10,
-		"input_items": {
-			"29168": 1
-		},
-		"output_multiple": 12,
-		"tick_rate": 3
 	},
 	{
 		"name": "Teak stock",

@@ -1,6 +1,6 @@
 {
-	"hash": "e56f573ba8ff4d7954ae4ec664adc334",
-	"date": "2026-10-19T15:04:35.741Z",
+	"hash": "c816cf21901683d795f2b7377b0d8666",
+	"date": "2026-05-19T20:03:04.322Z",
 	"data": [
 		{
 			"name": "3rd age felling axe",
@@ -892,16 +892,6 @@
 				"Barronite shards": 1500
 			},
 			"noCl": false
-		},
-		{
-			"name": "Basic quetzal whistle",
-			"items_created": {
-				"Basic quetzal whistle": 1
-			},
-			"items_required": {
-				"Basic quetzal whistle blueprint": 1,
-				"Willow logs": 1
-			}
 		},
 		{
 			"name": "Bellator icon",
@@ -2649,28 +2639,6 @@
 			"qp_required": 150
 		},
 		{
-			"name": "Enhanced quetzal whistle",
-			"items_created": {
-				"Enhanced quetzal whistle": 1
-			},
-			"items_required": {
-				"Basic quetzal whistle": 1,
-				"Enhanced quetzal whistle blueprint": 1,
-				"Yew logs": 1
-			}
-		},
-		{
-			"name": "Enhanced quetzal whistle (Torn)",
-			"items_created": {
-				"Enhanced quetzal whistle": 1
-			},
-			"items_required": {
-				"Basic quetzal whistle": 1,
-				"Torn enhanced quetzal whistle blueprint": 1,
-				"Yew logs": 1
-			}
-		},
-		{
 			"name": "Eternal boots",
 			"items_created": {
 				"Eternal boots": 1
@@ -3369,30 +3337,6 @@
 			"items_required": {
 				"Graceful top": 1,
 				"Mark of grace": 15
-			}
-		},
-		{
-			"name": "Hunter's spear",
-			"items_created": {
-				"Hunter's spear": 5
-			},
-			"items_required": {
-				"Hunter spear tips": 5,
-				"Jerboa tail": 1,
-				"Teak logs": 1
-			}
-		},
-		{
-			"name": "Hunters' sunlight crossbow",
-			"items_created": {
-				"Hunters' sunlight crossbow": 1
-			},
-			"items_required": {
-				"Hunters' crossbow": 1,
-				"Sunlight antelope antler": 1
-			},
-			"required_stats": {
-				"fletching": 74
 			}
 		},
 		{
@@ -4288,46 +4232,6 @@
 			}
 		},
 		{
-			"name": "Mixed hide boots",
-			"items_created": {
-				"Mixed hide boots": 1
-			},
-			"items_required": {
-				"Mixed hide base": 1,
-				"Sunlight antelope fur": 1
-			}
-		},
-		{
-			"name": "Mixed hide cape",
-			"items_created": {
-				"Mixed hide cape": 1
-			},
-			"items_required": {
-				"Jaguar fur": 1,
-				"Mixed hide base": 1
-			}
-		},
-		{
-			"name": "Mixed hide legs",
-			"items_created": {
-				"Mixed hide legs": 1
-			},
-			"items_required": {
-				"Fox fur": 3,
-				"Mixed hide base": 1
-			}
-		},
-		{
-			"name": "Mixed hide top",
-			"items_created": {
-				"Mixed hide top": 1
-			},
-			"items_required": {
-				"Mixed hide base": 1,
-				"Sunlight antelope fur": 2
-			}
-		},
-		{
 			"name": "Moon key",
 			"items_created": {
 				"Moon key": 1
@@ -4796,28 +4700,6 @@
 			"required_stats": {
 				"magic": 60,
 				"runecraft": 60
-			}
-		},
-		{
-			"name": "Perfected quetzal whistle",
-			"items_created": {
-				"Perfected quetzal whistle": 1
-			},
-			"items_required": {
-				"Enhanced quetzal whistle": 1,
-				"Perfected quetzal whistle blueprint": 1,
-				"Redwood logs": 1
-			}
-		},
-		{
-			"name": "Perfected quetzal whistle (Torn)",
-			"items_created": {
-				"Perfected quetzal whistle": 1
-			},
-			"items_required": {
-				"Enhanced quetzal whistle": 1,
-				"Redwood logs": 1,
-				"Torn perfected quetzal whistle blueprint": 1
 			}
 		},
 		{

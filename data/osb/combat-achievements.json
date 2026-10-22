@@ -4398,7 +4398,7 @@
 				"desc": "Kill the Phantom Muspah by only dealing damage to it with a salamander.",
 				"type": "restriction",
 				"monster": "Phantom Muspah",
-				"details": "You must have a Tecu, Black, Red, or Orange salamander equipped.",
+				"details": "You must have a Black, Red, or Orange salamander equipped.",
 				"rng": {
 					"chance_per_kill": 1
 				}
@@ -5861,7 +5861,7 @@
 				"desc": "Kill Kree'arra by only dealing damage to him with a salamander.",
 				"type": "restriction",
 				"monster": "Kree'arra",
-				"details": "You must have a tecu, black, red, or orange salamander equipped.",
+				"details": "You must have a black, red, or orange salamander equipped.",
 				"rng": {
 					"chance_per_kill": 1
 				}

@@ -2727,6 +2727,19 @@
 				]
 			},
 			"yama": {
+				"items": [
+					"Barrel of demonic tallow (full)",
+					"Chasm teleport scroll",
+					"Dossier",
+					"Forgotten lockbox",
+					"Oathplate chest",
+					"Oathplate helm",
+					"Oathplate legs",
+					"Oathplate shards",
+					"Rite of vile transference",
+					"Soulflame horn",
+					"Yami"
+				],
 				"all_items": [
 					"Aether catalyst",
 					"Barrel of demonic tallow (full)",
@@ -2750,7 +2763,6 @@
 					"Onyx bolt tips",
 					"Pineapple pizza",
 					"Prayer potion(3)",
-					"Rite of vile transference",
 					"Ruby",
 					"Rune chainbody",
 					"Rune platebody",
@@ -2763,19 +2775,6 @@
 					"Wrath rune",
 					"Yami",
 					"Zamorak mix(2)"
-				],
-				"items": [
-					"Barrel of demonic tallow (full)",
-					"Chasm teleport scroll",
-					"Dossier",
-					"Forgotten lockbox",
-					"Oathplate chest",
-					"Oathplate helm",
-					"Oathplate legs",
-					"Oathplate shards",
-					"Rite of vile transference",
-					"Soulflame horn",
-					"Yami"
 				]
 			},
 			"zalcano": {
@@ -5241,7 +5240,6 @@
 					"Pet zilyana",
 					"Phoenix",
 					"Prince black dragon",
-					"Quetzin",
 					"Rift guardian",
 					"Rock golem",
 					"Rocky",
@@ -5635,18 +5633,6 @@
 					"Monkey tail",
 					"Zenyte shard"
 				]
-			},
-			"hunter_guild": {
-				"kc_activity": {},
-				"items": [
-					"Guild hunter boots",
-					"Guild hunter headwear",
-					"Guild hunter legs",
-					"Guild hunter top",
-					"Huntsman's kit",
-					"Quetzin"
-				],
-				"is_activity": true
 			},
 			"monkey_backpacks": {
 				"kc_activity": {},
@@ -6929,7 +6915,6 @@
 					"Bandos rune armour set (sk)",
 					"Bandosian components",
 					"Barronite mace",
-					"Basic quetzal whistle",
 					"Basilisk jaw",
 					"Bellator icon",
 					"Bellator ring",
@@ -7079,7 +7064,6 @@
 					"Emberlight",
 					"Enhanced crystal key",
 					"Enhanced crystal weapon seed",
-					"Enhanced quetzal whistle",
 					"Eternal boots",
 					"Eternal teleport crystal",
 					"Ferocious gloves",
@@ -7148,8 +7132,6 @@
 					"Hosidius graceful hood",
 					"Hosidius graceful legs",
 					"Hosidius graceful top",
-					"Hunter's spear",
-					"Hunters' sunlight crossbow",
 					"Hydra slayer helmet",
 					"Hydra slayer helmet (i)",
 					"Imbued guthix max cape",
@@ -7239,10 +7221,6 @@
 					"Mithril set (sk)",
 					"Mithril trimmed set (lg)",
 					"Mithril trimmed set (sk)",
-					"Mixed hide boots",
-					"Mixed hide cape",
-					"Mixed hide legs",
-					"Mixed hide top",
 					"Moon key",
 					"Mystic air staff",
 					"Mystic boots (or)",
@@ -7283,7 +7261,6 @@
 					"Partyhat & specs",
 					"Partyhat set",
 					"Pegasian boots",
-					"Perfected quetzal whistle",
 					"Pheasant",
 					"Pheasant boots",
 					"Pheasant cape",
