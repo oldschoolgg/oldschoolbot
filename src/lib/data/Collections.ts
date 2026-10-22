@@ -24,6 +24,7 @@ import {
 	barbarianAssaultCL,
 	barrowsChestCL,
 	brimhavenAgilityArenaCL,
+	brutusCL,
 	bryophytaCL,
 	callistoCL,
 	camdozaalCL,
@@ -204,6 +205,17 @@ export const allCollectionLogs: ICollection = {
 				kcActivity: Monsters.Barrows.name,
 				items: barrowsChestCL,
 				fmtProg: kcProg(Monsters.Barrows)
+			},
+			Brutus: {
+				alias: [...Monsters.Brutus.aliases, ...Monsters.DemonicBrutus.aliases],
+				kcActivity: {
+					Default: [Monsters.Brutus.name, Monsters.DemonicBrutus.name],
+					Brutus: Monsters.Brutus.name,
+					'Demonic Brutus': Monsters.DemonicBrutus.name
+				},
+				allItems: uniqueArr([...Monsters.Brutus.allItems, ...Monsters.DemonicBrutus.allItems]),
+				items: brutusCL,
+				fmtProg: kcProg(Monsters.Brutus)
 			},
 			Bryophyta: {
 				alias: Monsters.Bryophyta.aliases,
