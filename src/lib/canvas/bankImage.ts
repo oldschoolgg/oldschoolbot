@@ -553,12 +553,18 @@ class BankImageTask {
 		}
 
 		if (!hasBgSprite) {
+			const drawWidth = wide
+				? canvas.width
+				: actualBackground.width! * (resizeBg === -1 ? bgFrameScale : resizeBg);
+			const drawHeight = wide
+				? canvas.height
+				: actualBackground.height! * (resizeBg === -1 ? bgFrameScale : resizeBg);
 			ctx.drawImage(
 				actualBackground,
-				(canvas.width - actualBackground.width! * (resizeBg === -1 ? bgFrameScale : resizeBg)) / 2,
-				0,
-				wide ? canvas.width : actualBackground.width! * (resizeBg === -1 ? bgFrameScale : resizeBg),
-				wide ? canvas.height : actualBackground.height! * (resizeBg === -1 ? bgFrameScale : resizeBg)
+				(canvas.width - drawWidth) / 2,
+				resizeBg === -1 ? (canvas.height - drawHeight) / 2 : 0,
+				drawWidth,
+				drawHeight
 			);
 		}
 
