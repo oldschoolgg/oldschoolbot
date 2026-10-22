@@ -6,7 +6,7 @@ import wtf from 'wtf_wikipedia';
 import { type Item, Items } from '@/index.js';
 import { pfetch } from './fetch.js';
 import { fetchPrices } from './fetchPrices.js';
-import { getItemExclusionReason, parseExplicitItemIDs } from './item-scraper-utils.js';
+import { getItemExclusionReason, parseExplicitItemIDs, preserveItemEquipment } from './item-scraper-utils.js';
 import { ZWikiBucketItem } from './schemas.js';
 import type { MoidSourceItem } from './types.js';
 import { convertWikiJSONToItem } from './wikiparse.js';
@@ -157,6 +157,7 @@ async function fetchItemWikiPage(itemId: number, moidItem?: MoidSourceItem): Pro
 		lowalch: itemFromInfoBox.lowalch,
 		highalch: dataFromBucket.high_alchemy_value ?? itemFromInfoBox.highalch,
 		equipment: itemFromInfoBox.equipment,
+		weapon: itemFromInfoBox.weapon,
 		cost: dataFromBucket.value,
 		buy_limit: dataFromBucket.buy_limit
 	};
@@ -201,7 +202,8 @@ async function main() {
 		const itemId = itemIdsToProcess[i];
 		const newItem = await fetchItemWikiPage(itemId, moidSourceMap.get(itemId));
 		if (newItem === null) continue;
-		newData[itemId] = applyPrice(newItem, currentData[itemId], allPrices[itemId]);
+		const previousItem = currentData[itemId];
+		newData[itemId] = applyPrice(preserveItemEquipment(newItem, previousItem), previousItem, allPrices[itemId]);
 		await writeItemData('./src/assets/item_data.json', newData);
 	}
 }

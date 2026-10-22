@@ -129,6 +129,25 @@ const unobtainableEmirsArenaGear: number[] = [
 ];
 
 export const unobtainableLeaguesItems: number[] = [
+	33218, // Knapsack (open)
+	33220, // Knapsack (closed)
+	33221, // Barbarian arm
+	33227, // Evil eye
+	33229, // Transmutation ledger
+	33231, // Soul shard
+	33233, // Map of alacrity
+	33235, // Clue contract
+	33237, // Butler's bell
+	33239, // Flask of fervour
+	33241, // Flask of fervour (empty)
+	33243, // Infernal tecpatl
+	33245, // Nature's recurve
+	33247, // V's helm
+	33249, // Fang of the hound
+	33251, // King's barrage
+	33253, // Shadowflame quadrant
+	33255, // Lithic sceptre
+	33257, // Lithic sceptre (uncharged)
 	30376, // Amulet of the monarchs
 	30367, // The dogsword
 	30374, // Drygore blowpipe
@@ -222,6 +241,32 @@ const unobtainableBountyHunterGear: number[] = Items.resolveItems([
 ]);
 
 const unobtainableDeadmanModeItems: number[] = [
+	33004, // Kharidian quest lamp
+	33005, // Myreque quest lamp
+	33006, // Dragonkin quest lamp
+	33007, // Mahjarrat 2 quest lamp
+	33008, // Camelot quest lamp
+	33009, // Recipe for disaster quest lamp
+	33010, // Ruinous powers
+	33038, // The dogsword
+	33041, // Thunder khopesh
+	33044, // Trinket of avarice
+	33047, // Trinket of fortuity (inactive)
+	33050, // Trinket of fortuity (active)
+	33053, // Sigil of the Gods (attuned)
+	33054, // Sigil of the Gods (unattuned)
+	33055, // Sigil of Conclusion (attuned)
+	33056, // Sigil of Conclusion (unattuned)
+	33057, // Sigil of Automation (attuned)
+	33058, // Sigil of Automation (unattuned)
+	33059, // Sigil of Eternal Belief (attuned)
+	33060, // Sigil of Eternal Belief (unattuned)
+	33061, // Sigil of Efficiency (attuned)
+	33062, // Sigil of Efficiency (unattuned)
+	33063, // Starter cape
+	33065, // Deadman's skull
+	33424, // Mission totem
+	34059, // Fairy tale quest lamp
 	22616, // Vesta's chainbody
 	22619, // Vesta's plateskirt
 	22610, // Vesta's spear

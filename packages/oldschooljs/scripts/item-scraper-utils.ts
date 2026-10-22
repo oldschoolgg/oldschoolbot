@@ -1,3 +1,4 @@
+import type { Item } from '@/meta/item.js';
 import { USELESS_ITEMS } from '@/structures/ItemsClass.js';
 import type { MoidSourceItem } from './types.js';
 
@@ -46,4 +47,30 @@ export function parseExplicitItemIDs(args: string[]): number[] | null {
 	}
 
 	return [...new Set(parsedIDs)];
+}
+
+export function preserveItemEquipment(newItem: Item, previousItem: Item | undefined): Item {
+	if (!previousItem) return newItem;
+
+	const equipment = newItem.equipment ?? previousItem.equipment;
+	const weapon = newItem.weapon ?? previousItem.weapon;
+
+	// The wiki scraper does not provide requirements or complete weapon metadata.
+	return {
+		...newItem,
+		equipable: newItem.equipable ?? previousItem.equipable,
+		equipment: equipment
+			? {
+					...equipment,
+					requirements: equipment.requirements ?? previousItem.equipment?.requirements ?? null
+				}
+			: undefined,
+		weapon: weapon
+			? {
+					...weapon,
+					attack_speed: weapon.attack_speed ?? previousItem.weapon?.attack_speed ?? null,
+					weapon_type: weapon.weapon_type ?? previousItem.weapon?.weapon_type
+				}
+			: undefined
+	};
 }
