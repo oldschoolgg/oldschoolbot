@@ -528,9 +528,15 @@ class BankImageTask {
 		});
 
 		const actualBackground = isPurple && bgImage.hasPurple ? bgImage.purpleImage! : backgroundImage;
+		// Normalize the background to the 488x331 bank frame, so background files of any
+		// size render correctly (exact 488x331 files are unaffected by this scale).
+		const bgFrameScale = actualBackground
+			? Math.max(488 / actualBackground.width!, 331 / actualBackground.height!)
+			: 1;
+		const bgFrameHeight = actualBackground ? actualBackground.height! * bgFrameScale : 331;
 		let resizeBg = -1;
-		if (!wide && !useSmallBank && !isTransparent && actualBackground && canvasHeight > 331) {
-			resizeBg = Math.min(1440, canvasHeight) / actualBackground.height;
+		if (!wide && !isTransparent && actualBackground && canvasHeight > 331) {
+			resizeBg = canvasHeight / bgFrameHeight;
 		}
 
 		const ctx = canvas.ctx;
@@ -547,12 +553,18 @@ class BankImageTask {
 		}
 
 		if (!hasBgSprite) {
+			const drawWidth = wide
+				? canvas.width
+				: actualBackground.width! * (resizeBg === -1 ? bgFrameScale : resizeBg);
+			const drawHeight = wide
+				? canvas.height
+				: actualBackground.height! * (resizeBg === -1 ? bgFrameScale : resizeBg);
 			ctx.drawImage(
 				actualBackground,
-				resizeBg === -1 ? 0 : (canvas.width - actualBackground.width! * resizeBg) / 2,
-				0,
-				wide ? canvas.width : actualBackground.width! * (resizeBg === -1 ? 1 : resizeBg),
-				wide ? canvas.height : actualBackground.height! * (resizeBg === -1 ? 1 : resizeBg)
+				(canvas.width - drawWidth) / 2,
+				isTransparent ? 0 : (canvas.height - drawHeight) / 2,
+				drawWidth,
+				drawHeight
 			);
 		}
 
