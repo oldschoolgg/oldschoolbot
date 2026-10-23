@@ -82,7 +82,7 @@ export const turaelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Cow,
 		amount: [15, 30],
 		weight: 8,
-		monsters: [Monsters.Cow.id, Monsters.CowCalf.id],
+		monsters: [Monsters.Cow.id, Monsters.CowCalf.id, Monsters.Brutus.id],
 		combatLevel: 5,
 		unlocked: true
 	},
