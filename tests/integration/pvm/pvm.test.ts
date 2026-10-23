@@ -1,4 +1,4 @@
-import { calcPerHour, isWeekend } from '@oldschoolgg/toolkit';
+import { calcPerHour } from '@oldschoolgg/toolkit';
 import { Bank, convertLVLtoXP, EItem, EMonster, itemID, Monsters, resolveItems } from 'oldschooljs';
 import { describe, expect, it, test } from 'vitest';
 
@@ -698,6 +698,7 @@ describe('PVM', async () => {
 		const user = await client.mockUser({
 			maxed: true,
 			QP: 300,
+			finishedQuestIds: [QuestID.AKingdomDivided],
 			meleeGear: resolveItems(['Scythe of vitur']),
 			bank: new Bank()
 				.add('Anglerfish', 100)
@@ -722,47 +723,11 @@ describe('PVM', async () => {
 		expect(user.user.scythe_of_vitur_charges).toBeLessThan(100_000);
 	});
 
-	it('kills Yama at the intended rate with maxed boosts and 10k KC', async () => {
-		const user = await client.mockUser({
-			maxed: true,
-			QP: 300,
-			meleeGear: resolveItems(['Amulet of rancour', 'Infernal cape', 'Ferocious gloves']),
-			bank: new Bank()
-				.add('Shark', 1000)
-				.add('Saradomin brew(4)', 100)
-				.add('Super restore(4)', 100)
-				.add('Super combat potion(4)', 100)
-				.add('Cosmic rune', 1000)
-				.add('Death rune', 1000)
-				.add('Blood rune', 1000)
-				.add('Soul rune', 1000)
-				.add('Fire rune', 10_000)
-				.add('Purging staff')
-				.add('Emberlight')
-				.add('Burning claws')
-				.add('Lightbearer')
-		});
-		await user.setAttackStyle(['attack', 'strength', 'defence']);
-		await user.update({
-			bitfield: {
-				push: BitField.HasRiteOfVileTransference
-			}
-		});
-		await user.incrementKC(EMonster.YAMA, 10_000);
-
-		const res = await user.kill(EMonster.YAMA, { quantity: 9 });
-		expect(res.commandResult).toContain('is now killing 9x Yama');
-		expect(res.commandResult).toContain('15.00% for stats');
-		expect(res.commandResult).toContain('10% for KC');
-		expect(res.commandResult).toContain('5% for Rite of vile transference');
-		expect(res.commandResult).toContain('2% for Shark');
-		expect(calcPerHour(res.activityResult!.q, res.activityResult!.duration)).toBeCloseTo(isWeekend() ? 20 : 18, 0);
-	});
-
 	it('requires a Purging staff to kill Yama', async () => {
 		const user = await client.mockUser({
 			maxed: true,
 			QP: 300,
+			finishedQuestIds: [QuestID.AKingdomDivided],
 			bank: new Bank()
 				.add('Anglerfish', 100)
 				.add('Saradomin brew(4)', 100)

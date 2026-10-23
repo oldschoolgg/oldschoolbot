@@ -1,11 +1,11 @@
-import { randInt } from 'node-rng';
+import { MathRNG, type RNGProvider } from 'node-rng';
 
 export interface SimpleTableItem<T> {
 	item: T;
 	weight: number;
 }
 
-export default class SimpleTable<T> {
+export class SimpleTable<T> {
 	public length: number;
 	public table: SimpleTableItem<T>[];
 	public totalWeight: number;
@@ -17,6 +17,10 @@ export default class SimpleTable<T> {
 	}
 
 	public add(item: T, weight = 1): this {
+		if (!Number.isFinite(weight) || weight < 0) {
+			throw new Error(`Invalid weight ${weight} in SimpleTable.`);
+		}
+
 		this.length += 1;
 		this.totalWeight += weight;
 
@@ -31,7 +35,7 @@ export default class SimpleTable<T> {
 	public delete(item: T): this {
 		const tableItem = this.table.find(_tableItem => _tableItem.item === item);
 		if (!tableItem) {
-			throw `${item} doesn't exist in this SimpleTable.`;
+			throw new Error(`${item} doesn't exist in this SimpleTable.`);
 		}
 
 		this.length -= 1;
@@ -42,24 +46,32 @@ export default class SimpleTable<T> {
 		return this;
 	}
 
-	public roll(): SimpleTableItem<T>['item'] {
-		// Random number between 1 and the total weighting
-		const randomWeight = randInt(1, this.totalWeight);
+	public roll(rng: RNGProvider = MathRNG): SimpleTableItem<T>['item'] | null {
+		if (this.table.length === 0 || this.totalWeight <= 0) return null;
 
-		// The index of the item that will be used.
-		let result = -1;
+		// Random number between 0 and the total weighting.
+		const randomWeight = rng.randFloat(0, this.totalWeight);
+
 		let weight = 0;
+		let lastRollableItem: SimpleTableItem<T> | null = null;
 
 		for (let i = 0; i < this.table.length; i++) {
 			const item = this.table[i];
+			if (item.weight <= 0) continue;
 
 			weight += item.weight;
-			if (randomWeight <= weight) {
-				result = i;
-				break;
+			lastRollableItem = item;
+			if (randomWeight < weight) {
+				return item.item;
 			}
 		}
 
-		return this.table[result].item;
+		return lastRollableItem?.item ?? null;
+	}
+
+	public rollOrThrow(rng: RNGProvider = MathRNG): SimpleTableItem<T>['item'] {
+		const result = this.roll(rng);
+		if (result === null) throw new Error('Received null from SimpleTable, but expect not-null.');
+		return result;
 	}
 }

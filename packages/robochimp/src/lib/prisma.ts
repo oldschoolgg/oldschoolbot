@@ -14,9 +14,10 @@ declare global {
 	var roboChimpClient: RobochimpPrismaClient;
 	var osbClient: OSBPrismaClient;
 	var bsoClient: BSOPrismaClient;
+	var neoClient: BSOPrismaClient;
 }
 
-async function getAdapter(type: 'osb' | 'bso' | 'robochimp'): Promise<PrismaPg> {
+async function getAdapter(type: 'osb' | 'bso' | 'neo' | 'robochimp'): Promise<PrismaPg> {
 	const shouldUseRealPostgres = globalConfig.isProduction || process.env.USE_REAL_PG === '1';
 	if (shouldUseRealPostgres) {
 		return new PrismaPg({ connectionString: process.env[`${type.toUpperCase()}_DATABASE_URL`] });
@@ -45,6 +46,7 @@ export async function initPrismaClients() {
 		});
 	global.osbClient = global.osbClient ?? new OSBPrismaClient({ adapter: await getAdapter('osb') });
 	global.bsoClient = global.bsoClient ?? new BSOPrismaClient({ adapter: await getAdapter('bso') });
+	global.neoClient = global.neoClient ?? new BSOPrismaClient({ adapter: await getAdapter('neo') });
 }
 
 export { BSOPrismaClient, OSBPrismaClient, RobochimpPrismaClient };
