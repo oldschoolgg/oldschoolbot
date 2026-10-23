@@ -99,6 +99,7 @@ import {
 	revenantsCL,
 	roguesDenCL,
 	rooftopAgilityCL,
+	rumourCL,
 	sarachnisCL,
 	scorpiaCL,
 	shadesOfMorttonCL,
@@ -1070,9 +1071,14 @@ export const allCollectionLogs: ICollection = {
 				items: demonicGorillaCL,
 				fmtProg: kcProg(Monsters.DemonicGorilla)
 			},
-			///	'Hunter Guild': {
-			///		items: CollectionLog.HunterGuild.items
-			///	},
+			'Hunter Guild': {
+				alias: ['hunter guild', 'hunter', 'rumours'],
+				kcActivity: {
+					Default: async (_, __, stats) => stats.rumours.total
+				},
+				items: rumourCL,
+				isActivity: true
+			},
 			'Monkey Backpacks': {
 				alias: ['monkey', 'monkey bps', 'backpacks'],
 				kcActivity: {

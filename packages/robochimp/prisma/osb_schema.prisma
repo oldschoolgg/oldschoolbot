@@ -303,6 +303,9 @@ model User {
   minion_birdhouseTraps           Json?     @map("minion.birdhouseTraps") @db.Json
   finished_quest_ids              Int[]     @default([])
 
+  // Maps guild hunters to blocked creature IDs. Missing hunters are unblocked.
+  rumour_blocked_ids Json @default("{}") @db.Json
+
   // Relations
   farmedCrops    FarmedCrop[]
   botItemSell    BotItemSell[]
@@ -671,6 +674,9 @@ model StashUnit {
 }
 
 model UserStats {
+  // Completed rumour counts keyed by tier.
+  rumours Json @default("{}") @db.Json
+
   user_id                BigInt @id
   sell_gp                BigInt @default(0)
   items_sold_bank        Json   @default("{}") @db.Json
@@ -859,6 +865,7 @@ model HistoricalData {
 }
 
 enum activity_type_enum {
+  Rumour
   Agility
   Cooking
   MonsterKilling
@@ -1188,6 +1195,7 @@ model CLCategoryItem {
 }
 
 enum command_name_enum {
+  rumours
   cache_refresh
   testpotato
   achievementdiary

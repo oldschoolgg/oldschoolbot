@@ -55,6 +55,7 @@ import {
 	SpoilsOfWarTable
 } from '@/lib/simulation/misc.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
+import { hunterSackOpenables } from '@/lib/skilling/skills/hunter/rumours/util.js';
 import { FriendlyTask } from '@/lib/util/FriendlyTask.js';
 
 const CacheOfRunesTable = new LootTable()
@@ -686,6 +687,7 @@ export const allOpenables: UnifiedOpenable[] = [
 	},
 	...clueOpenables,
 	...osjsOpenables,
+	...hunterSackOpenables,
 	...shadeChestOpenables
 ];
 
