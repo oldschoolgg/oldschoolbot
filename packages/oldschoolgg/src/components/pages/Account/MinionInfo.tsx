@@ -1,8 +1,8 @@
+import type { FullMinionData } from '@oldschoolgg/schemas';
 import { useEffect, useState } from 'react';
 
 import { BankImage } from '@/components/BankImage/BankImage.js';
 import { UserIndentity } from '@/components/UserIdentity.js';
-import type { FullMinionData } from '../../../../../robochimp/src/http/api-types.js';
 
 function formatTimestamp(timestamp: string | null) {
 	if (!timestamp) {
@@ -70,7 +70,7 @@ export function MinionInfo({ data }: { data: FullMinionData }) {
 		'Collection Log': Object.keys(data.collection_log_bank).length,
 		Sacrificed: `${data.total_sacrificed_value.toLocaleString()} GP`
 	};
-	const hasCurrentActivityData = Object.hasOwn(data, 'current_activity');
+	const hasCurrentActivityData = 'current_activity' in data;
 	const currentActivity = hasCurrentActivityData ? data.current_activity : undefined;
 	return (
 		<div className="flex items-center justify-center flex-col">

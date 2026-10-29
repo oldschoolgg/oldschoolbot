@@ -1,0 +1,13 @@
+{
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		"lib": ["DOM", "DOM.Iterable"],
+		"rootDir": "src",
+		"composite": true,
+		"outDir": "dist",
+		"isolatedDeclarations": true,
+		"isolatedModules": true
+	},
+	"include": ["src/**/*.ts", "src/**/*.tsx"],
+	"exclude": ["dist", "node_modules", "tests"]
+}

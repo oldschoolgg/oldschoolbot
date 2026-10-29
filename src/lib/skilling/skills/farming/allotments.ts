@@ -28,7 +28,7 @@ const allotmentPlants: Plant[] = [
 		defaultNumOfPatches: 8,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[1, 2], // Canifs Patches (2)
@@ -68,7 +68,7 @@ const allotmentPlants: Plant[] = [
 		defaultNumOfPatches: 8,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[1, 2], // Canifs Patches (2)
@@ -108,7 +108,7 @@ const allotmentPlants: Plant[] = [
 		defaultNumOfPatches: 8,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[1, 2], // Canifs Patches (2)
@@ -148,7 +148,7 @@ const allotmentPlants: Plant[] = [
 		defaultNumOfPatches: 8,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[1, 2], // Canifs Patches (2)
@@ -188,7 +188,7 @@ const allotmentPlants: Plant[] = [
 		defaultNumOfPatches: 8,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[1, 2], // Canifs Patches (2)
@@ -228,7 +228,7 @@ const allotmentPlants: Plant[] = [
 		defaultNumOfPatches: 8,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[1, 2], // Canifs Patches (2)
@@ -268,7 +268,7 @@ const allotmentPlants: Plant[] = [
 		defaultNumOfPatches: 8,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[1, 2], // Canifs Patches (2)
@@ -308,7 +308,7 @@ const allotmentPlants: Plant[] = [
 		defaultNumOfPatches: 8,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[1, 2], // Canifs Patches (2)

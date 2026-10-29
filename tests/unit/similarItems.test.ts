@@ -151,6 +151,15 @@ describe('Gear', () => {
 
 	expect(getSimilarItems(itemID('Infernal max cape'))).toEqual([itemID('Infernal max cape')]);
 
+	test('Avernic treads variants count as matching style-specific boots', () => {
+		expect(new Gear({ feet: 'Avernic treads (max)' }).hasEquipped('Avernic treads (pr)')).toEqual(true);
+		expect(new Gear({ feet: 'Avernic treads (pr)(pe)' }).hasEquipped('Avernic treads (pe)')).toEqual(true);
+		expect(new Gear({ feet: 'Avernic treads (pe)(et)' }).hasEquipped('Avernic treads (et)')).toEqual(true);
+		expect(new Gear({ feet: 'Avernic treads' }).hasEquipped('Primordial boots')).toEqual(true);
+		expect(new Gear({ feet: 'Avernic treads' }).hasEquipped('Pegasian boots')).toEqual(true);
+		expect(new Gear({ feet: 'Avernic treads' }).hasEquipped('Eternal boots')).toEqual(true);
+	});
+
 	test('toa', () => {
 		const testGear = new Gear({ cape: 'Masori assembler max cape' });
 		expect(testGear.hasEquipped("Ava's assembler")).toEqual(true);

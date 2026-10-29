@@ -4,6 +4,6 @@ export const inviteCommand = defineCommand({
 	options: [],
 	run: async () => {
 		return `**Old School Bot (OSB):** https://discord.com/application-directory/303730326692429825
-**Bot School Old (BSO):** https://discord.com/application-directory/729244028989603850`;
+**Bot School Old (BSO):** https://discord.com/oauth2/authorize?client_id=729244028989603850`;
 	}
 });

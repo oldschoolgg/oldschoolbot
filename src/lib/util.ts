@@ -3,7 +3,7 @@ import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { convertXPtoLVL } from 'oldschooljs';
 
 import type { Prisma, User } from '@/prisma/main.js';
-import { type BitField, BitFieldData, MAX_LEVEL, MAX_XP } from '@/lib/constants.js';
+import { BitField, BitFieldData, MAX_LEVEL, MAX_XP } from '@/lib/constants.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
@@ -26,9 +26,13 @@ export function skillingPetDropRate(
 	return { petDropRate: dropRate };
 }
 
-function createUsernameWithBadges(user: Pick<User, 'username' | 'badges' | 'minion_ironman'>): string {
+function createUsernameWithBadges(user: Pick<User, 'username' | 'badges' | 'minion_ironman' | 'bitfield'>): string {
 	if (!user.username) return 'Unknown';
-	const badges = makeBadgeString(user.badges, user.minion_ironman);
+	const badges = makeBadgeString(
+		user.badges,
+		user.minion_ironman,
+		user.bitfield.includes(BitField.OriginalCyrSupporter)
+	);
 	return `${badges ? `${badges} ` : ''}${user.username}`;
 }
 
@@ -38,7 +42,7 @@ export async function fetchUsernameAndCache(_id: string | bigint): Promise<strin
 	if (!isValidDiscordSnowflake(id)) {
 		throw new Error(`Invalid userID: ${id}`);
 	}
-	const cached = await Cache._getBadgedUsernameRaw(id);
+	const cached = await Cache.getBadgedUsername(id);
 	if (cached) return cached;
 	let user = await prisma.user.upsert({
 		where: {
@@ -47,7 +51,8 @@ export async function fetchUsernameAndCache(_id: string | bigint): Promise<strin
 		select: {
 			username: true,
 			badges: true,
-			minion_ironman: true
+			minion_ironman: true,
+			bitfield: true
 		},
 		create: {
 			id

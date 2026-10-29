@@ -1,4 +1,5 @@
-import { dateFm } from '@oldschoolgg/discord';
+import { WebSocketShardStatus } from '@discordjs/ws';
+import { dateFm, EmbedBuilder } from '@oldschoolgg/discord';
 import type { GearSetup } from '@oldschoolgg/gear';
 import {
 	calcPerHour,
@@ -17,14 +18,15 @@ import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import { economy_transaction_type } from '@/prisma/main/enums.js';
 import type { ClientStorage } from '@/prisma/main.js';
-import { bulkUpdateCommands, itemOption } from '@/discord/index.js';
+import { adminBitfieldOption, bulkUpdateCommands, itemOption } from '@/discord/index.js';
+import { MessageBuilder } from '@/discord/MessageBuilder.js';
 import {
 	bitfieldCanUserManipulate,
 	changeBitFieldForUser,
 	getBitFieldData,
 	listBitFields
 } from '@/lib/bitFieldUtils.js';
-import { BadgesEnum, BitField, BitFieldData, badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
+import { BadgesEnum, BitField, badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { syncCustomPrices } from '@/lib/preStartup.js';
 import { countUsersWithItemInCl } from '@/lib/rawSql.js';
@@ -85,6 +87,77 @@ async function getAllTradedItems(giveUniques = false) {
 	}
 
 	return total;
+}
+
+function formatShardAckAge(lastAckAt?: number) {
+	if (!lastAckAt) return 'never';
+	const diff = Date.now() - lastAckAt;
+	if (diff < Time.Day) {
+		return `${Math.max(0, Math.floor(diff / Time.Second))}s`;
+	}
+	return formatDuration(diff);
+}
+
+function formatShardLatency(latency: number | null) {
+	if (latency === null) return '-';
+	if (!Number.isFinite(latency)) return 'timed out';
+	return `${latency}ms`;
+}
+
+function buildShardStatusResponse(
+	report: Awaited<ReturnType<typeof globalClient.getShardStatusReport>>,
+	options: { minimal?: boolean; shard?: number }
+) {
+	const filteredReport =
+		typeof options.shard === 'number' ? report.filter(entry => entry.shardId === options.shard) : report;
+
+	if (typeof options.shard === 'number' && filteredReport.length === 0) {
+		return `Shard \`${options.shard}\` was not found in the current shard status report.`;
+	}
+
+	const statusEmojis = {
+		ready: '\u{1F7E2}',
+		unhealthy: '\u26A0\uFE0F',
+		dead: '\u{1F534}',
+		failed: '\u2620\uFE0F'
+	};
+	const total = report.length;
+	const ready = filteredReport.filter(i => i.status === WebSocketShardStatus.Ready).length;
+	const failed = filteredReport.filter(i => i.health.label === 'failed').length;
+	const unhealthy = filteredReport.filter(i => i.health.isUnhealthy).length;
+	const dead = filteredReport.filter(i => i.health.isDead).length;
+	const overview = `Shards: ${total} total, ${ready} ready, ${failed} failed, ${unhealthy} unhealthy, ${dead} dead`;
+	const lines = filteredReport.map(entry => {
+		let emoji = statusEmojis.ready;
+		if (entry.health.isUnhealthy) emoji = statusEmojis.unhealthy;
+		if (entry.health.isDead) emoji = statusEmojis.dead;
+		if (entry.health.label === 'failed') emoji = statusEmojis.failed;
+		if (options.minimal) {
+			return `${entry.shardId},${emoji},${entry.statusName}`;
+		}
+		const avg = formatShardLatency(entry.health.avgLatency);
+		const last = formatShardLatency(entry.health.lastLatency);
+		const lastAck = formatShardAckAge(entry.stats?.lastAckAt);
+		return `${entry.shardId}: ${emoji} ${entry.health.label} | ${entry.statusName} | avg=${avg} | last=${last} | ack=${lastAck}`;
+	});
+	const details = lines.join('\n');
+	const fullOutput = [overview, details].filter(Boolean).join('\n');
+
+	if (fullOutput.length <= 1800) {
+		return fullOutput;
+	}
+
+	if (fullOutput.length <= 4000) {
+		return {
+			content: overview,
+			embeds: [new EmbedBuilder().setDescription(details)]
+		};
+	}
+
+	return {
+		content: overview,
+		files: [{ buffer: Buffer.from(fullOutput), name: 'shard-status.txt' }]
+	};
 }
 
 const viewableThings: {
@@ -211,11 +284,11 @@ WHERE blowpipe iS NOT NULL and (blowpipe->>'dartQuantity')::int != 0;`),
 		name: 'Most Active',
 		run: async () => {
 			const res = await prisma.$queryRawUnsafe<{ num: number; username: string }[]>(`
-SELECT sum(duration)::int as num, "new_user"."username", user_id
+SELECT sum(duration)::int as num, users.username, user_id
 FROM activity
-INNER JOIN "new_users" "new_user" on "new_user"."id" = "activity"."user_id"::text
+INNER JOIN users on users.id = activity.user_id::text
 WHERE start_date > now() - interval '2 days'
-GROUP BY user_id, "new_user"."username"
+GROUP BY user_id, users.username
 ORDER BY num DESC
 LIMIT 10;
 `);
@@ -398,6 +471,58 @@ export const adminCommand = defineCommand({
 			options: []
 		},
 		{
+			type: 'SubcommandGroup',
+			name: 'system',
+			description: 'System controls.',
+			options: [
+				{
+					type: 'Subcommand',
+					name: 'shard_status',
+					description: 'Show shard health and latency.',
+					options: [
+						{
+							type: 'Integer',
+							name: 'shard',
+							description: 'Show only a specific shard.',
+							required: false,
+							min_value: 0
+						},
+						{
+							type: 'Boolean',
+							name: 'minimal',
+							description: 'Show a compact CSV-style shard list.',
+							required: false
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'shard_restart',
+					description: 'Reconnect shards.',
+					options: [
+						{
+							type: 'String',
+							name: 'group',
+							description: 'Which shards to reconnect.',
+							required: false,
+							choices: [
+								{ name: 'unhealthy', value: 'unhealthy' },
+								{ name: 'all', value: 'all' },
+								{ name: 'dead', value: 'dead' }
+							]
+						},
+						{
+							type: 'Integer',
+							name: 'which',
+							description: 'Specific shard number from the latest shard_status output.',
+							required: false,
+							min_value: 0
+						}
+					]
+				}
+			]
+		},
+		{
 			type: 'Subcommand',
 			name: 'item_stats',
 			description: 'item stats',
@@ -533,30 +658,14 @@ export const adminCommand = defineCommand({
 					required: true
 				},
 				{
-					type: 'String',
+					...adminBitfieldOption,
 					name: 'add',
-					description: 'The bitfield to add',
-					required: false,
-					autocomplete: async ({ value, user }: StringAutoComplete) => {
-						return Object.entries(BitFieldData)
-							.filter(bf => {
-								if (bf[1].protected && !user.isAdmin()) return false;
-								if (!value) return true;
-								return stringMatches(bf[1].name, value);
-							})
-							.map(i => ({ name: i[1].name, value: i[0] }));
-					}
+					description: 'The bitfield to add'
 				},
 				{
-					type: 'String',
+					...adminBitfieldOption,
 					name: 'remove',
-					description: 'The bitfield to remove',
-					required: false,
-					autocomplete: async ({ value }: StringAutoComplete) => {
-						return Object.entries(BitFieldData)
-							.filter(bf => (!value ? true : bf[1].name.toLowerCase().includes(value.toLowerCase())))
-							.map(i => ({ name: i[1].name, value: i[0] }));
-					}
+					description: 'The bitfield to remove'
 				}
 			]
 		},
@@ -745,6 +854,7 @@ export const adminCommand = defineCommand({
 		}
 
 		if (options.shut_down) {
+			await ClientSettings.update({ shutdown: false });
 			globalClient.isShuttingDown = true;
 			const timer = Time.Second * 30;
 			await interaction.reply({
@@ -758,8 +868,38 @@ export const adminCommand = defineCommand({
 ${META_CONSTANTS.RENDERED_STR}`
 				})
 				.catch(noOp);
-			await gracefulExit(0);
+			gracefulExit(0);
 			return 'Turning off...';
+		}
+		if (options.system) {
+			const { shard_status: shardStatus, shard_restart: shardRestart } = options.system;
+			if (shardStatus) {
+				const report = await globalClient.getShardStatusReport();
+				return buildShardStatusResponse(report, {
+					minimal: shardStatus.minimal,
+					shard: shardStatus.shard
+				});
+			}
+			if (shardRestart) {
+				if (typeof shardRestart.which === 'number') {
+					await interaction.confirmation(`Reconnect shard \`${shardRestart.which}\`?`);
+					const restartedShardId = await globalClient.restartShardByID(shardRestart.which);
+					if (restartedShardId === null) {
+						return `Shard \`${shardRestart.which}\` was not found in the current shard status report.`;
+					}
+					return `Reconnected shard: ${restartedShardId}`;
+				}
+				if (shardRestart.group) {
+					const group = shardRestart.group as 'all' | 'dead' | 'unhealthy';
+					await interaction.confirmation(`Reconnect shards matching \`${group}\`?`);
+					const restarted = await globalClient.restartShards(group);
+					if (restarted.length === 0) return `No ${group} shards found.`;
+					return `Reconnected shards: ${restarted.join(', ')}`;
+				}
+				return 'You must specify either `which` (a shard number from `shard_status`) or `group`.';
+			}
+
+			return `Invalid System Command`;
 		}
 
 		/**

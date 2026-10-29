@@ -82,10 +82,12 @@ function getSlayerContext({
 
 	let effectiveSlayed = quantitySlayed;
 
-	// TODO: is this even right? it looks wrong
+	// If the task is NOT Zammy, you get 2 per Zammy kill
+	// (Not on Zammy task but Killing Kril means must be a greater demons task)
 	if (monsterID === EMonster.KRIL_TSUTSAROTH && slayerTaskMonsterID !== Monsters.KrilTsutsaroth.id) {
 		effectiveSlayed = quantitySlayed * 2;
 	} else if (monsterID === EMonster.KREEARRA && slayerTaskMonsterID !== Monsters.Kreearra.id) {
+		// 4 Aviansies
 		effectiveSlayed = quantitySlayed * 4;
 	} else if (
 		monsterID === EMonster.GROTESQUE_GUARDIANS &&
@@ -234,12 +236,10 @@ export function doMonsterTrip(data: newOptions) {
 			}
 
 			messages.push(
-				`${
-					hasPrayerLevel && !protectItem
-						? "Oh no! While running for your life, you panicked, got smited and couldn't protect a 4th item. "
-						: ''
-				}You died, you lost a lot of loot, and these equipped items: ${calc.lostItems}..${
-					reEquipedItems ? ' Your minion equips similar lost items from bank.' : ''
+				`${hasPrayerLevel && !protectItem
+					? "Oh no! While running for your life, you panicked, got smited and couldn't protect a 4th item. "
+					: ''
+				}You died, you lost a lot of loot, and these equipped items: ${calc.lostItems}..${reEquipedItems ? ' Your minion equips similar lost items from bank.' : ''
 				}`
 			);
 		}
@@ -336,7 +336,8 @@ export function doMonsterTrip(data: newOptions) {
 				quantity: finalQuantity,
 				cl: data.cl,
 				user: data.user,
-				messages
+				messages,
+				bitfield
 			});
 		}
 		if (
@@ -406,8 +407,7 @@ export function doMonsterTrip(data: newOptions) {
 			messages.push(handleSlayerTaskCompletion({ slayerContext, updateBank, hasKourendElite }));
 		} else {
 			messages.push(
-				`You killed ${slayerContext.effectiveSlayed}x of your ${
-					slayerContext.currentTask?.quantity_remaining
+				`You killed ${slayerContext.effectiveSlayed}x of your ${slayerContext.currentTask?.quantity_remaining
 				} remaining kills, you now have ${slayerContext.quantityLeft} kills remaining.`
 			);
 		}
@@ -551,7 +551,7 @@ export const monsterTask: MinionTask = {
 			return;
 		}
 		const { itemTransactionResult, rawResults } = resultOrError;
-		messages.push(...rawResults.filter(r => typeof r === 'string'));
+		messages.push(...rawResults.filter(r => typeof r === 'string' && r.trim().length > 0));
 		const str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name} (${calcPerHour(data.q, data.duration).toFixed(1)}/hr), you now have ${newKC} KC.`;
 
 		let image: Awaited<ReturnType<typeof makeBankImage>> | undefined;

@@ -8,13 +8,13 @@ import { pointsHandler } from '@/events/messageCreate/pointsHandler.js';
 import { userReactsHandler } from '@/events/messageCreate/userReactsHandler.js';
 import { handleMessageCreate } from '@/events/messageCreate.js';
 
+console.log(`Preparing bot client... token ${globalConfig.botToken.slice(0, 5)}...`);
 const client = new RoboChimpBotClient({
 	intents: [
 		GatewayIntentBits.Guilds,
 		GatewayIntentBits.GuildMessages,
 		GatewayIntentBits.GuildMessageReactions,
-		GatewayIntentBits.GuildWebhooks,
-		GatewayIntentBits.MessageContent
+		GatewayIntentBits.GuildWebhooks
 	],
 	initialPresence: {
 		activity: {

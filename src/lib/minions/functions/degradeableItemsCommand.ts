@@ -8,7 +8,8 @@ export async function degradeableItemsCommand(
 	interaction: MInteraction,
 	user: MUser,
 	input: string | undefined,
-	quantity: number | undefined
+	quantity: number | undefined,
+	method: string | undefined
 ): CommandResponse {
 	const item = degradeableItems.find(i => [i.item.name, ...i.aliases].some(n => stringMatches(n, input ?? '')));
 	const number = mahojiParseNumber({ input: quantity, min: 1, max: 1_000_000 });
@@ -23,8 +24,14 @@ ${degradeableItems
 	.join('\n')}`;
 	}
 
-	const cost = item.chargeInput.cost.clone().multiply(number);
-	const amountOfCharges = item.chargeInput.charges * number;
+	const useAlt = item.altChargeInput && method && stringMatches(method, item.altChargeInput.name);
+	if (item.altChargeInput && !method) {
+		return `This item can be charged two ways - specify a method:\n- \`runes\` (${item.chargeInput.cost} per ${item.chargeInput.charges} charge)\n- \`${item.altChargeInput.name}\` (${item.altChargeInput.cost} per ${item.altChargeInput.charges} charges)`;
+	}
+
+	const chargeInput = useAlt ? item.altChargeInput! : item.chargeInput;
+	const cost = chargeInput.cost.clone().multiply(number);
+	const amountOfCharges = chargeInput.charges * number;
 
 	if (!user.owns(cost)) {
 		return `You don't own ${cost}.`;
@@ -54,6 +61,7 @@ ${degradeableItems
 	} else {
 		await user.transactItems({ itemsToRemove: cost });
 	}
+
 	const currentCharges = user.user[item.settingsKey];
 	const newCharges = currentCharges + amountOfCharges;
 	await user.update({

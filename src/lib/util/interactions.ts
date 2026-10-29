@@ -30,6 +30,14 @@ export function makeAutoContractButton() {
 		.setEmoji({ id: EmojiId.Seedpack });
 }
 
+export function makeAutoFarmButton() {
+	return new ButtonBuilder()
+		.setCustomId(InteractionID.Commands.AutoFarm)
+		.setLabel('Auto Farm')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji({ id: EmojiId.Farming });
+}
+
 export function makeRepeatTripButton() {
 	return new ButtonBuilder()
 		.setCustomId(InteractionID.Commands.RepeatTrip)

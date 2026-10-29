@@ -232,12 +232,6 @@ export async function assignNewSlayerTask({ user, rng }: OSInteraction, master: 
 
 	const quantity = rng.randInt(assignedTask?.amount[0], maxQuantity);
 
-	// New user row must exist
-	await prisma.newUser.upsert({
-		where: { id: user.id },
-		create: { id: user.id },
-		update: {}
-	});
 	const currentTask = await prisma.slayerTask.create({
 		data: {
 			user_id: user.id,

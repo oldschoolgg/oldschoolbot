@@ -1,6 +1,6 @@
 import { bold } from '@oldschoolgg/discord';
 
-import { quests } from '@/lib/minions/data/quests.js';
+import { MAX_QP, quests } from '@/lib/minions/data/quests.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { SpecificQuestOptions } from '@/lib/types/minions.js';
 
@@ -10,8 +10,10 @@ export const specificQuestTask: MinionTask = {
 		const { channelId, questID } = data;
 
 		const quest = quests.find(quest => quest.id === questID)!;
+		const newQP = user.QP + quest.qp;
+		const questPointText = `${quest.qp.toLocaleString()} quest point${quest.qp === 1 ? '' : 's'}`;
 
-		let completionMessage = `${user}, ${user.minionName} finished ${bold(quest.name)}.`;
+		let completionMessage = `${user}, ${user.minionName} finished ${bold(quest.name)}, you received ${questPointText}. Your new total is ${newQP.toLocaleString()} quest points.`;
 
 		if (quest.rewards) {
 			await user.transactItems({ itemsToAdd: quest.rewards, collectionLog: true });
@@ -35,6 +37,10 @@ export const specificQuestTask: MinionTask = {
 				increment: quest.qp
 			}
 		});
+
+		if (newQP >= MAX_QP) {
+			completionMessage += `\n\nYou have achieved the maximum amount of ${MAX_QP} Quest Points!`;
+		}
 
 		handleTripFinish({ user, channelId, message: completionMessage, data });
 	}

@@ -1,4 +1,5 @@
 import { notEmpty, removeFromArr, stringMatches } from '@oldschoolgg/toolkit';
+import { MathRNG } from 'node-rng';
 import { EItem, type Monster, Monsters } from 'oldschooljs';
 
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
@@ -75,16 +76,19 @@ export async function slayerNewTaskCommand({
 	extraContent,
 	slayerMasterOverride,
 	saveDefaultSlayerMaster,
-	showButtons
+	showButtons,
+	ephemeralButtonResponse = true
 }: {
-	rng: RNGProvider;
+	rng?: RNGProvider;
 	user: MUser;
 	interaction: OSInteraction;
 	extraContent?: string;
 	slayerMasterOverride?: string | undefined;
 	saveDefaultSlayerMaster?: boolean;
 	showButtons?: boolean;
+	ephemeralButtonResponse?: boolean;
 }): CommandResponse {
+	if (!rng) rng = MathRNG;
 	const { currentTask } = await user.fetchSlayerInfo();
 	const { slayer_remember_master: rememberedSlayerMaster } = user.user;
 
@@ -160,7 +164,7 @@ export async function slayerNewTaskCommand({
 		if (showButtons) {
 			return {
 				content: `${extraContent ?? ''}\n\n${returnMessage}`,
-				ephemeral: true,
+				ephemeral: ephemeralButtonResponse,
 				components: slayerActionButtons
 			};
 		}
@@ -194,7 +198,7 @@ export async function slayerNewTaskCommand({
 			if (showButtons) {
 				return {
 					content: `You already have a slayer task: ${resultMessage}`,
-					ephemeral: true,
+					ephemeral: ephemeralButtonResponse,
 					components: slayerActionButtons
 				};
 			}
@@ -235,7 +239,7 @@ export async function slayerNewTaskCommand({
 	if (showButtons) {
 		return {
 			content: resultMessage,
-			ephemeral: true,
+			ephemeral: ephemeralButtonResponse,
 			components: slayerActionButtons
 		};
 	}

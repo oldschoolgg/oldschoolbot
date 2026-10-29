@@ -5,11 +5,28 @@ import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
 import type { GearPreset } from '@/prisma/main.js';
 import { choicesOf, defineOption } from '@/discord/index.js';
+import { BitFieldData } from '@/lib/constants.js';
 import { baseFilters, filterableTypes } from '@/lib/data/filterables.js';
 import { type GlobalPreset, globalPresets } from '@/lib/gear/gearPresets.js';
-import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { SkillsArray } from '@/lib/skilling/types.js';
 import { Gear } from '@/lib/structures/Gear.js';
+
+export const adminBitfieldOption = defineOption({
+	type: 'String',
+	name: 'bitfield',
+	description: 'A field of wonderous bits',
+	required: false,
+	autocomplete: async ({ value, user }: StringAutoComplete) => {
+		return Object.entries(BitFieldData)
+			.filter(bf => {
+				if (bf[1].protected && !user.isAdmin()) return false;
+				if (!value) return true;
+				return stringSearch(value, bf[1].name);
+			})
+			.map(i => ({ name: i[1].name, value: i[0] }));
+	}
+});
 
 export const filterOption = {
 	type: 'String',
@@ -26,7 +43,7 @@ export const filterOption = {
 	}
 } as const;
 
-const itemArr = Items.array().map(i => ({ ...i, key: `${i.name.toLowerCase()}${i.id}` }));
+export const itemArr = Items.array().map(i => ({ ...i, key: `${i.name.toLowerCase()}_${i.id}` }));
 
 export const tradeableItemArr = itemArr.filter(i => i.tradeable_on_ge);
 
@@ -53,7 +70,7 @@ export const monsterOption = defineOption({
 	description: 'The monster you want to pick.',
 	required: true,
 	autocomplete: async ({ value }: StringAutoComplete) => {
-		return killableMonsters
+		return effectiveMonsters
 			.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 			.map(i => ({ name: i.name, value: i.name }));
 	}

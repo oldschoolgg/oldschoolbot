@@ -22,16 +22,13 @@ export const mageTrainingTask: MinionTask = {
 			duration
 		});
 		const pizazzPoints = Math.floor((pizazzPointsPerHour / (Time.Minute * 60)) * duration);
-		await prisma.newUser.update({
-			where: { id: user.id },
+		const totalPizazzPoints = await prisma.minigame.update({
+			where: { user_id: user.id },
 			data: {
 				pizazz_points: {
 					increment: pizazzPoints
 				}
-			}
-		});
-		const totalPizazzPoints = await prisma.newUser.findUnique({
-			where: { id: user.id },
+			},
 			select: {
 				pizazz_points: true
 			}

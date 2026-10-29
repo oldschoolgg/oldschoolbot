@@ -1,11 +1,14 @@
 {
-	"extends": "../../../tsconfig.base.json",
-	"include": [".", "../src/**/*"],
+	"extends": "../tsconfig.monorepo.json",
+	"include": ["**/*.ts", "**/*.tsx"],
+	"exclude": [],
 	"compilerOptions": {
 		"noEmit": true,
 		"composite": false,
+		"rootDir": "..",
+		"baseUrl": "..",
 		"paths": {
-			"@/*": ["../src/*"]
+			"@/*": ["src/*"]
 		}
 	}
 }

@@ -198,7 +198,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		item: Items.getOrThrow('Weapon poison'),
-		aliases: ['weapon poison(+)'],
+		aliases: ['weapon poison'],
 		level: 60,
 		xp: 137.5,
 		inputItems: new Bank({ 'Kwuarm potion (unf)': 1, 'Dragon scale dust': 1 }),
@@ -354,6 +354,15 @@ const Potions: Mixable[] = [
 			'Toadflax potion (unf)': 1,
 			'Crushed nest': 1
 		}),
+		tickRate: 2,
+		bankTimePerPotion: 0.3
+	},
+	{
+		item: Items.getOrThrow('Surge potion(3)'),
+		aliases: ['surge potion (3)', 'surge potion', 'surge'],
+		level: 81,
+		xp: 185,
+		inputItems: new Bank({ 'Torstol potion (unf)': 1, 'Demonic tallow': 1 }),
 		tickRate: 2,
 		bankTimePerPotion: 0.3
 	},

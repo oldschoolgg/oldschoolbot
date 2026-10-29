@@ -8,7 +8,8 @@ async function handleAutocomplete(
 	guildId: string | null,
 	command: AnyCommand | undefined,
 	autocompleteData: IAutoCompleteInteractionOption[],
-	option?: CommandOption
+	option?: CommandOption,
+	rawOptions = autocompleteData
 ): Promise<APIApplicationCommandOptionChoice[]> {
 	if (!command || !autocompleteData) return [];
 	const data = autocompleteData.find(i => 'focused' in i && i.focused === true) ?? autocompleteData[0];
@@ -19,20 +20,20 @@ async function handleAutocomplete(
 		if (!subCommand || !data.options || !data.options[0] || subCommand.type !== 'Subcommand') {
 			return [];
 		}
-		const option = data.options[0].options?.find(t => t.focused);
-		if (!option) return [];
-		const subSubCommand = subCommand.options?.find(o => o.name === option.name);
-		return handleAutocomplete(user, guildId, command, [option], subSubCommand);
+		const focusedOption = data.options[0].options?.find(t => t.focused);
+		if (!focusedOption) return [];
+		const subSubCommand = subCommand.options?.find(o => o.name === focusedOption.name);
+		return handleAutocomplete(user, guildId, command, [focusedOption], subSubCommand, rawOptions);
 	}
 	if (data.type === ApplicationCommandOptionType.Subcommand) {
 		if (!data.options || !data.options[0]) return [];
 		const subCommand = command.options.find(c => c.name === data.name);
 		if (subCommand?.type !== 'Subcommand') return [];
-		const option = data.options.find(o => ('focused' in o ? Boolean(o.focused) : false)) ?? data.options[0];
-		const subOption = subCommand.options?.find(c => c.name === option.name);
+		const focusedOption = data.options.find(o => ('focused' in o ? Boolean(o.focused) : false)) ?? data.options[0];
+		const subOption = subCommand.options?.find(c => c.name === focusedOption.name);
 		if (!subOption) return [];
 
-		return handleAutocomplete(user, guildId, command, [option], subOption);
+		return handleAutocomplete(user, guildId, command, [focusedOption], subOption, rawOptions);
 	}
 
 	const optionBeingAutocompleted = option ?? command.options.find(o => o.name === data.name);
@@ -46,7 +47,8 @@ async function handleAutocomplete(
 			value: data.value as never,
 			user,
 			userId: user.id,
-			guildId
+			guildId,
+			rawOptions
 		});
 		return autocompleteResult.slice(0, 25).map(i => ({
 			name: i.name,

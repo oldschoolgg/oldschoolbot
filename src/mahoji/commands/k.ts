@@ -107,9 +107,7 @@ export const minionKCommand = defineCommand({
 			options.quantity,
 			options.method,
 			options.wilderness,
-			options.solo,
-			// @ts-expect-error: Passed by the bot only
-			options.onTask
+			options.solo
 		);
 	}
 });

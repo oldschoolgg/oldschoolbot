@@ -28,9 +28,5 @@ export default function itemIsTradeable(itemID: number | string, allowCoins = fa
 	if (allowCoins && osItem.id === EItem.COINS) return true;
 
 	if (specialTradeables.includes(osItem.id)) return true;
-	if (specialUntradeables.includes(osItem.id) || !('tradeable' in osItem) || !osItem.tradeable) {
-		return false;
-	}
-
-	return true;
+	return !(specialUntradeables.includes(osItem.id) || !('tradeable' in osItem) || !osItem.tradeable);
 }

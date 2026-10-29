@@ -29,7 +29,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 4,
 		canPayFarmer: false,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[1, 1], // Canifs Patch
@@ -68,7 +68,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 3,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[3, 1] // Etceteria patch (1)
@@ -107,7 +107,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 4,
 		canPayFarmer: false,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[1, 1], // Canifs Patch
@@ -146,7 +146,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 3,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[3, 1] // Etceteria patch (1)
@@ -184,7 +184,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 0,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[3, 2] // Underwater Fossil Island (2)
@@ -220,7 +220,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 4,
 		canPayFarmer: false,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[1, 1], // Canifs Patch
@@ -260,7 +260,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 4,
 		canPayFarmer: false,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[1, 1], // Canifs Patch
@@ -299,7 +299,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 4,
 		canPayFarmer: false,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[1, 1], // Canifs Patch
@@ -321,6 +321,8 @@ const specialPlants: Plant[] = [
 		harvestXp: 0,
 		inputItems: new Bank({ 'Teak seed': 1 }).freeze(),
 		outputLogs: itemID('Teak logs'),
+		outputLogsQuantity: 16,
+		logDepletionChance: 1 / 8,
 		treeWoodcuttingLevel: 35,
 		name: 'Teak tree',
 		aliases: ['teak tree', 'teak', 'teaks'],
@@ -340,7 +342,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 0,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[3, 3] // Fossil Island (3)
@@ -375,7 +377,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 12,
 		canPayFarmer: false,
 		canCompostPatch: false,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -409,7 +411,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 3,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[3, 1] // Etceteria patch (1)
@@ -447,7 +449,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 3,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[3, 1] // Etceteria patch (1)
@@ -485,7 +487,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 0,
 		canPayFarmer: false,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[1, 1] // Canifs patch (1)
@@ -521,7 +523,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 1,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -540,6 +542,8 @@ const specialPlants: Plant[] = [
 		harvestXp: 0,
 		inputItems: new Bank({ 'Mahogany seed': 1 }).freeze(),
 		outputLogs: itemID('Mahogany logs'),
+		outputLogsQuantity: 16,
+		logDepletionChance: 1 / 8,
 		treeWoodcuttingLevel: 50,
 		name: 'Mahogany tree',
 		aliases: ['mahogany tree', 'mahogany', 'mahog'],
@@ -559,7 +563,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 0,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[3, 3] // Fossil Island (3)
@@ -596,7 +600,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 4,
 		canPayFarmer: false,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[1, 1], // Canifs Patch
@@ -635,7 +639,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 3,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[3, 1] // Etceteria patch (1)
@@ -673,7 +677,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 1,
 		canPayFarmer: false,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -707,7 +711,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 1,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -742,7 +746,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 0,
 		canPayFarmer: false,
 		canCompostPatch: false,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -777,7 +781,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 3,
 		canPayFarmer: false,
 		canCompostPatch: false,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[3, 1] // Etceteria patch (1)
@@ -817,7 +821,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 1,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -858,7 +862,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 0,
 		canPayFarmer: false,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[33, 1] // Prifddinas (1)
@@ -898,7 +902,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 1,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -937,7 +941,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 0,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -956,6 +960,8 @@ const specialPlants: Plant[] = [
 		harvestXp: 0,
 		inputItems: new Bank({ 'Redwood tree seed': 1 }).freeze(),
 		outputLogs: itemID('Redwood logs'),
+		outputLogsQuantity: 22,
+		logDepletionChance: 1 / 11,
 		treeWoodcuttingLevel: 90,
 		name: 'Redwood tree',
 		aliases: ['redwood tree', 'redwood'],
@@ -975,7 +981,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 0,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
