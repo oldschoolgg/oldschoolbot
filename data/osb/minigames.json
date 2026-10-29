@@ -95,6 +95,11 @@
 		"column": "mahogany_homes"
 	},
 	{
+		"name": "Mastering Mixology",
+		"aliases": ["mixology", "herbtodt"],
+		"column": "mastering_mixology"
+	},
+	{
 		"name": "Nightmare Zone",
 		"aliases": ["nightmare zone", "nmz"],
 		"column": "nmz"
