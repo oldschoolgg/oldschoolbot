@@ -10,7 +10,10 @@ export class SimpleOpenable extends Openable {
 	public table: LootTable;
 
 	constructor(options: SimpleOpenableOptions) {
-		super({ ...options, allItems: options.table.allItems });
+		super({
+			...options,
+			allItems: Array.from(new Set([...options.table.allItems, ...(options.allItems ?? [])]))
+		});
 		this.table = options.table;
 	}
 
