@@ -236,10 +236,12 @@ export function doMonsterTrip(data: newOptions) {
 			}
 
 			messages.push(
-				`${hasPrayerLevel && !protectItem
-					? "Oh no! While running for your life, you panicked, got smited and couldn't protect a 4th item. "
-					: ''
-				}You died, you lost a lot of loot, and these equipped items: ${calc.lostItems}..${reEquipedItems ? ' Your minion equips similar lost items from bank.' : ''
+				`${
+					hasPrayerLevel && !protectItem
+						? "Oh no! While running for your life, you panicked, got smited and couldn't protect a 4th item. "
+						: ''
+				}You died, you lost a lot of loot, and these equipped items: ${calc.lostItems}..${
+					reEquipedItems ? ' Your minion equips similar lost items from bank.' : ''
 				}`
 			);
 		}
@@ -407,7 +409,8 @@ export function doMonsterTrip(data: newOptions) {
 			messages.push(handleSlayerTaskCompletion({ slayerContext, updateBank, hasKourendElite }));
 		} else {
 			messages.push(
-				`You killed ${slayerContext.effectiveSlayed}x of your ${slayerContext.currentTask?.quantity_remaining
+				`You killed ${slayerContext.effectiveSlayed}x of your ${
+					slayerContext.currentTask?.quantity_remaining
 				} remaining kills, you now have ${slayerContext.quantityLeft} kills remaining.`
 			);
 		}
