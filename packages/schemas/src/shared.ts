@@ -59,7 +59,7 @@ export type IPermission = z.infer<typeof ZPermission>;
 export const ZSnowflake = z.string().regex(/^\d+$/);
 export type ISnowflake = z.infer<typeof ZSnowflake>;
 
-export const ZBotType = z.enum(['osb', 'bso']);
+export const ZBotType = z.enum(['osb', 'bso', 'neo']);
 export type IBotType = z.infer<typeof ZBotType>;
 
 export const ZStringInteger = z.string().refine(
@@ -71,6 +71,11 @@ export const ZStringInteger = z.string().refine(
 );
 export type TStringInteger = z.infer<typeof ZStringInteger>;
 
-export const AServiceTypes = ['osb', 'bso', 'robochimp'] as const;
-export const ZServiceType = z.enum(['osb', 'bso', 'robochimp']);
+export const ZBigInt = z
+	.union([z.bigint(), z.number().int(), z.string().regex(/^-?\d+$/)])
+	.transform(value => BigInt(value));
+export type IBigInt = z.infer<typeof ZBigInt>;
+
+export const AServiceTypes = ['osb', 'bso', 'neo', 'robochimp'] as const;
+export const ZServiceType = z.enum(['osb', 'bso', 'neo', 'robochimp']);
 export type IServiceType = z.infer<typeof ZServiceType>;

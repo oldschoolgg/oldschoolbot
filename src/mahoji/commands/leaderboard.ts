@@ -36,6 +36,49 @@ async function kcLb(interaction: MInteraction, name: string, ironmanOnly: boolea
 	});
 }
 
+const delveActivities = {
+	doom_of_mokhaiotl: {
+		name: 'Doom of Mokhaiotl',
+		metrics: {
+			deepest: { name: 'Deepest Delve' },
+			deep: { name: 'Deep Delves' },
+			total: { name: 'Total Delves' }
+		}
+	}
+} as const;
+
+async function delvesLb(interaction: MInteraction, activity: string, metric: string, ironmanOnly: boolean) {
+	if (!(activity in delveActivities)) return "That's not a valid delve activity.";
+	const { name, metrics } = delveActivities[activity as keyof typeof delveActivities];
+	if (!(metric in metrics)) return "That's not a valid delve score.";
+	const { name: metricName } = metrics[metric as keyof typeof metrics];
+	const users = await prisma.$queryRaw<{ id: string; score: number }[]>`
+		 SELECT scores.id, scores.score
+		 FROM (
+			 SELECT user_id::text AS id, user_id,
+				 CASE ${metric}
+					 WHEN 'deepest' THEN doom_deepest_delve
+					 WHEN 'deep' THEN doom_deep_delves
+					 WHEN 'total' THEN doom_total_delves
+				 END AS score
+			 FROM user_stats
+		 ) scores
+		 WHERE scores.score > 0
+			 AND (NOT ${ironmanOnly} OR EXISTS (
+				 SELECT 1 FROM users
+				 WHERE users.id::bigint = scores.user_id AND users."minion.ironman" = true
+			 ))
+		 ORDER BY score DESC
+		 LIMIT 2000;
+	`;
+	return doMenuWrapper({
+		ironmanOnly,
+		interaction,
+		users,
+		title: `${name} ${metricName} Leaderboard`
+	});
+}
+
 async function farmingContractLb(interaction: MInteraction, ironmanOnly: boolean) {
 	const list = await prisma.$queryRawUnsafe<{ id: string; count: number }[]>(
 		`SELECT id::text as id, CAST("minion.farmingContract"->>'contractsCompleted' AS INTEGER) as count
@@ -637,6 +680,34 @@ export const leaderboardCommand = defineCommand({
 		},
 		{
 			type: 'Subcommand',
+			name: 'delves',
+			description: 'Check delve leaderboards.',
+			options: [
+				{
+					type: 'String',
+					name: 'activity',
+					description: 'The delve activity to rank.',
+					required: true,
+					choices: Object.entries(delveActivities).map(([value, activity]) => ({
+						name: activity.name,
+						value
+					}))
+				},
+				{
+					type: 'String',
+					name: 'metric',
+					description: 'The delve score to rank (defaults to Deepest Delve).',
+					required: false,
+					choices: Object.entries(delveActivities.doom_of_mokhaiotl.metrics).map(([value, metric]) => ({
+						name: metric.name,
+						value
+					}))
+				},
+				ironmanOnlyOption
+			]
+		},
+		{
+			type: 'Subcommand',
 			name: 'farming_contracts',
 			description: 'Check the farming contracts leaderboard.',
 			options: [ironmanOnlyOption]
@@ -877,6 +948,15 @@ export const leaderboardCommand = defineCommand({
 
 		if (options.kc) {
 			return kcLb(interaction, options.kc.monster, Boolean(options.kc.ironmen_only));
+		}
+
+		if (options.delves) {
+			return delvesLb(
+				interaction,
+				options.delves.activity,
+				options.delves.metric ?? 'deepest',
+				Boolean(options.delves.ironmen_only)
+			);
 		}
 
 		if (options.farming_contracts) {

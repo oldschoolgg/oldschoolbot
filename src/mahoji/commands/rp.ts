@@ -625,7 +625,13 @@ Date: ${dateFm(date)}`;
 				});
 			}
 			const userToView = await mUserFetch(options.player.view_user.user.user.id);
-			return msg + '\n' + (await getUserInfo(userToView)).everythingString;
+			const userInfo = await getUserInfo(userToView);
+			msg += `\n${userInfo.everythingString}`;
+			if (isAdmin) {
+				msg += `\n${userInfo.perkDebugInfo.join('\n')}`;
+			}
+
+			return msg;
 		}
 
 		if (options.player?.migrate_user) {
