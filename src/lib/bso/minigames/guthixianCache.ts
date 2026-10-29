@@ -1,39 +1,18 @@
-import { time } from '@oldschoolgg/discord';
-import { formatDuration, getInterval, Time } from '@oldschoolgg/toolkit';
+import { dateFm } from '@oldschoolgg/discord';
+import { formatDuration, getNextUTCReset, Time } from '@oldschoolgg/toolkit';
 
+import { CONSTANTS } from '@/lib/constants.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
-export const getGuthixianCacheInterval = () => getInterval(24);
-
-export async function userHasDoneCurrentGuthixianCache(user: MUser) {
-	const currentInterval = getGuthixianCacheInterval();
-
-	const lastTrips = await prisma.activity.findMany({
-		where: {
-			user_id: BigInt(user.id),
-			type: 'GuthixianCache'
-		},
-		orderBy: {
-			finish_date: 'desc'
-		},
-		take: 10
-	});
-	return lastTrips.some(
-		trip =>
-			trip.finish_date.getTime() > currentInterval.start.getTime() &&
-			trip.finish_date.getTime() < currentInterval.end.getTime()
-	);
-}
-
 export async function joinGuthixianCache(user: MUser, channelId: string) {
-	if (await user.minionIsBusy()) {
-		return `${user.minionName} is busy.`;
-	}
+	if (await user.minionIsBusy()) return `${user.minionName} is busy.`;
 
-	const currentInterval = getGuthixianCacheInterval();
+	const currentStats = await user.fetchStats();
+	const lastPlayedDate = Number(currentStats.last_guthixian_cache_timestamp);
+	const nextReset = getNextUTCReset(lastPlayedDate, CONSTANTS.GUTHIX_CACHE_CD);
 
-	if (await userHasDoneCurrentGuthixianCache(user)) {
-		return `You already participated in the current Guthixian Cache, try again at: ${time(currentInterval.end)}`;
+	if (Date.now() < nextReset) {
+		return `You already participated in the current Guthixian Cache, try again at: ${dateFm(new Date(nextReset))}`;
 	}
 
 	const task = await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({

@@ -1198,7 +1198,8 @@ export const testPotatoCommand = globalConfig.isProduction
 							gambling_lockout_expiry: null,
 							last_spawn_box_date: 0,
 							lastSpawnLamp: 0,
-							last_item_contract_date: 0
+							last_item_contract_date: 0,
+							last_bonanza_date: null
 						});
 						await prisma.userStats.upsert({
 							where: {
@@ -1206,13 +1207,14 @@ export const testPotatoCommand = globalConfig.isProduction
 							},
 							update: {
 								last_daily_timestamp: Date.now() - Time.Day,
-								last_tears_of_guthix_timestamp: Date.now() - Time.Day * 2
+								last_tears_of_guthix_timestamp: Date.now() - Time.Day * 10,
+								last_guthixian_cache_timestamp: Date.now() - Time.Day * 2
 							},
 							create: {
 								user_id: BigInt(user.id)
 							}
 						});
-						return 'Reset all your daily/TOG/item contract cooldowns, gambling lockout.';
+						return 'Reset your daily, TOG, bonanza, guthixian cache, item contract cooldowns, gambling lockout.';
 					}
 					if (thing === 'kc') {
 						await user.statsUpdate({
