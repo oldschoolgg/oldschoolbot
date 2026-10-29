@@ -91,6 +91,7 @@ export async function minionKillCommand(
 		slayerUnlocks: user.user.slayer_unlocks,
 		favoriteFood: user.user.favorite_food,
 		bitfield: user.bitfield,
+		hasWildyEliteDiary: user.hasDiary('wilderness.elite'),
 		currentPeak: generateDailyPeakIntervals().currentPeak,
 		rng
 	});
