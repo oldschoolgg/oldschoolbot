@@ -104,8 +104,10 @@ export interface KillableMonster {
 		ownedItems: Bank;
 		quantity: number;
 		cl: Bank;
-		bitfield?: readonly BitField[];
 		user?: MUser;
+		hasCompletedQuests?: boolean;
+		messages?: string[];
+		bitfield?: readonly BitField[];
 	}) => void;
 	effect?: KillableMonsterEffect;
 	degradeableItemUsage?: {

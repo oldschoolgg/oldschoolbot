@@ -82,6 +82,12 @@ export const killCommand = defineCommand({
 			description: 'On slayer task from a master?',
 			required: false,
 			choices: slayerMasterChoices
+		},
+		{
+			type: 'Boolean',
+			name: 'quests',
+			description: 'Assume all quests are completed? Defaults to false.',
+			required: false
 		}
 	],
 	run: async ({ options, user, interaction }) => {
@@ -94,6 +100,7 @@ export const killCommand = defineCommand({
 			bossName: options.name,
 			limit: await determineKillLimit(user),
 			catacombs: options.catacombs,
+			quests: options.quests ?? false,
 			onTask: options.master !== undefined,
 			slayerMaster: slayerMasters.find(sMaster => sMaster.name === options.master)?.osjsEnum,
 			lootTableTertiaryChanges: Array.from(
