@@ -105,6 +105,7 @@ export interface KillableMonster {
 		quantity: number;
 		cl: Bank;
 		user?: MUser;
+		hasCompletedQuests?: boolean;
 		messages?: string[];
 		bitfield?: readonly BitField[];
 	}) => void;
