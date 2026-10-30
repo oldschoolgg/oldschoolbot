@@ -15,7 +15,7 @@ import {
 import { formatDuration, formatOrdinal, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import type { MakePartyOptions } from '@/lib/types/index.js';
+import type { MakePartyOptions, SkillRequirements } from '@/lib/types/index.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 // Max people in a party:
@@ -23,6 +23,7 @@ const maxTeamSize = 20;
 // Limit party size boost to maxBoostSize * boostPerPlayer:
 const maxBoostSize = 5;
 const boostPerPlayer = 5;
+const allDgFloors = [1, 2, 3, 4, 5, 6, 7] as const;
 
 async function startCommand(
 	interaction: MInteraction,
@@ -193,6 +194,56 @@ async function buyCommand(user: MUser, name?: string, quantity?: number) {
 	return `Successfully purchased ${quantity}x ${item.name} for ${overallCost} Dungeoneering tokens.`;
 }
 
+function getMissingStats(user: MUser, requiredStats: SkillRequirements) {
+	const missingStats: SkillRequirements = {};
+	for (const [skill, requiredLevel] of Object.entries(requiredStats) as [keyof SkillRequirements, number][]) {
+		const currentLevel = skill === 'combat' ? user.combatLevel : user.skillsAsLevels[skill];
+		if (currentLevel < requiredLevel) {
+			missingStats[skill] = requiredLevel;
+		}
+	}
+	return missingStats;
+}
+
+function formatMissingStats(missingStats: SkillRequirements) {
+	return Object.keys(missingStats).length === 0 ? 'No Stats Missing' : formatSkillRequirements(missingStats);
+}
+
+function statsCommand(user: MUser) {
+	const maxFloor = calcMaxFloorUserCanDo(user);
+	let str = `<:dungeoneeringToken:829004684685606912> **Dungeoneering Tokens:** ${user.user.dungeoneering_tokens.toLocaleString()}
+**Max floor:** ${maxFloor}`;
+	const { boosts } = calcUserGorajanShardChance(user);
+	if (boosts.length > 0) {
+		str += `\n**Gorajan shard boosts:** ${boosts.join(', ')}`;
+	}
+	if (maxFloor < 7) {
+		const nextFloor = maxFloor + 1;
+		str += `\n**Missing stats for Floor ${nextFloor}:** ${formatMissingStats(
+			getMissingStats(user, requiredSkills(nextFloor))
+		)}`;
+	}
+	return str;
+}
+
+async function floorInfoCommand(user: MUser, floor: number) {
+	if (!isValidFloor(floor)) {
+		return "That's an invalid floor.";
+	}
+
+	const dungeonLength = Time.Minute * 5 * (floor / 2);
+	const quantity = Math.floor((await user.calcMaxTripLength('Dungeoneering')) / dungeonLength);
+	const duration = quantity * dungeonLength;
+	const requiredStats = requiredSkills(floor);
+	const missingStats = getMissingStats(user, requiredStats);
+
+	return `**Floor:** ${floor}
+**Duration:** ${formatDuration(duration)}
+**Quantity:** ${quantity}
+**Required Stats:** ${formatSkillRequirements(requiredStats)}
+**Missing Stats:** ${formatMissingStats(missingStats)}`;
+}
+
 export const dgCommand = defineCommand({
 	name: 'dg',
 	description: 'The Dungeoneering skill.',
@@ -226,8 +277,24 @@ export const dgCommand = defineCommand({
 		},
 		{
 			type: 'Subcommand',
-			name: 'stats',
-			description: 'See your Dungeoneering stats.'
+			name: 'info',
+			description: 'See your Dungeoneering stats or floor information.',
+			options: [
+				{
+					type: 'Integer',
+					name: 'floor_info',
+					description: 'The floor to show information for.',
+					autocomplete: async ({ value }: NumberAutoComplete) => {
+						const search = value?.toString() ?? '';
+						return allDgFloors
+							.filter(floor => floor.toString().includes(search))
+							.map(floor => ({ name: `Floor ${floor}`, value: floor }));
+					},
+					required: false,
+					min_value: 1,
+					max_value: 7
+				}
+			]
 		},
 		{
 			type: 'Subcommand',
@@ -259,12 +326,9 @@ export const dgCommand = defineCommand({
 		if (interaction) await interaction.defer();
 		if (options.start) return startCommand(interaction, channelId, user, options.start.floor, options.start.solo);
 		if (options.buy) return buyCommand(user, options.buy.item, options.buy.quantity);
-		let str = `<:dungeoneeringToken:829004684685606912> **Dungeoneering Tokens:** ${user.user.dungeoneering_tokens.toLocaleString()}
-**Max floor:** ${calcMaxFloorUserCanDo(user)}`;
-		const { boosts } = calcUserGorajanShardChance(user);
-		if (boosts.length > 0) {
-			str += `\n**Gorajan shard boosts:** ${boosts.join(', ')}`;
+		if (options.info) {
+			return options.info.floor_info ? floorInfoCommand(user, options.info.floor_info) : statsCommand(user);
 		}
-		return str;
+		return statsCommand(user);
 	}
 });
