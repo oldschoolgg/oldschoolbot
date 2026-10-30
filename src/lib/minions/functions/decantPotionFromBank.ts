@@ -3,11 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import Potions from '@/lib/minions/data/potions.js';
 
-export default function decantPotionFromBank(
-	userBank: Bank,
-	potion: string,
-	dose: number
-):
+type DecantPotionResult =
 	| {
 			potionsToAdd: Bank;
 			potionsToRemove: Bank;
@@ -18,7 +14,9 @@ export default function decantPotionFromBank(
 	  }
 	| {
 			error: string;
-	  } {
+	  };
+
+export default function decantPotionFromBank(userBank: Bank, potion: string, dose: number): DecantPotionResult {
 	const potionToDecant = Potions.find(pot => stringMatches(pot.name, potion));
 	if (!potionToDecant) {
 		return { error: "That's not a valid potion that you can decant." };
@@ -57,6 +55,52 @@ export default function decantPotionFromBank(
 		potionsToRemove,
 		sumOfPots,
 		potionName: potionToDecant.name,
+		finalUserBank: new Bank().add(userBank).add(potionsToAdd).remove(potionsToRemove),
+		error: null
+	};
+}
+
+export function decantAllPotionsFromBank(
+	userBank: Bank,
+	dose: number
+):
+	| {
+			potionsToAdd: Bank;
+			potionsToRemove: Bank;
+			sumOfPots: number;
+			potionNames: string[];
+			finalUserBank: Bank;
+			error: null;
+	  }
+	| {
+			error: string;
+	  } {
+	const potionsToAdd = new Bank();
+	const potionsToRemove = new Bank();
+	const potionNames: string[] = [];
+	let sumOfPots = 0;
+
+	for (const potion of Potions) {
+		if (potion.items.length < dose) continue;
+
+		const result = decantPotionFromBank(userBank, potion.name, dose);
+		if (result.error !== null) continue;
+
+		potionsToAdd.add(result.potionsToAdd);
+		potionsToRemove.add(result.potionsToRemove);
+		potionNames.push(result.potionName);
+		sumOfPots += result.sumOfPots;
+	}
+
+	if (potionsToRemove.length === 0) {
+		return { error: `You don't have any potions that can be decanted to ${dose}-dose.` };
+	}
+
+	return {
+		potionsToAdd,
+		potionsToRemove,
+		sumOfPots,
+		potionNames,
 		finalUserBank: new Bank().add(userBank).add(potionsToAdd).remove(potionsToRemove),
 		error: null
 	};
