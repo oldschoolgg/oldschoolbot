@@ -73,7 +73,7 @@ export const discoBloodbathTask: MinionTask = {
 		}
 		let crashMessage = '';
 		if (data.isCrashing) {
-			const goodAestheticScore = scored.points[data.theme.good as DiscoAesthetic] ?? 0;
+			const goodAestheticScore = scored.rawPoints[data.theme.good as DiscoAesthetic] ?? 0;
 			const crashSuccessChance = Math.min(95, (goodAestheticScore / 3000) * data.popularity);
 			const crashedWithStyle = rng.percentChance(crashSuccessChance);
 			for (const aesthetic of Object.keys(gained) as DiscoAesthetic[]) {
