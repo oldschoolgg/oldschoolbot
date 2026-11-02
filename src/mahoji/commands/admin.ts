@@ -228,18 +228,23 @@ function findDiscontinuedStaffBestowItems(schedule: StaffGrants) {
 async function generateAdminGEListingsImage({
 	user,
 	listingData,
-	unlockedSlots
+	unlockedSlots,
+	trim
 }: {
 	user: MUser;
 	listingData: GEListingWithTransactions[];
 	unlockedSlots: number;
+	trim?: true;
 }) {
 	await CanvasModule.waitTillReady();
 	if (!GeImageGenerator.ready) await GeImageGenerator.init();
 
 	const rowLength = 4;
 	const startY = 78;
-	const slotCount = Math.ceil(Math.max(listingData.length, unlockedSlots) / rowLength) * rowLength;
+	const slotCount =
+		Math.ceil(
+			(trim ? Math.max(listingData.length, rowLength) : Math.max(listingData.length, unlockedSlots)) / rowLength
+		) * rowLength;
 	const rowCount = Math.max(1, slotCount / rowLength);
 	const height = startY + rowCount * GeImageGenerator.geSlotOpen!.height + (rowCount - 1) * 10 + 10;
 	const canvas = new OSRSCanvas({ width: GeImageGenerator.geInterface!.width, height });
@@ -274,6 +279,7 @@ async function generateAdminGEListingsImage({
 
 	await GeImageGenerator.addInterfaceSlots(canvas, listingData, {
 		unlockedSlots,
+		trim,
 		rowLength,
 		startY,
 		user
@@ -291,11 +297,17 @@ const adminRunnableCommands: AdminRunnableCommand[] = [
 				name: 'userId',
 				description: 'The user in Discord ID format.',
 				required: true
+			},
+			{
+				name: 'view',
+				description: 'Use "all" to include recent completed listings.'
 			}
 		],
-		run: async ({ arg1 }) => {
+		run: async ({ arg1, arg2, adminUser }) => {
 			if (!arg1 || !isValidDiscordSnowflake(arg1)) return 'Not a valid User ID.';
 
+			const showAll = arg2 === 'all';
+			const isAdmin = adminUser.isAdmin;
 			const user = await mUserFetch(arg1);
 			const activeListings = await prisma.gEListing.findMany({
 				where: {
@@ -314,34 +326,41 @@ const adminRunnableCommands: AdminRunnableCommand[] = [
 					created_at: 'desc'
 				}
 			});
-			const recentInactiveListings = await prisma.gEListing.findMany({
-				where: {
-					user_id: user.id,
-					OR: [
-						{
-							fulfilled_at: {
-								not: null
-							}
+			const recentInactiveListings = showAll
+				? await prisma.gEListing.findMany({
+						where: {
+							user_id: user.id,
+							...(isAdmin ? {} : { cancelled_at: null }),
+							OR: [
+								{
+									fulfilled_at: {
+										not: null
+									}
+								},
+								{
+									quantity_remaining: 0
+								},
+								...(isAdmin
+									? [
+											{
+												cancelled_at: {
+													not: null
+												}
+											}
+										]
+									: [])
+							]
 						},
-						{
-							cancelled_at: {
-								not: null
-							}
+						include: {
+							buyTransactions: true,
+							sellTransactions: true
 						},
-						{
-							quantity_remaining: 0
-						}
-					]
-				},
-				include: {
-					buyTransactions: true,
-					sellTransactions: true
-				},
-				orderBy: {
-					created_at: 'desc'
-				},
-				take: 5
-			});
+						orderBy: {
+							created_at: 'desc'
+						},
+						take: 5
+					})
+				: [];
 			const slots = await GrandExchange.calculateSlotsOfUser(user);
 			const activeListingText = activeListings.length
 				? (
@@ -356,20 +375,21 @@ const adminRunnableCommands: AdminRunnableCommand[] = [
 			const recentInactiveListingText = recentInactiveListings.length
 				? recentInactiveListings.map(i => geListingToString(i)).join('\n')
 				: '-- No Listings --';
+			const listingSections = [
+				`**Active Listings**\n${activeListingText}`,
+				`**Recent ${isAdmin ? 'Fulfilled/Cancelled' : 'Fulfilled'} Listings**\n${recentInactiveListingText}`
+			];
 
 			return {
-				embeds: [
-					new EmbedBuilder().setDescription(
-						`**Active Listings**\n${activeListingText}\n\n**Recent Fulfilled/Cancelled Listings**\n${recentInactiveListingText}`
-					)
-				],
+				embeds: showAll ? [new EmbedBuilder().setDescription(listingSections.join('\n\n'))] : [],
 				files: [
 					{
 						name: 'ge-listings.png',
 						buffer: await generateAdminGEListingsImage({
 							user,
 							listingData: activeListings,
-							unlockedSlots: slots.slots
+							unlockedSlots: slots.slots,
+							...(!showAll ? { trim: true } : {})
 						})
 					}
 				]

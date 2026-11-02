@@ -134,6 +134,7 @@ class GeImageGeneratorSingleton {
 		listingData: GEListingWithTransactions[],
 		extra: {
 			unlockedSlots?: number;
+			trim?: true;
 			page?: number;
 			rowLength?: number;
 			rowCount?: number;
@@ -154,7 +155,11 @@ class GeImageGeneratorSingleton {
 		const remainingUnlockedSlots = Math.max(0, unlockedSlots - pageStart);
 		const slotCount = isPaged
 			? pageSize
-			: Math.ceil(Math.max(listingData.length, unlockedSlots) / rowLength) * rowLength;
+			: Math.ceil(
+					(extra.trim
+						? Math.max(listingData.length, rowLength)
+						: Math.max(listingData.length, unlockedSlots)) / rowLength
+				) * rowLength;
 
 		for (let indexOnCanvas = 0; indexOnCanvas < slotCount; indexOnCanvas++) {
 			const slotIndex = pageStart + indexOnCanvas;
