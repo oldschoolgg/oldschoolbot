@@ -23,6 +23,8 @@ export interface MockUserArgs {
 	meleeGear?: GearSetup | PartialGearSetup;
 	skills_agility?: number;
 	skills_attack?: number;
+	skills_farming?: number;
+	skills_woodcutting?: number;
 	skills_strength?: number;
 	skills_ranged?: number;
 	skills_magic?: number;
@@ -32,6 +34,7 @@ export interface MockUserArgs {
 	skills_fishing?: number;
 	GP?: number;
 	bitfield?: BitField[];
+	favorite_alchables?: number[];
 	id?: string;
 }
 
@@ -55,14 +58,14 @@ const mockUser = (overrides?: MockUserArgs): User => {
 		skills_fishing: overrides?.skills_fishing ?? 0,
 		skills_mining: 0,
 		skills_smithing: 0,
-		skills_woodcutting: 0,
+		skills_woodcutting: overrides?.skills_woodcutting ?? 0,
 		skills_firemaking: 0,
 		skills_runecraft: 0,
 		skills_crafting: 0,
 		skills_prayer: overrides?.skills_prayer ?? 0,
 		skills_fletching: 0,
 		skills_thieving: 0,
-		skills_farming: 0,
+		skills_farming: overrides?.skills_farming ?? 0,
 		skills_herblore: 0,
 		skills_hunter: 0,
 		skills_construction: 0,
@@ -75,12 +78,16 @@ const mockUser = (overrides?: MockUserArgs): User => {
 		skills_hitpoints: overrides?.skills_hitpoints ?? convertLVLtoXP(10),
 		GP: overrides?.GP ?? 0,
 		bitfield: overrides?.bitfield ?? [],
+		favorite_alchables: overrides?.favorite_alchables ?? [],
 		username: 'Magnaboy',
 		QP: overrides?.QP ?? 0,
 		sacrificedValue: 0,
 		id: overrides?.id ?? '',
 		monsterScores: {},
-		badges: []
+		badges: [],
+		minion_farmingContract: null,
+		minion_farmingPreferredContract: false,
+		minion_farmingPreferredSeeds: {}
 	} as unknown as User;
 
 	return r;

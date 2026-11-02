@@ -18,6 +18,7 @@ import { cookingTask } from '@/tasks/minions/cookingActivity.js';
 import { craftingTask } from '@/tasks/minions/craftingActivity.js';
 import { cutLeapingFishTask } from '@/tasks/minions/cutLeapingFishActivity.js';
 import { darkAltarTask } from '@/tasks/minions/darkAltarActivity.js';
+import { doomOfMokhaiotlTask } from '@/tasks/minions/doomOfMokhaiotlActivity.js';
 import { enchantingTask } from '@/tasks/minions/enchantingActivity.js';
 import { farmingTask } from '@/tasks/minions/farmingActivity.js';
 import { firemakingTask } from '@/tasks/minions/firemakingActivity.js';
@@ -96,6 +97,7 @@ import { underwaterAgilityThievingTask } from '@/tasks/minions/underwaterActivit
 import { vmTask } from '@/tasks/minions/volcanicMineActivity.js';
 import { wealthChargeTask } from '@/tasks/minions/wealthChargingActivity.js';
 import { woodcuttingTask } from '@/tasks/minions/woodcuttingActivity.js';
+import { yamaTask } from '@/tasks/minions/yamaActivity.js';
 
 type MinionTaskRunOptions = {
 	user: MUser;
@@ -132,6 +134,7 @@ export const allTasks: MinionTask[] = [
 	castleWarsTask,
 	championsChallengeTask,
 	chompHuntTask,
+	yamaTask,
 	fightCavesTask,
 	gauntletTask,
 	gnomeResTask,
@@ -217,6 +220,7 @@ export const allTasks: MinionTask[] = [
 	camdozaalFishingTask,
 	myNotesTask,
 	colosseumTask,
+	doomOfMokhaiotlTask,
 	CreateForestersRationsTask,
 	buyTask
 ];

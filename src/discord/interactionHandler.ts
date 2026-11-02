@@ -21,9 +21,10 @@ export async function interactionHandler(client: OldSchoolBotClient, itx: APIInt
 	const userId = user.id;
 
 	if (!DISCORD_USER_IDS_INSERTED_CACHE.has(userId) && user) {
-		client.upsertDiscordUser(user);
+		void client.upsertDiscordUser(user);
 	}
 
+	if (user?.username) await Cache.updateUsername(user.id, user.username);
 	const fullUser = await mUserFetch(userId);
 
 	if (itx.type === InteractionType.ApplicationCommandAutocomplete) {

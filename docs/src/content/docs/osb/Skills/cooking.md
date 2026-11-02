@@ -27,3 +27,5 @@ The first 3 things listed below will allow for increased cooking rates due to le
 - Hosidius Range
 - Elite Kourend & Kebos diary
 - 92 Cooking allows for Karambwans to be '1-ticked'
+
+At 92 Cooking, you can also use [[/cook name\:Karambwan Shop Cook + Drop]] to buy raw karambwans from a shop, cook them, and drop the cooked karambwans for around 450k-480k Cooking XP/hr. This costs 133 GP per raw karambwan and gives no items.

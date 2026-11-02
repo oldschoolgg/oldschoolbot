@@ -1,5 +1,5 @@
-import { SimpleTable, sumArr } from '@oldschoolgg/toolkit';
-import { Bank, type LootBank, LootTable } from 'oldschooljs';
+import { sumArr } from '@oldschoolgg/toolkit';
+import { Bank, type LootBank, LootTable, SimpleTable } from 'oldschooljs';
 
 import { TOBRooms } from '@/lib/data/tob.js';
 import { assert } from '@/lib/util/logError.js';

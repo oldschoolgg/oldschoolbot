@@ -44,7 +44,7 @@ export const shadesOfMortonTask: MinionTask = {
 				source: 'ShadesOfMorton'
 			});
 
-			const str = `${user}, Your minion finished oiling ${quantity}x ${recipe.pyreLogs.name} and received ${xpStr}.`;
+			const str = `${user}, Your minion finished oiling ${quantity}x ${recipe.pyreLogs.name}. ${xpStr}.`;
 			return handleTripFinish({ user, channelId, message: str, data, loot: itemsAdded });
 		}
 

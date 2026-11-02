@@ -40,7 +40,7 @@ const phosaniBISGear = new Gear({
 	cape: 'Infernal cape',
 	hands: 'Ferocious gloves',
 	legs: "Inquisitor's plateskirt",
-	feet: 'Primordial boots',
+	feet: 'Avernic treads (max)',
 	ring: 'Ultor ring',
 	weapon: "Inquisitor's mace",
 	shield: 'Avernic defender',
