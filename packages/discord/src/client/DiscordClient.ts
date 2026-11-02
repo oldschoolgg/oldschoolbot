@@ -270,8 +270,9 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 
 	async editMessage(channelId: string, messageId: string, body: SendableMessage): Promise<void> {
 		const route = Routes.channelMessage(channelId, messageId);
+		const { message } = await this.sendableMsgToApiCreate(body);
 		await this.rest.patch(route, {
-			body
+			body: message
 		});
 	}
 

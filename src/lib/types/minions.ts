@@ -544,6 +544,7 @@ export interface RaidsOptions extends ActivityTaskOptionsWithUsers {
 export interface TheatreOfBloodTaskOptions extends ActivityTaskOptionsWithUsers {
 	type: 'TheatreOfBlood';
 	leader: string;
+	isFakeMass?: boolean;
 	hardMode: boolean;
 	fakeDuration: number;
 	wipedRooms: (null | number)[];
