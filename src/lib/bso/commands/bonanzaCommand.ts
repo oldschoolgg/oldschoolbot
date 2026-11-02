@@ -1,15 +1,17 @@
-import { formatDuration, Time } from '@oldschoolgg/toolkit';
+import { dateFm } from '@oldschoolgg/discord';
+import { formatDuration, getNextUTCReset, Time } from '@oldschoolgg/toolkit';
 import { randomVariation } from 'node-rng';
 
+import { CONSTANTS } from '@/lib/constants.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
 export async function bonanzaCommand(user: MUser, channelId: string) {
 	if (await user.minionIsBusy()) return 'Your minion is busy.';
 	const lastPlayedDate = Number(user.user.last_bonanza_date);
-	const difference = Date.now() - lastPlayedDate;
-	if (difference < Time.Day * 7) {
-		const duration = formatDuration(Date.now() - (lastPlayedDate + Time.Day * 7));
-		return `You can only participate in Balthazar's Big Bonanza once per week, you can do it again in ${duration}.`;
+	const nextReset = getNextUTCReset(lastPlayedDate, CONSTANTS.BALTHAZARS_BIG_BONANZA_CD);
+
+	if (Date.now() < nextReset) {
+		return `You can only participate in Balthazar's Big Bonanza once per week, you can do it again in ${dateFm(new Date(nextReset))}.`;
 	}
 
 	const duration = randomVariation(Time.Minute * 15, 5);

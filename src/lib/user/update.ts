@@ -44,6 +44,7 @@ type PrismaIntKeys =
 	| 'carpenter_points'
 	| 'zeal_tokens'
 	| 'slayer_points'
+	| 'claimed_glamour_box'
 	| 'sacrificedValue'
 	| DegradeableItemColumns;
 
@@ -59,13 +60,16 @@ type PrismaNullableStringKeys =
 	| 'minion_icon'
 	| 'minion_name'
 	| 'bank_bg_hex'
+	| 'bank_bg_purple_color'
 	| 'username'
 	| 'RSN'
 	| 'username_with_badges'
 	| 'slayer_remember_master'
 	| 'icon_pack_id';
 
-type PrismaBooleanKeys = 'minion_defaultPay' | 'minion_ironman' | 'minion_hasBought';
+type PrismaBooleanKeys = 'minion_defaultPay' | 'minion_ironman' | 'minion_hasBought' | 'bloodbath_event_started';
+
+type PrismaNullableBooleanKeys = 'bank_bg_purple_glow';
 
 type BSOUserUpdateInput = {
 	magic_words_guessed: string[];
@@ -122,6 +126,7 @@ export type FullUserUpdateInput = Partial<
 		Record<PrismaDateKeys, Date | null> &
 		Record<PrismaNullableStringKeys, string | null> &
 		Record<PrismaBooleanKeys, boolean> &
+		Record<PrismaNullableBooleanKeys, boolean | null> &
 		Record<GearColumns, GearSetup | null> &
 		BSOUserUpdateInput
 >;

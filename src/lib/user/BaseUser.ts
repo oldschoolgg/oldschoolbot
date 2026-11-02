@@ -242,6 +242,10 @@ export class BaseUser {
 		return this.user.QP;
 	}
 
+	get lazy_boxes_claimed() {
+		return this.user.claimed_lazy_box;
+	}
+
 	get autoFarmFilter() {
 		return this.user.auto_farm_filter;
 	}

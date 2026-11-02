@@ -64,6 +64,7 @@ import type {
 	CreateForestersRationsActivityTaskOptions,
 	CutLeapingFishActivityTaskOptions,
 	DarkAltarOptions,
+	DiscoBloodbathActivityTaskOptions,
 	EnchantingActivityTaskOptions,
 	FarmingActivityTaskOptions,
 	FiremakingActivityTaskOptions,
@@ -114,6 +115,8 @@ export const taskCanBeRepeated = (activity: Activity, user: MUser, taskIndex: nu
 	if (data.type === activity_type_enum.Farming) {
 		return taskIndex === 0 && data.autoFarmed;
 	}
+  if (activity.type === activity_type_enum.DiscoBloodbath && (activity.data as { isRave?: boolean }).isRave) {
+		return false;
 	if (activity.type === activity_type_enum.ClueCompletion) {
 		const realActivity = ActivityManager.convertStoredActivityToFlatActivity(activity) as ClueActivityTaskOptions;
 		return (
@@ -241,6 +244,12 @@ const tripHandlers: {
 	[activity_type_enum.ArchonEvent]: {
 		commandName: 'm',
 		args: () => ({})
+	},
+	[activity_type_enum.DiscoBloodbath]: {
+		commandName: 'disco',
+		args: (data: DiscoBloodbathActivityTaskOptions) => ({
+			party: { club_name: data.club, crash: undefined }
+		})
 	},
 	[activity_type_enum.BirthdayEvent]: {
 		commandName: 'm',

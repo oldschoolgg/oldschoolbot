@@ -1,8 +1,7 @@
-import { calcPercentOfNum, calcWhatPercent, Time } from '@oldschoolgg/toolkit';
+import { calcPercentOfNum, calcWhatPercent, getCyrTripBonus, RoboChimpBit, Time } from '@oldschoolgg/toolkit';
 
 import type { activity_type_enum } from '@/prisma/main.js';
 import { BitField, PerkTier } from '@/lib/constants.js';
-import { getCyrTripBonus, RobochimpBitfieldEnum } from '@/lib/perkTiers.js';
 
 export function patronMaxTripBonus(perkTier: PerkTier) {
 	if (perkTier === PerkTier.Two) return Time.Minute * 3;
@@ -13,11 +12,20 @@ export function patronMaxTripBonus(perkTier: PerkTier) {
 
 export async function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
 	const perkTier = await user.fetchPerkTier({ forceNoCache: true });
-	const roboBits = (await Cache.getRoboChimpUser(user.id)).bits;
+	const roboUser = await Cache.getRoboChimpUser(user.id);
+	const roboBits = roboUser.bits;
 	let max = Time.Minute * 30;
-	max += Math.max(patronMaxTripBonus(perkTier), getCyrTripBonus(roboBits));
+	max += Math.max(
+		patronMaxTripBonus(perkTier),
+		getCyrTripBonus({
+			patreonBits: roboBits,
+			premiumTier: roboUser.premium_balance_tier,
+			premiumIsCyr: roboUser.premium_balance_is_cyr,
+			premiumExpiry: roboUser.premium_balance_expiry_date
+		})
+	);
 
-	if (roboBits.includes(RobochimpBitfieldEnum.BonusMinute)) {
+	if (roboBits.includes(RoboChimpBit.BonusMinute)) {
 		max += Time.Minute * 3;
 	}
 
@@ -39,7 +47,8 @@ export async function calcMaxTripLength(user: MUser, activity?: activity_type_en
 		case 'TombsOfAmascut':
 		case 'Pickpocket':
 		case 'SoulWars':
-		case 'Cyclops': {
+		case 'Cyclops':
+		case 'DiscoBloodbath': {
 			masterHPCapeBoost = 20;
 			regularHPBoost = true;
 			break;
@@ -83,18 +92,6 @@ export async function calcMaxTripLength(user: MUser, activity?: activity_type_en
 			}
 			if (user.usingPet('Shelldon')) {
 				max *= 1.25;
-			}
-			break;
-		}
-		case 'BeachCombing': {
-			if (user.usingPet('Patricia')) {
-				max *= 2;
-			}
-			if (user.usingPet('Partycrab')) {
-				max += Time.Minute * 30;
-			}
-			if (user.usingPet('Shelldon')) {
-				max += Time.Minute * 25;
 			}
 			break;
 		}

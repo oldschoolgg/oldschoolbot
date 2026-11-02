@@ -2,7 +2,14 @@ import { Hono } from 'hono';
 
 import { type HonoServerGeneric, httpErr } from '@/http/serverUtil.js';
 import { type GithubSponsorsWebhookData, verifyGithubSecret } from '@/lib/githubSponsor.js';
-import { parseStrToTier, patreonTask, verifyPatreonSecret } from '@/lib/patreon.js';
+import {
+	getVerifiedPatreonCampaign,
+	handlePatreonWebhook,
+	isPatreonEvent,
+	logIgnoredPatreonWebhook,
+	parseStrToTier,
+	patreonTask
+} from '@/lib/patreon.js';
 import { RUser } from '@/structures/RUser.js';
 
 export const webhooksServer = new Hono<HonoServerGeneric>();
@@ -12,21 +19,31 @@ webhooksServer.post('/patreon', async c => {
 	if (!signature) return httpErr.BAD_REQUEST({ message: 'Missing header' });
 
 	const raw = await c.req.text();
-	if (!raw || typeof raw !== 'string') {
+	if (!raw) {
 		return httpErr.BAD_REQUEST({ message: 'Missing body' });
 	}
 
 	console.log('Patreon webhook coming in...');
-	const isVerified = verifyPatreonSecret(raw, signature);
-	if (!isVerified) return httpErr.BAD_REQUEST({ message: 'Unverified' });
-	console.log('Verified! Syncing patreon...');
+	const campaign = getVerifiedPatreonCampaign(raw, signature);
+	if (!campaign) return httpErr.BAD_REQUEST({ message: 'Unverified' });
 
-	// biome-ignore lint/nursery/noFloatingPromises:-
-	patreonTask.run().then(res => {
-		if (res) {
-			console.log(res.join('\n').slice(0, 1950));
+	const patreonEvent = c.req.header('X-Patreon-Event');
+	if (!isPatreonEvent(patreonEvent)) {
+		console.log(`Ignoring Patreon webhook event ${patreonEvent ?? 'unknown'}.`);
+		await logIgnoredPatreonWebhook(raw, patreonEvent ?? null, campaign);
+		return c.text('OK');
+	}
+
+	console.log(`Verified Patreon ${patreonEvent} webhook for ${campaign.source}.`);
+	try {
+		const result = await handlePatreonWebhook(raw, patreonEvent, campaign);
+		if (result) {
+			console.log(result.slice(0, 1950));
 		}
-	});
+	} catch (err) {
+		console.error(err);
+		return httpErr.BAD_REQUEST({ message: 'Invalid Patreon webhook body' });
+	}
 
 	return c.text('OK');
 });

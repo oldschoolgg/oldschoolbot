@@ -15,7 +15,7 @@ import { gearEquipMultiImpl } from '@/lib/util/equipMulti.js';
 import { assert } from '@/lib/util/logError.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
-async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName: string): CommandResponse {
+export async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName: string): CommandResponse {
 	if (await user.minionIsBusy()) {
 		return `${user.minionName} is currently out on a trip, so you can't change their gear!`;
 	}

@@ -684,6 +684,14 @@ const thingsToWipe = [
 	'giveaways'
 ] as const;
 
+const unspawnableItemIDs = [
+	itemID('Idle idol'),
+	itemID('Trust fund tiara'),
+	itemID('Two of Hearts'),
+	itemID('Count Napula'),
+	itemID('Lazy mystery box')
+];
+
 export const testPotatoCommand = globalConfig.isProduction
 	? null
 	: defineCommand({
@@ -772,12 +780,14 @@ export const testPotatoCommand = globalConfig.isProduction
 							autocomplete: async ({ value }: StringAutoComplete) => {
 								if (!value)
 									return [{ name: 'Type something!', value: itemID('Twisted bow').toString() }];
-								return Items.filter(item => item.name.toLowerCase().includes(value.toLowerCase())).map(
-									i => ({
-										name: `${i.name} (ID: ${i.id})`,
-										value: i.id.toString()
-									})
-								);
+								return Items.filter(
+									item =>
+										item.name.toLowerCase().includes(value.toLowerCase()) &&
+										!unspawnableItemIDs.includes(item.id)
+								).map(i => ({
+									name: `${i.name} (ID: ${i.id})`,
+									value: i.id.toString()
+								}));
 							}
 						},
 						{
@@ -1233,7 +1243,8 @@ export const testPotatoCommand = globalConfig.isProduction
 							gambling_lockout_expiry: null,
 							last_spawn_box_date: 0,
 							lastSpawnLamp: 0,
-							last_item_contract_date: 0
+							last_item_contract_date: 0,
+							last_bonanza_date: null
 						});
 						await prisma.userStats.upsert({
 							where: {
@@ -1241,13 +1252,14 @@ export const testPotatoCommand = globalConfig.isProduction
 							},
 							update: {
 								last_daily_timestamp: Date.now() - Time.Day,
-								last_tears_of_guthix_timestamp: Date.now() - Time.Day * 2
+								last_tears_of_guthix_timestamp: Date.now() - Time.Day * 10,
+								last_guthixian_cache_timestamp: Date.now() - Time.Day * 2
 							},
 							create: {
 								user_id: BigInt(user.id)
 							}
 						});
-						return 'Reset all your daily/TOG/item contract cooldowns, gambling lockout.';
+						return 'Reset your daily, TOG, bonanza, guthixian cache, item contract cooldowns, gambling lockout.';
 					}
 					if (thing === 'kc') {
 						await user.statsUpdate({
@@ -1459,6 +1471,9 @@ export const testPotatoCommand = globalConfig.isProduction
 							bankToGive.add(i.id, qty || 1);
 						}
 					}
+					const unspawnableItem = unspawnableItemIDs.find(itemID => bankToGive.has(itemID));
+					if (!user.isAdmin && unspawnableItem)
+						return `${Items.getOrThrow(unspawnableItem).name} cannot be spawned.`;
 
 					await user.addItemsToBank({ items: bankToGive, collectionLog: Boolean(collectionlog) });
 					return `Spawned: ${bankToGive.toString().slice(0, 500)}.`;

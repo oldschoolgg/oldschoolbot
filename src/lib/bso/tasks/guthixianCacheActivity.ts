@@ -66,6 +66,9 @@ export const guthixianCacheTask: MinionTask = {
 		}
 
 		await user.incrementMinigameScore('guthixian_cache', 1);
+		await user.statsUpdate({
+			last_guthixian_cache_timestamp: Date.now()
+		});
 		await user.addToGodFavour(['Guthix'], data.duration);
 
 		return handleTripFinish({ user, channelId, message: str, data, loot });

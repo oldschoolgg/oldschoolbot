@@ -13,7 +13,7 @@ import { slotsCommand } from '@/mahoji/lib/abstracted_commands/slotsCommand.js';
 
 export const gambleCommand = defineCommand({
 	name: 'gamble',
-	flags: ['REQUIRES_LOCK'],
+	flags: ['REQUIRES_LOCK', 'GAMBLING_BANNED'],
 	description: 'Partake in various gambling activities.',
 	options: [
 		/**
@@ -244,8 +244,6 @@ export const gambleCommand = defineCommand({
 					type: 'gri'
 				}
 			});
-			const debug = new Bank();
-			for (const t of bank) debug.add(t[0].id);
 
 			return `You gave ${qty.toLocaleString()}x ${item.name} to ${recipientuser.usernameOrMention}.`;
 		}

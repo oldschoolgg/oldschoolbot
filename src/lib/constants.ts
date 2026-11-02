@@ -218,7 +218,9 @@ export enum BitField {
 	HasHalloweenWallkit = 234,
 	HasEarnedRiftGuardianFromStar = 235,
 	DisablePaints = 236,
-	DisableGlowEffects = 238
+	BannedFromGambling = 237,
+	DisableGlowEffects = 238,
+	DiscoBloodbathGearPresetSlots = 239
 }
 
 export interface IBitFieldData {
@@ -284,6 +286,11 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 	[BitField.PermanentIronman]: { name: 'Permanent Ironman', protected: false, userConfigurable: false },
 	[BitField.HasLeaguesOneMinuteLengthBoost]: {
 		name: 'Leagues One Minute Trip Length Boost',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.DiscoBloodbathGearPresetSlots]: {
+		name: 'Disco Bloodbath Gear Preset Slots',
 		protected: false,
 		userConfigurable: false
 	},
@@ -520,6 +527,11 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 		protected: false,
 		userConfigurable: true
 	},
+	[BitField.BannedFromGambling]: {
+		name: 'Banned from Gambling',
+		protected: false,
+		userConfigurable: false
+	},
 	[BitField.DisableGlowEffects]: {
 		name: 'Disable Glow Effects',
 		protected: false,
@@ -706,6 +718,8 @@ export const DEPRECATED_ACTIVITY_TYPES: activity_type_enum[] = [
 export const CONSTANTS = {
 	DAILY_COOLDOWN: BOT_TYPE === 'BSO' ? Time.Hour * 4 : Time.Hour * 12,
 	TEARS_OF_GUTHIX_CD: Time.Day * 7,
+	BALTHAZARS_BIG_BONANZA_CD: Time.Day * 7,
+	GUTHIX_CACHE_CD: Time.Day * 1,
 	GAMBLE_LIMITS: {
 		HOTCOLD: [10_000_000, 5_000_000_000],
 		DICE: [1_000_000, 50_000_000_000],

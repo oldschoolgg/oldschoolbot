@@ -15690,6 +15690,612 @@ setCustomItem(
 	10_000
 );
 
+/** Loyalty Box **/
+setCustomItem(
+	75_698,
+	"Boo'ala",
+	'Herbi',
+	{
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isPet: true,
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	75_699,
+	'Fealty Mystery Box',
+	'Mystery box',
+	{
+		// A royal invitation to do absolutely nothing. Preferably in diamonds.
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+/** Lazy T5 promotion: money, success, fame, glamour, and a well-earned nap. */
+setCustomItem(
+	75_700,
+	'Lazy Mystery Box',
+	'Royal mystery box',
+	{
+		// A royal invitation to do absolutely nothing. Preferably in diamonds.
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	75_701,
+	'Skrink box',
+	'Royal mystery box',
+	{
+		// Skrinkle sends his regards. You're on the list.
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	75_702,
+	'Skrod box',
+	'Royal mystery box',
+	{
+		// Bad company. Impeccable packaging.
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	75_703,
+	'Lazily rollers',
+	'Leather boots',
+	{
+		// Lazily we roll along. Walking is for the supporting cast.
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	75_704,
+	'Partytimehat',
+	'Diamond crown',
+	{
+		// Heavy is the head that puts it off until tomorrow.
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	75_705,
+	'Snooze control',
+	'Rune sword',
+	{
+		// Absolute power over absolutely nothing.
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	75_706,
+	'Resting rich face',
+	'Rune full helm',
+	{
+		// Beauty sleep has a controlling interest.
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	75_707,
+	'Loaf lord loafers',
+	'Leather boots',
+	{
+		// All rise? He would prefer to loaf.
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	75_708,
+	'Duvet dictator',
+	'Red cape',
+	{
+		// Your blanket decree is final.
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	75_709,
+	'Couch potato sceptre',
+	'Rune sword',
+	{
+		// Rules from the comfort of the couch.
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	75_710,
+	'Idle idol',
+	'Rune sword',
+	{
+		// Worship the work you didn't put in.
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	75_711,
+	'Trust fund tiara',
+	'Diamond crown',
+	{
+		// Born with a silver spoon. Upgraded to platinum.
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	75_712,
+	'Gross domestic bling',
+	'Amulet of glory',
+	{
+		// The economy revolves around your neckline.
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	75_713,
+	'Cheque mate',
+	'Rune sword',
+	{
+		// Your move. Your money. Your majesty.
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	75_714,
+	'Millionaire mink',
+	'Bronze platebody',
+	{
+		// Dressed for a hostile takeover of the dance floor.
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	75_715,
+	'Velvet rope sceptre',
+	'Rune sword',
+	{
+		// Your name isn't down, darling.
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	75_716,
+	'Fame fatale',
+	'Rune sword',
+	{
+		// Fifteen minutes? Make it an eternity.
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	75_717,
+	'Glam jam platformers',
+	'Leather boots',
+	{
+		// Step on the scene. Leave a crater.
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	75_718,
+	'Age of the thing',
+	'Rune sword',
+	{
+		// Money. Success. Fame. Glamour. The age has found its thing.
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	75_719,
+	'Disco bloodbath',
+	'Bronze kiteshield',
+	{
+		// A clawfoot tub of crimson glitter. The dance floor is a wash.
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	75_720,
+	'Two of Hearts',
+	'Bronze kiteshield',
+	{
+		// Two hearts. One dangerously good hand.
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	75_721,
+	'Skrink mink',
+	'Red cape',
+	{
+		// Faux fur. Real attitude. Strictly Skrink.
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	75_722,
+	'Afterparty afterlife',
+	'Rune sword',
+	{
+		// The cat's still asleep. The clock begs to differ.
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+setCustomItem(
+	75_723,
+	'Chill',
+	'Herbi',
+	{
+		// A plush fire dragon hood with a ferociously cozy bite.
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true,
+			isPet: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	75_724,
+	'10% Pumpkinhead pie',
+	'Coal',
+	{
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	50_000
+);
+setCustomItem(
+	75_725,
+	'Smorkey painting',
+	'Coal',
+	{
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	5_000_000
+);
+
+setCustomItem(
+	75_726,
+	'Roosted newt',
+	'Coal',
+	{
+		customItemData: {
+			isSecret: true,
+			isDiscontinued: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	75_728,
+	'Chunky Hunky Boots',
+	'Leather boots',
+	{
+		// Big slippers. Even bigger plans to stay in.
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	75_729,
+	'Chunky Hunky Mittens',
+	'Leather gloves',
+	{
+		// For keeping your paws off the workload.
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	75_730,
+	'Chunky Hunky bodysuit',
+	'Bronze platebody',
+	{
+		// Built for the heavyweight division of lounging.
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	75_731,
+	'Chunky Hunk leggings',
+	'Bronze platelegs',
+	{
+		// Plenty of room for a second helping.
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	75_732,
+	'Skrinkle',
+	'Herbi',
+	{
+		// Our lovechild. Your tiny velvet-rope tyrant.
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true,
+			isPet: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	75_733,
+	'Count Napula',
+	'Herbi',
+	{
+		// Sleeps all day. Still overdressed for the night.
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true,
+			isPet: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	75_734,
+	'Premierekat',
+	'Herbi',
+	{
+		// His portfolio is mostly shiny things.
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true,
+			isPet: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	75_735,
+	'Disco infernowl',
+	'Herbi',
+	{
+		// Burns up the dance floor, then asks who.
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true,
+			isPet: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	75_736,
+	'Slothario',
+	'Herbi',
+	{
+		// A slow mover with very fast charm.
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			isSecret: true,
+			cantDropFromMysteryBoxes: true,
+			isPet: true
+		}
+	},
+	1_000_000
+);
+
 export const discontinuedItems = resolveItems([
 	'Turkey',
 	'Raw turkey',

@@ -23,7 +23,7 @@ const COXMaxMeleeGear = constructGearSetup({
 });
 
 describe('Gear Images', async () => {
-	await bankImageTask.ready;
+	await bankImageTask.waitTillReady();
 	const gear = COXMaxMeleeGear.clone();
 	gear.equip(EGear.DRAGON_ARROW, 100);
 

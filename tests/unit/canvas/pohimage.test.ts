@@ -7,7 +7,7 @@ import { pohImageGenerator } from '@/lib/canvas/pohImage.js';
 import { baseSnapshotPath } from '../../testConstants.js';
 
 describe('POH Image', async () => {
-	await bankImageTask.ready;
+	await bankImageTask.waitTillReady();
 	test('Basic POH Image', async () => {
 		const result = await pohImageGenerator.run({
 			// @ts-expect-error

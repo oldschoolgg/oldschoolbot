@@ -9,7 +9,7 @@ import {
 	ZCompostType,
 	ZItemIdArray
 } from './bot.js';
-import { ZBotType, ZSnowflake } from './shared.js';
+import { type IBotType, type IServiceType, ZBotType, ZSnowflake } from './shared.js';
 
 const ZUserMinionConfigPatchPayload = z
 	.strictObject({
@@ -74,3 +74,113 @@ export const ZEconomyTransactionsQuery = z.strictObject({
 	page: z.number().int().min(1)
 });
 export type IEconomyTransactionsQuery = z.infer<typeof ZEconomyTransactionsQuery>;
+
+export type AuthenticatedUser = {
+	id: string;
+	username: string | null;
+	avatar: string | null;
+	global_name: string | null;
+	bits: number[];
+};
+
+export type FullMinionData = {
+	bot: IBotType;
+	user_id: string;
+	name: string | null;
+	icon: string | null;
+	gp: number;
+	is_ironman: boolean;
+	qp: number;
+
+	bank: Record<string, number>;
+	collection_log_bank: Record<string, number>;
+
+	bitfield: number[];
+	bought_date: string | null;
+	total_sacrificed_value: number;
+
+	gambling_lockout_expiry: string | null;
+	finished_quest_ids: number[];
+
+	slayer_points: number;
+	slayer_unlocks: number[];
+	slayer_blocked_ids: number[];
+	slayer_last_task: number | null;
+	slayer_remember_master: string | null;
+	slayer_autoslay_options: number[];
+
+	skills_xp: Record<string, number>;
+
+	points: {
+		lms: number;
+		volcanic_mine: number;
+		nmz: number;
+		carpenter: number;
+		zeal_tokens: number;
+		slayer: number;
+	};
+
+	charges: {
+		tentacle: number;
+		sang: number;
+		celestial_ring: number;
+		ash_sanctifier: number;
+		serp_helm: number;
+		blood_fury: number;
+		tum_shadow: number;
+		blood_essence: number;
+		trident: number;
+		ayak: number;
+		venator_bow: number;
+		scythe_of_vitur: number;
+	};
+
+	minigames: Record<string, number>;
+
+	gear: {
+		pet: number | null;
+	};
+
+	config: {
+		bank_sort_method: string | null;
+		bank_sort_weightings: Record<string, number>;
+		favorite_items: number[];
+		favorite_alchables: number[];
+		favorite_foods: number[];
+		favorite_bh_seeds: number[];
+		auto_farm_filter: string;
+		default_compost: string;
+		attack_style: string[];
+		combat_options: number[];
+	};
+
+	current_activity?: {
+		name: string;
+		started_at: string;
+		finishes_at: string;
+	} | null;
+};
+
+export type SUserIdentity = {
+	user_id: string;
+	username: string;
+	avatar: string | null;
+	blacklisted: boolean;
+};
+
+export type ServiceStatus = {
+	service: IServiceType;
+	active: boolean;
+	state: string;
+	sub_state: string;
+	uptime: number | null;
+	memory: {
+		current: number;
+		peak: number;
+	} | null;
+	cpu: {
+		usage: number;
+	} | null;
+	pid: number | null;
+	restart_count: number;
+};

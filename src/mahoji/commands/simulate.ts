@@ -138,6 +138,7 @@ async function coxCommand(user: MUser, quantity: number, cm = false, points = 25
 
 export const simulateCommand = defineCommand({
 	name: 'simulate',
+	flags: ['GAMBLING_BANNED'],
 	description: 'Simulate various OSRS related things.',
 	attributes: {
 		examples: ['/simulate cox quantity:1']
