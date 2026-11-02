@@ -21,6 +21,7 @@ FROM base AS dependencies
 WORKDIR /usr/src/app
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
 COPY packages/oldschooljs/package.json ./packages/oldschooljs/package.json
+COPY packages/node-rng/package.json ./packages/node-rng/package.json
 COPY packages/toolkit/package.json ./packages/toolkit/package.json
 COPY packages/util/package.json ./packages/util/package.json
 COPY packages/discord/package.json ./packages/discord/package.json

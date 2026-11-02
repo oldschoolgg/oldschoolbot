@@ -57,6 +57,7 @@ import type {
 	CreateForestersRationsActivityTaskOptions,
 	CutLeapingFishActivityTaskOptions,
 	DarkAltarOptions,
+	DiscoBloodbathActivityTaskOptions,
 	EnchantingActivityTaskOptions,
 	FarmingActivityTaskOptions,
 	FiremakingActivityTaskOptions,
@@ -102,6 +103,9 @@ import { giantsFoundryAlloys } from '@/mahoji/lib/abstracted_commands/giantsFoun
 import puroOptions from '@/mahoji/lib/abstracted_commands/puroPuroCommand.js';
 
 export const taskCanBeRepeated = (activity: Activity) => {
+	if (activity.type === activity_type_enum.DiscoBloodbath && (activity.data as { isRave?: boolean }).isRave) {
+		return false;
+	}
 	return !(
 		[
 			activity_type_enum.TearsOfGuthix,
@@ -215,6 +219,12 @@ const tripHandlers: {
 	[activity_type_enum.ArchonEvent]: {
 		commandName: 'm',
 		args: () => ({})
+	},
+	[activity_type_enum.DiscoBloodbath]: {
+		commandName: 'disco',
+		args: (data: DiscoBloodbathActivityTaskOptions) => ({
+			party: { club_name: data.club, crash: undefined }
+		})
 	},
 	[activity_type_enum.BirthdayEvent]: {
 		commandName: 'm',

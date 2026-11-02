@@ -1,4 +1,5 @@
 import { Inventions } from '@/lib/bso/skills/invention/inventions.js';
+import { isSecretItemIDQuery } from '@/lib/bso/util/isSecretItemQuery.js';
 
 import { bold, EmbedBuilder, inlineCode } from '@oldschoolgg/discord';
 import { ECombatOption, type IGuild } from '@oldschoolgg/schemas';
@@ -132,7 +133,7 @@ async function favFoodConfig(
 	const currentItems = `Your current favorite food is: ${
 		currentFavorites.length === 0 ? 'None' : currentFavorites.map(i => Items.itemNameFromId(i)).join(', ')
 	}.`;
-	if (!item || item.customItemData?.isSecret) return currentItems;
+	if (!item || isSecretItemIDQuery(item, itemToAdd ?? itemToRemove)) return currentItems;
 	if (!Eatables.some(i => i.id === item.id || i.raw === item.id)) return "That's not a valid item.";
 
 	if (itemToAdd) {
@@ -168,7 +169,7 @@ async function favItemConfig(
 					.join(', ')
 					.slice(0, 1500)
 	}.`;
-	if (!item || item.customItemData?.isSecret) return currentItems;
+	if (!item || isSecretItemIDQuery(item, itemToAdd ?? itemToRemove)) return currentItems;
 	if (itemToAdd) {
 		const limit = ((await user.fetchPerkTier()) + 1) * 100;
 		if (currentFavorites.length >= limit) {

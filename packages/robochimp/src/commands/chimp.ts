@@ -9,8 +9,7 @@ import {
 	fetchPremiumTimeBalance,
 	formatPremiumTimeGrant,
 	grantPremiumTime,
-	validatePremiumTimeGrant,
-	validPremiumTimeTiers
+	validatePremiumTimeGrant
 } from '@/lib/premiumTime.js';
 import type { RUser } from '@/structures/RUser.js';
 import { serviceManager } from '@/structures/ServiceManager.js';
@@ -25,24 +24,33 @@ function availableTiersString() {
 	return tierChoices.map(tier => `${tier.name}: \`${tier.value}\``).join('\n');
 }
 
-async function addPatreonTime(timeMs: number, tier: number, userToGive: RUser, interaction: MInteraction) {
+async function addPatreonTime(
+	timeMs: number,
+	tier: number,
+	isCyr: boolean,
+	userToGive: RUser,
+	interaction: MInteraction
+) {
 	if (!validatePremiumTimeGrant(timeMs, tier)) return 'Invalid input.';
 
 	const currentUser = await fetchPremiumTimeBalance(userToGive.id);
 	const currentBalanceTier = currentUser.premium_balance_tier;
 
-	if (currentBalanceTier !== null && currentBalanceTier !== tier) {
+	if (
+		currentBalanceTier !== null &&
+		(currentBalanceTier !== tier || Boolean(currentUser.premium_balance_is_cyr) !== isCyr)
+	) {
 		await interaction.confirmation(
-			`They already have Tier ${currentBalanceTier}; this will replace the existing balance entirely, are you sure?`
+			`❗They already have **__Tier: ${currentBalanceTier - 1}__** (||PerkTier: ${currentBalanceTier}||), this will replace the existing balance entirely, are you sure?`
 		);
 	}
 	await interaction.confirmation(
-		`Are you sure you want to add ${formatDuration(timeMs)} of Tier ${tier} patron to ${userToGive.mention}?`
+		`🤔❓Are you sure you want to add ${formatDuration(timeMs)} of **__Tier ${tier - 1}__** premium perks to ${userToGive.mention}?`
 	);
 
-	const grant = await grantPremiumTime({ userID: userToGive.id, timeMs, tier });
+	const grant = await grantPremiumTime({ userID: userToGive.id, timeMs, tier, isCyr });
 
-	return `Gave ${formatPremiumTimeGrant(grant)} patron to ${userToGive.mention}. They have ${formatDuration(
+	return `Gave ${formatPremiumTimeGrant(grant)} Perks to ${userToGive.mention}. They have ${formatDuration(
 		grant.remainingTime
 	)} remaining.`;
 }
@@ -139,17 +147,30 @@ export const chimpCommand = defineCommand({
 							required: true
 						},
 						{
-							type: 'Integer',
+							type: 'String',
 							name: 'tier',
-							description: 'The tier to give.',
+							description: 'The perk tier number.',
 							required: true,
-							choices: validPremiumTimeTiers.map(tier => ({ name: tier.toString(), value: tier }))
+							autocomplete: async ({ value }: StringAutoComplete) => {
+								const normalizedValue = value?.toLowerCase() ?? '';
+								return tierChoices.filter(tier =>
+									normalizedValue
+										? `${tier.name} ${tier.value}`.toLowerCase().includes(normalizedValue)
+										: true
+								);
+							}
 						},
 						{
 							type: 'String',
 							name: 'time',
 							description: 'The time.',
 							required: true
+						},
+						{
+							type: 'Boolean',
+							name: 'is_cyr',
+							description: 'Grant Cyr perks.',
+							required: false
 						}
 					]
 				}
@@ -191,12 +212,12 @@ export const chimpCommand = defineCommand({
 		}
 	],
 	run: async ({ options, user, interaction }) => {
-		await interaction.defer();
-
 		// Support Staff+ Commands:
 		if (!user.isSupport()) return 'Ook';
 
 		if (options.patreon?.sync) {
+			await interaction.defer();
+
 			const res = await patreonTask.run();
 			if (res) {
 				console.log(res.join('\n').slice(0, 1950));
@@ -224,6 +245,7 @@ export const chimpCommand = defineCommand({
 			}
 
 			const cancelId = `chimp.stop_bot.cancel.${bot}`;
+			interaction.defer();
 			await globalClient.sendMessage(interaction.channelId, {
 				content: `Pending ${bot.toUpperCase()} shutdown, click to cancel...`,
 				components: [new ButtonBuilder().setCustomId(cancelId).setLabel('CANCEL').setStyle(ButtonStyle.Danger)]
@@ -246,6 +268,7 @@ export const chimpCommand = defineCommand({
 				await githubSetUser.update({ github_id: null });
 				return `Reset ${options.setgithubid.user.user.username}'s github ID.`;
 			}
+			await interaction.defer();
 			const res = (await fetch(`https://api.github.com/users/${encodeURIComponent(github_username)}`)
 				.then(res => res.json())
 				.catch(() => null)) as Record<string, string> | null;
@@ -271,12 +294,18 @@ export const chimpCommand = defineCommand({
 			await patreonTask.syncGithub();
 			return `Set ${options.setgithubid.user.user.username}'s github ID to ${githubSetUser.githubId}, and synced their patron tier to: ${githubSetUser.perkTier}.`;
 		}
+		if (!user.isAdmin()) return 'Ook?';
 		if (options.patreon?.add_time) {
-			const { tier, time, user: targetUser } = options.patreon.add_time;
+			const { tier, time, is_cyr, user: targetUser } = options.patreon.add_time;
 			const ms = parseDuration(time);
-			return addPatreonTime(ms, tier, await globalClient.fetchRUser(targetUser.user.id), interaction);
+			return addPatreonTime(
+				ms,
+				Number(tier),
+				Boolean(is_cyr),
+				await globalClient.fetchRUser(targetUser.user.id),
+				interaction
+			);
 		}
-		if (!user.isAdmin()) return 'Sorry, these are restricted to admins only';
 		if (options.patreon?.change_tier) {
 			const changeTier = options.patreon.change_tier;
 			const targetUser = await globalClient.fetchRUser(changeTier.user.user.id);
@@ -301,6 +330,7 @@ export const chimpCommand = defineCommand({
 			return `Changed ${targetMention} to Magna Tier ${tier.number} (perkTier ${tier.perkTier}).`;
 		}
 		if (options.patreon?.debug) {
+			await interaction.defer();
 			const res = await patreonTask.fetchPatrons();
 			return {
 				content: 'Debug',
@@ -314,6 +344,7 @@ export const chimpCommand = defineCommand({
 			) {
 				return "You can't run this command in this channel.";
 			}
+			await interaction.defer();
 			const [osbResult, bsoResult] = await Promise.all([detectMischief('osb'), detectMischief('bso')]);
 			return {
 				content: "Here's the mischief reports!",

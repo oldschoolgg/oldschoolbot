@@ -22,6 +22,19 @@ export interface ActivityTaskOptions {
 	cantBeDoubled?: boolean;
 }
 
+export interface DiscoBloodbathActivityTaskOptions extends ActivityTaskOptions {
+	type: 'DiscoBloodbath';
+	club: string;
+	popularity: number;
+	theme: { name: string; good: string; bad: string };
+	fashion: Record<string, { item: number; quantity?: number } | null>;
+	isRave?: boolean;
+	raveId?: string;
+	raveAesthetics?: string[];
+	effectiveDuration?: number;
+	isCrashing?: boolean;
+}
+
 export type BeachCombingMethod = 'Surfing' | 'BeachCombing' | 'BuildSandcastles' | 'PickupTrash';
 
 export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
@@ -765,4 +778,5 @@ export type ActivityTaskData =
 	| CutLeapingFishActivityTaskOptions
 	| CreateForestersRationsActivityTaskOptions
 	| ColoTaskOptions
+	| DiscoBloodbathActivityTaskOptions
 	| BSOActivityTaskData;

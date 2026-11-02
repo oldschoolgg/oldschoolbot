@@ -43,7 +43,7 @@ describe.skip('Roles Task', async () => {
 				message_id: mockedId(),
 				reaction_id: mockedId(),
 				users_entered: [],
-				id: Number(mockedId()),
+				id: mockedId(),
 				completed: false,
 				duration: 10_000
 			}

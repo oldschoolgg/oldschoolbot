@@ -14,8 +14,7 @@ const client = new RoboChimpBotClient({
 		GatewayIntentBits.Guilds,
 		GatewayIntentBits.GuildMessages,
 		GatewayIntentBits.GuildMessageReactions,
-		GatewayIntentBits.GuildWebhooks,
-		GatewayIntentBits.MessageContent
+		GatewayIntentBits.GuildWebhooks
 	],
 	initialPresence: {
 		activity: {

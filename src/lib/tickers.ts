@@ -7,10 +7,10 @@ import { stringMatches, Time } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
 import { MathRNG } from 'node-rng';
 
-import type { User } from '@/prisma/main.js';
+import { Prisma, type User } from '@/prisma/main.js';
 import { resolveBotSendableMessage } from '@/discord/utils.js';
 import { analyticsTick } from '@/lib/analytics.js';
-import { Channel, globalConfig } from '@/lib/constants.js';
+import { BitField, Channel, globalConfig } from '@/lib/constants.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { cacheGEPrices } from '@/lib/marketPrices.js';
 import { collectMetrics } from '@/lib/metrics.js';
@@ -140,8 +140,78 @@ export const tickers: {
 		interval: Time.Minute * 3.5,
 		timer: null,
 		cb: async () => {
+			const totalStart = process.hrtime.bigint();
 			const basePlantTime = 1_626_556_507_451;
 			const now = Date.now();
+			const usersOldBitFieldStart = process.hrtime.bigint();
+			const oldPatreonUsers = await prisma.user.findMany({
+				where: {
+					AND: [
+						{
+							bitfield: {
+								hasSome: [
+									BitField.PatronTier3,
+									BitField.PatronTier4,
+									BitField.PatronTier5,
+									BitField.PatronTier6
+								]
+							}
+						},
+						{ NOT: { bitfield: { has: BitField.DisabledFarmingReminders } } }
+					]
+				},
+				select: { id: true }
+			});
+			const usersOldBitFieldNs = process.hrtime.bigint() - usersOldBitFieldStart;
+			const magnaTierBits = [10, 11, 12, 13] as const;
+			const cyrTierBits = [19, 20, 21, 22, 23] as const;
+			const tierByBit = new Map<number, number>([
+				[10, 4],
+				[11, 5],
+				[12, 6],
+				[13, 7],
+				[19, 4],
+				[20, 5],
+				[21, 6],
+				[22, 7],
+				[23, 7]
+			]);
+			const usersRobochimpStart = process.hrtime.bigint();
+			const robochimpUsers = await roboChimpClient.user.findMany({
+				where: {
+					OR: [
+						{ bits: { hasSome: [...magnaTierBits, ...cyrTierBits] } },
+						{
+							premium_balance_tier: { gte: 4 },
+							premium_balance_expiry_date: { gt: BigInt(now) }
+						}
+					]
+				},
+				select: {
+					id: true,
+					bits: true,
+					premium_balance_tier: true,
+					premium_balance_expiry_date: true
+				}
+			});
+			const usersRobochimpNs = process.hrtime.bigint() - usersRobochimpStart;
+			const eligiblesStart = process.hrtime.bigint();
+			const eligibleUsers = [
+				...robochimpUsers.map(user => ({
+					id: user.id.toString(),
+					perkTier: Math.max(
+						user.premium_balance_expiry_date !== null &&
+							Number(user.premium_balance_expiry_date) > now &&
+							user.premium_balance_tier !== null
+							? user.premium_balance_tier
+							: 0,
+						...user.bits.map(bit => tierByBit.get(bit) ?? 0)
+					),
+					isCyr: user.bits.some(bit => cyrTierBits.includes(bit as (typeof cyrTierBits)[number]))
+				})),
+				...oldPatreonUsers.map(user => ({ id: user.id, perkTier: 3, isCyr: false }))
+			].filter((user, index, users) => users.findIndex(other => other.id === user.id) === index);
+			const eligiblesNs = process.hrtime.bigint() - eligiblesStart;
 			const keys = [
 				'farmingPatches.herb',
 				'farmingPatches.fruit tree',
@@ -163,35 +233,54 @@ export const tickers: {
 				'farmingPatches.mushroom',
 				'farmingPatches.belladonna'
 			];
-			const users = await prisma.$queryRawUnsafe<User[]>(`SELECT *
-FROM users u
-WHERE
-  bitfield && ARRAY[
-    4,  -- PatronTier3
-    5,  -- PatronTier4
-    6,  -- PatronTier5
-    21, -- PatronTier6
-    7   -- Moderator
-  ]::int[]
-AND last_command_date > now() - INTERVAL '5 days'
-AND EXISTS (
-  SELECT 1
-  FROM farmed_crop fc
-  WHERE fc.user_id = u.id
-    AND fc.date_planted > now() - INTERVAL '2 days'
-)
-AND NOT (bitfield @> ARRAY[
-    37  -- DisabledFarmingReminders
-]::int[])
-AND (
-  ${keys.map(_key => `("${_key}" IS NOT NULL AND NOT "${_key}"::jsonb ? 'wasReminded')`).join(' OR ')}
-)
-ORDER BY random()
-LIMIT 10;`);
+			const tempTableStart = process.hrtime.bigint();
+			const users = await prisma.$transaction(async tx => {
+				if (eligibleUsers.length === 0) return [];
+				await tx.$executeRaw`
+					CREATE TEMPORARY TABLE farming_reminder_entitlements (
+						id varchar(19) PRIMARY KEY,
+						perk_tier integer NOT NULL,
+						is_cyr boolean NOT NULL
+					) ON COMMIT DROP
+				`;
+
+				await tx.$executeRaw`
+					INSERT INTO farming_reminder_entitlements (id, perk_tier, is_cyr)
+					VALUES ${Prisma.join(
+						eligibleUsers.map(user => Prisma.sql`(${user.id}, ${user.perkTier}, ${user.isCyr})`)
+					)}
+				`;
+
+				return tx.$queryRaw<User[]>`
+					SELECT u.*
+					FROM users u
+					INNER JOIN farming_reminder_entitlements entitlement ON entitlement.id = u.id
+					WHERE last_command_date > now() - INTERVAL '5 days'
+					AND EXISTS (
+						SELECT 1
+						FROM farmed_crop fc
+						WHERE fc.user_id = u.id
+						AND fc.date_planted > now() - INTERVAL '2 days'
+					)
+					AND NOT (bitfield @> ARRAY[
+						37 -- DisabledFarmingReminders
+					]::int[])
+					AND (
+						${Prisma.raw(
+							keys
+								.map(_key => `("${_key}" IS NOT NULL AND NOT "${_key}"::jsonb ? 'wasReminded')`)
+								.join(' OR ')
+						)}
+					)
+					ORDER BY random()
+					LIMIT 10
+				`;
+			});
+			const tempTableNs = process.hrtime.bigint() - tempTableStart;
+			const loopStart = process.hrtime.bigint();
 			for (const u of users) {
 				const user = new MUserClass(u);
 				const { patches } = Farming.getFarmingInfoFromUser(user);
-
 				const patchesReadyToHarvest: FarmingPatchName[] = [];
 				for (const patchType of Farming.farmingPatchNames) {
 					const patch = patches[patchType];
@@ -223,9 +312,10 @@ LIMIT 10;`);
 					};
 				}
 
+				const content = `The following farming patches are ready to be harvested: ${patchesReadyToHarvest.join(', ')}.`;
 				if (globalConfig.isProduction) {
 					await globalClient.sendDm(user.id, {
-						content: `The following farming patches are ready to be harvested: ${patchesReadyToHarvest.join(', ')}.`,
+						content,
 						components: [
 							new ButtonBuilder()
 								.setLabel('Disable Reminders')
@@ -241,6 +331,11 @@ LIMIT 10;`);
 					});
 				}
 			}
+			const loopNs = process.hrtime.bigint() - loopStart;
+			const totalNs = process.hrtime.bigint() - totalStart;
+			Logging.logDebug(
+				`Queries: UsersOldBitField: ${usersOldBitFieldNs}\tUsersRobochimp: ${usersRobochimpNs}\tTempTableNs: ${tempTableNs}\tElligiblesNs: ${eligiblesNs} LoopNs: ${loopNs} TotalNs: ${totalNs}`
+			);
 		}
 	},
 	{
@@ -358,7 +453,7 @@ async function runTicker(ticker: (typeof tickers)[number]): Promise<void> {
 	try {
 		if (globalClient.isShuttingDown) return;
 
-		if (ticker.interval > Time.Minute * 30) {
+		if (ticker.interval > Time.Minute * 1) {
 			Logging.logDebug(`Running ${ticker.name} ticker`);
 		}
 

@@ -102,9 +102,8 @@ class CollectionLogTask {
 		collectionLog?: IToReturnCollection;
 		minigameScoresOverride?: Awaited<ReturnType<MUser['fetchMinigameScores']>> | null;
 	}): Promise<CommandResponse> {
-		if (!bankImageTask.ready) {
-			await bankImageTask.init();
-			bankImageTask.ready = true;
+		if (!bankImageTask.isReady) {
+			await bankImageTask.waitTillReady();
 		}
 		const { sprite } = bankImageTask.getBgAndSprite({
 			bankBackgroundId: options.user.user.bankBackground,

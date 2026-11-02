@@ -1,9 +1,10 @@
 import { BSOItem } from '@/lib/bso/BSOItem.js';
 import { bsoShortNameMap } from '@/lib/bso/bsoShortNameMap.js';
+import { getDiscoBankPointLines } from '@/lib/bso/discoBankPoints.js';
 
 import { existsSync } from 'node:fs';
 import * as fs from 'node:fs/promises';
-import { cleanString, generateHexColorForCashStack, sumArr, UserError } from '@oldschoolgg/toolkit';
+import { cleanString, generateHexColorForCashStack, RoboChimpBit, sumArr, UserError } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, itemID, toKMB } from 'oldschooljs';
 import { chunk } from 'remeda';
 import type { Image } from 'skia-canvas';
@@ -12,7 +13,9 @@ import { CanvasModule } from '@/lib/canvas/CanvasModule.js';
 import {
 	type BaseCanvasArgs,
 	type BGSpriteName,
+	type Canvas,
 	CanvasImage,
+	createCanvas,
 	getClippedRegion,
 	type IBgSprite,
 	loadImage
@@ -36,6 +39,17 @@ const itemSize = 32;
 const distanceFromTop = 32;
 
 const { floor, ceil } = Math;
+
+const cyrTier4PlusBits = [
+	RoboChimpBit.CyrTier4,
+	RoboChimpBit.CyrTier5,
+	RoboChimpBit.CyrTier6,
+	RoboChimpBit.CyrTier7
+] as const;
+
+function bankItemRowHeight(compact: boolean, spacer: number, verticalSpacer: number) {
+	return floor((itemSize + spacer / 2) * (compact ? 0.9 : 1.08)) + verticalSpacer;
+}
 
 const i = itemID;
 const forcedShortNameMap = new Map<number, string>([
@@ -224,6 +238,7 @@ export const bankFlags = [
 	'show_id',
 	'show_names',
 	'show_weights',
+	'show_disco_points',
 	'show_all',
 	'wide',
 	'invention_xp'
@@ -237,8 +252,11 @@ class BankImageTask {
 	public _bgSpriteData: CanvasImage = new CanvasImage();
 	public bgSpriteList: Record<string, IBgSprite> = {};
 	public treeImage!: CanvasImage;
-	public ready: boolean = false;
+	private readonly initPromise: Promise<void>;
+	private initStarting = false;
+	private _ready = false;
 
+	public blackEffect: Image | null = null;
 	public redEffect: Image | null = null;
 	public bananaEffect: Image | null = null;
 	public whiteEffect: Image | null = null;
@@ -248,8 +266,22 @@ class BankImageTask {
 	public octoBubblesEffect: Image | null = null;
 
 	public effects: Map<number, Image> = new Map();
+	private customPurpleEffects = new Map<string, Canvas>();
 
-	async init() {
+	async waitTillReady() {
+		await this.initPromise;
+	}
+	get isReady() {
+		return this._ready;
+	}
+	constructor() {
+		this.initPromise = this.init();
+	}
+	private async init() {
+		if (this.initStarting) {
+			return this.initPromise;
+		}
+		this.initStarting = true;
 		await CanvasModule.waitTillReady();
 		const colors: Record<BGSpriteName, string> = {
 			default: '#655741',
@@ -258,6 +290,7 @@ class BankImageTask {
 		};
 
 		//Prepare to glow once more!
+		this.blackEffect = await loadImage(await fs.readFile('./src/lib/resources/images/black-glow.png'));
 		this.redEffect = await loadImage(await fs.readFile('./src/lib/resources/images/red-glow.png'));
 		this.bananaEffect = await loadImage(await fs.readFile('./src/lib/resources/images/banana-glow.png'));
 		this.whiteEffect = await loadImage(await fs.readFile('./src/lib/resources/images/white-glow.png'));
@@ -334,6 +367,22 @@ class BankImageTask {
 				};
 			})
 		);
+		this._ready = true;
+	}
+
+	private getCustomPurpleEffect(color: string) {
+		const cached = this.customPurpleEffects.get(color);
+		if (cached) return cached;
+
+		const canvas = createCanvas(this.whiteEffect!.width, this.whiteEffect!.height);
+		const ctx = canvas.getContext('2d');
+		ctx.imageSmoothingEnabled = false;
+		ctx.drawImage(this.whiteEffect!, 0, 0);
+		ctx.globalCompositeOperation = 'source-in';
+		ctx.fillStyle = color;
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+		this.customPurpleEffects.set(color, canvas);
+		return canvas;
 	}
 
 	getBgAndSprite({ bankBackgroundId, farmingContract }: BaseCanvasArgs = {}) {
@@ -375,12 +424,13 @@ class BankImageTask {
 		mahojiFlags: BankFlag[] | undefined,
 		weightings: Readonly<ItemBank> | undefined,
 		verticalSpacer = 0,
-		user?: MUser
+		user?: MUser,
+		customPurple?: { color: string; glow: boolean }
 	) {
 		let xLoc = 0;
 		let yLoc = compact ? 5 : 0;
 		for (let i = 0; i < items.length; i++) {
-			if (i % itemsPerRow === 0) yLoc += floor((itemSize + spacer / 2) * (compact ? 0.9 : 1.08)) + verticalSpacer;
+			if (i % itemsPerRow === 0) yLoc += bankItemRowHeight(compact, spacer, verticalSpacer);
 			// For some reason, it starts drawing at -2 so we compensate that
 			// Adds the border width
 			// Adds distance from side
@@ -409,20 +459,24 @@ class BankImageTask {
 			}
 
 			const effect = user?.bitfield.includes(BitField.DisableGlowEffects) ? undefined : this.effects.get(item.id);
+			const highlightColor = customPurple?.color ?? OSRSCanvas.COLORS.PURPLE;
+			const customPurpleEffect =
+				isNewCLItem && customPurple?.glow ? this.getCustomPurpleEffect(highlightColor) : undefined;
 
 			await c.drawItemIDSprite({
 				itemID: item.id,
 				x: xLoc,
 				y: yLoc,
-				outline: isNewCLItem ? { outlineColor: '#ac7fff', alpha: 1 } : undefined,
-				quantity,
-				textColor: isNewCLItem ? OSRSCanvas.COLORS.PURPLE : undefined,
+				outline: isNewCLItem ? { outlineColor: highlightColor, alpha: 1 } : undefined,
+				quantity: mahojiFlags?.includes('show_disco_points') ? undefined : quantity,
+				textColor: isNewCLItem ? highlightColor : undefined,
 				user,
 				override_show_paints: paintOverride,
-				effect
+				effect: customPurpleEffect ?? effect
 			});
 
 			let bottomItemText: string | number | null = null;
+			const discoPointLines = mahojiFlags?.includes('show_disco_points') ? getDiscoBankPointLines(item) : [];
 
 			if (flags.has('sv') || mahojiFlags?.includes('show_price')) {
 				bottomItemText = (item.price ?? 0) * quantity;
@@ -438,12 +492,21 @@ class BankImageTask {
 				bottomItemText = marketPriceOrBotPrice(item.id) * quantity;
 			}
 
-			const forcedShortName = forcedShortNameMap.get(item.id);
+			const forcedShortName = discoPointLines.length === 0 ? forcedShortNameMap.get(item.id) : undefined;
 			if (forcedShortName && !bottomItemText) {
 				bottomItemText = forcedShortName.toUpperCase();
 			}
 
-			if (bottomItemText) {
+			if (discoPointLines.length > 0 && !bottomItemText) {
+				for (const [line, point] of discoPointLines.entries()) {
+					c.drawText({
+						text: point.text,
+						x: floor(xLoc + itemSize - 1 - c.measureTextWidth(point.text)),
+						y: yLoc + distanceFromTop - 13 + line * 10,
+						color: point.color
+					});
+				}
+			} else if (bottomItemText) {
 				const text =
 					typeof bottomItemText === 'number' ? toKMB(bottomItemText) : bottomItemText.toString().slice(0, 8);
 				c.drawText({
@@ -468,9 +531,8 @@ class BankImageTask {
 			mahojiFlags?: BankFlag[];
 		} & BaseCanvasArgs
 	): Promise<BankImageResult> {
-		if (!this.ready) {
-			await this.init();
-			this.ready = true;
+		if (!this.isReady) {
+			await this.waitTillReady();
 		}
 		let { user, collectionLog, title = '', showValue = true } = opts;
 		const bank = opts.bank.clone();
@@ -558,17 +620,13 @@ class BankImageTask {
 		}
 
 		if (items.length > 500 && !flags.has('nc')) compact = true;
-
 		const itemWidthSize = compact ? 12 + 21 : 36 + 21;
 
 		let width = wide ? 5 + 6 + 20 + ceil(Math.sqrt(items.length)) * itemWidthSize : 488;
 		if (width < 488) width = 488;
 		const itemsPerRow = floor((width - 6 * 2) / itemWidthSize);
 		const canvasHeight =
-			floor(
-				floor(ceil(items.length / itemsPerRow) * floor((itemSize + spacer / 2) * (compact ? 0.9 : 1.08))) +
-					itemSize * 1.5
-			) - 2;
+			floor(floor(ceil(items.length / itemsPerRow) * bankItemRowHeight(compact, spacer, 0)) + itemSize * 1.5) - 2;
 
 		const {
 			sprite: bgSprite,
@@ -578,6 +636,7 @@ class BankImageTask {
 		} = this.getBgAndSprite({ ...opts, bankBackgroundId: bankBackgroundID });
 
 		const isTransparent = Boolean(bgImage.transparent);
+		const isPreScaled = bgImage.preScaled === true;
 
 		const isPurple: boolean =
 			flags.has('forceAllPurple') ||
@@ -586,6 +645,16 @@ class BankImageTask {
 				items.some(([item]) => !currentCL.has(item.id) && allCLItems.has(item.id)));
 
 		const useSmallBank = user ? (hasBgSprite ? true : user.bitfield.includes(BitField.AlwaysSmallBank)) : true;
+		const roboChimpUser = user ? await user.fetchRobochimpUser() : null;
+		const canUseCustomPurple = Boolean(
+			roboChimpUser?.bits.some(bit => cyrTier4PlusBits.includes(bit as (typeof cyrTier4PlusBits)[number]))
+		);
+		const customPurple = {
+			color: canUseCustomPurple
+				? (user?.user.bank_bg_purple_color ?? OSRSCanvas.COLORS.PURPLE)
+				: OSRSCanvas.COLORS.PURPLE,
+			glow: canUseCustomPurple && user?.user.bank_bg_purple_glow === true
+		};
 
 		const canvas = new OSRSCanvas({
 			width,
@@ -602,7 +671,7 @@ class BankImageTask {
 
 		const ctx = canvas.ctx;
 
-		if (!isTransparent) {
+		if (!isTransparent && !isPreScaled) {
 			ctx.fillStyle = ctx.createPattern(bgSprite.repeatableBg, 'repeat')!;
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
 		}
@@ -613,7 +682,7 @@ class BankImageTask {
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
 		}
 
-		if (!hasBgSprite) {
+		if (!hasBgSprite && !isPreScaled) {
 			ctx.drawImage(
 				actualBackground,
 				resizeBg === -1 ? 0 : (canvas.width - actualBackground.width! * resizeBg) / 2,
@@ -635,7 +704,7 @@ class BankImageTask {
 		});
 
 		// Skips border if noBorder is set
-		if (!isTransparent && noBorder !== 1) {
+		if (!isTransparent && !isPreScaled && noBorder !== 1) {
 			canvas.drawBorder(bgSprite, bgImage.name === 'Default');
 		}
 
@@ -651,15 +720,27 @@ class BankImageTask {
 			opts.mahojiFlags,
 			weightings,
 			undefined,
-			user
+			user,
+			customPurple
 		);
 
-		const image = await canvas.toScaledOutput(2);
+		const image = isPreScaled
+			? await this.composePreScaledBackground(canvas, actualBackground)
+			: await canvas.toScaledOutput(2);
 
 		return {
 			image,
 			isTransparent
 		};
+	}
+
+	private async composePreScaledBackground(canvas: OSRSCanvas, background: CanvasImage | null) {
+		if (!background) throw new Error('Pre-scaled bank backgrounds must have an image.');
+
+		const output = new OSRSCanvas({ width: canvas.width * 2, height: canvas.height * 2 });
+		output.ctx.drawImage(background, 0, 0);
+		output.ctx.drawImage(canvas.getCanvas(), 0, 0, canvas.width, canvas.height, 0, 0, output.width, output.height);
+		return output.toBuffer();
 	}
 }
 

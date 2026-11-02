@@ -1,4 +1,4 @@
-import { calcWhatPercent, formatOrdinal, round, sumArr } from '@oldschoolgg/toolkit';
+import { calcWhatPercent, formatOrdinal, RoboChimpBit, round, sumArr } from '@oldschoolgg/toolkit';
 import type { Bank } from 'oldschooljs';
 import { isDeepEqual } from 'remeda';
 
@@ -7,7 +7,6 @@ import { BitField, BOT_TYPE, globalConfig, masteryKey } from '@/lib/constants.js
 import { getTotalCl } from '@/lib/data/Collections.js';
 import { calculateMastery } from '@/lib/mastery.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
-import { RobochimpBitfieldEnum } from './perkTiers.js';
 
 export type RobochimpUser = User;
 
@@ -38,7 +37,7 @@ const levelKey: keyof User = BOT_TYPE === 'OSB' ? 'osb_total_level' : 'bso_total
 const totalXPKey: keyof User = BOT_TYPE === 'OSB' ? 'osb_total_xp' : 'bso_total_xp';
 
 export async function syncOriginalCyrSupporterBit(user: MUser, roboChimpUser: RobochimpUser) {
-	if (!roboChimpUser.bits.includes(RobochimpBitfieldEnum.CyrsOriginalPatrons)) return;
+	if (!roboChimpUser.bits.includes(RoboChimpBit.CyrsOriginalPatrons)) return;
 
 	if (user.bitfield.includes(BitField.OriginalCyrSupporter)) return;
 

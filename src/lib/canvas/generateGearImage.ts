@@ -250,9 +250,8 @@ export async function generateGearImage({
 	gearTemplate?: number;
 	user?: MUser;
 } & BaseCanvasArgs) {
-	if (!bankImageTask.ready) {
-		await bankImageTask.init();
-		bankImageTask.ready = true;
+	if (!bankImageTask.isReady) {
+		await bankImageTask.waitTillReady();
 	}
 	const {
 		sprite,
@@ -366,9 +365,8 @@ export async function generateAllGearImage({
 	gear: UserFullGearSetup;
 	equippedPet?: number | null;
 }) {
-	if (!bankImageTask.ready) {
-		await bankImageTask.init();
-		bankImageTask.ready = true;
+	if (!bankImageTask.isReady) {
+		await bankImageTask.waitTillReady();
 	}
 	const {
 		sprite: bgSprite,

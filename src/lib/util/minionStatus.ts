@@ -72,6 +72,7 @@ import type {
 	CreateForestersRationsActivityTaskOptions,
 	CutLeapingFishActivityTaskOptions,
 	DarkAltarOptions,
+	DiscoBloodbathActivityTaskOptions,
 	EnchantingActivityTaskOptions,
 	FarmingActivityTaskOptions,
 	FightCavesActivityTaskOptions,
@@ -945,6 +946,12 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 		}
 		case 'TuraelsTrials': {
 			return `${name} is currently slaying monsters in Turaels Trials. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
+		case 'DiscoBloodbath': {
+			const data = currentTask as DiscoBloodbathActivityTaskOptions;
+			return `${name} is currently at the ${data.club} club (${data.theme.name} vibe). The visit should take ${formatDuration(
 				durationRemaining
 			)}.`;
 		}

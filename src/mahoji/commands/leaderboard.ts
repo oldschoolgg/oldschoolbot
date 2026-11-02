@@ -1,9 +1,11 @@
+import { DISCO_AESTHETICS, type DiscoAesthetic } from '@/lib/bso/discoBloodbath.js';
 import { bsoItemContractDonationGivenLb, bsoItemContractLb } from '@/lib/bso/leaderboards/itemContractsLb.js';
 import { bsoTamesHatchedLb } from '@/lib/bso/leaderboards/tamesHatchedLb.js';
 
 import { calcWhatPercent, formatDuration, stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
 import { convertXPtoLVL } from 'oldschooljs';
 
+import { Prisma } from '@/prisma/main.js';
 import { choicesOf, defineOption } from '@/discord/index.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { MAX_LEVEL, masteryKey } from '@/lib/constants.js';
@@ -261,26 +263,6 @@ async function openLb(interaction: MInteraction, name: string, ironmanOnly: bool
 		interaction,
 		users: list.map(u => ({ id: u.id, score: u.qty })),
 		title: `${openableName} Opening Leaderboard`
-	});
-}
-
-async function gpLb(interaction: MInteraction, ironmanOnly: boolean) {
-	const users = (
-		await prisma.$queryRawUnsafe<{ id: string; GP: number }[]>(
-			`SELECT "id"::text as id, "GP"
-			 FROM users
-			 WHERE "GP" > 1000000
-			 ${ironmanOnly ? ' AND "minion.ironman" = true ' : ''}
-			 ORDER BY "GP" DESC
-			 LIMIT 100;`
-		)
-	).map(res => ({ id: res.id, score: Number(res.GP) }));
-	return doMenuWrapper({
-		ironmanOnly,
-		interaction,
-		users,
-		title: 'GP Leaderboard',
-		formatter: val => `${val.toLocaleString()} GP`
 	});
 }
 
@@ -587,6 +569,70 @@ async function masteryLb(interaction: MInteraction) {
 	});
 }
 
+const discoRankingChoices = [
+	{ name: 'Combined', value: 'combined' },
+	{ name: 'Ragged Renegades', value: 'ragged_renegades' },
+	{ name: 'Neon Plushies', value: 'neon_plushies' },
+	{ name: 'Chrome Wreckers', value: 'chrome_wreckers' },
+	{ name: 'Futuristic', value: 'future' },
+	{ name: 'Ragdoll', value: 'ragdoll' },
+	{ name: 'Anti-Fashion', value: 'anti' }
+] as const;
+type DiscoRankingChoice = (typeof discoRankingChoices)[number]['value'];
+const discoRankings: Record<DiscoRankingChoice, { name: string; aesthetics: readonly DiscoAesthetic[] }> = {
+	combined: { name: 'Combined', aesthetics: DISCO_AESTHETICS },
+	ragged_renegades: { name: 'Ragged Renegades', aesthetics: ['Ragdoll', 'Anti-Fashion'] },
+	neon_plushies: { name: 'Neon Plushies', aesthetics: ['Futuristic', 'Ragdoll'] },
+	chrome_wreckers: { name: 'Chrome Wreckers', aesthetics: ['Futuristic', 'Anti-Fashion'] },
+	future: { name: 'Futuristic', aesthetics: ['Futuristic'] },
+	ragdoll: { name: 'Ragdoll', aesthetics: ['Ragdoll'] },
+	anti: { name: 'Anti-Fashion', aesthetics: ['Anti-Fashion'] }
+};
+
+async function discoLb(interaction: MInteraction, choice?: DiscoRankingChoice) {
+	const ranking = choice ? discoRankings[choice] : null;
+	const aesthetics = ranking ? ranking.aesthetics : DISCO_AESTHETICS;
+	const limit = choice ? 10 : 3;
+	const score = (aesthetics: readonly DiscoAesthetic[]) =>
+		aesthetics.map(aesthetic => `COALESCE((disco_stats->'points'->>'${aesthetic}')::integer, 0)`).join(' + ');
+	const leaderboards = await Promise.all(
+		(ranking ? [ranking] : aesthetics.map(aesthetic => ({ name: aesthetic, aesthetics: [aesthetic] }))).map(
+			async ranking => {
+				const total = score(ranking.aesthetics);
+				return {
+					aesthetic: ranking.name,
+					users: await prisma.$queryRaw<{ id: string; score: number }[]>`
+						SELECT user_id::text AS id, (${Prisma.raw(total)})::integer AS score
+						FROM user_stats
+						WHERE (${Prisma.raw(total)}) > 0
+						ORDER BY score DESC, user_id
+						LIMIT ${limit};
+					`
+				};
+			}
+		)
+	);
+
+	if (ranking) {
+		return doMenuWrapper({
+			interaction,
+			ironmanOnly: false,
+			users: leaderboards[0].users,
+			title: `Disco Bloodbath ${ranking.name} Leaderboard`
+		});
+	}
+
+	return doMenuWrapper({
+		interaction,
+		ironmanOnly: false,
+		users: leaderboards.flatMap(({ aesthetic, users }) =>
+			users.map((user, index) => ({ ...user, aesthetic, aestheticRank: index + 1 }))
+		),
+		title: 'Disco Bloodbath Leaderboard',
+		render: (user, username) => `**${user.aesthetic} #${user.aestheticRank}:** ${username} — ${user.score}`
+	});
+}
+
 const ironmanOnlyOption = defineOption({
 	type: 'Boolean',
 	name: 'ironmen_only',
@@ -716,12 +762,6 @@ export const leaderboardCommand = defineCommand({
 					}
 				}
 			]
-		},
-		{
-			type: 'Subcommand',
-			name: 'gp',
-			description: 'Check the GP leaderboard.',
-			options: [ironmanOnlyOption]
 		},
 		{
 			type: 'Subcommand',
@@ -907,6 +947,20 @@ export const leaderboardCommand = defineCommand({
 			name: 'mastery',
 			description: 'Check the mastery leaderboard.',
 			options: []
+		},
+		{
+			type: 'Subcommand',
+			name: 'disco',
+			description: 'Check Disco Bloodbath aesthetic leaderboards.',
+			options: [
+				{
+					type: 'String',
+					name: 'aesthetic',
+					description: 'Show one Disco Bloodbath ranking top 10.',
+					required: false,
+					choices: discoRankingChoices
+				}
+			]
 		}
 	],
 	run: async ({ options, interaction }) => {
@@ -938,10 +992,6 @@ export const leaderboardCommand = defineCommand({
 
 		if (options.agility_laps) {
 			return lapsLb(interaction, options.agility_laps.course);
-		}
-
-		if (options.gp) {
-			return gpLb(interaction, Boolean(options.gp.ironmen_only));
 		}
 
 		if (options.skills) {
@@ -995,6 +1045,10 @@ export const leaderboardCommand = defineCommand({
 
 		if (options.mastery) {
 			return masteryLb(interaction);
+		}
+
+		if (options.disco) {
+			return discoLb(interaction, options.disco.aesthetic);
 		}
 
 		return 'Invalid input.';

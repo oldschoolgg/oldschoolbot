@@ -1,3 +1,4 @@
+import { handleDiscoInquireButton, handleDiscoRaveButton } from '@/lib/bso/discoHandler.js';
 import { ItemContracts } from '@/lib/bso/itemContracts.js';
 import { repeatTameTrip } from '@/lib/bso/tames/tameTasks.js';
 
@@ -26,7 +27,8 @@ import { shootingStarsCommand } from '@/mahoji/lib/abstracted_commands/shootingS
 async function giveawayButtonHandler(user: MUser, customID: string, interaction: OSInteraction): CommandResponse {
 	const split = customID.split('_');
 	if (split[0] !== 'GIVEAWAY') return { content: 'Invalid giveaway.', ephemeral: true };
-	const giveawayID = Number(split[2]);
+	const giveawayID = split[2];
+	if (!giveawayID) return { content: 'Invalid giveaway.', ephemeral: true };
 	let giveaway: Giveaway | null = giveawayCache.get(giveawayID) ?? null;
 	if (!giveaway) {
 		giveaway = await prisma.giveaway.findFirst({
@@ -250,6 +252,8 @@ async function globalButtonInteractionHandler({
 	}
 
 	const user = interaction.user;
+	if (id.startsWith('DISCO_RAVE_')) return handleDiscoRaveButton(user, id, interaction);
+	if (id.startsWith('DISCO_INQUIRE_')) return handleDiscoInquireButton(user, id, interaction);
 	if (id.includes(InteractionID.Commands.RepeatTrip)) return repeatTripHandler(user, id, interaction);
 
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);

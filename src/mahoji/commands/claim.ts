@@ -1,3 +1,5 @@
+import { DISCO_EVENT_END_DATE, isDiscoEventActive } from '@/lib/bso/discoBloodbath.js';
+
 import { CollectionLog } from '@oldschoolgg/collectionlog';
 import { dateFm } from '@oldschoolgg/discord';
 import { stringMatches } from '@oldschoolgg/toolkit';
@@ -41,6 +43,23 @@ function maxIndy2Boxes(user: MUser): number {
 }
 
 const claimables = [
+	{
+		name: 'Lazy Mystery Box (T5 Promo)',
+		hasRequirement: async (user: MUser): Promise<true | string> => {
+			if (!isDiscoEventActive()) return `This event ended on ${DISCO_EVENT_END_DATE.toDateString()}.`;
+			if (user.user.fealty_box_claimed) return 'You already claimed your Fealty box!';
+			return true;
+		},
+		action: async (user: MUser, bonusBox?: string) => {
+			const box = bonusBox
+				? bonusBox === 'Skrink box'
+					? 'Skrink box'
+					: 'Skrod box'
+				: MathRNG.pick<'Skrink box' | 'Skrod box'>(['Skrod box', 'Skrink box']);
+			const loot = await user.claimLazyBox(box);
+			return `You claimed ${loot}. Money, success, fame, glamour — your afterparty starts here.`;
+		}
+	},
 	{
 		name: independenceDay2Box,
 		hasRequirement: async (user: MUser): Promise<true | string> => {
@@ -185,6 +204,16 @@ export const claimCommand = defineCommand({
 						value: i.name
 					}));
 			}
+		},
+		{
+			type: 'String',
+			name: 'bonus_box',
+			description: 'Choose your club-kid chase box for the Lazy box promotion.',
+			required: false,
+			choices: [
+				{ name: 'Skrink box', value: 'Skrink box' },
+				{ name: 'Skrod box', value: 'Skrod box' }
+			]
 		}
 	],
 	run: async ({ options, user }) => {
@@ -214,7 +243,7 @@ ${dateFm(new Date(rawData.date))}`;
 			}
 		}
 
-		const result = await claimable.action(user);
+		const result = await claimable.action(user, options.bonus_box);
 		return result;
 	}
 });

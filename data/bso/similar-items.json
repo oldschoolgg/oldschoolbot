@@ -1422,6 +1422,10 @@
 		"similar_items": ["Magic shortbow", "Magic shortbow (i)"]
 	},
 	{
+		"main_item": "Magnabbit",
+		"similar_items": ["Magnabbit", "Radiant Magnabbit"]
+	},
+	{
 		"main_item": "Malediction ward",
 		"similar_items": ["Malediction ward", "Malediction ward (or)"]
 	},
@@ -1546,6 +1550,10 @@
 	{
 		"main_item": "Osmumten's fang",
 		"similar_items": ["Osmumten's fang", "Osmumten's fang (or)"]
+	},
+	{
+		"main_item": "Partycrab",
+		"similar_items": ["Mona", "Partycrab"]
 	},
 	{
 		"main_item": "Patricia",
@@ -1800,6 +1808,10 @@
 	{
 		"main_item": "Searcrown band",
 		"similar_items": ["Searcrown band", "Searcrown band (archaic)"]
+	},
+	{
+		"main_item": "Seer",
+		"similar_items": ["Black swan", "Seer"]
 	},
 	{
 		"main_item": "Skull sceptre",

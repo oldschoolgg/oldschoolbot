@@ -37,18 +37,37 @@ type RatelimitConfig = {
 	max: number;
 };
 
-type RatelimitType = 'random_events' | 'global_buttons' | 'stats_command' | 'delay_member_fetch' | 'delay_guild_fetch';
+type RatelimitType =
+	| 'random_events'
+	| 'global_buttons'
+	| 'stats_command'
+	| 'disco_inquire'
+	| 'delay_member_fetch'
+	| 'delay_guild_fetch'
+	| 'disco_bank_search'
+	| 'disco_leaderboard';
 
 const RATELIMITS: Record<RatelimitType, RatelimitConfig> = {
-	global_buttons: { windowSeconds: 2, max: 1 },
+	global_buttons: { windowSeconds: 2, max: 3 },
 	random_events: { windowSeconds: TTL.Hour * 3, max: 5 },
 	stats_command: { windowSeconds: 5, max: 1 },
+	disco_inquire: { windowSeconds: TTL.Minute * 30, max: 5 },
 	delay_member_fetch: { windowSeconds: 5 * 60, max: 1 },
-	delay_guild_fetch: { windowSeconds: 5 * 60, max: 1 }
+	delay_guild_fetch: { windowSeconds: 5 * 60, max: 1 },
+	disco_bank_search: { windowSeconds: TTL.Minute * 15, max: 4 },
+	disco_leaderboard: { windowSeconds: TTL.Minute * 10, max: 1 }
 } as const;
 
 const BotKeys = RedisKeys[BOT_TYPE];
 const ROBOCHIMP_USER_CACHE_TTL_SECONDS = TTL.Minute * 5;
+const roboChimpBigIntFields = [
+	'id',
+	'migrated_user_id',
+	'osb_total_xp',
+	'bso_total_xp',
+	'premium_balance_expiry_date',
+	'last_patreon_gift'
+] as const;
 type CachedGuildSettings = Pick<Guild, 'id' | 'disabledCommands' | 'petchannel' | 'staffOnlyChannels'>;
 type GuildUpdateInput = Partial<IGuild> & {
 	mega_duck_location?: MegaDuckLocation | Prisma.InputJsonValue;
@@ -56,10 +75,15 @@ type GuildUpdateInput = Partial<IGuild> & {
 
 class CacheManager {
 	private client: Redis;
+	private readyPromise = Promise.withResolvers<void>();
 
+	async waitTillReady() {
+		return this.readyPromise;
+	}
 	constructor() {
 		if (globalConfig.isProduction) {
 			this.client = new Redis();
+			this.client.on('ready', () => this.readyPromise.resolve());
 		} else {
 			try {
 				const host: string = process.env.REDIS_HOST ?? 'localhost';
@@ -68,10 +92,13 @@ class CacheManager {
 				redis.on('error', () => {
 					redis.disconnect();
 					this.client = new MockedRedis() as any as Redis;
+					this.readyPromise.resolve();
 				});
+				redis.on('ready', () => this.readyPromise.resolve());
 				this.client = redis;
 			} catch {
 				this.client = new MockedRedis() as any as Redis;
+				this.readyPromise.resolve();
 			}
 		}
 	}
@@ -91,6 +118,14 @@ class CacheManager {
 	private async getJson<T = unknown>(key: string): Promise<T | null> {
 		const raw = await this.client.get(key);
 		return raw ? JSON.parse(raw) : null;
+	}
+
+	private deserializeRoboChimpUser(user: RobochimpUser): RobochimpUser {
+		const result = { ...user } as Record<string, unknown>;
+		for (const field of roboChimpBigIntFields) {
+			if (typeof result[field] === 'string') result[field] = BigInt(result[field]);
+		}
+		return result as unknown as RobochimpUser;
 	}
 
 	private async getString(key: string): Promise<string | null> {
@@ -279,7 +314,8 @@ class CacheManager {
 		const key = RedisKeys.RoboChimpUser(BigInt(userId));
 		if (!forceRefresh) {
 			const cachedUser = await this.getJson<RobochimpUser>(key);
-			if (cachedUser && this.isCompleteRoboChimpUser(cachedUser)) return cachedUser;
+			if (cachedUser && this.isCompleteRoboChimpUser(cachedUser))
+				return this.deserializeRoboChimpUser(cachedUser);
 		}
 
 		const user = await roboChimpClient.user.upsert({
@@ -309,6 +345,18 @@ class CacheManager {
 
 	async resetPerkTier(userId: string): Promise<void> {
 		await this.client.del(RedisKeys.Global.PerkTier(userId));
+	}
+
+	async createDiscoRave(userId: string, raveId: string): Promise<void> {
+		await this.client.set(`bso:${userId}:${raveId}`, '1', 'EX', TTL.Hour);
+	}
+
+	async consumeDiscoRave(userId: string, raveId: string): Promise<boolean> {
+		return (await this.client.del(`bso:${userId}:${raveId}`)) === 1;
+	}
+
+	async deleteDiscoRave(userId: string, raveId: string): Promise<void> {
+		await this.client.del(`bso:${userId}:${raveId}`);
 	}
 
 	// Users

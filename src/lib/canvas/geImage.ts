@@ -4,9 +4,9 @@ import { Items } from 'oldschooljs';
 import type { GEListing, GETransaction } from '@/prisma/main.js';
 import { CanvasModule } from '@/lib/canvas/CanvasModule.js';
 import { CanvasSpritesheet } from '@/lib/canvas/CanvasSpritesheet.js';
-import type { Canvas } from '@/lib/canvas/canvasUtil.js';
+import { type Canvas, type CanvasImage, loadImage } from '@/lib/canvas/canvasUtil.js';
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
-import type { GEListingWithTransactions } from '@/mahoji/commands/ge.js';
+import type { GEListingWithTransactions } from '@/lib/grandExchange.js';
 
 class GeImageGeneratorSingleton {
 	public ready = false;
@@ -14,6 +14,7 @@ class GeImageGeneratorSingleton {
 	public geSlotLocked: Canvas | null = null;
 	public geSlotOpen: Canvas | null = null;
 	public geSlotActive: Canvas | null = null;
+	public geSlotExpired: CanvasImage | null = null;
 	public geProgressShadow: Canvas | null = null;
 
 	async init() {
@@ -26,6 +27,7 @@ class GeImageGeneratorSingleton {
 		this.geSlotActive = geSpritesheet.getSprite('ge_slot_active');
 		this.geSlotLocked = geSpritesheet.getSprite('ge_slot_locked');
 		this.geSlotOpen = geSpritesheet.getSprite('ge_slot_open');
+		this.geSlotExpired = await loadImage('./src/lib/resources/images/grandexchange/ge_slot_expired.png');
 		this.geProgressShadow = geSpritesheet.getSprite('ge_progress_shadow');
 		this.ready = true;
 	}
@@ -35,9 +37,16 @@ class GeImageGeneratorSingleton {
 		canvas: OSRSCanvas,
 		slot: number,
 		locked: boolean,
-		listing: GEListingWithTransactions | undefined
+		listing: GEListingWithTransactions | undefined,
+		expired = false
 	) {
-		const slotImage = listing ? this.geSlotActive! : locked ? this.geSlotLocked! : this.geSlotOpen!;
+		const slotImage = listing
+			? expired
+				? this.geSlotExpired!
+				: this.geSlotActive!
+			: locked
+				? this.geSlotLocked!
+				: this.geSlotOpen!;
 		const ctx = canvas.ctx;
 
 		// Draw slot background
@@ -120,6 +129,48 @@ class GeImageGeneratorSingleton {
 		ctx.restore();
 	}
 
+	async addInterfaceSlots(
+		canvas: OSRSCanvas,
+		listingData: GEListingWithTransactions[],
+		extra: {
+			unlockedSlots?: number;
+			page?: number;
+			rowLength?: number;
+			rowCount?: number;
+			startX?: number;
+			startY?: number;
+			user?: MUser | null;
+		} = {}
+	) {
+		const rowLength = extra.rowLength ?? 4;
+		const rowCount = extra.rowCount ?? 2;
+		const startX = extra.startX ?? 9;
+		const startY = extra.startY ?? 64;
+		const unlockedSlots = extra.unlockedSlots ?? listingData.length;
+		const pageSize = rowLength * rowCount;
+		const isPaged = extra.page !== undefined;
+		const page = Math.max(extra.page ?? 1, 1);
+		const pageStart = isPaged ? (page - 1) * pageSize : 0;
+		const remainingUnlockedSlots = Math.max(0, unlockedSlots - pageStart);
+		const slotCount = isPaged
+			? pageSize
+			: Math.ceil(Math.max(listingData.length, unlockedSlots) / rowLength) * rowLength;
+
+		for (let indexOnCanvas = 0; indexOnCanvas < slotCount; indexOnCanvas++) {
+			const slotIndex = pageStart + indexOnCanvas;
+			const listing = listingData[slotIndex];
+			const locked = indexOnCanvas >= remainingUnlockedSlots;
+			const expired = Boolean(listing && locked);
+			const x = indexOnCanvas % rowLength;
+			const y = Math.floor(indexOnCanvas / rowLength) * (this.geSlotOpen!.height + 10);
+
+			canvas.ctx.save();
+			canvas.ctx.translate(startX + x * (this.geSlotOpen!.width + 2), startY + y);
+			await this.getSlotImage(extra.user ?? null, canvas, slotIndex + 1, locked, listing, expired);
+			canvas.ctx.restore();
+		}
+	}
+
 	async createInterface(opts: {
 		user?: MUser;
 		slotsUsed: number;
@@ -153,22 +204,13 @@ class GeImageGeneratorSingleton {
 			});
 		}
 
-		const startX = 9;
-		const startY = 64;
-
-		const pageStart = (page - 1) * chunkSize;
-		const pageEnd = Math.min(pageStart + chunkSize, maxSlots);
-		for (let i = pageStart; i < pageEnd; i++) {
-			const listing: GEListingWithTransactions = activeListings[i];
-			const indexOnPage = i - pageStart;
-			const x = indexOnPage % slotsPerRow;
-			const y = Math.floor(indexOnPage / slotsPerRow) * (this.geSlotOpen!.height + 10);
-
-			canvas.ctx.save();
-			canvas.ctx.translate(startX + x * (this.geSlotOpen!.width + 2), startY + y);
-			await this.getSlotImage(opts.user ?? null, canvas, i + 1, i >= slotsUsed, listing);
-			canvas.ctx.restore();
-		}
+		await this.addInterfaceSlots(canvas, activeListings, {
+			unlockedSlots: slotsUsed,
+			page,
+			rowLength: slotsPerRow,
+			rowCount: rowsPerPage,
+			user: opts.user
+		});
 
 		return canvas.toScaledOutput(2);
 	}

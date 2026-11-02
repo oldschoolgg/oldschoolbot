@@ -47,6 +47,7 @@ const ALL_VALID_KILLABLE_MONSTERS = [
 
 export const killCommand = defineCommand({
 	name: 'kill',
+	flags: ['GAMBLING_BANNED'],
 	description: 'Simulate killing monsters.',
 	options: [
 		{

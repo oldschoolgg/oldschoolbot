@@ -16,6 +16,11 @@ import { assert } from '@/lib/util/logError.js';
 
 export const generateGrandExchangeID = () => miniID(6).toLowerCase();
 
+export type GEListingWithTransactions = GEListing & {
+	buyTransactions: GETransaction[];
+	sellTransactions: GETransaction[];
+};
+
 interface CreateListingArgs {
 	user: MUser;
 	itemName: string;
@@ -1004,6 +1009,43 @@ Difference: ${shouldHave.difference(currentBank)}`);
 		});
 		await prisma.$executeRaw`TRUNCATE TABLE "ge_bank", "ge_transaction", "ge_listing" RESTART IDENTITY;`;
 	}
+}
+
+export function geListingToString(
+	listing: GEListingWithTransactions,
+	buyLimit?: Awaited<ReturnType<(typeof GrandExchange)['checkBuyLimitForListing']>>
+) {
+	const item = Items.getOrThrow(listing.item_id);
+	const allTransactions = [...listing.buyTransactions, ...listing.sellTransactions];
+	const verb = listing.type === 'Buy' ? 'Buying' : 'Selling';
+	const pastVerb = listing.type === 'Buy' ? 'bought' : 'sold';
+	const action = listing.type.toLowerCase();
+	const itemQty = `${toKMB(listing.total_quantity)} ${item.name}`;
+
+	const totalSold = listing.total_quantity - listing.quantity_remaining;
+	const totalPricePaidSoFar = toKMB(
+		sumArr(allTransactions.map(i => i.quantity_bought * Number(i.price_per_item_after_tax)))
+	);
+	const totalTaxPaidSoFar = toKMB(sumArr(allTransactions.map(i => Number(i.total_tax_paid))));
+
+	if (listing.cancelled_at) {
+		return `Cancelled offer to ${action} ${itemQty}. ${totalSold} ${pastVerb}.`;
+	}
+
+	if (listing.fulfilled_at) {
+		return `Completed offer to ${action} ${itemQty}. ${totalSold} ${pastVerb} for a total amount of ${totalPricePaidSoFar} (${totalTaxPaidSoFar} tax paid).`;
+	}
+
+	const buyLimitStr =
+		buyLimit !== undefined && buyLimit.remainingItemsCanBuy !== buyLimit.buyLimit
+			? ` (${buyLimit.remainingItemsCanBuy.toLocaleString()}/${buyLimit.buyLimit.toLocaleString()} remaining in buy limit currently)`
+			: '';
+
+	return `${verb} ${itemQty}, ${toKMB(
+		listing.quantity_remaining
+	)} are remaining to ${listing.type.toLowerCase()}, asking for ${toKMB(
+		Number(listing.asking_price_per_item)
+	)} GP each. ${allTransactions.length}x transactions made.${buyLimitStr}`;
 }
 
 export const GrandExchange = new GrandExchangeSingleton();

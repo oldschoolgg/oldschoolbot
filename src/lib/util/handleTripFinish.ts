@@ -1,5 +1,9 @@
+import { BSOItem } from '@/lib/bso/BSOItem.js';
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 import { ASSIGNMENT_TRIP_COSTS, ASSIGNMENT_TRIP_ITEM, getActiveAssignment } from '@/lib/bso/commands/islandUpgrades.js';
 import { tearsOfGuthixIronmanReqs, tearsOfGuthixSkillReqs } from '@/lib/bso/commands/tearsOfGuthixCommand.js';
+import { DISCO_EVENT_END_DATE, isDiscoEventActive } from '@/lib/bso/discoBloodbath.js';
+import { discoHandler } from '@/lib/bso/discoHandler.js';
 import { handleCrateSpawns } from '@/lib/bso/handleCrateSpawns.js';
 import { gods } from '@/lib/bso/minigames/divineDominion.js';
 import { mysteriousStepData } from '@/lib/bso/mysteryTrail.js';
@@ -10,8 +14,8 @@ import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skil
 import { RuneTable, WilvusTable, WoodTable } from '@/lib/bso/tables/seedTable.js';
 import { DougTable, PekyTable } from '@/lib/bso/tables/sharedTables.js';
 
-import { type ButtonBuilder, bold } from '@oldschoolgg/discord';
-import { getNextUTCReset, notEmpty, Time } from '@oldschoolgg/toolkit';
+import { type ButtonBuilder, bold, type EmbedBuilder } from '@oldschoolgg/discord';
+import { Emoji, getNextUTCReset, notEmpty, Time } from '@oldschoolgg/toolkit';
 import { MathRNG, randArrItem, randInt, roll } from 'node-rng';
 import { cryptoRng } from 'node-rng/crypto';
 import { Bank, EItem, itemID, toKMB } from 'oldschooljs';
@@ -54,12 +58,26 @@ const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
 	'ClueCompletion'
 ];
 
-interface TripFinishEffectOptions {
+const BOOALA_BASE_DROPRATE = (Time.Hour / Time.Minute) * 25;
+const BOOALA_FINALE_DURATION = Time.Day * 3;
+
+function booalaDroprate(user: MUser, date = new Date()) {
+	let droprate = BOOALA_BASE_DROPRATE;
+	if (date.getDay() === 0 || date.getDay() === 6) droprate /= 2;
+	if (date.getMonth() === 9 && date.getDate() >= 25) droprate /= 2;
+	if (date.getTime() >= DISCO_EVENT_END_DATE.getTime() - BOOALA_FINALE_DURATION) {
+		droprate *= user.cl.has(BSOItem.BOOALA) ? 2 : 0.5;
+	}
+	return clAdjustedDroprate(user, BSOItem.BOOALA, droprate, 2);
+}
+
+export interface TripFinishEffectOptions {
 	data: ActivityTaskData;
 	user: MUser;
 	loot: Bank | null;
 	messages: string[];
 	components: ButtonBuilder[];
+	embeds: EmbedBuilder[];
 	lastDailyTimestamp: bigint | null;
 	lastTearsOfGuthixTimestamp: bigint | null;
 	perkTier: PerkTier;
@@ -92,6 +110,27 @@ const tripFinishEffects: TripFinishEffect[] = [
 				}
 			}
 			return {};
+		}
+	},
+	{
+		name: 'Disco Bloodbath Raves',
+		fn: discoHandler
+	},
+	{
+		name: 'Halloween2026Pet',
+		fn: async ({ data, messages, user, rng }) => {
+			if (!isDiscoEventActive() || data.duration <= Time.Minute * 10) return;
+
+			const droprate = booalaDroprate(user);
+			const minutes = Math.floor(data.duration / Time.Minute);
+			for (let i = 0; i < minutes; i++) {
+				if (!rng.roll(droprate)) continue;
+				const loot = new Bank().add(BSOItem.BOOALA);
+				messages.push(
+					`\n${Emoji.Booala} BOO! A meandering, menacing,  miniature joins your minion. Why don't Koala start with an M? You received ${loot}.\n`
+				);
+				return { itemsToAddWithCL: loot };
+			}
 		}
 	},
 	{
@@ -761,6 +800,7 @@ export async function handleTripFinish(
 	const messages: string[] = inputMessages ?? [];
 
 	const components: ButtonBuilder[] = [];
+	const embeds: EmbedBuilder[] = [];
 	components.push(makeRepeatTripButton());
 
 	const portents = await getAllPortentCharges(user);
@@ -775,6 +815,7 @@ export async function handleTripFinish(
 			user,
 			loot: loot ?? null,
 			components,
+			embeds,
 			messages,
 			portents,
 			lastDailyTimestamp: last_daily_timestamp,
@@ -792,7 +833,6 @@ export async function handleTripFinish(
 			duration
 		});
 	}
-
 	if (itemsToAddWithCL.length > 0 || itemsToRemove.length > 0) {
 		await user.transactItems({ itemsToAdd: itemsToAddWithCL, collectionLog: true, itemsToRemove });
 	}
@@ -808,6 +848,7 @@ export async function handleTripFinish(
 	if (components.length > 0) {
 		message.addComponents(components);
 	}
+	for (const embed of embeds) message.addEmbed(embed);
 
 	message.addAllowedUserMentions([user.id]);
 	if ('users' in data) {
