@@ -115,8 +115,9 @@ export const taskCanBeRepeated = (activity: Activity, user: MUser, taskIndex: nu
 	if (data.type === activity_type_enum.Farming) {
 		return taskIndex === 0 && data.autoFarmed;
 	}
-  if (activity.type === activity_type_enum.DiscoBloodbath && (activity.data as { isRave?: boolean }).isRave) {
+	if (activity.type === activity_type_enum.DiscoBloodbath && (activity.data as { isRave?: boolean }).isRave) {
 		return false;
+	}
 	if (activity.type === activity_type_enum.ClueCompletion) {
 		const realActivity = ActivityManager.convertStoredActivityToFlatActivity(activity) as ClueActivityTaskOptions;
 		return (
