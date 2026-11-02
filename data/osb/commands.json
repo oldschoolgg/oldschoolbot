@@ -1,6 +1,6 @@
 {
-	"hash": "27a3bd240d4d63b1ec5a25f2d70cf03a",
-	"date": "2026-09-09T11:55:21.667Z",
+	"hash": "ad1bfd030cf7a3450b0c949e1698dc2a",
+	"date": "2026-09-22T13:08:37.923Z",
 	"data": [
 		{
 			"name": "activities",
@@ -287,6 +287,7 @@
 				"cl",
 				"clues",
 				"combat_achievements",
+				"delves",
 				"farming_contracts",
 				"giants_foundry",
 				"global",

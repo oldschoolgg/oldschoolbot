@@ -7,6 +7,7 @@ export const validPremiumTimeTiers = [1, 2, 3, 4, 5, 6, 7] as const;
 
 export type PremiumTimeBalance = {
 	premium_balance_tier: number | null;
+	premium_balance_is_cyr?: boolean | null;
 	premium_balance_expiry_date: bigint | null;
 	is_active?: boolean | null;
 };
@@ -15,6 +16,7 @@ export type PremiumTimeGrant = {
 	expiryTime: number;
 	remainingTime: number;
 	tier: number;
+	isCyr: boolean;
 	timeMs: number;
 };
 
@@ -33,6 +35,7 @@ export async function fetchPremiumTimeBalance(userID: bigint): Promise<PremiumTi
 		},
 		select: {
 			premium_balance_tier: true,
+			premium_balance_is_cyr: true,
 			premium_balance_expiry_date: true
 		}
 	});
@@ -47,19 +50,24 @@ export function calculatePremiumTimeGrant({
 	currentBalance,
 	timeMs,
 	tier,
+	isCyr = false,
 	now = Date.now()
 }: {
 	currentBalance: PremiumTimeBalance;
 	timeMs: number;
 	tier: number;
+	isCyr?: boolean;
 	now?: number;
 }): PremiumTimeGrant {
 	const currentExpiryDate =
 		currentBalance.premium_balance_expiry_date === null ? null : Number(currentBalance.premium_balance_expiry_date);
 
-	// If not yet expired, AND the tier is the same, then time stacks, otherwise it resets.
+	// If not yet expired and the tier/source match, time stacks; otherwise it resets.
 	const expiryTime =
-		currentExpiryDate && now < currentExpiryDate && tier === currentBalance.premium_balance_tier
+		currentExpiryDate &&
+		now < currentExpiryDate &&
+		tier === currentBalance.premium_balance_tier &&
+		isCyr === Boolean(currentBalance.premium_balance_is_cyr)
 			? currentExpiryDate + timeMs
 			: now + timeMs;
 
@@ -67,6 +75,7 @@ export function calculatePremiumTimeGrant({
 		expiryTime,
 		remainingTime: expiryTime - now,
 		tier,
+		isCyr,
 		timeMs
 	};
 }
@@ -74,6 +83,7 @@ export function calculatePremiumTimeGrant({
 export function premiumTimeGrantUpdate(grant: PremiumTimeGrant) {
 	return {
 		premium_balance_tier: grant.tier,
+		premium_balance_is_cyr: grant.isCyr,
 		premium_balance_expiry_date: grant.expiryTime
 	};
 }
@@ -99,11 +109,13 @@ export async function grantPremiumTime({
 	userID,
 	timeMs,
 	tier,
+	isCyr = false,
 	now = Date.now()
 }: {
 	userID: bigint;
 	timeMs: number;
 	tier: number;
+	isCyr?: boolean;
 	now?: number;
 }) {
 	if (!validatePremiumTimeGrant(timeMs, tier)) {
@@ -111,7 +123,7 @@ export async function grantPremiumTime({
 	}
 
 	const currentBalance = await fetchPremiumTimeBalance(userID);
-	const grant = calculatePremiumTimeGrant({ currentBalance, timeMs, tier, now });
+	const grant = calculatePremiumTimeGrant({ currentBalance, timeMs, tier, isCyr, now });
 
 	await applyPremiumTimeGrant({ userID, grant });
 	await globalClient.fetchRUser(userID);

@@ -2,6 +2,7 @@ export const RedisKeys = {
 	BlacklistedUsers: 'blacklist:users',
 	BlacklistedGuilds: 'blacklist:guilds',
 	RoboChimpUser: (id: bigint): string => `robochimp:user:${id.toString()}`,
+	PatreonToUserId: (id: string | number | bigint): string => `robochimp:patreon_id:${id.toString()}`,
 	OSB: {
 		User: {
 			BadgedUsername: (id: string): string => `osb:user:${id.toString()}:badged_username`,
