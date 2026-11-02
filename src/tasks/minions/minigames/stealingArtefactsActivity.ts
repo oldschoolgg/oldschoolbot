@@ -1,6 +1,7 @@
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
+import { MessageBuilder } from '@/discord/MessageBuilder.js';
 import { calculateStealingArtefactsXpPerHour, getGlassblowingProduct } from '@/lib/minions/data/stealingArtefacts.js';
 import type { StealingArtefactsActivityTaskOptions } from '@/lib/types/minions.js';
 
