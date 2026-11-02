@@ -1,6 +1,6 @@
 {
-	"hash": "0e07104917eed2985ba1dd0d63a28523",
-	"date": "2026-03-05T11:16:59.512Z",
+	"hash": "c816cf21901683d795f2b7377b0d8666",
+	"date": "2026-05-19T20:03:04.322Z",
 	"data": [
 		{
 			"name": "3rd age felling axe",
@@ -600,6 +600,191 @@
 				"Avernic defender hilt": 1,
 				"Dragon defender": 1
 			}
+		},
+		{
+			"name": "Avernic treads (et)",
+			"items_created": {
+				"Avernic treads (et)": 1
+			},
+			"items_required": {
+				"Avernic treads": 1,
+				"Demon tear": 4000,
+				"Eternal boots": 1
+			},
+			"required_stats": {
+				"magic": 80,
+				"runecraft": 60
+			}
+		},
+		{
+			"name": "Avernic treads (max) (from pe)(et)",
+			"items_created": {
+				"Avernic treads (max)": 1
+			},
+			"items_required": {
+				"Avernic treads (pe)(et)": 1,
+				"Demon tear": 4000,
+				"Primordial boots": 1
+			},
+			"required_stats": {
+				"magic": 80,
+				"runecraft": 60
+			},
+			"noCl": true
+		},
+		{
+			"name": "Avernic treads (max) (from pr)(et)",
+			"items_created": {
+				"Avernic treads (max)": 1
+			},
+			"items_required": {
+				"Avernic treads (pr)(et)": 1,
+				"Demon tear": 4000,
+				"Pegasian boots": 1
+			},
+			"required_stats": {
+				"magic": 80,
+				"runecraft": 60
+			},
+			"noCl": true
+		},
+		{
+			"name": "Avernic treads (max) (from pr)(pe)",
+			"items_created": {
+				"Avernic treads (max)": 1
+			},
+			"items_required": {
+				"Avernic treads (pr)(pe)": 1,
+				"Demon tear": 4000,
+				"Eternal boots": 1
+			},
+			"required_stats": {
+				"magic": 80,
+				"runecraft": 60
+			}
+		},
+		{
+			"name": "Avernic treads (pe)",
+			"items_created": {
+				"Avernic treads (pe)": 1
+			},
+			"items_required": {
+				"Avernic treads": 1,
+				"Demon tear": 4000,
+				"Pegasian boots": 1
+			},
+			"required_stats": {
+				"magic": 80,
+				"runecraft": 60
+			}
+		},
+		{
+			"name": "Avernic treads (pe)(et)",
+			"items_created": {
+				"Avernic treads (pe)(et)": 1
+			},
+			"items_required": {
+				"Avernic treads (pe)": 1,
+				"Demon tear": 4000,
+				"Eternal boots": 1
+			},
+			"required_stats": {
+				"magic": 80,
+				"runecraft": 60
+			}
+		},
+		{
+			"name": "Avernic treads (pe)(et) (from et)",
+			"items_created": {
+				"Avernic treads (pe)(et)": 1
+			},
+			"items_required": {
+				"Avernic treads (et)": 1,
+				"Demon tear": 4000,
+				"Pegasian boots": 1
+			},
+			"required_stats": {
+				"magic": 80,
+				"runecraft": 60
+			},
+			"noCl": true
+		},
+		{
+			"name": "Avernic treads (pr)",
+			"items_created": {
+				"Avernic treads (pr)": 1
+			},
+			"items_required": {
+				"Avernic treads": 1,
+				"Demon tear": 4000,
+				"Primordial boots": 1
+			},
+			"required_stats": {
+				"magic": 80,
+				"runecraft": 60
+			}
+		},
+		{
+			"name": "Avernic treads (pr)(et)",
+			"items_created": {
+				"Avernic treads (pr)(et)": 1
+			},
+			"items_required": {
+				"Avernic treads (pr)": 1,
+				"Demon tear": 4000,
+				"Eternal boots": 1
+			},
+			"required_stats": {
+				"magic": 80,
+				"runecraft": 60
+			}
+		},
+		{
+			"name": "Avernic treads (pr)(et) (from et)",
+			"items_created": {
+				"Avernic treads (pr)(et)": 1
+			},
+			"items_required": {
+				"Avernic treads (et)": 1,
+				"Demon tear": 4000,
+				"Primordial boots": 1
+			},
+			"required_stats": {
+				"magic": 80,
+				"runecraft": 60
+			},
+			"noCl": true
+		},
+		{
+			"name": "Avernic treads (pr)(pe)",
+			"items_created": {
+				"Avernic treads (pr)(pe)": 1
+			},
+			"items_required": {
+				"Avernic treads (pr)": 1,
+				"Demon tear": 4000,
+				"Pegasian boots": 1
+			},
+			"required_stats": {
+				"magic": 80,
+				"runecraft": 60
+			}
+		},
+		{
+			"name": "Avernic treads (pr)(pe) (from pe)",
+			"items_created": {
+				"Avernic treads (pr)(pe)": 1
+			},
+			"items_required": {
+				"Avernic treads (pe)": 1,
+				"Demon tear": 4000,
+				"Primordial boots": 1
+			},
+			"required_stats": {
+				"magic": 80,
+				"runecraft": 60
+			},
+			"noCl": true
 		},
 		{
 			"name": "Babi",
@@ -1594,6 +1779,21 @@
 				"Attack potion(4)": 1,
 				"Defence potion(4)": 1,
 				"Strength potion(4)": 1
+			}
+		},
+		{
+			"name": "Confliction gauntlets",
+			"items_created": {
+				"Confliction gauntlets": 1
+			},
+			"items_required": {
+				"Demon tear": 10000,
+				"Mokhaiotl cloth": 1,
+				"Tormented bracelet": 1
+			},
+			"required_stats": {
+				"crafting": 83,
+				"smithing": 70
 			}
 		},
 		{
@@ -5051,6 +5251,88 @@
 			"items_required": {
 				"Avernic defender": 1
 			}
+		},
+		{
+			"name": "Revert avernic treads (et)",
+			"items_created": {
+				"Avernic treads": 1,
+				"Eternal boots": 1
+			},
+			"items_required": {
+				"Avernic treads (et)": 1
+			},
+			"noCl": true
+		},
+		{
+			"name": "Revert avernic treads (max)",
+			"items_created": {
+				"Avernic treads": 1,
+				"Eternal boots": 1,
+				"Pegasian boots": 1,
+				"Primordial boots": 1
+			},
+			"items_required": {
+				"Avernic treads (max)": 1
+			},
+			"noCl": true
+		},
+		{
+			"name": "Revert avernic treads (pe)",
+			"items_created": {
+				"Avernic treads": 1,
+				"Pegasian boots": 1
+			},
+			"items_required": {
+				"Avernic treads (pe)": 1
+			},
+			"noCl": true
+		},
+		{
+			"name": "Revert avernic treads (pe)(et)",
+			"items_created": {
+				"Avernic treads": 1,
+				"Eternal boots": 1,
+				"Pegasian boots": 1
+			},
+			"items_required": {
+				"Avernic treads (pe)(et)": 1
+			},
+			"noCl": true
+		},
+		{
+			"name": "Revert avernic treads (pr)",
+			"items_created": {
+				"Avernic treads": 1,
+				"Primordial boots": 1
+			},
+			"items_required": {
+				"Avernic treads (pr)": 1
+			},
+			"noCl": true
+		},
+		{
+			"name": "Revert avernic treads (pr)(et)",
+			"items_created": {
+				"Avernic treads": 1,
+				"Eternal boots": 1,
+				"Primordial boots": 1
+			},
+			"items_required": {
+				"Avernic treads (pr)(et)": 1
+			},
+			"noCl": true
+		},
+		{
+			"name": "Revert avernic treads (pr)(pe)",
+			"items_created": {
+				"Avernic treads": 1,
+				"Pegasian boots": 1,
+				"Primordial boots": 1
+			},
+			"items_required": {
+				"Avernic treads (pr)(pe)": 1
+			},
+			"noCl": true
 		},
 		{
 			"name": "Revert Babi",

@@ -1,6 +1,6 @@
 {
-	"hash": "4adfea88669c8929e25c50c45d38ca91",
-	"date": "2026-06-09T08:23:51.005Z",
+	"hash": "ad1bfd030cf7a3450b0c949e1698dc2a",
+	"date": "2026-09-22T13:08:37.923Z",
 	"data": [
 		{
 			"name": "activities",
@@ -144,6 +144,12 @@
 			"subOptions": []
 		},
 		{
+			"name": "delves",
+			"desc": "Send your minion to attempt a delve boss.",
+			"examples": ["/delves doom"],
+			"subOptions": ["doom"]
+		},
+		{
 			"name": "drop",
 			"desc": "Drop items from your bank.",
 			"examples": ["/drop items:10 trout, 5 coal"],
@@ -281,6 +287,7 @@
 				"cl",
 				"clues",
 				"combat_achievements",
+				"delves",
 				"farming_contracts",
 				"giants_foundry",
 				"global",

@@ -43,9 +43,7 @@ export const groupoMonsterTask: MinionTask = {
 			});
 			const kcToAdd = kcAmounts[user.id];
 			if (kcToAdd) await user.incrementKC(monsterID, kcToAdd);
-			const purple = Object.keys(loot).some(itemID =>
-				isImportantItemForMonster(Number.parseInt(itemID), monster)
-			);
+			const purple = loot.items().some(([item]) => isImportantItemForMonster(item.id, monster));
 
 			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${loot}||\n`;
 

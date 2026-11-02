@@ -376,6 +376,24 @@ const source: [string, (string | number)[]][] = [
 	['Torva full helm', ['Sanguine torva full helm']],
 	['Torva platebody', ['Sanguine torva platebody']],
 	['Torva platelegs', ['Sanguine torva platelegs']],
+	['Primordial boots', ['Avernic treads']],
+	['Pegasian boots', ['Avernic treads']],
+	['Eternal boots', ['Avernic treads']],
+	[
+		'Avernic treads',
+		[
+			'Avernic treads (pr)',
+			'Avernic treads (pe)',
+			'Avernic treads (et)',
+			'Avernic treads (pr)(pe)',
+			'Avernic treads (pr)(et)',
+			'Avernic treads (pe)(et)',
+			'Avernic treads (max)'
+		]
+	],
+	['Avernic treads (pr)', ['Avernic treads (pr)(pe)', 'Avernic treads (pr)(et)', 'Avernic treads (max)']],
+	['Avernic treads (pe)', ['Avernic treads (pr)(pe)', 'Avernic treads (pe)(et)', 'Avernic treads (max)']],
+	['Avernic treads (et)', ['Avernic treads (pr)(et)', 'Avernic treads (pe)(et)', 'Avernic treads (max)']],
 
 	['Lumberjack hat', ['Forestry hat']],
 	['Lumberjack top', ['Forestry top']],

@@ -1,6 +1,6 @@
 import type { Minigame } from '@/prisma/main.js';
 
-export type MinigameName = keyof Omit<Minigame, 'id' | 'user_id'>;
+export type MinigameName = keyof Omit<Minigame, 'id' | 'user_id' | 'pizazz_points'>;
 
 interface BotMinigame {
 	name: string;

@@ -49,6 +49,7 @@ test('CoX ', async () => {
 			}
 		}
 	});
+	expect(res.commandResult).toContain('Regular Chambers of Xeric');
 	expect(res.commandResult).toContain('the total trip will return in about');
 	expect(user.bank.amount('Scythe of vitur (uncharged)')).toBe(1);
 	expect(user.bank.amount('Scythe of vitur')).toBe(0);

@@ -1,5 +1,6 @@
 import { Bank } from 'oldschooljs';
 
+import { MessageBuilder } from '@/discord/MessageBuilder.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { PerkTier } from '@/lib/constants.js';
 import { Workers } from '@/lib/workers/index.js';
