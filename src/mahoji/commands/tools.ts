@@ -325,7 +325,11 @@ const dryStreakMinigames: DrystreakMinigame[] = [
 interface DrystreakEntity {
 	name: string;
 	items: number[];
-	run: (args: { item: Item; ironmanOnly: boolean }) => Promise<string | { id: string; val: number | string }[]>;
+	run: (args: {
+		item: Item;
+		ironmanOnly: boolean;
+		limit?: number;
+	}) => Promise<string | { id: string; val: number | string }[]>;
 	format: (num: number | string) => string;
 }
 
@@ -333,7 +337,7 @@ function convertOpenableToDryStreakEntity(openable: UnifiedOpenable): DrystreakE
 	return {
 		name: openable.name,
 		items: openable.allItems,
-		run: async ({ item, ironmanOnly }) => {
+		run: async ({ item, ironmanOnly, limit = 10 }) => {
 			const result = await prisma.$queryRawUnsafe<
 				{ id: string; val: number }[]
 			>(`SELECT id, ("openable_scores"->>'${openable.id}')::int AS val
@@ -343,7 +347,7 @@ WHERE "collectionLogBank"->>'${item.id}' IS NULL
 AND "openable_scores"->>'${openable.id}' IS NOT NULL
 ${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
 ORDER BY ("openable_scores"->>'${openable.id}')::int DESC
-LIMIT 10;`);
+LIMIT ${limit};`);
 			return result;
 		},
 		format: val => `${val.toLocaleString()} ${openable.name}`
@@ -354,7 +358,7 @@ export const dryStreakEntities: DrystreakEntity[] = [
 	{
 		name: 'Herbiboar',
 		items: resolveItems(['Herbi']),
-		run: async ({ item, ironmanOnly }) => {
+		run: async ({ item, ironmanOnly, limit = 10 }) => {
 			const creatureId = ECreature.HERBIBOAR.toString();
 			const itemId = item.id.toString();
 			const result = await prisma.$queryRaw<{ id: string; val: number }[]>(Prisma.sql`
@@ -365,7 +369,7 @@ WHERE "collectionLogBank"->>${itemId} IS NULL
 AND "creature_scores"->>${creatureId} IS NOT NULL
 ${ironmanOnly ? Prisma.sql`AND "minion.ironman" = true` : Prisma.empty}
 ORDER BY ("creature_scores"->>${creatureId})::int DESC
-LIMIT 10;`);
+LIMIT ${limit};`);
 			return result;
 		},
 		format: num => `${num.toLocaleString()} Catches`
@@ -387,7 +391,7 @@ LIMIT 10;`);
 			'Twisted bow',
 			'Olmlet'
 		]),
-		run: async ({ item, ironmanOnly }) => {
+		run: async ({ item, ironmanOnly, limit = 10 }) => {
 			const result = await prisma.$queryRawUnsafe<
 				{ id: string; points: number; raids_total_kc: number }[]
 			>(`SELECT "users"."id", "user_stats".total_cox_points AS points, "minigames"."raids" + "minigames"."raids_challenge_mode" AS raids_total_kc
@@ -397,7 +401,7 @@ INNER JOIN "minigames" on "minigames"."user_id" = "user_stats"."user_id"::text
 WHERE "collectionLogBank"->>'${item.id}' IS NULL
 ${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
 ORDER BY "user_stats".total_cox_points DESC
-LIMIT 10;`);
+LIMIT ${limit};`);
 			return result.map(i => ({
 				id: i.id,
 				val: `${i.points.toLocaleString()} points / ${i.raids_total_kc} KC`
@@ -417,7 +421,7 @@ LIMIT 10;`);
 			'Volatile orb',
 			'Harmonised orb'
 		]),
-		run: async ({ item, ironmanOnly }) => {
+		run: async ({ item, ironmanOnly, limit = 10 }) => {
 			const result = await prisma.$queryRawUnsafe<
 				{ id: string; val: number }[]
 			>(`SELECT "id", ("monster_scores"->>'${NightmareMonster.id}')::int AS val
@@ -427,7 +431,7 @@ LIMIT 10;`);
 		   AND "monster_scores"->>'${NightmareMonster.id}' IS NOT NULL
 		   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
 		   ORDER BY ("monster_scores"->>'${NightmareMonster.id}')::int DESC
-		   LIMIT 10;`);
+		   LIMIT ${limit};`);
 			return result;
 		},
 
@@ -436,7 +440,7 @@ LIMIT 10;`);
 	{
 		name: 'Barbarian Assault (Pet penance queen)',
 		items: resolveItems(['Pet penance queen']),
-		run: async ({ item, ironmanOnly }) => {
+		run: async ({ item, ironmanOnly, limit = 10 }) => {
 			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`SELECT "id", high_gambles AS val
 				   FROM users
 				   INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
@@ -444,7 +448,7 @@ LIMIT 10;`);
 				   AND high_gambles > 0
 				   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
 				   ORDER BY high_gambles DESC
-				   LIMIT 10;`);
+				   LIMIT ${limit};`);
 			return result;
 		},
 		format: num => `${num.toLocaleString()} Gambles`
@@ -452,7 +456,7 @@ LIMIT 10;`);
 	{
 		name: 'Guardians of the Rift',
 		items: guardiansOfTheRiftCL,
-		run: async ({ item, ironmanOnly }) => {
+		run: async ({ item, ironmanOnly, limit = 10 }) => {
 			const result = await prisma.$queryRawUnsafe<
 				{ id: string; val: number }[]
 			>(`SELECT users.id, gotr_rift_searches AS val
@@ -461,7 +465,7 @@ LIMIT 10;`);
             WHERE "collectionLogBank"->>'${item.id}' IS NULL
             ${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
             ORDER BY gotr_rift_searches DESC
-            LIMIT 10;`);
+            LIMIT ${limit};`);
 			return result;
 		},
 		format: num => `${num.toLocaleString()} Rift Searches`
@@ -469,7 +473,7 @@ LIMIT 10;`);
 	{
 		name: 'Evil Chicken Outfit',
 		items: ItemGroups.evilChickenOutfit,
-		run: async ({ item, ironmanOnly }) => {
+		run: async ({ item, ironmanOnly, limit = 10 }) => {
 			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`
             SELECT *
 			FROM
@@ -484,7 +488,7 @@ LIMIT 10;`);
             ${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
             GROUP BY users.id
             ORDER BY val DESC
-            LIMIT 10
+            LIMIT ${limit}
 			)
 			AS eggs
 			WHERE eggs.val > 0;`);
@@ -495,7 +499,7 @@ LIMIT 10;`);
 	{
 		name: 'Random Events',
 		items: resolveItems(['Stale baguette']),
-		run: async ({ ironmanOnly }) => {
+		run: async ({ ironmanOnly, limit = 10 }) => {
 			const result = await prisma.$queryRawUnsafe<
 				{ id: string; mbox_opens: number; baguettes_received: number }[]
 			>(`SELECT id, (openable_scores->>'6199')::int AS mbox_opens, ("collectionLogBank"->>'6961')::int AS baguettes_received,
@@ -511,7 +515,7 @@ AND openable_scores->>'6199' IS NOT NULL
 AND (openable_scores->>'6199')::int > 3
 ${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
 ORDER BY factor DESC
-LIMIT 10;`);
+LIMIT ${limit};`);
 			return result.map(i => ({
 				id: i.id,
 				val: `${i.mbox_opens} Mystery box Opens, ${i.baguettes_received} Baguettes`
@@ -522,7 +526,7 @@ LIMIT 10;`);
 	{
 		name: 'Superior Slayer Creatures',
 		items: resolveItems(['Imbued heart', 'Eternal gem']),
-		run: async ({ ironmanOnly, item }) => {
+		run: async ({ ironmanOnly, item, limit = 10 }) => {
 			const result = await prisma.$queryRawUnsafe<
 				{ id: string; slayer_superior_count: number }[]
 			>(`SELECT id, slayer_superior_count
@@ -531,7 +535,7 @@ INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
 WHERE "collectionLogBank"->>'${item.id}' IS NULL
 ${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
 ORDER BY slayer_superior_count DESC
-LIMIT 10;`);
+LIMIT ${limit};`);
 			return result.map(i => ({
 				id: i.id,
 				val: `${i.slayer_superior_count} Superiors Slayed`
@@ -544,7 +548,7 @@ for (const minigame of dryStreakMinigames) {
 	dryStreakEntities.push({
 		name: minigame.name,
 		items: minigame.items,
-		run: async ({ item, ironmanOnly }) => {
+		run: async ({ item, ironmanOnly, limit = 10 }) => {
 			const minigameObj = Minigames.find(i => i.column === minigame.key)!;
 			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`SELECT users.id, "minigame"."${
 				minigameObj.column
@@ -554,7 +558,7 @@ INNER JOIN "minigames" "minigame" on "minigame"."user_id" = "users"."id"::text
 WHERE "collectionLogBank"->>'${item.id}' IS NULL
 ${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
 ORDER BY "minigame"."${minigameObj.column}" DESC
-LIMIT 10;`);
+LIMIT ${limit};`);
 			return result;
 		},
 		format: num => `${num.toLocaleString()} KC`
@@ -572,6 +576,8 @@ for (const openable of allOpenables) {
 async function dryStreakCommand(sourceName: string, itemName: string, ironmanOnly: boolean) {
 	const item = Items.getItem(itemName);
 	if (!item) return 'Invalid item.';
+	const blacklistedUsers = await Cache.getAllBlacklistedUsers();
+	const limit = 10 + blacklistedUsers.size;
 	const entity = dryStreakEntities.find(
 		e =>
 			stringMatches(e.name, sourceName) ||
@@ -585,9 +591,10 @@ async function dryStreakCommand(sourceName: string, itemName: string, ironmanOnl
 				.join(', ')}.`;
 		}
 
-		const result = await entity.run({ item, ironmanOnly });
+		const rows = await entity.run({ item, ironmanOnly, limit });
+		if (typeof rows === 'string') return rows;
+		const result = rows.filter(row => !blacklistedUsers.has(row.id)).slice(0, 10);
 		if (result.length === 0) return 'No results found.';
-		if (typeof result === 'string') return result;
 
 		return `**Dry Streaks for ${item.name} from ${entity.name}:**\n${(
 			await Promise.all(
@@ -611,15 +618,16 @@ async function dryStreakCommand(sourceName: string, itemName: string, ironmanOnl
 						AND "${key}"->>'${id}' IS NOT NULL
 						${ironmanPart}
 				ORDER BY ("${key}"->>'${id}')::int DESC
-				LIMIT 10;`;
+				LIMIT ${limit};`;
 
-	const result =
-		await prisma.$queryRawUnsafe<
+	const result = await prisma
+		.$queryRawUnsafe<
 			{
 				id: string;
 				KC: string;
 			}[]
-		>(query);
+		>(query)
+		.then(rows => rows.filter(row => !blacklistedUsers.has(row.id)).slice(0, 10));
 
 	if (result.length === 0) return 'No results found.';
 
@@ -646,15 +654,17 @@ async function mostDrops(user: MUser, itemName: string, filter: string) {
 		return "You can't check this item, because it's not on any collection log.";
 	}
 
-	const query = `SELECT "id", "collectionLogBank"->>'${item.id}' AS "qty" FROM users WHERE "collectionLogBank"->>'${item.id}' IS NOT NULL ${ironmanPart} ORDER BY ("collectionLogBank"->>'${item.id}')::int DESC LIMIT 10;`;
+	const blacklistedUsers = await Cache.getAllBlacklistedUsers();
+	const query = `SELECT "id", "collectionLogBank"->>'${item.id}' AS "qty" FROM users WHERE "collectionLogBank"->>'${item.id}' IS NOT NULL ${ironmanPart} ORDER BY ("collectionLogBank"->>'${item.id}')::int DESC LIMIT ${10 + blacklistedUsers.size};`;
 
-	const result =
-		await prisma.$queryRawUnsafe<
+	const result = await prisma
+		.$queryRawUnsafe<
 			{
 				id: string;
 				qty: string;
 			}[]
-		>(query);
+		>(query)
+		.then(rows => rows.filter(row => !blacklistedUsers.has(row.id)).slice(0, 10));
 
 	if (result.length === 0) return 'No results found.';
 
