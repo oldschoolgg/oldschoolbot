@@ -24,7 +24,13 @@ describe('farming task auto farm sequencing', () => {
 		vi.restoreAllMocks();
 	});
 
-	async function runAutoFarmScenario({ combinedMode = false }: { combinedMode?: boolean } = {}) {
+	async function runAutoFarmScenario({
+		combinedMode = false,
+		watermelonAlive = 8
+	}: {
+		combinedMode?: boolean;
+		watermelonAlive?: number;
+	} = {}) {
 		const user = await createTestUser();
 
 		const basePatch: IPatchData = {
@@ -84,7 +90,7 @@ describe('farming task auto farm sequencing', () => {
 				payNote: 'Paid 3x Tomatoes to keep the farmers happy.'
 			},
 			{
-				harvested: { itemName: 'Watermelon', quantity: 8, alive: 8, died: 0 },
+				harvested: { itemName: 'Watermelon', quantity: 8, alive: watermelonAlive, died: 8 - watermelonAlive },
 				duration: Time.Minute,
 				xp: {
 					totalFarming: 200,
@@ -221,6 +227,7 @@ describe('farming task auto farm sequencing', () => {
 		expect(messageContent).not.toContain('Seed pack');
 		expect(messageContent).toContain('Woodcutting 100 XP (3k/Hr)');
 		expect(messageContent).toContain('Farming 300 XP (9k/Hr)');
+		expect(messageContent).not.toContain('**Crop deaths:**');
 		expect(messageContent).not.toContain('**Total loot:**');
 		expect(messageContent).not.toContain('**Patches farmed:**');
 		expect(messageContent).toContain('**Boosts:** Graceful.');
@@ -229,5 +236,22 @@ describe('farming task auto farm sequencing', () => {
 		const finalLoot = finalCall?.loot;
 		expect(finalLoot?.has('Seed pack')).toBe(true);
 		expect(finalLoot?.has('Watermelon')).toBe(true);
+	});
+
+	it('only lists crop deaths when crops died', async () => {
+		const { handleTripFinishSpy } = await runAutoFarmScenario({
+			combinedMode: true,
+			watermelonAlive: 6
+		});
+
+		const finalCall = handleTripFinishSpy.mock.calls[0]?.[0] as
+			| { message?: string | { content?: string; files?: SendableFile[] } }
+			| undefined;
+		const messageContent =
+			typeof finalCall?.message === 'string' ? finalCall.message : (finalCall?.message?.content ?? '');
+
+		expect(messageContent).toContain('**Crop deaths:** Watermelon: 2 died.');
+		expect(messageContent).not.toContain('Guam');
+		expect(messageContent).not.toContain('6/8 survived');
 	});
 });
