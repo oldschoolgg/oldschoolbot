@@ -380,6 +380,14 @@ export function hasCompletedDoomDelveTrek(treks: DoomActivityTrekData[], targetD
 	return treks.some(trek => !trek.dead && trek.lastDelve >= targetDelve);
 }
 
+export function hasCompletedDoomDelveTrekWithinDuration(
+	treks: DoomActivityTrekData[],
+	targetDelve: number,
+	duration: number
+): boolean {
+	return treks.some(trek => !trek.dead && trek.lastDelve >= targetDelve && trek.dur < duration);
+}
+
 function describeMissingSupplies(availableSupplies: Bank, cost: Bank): string {
 	const missing = cost.clone().remove(availableSupplies);
 	return `${missing}`;
