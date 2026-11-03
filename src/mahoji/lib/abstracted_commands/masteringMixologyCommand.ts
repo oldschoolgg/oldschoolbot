@@ -5,17 +5,18 @@ import {
 	getMixologyContractCost,
 	getMixologyContractDuration,
 	masteringMixologyBuyables,
+	masteringMixologyWeightedRandom,
 	mixologyContractDuration,
 	mixologyContracts,
 	mixologyHerbs,
 	mixologyHerbUseDuration
-} from '../../../lib/minions/data/masteringMixology.js';
-import { QuestID } from '../../../lib/minions/data/quests.js';
+} from '@/lib/minions/data/masteringMixology.js';
+import { QuestID } from '@/lib/minions/data/quests.js';
 import type {
 	MasteringMixologyContractActivityTaskOptions,
 	MasteringMixologyContractCreatingTaskOptions
-} from '../../../lib/types/minions.js';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
+} from '@/lib/types/minions.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 export async function MixologyPasteCreationCommand(
 	user: MUser,
@@ -146,11 +147,9 @@ export async function MasteringMixologyContractStartCommand(user: MUser, channel
 		)}.`;
 	}
 
-	const totalAvailable = mixologyContracts.filter(c => {
-		const cost = getMixologyContractCost(c.pasteSequence);
-		return currentLevel >= c.requiredLevel && user.bank.has(cost);
-	}).length;
-	if (totalAvailable === 0) {
+	const eligibleContracts = mixologyContracts.filter(c => currentLevel >= c.requiredLevel);
+	const remainingPaste = user.bank.clone();
+	if (!eligibleContracts.some(c => remainingPaste.has(getMixologyContractCost(c.pasteSequence)))) {
 		return `You're out of paste! Each contract requires 30 paste (3 batches of 10), or 60 for contracts using all three pastes. \nCreate more using ${globalClient.mentionCommand(
 			'minigames',
 			'mastering_mixology',
@@ -168,8 +167,17 @@ export async function MasteringMixologyContractStartCommand(user: MUser, channel
 	if (contracts < 1 || contracts > maxContracts) {
 		return `You can only complete between 1 and ${maxContracts} contracts based on your current max trip length.`;
 	}
+	const contractIDs: number[] = [];
 	let totalDuration = 0;
 	for (let i = 0; i < contracts; i++) {
+		const availableContracts = eligibleContracts.filter(c =>
+			remainingPaste.has(getMixologyContractCost(c.pasteSequence))
+		);
+		if (availableContracts.length === 0) break;
+
+		const contract = masteringMixologyWeightedRandom(availableContracts);
+		remainingPaste.remove(getMixologyContractCost(contract.pasteSequence));
+		contractIDs.push(contract.id);
 		totalDuration += getMixologyContractDuration(mixologyContractDuration);
 	}
 	const duration = Math.round(totalDuration);
@@ -180,10 +188,11 @@ export async function MasteringMixologyContractStartCommand(user: MUser, channel
 		type: 'MasteringMixologyContract',
 		duration,
 		minigameID: 'mastering_mixology',
-		quantity: contracts
+		quantity: contractIDs.length,
+		contractIDs
 	});
 
-	return `${user.minionName} is now attempting ${contracts} Mastering Mixology contract${contracts > 1 ? 's' : ''}. If enough paste is available, the trip will take ${formatDuration(duration)}.`;
+	return `${user.minionName} is now attempting ${contractIDs.length} Mastering Mixology contract${contractIDs.length > 1 ? 's' : ''}. The trip will take ${formatDuration(duration)}.`;
 }
 
 export async function MasteringMixologyStatusCommand(user: MUser) {

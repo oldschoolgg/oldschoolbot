@@ -117,4 +117,34 @@ describe('Mastering Mixology activity', () => {
 			expect.objectContaining({ message: expect.stringContaining('1x Digweed') })
 		);
 	});
+
+	test('uses planned contracts even when another random selection would run out of paste early', async () => {
+		const user = makeMixologyUser();
+		user.bank.remove('Lye paste', 30);
+		vi.mocked(user.skillLevel).mockReturnValue(63);
+		vi.mocked(Math.random).mockReturnValue(0.99);
+		global.mUserFetch = vi.fn(async () => user) as typeof mUserFetch;
+
+		await MasteringMixologyContractTask.run(
+			{
+				type: 'MasteringMixologyContract',
+				userID: user.id,
+				channelId: 'test-channel',
+				duration: 1,
+				quantity: 2,
+				contractIDs: [0, 1],
+				minigameID: 'mastering_mixology'
+			} as MasteringMixologyContractActivityTaskOptions,
+			{ user, handleTripFinish: handleTripFinishMock, rng: {} as RNGProvider }
+		);
+
+		expect(user.incrementMinigameScore).toHaveBeenCalledWith('mastering_mixology', 2);
+		expect(user.bank.amount('Mox paste')).toEqual(0);
+		expect(user.bank.amount('Aga paste')).toEqual(0);
+		expect(user.update).toHaveBeenCalledWith({
+			mixology_mox_points: { increment: 24 },
+			mixology_aga_points: { increment: 24 },
+			mixology_lye_points: { increment: 0 }
+		});
+	});
 });

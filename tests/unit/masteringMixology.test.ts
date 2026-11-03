@@ -1,5 +1,5 @@
 import { Bank, Items } from 'oldschooljs';
-import { describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
 import { herbloreItems } from '@/lib/data/filterables.js';
 import {
@@ -8,12 +8,15 @@ import {
 	getMixologyContractCost,
 	getMixologyContractDuration,
 	masteringMixologyBuyables,
+	mixologyContractDuration,
 	mixologyContracts,
 	mixologyHerbs
 } from '@/lib/minions/data/masteringMixology.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
+import * as tripLength from '@/lib/util/calcMaxTripLength.js';
 import {
 	MasteringMixologyBuyCommand,
+	MasteringMixologyContractStartCommand,
 	MasteringMixologyStatusCommand,
 	MixologyPasteCreationCommand
 } from '@/mahoji/lib/abstracted_commands/masteringMixologyCommand.js';
@@ -33,6 +36,93 @@ function mockMixologyUser(overrides: Record<string, unknown> = {}) {
 }
 
 describe('Mastering Mixology', () => {
+	describe('contract scheduling', () => {
+		beforeEach(() => {
+			vi.spyOn(Math, 'random').mockReturnValue(0.5);
+			vi.spyOn(tripLength, 'calcMaxTripLength').mockResolvedValue(mixologyContractDuration * 11.5);
+			vi.stubGlobal('ActivityManager', { startTrip: vi.fn() });
+			vi.stubGlobal('globalClient', { mentionCommand: () => '/minigames mastering_mixology create' });
+		});
+
+		afterEach(() => {
+			vi.restoreAllMocks();
+			vi.unstubAllGlobals();
+		});
+
+		function contractUser(bank: Bank, level = 99) {
+			return mockMixologyUser({
+				bank,
+				id: '123',
+				minionName: 'Test minion',
+				skillLevel: () => level,
+				user: { finished_quest_ids: [QuestID.ChildrenOfTheSun] }
+			});
+		}
+
+		test.each([undefined, 5])('shortens a trip to one affordable contract (requested: %s)', async requested => {
+			const user = contractUser(new Bank().add('Mox paste', 30));
+
+			const result = await MasteringMixologyContractStartCommand(user, '1', requested);
+
+			expect(ActivityManager.startTrip).toHaveBeenCalledWith(
+				expect.objectContaining({
+					quantity: 1,
+					duration: Math.round(mixologyContractDuration),
+					contractIDs: [1]
+				})
+			);
+			expect(result).toContain('attempting 1 Mastering Mixology contract.');
+			expect(user.bank.amount('Mox paste')).toEqual(30);
+		});
+
+		test('counts repeated contracts rather than affordable recipe types', async () => {
+			await MasteringMixologyContractStartCommand(contractUser(new Bank().add('Mox paste', 90)), '1');
+
+			expect(ActivityManager.startTrip).toHaveBeenCalledWith(
+				expect.objectContaining({ quantity: 3, duration: Math.round(mixologyContractDuration * 3) })
+			);
+		});
+
+		test('uses mixed paste recipes when there is not enough of any single paste', async () => {
+			await MasteringMixologyContractStartCommand(
+				contractUser(new Bank().add('Mox paste', 20).add('Aga paste', 10), 63),
+				'1'
+			);
+
+			expect(ActivityManager.startTrip).toHaveBeenCalledWith(
+				expect.objectContaining({ quantity: 1, contractIDs: [3] })
+			);
+		});
+
+		test.each([
+			new Bank(),
+			new Bank().add('Mox paste', 20).add('Aga paste', 10)
+		])('rejects paste that cannot fund an unlocked contract', async bank => {
+			const result = await MasteringMixologyContractStartCommand(contractUser(bank, 60), '1');
+
+			expect(result).toContain("You're out of paste!");
+			expect(ActivityManager.startTrip).not.toHaveBeenCalled();
+		});
+
+		test.each([
+			{ requested: undefined, expected: 10 },
+			{ requested: 2, expected: 2 }
+		])('respects time and requested quantity limits ($requested)', async ({ requested, expected }) => {
+			await MasteringMixologyContractStartCommand(
+				contractUser(new Bank().add('Mox paste', 1000)),
+				'1',
+				requested
+			);
+
+			expect(ActivityManager.startTrip).toHaveBeenCalledWith(
+				expect.objectContaining({
+					quantity: expected,
+					duration: Math.round(mixologyContractDuration * expected)
+				})
+			);
+		});
+	});
+
 	test('defines paste outputs for clean herbs and unfinished potions', () => {
 		expect(mixologyHerbs).toContainEqual({ name: 'Guam leaf', paste: 'Mox', quantity: 10 });
 		expect(mixologyHerbs).toContainEqual({ name: 'Guam potion (unf)', paste: 'Mox', quantity: 10 });
@@ -55,6 +145,7 @@ describe('Mastering Mixology', () => {
 
 	test('contracts use three paste batches and valid requirements', () => {
 		expect(mixologyContracts.length).toBeGreaterThan(0);
+		expect(new Set(mixologyContracts.map(contract => contract.id)).size).toEqual(mixologyContracts.length);
 
 		for (const contract of mixologyContracts) {
 			expect(contract.pasteSequence).toHaveLength(3);

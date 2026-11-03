@@ -435,6 +435,7 @@ export interface MahoganyHomesActivityTaskOptions extends MinigameActivityTaskOp
 export interface MasteringMixologyContractActivityTaskOptions extends MinigameActivityTaskOptions {
 	type: 'MasteringMixologyContract';
 	quantity: number;
+	contractIDs?: number[];
 }
 
 export interface MasteringMixologyContractCreatingTaskOptions extends MinigameActivityTaskOptions {

@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import type { MixologyPaste, MixologyPoints } from '../../../lib/minions/data/masteringMixology.js';
+import type { MixologyPaste, MixologyPoints } from '@/lib/minions/data/masteringMixology.js';
 import {
 	calcMixologyContractBasePoints,
 	calcMixologyHandInPoints,
@@ -15,12 +15,12 @@ import {
 	mixologyDigweedSpawnRate,
 	mixologyHerbs,
 	mixologyProcessingBonusXP
-} from '../../../lib/minions/data/masteringMixology.js';
+} from '@/lib/minions/data/masteringMixology.js';
 import type {
 	MasteringMixologyContractActivityTaskOptions,
 	MasteringMixologyContractCreatingTaskOptions
-} from '../../../lib/types/minions.js';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish.js';
+} from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const MixologyPasteCreationTask: MinionTask = {
 	type: 'MixologyPasteCreation',
@@ -58,7 +58,7 @@ export const MixologyPasteCreationTask: MinionTask = {
 export const MasteringMixologyContractTask: MinionTask = {
 	type: 'MasteringMixologyContract',
 	run: async (data: MasteringMixologyContractActivityTaskOptions, options?: Parameters<MinionTask['run']>[1]) => {
-		const { userID, channelId, quantity } = data;
+		const { userID, channelId, quantity, contractIDs } = data;
 		const user = await mUserFetch(userID);
 		const tripFinish = options?.handleTripFinish ?? handleTripFinish;
 		const rng = options?.rng;
@@ -89,16 +89,17 @@ export const MasteringMixologyContractTask: MinionTask = {
 		for (let i = 0; i < quantity; i++) {
 			const currentBank = user.bank.clone();
 
-			const availableContracts = mixologyContracts.filter(contract => {
-				return (
-					currentLevel >= contract.requiredLevel &&
-					currentBank.has(getMixologyContractCost(contract.pasteSequence))
-				);
+			const availableContracts = mixologyContracts.filter(c => {
+				return currentLevel >= c.requiredLevel && currentBank.has(getMixologyContractCost(c.pasteSequence));
 			});
 
 			if (availableContracts.length === 0) break;
 
-			const contract = masteringMixologyWeightedRandom(availableContracts);
+			// Trips started before contracts were planned still select their recipes here.
+			const contract = contractIDs
+				? availableContracts.find(c => c.id === contractIDs[i])
+				: masteringMixologyWeightedRandom(availableContracts);
+			if (!contract) break;
 			const cost = getMixologyContractCost(contract.pasteSequence);
 
 			if (!user.owns(cost)) continue;
