@@ -6,7 +6,7 @@ Mastering Mixology is a minigame unlocked after completing the **Children of the
 
 ## Creating Paste
 
-Use [[/minigames mastering_mixology create herb\:<herb> quantity\:<quantity>]] to turn herbs into paste. Each herb yields a specific amount of paste.
+Use [[/minigames mastering_mixology create herb\:Guam leaf quantity\:100]] to turn herbs into paste. Each herb yields a specific amount of paste.
 
 ## Starting Contracts
 
