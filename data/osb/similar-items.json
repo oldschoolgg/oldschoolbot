@@ -482,7 +482,13 @@
 	},
 	{
 		"main_item": "Eternal boots",
-		"similar_items": ["Avernic treads", "Eternal boots"]
+		"similar_items": [
+			"Avernic treads (et)",
+			"Avernic treads (max)",
+			"Avernic treads (pe)(et)",
+			"Avernic treads (pr)(et)",
+			"Eternal boots"
+		]
 	},
 	{
 		"main_item": "Facemask",
@@ -832,7 +838,13 @@
 	},
 	{
 		"main_item": "Pegasian boots",
-		"similar_items": ["Avernic treads", "Pegasian boots"]
+		"similar_items": [
+			"Avernic treads (max)",
+			"Avernic treads (pe)",
+			"Avernic treads (pe)(et)",
+			"Avernic treads (pr)(pe)",
+			"Pegasian boots"
+		]
 	},
 	{
 		"main_item": "Prayer cape",
@@ -840,7 +852,13 @@
 	},
 	{
 		"main_item": "Primordial boots",
-		"similar_items": ["Avernic treads", "Primordial boots"]
+		"similar_items": [
+			"Avernic treads (max)",
+			"Avernic treads (pr)",
+			"Avernic treads (pr)(et)",
+			"Avernic treads (pr)(pe)",
+			"Primordial boots"
+		]
 	},
 	{
 		"main_item": "Prospector boots",
