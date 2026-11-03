@@ -49,7 +49,7 @@ export const MixologyPasteCreationTask: MinionTask = {
 			source: 'MasteringMixology'
 		});
 
-		const str = `${user.minionName} finished creating ${totalPaste}x ${pasteItemName} using ${quantity}x ${herb.name}. You gained ${totalXP} Herblore XP.`;
+		const str = `${user}, ${user.minionName} finished creating ${totalPaste}x ${pasteItemName} using ${quantity}x ${herb.name}. You gained ${totalXP} Herblore XP.`;
 
 		handleTripFinish({ user, channelId, message: str, data });
 	}
@@ -137,7 +137,7 @@ export const MasteringMixologyContractTask: MinionTask = {
 			return tripFinish({
 				user,
 				channelId,
-				message: `${user.minionName} attempted to complete contracts but had insufficient paste.`,
+				message: `${user}, ${user.minionName} attempted to complete contracts but had insufficient paste.`,
 				data
 			});
 		}
@@ -168,7 +168,7 @@ export const MasteringMixologyContractTask: MinionTask = {
 		const pointsInline = pointsEntries.map(([paste, val]) => `${val} ${paste} points`).join(', ');
 
 		const finalMsg = [
-			`${user.minionName} completed ${completed} contract${completed === 1 ? '' : 's'}, earning ${totalPoints} points (${pointsInline}). ${xpRes}`,
+			`${user}, ${user.minionName} completed ${completed} contract${completed === 1 ? '' : 's'}, earning ${totalPoints} points (${pointsInline}). ${xpRes}`,
 			`**Paste Used:** ${pasteSummary}`,
 			...(digweedsUsed > 0
 				? [
