@@ -75,6 +75,7 @@ import type {
 	SepulchreActivityTaskOptions,
 	ShadesOfMortonOptions,
 	ShadesOfMortonPyreLogsOptions,
+	ShootingStarsOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	TempleTrekkingActivityTaskOptions,
@@ -103,10 +104,13 @@ const taskCanBeRepeated = (activity: Activity, user: MUser, taskIndex: number) =
 			user.owns(ClueTiers.find(clue => clue.id === realActivity.ci)!.scrollID)
 		);
 	}
+	if (activity.type === activity_type_enum.ShootingStars) {
+		const realActivity = data as ShootingStarsOptions;
+		return realActivity.hunted === true;
+	}
 	return !(
 		[
 			activity_type_enum.TearsOfGuthix,
-			activity_type_enum.ShootingStars,
 			activity_type_enum.BirthdayEvent,
 			activity_type_enum.BlastFurnace,
 			activity_type_enum.Easter,
@@ -188,8 +192,8 @@ const tripHandlers: {
 		}
 	},
 	[activity_type_enum.ShootingStars]: {
-		commandName: 'm',
-		args: () => ({})
+		commandName: 'activities',
+		args: () => ({ other: { activity: activity_type_enum.ShootingStars } })
 	},
 	[activity_type_enum.BirthdayEvent]: {
 		commandName: 'm',
