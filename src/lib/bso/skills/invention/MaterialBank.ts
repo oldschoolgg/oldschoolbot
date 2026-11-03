@@ -89,7 +89,7 @@ export class MaterialBank {
 		}
 		const res = [];
 		for (const [type, qty] of entries.sort((a, b) => a[0].localeCompare(b[0]))) {
-			res.push(`${qty.toLocaleString()}x ${toTitleCase(type)}`);
+			res.push(`${toTitleCase(type)}: ${qty.toLocaleString()}`);
 		}
 
 		return res.join(', ');
