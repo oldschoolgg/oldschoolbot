@@ -1350,6 +1350,29 @@
 		"attack_styles_used": ["attack_slash"]
 	},
 	{
+		"id": 15627,
+		"name": "Brutus",
+		"time_to_finish": 25000,
+		"respawn_time": 21600,
+		"required_quests": [20],
+		"qp_required": 0,
+		"difficulty_rating": 1,
+		"can_cannon": false,
+		"notify_drops": ["Beef"],
+		"uniques": ["Beef", "Bottomless milk bucket (empty)", "Cow slippers", "Mooleta"],
+		"default_attack_styles": ["attack"],
+		"custom_monster_hp": 58,
+		"combat_xp_multiplier": 2,
+		"heal_amount_needed": 10,
+		"attack_style_to_use": "attack_slash",
+		"attack_styles_used": ["attack_crush"],
+		"item_in_bank_boosts": [
+			{
+				"33103": 15
+			}
+		]
+	},
+	{
 		"id": 8195,
 		"name": "Bryophyta",
 		"time_to_finish": 75000,
@@ -2627,6 +2650,108 @@
 		"wildy": false,
 		"difficulty_rating": 3,
 		"qp_required": 111
+	},
+	{
+		"id": 15628,
+		"name": "Demonic Brutus",
+		"time_to_finish": 573000,
+		"respawn_time": 21600,
+		"required_quests": [20, 1],
+		"qp_required": 0,
+		"difficulty_rating": 9,
+		"can_cannon": false,
+		"notify_drops": ["Beef"],
+		"uniques": ["Beef", "Brutus slippers"],
+		"default_attack_styles": ["attack"],
+		"custom_monster_hp": 1237,
+		"heal_amount_needed": 300,
+		"minimum_heal_amount": 20,
+		"attack_style_to_use": "attack_slash",
+		"attack_styles_used": ["attack_crush", "attack_magic", "attack_ranged"],
+		"level_requirements": {
+			"attack": 75,
+			"strength": 75,
+			"defence": 75,
+			"hitpoints": 75,
+			"prayer": 43
+		},
+		"death_props": {
+			"hardness": 0.6,
+			"steepness": 0.99
+		},
+		"equipped_item_boosts": [
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"item_id": 25484,
+						"boost_percent": 20
+					},
+					{
+						"item_id": 29796,
+						"boost_percent": 15
+					},
+					{
+						"item_id": 23995,
+						"boost_percent": 10
+					},
+					{
+						"item_id": 12006,
+						"boost_percent": 7
+					},
+					{
+						"item_id": 4151,
+						"boost_percent": 5
+					},
+					{
+						"item_id": 28810,
+						"boost_percent": 3
+					}
+				]
+			},
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"item_id": 22322,
+						"boost_percent": 5
+					},
+					{
+						"item_id": 12954,
+						"boost_percent": 3
+					}
+				]
+			},
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"item_id": 29801,
+						"boost_percent": 5
+					},
+					{
+						"item_id": 19553,
+						"boost_percent": 3
+					},
+					{
+						"item_id": 6585,
+						"boost_percent": 1
+					}
+				]
+			}
+		],
+		"degradeable_item_usage": [
+			{
+				"required": false,
+				"gear_setup": "melee",
+				"items": [
+					{
+						"item_id": 22325,
+						"boost_percent": 25
+					}
+				]
+			}
+		]
 	},
 	{
 		"id": 7144,

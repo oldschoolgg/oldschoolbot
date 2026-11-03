@@ -1387,6 +1387,7 @@ export const aerialFishingCL = resolveItems([
 	...ItemGroups.anglerOutfit
 ]);
 export const allPetsCL = resolveItems([
+	'Beef',
 	'Abyssal orphan',
 	'Ikkle hydra',
 	'Callisto cub',
@@ -2253,6 +2254,8 @@ export const araxxorCL = resolveItems([
 ]);
 
 export const amoxliatlCL = resolveItems(['Moxi', 'Glacial temotli', 'Pendant of ates (inert)', 'Frozen tear']);
+
+export const brutusCL = resolveItems(['Mooleta', 'Bottomless milk bucket (empty)', 'Cow slippers', 'Beef']);
 
 export const doomOfMokhaiotlCL = resolveItems([
 	'Dom',
