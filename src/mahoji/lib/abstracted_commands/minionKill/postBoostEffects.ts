@@ -19,7 +19,7 @@ const noFoodBoost = Math.floor(Math.max(...Eatables.map(eatable => eatable.pvmBo
 // Runs after we know the quantity/duration/etc
 type PostBoostEffectReturn = Pick<
 	BoostResult,
-	'percentageReduction' | 'percentageIncrease' | 'message' | 'charges' | 'changes' | 'itemCost'
+	'percentageReduction' | 'percentageIncrease' | 'message' | 'charges' | 'changes' | 'itemCost' | 'materialCost'
 >;
 export type PostBoostEffect = {
 	description: string;
