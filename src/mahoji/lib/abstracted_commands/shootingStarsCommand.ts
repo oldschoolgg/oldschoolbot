@@ -4,7 +4,6 @@ import { Bank, Items } from 'oldschooljs';
 
 import type { activity_type_enum } from '@/prisma/main/enums.js';
 import type { ShootingStars } from '@/prisma/main.js';
-import { QuestID } from '@/lib/minions/data/quests.js';
 import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
 import type { Star } from '@/lib/minions/types.js';
 import { determineMiningTime } from '@/lib/skilling/functions/determineMiningTime.js';
@@ -239,7 +238,7 @@ export async function shootingStarsCommand({
 
 		rollForMoonKeyHalf({
 			rng,
-			user: user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun),
+			user,
 			duration: timeToMine,
 			loot,
 			quantity: newQuantity,
