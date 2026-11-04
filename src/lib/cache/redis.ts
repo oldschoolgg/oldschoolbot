@@ -8,6 +8,7 @@ import {
 	type IWebhook,
 	type IWebhookPermissions,
 	ZMember,
+	ZRoboChimpUser,
 	ZRole,
 	ZWebhook,
 	ZWebhookPermissions
@@ -18,7 +19,7 @@ import { Redis } from 'ioredis';
 
 import type { Guild } from '@/prisma/main.js';
 import { BitField, BOT_TYPE, globalConfig } from '@/lib/constants.js';
-import type { RobochimpUser } from '@/lib/roboChimp.js';
+import { loadRoboChimpGroup, type RobochimpUser } from '@/lib/roboChimp.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
 
 type LockStatus = 'locked' | 'unlocked';
@@ -260,23 +261,52 @@ class CacheManager {
 		await this.bulkSet(roles, r => RedisKeys.Discord.Role(r.guild_id, r.id));
 	}
 
-	private isCompleteRoboChimpUser(user: RobochimpUser): boolean {
-		return 'premium_balance_tier' in user && 'premium_balance_expiry_date' in user && 'last_patreon_gift' in user;
+	private async getCachedRoboChimpUser(key: string): Promise<RobochimpUser | null> {
+		const raw = await this.client.get(key);
+		if (!raw) return null;
+
+		let cached: unknown;
+		try {
+			cached = JSON.parse(raw);
+		} catch (err) {
+			console.warn(`Invalid RoboChimp user cache JSON for ${key}:`, err);
+			await this.client.del(key);
+			return null;
+		}
+
+		const result = ZRoboChimpUser.safeParse(cached);
+		if (!result.success) {
+			console.warn(`Invalid RoboChimp user cache object for ${key}:`, result.error.issues);
+			await this.client.del(key);
+			return null;
+		}
+
+		return result.data;
 	}
 
-	async setRoboChimpUser(userID: string, user: RobochimpUser): Promise<void> {
+	private async writeRoboChimpUser(userID: string, user: RobochimpUser): Promise<void> {
+		const parsed = ZRoboChimpUser.parse(user);
 		await this.setJsonWithTTL(
 			RedisKeys.RoboChimpUser(BigInt(userID)),
-			user,
+			parsed,
 			this.jitterTTL(ROBOCHIMP_USER_CACHE_TTL_SECONDS, 0.1)
 		);
+	}
+
+	private async writeRoboChimpUsers(users: RobochimpUser[]): Promise<void> {
+		await Promise.all(users.map(user => this.writeRoboChimpUser(user.id.toString(), user)));
+	}
+
+	async setRoboChimpUser(user: RobochimpUser): Promise<void> {
+		const users = await loadRoboChimpGroup(user);
+		await this.writeRoboChimpUsers(users);
 	}
 
 	async getRoboChimpUser(userId: string, forceRefresh = false): Promise<RobochimpUser> {
 		const key = RedisKeys.RoboChimpUser(BigInt(userId));
 		if (!forceRefresh) {
-			const cachedUser = await this.getJson<RobochimpUser>(key);
-			if (cachedUser && this.isCompleteRoboChimpUser(cachedUser)) return cachedUser;
+			const cachedUser = await this.getCachedRoboChimpUser(key);
+			if (cachedUser) return cachedUser;
 		}
 
 		const user = await roboChimpClient.user.upsert({
@@ -288,8 +318,9 @@ class CacheManager {
 			},
 			update: {}
 		});
-		await this.setRoboChimpUser(userId, user);
-		return user;
+		const users = await loadRoboChimpGroup(user);
+		await this.writeRoboChimpUsers(users);
+		return users.find(groupUser => groupUser.id === BigInt(userId)) ?? users[0];
 	}
 
 	async setPerkTier(userId: string, tier: number): Promise<void> {

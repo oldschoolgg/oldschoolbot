@@ -55,6 +55,8 @@ import type {
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
 	MahoganyHomesActivityTaskOptions,
+	MasteringMixologyContractActivityTaskOptions,
+	MasteringMixologyContractCreatingTaskOptions,
 	MinigameActivityTaskOptionsWithNoChanges,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
@@ -82,6 +84,7 @@ import type {
 	UnderwaterAgilityThievingTaskOptions,
 	ValeTotemsActivityTaskOptions,
 	WoodcuttingActivityTaskOptions,
+	YamaActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '@/lib/types/minions.js';
 import { giantsFoundryAlloys } from '@/mahoji/lib/abstracted_commands/giantsFoundryCommand.js';
@@ -131,7 +134,7 @@ type MockedCommandOptions = {
 
 const tripHandlers: {
 	[K in keyof ActivityMap]: {
-		commandName: string;
+		commandName: string | ((data: ActivityMap[K]) => string);
 		args: (data: ActivityMap[K]) => MockedCommandOptions;
 	};
 } = {
@@ -444,6 +447,14 @@ const tripHandlers: {
 			monster: autocompleteMonsters.find(i => i.id === data.mi)?.name ?? data.mi.toString()
 		})
 	},
+	[activity_type_enum.Yama]: {
+		commandName: 'k',
+		args: (data: YamaActivityTaskOptions) => ({
+			name: 'Yama',
+			quantity: data.iQty,
+			solo: data.solo
+		})
+	},
 	[activity_type_enum.Herblore]: {
 		commandName: 'mix',
 		args: (data: HerbloreActivityTaskOptions) => ({
@@ -498,6 +509,27 @@ const tripHandlers: {
 	[activity_type_enum.MahoganyHomes]: {
 		commandName: 'minigames',
 		args: (data: MahoganyHomesActivityTaskOptions) => ({ mahogany_homes: { start: { tier: data.tier } } })
+	},
+	[activity_type_enum.MixologyPasteCreation]: {
+		commandName: 'minigames',
+		args: (data: MasteringMixologyContractCreatingTaskOptions) => ({
+			mastering_mixology: {
+				create: {
+					herb: data.herbName,
+					quantity: data.quantity
+				}
+			}
+		})
+	},
+	[activity_type_enum.MasteringMixologyContract]: {
+		commandName: 'minigames',
+		args: (data: MasteringMixologyContractActivityTaskOptions) => ({
+			mastering_mixology: {
+				start: {
+					contracts: data.quantity
+				}
+			}
+		})
 	},
 	[activity_type_enum.Mining]: {
 		commandName: 'mine',
@@ -998,8 +1030,10 @@ export async function repeatTrip(
 		}
 		throw err;
 	}
+	const commandName =
+		typeof handler.commandName === 'function' ? handler.commandName(args as any) : handler.commandName;
 	return runCommand({
-		commandName: handler.commandName,
+		commandName,
 		isContinue: true,
 		args: commandArgs,
 		interaction,

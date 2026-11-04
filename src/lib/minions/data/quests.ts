@@ -35,7 +35,8 @@ export enum QuestID {
 	TheFinalDawn = 15,
 	'Scrambled!' = 16,
 	ShadowsOfCustodia = 17,
-	TutorialIsland = 18
+	TutorialIsland = 18,
+	AKingdomDivided = 19
 }
 
 export const quests: Quest[] = [
@@ -423,6 +424,31 @@ export const quests: Quest[] = [
 			let duration = Time.Minute * 8;
 			if (user.combatLevel < 50) {
 				duration += Time.Minute * 2;
+			}
+			return duration;
+		}
+	},
+	{
+		id: QuestID.AKingdomDivided,
+		qp: 2,
+		name: 'A Kingdom Divided',
+		skillReqs: {
+			agility: 54,
+			thieving: 52,
+			woodcutting: 52,
+			herblore: 50,
+			mining: 42,
+			crafting: 38,
+			magic: 35,
+			smithing: 34
+		},
+		qpReq: 50,
+		combatLevelReq: 65,
+		rewards: new Bank().add('Book of the dead').add('Antique lamp', 2).freeze(),
+		calcTime: (user: MUser) => {
+			let duration = Time.Minute * 45;
+			if (user.combatLevel < 85) {
+				duration += Time.Minute * 15;
 			}
 			return duration;
 		}

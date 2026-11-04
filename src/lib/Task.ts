@@ -49,6 +49,10 @@ import { infernoTask } from '@/tasks/minions/minigames/infernoActivity.js';
 import { lmsTask } from '@/tasks/minions/minigames/lmsActivity.js';
 import { mageTrainingTask } from '@/tasks/minions/minigames/mageTrainingArenaActivity.js';
 import { mahoganyHomesTask } from '@/tasks/minions/minigames/mahoganyHomesActivity.js';
+import {
+	MasteringMixologyContractTask,
+	MixologyPasteCreationTask
+} from '@/tasks/minions/minigames/masteringMixologyActivity.js';
 import { nightmareTask } from '@/tasks/minions/minigames/nightmareActivity.js';
 import { nightmareZoneTask } from '@/tasks/minions/minigames/nightmareZoneActivity.js';
 import { pestControlTask } from '@/tasks/minions/minigames/pestControlActivity.js';
@@ -96,6 +100,7 @@ import { underwaterAgilityThievingTask } from '@/tasks/minions/underwaterActivit
 import { vmTask } from '@/tasks/minions/volcanicMineActivity.js';
 import { wealthChargeTask } from '@/tasks/minions/wealthChargingActivity.js';
 import { woodcuttingTask } from '@/tasks/minions/woodcuttingActivity.js';
+import { yamaTask } from '@/tasks/minions/yamaActivity.js';
 
 type MinionTaskRunOptions = {
 	user: MUser;
@@ -132,6 +137,7 @@ export const allTasks: MinionTask[] = [
 	castleWarsTask,
 	championsChallengeTask,
 	chompHuntTask,
+	yamaTask,
 	fightCavesTask,
 	gauntletTask,
 	gnomeResTask,
@@ -218,7 +224,9 @@ export const allTasks: MinionTask[] = [
 	colosseumTask,
 	doomOfMokhaiotlTask,
 	CreateForestersRationsTask,
-	buyTask
+	buyTask,
+	MasteringMixologyContractTask,
+	MixologyPasteCreationTask
 ];
 
 for (const a of Object.values(activity_type_enum)) {

@@ -18,17 +18,19 @@ export const sepulchreTask: MinionTask = {
 		let agilityXP = 0;
 		let thievingXP = 0;
 		let numCoffinsOpened = 0;
+		const canOpenGrandCoffin = user.skillLevel('agility') >= 92 || user.skillLevel('thieving') >= 84;
+		const completedFloor5 = completedFloors.some(floor => floor.number === 5);
 
 		const highestCompletedFloor = completedFloors.reduce((prev, next) => (prev.number > next.number ? prev : next));
 		for (let i = 0; i < quantity; i++) {
 			for (const floor of completedFloors) {
-				if (floor.number === 5) {
+				if (floor.number === 5 && canOpenGrandCoffin) {
 					loot.add(GrandHallowedCoffin.roll());
 				}
 
 				const numCoffinsToOpen = 1;
 				numCoffinsOpened += numCoffinsToOpen;
-				for (let i = 0; i < numCoffinsToOpen; i++) {
+				for (let coffinIndex = 0; coffinIndex < numCoffinsToOpen; coffinIndex++) {
 					loot.add(openCoffin(rng, floor.number, user));
 				}
 				agilityXP += floor.xp;
@@ -104,6 +106,9 @@ export const sepulchreTask: MinionTask = {
 		let str = `${user}, ${user.minionName} finished doing the Hallowed Sepulchre ${quantity}x times (floor ${
 			floors[0]
 		}-${floors[floors.length - 1]}), and opened ${numCoffinsOpened}x coffins.\n\n${xpRes}\n${thievingXpRes}`;
+		if (completedFloor5 && !canOpenGrandCoffin) {
+			str += `\n${user.minionName} did not open Floor 5's Grand Coffin because it requires 84 Thieving or 92 Agility.`;
+		}
 
 		const image = await makeBankImage({
 			bank: itemsAdded,

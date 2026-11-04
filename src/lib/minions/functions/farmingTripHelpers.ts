@@ -2,11 +2,13 @@ import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { CropUpgradeType } from '@/prisma/main/enums.js';
+import { BitField } from '@/lib/constants.js';
 import { calcNumOfPatches } from '@/lib/skilling/skills/farming/utils/calcsFarming.js';
 import {
 	farmingBoostMessages,
 	formatCropProtectionPayment,
 	formatMissingCropProtectionPayment,
+	formatMissingFavouritedCompost,
 	formatPatchTreatment,
 	formatTreeRemovalPreparation
 } from '@/lib/skilling/skills/farming/utils/farmingFormatters.js';
@@ -23,6 +25,7 @@ export interface PrepareFarmingStepOptions {
 	maxTripLength: number;
 	availableBank: Bank;
 	compostTier: CropUpgradeType;
+	compostWarning?: boolean;
 }
 
 export interface PreparedFarmingStep {
@@ -65,9 +68,10 @@ export async function prepareFarmingStep({
 	patchDetailed,
 	maxTripLength,
 	availableBank,
-	compostTier
+	compostTier,
+	compostWarning = user.bitfield.includes(BitField.CompostWarning)
 }: PrepareFarmingStepOptions): Promise<
-	{ success: true; data: PreparedFarmingStep } | { success: false; error: string }
+	{ success: true; data: PreparedFarmingStep } | { success: false; error: string; reason?: 'missing_compost' }
 > {
 	const infoStr: string[] = [];
 	const boostStr: string[] = [];
@@ -163,6 +167,17 @@ export async function prepareFarmingStep({
 			infoStr.push(formatPatchTreatment(compostCost));
 			cost.add(compostCost);
 			upgradeType = compostTier;
+		} else if (compostWarning) {
+			return {
+				success: false,
+				error: formatMissingFavouritedCompost(
+					compostTier,
+					compostCost,
+					availableBank.amount(compostTier),
+					user.mention
+				),
+				reason: 'missing_compost'
+			};
 		}
 	}
 
