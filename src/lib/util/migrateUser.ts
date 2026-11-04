@@ -78,6 +78,14 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	transactions.push(
 		prisma.bingoParticipant.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } })
 	);
+	transactions.push(prisma.$executeRaw`
+		UPDATE bingo
+		SET organizers = ARRAY(
+			SELECT DISTINCT CASE WHEN organizer_id = ${sourceUser.id} THEN ${destUser.id} ELSE organizer_id END
+			FROM UNNEST(organizers) AS organizer(organizer_id)
+		)
+		WHERE ${sourceUser.id} = ANY(organizers)
+	`);
 
 	transactions.push(
 		prisma.gearPreset.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } })
@@ -85,6 +93,14 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	transactions.push(
 		prisma.giveaway.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } })
 	);
+	transactions.push(prisma.$executeRaw`
+		UPDATE giveaway
+		SET users_entered = ARRAY(
+			SELECT DISTINCT CASE WHEN entrant_id = ${sourceUser.id} THEN ${destUser.id} ELSE entrant_id END
+			FROM UNNEST(users_entered) AS entrant(entrant_id)
+		)
+		WHERE ${sourceUser.id} = ANY(users_entered)
+	`);
 	transactions.push(
 		prisma.minigame.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } })
 	);
@@ -200,6 +216,11 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 		|| CONCAT('{"leader":"', REPLACE(data->>'leader', '${sourceUser.id}', '${destUser.id}'), '"}')::jsonb
 	WHERE (data->'users')::jsonb ? '${sourceUser.id}'`;
 	transactions.push(prisma.$queryRawUnsafe(updateUsers));
+
+	const updateAllUserIDs = `UPDATE activity
+	SET all_user_ids = ARRAY_REPLACE(all_user_ids, ${sourceUser.id}::bigint, ${destUser.id}::bigint)
+	WHERE ${sourceUser.id}::bigint = ANY(all_user_ids)`;
+	transactions.push(prisma.$queryRawUnsafe(updateAllUserIDs));
 
 	try {
 		await prisma.$transaction(transactions);
