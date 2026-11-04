@@ -13,6 +13,6 @@ export async function trackGamblingTransaction({
 }) {
 	await prisma.$executeRaw`
 INSERT INTO gambling_transaction (user_id, type, amount_staked, pnl)
-VALUES (${BigInt(userID)}, ${type}, ${BigInt(amountStaked)}, ${BigInt(Math.trunc(pnl))});
+VALUES (${BigInt(userID)}, ${type}, ${BigInt(Math.trunc(amountStaked))}, ${BigInt(Math.trunc(pnl))});
 `;
 }
