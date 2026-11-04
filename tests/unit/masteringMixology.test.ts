@@ -24,12 +24,13 @@ import {
 function mockMixologyUser(overrides: Record<string, unknown> = {}) {
 	return {
 		bank: new Bank(),
-		user: {
+		user: {},
+		skillLevel: () => 99,
+		fetchStats: async () => ({
 			mixology_mox_points: 0,
 			mixology_aga_points: 0,
 			mixology_lye_points: 0
-		},
-		skillLevel: () => 99,
+		}),
 		fetchMinigameScore: async () => 0,
 		...overrides
 	} as unknown as MUser;
@@ -212,10 +213,7 @@ describe('Mastering Mixology', () => {
 			minionIsBusy: async () => true,
 			removeItemsFromBank,
 			user: {
-				finished_quest_ids: [QuestID.ChildrenOfTheSun],
-				mixology_mox_points: 0,
-				mixology_aga_points: 0,
-				mixology_lye_points: 0
+				finished_quest_ids: [QuestID.ChildrenOfTheSun]
 			}
 		});
 
@@ -226,11 +224,11 @@ describe('Mastering Mixology', () => {
 	test('status reports points, paste and completed contracts', async () => {
 		const user = mockMixologyUser({
 			bank: new Bank().add('Mox paste', 10).add('Aga paste', 20).add('Lye paste', 30),
-			user: {
+			fetchStats: async () => ({
 				mixology_mox_points: 100,
 				mixology_aga_points: 200,
 				mixology_lye_points: 300
-			},
+			}),
 			fetchMinigameScore: async (minigame: string) => {
 				expect(minigame).toEqual('mastering_mixology');
 				return 12;

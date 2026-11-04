@@ -109,11 +109,12 @@ export async function MasteringMixologyBuyCommand(user: MUser, input = '', quant
 		Aga: buyable.cost.Aga * quantity,
 		Lye: buyable.cost.Lye * quantity
 	};
+	const stats = await user.fetchStats();
 
 	if (
-		user.user.mixology_mox_points < totalCost.Mox ||
-		user.user.mixology_aga_points < totalCost.Aga ||
-		user.user.mixology_lye_points < totalCost.Lye
+		stats.mixology_mox_points < totalCost.Mox ||
+		stats.mixology_aga_points < totalCost.Aga ||
+		stats.mixology_lye_points < totalCost.Lye
 	) {
 		return (
 			`You don't have enough Mixology points to buy ${quantity.toLocaleString()}x ${buyable.item.name}. ` +
@@ -124,12 +125,12 @@ export async function MasteringMixologyBuyCommand(user: MUser, input = '', quant
 	const loot = new Bank().add(buyable.item.id, quantity);
 	await user.transactItems({
 		itemsToAdd: loot,
-		collectionLog: true,
-		otherUpdates: {
-			mixology_mox_points: { decrement: totalCost.Mox },
-			mixology_aga_points: { decrement: totalCost.Aga },
-			mixology_lye_points: { decrement: totalCost.Lye }
-		}
+		collectionLog: true
+	});
+	await user.statsUpdate({
+		mixology_mox_points: { decrement: totalCost.Mox },
+		mixology_aga_points: { decrement: totalCost.Aga },
+		mixology_lye_points: { decrement: totalCost.Lye }
 	});
 
 	return `Successfully purchased ${loot} for ${totalCost.Mox} Mox, ${totalCost.Aga} Aga and ${totalCost.Lye} Lye points.`;
@@ -196,7 +197,7 @@ export async function MasteringMixologyContractStartCommand(user: MUser, channel
 }
 
 export async function MasteringMixologyStatusCommand(user: MUser) {
-	const { mixology_mox_points, mixology_aga_points, mixology_lye_points } = user.user;
+	const { mixology_mox_points, mixology_aga_points, mixology_lye_points } = await user.fetchStats();
 	const moxPaste = user.bank.amount('Mox paste');
 	const agaPaste = user.bank.amount('Aga paste');
 	const lyePaste = user.bank.amount('Lye paste');

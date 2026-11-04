@@ -157,7 +157,7 @@ export const MasteringMixologyContractTask: MinionTask = {
 			source: 'MasteringMixology'
 		});
 
-		await user.update({
+		await user.statsUpdate({
 			mixology_mox_points: { increment: pointsEarned.Mox },
 			mixology_aga_points: { increment: pointsEarned.Aga },
 			mixology_lye_points: { increment: pointsEarned.Lye }
