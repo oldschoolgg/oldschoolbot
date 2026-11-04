@@ -1,6 +1,6 @@
 import { findGroupOfUser } from '@/lib/bso/util/findGroupOfUser.js';
 
-import { RoboChimpBit } from '@oldschoolgg/toolkit';
+import { cyrTiers, hasCyrPerkTier, RoboChimpBit } from '@oldschoolgg/toolkit';
 
 import { srcMUserFetch } from '@/lib/user/MUser.js';
 
@@ -36,12 +36,29 @@ const robochimpTierBitfields: number[][] = [
 	]
 ];
 
-function hasBitfieldEntitlement(ownedBitfields: number[], requiredBitfield: number) {
+function hasBitfieldEntitlement(
+	robochimpUser: Awaited<ReturnType<typeof Cache.getRoboChimpUser>>,
+	requiredBitfield: number
+) {
 	const tierBitfields = robochimpTierBitfields.find(bitfields => bitfields.includes(requiredBitfield));
 	const eligibleBitfields = tierBitfields
 		? tierBitfields.slice(tierBitfields.indexOf(requiredBitfield))
 		: [requiredBitfield];
-	return eligibleBitfields.some(bitfield => ownedBitfields.includes(bitfield));
+	if (eligibleBitfields.some(bitfield => robochimpUser.bits.includes(bitfield))) return true;
+
+	const requiredCyrTier = cyrTiers.find(tier => tier.bit === requiredBitfield);
+	return (
+		requiredCyrTier !== undefined &&
+		hasCyrPerkTier(
+			{
+				patreonBits: robochimpUser.bits,
+				premiumTier: robochimpUser.premium_balance_tier,
+				premiumIsCyr: robochimpUser.premium_balance_is_cyr,
+				premiumExpiry: robochimpUser.premium_balance_expiry_date
+			},
+			requiredCyrTier.perkTier
+		)
+	);
 }
 
 export async function checkEntitlements(
@@ -63,7 +80,7 @@ export async function checkEntitlements(
 			const hasRequirements = entitlement.perkTier !== undefined || entitlement.bitfield !== undefined;
 			const matchesPerkTier = entitlement.perkTier === undefined || perkTier! >= entitlement.perkTier;
 			const matchesBitfield =
-				entitlement.bitfield === undefined || hasBitfieldEntitlement(robochimpUser!.bits, entitlement.bitfield);
+				entitlement.bitfield === undefined || hasBitfieldEntitlement(robochimpUser!, entitlement.bitfield);
 			if (hasRequirements && matchesPerkTier && matchesBitfield) {
 				return {
 					success: true,

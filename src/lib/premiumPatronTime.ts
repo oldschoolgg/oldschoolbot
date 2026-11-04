@@ -21,8 +21,9 @@ export async function premiumPatronTime(
 		update: {}
 	});
 	const currentBalanceTier = currentUser.premium_balance_tier;
+	const now = Date.now();
 
-	if (interaction && currentBalanceTier !== null && currentBalanceTier !== tier) {
+	if (interaction && currentBalanceTier !== null && (currentBalanceTier !== tier || currentUser.premium_balance_is_cyr)) {
 		await interaction.confirmation(
 			`They already have Tier ${currentBalanceTier}; this will replace the existing balance entirely, are you sure?`
 		);
@@ -38,7 +39,12 @@ export async function premiumPatronTime(
 		currentUser.premium_balance_expiry_date === null ? null : Number(currentUser.premium_balance_expiry_date);
 
 	const newBalanceExpiryTime =
-		currentBalanceTime !== null && tier === currentBalanceTier ? currentBalanceTime + timeMs : Date.now() + timeMs;
+		currentBalanceTime !== null &&
+		currentBalanceTime > now &&
+		tier === currentBalanceTier &&
+		currentUser.premium_balance_is_cyr !== true
+			? currentBalanceTime + timeMs
+			: now + timeMs;
 
 	const updatedUser = await roboChimpClient.user.update({
 		where: {
@@ -46,6 +52,7 @@ export async function premiumPatronTime(
 		},
 		data: {
 			premium_balance_tier: tier,
+			premium_balance_is_cyr: false,
 			premium_balance_expiry_date: newBalanceExpiryTime
 		}
 	});
@@ -53,6 +60,6 @@ export async function premiumPatronTime(
 	await getUsersPerkTier({ user: userToGive, forceNoCache: true });
 
 	return `Gave ${formatDuration(timeMs)} of Tier ${tier} patron to ${userToGive}. They have ${formatDuration(
-		newBalanceExpiryTime - Date.now()
+		newBalanceExpiryTime - now
 	)} remaining.`;
 }

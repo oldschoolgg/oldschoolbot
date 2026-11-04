@@ -4,7 +4,14 @@ import { getDiscoBankPointLines } from '@/lib/bso/discoBankPoints.js';
 
 import { existsSync } from 'node:fs';
 import * as fs from 'node:fs/promises';
-import { cleanString, generateHexColorForCashStack, RoboChimpBit, sumArr, UserError } from '@oldschoolgg/toolkit';
+import {
+	cleanString,
+	generateHexColorForCashStack,
+	hasCyrPerkTier,
+	PerkTier,
+	sumArr,
+	UserError
+} from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, itemID, toKMB } from 'oldschooljs';
 import { chunk } from 'remeda';
 import type { Image } from 'skia-canvas';
@@ -39,13 +46,6 @@ const itemSize = 32;
 const distanceFromTop = 32;
 
 const { floor, ceil } = Math;
-
-const cyrTier4PlusBits = [
-	RoboChimpBit.CyrTier4,
-	RoboChimpBit.CyrTier5,
-	RoboChimpBit.CyrTier6,
-	RoboChimpBit.CyrTier7
-] as const;
 
 function bankItemRowHeight(compact: boolean, spacer: number, verticalSpacer: number) {
 	return floor((itemSize + spacer / 2) * (compact ? 0.9 : 1.08)) + verticalSpacer;
@@ -647,7 +647,16 @@ class BankImageTask {
 		const useSmallBank = user ? (hasBgSprite ? true : user.bitfield.includes(BitField.AlwaysSmallBank)) : true;
 		const roboChimpUser = user ? await user.fetchRobochimpUser() : null;
 		const canUseCustomPurple = Boolean(
-			roboChimpUser?.bits.some(bit => cyrTier4PlusBits.includes(bit as (typeof cyrTier4PlusBits)[number]))
+			roboChimpUser &&
+				hasCyrPerkTier(
+					{
+						patreonBits: roboChimpUser.bits,
+						premiumTier: roboChimpUser.premium_balance_tier,
+						premiumIsCyr: roboChimpUser.premium_balance_is_cyr,
+						premiumExpiry: roboChimpUser.premium_balance_expiry_date
+					},
+					PerkTier.Five
+				)
 		);
 		const customPurple = {
 			color: canUseCustomPurple

@@ -4,10 +4,10 @@ import { findGroupOfUser } from '@/lib/bso/util/findGroupOfUser.js';
 import { bold } from '@oldschoolgg/discord';
 import {
 	FormattedCustomEmoji,
-	formatDuration,
 	formatOrdinal,
 	formatUserPaidTiers,
 	notEmpty,
+	relativeTimestamp,
 	roboChimpCLRankQuery
 } from '@oldschoolgg/toolkit';
 import { convertLVLtoXP, Items } from 'oldschooljs';
@@ -113,7 +113,9 @@ export async function getUserInfo(user: MUser) {
 	}
 	if (premium) {
 		if (premiumPerkTier > groupPerkTier) {
-			perkTierDisplay = `Premium __Tier ${premiumPerkTier - 1}__ - ${formatDuration(Number(premium.premium_balance_expiry_date!) - Date.now())} remaining`;
+			perkTierDisplay = `${premium.premium_balance_is_cyr ? 'Cyr' : 'Magna'} Tier ${premiumPerkTier - 1} (Expires: ${relativeTimestamp(
+				new Date(Number(premium.premium_balance_expiry_date!))
+			)})`;
 		}
 	}
 	if (result.perkTier > groupPerkTier && result.perkTier > premiumPerkTier) {
