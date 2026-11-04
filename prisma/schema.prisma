@@ -278,7 +278,7 @@ enum bank_sort_method_enum {
 }
 
 model User {
-  gambles                 Gamble[]
+  gambles            Gamble[]
   id                 String    @id @db.VarChar(19)
   last_command_date  DateTime? @db.Timestamp(6)
   minion_bought_date DateTime? @db.Timestamp(6)

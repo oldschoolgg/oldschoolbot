@@ -1,7 +1,6 @@
 import { WebSocketShardStatus } from '@discordjs/ws';
 import { dateFm, EmbedBuilder } from '@oldschoolgg/discord';
 import type { GearSetup } from '@oldschoolgg/gear';
-import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import {
 	calcPerHour,
 	calcWhatPercent,
@@ -14,6 +13,7 @@ import {
 	Time,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
+import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { gracefulExit } from 'exit-hook';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
@@ -27,14 +27,14 @@ import {
 	getBitFieldData,
 	listBitFields
 } from '@/lib/bitFieldUtils.js';
+import { giveawayCache } from '@/lib/cache.js';
 import { BadgesEnum, BitField, badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
-import { giveawayCache } from '@/lib/cache.js';
 import { syncCustomPrices } from '@/lib/preStartup.js';
 import { countUsersWithItemInCl } from '@/lib/rawSql.js';
 import { sorts } from '@/lib/sorts.js';
-import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { generateGiveawayContent } from '@/lib/util/giveaway.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 
 export const gifs = [
