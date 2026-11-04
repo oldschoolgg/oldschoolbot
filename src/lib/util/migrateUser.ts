@@ -35,6 +35,10 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	transactions.push(prisma.pinnedTrip.deleteMany({ where: { user_id: destUser.id } }));
 	transactions.push(prisma.reclaimableItem.deleteMany({ where: { user_id: destUser.id } }));
 	transactions.push(prisma.gamble.deleteMany({ where: { user_id: destUser.id } }));
+	transactions.push(prisma.userEvent.deleteMany({ where: { user_id: destUser.id } }));
+	transactions.push(prisma.tableBank.deleteMany({ where: { user_id: destUser.id } }));
+	transactions.push(prisma.jsonBank.deleteMany({ where: { user_id: destUser.id } }));
+	transactions.push(prisma.shootingStars.deleteMany({ where: { user_id: destUser.id } }));
 
 	transactions.push(prisma.activity.deleteMany({ where: { user_id: BigInt(destUser.id) } }));
 	transactions.push(prisma.xPGain.deleteMany({ where: { user_id: BigInt(destUser.id) } }));
@@ -44,6 +48,7 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	transactions.push(prisma.buyCommandTransaction.deleteMany({ where: { user_id: BigInt(destUser.id) } }));
 	transactions.push(prisma.stashUnit.deleteMany({ where: { user_id: BigInt(destUser.id) } }));
 	transactions.push(prisma.bingoParticipant.deleteMany({ where: { user_id: destUser.id } }));
+	transactions.push(prisma.userLog.deleteMany({ where: { user_id: BigInt(destUser.id) } }));
 
 	// For tables that aren't deleted, we often have to convert from target => source first to avoid FK errors, or null
 	transactions.push(
@@ -53,6 +58,12 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	// Without this, the user_id will be set to null when the Key'd users row is deleted:
 	transactions.push(
 		prisma.gEListing.updateMany({ where: { user_id: destUser.id }, data: { user_id: sourceUser.id } })
+	);
+	transactions.push(
+		prisma.giftBox.updateMany({ where: { creator_id: destUser.id }, data: { creator_id: sourceUser.id } })
+	);
+	transactions.push(
+		prisma.giftBox.updateMany({ where: { owner_id: destUser.id }, data: { owner_id: sourceUser.id } })
 	);
 
 	// Delete destUser.id user:
@@ -99,6 +110,12 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 		prisma.reclaimableItem.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } })
 	);
 	transactions.push(prisma.gamble.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } }));
+	transactions.push(prisma.userEvent.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } }));
+	transactions.push(prisma.tableBank.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } }));
+	transactions.push(prisma.jsonBank.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } }));
+	transactions.push(
+		prisma.shootingStars.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } })
+	);
 
 	transactions.push(
 		prisma.activity.updateMany({
@@ -162,6 +179,18 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	// GE Listing isn't wiped for destUser.id as that could mess up the GE
 	transactions.push(
 		prisma.gEListing.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } })
+	);
+	transactions.push(
+		prisma.userLog.updateMany({
+			where: { user_id: BigInt(sourceUser.id) },
+			data: { user_id: BigInt(destUser.id) }
+		})
+	);
+	transactions.push(
+		prisma.giftBox.updateMany({ where: { creator_id: sourceUser.id }, data: { creator_id: destUser.id } })
+	);
+	transactions.push(
+		prisma.giftBox.updateMany({ where: { owner_id: sourceUser.id }, data: { owner_id: destUser.id } })
 	);
 
 	// Update Users in group activities:
