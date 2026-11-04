@@ -67,7 +67,7 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 
 	const action = split[1] === 'ENTER' ? 'ENTER' : 'LEAVE';
 
-	if (user.isIronman) {
+	if (user.isIronman && !giveaway.allow_ironmen) {
 		return {
 			content: 'You are an ironman, you cannot enter giveaways.',
 			ephemeral: true
