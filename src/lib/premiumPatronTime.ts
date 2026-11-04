@@ -23,7 +23,11 @@ export async function premiumPatronTime(
 	const currentBalanceTier = currentUser.premium_balance_tier;
 	const now = Date.now();
 
-	if (interaction && currentBalanceTier !== null && (currentBalanceTier !== tier || currentUser.premium_balance_is_cyr)) {
+	if (
+		interaction &&
+		currentBalanceTier !== null &&
+		(currentBalanceTier !== tier || currentUser.premium_balance_is_cyr)
+	) {
 		await interaction.confirmation(
 			`They already have Tier ${currentBalanceTier}; this will replace the existing balance entirely, are you sure?`
 		);

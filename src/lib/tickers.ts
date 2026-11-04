@@ -206,10 +206,7 @@ export const tickers: {
 					const premiumTier = hasActivePremium ? user.premium_balance_tier! : 0;
 					return {
 						id: user.id.toString(),
-						perkTier: Math.max(
-							premiumTier,
-							...user.bits.map(bit => tierByBit.get(bit) ?? 0)
-						),
+						perkTier: Math.max(premiumTier, ...user.bits.map(bit => tierByBit.get(bit) ?? 0)),
 						isCyr:
 							user.bits.some(bit => cyrTierBits.includes(bit as (typeof cyrTierBits)[number])) ||
 							(hasActivePremium && user.premium_balance_is_cyr === true)
