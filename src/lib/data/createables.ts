@@ -166,7 +166,7 @@ const revWeapons: Createable[] = [
 		})
 	},
 	{
-		name: 'Revert bracelet of ethereum',
+		name: 'Revert bracelet of ethereum (uncharged)',
 		inputItems: new Bank({
 			'Bracelet of ethereum (uncharged)': 1
 		}),
