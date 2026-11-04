@@ -773,6 +773,12 @@ const noveltyFood: Buyable[] = [
 
 const Buyables: Buyable[] = [
 	{
+		name: 'Pestle and mortar',
+		aliases: ['mortar and pestle', 'pestle & mortar', 'mortar & pestle'],
+		gpCost: 10_000,
+		ironmanPrice: 128
+	},
+	{
 		name: 'Rope',
 		aliases: ['rope'],
 		gpCost: 100,
@@ -1091,11 +1097,11 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: 'Olive oil(4)',
-		gpCost: 220
+		gpCost: 270
 	},
 	{
 		name: 'Olive oil pack',
-		gpCost: 2670
+		gpCost: 27_000
 	},
 	{
 		name: 'Keris partisan',

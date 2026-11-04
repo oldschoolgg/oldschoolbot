@@ -1,5 +1,5 @@
 import { Emoji, Events, increaseNumByPercent, sumArr, Time } from '@oldschoolgg/toolkit';
-import { toKMB } from 'oldschooljs';
+import { Items, toKMB } from 'oldschooljs';
 
 import { QuestID } from '@/lib/minions/data/quests.js';
 import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
@@ -14,6 +14,7 @@ import { skillingPetDropRate } from '@/lib/util.js';
 export function determineMiningResult({
 	ore,
 	quantity,
+	minedQuantity,
 	gearBank,
 	duration,
 	isPowermining,
@@ -22,6 +23,7 @@ export function determineMiningResult({
 }: {
 	ore: Ore;
 	quantity: number;
+	minedQuantity?: number;
 	gearBank: GearBank;
 	duration: number;
 	isPowermining: boolean;
@@ -29,8 +31,9 @@ export function determineMiningResult({
 	rng: RNGProvider;
 }) {
 	const miningLvl = gearBank.skillsAsLevels.mining;
+	const xpQuantity = minedQuantity ?? quantity;
 	let bonusXP = 0;
-	let xpToReceive = quantity * ore.xp;
+	let xpToReceive = xpQuantity * ore.xp;
 
 	let taintedQty = 0; // 6xp per chunk rolled
 	if (ore.name === 'Tainted essence chunk') {
@@ -58,7 +61,7 @@ export function determineMiningResult({
 
 	// Add clue scrolls
 	if (ore.clueScrollChance) {
-		addSkillingClueToLoot(rng, gearBank, 'mining', quantity, ore.clueScrollChance, updateBank.itemLootBank);
+		addSkillingClueToLoot(rng, gearBank, 'mining', xpQuantity, ore.clueScrollChance, updateBank.itemLootBank);
 	}
 
 	// Roll for pet
@@ -122,6 +125,8 @@ export function determineMiningResult({
 			}
 		} else if (ore.name === 'Tainted essence chunk') {
 			updateBank.itemLootBank.add(ore.id, 5 * taintedQty);
+		} else if (ore.outputId) {
+			updateBank.itemLootBank.add(ore.outputId, quantity);
 		} else {
 			updateBank.itemLootBank.add(ore.id, quantity);
 		}
@@ -142,12 +147,13 @@ export const miningTask: MinionTask = {
 	type: 'Mining',
 	async run(data: MiningActivityTaskOptions, { user, handleTripFinish, rng }) {
 		const { oreID, channelId, duration, powermine } = data;
-		const { quantity } = data;
+		const { minedQuantity, quantity } = data;
 
-		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
+		const ore = Mining.Ores.find(oreToMine => oreToMine.id === oreID)!;
 		const { updateBank, bonusXP } = determineMiningResult({
 			ore,
 			quantity,
+			minedQuantity,
 			gearBank: user.gearBank,
 			duration,
 			isPowermining: powermine,
@@ -157,7 +163,8 @@ export const miningTask: MinionTask = {
 
 		const updateResult = await updateBank.transact(user);
 		if (typeof updateResult === 'string') throw new Error(updateResult);
-		let str = `${user}, ${user.minionName} finished mining ${quantity} ${ore.name}. ${updateResult.message}${
+		const minedItemName = ore.outputId ? Items.itemNameFromId(ore.outputId) : ore.name;
+		let str = `${user}, ${user.minionName} finished mining ${quantity} ${minedItemName}. ${updateResult.message}${
 			bonusXP > 0 ? ` **Bonus XP:** ${bonusXP.toLocaleString()}` : ''
 		}\n`;
 

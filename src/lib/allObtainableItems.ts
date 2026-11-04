@@ -153,7 +153,7 @@ for (const item of [
 	Mining.GemRockTable.allItems,
 	Mining.GraniteRockTable.allItems,
 	Mining.SandstoneRockTable.allItems,
-	Mining.Ores.map(i => i.id),
+	Mining.Ores.map(i => i.outputId ?? i.id),
 	RandomEvents.map(i => i.loot.allItems),
 	RandomEvents.map(i => i.outfit),
 	allOpenables.map(i => [i.allItems, i.id, i.openedItem.id]),

@@ -57,6 +57,7 @@ async function updateClientGPTrackSetting(
 type ClientBankKey =
 	| 'sold_items_bank'
 	| 'herblore_cost_bank'
+	| 'mastering_mixology_cost_bank'
 	| 'construction_cost_bank'
 	| 'farming_cost_bank'
 	| 'farming_loot_bank'
@@ -114,6 +115,8 @@ type ClientBankKey =
 	| 'ourania_loot'
 	| 'colo_cost'
 	| 'colo_loot'
+	| 'doom_loot'
+	| 'doom_cost'
 	| 'vt_cost'
 	| 'vt_loot';
 
@@ -129,6 +132,17 @@ async function updateBankSetting(key: ClientBankKey, bankToAdd: Bank) {
 		[key]: newBank.toJSON()
 	});
 	return res;
+}
+
+async function removeFromBankSetting(key: ClientBankKey, bankToRemove: Bank) {
+	if (bankToRemove === undefined || bankToRemove === null) throw new Error(`Gave null bank for ${key}`);
+	const currentClientSettings = await mahojiClientSettingsFetch({
+		[key]: true
+	});
+	const current = currentClientSettings[key] as ItemBank;
+	return mahojiClientSettingsUpdate({
+		[key]: new Bank(current).remove(bankToRemove).toJSON()
+	});
 }
 
 async function addToGPTaxBalance(user: MUser, amount: number) {
@@ -159,6 +173,7 @@ const ClientSettingsSrc = {
 	update: mahojiClientSettingsUpdate,
 	updateClientGPTrackSetting,
 	updateBankSetting,
+	removeFromBankSetting,
 	addToGPTaxBalance
 };
 

@@ -1,9 +1,8 @@
 import { codeBlock, dateFm } from '@oldschoolgg/discord';
 import { type GearSetupType, GearSetupTypes } from '@oldschoolgg/gear';
-import { sumArr, Time, toTitleCase } from '@oldschoolgg/toolkit';
+import { sumArr, toTitleCase } from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { DiscordSnowflake } from '@sapphire/snowflake';
-import { Duration } from '@sapphire/time-utilities';
 import { Bank, type Item, type ItemBank } from 'oldschooljs';
 
 import { UserEventType, xp_gains_skill_enum } from '@/prisma/main/enums.js';
@@ -14,7 +13,7 @@ import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { unEquipAllCommand } from '@/lib/minions/functions/unequipAllCommand.js';
 import { unequipPet } from '@/lib/minions/functions/unequipPet.js';
-import { premiumPatronTime } from '@/lib/premiumPatronTime.js';
+import { runRolesTask } from '@/lib/rolesTask.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
@@ -134,32 +133,6 @@ export const rpCommand = defineCommand({
 							name: 'text_format',
 							description: 'Do you want to see their gear in plaintext?',
 							required: false
-						}
-					]
-				},
-				{
-					type: 'Subcommand',
-					name: 'add_patron_time',
-					description: 'Give user temporary patron time.',
-					options: [
-						{
-							type: 'User',
-							name: 'user',
-							description: 'The user.',
-							required: true
-						},
-						{
-							type: 'Integer',
-							name: 'tier',
-							description: 'The tier to give.',
-							required: true,
-							choices: choicesOf([1, 2, 3, 4, 5, 6])
-						},
-						{
-							type: 'String',
-							name: 'time',
-							description: 'The time.',
-							required: true
 						}
 					]
 				},
@@ -411,6 +384,26 @@ export const rpCommand = defineCommand({
 					]
 				}
 			]
+		},
+		{
+			type: 'SubcommandGroup',
+			name: 'roles',
+			description: 'Manage support server roles.',
+			options: [
+				{
+					type: 'Subcommand',
+					name: 'sync',
+					description: 'Run the support server roles sync task.',
+					options: [
+						{
+							type: 'Boolean',
+							name: 'dry_run',
+							description: 'Run without making any changes.',
+							required: false
+						}
+					]
+				}
+			]
 		}
 	],
 	run: async ({ options, user: adminUser, interaction, guildId, rng }) => {
@@ -532,16 +525,6 @@ Date: ${dateFm(date)}`;
 			};
 		}
 
-		if (options.player?.add_patron_time) {
-			const { tier, time, user: userToGive } = options.player.add_patron_time;
-			const duration = new Duration(time);
-			if (![1, 2, 3, 4, 5, 6].includes(tier)) return 'Invalid input.';
-			const ms = duration.offset;
-			if (ms < Time.Second || ms > Time.Year * 3) return 'Invalid input.';
-			const res = await premiumPatronTime(ms, tier, await mUserFetch(userToGive.user.id), interaction);
-			return res;
-		}
-
 		// Unequip Items
 		if (options.player?.unequip_all_items) {
 			if (!isAdmin) {
@@ -642,7 +625,13 @@ Date: ${dateFm(date)}`;
 				});
 			}
 			const userToView = await mUserFetch(options.player.view_user.user.user.id);
-			return msg + '\n' + (await getUserInfo(userToView)).everythingString;
+			const userInfo = await getUserInfo(userToView);
+			msg += `\n${userInfo.everythingString}`;
+			if (isAdmin) {
+				msg += `\n${userInfo.perkDebugInfo.join('\n')}`;
+			}
+
+			return msg;
 		}
 
 		if (options.player?.migrate_user) {
@@ -773,6 +762,21 @@ Date: ${dateFm(date)}`;
 			const targetUser = await mUserFetch(options.player.ge_cancel.user.user.id);
 			await cancelUsersListings(targetUser);
 			return `Cancelled listings for ${targetUser}`;
+		}
+
+		if (options.roles?.sync) {
+			if (!isAdmin) {
+				return rng.pick(gifs);
+			}
+			const dryRun = options.roles.sync.dry_run ?? false;
+			if (!dryRun) {
+				await interaction.confirmation('Are you sure you want to sync support server roles?');
+			}
+			const result = await runRolesTask(dryRun);
+			await globalClient.sendMessage(Channel.BotLogs, {
+				content: `${adminUser.logName} ran the support server roles sync${dryRun ? ' (dry run)' : ''}.`
+			});
+			return result;
 		}
 
 		return 'Invalid command.';

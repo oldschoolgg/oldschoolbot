@@ -1,6 +1,7 @@
 import { calcPercentOfNum, Emoji, formatDuration, sumArr, Time, UserError } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, type ItemBank, Items, itemID } from 'oldschooljs';
 
+import { MessageBuilder } from '@/discord/MessageBuilder.js';
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
 import { BitField } from '@/lib/constants.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';

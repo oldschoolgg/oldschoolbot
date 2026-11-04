@@ -11,6 +11,7 @@ import type {
 
 import type { GearSetupType, XpGainSource } from '@/prisma/main.js';
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
+import type { BitField } from '@/lib/constants.js';
 import type { QuestID } from '@/lib/minions/data/quests.js';
 import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { POHBoosts } from '@/lib/poh/index.js';
@@ -98,7 +99,14 @@ export interface KillableMonster {
 	canBarrage?: boolean;
 	canCannon?: boolean;
 	cannonMulti?: boolean;
-	specialLoot?: (data: { loot: Bank; ownedItems: Bank; quantity: number; cl: Bank; user?: MUser }) => void;
+	specialLoot?: (data: {
+		loot: Bank;
+		ownedItems: Bank;
+		quantity: number;
+		cl: Bank;
+		bitfield?: readonly BitField[];
+		user?: MUser;
+	}) => void;
 	effect?: KillableMonsterEffect;
 	degradeableItemUsage?: {
 		required: boolean;
@@ -128,6 +136,7 @@ export interface Consumable {
 	itemCost: Bank;
 	qtyPerMinute?: number;
 	qtyPerKill?: number;
+	qtyPerKillRange?: [number, number];
 	// For staff of the dead / kodai
 	isRuneCost?: boolean;
 	alternativeConsumables?: Consumable[];

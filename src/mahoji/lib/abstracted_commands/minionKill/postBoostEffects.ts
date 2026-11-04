@@ -1,6 +1,6 @@
 import { convertAttackStyleToGearSetup } from '@oldschoolgg/gear';
 import { calcPercentOfNum, Time, uniqueArr } from '@oldschoolgg/toolkit';
-import { Bank } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 
 import type { GearSetupType } from '@/prisma/main/enums.js';
 import { BitField } from '@/lib/constants.js';
@@ -13,6 +13,7 @@ import { type Peak, PeakTier } from '@/lib/util/peaks.js';
 import type { BoostArgs, BoostResult } from '@/mahoji/lib/abstracted_commands/minionKill/speedBoosts.js';
 
 const noFoodBoost = Math.floor(Math.max(...Eatables.map(eatable => eatable.pvmBoost ?? 0)) + 1);
+const wildyEliteGreenDragonBoost = 30;
 
 // Runs after we know the quantity/duration/etc
 type PostBoostEffectReturn = Pick<
@@ -26,7 +27,7 @@ export type PostBoostEffect = {
 			BoostArgs,
 			'addPostBoostEffect' | 'itemCost'
 		>
-	) => null | undefined | PostBoostEffectReturn | PostBoostEffectReturn[];
+	) => string | null | undefined | PostBoostEffectReturn | PostBoostEffectReturn[];
 };
 export const postBoostEffects: PostBoostEffect[] = [
 	{
@@ -59,7 +60,13 @@ export const postBoostEffects: PostBoostEffect[] = [
 				minimumHealAmount: monster.minimumHealAmount
 			});
 
-			if (foodRemoveResult === null || foodRemoveResult.foodToRemove.length === 0) {
+			if (foodRemoveResult === null) {
+				return `You don't have enough food to kill ${monster.name}! You need enough food to heal at least ${
+					healAmountNeeded * quantity
+				} HP (${healAmountNeeded} per kill). You can use these food items: ${Eatables.map(i => i.name).join(', ')}.`;
+			}
+
+			if (foodRemoveResult.foodToRemove.length === 0) {
 				return {
 					percentageReduction: noFoodBoost,
 					message: `${noFoodBoost}% for no food`
@@ -98,6 +105,17 @@ export const postBoostEffects: PostBoostEffect[] = [
 				itemCost: foodRemoveResult.foodToRemove
 			});
 			return results;
+		}
+	},
+	{
+		description: 'Wilderness elite green dragon boost',
+		run: ({ monster, isInWilderness, hasWildyEliteDiary }) => {
+			if (monster.id !== Monsters.GreenDragon.id || !isInWilderness || !hasWildyEliteDiary) return;
+
+			return {
+				percentageReduction: wildyEliteGreenDragonBoost,
+				message: `${wildyEliteGreenDragonBoost}% for Wilderness Elite Diary`
+			};
 		}
 	},
 	{

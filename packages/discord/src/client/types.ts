@@ -1,5 +1,6 @@
 import type { ButtonBuilder, EmbedBuilder } from '@discordjs/builders';
 import type { RawFile } from '@discordjs/rest';
+import type { IShardingStrategy, WebSocketManager } from '@discordjs/ws';
 import type { IMessage } from '@oldschoolgg/schemas';
 import { chunkArr } from '@oldschoolgg/util';
 import {
@@ -120,6 +121,7 @@ export interface DiscordClientOptions {
 	initialPresence: { activity: GatewayPresenceUpdateData['activities'][0]; status: PresenceUpdateStatus };
 	defaultAllowedMentions?: APIAllowedMentions;
 	userUsernameFetcher: UserUsernameFetcher;
+	buildStrategy?: (manager: WebSocketManager) => IShardingStrategy;
 }
 
 export type ValidAPIChannel =

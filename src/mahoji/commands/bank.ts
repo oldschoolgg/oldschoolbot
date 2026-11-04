@@ -4,6 +4,7 @@ import type { Bank } from 'oldschooljs';
 import { chunk } from 'remeda';
 
 import { choicesOf, filterOption, itemOption } from '@/discord/index.js';
+import { MessageBuilder } from '@/discord/MessageBuilder.js';
 import type { BankFlag } from '@/lib/canvas/bankImage.js';
 import { bankFlags } from '@/lib/canvas/bankImage.js';
 import { PerkTier } from '@/lib/constants.js';

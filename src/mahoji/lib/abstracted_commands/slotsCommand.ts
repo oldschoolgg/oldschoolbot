@@ -1,6 +1,6 @@
 import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
-import { SimpleTable, sleep } from '@oldschoolgg/toolkit';
-import { Bank, toKMB } from 'oldschooljs';
+import { sleep } from '@oldschoolgg/toolkit';
+import { Bank, SimpleTable, toKMB } from 'oldschooljs';
 import { chunk } from 'remeda';
 
 import { trackGamblingTransaction } from '@/lib/util/gambling.js';

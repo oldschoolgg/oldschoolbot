@@ -169,11 +169,18 @@ export class Gear {
 		return clone(this.setup);
 	}
 
-	allItems(similar = false): number[] {
+	allItems(similar: true, withQuantities?: boolean): number[];
+	allItems(similar?: false, withQuantities?: false): number[];
+	allItems(similar: false, withQuantities: true): [number, number][];
+	allItems(similar = false, withQuantities = false): number[] | [number, number][] {
 		const values = new Set<number>();
+		const valuesWithQuantities: [number, number][] = [];
+		const returnQuantities = withQuantities && !similar;
+
 		for (const val of Object.values(this.setup)) {
 			if (val?.item) {
 				values.add(val.item);
+				valuesWithQuantities.push([val.item, val.quantity ?? 1]);
 			}
 		}
 
@@ -191,7 +198,7 @@ export class Gear {
 			}
 		}
 
-		return Array.from(values);
+		return returnQuantities ? valuesWithQuantities : Array.from(values);
 	}
 
 	allItemsBank() {
@@ -268,13 +275,15 @@ export class Gear {
 	}
 
 	toString() {
-		const allItems = this.allItems(false);
+		const allItems = this.allItems(false, true);
 		if (allItems.length === 0) {
 			return 'No items';
 		}
+
 		const items: string[] = [];
-		for (const item of allItems.sort((a, b) => a - b)) {
-			items.push(Items.itemNameFromId(item) ?? `Unknown Item? (${item})`);
+		for (const [item, qty] of allItems.sort((a, b) => a[0] - b[0])) {
+			const name = Items.itemNameFromId(Number(item)) ?? `Unknown Item? (${item})`;
+			items.push(`${qty > 1 ? `${qty}x ` : ''}${name}`);
 		}
 		return items.join(', ');
 	}
