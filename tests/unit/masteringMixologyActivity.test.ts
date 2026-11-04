@@ -23,7 +23,7 @@ function makeMixologyUser(startingBank?: Bank) {
 		}),
 		incrementMinigameScore: vi.fn(),
 		addXP: vi.fn(async () => 'You gained 570 Herblore XP.'),
-		update: vi.fn()
+		statsUpdate: vi.fn()
 	} as unknown as MUser;
 }
 
@@ -72,7 +72,7 @@ describe('Mastering Mixology activity', () => {
 			duration: expect.any(Number),
 			source: 'MasteringMixology'
 		});
-		expect(user.update).toHaveBeenCalledWith({
+		expect(user.statsUpdate).toHaveBeenCalledWith({
 			mixology_mox_points: { increment: 28 },
 			mixology_aga_points: { increment: 28 },
 			mixology_lye_points: { increment: 28 }
@@ -112,7 +112,9 @@ describe('Mastering Mixology activity', () => {
 
 		// (190 base + 14 processing) x2 for digweed
 		expect(user.addXP).toHaveBeenCalledWith(expect.objectContaining({ skillName: 'herblore', amount: 408 }));
-		expect(user.update).toHaveBeenCalledWith(expect.objectContaining({ mixology_mox_points: { increment: 40 } }));
+		expect(user.statsUpdate).toHaveBeenCalledWith(
+			expect.objectContaining({ mixology_mox_points: { increment: 40 } })
+		);
 		expect(handleTripFinishMock).toHaveBeenCalledWith(
 			expect.objectContaining({ message: expect.stringContaining('1x Digweed') })
 		);
@@ -141,7 +143,7 @@ describe('Mastering Mixology activity', () => {
 		expect(user.incrementMinigameScore).toHaveBeenCalledWith('mastering_mixology', 2);
 		expect(user.bank.amount('Mox paste')).toEqual(0);
 		expect(user.bank.amount('Aga paste')).toEqual(0);
-		expect(user.update).toHaveBeenCalledWith({
+		expect(user.statsUpdate).toHaveBeenCalledWith({
 			mixology_mox_points: { increment: 24 },
 			mixology_aga_points: { increment: 24 },
 			mixology_lye_points: { increment: 0 }
