@@ -34,6 +34,7 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	transactions.push(prisma.playerOwnedHouse.deleteMany({ where: { user_id: destUser.id } }));
 	transactions.push(prisma.pinnedTrip.deleteMany({ where: { user_id: destUser.id } }));
 	transactions.push(prisma.reclaimableItem.deleteMany({ where: { user_id: destUser.id } }));
+	transactions.push(prisma.gamble.deleteMany({ where: { user_id: destUser.id } }));
 
 	transactions.push(prisma.activity.deleteMany({ where: { user_id: BigInt(destUser.id) } }));
 	transactions.push(prisma.xPGain.deleteMany({ where: { user_id: BigInt(destUser.id) } }));
@@ -97,6 +98,7 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	transactions.push(
 		prisma.reclaimableItem.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } })
 	);
+	transactions.push(prisma.gamble.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } }));
 
 	transactions.push(
 		prisma.activity.updateMany({
