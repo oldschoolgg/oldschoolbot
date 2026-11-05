@@ -33,10 +33,15 @@ export async function stealingArtefactsCommand(
 	const teleportOptionEnabled = options.teleport ?? true;
 	const teleportEligible = canUseStealingArtefactsTeleport({
 		teleportOptionEnabled,
-		hasMemoirs: user.hasEquippedOrInBank("Kharedst's memoirs"),
 		hasBook: user.hasEquippedOrInBank('Book of the dead'),
 		questCompleted: true
 	});
+	let teleportNote = '';
+	if (teleportOptionEnabled && !teleportEligible) {
+		const requirement = 'You need Book of the dead in your bank or equipment to use teleport efficiency.';
+		if (options.teleport === true) return requirement;
+		teleportNote = `\nTeleport efficiency was not applied. ${requirement}`;
+	}
 
 	const maxTripLength = await user.calcMaxTripLength('StealingArtefacts');
 	const hasGraceful = user.hasGracefulEquipped();
@@ -70,6 +75,7 @@ export async function stealingArtefactsCommand(
 
 	let glassblow: StealingArtefactsGlassblowData | undefined;
 	let glassblowNote = '';
+	const itemsToRemove = new Bank();
 
 	if (glassblowProduct) {
 		const hours = duration / Time.Hour;
@@ -94,13 +100,24 @@ export async function stealingArtefactsCommand(
 			moltenGlassUsed: plan.moltenGlassUsed
 		};
 
-		// Consume glass up-front (consistent with most OSB “uses supplies” commands)
-		await user.removeItemsFromBank(new Bank().add('Molten glass', plan.moltenGlassUsed));
+		itemsToRemove.add('Molten glass', plan.moltenGlassUsed);
 
 		const product = getGlassblowingProduct(glassblowProduct);
 		const productName = product?.item.name ?? glassblowProduct.replaceAll('_', ' ');
 
 		glassblowNote = ` You're also glassblowing ${plan.itemsMade}x ${productName}.`;
+	}
+
+	if (stamina) {
+		const staminaPotions = Math.max(1, Math.ceil(duration / (Time.Minute * 8)));
+		if (user.bank.amount('Stamina potion(4)') < staminaPotions) {
+			return `You need ${staminaPotions}x Stamina potion(4) for this trip. Use stamina:false to go without stamina potions.`;
+		}
+		itemsToRemove.add('Stamina potion(4)', staminaPotions);
+	}
+
+	if (itemsToRemove.length > 0) {
+		await user.removeItemsFromBank(itemsToRemove);
 	}
 
 	const deliveries = Math.floor(deliveriesPerHour * (duration / Time.Hour));
@@ -120,11 +137,11 @@ export async function stealingArtefactsCommand(
 
 	const boosts = [
 		hasGraceful ? 'Graceful equipped (no penalty)' : 'No graceful equipped (-30%)',
-		stamina ? 'Stamina potions selected (no penalty)' : 'No stamina potions (-30%)',
+		stamina ? 'Stamina potions consumed (no penalty)' : 'No stamina potions (-30%)',
 		teleportEligible ? 'Teleport efficiency active' : null
 	].filter(Boolean);
 
 	return `${user.minionName} is now stealing artefacts for ${formatTripDuration(user, duration)} (${deliveries} deliveries expected).${glassblowNote}${
-		boosts.length > 0 ? `\nBoosts: ${boosts.join(', ')}.` : ''
-	}`;
+		itemsToRemove.length > 0 ? ` Removed ${itemsToRemove} from your bank.` : ''
+	}${boosts.length > 0 ? `\nBoosts: ${boosts.join(', ')}.` : ''}${teleportNote}`;
 }

@@ -71,16 +71,14 @@ export function getStealingArtefactsDeliveriesPerHour({
 
 export function canUseStealingArtefactsTeleport({
 	teleportOptionEnabled,
-	hasMemoirs,
 	hasBook,
 	questCompleted
 }: {
 	teleportOptionEnabled: boolean;
-	hasMemoirs: boolean;
 	hasBook: boolean;
 	questCompleted: boolean;
 }): boolean {
-	return teleportOptionEnabled && (hasMemoirs || hasBook) && questCompleted;
+	return teleportOptionEnabled && hasBook && questCompleted;
 }
 
 export function calculateStealingArtefactsXpPerHour({

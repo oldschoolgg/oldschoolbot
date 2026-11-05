@@ -33,19 +33,10 @@ describe('stealing artefacts caps', () => {
 });
 
 describe('stealing artefacts teleport eligibility', () => {
-	test('accepts memoirs or book when option enabled', () => {
+	test('accepts Book of the dead when option enabled', () => {
 		expect(
 			canUseStealingArtefactsTeleport({
 				teleportOptionEnabled: true,
-				hasMemoirs: true,
-				hasBook: false,
-				questCompleted: true
-			})
-		).toBe(true);
-		expect(
-			canUseStealingArtefactsTeleport({
-				teleportOptionEnabled: true,
-				hasMemoirs: false,
 				hasBook: true,
 				questCompleted: true
 			})
@@ -56,7 +47,6 @@ describe('stealing artefacts teleport eligibility', () => {
 		expect(
 			canUseStealingArtefactsTeleport({
 				teleportOptionEnabled: true,
-				hasMemoirs: false,
 				hasBook: false,
 				questCompleted: true
 			})
