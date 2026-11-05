@@ -5,13 +5,13 @@ import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { roll } from 'node-rng';
 import { Bank } from 'oldschooljs';
 
-import { readState } from '@/mahoji/commands/islandupgrade.js';
 import {
 	archonPresentations,
 	getUniquesForTier,
 	rollArchonLoot,
 	tierGearPenalty
 } from '@/mahoji/lib/abstracted_commands/archonCommand.js';
+import { readState } from '@/mahoji/lib/abstracted_commands/islandCommand.js';
 
 export const archonTask: MinionTask = {
 	type: 'Archon',

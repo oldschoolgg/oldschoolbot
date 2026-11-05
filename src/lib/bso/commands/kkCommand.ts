@@ -14,7 +14,7 @@ import { Gear } from '@/lib/structures/Gear.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import type { BossActivityTaskOptions } from '@/lib/types/minions.js';
 import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
-import { readState } from '@/mahoji/commands/islandupgrade.js';
+import { readState } from '@/mahoji/lib/abstracted_commands/islandCommand.js';
 
 async function checkReqs(users: MUser[], monster: KillableMonster, quantity: number): Promise<string | undefined> {
 	// Check if every user has the requirements for this monster.

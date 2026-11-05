@@ -23,7 +23,7 @@ import type { Gear } from '@/lib/structures/Gear.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { ClientBankKey } from '@/lib/util/clientSettings.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import { readState } from '@/mahoji/commands/islandupgrade.js';
+import { readState } from '@/mahoji/lib/abstracted_commands/islandCommand.js';
 
 export const gpCostPerKill = (user: MUser) =>
 	user.gear.melee.hasEquipped(['Ring of charos', 'Ring of charos(a)'], false) ? 5_000_000 : 10_000_000;

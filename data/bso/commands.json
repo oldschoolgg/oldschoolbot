@@ -204,6 +204,7 @@
 				"default_compost",
 				"harvest",
 				"plant",
+				"set_preferred",
 				"tithe_farm"
 			]
 		},

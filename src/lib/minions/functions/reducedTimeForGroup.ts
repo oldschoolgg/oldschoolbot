@@ -6,7 +6,7 @@ import { Items } from 'oldschooljs';
 import reducedTimeFromKC from '@/lib/minions/functions/reducedTimeFromKC.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 import { calcPOHBoosts } from '@/lib/poh/index.js';
-import { readState } from '@/mahoji/commands/islandupgrade.js';
+import { readState } from '@/mahoji/lib/abstracted_commands/islandCommand.js';
 import { resolveAvailableItemBoosts } from '@/mahoji/mahojiSettings.js';
 
 export interface PlayerBoostDetail {

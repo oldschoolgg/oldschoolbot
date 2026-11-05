@@ -15,7 +15,7 @@ import { Bank, itemID } from 'oldschooljs';
 import { COMBAT_TIER_XP } from '@/lib/constants.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { makeArchonButton } from '@/lib/util/interactions.js';
-import { readState } from '@/mahoji/commands/islandupgrade.js';
+import { readState } from '@/mahoji/lib/abstracted_commands/islandCommand.js';
 
 export const archonPresentations = {
 	1: {
