@@ -24,11 +24,11 @@ function userHasUnlimitedGiveaways(user: MUser) {
 export function makeGiveawayButtons(giveawayID: string) {
 	return [
 		new ButtonBuilder()
-			.setCustomId(`GIVEAWAY_ENTER_${giveawayID}`)
+			.setCustomId(`GW_JOIN_${giveawayID}`)
 			.setLabel('Join Giveaway')
 			.setStyle(ButtonStyle.Primary),
 		new ButtonBuilder()
-			.setCustomId(`GIVEAWAY_LEAVE_${giveawayID}`)
+			.setCustomId(`GW_BYE_${giveawayID}`)
 			.setLabel('Leave Giveaway')
 			.setStyle(ButtonStyle.Secondary)
 	];
@@ -36,7 +36,7 @@ export function makeGiveawayButtons(giveawayID: string) {
 
 function makeGiveawayRepeatButton(giveawayID: string) {
 	return new ButtonBuilder()
-		.setCustomId(`GIVEAWAY_REPEAT_${giveawayID}`)
+		.setCustomId(`GW_REP_${giveawayID}`)
 		.setLabel('Repeat This Giveaway')
 		.setEmoji({ id: EmojiId.MoneyBag })
 		.setStyle(ButtonStyle.Danger);

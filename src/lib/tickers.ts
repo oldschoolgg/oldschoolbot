@@ -191,24 +191,27 @@ export const tickers: {
 					id: true,
 					bits: true,
 					premium_balance_tier: true,
+					premium_balance_is_cyr: true,
 					premium_balance_expiry_date: true
 				}
 			});
 			const usersRobochimpNs = process.hrtime.bigint() - usersRobochimpStart;
 			const eligiblesStart = process.hrtime.bigint();
 			const eligibleUsers = [
-				...robochimpUsers.map(user => ({
-					id: user.id.toString(),
-					perkTier: Math.max(
+				...robochimpUsers.map(user => {
+					const hasActivePremium =
 						user.premium_balance_expiry_date !== null &&
-							Number(user.premium_balance_expiry_date) > now &&
-							user.premium_balance_tier !== null
-							? user.premium_balance_tier
-							: 0,
-						...user.bits.map(bit => tierByBit.get(bit) ?? 0)
-					),
-					isCyr: user.bits.some(bit => cyrTierBits.includes(bit as (typeof cyrTierBits)[number]))
-				})),
+						Number(user.premium_balance_expiry_date) > now &&
+						user.premium_balance_tier !== null;
+					const premiumTier = hasActivePremium ? user.premium_balance_tier! : 0;
+					return {
+						id: user.id.toString(),
+						perkTier: Math.max(premiumTier, ...user.bits.map(bit => tierByBit.get(bit) ?? 0)),
+						isCyr:
+							user.bits.some(bit => cyrTierBits.includes(bit as (typeof cyrTierBits)[number])) ||
+							(hasActivePremium && user.premium_balance_is_cyr === true)
+					};
+				}),
 				...oldPatreonUsers.map(user => ({ id: user.id, perkTier: 3, isCyr: false }))
 			].filter((user, index, users) => users.findIndex(other => other.id === user.id) === index);
 			const eligiblesNs = process.hrtime.bigint() - eligiblesStart;
@@ -260,7 +263,7 @@ export const tickers: {
 						SELECT 1
 						FROM farmed_crop fc
 						WHERE fc.user_id = u.id
-						AND fc.date_planted > now() - INTERVAL '2 days'
+						AND fc.date_planted > now() - INTERVAL '5 days'
 					)
 					AND NOT (bitfield @> ARRAY[
 						37 -- DisabledFarmingReminders

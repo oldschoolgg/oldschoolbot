@@ -1964,7 +1964,8 @@ export const allCollectionLogs: ICollection = {
 					...SkrinkBoxTable.allItems,
 					Items.getOrThrow('Skrod box').id,
 					...SkrodBoxTable.allItems,
-					...DiscoNormalLoot.allItems
+					...DiscoNormalLoot.allItems,
+					Items.getOrThrow("Boo'ala").id
 				]),
 				counts: false
 			},
