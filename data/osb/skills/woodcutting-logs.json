@@ -70,7 +70,11 @@
 		"wc_guild": true,
 		"pet_chance": 317647,
 		"qp_required": 0,
-		"clue_scroll_chance": 317647
+		"clue_scroll_chance": 317647,
+		"moon_key_half_catch_rate": {
+			"numerator": 1,
+			"denominator": 2117
+		}
 	},
 	{
 		"level": 75,
@@ -86,7 +90,11 @@
 		"wc_guild": true,
 		"pet_chance": 72321,
 		"qp_required": 0,
-		"clue_scroll_chance": 72321
+		"clue_scroll_chance": 72321,
+		"moon_key_half_catch_rate": {
+			"numerator": 1,
+			"denominator": 482
+		}
 	},
 	{
 		"level": 50,
@@ -100,7 +108,11 @@
 		"depletion_chance": 12.5,
 		"pet_chance": 220623,
 		"qp_required": 0,
-		"clue_scroll_chance": 220623
+		"clue_scroll_chance": 220623,
+		"moon_key_half_catch_rate": {
+			"numerator": 1,
+			"denominator": 1470
+		}
 	},
 	{
 		"level": 45,
@@ -116,7 +128,11 @@
 		"wc_guild": true,
 		"pet_chance": 221918,
 		"qp_required": 0,
-		"clue_scroll_chance": 221918
+		"clue_scroll_chance": 221918,
+		"moon_key_half_catch_rate": {
+			"numerator": 1,
+			"denominator": 1479
+		}
 	},
 	{
 		"level": 15,
@@ -132,7 +148,11 @@
 		"wc_guild": true,
 		"pet_chance": 361146,
 		"qp_required": 0,
-		"clue_scroll_chance": 361146
+		"clue_scroll_chance": 361146,
+		"moon_key_half_catch_rate": {
+			"numerator": 1,
+			"denominator": 2407
+		}
 	},
 	{
 		"level": 90,
@@ -177,7 +197,11 @@
 		"depletion_chance": 12.5,
 		"pet_chance": 264336,
 		"qp_required": 0,
-		"clue_scroll_chance": 264336
+		"clue_scroll_chance": 264336,
+		"moon_key_half_catch_rate": {
+			"numerator": 1,
+			"denominator": 1762
+		}
 	},
 	{
 		"level": 30,
@@ -193,7 +217,11 @@
 		"wc_guild": true,
 		"pet_chance": 289286,
 		"qp_required": 0,
-		"clue_scroll_chance": 289286
+		"clue_scroll_chance": 289286,
+		"moon_key_half_catch_rate": {
+			"numerator": 1,
+			"denominator": 1928
+		}
 	},
 	{
 		"level": 60,
@@ -209,6 +237,10 @@
 		"wc_guild": true,
 		"pet_chance": 145013,
 		"qp_required": 0,
-		"clue_scroll_chance": 145013
+		"clue_scroll_chance": 145013,
+		"moon_key_half_catch_rate": {
+			"numerator": 1,
+			"denominator": 966
+		}
 	}
 ]

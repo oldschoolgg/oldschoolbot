@@ -10,7 +10,9 @@ import { determineMiningTime } from '@/lib/skilling/functions/determineMiningTim
 import { pickaxes } from '@/lib/skilling/functions/miningBoosts.js';
 import type { ActivityTaskData, ShootingStarsOptions } from '@/lib/types/minions.js';
 import { makeShootingStarButton } from '@/lib/util/interactions.js';
-import { formatTripDuration } from '@/lib/util/minionUtils.js';
+import { formatTripDuration, rollForMoonKeyHalf } from '@/lib/util/minionUtils.js';
+
+const CRASHED_STAR_MOON_KEY_CATCH_RATE = { numerator: 1, denominator: 3477 };
 
 export const starSizes: Star[] = [
 	{
@@ -233,6 +235,15 @@ export async function shootingStarsCommand({
 		if (s.clueScrollChance) {
 			addSkillingClueToLoot(rng, user, 'mining', newQuantity, s.clueScrollChance, loot);
 		}
+
+		rollForMoonKeyHalf({
+			rng,
+			user,
+			duration: timeToMine,
+			loot,
+			quantity: newQuantity,
+			perCatchRate: CRASHED_STAR_MOON_KEY_CATCH_RATE
+		});
 
 		// Roll for pet
 		if (s.petChance && rng.roll(Math.round(Math.min(s.petChance - skills.mining * 25) / newQuantity))) {

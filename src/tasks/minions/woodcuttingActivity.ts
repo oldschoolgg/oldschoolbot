@@ -336,8 +336,15 @@ export const woodcuttingTask: MinionTask = {
 			}
 		}
 
-		if ([EItem.MAGIC_LOGS, EItem.YEW_LOGS, EItem.TEAK_LOGS, EItem.MAPLE_LOGS].includes(log.id)) {
-			rollForMoonKeyHalf({ rng, user, duration, loot });
+		if (log.moonKeyHalfCatchRate) {
+			rollForMoonKeyHalf({
+				rng,
+				user,
+				duration,
+				loot,
+				quantity,
+				perCatchRate: log.moonKeyHalfCatchRate
+			});
 		}
 
 		// Loot received, items used, and logs/loot rolls lost message
