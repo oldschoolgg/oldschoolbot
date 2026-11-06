@@ -62,6 +62,7 @@ model Analytic {
 
 model ClientStorage {
   id                           String   @id @db.VarChar(19)
+  extra_settings               Json     @default("{}") @db.Json
   totalCommandsUsed            Int      @default(0)
   prices                       Json     @default("{}") @db.Json
   sold_items_bank              Json     @default("{}") @db.Json
@@ -255,7 +256,7 @@ model GearPreset {
 }
 
 model Giveaway {
-  id            Int      @id
+  id            String   @id @db.VarChar(19)
   user_id       String   @db.VarChar(19)
   start_date    DateTime @db.Timestamp(6)
   finish_date   DateTime @db.Timestamp(6)

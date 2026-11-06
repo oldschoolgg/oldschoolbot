@@ -1,5 +1,6 @@
 import { Bank, toKMB } from 'oldschooljs';
 
+import { createGamble, settleGamble } from '@/lib/gambling.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 export async function diceCommand(rng: RNGProvider, user: MUser, interaction: MInteraction, diceamount?: string) {
@@ -28,6 +29,7 @@ export async function diceCommand(rng: RNGProvider, user: MUser, interaction: MI
 	if (amount > gp) return "You don't have enough GP.";
 	const won = roll >= 55;
 	const amountToAdd = won ? amount : -amount;
+	const gamble = await createGamble({ userId: user.id, game: 'dice', betAmount: amount });
 
 	await ClientSettings.updateClientGPTrackSetting('gp_dice', amountToAdd);
 	await user.updateGPTrackSetting('gp_dice', amountToAdd);
@@ -43,6 +45,7 @@ export async function diceCommand(rng: RNGProvider, user: MUser, interaction: MI
 		});
 		await user.removeItemsFromBank(new Bank().add('Coins', amount));
 	}
+	await settleGamble(gamble.id, { won, profitLoss: amountToAdd, payoutAmount: won ? amount : 0 });
 
 	return `${user.username} rolled **${roll}** on the percentile dice, and you ${
 		won ? 'won' : 'lost'
