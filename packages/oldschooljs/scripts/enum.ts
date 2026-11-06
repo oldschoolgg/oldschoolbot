@@ -128,7 +128,6 @@ async function main() {
 		['MIMIC', 23_184],
 		['ZALCANO', 9049],
 		['NEX', 11_278],
-		['DOOM_OF_MOKHAIOTL', 14_708],
 		['BRANDA', 12_596],
 		['ELDRIC', 14_147],
 		['ROYAL_TITANS', 14_148],

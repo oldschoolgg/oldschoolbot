@@ -1,5 +1,5 @@
 import { EmbedBuilder, userMention } from '@oldschoolgg/discord';
-import { noOp, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { noOp, objectEntries, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, convertLVLtoXP, ItemGroups, Items, itemID, MAX_INT_JAVA, resolveItems } from 'oldschooljs';
 
 import { xp_gains_skill_enum } from '@/prisma/main.js';
@@ -17,12 +17,16 @@ import { spiritAnglerOutfit } from '@/lib/data/CollectionsExport.js';
 import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '@/lib/data/cox.js';
 import { leaguesCreatables } from '@/lib/data/creatables/leagueCreatables.js';
 import { Eatables } from '@/lib/data/eatables.js';
+import { herbloreItems } from '@/lib/data/filterables.js';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '@/lib/data/tob.js';
+import { type Diary, diaries } from '@/lib/diaries.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import potions from '@/lib/minions/data/potions.js';
 import { MAX_QP, quests } from '@/lib/minions/data/quests.js';
+import { DiaryID, type DiaryTierName } from '@/lib/minions/types.js';
 import { allOpenables } from '@/lib/openables.js';
-import { Minigames } from '@/lib/settings/minigames.js';
+import { type MinigameName, Minigames } from '@/lib/settings/minigames.js';
+import Agility from '@/lib/skilling/skills/agility.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import {
 	farmingPatchNames,
@@ -37,6 +41,7 @@ import { SlayerRewardsShop } from '@/lib/slayer/slayerUnlocks.js';
 import { allSlayerMonsters } from '@/lib/slayer/tasks/index.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import type { SafeUserUpdateInput } from '@/lib/user/update.js';
+import type { HasDiaryDiaryKey } from '@/lib/user/userTypes.js';
 import { parseStringBank } from '@/lib/util/parseStringBank.js';
 import { fetchBingosThatUserIsInvolvedIn } from '@/mahoji/commands/bingo.js';
 import { gearViewCommand } from '@/mahoji/lib/abstracted_commands/gearCommands.js';
@@ -351,6 +356,11 @@ function bankFromItemIDs(itemIDs: Iterable<number>, qty: number) {
 	return bank;
 }
 
+const herblorePreset = new Bank();
+for (const item of herbloreItems) {
+	herblorePreset.add(item, 100_000);
+}
+
 const anglerOutfit = resolveItems(['Angler hat', 'Angler top', 'Angler waders', 'Angler boots']);
 const fishingPreset = new Bank()
 	.add('Fish sack barrel')
@@ -497,6 +507,7 @@ const spawnPresets = [
 	['potions', potionsPreset],
 	['food', foodPreset],
 	['runes', runePreset],
+	['herblore', herblorePreset],
 	['bossing', bossingPreset],
 	['doom', doomPreset],
 	['yama', yamaPreset],
@@ -516,6 +527,68 @@ const thingsToWipe = [
 	'giveaways'
 ] as const;
 
+const diaryTierChoices = ['easy', 'medium', 'hard', 'elite', 'all'] as const;
+type TestPotatoDiaryTier = (typeof diaryTierChoices)[number];
+const diaryTierNames = ['easy', 'medium', 'hard', 'elite'] as const;
+
+function formatDiaryKey(diaryName: string, tier: (typeof diaryTierNames)[number]): HasDiaryDiaryKey {
+	return `${diaryName}.${tier}`.replace(/\s/g, '').toLowerCase() as HasDiaryDiaryKey;
+}
+
+async function fulfilDiaryRequirements(user: MUser, diary: Diary, tiers: readonly DiaryTierName[]) {
+	const [stats, minigameScores] = await Promise.all([user.fetchMStats(), user.fetchMinigames()]);
+	const updates: SafeUserUpdateInput = {};
+	const minigameUpdates: Partial<Record<MinigameName, number>> = {};
+	const monsterScores = { ...stats.monsterScores };
+	const lapsScores = { ...stats.lapsScores };
+	const items = new Bank();
+	let qp = user.QP;
+	let honourLevel = stats.userStats.honour_level;
+
+	for (const tierName of tiers) {
+		const tier = diary[tierName];
+		for (const [skill, level] of objectEntries(tier.skillReqs)) {
+			if (level === undefined || user.skillsAsLevels[skill] >= level) continue;
+			const key = `skills_${skill}` as const;
+			updates[key] = Math.max(Number(updates[key] ?? 0), convertLVLtoXP(level));
+		}
+		qp = Math.max(qp, tier.qp ?? 0);
+
+		for (const item of tier.collectionLogReqs ?? []) {
+			if (!user.cl.has(item) && !items.has(item)) items.add(item);
+		}
+		for (const item of tier.ownedItems ?? []) {
+			if (!user.bank.has(item) && !items.has(item)) items.add(item);
+		}
+		for (const [minigame, score] of objectEntries(tier.minigameReqs ?? {})) {
+			minigameUpdates[minigame] = Math.max(minigameUpdates[minigame] ?? minigameScores[minigame], score!);
+		}
+		for (const [monster, score] of objectEntries(tier.monsterScores ?? {})) {
+			monsterScores[monster] = Math.max(monsterScores[monster] ?? 0, score!);
+		}
+		for (const [courseName, score] of Object.entries(tier.lapsReqs ?? {})) {
+			const course = Agility.Courses.find(c => c.name === courseName)!;
+			lapsScores[course.id] = Math.max(lapsScores[course.id] ?? 0, score);
+		}
+
+		if (tier.customReq && !tier.customReq(user, false, stats)[0]) {
+			if (diary.id === DiaryID.Falador) {
+				qp = MAX_QP;
+				if (!user.bank.has('Quest point cape')) items.add('Quest point cape');
+			}
+			if (diary.id === DiaryID.Kandarin) honourLevel = Math.max(honourLevel, 5);
+		}
+	}
+
+	await user.update({ ...updates, QP: qp });
+	if (items.length > 0) await user.addItemsToBank({ items, collectionLog: true, filterLoot: false });
+	await user.statsUpdate({ monster_scores: monsterScores, laps_scores: lapsScores, honour_level: honourLevel });
+	if (Object.keys(minigameUpdates).length > 0) {
+		await prisma.minigame.update({ where: { user_id: user.id }, data: minigameUpdates });
+	}
+	await user.syncCompletedAchievementDiaries();
+}
+
 export const testPotatoCommand = globalConfig.isProduction
 	? null
 	: defineCommand({
@@ -526,6 +599,11 @@ export const testPotatoCommand = globalConfig.isProduction
 					type: 'Subcommand',
 					name: 'party',
 					description: 'Test party'
+				},
+				{
+					type: 'Subcommand',
+					name: 'duo',
+					description: 'Test duo'
 				},
 				{
 					type: 'Subcommand',
@@ -810,6 +888,27 @@ export const testPotatoCommand = globalConfig.isProduction
 				},
 				{
 					type: 'Subcommand',
+					name: 'setdiarytier',
+					description: 'Set an achievement diary tier as complete.',
+					options: [
+						{
+							type: 'String',
+							name: 'diary',
+							description: 'The achievement diary.',
+							required: true,
+							choices: diaries.map(diary => ({ name: diary.name, value: diary.name }))
+						},
+						{
+							type: 'String',
+							name: 'tier',
+							description: 'The diary tier to complete.',
+							required: true,
+							choices: diaryTierChoices.map(tier => ({ name: tier, value: tier }))
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
 					name: 'irontoggle',
 					description: 'Toggle being an ironman on/off.'
 				},
@@ -936,6 +1035,17 @@ export const testPotatoCommand = globalConfig.isProduction
 						ironmanAllowed: true
 					});
 					return `The party has now started with the following users: ${party.map(i => i.username).join(', ')}`;
+				}
+				if (options.duo) {
+					const duo = await globalClient.makeDuo({
+						interaction,
+						message: 'Join the duo!',
+						leader: user,
+						ironmanAllowed: true
+					});
+					return duo
+						? `The duo has now started with the following users: ${duo.map(i => i.username).join(', ')}`
+						: 'The duo was cancelled.';
 				}
 				if (options.ping) {
 					return {
@@ -1252,6 +1362,20 @@ export const testPotatoCommand = globalConfig.isProduction
 				}
 				if (options.setxp) {
 					return setXP(user, options.setxp.skill, options.setxp.xp);
+				}
+				if (options.setdiarytier) {
+					const diary = diaries.find(d => stringMatches(d.name, options.setdiarytier?.diary ?? ''));
+					if (!diary) return 'Invalid diary.';
+
+					const tier = options.setdiarytier.tier as TestPotatoDiaryTier;
+					const tiersToSet = tier === 'all' ? diaryTierNames : [tier];
+					await fulfilDiaryRequirements(user, diary, tiersToSet);
+					if (tiersToSet.some(tierToSet => !user.hasDiary(formatDiaryKey(diary.name, tierToSet)))) {
+						return `Couldn't fulfil all requirements for your ${diary.name} diary.`;
+					}
+
+					const tierName = tier === 'all' ? 'all tiers' : diary[tier].name;
+					return `Set your ${diary.name} ${tierName} diary as complete.`;
 				}
 				if (options.spawn) {
 					const { preset, collectionlog, cl, qty: clQty, item, items } = options.spawn;

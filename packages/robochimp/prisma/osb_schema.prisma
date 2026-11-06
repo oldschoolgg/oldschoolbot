@@ -701,6 +701,10 @@ model UserStats {
 
   gp_from_agil_pyramid Int @default(0)
 
+  mixology_mox_points Int @default(0)
+  mixology_aga_points Int @default(0)
+  mixology_lye_points Int @default(0)
+
   random_event_completions_bank Json @default("{}") @db.Json
 
   toa_attempts Int @default(0)
@@ -863,6 +867,7 @@ enum activity_type_enum {
   Cooking
   MonsterKilling
   GroupMonsterKilling
+  Yama
   ClueCompletion
   Fishing
   Mining
@@ -914,6 +919,7 @@ enum activity_type_enum {
   SoulWars
   RoguesDenMaze
   Gauntlet
+  DoomOfMokhaiotl
   CastleWars
   MageArena
   Raids
@@ -959,7 +965,6 @@ enum activity_type_enum {
   CamdozaalSmithing
   MyNotes
   Colosseum
-  DoomOfMokhaiotl
   CreateForestersRations
   Buy
 }

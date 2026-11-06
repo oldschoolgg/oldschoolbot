@@ -172,6 +172,7 @@ export enum BitField {
 	Boring = 58,
 	HasRiteOfVileTransference = 59,
 	DisableRiteOfVileTransference = 60,
+	CompostWarning = 61,
 
 	OriginalCyrSupporter = 199
 }
@@ -188,7 +189,7 @@ export interface IBitFieldData {
 export const BitFieldData: Record<BitField, IBitFieldData> = {
 	[BitField.Moderator]: { name: 'Moderator', protected: true, userConfigurable: false },
 	[BitField.Contributor]: { name: 'Contributor', protected: true, userConfigurable: false },
-	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1', protected: false, userConfigurable: false },
+	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1', protected: true, userConfigurable: false },
 	[BitField.PatronTier1]: { name: 'Tier 1 Patron', protected: false, userConfigurable: false },
 	[BitField.PatronTier2]: { name: 'Tier 2 Patron', protected: false, userConfigurable: false },
 	[BitField.PatronTier3]: { name: 'Tier 3 Patron', protected: false, userConfigurable: false },
@@ -210,18 +211,18 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 	[BitField.UsedSirenicTablet]: { name: 'Used Sirenic Tablet', protected: false, userConfigurable: false },
 	[BitField.UsedStrangledTablet]: { name: 'Used Strangled Tablet', protected: false, userConfigurable: false },
 	[BitField.SelfGamblingLocked]: { name: 'Self Gambling Lock', protected: false, userConfigurable: true },
-	[BitField.OriginalCyrSupporter]: { name: "One of Cyr's first Patrons", protected: false, userConfigurable: false },
+	[BitField.OriginalCyrSupporter]: { name: "One of Cyr's first Patrons", protected: true, userConfigurable: false },
 
 	[BitField.BypassAgeRestriction]: { name: 'Bypassed Age Restriction', protected: false, userConfigurable: false },
 	[BitField.HasPermanentEventBackgrounds]: {
 		name: 'Permanent Event Backgrounds',
-		protected: false,
+		protected: true,
 		userConfigurable: false
 	},
 	[BitField.PermanentIronman]: { name: 'Permanent Ironman', protected: false, userConfigurable: false },
 	[BitField.BothBotsMaxedFreeTierOnePerks]: {
 		name: 'Free T1 Perks for Maxed in OSB/BSO',
-		protected: false,
+		protected: true,
 		userConfigurable: false
 	},
 	[BitField.DisableBankWeights]: { name: 'Disable Bank Weight Sorting', protected: false, userConfigurable: true },
@@ -279,6 +280,11 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 		protected: false,
 		userConfigurable: true
 	},
+	[BitField.CompostWarning]: {
+		name: 'Compost Warning',
+		protected: false,
+		userConfigurable: true
+	},
 	[BitField.DisableHighPeakTimeWarning]: {
 		name: 'Disable Wilderness High Peak Time Warning',
 		protected: false,
@@ -333,7 +339,7 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 		userConfigurable: true
 	},
 	[BitField.ToggleAutoRummage]: { name: 'Auto Rummage Vale Offerings', protected: false, userConfigurable: true },
-	[BitField.WikiContributor]: { name: 'Wiki Contributor', protected: false, userConfigurable: false },
+	[BitField.WikiContributor]: { name: 'Wiki Contributor', protected: true, userConfigurable: false },
 	[BitField.UnlimitedGiveaways]: { name: 'Unlimited Giveaways', protected: false, userConfigurable: false },
 	[BitField.ServerSupport]: { name: 'Server Support', protected: true, userConfigurable: false },
 	[BitField.Boring]: { name: 'Boring', protected: true, userConfigurable: false }

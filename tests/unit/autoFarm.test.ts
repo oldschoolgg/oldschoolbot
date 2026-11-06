@@ -29,6 +29,7 @@ import { mockMUser } from './userutil.js';
 import '../../src/lib/util/clientSettings.js';
 
 import { fetchRepeatTrips, repeatTrip } from '@/lib/util/repeatStoredTrip.js';
+import { BitField } from '../../src/lib/constants.js';
 import { AutoFarmFilterEnum, activity_type_enum, CropUpgradeType } from '../../src/prisma/main/enums.js';
 import type { User } from '../../src/prisma/main.js';
 
@@ -302,6 +303,39 @@ describe('auto farm helpers', () => {
 		expect(cost.amount('Tomatoes(5)')).toBe(0);
 	});
 
+	it('prepareFarmingStep blocks missing favourited compost when compost warning is enabled', async () => {
+		const bank = new Bank().add('Guam seed', 4);
+		const user = mockMUser({
+			bank,
+			bitfield: [BitField.CompostWarning],
+			id: '123456789',
+			skills_farming: convertLVLtoXP(50)
+		});
+		const mutableUser = user.user as MutableUser;
+		mutableUser.minion_defaultCompostToUse = CropUpgradeType.ultracompost;
+
+		const result = await prepareFarmingStep({
+			user,
+			plant: herbPlant,
+			quantity: null,
+			pay: false,
+			patchDetailed: herbPatchDetailed,
+			maxTripLength: 300 * 1000,
+			availableBank: user.bank.clone().add('Coins', user.GP),
+			compostTier: CropUpgradeType.ultracompost
+		});
+
+		expect(result.success).toBe(false);
+		if (result.success) {
+			return;
+		}
+		expect(result.reason).toBe('missing_compost');
+		expect(result.error).toContain('<@123456789>');
+		expect(result.error).toContain('your minion could not farm because your default compost is Ultracompost');
+		expect(result.error).toContain('You need 4x Ultracompost and currently have 0.');
+		expect(result.error).toContain('disable the Compost Warning toggle with /config user toggle');
+	});
+
 	it('planAutoFarmTrip creates a deterministic step list for AllFarm', async () => {
 		const bank = new Bank().add('Guam seed', 4).add('Compost', 4);
 		const user = mockMUser({
@@ -454,6 +488,43 @@ describe('auto farm helpers', () => {
 		// We don't assert internal shape of autoFarmPlan here –
 		// just that a task was queued.
 		expect(addSubTaskToActivityTask).toHaveBeenCalledTimes(1);
+	});
+
+	it('autoFarm blocks missing favourited compost when compost warning is enabled', async () => {
+		const bank = new Bank().add('Guam seed', 4);
+		const user = mockMUser({
+			bank,
+			bitfield: [BitField.CompostWarning],
+			id: '123456789',
+			skills_farming: convertLVLtoXP(50)
+		});
+		const mutableUser = user.user as MutableUser;
+		mutableUser.auto_farm_filter = AutoFarmFilterEnum.AllFarm;
+		mutableUser.minion_defaultCompostToUse = CropUpgradeType.ultracompost;
+
+		const transactSpy = vi.spyOn(user, 'transactItems');
+		calcMaxTripLengthSpy.mockReturnValue(300 * 1000);
+
+		const response = await autoFarm(
+			user,
+			[herbPatchDetailed],
+			herbPatches as Record<FarmingPatchName, IPatchData>,
+			baseInteraction as MInteraction
+		);
+		expect(response).toEqual(
+			expect.objectContaining({
+				content: expect.any(String),
+				allowedMentions: { users: ['123456789'] }
+			})
+		);
+		const content = typeof response === 'object' && 'content' in response ? response.content! : '';
+
+		expect(content).toContain('<@123456789>');
+		expect(content).toContain('your minion could not farm because your default compost is Ultracompost');
+		expect(content).toContain('You need 4x Ultracompost and currently have 0.');
+		expect(content).toContain('disable the Compost Warning toggle with /config user toggle');
+		expect(transactSpy).not.toHaveBeenCalled();
+		expect(addSubTaskToActivityTask).not.toHaveBeenCalled();
 	});
 
 	it('autoFarm names patch groups skipped due to trip length', async () => {
