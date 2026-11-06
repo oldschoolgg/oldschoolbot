@@ -1,5 +1,6 @@
 import { Bank, toKMB } from 'oldschooljs';
 
+import { trackGamblingTransaction } from '@/lib/util/gambling.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 export async function diceCommand(rng: RNGProvider, user: MUser, interaction: MInteraction, diceamount?: string) {
@@ -29,6 +30,12 @@ export async function diceCommand(rng: RNGProvider, user: MUser, interaction: MI
 	const won = roll >= 55;
 	const amountToAdd = won ? amount : -amount;
 
+	await trackGamblingTransaction({
+		userID: user.id,
+		type: 'dice',
+		amountStaked: amount,
+		pnl: amountToAdd
+	});
 	await ClientSettings.updateClientGPTrackSetting('gp_dice', amountToAdd);
 	await user.updateGPTrackSetting('gp_dice', amountToAdd);
 

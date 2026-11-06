@@ -666,6 +666,19 @@ model EconomyTransaction {
   @@map("economy_transaction")
 }
 
+model GamblingTransaction {
+  id            Int      @id @default(autoincrement())
+  user_id       BigInt
+  date          DateTime @default(now())
+  type          String   @db.VarChar(32)
+  amount_staked BigInt
+  pnl           BigInt
+
+  @@index([user_id, date])
+  @@index([type, date])
+  @@map("gambling_transaction")
+}
+
 model StashUnit {
   stash_id        Int
   user_id         BigInt
