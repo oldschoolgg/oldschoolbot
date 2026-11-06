@@ -75,8 +75,15 @@ export async function sendableMsgToApiCreate({ msg }: { msg: SendableMessage }):
 	}
 
 	if ('build' in msg) {
-		// TODO: if content >2k, send as txt file
 		return sendableMsgToApiCreate({ msg: await msg.build() });
+	}
+
+	if (msg.content && msg.content.length > 2000) {
+		msg = {
+			...msg,
+			content: 'The result was too long (over 2000 characters), please read the attached file.',
+			files: [...(msg.files ?? []), { buffer: Buffer.from(msg.content), name: 'result.txt' }]
+		};
 	}
 
 	const message: RESTPostAPIChannelMessageJSONBody = {
