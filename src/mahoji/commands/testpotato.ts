@@ -360,7 +360,6 @@ const herblorePreset = new Bank();
 for (const item of herbloreItems) {
 	herblorePreset.add(item, 100_000);
 }
-
 const anglerOutfit = resolveItems(['Angler hat', 'Angler top', 'Angler waders', 'Angler boots']);
 const fishingPreset = new Bank()
 	.add('Fish sack barrel')
