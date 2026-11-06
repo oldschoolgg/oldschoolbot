@@ -11,6 +11,7 @@ type CalcLootXPHuntingOptions = {
 	usingStaminaPotion: boolean;
 	graceful: boolean;
 	experienceScore: number;
+	outfitMod?: number;
 };
 
 export function calcLootXPHunting({
@@ -20,12 +21,13 @@ export function calcLootXPHunting({
 	usingStaminaPotion,
 	graceful,
 	experienceScore,
+	outfitMod = 0,
 	rng
 }: CalcLootXPHuntingOptions): [number, number, number] {
 	let xpReceived = 0;
 	let successful = 0;
 
-	let chanceOfSuccess = creature.slope * currentLevel + creature.intercept;
+	let chanceOfSuccess = creature.slope * currentLevel + creature.intercept + outfitMod;
 
 	if (creature.name === 'Crystal impling') {
 		chanceOfSuccess = 20;

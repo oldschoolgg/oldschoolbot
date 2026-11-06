@@ -24,6 +24,7 @@ import {
 	FishingStoredTripError
 } from '@/lib/skilling/skills/fishing/fishingRework.js';
 import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
+import { getRumourHunter } from '@/lib/skilling/skills/hunter/rumours/util.js';
 import type {
 	ActivityTaskData,
 	ActivityTaskOptionsWithQuantity,
@@ -69,6 +70,7 @@ import type {
 	PickpocketActivityTaskOptions,
 	PuroPuroActivityTaskOptions,
 	RaidsOptions,
+	RumourActivityTaskOptions,
 	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,
 	ScatteringActivityTaskOptions,
@@ -476,6 +478,10 @@ const tripHandlers: {
 			name: data.rationName,
 			quantity: data.quantity
 		})
+	},
+	[activity_type_enum.Rumour]: {
+		commandName: 'rumours',
+		args: (data: RumourActivityTaskOptions) => ({ start: { tier: data.hunter ?? getRumourHunter(data.tier).id } })
 	},
 	[activity_type_enum.Hunter]: {
 		commandName: 'hunt',

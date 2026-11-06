@@ -351,12 +351,14 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		desc: "Kill Kree'arra by only dealing damage to him with a salamander.",
 		type: 'restriction',
 		monster: "Kree'arra",
-		details: 'You must have a black, red, or orange salamander equipped.',
+		details: 'You must have a tecu, black, red, or orange salamander equipped.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
 				isCertainMonsterTrip(Monsters.Kreearra.id)(data) &&
-				['Black salamander', 'Red salamander', 'Orange salamander'].some(sal => user.hasEquipped(sal))
+				['Tecu salamander', 'Black salamander', 'Red salamander', 'Orange salamander'].some(sal =>
+					user.hasEquipped(sal)
+				)
 		}
 	},
 	{
