@@ -1,5 +1,6 @@
 import { GLOBAL_BSO_XP_MULTIPLIER } from '@/lib/bso/bsoConstants.js';
 import type { BathhouseTaskOptions } from '@/lib/bso/bsoTypes.js';
+import { defaultMaintenanceTimestamps, getGlobalMinigameBonus } from '@/lib/bso/commands/islandUpgrades.js';
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 import type { MTame } from '@/lib/bso/structures/MTame.js';
 
@@ -278,8 +279,18 @@ export async function baxtorianBathhousesStartCommand({
 	}
 	const userBank = user.bank;
 	const maxTripLength = await user.calcMaxTripLength('BaxtorianBathhouses');
-	const quantity = Math.floor(maxTripLength / durationPerBaxBath);
-	const duration = quantity * durationPerBaxBath;
+
+	let effectiveDurationPerBath = durationPerBaxBath;
+	const rawUpgrades = (user.user.island_upgrades ?? {}) as any;
+	const islandMaint = rawUpgrades.maintenance ?? defaultMaintenanceTimestamps;
+	const islandAssign = rawUpgrades.assignment ?? null;
+	const globalMinigameBonus = getGlobalMinigameBonus(rawUpgrades, islandMaint, islandAssign);
+	if (globalMinigameBonus > 0) {
+		effectiveDurationPerBath = reduceNumByPercent(effectiveDurationPerBath, globalMinigameBonus * 100);
+	}
+
+	const quantity = Math.floor(maxTripLength / effectiveDurationPerBath);
+	const duration = quantity * effectiveDurationPerBath;
 	const bathHouseTier = bathHouseTiers.find(i => stringMatches(i.name, tier)) ?? bathHouseTiers[0];
 	const warmthNeeded = bathHouseTier.warmthPerBath * quantity;
 	const herbsNeeded = calcHerbsNeeded(quantity);
@@ -318,6 +329,9 @@ export async function baxtorianBathhousesStartCommand({
 	}
 
 	const boosts: string[] = [];
+	if (globalMinigameBonus > 0) {
+		boosts.push(`${(globalMinigameBonus * 100).toFixed(0)}% faster from Grand Conduit (Settlement Infrastructure)`);
+	}
 
 	const tames = await user.fetchTames();
 	const tameToUse: MTame | undefined = tames.find(_t => _t.isIgne());
@@ -330,6 +344,12 @@ export async function baxtorianBathhousesStartCommand({
 		oreNeeded = Math.floor(reduceNumByPercent(oreNeeded, 20));
 		coalNeeded = Math.floor(reduceNumByPercent(coalNeeded, 20));
 		logsNeeded = Math.floor(reduceNumByPercent(logsNeeded, 20));
+	}
+	if (user.hasEquippedOrInBank(['Celestial pendant'])) {
+		boosts.push('10% Less heating for Celestial pendant');
+		oreNeeded = Math.floor(reduceNumByPercent(oreNeeded, 10));
+		coalNeeded = Math.floor(reduceNumByPercent(coalNeeded, 10));
+		logsNeeded = Math.floor(reduceNumByPercent(logsNeeded, 10));
 	}
 	if (user.hasEquippedOrInBank(['Firemaking master cape'])) {
 		boosts.push('5% Less heating for Firemaking mastery');

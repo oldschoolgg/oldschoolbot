@@ -1,3 +1,4 @@
+import { handleDiscoInquireButton, handleDiscoRaveButton } from '@/lib/bso/discoHandler.js';
 import { ItemContracts } from '@/lib/bso/itemContracts.js';
 import { repeatTameTrip } from '@/lib/bso/tames/tameTasks.js';
 
@@ -16,6 +17,8 @@ import { type RunCommandArgs, runCommand } from '@/lib/settings/settings.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import { updateGiveawayMessage } from '@/lib/util/giveaway.js';
 import { fetchRepeatTrips, repeatTrip } from '@/lib/util/repeatStoredTrip.js';
+import { collectAllIslandCamps } from '@/mahoji/commands/islandupgrade.js';
+import { archonCommand } from '@/mahoji/lib/abstracted_commands/archonCommand.js';
 import { autoSlayCommand } from '@/mahoji/lib/abstracted_commands/autoSlayCommand.js';
 import { cancelGEListingCommand } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
 import { autoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
@@ -23,8 +26,9 @@ import { shootingStarsCommand } from '@/mahoji/lib/abstracted_commands/shootingS
 
 async function giveawayButtonHandler(user: MUser, customID: string, interaction: OSInteraction): CommandResponse {
 	const split = customID.split('_');
-	if (split[0] !== 'GIVEAWAY') return { content: 'Invalid giveaway.', ephemeral: true };
-	const giveawayID = Number(split[2]);
+	if (split[0] !== 'GW') return { content: 'Invalid giveaway.', ephemeral: true };
+	const giveawayID = split[2];
+	if (!giveawayID) return { content: 'Invalid giveaway.', ephemeral: true };
 	let giveaway: Giveaway | null = giveawayCache.get(giveawayID) ?? null;
 	if (!giveaway) {
 		giveaway = await prisma.giveaway.findFirst({
@@ -37,7 +41,7 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 	if (!giveaway) {
 		return { content: 'Invalid giveaway.', ephemeral: true };
 	}
-	if (split[1] === 'REPEAT') {
+	if (split[1] === 'REP') {
 		if (user.id !== giveaway.user_id) {
 			return {
 				content: "You cannot repeat other peoples' giveaways.",
@@ -66,9 +70,9 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 		return { content: 'This giveaway has finished.', ephemeral: true };
 	}
 
-	const action = split[1] === 'ENTER' ? 'ENTER' : 'LEAVE';
+	const action = split[1] === 'JOIN' ? 'JOIN' : 'BYE';
 
-	if (user.isIronman) {
+	if (user.isIronman && !giveaway.allow_ironmen) {
 		return {
 			content: 'You are an ironman, you cannot enter giveaways.',
 			ephemeral: true
@@ -79,14 +83,14 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 		return { content: 'You cannot join your own giveaway.', ephemeral: true };
 	}
 
-	if (action === 'ENTER') {
+	if (action === 'JOIN') {
 		if (giveaway.users_entered.includes(user.id)) {
 			return {
 				content: 'You are already entered in this giveaway.',
 				ephemeral: true
 			};
 		}
-		await prisma.giveaway.update({
+		const updatedGiveaway = await prisma.giveaway.update({
 			where: {
 				id: giveaway.id
 			},
@@ -96,7 +100,8 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 				}
 			}
 		});
-		updateGiveawayMessage(giveaway);
+		giveawayCache.set(updatedGiveaway.id, updatedGiveaway);
+		void updateGiveawayMessage(updatedGiveaway);
 		return { content: 'You are now entered in this giveaway.', ephemeral: true };
 	}
 	if (!giveaway.users_entered.includes(user.id)) {
@@ -105,7 +110,7 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 			ephemeral: true
 		};
 	}
-	await prisma.giveaway.update({
+	const updatedGiveaway = await prisma.giveaway.update({
 		where: {
 			id: giveaway.id
 		},
@@ -113,7 +118,8 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 			users_entered: uniqueArr(removeFromArr(giveaway.users_entered, user.id))
 		}
 	});
-	updateGiveawayMessage(giveaway);
+	giveawayCache.set(updatedGiveaway.id, updatedGiveaway);
+	void updateGiveawayMessage(updatedGiveaway);
 	return { content: 'You left the giveaway.', ephemeral: true };
 }
 
@@ -246,9 +252,11 @@ async function globalButtonInteractionHandler({
 	}
 
 	const user = interaction.user;
+	if (id.startsWith('DISCO_RAVE_')) return handleDiscoRaveButton(user, id, interaction);
+	if (id.startsWith('DISCO_INQUIRE_')) return handleDiscoInquireButton(user, id, interaction);
 	if (id.includes(InteractionID.Commands.RepeatTrip)) return repeatTripHandler(user, id, interaction);
 
-	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
+	if (id.startsWith('GW_')) return giveawayButtonHandler(user, id, interaction);
 	if (id.includes('DONATE_IC')) return ItemContracts.donateICHandler(interaction);
 	if (id.startsWith('GPE_')) return handleGearPresetEquip(user, id, interaction);
 	if (id.startsWith('PTR_')) return handlePinnedTripRepeat(user, id, interaction);
@@ -347,6 +355,9 @@ async function globalButtonInteractionHandler({
 			args: { send: {} },
 			...options
 		});
+	}
+	if (id === InteractionID.Commands.CollectAllCamps) {
+		return collectAllIslandCamps(user);
 	}
 
 	if (id === InteractionID.Commands.BuyMinion) {
@@ -528,6 +539,32 @@ async function globalButtonInteractionHandler({
 				}
 			});
 			return shootingStarsCommand({ rng, channelId: interaction.channelId, user, star: validStar });
+		}
+		case 'DO_ARCHON': {
+			if (await user.minionIsBusy()) {
+				return {
+					content: 'Your minion is busy.',
+					ephemeral: true
+				};
+			}
+
+			const pendingArchon = await prisma.archonEvent.findFirst({
+				where: {
+					user_id: user.id,
+					has_been_done: false,
+					expires_at: { gt: new Date() }
+				},
+				orderBy: { expires_at: 'asc' }
+			});
+
+			if (!pendingArchon) {
+				return {
+					content: 'You have no active Archon encounter, or it has expired.',
+					ephemeral: true
+				};
+			}
+
+			return archonCommand(interaction.channelId, user, pendingArchon);
 		}
 		case InteractionID.Commands.StartTearsOfGuthix: {
 			return runCommand({

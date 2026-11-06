@@ -1,3 +1,5 @@
+import { defaultMaintenanceTimestamps, getGlobalMinigameBonus } from '@/lib/bso/commands/islandUpgrades.js';
+
 import { Emoji, formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { randInt, randomVariation } from 'node-rng';
 import { Bank, Items } from 'oldschooljs';
@@ -76,6 +78,20 @@ export async function odsStartCommand(user: MUser, channelId: string) {
 	if (user.hasEquipped('Kuro')) {
 		waveTime = reduceNumByPercent(waveTime, 5);
 		boosts.push(`${Emoji.Kuro} 5% faster with Kuro's help`);
+	}
+
+	if (user.hasEquippedOrInBank('Celestial pendant')) {
+		waveTime = reduceNumByPercent(waveTime, 10);
+		boosts.push('10% faster from Celestial pendant');
+	}
+
+	const rawUpgrades = (user.user.island_upgrades ?? {}) as any;
+	const islandMaint = rawUpgrades.maintenance ?? defaultMaintenanceTimestamps;
+	const islandAssign = rawUpgrades.assignment ?? null;
+	const globalMinigameBonus = getGlobalMinigameBonus(rawUpgrades, islandMaint, islandAssign);
+	if (globalMinigameBonus > 0) {
+		waveTime = reduceNumByPercent(waveTime, globalMinigameBonus * 100);
+		boosts.push(`${(globalMinigameBonus * 100).toFixed(0)}% faster from Grand Conduit (Settlement Infrastructure)`);
 	}
 
 	const quantity = Math.floor((await user.calcMaxTripLength('OuraniaDeliveryService')) / waveTime);

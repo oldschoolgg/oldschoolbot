@@ -1,4 +1,5 @@
 import { type UsingPetFunction, usingPet } from '@/lib/bso/bsoUtil.js';
+import { DISCO_EVENT_END_DATE, isDiscoEventActive } from '@/lib/bso/discoBloodbath.js';
 import type { GodFavourBank, GodName } from '@/lib/bso/minigames/divineDominion.js';
 import { mysteriousStepData, mysteriousTrailTracks } from '@/lib/bso/mysteryTrail.js';
 import type { IMaterialBank } from '@/lib/bso/skills/invention/index.js';
@@ -20,7 +21,15 @@ import {
 	ZBlowpipeData,
 	ZFarmingContract
 } from '@oldschoolgg/schemas';
-import { calcWhatPercent, isObject, type PerkTier, Time, UserError, uniqueArr } from '@oldschoolgg/toolkit';
+import {
+	calcWhatPercent,
+	isObject,
+	type PerkTier,
+	RoboChimpBit,
+	Time,
+	UserError,
+	uniqueArr
+} from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { Mutex } from 'async-mutex';
 import { randArrItem, SeedableRNG } from 'node-rng';
@@ -58,8 +67,7 @@ import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { RemoveFoodFromUserParams } from '@/lib/minions/functions/removeFoodFromUser.js';
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import type { AddXpParams, ClueBank, KillableMonster } from '@/lib/minions/types.js';
-import { getUsersPerkTier } from '@/lib/perkTiers.js';
-import { roboChimpUserFetchCached } from '@/lib/roboChimp.js';
+import { getPerkTierCached, getUsersPerkTier } from '@/lib/perkTiers.js';
 import { type MinigameName, type MinigameScore, Minigames } from '@/lib/settings/minigames.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { DetailedFarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
@@ -83,12 +91,11 @@ import { getKCByName } from '@/lib/util/getKCByName.js';
 import { hasMonsterRequirements } from '@/lib/util/hasMonsterRequirements.js';
 import { hasSkillReqsRaw } from '@/lib/util/smallUtils.js';
 import { type TransactItemsArgs, transactItemsFromBank } from '@/lib/util/transactItemsFromBank.js';
+import { userQueueFn } from '@/lib/util/userQueues.js';
 import type { JsonKeys } from '@/lib/util.js';
 import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 
 export class MUserClass extends BaseUser {
-	private _perkTier: PerkTier | 0 | null = null;
-
 	constructor(user: User) {
 		super(user);
 	}
@@ -176,20 +183,27 @@ export class MUserClass extends BaseUser {
 	}
 
 	async calcMaxGearPresets() {
-		return this.perkTier * 2 + 4;
+		return this.perkTier * 2 + 4 + (this.bitfield.includes(BitField.DiscoBloodbathGearPresetSlots) ? 4 : 0);
+	}
+
+	get bloodbathEventStarted() {
+		return Boolean(this.user.bloodbath_event_started);
 	}
 
 	get perkTier() {
-		if (this._perkTier === 2 && BOT_TYPE === 'BSO') {
-			return this.bitfield.includes(BitField.HasPermanentTierOne) ? (3 as PerkTier) : this._perkTier;
-		}
-		return this._perkTier ?? 0;
+		return getPerkTierCached(this.id) ?? 0;
+	}
+	get perkTierIsCached(): boolean {
+		return getPerkTierCached(this.id) !== null;
 	}
 
-	async fetchPerkTier({ forceNoCache }: { forceNoCache?: boolean } = {}): Promise<0 | PerkTier> {
-		if (!forceNoCache && this._perkTier !== null) return this._perkTier;
-		this._perkTier = await getUsersPerkTier({ user: this, forceNoCache });
-		return this._perkTier;
+	async fetchPerkTier({ forceNoCache }: { forceNoCache?: boolean } = {}): Promise<PerkTier> {
+		return await getUsersPerkTier({ user: this, forceNoCache });
+	}
+	get premiumTier(): PerkTier | null {
+		// TODO: Replace this with the actual Tier associated with the best entitlement.
+		const cached = getPerkTierCached(this.id);
+		return cached !== null ? Math.max(0, cached - 1) : null;
 	}
 
 	hasMonsterRequirements(monster: KillableMonster) {
@@ -243,6 +257,7 @@ WHERE user_id = ${this.id};`;
 		}
 		const stats = await this.fetchStats();
 		const opens = new Bank(stats.openable_scores as ItemBank);
+		const collectionLog = await this.fetchCL();
 
 		// Actual clues are only ones that you have: received in your cl, completed in trips, and opened.
 		const actualClues = new Bank();
@@ -251,7 +266,7 @@ WHERE user_id = ${this.id};`;
 			const clueTier = ClueTiers.find(i => i.id === item.id)!;
 			actualClues.add(
 				clueTier.scrollID,
-				Math.min(qtyCompleted, this.cl.amount(clueTier.scrollID), opens.amount(clueTier.id))
+				Math.min(qtyCompleted, collectionLog.amount(clueTier.scrollID), opens.amount(clueTier.id))
 			);
 		}
 
@@ -282,6 +297,79 @@ RETURNING (monster_scores->>'${monsterID}')::int AS new_kc;
 		return { newKC: res[0]?.new_kc ?? 0 };
 	}
 
+	/** Claim the lifetime Cyr T5 promotion through the same queue as other bank writes. */
+	async claimLazyBox(bonusBox: 'Skrink box' | 'Skrod box' = 'Skrink box'): Promise<Bank> {
+		if (BOT_TYPE !== 'BSO') throw new UserError('This promotion can only be claimed in BSO.');
+		if (!isDiscoEventActive())
+			throw new UserError(`This promotion ended on ${DISCO_EVENT_END_DATE.toDateString()}.`);
+		if (bonusBox !== 'Skrink box' && bonusBox !== 'Skrod box') {
+			throw new UserError('Choose either a Skrink box or a Skrod box.');
+		}
+
+		return userQueueFn(this.id, async () => {
+			let loot = new Bank();
+			// Read the authoritative account directly: perk tiers and cached bits may be stale
+			// or include courtesy perks, other creators, or premium balance purchases.
+			const patron = await roboChimpClient.user.findUnique({
+				where: { id: BigInt(this.id) },
+				select: { bits: true, patreon_id: true }
+			});
+			if (!patron) {
+				throw new UserError('You need an active Cyr Tier 5 Patreon subscription to claim this promotion.');
+			}
+			if (!(patron.bits.includes(RoboChimpBit.CyrTier5) || patron.bits.includes(RoboChimpBit.CyrTier6))) {
+				throw new UserError('You need an active Cyr Tier 5 Patreon subscription to claim this promotion.');
+			}
+
+			const newUser = await prisma.$transaction(async tx => {
+				// Claim Fealty first to lock the user row. This lets previously issued Lazy
+				// boxes receive Fealty without allowing a second Fealty claim.
+				const claimedFealty = await tx.user.updateMany({
+					where: { id: this.id, fealty_box_claimed: null },
+					data: { fealty_box_claimed: true }
+				});
+				if (claimedFealty.count !== 1) {
+					throw new UserError('You have already claimed your Fealty Mystery Box promotion.');
+				}
+
+				const currentUser = await tx.user.findUniqueOrThrow({ where: { id: this.id } });
+				loot = new Bank().add('Fealty Mystery Box');
+				if (currentUser.claimed_lazy_box === 0) {
+					const claimedLazy = await tx.user.updateMany({
+						where: { id: this.id, claimed_lazy_box: 0 },
+						data: { claimed_lazy_box: { increment: 1 } }
+					});
+					if (claimedLazy.count !== 1) {
+						throw new UserError('You have already claimed your Lazy Mystery Box promotion.');
+					}
+					loot.add('Lazy Mystery Box').add(bonusBox);
+				}
+
+				const bank: ItemBank = new Bank(currentUser.bank as ItemBank).add(loot).toJSON();
+				const previousCL = await tx.jsonBank.findUnique({
+					where: { user_id_type: { user_id: this.id, type: 'CollectionLog' } }
+				});
+				const collectionLog = new Bank(previousCL?.bank as ItemBank | undefined).add(loot).toJSON();
+				/*	JsonBank isn't in use currently.
+				await tx.jsonBank.upsert({
+					where: { user_id_type: { user_id: this.id, type: 'CollectionLog' } },
+					create: { user_id: this.id, type: 'CollectionLog', bank: collectionLog },
+					update: { bank: collectionLog }
+				});*/
+				return tx.user.update({
+					where: { id: this.id },
+					data: {
+						bank,
+						collectionLogBank: collectionLog,
+						temp_cl: new Bank(currentUser.temp_cl as ItemBank).add(loot).toJSON()
+					}
+				});
+			});
+			this._updateRawUser(newUser);
+			return loot;
+		});
+	}
+
 	public async addItemsToBank({
 		items,
 		collectionLog = false,
@@ -295,7 +383,7 @@ RETURNING (monster_scores->>'${monsterID}')::int AS new_kc;
 		filterLoot?: boolean;
 		dontAddToTempCL?: boolean;
 		neverUpdateHistory?: boolean;
-		otherUpdates?: SafeUserUpdateInput;
+		otherUpdates?: TransactItemsArgs['otherUpdates'];
 	}) {
 		return this.transactItems({
 			collectionLog,
@@ -397,7 +485,7 @@ RETURNING (creature_scores->>'${creatureID}')::int AS new_kc;
 				throw new Error(`Invalid degradeable item key: ${keyName}`);
 			}
 			const currentCharges = this.user[degradeableItem.settingsKey];
-			const newCharges = currentCharges - chargesToDegrade;
+			const newCharges = (currentCharges ?? 0) - chargesToDegrade;
 			if (newCharges < 0) {
 				failureReasons.push(
 					`You don't have enough ${degradeableItem.item.name} charges, you need ${chargesToDegrade}, but you have only ${currentCharges}.`
@@ -711,7 +799,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 	}
 
 	async checkBankBackground() {
-		if (this.isModOrAdmin()) {
+		if (this.isModOrAdmin) {
 			return;
 		}
 		const resetBackground = async () => {
@@ -744,7 +832,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 	}
 
 	async fetchRobochimpUser() {
-		return roboChimpUserFetchCached(this.id);
+		return Cache.getRoboChimpUser(this.id);
 	}
 
 	async forceUnequip(setup: GearSetupType, slot: EquipmentSlot, reason: string) {
@@ -864,7 +952,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 	}
 
 	async addMonsterXP(params: AddMonsterXpParams) {
-		const res = addMonsterXPRaw({ ...params, attackStyles: this.getAttackStyles(), rng: cryptoRng });
+		const res = addMonsterXPRaw({ ...params, user: this, attackStyles: this.getAttackStyles(), rng: cryptoRng });
 		const result = await this.addXPBank(res);
 		return `**XP Gains:** ${result}`;
 	}
@@ -1024,7 +1112,6 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 
 		const res = await Promise.race([
 			mutex.runExclusive(async () => {
-				await this.sync();
 				return fn(this);
 			}),
 			timeoutPromise

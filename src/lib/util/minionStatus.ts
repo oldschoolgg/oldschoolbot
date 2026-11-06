@@ -1,4 +1,7 @@
 import type {
+	ArchonOptions,
+	BrimstoneDistilleryTaskOptions,
+	ConstructionContractsTaskOptions,
 	DisassembleTaskOptions,
 	DOAOptions,
 	DungeoneeringOptions,
@@ -54,6 +57,7 @@ import type {
 	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
+	ArchaicMiningActivityTaskOptions,
 	BeachCombingActivityTaskOptions,
 	BossActivityTaskOptions,
 	BuryingActivityTaskOptions,
@@ -68,6 +72,7 @@ import type {
 	CreateForestersRationsActivityTaskOptions,
 	CutLeapingFishActivityTaskOptions,
 	DarkAltarOptions,
+	DiscoBloodbathActivityTaskOptions,
 	EnchantingActivityTaskOptions,
 	FarmingActivityTaskOptions,
 	FightCavesActivityTaskOptions,
@@ -414,6 +419,30 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 			return `${name} is currently Fishing in the Ruins of Camdozaal. ${formattedDuration}`;
 		}
 
+		case 'GemstoneFishing': {
+			return `${name} is currently Fishing in the Crystal River. ${formattedDuration}`;
+		}
+
+		case 'AncientMycology': {
+			return `${name} is currently Woodcutting in the Ancient Myconid forest. ${formattedDuration}`;
+		}
+
+		case 'ArchaicMining': {
+			const data = currentTask as ArchaicMiningActivityTaskOptions;
+			const typeName = data.miningType === 'dragonbone' ? 'dragonbone mining' : 'crystalline mining';
+			return `${name} is currently doing ${typeName}. ${formattedDuration}`;
+		}
+
+		case 'BrimstoneDistillery': {
+			const data = currentTask as BrimstoneDistilleryTaskOptions;
+			return `${name} is currently distilling ${data.quantity}x ${data.recipe} in the Brimstone Distillery. ${formattedDuration}`;
+		}
+
+		case 'ConstructionContracts': {
+			const data = currentTask as ConstructionContractsTaskOptions;
+			return `${name} is currently completing ${data.quantity}x ${data.recipe} contracts. ${formattedDuration}`;
+		}
+
 		case 'CamdozaalMining': {
 			return `${name} is currently Mining in the Ruins of Camdozaal. ${formattedDuration}`;
 		}
@@ -727,6 +756,16 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 		case 'Ignecarus': {
 			return `${name} is currently killing Ignecarus. ${formattedDuration}`;
 		}
+		case 'Archon': {
+			const data = currentTask as ArchonOptions;
+			const tierNames: Record<number, string> = {
+				1: 'Shrouded Archon',
+				2: 'Ascendant Archon',
+				3: 'Apotheotic Archon'
+			};
+			const tierName = tierNames[data.tier] ?? 'Archon';
+			return `${name} is currently fighting the ${tierName}. ${formattedDuration}`;
+		}
 		case 'KibbleMaking': {
 			return `${name} is currently making Kibble. ${formattedDuration}`;
 		}
@@ -907,6 +946,12 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 		}
 		case 'TuraelsTrials': {
 			return `${name} is currently slaying monsters in Turaels Trials. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
+		case 'DiscoBloodbath': {
+			const data = currentTask as DiscoBloodbathActivityTaskOptions;
+			return `${name} is currently at the ${data.club} club (${data.theme.name} vibe). The visit should take ${formatDuration(
 				durationRemaining
 			)}.`;
 		}

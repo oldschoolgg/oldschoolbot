@@ -16,7 +16,7 @@ export async function bankBgCommand(interaction: MInteraction, user: MUser, name
 		return 'This is already your bank background.';
 	}
 
-	if (user.isModOrAdmin()) {
+	if (user.isModOrAdmin) {
 		await user.update({
 			bankBackground: selectedImage.id
 		});

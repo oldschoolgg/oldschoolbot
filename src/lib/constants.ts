@@ -1,3 +1,4 @@
+import { execSync } from 'node:child_process';
 import path from 'node:path';
 import { isMainThread } from 'node:worker_threads';
 import { dateFm } from '@oldschoolgg/discord';
@@ -20,10 +21,10 @@ const GENERAL_CHANNEL_ID =
 	BOT_TYPE === 'OSB'
 		? isProduction
 			? '346304390858145792'
-			: '1154056119019393035'
+			: (process.env.GENERAL_CHANNEL ?? '1154056119019393035')
 		: isProduction
 			? '792691343284764693'
-			: '1154056119019393035';
+			: (process.env.GENERAL_CHANNEL ?? '1154056119019393035');
 const OLDSCHOOLGG_TESTING_SERVER_ID = '940758552425955348';
 const TEST_SERVER_ID = process.env.TESTING_SERVER ?? OLDSCHOOLGG_TESTING_SERVER_ID;
 const TEST_SERVER_LOG_CHANNEL = process.env.TESTING_LOG_CHANNEL ?? '1042760447830536212';
@@ -39,6 +40,7 @@ interface ChannelConfig {
 	HelpAndSupport: string;
 	BotLogs: string;
 	GeneralChannel: string;
+	CyrCommandsChannel: string;
 }
 
 const OSBChannelConfig: ChannelConfig = {
@@ -47,8 +49,9 @@ const OSBChannelConfig: ChannelConfig = {
 	GrandExchange: '682996313209831435',
 	EconomyLogs: '802029843712573510',
 	HelpAndSupport: '668073484731154462',
-	BotLogs: '1051725977320964197',
-	GeneralChannel: GENERAL_CHANNEL_ID
+	BotLogs: isProduction ? '1051725977320964197' : TEST_SERVER_LOG_CHANNEL,
+	GeneralChannel: GENERAL_CHANNEL_ID,
+	CyrCommandsChannel: '1522315320260562992'
 };
 
 const BSOChannelConfig: ChannelConfig = {
@@ -57,8 +60,9 @@ const BSOChannelConfig: ChannelConfig = {
 	GrandExchange: '738780181946171493',
 	EconomyLogs: '802029843712573510',
 	HelpAndSupport: '970752140324790384',
-	BotLogs: '1051725977320964197',
-	GeneralChannel: GENERAL_CHANNEL_ID
+	BotLogs: isProduction ? '1051725977320964197' : TEST_SERVER_LOG_CHANNEL,
+	GeneralChannel: GENERAL_CHANNEL_ID,
+	CyrCommandsChannel: '1522315320260562992'
 };
 
 const TestChannelConfig: ChannelConfig = {
@@ -68,7 +72,8 @@ const TestChannelConfig: ChannelConfig = {
 	EconomyLogs: TEST_SERVER_LOG_CHANNEL,
 	HelpAndSupport: TEST_SERVER_LOG_CHANNEL,
 	BotLogs: TEST_SERVER_LOG_CHANNEL,
-	GeneralChannel: TEST_SERVER_LOG_CHANNEL
+	GeneralChannel: TEST_SERVER_LOG_CHANNEL,
+	CyrCommandsChannel: '1522315320260562992'
 };
 
 export const Channel = isProduction ? (BOT_TYPE === 'OSB' ? OSBChannelConfig : BSOChannelConfig) : TestChannelConfig;
@@ -171,6 +176,8 @@ export enum BitField {
 	DisableAutoFarmButton = 54,
 	DisableBankWeights = 55,
 	DisableBankFavorites = 56,
+	UnlimitedOpenUntil = 57,
+	Boring = 58,
 
 	OriginalCyrSupporter = 199,
 	HasGivenBirthdayPack = 200,
@@ -211,7 +218,9 @@ export enum BitField {
 	HasHalloweenWallkit = 234,
 	HasEarnedRiftGuardianFromStar = 235,
 	DisablePaints = 236,
-	DisableGlowEffects = 238
+	BannedFromGambling = 237,
+	DisableGlowEffects = 238,
+	DiscoBloodbathGearPresetSlots = 239
 }
 
 export interface IBitFieldData {
@@ -280,6 +289,11 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 		protected: false,
 		userConfigurable: false
 	},
+	[BitField.DiscoBloodbathGearPresetSlots]: {
+		name: 'Disco Bloodbath Gear Preset Slots',
+		protected: false,
+		userConfigurable: false
+	},
 	[BitField.BothBotsMaxedFreeTierOnePerks]: {
 		name: 'Free T1 Perks for Maxed in OSB/BSO',
 		protected: false,
@@ -291,7 +305,11 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 		protected: false,
 		userConfigurable: true
 	},
-
+	[BitField.UnlimitedOpenUntil]: {
+		name: 'Unlimited Open Until by Default (P)',
+		protected: false,
+		userConfigurable: false
+	},
 	[BitField.HasFlickeringBoon]: {
 		name: 'Has Flickering Boon',
 		protected: false,
@@ -505,14 +523,24 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 		userConfigurable: false
 	},
 	[BitField.DisablePaints]: {
-		name: 'Disable item Paints',
+		name: 'Disable Paints',
 		protected: false,
 		userConfigurable: true
+	},
+	[BitField.BannedFromGambling]: {
+		name: 'Banned from Gambling',
+		protected: false,
+		userConfigurable: false
 	},
 	[BitField.DisableGlowEffects]: {
 		name: 'Disable Glow Effects',
 		protected: false,
 		userConfigurable: true
+	},
+	[BitField.Boring]: {
+		name: 'Boring',
+		protected: true,
+		userConfigurable: false
 	}
 } as const;
 
@@ -566,6 +594,14 @@ export const MAX_LEVEL_XP = convertLVLtoXP(MAX_LEVEL);
 export const MAX_TOTAL_LEVEL = SkillsArray.length * MAX_LEVEL;
 export const SILENT_ERROR = 'SILENT_ERROR';
 
+export const COMBAT_TIER_XP = {
+	TIER_1: 104_300_000,
+	TIER_2: 1_000_000_000,
+	TIER_3: 5_000_000_000
+} as const;
+
+export const ARCHON_SPAWN_CHANCE = 20;
+
 export const PATRON_ONLY_GEAR_SETUP =
 	'Sorry - but the `other` gear setup is only available for Tier 3 Patrons (and higher) to use.';
 
@@ -580,7 +616,7 @@ const globalConfigSchema = z.object({
 	isCI: z.coerce.boolean().default(false),
 	isProduction: z.boolean(),
 	timeZone: z.literal('UTC'),
-	adminUserIDs: z.array(z.string()).default(['157797566833098752', '425134194436341760']),
+	adminUserIDs: z.array(z.string()).default(['425134194436341760', '157797566833098752']),
 	maxingMessage: z.string().default('Congratulations on maxing!'),
 	moderatorLogsChannels: z.string().default(''),
 	supportServerID: z.string(),
@@ -624,8 +660,8 @@ if ((process.env.NODE_ENV === 'production') !== globalConfig.isProduction) {
 	throw new Error('The NODE_ENV and isProduction variables must match');
 }
 
-//export const gitHash = process.env.TEST ? 'TESTGITHASH' : execSync('git rev-parse HEAD').toString().trim();
-export const gitHash = '9f3c2b7a4d8e1c6f5a2b9d0e7c1f4a8b6d3e2c1a';
+export const gitHash = process.env.TEST ? 'TESTGITHASH' : execSync('git rev-parse HEAD').toString().trim();
+
 const gitRemote = 'oldschoolgg/oldschoolbot';
 
 const GIT_BRANCH = BOT_TYPE === 'BSO' ? 'bso' : 'master';
@@ -682,6 +718,8 @@ export const DEPRECATED_ACTIVITY_TYPES: activity_type_enum[] = [
 export const CONSTANTS = {
 	DAILY_COOLDOWN: BOT_TYPE === 'BSO' ? Time.Hour * 4 : Time.Hour * 12,
 	TEARS_OF_GUTHIX_CD: Time.Day * 7,
+	BALTHAZARS_BIG_BONANZA_CD: Time.Day * 7,
+	GUTHIX_CACHE_CD: Time.Day * 1,
 	GAMBLE_LIMITS: {
 		HOTCOLD: [10_000_000, 5_000_000_000],
 		DICE: [1_000_000, 50_000_000_000],

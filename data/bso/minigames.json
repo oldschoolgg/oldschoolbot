@@ -25,6 +25,11 @@
 		"column": "agility_arena"
 	},
 	{
+		"name": "Brimstone Distillery",
+		"aliases": ["brimstone distillery", "distillery"],
+		"column": "brimstone_distillery"
+	},
+	{
 		"name": "Castle Wars",
 		"aliases": ["cw", "cwars"],
 		"column": "castle_wars"
@@ -43,6 +48,11 @@
 		"name": "Champions' Challenge",
 		"aliases": ["champion", "scrolls"],
 		"column": "champions_challenge"
+	},
+	{
+		"name": "Construction Contracts",
+		"aliases": ["construction contracts", "cc"],
+		"column": "construction_contracts"
 	},
 	{
 		"name": "Corrupted Gauntlet",

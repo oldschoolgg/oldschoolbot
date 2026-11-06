@@ -20,7 +20,10 @@ export const VenatrixLootTable = new LootTable()
 	.tertiary(2, "Red spiders' eggs", [200, 600])
 	.tertiary(300, 'Venatrix webbing')
 	.tertiary(300, 'Spiders leg bottom')
-	.tertiary(85, 'Elder scroll piece');
+	.tertiary(85, 'Elder scroll piece')
+	.tertiary(100, 'Elder sigil fragment (1)')
+	.tertiary(100, 'Elder sigil fragment (2)')
+	.tertiary(100, 'Elder sigil fragment (3)');
 
 export const Venatrix: CustomMonster = {
 	isCustom: true,

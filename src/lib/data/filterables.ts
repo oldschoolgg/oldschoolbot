@@ -1,5 +1,5 @@
 import { BSOItemGroups } from '@/lib/bso/bsoItemGroups.js';
-import { discontinuedCustomPetsCL } from '@/lib/bso/collection-log/main.js';
+import { allDiscontinuedPets, discontinuedCustomPetsAltArt } from '@/lib/bso/collection-log/main.js';
 import { GrandmasterClueTable } from '@/lib/bso/grandmasterClue.js';
 import { PartyhatTable } from '@/lib/bso/holidayItems.js';
 import { keyCrates } from '@/lib/bso/keyCrates.js';
@@ -186,8 +186,6 @@ export const ores = resolveItems([
 	'Dwarven ore',
 	'Dark animica'
 ]);
-
-const dcPetsExtras = resolveItems(['Black swan', 'Radiant Magnabbit']);
 
 const bars = resolveItems([
 	'Bronze bar',
@@ -969,7 +967,12 @@ export const baseFilters: Filterable[] = [
 	{
 		name: 'Custom Pets (Discontinued)',
 		aliases: ['dc pets', 'dcpets', 'dcpet', 'dcp', 'discontinued custom pet', 'disc custom pet'],
-		items: () => [...discontinuedCustomPetsCL, ...dcPetsExtras]
+		items: () => allDiscontinuedPets
+	},
+	{
+		name: 'Alt Art Custom Pets (DC)',
+		aliases: ['aacp', 'aacpdc', 'dcaacp', 'artartdc', 'dcpalt', 'altdcp', 'alt dcp', 'alt art custom pets'],
+		items: () => discontinuedCustomPetsAltArt
 	},
 	{
 		name: 'Pets',
@@ -1030,6 +1033,17 @@ export const baseFilters: Filterable[] = [
 		name: 'Seasonal Creates',
 		aliases: ['crates'],
 		items: () => keyCrates.flatMap(i => [i.item.id, i.key.id])
+	},
+	{
+		name: 'Verdant Island',
+		aliases: ['verdant', 'verdant island', 'vi'],
+		items: () => {
+			const items: number[] = [];
+			for (let i = 75_001; i <= 75_081; i++) {
+				items.push(i);
+			}
+			return items;
+		}
 	}
 ];
 

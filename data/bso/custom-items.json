@@ -12,6 +12,22 @@
 		"price": 1000
 	},
 	{
+		"id": 75724,
+		"name": "10% Pumpkinhead pie",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 50000,
+		"customItemData": {
+			"isSecret": true,
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
 		"id": 45107,
 		"name": "100 sided die",
 		"tradeable": true,
@@ -1534,6 +1550,21 @@
 		}
 	},
 	{
+		"id": 75058,
+		"name": "Adolescent gemscale",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
 		"id": 73018,
 		"name": "Advax berry",
 		"tradeable": true,
@@ -1560,6 +1591,88 @@
 		"buy_limit": 13000,
 		"price": 1,
 		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75722,
+		"name": "Afterparty afterlife",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 20800,
+		"lowalch": 8320,
+		"highalch": 12480,
+		"buy_limit": 70,
+		"equipment": {
+			"attack_stab": 38,
+			"attack_slash": 26,
+			"attack_crush": -2,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 2,
+			"defence_crush": 1,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 39,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "weapon",
+			"requirements": {
+				"attack": 40
+			}
+		},
+		"weapon": {
+			"attack_speed": 4,
+			"weapon_type": "stab_sword"
+		},
+		"price": 1000000,
+		"customItemData": {
+			"isSecret": true,
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75718,
+		"name": "Age of the thing",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 20800,
+		"lowalch": 8320,
+		"highalch": 12480,
+		"buy_limit": 70,
+		"equipment": {
+			"attack_stab": 38,
+			"attack_slash": 26,
+			"attack_crush": -2,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 2,
+			"defence_crush": 1,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 39,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "weapon",
+			"requirements": {
+				"attack": 40
+			}
+		},
+		"weapon": {
+			"attack_speed": 4,
+			"weapon_type": "stab_sword"
+		},
+		"price": 1000000,
+		"customItemData": {
+			"isSecret": true,
 			"cantDropFromMysteryBoxes": true
 		}
 	},
@@ -1848,6 +1961,21 @@
 		}
 	},
 	{
+		"id": 75028,
+		"name": "Ancient cap",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
 		"id": 21807,
 		"name": "Ancient emblem",
 		"members": true,
@@ -1874,6 +2002,47 @@
 		"highalch": 27,
 		"buy_limit": 13000,
 		"price": 1,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75060,
+		"name": "Ancient gemscale",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75026,
+		"name": "Ancient verdant logs",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 4,
+		"highalch": 2,
+		"buy_limit": 15000,
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75038,
+		"name": "Ancient verdant plank",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"buy_limit": 13000,
+		"price": 10000,
 		"customItemData": {
 			"cantDropFromMysteryBoxes": true
 		}
@@ -1951,7 +2120,8 @@
 		},
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -2075,6 +2245,16 @@
 		}
 	},
 	{
+		"id": 75082,
+		"name": "Archibald",
+		"members": true,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true
+		},
+		"price": 1000000
+	},
+	{
 		"id": 71439,
 		"name": "Archon boots",
 		"members": true,
@@ -2108,7 +2288,8 @@
 		},
 		"price": 10000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -2144,7 +2325,8 @@
 		},
 		"price": 10000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -2174,7 +2356,8 @@
 			"requirements": null
 		},
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		},
 		"price": 10000
 	},
@@ -2211,6 +2394,22 @@
 		},
 		"price": 10000,
 		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
+		}
+	},
+	{
+		"id": 75047,
+		"name": "Archon relic",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 500000,
+		"customItemData": {
 			"cantDropFromMysteryBoxes": true
 		}
 	},
@@ -2245,6 +2444,22 @@
 				"defence": 1
 			}
 		},
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
+		}
+	},
+	{
+		"id": 75074,
+		"name": "Archon's ichor",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
 		"price": 10000,
 		"customItemData": {
 			"cantDropFromMysteryBoxes": true
@@ -2494,7 +2709,8 @@
 		},
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -2919,6 +3135,16 @@
 	{
 		"id": 52687,
 		"name": "Balloon cat",
+		"members": true,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true
+		},
+		"price": 1000000
+	},
+	{
+		"id": 75063,
+		"name": "Bamyr",
 		"members": true,
 		"customItemData": {
 			"cantDropFromMysteryBoxes": true,
@@ -4509,7 +4735,8 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -4567,32 +4794,38 @@
 		"id": 70081,
 		"name": "Blue disco boots",
 		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
 		"equipable": true,
-		"cost": 100,
-		"lowalch": 40,
-		"highalch": 60,
+		"cost": 24,
+		"lowalch": 9,
+		"highalch": 14,
+		"buy_limit": 125,
 		"equipment": {
-			"attack_stab": 2,
-			"attack_slash": 2,
-			"attack_crush": 2,
-			"attack_magic": 1,
-			"attack_ranged": 2,
-			"defence_stab": 2,
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": -3,
+			"attack_ranged": -1,
+			"defence_stab": 1,
 			"defence_slash": 2,
-			"defence_crush": 2,
-			"defence_magic": 1,
-			"defence_ranged": 2,
-			"melee_strength": 2,
+			"defence_crush": 3,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 0,
 			"ranged_strength": 0,
 			"magic_damage": 0,
 			"prayer": 0,
-			"slot": "hands",
-			"requirements": null
+			"slot": "feet",
+			"requirements": {
+				"defence": 1
+			}
 		},
+		"price": 100,
 		"customItemData": {
 			"cantDropFromMysteryBoxes": true
-		},
-		"price": 100
+		}
 	},
 	{
 		"id": 70080,
@@ -4852,6 +5085,19 @@
 		"customItemData": {
 			"cantDropFromMysteryBoxes": true
 		}
+	},
+	{
+		"id": 75698,
+		"name": "Boo'ala",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"isPet": true,
+			"isSecret": true,
+			"cantDropFromMysteryBoxes": true
+		},
+		"price": 1000000
 	},
 	{
 		"id": 73046,
@@ -5201,6 +5447,36 @@
 		}
 	},
 	{
+		"id": 75006,
+		"name": "Brimstone elixir",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75030,
+		"name": "Brimstone spore",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
 		"id": 244,
 		"name": "Brock",
 		"members": true,
@@ -5471,7 +5747,8 @@
 		},
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -5522,7 +5799,8 @@
 		},
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -5537,7 +5815,8 @@
 		"buy_limit": 13000,
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -5573,7 +5852,8 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -5609,7 +5889,8 @@
 		},
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -5646,7 +5927,8 @@
 		},
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -5761,7 +6043,8 @@
 		"buy_limit": 13000,
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -5812,6 +6095,41 @@
 		},
 		"price": 100,
 		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75073,
+		"name": "Buried firmament",
+		"members": true,
+		"equipable": true,
+		"cost": 80000,
+		"lowalch": 32000,
+		"highalch": 48000,
+		"equipment": {
+			"attack_stab": 12,
+			"attack_slash": 12,
+			"attack_crush": 12,
+			"attack_magic": 6,
+			"attack_ranged": 6,
+			"defence_stab": 36,
+			"defence_slash": 36,
+			"defence_crush": 36,
+			"defence_magic": 36,
+			"defence_ranged": 36,
+			"melee_strength": 24,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 10,
+			"slot": "cape",
+			"requirements": null
+		},
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"price": 10000,
+		"customItemData": {
+			"isSuperUntradeable": true,
+			"cantBeSacrificed": true,
 			"cantDropFromMysteryBoxes": true
 		}
 	},
@@ -6525,6 +6843,22 @@
 		"price": 1
 	},
 	{
+		"id": 75013,
+		"name": "Celestial flame",
+		"tradeable": false,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true
+		}
+	},
+	{
 		"id": 73087,
 		"name": "Celestial gloves",
 		"members": true,
@@ -6587,6 +6921,41 @@
 			}
 		},
 		"price": 1,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75005,
+		"name": "Celestial pendant",
+		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"equipable": true,
+		"cost": 202000,
+		"lowalch": 80800,
+		"highalch": 121200,
+		"buy_limit": 8,
+		"equipment": {
+			"attack_stab": 10,
+			"attack_slash": 10,
+			"attack_crush": 10,
+			"attack_magic": 10,
+			"attack_ranged": 10,
+			"defence_stab": 15,
+			"defence_slash": 15,
+			"defence_crush": 15,
+			"defence_magic": 15,
+			"defence_ranged": 15,
+			"melee_strength": 8,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 5,
+			"slot": "neck",
+			"requirements": null
+		},
+		"price": 100000000,
 		"customItemData": {
 			"cantDropFromMysteryBoxes": true
 		}
@@ -6664,6 +7033,21 @@
 		}
 	},
 	{
+		"id": 75051,
+		"name": "Celestyte",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
 		"id": 73216,
 		"name": "Ceremonial boots",
 		"members": true,
@@ -6697,7 +7081,8 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -6729,7 +7114,8 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -6765,7 +7151,8 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -6801,7 +7188,8 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -6837,7 +7225,8 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -7108,6 +7497,47 @@
 		}
 	},
 	{
+		"id": 75713,
+		"name": "Cheque mate",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 20800,
+		"lowalch": 8320,
+		"highalch": 12480,
+		"buy_limit": 70,
+		"equipment": {
+			"attack_stab": 38,
+			"attack_slash": 26,
+			"attack_crush": -2,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 2,
+			"defence_crush": 1,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 39,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "weapon",
+			"requirements": {
+				"attack": 40
+			}
+		},
+		"weapon": {
+			"attack_speed": 4,
+			"weapon_type": "stab_sword"
+		},
+		"price": 1000000,
+		"customItemData": {
+			"isSecret": true,
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
 		"id": 48337,
 		"name": "Chickaxe",
 		"members": true,
@@ -7147,6 +7577,19 @@
 		"customItemData": {
 			"cantDropFromMysteryBoxes": true
 		}
+	},
+	{
+		"id": 75723,
+		"name": "Chill",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"isSecret": true,
+			"cantDropFromMysteryBoxes": true,
+			"isPet": true
+		},
+		"price": 1000000
 	},
 	{
 		"id": 73192,
@@ -7430,7 +7873,8 @@
 		},
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -7494,7 +7938,8 @@
 		},
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -7526,7 +7971,8 @@
 		},
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -7558,7 +8004,8 @@
 		},
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -7573,7 +8020,8 @@
 		"buy_limit": 13000,
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -7588,7 +8036,8 @@
 		"buy_limit": 13000,
 		"price": 10000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -7624,7 +8073,8 @@
 		},
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -7660,7 +8110,8 @@
 		},
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -7696,7 +8147,8 @@
 		},
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -7711,7 +8163,8 @@
 		"buy_limit": 13000,
 		"price": 50000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -7873,6 +8326,154 @@
 		}
 	},
 	{
+		"id": 75731,
+		"name": "Chunky Hunk leggings",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 80,
+		"lowalch": 32,
+		"highalch": 48,
+		"buy_limit": 125,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": -21,
+			"attack_ranged": -11,
+			"defence_stab": 8,
+			"defence_slash": 7,
+			"defence_crush": 6,
+			"defence_magic": -4,
+			"defence_ranged": 7,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "legs",
+			"requirements": {
+				"defence": 1
+			}
+		},
+		"price": 1000000,
+		"customItemData": {
+			"isSecret": true,
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75730,
+		"name": "Chunky Hunky bodysuit",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 160,
+		"lowalch": 64,
+		"highalch": 96,
+		"buy_limit": 125,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": -30,
+			"attack_ranged": -15,
+			"defence_stab": 15,
+			"defence_slash": 14,
+			"defence_crush": 9,
+			"defence_magic": -6,
+			"defence_ranged": 14,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "body",
+			"requirements": {
+				"defence": 1
+			}
+		},
+		"price": 1000000,
+		"customItemData": {
+			"isSecret": true,
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75728,
+		"name": "Chunky Hunky Boots",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 6,
+		"lowalch": 2,
+		"highalch": 3,
+		"buy_limit": 125,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 1,
+			"defence_crush": 1,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "feet",
+			"requirements": {
+				"defence": 1
+			}
+		},
+		"price": 1000000,
+		"customItemData": {
+			"isSecret": true,
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75729,
+		"name": "Chunky Hunky Mittens",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 6,
+		"lowalch": 2,
+		"highalch": 3,
+		"buy_limit": 125,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 1,
+			"defence_crush": 2,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "hands",
+			"requirements": {
+				"defence": 1
+			}
+		},
+		"price": 1000000,
+		"customItemData": {
+			"isSecret": true,
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
 		"id": 73283,
 		"name": "Cinnamon doughnut-ball",
 		"tradeable": true,
@@ -7884,7 +8485,8 @@
 		"buy_limit": 13000,
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -8692,6 +9294,21 @@
 		}
 	},
 	{
+		"id": 75029,
+		"name": "Colossal stem",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
 		"id": 40056,
 		"name": "Combatant's cape",
 		"members": true,
@@ -9468,7 +10085,8 @@
 		"buy_limit": 13000,
 		"price": 50000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -9495,6 +10113,47 @@
 		"buy_limit": 13000,
 		"price": 100000,
 		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75709,
+		"name": "Couch potato sceptre",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 20800,
+		"lowalch": 8320,
+		"highalch": 12480,
+		"buy_limit": 70,
+		"equipment": {
+			"attack_stab": 38,
+			"attack_slash": 26,
+			"attack_crush": -2,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 2,
+			"defence_crush": 1,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 39,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "weapon",
+			"requirements": {
+				"attack": 40
+			}
+		},
+		"weapon": {
+			"attack_speed": 4,
+			"weapon_type": "stab_sword"
+		},
+		"price": 1000000,
+		"customItemData": {
+			"isSecret": true,
 			"cantDropFromMysteryBoxes": true
 		}
 	},
@@ -9711,6 +10370,19 @@
 			"cantDropFromMysteryBoxes": true,
 			"isDiscontinued": true
 		}
+	},
+	{
+		"id": 75733,
+		"name": "Count Napula",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"isSecret": true,
+			"cantDropFromMysteryBoxes": true,
+			"isPet": true
+		},
+		"price": 1000000
 	},
 	{
 		"id": 71909,
@@ -10068,6 +10740,33 @@
 		}
 	},
 	{
+		"id": 75031,
+		"name": "Crystalline ore",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 17,
+		"lowalch": 6,
+		"highalch": 10,
+		"buy_limit": 13000,
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75036,
+		"name": "Crystalline plank",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"buy_limit": 13000,
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
 		"id": 73166,
 		"name": "Cursed onyx",
 		"tradeable": true,
@@ -10111,7 +10810,8 @@
 		},
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -10285,7 +10985,8 @@
 		},
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -10463,7 +11164,8 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -10779,7 +11481,8 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -11152,6 +11855,21 @@
 		"customItemData": {
 			"cantDropFromMysteryBoxes": true,
 			"isSuperUntradeable": true
+		}
+	},
+	{
+		"id": 75033,
+		"name": "Dense Crystal shard",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -11674,6 +12392,22 @@
 		},
 		"price": 100000,
 		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
+		}
+	},
+	{
+		"id": 75034,
+		"name": "Diluted brimstone",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000,
+		"customItemData": {
 			"cantDropFromMysteryBoxes": true
 		}
 	},
@@ -11716,6 +12450,56 @@
 		"customItemData": {
 			"cantDropFromMysteryBoxes": true
 		}
+	},
+	{
+		"id": 75719,
+		"name": "Disco bloodbath",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 68,
+		"lowalch": 27,
+		"highalch": 40,
+		"buy_limit": 125,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": -8,
+			"attack_ranged": -3,
+			"defence_stab": 5,
+			"defence_slash": 7,
+			"defence_crush": 6,
+			"defence_magic": -1,
+			"defence_ranged": 6,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "shield",
+			"requirements": {
+				"defence": 1
+			}
+		},
+		"price": 1000000,
+		"customItemData": {
+			"isSecret": true,
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75735,
+		"name": "Disco infernowl",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"isSecret": true,
+			"cantDropFromMysteryBoxes": true,
+			"isPet": true
+		},
+		"price": 1000000
 	},
 	{
 		"id": 73706,
@@ -12325,7 +13109,8 @@
 		"buy_limit": 13000,
 		"price": 50000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -12458,6 +13243,120 @@
 		"highalch": 3000,
 		"buy_limit": 50000,
 		"price": 6000
+	},
+	{
+		"id": 75002,
+		"name": "Dragonbane aegis",
+		"members": true,
+		"equipable": true,
+		"cost": 2000000,
+		"lowalch": 800000,
+		"highalch": 50000000,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": -65,
+			"attack_ranged": -45,
+			"defence_stab": 105,
+			"defence_slash": 105,
+			"defence_crush": 105,
+			"defence_magic": -25,
+			"defence_ranged": -15,
+			"melee_strength": 20,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 3,
+			"slot": "shield",
+			"requirements": {
+				"defence": 120,
+				"strength": 120
+			}
+		},
+		"tradeable": true,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		},
+		"price": 50000000
+	},
+	{
+		"id": 75076,
+		"name": "Dragonbane aegis (archaic)",
+		"members": true,
+		"equipable": true,
+		"cost": 2000000,
+		"lowalch": 800000,
+		"highalch": 50000000,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": -65,
+			"attack_ranged": -45,
+			"defence_stab": 105,
+			"defence_slash": 105,
+			"defence_crush": 105,
+			"defence_magic": -25,
+			"defence_ranged": -15,
+			"melee_strength": 20,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 3,
+			"slot": "shield",
+			"requirements": {
+				"defence": 120,
+				"strength": 120
+			}
+		},
+		"tradeable": true,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true,
+			"cantBeSacrificed": true
+		},
+		"price": 10000
+	},
+	{
+		"id": 75001,
+		"name": "Dragonbane glaive",
+		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"equipable": true,
+		"cost": 300000,
+		"lowalch": 120000,
+		"highalch": 50000000,
+		"buy_limit": 8,
+		"equipment": {
+			"attack_stab": 125,
+			"attack_slash": 85,
+			"attack_crush": 85,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 105,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 1,
+			"slot": "weapon",
+			"requirements": {
+				"attack": 120,
+				"strength": 120
+			}
+		},
+		"weapon": {
+			"attack_speed": 4,
+			"weapon_type": "spear"
+		},
+		"price": 50000000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
 	},
 	{
 		"id": 50108,
@@ -14401,6 +15300,39 @@
 		}
 	},
 	{
+		"id": 75708,
+		"name": "Duvet dictator",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 2,
+		"buy_limit": 150,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 1,
+			"defence_crush": 1,
+			"defence_magic": 0,
+			"defence_ranged": 2,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "cape",
+			"requirements": null
+		},
+		"price": 1000000,
+		"customItemData": {
+			"isSecret": true,
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
 		"id": 73177,
 		"name": "Dwarfqueen tiara",
 		"tradeable": true,
@@ -15555,7 +16487,8 @@
 		},
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -16153,7 +17086,8 @@
 		},
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -16190,7 +17124,8 @@
 		},
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -16226,7 +17161,8 @@
 		},
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -16241,7 +17177,8 @@
 		"buy_limit": 13000,
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -16256,7 +17193,8 @@
 		"buy_limit": 13000,
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -16722,6 +17660,21 @@
 		}
 	},
 	{
+		"id": 75061,
+		"name": "Elder gemscale",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
 		"id": 73182,
 		"name": "Elder knowledge",
 		"tradeable": true,
@@ -16749,6 +17702,40 @@
 		"highalch": 192,
 		"buy_limit": 12000,
 		"price": 19000
+	},
+	{
+		"id": 75042,
+		"name": "Elder mimic casket",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 50,
+		"lowalch": 20,
+		"highalch": 30,
+		"buy_limit": 50,
+		"price": 10000000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true
+		}
+	},
+	{
+		"id": 75041,
+		"name": "Elder mimic casket (locked)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 50,
+		"lowalch": 20,
+		"highalch": 30,
+		"buy_limit": 50,
+		"price": 10000000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true
+		}
 	},
 	{
 		"id": 50018,
@@ -16849,6 +17836,66 @@
 		}
 	},
 	{
+		"id": 75043,
+		"name": "Elder sigil",
+		"tradeable": false,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75044,
+		"name": "Elder sigil fragment (1)",
+		"tradeable": false,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75045,
+		"name": "Elder sigil fragment (2)",
+		"tradeable": false,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75046,
+		"name": "Elder sigil fragment (3)",
+		"tradeable": false,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
 		"id": 52634,
 		"name": "Elder table",
 		"tradeable": true,
@@ -16893,6 +17940,108 @@
 		"price": 1000000,
 		"customItemData": {
 			"isSuperUntradeable": true,
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75020,
+		"name": "Elderflame arrow",
+		"members": true,
+		"stackable": true,
+		"equipable": true,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": 0,
+			"attack_ranged": 55,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 0,
+			"ranged_strength": 130,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "ammo",
+			"requirements": {
+				"ranged": 120
+			}
+		},
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"buy_limit": 100000,
+		"price": 10000
+	},
+	{
+		"id": 75021,
+		"name": "Elderflame arrowtips",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 1000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75016,
+		"name": "Elderflame bow",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 4000000,
+		"lowalch": 1600000,
+		"highalch": 200000000,
+		"buy_limit": 8,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": 0,
+			"attack_ranged": 250,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 0,
+			"ranged_strength": 45,
+			"magic_damage": 0,
+			"prayer": 8,
+			"slot": "2h",
+			"requirements": {
+				"ranged": 120
+			}
+		},
+		"weapon": {
+			"attack_speed": 6,
+			"weapon_type": "bow"
+		},
+		"price": 50000000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75048,
+		"name": "Elderflame catalyst",
+		"tradeable": false,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000000,
+		"customItemData": {
 			"cantDropFromMysteryBoxes": true
 		}
 	},
@@ -17431,6 +18580,406 @@
 		"price": 1
 	},
 	{
+		"id": 75068,
+		"name": "Empyrean greatgauntlets",
+		"members": true,
+		"equipable": true,
+		"cost": 5000,
+		"lowalch": 2000,
+		"highalch": 200000000,
+		"equipment": {
+			"attack_stab": 25,
+			"attack_slash": 20,
+			"attack_crush": 15,
+			"attack_magic": -20,
+			"attack_ranged": -20,
+			"defence_stab": 30,
+			"defence_slash": 30,
+			"defence_crush": 30,
+			"defence_magic": 5,
+			"defence_ranged": 45,
+			"melee_strength": 6,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 1,
+			"slot": "hands",
+			"requirements": {
+				"strength": 120,
+				"defence": 120
+			}
+		},
+		"tradeable_on_ge": false,
+		"tradeable": false,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true
+		},
+		"price": 300000000
+	},
+	{
+		"id": 75081,
+		"name": "Empyrean greatgauntlets (archaic)",
+		"members": true,
+		"equipable": true,
+		"cost": 5000,
+		"lowalch": 2000,
+		"highalch": 200000000,
+		"equipment": {
+			"attack_stab": 25,
+			"attack_slash": 20,
+			"attack_crush": 15,
+			"attack_magic": -20,
+			"attack_ranged": -20,
+			"defence_stab": 30,
+			"defence_slash": 30,
+			"defence_crush": 30,
+			"defence_magic": 5,
+			"defence_ranged": 45,
+			"melee_strength": 6,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 1,
+			"slot": "hands",
+			"requirements": {
+				"strength": 120,
+				"defence": 120
+			}
+		},
+		"tradeable_on_ge": false,
+		"tradeable": false,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true,
+			"cantBeSacrificed": true
+		},
+		"price": 10000
+	},
+	{
+		"id": 75067,
+		"name": "Empyrean greatgreaves",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 64000,
+		"lowalch": 25600,
+		"highalch": 200000000,
+		"buy_limit": 70,
+		"equipment": {
+			"attack_stab": 45,
+			"attack_slash": 25,
+			"attack_crush": 25,
+			"attack_magic": -20,
+			"attack_ranged": -20,
+			"defence_stab": 155,
+			"defence_slash": 155,
+			"defence_crush": 155,
+			"defence_magic": 10,
+			"defence_ranged": 155,
+			"melee_strength": 8,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 2,
+			"slot": "legs",
+			"requirements": {
+				"strength": 120,
+				"defence": 120
+			}
+		},
+		"price": 300000000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true
+		}
+	},
+	{
+		"id": 75079,
+		"name": "Empyrean greatgreaves (archaic)",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 64000,
+		"lowalch": 25600,
+		"highalch": 200000000,
+		"buy_limit": 70,
+		"equipment": {
+			"attack_stab": 45,
+			"attack_slash": 25,
+			"attack_crush": 25,
+			"attack_magic": -20,
+			"attack_ranged": -20,
+			"defence_stab": 155,
+			"defence_slash": 155,
+			"defence_crush": 155,
+			"defence_magic": 10,
+			"defence_ranged": 155,
+			"melee_strength": 8,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 2,
+			"slot": "legs",
+			"requirements": {
+				"strength": 120,
+				"defence": 120
+			}
+		},
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true,
+			"cantBeSacrificed": true
+		}
+	},
+	{
+		"id": 75065,
+		"name": "Empyrean greathelm",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 35200,
+		"lowalch": 14080,
+		"highalch": 200000000,
+		"buy_limit": 70,
+		"equipment": {
+			"attack_stab": 40,
+			"attack_slash": 25,
+			"attack_crush": 25,
+			"attack_magic": -20,
+			"attack_ranged": -20,
+			"defence_stab": 85,
+			"defence_slash": 90,
+			"defence_crush": 90,
+			"defence_magic": 5,
+			"defence_ranged": 70,
+			"melee_strength": 8,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 2,
+			"slot": "head",
+			"requirements": {
+				"strength": 120,
+				"defence": 120
+			}
+		},
+		"price": 300000000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true
+		}
+	},
+	{
+		"id": 75077,
+		"name": "Empyrean greathelm (archaic)",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 35200,
+		"lowalch": 14080,
+		"highalch": 200000000,
+		"buy_limit": 70,
+		"equipment": {
+			"attack_stab": 40,
+			"attack_slash": 25,
+			"attack_crush": 25,
+			"attack_magic": -20,
+			"attack_ranged": -20,
+			"defence_stab": 85,
+			"defence_slash": 90,
+			"defence_crush": 90,
+			"defence_magic": 5,
+			"defence_ranged": 70,
+			"melee_strength": 8,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 2,
+			"slot": "head",
+			"requirements": {
+				"strength": 120,
+				"defence": 120
+			}
+		},
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true,
+			"cantBeSacrificed": true
+		}
+	},
+	{
+		"id": 75066,
+		"name": "Empyrean greatplate",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 65000,
+		"lowalch": 26000,
+		"highalch": 200000000,
+		"buy_limit": 70,
+		"equipment": {
+			"attack_stab": 55,
+			"attack_slash": 30,
+			"attack_crush": 30,
+			"attack_magic": -20,
+			"attack_ranged": -20,
+			"defence_stab": 190,
+			"defence_slash": 180,
+			"defence_crush": 180,
+			"defence_magic": 10,
+			"defence_ranged": 195,
+			"melee_strength": 10,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 3,
+			"slot": "body",
+			"requirements": {
+				"strength": 120,
+				"defence": 120
+			}
+		},
+		"price": 300000000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true
+		}
+	},
+	{
+		"id": 75078,
+		"name": "Empyrean greatplate (archaic)",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 65000,
+		"lowalch": 26000,
+		"highalch": 200000000,
+		"buy_limit": 70,
+		"equipment": {
+			"attack_stab": 55,
+			"attack_slash": 30,
+			"attack_crush": 30,
+			"attack_magic": -20,
+			"attack_ranged": -20,
+			"defence_stab": 190,
+			"defence_slash": 180,
+			"defence_crush": 180,
+			"defence_magic": 10,
+			"defence_ranged": 195,
+			"melee_strength": 10,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 3,
+			"slot": "body",
+			"requirements": {
+				"strength": 120,
+				"defence": 120
+			}
+		},
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true,
+			"cantBeSacrificed": true
+		}
+	},
+	{
+		"id": 75069,
+		"name": "Empyrean greatsabaton",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 12500,
+		"lowalch": 5000,
+		"highalch": 200000000,
+		"buy_limit": 70,
+		"equipment": {
+			"attack_stab": 25,
+			"attack_slash": 12,
+			"attack_crush": 15,
+			"attack_magic": -20,
+			"attack_ranged": -20,
+			"defence_stab": 35,
+			"defence_slash": 35,
+			"defence_crush": 35,
+			"defence_magic": 5,
+			"defence_ranged": 45,
+			"melee_strength": 6,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 1,
+			"slot": "feet",
+			"requirements": {
+				"strength": 120,
+				"defence": 120
+			}
+		},
+		"price": 300000000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true
+		}
+	},
+	{
+		"id": 75080,
+		"name": "Empyrean greatsabaton (archaic)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 12500,
+		"lowalch": 5000,
+		"highalch": 200000000,
+		"buy_limit": 70,
+		"equipment": {
+			"attack_stab": 25,
+			"attack_slash": 12,
+			"attack_crush": 15,
+			"attack_magic": -20,
+			"attack_ranged": -20,
+			"defence_stab": 35,
+			"defence_slash": 35,
+			"defence_crush": 35,
+			"defence_magic": 5,
+			"defence_ranged": 45,
+			"melee_strength": 6,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 1,
+			"slot": "feet",
+			"requirements": {
+				"strength": 120,
+				"defence": 120
+			}
+		},
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true,
+			"cantBeSacrificed": true
+		}
+	},
+	{
+		"id": 75070,
+		"name": "Empyrean shards",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
 		"id": 70007,
 		"name": "Enhanced divine water",
 		"tradeable": true,
@@ -17876,6 +19425,47 @@
 		"price": 10000
 	},
 	{
+		"id": 75716,
+		"name": "Fame fatale",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 20800,
+		"lowalch": 8320,
+		"highalch": 12480,
+		"buy_limit": 70,
+		"equipment": {
+			"attack_stab": 38,
+			"attack_slash": 26,
+			"attack_crush": -2,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 2,
+			"defence_crush": 1,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 39,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "weapon",
+			"requirements": {
+				"attack": 40
+			}
+		},
+		"weapon": {
+			"attack_speed": 4,
+			"weapon_type": "stab_sword"
+		},
+		"price": 1000000,
+		"customItemData": {
+			"isSecret": true,
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
 		"id": 73756,
 		"name": "Famine scroll",
 		"tradeable": true,
@@ -18105,6 +19695,17 @@
 			}
 		},
 		"price": 20000000
+	},
+	{
+		"id": 75699,
+		"name": "Fealty Mystery Box",
+		"tradeable_on_ge": false,
+		"tradeable": false,
+		"price": 1000000,
+		"customItemData": {
+			"isSecret": true,
+			"cantDropFromMysteryBoxes": true
+		}
 	},
 	{
 		"id": 50517,
@@ -18505,7 +20106,8 @@
 		},
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -18587,6 +20189,21 @@
 		"customItemData": {
 			"cantDropFromMysteryBoxes": true,
 			"isSuperUntradeable": true
+		}
+	},
+	{
+		"id": 75055,
+		"name": "Firaxyte",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -19634,6 +21251,22 @@
 		}
 	},
 	{
+		"id": 75012,
+		"name": "Forsaken tear",
+		"tradeable": false,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true
+		}
+	},
+	{
 		"id": 70399,
 		"name": "Fox ears",
 		"tradeable": true,
@@ -19876,7 +21509,8 @@
 		},
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -20666,6 +22300,66 @@
 		"price": 200000000,
 		"customItemData": {
 			"isSuperUntradeable": true,
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75032,
+		"name": "Gem Infused ore",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 17,
+		"lowalch": 6,
+		"highalch": 10,
+		"buy_limit": 13000,
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75022,
+		"name": "Gemstone bundle",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 1000000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75024,
+		"name": "Gemstone core",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75023,
+		"name": "Gemstone satchel",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 5000000,
+		"customItemData": {
 			"cantDropFromMysteryBoxes": true
 		}
 	},
@@ -21753,6 +23447,43 @@
 		}
 	},
 	{
+		"id": 75717,
+		"name": "Glam jam platformers",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 6,
+		"lowalch": 2,
+		"highalch": 3,
+		"buy_limit": 125,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 1,
+			"defence_crush": 1,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "feet",
+			"requirements": {
+				"defence": 1
+			}
+		},
+		"price": 1000000,
+		"customItemData": {
+			"isSecret": true,
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
 		"id": 45003,
 		"name": "Glass of bubbly",
 		"tradeable": true,
@@ -21924,7 +23655,8 @@
 		},
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -23938,7 +25670,8 @@
 		"buy_limit": 13000,
 		"price": 50000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -24107,7 +25840,8 @@
 		},
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -24129,32 +25863,38 @@
 		"id": 70077,
 		"name": "Green disco boots",
 		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
 		"equipable": true,
-		"cost": 100,
-		"lowalch": 40,
-		"highalch": 60,
+		"cost": 24,
+		"lowalch": 9,
+		"highalch": 14,
+		"buy_limit": 125,
 		"equipment": {
-			"attack_stab": 2,
-			"attack_slash": 2,
-			"attack_crush": 2,
-			"attack_magic": 1,
-			"attack_ranged": 2,
-			"defence_stab": 2,
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": -3,
+			"attack_ranged": -1,
+			"defence_stab": 1,
 			"defence_slash": 2,
-			"defence_crush": 2,
-			"defence_magic": 1,
-			"defence_ranged": 2,
-			"melee_strength": 2,
+			"defence_crush": 3,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 0,
 			"ranged_strength": 0,
 			"magic_damage": 0,
 			"prayer": 0,
-			"slot": "hands",
-			"requirements": null
+			"slot": "feet",
+			"requirements": {
+				"defence": 1
+			}
 		},
+		"price": 100,
 		"customItemData": {
 			"cantDropFromMysteryBoxes": true
-		},
-		"price": 100
+		}
 	},
 	{
 		"id": 70076,
@@ -24911,6 +26651,42 @@
 			"cantDropFromMysteryBoxes": true
 		},
 		"price": 100000
+	},
+	{
+		"id": 75712,
+		"name": "Gross domestic bling",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 17625,
+		"lowalch": 7050,
+		"highalch": 10575,
+		"buy_limit": 10000,
+		"equipment": {
+			"attack_stab": 10,
+			"attack_slash": 10,
+			"attack_crush": 10,
+			"attack_magic": 10,
+			"attack_ranged": 10,
+			"defence_stab": 3,
+			"defence_slash": 3,
+			"defence_crush": 3,
+			"defence_magic": 3,
+			"defence_ranged": 3,
+			"melee_strength": 6,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 3,
+			"slot": "neck",
+			"requirements": null
+		},
+		"price": 1000000,
+		"customItemData": {
+			"isSecret": true,
+			"cantDropFromMysteryBoxes": true
+		}
 	},
 	{
 		"id": 71490,
@@ -26158,7 +27934,8 @@
 		"buy_limit": 13000,
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -26400,6 +28177,47 @@
 		}
 	},
 	{
+		"id": 75710,
+		"name": "Idle idol",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 20800,
+		"lowalch": 8320,
+		"highalch": 12480,
+		"buy_limit": 70,
+		"equipment": {
+			"attack_stab": 38,
+			"attack_slash": 26,
+			"attack_crush": -2,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 2,
+			"defence_crush": 1,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 39,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "weapon",
+			"requirements": {
+				"attack": 40
+			}
+		},
+		"weapon": {
+			"attack_speed": 4,
+			"weapon_type": "stab_sword"
+		},
+		"price": 1000000,
+		"customItemData": {
+			"isSecret": true,
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
 		"id": 52661,
 		"name": "Igne gear frame",
 		"tradeable": true,
@@ -26468,6 +28286,36 @@
 		"highalch": 3000,
 		"buy_limit": 50000,
 		"price": 6000
+	},
+	{
+		"id": 75014,
+		"name": "Ignilace",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75015,
+		"name": "Ignilace seed",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
 	},
 	{
 		"id": 48205,
@@ -27928,7 +29776,8 @@
 		},
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -27977,6 +29826,21 @@
 		"customItemData": {
 			"cantDropFromMysteryBoxes": true,
 			"isSuperUntradeable": true
+		}
+	},
+	{
+		"id": 75057,
+		"name": "Juvenile gemscale",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -28372,6 +30236,54 @@
 		"price": 1,
 		"customItemData": {
 			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	{
+		"id": 75703,
+		"name": "Lazily rollers",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 6,
+		"lowalch": 2,
+		"highalch": 3,
+		"buy_limit": 125,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 1,
+			"defence_crush": 1,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "feet",
+			"requirements": {
+				"defence": 1
+			}
+		},
+		"price": 1000000,
+		"customItemData": {
+			"isSecret": true,
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75700,
+		"name": "Lazy Mystery Box",
+		"tradeable_on_ge": false,
+		"tradeable": false,
+		"price": 1000000,
+		"customItemData": {
+			"isSecret": true,
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -28792,6 +30704,58 @@
 		"buy_limit": 13000,
 		"price": 1000,
 		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75027,
+		"name": "Living bark",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75707,
+		"name": "Loaf lord loafers",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 6,
+		"lowalch": 2,
+		"highalch": 3,
+		"buy_limit": 125,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 1,
+			"defence_crush": 1,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "feet",
+			"requirements": {
+				"defence": 1
+			}
+		},
+		"price": 1000000,
+		"customItemData": {
+			"isSecret": true,
 			"cantDropFromMysteryBoxes": true
 		}
 	},
@@ -30417,6 +32381,21 @@
 		}
 	},
 	{
+		"id": 75059,
+		"name": "Mature gemscale",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
 		"id": 63308,
 		"name": "Mecha mortar",
 		"tradeable": true,
@@ -30529,6 +32508,43 @@
 		"buy_limit": 13000,
 		"price": 1,
 		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75714,
+		"name": "Millionaire mink",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 160,
+		"lowalch": 64,
+		"highalch": 96,
+		"buy_limit": 125,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": -30,
+			"attack_ranged": -15,
+			"defence_stab": 15,
+			"defence_slash": 14,
+			"defence_crush": 9,
+			"defence_magic": -6,
+			"defence_ranged": 14,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "body",
+			"requirements": {
+				"defence": 1
+			}
+		},
+		"price": 1000000,
+		"customItemData": {
+			"isSecret": true,
 			"cantDropFromMysteryBoxes": true
 		}
 	},
@@ -30701,7 +32717,8 @@
 		"buy_limit": 13000,
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -30890,7 +32907,8 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -31127,7 +33145,8 @@
 		},
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -31607,6 +33626,18 @@
 			}
 		},
 		"price": 1000
+	},
+	{
+		"id": 75035,
+		"name": "Myconid plank",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"buy_limit": 13000,
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
 	},
 	{
 		"id": 73993,
@@ -32920,7 +34951,8 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -33874,6 +35906,21 @@
 		}
 	},
 	{
+		"id": 75054,
+		"name": "Oneiryte",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
 		"id": 50558,
 		"name": "Oni orokami mask",
 		"tradeable": true,
@@ -33993,7 +36040,8 @@
 		},
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -34082,6 +36130,33 @@
 		}
 	},
 	{
+		"id": 75019,
+		"name": "Orrodin",
+		"tradeable": false,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 1000000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true
+		}
+	},
+	{
+		"id": 75018,
+		"name": "Orylin",
+		"members": true,
+		"tradeable": false,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true
+		},
+		"price": 1000000
+	},
+	{
 		"id": 73291,
 		"name": "OSB beanie",
 		"tradeable": true,
@@ -34114,7 +36189,8 @@
 		},
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -34150,7 +36226,8 @@
 		},
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -34186,7 +36263,8 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -34412,6 +36490,43 @@
 		}
 	},
 	{
+		"id": 75704,
+		"name": "Partytimehat",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 44,
+		"lowalch": 17,
+		"highalch": 26,
+		"buy_limit": 125,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": -6,
+			"attack_ranged": -3,
+			"defence_stab": 4,
+			"defence_slash": 5,
+			"defence_crush": 3,
+			"defence_magic": -1,
+			"defence_ranged": 4,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "head",
+			"requirements": {
+				"defence": 1
+			}
+		},
+		"price": 1000000,
+		"customItemData": {
+			"isSecret": true,
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
 		"id": 73982,
 		"name": "Patricia",
 		"tradeable": true,
@@ -34460,7 +36575,8 @@
 		"buy_limit": 13000,
 		"price": 50000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -35093,29 +37209,33 @@
 		"tradeable_on_ge": true,
 		"noteable": true,
 		"equipable": true,
-		"cost": 44,
-		"lowalch": 17,
-		"highalch": 26,
+		"cost": 26,
+		"lowalch": 10,
+		"highalch": 15,
 		"buy_limit": 125,
 		"equipment": {
-			"attack_stab": 0,
-			"attack_slash": 0,
-			"attack_crush": 0,
-			"attack_magic": -6,
-			"attack_ranged": -3,
-			"defence_stab": 4,
-			"defence_slash": 5,
-			"defence_crush": 3,
-			"defence_magic": -1,
-			"defence_ranged": 4,
-			"melee_strength": 0,
+			"attack_stab": 4,
+			"attack_slash": 3,
+			"attack_crush": -2,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 2,
+			"defence_crush": 1,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 5,
 			"ranged_strength": 0,
 			"magic_damage": 0,
 			"prayer": 0,
-			"slot": "head",
+			"slot": "weapon",
 			"requirements": {
-				"defence": 1
+				"attack": 1
 			}
+		},
+		"weapon": {
+			"attack_speed": 4,
+			"weapon_type": "stab_sword"
 		},
 		"price": 100,
 		"customItemData": {
@@ -35467,32 +37587,38 @@
 		"id": 70073,
 		"name": "Pink disco boots",
 		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
 		"equipable": true,
-		"cost": 100,
-		"lowalch": 40,
-		"highalch": 60,
+		"cost": 24,
+		"lowalch": 9,
+		"highalch": 14,
+		"buy_limit": 125,
 		"equipment": {
-			"attack_stab": 2,
-			"attack_slash": 2,
-			"attack_crush": 2,
-			"attack_magic": 1,
-			"attack_ranged": 2,
-			"defence_stab": 2,
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": -3,
+			"attack_ranged": -1,
+			"defence_stab": 1,
 			"defence_slash": 2,
-			"defence_crush": 2,
-			"defence_magic": 1,
-			"defence_ranged": 2,
-			"melee_strength": 2,
+			"defence_crush": 3,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 0,
 			"ranged_strength": 0,
 			"magic_damage": 0,
 			"prayer": 0,
-			"slot": "hands",
-			"requirements": null
+			"slot": "feet",
+			"requirements": {
+				"defence": 1
+			}
 		},
+		"price": 100,
 		"customItemData": {
 			"cantDropFromMysteryBoxes": true
-		},
-		"price": 100
+		}
 	},
 	{
 		"id": 70072,
@@ -35672,7 +37798,8 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -35913,7 +38040,8 @@
 		"buy_limit": 13000,
 		"price": 50000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -36000,6 +38128,19 @@
 		}
 	},
 	{
+		"id": 75734,
+		"name": "Premierekat",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"isSecret": true,
+			"cantDropFromMysteryBoxes": true,
+			"isPet": true
+		},
+		"price": 1000000
+	},
+	{
 		"id": 72455,
 		"name": "Pretty Pink paint can",
 		"tradeable": true,
@@ -36026,7 +38167,8 @@
 		"buy_limit": 13000,
 		"price": 50000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -36310,6 +38452,136 @@
 		}
 	},
 	{
+		"id": 75007,
+		"name": "Primordial bones",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75010,
+		"name": "Primordial heartstring",
+		"tradeable": false,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true
+		}
+	},
+	{
+		"id": 75008,
+		"name": "Primordial scales",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75009,
+		"name": "Primordial spine",
+		"tradeable": false,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true
+		}
+	},
+	{
+		"id": 75056,
+		"name": "Prismare",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75050,
+		"name": "Prismare ring",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 201000,
+		"lowalch": 80400,
+		"highalch": 120600,
+		"buy_limit": 8,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "ring",
+			"requirements": {
+				"hitpoints": 75
+			}
+		},
+		"price": 100000000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true
+		}
+	},
+	{
+		"id": 75064,
+		"name": "Prismare ring (u)",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 10,
+		"price": 10000000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
 		"id": 70402,
 		"name": "Prisoner legs",
 		"tradeable": true,
@@ -36434,6 +38706,22 @@
 		}
 	},
 	{
+		"id": 75071,
+		"name": "Prolific twine",
+		"tradeable": false,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true
+		}
+	},
+	{
 		"id": 73268,
 		"name": "Pumpkin carving knife",
 		"tradeable": true,
@@ -36502,7 +38790,8 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -36605,7 +38894,8 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -36620,7 +38910,8 @@
 		"buy_limit": 13000,
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -36635,7 +38926,8 @@
 		"buy_limit": 13000,
 		"price": 50000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -36845,7 +39137,8 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -36952,7 +39245,8 @@
 		"buy_limit": 13000,
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -37648,7 +39942,8 @@
 		"buy_limit": 13000,
 		"price": 1000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -37887,7 +40182,8 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -37903,6 +40199,43 @@
 		"price": 1,
 		"customItemData": {
 			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	{
+		"id": 75706,
+		"name": "Resting rich face",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 35200,
+		"lowalch": 14080,
+		"highalch": 21120,
+		"buy_limit": 70,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": -6,
+			"attack_ranged": -3,
+			"defence_stab": 30,
+			"defence_slash": 32,
+			"defence_crush": 27,
+			"defence_magic": -1,
+			"defence_ranged": 30,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "head",
+			"requirements": {
+				"defence": 40
+			}
+		},
+		"price": 1000000,
+		"customItemData": {
+			"isSecret": true,
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -38327,7 +40660,8 @@
 		"buy_limit": 13000,
 		"price": 50000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -38342,7 +40676,8 @@
 		"buy_limit": 13000,
 		"price": 50000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -38397,6 +40732,23 @@
 		"buy_limit": 13000,
 		"price": 1,
 		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75726,
+		"name": "Roosted newt",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000,
+		"customItemData": {
+			"isSecret": true,
+			"isDiscontinued": true,
 			"cantDropFromMysteryBoxes": true
 		}
 	},
@@ -39363,6 +41715,22 @@
 		}
 	},
 	{
+		"id": 75011,
+		"name": "Sacrilegious flask",
+		"tradeable": false,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true
+		}
+	},
+	{
 		"id": 48232,
 		"name": "Sam",
 		"members": true,
@@ -40217,6 +42585,92 @@
 		}
 	},
 	{
+		"id": 75017,
+		"name": "Searcrown band",
+		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"equipable": true,
+		"cost": 10000,
+		"lowalch": 4000,
+		"highalch": 100000000,
+		"buy_limit": 8,
+		"equipment": {
+			"attack_stab": 15,
+			"attack_slash": 15,
+			"attack_crush": 15,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 45,
+			"defence_slash": 45,
+			"defence_crush": 45,
+			"defence_magic": 45,
+			"defence_ranged": 45,
+			"melee_strength": 25,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 3,
+			"slot": "ring",
+			"requirements": {
+				"defence": 115
+			}
+		},
+		"price": 25000000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75075,
+		"name": "Searcrown band (archaic)",
+		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"equipable": true,
+		"cost": 10000,
+		"lowalch": 4000,
+		"highalch": 100000000,
+		"buy_limit": 8,
+		"equipment": {
+			"attack_stab": 15,
+			"attack_slash": 15,
+			"attack_crush": 15,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 45,
+			"defence_slash": 45,
+			"defence_crush": 45,
+			"defence_magic": 45,
+			"defence_ranged": 45,
+			"melee_strength": 25,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 3,
+			"slot": "ring",
+			"requirements": {
+				"defence": 115
+			}
+		},
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true,
+			"cantBeSacrificed": true
+		}
+	},
+	{
+		"id": 75062,
+		"name": "Sedryn",
+		"members": true,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true
+		},
+		"price": 1000000
+	},
+	{
 		"id": 62496,
 		"name": "Seer",
 		"members": true,
@@ -40278,6 +42732,21 @@
 		"highalch": 27,
 		"buy_limit": 13000,
 		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75039,
+		"name": "Sentinel core",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000000,
 		"customItemData": {
 			"cantDropFromMysteryBoxes": true
 		}
@@ -40547,6 +43016,22 @@
 			"requirements": null
 		},
 		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true
+		}
+	},
+	{
+		"id": 75004,
+		"name": "Shattered pendant",
+		"tradeable": false,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000000,
 		"customItemData": {
 			"cantDropFromMysteryBoxes": true,
 			"isSuperUntradeable": true
@@ -41202,26 +43687,26 @@
 		"tradeable_on_ge": true,
 		"noteable": true,
 		"equipable": true,
-		"cost": 160,
-		"lowalch": 64,
-		"highalch": 96,
+		"cost": 80,
+		"lowalch": 32,
+		"highalch": 48,
 		"buy_limit": 125,
 		"equipment": {
 			"attack_stab": 0,
 			"attack_slash": 0,
 			"attack_crush": 0,
-			"attack_magic": -30,
-			"attack_ranged": -15,
-			"defence_stab": 15,
-			"defence_slash": 14,
-			"defence_crush": 9,
-			"defence_magic": -6,
-			"defence_ranged": 14,
+			"attack_magic": -21,
+			"attack_ranged": -11,
+			"defence_stab": 8,
+			"defence_slash": 7,
+			"defence_crush": 6,
+			"defence_magic": -4,
+			"defence_ranged": 7,
 			"melee_strength": 0,
 			"ranged_strength": 0,
 			"magic_damage": 0,
 			"prayer": 0,
-			"slot": "body",
+			"slot": "legs",
 			"requirements": {
 				"defence": 1
 			}
@@ -41570,7 +44055,8 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -41920,7 +44406,8 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -41957,7 +44444,8 @@
 		},
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -42072,6 +44560,74 @@
 		}
 	},
 	{
+		"id": 75701,
+		"name": "Skrink box",
+		"tradeable_on_ge": false,
+		"tradeable": false,
+		"price": 1000000,
+		"customItemData": {
+			"isSecret": true,
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75721,
+		"name": "Skrink mink",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 2,
+		"buy_limit": 150,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 1,
+			"defence_crush": 1,
+			"defence_magic": 0,
+			"defence_ranged": 2,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "cape",
+			"requirements": null
+		},
+		"price": 1000000,
+		"customItemData": {
+			"isSecret": true,
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75732,
+		"name": "Skrinkle",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"isSecret": true,
+			"cantDropFromMysteryBoxes": true,
+			"isPet": true
+		},
+		"price": 1000000
+	},
+	{
+		"id": 75702,
+		"name": "Skrod box",
+		"tradeable_on_ge": false,
+		"tradeable": false,
+		"price": 1000000,
+		"customItemData": {
+			"isSecret": true,
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
 		"id": 40060,
 		"name": "Slayer master cape",
 		"members": true,
@@ -42165,6 +44721,19 @@
 		"customItemData": {
 			"tags": ["SUMMONING", "IN_UMB"]
 		}
+	},
+	{
+		"id": 75736,
+		"name": "Slothario",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"isSecret": true,
+			"cantDropFromMysteryBoxes": true,
+			"isPet": true
+		},
+		"price": 1000000
 	},
 	{
 		"id": 21642,
@@ -42360,6 +44929,22 @@
 		}
 	},
 	{
+		"id": 75725,
+		"name": "Smorkey painting",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 5000000,
+		"customItemData": {
+			"isSecret": true,
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
 		"id": 72031,
 		"name": "Snail oil",
 		"tradeable": true,
@@ -42384,6 +44969,47 @@
 			"cantDropFromMysteryBoxes": true
 		},
 		"price": 1000000
+	},
+	{
+		"id": 75705,
+		"name": "Snooze control",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 20800,
+		"lowalch": 8320,
+		"highalch": 12480,
+		"buy_limit": 70,
+		"equipment": {
+			"attack_stab": 38,
+			"attack_slash": 26,
+			"attack_crush": -2,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 2,
+			"defence_crush": 1,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 39,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "weapon",
+			"requirements": {
+				"attack": 40
+			}
+		},
+		"weapon": {
+			"attack_speed": 4,
+			"weapon_type": "stab_sword"
+		},
+		"price": 1000000,
+		"customItemData": {
+			"isSecret": true,
+			"cantDropFromMysteryBoxes": true
+		}
 	},
 	{
 		"id": 73303,
@@ -44416,6 +47042,78 @@
 		}
 	},
 	{
+		"id": 75052,
+		"name": "Starfire agate",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75049,
+		"name": "Starfire bow",
+		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"equipable": true,
+		"cost": 4000000,
+		"lowalch": 1600000,
+		"highalch": 2400000,
+		"buy_limit": 10,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "2h",
+			"requirements": {
+				"ranged": 0
+			}
+		},
+		"weapon": {
+			"attack_speed": 6,
+			"weapon_type": "bow"
+		},
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75072,
+		"name": "Starfire bow (u)",
+		"tradeable": false,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true
+		}
+	},
+	{
 		"id": 48234,
 		"name": "Stars and Stripeship",
 		"tradeable": true,
@@ -45095,7 +47793,8 @@
 		"buy_limit": 13000,
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -47223,6 +49922,43 @@
 		}
 	},
 	{
+		"id": 75711,
+		"name": "Trust fund tiara",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 44,
+		"lowalch": 17,
+		"highalch": 26,
+		"buy_limit": 125,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": -6,
+			"attack_ranged": -3,
+			"defence_stab": 4,
+			"defence_slash": 5,
+			"defence_crush": 3,
+			"defence_magic": -1,
+			"defence_ranged": 4,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "head",
+			"requirements": {
+				"defence": 1
+			}
+		},
+		"price": 1000000,
+		"customItemData": {
+			"isSecret": true,
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
 		"id": 73409,
 		"name": "Tuah",
 		"members": true,
@@ -47780,6 +50516,43 @@
 		"price": 500000000,
 		"customItemData": {
 			"isSuperUntradeable": true,
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75720,
+		"name": "Two of Hearts",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 68,
+		"lowalch": 27,
+		"highalch": 40,
+		"buy_limit": 125,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": -8,
+			"attack_ranged": -3,
+			"defence_stab": 5,
+			"defence_slash": 7,
+			"defence_crush": 6,
+			"defence_magic": -1,
+			"defence_ranged": 6,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "shield",
+			"requirements": {
+				"defence": 1
+			}
+		},
+		"price": 1000000,
+		"customItemData": {
+			"isSecret": true,
 			"cantDropFromMysteryBoxes": true
 		}
 	},
@@ -48441,6 +51214,47 @@
 		"price": 10000
 	},
 	{
+		"id": 75715,
+		"name": "Velvet rope sceptre",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 20800,
+		"lowalch": 8320,
+		"highalch": 12480,
+		"buy_limit": 70,
+		"equipment": {
+			"attack_stab": 38,
+			"attack_slash": 26,
+			"attack_crush": -2,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 2,
+			"defence_crush": 1,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 39,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "weapon",
+			"requirements": {
+				"attack": 40
+			}
+		},
+		"weapon": {
+			"attack_speed": 4,
+			"weapon_type": "stab_sword"
+		},
+		"price": 1000000,
+		"customItemData": {
+			"isSecret": true,
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
 		"id": 73181,
 		"name": "Venatrix eggs",
 		"tradeable": true,
@@ -48513,6 +51327,63 @@
 			"requirements": null
 		},
 		"price": 100000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
+		}
+	},
+	{
+		"id": 75040,
+		"name": "Verdant heart",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75025,
+		"name": "Verdant logs",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 4,
+		"highalch": 2,
+		"buy_limit": 15000,
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75037,
+		"name": "Verdant plank",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"buy_limit": 13000,
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75053,
+		"name": "Verdantyte",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000,
 		"customItemData": {
 			"cantDropFromMysteryBoxes": true
 		}
@@ -49346,6 +52217,43 @@
 			"weapon_type": "staff"
 		},
 		"price": 50000000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75003,
+		"name": "Vitrolic curse",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"equipable": true,
+		"buy_limit": 7000,
+		"equipment": {
+			"attack_stab": 10,
+			"attack_slash": 10,
+			"attack_crush": 10,
+			"attack_magic": 10,
+			"attack_ranged": 10,
+			"defence_stab": 10,
+			"defence_slash": 10,
+			"defence_crush": 10,
+			"defence_magic": 10,
+			"defence_ranged": 10,
+			"melee_strength": 5,
+			"ranged_strength": 5,
+			"magic_damage": 5,
+			"prayer": 7,
+			"slot": "ammo",
+			"requirements": {
+				"ranged": 1,
+				"prayer": 120,
+				"defence": 120,
+				"hitpoints": 120
+			}
+		},
+		"price": 50000000,
+		"highalch": 50000000,
 		"customItemData": {
 			"cantDropFromMysteryBoxes": true
 		}
@@ -50934,14 +53842,14 @@
 			"attack_ranged": 0,
 			"defence_stab": 0,
 			"defence_slash": 1,
-			"defence_crush": 2,
+			"defence_crush": 1,
 			"defence_magic": 0,
 			"defence_ranged": 0,
 			"melee_strength": 0,
 			"ranged_strength": 0,
 			"magic_damage": 0,
 			"prayer": 0,
-			"slot": "hands",
+			"slot": "feet",
 			"requirements": {
 				"defence": 1
 			}
@@ -51072,7 +53980,8 @@
 		},
 		"price": 500000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -51104,7 +54013,8 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -51140,7 +54050,8 @@
 		},
 		"price": 100000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -51747,26 +54658,26 @@
 		"tradeable_on_ge": true,
 		"noteable": true,
 		"equipable": true,
-		"cost": 160,
-		"lowalch": 64,
-		"highalch": 96,
+		"cost": 80,
+		"lowalch": 32,
+		"highalch": 48,
 		"buy_limit": 125,
 		"equipment": {
 			"attack_stab": 0,
 			"attack_slash": 0,
 			"attack_crush": 0,
-			"attack_magic": -30,
-			"attack_ranged": -15,
-			"defence_stab": 15,
-			"defence_slash": 14,
-			"defence_crush": 9,
-			"defence_magic": -6,
-			"defence_ranged": 14,
+			"attack_magic": -21,
+			"attack_ranged": -11,
+			"defence_stab": 8,
+			"defence_slash": 7,
+			"defence_crush": 6,
+			"defence_magic": -4,
+			"defence_ranged": 7,
 			"melee_strength": 0,
 			"ranged_strength": 0,
 			"magic_damage": 0,
 			"prayer": 0,
-			"slot": "body",
+			"slot": "legs",
 			"requirements": {
 				"defence": 1
 			}
@@ -51911,7 +54822,8 @@
 		"buy_limit": 13000,
 		"price": 50000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{

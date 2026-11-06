@@ -1,4 +1,5 @@
 import type { MonkeyRumbleOptions } from '@/lib/bso/bsoTypes.js';
+import { defaultMaintenanceTimestamps, getGlobalMinigameBonus } from '@/lib/bso/commands/islandUpgrades.js';
 import {
 	fightingMessages,
 	getMonkeyPhrase,
@@ -59,6 +60,22 @@ export async function monkeyRumbleCommand(user: MUser, channelId: string): Comma
 		fightDuration = reduceNumByPercent(fightDuration, 17);
 		boosts.push('17% faster fights for gorilla rumble greegree');
 	}
+	if (user.hasEquippedOrInBank('Celestial pendant')) {
+		fightDuration = reduceNumByPercent(fightDuration, 10);
+		boosts.push('10% faster fights from Celestial pendant');
+	}
+
+	const rawUpgrades = (user.user.island_upgrades ?? {}) as any;
+	const islandMaint = rawUpgrades.maintenance ?? defaultMaintenanceTimestamps;
+	const islandAssign = rawUpgrades.assignment ?? null;
+	const globalMinigameBonus = getGlobalMinigameBonus(rawUpgrades, islandMaint, islandAssign);
+	if (globalMinigameBonus > 0) {
+		fightDuration = reduceNumByPercent(fightDuration, globalMinigameBonus * 100);
+		boosts.push(
+			`${(globalMinigameBonus * 100).toFixed(0)}% faster fights from Grand Conduit (Settlement Infrastructure)`
+		);
+	}
+
 	const quantity = Math.floor((await user.calcMaxTripLength('MonkeyRumble')) / fightDuration);
 	let duration = quantity * fightDuration;
 

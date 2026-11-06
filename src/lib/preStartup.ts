@@ -1,3 +1,5 @@
+import { loadDiscoBoxCounts } from '@/lib/bso/discoBloodbath.js';
+
 import type { ItemBank } from 'oldschooljs';
 
 import { CUSTOM_PRICE_CACHE } from '@/lib/cache.js';
@@ -41,6 +43,7 @@ export const preStartup = async () => {
 		GrandExchange.init(),
 		cacheGEPrices(),
 		syncCollectionLogSlotTable(),
+		loadDiscoBoxCounts(),
 		updateBadgeTable()
 	]);
 };

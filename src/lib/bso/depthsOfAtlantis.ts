@@ -77,13 +77,13 @@ maxRange.set('ammo', { item: BSOItem.OBSIDIAN_JAVELIN, quantity: 100_000 });
 
 export const maxMelee = new Gear({
 	cape: 'Tzkal cape',
-	ring: 'Ignis ring(i)',
-	head: 'Gorajan warrior helmet',
+	ring: 'Searcrown band',
+	head: 'Empyrean greathelm',
 	neck: "Brawler's hook necklace",
-	body: 'Gorajan warrior top',
-	hands: 'Gorajan warrior gloves',
-	legs: 'Gorajan warrior legs',
-	feet: 'Gorajan warrior boots',
+	body: 'Empyrean greatplate',
+	hands: 'Empyrean greatgauntlets',
+	legs: 'Empyrean greatgreaves',
+	feet: 'Empyrean greatsabaton',
 	'2h': 'Atlantean trident'
 });
 
@@ -382,6 +382,11 @@ export const DOARooms: AtlantisRoom[] = [
 				name: 'TzKal cape',
 				percent: 9,
 				has: user => user.gear.melee.hasEquipped('TzKal cape')
+			},
+			{
+				name: 'Searcrown band',
+				percent: 9,
+				has: user => user.gear.melee.hasEquipped('Searcrown band')
 			},
 			{
 				name: 'Ignis ring',

@@ -1,4 +1,9 @@
+import { BSOItem } from '@/lib/bso/BSOItem.js';
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
+import { ASSIGNMENT_TRIP_COSTS, ASSIGNMENT_TRIP_ITEM, getActiveAssignment } from '@/lib/bso/commands/islandUpgrades.js';
 import { tearsOfGuthixIronmanReqs, tearsOfGuthixSkillReqs } from '@/lib/bso/commands/tearsOfGuthixCommand.js';
+import { DISCO_EVENT_END_DATE, isDiscoEventActive } from '@/lib/bso/discoBloodbath.js';
+import { discoHandler } from '@/lib/bso/discoHandler.js';
 import { handleCrateSpawns } from '@/lib/bso/handleCrateSpawns.js';
 import { gods } from '@/lib/bso/minigames/divineDominion.js';
 import { mysteriousStepData } from '@/lib/bso/mysteryTrail.js';
@@ -9,8 +14,8 @@ import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skil
 import { RuneTable, WilvusTable, WoodTable } from '@/lib/bso/tables/seedTable.js';
 import { DougTable, PekyTable } from '@/lib/bso/tables/sharedTables.js';
 
-import { type ButtonBuilder, bold } from '@oldschoolgg/discord';
-import { getNextUTCReset, notEmpty, Time } from '@oldschoolgg/toolkit';
+import { type ButtonBuilder, bold, type EmbedBuilder } from '@oldschoolgg/discord';
+import { Emoji, getNextUTCReset, notEmpty, Time } from '@oldschoolgg/toolkit';
 import { MathRNG, randArrItem, randInt, roll } from 'node-rng';
 import { cryptoRng } from 'node-rng/crypto';
 import { Bank, EItem, itemID, toKMB } from 'oldschooljs';
@@ -39,7 +44,9 @@ import {
 	makeTearsOfGuthixButton
 } from '@/lib/util/interactions.js';
 import { hasSkillReqs, perHourChance } from '@/lib/util/smallUtils.js';
+import { readState } from '@/mahoji/commands/islandupgrade.js';
 import { alching } from '@/mahoji/commands/laps.js';
+import { handleTriggerArchon } from '@/mahoji/lib/abstracted_commands/archonCommand.js';
 import { isUsersDailyReady } from '@/mahoji/lib/abstracted_commands/dailyCommand.js';
 import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
 import { handleTriggerShootingStar } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
@@ -51,15 +58,29 @@ const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
 	'ClueCompletion'
 ];
 
-interface TripFinishEffectOptions {
+const BOOALA_BASE_DROPRATE = (Time.Hour / Time.Minute) * 25;
+const BOOALA_FINALE_DURATION = Time.Day * 3;
+
+function booalaDroprate(user: MUser, date = new Date()) {
+	let droprate = BOOALA_BASE_DROPRATE;
+	if (date.getDay() === 0 || date.getDay() === 6) droprate /= 2;
+	if (date.getMonth() === 9 && date.getDate() >= 25) droprate /= 2;
+	if (date.getTime() >= DISCO_EVENT_END_DATE.getTime() - BOOALA_FINALE_DURATION) {
+		droprate *= user.cl.has(BSOItem.BOOALA) ? 2 : 0.5;
+	}
+	return clAdjustedDroprate(user, BSOItem.BOOALA, droprate, 2);
+}
+
+export interface TripFinishEffectOptions {
 	data: ActivityTaskData;
 	user: MUser;
 	loot: Bank | null;
 	messages: string[];
 	components: ButtonBuilder[];
+	embeds: EmbedBuilder[];
 	lastDailyTimestamp: bigint | null;
 	lastTearsOfGuthixTimestamp: bigint | null;
-	perkTier: PerkTier | 0;
+	perkTier: PerkTier;
 	rng: RNGProvider;
 
 	// BSO
@@ -89,6 +110,27 @@ const tripFinishEffects: TripFinishEffect[] = [
 				}
 			}
 			return {};
+		}
+	},
+	{
+		name: 'Disco Bloodbath Raves',
+		fn: discoHandler
+	},
+	{
+		name: 'Halloween2026Pet',
+		fn: async ({ data, messages, user, rng }) => {
+			if (!isDiscoEventActive() || data.duration <= Time.Minute * 10) return;
+
+			const droprate = booalaDroprate(user);
+			const minutes = Math.floor(data.duration / Time.Minute);
+			for (let i = 0; i < minutes; i++) {
+				if (!rng.roll(droprate)) continue;
+				const loot = new Bank().add(BSOItem.BOOALA);
+				messages.push(
+					`\n${Emoji.Booala} BOO! A meandering, menacing,  miniature joins your minion. Why don't Koala start with an M? You received ${loot}.\n`
+				);
+				return { itemsToAddWithCL: loot };
+			}
 		}
 	},
 	{
@@ -496,6 +538,12 @@ const tripFinishEffects: TripFinishEffect[] = [
 		}
 	},
 	{
+		name: 'Archon',
+		fn: async ({ user, data, components }) => {
+			await handleTriggerArchon(user, data, components);
+		}
+	},
+	{
 		name: 'Open Casket Button',
 		fn: async ({ loot, components }) => {
 			const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
@@ -615,6 +663,67 @@ const tripFinishEffects: TripFinishEffect[] = [
 				itemsToAddWithCL: mysteriousLoot
 			};
 		}
+	},
+	{
+		name: 'Island Worker Focus Cost',
+		fn: async ({ user, data, messages }) => {
+			const { maintenance, assignment } = readState(user);
+			if (!assignment) return;
+			const active = getActiveAssignment(assignment, maintenance, Date.now());
+			if (!active) return;
+
+			const isBoss =
+				active === 'boss' &&
+				[
+					'MonsterKilling',
+					'GroupMonsterKilling',
+					'BossEvent',
+					'BurningDominion',
+					'Archon',
+					'KalphiteKing',
+					'Moktang',
+					'Naxxus',
+					'VasaMagus',
+					'Ignecarus',
+					'KingGoldemar'
+				].includes(data.type);
+
+			const isMinigame =
+				active === 'minigame' &&
+				[
+					'Minigame',
+					'BarbarianAssault',
+					'GiantsFoundry',
+					'GuardiansOfTheRift',
+					'PestControl',
+					'FistOfGuthix',
+					'MonkeyRumble',
+					'StealingCreation',
+					'TinkeringWorkshop',
+					'BaxtorianBathhouses',
+					'OuraniaDeliveryService',
+					'TuraelsTrials'
+				].includes(data.type);
+
+			const isGathering =
+				active === 'gathering' &&
+				['Mining', 'ArchaicMining', 'Woodcutting', 'AncientMycology', 'Fishing', 'GemstoneFishing'].includes(
+					data.type
+				);
+
+			if (!isBoss && !isMinigame && !isGathering) return;
+
+			const costItem = ASSIGNMENT_TRIP_ITEM[active];
+			const costQty = ASSIGNMENT_TRIP_COSTS[active];
+			const costBank = new Bank().add(costItem, costQty);
+
+			if (user.owns(costBank)) {
+				messages.push(`Focused workers: Removed ${costQty}x ${costItem}`);
+				return {
+					itemsToRemove: costBank
+				};
+			}
+		}
 	}
 ];
 
@@ -691,6 +800,7 @@ export async function handleTripFinish(
 	const messages: string[] = inputMessages ?? [];
 
 	const components: ButtonBuilder[] = [];
+	const embeds: EmbedBuilder[] = [];
 	components.push(makeRepeatTripButton());
 
 	const portents = await getAllPortentCharges(user);
@@ -705,6 +815,7 @@ export async function handleTripFinish(
 			user,
 			loot: loot ?? null,
 			components,
+			embeds,
 			messages,
 			portents,
 			lastDailyTimestamp: last_daily_timestamp,
@@ -722,7 +833,6 @@ export async function handleTripFinish(
 			duration
 		});
 	}
-
 	if (itemsToAddWithCL.length > 0 || itemsToRemove.length > 0) {
 		await user.transactItems({ itemsToAdd: itemsToAddWithCL, collectionLog: true, itemsToRemove });
 	}
@@ -738,6 +848,7 @@ export async function handleTripFinish(
 	if (components.length > 0) {
 		message.addComponents(components);
 	}
+	for (const embed of embeds) message.addEmbed(embed);
 
 	message.addAllowedUserMentions([user.id]);
 	if ('users' in data) {

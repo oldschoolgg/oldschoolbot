@@ -17,7 +17,7 @@ if (globalConfig.isProduction) {
 }
 
 export const CHAT_PET_COOLDOWN_CACHE = new LRUCache<string, number>({ max: 2000 });
-export const giveawayCache = new LRUCache<number, Giveaway>({
+export const giveawayCache = new LRUCache<string, Giveaway>({
 	max: 10,
 	ttl: Time.Second * 10,
 	ttlAutopurge: true,

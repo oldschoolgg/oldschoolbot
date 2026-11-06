@@ -38,8 +38,12 @@ const specialSoldItems = new Map([
 const MAX_BANK_CONFIRMATION_LENGTH = 1600;
 const DEFAULT_SELL_MAX_SIZE = 50;
 
-function totalDifferentItemsInBank(bank: Bank): number {
-	return bank.length;
+function totalQuantityInBank(bank: Bank): number {
+	return bank.items().reduce((sum, [, qty]) => sum + qty, 0);
+}
+
+function formatBankItemSummary(bank: Bank): string {
+	return `${bank.length.toLocaleString()} different items, ${totalQuantityInBank(bank).toLocaleString()} total quantity`;
 }
 
 function itemsExcludedFromSell(user: MUser): number[] {
@@ -49,13 +53,14 @@ function itemsExcludedFromSell(user: MUser): number[] {
 
 function sellConfirmationMessage(user: MUser, bankToSell: Bank, totalValue: string): string {
 	const bankToSellStr = bankToSell.toString();
+	const itemSummary = formatBankItemSummary(bankToSell);
 	if (bankToSellStr.length <= MAX_BANK_CONFIRMATION_LENGTH) {
-		return `${user}, please confirm you want to sell ${bankToSellStr} for **${totalValue}**.`;
+		return `${user}, please confirm you want to sell ${bankToSellStr} (${itemSummary}) for **${totalValue}**.`;
 	}
 
 	return `${user}
 # ❗ **WARNING**
-**You are about to sell ${totalDifferentItemsInBank(bankToSell).toLocaleString()} different items, for ${totalValue}, are you sure?**
+**You are about to sell ${itemSummary}, for ${totalValue}, are you sure?**
 Use \`/sell preview:true\` to see the full list before selling.
 
 Selling: ${ellipsize(bankToSellStr, MAX_BANK_CONFIRMATION_LENGTH)}`;
@@ -334,10 +339,10 @@ export const sellCommand = defineCommand({
 		]);
 
 		if (user.isIronman) {
-			return `Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(totalPrice)})**`;
+			return `Sold ${bankToSell} (${formatBankItemSummary(bankToSell)}) for **${totalPrice.toLocaleString()}gp (${toKMB(totalPrice)})**`;
 		}
 		return interaction.returnStringOrFile(
-			`Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(
+			`Sold ${bankToSell} (${formatBankItemSummary(bankToSell)}) for **${totalPrice.toLocaleString()}gp (${toKMB(
 				totalPrice
 			)})** (${taxRatePercent}% below market price). ${
 				hasSkipper

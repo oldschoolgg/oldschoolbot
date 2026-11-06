@@ -1,6 +1,7 @@
 import { bsoMinigamesCommand } from '@/lib/bso/commands/bsominigames.js';
 import { completionCommand } from '@/lib/bso/commands/completion.js';
 import { dgCommand } from '@/lib/bso/commands/dg.js';
+import { discoCommand } from '@/lib/bso/commands/disco.js';
 import { divinationCommand } from '@/lib/bso/commands/divination.js';
 import { dropRatesCommand } from '@/lib/bso/commands/droprates.js';
 import { icCommand } from '@/lib/bso/commands/ic.js';
@@ -51,6 +52,7 @@ import { gpCommand } from '@/mahoji/commands/gp.js';
 import { helpCommand } from '@/mahoji/commands/help.js';
 import { huntCommand } from '@/mahoji/commands/hunt.js';
 import { inviteCommand } from '@/mahoji/commands/invite.js';
+import { islandUpgradeCommand } from '@/mahoji/commands/islandupgrade.js';
 import { minionKCommand } from '@/mahoji/commands/k.js';
 import { killCommand } from '@/mahoji/commands/kill.js';
 import { lapsCommand } from '@/mahoji/commands/laps.js';
@@ -163,6 +165,7 @@ export const allCommandsDONTIMPORT: AnyCommand[] = [
 	gearPresetsCommand,
 	bsoMinigamesCommand,
 	completionCommand,
+	discoCommand,
 	dgCommand,
 	divinationCommand,
 	dropRatesCommand,
@@ -176,7 +179,8 @@ export const allCommandsDONTIMPORT: AnyCommand[] = [
 	ratesCommand,
 	tamesCommand,
 	testerShopCommand,
-	bsoLeaguesCommand
+	bsoLeaguesCommand,
+	islandUpgradeCommand
 ];
 
 if (!globalConfig.isProduction && testPotatoCommand) {

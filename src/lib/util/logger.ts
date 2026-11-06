@@ -114,7 +114,7 @@ function logError(args: string | Error | RichErrorLogArgs, ctx?: LogContext): vo
 
 	const unknownInteraction = 'code' in err && err.code === 10062;
 
-	if (!unknownInteraction && interaction) {
+	if (err instanceof UserError && !unknownInteraction && interaction) {
 		Logging.logDebug('UserError encountered, sending message to user.', {
 			error: err.message,
 			user_id: interaction.userId
@@ -133,7 +133,7 @@ function logError(args: string | Error | RichErrorLogArgs, ctx?: LogContext): vo
 			requestBody.files = err.requestBody.files.map(file => ({ name: file.name }));
 		}
 		if (err.requestBody.json) {
-			requestBody.json = String(err.requestBody.json).slice(0, 10_000);
+			requestBody.json = JSON.stringify(err.requestBody.json).slice(0, 10_000);
 		}
 		context.requestBody = requestBody;
 	}

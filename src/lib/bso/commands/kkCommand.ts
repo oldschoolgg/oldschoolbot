@@ -1,5 +1,6 @@
 import { calcBossFood } from '@/lib/bso/calcBossFood.js';
-import { gorajanWarriorOutfit, torvaOutfit } from '@/lib/bso/collection-log/main.js';
+import { empyreanOutfit, gorajanWarriorOutfit, torvaOutfit } from '@/lib/bso/collection-log/main.js';
+import { getGlobalBossSpeedBonus } from '@/lib/bso/commands/islandUpgrades.js';
 import { KalphiteKingMonster } from '@/lib/bso/monsters/bosses/KalphiteKing.js';
 import { getKalphiteKingGearStats } from '@/lib/bso/util/getKalphiteKingGearStats.js';
 
@@ -13,6 +14,7 @@ import { Gear } from '@/lib/structures/Gear.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import type { BossActivityTaskOptions } from '@/lib/types/minions.js';
 import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
+import { readState } from '@/mahoji/commands/islandupgrade.js';
 
 async function checkReqs(users: MUser[], monster: KillableMonster, quantity: number): Promise<string | undefined> {
 	// Check if every user has the requirements for this monster.
@@ -152,6 +154,12 @@ export async function kkCommand(
 			msgs.push(`${perUserPercent}% for Gorajan warrior`);
 		}
 
+		if (meleeGear.hasEquipped(empyreanOutfit, true, true)) {
+			const perUserPercent = round(25 / users.length, 2);
+			effectiveTime = reduceNumByPercent(effectiveTime, perUserPercent);
+			msgs.push(`${perUserPercent}% for Empyrean great armor`);
+		}
+
 		if (data.gearStats.attack_crush < 200) {
 			const percent = 10;
 			effectiveTime = increaseNumByPercent(effectiveTime, percent);
@@ -237,6 +245,14 @@ export async function kkCommand(
 		} else if (data.kc > 50) {
 			effectiveTime = reduceNumByPercent(effectiveTime, 5);
 			msgs.push(`5% for ${user.usernameOrMention} over 50 kc`);
+		}
+
+		const { upgrades, maintenance, assignment } = readState(user);
+		const conduitBonus = getGlobalBossSpeedBonus(upgrades, maintenance, assignment);
+		if (conduitBonus > 0) {
+			const perUserPercent = round((conduitBonus * 100) / users.length, 2);
+			effectiveTime = reduceNumByPercent(effectiveTime, perUserPercent);
+			msgs.push(`${perUserPercent}% for Grand Conduit - Warcamp`);
 		}
 
 		debugStr += `${msgs.join(', ')}. `;

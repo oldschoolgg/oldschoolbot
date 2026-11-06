@@ -126,6 +126,7 @@ const source: [string, (string | number)[]][] = [
 	['Necklace of anguish', ['Necklace of anguish (or)']],
 	['Occult necklace', ['Occult necklace (or)']],
 	['Dragon hunter crossbow', ['Dragon hunter crossbow (t)', 'Dragon hunter crossbow (b)']],
+	['Dragon hunter lance', ['Dragonbane glaive']],
 	['Armadyl crossbow', ['Zaryte crossbow']],
 	['Dragon pickaxe', ['Dragon pickaxe(or)', 12_797, 'Crystal pickaxe', '3rd age pickaxe', 'Infernal pickaxe']],
 	['Steam battlestaff', [12_795]],
@@ -239,9 +240,10 @@ const source: [string, (string | number)[]][] = [
 		]
 	],
 	['Guthix cape', ['Saradomin cape', 'Zamorak cape', 'Guthix max cape', 'Saradomin max cape', 'Zamorak max cape']],
-	['Dragonfire ward', [22_003]],
-	['Dragonfire shield', [11_284]],
-	['Ancient wyvern shield', [21_634]],
+	['Dragonfire ward', [22_003, 'Dragonbane aegis', 'Dragonbane aegis (archaic)']],
+	['Dragonfire shield', [11_284, 'Dragonbane aegis', 'Dragonbane aegis (archaic)']],
+	['Dragonbane aegis', ['Dragonbane aegis (archaic)']],
+	['Ancient wyvern shield', [21_634, 'Dragonbane aegis', 'Dragonbane aegis (archaic)']],
 	['Avernic defender', ['Avernic defender (l)', "Ghommal's avernic defender 5", "Ghommal's avernic defender 6"]],
 	['Void melee helm', ['Void melee helm (l)', 'Void melee helm (or)']],
 	['Void mage helm', ['Void mage helm (l)', 'Void mage helm (or)']],
@@ -315,11 +317,11 @@ const source: [string, (string | number)[]][] = [
 			'Void staff (u)'
 		]
 	],
-	['Torva full helm', ['Gorajan warrior helmet', 'Infernal slayer helmet(i)']],
-	['Torva platebody', ['Gorajan warrior top']],
-	['Torva platelegs', ['Gorajan warrior legs']],
-	['Torva gloves', ['Gorajan warrior gloves']],
-	['Torva boots', ['Gorajan warrior boots']],
+	['Torva full helm', ['Gorajan warrior helmet', 'Infernal slayer helmet(i)', 'Empyrean greathelm']],
+	['Torva platebody', ['Gorajan warrior top', 'Empyrean greatplate']],
+	['Torva platelegs', ['Gorajan warrior legs', 'Empyrean greatgreaves']],
+	['Torva gloves', ['Gorajan warrior gloves', 'Empyrean greatgauntlets']],
+	['Torva boots', ['Gorajan warrior boots', 'Empyrean greatsabaton']],
 	['Virtus mask', ['Gorajan occult helmet', 'Infernal slayer helmet(i)']],
 	['Virtus robe top', ['Gorajan occult top']],
 	['Virtus robe legs', ['Gorajan occult legs']],
@@ -418,6 +420,9 @@ const source: [string, (string | number)[]][] = [
 
 	// Pets
 	['Patricia', ['Lydia']],
+	['Partycrab', ['Mona']],
+	['Seer', ['Black swan']],
+	['Magnabbit', ['Radiant Magnabbit']],
 
 	// Tame gear
 	['Abyssal jibwings', ['Abyssal jibwings (e)']],

@@ -1,3 +1,5 @@
+import { dyedItems } from '@/lib/bso/dyedItems.js';
+
 import { itemID } from 'oldschooljs';
 import { expect, test } from 'vitest';
 
@@ -26,4 +28,12 @@ test('inverted master capes', () => {
 test('Patricia matches Lydia as a one-way similar pet', () => {
 	expect(getSimilarItems(itemID('Patricia'))).toContain(itemID('Lydia'));
 	expect(getSimilarItems(itemID('Lydia'))).not.toContain(itemID('Patricia'));
+});
+
+test('Dwarven warhammer cosmetics count as Dwarven warhammer', () => {
+	const dwarvenWarhammer = dyedItems.find(i => i.baseItem.id === itemID('Dwarven warhammer'));
+	expect(dwarvenWarhammer).toBeDefined();
+	expect(getSimilarItems(itemID('Dwarven warhammer'))).toEqual(
+		expect.arrayContaining(dwarvenWarhammer!.dyedVersions.map(i => i.item.id))
+	);
 });

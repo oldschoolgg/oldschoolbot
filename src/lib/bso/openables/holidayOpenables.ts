@@ -1,3 +1,4 @@
+import { holidayOpenableItemIDs } from '@/lib/bso/discoBloodbath.js';
 import {
 	BeachMysteryBoxTable,
 	IndependenceBoxTable,
@@ -64,7 +65,77 @@ const HalloweenCrackerTable = new LootTable()
 	.add('Zombie cow plushie')
 	.add('Deathtouched tart');
 
+export const LazyMysteryBoxTable = new LootTable()
+	.add('Two of Hearts')
+	.add('Idle idol')
+	.add('Trust fund tiara')
+	.add('Count Napula');
+
+export const DiscoNormalLoot = new LootTable()
+	.add('Smorkey painting')
+	.add('10% Pumpkinhead pie')
+	.add('Roosted newt')
+	.tertiary(50, 'Slothario')
+	.tertiary(100, new LootTable().add('Skrink box').add('Skrod Box'));
+
+export const SkrinkBoxTable = new LootTable()
+	.add('Disco bloodbath')
+	.add('Skrinkle')
+	.add('Skrink mink')
+	.add('Resting rich face')
+	.add('Lazily rollers')
+	// Note: Partyhat should be rare / chase, so depending on box rarity, this number might change a lot
+	.tertiary(10, 'Premierekat')
+	.tertiary(50, 'Partytimehat');
+
+export const SkrodBoxTable = new LootTable()
+	.add('Disco bloodbath')
+	.add('Disco infernowl')
+	.add('Afterparty afterlife')
+	.add('Glam jam platformers')
+	.add('Couch potato sceptre')
+	// Note: Partyhat should be rare / chase, so depending on box rarity, this number might change a lot
+	.tertiary(10, 'Premierekat')
+	.tertiary(50, 'Partytimehat');
+
+export const FealtyBoxTable = new LootTable().add('Chill').add('Gross domestic bling').add('Millionaire mink');
+
 export const holidayOpenables: UnifiedOpenable[] = [
+	...(
+		[
+			['Skrink box', SkrinkBoxTable],
+			['Skrod box', SkrodBoxTable]
+		] as const
+	).map(
+		([name, table]): UnifiedOpenable => ({
+			name,
+			id: itemID(name),
+			openedItem: Items.getOrThrow(name),
+			aliases: [name.toLowerCase()],
+			output: table,
+			allItems: table.allItems,
+			excludeFromOpenAll: true,
+			smokeyApplies: true
+		})
+	),
+	...(
+		[
+			['Lazy Mystery Box', LazyMysteryBoxTable],
+			['Fealty Mystery Box', FealtyBoxTable]
+		] as const
+	).map(
+		([name, table]): UnifiedOpenable => ({
+			name,
+			id: itemID(name),
+			openedItem: Items.getOrThrow(name),
+			aliases: [name.toLowerCase()],
+			output: table,
+			allItems: table.allItems,
+			excludeFromOpenAll: true,
+			smokeyApplies: false,
+			alwaysConfirm: true
+		})
+	),
 	{
 		name: 'Royal mystery box',
 		id: itemID('Royal mystery box'),
@@ -72,7 +143,8 @@ export const holidayOpenables: UnifiedOpenable[] = [
 		aliases: ['royal mystery box'],
 		output: RoyalMysteryBoxTable,
 		allItems: RoyalMysteryBoxTable.allItems,
-		excludeFromOpenAll: true
+		excludeFromOpenAll: true,
+		alwaysConfirm: true
 	},
 	{
 		name: 'Beach mystery box',
@@ -81,7 +153,8 @@ export const holidayOpenables: UnifiedOpenable[] = [
 		aliases: ['Beach mystery box'],
 		output: BeachMysteryBoxTable,
 		allItems: BeachMysteryBoxTable.allItems,
-		excludeFromOpenAll: true
+		excludeFromOpenAll: true,
+		alwaysConfirm: true
 	},
 	{
 		name: 'Independence box',
@@ -90,7 +163,8 @@ export const holidayOpenables: UnifiedOpenable[] = [
 		aliases: ['independence box'],
 		output: IndependenceBoxTable,
 		allItems: IndependenceBoxTable.allItems,
-		excludeFromOpenAll: true
+		excludeFromOpenAll: true,
+		alwaysConfirm: true
 	},
 	{
 		name: 'Independence Day 2 Box',
@@ -99,7 +173,8 @@ export const holidayOpenables: UnifiedOpenable[] = [
 		aliases: ['independence day 2 box', 'id2 box'],
 		output: IndependenceDay2BoxTable,
 		allItems: IndependenceDay2BoxTable.allItems,
-		excludeFromOpenAll: true
+		excludeFromOpenAll: true,
+		alwaysConfirm: true
 	},
 	{
 		name: 'Spooky box',
@@ -129,3 +204,7 @@ export const holidayOpenables: UnifiedOpenable[] = [
 		smokeyApplies: false
 	}
 ];
+
+for (const { allItems } of holidayOpenables) {
+	for (const itemID of allItems) holidayOpenableItemIDs.add(itemID);
+}

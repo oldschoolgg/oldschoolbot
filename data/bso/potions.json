@@ -81,6 +81,10 @@
 		]
 	},
 	{
+		"name": "Brimstone elixir",
+		"items": ["Brimstone elixir"]
+	},
+	{
 		"name": "Combat mix",
 		"items": ["Combat mix(1)", "Combat mix(2)"]
 	},

@@ -775,7 +775,7 @@ const allTableCommands: TestCommand[] = [
 		cmd: async user => {
 			await global.prisma!.giveaway.create({
 				data: {
-					id: randInt(1_000_000, 9_999_999),
+					id: mockedId(),
 					channel_id: '1111111111111',
 					start_date: new Date(),
 					finish_date: new Date(Date.now() + 60 * 60 * 1000),

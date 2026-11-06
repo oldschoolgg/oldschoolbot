@@ -1,4 +1,11 @@
 import {
+	addToLotteryBank,
+	addToLotteryPrizePool,
+	getLotteryBank,
+	isLotteryActive,
+	LOTTERY_TICKET_ITEM
+} from '@/lib/bso/commands/lottery.js';
+import {
 	allLeagueTasks,
 	analyzeLeaguesCompletedTaskIDs,
 	cleanupDuplicateLeaguesClaims,
@@ -11,9 +18,11 @@ import {
 	validateStoredLeaguesTasks,
 	verifyLeaguesTasksForUser
 } from '@/lib/bso/leagues/leagues.js';
+import { LazyMysteryBoxTable, SkrinkBoxTable, SkrodBoxTable } from '@/lib/bso/openables/holidayOpenables.js';
+import { BeachMysteryBoxTable, FestivePresentTable, RoyalMysteryBoxTable } from '@/lib/bso/openables/tables.js';
 import { getLydiaQuote } from '@/lib/bso/summerDays.js';
 
-import { dateFm, EmbedBuilder } from '@oldschoolgg/discord';
+import { dateFm, EmbedBuilder, type SpecialResponse } from '@oldschoolgg/discord';
 import type { GearSetup } from '@oldschoolgg/gear';
 import {
 	calcPerHour,
@@ -28,6 +37,7 @@ import {
 	Time,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
+import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { gracefulExit } from 'exit-hook';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
@@ -40,11 +50,27 @@ import {
 	getBitFieldData,
 	listBitFields
 } from '@/lib/bitFieldUtils.js';
+import { giveawayCache } from '@/lib/cache.js';
+import { CanvasModule } from '@/lib/canvas/CanvasModule.js';
+import { canvasToBuffer, createCanvas } from '@/lib/canvas/canvasUtil.js';
+import { GeImageGenerator } from '@/lib/canvas/geImage.js';
+import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 import { BadgesEnum, BitField, BitFieldData, badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
-import { GrandExchange } from '@/lib/grandExchange.js';
+import { customItems } from '@/lib/customItems/util.js';
+import { allDcSet } from '@/lib/data/Collections.js';
+import { type GEListingWithTransactions, GrandExchange, geListingToString } from '@/lib/grandExchange.js';
+import { doMenuWrapper } from '@/lib/menuWrapper.js';
 import { syncCustomPrices } from '@/lib/preStartup.js';
 import { countUsersWithItemInCl } from '@/lib/rawSql.js';
 import { sorts } from '@/lib/sorts.js';
+import {
+	runStaffBestowReplenishment,
+	type StaffBestowPeriod,
+	type StaffGrants,
+	ZStaffGrants
+} from '@/lib/staffBestow.js';
+import { dmCyrAudit, makeArgAuditFiles, sendCyrCriticalBotLog } from '@/lib/util/cyrAudit.js';
+import { generateGiveawayContent } from '@/lib/util/giveaway.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { safeMessage } from '@/lib/util/smallUtils.js';
@@ -57,6 +83,7 @@ export const gifs = [
 ];
 
 const leaguesTaskNameByID = new Map(allLeagueTasks.map(task => [task.id, task.name] as const));
+const adminGiveItemDestinations = ['Lottery Bank'] as const;
 
 function formatLeaguesTaskList(taskIDs: number[]) {
 	if (taskIDs.length === 0) return 'None';
@@ -111,6 +138,16 @@ function sanitizeTSVCell(value: string | number) {
 	return value.toString().replaceAll('\t', ' ').replaceAll('\n', ' ').replaceAll('\r', ' ');
 }
 
+function sanitizeCSVCell(value: string | number | bigint) {
+	const str = value.toString();
+	if (!/[",\n\r]/.test(str)) return str;
+	return `"${str.replaceAll('"', '""')}"`;
+}
+
+function toBigInt(value: string | number | bigint) {
+	return typeof value === 'bigint' ? value : BigInt(value);
+}
+
 async function fetchUsernames(userIDs: string[]) {
 	const users = await prisma.user.findMany({
 		where: {
@@ -126,6 +163,515 @@ async function fetchUsernames(userIDs: string[]) {
 
 	return new Map(users.map(user => [user.id, user.username ?? 'Unknown']));
 }
+
+interface AdminRunnableCommandArg {
+	name: string;
+	description: string;
+	required?: boolean;
+}
+
+interface AdminRunnableCommand {
+	name: string;
+	description: string;
+	args: AdminRunnableCommandArg[];
+	run: (options: { arg1?: string; arg2?: string; adminUser: MUser; rng: RNGProvider }) => Promise<SendableMessage>;
+}
+
+async function findUsersWithLotteryTickets() {
+	return prisma.$queryRawUnsafe<{ id: string; quantity: string | number | bigint }[]>(`
+SELECT id, (bank->>'${LOTTERY_TICKET_ITEM.id}')::bigint AS quantity
+FROM users
+WHERE COALESCE((bank->>'${LOTTERY_TICKET_ITEM.id}')::bigint, 0) > 0
+ORDER BY quantity DESC, id ASC;`);
+}
+
+function formatAdminRunnableCommand(command: AdminRunnableCommand) {
+	const args =
+		command.args.length === 0
+			? 'No arguments.'
+			: command.args
+					.map(arg => `- ${arg.name}${arg.required ? ' (required)' : ' (optional)'}: ${arg.description}`)
+					.join('\n');
+
+	return `**${command.name}**
+${command.description}
+
+Args:
+${args}
+
+Set \`exec: true\` to execute this command.`;
+}
+
+function findDiscontinuedStaffBestowItems(schedule: StaffGrants) {
+	const found = new Map<number, string[]>();
+
+	for (const [period, sources] of Object.entries(schedule)) {
+		if (!sources) continue;
+		for (const [source, drops] of Object.entries(sources)) {
+			for (const [dropIndex, drop] of drops.entries()) {
+				for (const itemID of Object.keys(drop.bank)) {
+					const id = Number(itemID);
+					if (!allDcSet.has(id) || !customItems.includes(id)) continue;
+					const item = Items.getItem(id);
+					const itemName = item ? `${item.name} (${id})` : itemID;
+					const locations = found.get(id) ?? [];
+					locations.push(`${period}.${source}[${dropIndex}].bank: ${itemName}`);
+					found.set(id, locations);
+				}
+			}
+		}
+	}
+
+	return [...found.values()].flat();
+}
+
+async function generateAdminGEListingsImage({
+	user,
+	listingData,
+	unlockedSlots,
+	trim
+}: {
+	user: MUser;
+	listingData: GEListingWithTransactions[];
+	unlockedSlots: number;
+	trim?: true;
+}) {
+	await CanvasModule.waitTillReady();
+	if (!GeImageGenerator.ready) await GeImageGenerator.init();
+
+	const rowLength = 4;
+	const startY = 78;
+	const slotCount =
+		Math.ceil(
+			(trim ? Math.max(listingData.length, rowLength) : Math.max(listingData.length, unlockedSlots)) / rowLength
+		) * rowLength;
+	const rowCount = Math.max(1, slotCount / rowLength);
+	const height = startY + rowCount * GeImageGenerator.geSlotOpen!.height + (rowCount - 1) * 10 + 10;
+	const canvas = new OSRSCanvas({ width: GeImageGenerator.geInterface!.width, height });
+	const ctx = canvas.ctx;
+	const interfaceImage = GeImageGenerator.geInterface!;
+	const bodyHeight = interfaceImage.height - 38;
+
+	for (let y = 34; y < canvas.height - 3; y += bodyHeight) {
+		const drawHeight = Math.min(bodyHeight, canvas.height - 3 - y);
+		ctx.drawImage(interfaceImage, 4, 34, canvas.width - 8, drawHeight, 4, y, canvas.width - 8, drawHeight);
+	}
+	ctx.drawImage(interfaceImage, 0, 0, canvas.width, 34, 0, 0, canvas.width, 34);
+	ctx.fillStyle = '#4b463c';
+	ctx.fillRect(4, 4, canvas.width - 8, 26);
+	ctx.fillStyle = '#1d1b18';
+	ctx.fillRect(0, 31, canvas.width, 3);
+	ctx.fillRect(0, canvas.height - 3, canvas.width, 3);
+	ctx.fillRect(0, 0, 3, canvas.height);
+	ctx.fillRect(canvas.width - 3, 0, 3, canvas.height);
+
+	const title = `${user.username}'s Listings`;
+	const slots = `Slots Used: ${listingData.length} of ${unlockedSlots}`;
+	const timestamp = new Date()
+		.toISOString()
+		.replace('T', ' ')
+		.replace(/\.\d{3}Z$/, '');
+	const userID = `ID: ${user.id}`;
+	canvas.drawTitleText({ text: title, x: 16, y: 20 });
+	canvas.drawTitleText({ text: slots, x: canvas.width - 16 - canvas.measureTextWidth(slots, 'Bold'), y: 20 });
+	canvas.drawTitleText({ text: timestamp, x: 16, y: 56 });
+	canvas.drawTitleText({ text: userID, x: canvas.width - 16 - canvas.measureTextWidth(userID, 'Bold'), y: 56 });
+
+	await GeImageGenerator.addInterfaceSlots(canvas, listingData, {
+		unlockedSlots,
+		trim,
+		rowLength,
+		startY,
+		user
+	});
+
+	return canvas.toScaledOutput(2);
+}
+
+const adminRunnableCommands: AdminRunnableCommand[] = [
+	{
+		name: 'view_ge_listings',
+		description: "Shows a user's active Grand Exchange listings in one image.",
+		args: [
+			{
+				name: 'userId',
+				description: 'The user in Discord ID format.',
+				required: true
+			},
+			{
+				name: 'view',
+				description: 'Use "all" to include recent completed listings.'
+			}
+		],
+		run: async ({ arg1, arg2, adminUser }) => {
+			if (!arg1 || !isValidDiscordSnowflake(arg1)) return 'Not a valid User ID.';
+
+			const showAll = arg2 === 'all';
+			const isAdmin = adminUser.isAdmin;
+			const user = await mUserFetch(arg1);
+			const activeListings = await prisma.gEListing.findMany({
+				where: {
+					user_id: user.id,
+					quantity_remaining: {
+						gt: 0
+					},
+					fulfilled_at: null,
+					cancelled_at: null
+				},
+				include: {
+					buyTransactions: true,
+					sellTransactions: true
+				},
+				orderBy: {
+					created_at: 'desc'
+				}
+			});
+			const recentInactiveListings = showAll
+				? await prisma.gEListing.findMany({
+						where: {
+							user_id: user.id,
+							...(isAdmin ? {} : { cancelled_at: null }),
+							OR: [
+								{
+									fulfilled_at: {
+										not: null
+									}
+								},
+								{
+									quantity_remaining: 0
+								},
+								...(isAdmin
+									? [
+											{
+												cancelled_at: {
+													not: null
+												}
+											}
+										]
+									: [])
+							]
+						},
+						include: {
+							buyTransactions: true,
+							sellTransactions: true
+						},
+						orderBy: {
+							created_at: 'desc'
+						},
+						take: 5
+					})
+				: [];
+			const slots = await GrandExchange.calculateSlotsOfUser(user);
+			const activeListingText = activeListings.length
+				? (
+						await Promise.all(
+							activeListings.map(async listing => {
+								const buyLimit = await GrandExchange.checkBuyLimitForListing(listing);
+								return geListingToString(listing, buyLimit);
+							})
+						)
+					).join('\n')
+				: '-- No Listings --';
+			const recentInactiveListingText = recentInactiveListings.length
+				? recentInactiveListings.map(i => geListingToString(i)).join('\n')
+				: '-- No Listings --';
+			const listingSections = [
+				`**Active Listings**\n${activeListingText}`,
+				`**Recent ${isAdmin ? 'Fulfilled/Cancelled' : 'Fulfilled'} Listings**\n${recentInactiveListingText}`
+			];
+
+			return {
+				embeds: showAll ? [new EmbedBuilder().setDescription(listingSections.join('\n\n'))] : [],
+				files: [
+					{
+						name: 'ge-listings.png',
+						buffer: await generateAdminGEListingsImage({
+							user,
+							listingData: activeListings,
+							unlockedSlots: slots.slots,
+							...(!showAll ? { trim: true } : {})
+						})
+					}
+				]
+			};
+		}
+	},
+	{
+		name: 'tax_gp',
+		description: 'Tax eligible users by a percentage while preserving the configured GP floor.',
+		args: [
+			{
+				name: 'taxPercent',
+				description: 'Tax rate as a decimal percentage, from 0 through 0.02 (for example, 0.005).',
+				required: true
+			},
+			{
+				name: 'taxFloor',
+				description: 'Minimum GP balance after tax; at least 1,000,000.',
+				required: false
+			}
+		],
+		run: async ({ arg1, arg2, adminUser }) => {
+			if (!adminUser.isAdmin) return 'You must be an admin to tax GP.';
+			if (!arg1) return 'taxPercent is required.';
+
+			const taxPercent = Number(arg1);
+			if (!Number.isFinite(taxPercent) || taxPercent < 0 || taxPercent > 0.02) {
+				return 'taxPercent must be a decimal from 0 through 0.02.';
+			}
+			if (arg2 && (!/^\d+$/.test(arg2) || BigInt(arg2) < 1_000_000n)) {
+				return 'taxFloor must be a whole number of at least 1,000,000 GP.';
+			}
+			const taxFloor = arg2 ? BigInt(arg2) : 1_000_000_000n;
+
+			const rows = await prisma.$queryRaw<{ user_id: string; amount: bigint }[]>`
+				WITH eligible AS (
+					SELECT id, "GP" AS pre_tax_gp, floor("GP" * ${taxPercent}::numeric)::bigint AS amount
+					FROM users
+					WHERE "GP" > ${taxFloor}::numeric / (1 - ${taxPercent}::numeric)
+				), taxed AS (
+					UPDATE users AS u
+					SET "GP" = u."GP" - eligible.amount
+					FROM eligible
+					WHERE u.id = eligible.id
+					RETURNING u.id, u."GP" AS post_tax_gp
+				)
+				INSERT INTO gp_tax_history (
+					user_id, instance_id, tax_percent, tax_floor, pre_tax_gp, post_tax_gp, amount
+				)
+				SELECT
+					taxed.id,
+					${globalConfig.clientID},
+					${taxPercent}::numeric,
+					${taxFloor},
+					eligible.pre_tax_gp,
+					taxed.post_tax_gp,
+					eligible.amount
+				FROM taxed
+				JOIN eligible ON eligible.id = taxed.id
+				RETURNING user_id, amount;
+			`;
+
+			const totalTaxed = rows.reduce((total, row) => total + row.amount, 0n);
+			return `Taxed ${rows.length.toLocaleString()} users for ${totalTaxed.toLocaleString()} GP.`;
+		}
+	},
+	{
+		name: 'show_bestow_bank',
+		args: [
+			{
+				name: 'userId',
+				description: 'The user in Discord ID format',
+				required: true
+			}
+		],
+		description: `Shows a user's bestow bank.`,
+		run: async ({ arg1, adminUser, rng }) => {
+			arg1 = arg1 ?? adminUser.id;
+			if (!isValidDiscordSnowflake(arg1)) {
+				return 'Not a valid User ID';
+			}
+			if (!adminUser.isAdmin && !adminUser.isGameHacker) {
+				return rng.pick(gifs);
+			}
+			const user = await mUserFetch(arg1);
+			if (!user.isMod && !user.isContributor && !user.isWikiContrib) {
+				return `That player can't bestow items on anyone`;
+			}
+
+			return {
+				files: [
+					await makeBankImage({
+						bank: new Bank((user.user.rp_bestow_bank ?? {}) as ItemBank),
+						title: `${user.username}'s Bestow Bank`
+					})
+				]
+			};
+		}
+	},
+	{
+		name: 'trigger_bestow_cycle',
+		description: 'Triggers one of the staff bestow replenishment cycles.',
+		args: [
+			{
+				name: 'cycle',
+				description: 'The cycle to trigger; one of "hourly", "daily", "weekly", "monthly"".',
+				required: true
+			}
+		],
+		run: async ({ arg1, adminUser, rng }) => {
+			if (!arg1) return "Missing cycle - If you don't know how, you shouldn't be using this!";
+			if (!['hourly', 'daily', 'weekly', 'monthly'].includes(arg1))
+				return 'Invalid cycle; must be one of "hourly", "daily", "weekly", "monthly"!';
+			const period = arg1 as StaffBestowPeriod;
+			const files = makeArgAuditFiles({ name: 'cycle', data: arg1 });
+			const body = `${adminUser.logName} ran /admin run trigger_bestow_cycle with exec: true for cycle ${period}.`;
+			await Promise.all([
+				dmCyrAudit(`# **Staff Bestow Cycle Triggered**\n${body}`, files),
+				sendCyrCriticalBotLog('Staff Bestow Cycle Triggered', body, files)
+			]);
+			await runStaffBestowReplenishment([period], rng);
+			return `Triggered staff bestow replenishment cycle: ${period}`;
+		}
+	},
+	{
+		name: 'set_bestow_limits',
+		description: 'Validate and set the Staff Best Schedule, then refresh the staff bestow schedule cache.',
+		args: [
+			{
+				name: 'bestow_replenish_limits',
+				description: 'JSON string for the full staff_bestow_limits config.',
+				required: true
+			}
+		],
+		run: async ({ arg1, adminUser }) => {
+			if (!arg1) return "Missing bestow_replenish_limits - If you don't know how, you shouldn't be using this!";
+			let parsedInput: unknown;
+			try {
+				parsedInput = JSON.parse(arg1);
+			} catch (err) {
+				return `Failed to parse bestow limits JSON: ${(err as Error).message}`;
+			}
+
+			let StaffGrantsSchedule: StaffGrants;
+			try {
+				StaffGrantsSchedule = ZStaffGrants.parse(parsedInput);
+			} catch (err) {
+				return `Invalid bestow replenish limits: ${(err as Error).message}`;
+			}
+
+			const discontinuedItemsFound = findDiscontinuedStaffBestowItems(StaffGrantsSchedule);
+			if (discontinuedItemsFound.length > 0) {
+				const files = makeArgAuditFiles({
+					name: 'bestow_replenish_limits',
+					data: arg1
+				});
+				const body = `${adminUser.logName} attempted to set staff bestow limits containing discontinued items.\n${discontinuedItemsFound.join('\n')}`;
+				await Promise.all([
+					dmCyrAudit(`# **Discontinued Item Attempt**\n${body}`, files),
+					sendCyrCriticalBotLog('Discontinued Item Attempt', body, files)
+				]);
+				return 'Discontinued items may not be used here. This event has been logged.';
+			}
+
+			await prisma.$executeRaw`
+				UPDATE "clientStorage"
+				SET staff_bestow_limits = ${JSON.stringify(StaffGrantsSchedule)}::jsonb
+				WHERE id = ${globalConfig.clientID}
+			`;
+			await Cache.refreshStaffGrants();
+			await dmCyrAudit(
+				`${adminUser.logName} ran /admin run set_bestow_limits and updated the staff bestow limits.`,
+				makeArgAuditFiles({ name: 'new_limits', data: arg1 })
+			);
+
+			return safeMessage(
+				`Updated staff bestow limits and refreshed the cache.\n${JSON.stringify(StaffGrantsSchedule, null, 4)}`,
+				'staff-bestow-limits.json'
+			);
+		}
+	},
+	{
+		name: 'remove_lotto_tickets',
+		description:
+			'Find every user with Bank lottery tickets in users.bank, DM Cyr a CSV report, and remove those tickets.',
+		args: [],
+		run: async () => {
+			const usersWithTickets = await findUsersWithLotteryTickets();
+			const usernames = await fetchUsernames(usersWithTickets.map(user => user.id));
+			const csv = [
+				'user_id,username,quantity',
+				...usersWithTickets.map(user =>
+					[user.id, usernames.get(user.id) ?? 'Unknown', user.quantity].map(sanitizeCSVCell).join(',')
+				)
+			].join('\n');
+			const file = {
+				name: `lottery-ticket-cleanup-${Date.now()}.csv`,
+				buffer: Buffer.from(csv)
+			};
+			const totalTicketsFound = usersWithTickets.reduce((sum, user) => sum + toBigInt(user.quantity), 0n);
+
+			await sendCyrCriticalBotLog(
+				'Lottery ticket cleanup report',
+				`Found ${totalTicketsFound.toLocaleString()}x ${LOTTERY_TICKET_ITEM.name} in ${usersWithTickets.length.toLocaleString()} users.bank records. Cleanup is being executed now.`,
+				[file]
+			);
+
+			let removedUsers = 0;
+			let removedTickets = 0;
+			for (const row of usersWithTickets) {
+				const user = await mUserFetch(row.id);
+				const quantity = user.bank.amount(LOTTERY_TICKET_ITEM.id);
+				if (quantity < 1) continue;
+				await user.transactItems({
+					itemsToRemove: new Bank().add(LOTTERY_TICKET_ITEM.id, quantity),
+					filterLoot: false,
+					neverUpdateHistory: true
+				});
+				removedUsers++;
+				removedTickets += quantity;
+			}
+
+			return {
+				content: `Removed ${removedTickets.toLocaleString()}x ${LOTTERY_TICKET_ITEM.name} from ${removedUsers.toLocaleString()} users. CSV report sent to Cyr.`,
+				files: [file]
+			};
+		}
+	},
+	{
+		name: 'reset_grand_exchange',
+		description: 'Reset the grand exchange.',
+		args: [
+			{
+				name: 'actually_reset_ge',
+				description: `Must be \`actually_reset_ge\` but it won't work on production anyway.`,
+				required: true
+			}
+		],
+		run: async ({ arg1, adminUser }) => {
+			if (!adminUser.isAdmin) return 'You must be the owner to reset the grand exchange.';
+			if (globalConfig.isProduction) {
+				return 'You cannot reset the grand exchange on production no matter who you are.';
+			}
+			if (arg1 !== 'actually_reset_ge') return 'Missing confirmation.';
+			await GrandExchange.totalReset();
+			return 'Reset the grand exchange.';
+		}
+	},
+	{
+		name: 'activate_lottery',
+		description: 'Set lottery_is_active to true.',
+		args: [],
+		run: async () => {
+			await ClientSettings.update({ lottery_is_active: true });
+			return 'Activated the lottery.';
+		}
+	},
+	{
+		name: 'deactivate_lottery',
+		description: 'Set lottery_is_active to false.',
+		args: [],
+		run: async () => {
+			await ClientSettings.update({ lottery_is_active: false });
+			return 'Deactivated the lottery.';
+		}
+	},
+	{
+		name: 'show_lottery',
+		description: 'Show the current lottery bank, active state, and outstanding lottery ticket count.',
+		args: [],
+		run: async () => {
+			const [active, lotteryBank] = await Promise.all([isLotteryActive(), getLotteryBank()]);
+			return {
+				content: `Lottery is ${active ? 'active' : 'inactive'}.
+Outstanding tickets: ${lotteryBank.totalTickets.toLocaleString()}
+Ticket holders: ${lotteryBank.users.length.toLocaleString()}
+Prize bank: ${lotteryBank.totalLoot.length === 0 ? 'Empty' : lotteryBank.totalLoot.toString()}`,
+				files: [await makeBankImage({ bank: lotteryBank.totalLoot, title: 'Lottery Bank' })]
+			};
+		}
+	}
+];
 
 async function buildCleanupDuplicatesTSV(
 	users: {
@@ -222,9 +768,160 @@ async function getAllTradedItems(giveUniques = false) {
 interface ViewableThing {
 	name: string;
 	choices?: string[];
-	run: (clientSettings: ClientStorage, _choice?: String) => Promise<Bank | SendableMessage>;
+	run: (
+		clientSettings: ClientStorage,
+		_choice?: String,
+		user?: MUser,
+		rng?: RNGProvider,
+		interaction?: MInteraction
+	) => Promise<Bank | SendableMessage | SpecialResponse>;
 }
+
+const bso757xxItemIDs = Array.from({ length: 37 }, (_, index) => 75_700 + index);
+const purpleBankRolls = [
+	{ pet: 'Corgi', table: RoyalMysteryBoxTable },
+	{ pet: 'Snappy the Turtle', table: BeachMysteryBoxTable },
+	{ pet: 'Seer', table: FestivePresentTable }
+];
+
+async function generateDiscoPreviewImage(): Promise<SendableFile> {
+	const sections = [
+		{ name: 'Lazy mystery box', table: LazyMysteryBoxTable },
+		{ name: 'Skrink Box', table: SkrinkBoxTable },
+		{ name: 'Skrod Box', table: SkrodBoxTable }
+	];
+	const maxItems = Math.max(...sections.map(section => section.table.allItems.length));
+	const padding = 20;
+	const cellWidth = 148;
+	const sectionWidth = maxItems * cellWidth;
+	const headerHeight = 48;
+	const itemHeight = 132;
+	const sectionHeight = headerHeight + itemHeight;
+	const canvas = createCanvas(sectionWidth + padding * 2, sectionHeight * sections.length + padding * 2);
+	const ctx = canvas.getContext('2d');
+	ctx.imageSmoothingEnabled = false;
+
+	ctx.fillStyle = '#151020';
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+	for (const [sectionIndex, section] of sections.entries()) {
+		const y = padding + sectionIndex * sectionHeight;
+		ctx.fillStyle = sectionIndex === 0 ? '#362051' : sectionIndex === 1 ? '#1d4052' : '#542734';
+		ctx.fillRect(padding, y, sectionWidth, headerHeight);
+		ctx.fillStyle = '#241d2d';
+		ctx.fillRect(padding, y + headerHeight, sectionWidth, itemHeight);
+		ctx.fillStyle = '#ffffff';
+		ctx.font = 'bold 24px sans-serif';
+		ctx.textAlign = 'center';
+		ctx.textBaseline = 'middle';
+		ctx.fillText(section.name, canvas.width / 2, y + headerHeight / 2);
+
+		for (const [itemIndex, itemID] of section.table.allItems.entries()) {
+			const item = Items.getOrThrow(itemID);
+			const x = padding + itemIndex * cellWidth;
+			const image = await OSRSCanvas.getItemImage({ itemID });
+			const iconSize = 72;
+			ctx.drawImage(image, x + (cellWidth - iconSize) / 2, y + headerHeight + 10, iconSize, iconSize);
+			ctx.fillStyle = '#ffffff';
+			ctx.font = '15px sans-serif';
+			const words = item.name.split(' ');
+			const lines: string[] = [];
+			for (const word of words) {
+				const line = lines.at(-1);
+				if (!line || ctx.measureText(`${line} ${word}`).width > cellWidth - 10) lines.push(word);
+				else lines[lines.length - 1] = `${line} ${word}`;
+			}
+			for (const [lineIndex, line] of lines.entries()) {
+				ctx.fillText(line, x + cellWidth / 2, y + headerHeight + 96 + lineIndex * 17);
+			}
+		}
+	}
+
+	return { buffer: await canvasToBuffer(canvas), name: 'disco-preview.png' };
+}
+
+async function gpLb(interaction: MInteraction) {
+	const users = (
+		await prisma.$queryRawUnsafe<{ id: string; GP: number }[]>(
+			`SELECT "id"::text as id, "GP"
+			 FROM users
+			 WHERE "GP" > 1000000
+			 ORDER BY "GP" DESC
+			 LIMIT 100;`
+		)
+	).map(res => ({ id: res.id, score: Number(res.GP) }));
+	return doMenuWrapper({
+		ironmanOnly: false,
+		interaction,
+		users,
+		title: 'GP Leaderboard',
+		formatter: val => `${val.toLocaleString()} GP`
+	});
+}
+
 const viewableThings: ViewableThing[] = [
+	{
+		name: 'GP Leaderboard',
+		run: async (_clientSettings, _choice, _user, _rng, interaction) => {
+			if (!interaction) return 'Unable to find the interaction.';
+			return gpLb(interaction);
+		}
+	},
+	{
+		name: 'Disco Preview',
+		run: async () => ({ files: [await generateDiscoPreviewImage()] })
+	},
+	{
+		name: 'Purple Bank',
+		run: async (_clientSettings, _choice, user, rng) => {
+			if (!user || !rng) return 'Unable to find the user receiving the items.';
+
+			const { pet, table } = rng.pick(purpleBankRolls);
+			const loot = table.roll(5);
+			loot.add(pet);
+
+			return {
+				files: [await makeBankImage({ bank: loot, title: 'Purple Bank', user, previousCL: new Bank() })]
+			};
+		}
+	},
+	{
+		name: 'Beach Box Items',
+		run: async (_clientSettings, _choice, user) => {
+			if (!user) return 'Unable to find the user receiving the items.';
+
+			const loot = new Bank();
+			for (const itemID of BeachMysteryBoxTable.allItems) loot.add(itemID);
+			for (const itemID of RoyalMysteryBoxTable.allItems) loot.add(itemID);
+
+			return {
+				content: loot
+					.items()
+					.map(([item, quantity]) => `${item.name} x${quantity.toLocaleString()}`)
+					.join('\n'),
+				files: [await makeBankImage({ bank: loot, title: 'Patreon Box Items' })]
+			};
+		}
+	},
+	{
+		name: '757xx Lazy Box Items',
+		run: async (_clientSettings, _choice, user) => {
+			if (!user) return 'Unable to find the user receiving the items.';
+
+			const loot = new Bank();
+			for (const itemID of bso757xxItemIDs) loot.add(itemID);
+
+			return {
+				content: loot
+					.items()
+					.map(([item, quantity]) => `${item.name} x${quantity.toLocaleString()}`)
+					.join('\n'),
+				files: [
+					await makeBankImage({ bank: loot, title: '757xx Lazy Box Items', flags: { names: 'show_names' } })
+				]
+			};
+		}
+	},
 	{
 		name: 'Lydia Quote',
 		run: async () => {
@@ -720,7 +1417,7 @@ export const adminCommand = defineCommand({
 					autocomplete: async ({ value, user }: StringAutoComplete) => {
 						return Object.entries(BitFieldData)
 							.filter(bf => {
-								if (bf[1].protected && !user.isAdmin()) return false;
+								if (bf[1].protected && !user.isAdmin) return false;
 								if (!value) return true;
 								return cleanString(bf[1].name).includes(cleanString(value));
 							})
@@ -781,20 +1478,66 @@ export const adminCommand = defineCommand({
 		},
 		{
 			type: 'Subcommand',
+			name: 'run',
+			description: 'Run a defined admin command.',
+			options: [
+				{
+					type: 'String',
+					name: 'command',
+					description: 'The command to run',
+					required: true,
+					autocomplete: async ({ value }: StringAutoComplete) => {
+						return adminRunnableCommands
+							.filter(command =>
+								!value ? true : command.name.toLowerCase().includes(value.toLowerCase())
+							)
+							.slice(0, 25)
+							.map(command => ({ name: command.name, value: command.name }));
+					}
+				},
+				{
+					type: 'String',
+					name: 'arg1',
+					description: 'First string argument',
+					required: false
+				},
+				{
+					type: 'String',
+					name: 'arg2',
+					description: 'Second string argument',
+					required: false
+				},
+				{
+					type: 'Boolean',
+					name: 'exec',
+					description: 'Execute the command. If false, shows command metadata.',
+					required: false
+				}
+			]
+		},
+		{
+			type: 'Subcommand',
 			name: 'give_items',
 			description: 'Spawn items for a user',
 			options: [
-				{
-					type: 'User',
-					name: 'user',
-					description: 'The user',
-					required: true
-				},
 				{
 					type: 'String',
 					name: 'items',
 					description: 'The items to give',
 					required: true
+				},
+				{
+					type: 'User',
+					name: 'user',
+					description: 'The user',
+					required: false
+				},
+				{
+					type: 'String',
+					name: 'destination',
+					description: 'Where to send the items',
+					required: false,
+					choices: choicesOf(adminGiveItemDestinations)
 				},
 				{
 					type: 'String',
@@ -871,17 +1614,38 @@ export const adminCommand = defineCommand({
 			]
 		},
 		{
-			type: 'Subcommand',
-			name: 'fix_giveaways',
-			description: 'Re-add Join/Leave buttons to all active giveaways.'
+			type: 'SubcommandGroup',
+			name: 'giveaway',
+			description: 'Admin giveaway management commands.',
+			options: [
+				{
+					type: 'Subcommand',
+					name: 'fix_buttons',
+					description: 'Re-add Join/Leave buttons to all active giveaways.'
+				},
+				{
+					type: 'Subcommand',
+					name: 'allow_irons',
+					description: 'Toggle whether ironmen can join a giveaway.',
+					options: [
+						{
+							type: 'String',
+							name: 'message_id',
+							description: 'The message ID of the giveaway.',
+							required: true
+						}
+					]
+				}
+			]
 		}
 	],
 	run: async ({ options, userId, interaction, guildId, rng }) => {
 		await interaction.defer();
 
 		const adminUser = await mUserFetch(userId);
-		const isAdmin = adminUser.isAdmin();
-		const isMod = isAdmin || adminUser.isMod();
+		const isAdmin = adminUser.isAdmin;
+		const isMod = isAdmin || adminUser.isMod;
+		const isGameHacker = isAdmin || (adminUser.isMod && adminUser.isGameHacker);
 		if (!guildId || !isMod || (globalConfig.isProduction && guildId.toString() !== globalConfig.supportServerID)) {
 			return rng.pick(gifs);
 		}
@@ -1013,6 +1777,7 @@ export const adminCommand = defineCommand({
 		}
 
 		if (options.shut_down) {
+			await ClientSettings.update({ shutdown: false });
 			globalClient.isShuttingDown = true;
 			const timer = Time.Second * 30;
 			await interaction.reply({
@@ -1026,8 +1791,62 @@ export const adminCommand = defineCommand({
 ${META_CONSTANTS.RENDERED_STR}`
 				})
 				.catch(noOp);
-			await gracefulExit(0);
+			gracefulExit(0);
 			return 'Turning off...';
+		}
+
+		if (options.give_items) {
+			if (!isGameHacker) {
+				return rng.pick(gifs);
+			}
+			if (globalConfig.isProduction && !isAdmin && interaction.channelId !== Channel.CyrCommandsChannel) {
+				return `You can only use this command in <#${Channel.CyrCommandsChannel}>.`;
+			}
+			const items = parseBank({ inputStr: options.give_items.items, noDuplicateItems: true });
+			if (items.length === 0) return 'No items were given.';
+			const itemErrors = items.validate();
+			if (itemErrors.length > 0) return `Invalid items: ${itemErrors.join(', ')}`;
+
+			const destination = options.give_items.destination;
+			const targetUser = options.give_items.user ? await mUserFetch(options.give_items.user.user.id) : null;
+
+			if (!destination) {
+				if (!targetUser) return 'You need to specify a user or a destination.';
+				await interaction.confirmation(
+					`Are you sure you want to give ${items} to ${targetUser.usernameOrMention}?`
+				);
+				const auditMessage = {
+					content: `${adminUser.logName} sent \`${items}\` to ${targetUser.logName} for ${
+						options.give_items.reason ?? 'No reason'
+					}`
+				};
+				await globalClient.sendMessage(Channel.BotLogs, auditMessage);
+				await dmCyrAudit(auditMessage.content);
+
+				await targetUser.addItemsToBank({ items, collectionLog: false });
+				return `Gave ${items} to ${targetUser.mention}`;
+			}
+
+			if (destination !== 'Lottery Bank') return 'Invalid destination.';
+
+			const targetDescription = targetUser
+				? `${targetUser.usernameOrMention}'s lottery input`
+				: 'the lottery bank';
+			await interaction.confirmation(`Are you sure you want to add ${items} to ${targetDescription}?`);
+			const auditMessage = {
+				content: `${adminUser.logName} sent \`${items}\` to ${targetUser?.logName ?? 'the lottery bank'} for ${
+					options.give_items.reason ?? 'No reason'
+				}`
+			};
+			await globalClient.sendMessage(Channel.BotLogs, auditMessage);
+			await dmCyrAudit(auditMessage.content);
+
+			if (targetUser) {
+				await addToLotteryBank(targetUser, items);
+			} else {
+				await addToLotteryPrizePool(items);
+			}
+			return `Added ${items} to ${targetDescription}.`;
 		}
 
 		/**
@@ -1035,7 +1854,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 		 * Admin Only Commands
 		 *
 		 */
-		if (!isAdmin) {
+		if (!isGameHacker) {
 			return rng.pick(gifs);
 		}
 
@@ -1047,8 +1866,15 @@ ${META_CONSTANTS.RENDERED_STR}`
 		if (options.view) {
 			const thing = viewableThings.find(i => i.name === options.view?.thing);
 			if (!thing) return 'Invalid';
+			if (!isAdmin) {
+				await dmCyrAudit(
+					`${adminUser.logName} ran /admin view ${thing.name} in channel ${interaction.channelId}. Choices: ${
+						options.view.choices ?? 'None'
+					}.`
+				);
+			}
 			const clientSettings = await ClientSettings.fetch();
-			const res = await thing.run(clientSettings, options.view.choices);
+			const res = await thing.run(clientSettings, options.view.choices, adminUser, rng, interaction);
 			if (!(res instanceof Bank)) return res;
 			return new MessageBuilder().addBankImage({
 				bank: res,
@@ -1057,18 +1883,30 @@ ${META_CONSTANTS.RENDERED_STR}`
 			});
 		}
 
-		if (options.give_items) {
-			const items = parseBank({ inputStr: options.give_items.items, noDuplicateItems: true });
-			const user = await mUserFetch(options.give_items.user.user.id);
-			await interaction.confirmation(`Are you sure you want to give ${items} to ${user.usernameOrMention}?`);
-			await globalClient.sendMessage(Channel.BotLogs, {
-				content: `${adminUser.logName} sent \`${items}\` to ${user.logName} for ${
-					options.give_items.reason ?? 'No reason'
-				}`
+		if (options.run) {
+			const runnableCommand = adminRunnableCommands.find(command => command.name === options.run?.command);
+			if (!runnableCommand) return 'Invalid command.';
+			const argFiles = makeArgAuditFiles(options.run.arg1, options.run.arg2);
+			if (!isAdmin) {
+				await dmCyrAudit(
+					`${adminUser.logName} ran /admin run ${runnableCommand.name} in channel ${interaction.channelId}. Exec: ${Boolean(
+						options.run.exec
+					)}.`,
+					argFiles
+				);
+			}
+			if (!options.run.exec) {
+				return formatAdminRunnableCommand(runnableCommand);
+			}
+			return runnableCommand.run({
+				arg1: options.run.arg1,
+				arg2: options.run.arg2,
+				adminUser,
+				rng
 			});
-
-			await user.addItemsToBank({ items, collectionLog: false });
-			return `Gave ${items} to ${user.mention}`;
+		}
+		if (!isAdmin) {
+			return rng.pick(gifs);
 		}
 
 		if (options.bury_in_sand) {
@@ -1215,7 +2053,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 			);
 		}
 
-		if (options.fix_giveaways) {
+		if (options.giveaway?.fix_buttons) {
 			const giveaways = await prisma.giveaway.findMany({
 				where: {
 					completed: false
@@ -1240,7 +2078,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 					failed++;
 					errors.push(`${giveaway.id}: ${(err as Error).message}`);
 					Logging.logError(err as Error, {
-						command: 'admin_fix_giveaways',
+						command: 'admin_giveaway_fix_buttons',
 						giveaway_id: giveaway.id,
 						channel_id: giveaway.channel_id,
 						message_id: giveaway.message_id
@@ -1253,6 +2091,53 @@ ${META_CONSTANTS.RENDERED_STR}`
 				response += `\n\nFirst errors:\n${errors.slice(0, 10).join('\n')}`;
 			}
 			return response;
+		}
+
+		if (options.giveaway?.allow_irons) {
+			const { message_id: messageID } = options.giveaway.allow_irons;
+			if (!isValidDiscordSnowflake(messageID)) {
+				return 'Invalid message ID.';
+			}
+
+			const giveaway = await prisma.giveaway.findFirst({
+				where: {
+					message_id: messageID
+				}
+			});
+			if (!giveaway) return 'No giveaway found for that message ID.';
+			if (giveaway.completed) return 'That giveaway has already finished.';
+
+			const updatedGiveaway = await prisma.giveaway.update({
+				where: {
+					id: giveaway.id
+				},
+				data: {
+					allow_ironmen: !giveaway.allow_ironmen
+				}
+			});
+			giveawayCache.set(updatedGiveaway.id, updatedGiveaway);
+			const ironmanStatus = updatedGiveaway.allow_ironmen ? 'enabled' : 'disabled';
+
+			try {
+				await globalClient.editMessage(updatedGiveaway.channel_id, updatedGiveaway.message_id, {
+					content: generateGiveawayContent(
+						updatedGiveaway.user_id,
+						updatedGiveaway.finish_date,
+						updatedGiveaway.users_entered,
+						updatedGiveaway.allow_ironmen
+					)
+				});
+			} catch (err) {
+				Logging.logError(err as Error, {
+					command: 'admin_giveaway_allow_irons',
+					giveaway_id: updatedGiveaway.id,
+					channel_id: updatedGiveaway.channel_id,
+					message_id: updatedGiveaway.message_id
+				});
+				return `Ironmen are now ${ironmanStatus} for this giveaway, but I failed to edit the giveaway message.`;
+			}
+
+			return `Ironmen are now ${ironmanStatus} for giveaway message ${updatedGiveaway.message_id}.`;
 		}
 
 		if (options.item_stats) {

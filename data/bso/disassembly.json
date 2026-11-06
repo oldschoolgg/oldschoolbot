@@ -443,6 +443,10 @@
 			{
 				"item": "Abyssal dragon bones",
 				"lvl": 99
+			},
+			{
+				"item": "Primordial bones",
+				"lvl": 99
 			}
 		]
 	},
@@ -603,6 +607,14 @@
 			},
 			{
 				"item": "Craw's bow (u)",
+				"lvl": 99
+			},
+			{
+				"item": "Starfire bow",
+				"lvl": 99
+			},
+			{
+				"item": "Elderflame bow",
 				"lvl": 99
 			}
 		]
@@ -1798,6 +1810,30 @@
 			{
 				"item": "Zenyte",
 				"lvl": 75
+			},
+			{
+				"item": "Celestyte",
+				"lvl": 78
+			},
+			{
+				"item": "Starfire agate",
+				"lvl": 81
+			},
+			{
+				"item": "Verdantyte",
+				"lvl": 84
+			},
+			{
+				"item": "Oneiryte",
+				"lvl": 87
+			},
+			{
+				"item": "Firaxyte",
+				"lvl": 90
+			},
+			{
+				"item": "Prismare",
+				"lvl": 99
 			}
 		]
 	},
@@ -1982,6 +2018,10 @@
 			{
 				"item": "Zamorakian hasta",
 				"lvl": 70
+			},
+			{
+				"item": "Dragonbane glaive",
+				"lvl": 85
 			}
 		]
 	},
@@ -2105,6 +2145,14 @@
 			},
 			{
 				"item": "Athelas",
+				"lvl": 99
+			},
+			{
+				"item": "Korulsi",
+				"lvl": 99
+			},
+			{
+				"item": "Ignilace",
 				"lvl": 99
 			}
 		]
@@ -2656,11 +2704,27 @@
 				"lvl": 76
 			},
 			{
+				"item": "Verdant logs",
+				"lvl": 79
+			},
+			{
+				"item": "Colossal stem",
+				"lvl": 81
+			},
+			{
+				"item": "Ancient cap",
+				"lvl": 84
+			},
+			{
 				"item": "Redwood logs",
 				"lvl": 90
 			},
 			{
 				"item": "Elder logs",
+				"lvl": 90
+			},
+			{
+				"item": "Ancient verdant logs",
 				"lvl": 90
 			}
 		]
@@ -4441,6 +4505,22 @@
 			},
 			{
 				"item": "Elder plank",
+				"lvl": 99
+			},
+			{
+				"item": "Myconid plank",
+				"lvl": 99
+			},
+			{
+				"item": "Crystalline plank",
+				"lvl": 99
+			},
+			{
+				"item": "Verdant plank",
+				"lvl": 99
+			},
+			{
+				"item": "Ancient verdant plank",
 				"lvl": 99
 			}
 		]

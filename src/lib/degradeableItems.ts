@@ -243,6 +243,21 @@ export const degradeableItems: DegradeableItem[] = [
 		unchargedItem: Items.getOrThrow('Venator bow (uncharged)'),
 		convertOnCharge: true,
 		emoji: ''
+	},
+	{
+		item: Items.getOrThrow('Prismare ring'),
+		settingsKey: 'prismare_ring_charges',
+		itemsToRefundOnBreak: new Bank().add('Prismare ring (u)'),
+		refundVariants: [], // No tier variants needed
+		setup: 'skilling',
+		aliases: ['prismare ring', 'prismare'],
+		chargeInput: {
+			cost: new Bank().add('Prismare', 1),
+			charges: 100
+		},
+		convertOnCharge: true,
+		unchargedItem: Items.getOrThrow('Prismare ring (u)'),
+		emoji: '' // Optional: add an emoji if you want
 	}
 ];
 

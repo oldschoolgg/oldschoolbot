@@ -1,5 +1,7 @@
 import { Items, resolveItems } from 'oldschooljs';
 
+import { getSimilarItems } from '@/lib/data/similarItems.js';
+
 export const tameGearCL = Items.resolveItems([
 	'Dragon igne armor',
 	'Barrows igne armor',
@@ -75,7 +77,8 @@ export const customPetsCL = resolveItems([
 	'Noom',
 	'Baby venatrix',
 	'Mini akumu',
-	'Octo'
+	'Octo',
+	'Archibald'
 ]);
 
 export const discontinuedCustomPetsCL = resolveItems([
@@ -111,8 +114,14 @@ export const discontinuedCustomPetsCL = resolveItems([
 	'Magnabbit',
 	'Partycrab',
 	'Patricia',
-	'Sam'
+	'Sam',
+	"Boo'ala"
 ]);
+
+// Real all dc pets:
+export const allDiscontinuedPets = [...new Set([...discontinuedCustomPetsCL.flatMap(getSimilarItems)])];
+// Should be just alt art pets here:
+export const discontinuedCustomPetsAltArt = allDiscontinuedPets.filter(p => !discontinuedCustomPetsCL.includes(p));
 
 export const kingGoldemarCL = resolveItems([
 	'Broken dwarven warhammer',
@@ -186,6 +195,26 @@ export const queenBlackDragonCL = resolveItems([
 	'Royal bolt stabiliser'
 ]);
 
+export const orymCL = resolveItems([
+	'Forsaken tear',
+	'Sacrilegious flask',
+	'Orylin',
+	'Primordial heartstring',
+	'Primordial spine'
+]);
+
+export const orrodilCL = resolveItems([
+	'Celestial flame',
+	'Shattered pendant',
+	'Orrodin',
+	'Primordial heartstring',
+	'Primordial spine'
+]);
+
+export const fungalBehemothCL = resolveItems(['Verdant heart', 'Prolific twine']);
+
+export const crystallineSentinelCL = resolveItems(['Sentinel core', 'Starfire bow (u)']);
+
 export const akumuCL = resolveItems(['Mini akumu', 'Nightmarish ashes', 'Cursed onyx', 'Demon statuette']);
 export const venatrixCL = resolveItems(['Baby venatrix', 'Venatrix eggs', 'Venatrix webbing', 'Spiders leg bottom']);
 
@@ -209,6 +238,13 @@ export const gorajanArcherOutfit = resolveItems([
 	'Gorajan archer legs',
 	'Gorajan archer gloves',
 	'Gorajan archer boots'
+]);
+export const empyreanOutfit = resolveItems([
+	'Empyrean greathelm',
+	'Empyrean greatplate',
+	'Empyrean greatgreaves',
+	'Empyrean greatgauntlets',
+	'Empyrean greatsabaton'
 ]);
 
 export const brokenTorvaOutfit = resolveItems([

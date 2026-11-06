@@ -27,10 +27,15 @@ export async function igneCommand(
 			slayer: 110
 		},
 		itemBoosts: [
-			['Drygore longsword', 15],
-			['Ignis ring(i)', 10],
+			['Drygore longsword', 25],
 			['TzKal cape', 6],
 			["Brawler's hook necklace", 4]
+		],
+		additionalItemBoosts: [
+			['Ignis ring', 6],
+			['Ignis ring(i)', 10],
+			['Searcrown band', 15], // TODO: This should be fixed so only 1 ring can take effect.
+			['Dragonbane aegis', 15]
 		],
 		speedMaxReduction: 40,
 		customDenier: async () => {

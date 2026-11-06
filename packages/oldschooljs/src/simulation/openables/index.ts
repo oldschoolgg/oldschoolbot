@@ -35,6 +35,7 @@ import { OgreCoffin } from './OgreCoffin.js';
 import { GiantsFoundryOrePack, VolcanicMineOrePack } from './OrePack.js';
 import { SeedPackOpenable as SeedPack } from './SeedPack.js';
 import { SinisterChest } from './SinisterChest.js';
+import { ElderHoard, GemstoneBundle, GemstoneCore, GemstoneSatchel } from './VerdantOpenables.js';
 import { ZombiePiratesLocker } from './ZombiePiratesLocker.js';
 
 export {
@@ -72,6 +73,10 @@ export {
 	LuckyImpling,
 	VolcanicMineOrePack,
 	GiantsFoundryOrePack,
+	GemstoneSatchel,
+	GemstoneBundle,
+	GemstoneCore,
+	ElderHoard,
 	IntricatePouch,
 	BasicSack,
 	AdeptSack,

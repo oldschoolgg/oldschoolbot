@@ -1076,6 +1076,17 @@
 			"add_to_cl": false
 		},
 		{
+			"items": ["Dwarven pumpkinsmasher", "Sun Scream"],
+			"cost": {
+				"71622": 1,
+				"73984": 1
+			},
+			"loot": {
+				"73987": 1
+			},
+			"add_to_cl": false
+		},
+		{
 			"items": ["Dwarven warhammer (3a)", "Blood dye"],
 			"cost": {
 				"41089": 1,
@@ -1149,6 +1160,17 @@
 			},
 			"loot": {
 				"71622": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (3a)", "Sun Scream"],
+			"cost": {
+				"41089": 1,
+				"73984": 1
+			},
+			"loot": {
+				"73987": 1
 			},
 			"add_to_cl": false
 		},
@@ -1230,6 +1252,17 @@
 			"add_to_cl": false
 		},
 		{
+			"items": ["Dwarven warhammer (blood)", "Sun Scream"],
+			"cost": {
+				"41088": 1,
+				"73984": 1
+			},
+			"loot": {
+				"73987": 1
+			},
+			"add_to_cl": false
+		},
+		{
 			"items": ["Dwarven warhammer (ice)", "Blood dye"],
 			"cost": {
 				"41086": 1,
@@ -1303,6 +1336,17 @@
 			},
 			"loot": {
 				"71622": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (ice)", "Sun Scream"],
+			"cost": {
+				"41086": 1,
+				"73984": 1
+			},
+			"loot": {
+				"73987": 1
 			},
 			"add_to_cl": false
 		},
@@ -1384,6 +1428,17 @@
 			"add_to_cl": false
 		},
 		{
+			"items": ["Dwarven warhammer (shadow)", "Sun Scream"],
+			"cost": {
+				"41087": 1,
+				"73984": 1
+			},
+			"loot": {
+				"73987": 1
+			},
+			"add_to_cl": false
+		},
+		{
 			"items": ["Dwarven warhammer (volcanic)", "Blood dye"],
 			"cost": {
 				"48203": 1,
@@ -1461,6 +1516,17 @@
 			"add_to_cl": false
 		},
 		{
+			"items": ["Dwarven warhammer (volcanic)", "Sun Scream"],
+			"cost": {
+				"52673": 1,
+				"73984": 1
+			},
+			"loot": {
+				"73987": 1
+			},
+			"add_to_cl": false
+		},
+		{
 			"items": ["Dwarven warnana", "Blood dye"],
 			"cost": {
 				"40067": 1,
@@ -1534,6 +1600,17 @@
 			},
 			"loot": {
 				"71622": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warnana", "Sun Scream"],
+			"cost": {
+				"40067": 1,
+				"73984": 1
+			},
+			"loot": {
+				"73987": 1
 			},
 			"add_to_cl": false
 		},
@@ -1911,6 +1988,94 @@
 			"add_to_cl": false
 		},
 		{
+			"items": ["Gothic Dwarven warhammer", "Blood dye"],
+			"cost": {
+				"48203": 1,
+				"73987": 1
+			},
+			"loot": {
+				"41088": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gothic Dwarven warhammer", "Ice dye"],
+			"cost": {
+				"48202": 1,
+				"73987": 1
+			},
+			"loot": {
+				"41086": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gothic Dwarven warhammer", "Shadow dye"],
+			"cost": {
+				"48201": 1,
+				"73987": 1
+			},
+			"loot": {
+				"41087": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gothic Dwarven warhammer", "Third age dye"],
+			"cost": {
+				"48204": 1,
+				"73987": 1
+			},
+			"loot": {
+				"41089": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gothic Dwarven warhammer", "Monkey dye"],
+			"cost": {
+				"48228": 1,
+				"73987": 1
+			},
+			"loot": {
+				"40067": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gothic Dwarven warhammer", "Volcanic dye"],
+			"cost": {
+				"52672": 1,
+				"73987": 1
+			},
+			"loot": {
+				"52673": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gothic Dwarven warhammer", "Christmas dye"],
+			"cost": {
+				"70235": 1,
+				"73987": 1
+			},
+			"loot": {
+				"70233": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gothic Dwarven warhammer", "Spooky dye"],
+			"cost": {
+				"71620": 1,
+				"73987": 1
+			},
+			"loot": {
+				"71622": 1
+			},
+			"add_to_cl": false
+		},
+		{
 			"items": ["Hairy banana-butter", "Peky"],
 			"cost": {
 				"72036": 1
@@ -2126,6 +2291,17 @@
 			},
 			"loot": {
 				"71622": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Ho-ho hammer", "Sun Scream"],
+			"cost": {
+				"70233": 1,
+				"73984": 1
+			},
+			"loot": {
+				"73987": 1
 			},
 			"add_to_cl": false
 		},

@@ -10,11 +10,16 @@ import { type GEListing, GEListingType, type GETransaction } from '@/prisma/main
 import { GE_SLOTS_CACHE, marketPricemap } from '@/lib/cache.js';
 import { BitField, globalConfig, PerkTier } from '@/lib/constants.js';
 import { isCustomItem } from '@/lib/customItems/util.js';
-import { type RobochimpUser, roboChimpUserFetchCached } from '@/lib/roboChimp.js';
+import type { RobochimpUser } from '@/lib/roboChimp.js';
 import { fetchTableBank, makeTransactFromTableBankQueries } from '@/lib/table-banks/tableBank.js';
 import { assert } from '@/lib/util/logError.js';
 
 export const generateGrandExchangeID = () => miniID(6).toLowerCase();
+
+export type GEListingWithTransactions = GEListing & {
+	buyTransactions: GETransaction[];
+	sellTransactions: GETransaction[];
+};
 
 interface CreateListingArgs {
 	user: MUser;
@@ -23,6 +28,13 @@ interface CreateListingArgs {
 	price: number;
 	type: GEListingType;
 }
+
+const gePerkTierSlotBoosts = [
+	[PerkTier.Two, 3],
+	[PerkTier.Three, 3],
+	[PerkTier.Four, 6],
+	...[PerkTier.Five, PerkTier.Six, PerkTier.Seven].map(tier => [tier, 2])
+] as const;
 
 function validateNumber(num: number) {
 	if (num < 0 || Number.isNaN(num) || !Number.isInteger(num) || num >= Number.MAX_SAFE_INTEGER) {
@@ -155,21 +167,11 @@ class GrandExchangeSingleton {
 					name: `${num.toLocaleString()} Leagues Points`,
 					amount: 1
 				})),
-				{
-					has: async (user: MUser) => (await user.fetchPerkTier()) >= PerkTier.Four,
-					name: 'Tier 3 Patron',
-					amount: 8
-				},
-				{
-					has: async (user: MUser) => (await user.fetchPerkTier()) >= PerkTier.Three,
-					name: 'Tier 2 Patron',
-					amount: 4
-				},
-				{
-					has: async (user: MUser) => (await user.fetchPerkTier()) >= PerkTier.Two,
-					name: 'Tier 1 Patron',
-					amount: 2
-				}
+				...gePerkTierSlotBoosts.map(([tier, amount]) => ({
+					has: async (user: MUser) => (await user.fetchPerkTier()) >= tier,
+					name: `Perk Tier ${tier}`,
+					amount
+				}))
 			]
 		}
 	};
@@ -190,7 +192,7 @@ class GrandExchangeSingleton {
 	): Promise<{ slots: number; doesntHaveNames: string[]; possibleExtra: number; maxPossible: number }> {
 		const cached = GE_SLOTS_CACHE.get(user.id);
 		if (cached) return cached;
-		const robochimpUser = await roboChimpUserFetchCached(user.id);
+		const robochimpUser = await Cache.getRoboChimpUser(user.id);
 		let slots = 0;
 		const doesntHaveNames = [];
 		let possibleExtra = 0;
@@ -1005,10 +1007,45 @@ Difference: ${shouldHave.difference(currentBank)}`);
 			grand_exchange_tax_bank: 0,
 			grand_exchange_total_tax: 0
 		});
-		await prisma.gEBank.deleteMany();
-		await prisma.gETransaction.deleteMany();
-		await prisma.gEListing.deleteMany();
+		await prisma.$executeRaw`TRUNCATE TABLE "ge_bank", "ge_transaction", "ge_listing" RESTART IDENTITY;`;
 	}
+}
+
+export function geListingToString(
+	listing: GEListingWithTransactions,
+	buyLimit?: Awaited<ReturnType<(typeof GrandExchange)['checkBuyLimitForListing']>>
+) {
+	const item = Items.getOrThrow(listing.item_id);
+	const allTransactions = [...listing.buyTransactions, ...listing.sellTransactions];
+	const verb = listing.type === 'Buy' ? 'Buying' : 'Selling';
+	const pastVerb = listing.type === 'Buy' ? 'bought' : 'sold';
+	const action = listing.type.toLowerCase();
+	const itemQty = `${toKMB(listing.total_quantity)} ${item.name}`;
+
+	const totalSold = listing.total_quantity - listing.quantity_remaining;
+	const totalPricePaidSoFar = toKMB(
+		sumArr(allTransactions.map(i => i.quantity_bought * Number(i.price_per_item_after_tax)))
+	);
+	const totalTaxPaidSoFar = toKMB(sumArr(allTransactions.map(i => Number(i.total_tax_paid))));
+
+	if (listing.cancelled_at) {
+		return `Cancelled offer to ${action} ${itemQty}. ${totalSold} ${pastVerb}.`;
+	}
+
+	if (listing.fulfilled_at) {
+		return `Completed offer to ${action} ${itemQty}. ${totalSold} ${pastVerb} for a total amount of ${totalPricePaidSoFar} (${totalTaxPaidSoFar} tax paid).`;
+	}
+
+	const buyLimitStr =
+		buyLimit !== undefined && buyLimit.remainingItemsCanBuy !== buyLimit.buyLimit
+			? ` (${buyLimit.remainingItemsCanBuy.toLocaleString()}/${buyLimit.buyLimit.toLocaleString()} remaining in buy limit currently)`
+			: '';
+
+	return `${verb} ${itemQty}, ${toKMB(
+		listing.quantity_remaining
+	)} are remaining to ${listing.type.toLowerCase()}, asking for ${toKMB(
+		Number(listing.asking_price_per_item)
+	)} GP each. ${allTransactions.length}x transactions made.${buyLimitStr}`;
 }
 
 export const GrandExchange = new GrandExchangeSingleton();

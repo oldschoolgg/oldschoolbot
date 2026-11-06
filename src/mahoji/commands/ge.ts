@@ -1,67 +1,24 @@
 import { isGEUntradeable } from '@/lib/bso/bsoUtil.js';
 
 import { dateFm } from '@oldschoolgg/discord';
-import { evalMathExpression, formatDuration, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
+import { evalMathExpression, formatDuration, uniqueArr } from '@oldschoolgg/toolkit';
 import { Items, toKMB } from 'oldschooljs';
 
-import type { GEListing, GETransaction } from '@/prisma/main.js';
 import { defineOption } from '@/discord/index.js';
 import { itemArr, itemOption } from '@/discord/presetCommandOptions.js';
 import { marketPricemap } from '@/lib/cache.js';
 import { GeImageGenerator } from '@/lib/canvas/geImage.js';
 import { PerkTier } from '@/lib/constants.js';
-import { createGECancelButton, GrandExchange } from '@/lib/grandExchange.js';
+import { createGECancelButton, GrandExchange, geListingToString } from '@/lib/grandExchange.js';
 import { createChart } from '@/lib/util/chart.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { cancelGEListingCommand } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
-
-export type GEListingWithTransactions = GEListing & {
-	buyTransactions: GETransaction[];
-	sellTransactions: GETransaction[];
-};
 
 function parseNumber(str: string) {
 	if (typeof str === 'number') str = `${str}`;
 	const number = evalMathExpression(str);
 	if (!number) return -1;
 	return number;
-}
-
-function geListingToString(
-	listing: GEListingWithTransactions,
-	buyLimit?: Awaited<ReturnType<(typeof GrandExchange)['checkBuyLimitForListing']>>
-) {
-	const item = Items.getOrThrow(listing.item_id);
-	const allTransactions = [...listing.buyTransactions, ...listing.sellTransactions];
-	const verb = listing.type === 'Buy' ? 'Buying' : 'Selling';
-	const pastVerb = listing.type === 'Buy' ? 'bought' : 'sold';
-	const action = listing.type.toLowerCase();
-	const itemQty = `${toKMB(listing.total_quantity)} ${item.name}`;
-
-	const totalSold = listing.total_quantity - listing.quantity_remaining;
-	const totalPricePaidSoFar = toKMB(
-		sumArr(allTransactions.map(i => i.quantity_bought * Number(i.price_per_item_after_tax)))
-	);
-	const totalTaxPaidSoFar = toKMB(sumArr(allTransactions.map(i => Number(i.total_tax_paid))));
-
-	if (listing.cancelled_at) {
-		return `Cancelled offer to ${action} ${itemQty}. ${totalSold} ${pastVerb}.`;
-	}
-
-	if (listing.fulfilled_at) {
-		return `Completed offer to ${action} ${itemQty}. ${totalSold} ${pastVerb} for a total amount of ${totalPricePaidSoFar} (${totalTaxPaidSoFar} tax paid).`;
-	}
-
-	const buyLimitStr =
-		buyLimit !== undefined && buyLimit.remainingItemsCanBuy !== buyLimit.buyLimit
-			? ` (${buyLimit.remainingItemsCanBuy.toLocaleString()}/${buyLimit.buyLimit.toLocaleString()} remaining in buy limit currently)`
-			: '';
-
-	return `${verb} ${itemQty}, ${toKMB(
-		listing.quantity_remaining
-	)} are remaining to ${listing.type.toLowerCase()}, asking for ${toKMB(
-		Number(listing.asking_price_per_item)
-	)} GP each. ${allTransactions.length}x transactions made.${buyLimitStr}`;
 }
 
 const quantityOption = defineOption({
@@ -344,17 +301,21 @@ The next buy limit reset is at: ${dateFm(GrandExchange.getInterval().end)}, it r
 				user
 			});
 
+			const activeListingText = activeListings.length
+				? (
+						await Promise.all(
+							activeListings.map(async listing => {
+								const buyLimit = await GrandExchange.checkBuyLimitForListing(listing);
+								return geListingToString(listing, buyLimit);
+							})
+						)
+					).join('\n')
+				: '-- No Listings --';
+			const recentInactiveListingText = recentInactiveListings.length
+				? recentInactiveListings.map(i => geListingToString(i)).join('\n')
+				: '-- No Listings --';
 			const geResult = {
-				content: `**Active Listings**\n${(
-					await Promise.all(
-						activeListings.map(async listing => {
-							const buyLimit = await GrandExchange.checkBuyLimitForListing(listing);
-							return geListingToString(listing, buyLimit);
-						})
-					)
-				).join('\n')}\n\n**Recent Fulfilled/Cancelled Listings**\n${recentInactiveListings
-					.map(i => geListingToString(i))
-					.join('\n')}`,
+				content: `**Active Listings**\n${activeListingText}\n\n**Recent Fulfilled/Cancelled Listings**\n${recentInactiveListingText}`,
 				files: [
 					{
 						name: 'ge.png',
