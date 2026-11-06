@@ -142,13 +142,17 @@ describe('Open Command', async () => {
 	test('Rejects invalid result_quantity', async () => {
 		const user = await createTestUser();
 		await user.addItemsToBank({ items: new Bank().add('Reward casket (beginner)', 10) });
-		for (const num of ['not a number', -1, 0]) {
+		for (const [num, expected] of [
+			['not a number', 'result_quantity must be a number.'],
+			[-1, 'result_quantity cannot be negative.'],
+			[0, 'result_quantity must be at least 1.']
+		] as const) {
 			const res = await user.runCommand(openCommand, {
 				name: 'reward casket (beginner)',
 				open_until: 'Fire rune',
 				result_quantity: num
 			});
-			expect(res).toEqual(`The result quantity must be a positive integer.`);
+			expect(res).toEqual(expected);
 		}
 	});
 
@@ -156,13 +160,16 @@ describe('Open Command', async () => {
 		const user = await createTestUser();
 		await user.givePatronTier(2);
 		await user.addItemsToBank({ items: new Bank().add('Reward casket (beginner)', 10) });
-		for (const num of ['not a number', -1]) {
+		for (const [num, expected] of [
+			['not a number', 'quantity must be a number.'],
+			[-1, 'quantity cannot be negative.']
+		] as const) {
 			const res = await user.runCommand(openCommand, {
 				name: 'reward casket (beginner)',
 				open_until: 'Fire rune',
 				quantity: num
 			});
-			expect(res).toEqual(`The quantity must be a positive integer.`);
+			expect(res).toEqual(expected);
 		}
 	});
 
