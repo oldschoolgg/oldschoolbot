@@ -1,8 +1,9 @@
 ---
 import authorsJson from '@data/authors.json';
 import { Fragment } from 'preact';
-const authors = authorsJson[Astro.props.id] || [];
-const editURL = Astro.props.editUrl?.toString();
+const { entry, editUrl } = Astro.locals.starlightRoute;
+const authors = authorsJson[entry.filePath.replace('src/content/docs/', '')] || [];
+const editURL = editUrl?.toString();
 ---
 
 <footer class="sl-flex">
