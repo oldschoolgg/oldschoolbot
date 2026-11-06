@@ -17,6 +17,26 @@ export const lowKillableMonsters: KillableMonster[] = [
 		qpRequired: 0
 	},
 	{
+		id: Monsters.Wizard.id,
+		name: Monsters.Wizard.name,
+		aliases: Monsters.Wizard.aliases,
+		timeToFinish: Time.Second * 15,
+		table: Monsters.Wizard,
+		wildy: false,
+		difficultyRating: 1,
+		qpRequired: 0
+	},
+	{
+		id: Monsters.DarkWizard.id,
+		name: Monsters.DarkWizard.name,
+		aliases: Monsters.DarkWizard.aliases,
+		timeToFinish: Time.Second * 15,
+		table: Monsters.DarkWizard,
+		wildy: false,
+		difficultyRating: 1,
+		qpRequired: 0
+	},
+	{
 		id: Monsters.Jogre.id,
 		name: Monsters.Jogre.name,
 		aliases: Monsters.Jogre.aliases,

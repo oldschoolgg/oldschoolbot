@@ -32,6 +32,8 @@ export function convertCommandOptionToAPIOption(option: CommandOption): APIAppli
 				description: option.description,
 				required: option.required ?? false,
 				type: ApplicationCommandOptionType.Integer,
+				...(option.min_value !== undefined ? { min_value: option.min_value } : {}),
+				...(option.max_value !== undefined ? { max_value: option.max_value } : {}),
 				...(option.choices
 					? { choices: option.choices as { name: string; value: number }[] }
 					: { autocomplete: 'autocomplete' in option })
@@ -43,6 +45,8 @@ export function convertCommandOptionToAPIOption(option: CommandOption): APIAppli
 				description: option.description,
 				required: option.required ?? false,
 				type: ApplicationCommandOptionType.Number,
+				...(option.min_value !== undefined ? { min_value: option.min_value } : {}),
+				...(option.max_value !== undefined ? { max_value: option.max_value } : {}),
 				...(option.choices
 					? { choices: option.choices as { name: string; value: number }[] }
 					: { autocomplete: 'autocomplete' in option })

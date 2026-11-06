@@ -355,6 +355,70 @@ importers:
         specifier: ^10.3.2
         version: 10.3.2(encoding@0.1.13)
 
+  packages/osb-reacts:
+    dependencies:
+      '@electric-sql/pglite':
+        specifier: ^0.3.10
+        version: 0.3.10
+      '@oldschoolgg/discord':
+        specifier: workspace:*
+        version: link:../discord
+      '@oldschoolgg/schemas':
+        specifier: workspace:*
+        version: link:../schemas
+      '@oldschoolgg/toolkit':
+        specifier: workspace:*
+        version: link:../toolkit
+      '@oldschoolgg/util':
+        specifier: workspace:*
+        version: link:../util
+      '@prisma/adapter-pg':
+        specifier: ^6.19.0
+        version: 6.19.0
+      '@prisma/client':
+        specifier: ^6.19.0
+        version: 6.19.0(prisma@6.19.0(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+      '@sapphire/discord-utilities':
+        specifier: ^2.12.0
+        version: 2.12.0
+      '@sapphire/snowflake':
+        specifier: ^3.5.3
+        version: 3.5.5
+      dotenv:
+        specifier: 16.5.0
+        version: 16.5.0
+      ioredis:
+        specifier: ^5.8.2
+        version: 5.9.3
+      oldschooljs:
+        specifier: workspace:*
+        version: link:../oldschooljs
+      pglite-prisma-adapter:
+        specifier: ^0.6.1
+        version: 0.6.1(@electric-sql/pglite@0.3.10)(@prisma/client@6.19.0(prisma@6.19.0(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3))
+      remeda:
+        specifier: ^2.33.4
+        version: 2.33.4
+      zod:
+        specifier: ^4.1.12
+        version: 4.3.6
+    devDependencies:
+      esbuild:
+        specifier: 0.27.3
+        version: 0.27.3
+      nodemon:
+        specifier: ^3.1.14
+        version: 3.1.14
+      prisma:
+        specifier: ^6.19.0
+        version: 6.19.0(magicast@0.3.5)(typescript@5.9.3)
+      tsx:
+        specifier: 4.21.0
+        version: 4.21.0
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
   packages/robochimp:
     dependencies:
       '@hono/node-server':
@@ -3005,9 +3069,6 @@ packages:
   get-east-asian-width@1.4.0:
     resolution: {integrity: sha512-QZjmEOC+IT1uk6Rx0sX22V6uHWVwbdbxf1faPqJ1QhLdGgsRGCZoyaQBm/piRdJy/D2um6hM1UP7ZEeQ4EkP+Q==}
     engines: {node: '>=18'}
-
-  get-tsconfig@4.13.0:
-    resolution: {integrity: sha512-1VKTZJCwBrvbd+Wn3AOgQP/2Av+TfTCOlE4AcRJE72W1ksZXbAx8PPBR9RzgTeSPzlPMHrbANMH3LbltH73wxQ==}
 
   get-tsconfig@4.13.6:
     resolution: {integrity: sha512-shZT/QMiSHc/YBLxxOkMtgSid5HFoauqCE3/exfsEcwg1WkeqjG+V40yBbBrsD+jW2HDXcs28xOfcbm2jI8Ddw==}
@@ -7600,10 +7661,6 @@ snapshots:
 
   get-east-asian-width@1.4.0: {}
 
-  get-tsconfig@4.13.0:
-    dependencies:
-      resolve-pkg-maps: 1.0.0
-
   get-tsconfig@4.13.6:
     dependencies:
       resolve-pkg-maps: 1.0.0
@@ -9812,7 +9869,7 @@ snapshots:
   tsx@4.21.0:
     dependencies:
       esbuild: 0.27.3
-      get-tsconfig: 4.13.0
+      get-tsconfig: 4.13.6
     optionalDependencies:
       fsevents: 2.3.3
 
