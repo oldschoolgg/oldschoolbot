@@ -1,6 +1,6 @@
 {
-	"hash": "c816cf21901683d795f2b7377b0d8666",
-	"date": "2026-05-19T20:03:04.322Z",
+	"hash": "59fcfb583994e0f240471444158a0914",
+	"date": "2026-11-06T16:04:43.171Z",
 	"data": [
 		{
 			"name": "3rd age felling axe",
@@ -2519,6 +2519,16 @@
 				"Cannon base": 1,
 				"Cannon furnace": 1,
 				"Cannon stand": 1
+			}
+		},
+		{
+			"name": "Echo boots",
+			"items_created": {
+				"Echo boots": 1
+			},
+			"items_required": {
+				"Echo crystal": 1,
+				"Guardian boots": 1
 			}
 		},
 		{
