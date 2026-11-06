@@ -376,6 +376,8 @@ const source: [string, (string | number)[]][] = [
 	['Torva full helm', ['Sanguine torva full helm']],
 	['Torva platebody', ['Sanguine torva platebody']],
 	['Torva platelegs', ['Sanguine torva platelegs']],
+	['Bandos boots', ['Guardian boots', 'Echo boots']],
+	['Guardian boots', ['Echo boots']],
 	['Primordial boots', ['Avernic treads']],
 	['Pegasian boots', ['Avernic treads']],
 	['Eternal boots', ['Avernic treads']],

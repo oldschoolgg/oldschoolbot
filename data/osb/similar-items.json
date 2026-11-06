@@ -189,6 +189,10 @@
 		]
 	},
 	{
+		"main_item": "Bandos boots",
+		"similar_items": ["Bandos boots", "Echo boots", "Guardian boots"]
+	},
+	{
 		"main_item": "Bandos godsword",
 		"similar_items": ["Bandos godsword", "Bandos godsword (or)"]
 	},
@@ -636,6 +640,10 @@
 	{
 		"main_item": "Granite maul",
 		"similar_items": ["Granite maul", "Granite maul (or)"]
+	},
+	{
+		"main_item": "Guardian boots",
+		"similar_items": ["Echo boots", "Guardian boots"]
 	},
 	{
 		"main_item": "Guthix cape",

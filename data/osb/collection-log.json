@@ -5068,6 +5068,18 @@
 				],
 				"is_activity": true
 			},
+			"mastering_mixology": {
+				"items": [
+					"Alchemist gloves",
+					"Alchemist labcoat",
+					"Alchemist pants",
+					"Alchemist's amulet",
+					"Chugging barrel (disassembled)",
+					"Prescription goggles",
+					"Reagent pouch"
+				],
+				"is_activity": true
+			},
 			"pest_control": {
 				"items": [
 					"Elite void robe",
@@ -7054,6 +7066,7 @@
 					"Dragonfire ward",
 					"Dragonstone armour set",
 					"Dwarf cannon set",
+					"Echo boots",
 					"Ecumenical key",
 					"Eldritch nightmare staff",
 					"Elidinis' damaged guardian",
