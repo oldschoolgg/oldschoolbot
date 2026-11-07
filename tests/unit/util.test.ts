@@ -1,13 +1,17 @@
-import { calcPercentOfNum, reduceNumByPercent, stripEmojis, truncateString } from '@oldschoolgg/toolkit';
-import { Bank, convertLVLtoXP, Items } from 'oldschooljs';
+import { calcPercentOfNum, reduceNumByPercent, stripEmojis, Time, truncateString } from '@oldschoolgg/toolkit';
+import { Bank, convertLVLtoXP, Items, Monsters } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { Eatables } from '@/lib/data/eatables.js';
 import getUserFoodFromBank from '@/lib/minions/functions/getUserFoodFromBank.js';
-import { pluraliseItemName } from '@/lib/util/smallUtils.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import { PeakTier } from '@/lib/util/peaks.js';
+import { calculateSimpleMonsterDeathChance, pluraliseItemName } from '@/lib/util/smallUtils.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 import { sellPriceOfItem, sellStorePriceOfItem } from '@/mahoji/commands/sell.js';
+import { newMinionKillCommand } from '@/mahoji/lib/abstracted_commands/minionKill/newMinionKill.js';
 import { mockMUser } from './userutil.js';
+import { makeGearBank } from './utils.js';
 
 describe('util', () => {
 	test('stripEmojis', () => {
@@ -139,5 +143,78 @@ describe('util', () => {
 		expect(pluraliseItemName('Steel Axe')).toEqual('Steel Axes');
 		expect(pluraliseItemName('Steel Arrowtips')).toEqual('Steel Arrowtips');
 		expect(pluraliseItemName('Adamantite nails')).toEqual('Adamantite nails');
+	});
+
+	test('calculateSimpleMonsterDeathChance handles zero-hardness monsters', () => {
+		expect(
+			calculateSimpleMonsterDeathChance({
+				hardness: 0,
+				currentKC: 0,
+				lowestDeathChance: 0,
+				highestDeathChance: 0,
+				steepness: 0
+			})
+		).toEqual(0);
+	});
+
+	test('newMinionKillCommand leaves item removal messaging to the transaction layer', () => {
+		const gearBank = makeGearBank({ bank: new Bank().add('Coins', 10) });
+		const monster: KillableMonster = {
+			id: Monsters.Man.id,
+			name: 'Test Man',
+			aliases: ['test man'],
+			timeToFinish: Time.Minute,
+			table: { kill: () => new Bank() },
+			itemCost: {
+				itemCost: new Bank().add('Coins'),
+				qtyPerKill: 1
+			},
+			deathProps: {
+				hardness: 0,
+				lowestDeathChance: 0,
+				highestDeathChance: 0,
+				steepness: 0
+			}
+		};
+
+		const result = newMinionKillCommand({
+			attackStyles: ['attack'],
+			gearBank,
+			currentSlayerTask: {
+				currentTask: null,
+				assignedTask: null,
+				slayerMaster: null,
+				slayerPoints: 0,
+				statsWithStreaks: {
+					slayer_task_streak: 0,
+					slayer_wildy_task_streak: 0
+				}
+			},
+			monster,
+			isTryingToUseWildy: false,
+			combatOptions: [],
+			inputPVMMethod: undefined,
+			monsterKC: 0,
+			poh: null as never,
+			maxTripLength: Time.Hour,
+			inputQuantity: 1,
+			slayerUnlocks: [],
+			favoriteFood: [],
+			bitfield: [],
+			pkEvasionExperience: 0,
+			currentPeak: {
+				startTime: 0,
+				finishTime: Time.Hour,
+				peakTier: PeakTier.Low
+			},
+			disabledInventions: [],
+			rng: MathRNG
+		});
+
+		expect(result).not.toBeTypeOf('string');
+		if (typeof result === 'string') return;
+		expect(result.messages).not.toContain('0.0% chance of death');
+		expect(result.messages).not.toContain('Removing items: 1x Coins');
+		expect(result.updateBank.itemCostBank.toString()).toEqual('1x Coins');
 	});
 });
