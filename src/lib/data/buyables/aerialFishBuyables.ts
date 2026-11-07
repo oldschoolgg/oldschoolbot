@@ -48,7 +48,7 @@ export const aerialFishBuyables: Buyable[] = [
 	{
 		name: 'Fish sack',
 		itemCost: new Bank({
-			'Molch pearl': 1000
+			'Molch pearl': 500
 		})
 	}
 ];
