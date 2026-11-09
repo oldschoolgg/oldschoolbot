@@ -144,10 +144,16 @@ export const huntCommand = defineCommand({
 			const [bol, reason, score] = hasWildyHuntGearEquipped(user.gear.wildy.raw());
 			wildyScore = score;
 			if (!bol) {
-				return `To hunt ${creature.name} in the wilderness you need to meet the following requirement: ${reason}, check your wildy gear.`;
+				return {
+					content: `<@${user.id}>, to hunt ${creature.name} in the wilderness you need to meet the following requirement: ${reason} Check your wildy gear.`,
+					allowedMentions: { users: [user.id] }
+				};
 			}
 			if (userBank.amount('Saradomin brew(4)') < 10 || userBank.amount('Super restore(4)') < 5) {
-				return `To hunt ${creature.name} in the wilderness you need to have 10x Saradomin brew(4) and 5x Super restore(4) for safety.`;
+				return {
+					content: `<@${user.id}>, to hunt ${creature.name} in the wilderness you need to have 10x Saradomin brew(4) and 5x Super restore(4) for safety.`,
+					allowedMentions: { users: [user.id] }
+				};
 			}
 		}
 
