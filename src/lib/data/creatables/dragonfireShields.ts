@@ -16,6 +16,18 @@ export const dragonFireShieldCreatables: Createable[] = [
 		requiredSkills: { smithing: 90 }
 	},
 	{
+		name: 'Uncharged dragonfire shield (bypass stats)',
+		inputItems: {
+			[itemID('Draconic visage')]: 1,
+			[itemID('Anti-dragon shield')]: 1
+		},
+		outputItems: {
+			'Uncharged dragonfire shield': 1
+		},
+		GPCost: 1_250_000,
+		QPRequired: 34
+	},
+	{
 		name: 'Uncharged dragonfire ward',
 		inputItems: {
 			[itemID('Skeletal visage')]: 1,

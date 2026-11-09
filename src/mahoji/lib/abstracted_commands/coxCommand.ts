@@ -1,5 +1,4 @@
-import { randomVariation } from '@oldschoolgg/rng';
-import { calcWhatPercent, Emoji, formatDuration, sumArr } from '@oldschoolgg/toolkit';
+import { calcWhatPercent, Emoji, sumArr } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import {
@@ -19,6 +18,7 @@ import { degradeItem } from '@/lib/degradeableItems.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import type { RaidsOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 export async function coxBoostsCommand(user: MUser) {
@@ -41,8 +41,10 @@ export async function coxBoostsCommand(user: MUser) {
 				if (item.setup && user.gear[item.setup].hasEquipped(item.item.id, false, true)) {
 					return true;
 				}
+				return false;
+			} else {
+				return user.hasEquippedOrInBank(getSimilarItems(item.item.id));
 			}
-			return user.hasEquippedOrInBank(getSimilarItems(item.item.id));
 		});
 		if (ownedItems.length > 0) {
 			const maxBoost = Math.max(...ownedItems.map(item => item.boost));
@@ -122,6 +124,7 @@ Check \`/raid cox itemboosts\` for more information on Item boosts.`;
 }
 
 export async function coxCommand(
+	rng: RNGProvider,
 	interaction: MInteraction,
 	channelId: string,
 	user: MUser,
@@ -231,7 +234,7 @@ export async function coxCommand(
 	const duration = sumArr(
 		Array(quantity)
 			.fill(raidDuration)
-			.map(d => randomVariation(d, 5))
+			.map(d => rng.randomVariation(d, 5))
 	);
 
 	let debugStr = '';
@@ -295,19 +298,20 @@ export async function coxCommand(
 		quantity
 	});
 
+	const raidName = isChallengeMode ? 'Challenge Mode Chambers of Xeric' : 'Regular Chambers of Xeric';
 	let str = isSolo
-		? `${user.minionName} is now doing ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
+		? `${user.minionName} is now doing ${quantity > 1 ? quantity : 'a'} ${raidName} raid${
 				quantity > 1 ? 's' : ''
-			}. The total trip will take ${formatDuration(duration)}.`
+			}. The total trip will return in about ${formatTripDuration(user, duration)}.`
 		: isFakeMass
-			? `${partyOptions.leader.usernameOrMention} your party of (${user.minionName} & ${users.length - 1} simulated users) is now off to do ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
+			? `${partyOptions.leader.usernameOrMention} your party of (${user.minionName} & ${users.length - 1} simulated users) is now off to do ${quantity > 1 ? quantity : 'a'} ${raidName} raid${
 					quantity > 1 ? 's' : ''
-				} - the total trip will take ${formatDuration(duration)}.`
+				} - the total trip will return in about ${formatTripDuration(user, duration)}.`
 			: `${partyOptions.leader.usernameOrMention}'s party (${users
 					.map(u => u.usernameOrMention)
-					.join(', ')}) is now off to do ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
+					.join(', ')}) is now off to do ${quantity > 1 ? quantity : 'a'} ${raidName} raid${
 					quantity > 1 ? 's' : ''
-				} - the total trip will take ${formatDuration(duration)}.`;
+				} - the total trip will return in about ${formatTripDuration(user, duration)}.`;
 
 	str += ` \n\n${debugStr}`;
 

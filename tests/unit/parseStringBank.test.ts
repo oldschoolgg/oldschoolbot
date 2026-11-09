@@ -1,4 +1,4 @@
-import { randInt } from '@oldschoolgg/rng';
+import { randInt } from 'node-rng';
 import { Bank, Items, itemID } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 

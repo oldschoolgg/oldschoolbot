@@ -1,4 +1,4 @@
-import { Bank, convertLVLtoXP, EquipmentSlot, itemID } from 'oldschooljs';
+import { Bank, convertLVLtoXP, itemID } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { Gear } from '../../src/lib/structures/Gear.js';
@@ -16,7 +16,9 @@ describe('Multi-equip Gear Test', () => {
 		.add('Dragon arrow', 1000)
 		.add('Rune arrow', 5000)
 		.add('Twisted bow')
-		.add('Dragon dart', 5000);
+		.add('Dragon dart', 5000)
+		.add('Bronze knife', 100)
+		.add('Iron knife', 100);
 
 	const testUser = mockMUser({
 		skills_agility: convertLVLtoXP(50),
@@ -40,9 +42,9 @@ describe('Multi-equip Gear Test', () => {
 		expect(result.unequipBank!.toString()).toEqual('1x Twisted bow');
 		expect(result.skillFailBank!.toString()).toEqual('1x Elysian spirit shield');
 		expect(test1Gear1.toString()).toEqual(
-			'Rune arrow, Dragon platebody, Armadyl helmet, Dragon platelegs, Zaryte crossbow'
+			'500x Rune arrow, Dragon platelegs, Armadyl helmet, Dragon platebody, Zaryte crossbow'
 		);
-		expect(test1Gear1.ammo?.quantity).toEqual(500);
+		expect(test1Gear1.get('ammo')?.quantity).toEqual(500);
 	});
 
 	const testGear2 = new Gear({
@@ -53,7 +55,7 @@ describe('Multi-equip Gear Test', () => {
 		legs: 'Dragon platelegs',
 		ammo: 'Rune arrow'
 	});
-	testGear2.ammo!.quantity = 500;
+	testGear2.set('ammo', { item: itemID('Rune arrow'), quantity: 500 });
 
 	const testUser2 = mockMUser({
 		skills_agility: convertLVLtoXP(50),
@@ -75,9 +77,9 @@ describe('Multi-equip Gear Test', () => {
 		expect(result.unequipBank!.toString()).toEqual('1x Dragonfire shield, 500x Rune arrow');
 		expect(result.skillFailBank!.toString()).toEqual('No items');
 		expect(resultGear.toString()).toEqual(
-			'Dragon arrow, Dragon platebody, Armadyl helmet, Dragon platelegs, Elysian spirit shield, Zaryte crossbow'
+			'Dragon platelegs, 999x Dragon arrow, Armadyl helmet, Elysian spirit shield, Dragon platebody, Zaryte crossbow'
 		);
-		expect(resultGear.ammo?.quantity).toEqual(999);
+		expect(resultGear.get('ammo')?.quantity).toEqual(999);
 	});
 	// Test equipping random items, and 2h item equipping
 	test('multi-equip-2b', () => {
@@ -88,9 +90,9 @@ describe('Multi-equip Gear Test', () => {
 		expect(result.unequipBank!.toString()).toEqual('1x Dragonfire shield, 500x Rune arrow, 1x Zaryte crossbow');
 		expect(result.skillFailBank!.toString()).toEqual('No items');
 		expect(resultGear.toString()).toEqual(
-			'Dragon arrow, Dragon platebody, Armadyl helmet, Dragon platelegs, Twisted bow'
+			'Dragon platelegs, 999x Dragon arrow, Armadyl helmet, Twisted bow, Dragon platebody'
 		);
-		expect(resultGear.ammo?.quantity).toEqual(999);
+		expect(resultGear.get('ammo')?.quantity).toEqual(999);
 	});
 
 	// Test equipping same ammo type
@@ -102,9 +104,9 @@ describe('Multi-equip Gear Test', () => {
 		expect(result.unequipBank!.toString()).toEqual('500x Rune arrow');
 		expect(result.skillFailBank!.toString()).toEqual('No items');
 		expect(resultGear.toString()).toEqual(
-			'Rune arrow, Dragon platebody, Armadyl helmet, Dragon platelegs, Dragonfire shield, Zaryte crossbow'
+			'999x Rune arrow, Dragon platelegs, Dragonfire shield, Armadyl helmet, Dragon platebody, Zaryte crossbow'
 		);
-		expect(resultGear.ammo?.quantity).toEqual(999);
+		expect(resultGear.get('ammo')?.quantity).toEqual(999);
 	});
 
 	// Test with 0 qty:
@@ -116,9 +118,9 @@ describe('Multi-equip Gear Test', () => {
 		expect(result.unequipBank!.toString()).toEqual('500x Rune arrow');
 		expect(result.skillFailBank!.toString()).toEqual('No items');
 		expect(resultGear.toString()).toEqual(
-			'Rune arrow, Dragon platebody, Armadyl helmet, Dragon platelegs, Dragonfire shield, Zaryte crossbow'
+			'Rune arrow, Dragon platelegs, Dragonfire shield, Armadyl helmet, Dragon platebody, Zaryte crossbow'
 		);
-		expect(resultGear.ammo?.quantity).toEqual(1);
+		expect(resultGear.get('ammo')?.quantity).toEqual(1);
 	});
 
 	const testUser3 = mockMUser({
@@ -164,13 +166,13 @@ describe('Multi-equip Gear Test', () => {
 		const resultGear = new Gear(result.equippedGear);
 		expect(result.equipBank!.toString()).toEqual('2.2k Dragon dart');
 		expect(result.unequipBank!.toString()).toEqual('1x Twisted bow');
-		expect(resultGear.toString()).toEqual('Dragon dart');
+		expect(resultGear.toString()).toEqual('2222x Dragon dart');
 
-		expect(resultGear.weapon!.quantity).toEqual(2222);
+		expect(resultGear.get('weapon')!.quantity).toEqual(2222);
 	});
 
 	const testGear5 = new Gear();
-	testGear5[EquipmentSlot.Weapon] = { item: itemID('Rune dart'), quantity: 500 };
+	testGear5.set('weapon', { item: itemID('Rune dart'), quantity: 500 });
 
 	const testUser5 = mockMUser({
 		skills_agility: convertLVLtoXP(50),
@@ -189,8 +191,26 @@ describe('Multi-equip Gear Test', () => {
 		const resultGear = new Gear(result.equippedGear);
 		expect(result.equipBank!.toString()).toEqual('2.2k Dragon dart');
 		expect(result.unequipBank!.toString()).toEqual('500x Rune dart');
-		expect(resultGear.toString()).toEqual('Dragon dart');
+		expect(resultGear.toString()).toEqual('2222x Dragon dart');
 
-		expect(resultGear.weapon!.quantity).toEqual(2222);
+		expect(resultGear.get('weapon')!.quantity).toEqual(2222);
+	});
+
+	test('equips stackable knives with quantity from item argument input', () => {
+		const result = gearEquipMultiImpl(testUser4, 'melee', '44 Bronze knife');
+		const resultGear = new Gear(result.equippedGear);
+		expect(result.equipBank!.toString()).toEqual('44x Bronze knife');
+		expect(result.unequipBank!.toString()).toEqual('1x Twisted bow');
+		expect(resultGear.toString()).toEqual('44x Bronze knife');
+		expect(resultGear.get('weapon')).toEqual({ item: itemID('Bronze knife'), quantity: 44 });
+	});
+
+	test('equips stackable knives with quantity from items input', () => {
+		const result = gearEquipMultiImpl(testUser4, 'melee', '44 iron knife');
+		const resultGear = new Gear(result.equippedGear);
+		expect(result.equipBank!.toString()).toEqual('44x Iron knife');
+		expect(result.unequipBank!.toString()).toEqual('1x Twisted bow');
+		expect(resultGear.toString()).toEqual('44x Iron knife');
+		expect(resultGear.get('weapon')).toEqual({ item: itemID('Iron knife'), quantity: 44 });
 	});
 });

@@ -1,12 +1,4 @@
-import {
-	calcWhatPercent,
-	formatDuration,
-	reduceNumByPercent,
-	round,
-	stringMatches,
-	sumArr,
-	Time
-} from '@oldschoolgg/toolkit';
+import { calcWhatPercent, reduceNumByPercent, round, stringMatches, sumArr, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import type { NMZStrategy } from '@/lib/constants.js';
@@ -15,6 +7,7 @@ import { MAX_QP } from '@/lib/minions/data/quests.js';
 import { resolveAttackStyles } from '@/lib/minions/functions/index.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { NightmareZoneActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 
 const itemBoosts = [
@@ -72,6 +65,26 @@ const itemBoosts = [
 	],
 	// Boots
 	[
+		{
+			item: Items.getOrThrow('Avernic treads (max)'),
+			boost: 7
+		},
+		{
+			item: Items.getOrThrow('Avernic treads (pr)(et)'),
+			boost: 7
+		},
+		{
+			item: Items.getOrThrow('Avernic treads (pr)(pe)'),
+			boost: 7
+		},
+		{
+			item: Items.getOrThrow('Avernic treads (pr)'),
+			boost: 7
+		},
+		{
+			item: Items.getOrThrow('Avernic treads'),
+			boost: 5
+		},
 		{
 			item: Items.getOrThrow('Primordial boots'),
 			boost: 5
@@ -399,9 +412,7 @@ export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrate
 
 	return `${
 		user.minionName
-	} is now killing ${quantity}x monsters in the Nightmare Zone! It will take ${formatDuration(
-		duration
-	)} to finish. **Boosts:** ${boosts.join(', ')}\nYour minion used up ${totalCost}`;
+	} is now killing ${quantity}x monsters in the Nightmare Zone! It will take ${formatTripDuration(user, duration)} to finish. **Boosts:** ${boosts.join(', ')}\nYour minion used up ${totalCost}`;
 }
 
 export async function nightmareZoneShopCommand(

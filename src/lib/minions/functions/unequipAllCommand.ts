@@ -1,9 +1,5 @@
+import { defaultGearSetup, type GearSetupType, GearSetupTypes, isValidGearSetup } from '@oldschoolgg/gear';
 import { toTitleCase } from '@oldschoolgg/toolkit';
-
-import { isValidGearSetup } from '@/lib/gear/functions/isValidGearSetup.js';
-import type { GearSetupType } from '@/lib/gear/types.js';
-import { GearSetupTypes } from '@/lib/gear/types.js';
-import { defaultGear } from '@/lib/structures/Gear.js';
 
 export async function unEquipAllCommand(user: MUser, gearType: GearSetupType, bypassBusy?: boolean): CommandResponse {
 	if (!isValidGearSetup(gearType)) {
@@ -13,21 +9,16 @@ export async function unEquipAllCommand(user: MUser, gearType: GearSetupType, by
 		return `${user.minionName} is currently out on a trip, so you can't change their gear!`;
 	}
 
-	return user.update((_user: MUser) => {
-		const currentEquippedGear = _user.gear[gearType];
-		const refund = currentEquippedGear.toBank();
+	const currentEquippedGear = user.gear[gearType];
+	const refund = currentEquippedGear.toBank();
 
-		if (refund.length === 0) {
-			return { response: `You have no items in your ${toTitleCase(gearType)} setup.` };
-		}
-
-		return {
-			itemsToAdd: refund,
-			collectionLog: false,
-			otherUpdates: {
-				[`gear_${gearType}`]: defaultGear
-			},
-			response: `You have unequipped all items from your ${toTitleCase(gearType)} setup.`
-		};
+	if (refund.length === 0) {
+		return `You have no items in your ${toTitleCase(gearType)} setup.`;
+	}
+	await user.transactItems({
+		itemsToAdd: refund,
+		collectionLog: false,
+		gearUpdates: [{ setup: gearType, gear: defaultGearSetup }]
 	});
+	return `You have unequipped ${refund} from your ${toTitleCase(gearType)} setup.`;
 }

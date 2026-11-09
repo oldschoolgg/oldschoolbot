@@ -12,13 +12,31 @@ async function refundGiveaway(creator: MUser, loot: Bank) {
 	await globalClient.sendDm(creator.id, `Your giveaway failed to finish, you were refunded the items: ${loot}.`);
 }
 
-export function generateGiveawayContent(host: string, finishDate: Date, usersEntered: string[]) {
-	return `${userMention(host)} created a giveaway that will finish at ${time(finishDate, 'F')} (${time(
-		finishDate,
-		'R'
-	)}).
+export function generateGiveawayFinishedMsg(
+	host: string,
+	finishDate: Date,
+	usersEntered: string[],
+	winner: MUser | null
+) {
+	let result = `${userMention(host)} hosted a giveaway that finished  at ${time(finishDate, 'F')} (${time(finishDate, 'R')}).`;
+	if (winner !== null) {
+		result += ` ${usersEntered.length} ${usersEntered.length === 1 ? 'person' : 'people'} entered, but....the winner was...... *drumroll*..... ${winner}! Congratulations!`;
+	} else {
+		result += ` ${usersEntered.length} ${usersEntered.length === 1 ? 'person' : 'people'} entered, but no one won. Hmmm seems suss.`;
+	}
+	return result;
+}
 
-There are ${usersEntered.length} users entered in this giveaway.`;
+export function generateGiveawayContent(host: string, finishDate: Date, usersEntered: string[], allowIronmen = false) {
+	return [
+		`${userMention(host)} created a giveaway that will finish at ${time(finishDate, 'F')} (${time(
+			finishDate,
+			'R'
+		)}).`,
+		'',
+		...(allowIronmen ? ['🛡️ **Ironmen are enabled for this giveaway.**', ''] : []),
+		`There are ${usersEntered.length} users entered in this giveaway.`
+	].join('\n');
 }
 
 async function pickRandomGiveawayWinner(giveaway: Giveaway): Promise<MUser | null> {
@@ -31,7 +49,7 @@ async function pickRandomGiveawayWinner(giveaway: Giveaway): Promise<MUser | nul
 SELECT id
 FROM users
 WHERE id IN (SELECT user_id FROM giveaway_users)
-AND "minion.ironman" = false
+AND (${giveaway.allow_ironmen} = true OR "minion.ironman" = false)
 AND id != ${giveaway.user_id}
 ORDER BY random()
 LIMIT 1;
@@ -42,12 +60,27 @@ LIMIT 1;
 	return user;
 }
 
-export const updateGiveawayMessage = debounce(async (_giveaway: Giveaway) => {
+export const updateGiveawayMessage = debounce(async (_giveaway: Giveaway, winner?: MUser | null) => {
 	const giveaway = await prisma.giveaway.findFirst({ where: { id: _giveaway.id } });
 	if (!giveaway) return;
 	const message = await globalClient.fetchMessage(giveaway.channel_id, giveaway.message_id);
 	if (!message) return;
-	const newContent = generateGiveawayContent(giveaway.user_id, giveaway.finish_date, giveaway.users_entered);
+	let newContent: string = '';
+	if (winner === null || winner) {
+		newContent = generateGiveawayFinishedMsg(
+			giveaway.user_id,
+			giveaway.finish_date,
+			giveaway.users_entered,
+			winner
+		);
+	} else {
+		newContent = generateGiveawayContent(
+			giveaway.user_id,
+			giveaway.finish_date,
+			giveaway.users_entered,
+			giveaway.allow_ironmen
+		);
+	}
 	const edits: BaseSendableMessage = {};
 	if (giveaway.completed) edits.components = [];
 	if (message.content !== newContent) {
@@ -56,7 +89,7 @@ export const updateGiveawayMessage = debounce(async (_giveaway: Giveaway) => {
 	if (Object.keys(edits).length > 0) {
 		await globalClient.editMessage(giveaway.channel_id, giveaway.message_id, edits);
 	}
-}, Time.Second);
+}, Time.Second * 2);
 
 export async function handleGiveawayCompletion(_giveaway: Giveaway) {
 	Logging.logDebug('Completing a giveaway.', { type: 'GIVEAWAY_COMPLETE', giveaway_id: _giveaway.id });
@@ -75,22 +108,22 @@ export async function handleGiveawayCompletion(_giveaway: Giveaway) {
 				completed: true
 			}
 		});
+		const winner = await pickRandomGiveawayWinner(giveaway);
 
-		await updateGiveawayMessage(giveaway);
+		await updateGiveawayMessage(giveaway, winner);
 
 		const creator = await mUserFetch(giveaway.user_id);
-
-		const winner = await pickRandomGiveawayWinner(giveaway);
 
 		if (winner === null) {
 			await refundGiveaway(creator, loot);
 			return;
 		}
 
+		const guild_id = giveaway.guild_id ? BigInt(giveaway.guild_id) : undefined;
 		await winner.transactItems({ itemsToAdd: loot });
 		await prisma.economyTransaction.create({
 			data: {
-				guild_id: undefined,
+				guild_id,
 				sender: BigInt(creator.id),
 				recipient: BigInt(winner.id),
 				items_sent: loot.toJSON(),

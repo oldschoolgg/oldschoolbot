@@ -92,7 +92,8 @@ export const payCommand = defineCommand({
 				items_sent: new Bank().add('Coins', amount),
 				items_received: undefined,
 				type: 'trade'
-			}
+			},
+			select: { id: true }
 		});
 
 		globalClient.emit(Events.EconomyLog, `${user.mention} paid ${amount} GP to ${recipient.mention}.`);

@@ -1,8 +1,9 @@
-import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { stringMatches, Time } from '@oldschoolgg/toolkit';
 import { type Item, Items, itemID } from 'oldschooljs';
 
 import type { Skills } from '@/lib/types/index.js';
 import type { PuroPuroActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 
 interface PuroImpling {
@@ -102,9 +103,7 @@ export async function puroPuroStartCommand(
 		minigameID: 'puro_puro'
 	});
 
-	let str = `${user.minionName} is now hunting ${impToHunt.name} in Puro-Puro! It will take ${formatDuration(
-		duration
-	)} to finish.`;
+	let str = `${user.minionName} is now hunting ${impToHunt.name} in Puro-Puro! It will take ${formatTripDuration(user, duration)} to finish.`;
 
 	if (!user.hasGracefulEquipped() && impToHunt.name !== 'Dragon Implings')
 		str += '\n20% less implings due to having no Graceful equipped.';

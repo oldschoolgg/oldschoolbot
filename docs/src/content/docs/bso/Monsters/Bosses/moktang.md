@@ -43,3 +43,15 @@ Moktang drops the Igne gear frame, which is used in creating the [Igne Claws](..
 | Volcanic dye          | 1/750         |
 | Volcanic shards       | 1/128         |
 | Igne gear frame       | 1/716         |
+
+## Dragonstone (u) upgrades
+
+Moktang can drop [[Dragonstone upgrade kit]] at **1/5**.
+
+Use [[/create]] with one kit + base item to make:
+
+- [[Dragonstone full helm(u)]]
+- [[Dragonstone platebody(u)]]
+- [[Dragonstone platelegs(u)]]
+- [[Dragonstone boots(u)]]
+- [[Dragonstone gauntlets(u)]]

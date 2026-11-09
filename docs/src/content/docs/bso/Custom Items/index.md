@@ -168,6 +168,13 @@ This cape is best-in-slot for melee and gives various combat boosts.
 
 ---
 
+## Offhand Spidergore Rapier
+
+Created with 1 Offhand drygore rapier and 1 Spiders' leg bottom.
+This rapier is the best offhand in most scenarios, providing a boost at many locations.
+
+---
+
 ### Runecrafting Pouches
 
 - **Abyssal Pouch** – Holds 64 essence (created with an Abyssal Thread and Giant

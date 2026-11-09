@@ -1,6 +1,4 @@
-/**
- * Utility for loading OSRS fonts in the browser
- */
+import { useEffect, useState } from 'react';
 
 export interface FontConfig {
 	family: string;
@@ -15,52 +13,47 @@ const DEFAULT_FONTS: FontConfig[] = [
 	{
 		family: 'RuneScape Bold 12',
 		url: 'https://cdn.oldschool.gg/fonts/osrs-font-bold.ttf'
+	},
+	{
+		family: 'quaver',
+		url: 'https://cdn.oldschool.gg/fonts/quaver.woff2'
 	}
 ];
 
 let fontsLoaded = false;
 let loadingPromise: Promise<void> | null = null;
 
-export async function loadOSRSFonts(fonts: FontConfig[] = DEFAULT_FONTS): Promise<void> {
-	if (fontsLoaded) {
-		return;
-	}
+async function loadFonts(fonts: FontConfig[]): Promise<void> {
+	if (fontsLoaded) return;
+	if (loadingPromise) return loadingPromise;
 
-	if (loadingPromise) {
-		return loadingPromise;
-	}
-
-	loadingPromise = (async () => {
-		try {
-			await Promise.all(
-				fonts.map(async ({ family, url }) => {
-					try {
-						const font = new FontFace(family, `url(${url})`);
-						await font.load();
-						// @ts-expect-error
-						document.fonts.add(font);
-						console.log(`Loaded font: ${family}`);
-					} catch (err) {
-						console.warn(`Failed to load font ${family} from ${url}:`, err);
-					}
-				})
-			);
-			fontsLoaded = true;
-			console.log('All OSRS fonts loaded successfully');
-		} catch (err) {
-			loadingPromise = null;
-			throw new Error(`Failed to load fonts: ${err}`);
-		}
-	})();
+	loadingPromise = Promise.all(
+		fonts.map(async ({ family, url }) => {
+			const font = new FontFace(family, `url(${url})`);
+			await font.load();
+			// @ts-expect-error
+			document.fonts.add(font);
+		})
+	).then(() => {
+		fontsLoaded = true;
+	});
 
 	return loadingPromise;
 }
 
-export function areFontsLoaded(): boolean {
-	return fontsLoaded;
-}
+export function useOSRSFonts(fonts: FontConfig[] = DEFAULT_FONTS): boolean {
+	const [loaded, setLoaded] = useState<boolean>(fontsLoaded);
 
-export function resetFontLoadingState(): void {
-	fontsLoaded = false;
-	loadingPromise = null;
+	useEffect(() => {
+		if (fontsLoaded) {
+			setLoaded(true);
+			return;
+		}
+
+		loadFonts(fonts)
+			.then(() => setLoaded(true))
+			.catch(() => setLoaded(false));
+	}, [fonts]);
+
+	return loaded;
 }

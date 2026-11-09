@@ -1,18 +1,18 @@
-import { randomVariation } from '@oldschoolgg/rng';
-import { formatDuration, Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import type { ActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
-export async function mageArena2Command(user: MUser, channelId: string) {
+export async function mageArena2Command(rng: RNGProvider, user: MUser, channelId: string) {
 	if (user.skillsAsLevels.magic < 75) {
 		return 'You need level 75 Magic to do the Mage Arena II.';
 	}
 	if (user.cl.amount('Saradomin cape') === 0) {
 		return 'You need to have completed Mage Arena I before doing part II.';
 	}
-	const duration = randomVariation(Time.Minute * 25, 3);
+	const duration = rng.randomVariation(Time.Minute * 25, 3);
 
 	const itemsNeeded = new Bank({
 		'Saradomin brew(4)': 1,
@@ -48,7 +48,5 @@ export async function mageArena2Command(user: MUser, channelId: string) {
 		type: 'MageArena2'
 	});
 
-	return `${user.minionName} is now doing the Mage Arena II, it will take approximately ${formatDuration(
-		duration
-	)}. Removed ${totalCost} from your bank.`;
+	return `${user.minionName} is now doing the Mage Arena II, it will take approximately ${formatTripDuration(user, duration)}. Removed ${totalCost} from your bank.`;
 }

@@ -1,6 +1,6 @@
-import { shuffleArr } from '@oldschoolgg/rng';
 import type { IUser } from '@oldschoolgg/schemas';
 import { Emoji } from '@oldschoolgg/toolkit';
+import { cryptoRng } from 'node-rng/crypto';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { addToOpenablesScores } from '@/mahoji/mahojiSettings.js';
@@ -52,7 +52,7 @@ export async function crackerCommand({
 	await owner.removeItemsFromBank(new Bank().add('Christmas cracker', 1));
 	const winnerLoot = HatTable.roll();
 	const loserLoot = JunkTable.roll();
-	const [winner, loser] = shuffleArr([otherPerson, owner]);
+	const [winner, loser] = cryptoRng.shuffle([otherPerson, owner]);
 	await winner.addItemsToBank({ items: winnerLoot, collectionLog: true });
 	await loser.addItemsToBank({ items: loserLoot, collectionLog: true });
 	await addToOpenablesScores(owner, new Bank().add('Christmas cracker', 1).freeze());

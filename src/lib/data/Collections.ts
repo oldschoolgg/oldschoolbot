@@ -1,4 +1,3 @@
-import { CollectionLog } from '@oldschoolgg/collectionlog';
 import { calcWhatPercent, notEmpty, stringMatches, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import {
 	Bank,
@@ -58,6 +57,7 @@ import {
 	demonicGorillaCL,
 	derangedArchaeologistCL,
 	diariesCL,
+	doomOfMokhaiotlCL,
 	dukeSucellusCL,
 	type FormatProgressFunction,
 	fightCavesCL,
@@ -86,6 +86,7 @@ import {
 	lastManStandingCL,
 	magicTrainingArenaCL,
 	mahoganyHomesCL,
+	masteringMixologyCL,
 	miscellaneousCL,
 	monkeyBackpacksCL,
 	motherlodeMineCL,
@@ -121,12 +122,14 @@ import {
 	tormentedDemonCL,
 	troubleBrewingCL,
 	tzHaarCL,
+	valeTotemsCL,
 	vardorvisCL,
 	venenatisCL,
 	vetionCL,
 	volcanicMineCL,
 	vorkathCL,
 	wintertodtCL,
+	yamaCL,
 	zalcanoCL,
 	zulrahCL
 } from '@/lib/data/CollectionsExport.js';
@@ -264,10 +267,6 @@ export const allCollectionLogs: ICollection = {
 				allItems: Monsters.DerangedArchaeologist.allItems,
 				items: derangedArchaeologistCL,
 				fmtProg: kcProg(Monsters.DerangedArchaeologist)
-			},
-			'Doom of Mokhaiotl': {
-				unobtainable: true,
-				items: CollectionLog.DoomofMokhaiotl.items
 			},
 			'Dagannoth Kings': {
 				alias: ['dagannoth kings', 'kings', 'dagga', 'dks'],
@@ -503,6 +502,12 @@ export const allCollectionLogs: ICollection = {
 					'Fire element staff crown',
 					'Desiccated page'
 				]),
+				allItems: uniqueArr([
+					...Monsters.Branda.allItems,
+					...Monsters.Eldric.allItems,
+					...Monsters.RoyalTitans.allItems,
+					...resolveItems(['Deadeye prayer scroll', 'Mystic vigour prayer scroll'])
+				]),
 				fmtProg: ({ stats }) => [
 					`${stats.kcBank[Monsters.Branda.id] ?? 0} Branda KC`,
 					`${stats.kcBank[Monsters.Eldric.id] ?? 0} Eldric KC`,
@@ -584,9 +589,57 @@ export const allCollectionLogs: ICollection = {
 				items: wintertodtCL,
 				fmtProg: mgProg('wintertodt')
 			},
-			Yami: {
-				unobtainable: true,
-				items: CollectionLog.Yami.items
+			'Doom of Mokhaiotl': {
+				alias: ['doom', 'mokhaiotl', 'mokha', 'osto-ayak', 'ostayak'],
+				allItems: resolveItems([
+					'Mokhaiotl cloth',
+					'Eye of ayak (uncharged)',
+					'Avernic treads',
+					'Dom',
+					'Dragon med helm',
+					'Dragon platelegs',
+					'Mystic earth staff',
+					'Rune pickaxe',
+					'Death rune',
+					'Chaos rune',
+					'Earth rune',
+					'Fire rune',
+					'Cannonball',
+					'Onyx bolts',
+					'Coal',
+					'Gold ore',
+					'Runite ore',
+					'Celastrus seed',
+					'Ranarr seed',
+					'Spirit seed',
+					'Aether catalyst',
+					'Dragon dart tip',
+					'Raw shark',
+					'Shark lure',
+					'Sun-kissed bones',
+					'Tooth half of key (moon key)',
+					'Demon tear',
+					'Mokhaiotl waystone',
+					'Clue scroll (elite)'
+				]),
+				items: doomOfMokhaiotlCL,
+				fmtProg: async ({ user }) => {
+					const stats = await user.fetchStats();
+					const deepestDelve = (stats.doom_deepest_delve ?? 0) as number;
+					const deepDelves = (stats.doom_deep_delves ?? 0) as number;
+					const totalDelves = (stats.doom_total_delves ?? 0) as number;
+					return [
+						`Deepest Delve: ${deepestDelve}`,
+						`Deep Delves: ${deepDelves}`,
+						`Total Delves: ${totalDelves}`
+					];
+				}
+			},
+			Yama: {
+				alias: Monsters.Yama.aliases,
+				allItems: uniqueArr([...yamaCL, ...Monsters.Yama.allItems]),
+				items: yamaCL,
+				fmtProg: kcProg(Monsters.Yama)
 			},
 			Zalcano: { items: zalcanoCL, fmtProg: ({ stats }) => `${stats.kcBank[EMonster.ZALCANO] ?? 0} KC` },
 			Zulrah: {
@@ -788,11 +841,10 @@ export const allCollectionLogs: ICollection = {
 				items: uniqueArr([...cluesHardRareCL, ...cluesEliteRareCL, ...cluesMasterRareCL]),
 				isActivity: true,
 				fmtProg: clueProg(['Hard', 'Elite', 'Master'])
-			},
-			'Scroll Cases': {
-				unobtainable: true,
-				items: CollectionLog.ScrollCases.items
 			}
+			///	'Scroll Cases': {
+			///		items: CollectionLog.ScrollCases.items
+			///	}
 		}
 	},
 	Minigames: {
@@ -818,6 +870,7 @@ export const allCollectionLogs: ICollection = {
 			},
 			'Castle Wars': {
 				alias: ['cw', 'castle wars'],
+				allItems: resolveItems(['Castle wars ticket', 'Castle wars supply crate']),
 				items: castleWarsCL,
 				isActivity: true,
 				fmtProg: mgProg('castle_wars')
@@ -894,8 +947,9 @@ export const allCollectionLogs: ICollection = {
 				fmtProg: mgProg('mahogany_homes')
 			},
 			'Mastering Mixology': {
-				unobtainable: true,
-				items: CollectionLog.MasteringMixology.items
+				items: masteringMixologyCL,
+				isActivity: true,
+				fmtProg: mgProg('mastering_mixology')
 			},
 			'Pest Control': {
 				items: pestControlCL,
@@ -948,8 +1002,10 @@ export const allCollectionLogs: ICollection = {
 				fmtProg: mgProg('trouble_brewing')
 			},
 			'Vale Totems': {
-				unobtainable: true,
-				items: CollectionLog.ValeTotems.items
+				alias: ['vt', 'vale', 'totems', 'vale totems'],
+				items: valeTotemsCL,
+				isActivity: true,
+				fmtProg: mgProg('vale_totems')
 			},
 			'Volcanic Mine': {
 				items: volcanicMineCL,
@@ -1017,10 +1073,9 @@ export const allCollectionLogs: ICollection = {
 				items: demonicGorillaCL,
 				fmtProg: kcProg(Monsters.DemonicGorilla)
 			},
-			'Hunter Guild': {
-				unobtainable: true,
-				items: CollectionLog.HunterGuild.items
-			},
+			///	'Hunter Guild': {
+			///		items: CollectionLog.HunterGuild.items
+			///	},
 			'Monkey Backpacks': {
 				alias: ['monkey', 'monkey bps', 'backpacks'],
 				kcActivity: {
@@ -1266,6 +1321,7 @@ export const allCollectionLogs: ICollection = {
 		}
 	}
 };
+
 // Get all items, from all monsters and all CLs into a variable, for uses like mostdrops
 export const allDroppedItems = uniqueArr([
 	...Object.values(allCollectionLogs)
@@ -1465,8 +1521,7 @@ export async function getCollection(options: {
 			collectionObtained: userAmount,
 			collectionTotal: totalCl,
 			userItems: userCheckBank,
-			counts: false,
-			unobtainable: false
+			counts: false
 		};
 	}
 	if (stringMatches(search, 'overall')) {
@@ -1477,8 +1532,7 @@ export async function getCollection(options: {
 			collectionObtained: userAmount,
 			collectionTotal: totalCl,
 			userItems: userCheckBank,
-			counts: false,
-			unobtainable: false
+			counts: false
 		};
 	}
 
@@ -1494,8 +1548,7 @@ export async function getCollection(options: {
 				collectionTotal: totalCl,
 				leftList: getLeftList(userCheckBank, category, allItems, logType === 'sacrifice'),
 				userItems: userCheckBank,
-				counts: false,
-				unobtainable: false
+				counts: false
 			};
 		}
 		for (const [activityName, attributes] of Object.entries(entries.activities)) {
@@ -1541,7 +1594,7 @@ export async function getCollection(options: {
 					),
 					userItems: userCheckBank,
 					counts: attributes.counts ?? true,
-					unobtainable: attributes.unobtainable ?? false
+					fmtProgResult: await resolveFmtProg(attributes.fmtProg, user, minigameScores, userStats)
 				};
 			}
 		}
@@ -1559,12 +1612,26 @@ export async function getCollection(options: {
 			collectionObtained: userAmount,
 			collectionTotal: totalCl,
 			userItems: userCheckBank,
-			counts: false,
-			unobtainable: false
+			counts: false
 		};
 	}
 
 	return false;
+}
+
+async function resolveFmtProg(
+	fmtProg: FormatProgressFunction | undefined,
+	user: MUser,
+	minigames: Awaited<ReturnType<MUser['fetchMinigameScores']>>,
+	stats: MUserStats
+): Promise<string | string[] | undefined> {
+	if (!fmtProg) return undefined;
+	return fmtProg({
+		user,
+		getKC: async (id: number) => user.getKC(id),
+		minigames: minigames as any,
+		stats
+	});
 }
 
 export const allCollectionLogsFlat = Object.values(allCollectionLogs).flatMap(i =>

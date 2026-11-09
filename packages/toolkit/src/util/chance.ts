@@ -32,7 +32,7 @@ export function perTimeUnitChance(
 	successFunction: () => unknown
 ): void {
 	const unitsPassed = Math.floor(durationMilliseconds / timeUnitInMilliseconds);
-	const perUnitChance = oneInXPerTimeUnitChance / (timeUnitInMilliseconds / 60_000);
+	const perUnitChance = Math.round(oneInXPerTimeUnitChance / (timeUnitInMilliseconds / 60_000));
 
 	for (let i = 0; i < unitsPassed; i++) {
 		if (rng.roll(perUnitChance)) {

@@ -19,7 +19,7 @@ export const onStartup = async () => {
 			.sendMessage(Channel.GeneralChannel, {
 				content: `I have just turned on!\n\n${META_CONSTANTS.RENDERED_STR}`
 			})
-			.catch(console.error);
+			.catch(err => Logging.logError(err));
 	} else {
 		// In development, always sync commands on startup.
 		await bulkUpdateCommands();

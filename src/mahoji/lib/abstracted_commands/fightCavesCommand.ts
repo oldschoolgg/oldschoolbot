@@ -1,4 +1,3 @@
-import { percentChance, randInt } from '@oldschoolgg/rng';
 import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, itemID } from 'oldschooljs';
 
@@ -92,7 +91,15 @@ function checkGear(user: MUser): string | undefined {
 	}
 }
 
-export async function fightCavesCommand(user: MUser, channelId: string): CommandResponse {
+export async function fightCavesCommand({
+	rng,
+	user,
+	channelId
+}: {
+	rng: RNGProvider;
+	user: MUser;
+	channelId: string;
+}): CommandResponse {
 	const gearFailure = checkGear(user);
 	if (gearFailure) {
 		return {
@@ -118,7 +125,7 @@ export async function fightCavesCommand(user: MUser, channelId: string): Command
 
 	const usersRangeStats = user.gear.range.stats;
 
-	duration += (randInt(1, 5) * duration) / 100;
+	duration += (rng.randInt(1, 5) * duration) / 100;
 
 	await user.removeItemsFromBank(fightCavesCost);
 
@@ -136,9 +143,13 @@ export async function fightCavesCommand(user: MUser, channelId: string): Command
 		debugStr += ', 15% on Task with Black mask (i)';
 	}
 
-	const diedPreJad = percentChance(preJadDeathChance);
+	const diedPreJad = rng.percentChance(preJadDeathChance);
 	const fakeDuration = duration;
-	duration = diedPreJad ? randInt(Time.Minute * 20, duration) : duration;
+	if (diedPreJad) {
+		const minDuration = Time.Minute * 20;
+		const maxDuration = Math.max(minDuration, Math.floor(duration));
+		duration = rng.randInt(minDuration, maxDuration);
+	}
 	const preJadDeathTime = diedPreJad ? duration : null;
 
 	await ActivityManager.startTrip<FightCavesActivityTaskOptions>({

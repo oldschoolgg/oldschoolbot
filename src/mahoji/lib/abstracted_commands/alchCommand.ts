@@ -1,8 +1,9 @@
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
-import { Bank, Items, resolveItems, toKMB } from 'oldschooljs';
+import { Bank, EItem, type Item, Items, resolveItems, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import type { AlchingActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 const unlimitedFireRuneProviders = resolveItems([
 	'Staff of fire',
@@ -17,9 +18,16 @@ const unlimitedFireRuneProviders = resolveItems([
 	'Tome of fire'
 ]);
 
+const untradeableAlchableItemIDs = new Set<number>([EItem.RITE_OF_VILE_TRANSFERENCE]);
+type AlchableItem = Item & { highalch: number };
+
 // 5 tick action
 export const timePerAlch = Time.Second * 3;
 export const timePerAlchAgility = Time.Second * (3 + 10);
+
+export function canAlchItem(item: Item): item is AlchableItem {
+	return Boolean(item.highalch && (item.tradeable || untradeableAlchableItemIDs.has(item.id)));
+}
 
 export async function alchCommand(
 	interaction: MInteraction | null,
@@ -35,7 +43,7 @@ export async function alchCommand(
 	if (!osItem) osItem = favAlchs;
 
 	if (!osItem) return 'Invalid item.';
-	if (!osItem.highalch || !osItem.tradeable) return 'This item cannot be alched.';
+	if (!canAlchItem(osItem)) return 'This item cannot be alched.';
 
 	if (user.skillsAsLevels.magic < 55) {
 		return 'You need level 55 Magic to cast High Alchemy';
@@ -92,7 +100,8 @@ export async function alchCommand(
 		type: 'Alching'
 	});
 
-	const response = `${user.minionName} is now alching ${quantity}x ${osItem.name}, it'll take around ${formatDuration(
+	const response = `${user.minionName} is now alching ${quantity}x ${osItem.name}, it'll take around ${formatTripDuration(
+		user,
 		duration
 	)} to finish.`;
 

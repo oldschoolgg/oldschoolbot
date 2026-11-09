@@ -36,6 +36,11 @@ export const ZRole = z.object({
 
 export type IRole = z.infer<typeof ZRole>;
 
+export const ZRichMember = ZMember.extend({
+	roles_detailed: z.array(ZRole)
+});
+export type IRichMember = z.infer<typeof ZRichMember>;
+
 export const ZChannel = z.object({
 	id: z.string(),
 	guild_id: z.string().nullable(),
@@ -59,14 +64,21 @@ export const ZMessage = z.object({
 });
 export type IMessage = z.infer<typeof ZMessage>;
 
-export const ZMemberWithRoles = ZMember.extend({
-	roles: z.array(ZRole)
-});
-export type IMemberWithRoles = z.infer<typeof ZMemberWithRoles>;
-
 export const ZWebhook = z.object({
 	id: z.string(),
 	channel_id: z.string(),
 	token: z.string()
 });
 export type IWebhook = z.infer<typeof ZWebhook>;
+
+export const ZCreateWebhook = z.object({
+	name: z.string().min(1).max(80),
+	avatar: z.string().nullable().optional()
+});
+export type ICreateWebhook = z.infer<typeof ZCreateWebhook>;
+
+export const ZWebhookPermissions = z.object({
+	channel_id: z.string(),
+	can_create_webhook: z.boolean()
+});
+export type IWebhookPermissions = z.infer<typeof ZWebhookPermissions>;

@@ -1,9 +1,5 @@
 import type { SkillNameType } from '@/lib/skilling/types.js';
 
-export interface ItemBank {
-	[key: string]: number;
-}
-
 export interface MakePartyOptions {
 	maxSize: number;
 	minSize: number;
@@ -13,6 +9,17 @@ export interface MakePartyOptions {
 	ironmanAllowed: boolean;
 	usersAllowed?: string[];
 	customDenier?(user: MUser): Promise<[false] | [true, string]>;
+}
+
+export interface MakeDuoOptions {
+	leader: MUser;
+	interaction: MInteraction;
+	message: string;
+	ironmanAllowed: boolean;
+	usersAllowed?: string[];
+	autoStartAfter?: number;
+	customDenier?(user: MUser): Promise<[false] | [true, string]>;
+	confirmMessage?(user: MUser): string;
 }
 
 export type Skills = Partial<{

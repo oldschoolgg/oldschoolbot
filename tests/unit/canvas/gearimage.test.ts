@@ -198,7 +198,7 @@ describe('Gear Images', async () => {
 
 	test('Transmog Gear', async () => {
 		const emptyGear = new Gear();
-		emptyGear.hands = { item: EItem.BANANA, quantity: 1 };
+		emptyGear.set('hands', { item: EItem.BANANA, quantity: 1 });
 		const gearImage = await generateGearImage({
 			gearSetup: emptyGear,
 			gearType: 'other',

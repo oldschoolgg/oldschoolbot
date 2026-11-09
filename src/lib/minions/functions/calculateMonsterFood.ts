@@ -1,8 +1,6 @@
+import { type GearSetupType, GearStat, inverseOfOffenceStat } from '@oldschoolgg/gear';
 import { calcWhatPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
-import { GearStat } from 'oldschooljs/gear';
 
-import { inverseOfOffenceStat } from '@/lib/gear/functions/inverseOfStat.js';
-import type { GearSetupType } from '@/lib/gear/types.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 import { maxDefenceStats, maxOffenceStats } from '@/lib/structures/Gear.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';

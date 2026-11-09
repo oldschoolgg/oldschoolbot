@@ -4,6 +4,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import { activity_type_enum } from '@/prisma/main/enums.js';
 import { TokkulShopItems } from '@/lib/data/buyables/tokkulBuyables.js';
 import type { TokkulShopOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 const { TzTokJad } = Monsters;
 
@@ -175,8 +176,6 @@ export const tksCommand = defineCommand({
 		// Trip start message
 		return `${user.minionName} is now ${action}ing ${action === 'buy' ? loot : cost} ${
 			action === 'buy' ? 'from' : 'to'
-		} the Tzhaar Shops, in return for ${action === 'buy' ? cost : loot}. The trip will take ${formatDuration(
-			duration
-		)}.`;
+		} the Tzhaar Shops, in return for ${action === 'buy' ? cost : loot}. The trip will return in about ${formatTripDuration(user, duration)}.`;
 	}
 });

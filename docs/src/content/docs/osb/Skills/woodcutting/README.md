@@ -26,13 +26,17 @@ To use the 1.5 tick method you must chop the trees planted in Farming patches. T
 
 ## Lumberjack Outfit
 
-The Lumberjack outfit can be obtained from the [Temple Trekking](https://wiki.oldschool.gg/minigames/temple-trekking) minigame. When equipped in the skilling setup, it provides the following boosts to woodcutting XP:
+The Lumberjack outfit can be obtained from the [Temple Trekking](https://wiki.oldschool.gg/osb/minigames/temple-trekking/#_top) minigame. When equipped in the skilling setup, it provides the following boosts to woodcutting XP:
 
 - 0.4% - Lumberjack hat
 - 0.8% - Lumberjack top
 - 0.6% - Lumberjack legs
 - 0.2% - Lumberjack boots
 - 2.5% - Full outfit equipped in skilling setup
+
+## Infected Roots
+
+Infected Roots require [[woodcutting:80]] and 70 QP. They can be chopped with [[/chop name\:Infected Roots]] for [[Demon tear]], with a small chance of regular [[Logs]].
 
 ## Logs
 
@@ -52,6 +56,7 @@ This table assumes no powerchopping is active.
 | Yew              | 60             | 175        | 41,369      |
 | Sulliusceps\*    | 65             | 127        | 100,536     |
 | Magic            | 75             | 250        | 29,227      |
+| Infected Roots   | 80             | 10         |             |
 | Redwood          | 90             | 380        | 65,860      |
 
 _\* Sulliusceps require 25qp to chop._

@@ -35,6 +35,22 @@ const barrows = [
 	"Verac's flail"
 ];
 describe('unobtainable item group', () => {
+	test('excludes seasonal equipment from normal gear choices', () => {
+		for (const itemID of [
+			33038, 33041, 33063, 33227, 33229, 33243, 33245, 33247, 33249, 33251, 33253, 33255, 33257
+		]) {
+			expect(Items.getOrThrow(itemID).equipable).toBe(true);
+			expect(allUnobtainableItems).toContain(itemID);
+		}
+	});
+
+	test('keeps main-game cosmetic rewards available', () => {
+		for (const itemID of [33021, 33023, 33027, 33031, 33035, 33036, 33066, 33260, 33296, 33338, 33340, 34607]) {
+			expect(Items.getOrThrow(itemID).equipable).toBe(true);
+			expect(allUnobtainableItems).not.toContain(itemID);
+		}
+	});
+
 	test('real barrows gear shouldnt be unobtainable', () => {
 		for (const item of barrowsItemArr.flat()) {
 			expect(allUnobtainableItems).not.toContain(item);

@@ -1,17 +1,4 @@
-import type { Item } from 'oldschooljs';
-
 import type { Spritesheet } from '@/hooks/useSpritesheet.js';
-
-const BankSortMethods = ['value', 'alch', 'name', 'quantity'] as const;
-
-export type BankSortMethod = (typeof BankSortMethods)[number];
-type SortFn = (a: [Item, number], b: [Item, number]) => number;
-export const sorts: Record<BankSortMethod, SortFn> = {
-	value: (a, b) => (b[0].price ?? 0) * b[1] - (a[0].price ?? 0) * a[1],
-	alch: (a, b) => (b[0].highalch ?? 0) * b[1] - (a[0].highalch ?? 0) * a[1],
-	name: (a, b) => a[0].name.localeCompare(b[0].name),
-	quantity: (a, b) => b[1] - a[1]
-};
 
 function createScaledPattern(
 	ctx: CanvasRenderingContext2D,
@@ -19,7 +6,7 @@ function createScaledPattern(
 	scale: number,
 	repeat: 'repeat' | 'repeat-x' | 'repeat-y'
 ): CanvasPattern {
-	console.log(`Creating scaled pattern with scale: ${scale} scale, ${image.width}x${image.height} image size`);
+	console.log(`	Creating scaled pattern with scale: ${scale} scale, ${image.width}x${image.height} image size`);
 	const scaledCanvas = document.createElement('canvas');
 	scaledCanvas.width = image.width * scale;
 	scaledCanvas.height = image.height * scale;
@@ -33,9 +20,6 @@ export function drawBorder(ctx: CanvasRenderingContext2D, bankSpritesheet: Sprit
 	const corner = bankSpritesheet.get('bank_border_c');
 	const top = bankSpritesheet.get('bank_border_h');
 	const side = bankSpritesheet.get('bank_border_v');
-	console.log(
-		`corner: ${corner.width}x${corner.height}, top: ${top.width}x${top.height}, side: ${side.width}x${side.height}`
-	);
 
 	const scaledTopHeight = top.height * scale;
 	const scaledSideWidth = side.width * scale;

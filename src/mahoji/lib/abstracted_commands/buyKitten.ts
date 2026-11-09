@@ -1,10 +1,9 @@
-import { randArrItem } from '@oldschoolgg/rng';
 import { Bank, Items } from 'oldschooljs';
 
 import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
 import { kittens } from '@/lib/growablePets.js';
 
-export async function buyKitten(user: MUser) {
+export async function buyKitten({ user, rng }: OSInteraction) {
 	const cost = new Bank().add('Coins', 1000);
 
 	let errorMsg: string | null = null;
@@ -17,7 +16,7 @@ export async function buyKitten(user: MUser) {
 	}
 
 	const allItemsOwnedBank = user.allItemsOwned;
-	if (kittens.some(kitten => allItemsOwnedBank.has(kitten))) {
+	if (kittens.some(_kitten => allItemsOwnedBank.has(_kitten))) {
 		errorMsg = "You are already raising a kitten! You can't handle a second.";
 	}
 	if (errorMsg) {
@@ -31,7 +30,7 @@ export async function buyKitten(user: MUser) {
 		};
 	}
 
-	const kitten = Items.getOrThrow(randArrItem(kittens));
+	const kitten = Items.getOrThrow(rng.pick(kittens));
 
 	const loot = new Bank().add(kitten.id);
 

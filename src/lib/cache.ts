@@ -16,7 +16,7 @@ if (globalConfig.isProduction) {
 }
 
 export const CHAT_PET_COOLDOWN_CACHE = new LRUCache<string, number>({ max: 2000 });
-export const giveawayCache = new LRUCache<number, Giveaway>({
+export const giveawayCache = new LRUCache<string, Giveaway>({
 	max: 10,
 	ttl: Time.Second * 10,
 	ttlAutopurge: true,
@@ -80,3 +80,5 @@ export function userIsBusy(userID: string): boolean {
 }
 
 export const MUTEX_CACHE = new Map<string, Mutex>();
+
+export const DISCORD_USER_IDS_INSERTED_CACHE = new Set<string>();

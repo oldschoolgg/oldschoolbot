@@ -35,6 +35,7 @@ export type SkillNameType = (typeof SkillsArray)[number];
 
 export interface Ore {
 	level: number;
+	prayerLevel?: number;
 	xp: number;
 	id: number;
 	name: string;
@@ -45,7 +46,11 @@ export interface Ore {
 	petChance?: number;
 	minerals?: number;
 	clueScrollChance?: number;
+	moonKeyHalfCatchRate?: MoonKeyHalfCatchRate;
 	aliases?: string[];
+	outputId?: number;
+	outputMultiplier?: number;
+	fixedRatePerHour?: [number, number];
 }
 
 export interface Log {
@@ -65,6 +70,7 @@ export interface Log {
 	petChance?: number;
 	qpRequired: number;
 	clueScrollChance?: number;
+	moonKeyHalfCatchRate?: MoonKeyHalfCatchRate;
 	clueNestsOnly?: boolean;
 }
 
@@ -75,19 +81,46 @@ export interface Burnable {
 	inputLogs: number;
 }
 
-export interface Fish {
+export type BonusXPMap = Partial<Record<SkillNameType, number>>;
+
+export interface FishInSpot {
+	id: number;
 	level: number;
 	xp: number;
-	id: number;
+	intercept: number;
+	slope: number;
+	bonusXP?: BonusXPMap;
+	tertiary?: { chance: number; id: number };
+}
+
+export interface MoonKeyHalfCatchRate {
+	numerator: number;
+	denominator: number;
+}
+
+export interface Fish {
 	name: string;
+	alias?: string[];
+	subfishes?: FishInSpot[];
+	moonKeyHalfCatchRate?: MoonKeyHalfCatchRate;
 	petChance?: number;
-	timePerFish: number;
+	clueScrollChance?: number;
+	lostTicks?: number;
+	bankingTime?: number;
+	ticksPerRoll?: number;
 	bait?: number;
 	qpRequired?: number;
 	bigFish?: number;
 	bigFishRate?: number;
-	clueScrollChance?: number;
-	alias?: string[];
+	// Camdozaal fish still rely on these properties.
+	timePerFish?: number;
+	level?: number;
+	xp?: number;
+	id?: number;
+	skillReqs?: Omit<LevelRequirements, 'fishing'>;
+	canPowerfish?: boolean;
+	powerfishTicks?: number;
+	powerfishLostTicks?: number;
 }
 
 export interface Course {
@@ -149,6 +182,7 @@ export interface SmithedItem {
 	timeToUse: number;
 	outputMultiple: number;
 	qpRequired?: number;
+	addToCl?: boolean;
 }
 
 export interface Craftable {
@@ -248,7 +282,9 @@ export interface Plant {
 	herbXp?: number;
 	herbLvl?: number;
 	outputLogs?: number;
+	outputLogsQuantity?: number;
 	outputRoots?: number;
+	logDepletionChance?: number;
 	treeWoodcuttingLevel?: number;
 	fixedOutputAmount?: number;
 	variableYield?: boolean;
@@ -269,7 +305,7 @@ export interface Plant {
 	defaultNumOfPatches: number;
 	canPayFarmer: boolean;
 	canCompostPatch: boolean;
-	canCompostandPay: boolean;
+	canCompostAndPay: boolean;
 	additionalPatchesByQP: number[][];
 	additionalPatchesByFarmLvl: number[][];
 	additionalPatchesByFarmGuildAndLvl: number[][];

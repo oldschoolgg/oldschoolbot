@@ -1,22 +1,31 @@
 import { EmbedBuilder, userMention } from '@oldschoolgg/discord';
-import { randInt } from '@oldschoolgg/rng';
-import { noOp, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
-import { Bank, convertLVLtoXP, ItemGroups, Items, itemID, MAX_INT_JAVA } from 'oldschooljs';
+import { noOp, objectEntries, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { Bank, convertLVLtoXP, ItemGroups, Items, itemID, MAX_INT_JAVA, resolveItems } from 'oldschooljs';
 
 import { xp_gains_skill_enum } from '@/prisma/main.js';
+import {
+	bitfieldCanUserManipulate,
+	changeBitFieldForUser,
+	getBitFieldData,
+	listBitFields
+} from '@/lib/bitFieldUtils.js';
 import { allStashUnitsFlat, allStashUnitTiers } from '@/lib/clues/stashUnits.js';
 import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
-import { BitFieldData, globalConfig } from '@/lib/constants.js';
+import { BitField, BitFieldData, globalConfig } from '@/lib/constants.js';
+import { spiritAnglerOutfit } from '@/lib/data/CollectionsExport.js';
 import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '@/lib/data/cox.js';
 import { leaguesCreatables } from '@/lib/data/creatables/leagueCreatables.js';
 import { Eatables } from '@/lib/data/eatables.js';
+import { herbloreItems } from '@/lib/data/filterables.js';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '@/lib/data/tob.js';
-import type { SafeUserUpdateInput } from '@/lib/MUser.js';
+import { type Diary, diaries } from '@/lib/diaries.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import potions from '@/lib/minions/data/potions.js';
 import { MAX_QP, quests } from '@/lib/minions/data/quests.js';
+import { DiaryID, type DiaryTierName } from '@/lib/minions/types.js';
 import { allOpenables } from '@/lib/openables.js';
-import { Minigames } from '@/lib/settings/minigames.js';
+import { type MinigameName, Minigames } from '@/lib/settings/minigames.js';
+import Agility from '@/lib/skilling/skills/agility.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import {
 	farmingPatchNames,
@@ -30,11 +39,13 @@ import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
 import { SlayerRewardsShop } from '@/lib/slayer/slayerUnlocks.js';
 import { allSlayerMonsters } from '@/lib/slayer/tasks/index.js';
 import { Gear } from '@/lib/structures/Gear.js';
+import type { SafeUserUpdateInput } from '@/lib/user/update.js';
+import type { HasDiaryDiaryKey } from '@/lib/user/userTypes.js';
 import { parseStringBank } from '@/lib/util/parseStringBank.js';
-import { isValidBitField } from '@/lib/util/smallUtils.js';
 import { fetchBingosThatUserIsInvolvedIn } from '@/mahoji/commands/bingo.js';
 import { gearViewCommand } from '@/mahoji/lib/abstracted_commands/gearCommands.js';
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
+import { shades, shadesLogs } from '@/mahoji/lib/abstracted_commands/shadesOfMortonCommand.js';
 import { allUsableItems } from '@/mahoji/lib/abstracted_commands/useCommand.js';
 import { BingoManager } from '@/mahoji/lib/bingo/BingoManager.js';
 
@@ -90,6 +101,83 @@ for (const gear of Items.resolveItems([
 	coloRange.equip(Items.getOrThrow(gear));
 }
 
+const yamaMelee = new Gear();
+for (const gear of Items.resolveItems([
+	'Torva full helm',
+	'Infernal cape',
+	'Amulet of rancour',
+	'Torva platebody',
+	'Torva platelegs',
+	'Ferocious gloves',
+	'Avernic defender',
+	'Primordial boots',
+	'Ultor ring',
+	'Emberlight'
+])) {
+	yamaMelee.equip(Items.getOrThrow(gear));
+}
+
+const yamaMage = new Gear();
+for (const gear of Items.resolveItems([
+	'Ancestral hat',
+	'Imbued zamorak cape',
+	'Occult necklace',
+	'Ancestral robe top',
+	'Ancestral robe bottom',
+	'Tormented bracelet',
+	'Eternal boots',
+	'Magus ring',
+	'Purging staff'
+])) {
+	yamaMage.equip(Items.getOrThrow(gear));
+}
+
+const doomMelee = new Gear();
+for (const gear of Items.resolveItems([
+	'Torva full helm',
+	'Infernal cape',
+	'Amulet of rancour',
+	'Torva platebody',
+	'Torva platelegs',
+	'Ferocious gloves',
+	'Avernic treads',
+	'Ultor ring',
+	'Noxious halberd'
+])) {
+	doomMelee.equip(Items.getOrThrow(gear));
+}
+
+const doomRange = new Gear();
+for (const gear of Items.resolveItems([
+	"Dizana's quiver",
+	'Masori mask (f)',
+	'Necklace of anguish',
+	'Masori body (f)',
+	'Masori chaps (f)',
+	'Zaryte vambraces',
+	'Avernic treads',
+	'Venator ring',
+	'Dragon arrow',
+	'Twisted bow'
+])) {
+	doomRange.equip(Items.getOrThrow(gear));
+}
+
+const doomMage = new Gear();
+for (const gear of Items.resolveItems([
+	'Ancestral hat',
+	'Imbued zamorak cape',
+	'Occult necklace',
+	'Ancestral robe top',
+	'Ancestral robe bottom',
+	'Tormented bracelet',
+	'Avernic treads',
+	'Magus ring',
+	'Eye of ayak'
+])) {
+	doomMage.equip(Items.getOrThrow(gear));
+}
+
 const gearPresets = [
 	{
 		name: 'Cox',
@@ -108,6 +196,18 @@ const gearPresets = [
 		melee: coloMelee,
 		range: coloRange,
 		mage: coloRange
+	},
+	{
+		name: 'Yama',
+		melee: yamaMelee,
+		range: COXMaxRangeGear,
+		mage: yamaMage
+	},
+	{
+		name: 'Doom',
+		melee: doomMelee,
+		range: doomRange,
+		mage: doomMage
 	}
 ];
 
@@ -122,7 +222,6 @@ const thingsToReset = [
 			await prisma.giveaway.deleteMany({ where: { user_id: user.id } }).catch(noOp);
 			await prisma.lastManStandingGame.deleteMany({ where: { user_id: BigInt(user.id) } }).catch(noOp);
 			await prisma.minigame.deleteMany({ where: { user_id: user.id } }).catch(noOp);
-			await prisma.newUser.deleteMany({ where: { id: user.id } }).catch(noOp);
 			await prisma.playerOwnedHouse.deleteMany({ where: { user_id: user.id } }).catch(noOp);
 			await prisma.user.deleteMany({ where: { id: user.id } }).catch(noOp);
 			return 'Reset all your data.';
@@ -145,6 +244,18 @@ const thingsToReset = [
 ];
 
 async function setMinigameKC(user: MUser, _minigame: string, kc: number) {
+	if (_minigame.toLowerCase() === 'all') {
+		await prisma.minigame.update({
+			where: {
+				user_id: user.id
+			},
+			data: Object.fromEntries(Minigames.map(game => [game.column, kc]))
+		});
+		await user.statsUpdate({
+			tithe_farms_completed: kc
+		});
+		return `Set all ${Minigames.length} minigame KCs to ${kc}.`;
+	}
 	const minigame = Minigames.find(m => m.column === _minigame.toLowerCase());
 	if (!minigame) return 'No kc set because invalid minigame.';
 	await prisma.minigame.update({
@@ -155,10 +266,21 @@ async function setMinigameKC(user: MUser, _minigame: string, kc: number) {
 			[minigame.column]: kc
 		}
 	});
+	if (minigame.column === 'tithe_farm') {
+		await user.statsUpdate({
+			tithe_farms_completed: kc
+		});
+	}
 	return `Set your ${minigame.name} KC to ${kc}.`;
 }
 
 async function setXP(user: MUser, skillName: string, xp: number) {
+	if (skillName === 'all') {
+		await user.update(
+			Object.fromEntries(Object.values(xp_gains_skill_enum).map(enumSkill => [`skills_${enumSkill}`, xp]))
+		);
+		return `Set all ${Object.values(xp_gains_skill_enum).length} skills to ${xp} XP.`;
+	}
 	const skill = Object.values(Skills).find(c => c.id === skillName);
 	if (!skill) return 'No xp set because invalid skill.';
 	await user.update({
@@ -213,6 +335,36 @@ for (const food of Eatables.map(food => food.id)) {
 	foodPreset.addItem(food, 100_000);
 }
 
+const herblorePreset = new Bank();
+for (const item of herbloreItems) {
+	herblorePreset.add(item, 100_000);
+}
+const anglerOutfit = resolveItems(['Angler hat', 'Angler top', 'Angler waders', 'Angler boots']);
+const fishingPreset = new Bank()
+	.add('Fish sack barrel')
+	.add('Fish barrel')
+	.add("Rada's blessing 4")
+	.add('Shark lure', MAX_INT_JAVA)
+	.add('Feather', MAX_INT_JAVA)
+	.add('Fishing bait', MAX_INT_JAVA)
+	.add('Raw karambwanji', MAX_INT_JAVA)
+	.add('Fishing bait', MAX_INT_JAVA)
+	.add('Sandworms', MAX_INT_JAVA)
+	.add('Spirit flakes', MAX_INT_JAVA)
+	.add('Crystal shard', MAX_INT_JAVA)
+	.add('Stripy feather', MAX_INT_JAVA)
+	.add('Pearl fly fishing rod')
+	.add('Pearl fishing rod')
+	.add('Fly fishing rod')
+	.add('Fishing rod')
+	.add('Oily fishing rod')
+	.add('Crystal harpoon')
+	.add('Infernal harpoon')
+	.add('Dark fishing bait', MAX_INT_JAVA);
+for (const anglerPiece of [...spiritAnglerOutfit, ...anglerOutfit]) {
+	fishingPreset.add(anglerPiece);
+}
+
 const runePreset = new Bank()
 	.add('Air rune', MAX_INT_JAVA)
 	.add('Mind rune', MAX_INT_JAVA)
@@ -235,7 +387,94 @@ const runePreset = new Bank()
 	.add('Smoke rune', MAX_INT_JAVA)
 	.add('Steam rune', MAX_INT_JAVA);
 
+const bossingPreset = new Bank()
+	.add(runePreset)
+	.add(foodPreset)
+	.add(potionsPreset)
+	.add('Rune pouch')
+	.add('Blood rune', 100_000_000)
+	.add('Death rune', 100_000_000)
+	.add('Water rune', 100_000_000)
+	.add('Fire rune', 100_000_000)
+	.add('Soul rune', 100_000_000)
+	.add('Aether rune', 100_000_000)
+	.add('Saradomin brew(4)', 100_000_000)
+	.add('Super restore(4)', 100_000_000)
+	.add('Stamina potion(4)', 100_000_000)
+	.add('Super combat potion(4)', 100_000_000)
+	.add('Ranging potion(4)', 100_000_000)
+	.add('Cooked karambwan', 100_000_000)
+	.add('Coins', 100_000_000);
+
+const yamaPreset = new Bank()
+	.add(bossingPreset)
+	.add('Purging staff')
+	.add('Emberlight')
+	.add('Burning claws')
+	.add('Lightbearer')
+	.add('Amulet of rancour')
+	.add('Infernal cape')
+	.add('Ferocious gloves')
+	.add('Oathplate shards', 1000)
+	.add('Oathplate helm')
+	.add('Oathplate chest')
+	.add('Oathplate legs');
+
+const doomPreset = new Bank()
+	.add(bossingPreset)
+	.add('Dexterous prayer scroll')
+	.add('Noxious halberd')
+	.add('Crystal halberd')
+	.add('Dual macuahuitl')
+	.add('Crystal shard', 100_000)
+	.add('Darklight')
+	.add('Arclight')
+	.add('Emberlight')
+	.add('Purging staff')
+	.add('Eye of ayak')
+	.add('Scorching bow')
+	.add('Twisted bow')
+	.add('Zaryte crossbow')
+	.add('Ruby bolts (e)', 100_000)
+	.add('Ruby dragon bolts (e)', 100_000)
+	.add('Dragon arrow', 100_000)
+	.add('Mokhaiotl waystone')
+	.add('Masori mask (f)')
+	.add('Masori body (f)')
+	.add('Masori chaps (f)')
+	.add('Zaryte vambraces')
+	.add("Dizana's quiver")
+	.add('Necklace of anguish')
+	.add('Avernic treads')
+	.add('Anti-venom+(4)', 100_000)
+	.add('Extended anti-venom+(4)', 100_000);
+
+const doomYamaPreset = new Bank().add(doomPreset).add(yamaPreset);
+
+const shadesPreset = new Bank().add('Olive oil(4)', 100_000).add('Sacred oil(4)', 100_000);
+for (const log of shadesLogs) {
+	shadesPreset.add(log.normalLog.id, 100_000);
+	shadesPreset.add(log.oiledLog.id, 100_000);
+}
+for (const shade of shades) {
+	shadesPreset.add(shade.item.id, 100_000);
+	if (shade.lowMetalKeys) {
+		for (const key of shade.lowMetalKeys.items) {
+			if (!shadesPreset.has(key)) shadesPreset.add(key, 100_000);
+		}
+	}
+	if (shade.highMetalKeys) {
+		for (const key of shade.highMetalKeys.items) {
+			if (!shadesPreset.has(key)) shadesPreset.add(key, 100_000);
+		}
+	}
+}
+for (const coffin of ['Bronze coffin', 'Steel coffin', 'Black coffin', 'Silver coffin', 'Gold coffin']) {
+	shadesPreset.add(coffin, 1);
+}
+
 const spawnPresets = [
+	['fishing', fishingPreset],
 	['openables', openablesBank],
 	['random', new Bank()],
 	['equippables', equippablesBank],
@@ -245,7 +484,13 @@ const spawnPresets = [
 	['stashunits', allStashUnitItems],
 	['potions', potionsPreset],
 	['food', foodPreset],
-	['runes', runePreset]
+	['runes', runePreset],
+	['herblore', herblorePreset],
+	['bossing', bossingPreset],
+	['doom', doomPreset],
+	['yama', yamaPreset],
+	['doom-yama', doomYamaPreset],
+	['shades', shadesPreset]
 ] as const;
 
 const thingsToWipe = [
@@ -260,6 +505,68 @@ const thingsToWipe = [
 	'giveaways'
 ] as const;
 
+const diaryTierChoices = ['easy', 'medium', 'hard', 'elite', 'all'] as const;
+type TestPotatoDiaryTier = (typeof diaryTierChoices)[number];
+const diaryTierNames = ['easy', 'medium', 'hard', 'elite'] as const;
+
+function formatDiaryKey(diaryName: string, tier: (typeof diaryTierNames)[number]): HasDiaryDiaryKey {
+	return `${diaryName}.${tier}`.replace(/\s/g, '').toLowerCase() as HasDiaryDiaryKey;
+}
+
+async function fulfilDiaryRequirements(user: MUser, diary: Diary, tiers: readonly DiaryTierName[]) {
+	const [stats, minigameScores] = await Promise.all([user.fetchMStats(), user.fetchMinigames()]);
+	const updates: SafeUserUpdateInput = {};
+	const minigameUpdates: Partial<Record<MinigameName, number>> = {};
+	const monsterScores = { ...stats.monsterScores };
+	const lapsScores = { ...stats.lapsScores };
+	const items = new Bank();
+	let qp = user.QP;
+	let honourLevel = stats.userStats.honour_level;
+
+	for (const tierName of tiers) {
+		const tier = diary[tierName];
+		for (const [skill, level] of objectEntries(tier.skillReqs)) {
+			if (level === undefined || user.skillsAsLevels[skill] >= level) continue;
+			const key = `skills_${skill}` as const;
+			updates[key] = Math.max(Number(updates[key] ?? 0), convertLVLtoXP(level));
+		}
+		qp = Math.max(qp, tier.qp ?? 0);
+
+		for (const item of tier.collectionLogReqs ?? []) {
+			if (!user.cl.has(item) && !items.has(item)) items.add(item);
+		}
+		for (const item of tier.ownedItems ?? []) {
+			if (!user.bank.has(item) && !items.has(item)) items.add(item);
+		}
+		for (const [minigame, score] of objectEntries(tier.minigameReqs ?? {})) {
+			minigameUpdates[minigame] = Math.max(minigameUpdates[minigame] ?? minigameScores[minigame], score!);
+		}
+		for (const [monster, score] of objectEntries(tier.monsterScores ?? {})) {
+			monsterScores[monster] = Math.max(monsterScores[monster] ?? 0, score!);
+		}
+		for (const [courseName, score] of Object.entries(tier.lapsReqs ?? {})) {
+			const course = Agility.Courses.find(c => c.name === courseName)!;
+			lapsScores[course.id] = Math.max(lapsScores[course.id] ?? 0, score);
+		}
+
+		if (tier.customReq && !tier.customReq(user, false, stats)[0]) {
+			if (diary.id === DiaryID.Falador) {
+				qp = MAX_QP;
+				if (!user.bank.has('Quest point cape')) items.add('Quest point cape');
+			}
+			if (diary.id === DiaryID.Kandarin) honourLevel = Math.max(honourLevel, 5);
+		}
+	}
+
+	await user.update({ ...updates, QP: qp });
+	if (items.length > 0) await user.addItemsToBank({ items, collectionLog: true, filterLoot: false });
+	await user.statsUpdate({ monster_scores: monsterScores, laps_scores: lapsScores, honour_level: honourLevel });
+	if (Object.keys(minigameUpdates).length > 0) {
+		await prisma.minigame.update({ where: { user_id: user.id }, data: minigameUpdates });
+	}
+	await user.syncCompletedAchievementDiaries();
+}
+
 export const testPotatoCommand = globalConfig.isProduction
 	? null
 	: defineCommand({
@@ -270,6 +577,11 @@ export const testPotatoCommand = globalConfig.isProduction
 					type: 'Subcommand',
 					name: 'party',
 					description: 'Test party'
+				},
+				{
+					type: 'Subcommand',
+					name: 'duo',
+					description: 'Test duo'
 				},
 				{
 					type: 'Subcommand',
@@ -373,7 +685,10 @@ export const testPotatoCommand = globalConfig.isProduction
 							name: 'skill',
 							description: 'The skill.',
 							required: true,
-							choices: Object.values(Skills).map(s => ({ name: s.name, value: s.id }))
+							choices: [
+								{ name: 'All skills', value: 'all' },
+								...Object.values(Skills).map(s => ({ name: s.name, value: s.id }))
+							]
 						},
 						{
 							type: 'Integer',
@@ -396,13 +711,23 @@ export const testPotatoCommand = globalConfig.isProduction
 							description: 'The minigame you want to set your KC for.',
 							required: true,
 							autocomplete: async ({ value }: StringAutoComplete) => {
-								return Minigames.filter(i => {
-									if (!value) return true;
-									return [i.name.toLowerCase(), i.aliases].some(i => i.includes(value.toLowerCase()));
-								}).map(i => ({
-									name: i.name,
-									value: i.column
-								}));
+								return [
+									{ name: 'All minigames', value: 'all' },
+									...Minigames.filter(i => {
+										if (!value) return true;
+										return [i.name.toLowerCase(), i.aliases].some(alias =>
+											alias.includes(value.toLowerCase())
+										);
+									}).map(i => ({
+										name: i.name,
+										value: i.column
+									}))
+								].filter(i =>
+									!value
+										? true
+										: i.name.toLowerCase().includes(value.toLowerCase()) ||
+											i.value.includes(value.toLowerCase())
+								);
 							}
 						},
 						{
@@ -492,17 +817,25 @@ export const testPotatoCommand = globalConfig.isProduction
 							description: 'The monster you want to set your KC for.',
 							required: true,
 							autocomplete: async ({ value }: StringAutoComplete) => {
-								return effectiveMonsters
-									.filter(i => {
-										if (!value) return true;
-										return [i.name.toLowerCase(), i.aliases].some(i =>
-											i.includes(value.toLowerCase())
-										);
-									})
-									.map(i => ({
-										name: i.name,
-										value: i.name
-									}));
+								return [
+									{ name: 'All monsters', value: 'all' },
+									...effectiveMonsters
+										.filter(i => {
+											if (!value) return true;
+											return [i.name.toLowerCase(), i.aliases].some(alias =>
+												alias.includes(value.toLowerCase())
+											);
+										})
+										.map(i => ({
+											name: i.name,
+											value: i.name
+										}))
+								].filter(i =>
+									!value
+										? true
+										: i.name.toLowerCase().includes(value.toLowerCase()) ||
+											i.value.toLowerCase().includes(value.toLowerCase())
+								);
 							}
 						},
 						{
@@ -512,6 +845,27 @@ export const testPotatoCommand = globalConfig.isProduction
 							required: true,
 							min_value: 0,
 							max_value: 10_000
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'setdiarytier',
+					description: 'Set an achievement diary tier as complete.',
+					options: [
+						{
+							type: 'String',
+							name: 'diary',
+							description: 'The achievement diary.',
+							required: true,
+							choices: diaries.map(diary => ({ name: diary.name, value: diary.name }))
+						},
+						{
+							type: 'String',
+							name: 'tier',
+							description: 'The diary tier to complete.',
+							required: true,
+							choices: diaryTierChoices.map(tier => ({ name: tier, value: tier }))
 						}
 					]
 				},
@@ -528,11 +882,11 @@ export const testPotatoCommand = globalConfig.isProduction
 						{
 							type: 'String',
 							name: 'patch_name',
-							description: 'The patches you want to harvest.',
+							description: 'The patches you want to force grow.',
 							required: true,
 							choices: [
-								{ name: 'Birdhouses', value: 'birdhouses' },
 								{ name: 'All patches', value: 'all' },
+								{ name: 'Birdhouses', value: 'birdhouses' },
 								...farmingPatchNames.map(i => ({ name: i, value: i }))
 							]
 						}
@@ -627,7 +981,7 @@ export const testPotatoCommand = globalConfig.isProduction
 					]
 				}
 			],
-			run: async ({ options, user, interaction }) => {
+			run: async ({ options, user, interaction, rng }) => {
 				if (globalConfig.isProduction) {
 					Logging.logError('Test command ran in production', { userID: user.id });
 					return 'This will never happen...';
@@ -643,6 +997,17 @@ export const testPotatoCommand = globalConfig.isProduction
 						ironmanAllowed: true
 					});
 					return `The party has now started with the following users: ${party.map(i => i.username).join(', ')}`;
+				}
+				if (options.duo) {
+					const duo = await globalClient.makeDuo({
+						interaction,
+						message: 'Join the duo!',
+						leader: user,
+						ironmanAllowed: true
+					});
+					return duo
+						? `The duo has now started with the following users: ${duo.map(i => i.username).join(', ')}`
+						: 'The duo was cancelled.';
 				}
 				if (options.ping) {
 					return {
@@ -671,28 +1036,28 @@ export const testPotatoCommand = globalConfig.isProduction
 								embeds: [
 									new EmbedBuilder()
 										.setTitle(`Page 1`)
-										.setImage(`https://cdn.oldschool.gg/monkey/${randInt(1, 39)}.webp`)
+										.setImage(`https://cdn.oldschool.gg/monkey/${rng.randInt(1, 39)}.webp`)
 								]
 							}),
 							() => ({
 								embeds: [
 									new EmbedBuilder()
 										.setTitle(`Page 2`)
-										.setImage(`https://cdn.oldschool.gg/monkey/${randInt(1, 39)}.webp`)
+										.setImage(`https://cdn.oldschool.gg/monkey/${rng.randInt(1, 39)}.webp`)
 								]
 							}),
 							() => ({
 								embeds: [
 									new EmbedBuilder()
 										.setTitle(`Page 3`)
-										.setImage(`https://cdn.oldschool.gg/monkey/${randInt(1, 39)}.webp`)
+										.setImage(`https://cdn.oldschool.gg/monkey/${rng.randInt(1, 39)}.webp`)
 								]
 							}),
 							() => ({
 								embeds: [
 									new EmbedBuilder()
 										.setTitle(`Page 4`)
-										.setImage(`https://cdn.oldschool.gg/monkey/${randInt(1, 39)}.webp`)
+										.setImage(`https://cdn.oldschool.gg/monkey/${rng.randInt(1, 39)}.webp`)
 								]
 							})
 						]
@@ -700,44 +1065,18 @@ export const testPotatoCommand = globalConfig.isProduction
 				}
 
 				if (options.bitfield) {
-					const bitInput = options.bitfield.add ?? options.bitfield.remove;
-					const bitEntry = Object.entries(BitFieldData).find(i => i[0] === bitInput);
-					const action: 'add' | 'remove' = options.bitfield.add ? 'add' : 'remove';
-					if (!bitEntry) {
-						return Object.entries(BitFieldData)
-							.map(entry => `**${entry[0]}:** ${entry[1]?.name}`)
-							.join('\n');
+					if (!options.bitfield.add && !options.bitfield.remove) {
+						return 'you must choose a valid bitfield from either add or remove';
 					}
-					const bit = Number.parseInt(bitEntry[0]);
+					const aor = () => Boolean(options.bitfield!.add);
 
-					if (
-						!bit ||
-						!isValidBitField(bit) ||
-						[7, 8].includes(bit) ||
-						(action !== 'add' && action !== 'remove')
-					) {
-						return 'Invalid bitfield.';
-					}
-
-					let newBits = [...user.bitfield];
-
-					if (action === 'add') {
-						if (newBits.includes(bit)) {
-							return "Already has this bit, so can't add.";
-						}
-						newBits.push(bit);
-					} else {
-						if (!newBits.includes(bit)) {
-							return "Doesn't have this bit, so can't remove.";
-						}
-						newBits = newBits.filter(i => i !== bit);
-					}
-
-					await user.update({
-						bitfield: uniqueArr(newBits)
-					});
-
-					return `${action === 'add' ? 'Added' : 'Removed'} '${(BitFieldData)[bit].name}' bit.`;
+					const bitInput = options.bitfield.add ?? options.bitfield.remove!;
+					const bit = getBitFieldData(bitInput);
+					const action: 'add' | 'remove' = aor() ? 'add' : 'remove';
+					if (!bit) return listBitFields(user);
+					const canManipulate = bitfieldCanUserManipulate({ user, bit });
+					if (canManipulate !== true) return canManipulate;
+					return changeBitFieldForUser(user, bit.bit, action);
 				}
 				if (options.bingo_tools) {
 					if (options.bingo_tools.start_bingo) {
@@ -907,53 +1246,51 @@ export const testPotatoCommand = globalConfig.isProduction
 					});
 					await user.addItemsToBank({
 						items: new Bank()
-							.add('Rune pouch')
-							.add('Blood rune', 100_000_000)
-							.add('Death rune', 100_000_000)
-							.add('Blood rune', 100_000_000)
-							.add('Water rune', 100_000_000)
-							.add('Saradomin brew(4)', 100_000_000)
-							.add('Super restore(4)', 100_000_000)
-							.add('Stamina potion(4)', 100_000_000)
-							.add('Super combat potion(4)', 100_000_000)
-							.add('Cooked karambwan', 100_000_000)
-							.add('Ranging potion(4)', 100_000_000)
-							.add('Coins', 100_000_000)
-							.add('Shark', 100_000_000)
+							.add(doomYamaPreset)
 							.add('Vial of blood', 100_000_000)
-							.add('Rune pouch')
 							.add('Zamorakian spear')
 							.add('Dragon warhammer')
 							.add('Bandos godsword')
 							.add('Toxic blowpipe')
-							.add(runePreset)
-							.add(foodPreset)
-							.add(potionsPreset)
 							.add(usables)
 					});
-					await user.update({
-						GP: 5_000_000_000,
-						slayer_points: 100_000,
-						tentacle_charges: 10_000,
-						sang_charges: 10_000,
-						trident_charges: 10_000,
-						serp_helm_charges: 10_000,
-						blood_fury_charges: 10_000,
-						tum_shadow_charges: 10_000,
-						blood_essence_charges: 10_000,
-						ash_sanctifier_charges: 10_000,
-						celestial_ring_charges: 10_000,
-						scythe_of_vitur_charges: 10_000,
-						venator_bow_charges: 10_000,
-						gear_mage: TOBMaxMageGear.raw(),
-						gear_melee: TOBMaxMeleeGear.raw(),
-						gear_range: TOBMaxRangeGear.raw(),
-						blowpipe: {
-							scales: 100_000,
-							dartQuantity: 100_000,
-							dartID: itemID('Dragon dart')
-						},
-						finished_quest_ids: quests.map(q => q.id)
+
+					await user.updateGear([
+						{ setup: 'melee', gear: COXMaxMeleeGear.raw() },
+						{ setup: 'range', gear: COXMaxRangeGear.raw() },
+						{ setup: 'mage', gear: COXMaxMageGear.raw() }
+					]);
+
+					await user.rawUpdate({
+						data: {
+							GP: 5000000000,
+							slayer_points: 100000,
+							tentacle_charges: 10000,
+							sang_charges: 10000,
+							trident_charges: 10000,
+							serp_helm_charges: 10000,
+							blood_fury_charges: 10000,
+							tum_shadow_charges: 10000,
+							ayak_charges: 10000,
+							blood_essence_charges: 10000,
+							ash_sanctifier_charges: 10000,
+							celestial_ring_charges: 10000,
+							scythe_of_vitur_charges: 10000,
+							venator_bow_charges: 10000,
+							blowpipe: {
+								scales: 100000,
+								dartQuantity: 100000,
+								dartID: itemID('Dragon dart')
+							},
+							finished_quest_ids: quests.map(q => q.id),
+							bitfield: [
+								...new Set([
+									...user.bitfield,
+									BitField.HasDexScroll,
+									BitField.HasRiteOfVileTransference
+								])
+							]
+						}
 					});
 					await giveMaxStats(user);
 					return 'Fully maxed your account, stocked your bank, charged all chargeable items.';
@@ -963,16 +1300,17 @@ export const testPotatoCommand = globalConfig.isProduction
 
 					for (const type of ['melee', 'range', 'mage'] as const) {
 						const currentGear = gear[type];
-						if (currentGear.ammo && Items.getItem(currentGear.ammo.item)?.stackable) {
-							currentGear.ammo.quantity = 10000;
+						const ammo = currentGear.get('ammo');
+						if (ammo && Items.getItem(ammo.item)?.stackable) {
+							currentGear.set('ammo', { ...ammo, quantity: 10_000 });
 						}
 					}
 
-					await user.update({
-						gear_melee: gear.melee.raw(),
-						gear_range: gear.range.raw(),
-						gear_mage: gear.mage.raw()
-					});
+					await user.updateGear([
+						{ setup: 'melee', gear: gear.melee.raw() },
+						{ setup: 'range', gear: gear.range.raw() },
+						{ setup: 'mage', gear: gear.mage.raw() }
+					]);
 
 					return gearViewCommand(user, 'all', false);
 				}
@@ -986,6 +1324,20 @@ export const testPotatoCommand = globalConfig.isProduction
 				}
 				if (options.setxp) {
 					return setXP(user, options.setxp.skill, options.setxp.xp);
+				}
+				if (options.setdiarytier) {
+					const diary = diaries.find(d => stringMatches(d.name, options.setdiarytier?.diary ?? ''));
+					if (!diary) return 'Invalid diary.';
+
+					const tier = options.setdiarytier.tier as TestPotatoDiaryTier;
+					const tiersToSet = tier === 'all' ? diaryTierNames : [tier];
+					await fulfilDiaryRequirements(user, diary, tiersToSet);
+					if (tiersToSet.some(tierToSet => !user.hasDiary(formatDiaryKey(diary.name, tierToSet)))) {
+						return `Couldn't fulfil all requirements for your ${diary.name} diary.`;
+					}
+
+					const tierName = tier === 'all' ? 'all tiers' : diary[tier].name;
+					return `Set your ${diary.name} ${tierName} diary as complete.`;
 				}
 				if (options.spawn) {
 					const { preset, collectionlog, item, items } = options.spawn;
@@ -1016,10 +1368,21 @@ export const testPotatoCommand = globalConfig.isProduction
 					}
 
 					await user.addItemsToBank({ items: bankToGive, collectionLog: Boolean(collectionlog) });
-					return `Spawned: ${bankToGive.toString().slice(0, 500)}.`;
+					return `Spawned: ${bankToGive.toString().slice(0, 1800)}.`;
 				}
 
 				if (options.setmonsterkc) {
+					if (options.setmonsterkc.monster.toLowerCase() === 'all') {
+						const kc = options.setmonsterkc.kc ?? 1;
+						const stats = await user.fetchStats();
+						await user.statsUpdate({
+							monster_scores: {
+								...(stats.monster_scores as Record<string, number>),
+								...Object.fromEntries(effectiveMonsters.map(mon => [mon.id, kc]))
+							}
+						});
+						return `Set all ${effectiveMonsters.length} monster KCs to ${kc}.`;
+					}
 					const monster = effectiveMonsters.find(m =>
 						stringMatches(m.name, options.setmonsterkc?.monster ?? '')
 					);
@@ -1068,7 +1431,7 @@ export const testPotatoCommand = globalConfig.isProduction
 					);
 
 					await user.update(updates);
-					return userGrowingProgressStr((await getFarmingInfoFromUser(user)).patchesDetailed);
+					return userGrowingProgressStr((await getFarmingInfoFromUser(user)).patchesDetailed, user);
 				}
 
 				if (options.setslayertask) {
@@ -1087,7 +1450,18 @@ export const testPotatoCommand = globalConfig.isProduction
 
 					const assignedTask = selectedMaster.tasks.find(m => m.monster.id === selectedMonster.id)!;
 
-					if (!assignedTask) return `${selectedMaster.name} can not assign ${selectedMonster.name}.`;
+					if (!assignedTask) {
+						const possibleMasters = slayerMasters
+							.filter(m => m.tasks.some(t => t.monster.id === selectedMonster?.id))
+							.map(m => m.name);
+
+						const suggestion =
+							possibleMasters.length > 0
+								? ` (${possibleMasters.join(', ')} can${possibleMasters.length > 1 ? '' : ' also'} assign this monster.)`
+								: '';
+
+						return `${selectedMaster.name} cannot assign ${selectedMonster.name}.${suggestion}`;
+					}
 
 					// Update an existing slayer task for the user
 					if (usersTask.currentTask?.id) {

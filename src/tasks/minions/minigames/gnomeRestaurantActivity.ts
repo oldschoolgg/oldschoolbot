@@ -1,4 +1,3 @@
-import { roll } from '@oldschoolgg/rng';
 import { Bank, LootTable } from 'oldschooljs';
 
 import type { GnomeRestaurantActivityTaskOptions } from '@/lib/types/minions.js';
@@ -54,7 +53,7 @@ export const tipTable = new LootTable()
 
 export const gnomeResTask: MinionTask = {
 	type: 'GnomeRestaurant',
-	async run(data: GnomeRestaurantActivityTaskOptions, { user, handleTripFinish }) {
+	async run(data: GnomeRestaurantActivityTaskOptions, { user, handleTripFinish, rng }) {
 		const { channelId, quantity, duration, gloriesRemoved } = data;
 
 		await user.incrementMinigameScore('gnome_restaurant', quantity);
@@ -68,7 +67,7 @@ export const gnomeResTask: MinionTask = {
 		let totalXP = 0;
 		for (let i = 0; i < quantity; i++) {
 			totalXP += 1000;
-			if (roll(5)) continue;
+			if (rng.roll(5)) continue;
 			loot.add(tipTable.roll());
 		}
 

@@ -42,7 +42,10 @@ export async function handleNewCLItems({
 
 	const didGetNewCLItem: boolean = newCLItems?.length > 0;
 	if (didGetNewCLItem) {
-		await prisma.historicalData.create({ data: await createHistoricalData(user) });
+		await prisma.historicalData.create({
+			data: await createHistoricalData(user),
+			select: { cl_global_rank: true }
+		});
 	}
 
 	if (didGetNewCLItem) {

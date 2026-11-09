@@ -1,7 +1,8 @@
 import { bold, dateFm, EmbedBuilder } from '@oldschoolgg/discord';
-import { MathRNG, roll } from '@oldschoolgg/rng';
 import type { IMessage } from '@oldschoolgg/schemas';
 import { Emoji, Events, getNextUTCReset, isFunction, Time } from '@oldschoolgg/toolkit';
+import { MathRNG, roll } from 'node-rng';
+import { cryptoRng } from 'node-rng/crypto';
 import { type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import type { command_name_enum } from '@/prisma/main/enums.js';
@@ -12,6 +13,7 @@ import { roboChimpSyncData } from '@/lib/roboChimp.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { minionStatsEmbed } from '@/lib/util/minionStatsEmbed.js';
+import { refreshUserCache } from '@/lib/util/refreshCache.js';
 import { minionStatusCommand } from '@/mahoji/lib/abstracted_commands/minionStatusCommand.js';
 
 const rareRolesSrc: [string, number, string][] = [
@@ -40,7 +42,7 @@ const rareRolesSrc: [string, number, string][] = [
 async function rareRoles(msg: IMessage) {
 	if (!globalConfig.isProduction) return;
 
-	if (msg.guild_id !== globalConfig.supportServerID) {
+	if (msg.guild_id !== globalConfig.supportServerID || !msg.guild_id) {
 		return;
 	}
 
@@ -48,12 +50,14 @@ async function rareRoles(msg: IMessage) {
 	if (Date.now() - lastMessage < Time.Second * 13) return;
 	RARE_ROLES_CACHE.set(msg.author_id, Date.now());
 
-	if (!roll(10) || !msg.guild_id) return;
+	if (!roll(10)) return;
 
 	for (const [roleID, chance, name] of rareRolesSrc) {
-		if (roll(chance / 10)) {
-			const member = await Cache.getMainServerMember(msg.author_id);
+		if (roll(Math.floor(chance / 10))) {
+			const member = await Cache.getMember({ guildId: msg.guild_id, userId: msg.author_id });
 			if (!member || member.roles.includes(roleID)) continue;
+			member.roles.push(roleID);
+			await Cache.setMember(member);
 			await globalClient.giveRole(msg.guild_id, msg.author_id, roleID);
 			await globalClient.reactToMsg({
 				channelId: msg.channel_id,
@@ -89,7 +93,7 @@ async function petMessages(msg: IMessage) {
 	if (Date.now() - lastMessage < 80_000) return;
 	CHAT_PET_COOLDOWN_CACHE.set(key, Date.now());
 
-	const pet = MathRNG.pick(pets);
+	const pet = MathRNG.pick(pets)!;
 	if (MathRNG.roll(Math.max(Math.min(pet.chance, 250_000), 1000))) {
 		Logging.logDebug(`${msg.author_id} triggered a pet message`);
 		const user = await mUserFetch(msg.author_id);
@@ -97,15 +101,14 @@ async function petMessages(msg: IMessage) {
 		await globalClient.replyToMessage(
 			msg,
 			isNewPet
-				? `You have a funny feeling like you’re being followed. ${pet.emoji}
+				? `You have a funny feeling like you’re being followed. ${pet.emoji ?? `(${pet.name})`}
 Type \`/tools user mypets\` to see your pets.`
-				: `You have a funny feeling like they would have been followed. ${pet.emoji}`
+				: `You have a funny feeling like they would have been followed. ${pet.emoji ?? `(${pet.name})`}`
 		);
 	}
 }
 
 const mentionText = `<@${globalConfig.clientID}>`;
-const mentionRegex = new RegExp(`^(\\s*<@&?[0-9]+>)*\\s*<@${globalConfig.clientID}>\\s*(<@&?[0-9]+>\\s*)*$`);
 
 const cooldownTimers: {
 	name: string;
@@ -134,6 +137,8 @@ interface MentionCommandOptions {
 	user: MUser;
 	components: BaseSendableMessage['components'];
 	content: string;
+	rng: RNGProvider;
+	guildId?: string | null;
 }
 interface MentionCommand {
 	name: command_name_enum;
@@ -143,6 +148,18 @@ interface MentionCommand {
 }
 
 const mentionCommands: MentionCommand[] = [
+	{
+		name: 'cache_refresh',
+		aliases: ['refresh', 'cache'],
+		description: 'Updates your caches',
+		run: async ({ user, components, content, guildId }: MentionCommandOptions) => {
+			const result = await refreshUserCache({ user, guildId, possibleTarget: content });
+			return {
+				content: result,
+				components
+			};
+		}
+	},
 	{
 		name: 'bs',
 		aliases: ['bs'],
@@ -263,14 +280,16 @@ const mentionCommands: MentionCommand[] = [
 		name: 'stats',
 		aliases: ['s', 'stats'],
 		description: 'Shows your stats.',
-		run: async ({ user, components }: MentionCommandOptions) => {
+		run: async ({ user, components, rng }: MentionCommandOptions) => {
 			return {
-				embeds: [await minionStatsEmbed(user)],
+				embeds: [await minionStatsEmbed({ user, rng })],
 				components
 			};
 		}
 	}
 ];
+
+const commandList = [...new Set(mentionCommands.flatMap(i => [i.name, ...i.aliases]))];
 
 export async function onMessage(msg: IMessage) {
 	// biome-ignore lint/nursery/noFloatingPromises:-
@@ -281,18 +300,25 @@ export async function onMessage(msg: IMessage) {
 	const content = msg.content.trim();
 	if (!content.includes(mentionText)) return;
 
+	const statusRegex = new RegExp(`^(\\s*<@&?[0-9]+>)*\\s*<@${globalConfig.clientID}>\\s*(<@&?[0-9]+>\\s*)*$`);
+	const commandRegex = new RegExp(
+		`^(?:\\s*<@&?[0-9]+>)*\\s*<@${globalConfig.clientID}>\\s*(?:\\s*<@&?[0-9]+>\\s*)*(${commandList.join('|')})\\s*(.*)$`
+	);
+	const commandMatch = content.match(commandRegex);
+	const statusMatch = content.match(statusRegex);
+	if (!commandMatch && !statusMatch) return;
+
 	const sendable = await globalClient.channelIsSendable(msg.channel_id);
 	if (!sendable) return;
 
 	const user = await mUserFetch(msg.author_id);
 	const result = await minionStatusCommand(user);
 
-	const command = mentionCommands.find(i =>
-		i.aliases.some(alias => msg.content.startsWith(`${mentionText} ${alias}`))
-	);
-	if (command) {
+	if (commandMatch) {
+		const command = mentionCommands.find(i => [i.name, ...i.aliases].includes(commandMatch[1].toLowerCase()));
+		if (!command) return;
 		Logging.logDebug(`${msg.author_id} used the ${command.name} mention command`);
-		const msgContentWithoutCommand = msg.content.split(' ').slice(2).join(' ');
+		const msgContentWithoutCommand = commandMatch[2] ?? '';
 		await prisma.commandUsage.create({
 			data: {
 				user_id: BigInt(user.id),
@@ -302,14 +328,17 @@ export async function onMessage(msg: IMessage) {
 				args: msgContentWithoutCommand,
 				inhibited: false,
 				is_mention_command: true
-			}
+			},
+			select: { id: true }
 		});
 
 		try {
 			const response = await command.run({
 				user,
 				components: result.components,
-				content: msgContentWithoutCommand
+				content: msgContentWithoutCommand,
+				rng: cryptoRng,
+				guildId: msg.guild_id
 			});
 			await globalClient.replyToMessage(msg, response);
 		} catch (err) {
@@ -317,18 +346,22 @@ export async function onMessage(msg: IMessage) {
 			if (typeof err === 'string') errMsg = err;
 			else if (err instanceof Error) errMsg = err.message;
 			await globalClient.replyToMessage(msg, { content: errMsg });
-			Logging.logError(err as Error);
+			Logging.logError(err instanceof Error ? err : new Error(errMsg), {
+				type: 'MENTION_COMMAND_ERROR',
+				user_id: msg.author_id,
+				channel_id: msg.channel_id,
+				guild_id: msg.guild_id,
+				command_name: command.name
+			});
 		}
 		return;
 	}
 
-	if (content.match(mentionRegex)) {
-		await globalClient.replyToMessage(msg, {
-			content: result.content,
-			components: result.components
-		});
-		return;
-	}
+	await globalClient.replyToMessage(msg, {
+		content: result.content,
+		components: result.components
+	});
+	Logging.logDebug(`${msg.author_id} used the status mention command`);
 }
 
 export async function onMinionActivityFinish(activity: ActivityTaskData) {
@@ -339,10 +372,17 @@ export async function onMinionActivityFinish(activity: ActivityTaskData) {
 		// Max once per 30 minutes
 		if (!botJustStarted && hasBeen30MinsSinceLast) {
 			lastRoboChimpSyncCache.set(activity.userID, Date.now());
-			Logging.logDebug(`Syncing RoboChimp for user ${activity.userID}`);
 			await roboChimpSyncData(await mUserFetch(activity.userID));
 		}
 	} catch (err) {
-		Logging.logError(err as Error, { activity: JSON.stringify(activity) });
+		Logging.logError(err as Error, {
+			type: 'ACTIVITY_FINISH_ERROR',
+			user_id: activity.userID,
+			activity_type: activity.type,
+			activity_id: activity.id,
+			channel_id: activity.channelId,
+			guild_id: activity.channelId ? (await Cache.getChannel(activity.channelId))?.guild_id : undefined,
+			activity: JSON.stringify(activity)
+		});
 	}
 }

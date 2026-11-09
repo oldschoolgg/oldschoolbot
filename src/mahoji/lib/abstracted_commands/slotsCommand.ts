@@ -1,9 +1,9 @@
 import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
-import { cryptoRng } from '@oldschoolgg/rng/crypto';
-import { SimpleTable, sleep } from '@oldschoolgg/toolkit';
-import { Bank, toKMB } from 'oldschooljs';
+import { sleep } from '@oldschoolgg/toolkit';
+import { Bank, SimpleTable, toKMB } from 'oldschooljs';
 import { chunk } from 'remeda';
 
+import { createGamble, settleGamble } from '@/lib/gambling.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 interface Button {
@@ -45,18 +45,18 @@ const buttonTable = new SimpleTable<Button>()
 	.add(buttonsData[2], 50)
 	.add(buttonsData[3], 30);
 
-function generateColumn() {
+function generateColumn(rng: RNGProvider) {
 	const column: ButtonInstance[] = [];
 	while (column.length < 3) {
 		const button = buttonTable.rollOrThrow();
 		if (column.some(i => i.name === button.name)) continue;
-		column.push({ ...button, id: cryptoRng.randInt(1, 999_999_999).toString() });
+		column.push({ ...button, id: rng.randInt(1, 999_999_999).toString() });
 	}
-	return cryptoRng.shuffle(column);
+	return rng.shuffle(column);
 }
 
-function getButtons(): ButtonInstance[] {
-	const columns = [1, 2, 3].map(() => generateColumn());
+function getButtons(rng: RNGProvider): ButtonInstance[] {
+	const columns = [1, 2, 3].map(() => generateColumn(rng));
 	const buttons: ButtonInstance[] = [];
 	for (let i = 0; i < 3; i++) {
 		buttons.push(columns[0][i]);
@@ -79,6 +79,7 @@ function determineWinnings(bet: number, buttons: ButtonInstance[]) {
 }
 
 export async function slotsCommand(
+	rng: RNGProvider,
 	interaction: MInteraction,
 	user: MUser,
 	_amount: string | undefined
@@ -110,7 +111,8 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`;
 	}
 
 	await user.transactItems({ itemsToRemove: new Bank().add('Coins', amount) });
-	const buttonsToShow = getButtons();
+	const gamble = await createGamble({ userId: user.id, game: 'slots', betAmount: amount });
+	const buttonsToShow = getButtons(rng);
 	const chunkedButtons = chunk(buttonsToShow, 3);
 
 	const { winningRow, amountReceived } = determineWinnings(amount, buttonsToShow);
@@ -147,6 +149,11 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`;
 			: `You won ${toKMB(amountReceived)}!`;
 
 	await user.transactItems({ itemsToAdd: new Bank().add('Coins', amountReceived), collectionLog: false });
+	await settleGamble(gamble.id, {
+		won: amountReceived > 0,
+		profitLoss: amountReceived - amount,
+		payoutAmount: amountReceived
+	});
 	await ClientSettings.updateClientGPTrackSetting('gp_slots', amountReceived - amount);
 	await user.updateGPTrackSetting('gp_slots', amountReceived - amount);
 

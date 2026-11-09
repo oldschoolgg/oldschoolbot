@@ -54,7 +54,7 @@ type OSBMahojiCommand<T extends readonly CommandOption[] = CommandOption[]> = Re
 }>;
 
 export type CommandRunOptions<TOpts = {}> = {
-	interaction: MInteraction;
+	interaction: OSInteraction;
 	options: TOpts;
 	user: MUser;
 	member: IMember | null;
@@ -64,7 +64,7 @@ export type CommandRunOptions<TOpts = {}> = {
 	rng: RNGProvider;
 };
 
-type CommandFlag = 'REQUIRES_LOCK';
+type CommandFlag = 'REQUIRES_LOCK' | 'GAMBLING_BANNED';
 
 export type AnyCommand = Readonly<{
 	name: string;

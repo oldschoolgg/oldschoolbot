@@ -1,10 +1,19 @@
 import { EmbedBuilder } from '@oldschoolgg/discord';
 import { randArrItem } from '@oldschoolgg/rng';
 import { formatDuration, stringMatches, stringSearch } from '@oldschoolgg/toolkit';
-import { asyncGzip } from '@oldschoolgg/toolkit/node';
-import { Bank, type Item, type ItemBank, ItemGroups, Items, resolveItems, ToBUniqueTable } from 'oldschooljs';
+import {
+	Bank,
+	ECreature,
+	type Item,
+	type ItemBank,
+	ItemGroups,
+	Items,
+	resolveItems,
+	ToBUniqueTable
+} from 'oldschooljs';
 
 import type { Activity } from '@/prisma/main.js';
+import { Prisma } from '@/prisma/main.js';
 import { choicesOf, itemOption, monsterOption, skillOption } from '@/discord/index.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { allStashUnitsFlat } from '@/lib/clues/stashUnits.js';
@@ -20,7 +29,7 @@ import { Minigames } from '@/lib/settings/minigames.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
 import { isGroupActivity, isNexActivity, isRaidsActivity, isTOBOrTOAActivity } from '@/lib/util/activityTypeCheck.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { parseStaticTimeInterval, patronMsg, staticTimeIntervals } from '@/lib/util/smallUtils.js';
+import { asyncGzip, parseStaticTimeInterval, patronMsg, staticTimeIntervals } from '@/lib/util/smallUtils.js';
 import { gifs } from '@/mahoji/commands/admin.js';
 import {
 	stashUnitBuildAllCommand,
@@ -345,6 +354,25 @@ LIMIT 10;`);
 }
 
 export const dryStreakEntities: DrystreakEntity[] = [
+	{
+		name: 'Herbiboar',
+		items: resolveItems(['Herbi']),
+		run: async ({ item, ironmanOnly }) => {
+			const creatureId = ECreature.HERBIBOAR.toString();
+			const itemId = item.id.toString();
+			const result = await prisma.$queryRaw<{ id: string; val: number }[]>(Prisma.sql`
+SELECT "users"."id", ("creature_scores"->>${creatureId})::int AS val
+FROM users
+INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
+WHERE "collectionLogBank"->>${itemId} IS NULL
+AND "creature_scores"->>${creatureId} IS NOT NULL
+${ironmanOnly ? Prisma.sql`AND "minion.ironman" = true` : Prisma.empty}
+ORDER BY ("creature_scores"->>${creatureId})::int DESC
+LIMIT 10;`);
+			return result;
+		},
+		format: num => `${num.toLocaleString()} Catches`
+	},
 	{
 		name: 'Chambers of Xeric (CoX)',
 		items: resolveItems([

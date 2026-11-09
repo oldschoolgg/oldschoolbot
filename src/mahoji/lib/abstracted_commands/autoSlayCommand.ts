@@ -17,6 +17,10 @@ interface AutoslayLink {
 	slayerMasters?: SlayerMasterEnum[];
 }
 
+function replaceBarrageWithBurst(method: PvMMethod, magicLevel: number): PvMMethod {
+	return method === 'barrage' && magicLevel < 94 ? 'burst' : method;
+}
+
 const AutoSlayMaxEfficiencyTable: AutoslayLink[] = [
 	{
 		monsterID: Monsters.Araxyte.id,
@@ -393,12 +397,14 @@ export async function autoSlayCommand({
 	user,
 	modeOverride,
 	saveMode,
-	interaction
+	interaction,
+	rng
 }: {
 	user: MUser;
 	modeOverride?: string;
 	saveMode?: boolean;
-	interaction: MInteraction;
+	interaction: OSInteraction;
+	rng: RNGProvider;
 }): CommandResponse {
 	modeOverride = modeOverride?.toLowerCase();
 	const autoslayOptions = user.user.slayer_autoslay_options;
@@ -406,7 +412,7 @@ export async function autoSlayCommand({
 	const isOnTask = usersTask.assignedTask !== null && usersTask.currentTask !== null;
 
 	if (!isOnTask) {
-		return slayerNewTaskCommand({ user, interaction, showButtons: true });
+		return slayerNewTaskCommand({ user, interaction, showButtons: true, rng });
 	}
 	const savedMethod = determineAutoslayMethod(autoslayOptions as AutoslayOptionsEnum[]);
 	const method = modeOverride ?? savedMethod;
@@ -480,11 +486,15 @@ export async function autoSlayCommand({
 		}
 
 		if (ehpMonster?.efficientName) {
+			const magicLevel = user.gearBank.skillsAsLevels.magic;
+			const efficientMethod = Array.isArray(ehpMonster.efficientMethod)
+				? ehpMonster.efficientMethod.map(method => replaceBarrageWithBurst(method, magicLevel))
+				: ehpMonster.efficientMethod && replaceBarrageWithBurst(ehpMonster.efficientMethod, magicLevel);
 			const args: CommandOptions = {
 				name: ehpMonster.efficientName
 			};
-			if (ehpMonster.efficientMethod) {
-				args.method = ehpMonster.efficientMethod as unknown as CommandOptions;
+			if (efficientMethod) {
+				args.method = efficientMethod as unknown as CommandOptions;
 			}
 
 			return runCommand({
@@ -518,7 +528,7 @@ export async function autoSlayCommand({
 			return usersTask.assignedTask?.monsters.includes(m.id);
 		});
 		if (allMonsters.length === 0) return 'Please report this error. No monster variations found.';
-		let maxDiff = 0;
+		let maxDiff = -1;
 		let maxMobName: string | null = null;
 
 		for (const m of allMonsters) {

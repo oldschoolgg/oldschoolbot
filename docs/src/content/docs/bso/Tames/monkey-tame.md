@@ -60,3 +60,15 @@ Tame spells are cast with [[/tames cast]]
 | Superglass Make | Per 3 casts: 3× Giant seaweed, 18× Bucket of sand, 10× Air rune, 6× Fire rune, 2× Astral rune                                               |
 
 Base cast times are: Tan Leather 0.5s, Spin Flax 0.8s, Superglass Make 3s and Plank Make 4s. Tier 3 staff and a fed Klik reduce these times further.
+
+
+## Casting mechanics and rates
+
+- Monkey casting requires a [[Seamonkey staff (t2)]] or better (all current spells are tier-2 spells).
+- Base cast times:
+  - Tan Leather: 0.5s
+  - Spin Flax: 0.8s
+  - Superglass/Superheat: 3s
+  - Plank Make: 4s
+- Staff t3 gives **12% faster** casting.
+- Feeding [[Klik]] gives **22% faster** casting.

@@ -45,7 +45,7 @@ export const runecraftTask: MinionTask = {
 
 		let bonusBlood = 0;
 		if (runeID === EItem.BLOOD_RUNE) {
-			bonusBlood = await bloodEssence(user, essenceQuantity);
+			bonusBlood = await bloodEssence(rng, user, essenceQuantity);
 			runeQuantity += bonusBlood;
 		}
 

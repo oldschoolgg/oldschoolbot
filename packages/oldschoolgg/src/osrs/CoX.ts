@@ -1,5 +1,6 @@
-import { randFloat, roll, shuffleArr } from '@oldschoolgg/rng';
-import { SimpleTable, sumArr, Time } from '@oldschoolgg/toolkit';
+import { sumArr, Time } from '@oldschoolgg/toolkit';
+import { MathRNG, randFloat, roll } from 'node-rng';
+import { SimpleTable } from 'oldschooljs';
 
 import { Bank, type ItemBank, Items, type LootBank, LootTable } from '@/osrs/index.js';
 
@@ -223,7 +224,7 @@ export class ChambersOfXericClass {
 		}
 
 		const onyxChance = options.team.length * 70;
-		for (const bank of shuffleArr(Object.values(lootResult))) {
+		for (const bank of MathRNG.shuffle(Object.values(lootResult))) {
 			if (roll(onyxChance)) {
 				bank.add('Onyx');
 				break;

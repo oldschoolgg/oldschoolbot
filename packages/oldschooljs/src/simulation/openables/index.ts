@@ -1,10 +1,14 @@
+import { SharkLurePack } from '@/simulation/openables/SharkLurePack.js';
 import { Collection } from '@/structures/Collection.js';
 import type Openable from '@/structures/Openable.js';
 import type { SimpleOpenable } from '@/structures/SimpleOpenable.js';
 import { BrimstoneChest } from './BrimstoneChest.js';
 import { Casket } from './Casket.js';
+import { CastleWarsSupplyCrate } from './CastleWarsSupplyCrate.js';
 import { CrystalChest } from './CrystalChest.js';
+import { Dossier } from './Dossier.js';
 import { ElvenCrystalChest } from './ElvenCrystalChest.js';
+import { ForgottenLockbox } from './ForgottenLockbox.js';
 import { GiantEggSacFull } from './GiantEggSacFull.js';
 import { GrubbyChest } from './GrubbyChest.js';
 import { BronzeHAMChest, IronHAMChest, SilverHAMChest, SteelHAMChest } from './HAMStoreRoomChests.js';
@@ -33,6 +37,7 @@ import { NestBoxRing } from './NestBoxRing.js';
 import { NestBoxSeeds } from './NestBoxSeeds.js';
 import { OgreCoffin } from './OgreCoffin.js';
 import { GiantsFoundryOrePack, VolcanicMineOrePack } from './OrePack.js';
+import { AdeptPotionPack, ApprenticePotionPack, ExpertPotionPack } from './PotionPacks.js';
 import { SeedPackOpenable as SeedPack } from './SeedPack.js';
 import { SinisterChest } from './SinisterChest.js';
 import { ZombiePiratesLocker } from './ZombiePiratesLocker.js';
@@ -49,6 +54,8 @@ export {
 	SteelHAMChest,
 	Casket,
 	CrystalChest,
+	Dossier,
+	ForgottenLockbox,
 	ElvenCrystalChest,
 	GrubbyChest,
 	MuddyChest,
@@ -72,12 +79,17 @@ export {
 	LuckyImpling,
 	VolcanicMineOrePack,
 	GiantsFoundryOrePack,
+	ApprenticePotionPack,
+	AdeptPotionPack,
+	ExpertPotionPack,
 	IntricatePouch,
 	BasicSack,
 	AdeptSack,
 	ExpertSack,
 	MasterSack,
-	ZombiePiratesLocker
+	ZombiePiratesLocker,
+	CastleWarsSupplyCrate,
+	SharkLurePack
 };
 
 const openablesObject: Record<string, SimpleOpenable> = {
@@ -92,6 +104,8 @@ const openablesObject: Record<string, SimpleOpenable> = {
 	SteelHAMChest,
 	Casket,
 	CrystalChest,
+	Dossier,
+	ForgottenLockbox,
 	ElvenCrystalChest,
 	GrubbyChest,
 	MuddyChest,
@@ -115,11 +129,16 @@ const openablesObject: Record<string, SimpleOpenable> = {
 	LuckyImpling,
 	VolcanicMineOrePack,
 	GiantsFoundryOrePack,
+	ApprenticePotionPack,
+	AdeptPotionPack,
+	ExpertPotionPack,
 	IntricatePouch,
 	BasicSack,
 	AdeptSack,
 	ExpertSack,
-	MasterSack
+	MasterSack,
+	CastleWarsSupplyCrate,
+	SharkLurePack
 };
 
 const allMonsters: [number, Openable][] = Object.values(openablesObject).map(openable => [openable.id, openable]);

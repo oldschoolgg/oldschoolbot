@@ -1,4 +1,3 @@
-import { percentChance } from '@oldschoolgg/rng';
 import { Bank, LootTable } from 'oldschooljs';
 
 import type { UnderwaterAgilityThievingTaskOptions } from '@/lib/types/minions.js';
@@ -13,7 +12,7 @@ const clamChestTable = new LootTable()
 
 export const underwaterAgilityThievingTask: MinionTask = {
 	type: 'UnderwaterAgilityThieving',
-	async run(data: UnderwaterAgilityThievingTaskOptions, { user, handleTripFinish }) {
+	async run(data: UnderwaterAgilityThievingTaskOptions, { user, handleTripFinish, rng }) {
 		const { quantity, channelId, duration, trainingSkill } = data;
 
 		const currentThievingLevel = user.skillsAsLevels.thieving;
@@ -24,7 +23,7 @@ export const underwaterAgilityThievingTask: MinionTask = {
 		const chanceOfSuccess = 0.043_88 * currentThievingLevel + 11.68;
 
 		for (let i = 0; i < quantity; i++) {
-			while (percentChance(chanceOfSuccess)) {
+			while (rng.percentChance(chanceOfSuccess)) {
 				successful++;
 			}
 		}

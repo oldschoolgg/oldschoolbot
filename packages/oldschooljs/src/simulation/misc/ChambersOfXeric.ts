@@ -1,12 +1,14 @@
-import { randFloat, roll, shuffleArr } from '@oldschoolgg/rng';
+import { sumArr } from '@oldschoolgg/util';
+import { MathRNG, randFloat, roll } from 'node-rng';
 
 import { EItem } from '@/EItem.js';
 import { Bank, type ItemBank, type LootBank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
 import Minigame from '@/structures/Minigame.js';
-import SimpleTable from '@/structures/SimpleTable.js';
+import { SimpleTable } from '@/structures/SimpleTable.js';
 import { resolveNameBank } from '@/util/bank.js';
-import { JSONClone, sumArr, Time } from '@/util/util.js';
+import { Time } from '@/util/smallUtils.js';
+import { JSONClone } from '@/util/util.js';
 
 export interface TeamMember {
 	id: string;
@@ -178,7 +180,7 @@ export class ChambersOfXericClass extends Minigame {
 		// First, pick which items we will be giving them, without giving a duplicate.
 		const items: number[] = [];
 		while (items.length < 2) {
-			const rolledItem = NonUniqueTable.roll();
+			const rolledItem = NonUniqueTable.rollOrThrow();
 			if (!items.includes(rolledItem)) items.push(rolledItem);
 		}
 
@@ -250,7 +252,7 @@ export class ChambersOfXericClass extends Minigame {
 		// For every unique item received, add it to someones loot.
 		while (uniqueLoot.length > 0) {
 			if (uniqueDeciderTable.table.length === 0) break;
-			const receipientID = uniqueDeciderTable.roll();
+			const receipientID = uniqueDeciderTable.rollOrThrow();
 			const uniqueItem = uniqueLoot.random()!;
 			lootResult[receipientID].add(uniqueItem.id, 1);
 			uniqueLoot.remove(uniqueItem.id, 1);
@@ -275,7 +277,7 @@ export class ChambersOfXericClass extends Minigame {
 		}
 
 		const onyxChance = options.team.length * 70;
-		for (const bank of shuffleArr(Object.values(lootResult))) {
+		for (const bank of MathRNG.shuffle(Object.values(lootResult))) {
 			if (roll(onyxChance)) {
 				bank.add('Onyx');
 				break;

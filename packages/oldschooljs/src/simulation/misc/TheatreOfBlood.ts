@@ -1,9 +1,10 @@
-import { percentChance, roll } from '@oldschoolgg/rng';
+import { sumArr } from '@oldschoolgg/util';
+import { percentChance, roll } from 'node-rng';
 
 import { Bank, type LootBank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
-import SimpleTable from '@/structures/SimpleTable.js';
-import { JSONClone, sumArr } from '@/util/util.js';
+import { SimpleTable } from '@/structures/SimpleTable.js';
+import { JSONClone } from '@/util/util.js';
 
 export interface TeamMember {
 	id: string;
@@ -157,7 +158,7 @@ export class TheatreOfBloodClass {
 			table.add(member, member.points);
 		}
 
-		return table.roll();
+		return table.rollOrThrow();
 	}
 
 	public complete(_options: TheatreOfBloodOptions): {

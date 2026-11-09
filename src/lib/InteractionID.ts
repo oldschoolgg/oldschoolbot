@@ -19,7 +19,9 @@ export const InteractionID = {
 		Join: 'PARTY_JOIN',
 		Leave: 'PARTY_LEAVE',
 		Cancel: 'PARTY_CANCEL',
-		Start: 'PARTY_START'
+		Start: 'PARTY_START',
+		HostApprove: 'PARTY_HOST_APPROVE',
+		HostDecline: 'PARTY_HOST_DECLINE'
 	},
 	Confirmation: {
 		Confirm: 'CONFIRM',
@@ -38,12 +40,14 @@ export const InteractionID = {
 		BuyMinion: 'BUY_MINION',
 		CancelTrip: 'CANCEL_TRIP',
 		RepeatTrip: 'REPEAT_TRIP',
+		RepeatAnyway: 'REPEAT_ANYWAY',
 		CheckPatches: 'CHECK_PATCHES',
 		ClaimDaily: 'CLAIM_DAILY',
 		DoShootingStar: 'DO_SHOOTING_STAR',
 		StartTearsOfGuthix: 'START_TOG',
 		NewSlayerTask: 'NEW_SLAYER_TASK',
 		DoBirdHouseRun: 'DO_BIRDHOUSE_RUN',
+		ToggleAutoRummage: 'TOGGLE_AUTO_RUMMAGE',
 		// Farming
 		FarmingContractEasier: 'FARMING_CONTRACT_EASIER',
 		AutoFarmingContract: 'AUTO_FARMING_CONTRACT',
