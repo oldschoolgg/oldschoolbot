@@ -13,6 +13,7 @@ import {
 	Time,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
+import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { gracefulExit } from 'exit-hook';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
@@ -26,11 +27,13 @@ import {
 	getBitFieldData,
 	listBitFields
 } from '@/lib/bitFieldUtils.js';
+import { giveawayCache } from '@/lib/cache.js';
 import { BadgesEnum, BitField, badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { syncCustomPrices } from '@/lib/preStartup.js';
 import { countUsersWithItemInCl } from '@/lib/rawSql.js';
 import { sorts } from '@/lib/sorts.js';
+import { generateGiveawayContent } from '@/lib/util/giveaway.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 
@@ -528,6 +531,19 @@ export const adminCommand = defineCommand({
 			description: 'item stats',
 			options: [{ ...itemOption(), required: true }]
 		},
+		{
+			type: 'Subcommand',
+			name: 'allow_giveaway_irons',
+			description: 'Allow ironmen to join a giveaway.',
+			options: [
+				{
+					type: 'String',
+					name: 'message_id',
+					description: 'The giveaway message ID.',
+					required: true
+				}
+			]
+		},
 		//
 		{
 			type: 'Subcommand',
@@ -914,6 +930,31 @@ ${META_CONSTANTS.RENDERED_STR}`
 		if (options.sync_commands) {
 			await bulkUpdateCommands();
 			return 'Done.';
+		}
+
+		if (options.allow_giveaway_irons) {
+			const { message_id: messageID } = options.allow_giveaway_irons;
+			if (!isValidDiscordSnowflake(messageID)) return 'Invalid message ID.';
+
+			const giveaway = await prisma.giveaway.findFirst({ where: { message_id: messageID } });
+			if (!giveaway) return 'No giveaway found for that message ID.';
+			if (giveaway.completed) return 'That giveaway has already finished.';
+
+			const updatedGiveaway = await prisma.giveaway.update({
+				where: { id: giveaway.id },
+				data: { allow_ironmen: true }
+			});
+			giveawayCache.set(updatedGiveaway.id, updatedGiveaway);
+
+			await globalClient.editMessage(updatedGiveaway.channel_id, updatedGiveaway.message_id, {
+				content: generateGiveawayContent(
+					updatedGiveaway.user_id,
+					updatedGiveaway.finish_date,
+					updatedGiveaway.users_entered,
+					updatedGiveaway.allow_ironmen
+				)
+			});
+			return `Ironmen are now enabled for giveaway message ${updatedGiveaway.message_id}.`;
 		}
 
 		if (options.view) {

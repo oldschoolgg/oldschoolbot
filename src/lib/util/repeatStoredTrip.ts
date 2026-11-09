@@ -2,6 +2,7 @@ import {
 	ButtonBuilder,
 	type ButtonMInteraction,
 	ButtonStyle,
+	idToUnixTs,
 	interactionButtonPrompt,
 	SpecialResponse
 } from '@oldschoolgg/discord';
@@ -1007,7 +1008,7 @@ export async function repeatTrip(
 		return { content: "Couldn't find any trip to repeat.", ephemeral: true };
 	}
 	const handler = tripHandlers[activity.type];
-	const args: ActivityTaskData = ActivityManager.convertStoredActivityToFlatActivity(activity);
+	const args: ActivityTaskData = ActivityManager.convertStoredActivityToFlatActivity(activity, interaction);
 
 	if (
 		activity.type === activity_type_enum.MonsterKilling &&
@@ -1032,13 +1033,13 @@ export async function repeatTrip(
 	}
 	const commandName =
 		typeof handler.commandName === 'function' ? handler.commandName(args as any) : handler.commandName;
+	const continueDeltaMillis = interaction.createdTimestamp - idToUnixTs(interaction.messageId);
 	return runCommand({
 		commandName,
 		isContinue: true,
 		args: commandArgs,
 		interaction,
 		user,
-		continueDeltaMillis: 0
-		// TODO: continueDeltaMillis: interaction.createdAt.getTime() - (interaction.message?.createdTimestamp ?? 0)
+		continueDeltaMillis
 	});
 }
