@@ -61,7 +61,6 @@ model Analytic {
 
 model ClientStorage {
   id                           String   @id @db.VarChar(19)
-  extra_settings               Json     @default("{}") @db.Json
   totalCommandsUsed            Int      @default(0)
   prices                       Json     @default("{}") @db.Json
   sold_items_bank              Json     @default("{}") @db.Json
@@ -148,6 +147,7 @@ model ClientStorage {
   grand_exchange_tax_bank  BigInt  @default(0)
 
   maxing_message String @default("Congratulations on maxing!")
+  extra_settings Json   @default("{}") @db.Json
 
   @@map("clientStorage")
 }
