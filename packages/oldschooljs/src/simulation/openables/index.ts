@@ -1,3 +1,4 @@
+import { SharkLurePack } from '@/simulation/openables/SharkLurePack.js';
 import { Collection } from '@/structures/Collection.js';
 import type Openable from '@/structures/Openable.js';
 import type { SimpleOpenable } from '@/structures/SimpleOpenable.js';
@@ -87,7 +88,8 @@ export {
 	ExpertSack,
 	MasterSack,
 	ZombiePiratesLocker,
-	CastleWarsSupplyCrate
+	CastleWarsSupplyCrate,
+	SharkLurePack
 };
 
 const openablesObject: Record<string, SimpleOpenable> = {
@@ -135,7 +137,8 @@ const openablesObject: Record<string, SimpleOpenable> = {
 	AdeptSack,
 	ExpertSack,
 	MasterSack,
-	CastleWarsSupplyCrate
+	CastleWarsSupplyCrate,
+	SharkLurePack
 };
 
 const allMonsters: [number, Openable][] = Object.values(openablesObject).map(openable => [openable.id, openable]);
