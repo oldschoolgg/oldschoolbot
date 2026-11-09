@@ -66,6 +66,7 @@ model ClientStorage {
   sold_items_bank              Json     @default("{}") @db.Json
   herblore_cost_bank           Json     @default("{}") @db.Json
   construction_cost_bank       Json     @default("{}") @db.Json
+  mastering_mixology_cost_bank Json     @default("{}") @db.Json
   farming_cost_bank            Json     @default("{}") @db.Json
   farming_loot_bank            Json     @default("{}") @db.Json
   buy_cost_bank                Json     @default("{}") @db.Json
@@ -146,6 +147,7 @@ model ClientStorage {
   grand_exchange_tax_bank  BigInt  @default(0)
 
   maxing_message String @default("Congratulations on maxing!")
+  extra_settings Json   @default("{}") @db.Json
 
   @@map("clientStorage")
 }
@@ -200,17 +202,18 @@ model GearPreset {
 }
 
 model Giveaway {
-  id          Int      @id
-  user_id     String   @db.VarChar(19)
-  start_date  DateTime @db.Timestamp(6)
-  finish_date DateTime @db.Timestamp(6)
-  duration    Int
-  completed   Boolean
-  guild_id    String?  @db.VarChar(20)
-  channel_id  String   @db.VarChar(19)
-  loot        Json     @db.Json
-  message_id  String   @db.VarChar(19)
-  reaction_id String?  @db.VarChar(19)
+  id            String   @id @db.VarChar(19)
+  user_id       String   @db.VarChar(19)
+  start_date    DateTime @db.Timestamp(6)
+  finish_date   DateTime @db.Timestamp(6)
+  duration      Int
+  completed     Boolean
+  allow_ironmen Boolean  @default(false)
+  guild_id      String?  @db.VarChar(20)
+  channel_id    String   @db.VarChar(19)
+  loot          Json     @db.Json
+  message_id    String   @db.VarChar(19)
+  reaction_id   String?  @db.VarChar(19)
 
   users_entered String[] @default([])
 
@@ -275,6 +278,7 @@ enum bank_sort_method_enum {
 }
 
 model User {
+  gambles            Gamble[]
   id                 String    @id @db.VarChar(19)
   last_command_date  DateTime? @db.Timestamp(6)
   minion_bought_date DateTime? @db.Timestamp(6)
@@ -490,6 +494,7 @@ enum XpGainSource {
   CamdozaalFishing
   ForestryEvents
   MonsterKilling
+  MasteringMixology
 }
 
 model XPGain {
@@ -562,6 +567,7 @@ model Minigame {
   shades_of_morton        Int    @default(0)
   tombs_of_amascut        Int    @default(0)
   colosseum               Int    @default(0)
+  mastering_mixology      Int    @default(0)
   doom_of_mokhaiotl       Int    @default(0)
   pizazz_points           Int    @default(0)
 
@@ -663,6 +669,30 @@ model EconomyTransaction {
   @@map("economy_transaction")
 }
 
+model Gamble {
+  id Int @id @default(autoincrement())
+
+  user_id String @db.VarChar(19)
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  game        String @db.VarChar(32)
+  bet_amount  BigInt
+  bet_item_id Int?
+
+  payout_amount  BigInt @default(0)
+  payout_item_id Int?
+
+  won         Boolean @default(false)
+  profit_loss BigInt?
+
+  created_at DateTime  @default(now()) @db.Timestamp(6)
+  settled_at DateTime? @db.Timestamp(6)
+
+  @@index([user_id, created_at])
+  @@index([game, created_at])
+  @@map("gamble")
+}
+
 model StashUnit {
   stash_id        Int
   user_id         BigInt
@@ -703,6 +733,10 @@ model UserStats {
   shades_of_morton_cost_bank Json @default("{}") @db.Json
 
   gp_from_agil_pyramid Int @default(0)
+
+  mixology_mox_points Int @default(0)
+  mixology_aga_points Int @default(0)
+  mixology_lye_points Int @default(0)
 
   random_event_completions_bank Json @default("{}") @db.Json
 
@@ -866,6 +900,7 @@ enum activity_type_enum {
   Cooking
   MonsterKilling
   GroupMonsterKilling
+  Yama
   ClueCompletion
   Fishing
   Mining
@@ -913,10 +948,13 @@ enum activity_type_enum {
   AerialFishing
   DriftNet
   MahoganyHomes
+  MasteringMixologyContract
+  MixologyPasteCreation
   GnomeRestaurant
   SoulWars
   RoguesDenMaze
   Gauntlet
+  DoomOfMokhaiotl
   CastleWars
   MageArena
   Raids
@@ -962,7 +1000,6 @@ enum activity_type_enum {
   CamdozaalSmithing
   MyNotes
   Colosseum
-  DoomOfMokhaiotl
   CreateForestersRations
   Buy
 }

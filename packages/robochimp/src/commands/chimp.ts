@@ -13,33 +13,56 @@ import {
 } from '@/lib/premiumTime.js';
 import type { RUser } from '@/structures/RUser.js';
 import { serviceManager } from '@/structures/ServiceManager.js';
-import { CHANNELS, tiers } from '@/util.js';
+import { CHANNELS, paidTiers } from '@/util.js';
 
-const tierChoices = [...tiers].reverse().map(tier => ({
-	name: `Magna Tier ${tier.number} (perkTier ${tier.perkTier})`,
-	value: tier.perkTier.toString()
+const tierChoices = [...paidTiers].reverse().map(tier => ({
+	name: `${tier.source === 'cyr' ? 'Cyr' : 'Magna'} Tier ${tier.number} (perkTier ${tier.perkTier})`,
+	value: `${tier.source}:${tier.number}`
 }));
 
 function availableTiersString() {
 	return tierChoices.map(tier => `${tier.name}: \`${tier.value}\``).join('\n');
 }
 
-async function addPatreonTime(timeMs: number, tier: number, userToGive: RUser, interaction: MInteraction) {
+function findTier(input: string) {
+	const [source, number] = input.split(':');
+	if (source === 'magna' || source === 'cyr') {
+		return paidTiers.find(tier => tier.source === source && tier.number === Number(number));
+	}
+
+	const perkTier = Number(input);
+	return Number.isInteger(perkTier)
+		? paidTiers.find(tier => tier.source === 'magna' && tier.perkTier === perkTier)
+		: undefined;
+}
+
+async function addPatreonTime(
+	timeMs: number,
+	tier: number,
+	isCyr: boolean,
+	userToGive: RUser,
+	interaction: MInteraction
+) {
 	if (!validatePremiumTimeGrant(timeMs, tier)) return 'Invalid input.';
 
 	const currentUser = await fetchPremiumTimeBalance(userToGive.id);
 	const currentBalanceTier = currentUser.premium_balance_tier;
+	const currentBalanceRemaining = Math.max(0, Number(currentUser.premium_balance_expiry_date ?? 0) - Date.now());
 
-	if (currentBalanceTier !== null && currentBalanceTier !== tier) {
+	if (
+		currentBalanceRemaining > 0 &&
+		currentBalanceTier !== null &&
+		(currentBalanceTier !== tier || Boolean(currentUser.premium_balance_is_cyr) !== isCyr)
+	) {
 		await interaction.confirmation(
-			`❗They already have **__Tier: ${currentBalanceTier - 1}__** (||PerkTier: ${currentBalanceTier}||), this will replace the existing balance entirely, are you sure?`
+			`❗They already have **__Tier: ${currentBalanceTier - 1}__** (||PerkTier: ${currentBalanceTier}||) with ${formatDuration(currentBalanceRemaining)} remaining, this will replace the existing balance entirely, are you sure?`
 		);
 	}
 	await interaction.confirmation(
 		`🤔❓Are you sure you want to add ${formatDuration(timeMs)} of **__Tier ${tier - 1}__** premium perks to ${userToGive.mention}?`
 	);
 
-	const grant = await grantPremiumTime({ userID: userToGive.id, timeMs, tier });
+	const grant = await grantPremiumTime({ userID: userToGive.id, timeMs, tier, isCyr });
 
 	return `Gave ${formatPremiumTimeGrant(grant)} Perks to ${userToGive.mention}. They have ${formatDuration(
 		grant.remainingTime
@@ -281,9 +304,19 @@ export const chimpCommand = defineCommand({
 		}
 		if (!user.isAdmin()) return 'Ook?';
 		if (options.patreon?.add_time) {
-			const { tier, time, user: targetUser } = options.patreon.add_time;
+			const { tier: tierInput, time, user: targetUser } = options.patreon.add_time;
+			const tier = findTier(tierInput);
+			if (!tier) {
+				return `Invalid tier: \`${tierInput}\`.\nAvailable tiers:\n${availableTiersString()}`;
+			}
 			const ms = parseDuration(time);
-			return addPatreonTime(ms, Number(tier), await globalClient.fetchRUser(targetUser.user.id), interaction);
+			return addPatreonTime(
+				ms,
+				tier.perkTier,
+				tier.source === 'cyr',
+				await globalClient.fetchRUser(targetUser.user.id),
+				interaction
+			);
 		}
 		if (options.patreon?.change_tier) {
 			const changeTier = options.patreon.change_tier;
@@ -299,14 +332,13 @@ export const chimpCommand = defineCommand({
 				return `Pick a tier, or enter its perk tier number:\n${availableTiersString()}`;
 			}
 
-			const perkTier = Number(changeTier.tier);
-			const tier = Number.isInteger(perkTier) ? tiers.find(t => t.perkTier === perkTier) : null;
+			const tier = findTier(changeTier.tier);
 			if (!tier) {
-				return `Invalid perk tier: \`${changeTier.tier}\`.\nAvailable tiers:\n${availableTiersString()}`;
+				return `Invalid tier: \`${changeTier.tier}\`.\nAvailable tiers:\n${availableTiersString()}`;
 			}
 
 			await patreonTask.changeTier(targetUser, tier);
-			return `Changed ${targetMention} to Magna Tier ${tier.number} (perkTier ${tier.perkTier}).`;
+			return `Changed ${targetMention} to ${tier.source === 'cyr' ? 'Cyr' : 'Magna'} Tier ${tier.number} (perkTier ${tier.perkTier}).`;
 		}
 		if (options.patreon?.debug) {
 			await interaction.defer();

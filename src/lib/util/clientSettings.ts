@@ -25,6 +25,10 @@ async function mahojiClientSettingsUpdate(data: Prisma.ClientStorageUpdateInput)
 	});
 }
 
+async function getExtraSettings() {
+	return Cache.getExtraSettings();
+}
+
 async function updateClientGPTrackSetting(
 	setting:
 		| 'gp_luckypick'
@@ -57,6 +61,7 @@ async function updateClientGPTrackSetting(
 type ClientBankKey =
 	| 'sold_items_bank'
 	| 'herblore_cost_bank'
+	| 'mastering_mixology_cost_bank'
 	| 'construction_cost_bank'
 	| 'farming_cost_bank'
 	| 'farming_loot_bank'
@@ -170,6 +175,7 @@ async function addToGPTaxBalance(user: MUser, amount: number) {
 const ClientSettingsSrc = {
 	fetch: mahojiClientSettingsFetch,
 	update: mahojiClientSettingsUpdate,
+	getExtraSettings,
 	updateClientGPTrackSetting,
 	updateBankSetting,
 	removeFromBankSetting,

@@ -432,6 +432,18 @@ export interface MahoganyHomesActivityTaskOptions extends MinigameActivityTaskOp
 	tier: number;
 }
 
+export interface MasteringMixologyContractActivityTaskOptions extends MinigameActivityTaskOptions {
+	type: 'MasteringMixologyContract';
+	quantity: number;
+	contractIDs?: number[];
+}
+
+export interface MasteringMixologyContractCreatingTaskOptions extends MinigameActivityTaskOptions {
+	type: 'MixologyPasteCreation';
+	herbName: string;
+	quantity: number;
+}
+
 export interface NightmareActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Nightmare';
 	method: 'solo' | 'mass';
@@ -511,6 +523,25 @@ export interface GroupMonsterActivityTaskOptions extends Omit<MonsterActivityTas
 	type: 'GroupMonsterKilling';
 	leader: string;
 	users: string[];
+}
+
+export interface YamaActivityTaskOptions extends ActivityTaskOptions {
+	type: 'Yama';
+	quantity: number;
+	iQty?: number;
+	leader: string;
+	users: string[];
+	solo?: boolean;
+	perKillTime: number;
+	teamMembers: YamaTeamMember[];
+}
+
+export interface YamaTeamMember {
+	id: string;
+	contribution: number;
+	deathChance: number;
+	kc: number;
+	attackStyles: AttackStyles[];
 }
 
 export interface RaidsOptions extends ActivityTaskOptionsWithUsers {
@@ -680,11 +711,13 @@ export type ActivityTaskData =
 	| CollectingOptions
 	| RaidsOptions
 	| GauntletOptions
+	| YamaActivityTaskOptions
 	| CastingActivityTaskOptions
 	| EnchantingActivityTaskOptions
 	| ConstructionActivityTaskOptions
 	| HunterActivityTaskOptions
-	| ZalcanoActivityTaskOptions
+	| MasteringMixologyContractActivityTaskOptions
+	| MasteringMixologyContractCreatingTaskOptions
 	| SawmillActivityTaskOptions
 	| ButlerActivityTaskOptions
 	| FarmingActivityTaskOptions

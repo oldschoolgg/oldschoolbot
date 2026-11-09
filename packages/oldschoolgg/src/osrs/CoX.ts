@@ -1,5 +1,6 @@
-import { SimpleTable, sumArr, Time } from '@oldschoolgg/toolkit';
+import { sumArr, Time } from '@oldschoolgg/toolkit';
 import { MathRNG, randFloat, roll } from 'node-rng';
+import { SimpleTable } from 'oldschooljs';
 
 import { Bank, type ItemBank, Items, type LootBank, LootTable } from '@/osrs/index.js';
 

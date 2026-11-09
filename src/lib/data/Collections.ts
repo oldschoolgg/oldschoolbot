@@ -86,6 +86,7 @@ import {
 	lastManStandingCL,
 	magicTrainingArenaCL,
 	mahoganyHomesCL,
+	masteringMixologyCL,
 	miscellaneousCL,
 	monkeyBackpacksCL,
 	motherlodeMineCL,
@@ -635,8 +636,10 @@ export const allCollectionLogs: ICollection = {
 				}
 			},
 			Yama: {
+				alias: Monsters.Yama.aliases,
+				allItems: uniqueArr([...yamaCL, ...Monsters.Yama.allItems]),
 				items: yamaCL,
-				allItems: Monsters.Yama.allItems
+				fmtProg: kcProg(Monsters.Yama)
 			},
 			Zalcano: { items: zalcanoCL, fmtProg: ({ stats }) => `${stats.kcBank[EMonster.ZALCANO] ?? 0} KC` },
 			Zulrah: {
@@ -943,9 +946,11 @@ export const allCollectionLogs: ICollection = {
 				isActivity: true,
 				fmtProg: mgProg('mahogany_homes')
 			},
-			///	'Mastering Mixology': {
-			///		items: CollectionLog.MasteringMixology.items
-			///	},
+			'Mastering Mixology': {
+				items: masteringMixologyCL,
+				isActivity: true,
+				fmtProg: mgProg('mastering_mixology')
+			},
 			'Pest Control': {
 				items: pestControlCL,
 				isActivity: true,
