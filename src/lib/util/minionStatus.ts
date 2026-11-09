@@ -19,6 +19,7 @@ import { findFishingSpotForStoredTrip } from '@/lib/skilling/skills/fishing/fish
 import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
 import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
 import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
+import { getRumourHunter } from '@/lib/skilling/skills/hunter/rumours/util.js';
 import { Castables } from '@/lib/skilling/skills/magic/castables.js';
 import { Enchantables } from '@/lib/skilling/skills/magic/enchantables.js';
 import Mining from '@/lib/skilling/skills/mining.js';
@@ -67,6 +68,7 @@ import type {
 	PickpocketActivityTaskOptions,
 	PlunderActivityTaskOptions,
 	RaidsOptions,
+	RumourActivityTaskOptions,
 	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,
 	ScatteringActivityTaskOptions,
@@ -482,6 +484,12 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 			return `${name} is currently hunting ${
 				crystalImpling ? creature?.name : `${data.quantity}x ${creature?.name}`
 			}. ${formattedDuration}`;
+		}
+
+		case 'Rumour': {
+			const data = currentTask as RumourActivityTaskOptions;
+			const hunterLabel = data.hunter ? getRumourHunter(data.hunter).label : data.tier;
+			return `${name} is currently completing ${data.quantity} ${hunterLabel} Hunter Rumours. ${formattedDuration}`;
 		}
 
 		case 'Birdhouse': {

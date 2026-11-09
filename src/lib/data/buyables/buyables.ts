@@ -1138,6 +1138,19 @@ const Buyables: Buyable[] = [
 		gpCost: 1000,
 		qpRequired: 30
 	},
+	{
+		name: 'Mixed hide base',
+		gpCost: 20_000,
+		skillsNeeded: {
+			hunter: 46
+		},
+		requiredQuests: [QuestID.ChildrenOfTheSun]
+	},
+	{
+		name: 'Jaguar fur',
+		gpCost: 3_000,
+		requiredQuests: [QuestID.ChildrenOfTheSun]
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,

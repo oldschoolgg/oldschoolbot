@@ -4,6 +4,8 @@ import type { UserStats } from '@/prisma/main.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import type { ClueBank } from '@/lib/minions/types.js';
 import { getToaKCs } from '@/lib/simulation/toaUtils.js';
+import type { RumourOption } from '@/lib/skilling/skills/hunter/rumours/util.js';
+import { RumourTierBank } from '@/lib/structures/Bank.js';
 import { fetchUserStats } from '@/lib/util/fetchUserStats.js';
 
 export class MUserStats {
@@ -15,6 +17,7 @@ export class MUserStats {
 	kcBank: ItemBank;
 	highGambles: number;
 	gotrRiftSearches: number;
+	rumours: RumourTierBank;
 	slayerWildyTaskStreak: number;
 	slayerTaskStreak: number;
 
@@ -27,6 +30,7 @@ export class MUserStats {
 		this.kcBank = userStats.monster_scores as ItemBank;
 		this.highGambles = userStats.high_gambles;
 		this.gotrRiftSearches = userStats.gotr_rift_searches;
+		this.rumours = new RumourTierBank(userStats.rumours as Record<RumourOption, number>);
 		this.slayerWildyTaskStreak = userStats.slayer_wildy_task_streak;
 		this.slayerTaskStreak = userStats.slayer_task_streak;
 	}

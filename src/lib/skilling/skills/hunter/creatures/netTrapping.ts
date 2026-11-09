@@ -15,7 +15,8 @@ const netTrappingCreatures: Creature[] = [
 		multiTraps: true,
 		catchTime: 26,
 		slope: 1,
-		intercept: 15
+		intercept: 15,
+		tier: ['novice', 'adept']
 	},
 	{
 		name: 'Orange salamander',
@@ -28,7 +29,8 @@ const netTrappingCreatures: Creature[] = [
 		multiTraps: true,
 		catchTime: 35,
 		slope: 1.2,
-		intercept: 5
+		intercept: 5,
+		tier: ['novice', 'adept', 'expert']
 	},
 	{
 		name: 'Red salamander',
@@ -41,7 +43,8 @@ const netTrappingCreatures: Creature[] = [
 		multiTraps: true,
 		catchTime: 40,
 		slope: 0.9,
-		intercept: 25
+		intercept: 25,
+		tier: ['novice', 'adept', 'expert', 'master']
 	},
 	{
 		name: 'Black salamander',
@@ -57,6 +60,20 @@ const netTrappingCreatures: Creature[] = [
 		catchTime: 48,
 		slope: 1.2,
 		intercept: -5
+	},
+	{
+		name: 'Tecu salamander',
+		id: 47,
+		aliases: ['tecu salamander'],
+		level: 79,
+		hunterXP: 344,
+		table: new LootTable().add('Immature tecu salamander', 1, 999).add('Tecu salamander', 1, 1),
+		huntTechnique: HunterTechniqueEnum.NetTrapping,
+		multiTraps: true,
+		catchTime: 46,
+		slope: 0.9,
+		intercept: -5.9,
+		tier: ['novice', 'expert', 'master']
 	}
 ];
 

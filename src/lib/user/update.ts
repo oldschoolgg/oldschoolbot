@@ -6,6 +6,7 @@ import type { AutoFarmFilterEnum, bank_sort_method_enum, CropUpgradeType } from 
 import type { PatchTypes } from '@/lib/skilling/skills/farming/index.js';
 import type { FarmingPatchSettingsKey } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { FarmingPreferredSeeds } from '@/lib/skilling/skills/farming/utils/types.js';
+import type { RumourBlockList } from '@/lib/skilling/skills/hunter/rumours/util.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { DegradeableItemColumns, GearColumns } from '@/lib/user/userTypes.js';
 
@@ -68,6 +69,7 @@ type PrismaBooleanKeys = 'minion_defaultPay' | 'minion_ironman' | 'minion_hasBou
 export type FullUserUpdateInput = Partial<
 	{
 		blowpipe: IBlowpipeData;
+		rumour_blocked_ids: RumourBlockList;
 		slayer_last_task: number;
 		minion_farmingContract: IFarmingContract | null;
 		minion_birdhouseTraps: IBirdhouseData | null;
