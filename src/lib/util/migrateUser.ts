@@ -126,9 +126,15 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 		prisma.reclaimableItem.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } })
 	);
 	transactions.push(prisma.gamble.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } }));
-	transactions.push(prisma.userEvent.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } }));
-	transactions.push(prisma.tableBank.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } }));
-	transactions.push(prisma.jsonBank.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } }));
+	transactions.push(
+		prisma.userEvent.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } })
+	);
+	transactions.push(
+		prisma.tableBank.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } })
+	);
+	transactions.push(
+		prisma.jsonBank.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } })
+	);
 	transactions.push(
 		prisma.shootingStars.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } })
 	);
