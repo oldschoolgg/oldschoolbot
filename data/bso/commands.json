@@ -1,6 +1,6 @@
 {
-	"hash": "623aa3405585820b80e2889368f9475a",
-	"date": "2026-07-05T07:44:38.019Z",
+	"hash": "16ce6ce1d4bda5bd998d5a09fcb90563",
+	"date": "2026-10-18T15:33:53.934Z",
 	"data": [
 		{
 			"name": "activities",
@@ -8,6 +8,8 @@
 			"subOptions": [
 				"aerial_fishing",
 				"alch",
+				"ancient_mycology",
+				"archaic_mining",
 				"beach_combing",
 				"birdhouses",
 				"bury",
@@ -19,6 +21,7 @@
 				"decant",
 				"enchant",
 				"fight_caves",
+				"gemstone_fishing",
 				"inferno",
 				"my_notes",
 				"other",
@@ -56,6 +59,8 @@
 			"subOptions": [
 				"balthazars_big_bonanza",
 				"baxtorian_bathhouses",
+				"brimstone_distillery",
+				"construction_contracts",
 				"divine_dominion",
 				"fishing_contest",
 				"fist_of_guthix",
@@ -153,7 +158,22 @@
 		{
 			"name": "dg",
 			"desc": "The Dungeoneering skill.",
-			"subOptions": ["buy", "start", "stats"]
+			"subOptions": ["buy", "info", "start"]
+		},
+		{
+			"name": "disco",
+			"desc": "Enter the Disco Bloodbath club circuit.",
+			"subOptions": [
+				"auto_equip",
+				"help",
+				"inquire",
+				"leaderboard",
+				"outfit",
+				"party",
+				"search",
+				"start",
+				"stats"
+			]
 		},
 		{
 			"name": "divination",
@@ -222,7 +242,7 @@
 		{
 			"name": "gearpresets",
 			"desc": "Manage, equip, unequip your gear presets.",
-			"subOptions": ["create", "delete", "edit", "equip", "view"]
+			"subOptions": ["create", "delete", "edit", "equip", "help", "view"]
 		},
 		{
 			"name": "gift",
@@ -267,6 +287,22 @@
 			"subOptions": []
 		},
 		{
+			"name": "island",
+			"desc": "Upgrade your island camp facilities",
+			"subOptions": [
+				"assign",
+				"complete",
+				"contribute",
+				"gather",
+				"lifetime",
+				"maintain",
+				"preview",
+				"summary",
+				"unassign",
+				"view"
+			]
+		},
+		{
 			"name": "k",
 			"desc": "Send your minion to kill things.",
 			"examples": ["/k name:zulrah"],
@@ -299,6 +335,7 @@
 				"clues",
 				"combat_achievements",
 				"completion",
+				"disco",
 				"farming_contracts",
 				"global",
 				"gp",
@@ -497,7 +534,7 @@
 		{
 			"name": "rp",
 			"desc": "Admin tools second set",
-			"subOptions": ["player", "user_event"]
+			"subOptions": ["bestow", "player", "user_event"]
 		},
 		{
 			"name": "runecraft",

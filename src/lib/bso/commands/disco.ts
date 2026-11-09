@@ -1,0 +1,456 @@
+import { generateDiscoLeaderboardImage } from '@/lib/bso/canvas/generateDiscoLeaderboardImage.js';
+import { generateDiscoOutfitImage } from '@/lib/bso/canvas/generateDiscoOutfitImage.js';
+import {
+	DISCO_AESTHETIC_SHORT_NAMES,
+	DISCO_AESTHETICS,
+	DISCO_CLUB_THEMES,
+	DISCO_CLUBS,
+	DiscoItem,
+	discoClubOrder,
+	discoHalloweenStory,
+	discoPopularity,
+	isDiscoEventActive,
+	isDiscoHalloween,
+	scoreDiscoFashion
+} from '@/lib/bso/discoBloodbath.js';
+import { discoInquiryPresetButtons } from '@/lib/bso/discoHandler.js';
+
+import type { ButtonBuilder } from '@oldschoolgg/discord';
+import { defaultGearSetup } from '@oldschoolgg/gear';
+import { Time } from '@oldschoolgg/toolkit';
+import { Bank } from 'oldschooljs';
+
+import { activity_type_enum } from '@/prisma/main/enums.js';
+import { Prisma } from '@/prisma/main.js';
+import { mentionCommand } from '@/discord/utils.js';
+import { BitField } from '@/lib/constants.js';
+import type { DiscoBloodbathActivityTaskOptions } from '@/lib/types/minions.js';
+
+const clubChoices = () => discoClubOrder().map(club => ({ name: club, value: club }));
+const discoPresetNames = ['discofuture', 'discoragdoll', 'discoanti'] as const;
+const autoEquipChoices = [
+	{ name: 'Futuristic + Ragdoll', value: 'futuristic_ragdoll', aesthetics: ['Futuristic', 'Ragdoll'] },
+	{ name: 'Futuristic + Anti-Fashion', value: 'futuristic_anti', aesthetics: ['Futuristic', 'Anti-Fashion'] },
+	{ name: 'Ragdoll + Anti-Fashion', value: 'ragdoll_anti', aesthetics: ['Ragdoll', 'Anti-Fashion'] },
+	{ name: 'Futuristic', value: 'futuristic', aesthetics: ['Futuristic'] },
+	{ name: 'Ragdoll', value: 'ragdoll', aesthetics: ['Ragdoll'] },
+	{ name: 'Anti-Fashion', value: 'anti', aesthetics: ['Anti-Fashion'] }
+] as const;
+
+function corruptDiscoHashSeed(name: string) {
+	const index = Math.floor(Math.random() * (name.length + 1));
+	return `${name.slice(0, index)}${Math.floor(Math.random() * 10)}${name.slice(index)}`;
+}
+
+const helpText =
+	() => `**Disco Bloodbath** is a limited-time club circuit for minions who understand that fashion is a weapon.
+
+⭐ Use ${mentionCommand('disco', 'party')} to send your minion on a trip. Visits take at least thirty minutes.
+- Your Fashion gear determines your points, and your top two Realms gain or lose progress depending on the party's vibe.
+- A day is every 4 hours, and that's how often the crowd/popularity changes. (*At 00:00, 04:00, etc.*)
+- Use ${mentionCommand('disco', 'inquire')} for a tip from your contacts
+💡 The ${mentionCommand('bank')} command can show you the Aesthetic points for each item in your bank: \`/bank flag:show_disco_points\`
+- ${mentionCommand('disco', 'stats')} to track your rank.
+- Use ${mentionCommand('disco', 'leaderboard')} to see the event leaders.
+
+*Completed visits can return strange fashion loot and very rarely a chase box*.
+
+The clubs are:
+${discoClubOrder()
+	.map(club => {
+		const theme = DISCO_CLUB_THEMES[club];
+		return `- **${theme.club}** — ${theme.name}: ${theme.description}`;
+	})
+	.join('\n')}
+
+Use ${mentionCommand('disco', 'outfit')} for your Fashion-gear breakdown.
+Use ${mentionCommand('disco', 'search')} to search your bank for the best Disco points.`;
+
+export const discoCommand = defineCommand({
+	name: 'disco',
+	description: 'Enter the Disco Bloodbath club circuit.',
+	options: [
+		{
+			type: 'Subcommand',
+			name: 'party',
+			description: 'Send your minion to a club to visit (or crash) the party!',
+			options: [
+				{
+					type: 'String',
+					name: 'club_name',
+					description: 'The club to visit.',
+					required: true,
+					autocomplete: async ({ value }: StringAutoComplete) =>
+						clubChoices().filter(
+							choice => !value || choice.name.toLowerCase().includes(value.toLowerCase())
+						)
+				},
+				{
+					type: 'String',
+					name: 'crash',
+					description: 'Crash the party?',
+					choices: [
+						{ name: 'Crash!', value: 'crash' },
+						{ name: 'Party!', value: 'party' },
+						{ name: 'Host!', value: 'host' }
+					]
+				}
+			]
+		},
+		{ type: 'Subcommand', name: 'start', description: 'Join the Disco Bloodbath event.' },
+		{ type: 'Subcommand', name: 'help', description: 'Learn how the club circuit works.' },
+		{ type: 'Subcommand', name: 'stats', description: 'View your Realm progress and club rank.' },
+		{ type: 'Subcommand', name: 'leaderboard', description: 'View the Disco Bloodbath leaders.' },
+		{
+			type: 'Subcommand',
+			name: 'outfit',
+			description: 'See the Realms and points in your Fashion gear.'
+		},
+		{
+			type: 'Subcommand',
+			name: 'auto_equip',
+			description: 'Use a rough scan to equip Fashion gear for Disco points.',
+			options: [
+				{
+					type: 'String',
+					name: 'aesthetic',
+					description: 'The Realm combination to prioritize.',
+					required: true,
+					choices: autoEquipChoices.map(({ name, value }) => ({ name, value }))
+				}
+			]
+		},
+		{
+			type: 'Subcommand',
+			name: 'search',
+			description: 'Find your best bank items for an aesthetic.',
+			options: [
+				{
+					type: 'String',
+					name: 'aesthetic',
+					description: 'The aesthetic to search for.',
+					required: true,
+					choices: DISCO_AESTHETICS.map(aesthetic => ({ name: aesthetic, value: aesthetic }))
+				},
+				{
+					type: 'Boolean',
+					name: 'combined',
+					description: 'Sort by combined Disco points.',
+					required: false
+				}
+			]
+		},
+		{
+			type: 'Subcommand',
+			name: 'inquire',
+			description: 'Ask your contacts what they think of a club.',
+			options: [
+				{
+					type: 'String',
+					name: 'club_name',
+					description: 'The club to ask about.',
+					required: true,
+					autocomplete: async ({ value }: StringAutoComplete) =>
+						DISCO_CLUBS.map(club => ({ name: club, value: club })).filter(
+							choice => !value || choice.name.toLowerCase().includes(value.toLowerCase())
+						)
+				}
+			]
+		}
+	],
+	run: async ({ options, user, channelId, interaction }) => {
+		if (!isDiscoEventActive()) return 'The Disco Bloodbath has closed for the night.';
+		if (options.start) {
+			const presets = await prisma.gearPreset.findMany({ where: { user_id: user.id }, select: { name: true } });
+			const missingPresets = discoPresetNames.filter(name => !presets.some(preset => preset.name === name));
+			if (user.bloodbathEventStarted) {
+				if (missingPresets.length === 0)
+					return 'You have already joined the Disco Bloodbath and your three Disco presets are ready.';
+
+				const availableSlots = (await user.calcMaxGearPresets()) - presets.length;
+				if (availableSlots < missingPresets.length) {
+					return `You have already joined the Disco Bloodbath, but ${missingPresets.map(name => `\`${name}\``).join(', ')} ${missingPresets.length === 1 ? 'is' : 'are'} missing. You need ${missingPresets.length - Math.max(availableSlots, 0)} more gear preset ${missingPresets.length - Math.max(availableSlots, 0) === 1 ? 'slot' : 'slots'} to restore them.`;
+				}
+
+				await interaction.confirmation(
+					`You already joined the Disco Bloodbath. Restore the missing preset${missingPresets.length === 1 ? '' : 's'}: ${missingPresets.map(name => `\`${name}\``).join(', ')}?`
+				);
+				await prisma.gearPreset.createMany({
+					data: missingPresets.map(name => ({ user_id: user.id, name })),
+					skipDuplicates: true
+				});
+				return `Restored ${missingPresets.map(name => `\`${name}\``).join(', ')}.`;
+			}
+
+			await user.update({
+				bloodbath_event_started: true,
+				bitfield: [...new Set([...user.bitfield, BitField.DiscoBloodbathGearPresetSlots])]
+			});
+			await prisma.gearPreset.createMany({
+				data: discoPresetNames.map(name => ({ user_id: user.id, name })),
+				skipDuplicates: true
+			});
+			return `You have started Disco Bloodbath. You really need to read ${mentionCommand('disco', 'help')}.
+
+4 \`/gearpresets\` slots have been permanently added to your account. Created empty presets: \`discofuture\`, \`discoragdoll\`, \`discoanti\`. Use \`/gearpresets help\`.
+
+‼️ **Use ${mentionCommand('disco', 'party')}** to send trips**`;
+		}
+		if (options.help) return helpText();
+
+		if (options.search) {
+			const ratelimit = await Cache.tryRatelimit(user.id, 'disco_bank_search');
+			if (!ratelimit.success) return 'You need to wait before searching your bank again.';
+
+			const aesthetic = options.search.aesthetic as (typeof DISCO_AESTHETICS)[number];
+			const combined = options.search.combined ?? false;
+			const results = user.bank
+				.items()
+				.filter(([item]) => Boolean(item.equipable) && Boolean(item.equipment?.slot))
+				.map(([item]) => ({ name: item.name, points: new DiscoItem(item).points }))
+				.sort((a, b) => {
+					const aScore = combined
+						? DISCO_AESTHETICS.reduce((total, realm) => total + a.points[realm], 0)
+						: a.points[aesthetic];
+					const bScore = combined
+						? DISCO_AESTHETICS.reduce((total, realm) => total + b.points[realm], 0)
+						: b.points[aesthetic];
+					return bScore - aScore || a.name.localeCompare(b.name);
+				})
+				.slice(0, 100)
+				.map(
+					result =>
+						`${result.name}, ${DISCO_AESTHETICS.filter(realm => result.points[realm] !== 0)
+							.map(realm => `${DISCO_AESTHETIC_SHORT_NAMES[realm]}: ${result.points[realm]}`)
+							.join(', ')}`
+				);
+			if (results.length === 0) return 'You have no equippable items in your bank.';
+
+			const pages = Array.from({ length: Math.ceil(results.length / 10) }, (_, index) => ({
+				content: results.slice(index * 10, (index + 1) * 10).join('\n')
+			}));
+			return interaction.makePaginatedMessage({ pages });
+		}
+
+		if (options.outfit) {
+			const scored = scoreDiscoFashion(user.gear.fashion.raw());
+			return {
+				files: [
+					{
+						name: 'disco-outfit.png',
+						buffer: await generateDiscoOutfitImage({ items: scored.items, user })
+					}
+				]
+			};
+		}
+
+		const autoEquip = options.auto_equip;
+		if (autoEquip) {
+			if (await user.minionIsBusy()) return `${user.minionName} is currently busy.`;
+			await user.sync();
+
+			const choice = autoEquipChoices.find(choice => choice.value === autoEquip.aesthetic);
+			if (!choice) return 'Choose an aesthetic from the suggestions.';
+			const aesthetics = choice.aesthetics;
+			const fashionBank = user.bank.clone();
+			for (const equipped of Object.values(user.gear.fashion.raw())) {
+				if (equipped) fashionBank.add(equipped.item, equipped.quantity);
+			}
+			const candidates = fashionBank
+				.items()
+				.filter(
+					([item]) =>
+						Boolean(item.equipable) && Boolean(item.equipment?.slot) && item.equipment?.slot !== 'ammo'
+				)
+				.filter(([item]) => !item.equipment?.requirements || user.hasSkillReqs(item.equipment.requirements))
+				.map(([item]) => {
+					const points = new DiscoItem(
+						item,
+						Math.random() < 0.1 ? { hashSeed: corruptDiscoHashSeed(item.name.toLowerCase()) } : undefined
+					).points;
+					return {
+						item,
+						points,
+						score: aesthetics.reduce((total, aesthetic) => total + points[aesthetic], 0)
+					};
+				})
+				.filter(candidate => candidate.score > 0);
+
+			const bestForSlot = (slot: string) =>
+				candidates
+					.filter(candidate => candidate.item.equipment?.slot === slot)
+					.sort((a, b) => b.score - a.score || a.item.name.localeCompare(b.item.name))[0];
+			const gear = { ...defaultGearSetup };
+			for (const slot of ['head', 'neck', 'body', 'legs', 'cape', 'hands', 'feet', 'ring'] as const) {
+				const candidate = bestForSlot(slot);
+				if (candidate) gear[slot] = { item: candidate.item.id, quantity: 1 };
+			}
+			const twoHanded = bestForSlot('2h');
+			const weapon = bestForSlot('weapon');
+			const shield = bestForSlot('shield');
+			if (twoHanded && twoHanded.score > (weapon?.score ?? 0) + (shield?.score ?? 0)) {
+				gear['2h'] = { item: twoHanded.item.id, quantity: 1 };
+			} else {
+				if (weapon) gear.weapon = { item: weapon.item.id, quantity: 1 };
+				if (shield) gear.shield = { item: shield.item.id, quantity: 1 };
+			}
+
+			const currentGear = user.gear.fashion.raw();
+			const itemIDs = (gearSetup: typeof gear) =>
+				Object.values(gearSetup).flatMap(item => (item ? [item.item] : []));
+			const currentItems = new Set(itemIDs(currentGear));
+			const selectedItems = new Set(itemIDs(gear));
+			const itemsToRemove = new Bank();
+			const itemsToAdd = new Bank();
+			for (const item of selectedItems) if (!currentItems.has(item)) itemsToRemove.add(item);
+			for (const item of currentItems) if (!selectedItems.has(item)) itemsToAdd.add(item);
+			if (selectedItems.size === 0)
+				return 'My eye could not find any suitable Fashion gear. Verify with `/bank flag:show_disco_points`.';
+
+			await user.transactItems({
+				itemsToRemove,
+				itemsToAdd,
+				gearUpdates: [{ setup: 'fashion', gear }]
+			});
+			return {
+				content: `👁️ I dressed you for **${choice.name}**, but my eye is not perfect... You might want to check ${mentionCommand('disco', 'outfit')} or \`/bank flag:show_disco_points\`.`,
+				files: [
+					{ name: 'disco-auto-outfit.png', buffer: await user.generateGearImage({ setupType: 'fashion' }) }
+				]
+			};
+		}
+
+		if (options.stats) {
+			const stats = (await user.fetchUserStat('disco_stats')) as {
+				points?: Record<string, number>;
+				trips?: number;
+			};
+			const points = stats?.points ?? {};
+			const ranks = await Promise.all(
+				DISCO_AESTHETICS.map(async aesthetic => {
+					const value = points[aesthetic] ?? 0;
+					const [row] = await prisma.$queryRaw<{ rank: bigint }[]>`
+						SELECT COUNT(*) + 1 AS rank
+						FROM user_stats
+						WHERE COALESCE((disco_stats->'points'->>${aesthetic})::integer, 0) > ${value};
+					`;
+					const [king] = await prisma.$queryRaw<{ username: string | null }[]>`
+						SELECT u.username
+						FROM user_stats s
+						JOIN users u ON u.id = s.user_id::text
+						WHERE COALESCE((s.disco_stats->'points'->>${aesthetic})::integer, 0) > 0
+						ORDER BY COALESCE((s.disco_stats->'points'->>${aesthetic})::integer, 0) DESC, u.id
+						LIMIT 1;
+					`;
+					return `**${aesthetic} Realm**: ${value} points (rank #${row?.rank ?? 1}; club king: ${king?.username ?? 'Unclaimed'})`;
+				})
+			);
+			const overall = DISCO_AESTHETICS.reduce((total, aesthetic) => total + (points[aesthetic] ?? 0), 0);
+			return `**Disco Bloodbath stats**\nTrips completed: ${stats?.trips ?? 0}\nOverall: ${overall} points\n${ranks.join('\n')}`;
+		}
+
+		if (options.leaderboard) {
+			const ratelimit = await Cache.tryRatelimit(user.id, 'disco_leaderboard');
+			if (!user.isAdmin && !ratelimit.success)
+				return 'The Disco Bloodbath leaderboard can only be viewed once every 10 minutes.';
+
+			const score = (aesthetics: readonly (typeof DISCO_AESTHETICS)[number][]) =>
+				aesthetics
+					.map(aesthetic => `COALESCE((s.disco_stats->'points'->>'${aesthetic}')::integer, 0)`)
+					.join(' + ');
+			const findLeader = async (label: string, aesthetics: readonly (typeof DISCO_AESTHETICS)[number][]) => {
+				const total = score(aesthetics);
+				const [leader] = await prisma.$queryRaw<
+					{
+						username: string | null;
+						score: number;
+						points: Record<(typeof DISCO_AESTHETICS)[number], number>;
+					}[]
+				>`
+					SELECT
+						u.username,
+						(${Prisma.raw(total)})::integer AS score,
+						jsonb_build_object(
+							'Futuristic', COALESCE((s.disco_stats->'points'->>'Futuristic')::integer, 0),
+							'Ragdoll', COALESCE((s.disco_stats->'points'->>'Ragdoll')::integer, 0),
+							'Anti-Fashion', COALESCE((s.disco_stats->'points'->>'Anti-Fashion')::integer, 0)
+						) AS points
+					FROM user_stats s
+					JOIN users u ON u.id = s.user_id::text
+					WHERE (${Prisma.raw(total)}) > 0
+					ORDER BY score DESC, u.id
+					LIMIT 1;
+				`;
+				return {
+					label,
+					username: leader?.username ?? null,
+					score: leader?.score ?? 0,
+					points: leader?.points ?? { Futuristic: 0, Ragdoll: 0, 'Anti-Fashion': 0 }
+				};
+			};
+			const [overall, ...leaders] = await Promise.all([
+				findLeader('Overall', DISCO_AESTHETICS),
+				findLeader('Chrome Wreckers (F+A)', ['Anti-Fashion', 'Futuristic']),
+				findLeader('Ragged Renegades (A+R)', ['Ragdoll', 'Anti-Fashion']),
+				findLeader('Neon Plushies (F+R)', ['Futuristic', 'Ragdoll']),
+				findLeader('Futuristic', ['Futuristic']),
+				findLeader('Ragdoll', ['Ragdoll']),
+				findLeader('Anti-Fashion', ['Anti-Fashion'])
+			]);
+			return {
+				files: [
+					{
+						name: 'disco-bloodbath-leaders.png',
+						buffer: await generateDiscoLeaderboardImage({ overall, leaders })
+					}
+				]
+			};
+		}
+
+		if (options.inquire) {
+			const { inquire } = options;
+			const club = DISCO_CLUBS.find(club => club.toLowerCase() === inquire.club_name.toLowerCase());
+			if (!club) return 'Choose a club from the suggestions.';
+
+			const ratelimit = await Cache.tryRatelimit(user.id, 'disco_inquire');
+			if (!ratelimit.success) {
+				return 'If you keep asking, you are going to lose reputation faster than you earn it. Be a leader, not a follower.';
+			}
+			const theme = DISCO_CLUB_THEMES[club];
+			const popularity = discoPopularity(theme.club);
+			let msg = `☠️ ${theme.club} is like the Crypt keeper.... Dead. But in a bad way. 🪦`;
+			if (popularity > 54)
+				msg = `💀 It's better than.... bad?  Your contacts are not impressed by ${theme.club}.`;
+			if (popularity > 89) msg = `${theme.club} is getting attention. Might be worth a visit...`;
+			if (popularity > 97) msg = `🐦‍🔥${theme.club} is hot. Everyone worth knowing is talking about it.🔥`;
+			if (popularity >= 114)
+				msg = `🦄🎉 ${theme.club} is a FREAKING **UNICORN**! You __**HAVE**__ to be there!.🎉🎉🎉`;
+			const components: ButtonBuilder[] = await discoInquiryPresetButtons(user, club);
+			return { content: msg, components };
+		}
+
+		if (options.party) {
+			const { party } = options;
+			const club = DISCO_CLUBS.find(club => club.toLowerCase() === party.club_name.toLowerCase());
+			if (!club) return 'Choose a club from the suggestions.';
+			if (await user.minionIsBusy()) return `${user.minionName} is currently busy.`;
+			const theme = DISCO_CLUB_THEMES[club];
+			const popularity = discoPopularity(theme.club);
+			await ActivityManager.startTrip<DiscoBloodbathActivityTaskOptions>({
+				userID: user.id,
+				channelId,
+				duration: 30 * Time.Minute,
+				type: activity_type_enum.DiscoBloodbath,
+				club: theme.club,
+				popularity,
+				theme: { name: theme.name, good: theme.good, bad: theme.bad },
+				fashion: user.gear.fashion.raw(),
+				isCrashing: party.crash === 'crash'
+			});
+			const story = isDiscoHalloween() ? discoHalloweenStory(theme.club) : null;
+			return `${user.minionName} is heading to ${theme.club}. The visit will take at least 30 minutes.${party.crash === 'crash' ? `\n\nThey're crashing the party, even though they weren't invited.` : ''}${story ? `\n\n${story.moment}` : ''}`;
+		}
+
+		return 'Choose a Disco Bloodbath option.';
+	}
+});

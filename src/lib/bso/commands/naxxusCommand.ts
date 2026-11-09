@@ -1,3 +1,4 @@
+import { getGlobalBossSpeedBonus } from '@/lib/bso/commands/islandUpgrades.js';
 import { NAXXUS_HP, Naxxus } from '@/lib/bso/monsters/bosses/Naxxus.js';
 
 import { EmbedBuilder } from '@oldschoolgg/discord';
@@ -16,6 +17,7 @@ import { trackLoot } from '@/lib/lootTrack.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
+import { readState } from '@/mahoji/commands/islandupgrade.js';
 
 const bisMageGear = new Gear({
 	head: 'Gorajan occult helmet', // 20
@@ -31,16 +33,16 @@ const bisMageGear = new Gear({
 });
 
 const bisMeleeGear = new Gear({
-	head: 'Gorajan warrior helmet',
-	body: 'Gorajan warrior top',
-	legs: 'Gorajan warrior legs',
-	hands: 'Gorajan warrior gloves',
-	feet: 'Gorajan warrior boots',
+	head: 'Empyrean greathelm',
+	body: 'Empyrean greatplate',
+	legs: 'Empyrean greatgreaves',
+	hands: 'Empyrean greatgauntlets',
+	feet: 'Empyrean greatsabaton',
 	neck: "Brawler's hook necklace",
 	cape: 'TzKal cape',
 	weapon: 'Drygore rapier',
 	shield: 'Offhand spidergore rapier',
-	ring: 'Ignis ring(i)'
+	ring: 'Searcrown band'
 });
 
 const itemBoosts: {
@@ -67,6 +69,11 @@ const itemBoosts: {
 		item: Items.getOrThrow('Vasa cloak'),
 		boost: 5,
 		setup: 'mage'
+	},
+	{
+		item: Items.getOrThrow('Searcrown band'),
+		boost: 4,
+		setup: 'melee'
 	},
 	{
 		item: Items.getOrThrow('Ignis ring(i)'),
@@ -178,6 +185,14 @@ export async function naxxusCommand(user: MUser, channelId: string, quantity: nu
 			effectiveTime = reduceNumByPercent(effectiveTime, itemBoost.boost);
 			boosts.push(`${itemBoost.boost}% ${itemBoost.item.name}`);
 		}
+	}
+
+	const { upgrades, maintenance, assignment } = readState(user);
+	const conduitBonus = getGlobalBossSpeedBonus(upgrades, maintenance, assignment);
+	if (conduitBonus > 0) {
+		const percent = conduitBonus * 100;
+		effectiveTime = reduceNumByPercent(effectiveTime, percent);
+		boosts.push(`${percent.toFixed(0)}% for Grand Conduit - Warcamp`);
 	}
 
 	const maxTripLength = await user.calcMaxTripLength('Naxxus');

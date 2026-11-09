@@ -1,0 +1,50 @@
+{
+	"name": "node-rng",
+	"description": "A library for generating random numbers with different providers.",
+	"type": "module",
+	"sideEffects": false,
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/gc/node-rng.git"
+	},
+	"version": "0.0.3",
+	"packageManager": "pnpm@10.30.1",
+	"exports": {
+		".": {
+			"types": "./dist/esm/index.d.mts",
+			"import": "./dist/esm/index.mjs"
+		},
+		"./crypto": {
+			"types": "./dist/esm/crypto.d.mts",
+			"import": "./dist/esm/crypto.mjs"
+		}
+	},
+	"keywords": [
+		"rng",
+		"random"
+	],
+	"scripts": {
+		"build": "tsdown",
+		"test": "pnpm tsc -p src --noEmit && vitest run --coverage",
+		"lint": "biome check --write"
+	},
+	"dependencies": {
+		"pure-rand": "7.0.1"
+	},
+	"files": [
+		"dist/"
+	],
+	"devDependencies": {
+		"@biomejs/biome": "2.4.4",
+		"@types/node": "^25.2.0",
+		"@vitest/coverage-v8": "^4.0.18",
+		"tsdown": "^0.20.1",
+		"typescript": "^5.9.3",
+		"vitest": "^4.0.18"
+	},
+	"engines": {
+		"node": ">=v22.0.0",
+		"pnpm": ">=10.30.1",
+		"npm": ">=7.0.0"
+	}
+}

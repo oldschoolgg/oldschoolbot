@@ -27,10 +27,10 @@ export function drawImageWithOutline(
 	dx: number,
 	dy: number,
 	dw: number,
-	dh: number
+	dh: number,
+	outlineColor: string = '#ac7fff'
 ): void {
 	const alpha = 1;
-	const outlineColor = '#ac7fff';
 	const outlineWidth = 1;
 	const dArr = [-1, -1, 0, -1, 1, -1, -1, 0, 1, 0, -1, 1, 0, 1, 1, 1];
 

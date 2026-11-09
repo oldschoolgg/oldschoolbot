@@ -1,4 +1,5 @@
 import type { TinkeringWorkshopOptions } from '@/lib/bso/bsoTypes.js';
+import { defaultMaintenanceTimestamps, getGlobalMinigameBonus } from '@/lib/bso/commands/islandUpgrades.js';
 import { transactMaterialsFromUser } from '@/lib/bso/skills/invention/inventions.js';
 import { isValidMaterialType } from '@/lib/bso/skills/invention/inventionUtil.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
@@ -15,7 +16,17 @@ export async function tinkeringWorkshopCommand(user: MUser, material: string, ch
 	}
 	if (await user.minionIsBusy()) return 'Your minion is busy.';
 
-	const gameTime = Time.Minute * 12.5;
+	const hasCelestialPendant = user.hasEquippedOrInBank('Celestial pendant');
+	const rawUpgrades = (user.user.island_upgrades ?? {}) as any;
+	const islandMaint = rawUpgrades.maintenance ?? defaultMaintenanceTimestamps;
+	const islandAssign = rawUpgrades.assignment ?? null;
+	const globalMinigameBonus = getGlobalMinigameBonus(rawUpgrades, islandMaint, islandAssign);
+
+	let gameTime = Time.Minute * 12.5 * (hasCelestialPendant ? 0.9 : 1);
+	if (globalMinigameBonus > 0) {
+		gameTime *= 1 - globalMinigameBonus;
+	}
+
 	const quantity = Math.floor((await user.calcMaxTripLength('TinkeringWorkshop')) / gameTime);
 	const duration = randomVariation(quantity * gameTime, 5);
 
@@ -33,12 +44,18 @@ export async function tinkeringWorkshopCommand(user: MUser, material: string, ch
 			.bank
 	});
 
+	const boosts = [];
+	if (hasCelestialPendant) boosts.push('10% faster from Celestial pendant');
+	if (globalMinigameBonus > 0) {
+		boosts.push(`${(globalMinigameBonus * 100).toFixed(0)}% faster from Grand Conduit (Settlement Infrastructure)`);
+	}
+	const boostStr = boosts.length > 0 ? `\n\n**Boosts:** ${boosts.join(', ')}.` : '';
 	const str = `${
 		user.minionName
 	} is now off to do ${quantity}x Tinkering Workshop projects! The total trip will take ${formatTripDuration(
 		user,
 		duration
-	)}. Removed ${materialCost}.`;
+	)}. Removed ${materialCost}.${boostStr}`;
 
 	await ActivityManager.startTrip<TinkeringWorkshopOptions>({
 		userID: user.id,

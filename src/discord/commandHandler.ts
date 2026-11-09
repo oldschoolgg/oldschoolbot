@@ -4,7 +4,7 @@ import { cryptoRng } from 'node-rng/crypto';
 
 import { convertAPIOptionsToCommandOptions } from '@/discord/index.js';
 import { preCommand } from '@/discord/preCommand.js';
-import { busyImmuneCommands, SILENT_ERROR } from '@/lib/constants.js';
+import { BitField, busyImmuneCommands, SILENT_ERROR } from '@/lib/constants.js';
 import { RawSQL } from '@/lib/rawSql.js';
 
 export async function rawCommandHandlerInner({
@@ -37,14 +37,12 @@ export async function rawCommandHandlerInner({
 		}
 	}
 	const user = interaction.user;
+	if (command.flags?.includes('GAMBLING_BANNED') && user.bitfield.includes(BitField.BannedFromGambling)) {
+		return 'You are barred from gambling.';
+	}
 	RawSQL.updateUserLastCommandDate({ userId: interaction.userId }).catch(err => Logging.logError(err));
 
-	// TODO: remove later
-	if (user.user.completed_achievement_diaries.length === 0) {
-		user.syncCompletedAchievementDiaries().catch(err => Logging.logError(err));
-	}
-
-	const shouldIgnoreBusy = user.isAdmin() || ignoreUserIsBusy || busyImmuneCommands.includes(command.name);
+	const shouldIgnoreBusy = user.isAdmin || ignoreUserIsBusy || busyImmuneCommands.includes(command.name);
 
 	if (!shouldIgnoreBusy && (await user.getIsLocked())) {
 		return {
@@ -85,15 +83,17 @@ export async function rawCommandHandlerInner({
 			});
 
 		const requiresLock = Boolean('flags' in command && command.flags?.includes('REQUIRES_LOCK'));
-		if (requiresLock) {
-			await interaction.defer();
-		}
+
 		const response: Awaited<CommandResponse> = requiresLock
 			? await user.withLock(command.name, runClosure)
 			: await runClosure();
 		return response;
 	} catch (err) {
 		if ((err as Error).message === SILENT_ERROR) return SpecialResponse.SilentErrorResponse;
+		if (err instanceof UserError) {
+			await interaction.reply({ content: err.message });
+			return SpecialResponse.RespondedManually;
+		}
 		const date = new Date();
 		Logging.logError({
 			err: err as Error,
@@ -108,7 +108,6 @@ export async function rawCommandHandlerInner({
 				options: JSON.stringify(options)
 			}
 		});
-		if (err instanceof UserError) return SpecialResponse.RespondedManually;
 		return {
 			content: `An error occurred while running this command.`
 		};

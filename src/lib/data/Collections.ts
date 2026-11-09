@@ -6,6 +6,7 @@ import {
 	akumuCL,
 	araxxorCL,
 	customPetsCL,
+	discontinuedCustomPetsAltArt,
 	discontinuedCustomPetsCL,
 	divineDominionCL,
 	divinersOutfit,
@@ -56,7 +57,15 @@ import { VasaMagus } from '@/lib/bso/monsters/bosses/VasaMagus.js';
 import { VenatrixLootTable } from '@/lib/bso/monsters/bosses/Venatrix.js';
 import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
 import { NexMonster, nexLootTable } from '@/lib/bso/monsters/nex.js';
+import {
+	BurningDominionLootTable,
+	CrystallineSentinelLootTable,
+	FungalBehemothLootTable,
+	OrrodilLootTable,
+	OrymLootTable
+} from '@/lib/bso/monsters/VerdantIsland.js';
 import { cmbClothes } from '@/lib/bso/openables/cmb.js';
+import { DiscoNormalLoot, SkrinkBoxTable, SkrodBoxTable } from '@/lib/bso/openables/holidayOpenables.js';
 import { PaintBoxTable } from '@/lib/bso/paintColors.js';
 import { pumpkinHeadUniqueTable } from '@/lib/bso/pumpkinHead.js';
 import { divinationEnergies, portents } from '@/lib/bso/skills/divination.js';
@@ -71,6 +80,7 @@ import {
 	ChambersOfXeric,
 	Clues,
 	EItem,
+	ElderHoard,
 	EMonster,
 	type ItemBank,
 	ItemGroups,
@@ -90,6 +100,7 @@ import {
 	alchemicalHydraCL,
 	allPetsCL,
 	amoxliatlCL,
+	archonCL,
 	barbarianAssaultCL,
 	barrowsChestCL,
 	brimhavenAgilityArenaCL,
@@ -120,6 +131,7 @@ import {
 	cluesSharedCL,
 	colossalWyrmAgilityCL,
 	commanderZilyanaCL,
+	concontractsCL,
 	corporealBeastCL,
 	crackerCL,
 	crazyArchaeologistCL,
@@ -130,7 +142,9 @@ import {
 	demonicGorillaCL,
 	derangedArchaeologistCL,
 	diariesCL,
+	distilleryCL,
 	dukeSucellusCL,
+	elderCacheCL,
 	emergedZukInfernoCL,
 	expertCapesCL,
 	type FormatProgressFunction,
@@ -947,6 +961,62 @@ export const allCollectionLogs: ICollection = {
 				allItems: BSOMonsters.Celestara.allItems,
 				items: BSOMonsters.Celestara.allItems!,
 				fmtProg: kcProg(BSOMonsters.Celestara.id)
+			},
+			Orym: {
+				alias: ['orym'],
+				allItems: OrymLootTable.allItems,
+				items: BSOMonsters.Orym.allItems!,
+				fmtProg: kcProg(BSOMonsters.Orym.id)
+			},
+			Orrodil: {
+				alias: ['orrodil'],
+				allItems: OrrodilLootTable.allItems,
+				items: BSOMonsters.Orrodil.allItems!,
+				fmtProg: kcProg(BSOMonsters.Orrodil.id)
+			},
+			'Burning Dominion': {
+				alias: ['burning dominion', 'burning'],
+				allItems: BurningDominionLootTable.allItems,
+				items: BSOMonsters.BurningDominion.allItems!,
+				fmtProg: kcProg(BSOMonsters.BurningDominion.id)
+			},
+			'Fungal Behemoth': {
+				alias: ['fungal behemoth', 'fungal', 'behemoth'],
+				allItems: FungalBehemothLootTable.allItems,
+				items: BSOMonsters.FungalBehemoth.allItems!,
+				fmtProg: kcProg(BSOMonsters.FungalBehemoth.id)
+			},
+			'Crystalline Sentinel': {
+				alias: ['crystalline sentinel', 'sentinel', 'crystal sentinel'],
+				allItems: CrystallineSentinelLootTable.allItems,
+				items: BSOMonsters.CrystallineSentinel.allItems!,
+				fmtProg: kcProg(BSOMonsters.CrystallineSentinel.id)
+			},
+			'Elder Mimic': {
+				alias: ['elder mimic', 'elder'],
+				allItems: BSOMonsters.ElderMimic.allItems,
+				items: BSOMonsters.ElderMimic.allItems!,
+				fmtProg: kcProg(BSOMonsters.ElderMimic.id)
+			},
+			Archon: {
+				alias: ['archon', 'arch'],
+				items: archonCL,
+				isActivity: true,
+				kcActivity: {
+					Default: async (_, __, stats) =>
+						(stats.kcBank[EBSOMonster.ARCHON_TIER_1] ?? 0) +
+						(stats.kcBank[EBSOMonster.ARCHON_TIER_2] ?? 0) +
+						(stats.kcBank[EBSOMonster.ARCHON_TIER_3] ?? 0),
+					T1: async (_, __, stats) => stats.kcBank[EBSOMonster.ARCHON_TIER_1] ?? 0,
+					T2: async (_, __, stats) => stats.kcBank[EBSOMonster.ARCHON_TIER_2] ?? 0,
+					T3: async (_, __, stats) => stats.kcBank[EBSOMonster.ARCHON_TIER_3] ?? 0
+				},
+				fmtProg: ({ stats }) => [
+					`${(stats.kcBank[EBSOMonster.ARCHON_TIER_1] ?? 0) + (stats.kcBank[EBSOMonster.ARCHON_TIER_2] ?? 0) + (stats.kcBank[EBSOMonster.ARCHON_TIER_3] ?? 0)} Total KC`,
+					`${stats.kcBank[EBSOMonster.ARCHON_TIER_1] ?? 0} Shrouded KC`,
+					`${stats.kcBank[EBSOMonster.ARCHON_TIER_2] ?? 0} Ascendant KC`,
+					`${stats.kcBank[EBSOMonster.ARCHON_TIER_3] ?? 0} Apotheotic KC`
+				]
 			}
 		}
 	},
@@ -1361,6 +1431,10 @@ export const allCollectionLogs: ICollection = {
 				alias: ['af', 'aerial fishing'],
 				items: aerialFishingCL
 			},
+			'Brimstone Distillery': {
+				alias: ['distillery', 'brimstone distillery'],
+				items: distilleryCL
+			},
 			Camdozaal: {
 				items: camdozaalCL
 			},
@@ -1372,6 +1446,10 @@ export const allCollectionLogs: ICollection = {
 			'Colossal Wyrm Agility': {
 				alias: ['colossal wyrm agility', 'colo agility', 'wyrm agility'],
 				items: colossalWyrmAgilityCL
+			},
+			'Construction Contracts': {
+				alias: ['cc', 'construction contracts'],
+				items: concontractsCL
 			},
 			'Creature Creation': {
 				items: creatureCreationCL
@@ -1624,6 +1702,15 @@ export const allCollectionLogs: ICollection = {
 			'Divine Dominion': {
 				alias: ['dd', 'divine dominion'],
 				items: divineDominionCL
+			},
+			'Elder Cache': {
+				alias: ['elder cache', 'elder sigil', 'cache'],
+				allItems: ElderHoard.table.allItems,
+				items: elderCacheCL,
+				kcActivity: {
+					Default: async (_, __, { openableScores }) => openableScores.amount(75_043)
+				},
+				fmtProg: ({ stats }) => `${stats.openableScores.amount(75_043)} Opened`
 			}
 		}
 	},
@@ -1698,6 +1785,11 @@ export const allCollectionLogs: ICollection = {
 			'Custom Pets (Discontinued)': {
 				alias: ['dcpets', 'disc custom pet', 'dcpet', 'dcp', 'discontinued custom pet'],
 				items: discontinuedCustomPetsCL,
+				counts: false
+			},
+			'Custom Pets (DC Alt Art)': {
+				alias: ['dcpaa', 'dcpalts', 'dyed dcp', 'dyed dcps', 'discontinued dyed pets', 'shiny dcp', 'sdcp'],
+				items: discontinuedCustomPetsAltArt,
 				counts: false
 			},
 			'Halloween 2021': {
@@ -1856,6 +1948,26 @@ export const allCollectionLogs: ICollection = {
 					BSOItem.PUMPKINMAN_CARD,
 					BSOItem.NIGHTMARE
 				])
+			},
+			'Skrink box': {
+				items: SkrinkBoxTable.allItems,
+				counts: false
+			},
+			'Skrod box': {
+				items: SkrodBoxTable.allItems,
+				counts: false
+			},
+			'Halloween 2026': {
+				alias: ['disco', 'Halloween 2026', 'Disco Bloodbath'],
+				items: uniqueArr([
+					Items.getOrThrow('Skrink box').id,
+					...SkrinkBoxTable.allItems,
+					Items.getOrThrow('Skrod box').id,
+					...SkrodBoxTable.allItems,
+					...DiscoNormalLoot.allItems,
+					Items.getOrThrow("Boo'ala").id
+				]),
+				counts: false
 			},
 			'Halloween Cracker': {
 				items: resolveItems([
@@ -2024,7 +2136,9 @@ for (const crate of keyCrates) {
 	allCollectionLogs.Discontinued.activities[crate.item.name] = {
 		alias: [crate.item.name.toLowerCase()],
 		items: resolveItems([crate.item.id, crate.key.id, ...crate.table.allItems]).filter(
-			i => !Items.getOrThrow(i).customItemData?.isSecret
+			i =>
+				Items.getOrThrow(i).customItemData?.isDiscontinued === true &&
+				!Items.getOrThrow(i).customItemData?.isSecret
 		),
 		counts: false,
 		kcActivity: {
@@ -2368,3 +2482,9 @@ export const allCollectionLogsFlat = Object.values(allCollectionLogs).flatMap(i 
 export const bossCLItems = Object.values({
 	...allCollectionLogs.PvM.activities
 }).flatMap(i => i.items);
+
+export const allDcSet = new Set(
+	Object.values({
+		...allCollectionLogs.Discontinued.activities
+	}).flatMap(i => i.items)
+);

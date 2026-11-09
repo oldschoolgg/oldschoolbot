@@ -20,6 +20,7 @@ export type BankBackground = {
 	skillsNeeded?: Skills;
 	transparent?: true;
 	owners?: string[];
+	preScaled?: boolean;
 	alternateImages?: { id: number }[];
 	storeBitField?: StoreBitfield;
 } & (
@@ -529,6 +530,13 @@ const backgroundImages: BankBackground[] = [
 		perkTierNeeded: PerkTier.Four
 	},
 	{
+		id: 509,
+		name: 'Smokikyu Halloween',
+		image: null,
+		available: true,
+		preScaled: true
+	},
+	{
 		id: 1000,
 		name: 'Kiddo CustomBG',
 		image: null,
@@ -668,6 +676,69 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: false,
 		owners: ['310150823986593803']
+	},
+	{
+		id: 1019,
+		name: 'xSALTYxFUPAx CustomBG',
+		image: null,
+		hasPurple: true,
+		purpleImage: null,
+		transparent: true,
+		available: false,
+		preScaled: true,
+		owners: ['603327620234608661']
+	},
+	{
+		id: 1020,
+		name: 'Osceola CustomBG',
+		image: null,
+		available: false,
+		transparent: true,
+		owners: ['1536284057086984192'],
+		hasPurple: true,
+		purpleImage: null
+	},
+	{
+		id: 1021,
+		name: 'Xavier CustomBG',
+		image: null,
+		available: false,
+		transparent: true,
+		preScaled: true,
+		owners: ['304309559068196867'],
+		hasPurple: true,
+		purpleImage: null
+	},
+	{
+		id: 1022,
+		name: 'Bubblzz CustomBG',
+		image: null,
+		available: false,
+		transparent: true,
+		preScaled: true,
+		owners: ['1530135353594482780'],
+		hasPurple: true,
+		purpleImage: null
+	},
+	{
+		id: 1023,
+		name: 'Sabir CustomBG',
+		image: null,
+		available: false,
+		preScaled: true,
+		owners: ['229709567594987522'],
+		hasPurple: true,
+		purpleImage: null
+	},
+	{
+		id: 1024,
+		name: 'Fried Apple CustomBG',
+		image: null,
+		available: false,
+		preScaled: true,
+		owners: ['974037681396912258'],
+		hasPurple: true,
+		purpleImage: null
 	}
 ];
 

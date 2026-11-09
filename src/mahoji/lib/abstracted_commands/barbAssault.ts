@@ -1,3 +1,5 @@
+import { defaultMaintenanceTimestamps, getGlobalMinigameBonus } from '@/lib/bso/commands/islandUpgrades.js';
+
 import type { ButtonBuilder } from '@oldschoolgg/discord';
 import { calcWhatPercent, formatDuration, reduceNumByPercent, round, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
@@ -119,6 +121,7 @@ export async function barbAssaultBuyCommand(interaction: MInteraction, user: MUs
 	if (!quantity) {
 		quantity = 1;
 	}
+	quantity = Math.max(1, quantity);
 
 	const { item, cost } = buyable;
 	const stats = await user.fetchStats();
@@ -225,6 +228,20 @@ export async function barbAssaultStartCommand({ user, channelId, rng }: OSIntera
 		boosts.push('10% for venator bow.');
 		venBowMsg = `\n\nYou have used ${totalVenChargesUsed} charges on your Venator bow, and have ${user.user.venator_bow_charges} remaining.`;
 		waveTime = reduceNumByPercent(waveTime, 10);
+	}
+
+	if (user.hasEquippedOrInBank('Celestial pendant')) {
+		waveTime = reduceNumByPercent(waveTime, 10);
+		boosts.push('10% faster from Celestial pendant');
+	}
+
+	const rawUpgrades = (user.user.island_upgrades ?? {}) as any;
+	const islandMaint = rawUpgrades.maintenance ?? defaultMaintenanceTimestamps;
+	const islandAssign = rawUpgrades.assignment ?? null;
+	const globalMinigameBonus = getGlobalMinigameBonus(rawUpgrades, islandMaint, islandAssign);
+	if (globalMinigameBonus > 0) {
+		waveTime = reduceNumByPercent(waveTime, globalMinigameBonus * 100);
+		boosts.push(`${(globalMinigameBonus * 100).toFixed(0)}% faster from Grand Conduit (Settlement Infrastructure)`);
 	}
 
 	quantity = Math.floor((await user.calcMaxTripLength('BarbarianAssault')) / waveTime);

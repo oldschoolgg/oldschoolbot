@@ -34,6 +34,10 @@ import { unchargeGloriesCommand } from '@/mahoji/lib/abstracted_commands/uncharg
 import { underwaterAgilityThievingCommand } from '@/mahoji/lib/abstracted_commands/underwaterCommand.js';
 import { warriorsGuildCommand } from '@/mahoji/lib/abstracted_commands/warriorsGuildCommand.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
+import { ancientMycologyCommand } from '../lib/abstracted_commands/ancientMycologyCommand.js';
+import { archaicMiningCommand } from '../lib/abstracted_commands/archaicMiningCommand.js';
+import { gemscaleBreakdownCommand } from '../lib/abstracted_commands/gemscaleBreakdownCommand.js';
+import { gemstoneFishingCommand } from '../lib/abstracted_commands/gemstoneFishingCommand.js';
 
 export const activitiesCommand = defineCommand({
 	name: 'activities',
@@ -158,6 +162,101 @@ export const activitiesCommand = defineCommand({
 					type: 'Integer',
 					name: 'quantity',
 					description: 'The quantity to do (optional).',
+					required: false,
+					min_value: 1
+				}
+			]
+		},
+		{
+			type: 'Subcommand',
+			name: 'gemstone_fishing',
+			description: 'Fish for gemstone fish, or break down gemscales into gemstones',
+			options: [
+				{
+					type: 'String',
+					name: 'action',
+					description: 'The action to perform.',
+					required: false,
+					choices: [
+						{ name: 'Fish', value: 'fish' },
+						{ name: 'Breakdown', value: 'breakdown' }
+					]
+				},
+				{
+					type: 'String',
+					name: 'fish_type',
+					description: 'The type of gemscale to break down (optional, defaults to all).',
+					required: false,
+					choices: [
+						{ name: 'All Gemscales (Breakdown Everything)', value: 'all' },
+						{ name: 'Juvenile gemscale (Tier 1)', value: 'Juvenile gemscale' },
+						{ name: 'Adolescent gemscale (Tier 2)', value: 'Adolescent gemscale' },
+						{ name: 'Mature gemscale (Tier 3)', value: 'Mature gemscale' },
+						{ name: 'Ancient gemscale (Tier 4)', value: 'Ancient gemscale' },
+						{ name: 'Elder gemscale (Tier 5)', value: 'Elder gemscale' }
+					]
+				},
+				{
+					type: 'Integer',
+					name: 'quantity',
+					description: 'The quantity of fish to catch or break down (optional).',
+					required: false,
+					min_value: 1
+				}
+			]
+		},
+		{
+			type: 'Subcommand',
+			name: 'ancient_mycology',
+			description: 'Harvest Ancient Myconid growth',
+			options: [
+				{
+					type: 'String',
+					name: 'growth',
+					description: 'The specific growth/wood tier to target (optional, defaults to highest available).',
+					required: false,
+					choices: [
+						{ name: 'Verdant logs (Level 95)', value: 'Verdant logs' },
+						{ name: 'Ancient cap (Level 100)', value: 'Ancient cap' },
+						{ name: 'Colossal stem (Level 105)', value: 'Colossal stem' },
+						{ name: 'Living bark (Level 110)', value: 'Living bark' },
+						{ name: 'Ancient verdant logs (Level 115)', value: 'Ancient verdant logs' }
+					]
+				},
+				{
+					type: 'Integer',
+					name: 'quantity',
+					description: 'The number of growths to harvest (optional).',
+					required: false,
+					min_value: 1
+				}
+			]
+		},
+		{
+			type: 'Subcommand',
+			name: 'archaic_mining',
+			description: 'Mine archaic ores',
+			options: [
+				{
+					type: 'String',
+					name: 'type',
+					description: 'The type of ore to mine',
+					required: true,
+					choices: [
+						{
+							name: 'Dragonbone',
+							value: 'dragonbone'
+						},
+						{
+							name: 'Crystalline',
+							value: 'crystalline'
+						}
+					]
+				},
+				{
+					type: 'Integer',
+					name: 'quantity',
+					description: 'The number of ores to mine (optional).',
 					required: false,
 					min_value: 1
 				}
@@ -563,6 +662,13 @@ export const activitiesCommand = defineCommand({
 		}
 		if (options.inferno?.action === 'stats') return infernoStatsCommand({ rng, user });
 		if (options.birdhouses?.action === 'check') return birdhouseCheckCommand(user);
+		if (options.gemstone_fishing?.action === 'breakdown') {
+			return gemscaleBreakdownCommand(
+				user,
+				options.gemstone_fishing.fish_type,
+				options.gemstone_fishing.quantity
+			);
+		}
 
 		// Minion must be free
 		const isBusy = await user.minionIsBusy();
@@ -621,6 +727,21 @@ export const activitiesCommand = defineCommand({
 		}
 		if (options.camdozaal) {
 			return camdozaalCommand(rng, user, channelId, options.camdozaal.action, options.camdozaal.quantity);
+		}
+		if (options.gemstone_fishing) {
+			return gemstoneFishingCommand(user, channelId, options.gemstone_fishing.quantity);
+		}
+		if (options.ancient_mycology) {
+			return ancientMycologyCommand(
+				user,
+				channelId,
+				options.ancient_mycology.quantity,
+				options.ancient_mycology.growth
+			);
+		}
+		if (options.archaic_mining) {
+			const { type, quantity } = options.archaic_mining;
+			return archaicMiningCommand(user, channelId, type as 'dragonbone' | 'crystalline', quantity);
 		}
 		if (options.collect) {
 			return collectCommand(

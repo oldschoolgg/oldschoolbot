@@ -1,8 +1,12 @@
 import { boxSpawnHandler } from '@/lib/bso/boxSpawns.js';
 import { giveBoxResetTime, itemContractResetTime, spawnLampResetTime } from '@/lib/bso/bsoConstants.js';
-import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
-import { getGuthixianCacheInterval, userHasDoneCurrentGuthixianCache } from '@/lib/bso/minigames/guthixianCache.js';
+import {
+	DOUBLE_LOOT_FINISH_TIME_CACHE,
+	getNextDoubleLootUsageReset,
+	isDoubleLootActive
+} from '@/lib/bso/doubleLoot.js';
 import { allIronmanMbTables, allMbTables } from '@/lib/bso/openables/mysteryBoxes.js';
+import { isSecretItemIDQuery } from '@/lib/bso/util/isSecretItemQuery.js';
 
 import { bold, dateFm, EmbedBuilder, time } from '@oldschoolgg/discord';
 import type { IMessage } from '@oldschoolgg/schemas';
@@ -11,6 +15,7 @@ import { cryptoRng } from 'node-rng/crypto';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import type { command_name_enum } from '@/prisma/main.js';
+import { bulkUpdateCommands } from '@/discord/index.js';
 import { mentionCommand } from '@/discord/utils.js';
 import { lastRoboChimpSyncCache } from '@/lib/cache.js';
 import { CONSTANTS, globalConfig } from '@/lib/constants.js';
@@ -20,30 +25,30 @@ import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { minionStatsEmbed } from '@/lib/util/minionStatsEmbed.js';
 import { refreshUserCache } from '@/lib/util/refreshCache.js';
-import { PATRON_DOUBLE_LOOT_COOLDOWN } from '@/mahoji/commands/tools.js';
 import { minionStatusCommand } from '@/mahoji/lib/abstracted_commands/minionStatusCommand.js';
 
 const mentionText = `<@${globalConfig.clientID}>`;
 
 interface CooldownFnParams {
 	user: MUser;
-	perkTier: PerkTier | 0;
+	perkTier: PerkTier;
 }
 
 const cooldownTimers: {
 	name: string;
-	timeStamp: (user: MUser, stats: { last_daily_timestamp: bigint; last_tears_of_guthix_timestamp: bigint }) => number;
+	timeStamp: (
+		user: MUser,
+		stats: {
+			last_daily_timestamp: bigint;
+			last_tears_of_guthix_timestamp: bigint;
+			last_guthixian_cache_timestamp: bigint;
+		}
+	) => number;
 	cd: number | ((args: CooldownFnParams) => number);
 	command: [string] | [string, string] | [string, string, string];
 	utcReset: boolean;
+	nextReset?: (lastDone: number) => number;
 }[] = [
-	{
-		name: 'Tears of Guthix',
-		timeStamp: (_, stats) => Number(stats.last_tears_of_guthix_timestamp),
-		cd: CONSTANTS.TEARS_OF_GUTHIX_CD,
-		command: ['minigames', 'tears_of_guthix', 'start'],
-		utcReset: true
-	},
 	{
 		name: 'Daily',
 		timeStamp: (_, stats) => Number(stats.last_daily_timestamp),
@@ -82,18 +87,36 @@ const cooldownTimers: {
 	{
 		name: 'Monthly Double Loot',
 		timeStamp: (user: MUser) => Number(user.user.last_patron_double_time_trigger),
-		cd: PATRON_DOUBLE_LOOT_COOLDOWN,
+		cd: 0,
 		command: ['tools', 'patron', 'doubleloot'],
-		utcReset: false
+		utcReset: false,
+		nextReset: getNextDoubleLootUsageReset
+	},
+	{
+		name: 'Tears of Guthix',
+		timeStamp: (_, stats) => Number(stats.last_tears_of_guthix_timestamp),
+		cd: CONSTANTS.TEARS_OF_GUTHIX_CD,
+		command: ['minigames', 'tears_of_guthix', 'start'],
+		utcReset: true
 	},
 	{
 		name: 'Balthazars Big Bonanza',
 		timeStamp: (user: MUser) => Number(user.user.last_bonanza_date),
-		cd: Time.Day * 7,
+		cd: CONSTANTS.BALTHAZARS_BIG_BONANZA_CD,
 		command: ['bsominigames', 'balthazars_big_bonanza', 'start'],
-		utcReset: false
+		utcReset: true
+	},
+	{
+		name: 'Guthixian Cache',
+		timeStamp: (_, stats) => Number(stats.last_guthixian_cache_timestamp),
+		cd: CONSTANTS.GUTHIX_CACHE_CD,
+		command: ['bsominigames', 'guthixian_cache', 'join'],
+		utcReset: true
 	}
 ];
+
+const NoLogCommandsEnum = ['sync_commands'] as const;
+export type NoLogCommands = (typeof NoLogCommandsEnum)[number];
 
 interface MentionCommandOptions {
 	user: MUser;
@@ -103,10 +126,17 @@ interface MentionCommandOptions {
 	guildId?: string | null;
 }
 interface MentionCommand {
-	name: command_name_enum;
+	name: command_name_enum | NoLogCommands;
 	aliases: string[];
 	description: string;
 	run: (options: MentionCommandOptions) => Promise<SendableMessage>;
+}
+
+// These commands won't be logged to command usage.
+// You should only do this if you're using runCommand() or logging some other way.
+
+function isLoggableCommand(command: MentionCommand): command is MentionCommand & { name: command_name_enum } {
+	return !(NoLogCommandsEnum as readonly string[]).includes(command.name);
 }
 
 const mentionCommands: MentionCommand[] = [
@@ -142,6 +172,15 @@ const mentionCommands: MentionCommand[] = [
 		}
 	},
 	{
+		name: 'sync_commands',
+		aliases: ['sync_commands'],
+		description: 'Syncs commands.',
+		run: async () => {
+			await bulkUpdateCommands();
+			return { content: 'Done.' };
+		}
+	},
+	{
 		name: 'bs',
 		aliases: ['bs'],
 		description: 'Searches your bank.',
@@ -173,11 +212,11 @@ const mentionCommands: MentionCommand[] = [
 		name: 'is',
 		aliases: ['is'],
 		description: 'Searches for items.',
-		run: async ({ components, user, content }: MentionCommandOptions) => {
+		run: async ({ user, content }: MentionCommandOptions) => {
 			const items = Items.filter(
 				i =>
 					[i.id.toString(), i.name.toLowerCase()].includes(content.toLowerCase()) &&
-					!i.customItemData?.isSecret
+					!isSecretItemIDQuery(i, content)
 			).array();
 			if (items.length === 0) return { content: 'No results for that item.' };
 
@@ -212,7 +251,7 @@ const mentionCommands: MentionCommand[] = [
 				str += `\n...and ${items.length - 5} others`;
 			}
 
-			return { embeds: [new EmbedBuilder().setDescription(str)], components };
+			return { embeds: [new EmbedBuilder().setDescription(str)] };
 		}
 	},
 	{
@@ -247,7 +286,11 @@ const mentionCommands: MentionCommand[] = [
 				.map(cd => {
 					const lastDone = cd.timeStamp(user, stats);
 					const cooldown = isFunction(cd.cd) ? cd.cd({ user, perkTier }) : cd.cd;
-					const nextReset = cd.utcReset ? getNextUTCReset(lastDone, cooldown) : lastDone + cooldown;
+					const nextReset = cd.nextReset
+						? cd.nextReset(lastDone)
+						: cd.utcReset
+							? getNextUTCReset(lastDone, cooldown)
+							: lastDone + cooldown;
 
 					if (Date.now() < nextReset) {
 						const durationRemaining = dateFm(new Date(nextReset));
@@ -256,14 +299,6 @@ const mentionCommands: MentionCommand[] = [
 					return bold(`${cd.name}: Ready ${mentionCommand(cd.command[0], cd.command[1], cd.command[2])}`);
 				})
 				.join('\n');
-
-			const currentGuthixCacheInterval = getGuthixianCacheInterval();
-			content += '\n';
-			if (await userHasDoneCurrentGuthixianCache(user)) {
-				content += `Guthixian Cache: ${time(currentGuthixCacheInterval.end)}`;
-			} else {
-				content += bold(`Guthixian Cache: Ready ${mentionCommand('bsominigames', 'guthixian_cache', 'join')}`);
-			}
 
 			if (isDoubleLootActive()) {
 				const date = new Date(DOUBLE_LOOT_FINISH_TIME_CACHE);
@@ -310,6 +345,7 @@ export async function onMessage(msg: IMessage) {
 	if (!sendable) return;
 
 	const user = await mUserFetch(msg.author_id);
+	if (commandMatch?.[1].toLowerCase() === 'sync_commands' && !user.isModOrAdmin) return;
 	const result = await minionStatusCommand(user, msg.channel_id);
 
 	if (commandMatch) {
@@ -317,18 +353,21 @@ export async function onMessage(msg: IMessage) {
 		if (!command) return 'This really should not happen...';
 		Logging.logDebug(`${msg.author_id} used the ${command.name} mention command`);
 		const args = commandMatch[2] ?? '';
-		await prisma.commandUsage.create({
-			data: {
-				user_id: BigInt(user.id),
-				channel_id: BigInt(msg.channel_id),
-				guild_id: msg.guild_id ? BigInt(msg.guild_id) : undefined,
-				command_name: command.name,
-				args,
-				inhibited: false,
-				is_mention_command: true
-			},
-			select: { id: true }
-		});
+
+		if (isLoggableCommand(command)) {
+			await prisma.commandUsage.create({
+				data: {
+					user_id: BigInt(user.id),
+					channel_id: BigInt(msg.channel_id),
+					guild_id: msg.guild_id ? BigInt(msg.guild_id) : undefined,
+					command_name: command.name,
+					args,
+					inhibited: false,
+					is_mention_command: true
+				},
+				select: { id: true }
+			});
+		}
 
 		try {
 			const response = await command.run({

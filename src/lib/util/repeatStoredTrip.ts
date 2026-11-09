@@ -1,5 +1,7 @@
 import type {
 	BathhouseTaskOptions,
+	BrimstoneDistilleryTaskOptions,
+	ConstructionContractsTaskOptions,
 	DisassembleTaskOptions,
 	DOAOptions,
 	DungeoneeringOptions,
@@ -38,7 +40,9 @@ import type {
 	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
+	AncientMycologyActivityTaskOptions,
 	AnimatedArmourActivityTaskOptions,
+	ArchaicMiningActivityTaskOptions,
 	BossActivityTaskOptions,
 	BuryingActivityTaskOptions,
 	ButlerActivityTaskOptions,
@@ -53,6 +57,7 @@ import type {
 	CreateForestersRationsActivityTaskOptions,
 	CutLeapingFishActivityTaskOptions,
 	DarkAltarOptions,
+	DiscoBloodbathActivityTaskOptions,
 	EnchantingActivityTaskOptions,
 	FarmingActivityTaskOptions,
 	FiremakingActivityTaskOptions,
@@ -98,10 +103,14 @@ import { giantsFoundryAlloys } from '@/mahoji/lib/abstracted_commands/giantsFoun
 import puroOptions from '@/mahoji/lib/abstracted_commands/puroPuroCommand.js';
 
 export const taskCanBeRepeated = (activity: Activity) => {
+	if (activity.type === activity_type_enum.DiscoBloodbath && (activity.data as { isRave?: boolean }).isRave) {
+		return false;
+	}
 	return !(
 		[
 			activity_type_enum.TearsOfGuthix,
 			activity_type_enum.ShootingStars,
+			activity_type_enum.Archon,
 			activity_type_enum.BirthdayEvent,
 			activity_type_enum.BlastFurnace,
 			activity_type_enum.Easter,
@@ -114,7 +123,8 @@ export const taskCanBeRepeated = (activity: Activity) => {
 			activity_type_enum.GuthixianCache,
 			activity_type_enum.Birdhouse,
 			activity_type_enum.StrongholdOfSecurity,
-			activity_type_enum.CombatRing
+			activity_type_enum.CombatRing,
+			activity_type_enum.ArchonEvent
 		] as activity_type_enum[]
 	).includes(activity.type);
 };
@@ -202,6 +212,20 @@ const tripHandlers: {
 		commandName: 'm',
 		args: () => ({})
 	},
+	[activity_type_enum.Archon]: {
+		commandName: 'm',
+		args: () => ({})
+	},
+	[activity_type_enum.ArchonEvent]: {
+		commandName: 'm',
+		args: () => ({})
+	},
+	[activity_type_enum.DiscoBloodbath]: {
+		commandName: 'disco',
+		args: (data: DiscoBloodbathActivityTaskOptions) => ({
+			party: { club_name: data.club, crash: undefined }
+		})
+	},
 	[activity_type_enum.BirthdayEvent]: {
 		commandName: 'm',
 		args: () => ({})
@@ -272,6 +296,30 @@ const tripHandlers: {
 		commandName: 'activities',
 		args: (data: ActivityTaskOptionsWithQuantity) => ({
 			camdozaal: { action: 'fishing', quantity: data.iQty }
+		})
+	},
+	[activity_type_enum.GemstoneFishing]: {
+		commandName: 'activities',
+		args: (data: ActivityTaskOptionsWithQuantity) => ({
+			gemstone_fishing: { quantity: data.iQty }
+		})
+	},
+	[activity_type_enum.AncientMycology]: {
+		commandName: 'activities',
+		args: (data: AncientMycologyActivityTaskOptions | ActivityTaskOptionsWithQuantity) => ({
+			ancient_mycology: {
+				growth: (data as AncientMycologyActivityTaskOptions).woodName,
+				quantity: data.iQty
+			}
+		})
+	},
+	[activity_type_enum.ArchaicMining]: {
+		commandName: 'activities',
+		args: (data: ArchaicMiningActivityTaskOptions | ActivityTaskOptionsWithQuantity) => ({
+			archaic_mining: {
+				type: (data as ArchaicMiningActivityTaskOptions).miningType,
+				quantity: data.iQty
+			}
 		})
 	},
 	[activity_type_enum.BarbarianAssault]: {
@@ -786,6 +834,12 @@ const tripHandlers: {
 			name: `Ignecarus ${data.users.length === 1 ? 'solo' : 'mass'}`
 		})
 	},
+	[activity_type_enum.BurningDominion]: {
+		commandName: 'k',
+		args: () => ({
+			name: 'Burning Dominion'
+		})
+	},
 	[activity_type_enum.KibbleMaking]: {
 		commandName: 'kibble',
 		args: (data: KibbleOptions) => ({
@@ -964,6 +1018,26 @@ const tripHandlers: {
 			turaels_trials: {
 				start: {
 					method: _data.m
+				}
+			}
+		})
+	},
+	[activity_type_enum.BrimstoneDistillery]: {
+		commandName: 'bsominigames',
+		args: (data: BrimstoneDistilleryTaskOptions) => ({
+			brimstone_distillery: {
+				start: {
+					recipe: data.recipe
+				}
+			}
+		})
+	},
+	[activity_type_enum.ConstructionContracts]: {
+		commandName: 'bsominigames',
+		args: (data: ConstructionContractsTaskOptions) => ({
+			construction_contracts: {
+				start: {
+					recipe: data.recipe
 				}
 			}
 		})

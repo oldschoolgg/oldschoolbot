@@ -1,4 +1,6 @@
+import { burningDominionCommand } from '@/lib/bso/commands/dominionCommand.js';
 import { igneCommand } from '@/lib/bso/commands/igneCommand.js';
+import { defaultIslandUpgrades, type IslandUpgradeTiers } from '@/lib/bso/commands/islandUpgrades.js';
 import { kgCommand } from '@/lib/bso/commands/kgCommand.js';
 import { kkCommand } from '@/lib/bso/commands/kkCommand.js';
 import { moktangCommand } from '@/lib/bso/commands/moktangCommand.js';
@@ -69,6 +71,9 @@ export async function minionKillCommand(
 	if (['vasa', 'vasa magus'].some(i => name.toLowerCase().includes(i))) {
 		return vasaCommand(interaction, user, channelId, inputQuantity);
 	}
+	if (['burning dominion', 'dominion', 'burning'].some(i => name.toLowerCase().includes(i))) {
+		return burningDominionCommand(interaction, user, channelId, name, inputQuantity);
+	}
 
 	let monster = findMonster(name);
 
@@ -119,6 +124,7 @@ export async function minionKillCommand(
 		bitfield: user.bitfield,
 		disabledInventions: user.user.disabled_inventions,
 		currentPeak: generateDailyPeakIntervals().currentPeak,
+		islandUpgrades: (user.user.island_upgrades as IslandUpgradeTiers) ?? defaultIslandUpgrades,
 		rng
 	});
 

@@ -3,6 +3,7 @@ import { customPetsCL, treeBeardCL } from '@/lib/bso/collection-log/main.js';
 import { inventorOutfit } from '@/lib/bso/collection-log/minigames.js';
 import { QueenBlackDragon } from '@/lib/bso/monsters/demi-bosses/QueenBlackDragon.js';
 import { SuperiorTormentedDemon } from '@/lib/bso/monsters/demi-bosses/TormentedDemon.js';
+import { CrystallineSentinel, FungalBehemoth, Orrodil, Orym } from '@/lib/bso/monsters/VerdantIsland.js';
 import { LampTable } from '@/lib/bso/xpLamps.js';
 
 import { sumArr } from '@oldschoolgg/toolkit';
@@ -1106,6 +1107,34 @@ export const mediumTasks: Task[] = [
 		has: async ({ userStats }) => {
 			const divLoot = new Bank(userStats.divination_loot as ItemBank);
 			return divLoot.has('Clue scroll (grandmaster)');
+		}
+	},
+	{
+		id: 1157,
+		name: 'Kill a Crystalline Sentinel',
+		has: async args => {
+			return leaguesHasKC(args, CrystallineSentinel, 1);
+		}
+	},
+	{
+		id: 1158,
+		name: 'Kill a Fungal Behemoth',
+		has: async args => {
+			return leaguesHasKC(args, FungalBehemoth, 1);
+		}
+	},
+	{
+		id: 1159,
+		name: 'Kill Orym',
+		has: async args => {
+			return leaguesHasKC(args, Orym, 1);
+		}
+	},
+	{
+		id: 1160,
+		name: 'Kill Orrodil',
+		has: async args => {
+			return leaguesHasKC(args, Orrodil, 1);
 		}
 	}
 ];

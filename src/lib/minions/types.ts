@@ -7,6 +7,7 @@ import type {
 	EMonster,
 	Item,
 	ItemBank,
+	MonsterAttribute,
 	MonsterKillOptions,
 	SimpleMonster
 } from 'oldschooljs';
@@ -93,7 +94,8 @@ export interface KillableMonster {
 	defaultAttackStyles?: AttackStyles[];
 	disallowedAttackStyles?: AttackStyles[];
 	customMonsterHP?: number;
-	combatXpMultiplier?: number;
+	customMonsterData?: { attributes?: MonsterAttribute[] };
+	combatXpMultiplier?: number | ((user: MUser, attackStyles?: string[]) => number);
 	itemCost?: Consumable | Consumable[];
 	superior?: SimpleMonster;
 	slayerOnly?: boolean;

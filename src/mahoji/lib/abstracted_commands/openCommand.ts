@@ -1,7 +1,7 @@
 import { checkElderClueRequirements } from '@/lib/bso/elderClueRequirements.js';
 
-import type { ButtonBuilder } from '@oldschoolgg/discord';
-import { Emoji, notEmpty, stringMatches, uniqueArr } from '@oldschoolgg/toolkit';
+import { type ButtonBuilder, EmbedBuilder } from '@oldschoolgg/discord';
+import { Emoji, ellipsize, notEmpty, stringMatches, uniqueArr } from '@oldschoolgg/toolkit';
 import { percentChance } from 'node-rng';
 import { cryptoRng } from 'node-rng/crypto';
 import { Bank, Items, itemID, resolveItems } from 'oldschooljs';
@@ -12,7 +12,6 @@ import { buildClueButtons } from '@/lib/clues/clueUtils.js';
 import { BitField, PerkTier } from '@/lib/constants.js';
 import type { UnifiedOpenable } from '@/lib/openables.js';
 import { allOpenables, getOpenableLoot } from '@/lib/openables.js';
-import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { assert } from '@/lib/util/logError.js';
 import { patronMsg } from '@/lib/util/smallUtils.js';
 import { addToOpenablesScores } from '@/mahoji/mahojiSettings.js';
@@ -62,9 +61,13 @@ export async function abstractedOpenUntilCommand(
 		return 'The quantity must be a positive integer.';
 	}
 
-	const perkTier = await user.fetchPerkTier();
-	if (maxOpenQuantity === undefined && perkTier < PerkTier.Three) {
-		return patronMsg(PerkTier.Three);
+	const elligible = (await user.fetchPerkTier()) || user.bitfield.includes(BitField.OriginalCyrSupporter);
+	if (!maxOpenQuantity) {
+		if (elligible && user.bitfield.includes(BitField.UnlimitedOpenUntil)) {
+			maxOpenQuantity = 100_000_000;
+		} else {
+			maxOpenQuantity = 1;
+		}
 	}
 	name = name.replace(regex, '$1');
 	const openableItem = allOpenables.find(o => o.aliases.some(alias => stringMatches(alias, name)));
@@ -98,7 +101,7 @@ export async function abstractedOpenUntilCommand(
 	let targetCount = 0;
 	const maxOpenLimit = maxOpenQuantity ?? amountOfThisOpenableOwned;
 	const max = Math.min(10000, amountOfThisOpenableOwned, maxOpenLimit);
-	const totalLeaguesPoints = (await roboChimpUserFetch(user.id)).leagues_points_total;
+	const totalLeaguesPoints = (await Cache.getRoboChimpUser(user.id)).leagues_points_total;
 	for (let i = 0; i < max; i++) {
 		cost.add(openable.openedItem.id);
 		const thisLoot = await getOpenableLoot({ openable, quantity: 1, user, rng, totalLeaguesPoints });
@@ -177,7 +180,7 @@ async function finalizeOpening({
 
 	if (hasSmokey || hasOcto) {
 		const bonuses = [];
-		const totalLeaguesPoints = (await roboChimpUserFetch(user.id)).leagues_points_total;
+		const totalLeaguesPoints = (await Cache.getRoboChimpUser(user.id)).leagues_points_total;
 		for (const openable of openables) {
 			if (!openable.smokeyApplies) continue;
 			const bonusChancePercent = hasSmokey ? 10 : 8;
@@ -231,22 +234,37 @@ async function finalizeOpening({
 	const perkTier = await user.fetchPerkTier();
 	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier, user);
 
+	const resultText = `You have now opened a total of ${openedStr}
+${messages.join(', ')}`.trim();
+	const gamblingBanned = user.bitfield.includes(BitField.BannedFromGambling);
+	const title =
+		openables.length === 1
+			? `Loot from ${cost.amount(openables[0].openedItem.id)}x ${openables[0].name}`
+			: 'Loot From Opening';
 	const response = new MessageBuilder()
-		.setContent(
-			`You have now opened a total of ${openedStr}
-${messages.join(', ')}`.trim()
-		)
 		.addBankImage({
 			bank: loot,
-			title:
-				openables.length === 1
-					? `Loot from ${cost.amount(openables[0].openedItem.id)}x ${openables[0].name}`
-					: 'Loot From Opening',
+			title: gamblingBanned ? 'Loot From Opening' : title,
 			user,
 			previousCL,
-			mahojiFlags: user.bitfield.includes(BitField.DisableOpenableNames) ? undefined : ['show_names']
+			showValue: !gamblingBanned,
+			mahojiFlags: gamblingBanned
+				? ['show_names']
+				: user.bitfield.includes(BitField.DisableOpenableNames)
+					? undefined
+					: ['show_names']
 		})
 		.addComponents(components);
+
+	if (resultText.length < 2000) {
+		response.setContent(resultText);
+	} else if (resultText.length < 4000) {
+		response.addEmbed(new EmbedBuilder().setDescription(resultText));
+	} else {
+		response
+			.setContent(ellipsize(resultText, 1950))
+			.addFile({ name: 'open-results.txt', buffer: Buffer.from(resultText) });
+	}
 
 	return response;
 }
@@ -285,6 +303,13 @@ export async function abstractedOpenCommand(
 			if (!user.owns(tmpCost)) return `You don't own ${tmpCost}`;
 		}
 	}
+	if (interaction) {
+		for (const openable of openables) {
+			if (!openable.alwaysConfirm) continue;
+			const quantity = typeof _quantity === 'string' ? user.bank.amount(openable.openedItem.id) : _quantity;
+			await interaction.confirmation(`‼️ Are you sure you want to open ${quantity}x ${openable.name}?`);
+		}
+	}
 
 	const elderError = await checkElderCasketOpenable(user, openables);
 	if (elderError) return elderError;
@@ -294,7 +319,7 @@ export async function abstractedOpenCommand(
 	const loot = new Bank();
 	const messages: string[] = [];
 
-	const totalLeaguesPoints = (await roboChimpUserFetch(user.id)).leagues_points_total;
+	const totalLeaguesPoints = (await Cache.getRoboChimpUser(user.id)).leagues_points_total;
 
 	for (const openable of openables) {
 		const { openedItem } = openable;

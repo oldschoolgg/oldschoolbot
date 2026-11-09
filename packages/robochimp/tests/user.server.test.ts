@@ -19,6 +19,7 @@ async function createTestUser(userId: string, bot: 'osb' | 'bso' = 'osb') {
 			bits: [],
 			github_id: null,
 			patreon_id: null,
+			cyr_patreon_id: null,
 			user_group_id: null,
 			migrated_user_id: null,
 			leagues_completed_tasks_ids: [],

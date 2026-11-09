@@ -18,25 +18,25 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 
 function userHasUnlimitedGiveaways(user: MUser) {
-	return user.isTrusted() || user.bitfield.includes(BitField.UnlimitedGiveaways);
+	return user.isTrusted || user.bitfield.includes(BitField.UnlimitedGiveaways);
 }
 
-export function makeGiveawayButtons(giveawayID: number) {
+export function makeGiveawayButtons(giveawayID: string) {
 	return [
 		new ButtonBuilder()
-			.setCustomId(`GIVEAWAY_ENTER_${giveawayID}`)
+			.setCustomId(`GW_JOIN_${giveawayID}`)
 			.setLabel('Join Giveaway')
 			.setStyle(ButtonStyle.Primary),
 		new ButtonBuilder()
-			.setCustomId(`GIVEAWAY_LEAVE_${giveawayID}`)
+			.setCustomId(`GW_BYE_${giveawayID}`)
 			.setLabel('Leave Giveaway')
 			.setStyle(ButtonStyle.Secondary)
 	];
 }
 
-function makeGiveawayRepeatButton(giveawayID: number) {
+function makeGiveawayRepeatButton(giveawayID: string) {
 	return new ButtonBuilder()
-		.setCustomId(`GIVEAWAY_REPEAT_${giveawayID}`)
+		.setCustomId(`GW_REP_${giveawayID}`)
 		.setLabel('Repeat This Giveaway')
 		.setEmoji({ id: EmojiId.MoneyBag })
 		.setStyle(ButtonStyle.Danger);
@@ -99,7 +99,7 @@ export const giveawayCommand = defineCommand({
 			options: []
 		}
 	],
-	run: async ({ options, user, guildId, interaction, channelId, user: apiUser, rng }): CommandResponse => {
+	run: async ({ options, user, guildId, interaction, channelId, user: apiUser }): CommandResponse => {
 		if (user.isIronman) return 'You cannot do giveaways!';
 
 		let maxGiveaways = 10;
@@ -168,8 +168,6 @@ export const giveawayCommand = defineCommand({
 				return 'You cannot have a giveaway with no items in it.';
 			}
 
-			const giveawayID = rng.randInt(1, 500_000_000);
-
 			const message = await globalClient.sendMessage(channelId, {
 				content: generateGiveawayContent(user.id, duration.fromNow, []),
 				files: [
@@ -178,23 +176,16 @@ export const giveawayCommand = defineCommand({
 						title: `${apiUser?.username ?? user.username}'s Giveaway`
 					})
 				],
-				components: makeGiveawayButtons(giveawayID),
 				allowedMentions: { users: [user.id] }
 			});
 			if (!message) {
 				return `There was an error sending the giveaway message. Please ensure I have permission to send messages and attach files in <#${channelId}>.`;
 			}
 
-			await user.removeItemsFromBank(bank);
-
-			if (bank.has('Coins')) {
-				await ClientSettings.addToGPTaxBalance(user, bank.amount('Coins'));
-			}
-
 			try {
 				const giveaway = await prisma.giveaway.create({
 					data: {
-						id: giveawayID,
+						id: message.id,
 						guild_id,
 						channel_id: channelId.toString(),
 						start_date: new Date(),
@@ -216,10 +207,28 @@ export const giveawayCommand = defineCommand({
 				return 'Error starting giveaway.';
 			}
 
+			await user.removeItemsFromBank(bank);
+
+			if (bank.has('Coins')) {
+				await ClientSettings.addToGPTaxBalance(user, bank.amount('Coins'));
+			}
+
+			try {
+				await globalClient.editMessage(channelId, message.id, {
+					components: makeGiveawayButtons(message.id)
+				});
+			} catch (err) {
+				Logging.logError(err as Error, {
+					user_id: user.id,
+					giveaway_id: message.id,
+					message_id: message.id
+				});
+			}
+
 			return {
 				content: 'Giveaway started.',
 				ephemeral: true,
-				components: [makeGiveawayRepeatButton(giveawayID)]
+				components: [makeGiveawayRepeatButton(message.id)]
 			};
 		}
 

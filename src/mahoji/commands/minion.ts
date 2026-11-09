@@ -2,7 +2,14 @@ import { feedHammyCommand } from '@/lib/bso/commands/hammyCommand.js';
 import { findGroupOfUser } from '@/lib/bso/util/findGroupOfUser.js';
 
 import { bold } from '@oldschoolgg/discord';
-import { FormattedCustomEmoji, formatOrdinal, notEmpty, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
+import {
+	FormattedCustomEmoji,
+	formatOrdinal,
+	formatUserPaidTiers,
+	notEmpty,
+	relativeTimestamp,
+	roboChimpCLRankQuery
+} from '@oldschoolgg/toolkit';
 import { convertLVLtoXP, Items } from 'oldschooljs';
 
 import { ownedItemOption, skillOption } from '@/discord/index.js';
@@ -15,7 +22,6 @@ import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js'
 import { blowpipeCommand, blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
 import { degradeableItemsCommand } from '@/lib/minions/functions/degradeableItemsCommand.js';
 import { allPossibleStyles, trainCommand } from '@/lib/minions/functions/trainCommand.js';
-import { roboChimpUserFetchCached } from '@/lib/roboChimp.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import creatures from '@/lib/skilling/skills/hunter/creatures/index.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
@@ -49,7 +55,9 @@ const patMessages = [
 
 export async function getUserInfo(user: MUser) {
 	await refreshUserCache({ user });
-	const roboChimpUser = await roboChimpUserFetchCached(user.id);
+	const groupUserIds = await findGroupOfUser(user.id);
+	const roboChimpUsers = await Promise.all(groupUserIds.map(userId => Cache.getRoboChimpUser(userId)));
+	const roboChimpUser = roboChimpUsers.find(roboChimpUser => roboChimpUser.id === BigInt(user.id))!;
 	const leaguesRanking = await roboChimpClient.user.count({
 		where: {
 			leagues_points_total: {
@@ -76,20 +84,52 @@ export async function getUserInfo(user: MUser) {
 		isIronman: user.isIronman,
 		bitfields,
 		currentTask: taskText,
-		patreon: roboChimpUser.patreon_id ? 'Yes' : 'None',
-		github: roboChimpUser.github_id ? 'Yes' : 'None'
+		patreon: roboChimpUsers.some(roboChimpUser => roboChimpUser.patreon_id) ? 'Yes' : 'None',
+		github: roboChimpUsers.some(roboChimpUser => roboChimpUser.github_id) ? 'Yes' : 'None'
 	};
 
 	const globalCLPercent = (((roboChimpUser.bso_cl_percent ?? 0) + (roboChimpUser.osb_cl_percent ?? 0)) / 2).toFixed(
 		2
 	);
 
-	const roboCache = await roboChimpUserFetchCached(user.id);
+	const premium = roboChimpUsers
+		.filter(
+			roboChimpUser =>
+				roboChimpUser.premium_balance_tier &&
+				roboChimpUser.premium_balance_expiry_date &&
+				roboChimpUser.premium_balance_expiry_date > Date.now()
+		)
+		.sort(
+			(a, b) =>
+				b.premium_balance_tier! - a.premium_balance_tier! ||
+				Number(b.premium_balance_expiry_date! - a.premium_balance_expiry_date!)
+		)[0];
+	const premiumPerkTier = premium?.premium_balance_tier ?? 0;
+	const groupPerkTier = Math.max(...roboChimpUsers.map(roboChimpUser => roboChimpUser.perk_tier), 0);
+
+	let perkTierDisplay = formatUserPaidTiers(roboChimpUsers.flatMap(roboChimpUser => roboChimpUser.bits));
+	if (perkTierDisplay === 'None' && groupPerkTier > 0) {
+		perkTierDisplay = `Perk Tier ${groupPerkTier}`;
+	}
+	if (premium) {
+		if (premiumPerkTier > groupPerkTier) {
+			perkTierDisplay = `${premium.premium_balance_is_cyr ? 'Cyr' : 'Magna'} Tier ${premiumPerkTier - 1} (Expires: ${relativeTimestamp(
+				new Date(Number(premium.premium_balance_expiry_date!))
+			)})`;
+		}
+	}
+	if (result.perkTier > groupPerkTier && result.perkTier > premiumPerkTier) {
+		if (user.isMod || user.isWikiContrib || user.isContributor || user.isTrusted) {
+			perkTierDisplay = `**Courtesy** __Tier ${result.perkTier - 1}__`;
+		} else {
+			perkTierDisplay = `🔴 **Temporary** __Tier ${result.perkTier - 1}__`;
+		}
+	}
 	return {
 		...result,
 		everythingString: `${user.badgedUsername}[${user.id}]
 **Current Trip:** ${taskText}
-**Perk Tier:** ${roboCache?.perk_tier ?? 'None'}
+**Perk Tier:** ${perkTierDisplay}
 **Blacklisted:** ${result.isBlacklisted}
 **Badges:** ${result.badges}
 **Ironman:** ${result.isIronman}
@@ -184,7 +224,7 @@ export const minionCommand = defineCommand({
 							)
 							.map(bg => bg.id);
 						return bankImages
-							.filter(bg => user.isModOrAdmin() || bg.available || owned.includes(bg.id))
+							.filter(bg => user.isModOrAdmin || bg.available || owned.includes(bg.id))
 							.filter(bg => (!value ? true : bg.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => {
 								const name = i.perkTierNeeded

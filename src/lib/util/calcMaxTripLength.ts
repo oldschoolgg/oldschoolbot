@@ -1,26 +1,33 @@
-import { calcPercentOfNum, calcWhatPercent, PerkTier, Time } from '@oldschoolgg/toolkit';
+import { calcPercentOfNum, calcWhatPercent, getCyrTripBonus, RoboChimpBit, Time } from '@oldschoolgg/toolkit';
 
 import type { activity_type_enum } from '@/prisma/main.js';
-import { BitField } from '@/lib/constants.js';
+import { BitField, PerkTier } from '@/lib/constants.js';
 
-export function patronMaxTripBonus(perkTier: PerkTier | 0, cyrSupporter: boolean = false) {
-	if (cyrSupporter) {
-		if (perkTier === PerkTier.One) return Time.Minute * 3;
-		else if (perkTier === PerkTier.Two) return Time.Minute * 6;
-		else if (perkTier === PerkTier.Three) return Time.Minute * 10;
-		else if (perkTier >= PerkTier.Four) return Time.Minute * 15;
-	} else {
-		if (perkTier === PerkTier.Two) return Time.Minute * 3;
-		else if (perkTier === PerkTier.Three) return Time.Minute * 6;
-		else if (perkTier >= PerkTier.Four) return Time.Minute * 10;
-	}
+export function patronMaxTripBonus(perkTier: PerkTier) {
+	if (perkTier === PerkTier.Two) return Time.Minute * 3;
+	else if (perkTier === PerkTier.Three) return Time.Minute * 6;
+	else if (perkTier >= PerkTier.Four) return Time.Minute * 10;
 	return 0;
 }
 
 export async function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
-	const perkTier = await user.fetchPerkTier();
+	const perkTier = await user.fetchPerkTier({ forceNoCache: true });
+	const roboUser = await Cache.getRoboChimpUser(user.id);
+	const roboBits = roboUser.bits;
 	let max = Time.Minute * 30;
-	max += patronMaxTripBonus(perkTier, user.bitfield.includes(BitField.OriginalCyrSupporter));
+	max += Math.max(
+		patronMaxTripBonus(perkTier),
+		getCyrTripBonus({
+			patreonBits: roboBits,
+			premiumTier: roboUser.premium_balance_tier,
+			premiumIsCyr: roboUser.premium_balance_is_cyr,
+			premiumExpiry: roboUser.premium_balance_expiry_date
+		})
+	);
+
+	if (roboBits.includes(RoboChimpBit.BonusMinute)) {
+		max += Time.Minute * 3;
+	}
 
 	const hasMasterHPCape = user.hasEquipped('Hitpoints master cape');
 	let masterHPCapeBoost = 0;
@@ -40,7 +47,8 @@ export async function calcMaxTripLength(user: MUser, activity?: activity_type_en
 		case 'TombsOfAmascut':
 		case 'Pickpocket':
 		case 'SoulWars':
-		case 'Cyclops': {
+		case 'Cyclops':
+		case 'DiscoBloodbath': {
 			masterHPCapeBoost = 20;
 			regularHPBoost = true;
 			break;
@@ -84,18 +92,6 @@ export async function calcMaxTripLength(user: MUser, activity?: activity_type_en
 			}
 			if (user.usingPet('Shelldon')) {
 				max *= 1.25;
-			}
-			break;
-		}
-		case 'BeachCombing': {
-			if (user.usingPet('Patricia')) {
-				max *= 2;
-			}
-			if (user.usingPet('Partycrab')) {
-				max += Time.Minute * 30;
-			}
-			if (user.usingPet('Shelldon')) {
-				max += Time.Minute * 25;
 			}
 			break;
 		}

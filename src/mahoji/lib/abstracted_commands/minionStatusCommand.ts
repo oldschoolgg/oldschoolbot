@@ -10,13 +10,13 @@ import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { BitField, PerkTier } from '@/lib/constants.js';
 import { EmojiId } from '@/lib/data/emojis.js';
 import { InteractionID } from '@/lib/InteractionID.js';
-import { roboChimpUserFetchCached } from '@/lib/roboChimp.js';
 import { minionBuyButton } from '@/lib/sharedComponents.js';
 import {
 	makeAutoContractButton,
 	makeAutoSlayButton,
 	makeBirdHouseTripButton,
 	makeClaimDailyButton,
+	makeCollectAllCampsButton,
 	makeFishingContestButton,
 	makeosbBsoLeaguesButton,
 	makeSendICButton,
@@ -24,6 +24,7 @@ import {
 } from '@/lib/util/interactions.js';
 import { minionStatus } from '@/lib/util/minionStatus.js';
 import { makeRepeatTripButtons } from '@/lib/util/repeatStoredTrip.js';
+import { hasCampsReadyToCollect } from '@/mahoji/commands/islandupgrade.js';
 import { isUsersDailyReady } from '@/mahoji/lib/abstracted_commands/dailyCommand.js';
 import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
 
@@ -72,7 +73,7 @@ export async function minionStatusCommand(
 	const minionIsBusy = Boolean(currentActivity);
 	const birdhouseDetails = minionIsBusy ? { isReady: false } : user.fetchBirdhouseData();
 	const [roboChimpUser, gearPresetButtons, pinnedTripButtons, fishingResult, dailyIsReady] = await Promise.all([
-		roboChimpUserFetchCached(user.id),
+		Cache.getRoboChimpUser(user.id),
 		minionIsBusy ? [] : fetchFavoriteGearPresets(user.id),
 		minionIsBusy ? [] : fetchPinnedTrips(user.id),
 		getUsersFishingContestDetails(user),
@@ -124,6 +125,10 @@ export async function minionStatusCommand(
 			.setEmoji({ id: EmojiId.Farming })
 			.setStyle(ButtonStyle.Secondary)
 	);
+
+	if (hasCampsReadyToCollect(user)) {
+		buttons.push(makeCollectAllCampsButton());
+	}
 
 	if (!minionIsBusy && birdhouseDetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton)) {
 		buttons.push(makeBirdHouseTripButton());
@@ -208,7 +213,7 @@ export async function minionStatusCommand(
 	}
 
 	return {
-		content: status,
+		content: status ?? '',
 		components: buttons
 	};
 }

@@ -1,4 +1,12 @@
+import { empyreanOutfit } from '@/lib/bso/collection-log/main.js';
+import {
+	defaultIslandUpgrades,
+	defaultMaintenanceTimestamps,
+	getBossSpeedBonus,
+	getGlobalBossSpeedBonus
+} from '@/lib/bso/commands/islandUpgrades.js';
 import { dwarvenBlessing } from '@/lib/bso/dwarvenBlessing.js';
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { gearstatToSetup, gorajanBoosts } from '@/lib/bso/gorajanGearBoost.js';
 import { InventionID } from '@/lib/bso/skills/invention/inventions.js';
 
@@ -212,18 +220,34 @@ const salveBoost: Boost = {
 const dragonHunterBoost: Boost = {
 	description: 'A boost for dragon-hunter gear when killing dragons',
 	run: ({ monster, osjsMon, primaryStyle: style, gearBank }) => {
-		const isDragon = osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon);
-		if (!isDragon || monster.name.toLowerCase() === 'vorkath') return null;
+		const isDragon =
+			osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon) ||
+			monster.customMonsterData?.attributes?.includes(MonsterAttribute.Dragon);
+		if (!isDragon) return null;
 
+		const results: BoostResult[] = [];
 		for (const wep of dragonHunterWeapons) {
 			const hasWep = gearBank.hasEquippedOrInBank(wep.item.id);
 			if (hasWep && style === wep.attackStyle) {
-				return {
+				results.push({
 					percentageReduction: wep.boost,
 					message: `${wep.boost}% boost for ${wep.item.name}`
-				};
+				});
+				break;
 			}
 		}
+
+		if (
+			gearBank.hasEquippedOrInBank('Dragonbane aegis') ||
+			gearBank.hasEquippedOrInBank('Dragonbane aegis (archaic)')
+		) {
+			results.push({
+				percentageReduction: 15,
+				message: '15% boost for Dragonbane aegis'
+			});
+		}
+
+		return results.length > 0 ? results : null;
 	}
 };
 const revWildyGearBoost: Boost = {
@@ -527,14 +551,31 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 				});
 			}
 
+			const empyreanMeleeEquipped = gearBank.gear.melee.hasEquipped(empyreanOutfit, true);
+
 			// Gorajan
-			const allGorajan = gorajanBoosts.every(e => gearBank.gear[e[1]].hasEquipped(e[0], true));
+			const allGorajan = gorajanBoosts.every(e => {
+				if (e[1] === 'melee') return gearBank.gear.melee.hasEquipped(e[0], true) || empyreanMeleeEquipped;
+				return gearBank.gear[e[1]].hasEquipped(e[0], true);
+			});
+
 			for (const [outfit, setup] of gorajanBoosts) {
 				const expectedSetup = monster.attackStyleToUse ? gearstatToSetup.get(monster.attackStyleToUse) : null;
-				if (allGorajan || (expectedSetup === setup && gearBank.gear[setup].hasEquipped(outfit, true))) {
+				const effectiveEquipped =
+					setup === 'melee'
+						? gearBank.gear.melee.hasEquipped(outfit, true) || empyreanMeleeEquipped
+						: gearBank.gear[setup].hasEquipped(outfit, true);
+
+				if (allGorajan || (expectedSetup === setup && effectiveEquipped)) {
+					const isEmpyrean =
+						setup === 'melee' && empyreanMeleeEquipped && !gearBank.gear.melee.hasEquipped(outfit, true);
+					const reduction = isEmpyrean ? 15 : 10;
+					const label = isEmpyrean
+						? 'Empyrean'
+						: Items.itemNameFromId(outfit[0])!.split(' ').slice(0, 2).join(' ');
 					results.push({
-						percentageReduction: 10,
-						message: `10% for ${Items.itemNameFromId(outfit[0])!.split(' ').slice(0, 2).join(' ')} gear`
+						percentageReduction: reduction,
+						message: `${reduction}% for ${label} gear`
 					});
 					break;
 				}
@@ -562,7 +603,58 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 				});
 			}
 
+			if (
+				[
+					EBSOMonster.CRYSTALLINE_SENTINEL,
+					EBSOMonster.FUNGAL_BEHEMOTH,
+					EBSOMonster.ELDER_MIMIC,
+					EBSOMonster.ORYM,
+					EBSOMonster.ORRODIL
+				].includes(monster.id) &&
+				gearBank.gear.range.hasEquipped('Elderflame arrow')
+			) {
+				if (gearBank.gear.range.hasEquipped('Elderflame bow')) {
+					results.push({
+						percentageReduction: 15,
+						message: '15% for Elderflame bow with Elderflame arrows'
+					});
+				} else if (gearBank.gear.range.hasEquipped('Starfire bow')) {
+					results.push({
+						percentageReduction: 7,
+						message: '7% for Starfire bow with Elderflame arrows'
+					});
+				}
+			}
+
 			return results;
+		}
+	},
+	{
+		description: 'Island Upgrade Boosts',
+		run: ({ monster, gearBank }) => {
+			const verdantIslandBosses = [
+				EBSOMonster.CRYSTALLINE_SENTINEL,
+				EBSOMonster.FUNGAL_BEHEMOTH,
+				EBSOMonster.ORYM,
+				EBSOMonster.ORRODIL,
+				EBSOMonster.BURNING_DOMINION
+			];
+
+			const isIslandBoss = verdantIslandBosses.includes(monster.id);
+			const userUpgrades = gearBank.island_upgrades ?? defaultIslandUpgrades;
+			const islandMaint = (gearBank.island_upgrades as any)?.maintenance ?? defaultMaintenanceTimestamps;
+			const islandAssign = (gearBank.island_upgrades as any)?.assignment ?? null;
+			const bossSpeedBonus = isIslandBoss
+				? getBossSpeedBonus(userUpgrades, islandMaint, islandAssign)
+				: getGlobalBossSpeedBonus(userUpgrades, islandMaint, islandAssign);
+
+			if (bossSpeedBonus > 0) {
+				return {
+					percentageReduction: bossSpeedBonus * 100
+				};
+			}
+
+			return null;
 		}
 	}
 ];

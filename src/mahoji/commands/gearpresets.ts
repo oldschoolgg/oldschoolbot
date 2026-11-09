@@ -48,12 +48,14 @@ export async function createOrEditGearSetup(
 	}
 
 	const userPresets = await prisma.gearPreset.findMany({ where: { user_id: user.id } });
-	if (userPresets.some(pre => pre.name === name) && !isUpdating) {
+	const existingPreset = userPresets.find(pre => stringMatches(pre.name, name));
+	if (existingPreset && !isUpdating) {
 		return `You already have a gear preset called \`${name}\`.`;
 	}
-	if (!userPresets.some(pre => pre.name === name) && isUpdating) {
+	if (!existingPreset && isUpdating) {
 		return 'You cant update a gearpreset you dont have.';
 	}
+	if (existingPreset) name = existingPreset.name;
 
 	const max = await user.calcMaxGearPresets();
 	if (userPresets.length >= max && !isUpdating) {
@@ -65,7 +67,7 @@ export async function createOrEditGearSetup(
 	if (setupToCopy) {
 		gearSetup = user.gear[setupToCopy];
 	} else if (isUpdating) {
-		gearSetup = Gear.fromGearPreset(userPresets.find(pre => pre.name === name)!);
+		gearSetup = Gear.fromGearPreset(existingPreset!);
 	}
 
 	// This is required to enable removal of items while editing
@@ -223,6 +225,12 @@ export const gearPresetsCommand = defineCommand({
 							.map(i => ({ name: i.name, value: i.name }));
 					}
 				},
+				{
+					...gearSetupOption,
+					required: false,
+					name: 'copy_setup',
+					description: 'Pick a setup to copy over this preset.'
+				},
 				...slotOptions,
 				{
 					type: 'String',
@@ -258,9 +266,17 @@ export const gearPresetsCommand = defineCommand({
 					}
 				}
 			]
+		},
+		{
+			type: 'Subcommand',
+			name: 'help',
+			description: 'Learn how to use gear presets.'
 		}
 	],
 	run: async ({ options, user, interaction }) => {
+		if (options.help) {
+			return 'Use `/gearpresets create` to save a named loadout, `/gearpresets edit` to change it, and `/gearpresets equip` to put it in a gear setup. Presets can be deleted with `/gearpresets delete`; `/gearpresets view` previews one. Disco Bloodbath creates empty Fashion presets you can fill: `discofuture`, `discoragdoll`, and `discoanti`.';
+		}
 		if (options.create) {
 			return createOrEditGearSetup(
 				user,
@@ -274,7 +290,7 @@ export const gearPresetsCommand = defineCommand({
 		if (options.edit) {
 			return createOrEditGearSetup(
 				user,
-				undefined,
+				options.edit.copy_setup,
 				options.edit.gear_preset,
 				true,
 				options.edit,

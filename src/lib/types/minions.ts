@@ -22,6 +22,19 @@ export interface ActivityTaskOptions {
 	cantBeDoubled?: boolean;
 }
 
+export interface DiscoBloodbathActivityTaskOptions extends ActivityTaskOptions {
+	type: 'DiscoBloodbath';
+	club: string;
+	popularity: number;
+	theme: { name: string; good: string; bad: string };
+	fashion: Record<string, { item: number; quantity?: number } | null>;
+	isRave?: boolean;
+	raveId?: string;
+	raveAesthetics?: string[];
+	effectiveDuration?: number;
+	isCrashing?: boolean;
+}
+
 export type BeachCombingMethod = 'Surfing' | 'BeachCombing' | 'BuildSandcastles' | 'PickupTrash';
 
 export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
@@ -73,6 +86,9 @@ export interface ActivityTaskOptionsWithQuantity extends ActivityTaskOptions {
 		| 'AerialFishing'
 		| 'FishingTrawler'
 		| 'CamdozaalFishing'
+		| 'GemstoneFishing'
+		| 'AncientMycology'
+		| 'ArchaicMining'
 		| 'CamdozaalMining'
 		| 'CamdozaalSmithing'
 		| 'Naxxus'
@@ -204,6 +220,20 @@ export interface MiningActivityTaskOptions extends ActivityTaskOptions {
 	oreID: number;
 	quantity: number;
 	powermine: boolean;
+	iQty?: number;
+}
+
+export interface AncientMycologyActivityTaskOptions extends ActivityTaskOptions {
+	type: 'AncientMycology';
+	woodName?: string;
+	quantity: number;
+	iQty?: number;
+}
+
+export interface ArchaicMiningActivityTaskOptions extends ActivityTaskOptions {
+	type: 'ArchaicMining';
+	miningType: 'dragonbone' | 'crystalline';
+	quantity: number;
 	iQty?: number;
 }
 
@@ -716,6 +746,8 @@ export type ActivityTaskData =
 	| FiremakingActivityTaskOptions
 	| FishingActivityTaskOptions
 	| MiningActivityTaskOptions
+	| AncientMycologyActivityTaskOptions
+	| ArchaicMiningActivityTaskOptions
 	| MotherlodeMiningActivityTaskOptions
 	| PlunderActivityTaskOptions
 	| SmithingActivityTaskOptions
@@ -746,4 +778,5 @@ export type ActivityTaskData =
 	| CutLeapingFishActivityTaskOptions
 	| CreateForestersRationsActivityTaskOptions
 	| ColoTaskOptions
+	| DiscoBloodbathActivityTaskOptions
 	| BSOActivityTaskData;

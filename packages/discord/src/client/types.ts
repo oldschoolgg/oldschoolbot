@@ -17,6 +17,7 @@ import {
 	type GatewayPresenceUpdateData,
 	MessageFlags,
 	type PresenceUpdateStatus,
+	type RESTPatchAPIChannelMessageJSONBody,
 	type RESTPostAPIChannelMessageJSONBody
 } from 'discord-api-types/v10';
 import { merge } from 'remeda';
@@ -33,6 +34,7 @@ export type BaseSendableMessage = {
 	embeds?: EmbedBuilder[];
 	allowedMentions?: RESTPostAPIChannelMessageJSONBody['allowed_mentions'];
 	files?: (SendableFile | undefined)[];
+	clearAttachments?: boolean;
 	ephemeral?: boolean;
 	threadId?: string;
 	withResponse?: boolean;
@@ -49,6 +51,7 @@ type AnyClassWithBuild = InstanceType<
 export type SendableMessage = string | BaseSendableMessage | AnyClassWithBuild;
 
 export type APISendableMessage = { message: RESTPostAPIChannelMessageJSONBody; files: RawFile[] | null };
+export type APIEditableMessage = { message: RESTPatchAPIChannelMessageJSONBody; files: RawFile[] | null };
 function isButtonMatrix(arr: ButtonBuilder[] | ButtonBuilder[][]): arr is ButtonBuilder[][] {
 	return Array.isArray(arr[0]);
 }
@@ -84,8 +87,35 @@ export async function sendableMsgToApiCreate({ msg }: { msg: SendableMessage }):
 		embeds: msg.embeds?.map(embed => embed.toJSON()),
 		flags: msg.ephemeral ? MessageFlags.Ephemeral : undefined,
 		allowed_mentions: merge(DEFAULT_ALLOWED_MENTIONS, msg.allowedMentions),
-		message_reference: msg.messageReference
+		message_reference: msg.messageReference,
+		attachments: msg.clearAttachments ? [] : undefined
 	};
+
+	if ('files' in msg && msg.files && msg.files.length > 0) {
+		const files: RawFile[] = [];
+		for (const file of msg.files) {
+			if (!file) continue;
+			files.push({ name: file.name, data: file.buffer });
+		}
+		return { message, files };
+	}
+	return { message, files: null };
+}
+
+export async function sendableMsgToApiEdit({ msg }: { msg: SendableMessage }): Promise<APIEditableMessage> {
+	if (typeof msg === 'string') {
+		return sendableMsgToApiEdit({ msg: { content: msg } });
+	}
+
+	if ('build' in msg) {
+		return sendableMsgToApiEdit({ msg: await msg.build() });
+	}
+
+	const message: RESTPatchAPIChannelMessageJSONBody = {};
+	if (msg.content !== undefined) message.content = msg.content;
+	if (msg.components !== undefined) message.components = resolveComponents(msg.components);
+	if (msg.embeds !== undefined) message.embeds = msg.embeds.map(embed => embed.toJSON());
+	if (msg.allowedMentions !== undefined) message.allowed_mentions = msg.allowedMentions;
 
 	if ('files' in msg && msg.files && msg.files.length > 0) {
 		const files: RawFile[] = [];

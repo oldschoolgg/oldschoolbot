@@ -10,8 +10,16 @@ import type { MakePartyOptions } from '@/lib/types/index.js';
 export async function makeParty(options: MakePartyOptions): Promise<MUser[]> {
 	if (process.env.TEST) return [options.leader];
 	const interaction = options.interaction;
+	if (partyLockCache.has(options.leader.id)) {
+		await interaction.reply({
+			content: 'You are already in or hosting an active mass party. Leave or finish that party first.',
+			ephemeral: true
+		});
+		throw new Error(SILENT_ERROR);
+	}
 	const timeout = Time.Minute * 5;
 	const usersWhoConfirmed: string[] = [options.leader.id];
+	partyLockCache.add(options.leader.id);
 	let massStarted = false;
 	let partyCancelled = false;
 

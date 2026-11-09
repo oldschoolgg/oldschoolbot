@@ -143,6 +143,7 @@ function getSlayerContext({
 
 interface newOptions {
 	type: 'MonsterKilling';
+	user: MUser;
 	monster: KillableMonster;
 	q: number;
 	iQty?: number;
@@ -173,6 +174,7 @@ interface newOptions {
 
 export function doMonsterTrip(data: newOptions) {
 	let {
+		user,
 		monster,
 		q: quantity,
 		usingCannon,
@@ -376,7 +378,10 @@ export function doMonsterTrip(data: newOptions) {
 
 	const loot = wiped
 		? new Bank()
-		: monster.table.kill(oriEffect({ gearBank, quantity: finalQuantity, duration, messages }), killOptions);
+		: monster.table.kill(
+				oriEffect({ gearBank, quantity: finalQuantity, duration, messages, monster: monster.name }),
+				killOptions
+			);
 	if (isDoubleLootActive(duration)) {
 		loot.multiply(2);
 		messages.push('**Double loot activated!**');
@@ -425,6 +430,7 @@ export function doMonsterTrip(data: newOptions) {
 		updateBank.itemLootBank.add(loot);
 		updateBank.xpBank.add(
 			addMonsterXPRaw({
+				user,
 				rng,
 				monsterID: monster.id,
 				quantity,
@@ -556,6 +562,7 @@ export const monsterTask: MinionTask = {
 		const attackStyles = data.attackStyles ?? user.getAttackStyles();
 		const { slayerContext, quantity, newKC, messages, updateBank } = doMonsterTrip({
 			...data,
+			user,
 			monster,
 			tertiaryItemPercentageChanges: user.buildTertiaryItemChanges(
 				user.hasEquipped('Ring of wealth (i)'),

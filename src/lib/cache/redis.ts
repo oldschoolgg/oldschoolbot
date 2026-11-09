@@ -21,6 +21,7 @@ import { Redis } from 'ioredis';
 import type { Guild, Prisma } from '@/prisma/main.js';
 import { BitField, BOT_TYPE, globalConfig } from '@/lib/constants.js';
 import type { RobochimpUser } from '@/lib/roboChimp.js';
+import { type IExtraSettings, type StaffGrants, ZExtraSettings, ZStaffGrants } from '@/lib/staffBestow.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
 
 type LockStatus = 'locked' | 'unlocked';
@@ -40,20 +41,33 @@ type RatelimitType =
 	| 'random_events'
 	| 'global_buttons'
 	| 'stats_command'
+	| 'disco_inquire'
 	| 'delay_member_fetch'
 	| 'delay_guild_fetch'
-	| 'delay_robochimp_fetch';
+	| 'disco_bank_search'
+	| 'disco_leaderboard';
 
 const RATELIMITS: Record<RatelimitType, RatelimitConfig> = {
-	global_buttons: { windowSeconds: 2, max: 1 },
+	global_buttons: { windowSeconds: 2, max: 3 },
 	random_events: { windowSeconds: TTL.Hour * 3, max: 5 },
 	stats_command: { windowSeconds: 5, max: 1 },
+	disco_inquire: { windowSeconds: TTL.Minute * 30, max: 5 },
 	delay_member_fetch: { windowSeconds: 5 * 60, max: 1 },
 	delay_guild_fetch: { windowSeconds: 5 * 60, max: 1 },
-	delay_robochimp_fetch: { windowSeconds: 5 * 60, max: 1 }
+	disco_bank_search: { windowSeconds: TTL.Minute * 15, max: 4 },
+	disco_leaderboard: { windowSeconds: TTL.Minute * 10, max: 1 }
 } as const;
 
 const BotKeys = RedisKeys[BOT_TYPE];
+const ROBOCHIMP_USER_CACHE_TTL_SECONDS = TTL.Minute * 5;
+const roboChimpBigIntFields = [
+	'id',
+	'migrated_user_id',
+	'osb_total_xp',
+	'bso_total_xp',
+	'premium_balance_expiry_date',
+	'last_patreon_gift'
+] as const;
 type CachedGuildSettings = Pick<Guild, 'id' | 'disabledCommands' | 'petchannel' | 'staffOnlyChannels'>;
 type GuildUpdateInput = Partial<IGuild> & {
 	mega_duck_location?: MegaDuckLocation | Prisma.InputJsonValue;
@@ -61,10 +75,15 @@ type GuildUpdateInput = Partial<IGuild> & {
 
 class CacheManager {
 	private client: Redis;
+	private readyPromise = Promise.withResolvers<void>();
 
+	async waitTillReady() {
+		return this.readyPromise;
+	}
 	constructor() {
 		if (globalConfig.isProduction) {
 			this.client = new Redis();
+			this.client.on('ready', () => this.readyPromise.resolve());
 		} else {
 			try {
 				const host: string = process.env.REDIS_HOST ?? 'localhost';
@@ -73,10 +92,13 @@ class CacheManager {
 				redis.on('error', () => {
 					redis.disconnect();
 					this.client = new MockedRedis() as any as Redis;
+					this.readyPromise.resolve();
 				});
+				redis.on('ready', () => this.readyPromise.resolve());
 				this.client = redis;
 			} catch {
 				this.client = new MockedRedis() as any as Redis;
+				this.readyPromise.resolve();
 			}
 		}
 	}
@@ -96,6 +118,14 @@ class CacheManager {
 	private async getJson<T = unknown>(key: string): Promise<T | null> {
 		const raw = await this.client.get(key);
 		return raw ? JSON.parse(raw) : null;
+	}
+
+	private deserializeRoboChimpUser(user: RobochimpUser): RobochimpUser {
+		const result = { ...user } as Record<string, unknown>;
+		for (const field of roboChimpBigIntFields) {
+			if (typeof result[field] === 'string') result[field] = BigInt(result[field]);
+		}
+		return result as unknown as RobochimpUser;
 	}
 
 	private async getString(key: string): Promise<string | null> {
@@ -268,11 +298,37 @@ class CacheManager {
 		await this.bulkSet(roles, r => RedisKeys.Discord.Role(r.guild_id, r.id));
 	}
 
-	async setRoboChimpUser(userID: string, user: RobochimpUser): Promise<void> {
-		await this.setJson(RedisKeys.RoboChimpUser(BigInt(userID)), user);
+	private isCompleteRoboChimpUser(user: RobochimpUser): boolean {
+		return 'premium_balance_tier' in user && 'premium_balance_expiry_date' in user && 'last_patreon_gift' in user;
 	}
-	async getRoboChimpUser(userId: string): Promise<RobochimpUser | null> {
-		return this.getJson<RobochimpUser>(RedisKeys.RoboChimpUser(BigInt(userId)));
+
+	async setRoboChimpUser(userID: string, user: RobochimpUser): Promise<void> {
+		await this.setJsonWithTTL(
+			RedisKeys.RoboChimpUser(BigInt(userID)),
+			user,
+			this.jitterTTL(ROBOCHIMP_USER_CACHE_TTL_SECONDS, 0.1)
+		);
+	}
+
+	async getRoboChimpUser(userId: string, forceRefresh = false): Promise<RobochimpUser> {
+		const key = RedisKeys.RoboChimpUser(BigInt(userId));
+		if (!forceRefresh) {
+			const cachedUser = await this.getJson<RobochimpUser>(key);
+			if (cachedUser && this.isCompleteRoboChimpUser(cachedUser))
+				return this.deserializeRoboChimpUser(cachedUser);
+		}
+
+		const user = await roboChimpClient.user.upsert({
+			where: {
+				id: BigInt(userId)
+			},
+			create: {
+				id: BigInt(userId)
+			},
+			update: {}
+		});
+		await this.setRoboChimpUser(userId, user);
+		return user;
 	}
 
 	async setPerkTier(userId: string, tier: number): Promise<void> {
@@ -289,6 +345,18 @@ class CacheManager {
 
 	async resetPerkTier(userId: string): Promise<void> {
 		await this.client.del(RedisKeys.Global.PerkTier(userId));
+	}
+
+	async createDiscoRave(userId: string, raveId: string): Promise<void> {
+		await this.client.set(`bso:${userId}:${raveId}`, '1', 'EX', TTL.Hour);
+	}
+
+	async consumeDiscoRave(userId: string, raveId: string): Promise<boolean> {
+		return (await this.client.del(`bso:${userId}:${raveId}`)) === 1;
+	}
+
+	async deleteDiscoRave(userId: string, raveId: string): Promise<void> {
+		await this.client.del(`bso:${userId}:${raveId}`);
 	}
 
 	// Users
@@ -329,6 +397,11 @@ class CacheManager {
 	private expiringDayTTL(): number {
 		const jitterSeconds = Math.floor(Math.random() * TTL.Hour * 2) - TTL.Hour;
 		return TTL.Day + jitterSeconds;
+	}
+
+	private jitterTTL(baseSeconds: number, percent: number): number {
+		const jitterSeconds = Math.floor(baseSeconds * percent);
+		return baseSeconds + Math.floor(Math.random() * (jitterSeconds * 2 + 1)) - jitterSeconds;
 	}
 
 	async getUsername(userId: string): Promise<string> {
@@ -377,6 +450,15 @@ class CacheManager {
 		await this.client.del(RedisKeys.Discord.Username(userId));
 		await this.client.del(BotKeys.User.BadgedUsername(userId));
 	}
+
+	async _getBadgedUsernameRaw(userId: string): Promise<string | null> {
+		return this.getExpiringString(BotKeys.User.BadgedUsername(userId));
+	}
+
+	async setBadgedUsername(userId: string, username: string): Promise<void> {
+		await this.setExpiringString(BotKeys.User.BadgedUsername(userId), username);
+	}
+
 	async getBadgedUsername(userId: string): Promise<string> {
 		if (!isValidDiscordSnowflake(userId)) {
 			throw new Error(`Invalid userID: ${userId}`);
@@ -465,6 +547,64 @@ class CacheManager {
 
 	async setDisabledCommands(newDisabledCommands: string[]): Promise<void> {
 		await this.setJson(BotKeys.DisabledCommands, newDisabledCommands);
+	}
+
+	async getStaffGrantsSchedule({ forceRefresh = false }: { forceRefresh?: boolean } = {}): Promise<StaffGrants> {
+		if (!forceRefresh) {
+			const cached = await this.getJson(BotKeys.Global.StaffGrantsSchedule);
+			if (cached) return ZStaffGrants.parse(cached);
+		}
+
+		const [clientSettings] = await prisma.$queryRaw<{ staff_bestow_limits: unknown }[]>`
+			SELECT staff_bestow_limits
+			FROM "clientStorage"
+			WHERE id = ${globalConfig.clientID}
+		`;
+		const schedule = ZStaffGrants.parse(clientSettings?.staff_bestow_limits ?? {});
+		await this.setStaffGrantsSchedule(schedule);
+		return schedule;
+	}
+
+	async setStaffGrantsSchedule(value: StaffGrants): Promise<void> {
+		await this.setJsonWithTTL(BotKeys.Global.StaffGrantsSchedule, value, this.jitterTTL(TTL.Hour, 0.1));
+	}
+
+	async refreshStaffGrants(): Promise<StaffGrants> {
+		await this.resetStaffGrants();
+		return this.getStaffGrantsSchedule({ forceRefresh: true });
+	}
+
+	async resetStaffGrants(): Promise<void> {
+		await this.client.del(BotKeys.Global.StaffGrantsSchedule);
+	}
+
+	async getExtraSettings({ forceRefresh = false }: { forceRefresh?: boolean } = {}): Promise<IExtraSettings> {
+		if (!forceRefresh) {
+			const cached = await this.getJson(BotKeys.Global.ExtraClientSettings);
+			if (cached) return ZExtraSettings.parse(cached);
+		}
+
+		const [clientSettings] = await prisma.$queryRaw<{ extra_settings: unknown }[]>`
+			SELECT extra_settings
+			FROM "clientStorage"
+			WHERE id = ${globalConfig.clientID}
+		`;
+		const settings = ZExtraSettings.parse(clientSettings?.extra_settings ?? {});
+		await this.setExtraSettings(settings);
+		return settings;
+	}
+
+	async setExtraSettings(value: IExtraSettings): Promise<void> {
+		await this.setJsonWithTTL(BotKeys.Global.ExtraClientSettings, value, TTL.Hour);
+	}
+
+	async refreshExtraSettingsCache(): Promise<IExtraSettings> {
+		await this.resetExtraSettings();
+		return this.getExtraSettings({ forceRefresh: true });
+	}
+
+	async resetExtraSettings(): Promise<void> {
+		await this.client.del(BotKeys.Global.ExtraClientSettings);
 	}
 
 	async isUserBlacklisted(id: string): Promise<boolean> {

@@ -9,6 +9,17 @@ export function isDoubleLootActive(duration = 0) {
 	return Date.now() - duration < DOUBLE_LOOT_FINISH_TIME_CACHE;
 }
 
+export function hasUsedDoubleLootThisMonth(lastUsage: Date | null, now = Date.now()) {
+	if (lastUsage === null) return false;
+	const nowDate = new Date(now);
+	return lastUsage.getUTCFullYear() === nowDate.getUTCFullYear() && lastUsage.getUTCMonth() === nowDate.getUTCMonth();
+}
+
+export function getNextDoubleLootUsageReset(lastUsage: Date | number) {
+	const usageDate = new Date(lastUsage);
+	return Date.UTC(usageDate.getUTCFullYear(), usageDate.getUTCMonth() + 1, 1);
+}
+
 export async function addToDoubleLootTimer(amount: number, reason: string) {
 	const clientSettings = await ClientSettings.fetch({
 		double_loot_finish_time: true
@@ -41,6 +52,7 @@ export async function addPatronLootTime(_tier: number, user: MUser | null) {
 		4: 25,
 		5: 60
 	};
+	// TODO: Again, this should be the Tier associated with the best entitlement.
 	const tier = _tier - 1;
 	if (!map[tier]) return;
 	const minutes = map[tier];

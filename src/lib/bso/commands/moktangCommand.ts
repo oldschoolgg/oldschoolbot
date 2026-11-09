@@ -1,5 +1,6 @@
 import type { MoktangTaskOptions } from '@/lib/bso/bsoTypes.js';
 import { dwarvenOutfit } from '@/lib/bso/collection-log/main.js';
+import { getGlobalBossSpeedBonus } from '@/lib/bso/commands/islandUpgrades.js';
 
 import { spoiler } from '@oldschoolgg/discord';
 import { Time } from '@oldschoolgg/toolkit';
@@ -8,6 +9,7 @@ import { Bank, Items, resolveItems } from 'oldschooljs';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { PercentCounter } from '@/lib/structures/PercentCounter.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
+import { readState } from '@/mahoji/commands/islandupgrade.js';
 
 const requiredPickaxes = resolveItems(['Crystal pickaxe', 'Volcanic pickaxe', 'Dwarven pickaxe', 'Dragon pickaxe']);
 
@@ -32,6 +34,12 @@ export async function moktangCommand(user: MUser, channelId: string, inputQuanti
 		'Offhand volcanic pickaxe'
 	);
 	timeToKill.add(user.hasEquipped('Mining master cape'), -5, 'Mining mastery');
+
+	const { upgrades, maintenance, assignment } = readState(user);
+	const conduitBonus = getGlobalBossSpeedBonus(upgrades, maintenance, assignment);
+	if (conduitBonus > 0) {
+		timeToKill.add(true, -(conduitBonus * 100), `${(conduitBonus * 100).toFixed(0)}% for Grand Conduit - Warcamp`);
+	}
 
 	const maxCanDo = Math.floor((await user.calcMaxTripLength('Moktang')) / timeToKill.value);
 	const quantity = Math.max(1, Math.min(totemsOwned, maxCanDo, inputQuantity ?? maxCanDo));

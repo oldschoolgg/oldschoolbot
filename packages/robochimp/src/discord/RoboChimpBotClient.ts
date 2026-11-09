@@ -5,8 +5,8 @@ import { DiscordSnowflake } from '@sapphire/snowflake';
 
 import { mentionCommand } from '@/discord/utils.js';
 import { allCommands } from '@/commands/allCommands.js';
-import { redis } from '@/lib/redis.js';
-import { RUser } from '@/structures/RUser.js';
+import { redis, rUserTTL } from '@/lib/redis.js';
+import { fetchRUserGroupUsers, RUser } from '@/structures/RUser.js';
 
 // @ts-expect-error ignore
 BigInt.prototype.toJSON = function () {
@@ -55,8 +55,8 @@ export class RoboChimpBotClient extends DiscordClient {
 			},
 			update: {}
 		});
-		redis.set(RedisKeys.RoboChimpUser(user.id), JSON.stringify(user));
-		return new RUser(user);
+		redis.set(RedisKeys.RoboChimpUser(user.id), JSON.stringify(user), 'EX', rUserTTL());
+		return new RUser(user, await fetchRUserGroupUsers(user));
 	}
 
 	mentionCommand(name: string, subCommand?: string, subSubCommand?: string) {

@@ -1,3 +1,4 @@
+import { defaultIslandUpgrades, type IslandUpgradeTiers } from '@/lib/bso/commands/islandUpgrades.js';
 import type { IMaterialBank } from '@/lib/bso/skills/invention/index.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
@@ -90,7 +91,8 @@ export class BaseUser {
 			minionName: this.minionName,
 
 			materials: this.ownedMaterials(),
-			pet: this.user.minion_equippedPet
+			pet: this.user.minion_equippedPet,
+			island_upgrades: (this.user.island_upgrades as IslandUpgradeTiers) ?? defaultIslandUpgrades
 		});
 	}
 
@@ -240,6 +242,10 @@ export class BaseUser {
 		return this.user.QP;
 	}
 
+	get lazy_boxes_claimed() {
+		return this.user.claimed_lazy_box;
+	}
+
 	get autoFarmFilter() {
 		return this.user.auto_farm_filter;
 	}
@@ -383,30 +389,36 @@ export class BaseUser {
 	modifyBusy(type: 'lock' | 'unlock', reason: string): void {
 		modifyUserBusy({ type, reason, userID: this.id });
 	}
-	isSupport(): boolean {
+	get isSupport(): boolean {
 		return this.bitfield.includes(BitField.ServerSupport);
 	}
-	isTrusted(): boolean {
-		return this.isWikiContrib() || this.isStaff();
+	get isTrusted(): boolean {
+		return this.isWikiContrib || this.isStaff;
 	}
-	isStaff(): boolean {
-		return this.isModOrAdmin() || this.isSupport() || this.isContributor();
+	get isStaff(): boolean {
+		return this.isModOrAdmin || this.isSupport || this.isContributor;
 	}
-	isWikiContrib(): boolean {
+	get isWikiContrib(): boolean {
 		return this.bitfield.includes(BitField.WikiContributor);
 	}
-	isMod(): boolean {
+	get isMod(): boolean {
 		return this.bitfield.includes(BitField.Moderator);
 	}
-	isContributor(): boolean {
+	get isGameHacker(): boolean {
+		return this.isMod && this.isBoring;
+	}
+	get isBoring(): boolean {
+		return this.bitfield.includes(BitField.Boring);
+	}
+	get isContributor(): boolean {
 		return this.bitfield.includes(BitField.Contributor);
 	}
 
-	isAdmin(): boolean {
+	get isAdmin(): boolean {
 		return globalConfig.adminUserIDs.includes(this.id);
 	}
-	isModOrAdmin(): boolean {
-		return this.isAdmin() || this.isMod();
+	get isModOrAdmin(): boolean {
+		return this.isAdmin || this.isMod;
 	}
 
 	/**

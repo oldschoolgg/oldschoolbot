@@ -120,6 +120,12 @@
 		"input_id": 4834
 	},
 	{
+		"name": "Primordial bones",
+		"level": 105,
+		"xp": 300,
+		"input_id": 75007
+	},
+	{
 		"name": "Raurg bones",
 		"level": 1,
 		"xp": 96,

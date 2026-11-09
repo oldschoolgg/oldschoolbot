@@ -1,10 +1,11 @@
+import { ORI_DISABLED_MONSTERS } from '@/lib/bso/bsoConstants.js';
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 import { bonecrusherEffect } from '@/lib/bso/skills/invention/effects/bonecrusherEffect.js';
 import { clueUpgraderEffect } from '@/lib/bso/skills/invention/effects/clueUpgraderEffect.js';
 import { portableTannerEffect } from '@/lib/bso/skills/invention/effects/portableTannerEffect.js';
 import { slayerMaskHelms } from '@/lib/bso/skills/slayer/slayerMaskHelms.js';
 
-import { increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { increaseNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { roll } from 'node-rng';
 import { type Bank, type ItemBank, MonsterAttribute, Monsters } from 'oldschooljs';
 
@@ -39,13 +40,17 @@ export function oriEffect({
 	gearBank,
 	quantity,
 	duration,
-	messages
-}: Pick<MidPVMEffectArgs, 'gearBank' | 'quantity' | 'duration' | 'messages'>) {
+	messages,
+	monster
+}: Pick<MidPVMEffectArgs, 'gearBank' | 'quantity' | 'duration' | 'messages'> & { monster?: string }) {
 	if (!gearBank.usingPet('Ori')) return quantity;
+	if (monster && ORI_DISABLED_MONSTERS.some(disabledMonster => stringMatches(disabledMonster, monster))) {
+		return quantity;
+	}
 	let newQuantity = quantity;
 
-	if (duration > Time.Minute * 5) {
-		// Original boost for 5+ minute task:
+	if (duration > Time.Minute * 5 || quantity >= 8) {
+		// Original boost for 5+ minute task, or >= 8 kills.
 		newQuantity = Math.ceil(increaseNumByPercent(quantity, 25));
 	} else {
 		// 25% chance at extra kill otherwise:
