@@ -34,16 +34,57 @@ function randomHexColor(value: number): string {
 	return getWrappedArrayItem(colors, Math.floor(value));
 }
 
-async function renderChart(url: string) {
+const PNG_FILE_SIGNATURE = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+
+function isPng(buffer: Buffer) {
+	if (buffer.length < PNG_FILE_SIGNATURE.length) return false;
+	return buffer.subarray(0, PNG_FILE_SIGNATURE.length).equals(PNG_FILE_SIGNATURE);
+}
+
+function isImageResponse(contentType: string | null, buffer: Buffer) {
+	if (contentType?.toLowerCase().includes('image/')) return true;
+	return isPng(buffer);
+}
+
+async function renderChart(url: string, encodedConfig: string) {
 	if (process.env.NODE_ENV === 'TEST') {
 		return Buffer.from([]);
 	}
-	const response = await fetch(url, {
-		method: 'GET',
-		headers: { 'Content-Type': 'application/json' }
-	});
+	const requestAttempts = [
+		() =>
+			fetch('https://quickchart.io/apex-charts/render', {
+				method: 'POST',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify({ config: encodedConfig })
+			}),
+		() =>
+			fetch(url, {
+				method: 'GET',
+				headers: { 'content-type': 'application/json' }
+			})
+	];
+	const errors: string[] = [];
 
-	return Buffer.from(await response.arrayBuffer());
+	for (const [index, makeRequest] of requestAttempts.entries()) {
+		const method = index === 0 ? 'POST' : 'GET';
+		try {
+			const response = await makeRequest();
+			const contentType = response.headers.get('content-type');
+			const buffer = Buffer.from(await response.arrayBuffer());
+			if (!response.ok || !isImageResponse(contentType, buffer)) {
+				const responseBody = buffer.toString('utf-8', 0, 200).trim().replaceAll(/\s+/g, ' ');
+				errors.push(
+					`${method} ${response.status} ${response.statusText}${responseBody ? ` - ${responseBody}` : ''}`
+				);
+				continue;
+			}
+			return buffer;
+		} catch (error) {
+			errors.push(`${method} request failed: ${(error as Error).message}`);
+		}
+	}
+
+	throw new Error(`Failed to render chart via QuickChart. ${errors.join(' | ')}`);
 }
 
 export interface ChartOptions {
@@ -154,5 +195,5 @@ type ChartNumberFormat = (typeof formatList)[number]['name'];
 
 export async function createChart(options: ChartOptions) {
 	const res = createApexChartConfig(options);
-	return renderChart(res.url);
+	return renderChart(res.url, res.encoded);
 }
