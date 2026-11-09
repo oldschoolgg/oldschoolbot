@@ -931,9 +931,7 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 		}
 		case 'DiscoBloodbath': {
 			const data = currentTask as DiscoBloodbathActivityTaskOptions;
-			return `${name} is currently at the ${data.club} club (${data.theme.name} vibe). The visit should take ${formatDuration(
-				durationRemaining
-			)}.`;
+			return `${name} is currently at the ${data.club} club (${data.theme.name} vibe). The visit should take ${loneFormattedDuration}.`;
 		}
 
 		case 'BossEvent': {
