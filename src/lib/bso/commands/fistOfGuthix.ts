@@ -1,6 +1,6 @@
 import { defaultMaintenanceTimestamps, getGlobalMinigameBonus } from '@/lib/bso/commands/islandUpgrades.js';
 
-import { formatDuration, Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit';
 import { randomVariation } from 'node-rng';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
@@ -29,8 +29,8 @@ export async function fistOfGuthixCommand(user: MUser, channelId: string) {
 		boosts.push(`${(globalMinigameBonus * 100).toFixed(0)}% faster from Grand Conduit (Settlement Infrastructure)`);
 	}
 	const boostStr = boosts.length > 0 ? `\n\n**Boosts:** ${boosts.join(', ')}.` : '';
-  const str = `${
-	  user.minionName
+	const str = `${
+		user.minionName
 	} is now off to do ${quantity} Fist of Guthix games. The total trip will take ${formatTripDuration(user, duration)}.${boostStr}`;
 
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({

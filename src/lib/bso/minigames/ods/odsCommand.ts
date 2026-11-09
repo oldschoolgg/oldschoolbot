@@ -1,6 +1,6 @@
 import { defaultMaintenanceTimestamps, getGlobalMinigameBonus } from '@/lib/bso/commands/islandUpgrades.js';
 
-import { Emoji, formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { Emoji, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { randInt, randomVariation } from 'node-rng';
 import { Bank, Items } from 'oldschooljs';
 

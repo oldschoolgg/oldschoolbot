@@ -1,6 +1,6 @@
 import { defaultMaintenanceTimestamps, getGlobalMinigameBonus } from '@/lib/bso/commands/islandUpgrades.js';
 
-import { formatDuration, Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit';
 import { randomVariation } from 'node-rng';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';

@@ -1,7 +1,7 @@
 import type { TuraelsTrialsOptions } from '@/lib/bso/bsoTypes.js';
 import { defaultMaintenanceTimestamps, getGlobalMinigameBonus } from '@/lib/bso/commands/islandUpgrades.js';
 
-import { formatDuration, increaseNumByPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { increaseNumByPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { degradeChargeBank } from '@/lib/degradeableItems.js';

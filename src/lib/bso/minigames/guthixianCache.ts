@@ -1,5 +1,5 @@
 import { dateFm } from '@oldschoolgg/discord';
-import { formatDuration, getNextUTCReset, Time } from '@oldschoolgg/toolkit';
+import { getNextUTCReset, Time } from '@oldschoolgg/toolkit';
 
 import { CONSTANTS } from '@/lib/constants.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
