@@ -13,8 +13,13 @@ const ZulrahFlaxMutagenTable: LootTable = new LootTable()
 	.add('Magma mutagen', 1, 10)
 	.add('Flax', 1000, 5244);
 
+const ZulrahSharkTable: LootTable = new LootTable()
+	.add('Raw shark', 35, 9)
+	.add('Shark lure', 70, 9)
+	.add('Manta ray', 35, 6);
+
 const ZulrahTable: LootTable = new LootTable()
-	.add(RareDropTable, 1, 9)
+	.add(RareDropTable, 1, 10)
 	.oneIn(256, ZulrahUniqueTable)
 
 	/* Weapons and armour */
@@ -23,9 +28,9 @@ const ZulrahTable: LootTable = new LootTable()
 	.add('Dragon halberd', 1, 2)
 
 	/* Runes */
-	.add('Death rune', 300, 12)
+	.add('Death rune', 250, 12)
 	.add('Law rune', 200, 12)
-	.add('Chaos rune', 500, 12)
+	.add('Chaos rune', 400, 12)
 
 	/* Herbs */
 	.add('Snapdragon', 10, 2)
@@ -57,7 +62,7 @@ const ZulrahTable: LootTable = new LootTable()
 
 	/* Other */
 	.add('Zul-andra teleport', 4, 15)
-	.add('Manta ray', 35, 12)
+	.add(ZulrahSharkTable, 1, 12)
 	.add('Antidote++(4)', 10, 9)
 	.add('Dragonstone bolt tips', 12, 8)
 	.add('Grapes', 250, 6)

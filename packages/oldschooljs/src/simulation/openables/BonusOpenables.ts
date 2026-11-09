@@ -22,7 +22,7 @@ export const BrimstoneChestFish: FishDropTable[] = [
 		qty: [80, 160],
 		low: -10,
 		high: 20,
-		req: 31
+		req: 33
 	},
 	{
 		item: 'Raw sea turtle',
@@ -33,10 +33,10 @@ export const BrimstoneChestFish: FishDropTable[] = [
 	},
 	{
 		item: 'Raw shark',
-		qty: [100, 250],
+		qty: [80, 250],
 		low: -60,
-		high: 140,
-		req: 27
+		high: 40,
+		req: 17
 	},
 	{
 		item: 'Raw monkfish',
@@ -48,22 +48,22 @@ export const BrimstoneChestFish: FishDropTable[] = [
 	{
 		item: 'Raw swordfish',
 		qty: [100, 300],
-		low: 30,
+		low: 25,
 		high: 200,
-		req: 1
-	},
-	{
-		item: 'Raw lobster',
-		qty: [100, 350],
-		low: 70,
-		high: 270,
 		req: 1
 	},
 	{
 		item: 'Raw tuna',
 		qty: [100, 350],
-		low: 225,
-		high: 324,
+		low: 160,
+		high: 0,
+		req: 1
+	},
+	{
+		item: 'Raw lobster',
+		qty: [100, 350],
+		low: 0,
+		high: 0,
 		req: 1
 	}
 ];
@@ -126,7 +126,7 @@ export const LarransBigChestFish: FishDropTable[] = [
 		qty: [120, 240],
 		low: -10,
 		high: 20,
-		req: 31
+		req: 33
 	},
 	{
 		item: 'Raw sea turtle',
@@ -137,10 +137,10 @@ export const LarransBigChestFish: FishDropTable[] = [
 	},
 	{
 		item: 'Raw shark',
-		qty: [150, 375],
+		qty: [120, 375],
 		low: -60,
-		high: 140,
-		req: 27
+		high: 40,
+		req: 17
 	},
 	{
 		item: 'Raw monkfish',
@@ -152,22 +152,22 @@ export const LarransBigChestFish: FishDropTable[] = [
 	{
 		item: 'Raw swordfish',
 		qty: [150, 450],
-		low: 30,
+		low: 25,
 		high: 200,
-		req: 1
-	},
-	{
-		item: 'Raw lobster',
-		qty: [150, 525],
-		low: 70,
-		high: 270,
 		req: 1
 	},
 	{
 		item: 'Raw tuna',
 		qty: [150, 525],
-		low: 225,
-		high: 324,
+		low: 160,
+		high: 0,
+		req: 1
+	},
+	{
+		item: 'Raw lobster',
+		qty: [150, 525],
+		low: 0,
+		high: 0,
 		req: 1
 	}
 ];

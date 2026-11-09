@@ -2,6 +2,8 @@ import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
+const ThermySharkTable: LootTable = new LootTable().add('Raw shark', 30, 5).add('Shark lure', 60, 3);
+
 const ThermonuclearSmokeDevilTable: LootTable = new LootTable()
 	.every('Ashes')
 
@@ -23,40 +25,40 @@ const ThermonuclearSmokeDevilTable: LootTable = new LootTable()
 	/* Runes and ammunition */
 	.add('Smoke rune', 100, 10)
 	.add('Air rune', 300, 8)
-	.add('Soul rune', 60, 8)
+	.add('Soul rune', 100, 8)
 	.add('Rune arrow', 100, 2)
 
 	/* Consumables */
-	.add('Ugthanki kebab', 3, 4)
 	.add('Tuna potato', 3, 3)
 	.add('Sanfew serum(4)', 2, 3)
+	.add('Ugthanki kebab', 3, 1)
 	.add('Prayer potion(4)', 2, 1)
 
 	/* Resources */
-	.add('Pure essence', 300, 5)
+	.add('Pure essence', 300, 2)
 	.add('Molten glass', 100, 2)
 	.add('Mithril bar', 20, 2)
-	.add('Coal', 150, 2)
 	.add('Magic logs', 20, 2)
 	.add('Gold ore', 200, 2)
 	.add('Diamond', 10, 1)
+	.add(ThermySharkTable, 1, 1)
 
 	/* Other */
-	.add('Coins', [10_000, 20_000], 15)
-	.add('Tinderbox', 1, 10)
-	.add('Fire talisman', 1, 4)
-	.add('Bullseye lantern', 1, 3)
+	.add('Coins', [10_000, 19_999], 15)
 	.add('Desert goat horn', 50, 2)
 	.add('Grimy toadflax', 15, 2)
 	.add('Onyx bolt tips', 12, 2)
 	.add('Snapdragon seed', 2, 2)
+	.add('Ranarr seed', 2, 2)
+	.add('Tinderbox', 1, 1)
+	.add('Fire talisman', 1, 1)
 	.add('Grapes', 100, 1)
 	.add('Magic seed', 1, 1)
 	.add('Dragonstone ring', 1, 1)
 	.add('Crystal key', 1, 1)
 
 	/* Gem drop table */
-	.add(GemTable, 1, 3)
+	.add(GemTable, 1, 2)
 
 	/* Tertiary */
 	.tertiary(96, 'Clue scroll (hard)')
