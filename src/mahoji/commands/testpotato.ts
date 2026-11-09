@@ -48,7 +48,6 @@ import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 import { shades, shadesLogs } from '@/mahoji/lib/abstracted_commands/shadesOfMortonCommand.js';
 import { allUsableItems } from '@/mahoji/lib/abstracted_commands/useCommand.js';
 import { BingoManager } from '@/mahoji/lib/bingo/BingoManager.js';
-import { satisfyDiaryRequirements } from '@/mahoji/lib/testPotato/satisfyDiaryRequirements.js';
 
 export function getMaxUserValues(): SafeUserUpdateInput {
 	const updates: SafeUserUpdateInput = {};
