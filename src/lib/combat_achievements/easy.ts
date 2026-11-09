@@ -483,5 +483,17 @@ export const easyCombatAchievements: CombatAchievement[] = [
 				isCertainMonsterTrip(Monsters.Eldric.id)(data) ||
 				isCertainMonsterTrip(Monsters.RoyalTitans.id)(data)
 		}
+	},
+	{
+		id: 39,
+		name: 'Brutus Novice',
+		type: 'kill_count',
+		monster: 'Brutus',
+		desc: 'Kill Brutus.',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Brutus.id]: 1
+			}
+		})
 	}
 ];
