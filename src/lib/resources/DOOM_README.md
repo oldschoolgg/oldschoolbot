@@ -171,7 +171,7 @@ Do not put database credentials in this document, logs, source code, or response
 - `src/lib/types/minions.ts`: persisted Doom Activity TaskData types.
 - `src/tasks/minions/doomOfMokhaiotlActivity.ts`: applies the already-stored outcome at completion.
 - `src/mahoji/lib/abstracted_commands/delveCommand.ts`: command options and user-facing option descriptions.
-- Doom combat-achievement definitions consume the stored Delve Trek results and must use the same terminology and semantics.
+- Doom combat-achievement definitions consume the stored Delve Trek results and must use the same terminology and semantics. Timed Doom combat achievements check the duration of each completed Delve Trek, not the summed task duration, so multi-Trek tasks can complete them when any Delve Trek meets the threshold. Combat-achievement rolls use the number of stored Delve Treks, including for max trips, so one multi-Trek task can award several achievements.
 
 ## Working agreement for future changes
 
