@@ -240,6 +240,17 @@ const thingsToReset = [
 			});
 			return 'Reset your bank.';
 		}
+	},
+	{
+		name: 'Dailies/Weeklies',
+		run: async (user: MUser) => {
+			await user.statsUpdate({
+				last_daily_timestamp: 0,
+				last_tears_of_guthix_timestamp: 0,
+				last_bert_sand_timestamp: 0
+			});
+			return 'Reset your daily and weekly timers.';
+		}
 	}
 ];
 
@@ -288,6 +299,7 @@ async function setXP(user: MUser, skillName: string, xp: number) {
 	});
 	return `Set ${skill.name} XP to ${xp}.`;
 }
+
 const openablesBank = new Bank();
 for (const i of allOpenables.values()) {
 	openablesBank.add(i.id, 100);
