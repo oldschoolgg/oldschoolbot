@@ -34,11 +34,29 @@ export const duradelTasks: AssignableSlayerTask[] = [
 	{
 		monster: Monsters.AdamantDragon,
 		amount: [4, 9],
-		weight: 2,
+		weight: 0,
 		monsters: [Monsters.AdamantDragon.id],
 		extendedAmount: [20, 30],
 		extendedUnlockId: SlayerTaskUnlocksEnum.AdamindSomeMore,
 		questPoints: 205,
+		unlocked: true
+	},
+	{
+		monster: Monsters.BronzeDragon,
+		amount: [35, 45],
+		weight: 14,
+		monsters: [
+			Monsters.BronzeDragon.id,
+			Monsters.IronDragon.id,
+			Monsters.SteelDragon.id,
+			Monsters.MithrilDragon.id,
+			Monsters.AdamantDragon.id,
+			Monsters.RuneDragon.id
+		],
+		extendedAmount: [150, 200],
+		extendedUnlockId: SlayerTaskUnlocksEnum.PedalToTheMetals,
+		combatLevel: 75,
+		questPoints: 34,
 		unlocked: true
 	},
 	{
@@ -272,7 +290,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 	{
 		monster: Monsters.IronDragon,
 		amount: [40, 60],
-		weight: 5,
+		weight: 0,
 		monsters: [Monsters.IronDragon.id],
 		extendedAmount: [60, 100],
 		extendedUnlockId: SlayerTaskUnlocksEnum.PedalToTheMetals,
@@ -312,7 +330,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 	{
 		monster: Monsters.MithrilDragon,
 		amount: [5, 10],
-		weight: 9,
+		weight: 0,
 		monsters: [Monsters.MithrilDragon.id],
 		extendedAmount: [25, 35],
 		extendedUnlockId: SlayerTaskUnlocksEnum.IReallyMithYou,
@@ -351,7 +369,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 	{
 		monster: Monsters.RuneDragon,
 		amount: [3, 8],
-		weight: 2,
+		weight: 0,
 		monsters: [Monsters.RuneDragon.id],
 		extendedAmount: [30, 60],
 		extendedUnlockId: SlayerTaskUnlocksEnum.RUUUUUNE,
@@ -397,7 +415,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 	{
 		monster: Monsters.SteelDragon,
 		amount: [10, 20],
-		weight: 7,
+		weight: 0,
 		monsters: [Monsters.SteelDragon.id],
 		levelRequirements: killableMonsters.find(k => k.id === Monsters.SteelDragon.id)?.levelRequirements,
 		extendedAmount: [40, 60],
