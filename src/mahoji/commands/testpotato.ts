@@ -715,45 +715,6 @@ export const testPotatoCommand = globalConfig.isProduction
 				},
 				{
 					type: 'Subcommand',
-					name: 'setdiary',
-					description: 'Mark an achievement diary tier as completed.',
-					options: [
-						{
-							type: 'String',
-							name: 'diary',
-							description: 'The diary you want to mark as completed.',
-							required: true,
-							autocomplete: async ({ value }: StringAutoComplete) => {
-								return diaries
-									.filter(diary =>
-										!value
-											? true
-											: [diary.name, ...(diary.alias ?? [])].some(alias =>
-													alias.toLowerCase().includes(value.toLowerCase())
-												)
-									)
-									.map(diary => ({
-										name: diary.name,
-										value: diary.name
-									}));
-							}
-						},
-						{
-							type: 'String',
-							name: 'tier',
-							description: 'The tier to complete.',
-							required: true,
-							choices: [
-								{ name: 'Easy', value: 'easy' },
-								{ name: 'Medium', value: 'medium' },
-								{ name: 'Hard', value: 'hard' },
-								{ name: 'Elite', value: 'elite' }
-							]
-						}
-					]
-				},
-				{
-					type: 'Subcommand',
 					name: 'setminigamekc',
 					description: 'Set minigame kc.',
 					options: [
