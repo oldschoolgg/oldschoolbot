@@ -17,6 +17,7 @@ export default async ({
 	quantity,
 	bossName,
 	catacombs,
+	quests = false,
 	onTask,
 	slayerMaster,
 	limit,
@@ -43,7 +44,13 @@ export default async ({
 
 		const killableMonster = killableMonsters.find(mon => mon.id === osjsMonster.id);
 		if (killableMonster?.specialLoot) {
-			killableMonster.specialLoot({ ownedItems: result.bank, loot: result.bank, quantity, cl: new Bank() });
+			killableMonster.specialLoot({
+				ownedItems: result.bank,
+				loot: result.bank,
+				quantity,
+				cl: new Bank(),
+				hasCompletedQuests: quests
+			});
 		}
 
 		return { bank: result.bank.toJSON() };

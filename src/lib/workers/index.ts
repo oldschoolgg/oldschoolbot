@@ -13,6 +13,7 @@ export interface KillWorkerArgs {
 	limit: number;
 	onTask: boolean;
 	catacombs?: boolean;
+	quests?: boolean;
 	slayerMaster?: MonsterSlayerMaster;
 	lootTableTertiaryChanges: [string, number][];
 }
