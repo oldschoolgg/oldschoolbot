@@ -1,9 +1,10 @@
 import { dateFm } from '@oldschoolgg/discord';
-import { formatDuration, getNextUTCReset, Time } from '@oldschoolgg/toolkit';
+import { getNextUTCReset, Time } from '@oldschoolgg/toolkit';
 import { randomVariation } from 'node-rng';
 
 import { CONSTANTS } from '@/lib/constants.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export async function bonanzaCommand(user: MUser, channelId: string) {
 	if (await user.minionIsBusy()) return 'Your minion is busy.';
@@ -18,7 +19,7 @@ export async function bonanzaCommand(user: MUser, channelId: string) {
 
 	const str = `${
 		user.minionName
-	} is now off to participate in Balthazar's Big Bonanza! The total trip will take ${formatDuration(duration)}.`;
+	} is now off to participate in Balthazar's Big Bonanza! The total trip will take ${formatTripDuration(user, duration)}.`;
 
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,

@@ -7,10 +7,11 @@ import {
 	getValidLocationsForFishType
 } from '@/lib/bso/minigames/fishingContest.js';
 
-import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export async function fishingContestStartCommand(user: MUser, channelId: string, loc: string | undefined) {
 	const currentFishType = getCurrentFishType();
@@ -101,7 +102,7 @@ export async function fishingContestStartCommand(user: MUser, channelId: string,
 	return {
 		content: `${user.minionName} is now off to catch ${quantity === 1 ? 'a' : quantity} fish at ${
 			fishingLocation.name
-		}, they will return in ${formatDuration(duration)}. Removed ${cost} from your bank.${
+		}, they will return in ${formatTripDuration(user, duration)}. Removed ${cost} from your bank.${
 			quantity > 1
 				? `
 You're fishing ${quantity - 1} extra fish: ${quantityBoosts.join(', ')}`

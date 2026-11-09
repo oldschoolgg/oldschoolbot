@@ -7,13 +7,14 @@ import {
 	createDOATeam
 } from '@/lib/bso/depthsOfAtlantis.js';
 
-import { Emoji, formatDuration, Time } from '@oldschoolgg/toolkit';
+import { Emoji, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import { degradeItem } from '@/lib/degradeableItems.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { bankToStrShortNames } from '@/lib/util/smallUtils.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
@@ -181,7 +182,7 @@ export async function doaStartCommand(
 		.map(u => u.usernameOrMention)
 		.join(', ')}) is now off to do ${quantity === 1 ? 'a' : `${quantity}x`} ${
 		challengeMode ? 'Challenge Mode' : ''
-	} Depths of Atlantis raid - the total trip will take ${formatDuration(createdDOATeam.fakeDuration)}.`;
+	} Depths of Atlantis raid - the total trip will take ${formatTripDuration(user, createdDOATeam.fakeDuration)}.`;
 
 	str += ` \n\n${debugStr}`;
 

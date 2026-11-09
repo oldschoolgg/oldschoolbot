@@ -1,11 +1,12 @@
 import type { TuraelsTrialsOptions } from '@/lib/bso/bsoTypes.js';
 import { defaultMaintenanceTimestamps, getGlobalMinigameBonus } from '@/lib/bso/commands/islandUpgrades.js';
 
-import { formatDuration, increaseNumByPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { increaseNumByPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { degradeChargeBank } from '@/lib/degradeableItems.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export const TuraelsTrialsMethods = ['melee', 'mage', 'range'] as const;
 export type TuraelsTrialsMethod = (typeof TuraelsTrialsMethods)[number];
@@ -137,7 +138,8 @@ export async function turaelsTrialsStartCommand(user: MUser, channelId: string, 
 		m: method
 	});
 
-	const response = `${user.minionName} is now participating in Turaels Trials, it'll take around ${formatDuration(
+	const response = `${user.minionName} is now participating in Turaels Trials, it'll take around ${formatTripDuration(
+		user,
 		task.duration
 	)} to finish.
 

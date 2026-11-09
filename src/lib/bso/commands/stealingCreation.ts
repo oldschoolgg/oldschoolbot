@@ -1,9 +1,10 @@
 import { defaultMaintenanceTimestamps, getGlobalMinigameBonus } from '@/lib/bso/commands/islandUpgrades.js';
 
-import { formatDuration, Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit';
 import { randomVariation } from 'node-rng';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export async function stealingCreationCommand(user: MUser, channelId: string) {
 	if (await user.minionIsBusy()) return 'Your minion is busy.';
@@ -28,7 +29,9 @@ export async function stealingCreationCommand(user: MUser, channelId: string) {
 		boosts.push(`${(globalMinigameBonus * 100).toFixed(0)}% faster from Grand Conduit (Settlement Infrastructure)`);
 	}
 	const boostStr = boosts.length > 0 ? `\n\n**Boosts:** ${boosts.join(', ')}.` : '';
-	const str = `${user.minionName} is now off to do ${quantity} Stealing Creation games. The total trip will take ${formatDuration(duration)}.${boostStr}`;
+	const str = `${
+		user.minionName
+	} is now off to do ${quantity} Stealing Creation games. The total trip will take ${formatTripDuration(user, duration)}.${boostStr}`;
 
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,

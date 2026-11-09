@@ -6,7 +6,6 @@ import type { GearStats } from '@oldschoolgg/gear';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
-	formatDuration,
 	increaseNumByPercent,
 	isWeekend,
 	reduceNumByPercent
@@ -17,6 +16,7 @@ import { checkUserCanUseDegradeableItem, degradeablePvmBoostItems, degradeItem }
 import { trackLoot } from '@/lib/lootTrack.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { readState } from '@/mahoji/commands/islandupgrade.js';
 
 const bisMageGear = new Gear({
@@ -282,7 +282,7 @@ ${boosts.length > 0 ? `**Boosts:** ${boosts.join(', ')}` : ''}`
 		);
 
 	return {
-		content: `Your minion is now attempting to kill ${quantity}x Naxxus, the trip will take ${formatDuration(duration)}.`,
+		content: `Your minion is now attempting to kill ${quantity}x Naxxus, the trip will take ${formatTripDuration(user, duration)}.`,
 		embeds: [embed]
 	};
 }

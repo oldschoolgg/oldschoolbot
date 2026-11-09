@@ -1,8 +1,9 @@
 import { dateFm } from '@oldschoolgg/discord';
-import { formatDuration, getNextUTCReset, Time } from '@oldschoolgg/toolkit';
+import { getNextUTCReset, Time } from '@oldschoolgg/toolkit';
 
 import { CONSTANTS } from '@/lib/constants.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export async function joinGuthixianCache(user: MUser, channelId: string) {
 	if (await user.minionIsBusy()) return `${user.minionName} is busy.`;
@@ -26,7 +27,8 @@ export async function joinGuthixianCache(user: MUser, channelId: string) {
 
 	const response = `${
 		user.minionName
-	} is now participating in the current Guthixian Cache, it'll take around ${formatDuration(
+	} is now participating in the current Guthixian Cache, it'll take around ${formatTripDuration(
+		user,
 		task.duration
 	)} to finish.`;
 
