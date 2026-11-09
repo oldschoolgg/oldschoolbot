@@ -1,7 +1,21 @@
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
-import type { BSOPrismaClient, OSBPrismaClient } from '@/lib/prisma.js';
+type UserDuration = {
+	user_id: string;
+	total_duration_hours: number;
+};
+
+type UserContinue = {
+	user_id: string;
+	continue_to_activity_ratio: number;
+};
+
+type UserUnique = {
+	user_id: string;
+	unique_seconds: bigint;
+	total_entries: number;
+};
 
 class ArrayTracker {
 	private counts: Record<string, string[]> = {};
@@ -50,7 +64,6 @@ export async function detectMischief(botType: 'osb' | 'bso') {
 			}
 		})
 	).map(i => i.id.toString());
-	const prismaClient: OSBPrismaClient | BSOPrismaClient = botType === 'osb' ? osbClient : bsoClient;
 
 	/**
 	 * Most Active
@@ -68,12 +81,9 @@ WHERE start_date >= '${startOfDay}' AND start_date <= '${endOfDay}'
 GROUP BY user_id`;
 
 		const activities = (
-			await prismaClient.$queryRawUnsafe<
-				{
-					user_id: string;
-					total_duration_hours: number;
-				}[]
-			>(sql)
+			botType === 'osb'
+				? await osbClient.$queryRawUnsafe<UserDuration[]>(sql)
+				: await bsoClient.$queryRawUnsafe<UserDuration[]>(sql)
 		).filter(i => !blacklistedUsers.includes(i.user_id));
 
 		// Calculate average
@@ -128,19 +138,33 @@ GROUP BY user_id`;
 	 */
 	async function tradeGivers() {
 		const netValueSent: Record<string, number> = {};
-		const transactions = await (prismaClient.economyTransaction as OSBPrismaClient['economyTransaction']).findMany({
-			where: {
-				date: {
-					gte: new Date(Date.now() - Time.Day * 7 * 2)
-				}
-			},
-			select: {
-				sender: true,
-				recipient: true,
-				items_sent: true,
-				items_received: true
-			}
-		});
+		const transactions = await (botType === 'osb'
+			? osbClient.economyTransaction.findMany({
+					where: {
+						date: {
+							gte: new Date(Date.now() - Time.Day * 7 * 2)
+						}
+					},
+					select: {
+						sender: true,
+						recipient: true,
+						items_sent: true,
+						items_received: true
+					}
+				})
+			: bsoClient.economyTransaction.findMany({
+					where: {
+						date: {
+							gte: new Date(Date.now() - Time.Day * 7 * 2)
+						}
+					},
+					select: {
+						sender: true,
+						recipient: true,
+						items_sent: true,
+						items_received: true
+					}
+				}));
 
 		for (const transaction of transactions) {
 			const sentValue = approximateValue(new Bank((transaction.items_sent as ItemBank) ?? {}));
@@ -175,9 +199,7 @@ GROUP BY user_id`;
 	 * Only uses commands in 1 server
 	 */
 	async function commandsInOnlyOneServer() {
-		const result = await prismaClient.$queryRawUnsafe<
-			{ user_id: string; guild_id: bigint; commands_used: number }[]
-		>(`SELECT
+		const commandsOneServerSQL = `SELECT
   user_id::text,
    MAX(guild_id) AS guild_id,
    COUNT(id)::int as commands_used
@@ -192,7 +214,15 @@ HAVING
   COUNT(id) > 10
 ORDER BY
   user_id DESC;
-`);
+`;
+		const result =
+			botType === 'osb'
+				? await osbClient.$queryRawUnsafe<{ user_id: string; guild_id: bigint; commands_used: number }[]>(
+						commandsOneServerSQL
+					)
+				: await bsoClient.$queryRawUnsafe<{ user_id: string; guild_id: bigint; commands_used: number }[]>(
+						commandsOneServerSQL
+					);
 
 		for (const activity of result) {
 			suspiciousUsers.add(
@@ -260,13 +290,11 @@ ORDER BY
 LIMIT 30;
     `;
 
-		const results =
-			await prismaClient.$queryRawUnsafe<
-				{
-					user_id: string;
-					continue_to_activity_ratio: number;
-				}[]
-			>(sql);
+		const results = (
+			botType === 'osb'
+				? await osbClient.$queryRawUnsafe<UserContinue[]>(sql)
+				: await bsoClient.$queryRawUnsafe<UserContinue[]>(sql)
+		).filter(i => !blacklistedUsers.includes(i.user_id));
 
 		let subBody = 'Continue/Activity ratio\n\n';
 		for (const row of results) {
@@ -306,14 +334,11 @@ FROM SuspiciousData
 WHERE uniqueness_ratio < 20
 ORDER BY uniqueness_ratio ASC;`;
 
-		const results =
-			await prismaClient.$queryRawUnsafe<
-				{
-					user_id: string;
-					unique_seconds: bigint;
-					total_entries: number;
-				}[]
-			>(sql);
+		const results = (
+			botType === 'osb'
+				? await osbClient.$queryRawUnsafe<UserUnique[]>(sql)
+				: await bsoClient.$queryRawUnsafe<UserUnique[]>(sql)
+		).filter(i => !blacklistedUsers.includes(i.user_id));
 
 		let subBody = 'Low Unique Continue Delta Seconds\n\n';
 		for (const row of results) {

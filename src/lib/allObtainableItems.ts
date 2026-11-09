@@ -75,7 +75,13 @@ for (const a of Enchantables) {
 	totalBankToAdd.add(a.output);
 }
 for (const fish of Fishing.Fishes) {
-	ALL_OBTAINABLE_ITEMS.add(fish.id);
+	if (fish.subfishes) {
+		for (const subfish of fish.subfishes) {
+			ALL_OBTAINABLE_ITEMS.add(subfish.id);
+		}
+	} else if (fish.id) {
+		ALL_OBTAINABLE_ITEMS.add(fish.id);
+	}
 }
 for (const clue of ClueTiers) {
 	ALL_OBTAINABLE_ITEMS.add(clue.id);
@@ -147,7 +153,7 @@ for (const item of [
 	Mining.GemRockTable.allItems,
 	Mining.GraniteRockTable.allItems,
 	Mining.SandstoneRockTable.allItems,
-	Mining.Ores.map(i => i.id),
+	Mining.Ores.map(i => i.outputId ?? i.id),
 	RandomEvents.map(i => i.loot.allItems),
 	RandomEvents.map(i => i.outfit),
 	allOpenables.map(i => [i.allItems, i.id, i.openedItem.id]),

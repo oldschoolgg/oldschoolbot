@@ -3,8 +3,7 @@ import {
 	type APIInteraction,
 	ApplicationCommandType,
 	ComponentType,
-	InteractionType,
-	MInteraction
+	InteractionType
 } from '@oldschoolgg/discord';
 import type { IAutoCompleteInteraction, IButtonInteraction, IChatInputCommandInteraction } from '@oldschoolgg/schemas';
 import { DiscordSnowflake } from '@sapphire/snowflake';
@@ -13,6 +12,7 @@ import { autoCompleteHandler } from '@/discord/autoCompleteHandler.js';
 import { commandHandler } from '@/discord/commandHandler.js';
 import type { OldSchoolBotClient } from '@/discord/OldSchoolBotClient.js';
 import { DISCORD_USER_IDS_INSERTED_CACHE } from '@/lib/cache.js';
+import { OSInteraction } from '@/lib/structures/OSInteraction.js';
 import { globalButtonInteractionHandlerWrapper } from '@/lib/util/globalInteractions.js';
 
 export async function interactionHandler(client: OldSchoolBotClient, itx: APIInteraction) {
@@ -21,9 +21,10 @@ export async function interactionHandler(client: OldSchoolBotClient, itx: APIInt
 	const userId = user.id;
 
 	if (!DISCORD_USER_IDS_INSERTED_CACHE.has(userId) && user) {
-		client.upsertDiscordUser(user);
+		void client.upsertDiscordUser(user);
 	}
 
+	if (user?.username) await Cache.updateUsername(user.id, user.username);
 	if (itx.type === InteractionType.ApplicationCommandAutocomplete) {
 		const d: IAutoCompleteInteraction = {
 			id: itx.id,
@@ -38,6 +39,8 @@ export async function interactionHandler(client: OldSchoolBotClient, itx: APIInt
 		};
 		return autoCompleteHandler(d);
 	}
+
+	const fullUser = await mUserFetch(userId);
 
 	// Button
 	if (itx.type === InteractionType.MessageComponent && itx.data.component_type === ComponentType.Button) {
@@ -58,12 +61,13 @@ export async function interactionHandler(client: OldSchoolBotClient, itx: APIInt
 				content: itx.message.content
 			}
 		};
-		const interaction = new MInteraction({ interaction: d, rawInteraction: itx, client });
+		const interaction = new OSInteraction({ interaction: d, rawInteraction: itx, client, user: fullUser });
 		await globalButtonInteractionHandlerWrapper(itx, interaction);
 		return;
 	}
 
 	if (itx.type === InteractionType.ApplicationCommand && itx.data.type === ApplicationCommandType.ChatInput) {
+		await fullUser.fetchPerkTier({ forceNoCache: true });
 		const chatInputItx = itx as APIChatInputApplicationCommandInteraction;
 		const d: IChatInputCommandInteraction = {
 			id: itx.id,
@@ -76,7 +80,7 @@ export async function interactionHandler(client: OldSchoolBotClient, itx: APIInt
 			command_name: itx.data.name,
 			command_type: itx.data.type
 		};
-		const interaction = new MInteraction({ interaction: d, rawInteraction: chatInputItx, client });
+		const interaction = new OSInteraction({ interaction: d, rawInteraction: chatInputItx, client, user: fullUser });
 		await commandHandler(chatInputItx, interaction);
 		return;
 	}

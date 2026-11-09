@@ -79,14 +79,6 @@ const TitheFarmBuyables: TitheFarmBuyable[] = [
 		titheFarmPoints: 2
 	},
 	{
-		name: '20x Grape seed',
-		aliases: ['20x grape seeds'],
-		outputItems: {
-			[itemID('Grape seed')]: 20
-		},
-		titheFarmPoints: 40
-	},
-	{
 		name: 'Supercompost',
 		aliases: ['super compost'],
 		outputItems: {

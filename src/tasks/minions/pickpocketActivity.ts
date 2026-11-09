@@ -1,10 +1,11 @@
-import { percentChance, randInt, roll } from '@oldschoolgg/rng';
 import { Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
+import { MessageBuilder } from '@/discord/MessageBuilder.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { Thieving } from '@/lib/skilling/skills/thieving/index.js';
 import type { Stealable } from '@/lib/skilling/skills/thieving/stealables.js';
+import { rogueOutfitPercentBonus } from '@/lib/skilling/skills/thieving/thievingUtils.js';
 import type { PickpocketActivityTaskOptions } from '@/lib/types/minions.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
@@ -13,7 +14,8 @@ export function calcLootXPPickpocketing(
 	npc: Stealable,
 	quantity: number,
 	hasThievingCape: boolean,
-	hasDiary: boolean
+	hasDiary: boolean,
+	rng: { percentChance: (percent: number) => boolean }
 ): [number, number, number, number] {
 	let xpReceived = 0;
 
@@ -28,7 +30,7 @@ export function calcLootXPPickpocketing(
 	const chanceOfSuccess = (npc.slope! * currentLevel + npc.intercept!) * diary * thievCape;
 
 	for (let i = 0; i < quantity; i++) {
-		if (!percentChance(chanceOfSuccess)) {
+		if (!rng.percentChance(chanceOfSuccess)) {
 			// The minion has just been stunned, and cant pickpocket for a few ticks, therefore
 			// they also miss out on the next few pickpockets depending on stun time. And take damage
 			damageTaken += npc.stunDamage!;
@@ -45,18 +47,22 @@ export function calcLootXPPickpocketing(
 
 export const pickpocketTask: MinionTask = {
 	type: 'Pickpocket',
-	async run(data: PickpocketActivityTaskOptions, { user, handleTripFinish }) {
+	async run(data: PickpocketActivityTaskOptions, { user, handleTripFinish, rng }) {
 		const { monsterID, quantity, successfulQuantity, channelId, xpReceived, duration } = data;
 
 		const obj = Thieving.stealables.find(_obj => _obj.id === monsterID)!;
+		const isRoguesCastleChest = obj.id === 14774;
 		const currentLevel = user.skillLevel('thieving');
 		let rogueOutfitBoostActivated = false;
 
-		const loot = new Bank();
-		const { petDropRate } = skillingPetDropRate(user, 'thieving', obj.petChance);
-
 		const userTertChanges = user.buildTertiaryItemChanges();
-		const roguesChance = Thieving.rogueOutfitPercentBonus(user);
+
+		const loot = new Bank();
+
+		const petDropRate =
+			obj.type === 'chest' || !obj.petChance
+				? null
+				: skillingPetDropRate(user, 'thieving', obj.petChance).petDropRate;
 
 		if (obj.type === 'pickpockable') {
 			for (let i = 0; i < successfulQuantity; i++) {
@@ -70,10 +76,7 @@ export const pickpocketTask: MinionTask = {
 					lootItems.remove(id);
 				}
 
-				// TODO: Remove Rocky from loot tables in oldschoolJS
-				if (lootItems.has('Rocky')) lootItems.remove('Rocky');
-
-				if (randInt(1, 100) <= roguesChance) {
+				if (rng.randInt(1, 100) <= rogueOutfitPercentBonus(user)) {
 					rogueOutfitBoostActivated = true;
 					const doubledLoot = lootItems.multiply(2);
 					loot.add(doubledLoot);
@@ -81,18 +84,61 @@ export const pickpocketTask: MinionTask = {
 					loot.add(lootItems);
 				}
 
-				if (roll(petDropRate)) {
+				if (petDropRate && rng.roll(petDropRate)) {
 					loot.add('Rocky');
 				}
 			}
 		} else if (obj.type === 'stall') {
 			for (let i = 0; i < successfulQuantity; i++) {
-				if (percentChance(obj.lootPercent!)) {
+				if (rng.percentChance(obj.lootPercent!)) {
 					obj.table.roll(1, { targetBank: loot });
 				}
 
-				if (roll(petDropRate)) {
+				if (petDropRate && rng.roll(petDropRate)) {
 					loot.add('Rocky');
+				}
+			}
+		} else if (obj.type === 'chest') {
+			const hasMediumDiary = isRoguesCastleChest && user.hasDiary('wilderness.medium');
+			const hasHardDiary = isRoguesCastleChest && user.hasDiary('wilderness.hard');
+			const lootMultiplier = isRoguesCastleChest ? (hasHardDiary ? 1.25 : hasMediumDiary ? 1 : 0.75) : 1;
+			const extraLootChance = lootMultiplier > 1 ? (lootMultiplier - 1) * 100 : 0;
+			const baseLootChance = lootMultiplier < 1 ? lootMultiplier * 100 : 100;
+			const clueRolls = isRoguesCastleChest && user.owns('Ring of wealth (i)') ? 2 : 1;
+
+			for (let i = 0; i < successfulQuantity; i++) {
+				if (rng.percentChance(baseLootChance)) {
+					obj.table.roll(1, { targetBank: loot });
+				}
+
+				if (extraLootChance > 0 && rng.percentChance(extraLootChance)) {
+					obj.table.roll(1, { targetBank: loot });
+				}
+
+				if (isRoguesCastleChest) {
+					for (let rollIndex = 0; rollIndex < clueRolls; rollIndex++) {
+						if (rng.roll(99)) {
+							loot.add('Clue scroll (hard)');
+						}
+					}
+				}
+			}
+		}
+
+		const hardClueScrollId = ClueTiers.find(tier => tier.name === 'Hard')?.scrollID;
+		const pkedLoot = new Bank();
+		let pkedLootPercent = 0;
+
+		if (isRoguesCastleChest && loot.length > 0) {
+			pkedLootPercent = rng.randInt(5, 15);
+			for (const [item, quantity] of loot.items()) {
+				if (item.id === hardClueScrollId) {
+					continue;
+				}
+				const lostAmount = Math.floor((quantity * pkedLootPercent) / 100);
+				if (lostAmount > 0) {
+					loot.remove(item.id, lostAmount);
+					pkedLoot.add(item.id, lostAmount);
 				}
 			}
 		}
@@ -113,16 +159,18 @@ export const pickpocketTask: MinionTask = {
 			quantity - successfulQuantity
 		}x ${obj.type === 'pickpockable' ? 'pickpockets' : 'steals'}. ${xpRes}`;
 
-		str += `\n${
-			obj.type === 'pickpockable'
-				? ''
-				: `${
-						100 - obj.lootPercent!
-					}% of the loot was dropped in favour of enhancing amount of stalls stolen from.`
-		}`;
+		if (obj.type === 'stall') {
+			str += `\n${
+				100 - obj.lootPercent!
+			}% of the loot was dropped in favour of enhancing amount of stalls stolen from.`;
+		}
 
 		if (rogueOutfitBoostActivated) {
 			str += '\nYour rogue outfit allows you to take some extra loot.';
+		}
+
+		if (pkedLoot.length > 0) {
+			str += `\nYou were PKed and lost ${pkedLootPercent}% of your loot: ${pkedLoot}.`;
 		}
 
 		if (loot.amount('Rocky') > 0) {

@@ -1,6 +1,6 @@
+import { GearStat } from '@oldschoolgg/gear';
 import { stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, deepResolveItems, EMonster, itemID, Monsters, NIGHTMARES_HP, resolveItems } from 'oldschooljs';
-import { GearStat } from 'oldschooljs/gear';
 
 import { bossKillables } from '@/lib/minions/data/killableMonsters/bosses/index.js';
 import { camdozaalMonsters } from '@/lib/minions/data/killableMonsters/camdozaalMonsters.js';
@@ -50,7 +50,8 @@ const killableMonsters: KillableMonster[] = [
 				[itemID("Iban's staff")]: 5,
 				[itemID('Warped sceptre (uncharged)')]: 6,
 				[itemID('Harmonised nightmare staff')]: 7,
-				[itemID("Tumeken's shadow")]: 10
+				[itemID("Tumeken's shadow")]: 10,
+				[itemID('Eye of Ayak')]: 15
 			},
 			{ [itemID('Strange old lockpick')]: 7 }
 		],

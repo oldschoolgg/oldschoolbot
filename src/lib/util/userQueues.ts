@@ -19,7 +19,7 @@ export async function userQueueFn<T>(userID: string, fn: () => Promise<T>): Prom
 			return fn()
 				.then(resolve)
 				.catch(e => {
-					console.error(e);
+					Logging.logError(e);
 					reject(e);
 				});
 		});

@@ -8,12 +8,11 @@ export * from './util/chance.js';
 export * from './util/datetime.js';
 export * from './util/markdown.js';
 export * from './util/misc.js';
+export * from './util/perkTiers.js';
 export * from './util/typeChecking.js';
 
 import { detailedDiff } from 'deep-object-diff';
 export { detailedDiff as deepObjectDiff };
-
-export { default as deepEqual } from 'fast-deep-equal';
 
 export * from './colors.js';
 export * from './string-util.js';

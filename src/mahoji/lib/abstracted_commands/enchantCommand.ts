@@ -4,6 +4,7 @@ import { Items } from 'oldschooljs';
 import { Enchantables } from '@/lib/skilling/skills/magic/enchantables.js';
 import type { EnchantingActivityTaskOptions } from '@/lib/types/minions.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export async function enchantCommand(user: MUser, channelId: string, name: string, quantity?: number) {
 	const enchantable = Enchantables.find(
@@ -66,7 +67,8 @@ export async function enchantCommand(user: MUser, channelId: string, name: strin
 
 	const xpHr = `${Math.round(((enchantable.xp * quantity) / (duration / Time.Minute)) * 60).toLocaleString()} XP/Hr`;
 
-	return `${user.minionName} is now enchanting ${quantity}x ${enchantable.name}, it'll take around ${formatDuration(
+	return `${user.minionName} is now enchanting ${quantity}x ${enchantable.name}, it'll take around ${formatTripDuration(
+		user,
 		duration
 	)} to finish. Removed ${cost} from your bank. ${xpHr}`;
 }

@@ -1,14 +1,10 @@
-import './base.js';
-
 import { type ExecOptions, exec as execNonPromise } from 'node:child_process';
 import { promisify } from 'node:util';
 import { Stopwatch } from '@oldschoolgg/toolkit';
-import { TimerManager } from '@sapphire/timer-manager';
 import { Bank, Items, LootTable } from 'oldschooljs';
 import { isFunction, isObjectType, toSnakeCase } from 'remeda';
 
 import { SlayerRewardsShop } from '@/lib/slayer/slayerUnlocks.js';
-import { sonicBoom } from '@/lib/util/logger.js';
 
 const rawExecAsync = promisify(execNonPromise);
 
@@ -38,12 +34,6 @@ export async function runTimedLoggedFn(name: string, fn: () => unknown) {
 	console.log(`${name} completed in ${stopwatch.toString()}`);
 }
 
-export async function tearDownScript() {
-	TimerManager.destroy();
-	sonicBoom.destroy();
-	process.exit(0);
-}
-
 export function serializeSnapshotItem(item: any): any {
 	if (!isObjectType(item)) return item;
 	if (Array.isArray(item)) return item.map(serializeSnapshotItem);
@@ -70,7 +60,7 @@ export function serializeSnapshotItem(item: any): any {
 		}
 
 		// Item arrays
-		const notItemKeys = ['burn_kourend_bonus'];
+		const notItemKeys = ['burn_kourend_bonus', 'fixed_rate_per_hour'];
 		const definitelyItemKeys = ['items', 'all_items'];
 		if (
 			Array.isArray(value) &&
@@ -127,7 +117,7 @@ export function serializeSnapshotItem(item: any): any {
 		}
 
 		if (isObjectType(value) && 'toJSON' in value && isFunction(value.toJSON)) {
-			result[key] = value.toJSON();
+			result[key] = (value as any).toJSON();
 			continue;
 		}
 

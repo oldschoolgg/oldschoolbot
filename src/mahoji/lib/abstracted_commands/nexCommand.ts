@@ -1,12 +1,18 @@
 import { userMention } from '@oldschoolgg/discord';
-import { calcPerHour, formatDuration } from '@oldschoolgg/toolkit';
+import { calcPerHour } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
 import { calculateNexDetails, checkNexUser } from '@/lib/simulation/nex.js';
 import type { NexTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
-export async function nexCommand(interaction: MInteraction, user: MUser, channelId: string, solo: boolean | undefined) {
+export async function nexCommand(
+	interaction: OSInteraction,
+	user: MUser,
+	channelId: string,
+	solo: boolean | undefined
+) {
 	const ownerCheck = checkNexUser(user);
 	if (ownerCheck[1]) {
 		return `You can't start a Nex mass: ${ownerCheck[1]}`;
@@ -43,7 +49,8 @@ export async function nexCommand(interaction: MInteraction, user: MUser, channel
 	}
 
 	const details = await calculateNexDetails({
-		team: mahojiUsers.length === 1 ? [mahojiUsers[0], mahojiUsers[0], mahojiUsers[0], mahojiUsers[0]] : mahojiUsers
+		team: mahojiUsers.length === 1 ? [mahojiUsers[0], mahojiUsers[0], mahojiUsers[0], mahojiUsers[0]] : mahojiUsers,
+		rng: interaction.rng
 	});
 
 	const effectiveTeam = details.team.filter(m => !m.fake);
@@ -100,7 +107,7 @@ export async function nexCommand(interaction: MInteraction, user: MUser, channel
 		.join(', ')}${solo ? ' and 3 others' : ''}) is now off to kill ${details.quantity}x Nex! (${calcPerHour(
 		details.quantity,
 		details.fakeDuration
-	).toFixed(1)}/hr) - the total trip will take ${formatDuration(details.fakeDuration)}.
+	).toFixed(1)}/hr) - the total trip will return in about ${formatTripDuration(user, details.fakeDuration)}.
 
 ${effectiveTeam
 	.map(i => {

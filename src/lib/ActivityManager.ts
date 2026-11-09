@@ -1,15 +1,46 @@
-import { cryptoRng } from '@oldschoolgg/rng/crypto';
+import { cryptoRng } from 'node-rng/crypto';
 
 import type { Activity, activity_type_enum } from '@/prisma/main.js';
 import { globalConfig } from '@/lib/constants.js';
 import { onMinionActivityFinish } from '@/lib/events.js';
+import type { OSInteraction } from '@/lib/structures/OSInteraction.js';
 import { allTasks } from '@/lib/Task.js';
 import type { PrismaCompatibleJsonObject } from '@/lib/types/index.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
+function getActivityLogSummary(activity: Activity): string {
+	if (activity.type !== 'Farming') {
+		return '';
+	}
+	const data = activity.data as Record<string, unknown> | null;
+	if (!data || typeof data !== 'object') {
+		return '';
+	}
+
+	const plantsName =
+		typeof data.plantsName === 'string' && data.plantsName.length > 0 ? data.plantsName : 'Unknown crop';
+	const quantity = typeof data.quantity === 'number' ? data.quantity.toLocaleString() : null;
+
+	const parts = [quantity ? `${plantsName} x${quantity}` : plantsName].filter(Boolean);
+
+	if (parts.length === 0) {
+		return '';
+	}
+	return `: ${parts.join(' ')}`;
+}
+
 class SActivityManager {
+	private async getGuildIdForActivityError(channelId: string): Promise<string | null> {
+		try {
+			const channel = await Cache.getChannel(channelId);
+			return channel.guild_id;
+		} catch {
+			return null;
+		}
+	}
+
 	async cancelActivity(userID: string): Promise<void> {
 		await prisma.activity.deleteMany({ where: { user_id: BigInt(userID), completed: false } });
 	}
@@ -18,15 +49,16 @@ class SActivityManager {
 		return addSubTaskToActivityTask(tripData);
 	}
 
-	convertStoredActivityToFlatActivity(activity: Activity): ActivityTaskData {
-		if (!activity.channel_id) {
+	convertStoredActivityToFlatActivity(activity: Activity, interaction?: OSInteraction): ActivityTaskData {
+		const channelId = activity.channel_id?.toString() ?? interaction?.channelId?.toString() ?? null;
+		if (!channelId) {
 			throw new Error(`Activity ${activity.id} has no channel_id`);
 		}
 		return {
 			...(activity.data as PrismaCompatibleJsonObject),
 			type: activity.type as activity_type_enum,
 			userID: activity.user_id.toString(),
-			channelId: activity.channel_id.toString(),
+			channelId,
 			duration: activity.duration,
 			finishDate: activity.finish_date.getTime(),
 			id: activity.id
@@ -34,12 +66,18 @@ class SActivityManager {
 	}
 
 	async completeActivity(_activity: Activity): Promise<void> {
-		Logging.logDebug(`Completing activity ${_activity.id} of type ${_activity.type}`, {
-			type: 'ACTIVITY',
-			activity_type: _activity.type,
-			data: _activity.data,
-			user_id: _activity.user_id
-		});
+		const user = await mUserFetch(_activity.user_id.toString());
+		const summary = getActivityLogSummary(_activity);
+		Logging.logDebug(
+			`Completing activity ${_activity.id} (${_activity.type}${summary}) for ${user.username}[${user.id}]`,
+			{
+				type: 'ACTIVITY',
+				activity_type: _activity.type,
+				data: _activity.data,
+				user_id: _activity.user_id,
+				username: user.username
+			}
+		);
 		const activity = this.convertStoredActivityToFlatActivity(_activity);
 
 		if (_activity.completed) {
@@ -53,8 +91,6 @@ class SActivityManager {
 			return;
 		}
 
-		const user = await mUserFetch(activity.userID);
-
 		try {
 			await task.run(
 				{ ...activity, channelId: activity.channelId },
@@ -65,7 +101,17 @@ class SActivityManager {
 				}
 			);
 		} catch (err) {
-			Logging.logError(err as Error);
+			const date = new Date();
+			Logging.logError(err as Error, {
+				type: 'ACTIVITY_ERROR',
+				user_id: activity.userID,
+				activity_type: activity.type,
+				activity_id: activity.id,
+				channel_id: activity.channelId,
+				guild_id: await this.getGuildIdForActivityError(activity.channelId),
+				datetime: date.toISOString(),
+				timestamp: date.getTime()
+			});
 		} finally {
 			await onMinionActivityFinish(activity);
 		}

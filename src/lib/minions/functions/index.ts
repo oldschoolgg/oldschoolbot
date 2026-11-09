@@ -1,8 +1,7 @@
-import { GearStat, type OffenceGearStat } from 'oldschooljs/gear';
+import { GearStat, type OffenceGearStat, type PrimaryGearSetupType } from '@oldschoolgg/gear';
 
 import type { User } from '@/prisma/main.js';
 import type { PvMMethod } from '@/lib/constants.js';
-import type { PrimaryGearSetupType } from '@/lib/gear/types.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 
 export const attackStylesArr = ['attack', 'strength', 'defence', 'magic', 'ranged'] as const;

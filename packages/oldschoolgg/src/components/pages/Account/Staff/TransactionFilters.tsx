@@ -1,24 +1,13 @@
+import type { IBotType, IEconomyTransactionsQuery, IEconomyTransactionType } from '@oldschoolgg/schemas';
+
 import { Button } from '@/components/ui/button.js';
 import { Input } from '@/components/ui/input.js';
 import { Select } from '@/components/ui/Select.js';
-import type { Bot, TransactionType } from './types.js';
 
 interface TransactionFiltersProps {
-	bot: Bot;
-	sender: string;
-	recipient: string;
-	guildId: string;
-	type: TransactionType | '';
-	dateFrom: Date | null;
-	dateTo: Date | null;
+	query: IEconomyTransactionsQuery;
 	loading: boolean;
-	onBotChange: (bot: Bot) => void;
-	onSenderChange: (sender: string) => void;
-	onRecipientChange: (recipient: string) => void;
-	onGuildIdChange: (guildId: string) => void;
-	onTypeChange: (type: TransactionType | '') => void;
-	onDateFromChange: (date: Date | null) => void;
-	onDateToChange: (date: Date | null) => void;
+	setQuery: (query: Partial<IEconomyTransactionsQuery>) => void;
 	onSearch: () => void;
 	onReset: () => void;
 }
@@ -38,25 +27,7 @@ function parseDateInputValue(v: string): Date | null {
 	return new Date(y, m - 1, d, 0, 0, 0, 0);
 }
 
-export function TransactionFilters({
-	bot,
-	sender,
-	recipient,
-	guildId,
-	type,
-	dateFrom,
-	dateTo,
-	loading,
-	onBotChange,
-	onSenderChange,
-	onRecipientChange,
-	onGuildIdChange,
-	onTypeChange,
-	onDateFromChange,
-	onDateToChange,
-	onSearch,
-	onReset
-}: TransactionFiltersProps) {
+export function TransactionFilters({ query, setQuery, loading, onSearch, onReset }: TransactionFiltersProps) {
 	return (
 		<div>
 			<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -68,8 +39,8 @@ export function TransactionFilters({
 							{ label: 'OSB', value: 'osb' },
 							{ label: 'BSO', value: 'bso' }
 						]}
-						value={bot}
-						onChange={_t => onBotChange(_t as Bot)}
+						value={query.bot}
+						onChange={_t => setQuery({ bot: _t as IBotType })}
 						disabled={loading}
 					/>
 				</label>
@@ -79,10 +50,10 @@ export function TransactionFilters({
 					<Select
 						options={['All', 'Trade', 'Giveaway', 'Duel', 'GRI', 'Gift'].map(t => ({
 							label: t,
-							value: t === 'All' ? '' : (t.toLowerCase() as TransactionType)
+							value: t === 'All' ? '' : (t.toLowerCase() as IEconomyTransactionType)
 						}))}
-						value={type}
-						onChange={e => onTypeChange(e as TransactionType | '')}
+						value={query.type || ''}
+						onChange={e => setQuery({ type: e as IEconomyTransactionType })}
 						disabled={loading}
 					/>
 				</label>
@@ -91,8 +62,8 @@ export function TransactionFilters({
 					<div className="mb-1 text-sm font-medium ">Sender ID(s)</div>
 					<Input
 						placeholder="Discord ID (comma-separated)"
-						value={sender}
-						onChange={e => onSenderChange(e.currentTarget.value)}
+						value={query.sender}
+						onChange={e => setQuery({ sender: e.currentTarget.value })}
 						disabled={loading}
 					/>
 				</label>
@@ -101,8 +72,8 @@ export function TransactionFilters({
 					<div className="mb-1 text-sm font-medium ">Recipient ID</div>
 					<Input
 						placeholder="Discord ID"
-						value={recipient}
-						onChange={e => onRecipientChange(e.currentTarget.value)}
+						value={query.recipient}
+						onChange={e => setQuery({ recipient: e.currentTarget.value })}
 						disabled={loading}
 					/>
 				</label>
@@ -111,8 +82,8 @@ export function TransactionFilters({
 					<div className="mb-1 text-sm font-medium ">Guild ID</div>
 					<Input
 						placeholder="Discord Server ID"
-						value={guildId}
-						onChange={e => onGuildIdChange(e.currentTarget.value)}
+						value={query.guild_id}
+						onChange={e => setQuery({ guild_id: e.currentTarget.value })}
 						disabled={loading}
 					/>
 				</label>
@@ -121,8 +92,10 @@ export function TransactionFilters({
 					<div className="mb-1 text-sm font-medium ">Date From</div>
 					<Input
 						type="date"
-						value={isoDateInputValue(dateFrom)}
-						onChange={e => onDateFromChange(parseDateInputValue(e.currentTarget.value))}
+						value={isoDateInputValue(query.date_from ? new Date(query.date_from) : null)}
+						onChange={e =>
+							setQuery({ date_from: parseDateInputValue(e.currentTarget.value)?.toISOString() })
+						}
 						disabled={loading}
 					/>
 				</label>
@@ -131,8 +104,8 @@ export function TransactionFilters({
 					<div className="mb-1 text-sm font-medium ">Date To</div>
 					<Input
 						type="date"
-						value={isoDateInputValue(dateTo)}
-						onChange={e => onDateToChange(parseDateInputValue(e.currentTarget.value))}
+						value={isoDateInputValue(query.date_to ? new Date(query.date_to) : null)}
+						onChange={e => setQuery({ date_to: parseDateInputValue(e.currentTarget.value)?.toISOString() })}
 						disabled={loading}
 					/>
 				</label>

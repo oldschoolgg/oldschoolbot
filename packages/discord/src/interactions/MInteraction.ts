@@ -17,17 +17,17 @@ import type { BaseSendableMessage, SendableMessage } from '../client/types.js';
 import { convertApiMemberToZMember } from '../conversions.js';
 import type { SpecialResponse } from '../util.js';
 import { BaseInteraction } from './BaseInteraction.js';
-import { interactionConfirmation } from './confirmation.js';
+import { type InteractionConfirmationMessage, interactionConfirmation } from './confirmation.js';
 import { PaginatedMessage, type PaginatedMessageOptions } from './PaginatedMessage.js';
 
-type AnyInteraction = IChatInputCommandInteraction | IButtonInteraction;
+export type AnyInteraction = IChatInputCommandInteraction | IButtonInteraction;
 type RawFor<T> = T extends IButtonInteraction
 	? APIMessageComponentInteraction
 	: T extends IChatInputCommandInteraction
 		? APIChatInputApplicationCommandInteraction
 		: never;
 
-type InputItx<T extends AnyInteraction> = {
+export type InputItx<T extends AnyInteraction> = {
 	interaction: T;
 	rawInteraction: RawFor<T>;
 	client: DiscordClient;
@@ -114,14 +114,7 @@ export class MInteraction<T extends AnyInteraction = AnyInteraction> extends Bas
 	/**
 	 * You cannot use ephemeral if more than one user is required to confirm.
 	 */
-	async confirmation(
-		message:
-			| string
-			| ({ content: string; timeout?: number } & (
-					| { ephemeral?: false; users?: string[] }
-					| { ephemeral?: boolean; users?: undefined }
-			  ))
-	): Promise<void> {
+	async confirmation(message: InteractionConfirmationMessage): Promise<void> {
 		return interactionConfirmation(this, message);
 	}
 

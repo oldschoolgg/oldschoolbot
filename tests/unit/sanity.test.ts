@@ -1,5 +1,6 @@
+import { EquipmentSlot } from '@oldschoolgg/gear';
 import { exponentialPercentScale, uniqueArr } from '@oldschoolgg/toolkit';
-import { Bank, EMonster, EquipmentSlot, Items, itemID } from 'oldschooljs';
+import { Bank, EMonster, Items, itemID } from 'oldschooljs';
 import { clamp } from 'remeda';
 import { describe, expect, test } from 'vitest';
 
@@ -90,6 +91,10 @@ describe('Sanity', () => {
 		expect(Items.itemNameFromId(25485)).toEqual('Ultor ring');
 		expect(Items.getOrThrow('Ultor ring')!.equipment?.slot).toEqual('ring');
 		expect(Items.getOrThrow('Ultor ring')!.equipment?.melee_strength).toEqual(12);
+	});
+
+	test('Confliction gauntlets require 90 Hitpoints to equip', () => {
+		expect(Items.getOrThrow('Confliction gauntlets').equipment?.requirements?.hitpoints).toEqual(90);
 	});
 
 	test('EMonster', () => {

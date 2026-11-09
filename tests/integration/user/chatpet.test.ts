@@ -1,4 +1,4 @@
-import { SeedableRNG } from '@oldschoolgg/rng';
+import { SeedableRNG } from 'node-rng';
 import type { ItemBank } from 'oldschooljs';
 import { expect, test } from 'vitest';
 

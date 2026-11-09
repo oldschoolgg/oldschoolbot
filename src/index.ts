@@ -1,5 +1,5 @@
 import './lib/safeglobals.js';
-import './lib/MUser.js';
+import './lib/user/MUser.js';
 import './discord/client.js';
 import './lib/cache/redis.js';
 
@@ -18,12 +18,10 @@ async function main() {
 }
 
 process.on('uncaughtException', err => {
-	console.error(err);
 	Logging.logError(err);
 });
 
 process.on('unhandledRejection', err => {
-	console.error(err);
 	Logging.logError(err as Error);
 });
 

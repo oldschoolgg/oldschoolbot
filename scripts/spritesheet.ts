@@ -1,11 +1,15 @@
 import { promises as fs } from 'node:fs';
 import * as path from 'node:path';
-import { type GenerateResult, SpriteSheetGenerator } from '@oldschoolgg/spritesheet';
 import { isFunction, Stopwatch, uniqueArr } from '@oldschoolgg/toolkit';
+import { Bank, EItem, Items, resolveItems } from 'oldschooljs';
+import sharp from 'sharp';
+import { type GenerateResult, SpriteSheetGenerator } from 'spritesheets';
+
+import JsonItemData from '../packages/oldschooljs/src/assets/item_data.json' with { type: 'json' };
+
 import '../src/lib/safeglobals.js';
 
-import { Bank, EItem, GearStat, Items, resolveItems } from 'oldschooljs';
-import sharp from 'sharp';
+import { GearStat } from '@oldschoolgg/gear';
 
 import { ALL_OBTAINABLE_ITEMS } from '@/lib/allObtainableItems.js';
 import { HolidayItems } from '@/lib/data/holidayItems.js';
@@ -252,6 +256,7 @@ const itemsMustBeInSpritesheet: number[] = uniqueArr([
 	7774, // Reward token
 	7775, // Reward token
 	7776, // Reward token,
+	30970, // Humphrey Dumphrey
 	31181,
 	31184,
 	31187,
@@ -711,7 +716,89 @@ const itemsMustBeInSpritesheet: number[] = uniqueArr([
 	32928,
 	32930,
 	32932,
-	32934
+	32934,
+	EItem.CRYSTAL_HALBERD_910_I,
+	EItem.ELDER_CHAOS_HOOD_OR,
+	EItem.ECHO_AHRIMS_HOOD,
+	33002,
+	33004,
+	33005,
+	33006,
+	33007,
+	33008,
+	33009,
+	33012,
+	33015,
+	33018,
+	33044,
+	33063,
+	33065,
+	33066,
+	33080,
+	33082,
+	33084,
+	33086,
+	33099,
+	33101,
+	33106,
+	33109,
+	33112,
+	33115,
+	33117,
+	33118,
+	33120,
+	33124,
+	33126,
+	33133,
+	33144,
+	33145,
+	33146,
+	33221,
+	33227,
+	33229,
+	33231,
+	33233,
+	33235,
+	33237,
+	33243,
+	33245,
+	33247,
+	33249,
+	33251,
+	33253,
+	33260,
+	33263,
+	33266,
+	33269,
+	33272,
+	33275,
+	33278,
+	33281,
+	33284,
+	33287,
+	33290,
+	33293,
+	33296,
+	33299,
+	33302,
+	33305,
+	33308,
+	33311,
+	33332,
+	33335,
+	33345,
+	33347,
+	33349,
+	33351,
+	33353,
+	33355,
+	33357,
+	33359,
+	33362,
+	33365,
+	33368,
+	33382,
+	33424
 ]);
 
 const bisGearItems = new Set<number>();
@@ -769,6 +856,15 @@ const generateJsonData = (result: GenerateResult) => {
 	return jsonData;
 };
 
+async function downloadFile(url: string, dest: string): Promise<{ status: false; msg: string } | { status: true }> {
+	const res = await fetch(url);
+	if (!res.ok) return { status: false, msg: `HTTP ${res.status}` };
+
+	const buffer = Buffer.from(await res.arrayBuffer());
+	await fs.writeFile(dest, buffer);
+	return { status: true };
+}
+
 async function makeSpritesheet(iconsDir: string, name: string, allItems?: number[]) {
 	const pngFiles = await getPngFiles(iconsDir);
 	stopwatch.check(`Found ${pngFiles.length} PNG files in ${iconsDir}`);
@@ -825,9 +921,61 @@ async function generateGenericSpritesheet(inputDir: string, outputName: string) 
 		throw new Error(`Failed to generate generic spritesheet: ${error}`);
 	}
 }
+async function exists(path: string) {
+	try {
+		await fs.access(path);
+		return true;
+	} catch {
+		return false;
+	}
+}
+const iconBaseUrls = ['https://cdn.oldschool.gg/icons/items/', 'https://chisel.weirdgloop.org/static/img/osrs-sprite/'];
+const allOsbIconDir = './tmp/icons';
 
 async function main() {
+	const allOsbItems: number[] = [];
+
+	for (const _id of Object.keys(JsonItemData)) {
+		allOsbItems.push(Number(_id));
+	}
+
+	let isMissing = false;
+	const missingItems: number[] = [];
 	if (BOT_TYPE !== 'OSB') throw new Error('This script is only for OSB.');
+	// TODO: Get the icons for OSRS images that are unobtainable in OSB but are in BSO
+	stopwatch.check('Downloading missing files');
+	for (const item of itemsMustBeInSpritesheet) {
+		const imgName = `${allOsbIconDir}/${item}.png`;
+		if (!(await exists(imgName))) {
+			console.log(`Missing ${imgName}. Downloading...`);
+			const errors: string[] = [];
+			for (const iconBaseUrl of iconBaseUrls) {
+				const url = `${iconBaseUrl}${item}.png`;
+				try {
+					const dlResult = await downloadFile(url, imgName);
+					if (dlResult.status) {
+						errors.length = 0;
+						break;
+					}
+					errors.push(`${url} ${dlResult.msg}`);
+				} catch (error) {
+					errors.push(`${url} ${error instanceof Error ? error.message : String(error)}`);
+				}
+			}
+			if (errors.length > 0) {
+				isMissing = true;
+				missingItems.push(item);
+				for (const error of errors) {
+					console.log(`Error downloading ${error}`);
+				}
+			}
+		}
+	}
+
+	if (isMissing) {
+		console.log(JSON.stringify(missingItems));
+		throw `${missingItems.length} files did not exist on magna's server`;
+	}
 	stopwatch.check('Making OSB spritesheet');
 	await makeSpritesheet('./tmp/icons', 'items-spritesheet', itemsMustBeInSpritesheet).catch(err =>
 		console.error(`Failed to make OSB spritesheet: ${err.message}`)

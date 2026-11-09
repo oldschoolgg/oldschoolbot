@@ -1,10 +1,9 @@
-import { randomVariation } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, ItemGroups } from 'oldschooljs';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
-export async function championsChallengeCommand(user: MUser, channelId: string) {
+export async function championsChallengeCommand({ user, channelId, rng }: OSInteraction) {
 	if (await user.minionIsBusy()) {
 		return 'Your minion is busy.';
 	}
@@ -22,7 +21,7 @@ export async function championsChallengeCommand(user: MUser, channelId: string) 
 		userID: user.id,
 		channelId,
 		quantity: 1,
-		duration: randomVariation(Time.Minute * 20, 5),
+		duration: rng.randomVariation(Time.Minute * 20, 5),
 		type: 'ChampionsChallenge',
 		minigameID: 'champions_challenge'
 	});

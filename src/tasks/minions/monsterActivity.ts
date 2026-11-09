@@ -1,7 +1,6 @@
-import { percentChance, roll } from '@oldschoolgg/rng';
-import { calcPerHour, deepEqual, Emoji, Time, uniqueArr } from '@oldschoolgg/toolkit';
+import { calcPerHour, Emoji, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, type MonsterKillOptions, MonsterSlayerMaster, Monsters } from 'oldschooljs';
-import { clone } from 'remeda';
+import { clone, isDeepEqual } from 'remeda';
 
 import type { BitField } from '@/lib/constants.js';
 import { trackLoot } from '@/lib/lootTrack.js';
@@ -83,10 +82,12 @@ function getSlayerContext({
 
 	let effectiveSlayed = quantitySlayed;
 
-	// TODO: is this even right? it looks wrong
+	// If the task is NOT Zammy, you get 2 per Zammy kill
+	// (Not on Zammy task but Killing Kril means must be a greater demons task)
 	if (monsterID === EMonster.KRIL_TSUTSAROTH && slayerTaskMonsterID !== Monsters.KrilTsutsaroth.id) {
 		effectiveSlayed = quantitySlayed * 2;
 	} else if (monsterID === EMonster.KREEARRA && slayerTaskMonsterID !== Monsters.Kreearra.id) {
+		// 4 Aviansies
 		effectiveSlayed = quantitySlayed * 4;
 	} else if (
 		monsterID === EMonster.GROTESQUE_GUARDIANS &&
@@ -134,6 +135,7 @@ interface newOptions {
 	attackStyles: AttackStyles[];
 	bitfield: readonly BitField[];
 	cl: Bank;
+	rng: RNGProvider;
 }
 
 export function doMonsterTrip(data: newOptions) {
@@ -157,7 +159,8 @@ export function doMonsterTrip(data: newOptions) {
 		hasKourendElite,
 		attackStyles,
 		duration,
-		bitfield
+		bitfield,
+		rng
 	} = data;
 	const currentKC = kcBank.amount(monster.id);
 	const updateBank = new UpdateBank();
@@ -177,10 +180,10 @@ export function doMonsterTrip(data: newOptions) {
 			.add('Cooked karambwan', Math.max(1, Math.floor(duration / (4 * Time.Minute))));
 
 		for (let i = 0; i < (pkEncounters ?? -1); i++) {
-			if (percentChance(2) || died) {
+			if (rng.percentChance(2) || died) {
 				antiPKSupplies.clear();
 				break;
-			} else if (percentChance(10)) {
+			} else if (rng.percentChance(10)) {
 				antiPKSupplies
 					.remove('Saradomin brew(4)', 1)
 					.remove('Super restore(4)', 1)
@@ -212,7 +215,7 @@ export function doMonsterTrip(data: newOptions) {
 		if (died) {
 			// 1 in 20 to get smited without antiPKSupplies and 1 in 300 if the user has super restores
 			const hasPrayerLevel = gearBank.skillsAsLevels.prayer >= 25;
-			const protectItem = roll(hasWildySupplies ? 300 : 20) ? false : hasPrayerLevel;
+			const protectItem = rng.roll(hasWildySupplies ? 300 : 20) ? false : hasPrayerLevel;
 			const userGear = { ...clone(gearBank.gear.wildy.raw()) };
 
 			const calc = calculateGearLostOnDeathWilderness({
@@ -225,7 +228,7 @@ export function doMonsterTrip(data: newOptions) {
 
 			let reEquipedItems = false;
 			if (!gearBank.bank.has(calc.lostItems)) {
-				updateBank.gearChanges.wildy = calc.newGear;
+				updateBank.gearChanges.push({ setup: 'wildy', gear: calc.newGear });
 			} else {
 				updateBank.itemCostBank.add(calc.lostItems);
 				reEquipedItems = true;
@@ -248,7 +251,7 @@ export function doMonsterTrip(data: newOptions) {
 	if (monster.deathProps) {
 		const deathChance = calculateSimpleMonsterDeathChance({ ...monster.deathProps, currentKC });
 		for (let i = 0; i < quantity; i++) {
-			if (percentChance(deathChance)) {
+			if (rng.percentChance(deathChance)) {
 				deaths++;
 			}
 		}
@@ -315,7 +318,7 @@ export function doMonsterTrip(data: newOptions) {
 			}
 
 			for (let i = 0; i < quantity; i++) {
-				if (roll(superiorDroprate)) {
+				if (rng.roll(superiorDroprate)) {
 					newSuperiorCount++;
 				}
 			}
@@ -328,7 +331,7 @@ export function doMonsterTrip(data: newOptions) {
 	const loot = wiped ? new Bank() : monster.table.kill(finalQuantity, killOptions);
 	if (!wiped) {
 		if (monster.specialLoot) {
-			monster.specialLoot({ loot, ownedItems: gearBank.bank, quantity: finalQuantity, cl: data.cl });
+			monster.specialLoot({ loot, ownedItems: gearBank.bank, quantity: finalQuantity, cl: data.cl, bitfield });
 		}
 		if (
 			monster.name.toLowerCase() === 'unicorn' &&
@@ -349,7 +352,7 @@ export function doMonsterTrip(data: newOptions) {
 		}
 		if (isInWilderness && monster.name === 'Hill giant') {
 			for (let i = 0; i < quantity; i++) {
-				if (roll(128)) {
+				if (rng.roll(128)) {
 					loot.add('Giant key');
 				}
 			}
@@ -357,6 +360,7 @@ export function doMonsterTrip(data: newOptions) {
 		updateBank.itemLootBank.add(loot);
 		updateBank.xpBank.add(
 			addMonsterXPRaw({
+				rng,
 				monsterID: monster.id,
 				quantity,
 				duration,
@@ -412,7 +416,8 @@ export function doMonsterTrip(data: newOptions) {
 			monster,
 			loot,
 			gearBank,
-			updateBank
+			updateBank,
+			rng
 		});
 		if (effectResult) {
 			if (effectResult.loot) updateBank.itemLootBank.add(effectResult.loot);
@@ -436,7 +441,7 @@ export function doMonsterTrip(data: newOptions) {
 
 export const monsterTask: MinionTask = {
 	type: 'MonsterKilling',
-	async run(data: MonsterActivityTaskOptions, { user, handleTripFinish }) {
+	async run(data: MonsterActivityTaskOptions, { user, handleTripFinish, rng }) {
 		const { duration } = data;
 		const stats = await prisma.userStats.upsert({
 			where: {
@@ -469,7 +474,8 @@ export const monsterTask: MinionTask = {
 			attackStyles,
 			hasEliteCA: user.hasCompletedCATier('elite'),
 			bitfield: user.bitfield,
-			cl: user.cl
+			cl: user.cl,
+			rng
 		});
 		if (slayerContext.isOnTask) {
 			await prisma.slayerTask.update({
@@ -487,7 +493,7 @@ export const monsterTask: MinionTask = {
 		}
 
 		const recentlyKilledMonsters = uniqueArr([data.mi, ...stats.recently_killed_monsters]).slice(0, 6);
-		if (!deepEqual(recentlyKilledMonsters, stats.recently_killed_monsters)) {
+		if (!isDeepEqual(recentlyKilledMonsters, stats.recently_killed_monsters)) {
 			await prisma.userStats.update({
 				where: { user_id: BigInt(user.id) },
 				data: {
@@ -538,7 +544,7 @@ export const monsterTask: MinionTask = {
 			return;
 		}
 		const { itemTransactionResult, rawResults } = resultOrError;
-		messages.push(...rawResults.filter(r => typeof r === 'string'));
+		messages.push(...rawResults.filter(r => typeof r === 'string' && r.trim().length > 0));
 		const str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name} (${calcPerHour(data.q, data.duration).toFixed(1)}/hr), you now have ${newKC} KC.`;
 
 		let image: Awaited<ReturnType<typeof makeBankImage>> | undefined;

@@ -72,7 +72,8 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 				xp: Math.floor(totalXPAdded),
 				artificial: params.artificial ? true : null,
 				source: params.source
-			}
+			},
+			select: { id: true }
 		});
 	}
 
@@ -86,7 +87,8 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 				artificial: params.artificial ? true : null,
 				post_max: true,
 				source: params.source
-			}
+			},
+			select: { id: true }
 		});
 	}
 

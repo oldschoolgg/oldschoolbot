@@ -18,6 +18,7 @@ import { cookingTask } from '@/tasks/minions/cookingActivity.js';
 import { craftingTask } from '@/tasks/minions/craftingActivity.js';
 import { cutLeapingFishTask } from '@/tasks/minions/cutLeapingFishActivity.js';
 import { darkAltarTask } from '@/tasks/minions/darkAltarActivity.js';
+import { doomOfMokhaiotlTask } from '@/tasks/minions/doomOfMokhaiotlActivity.js';
 import { enchantingTask } from '@/tasks/minions/enchantingActivity.js';
 import { farmingTask } from '@/tasks/minions/farmingActivity.js';
 import { firemakingTask } from '@/tasks/minions/firemakingActivity.js';
@@ -25,6 +26,7 @@ import { fishingTask } from '@/tasks/minions/fishingActivity.js';
 import { fletchingTask } from '@/tasks/minions/fletchingActivity.js';
 import { CreateForestersRationsTask } from '@/tasks/minions/forestersRationActivity.js';
 import { gloryChargingTask } from '@/tasks/minions/gloryChargingActivity.js';
+import { gloryUnchargingTask } from '@/tasks/minions/gloryUnchargingActivity.js';
 import { groupoMonsterTask } from '@/tasks/minions/groupMonsterActivity.js';
 import { aerialFishingTask } from '@/tasks/minions/HunterActivity/aerialFishingActivity.js';
 import { birdHouseTask } from '@/tasks/minions/HunterActivity/birdhouseActivity.js';
@@ -47,6 +49,10 @@ import { infernoTask } from '@/tasks/minions/minigames/infernoActivity.js';
 import { lmsTask } from '@/tasks/minions/minigames/lmsActivity.js';
 import { mageTrainingTask } from '@/tasks/minions/minigames/mageTrainingArenaActivity.js';
 import { mahoganyHomesTask } from '@/tasks/minions/minigames/mahoganyHomesActivity.js';
+import {
+	MasteringMixologyContractTask,
+	MixologyPasteCreationTask
+} from '@/tasks/minions/minigames/masteringMixologyActivity.js';
 import { nightmareTask } from '@/tasks/minions/minigames/nightmareActivity.js';
 import { nightmareZoneTask } from '@/tasks/minions/minigames/nightmareZoneActivity.js';
 import { pestControlTask } from '@/tasks/minions/minigames/pestControlActivity.js';
@@ -65,6 +71,7 @@ import { toaTask } from '@/tasks/minions/minigames/toaActivity.js';
 import { tobTask } from '@/tasks/minions/minigames/tobActivity.js';
 import { trawlerTask } from '@/tasks/minions/minigames/trawlerActivity.js';
 import { brewingTask } from '@/tasks/minions/minigames/troubleBrewingActivity.js';
+import { valeTotemsTask } from '@/tasks/minions/minigames/valeTotemActivity.js';
 import { animatedArmorTask } from '@/tasks/minions/minigames/warriorsGuild/animatedArmourActivity.js';
 import { cyclopsTask } from '@/tasks/minions/minigames/warriorsGuild/cyclopsActivity.js';
 import { wintertodtTask } from '@/tasks/minions/minigames/wintertodtActivity.js';
@@ -93,6 +100,30 @@ import { underwaterAgilityThievingTask } from '@/tasks/minions/underwaterActivit
 import { vmTask } from '@/tasks/minions/volcanicMineActivity.js';
 import { wealthChargeTask } from '@/tasks/minions/wealthChargingActivity.js';
 import { woodcuttingTask } from '@/tasks/minions/woodcuttingActivity.js';
+import { yamaTask } from '@/tasks/minions/yamaActivity.js';
+
+type MinionTaskRunOptions = {
+	user: MUser;
+	handleTripFinish: typeof handleTripFinish;
+	rng: RNGProvider;
+};
+
+type IMinionTask = {
+	type: activity_type_enum;
+	run: (data: any, options: MinionTaskRunOptions) => Promise<void>;
+};
+declare global {
+	export type MinionTask = IMinionTask;
+}
+
+const shadesOfMortonSacredOilTask: MinionTask = {
+	type: activity_type_enum.ShadesOfMortonSacredOil,
+	run: shadesOfMortonTask.run
+};
+const shadesOfMortonPyreLogsTask: MinionTask = {
+	type: activity_type_enum.ShadesOfMortonPyreLogs,
+	run: shadesOfMortonTask.run
+};
 
 export const allTasks: MinionTask[] = [
 	aerialFishingTask,
@@ -106,6 +137,7 @@ export const allTasks: MinionTask[] = [
 	castleWarsTask,
 	championsChallengeTask,
 	chompHuntTask,
+	yamaTask,
 	fightCavesTask,
 	gauntletTask,
 	gnomeResTask,
@@ -146,6 +178,7 @@ export const allTasks: MinionTask[] = [
 	fishingTask,
 	fletchingTask,
 	gloryChargingTask,
+	gloryUnchargingTask,
 	groupoMonsterTask,
 	herbloreTask,
 	fletchingTask,
@@ -165,6 +198,7 @@ export const allTasks: MinionTask[] = [
 	templeTrekkingTask,
 	mageTrainingTask,
 	sepulchreTask,
+	valeTotemsTask,
 	titheFarmTask,
 	temporossTask,
 	smithingTask,
@@ -175,6 +209,8 @@ export const allTasks: MinionTask[] = [
 	tiaraRunecraftTask,
 	nightmareZoneTask,
 	shadesOfMortonTask,
+	shadesOfMortonSacredOilTask,
+	shadesOfMortonPyreLogsTask,
 	cutLeapingFishTask,
 	toaTask,
 	underwaterAgilityThievingTask,
@@ -186,23 +222,12 @@ export const allTasks: MinionTask[] = [
 	camdozaalFishingTask,
 	myNotesTask,
 	colosseumTask,
+	doomOfMokhaiotlTask,
 	CreateForestersRationsTask,
-	buyTask
+	buyTask,
+	MasteringMixologyContractTask,
+	MixologyPasteCreationTask
 ];
-
-type MinionTaskRunOptions = {
-	user: MUser;
-	handleTripFinish: typeof handleTripFinish;
-	rng: RNGProvider;
-};
-
-type IMinionTask = {
-	type: activity_type_enum;
-	run: (data: any, options: MinionTaskRunOptions) => Promise<void>;
-};
-declare global {
-	export type MinionTask = IMinionTask;
-}
 
 for (const a of Object.values(activity_type_enum)) {
 	if (DEPRECATED_ACTIVITY_TYPES.includes(a)) {

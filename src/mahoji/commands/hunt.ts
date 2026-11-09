@@ -7,6 +7,7 @@ import { soteSkillRequirements } from '@/lib/skilling/functions/questRequirement
 import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
 import { HunterTechniqueEnum } from '@/lib/skilling/types.js';
 import type { HunterActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { generateDailyPeakIntervals, type Peak } from '@/lib/util/peaks.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 
@@ -140,13 +141,19 @@ export const huntCommand = defineCommand({
 		}
 
 		if (creature.wildy) {
-			const [bol, reason, score] = hasWildyHuntGearEquipped(user.gear.wildy);
+			const [bol, reason, score] = hasWildyHuntGearEquipped(user.gear.wildy.raw());
 			wildyScore = score;
 			if (!bol) {
-				return `To hunt ${creature.name} in the wilderness you need to meet the following requirement: ${reason}, check your wildy gear.`;
+				return {
+					content: `<@${user.id}>, to hunt ${creature.name} in the wilderness you need to meet the following requirement: ${reason} Check your wildy gear.`,
+					allowedMentions: { users: [user.id] }
+				};
 			}
 			if (userBank.amount('Saradomin brew(4)') < 10 || userBank.amount('Super restore(4)') < 5) {
-				return `To hunt ${creature.name} in the wilderness you need to have 10x Saradomin brew(4) and 5x Super restore(4) for safety.`;
+				return {
+					content: `<@${user.id}>, to hunt ${creature.name} in the wilderness you need to have 10x Saradomin brew(4) and 5x Super restore(4) for safety.`,
+					allowedMentions: { users: [user.id] }
+				};
 			}
 		}
 
@@ -271,7 +278,7 @@ export const huntCommand = defineCommand({
 
 		let response = `${user.minionName} is now ${crystalImpling ? 'hunting' : `${creature.huntTechnique}`}${
 			crystalImpling ? ' ' : ` ${quantity}x `
-		}${creature.name}, it'll take around ${formatDuration(duration)} to finish.`;
+		}${creature.name}, it'll take around ${formatTripDuration(user, duration)} to finish.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;

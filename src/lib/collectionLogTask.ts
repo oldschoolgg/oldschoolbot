@@ -4,7 +4,7 @@ import { type Bank, Items, toKMB } from 'oldschooljs';
 import { bankImageTask } from '@/lib/canvas/bankImage.js';
 import type { IBgSprite } from '@/lib/canvas/canvasUtil.js';
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
-import { allCollectionLogs, allCollectionLogsFlat, getCollection, getTotalCl } from '@/lib/data/Collections.js';
+import { allCollectionLogs, getCollection, getTotalCl } from '@/lib/data/Collections.js';
 import type { CollectionStatus, IToReturnCollection } from '@/lib/data/CollectionsExport.js';
 import type { MUserStats } from '@/lib/structures/MUserStats.js';
 
@@ -78,11 +78,7 @@ class CollectionLogTask {
 
 			_canvas.drawSquare(1, index * ITEM_HEIGHT, _canvas.width, ITEM_HEIGHT, color);
 
-			const fullCLObject = allCollectionLogsFlat.find(_cl => _cl.name === clPageName);
-			let textColor = colors[status];
-			if (fullCLObject?.unobtainable) {
-				textColor = this.COLORS.GRAY;
-			}
+			const textColor = colors[status];
 			_canvas.drawText({
 				text: clPageName,
 				x: 4,
@@ -216,13 +212,21 @@ class CollectionLogTask {
 		canvas.drawBackgroundPattern();
 		canvas.drawBorder();
 
+		const fmtProgLines =
+			collectionLog.fmtProgResult && !collectionLog.completions
+				? Array.isArray(collectionLog.fmtProgResult)
+					? collectionLog.fmtProgResult
+					: [collectionLog.fmtProgResult]
+				: [];
+		const fmtProgExtraHeight = fmtProgLines.length > 0 ? (fmtProgLines.length - 1) * 12 : 0;
+
 		if (!fullSize) {
 			canvas.drawHollowSquare(10, 59, canvas.width - 20, boxHeight, sprite.oddListColor);
-			canvas.drawHollowSquare(leftDivisor, 59, rightArea, 47, sprite.oddListColor);
+			canvas.drawHollowSquare(leftDivisor, 59, rightArea, 47 + fmtProgExtraHeight, sprite.oddListColor);
 			canvas.drawHollowSquare(leftDivisor, 59, rightArea, boxHeight, sprite.oddListColor);
 		} else {
 			canvas.drawHollowSquare(10, 59, canvas.width - 20, boxHeight, sprite.oddListColor);
-			canvas.drawHollowSquare(10, 59, canvas.width - 20, 47, sprite.oddListColor);
+			canvas.drawHollowSquare(10, 59, canvas.width - 20, 47 + fmtProgExtraHeight, sprite.oddListColor);
 		}
 
 		// Draw Title
@@ -256,7 +260,7 @@ class CollectionLogTask {
 
 		// Draw items
 		ctx.save();
-		ctx.translate(!fullSize ? leftDivisor + 5 : 15, 110);
+		ctx.translate(!fullSize ? leftDivisor + 5 : 15, 110 + fmtProgExtraHeight);
 		let i = 0;
 		let y = 0;
 
@@ -271,10 +275,6 @@ class CollectionLogTask {
 				ctx.globalAlpha = 0.3;
 			} else {
 				qtyText = userCollectionBank.amount(item);
-			}
-
-			if (collectionLog.unobtainable) {
-				ctx.filter = 'saturate(0)';
 			}
 
 			totalPrice += (Items.getOrThrow(item).price ?? 0) * qtyText;
@@ -300,11 +300,7 @@ class CollectionLogTask {
 			effectiveName = `${effectiveName} (Uncounted CL)`;
 		}
 
-		let clPageTitleTextColor = this.COLORS.ORANGEY;
-		if (collectionLog.unobtainable) {
-			effectiveName = `${effectiveName} (Currently Unobtainable)`;
-			clPageTitleTextColor = this.COLORS.GRAY;
-		}
+		const clPageTitleTextColor = this.COLORS.ORANGEY;
 
 		canvas.drawText({
 			text: effectiveName,
@@ -328,9 +324,6 @@ class CollectionLogTask {
 			color = this.COLORS.PAGE_TITLE.COMPLETED;
 		} else if (collectionLog.collectionTotal !== collectionLog.collectionObtained) {
 			color = this.COLORS.PAGE_TITLE.PARTIAL_COMPLETION;
-		}
-		if (collectionLog.unobtainable) {
-			color = this.COLORS.GRAY;
 		}
 
 		const obtainableMeasure = canvas.measureText(toDraw, 'Compact');
@@ -392,6 +385,37 @@ class CollectionLogTask {
 					y: pixelLevel,
 					color: this.COLORS.WHITE
 				});
+			}
+		}
+
+		if (fmtProgLines.length > 0) {
+			let pixelLevel = 25;
+			for (const line of fmtProgLines) {
+				const colonIndex = line.indexOf(':');
+				if (colonIndex !== -1) {
+					const label = line.slice(0, colonIndex + 1) + ' ';
+					const value = line.slice(colonIndex + 1).trim();
+					canvas.drawText({
+						text: label,
+						x: 0,
+						y: pixelLevel,
+						color: this.COLORS.ORANGEY
+					});
+					canvas.drawText({
+						text: value,
+						x: canvas.measureTextWidth(label),
+						y: pixelLevel,
+						color: this.COLORS.WHITE
+					});
+				} else {
+					canvas.drawText({
+						text: line,
+						x: 0,
+						y: pixelLevel,
+						color: this.COLORS.ORANGEY
+					});
+				}
+				pixelLevel += 12;
 			}
 		}
 
@@ -500,8 +524,7 @@ class CollectionLogTask {
 				collectionObtained: Array.from(clItems).filter(i => userBank.has(i)).length,
 				category: 'idk',
 				leftList: undefined,
-				counts: false,
-				unobtainable: false
+				counts: false
 			}
 		});
 	}

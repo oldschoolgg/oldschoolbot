@@ -1,5 +1,11 @@
 import { bold } from '@oldschoolgg/discord';
-import { FormattedCustomEmoji, formatOrdinal, notEmpty, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
+import {
+	FormattedCustomEmoji,
+	formatDuration,
+	formatOrdinal,
+	notEmpty,
+	roboChimpCLRankQuery
+} from '@oldschoolgg/toolkit';
 import { convertLVLtoXP, Items } from 'oldschooljs';
 
 import { skillOption } from '@/discord/index.js';
@@ -12,14 +18,15 @@ import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js'
 import { blowpipeCommand, blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
 import { degradeableItemsCommand } from '@/lib/minions/functions/degradeableItemsCommand.js';
 import { allPossibleStyles, trainCommand } from '@/lib/minions/functions/trainCommand.js';
-import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import creatures from '@/lib/skilling/skills/hunter/creatures/index.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
+import { calcMaxTripLengthSync } from '@/lib/util/calcMaxTripLength.js';
 import { getAllKillCounts, getKCByName } from '@/lib/util/getKCByName.js';
 import { minionStatsEmbed } from '@/lib/util/minionStatsEmbed.js';
 import { getPeakTimesString } from '@/lib/util/peaks.js';
+import { refreshUserCache } from '@/lib/util/refreshCache.js';
 import { isValidNickname, patronMsg } from '@/lib/util/smallUtils.js';
 import {
 	achievementDiaryCommand,
@@ -44,7 +51,8 @@ const patMessages = [
 ];
 
 export async function getUserInfo(user: MUser) {
-	const roboChimpUser = await roboChimpUserFetch(user.id);
+	await refreshUserCache({ user });
+	const roboChimpUser = await Cache.getRoboChimpUser(user.id);
 	const leaguesRanking = await roboChimpClient.user.count({
 		where: {
 			leagues_points_total: {
@@ -65,29 +73,48 @@ export async function getUserInfo(user: MUser) {
 	const taskText = task ? `${task.type}` : 'None';
 
 	const result = {
-		perkTier: await user.fetchPerkTier(),
+		perkTier: user.perkTier,
 		isBlacklisted: await user.isBlacklisted(),
 		badges: user.badgesString,
 		isIronman: user.isIronman,
 		bitfields,
 		currentTask: taskText,
 		patreon: roboChimpUser.patreon_id ? 'Yes' : 'None',
-		github: roboChimpUser.github_id ? 'Yes' : 'None'
+		github: roboChimpUser.github_id ? 'Yes' : 'None',
+		maxTripLength: calcMaxTripLengthSync(user, roboChimpUser),
+		perkDebugInfo: [] as string[]
 	};
 
 	const globalCLPercent = (((roboChimpUser.bso_cl_percent ?? 0) + (roboChimpUser.osb_cl_percent ?? 0)) / 2).toFixed(
 		2
 	);
 
-	const roboCache = await Cache.getRoboChimpUser(user.id);
+	const perkTierDisplay = user.getPerkTierDisplay(roboChimpUser);
+	const premiumTimeActive = Boolean(
+		roboChimpUser.premium_balance_tier &&
+			roboChimpUser.premium_balance_expiry_date &&
+			roboChimpUser.premium_balance_expiry_date > Date.now()
+	);
+
+	result.perkDebugInfo.push(`**Raw perk tier**: ${user.perkTier}`);
+	result.perkDebugInfo.push(`**Robo perk tier**: ${roboChimpUser.perk_tier}`);
+
+	if (roboChimpUser.premium_balance_tier || roboChimpUser.premium_balance_expiry_date) {
+		result.perkDebugInfo.push(`**Premium Balance Tier**: ${roboChimpUser.premium_balance_tier}`);
+		result.perkDebugInfo.push(
+			`**Premium Balance Expiry**: ${premiumTimeActive ? '🟢' : '🔴'} ${roboChimpUser.premium_balance_expiry_date} (${formatDuration(Number(roboChimpUser.premium_balance_expiry_date))}))`
+		);
+	}
+
 	return {
 		...result,
 		everythingString: `${user.badgedUsername}[${user.id}]
 **Current Trip:** ${taskText}
-**Perk Tier:** ${roboCache?.perk_tier ?? 'None'}
+**Perk Tier:** ${perkTierDisplay}
 **Blacklisted:** ${result.isBlacklisted}
 **Badges:** ${result.badges}
 **Ironman:** ${result.isIronman}
+**Max Trip Length:** ${formatDuration(result.maxTripLength)} ⏱️
 **Bitfields:** ${result.bitfields}
 **Patreon Connected:** ${result.patreon}
 **Github Connected:** ${result.github}
@@ -335,6 +362,24 @@ export const minionCommand = defineCommand({
 					name: 'amount',
 					description: 'The amount you want to charge',
 					required: false
+				},
+				{
+					type: 'String',
+					name: 'method',
+					description: 'The charging method to use (if the item supports multiple).',
+					required: false,
+					autocomplete: async ({ value }: StringAutoComplete) => {
+						const allMethods = new Map<string, string>();
+						for (const item of degradeableItems) {
+							allMethods.set('runes', 'Runes');
+							if (item.altChargeInput) {
+								allMethods.set(item.altChargeInput.name, item.altChargeInput.name);
+							}
+						}
+						return [...allMethods.entries()]
+							.map(([val, name]) => ({ name, value: val }))
+							.filter(m => !value || m.name.toLowerCase().includes(value.toLowerCase()));
+					}
 				}
 			]
 		},
@@ -421,7 +466,7 @@ export const minionCommand = defineCommand({
 		if (options.status) return minionStatusCommand(user);
 
 		if (options.stats) {
-			return { embeds: [await minionStatsEmbed(user)] };
+			return { embeds: [await minionStatsEmbed({ user, rng })] };
 		}
 
 		if (options.achievementdiary) {
@@ -535,10 +580,16 @@ export const minionCommand = defineCommand({
 		if (options.buy) return minionBuyCommand(user, Boolean(options.buy.ironman));
 		if (options.ironman) return ironmanCommand(user, interaction, Boolean(options.ironman.permanent));
 		if (options.charge) {
-			return degradeableItemsCommand(interaction, user, options.charge.item, options.charge.amount);
+			return degradeableItemsCommand(
+				interaction,
+				user,
+				options.charge.item,
+				options.charge.amount,
+				options.charge.method
+			);
 		}
 		if (options.daily) {
-			return dailyCommand(interaction, user);
+			return dailyCommand(rng, interaction, user);
 		}
 		if (options.train) return trainCommand(user, options.train.style);
 		if (options.pat) return rng.pick(patMessages).replace('{name}', user.minionName);

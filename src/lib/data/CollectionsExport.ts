@@ -26,7 +26,7 @@ export interface IToReturnCollection {
 	leftList?: ILeftListStatus;
 	userItems: Bank;
 	counts: boolean;
-	unobtainable: boolean;
+	fmtProgResult?: string | string[];
 }
 
 export type CollectionStatus = 'not_started' | 'started' | 'completed';
@@ -60,7 +60,6 @@ interface ICollectionActivity {
 		counts?: false;
 		alias?: string[];
 		items: number[];
-		unobtainable?: true;
 		allItems?: number[];
 		kcActivity?: string | IKCActivity;
 		isActivity?: boolean;
@@ -339,6 +338,19 @@ export const wintertodtCL = resolveItems([
 	'Warm gloves',
 	'Bruma torch',
 	'Dragon axe'
+]);
+export const yamaCL = resolveItems([
+	'Yami',
+	'Chasm teleport scroll',
+	'Oathplate shards',
+	'Oathplate helm',
+	'Oathplate chest',
+	'Oathplate legs',
+	'Soulflame horn',
+	'Rite of vile transference',
+	'Forgotten lockbox',
+	'Dossier',
+	'Barrel of demonic tallow (full)'
 ]);
 export const zalcanoCL = resolveItems(['Smolcano', 'Crystal tool seed', 'Zalcano shard', 'Uncut onyx']);
 export const zulrahCL = resolveItems([
@@ -1268,6 +1280,15 @@ export const mahoganyHomesCL = resolveItems([
 	'Plank sack',
 	'Hosidius blueprints'
 ]);
+export const masteringMixologyCL = resolveItems([
+	'Prescription goggles',
+	'Alchemist labcoat',
+	'Alchemist pants',
+	'Alchemist gloves',
+	"Alchemist's amulet",
+	'Reagent pouch',
+	'Chugging barrel (disassembled)'
+]);
 export const pestControlCL = resolveItems([
 	'Void knight mace',
 	'Void knight top',
@@ -1343,6 +1364,13 @@ export const troubleBrewingCL = resolveItems([
 	'The stuff',
 	'Red rum (trouble brewing)',
 	'Blue rum (trouble brewing)'
+]);
+export const valeTotemsCL = resolveItems([
+	'Bow string spool',
+	'Ent branch',
+	'Fletching knife',
+	'Greenman mask',
+	'Vale offerings'
 ]);
 export const volcanicMineCL = resolveItems([
 	'Ash covered tome',
@@ -1702,7 +1730,7 @@ export const slayerCL = resolveItems([
 	'Glacial temotli',
 	'Pendant of ates (inert)',
 	'Frozen tear',
-	EItem.EARTHBOUND_TECPATL,
+	// EItem.EARTHBOUND_TECPATL, // Currently unobtainable.
 	EItem.ANTLER_GUARD,
 	EItem.ALCHEMISTS_SIGNET,
 	EItem.BROKEN_ANTLER
@@ -2225,6 +2253,15 @@ export const araxxorCL = resolveItems([
 ]);
 
 export const amoxliatlCL = resolveItems(['Moxi', 'Glacial temotli', 'Pendant of ates (inert)', 'Frozen tear']);
+
+export const doomOfMokhaiotlCL = resolveItems([
+	'Dom',
+	'Avernic treads',
+	'Eye of ayak (uncharged)',
+	'Mokhaiotl cloth',
+	'Mokhaiotl waystone',
+	'Demon tear'
+]);
 
 export const chompyHats = [
 	[Items.getOrThrow('Chompy bird hat (ogre bowman)'), 30],

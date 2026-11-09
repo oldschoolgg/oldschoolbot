@@ -1,9 +1,7 @@
-import { MathRNG } from '@oldschoolgg/rng';
 import { calcPerHour, Table, Time } from '@oldschoolgg/toolkit';
+import { MathRNG } from 'node-rng';
 import { type Bank, convertLVLtoXP } from 'oldschooljs';
 import { uniqueBy } from 'remeda';
-
-import '../base.js';
 
 import { ClueTiers } from '../../src/lib/clues/clueTiers.js';
 import Mining from '../../src/lib/skilling/skills/mining.js';
@@ -22,7 +20,7 @@ function bankToPerHour(bank: Bank, duration: number): FloatBank {
 	return perHourBank;
 }
 
-function main() {
+export function renderMiningXpHrTable() {
 	const gearBank = makeGearBank();
 
 	gearBank.gear.skilling.equip('Varrock armour 4');
@@ -67,7 +65,8 @@ function main() {
 							isPowermining,
 							quantityInput: undefined,
 							hasKaramjaMedium,
-							randomVariationEnabled: false
+							randomVariationEnabled: false,
+							rng: MathRNG
 						});
 						const result = determineMiningResult({
 							ore,
@@ -126,5 +125,3 @@ function main() {
 
 	handleMarkdownEmbed('miningxphr', 'osb/Skills/mining.mdx', table.toString());
 }
-
-main();

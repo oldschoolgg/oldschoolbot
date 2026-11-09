@@ -54,8 +54,10 @@ export interface MinionKillOptions {
 	slayerUnlocks: SlayerTaskUnlocksEnum[];
 	favoriteFood: number[];
 	bitfield: readonly BitField[];
+	hasWildyEliteDiary: boolean;
 	pkEvasionExperience: number;
 	currentPeak: Peak;
+	rng: RNGProvider;
 }
 
 export function newMinionKillCommand(args: MinionKillOptions): string | MinionKillReturn {
@@ -101,12 +103,17 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 	const matchedRevenantMonster = revenantMonsters.find(m => m.id === monster.id);
 	if (matchedRevenantMonster) {
 		const weapon = gearBank.gear.wildy.equippedWeapon();
+		const revRequiredWeaponAttackBonus = 10;
 		if (!weapon) {
 			return 'You have no weapon equipped in your Wildy outfit.';
 		}
 
-		if (weapon.equipment![relevantGearStat] < 10) {
-			return `Your weapon is terrible, you can't kill Revenants. You should have ${primaryStyle} gear equipped in your wildy outfit, as this is what you're currently training. You can change this using \`/minion train\``;
+		if (weapon.equipment![relevantGearStat] < revRequiredWeaponAttackBonus) {
+			const weaponAttackBonusName =
+				primaryStyle === 'melee' ? 'Crush' : primaryStyle === 'range' ? 'Ranged' : 'Magic';
+			const trainingStyleName =
+				primaryStyle === 'melee' ? 'melee' : primaryStyle === 'range' ? 'ranged' : 'magic';
+			return `You need a weapon in your Wildy outfit with at least +${revRequiredWeaponAttackBonus} ${weaponAttackBonusName} Attack to kill Revenants while training ${trainingStyleName}. Equip a better ${weaponAttackBonusName.toLowerCase()} weapon, or change your training style with \`/minion train\`.`;
 		}
 	}
 
@@ -194,7 +201,7 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 			return `Your range gear isn't right: ${rangeCheck}`;
 		}
 		const usingBowfa = getSimilarItems(EItem.BOW_OF_FAERDHINEN_C).includes(rangeCheck.weapon.id);
-		if (!gearBank.gear.range.ammo?.item && !usingBowfa) {
+		if (!gearBank.gear.range.get('ammo')?.item && !usingBowfa) {
 			return `You need range ammo equipped to kill ${monster.name}.`;
 		}
 
@@ -223,9 +230,13 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 			combatMethods,
 			relevantGearStat,
 			currentTaskOptions: speedDurationResult.currentTaskOptions,
-			killsRemaining
+			killsRemaining,
+			rng: args.rng
 		});
 		if (!result) continue;
+		if (typeof result === 'string') {
+			return result;
+		}
 		for (const boostResult of Array.isArray(result) ? result : [result]) {
 			if (boostResult.changes) {
 				speedDurationResult.currentTaskOptions = mergeDeep(

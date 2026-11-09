@@ -1,9 +1,9 @@
-import { randArrItem } from '@oldschoolgg/rng';
 import { Bank, Items } from 'oldschooljs';
 
 import { fossilIslandNotesCL } from '@/lib/data/CollectionsExport.js';
 
-export async function buyFossilIslandNotes(user: MUser, interaction: MInteraction, quantity: number) {
+export async function buyFossilIslandNotes(itx: OSInteraction, quantity: number) {
+	const { user, rng } = itx;
 	const cost = new Bank().add('Numulite', 300).multiply(quantity);
 	if (await user.minionIsBusy()) {
 		return 'Your minion is busy.';
@@ -15,7 +15,7 @@ export async function buyFossilIslandNotes(user: MUser, interaction: MInteractio
 		return "You don't have enough Numulite.";
 	}
 
-	await interaction.confirmation(
+	await itx.confirmation(
 		`${user}, please confirm that you want to buy ${quantity}x Fossil Island note for: ${cost}.`
 	);
 
@@ -25,8 +25,8 @@ export async function buyFossilIslandNotes(user: MUser, interaction: MInteractio
 		const filteredPages = fossilIslandNotesCL.filter(page => !tempClWithNewUniques.has(page));
 		const outPage =
 			filteredPages.length === 0
-				? Items.getOrThrow(randArrItem(fossilIslandNotesCL))
-				: Items.getOrThrow(randArrItem(filteredPages));
+				? Items.getOrThrow(rng.pick(fossilIslandNotesCL))
+				: Items.getOrThrow(rng.pick(filteredPages));
 		tempClWithNewUniques.add(outPage);
 		loot.add(outPage);
 	}

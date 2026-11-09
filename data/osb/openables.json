@@ -1,9 +1,51 @@
 [
 	{
+		"name": "Adept potion pack",
+		"id": 29972,
+		"opened_item": "Adept potion pack",
+		"all_items": [
+			"Agility potion(3)",
+			"Antifire potion(3)",
+			"Antipoison(3)",
+			"Combat potion(3)",
+			"Energy potion(3)",
+			"Hunter potion(3)",
+			"Prayer potion(3)",
+			"Prayer regeneration potion(3)",
+			"Restore potion(3)",
+			"Super attack(3)",
+			"Super defence(3)",
+			"Super energy(3)",
+			"Super strength(3)",
+			"Superantipoison(3)"
+		]
+	},
+	{
 		"name": "Amylase pack",
 		"id": 12641,
 		"opened_item": "Amylase pack",
 		"all_items": ["Amylase crystal"]
+	},
+	{
+		"name": "Apprentice potion pack",
+		"id": 29971,
+		"opened_item": "Apprentice potion pack",
+		"all_items": [
+			"Agility potion(3)",
+			"Antipoison(3)",
+			"Attack potion(3)",
+			"Combat potion(3)",
+			"Defence potion(3)",
+			"Energy potion(3)",
+			"Fishing potion(3)",
+			"Hunter potion(3)",
+			"Prayer potion(3)",
+			"Restore potion(3)",
+			"Strength potion(3)",
+			"Super attack(3)",
+			"Super strength(3)",
+			"Superantipoison(3)"
+		]
 	},
 	{
 		"name": "Baby impling",
@@ -44,6 +86,18 @@
 			"Uncut ruby",
 			"Uncut sapphire"
 		]
+	},
+	{
+		"name": "Bale of flax",
+		"id": 31045,
+		"opened_item": "Bale of flax",
+		"all_items": ["Flax"]
+	},
+	{
+		"name": "Barrel of demonic tallow (full)",
+		"id": 30795,
+		"opened_item": "Barrel of demonic tallow (full)",
+		"all_items": ["Demonic tallow"]
 	},
 	{
 		"name": "Bird nest",
@@ -612,6 +666,24 @@
 		]
 	},
 	{
+		"name": "Castle wars supply crate",
+		"id": 30690,
+		"opened_item": "Castle wars supply crate",
+		"all_items": [
+			"Blighted ancient ice sack",
+			"Blighted anglerfish",
+			"Blighted karambwan",
+			"Blighted manta ray",
+			"Blighted super restore(4)",
+			"Blighted vengeance sack",
+			"Castle wars arrow",
+			"Castle wars bolts",
+			"Castle wars ticket",
+			"Rune arrow",
+			"Rune javelin"
+		]
+	},
+	{
 		"name": "Chest (moon key)",
 		"id": 30109,
 		"opened_item": "Moon key",
@@ -693,6 +765,26 @@
 			"Rune javelin heads",
 			"Rune scimitar",
 			"Yew seed"
+		]
+	},
+	{
+		"name": "Dossier",
+		"id": 30803,
+		"opened_item": "Dossier",
+		"all_items": [
+			"Chasm teleport scroll",
+			"Contract of bloodied blows",
+			"Contract of catalyst acquisition",
+			"Contract of divine severance",
+			"Contract of familiar acquisition",
+			"Contract of forfeit breath",
+			"Contract of glyphic attenuation",
+			"Contract of harmony acquisition",
+			"Contract of oathplate acquisition",
+			"Contract of sensory clouding",
+			"Contract of shard acquisition",
+			"Contract of worm acquisition",
+			"Rite of vile transference"
 		]
 	},
 	{
@@ -834,6 +926,43 @@
 			"Soul rune",
 			"Steam rune",
 			"Water rune"
+		]
+	},
+	{
+		"name": "Expert potion pack",
+		"id": 29973,
+		"opened_item": "Expert potion pack",
+		"all_items": [
+			"Ancient brew(3)",
+			"Hunter potion(3)",
+			"Magic potion(3)",
+			"Prayer potion(3)",
+			"Prayer regeneration potion(3)",
+			"Ranging potion(3)",
+			"Saradomin brew(3)",
+			"Super attack(3)",
+			"Super defence(3)",
+			"Super energy(3)",
+			"Super restore(3)",
+			"Super strength(3)",
+			"Superantipoison(3)",
+			"Zamorak brew(3)"
+		]
+	},
+	{
+		"name": "Forgotten lockbox",
+		"id": 30763,
+		"opened_item": "Forgotten lockbox",
+		"all_items": [
+			"Coins",
+			"Dragon bolts (unf)",
+			"Dragon dart",
+			"Dragon platelegs",
+			"Dragon plateskirt",
+			"Oathplate chest",
+			"Oathplate helm",
+			"Oathplate legs",
+			"Oathplate shards"
 		]
 	},
 	{
@@ -2196,6 +2325,12 @@
 			"Uncut opal",
 			"Zogre bones"
 		]
+	},
+	{
+		"name": "Olive oil pack",
+		"id": 12857,
+		"opened_item": "Olive oil pack",
+		"all_items": ["Olive oil(4)"]
 	},
 	{
 		"name": "Ore pack (Giant's Foundry)",
@@ -3672,6 +3807,12 @@
 			"Grimy ranarr weed",
 			"Grimy torstol"
 		]
+	},
+	{
+		"name": "Soft clay pack",
+		"id": 12009,
+		"opened_item": "Soft clay pack",
+		"all_items": ["Soft clay"]
 	},
 	{
 		"name": "Spoils of war",

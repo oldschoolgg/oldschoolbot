@@ -1,25 +1,15 @@
-import { percentChance } from '@oldschoolgg/rng';
+import type { GearSetupType, PrimaryGearSetupType } from '@oldschoolgg/gear';
+import { MathRNG } from 'node-rng';
 import { Bank, type Item, Items, itemID, type Monster } from 'oldschooljs';
 
-import type { GearSetupType, PrimaryGearSetupType } from '@/lib/gear/types.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 import type { ChargeBank } from '@/lib/structures/Bank.js';
+import type { DegradeableItemColumns } from '@/lib/user/userTypes.js';
 import { assert } from '@/lib/util/logError.js';
 
 export interface DegradeableItem {
 	item: Item;
-	settingsKey:
-		| 'tentacle_charges'
-		| 'sang_charges'
-		| 'celestial_ring_charges'
-		| 'ash_sanctifier_charges'
-		| 'serp_helm_charges'
-		| 'blood_fury_charges'
-		| 'tum_shadow_charges'
-		| 'blood_essence_charges'
-		| 'trident_charges'
-		| 'scythe_of_vitur_charges'
-		| 'venator_bow_charges';
+	settingsKey: DegradeableItemColumns;
 	itemsToRefundOnBreak: Bank;
 	refundVariants: {
 		variant: Item;
@@ -30,6 +20,11 @@ export interface DegradeableItem {
 	chargeInput: {
 		cost: Bank;
 		charges: number;
+	};
+	altChargeInput?: {
+		cost: Bank;
+		charges: number;
+		name: string;
 	};
 	unchargedItem?: Item;
 	convertOnCharge?: boolean;
@@ -88,7 +83,7 @@ export const degradeableItems: DegradeableItem[] = [
 		setup: 'mage',
 		aliases: ['sang', 'sang staff', 'sanguinesti staff', 'sanguinesti'],
 		chargeInput: {
-			cost: new Bank().add('Blood rune', 3).freeze(),
+			cost: new Bank().add('Blood rune', 2).freeze(),
 			charges: 1
 		},
 		unchargedItem: Items.getOrThrow('Sanguinesti staff (uncharged)'),
@@ -168,6 +163,26 @@ export const degradeableItems: DegradeableItem[] = [
 		unchargedItem: Items.getOrThrow("Tumeken's shadow (uncharged)"),
 		convertOnCharge: true,
 		emoji: '<:Tumekens_shadow:1068491239302901831>'
+	},
+	{
+		item: Items.getOrThrow('Eye of ayak'),
+		settingsKey: 'ayak_charges',
+		itemsToRefundOnBreak: new Bank().add('Eye of ayak (uncharged)').freeze(),
+		refundVariants: [],
+		setup: 'mage',
+		aliases: ['eye', 'ayak', 'eye of ayak', 'eoa', 'yak'],
+		chargeInput: {
+			cost: new Bank().add('Death rune', 2).add('Chaos rune', 1).freeze(),
+			charges: 1
+		},
+		altChargeInput: {
+			cost: new Bank().add('Demon tear', 1).freeze(),
+			charges: 10,
+			name: 'Demon tears'
+		},
+		unchargedItem: Items.getOrThrow('Eye of ayak (uncharged)'),
+		convertOnCharge: true,
+		emoji: ''
 	},
 	{
 		item: Items.getOrThrow('Blood essence (active)'),
@@ -333,7 +348,7 @@ export async function degradeItem({
 	let pennyReduction = 0;
 	if (user.hasEquipped("Ghommal's lucky penny")) {
 		for (let i = 0; i < chargesToDegrade; i++) {
-			if (percentChance(5)) {
+			if (MathRNG.percentChance(5)) {
 				pennyReduction++;
 			}
 		}

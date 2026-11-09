@@ -2,7 +2,9 @@ import { toTitleCase } from '@oldschoolgg/util';
 import { type ColumnDef, flexRender, getCoreRowModel, type SortingState, useReactTable } from '@tanstack/react-table';
 import { useMemo } from 'react';
 
+import { BankImage } from '@/components/BankImage/BankImage.js';
 import { UserIndentity } from '@/components/UserIdentity.js';
+import { Modal } from '@/components/ui/Modal/Modal.js';
 import { timeAgo } from '@/lib/utils.js';
 import type { EconomyTransaction } from './types.js';
 
@@ -50,6 +52,8 @@ export function TransactionTable({
 	onPageChange,
 	onSortStatusChange
 }: TransactionTableProps) {
+	const BUTTONS_CLASS =
+		'rounded-md border border-slate-600 bg-slate-800 px-2 py-1 text-xs font-medium text-slate-200 hover:bg-slate-700 hover:border-slate-500 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer';
 	const columns = useMemo<ColumnDef<EconomyTransaction>[]>(
 		() => [
 			{
@@ -73,6 +77,17 @@ export function TransactionTable({
 				enableSorting: true
 			},
 			{
+				accessorKey: 'guild_id',
+				header: 'Guild ID',
+				cell: ({ row }) =>
+					row.original.guild_id ? (
+						<span className="font-mono text-sm">{String(row.original.guild_id)}</span>
+					) : (
+						<span className="text-slate-400">-</span>
+					),
+				enableSorting: true
+			},
+			{
 				accessorKey: 'sender',
 				header: 'Sender',
 				cell: ({ row }) => {
@@ -91,14 +106,38 @@ export function TransactionTable({
 				enableSorting: true
 			},
 			{
-				accessorKey: 'guild_id',
-				header: 'Guild ID',
-				cell: ({ row }) =>
-					row.original.guild_id ? (
-						<span className="font-mono text-sm">{String(row.original.guild_id)}</span>
-					) : (
-						<span className="text-slate-400">-</span>
-					),
+				accessorKey: 'items_sent',
+				header: 'Items Traded',
+				cell: ({ row }) => {
+					const itemsSent = row.original.items_sent;
+					const itemsReceived = row.original.items_received;
+					return (
+						<div>
+							<Modal buttonText="View Items Traded" title="Items">
+								<div className="flex flex-col w-full min-w-[600px] gap-8 text-center">
+									{Object.keys(itemsSent).length > 0 && (
+										<div className="w-full flex items-center flex-col justify-center">
+											<h2 className="mb-2 text-gray-300 flex items-center gap-2">
+												<UserIndentity userId={row.original.sender} /> sent these items to{' '}
+												<UserIndentity userId={row.original.recipient} />
+											</h2>
+											<BankImage sort="name" title="" bank={itemsSent} />
+										</div>
+									)}
+									{Object.keys(itemsReceived).length > 0 && (
+										<div className="w-full flex items-center flex-col">
+											<h2 className="mb-2 text-gray-300 flex items-center gap-2">
+												<UserIndentity userId={row.original.recipient} /> sent these items to{' '}
+												<UserIndentity userId={row.original.sender} />
+											</h2>
+											<BankImage sort="name" title="" bank={itemsReceived} />
+										</div>
+									)}
+								</div>
+							</Modal>
+						</div>
+					);
+				},
 				enableSorting: true
 			}
 		],
@@ -131,7 +170,7 @@ export function TransactionTable({
 		<div className="rounded-xl border border-[var(--color-border)] shadow-sm">
 			<div className="overflow-x-auto">
 				<table className="min-w-full border-separate border-spacing-0">
-					<thead>
+					<thead className="text-gray-200">
 						{table.getHeaderGroups().map(hg => (
 							<tr key={hg.id}>
 								{hg.headers.map((header, i) => {
@@ -145,9 +184,11 @@ export function TransactionTable({
 											key={header.id}
 											scope="col"
 											className={[
-												'sticky top-0 z-10 px-3 py-2 text-left text-xs font-semibold text-slate-700',
+												'sticky top-0 z-10 px-4 py-4 text-left text-xs font-semibold',
 												'border-b border-[var(--color-border)]',
-												!isLast ? 'border-r border-[var(--color-border)]' : ''
+												!isLast ? 'border-r border-[var(--color-border)]' : '',
+												col.id === 'date' ? 'w-50' : '',
+												col.id === 'type' ? 'w-24' : ''
 											].join(' ')}
 										>
 											<button
@@ -226,7 +267,7 @@ export function TransactionTable({
 				<div className="flex items-center gap-2">
 					<button
 						type="button"
-						className="rounded-md border border-[var(--color-border)] px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+						className={BUTTONS_CLASS}
 						onClick={() => onPageChange(1)}
 						disabled={safePage <= 1 || loading}
 					>
@@ -234,20 +275,20 @@ export function TransactionTable({
 					</button>
 					<button
 						type="button"
-						className="rounded-md border border-[var(--color-border)] px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+						className={BUTTONS_CLASS}
 						onClick={() => onPageChange(safePage - 1)}
 						disabled={safePage <= 1 || loading}
 					>
 						Prev
 					</button>
 
-					<div className="px-1 text-xs text-slate-600">
+					<div className="px-1 text-xs text-slate-400">
 						Page {safePage} / {totalPages}
 					</div>
 
 					<button
 						type="button"
-						className="rounded-md border border-[var(--color-border)] px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+						className={BUTTONS_CLASS}
 						onClick={() => onPageChange(safePage + 1)}
 						disabled={safePage >= totalPages || loading}
 					>
@@ -255,7 +296,7 @@ export function TransactionTable({
 					</button>
 					<button
 						type="button"
-						className="rounded-md border border-[var(--color-border)] px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+						className={BUTTONS_CLASS}
 						onClick={() => onPageChange(totalPages)}
 						disabled={safePage >= totalPages || loading}
 					>

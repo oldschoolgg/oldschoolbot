@@ -24,7 +24,7 @@ async function getAdapter(
 					max: 100,
 					min: 20
 				},
-				{ onPoolError: console.error, onConnectionError: console.error }
+				{ onPoolError: Logging.logError, onConnectionError: Logging.logError }
 			),
 			pgLiteClient: null
 		};
@@ -54,7 +54,7 @@ async function makePrismaClient() {
 		adapter,
 		transactionOptions: {
 			maxWait: 15_000,
-			timeout: 15_000
+			timeout: 250_000
 		}
 	});
 	prismaClient.$on('query', e => {

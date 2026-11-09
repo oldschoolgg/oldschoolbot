@@ -125,7 +125,7 @@ export const LootSimulatorPage = () => {
 
 					<BankImage
 						title={`Loot from ${currentKC.toLocaleString()}x ${selectedMonster.name}`}
-						bank={bank}
+						bank={bank.toJSON()}
 						showPrice={showPrice}
 					/>
 				</div>

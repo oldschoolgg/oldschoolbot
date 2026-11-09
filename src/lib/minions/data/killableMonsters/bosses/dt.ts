@@ -1,7 +1,6 @@
-import { roll } from '@oldschoolgg/rng';
+import { GearStat } from '@oldschoolgg/gear';
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, deepResolveItems, Items, itemID, Monsters, resolveItems } from 'oldschooljs';
-import { GearStat } from 'oldschooljs/gear';
 
 import { dukeSucellusCL, theLeviathanCL, theWhispererCL, vardorvisCL } from '@/lib/data/CollectionsExport.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
@@ -16,11 +15,11 @@ const awakenedDeathProps = {
 
 function makeTabletEffect(itemName: string): KillableMonster['effect'] {
 	const item = Items.getOrThrow(itemName);
-	return ({ quantity, gearBank }: Parameters<KillableMonsterEffect>['0']): ReturnType<KillableMonsterEffect> => {
+	return ({ quantity, gearBank, rng }: Parameters<KillableMonsterEffect>['0']): ReturnType<KillableMonsterEffect> => {
 		if (gearBank.bank.has(item)) return;
 		let gotTab = false;
 		for (let i = 0; i < quantity; i++) {
-			if (roll(25)) {
+			if (rng.roll(25)) {
 				gotTab = true;
 				break;
 			}
@@ -32,6 +31,21 @@ function makeTabletEffect(itemName: string): KillableMonster['effect'] {
 		};
 	};
 }
+
+const meleeTreadBoosts = [
+	{ boostPercent: 5, itemID: itemID('Avernic treads (pr)') },
+	{ boostPercent: 3, itemID: itemID('Primordial boots') }
+];
+
+const rangeTreadBoosts = [
+	{ boostPercent: 5, itemID: itemID('Avernic treads (pe)') },
+	{ boostPercent: 3, itemID: itemID('Pegasian boots') }
+];
+
+const mageTreadBoosts = [
+	{ boostPercent: 5, itemID: itemID('Avernic treads (et)') },
+	{ boostPercent: 3, itemID: itemID('Eternal boots') }
+];
 
 export const desertTreasureKillableBosses: KillableMonster[] = [
 	{
@@ -52,7 +66,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 				gearSetup: 'melee'
 			},
 			{
-				items: [{ boostPercent: 3, itemID: itemID('Primordial boots') }],
+				items: meleeTreadBoosts,
 				gearSetup: 'melee'
 			},
 			{
@@ -124,7 +138,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 				gearSetup: 'melee'
 			},
 			{
-				items: [{ boostPercent: 3, itemID: itemID('Primordial boots') }],
+				items: meleeTreadBoosts,
 				gearSetup: 'melee'
 			},
 			{
@@ -201,7 +215,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 				gearSetup: 'range'
 			},
 			{
-				items: [{ boostPercent: 3, itemID: itemID('Pegasian boots') }],
+				items: rangeTreadBoosts,
 				gearSetup: 'range'
 			},
 			{
@@ -281,7 +295,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 				gearSetup: 'range'
 			},
 			{
-				items: [{ boostPercent: 3, itemID: itemID('Pegasian boots') }],
+				items: rangeTreadBoosts,
 				gearSetup: 'range'
 			},
 			{
@@ -355,11 +369,14 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 				gearSetup: 'mage'
 			},
 			{
-				items: [{ boostPercent: 3, itemID: itemID('Tormented bracelet') }],
+				items: [
+					{ boostPercent: 5, itemID: itemID('Confliction gauntlets') },
+					{ boostPercent: 3, itemID: itemID('Tormented bracelet') }
+				],
 				gearSetup: 'mage'
 			},
 			{
-				items: [{ boostPercent: 3, itemID: itemID('Eternal boots') }],
+				items: mageTreadBoosts,
 				gearSetup: 'mage'
 			},
 			{
@@ -458,11 +475,14 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 				gearSetup: 'mage'
 			},
 			{
-				items: [{ boostPercent: 3, itemID: itemID('Tormented bracelet') }],
+				items: [
+					{ boostPercent: 5, itemID: itemID('Confliction gauntlets') },
+					{ boostPercent: 3, itemID: itemID('Tormented bracelet') }
+				],
 				gearSetup: 'mage'
 			},
 			{
-				items: [{ boostPercent: 3, itemID: itemID('Eternal boots') }],
+				items: mageTreadBoosts,
 				gearSetup: 'mage'
 			},
 			{
@@ -570,7 +590,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 				gearSetup: 'melee'
 			},
 			{
-				items: [{ boostPercent: 3, itemID: itemID('Primordial boots') }],
+				items: meleeTreadBoosts,
 				gearSetup: 'melee'
 			},
 			{
@@ -647,7 +667,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 				gearSetup: 'melee'
 			},
 			{
-				items: [{ boostPercent: 3, itemID: itemID('Primordial boots') }],
+				items: meleeTreadBoosts,
 				gearSetup: 'melee'
 			},
 			{

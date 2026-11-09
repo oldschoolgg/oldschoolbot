@@ -1,5 +1,5 @@
-import { cryptoRng } from '@oldschoolgg/rng/crypto';
 import type { Prisma, User } from '@prisma/robochimp';
+import { cryptoRng } from 'node-rng/crypto';
 
 import { RUser } from '../src/structures/RUser.js';
 
@@ -20,6 +20,7 @@ export function mockUser(): RUser {
 		bits: [],
 		github_id: null,
 		patreon_id: null,
+		cyr_patreon_id: null,
 		user_group_id: null,
 		migrated_user_id: null,
 

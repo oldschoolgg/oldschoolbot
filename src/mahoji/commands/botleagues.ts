@@ -3,7 +3,6 @@ import { Bank, Items } from 'oldschooljs';
 
 import { leagueBuyables } from '@/lib/data/leaguesBuyables.js';
 import { doMenuWrapper } from '@/lib/menuWrapper.js';
-import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 
 const leaguesTrophiesBuyables = [
 	{
@@ -75,7 +74,7 @@ export const botLeaguesCommand = defineCommand({
 		}
 	],
 	run: async ({ options, user, interaction }) => {
-		const roboChimpUser = await roboChimpUserFetch(user.id);
+		const roboChimpUser = await Cache.getRoboChimpUser(user.id);
 
 		if (options.claim_trophy) {
 			const loot = new Bank();

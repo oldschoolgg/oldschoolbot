@@ -6,7 +6,9 @@ import type { SlayerActivityConstants } from '@/lib/minions/data/combatConstants
 import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
 import type { UnderwaterAgilityThievingTrainingSkill } from '@/lib/skilling/skills/agility.js';
+import type { CookingMethodEnum } from '@/lib/skilling/skills/cooking/cooking.js';
 import type { IPatchData } from '@/lib/skilling/skills/farming/utils/types.js';
+import type { SharkLureQuantity } from '@/lib/skilling/skills/fishing/fishingUtil.js';
 import type { TwitcherGloves } from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import type { Peak } from '@/lib/util/peaks.js';
 
@@ -27,7 +29,6 @@ export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
 		| 'AerialFishing'
 		| 'SoulWars'
 		| 'RoguesDenMaze'
-		| 'CastleWars'
 		| 'MageArena'
 		| 'MageTrainingArena'
 		| 'BlastFurnace'
@@ -54,6 +55,7 @@ export interface ActivityTaskOptionsWithQuantity extends ActivityTaskOptions {
 		| 'DriftNet'
 		| 'WealthCharging'
 		| 'GloryCharging'
+		| 'GloryUncharging'
 		| 'AerialFishing'
 		| 'FishingTrawler'
 		| 'CamdozaalFishing'
@@ -123,6 +125,7 @@ export interface CookingActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Cooking';
 	cookableID: number;
 	quantity: number;
+	method?: CookingMethodEnum;
 }
 
 export interface ConstructionActivityTaskOptions extends ActivityTaskOptions {
@@ -159,9 +162,23 @@ export interface ClueActivityTaskOptions extends ActivityTaskOptions {
 
 export interface FishingActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Fishing';
-	fishID: number;
+	fishID: string;
 	quantity: number;
+	qty: number[];
+	loot?: number[];
+	extraCatchRolls?: number[];
+	flakesToRemove?: number;
 	flakesQuantity?: number;
+	powerfish?: boolean;
+	spiritFlakes?: boolean;
+	spiritFlakePreference?: boolean;
+	sharkLureQuantity?: SharkLureQuantity;
+	sharkLuresToConsume?: number;
+	sharkLurePreference?: SharkLureQuantity;
+	blessingExtra?: number;
+	blessingQuantity?: number;
+	flakeExtra?: number;
+	usedBarbarianCutEat?: boolean;
 	iQty?: number;
 }
 
@@ -171,6 +188,7 @@ export interface MiningActivityTaskOptions extends ActivityTaskOptions {
 	fakeDurationMin: number;
 	oreID: number;
 	quantity: number;
+	minedQuantity?: number;
 	powermine: boolean;
 	iQty?: number;
 }
@@ -325,17 +343,54 @@ export interface InfernoOptions extends ActivityTaskOptions {
 	cost: ItemBank;
 }
 
-export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
-	type: 'Farming';
+export interface FarmingStepTaskData {
+	duration: number;
 	pid?: number;
 	plantsName: string | null;
 	quantity: number;
 	upgradeType: CropUpgradeType | null;
+	patchName?: string;
 	payment?: boolean;
+	treeChopFeePaid?: number;
+	treeChopFeePlanned?: number;
 	patchType: IPatchData;
 	planting: boolean;
 	currentDate: number;
+}
+
+export interface AutoFarmStepData extends FarmingStepTaskData {}
+
+export interface AutoFarmSummaryStep {
+	patchType: string;
+	plantsName: string;
+	quantity: number;
+	xp: number;
+	bonusXp: number;
+	weeds: number;
+	duration: number;
+	loot?: ItemBank;
+}
+
+export interface AutoFarmSummary {
+	totalXP: number;
+	totalBonusXP: number;
+	totalWeeds: number;
+	totalDuration: number;
+	totalWoodcuttingXP: number;
+	totalHerbloreXP: number;
+	totalLoot?: ItemBank;
+	contractsCompleted: number;
+	boosts: string[];
+	attachmentMessages: string[];
+	steps: AutoFarmSummaryStep[];
+}
+
+export interface FarmingActivityTaskOptions extends ActivityTaskOptions, FarmingStepTaskData {
+	type: 'Farming';
 	autoFarmed: boolean;
+	autoFarmPlan?: AutoFarmStepData[];
+	autoFarmCombined?: boolean;
+	autoFarmSummary?: AutoFarmSummary;
 }
 
 export interface BirdhouseActivityTaskOptions extends ActivityTaskOptions {
@@ -377,6 +432,18 @@ export interface MahoganyHomesActivityTaskOptions extends MinigameActivityTaskOp
 	tier: number;
 }
 
+export interface MasteringMixologyContractActivityTaskOptions extends MinigameActivityTaskOptions {
+	type: 'MasteringMixologyContract';
+	quantity: number;
+	contractIDs?: number[];
+}
+
+export interface MasteringMixologyContractCreatingTaskOptions extends MinigameActivityTaskOptions {
+	type: 'MixologyPasteCreation';
+	herbName: string;
+	quantity: number;
+}
+
 export interface NightmareActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Nightmare';
 	method: 'solo' | 'mass';
@@ -406,6 +473,15 @@ export interface SepulchreActivityTaskOptions extends MinigameActivityTaskOption
 export interface PlunderActivityTaskOptions extends MinigameActivityTaskOptions {
 	type: 'Plunder';
 	rooms: number[];
+}
+
+export interface ValeTotemsActivityTaskOptions extends MinigameActivityTaskOptions {
+	type: 'ValeTotems';
+	offerings: number;
+	fletchXp: number;
+	logId: number;
+	itemId: number;
+	staminaPot: boolean | undefined;
 }
 
 export interface ZalcanoActivityTaskOptions extends ActivityTaskOptions {
@@ -449,6 +525,25 @@ export interface GroupMonsterActivityTaskOptions extends Omit<MonsterActivityTas
 	users: string[];
 }
 
+export interface YamaActivityTaskOptions extends ActivityTaskOptions {
+	type: 'Yama';
+	quantity: number;
+	iQty?: number;
+	leader: string;
+	users: string[];
+	solo?: boolean;
+	perKillTime: number;
+	teamMembers: YamaTeamMember[];
+}
+
+export interface YamaTeamMember {
+	id: string;
+	contribution: number;
+	deathChance: number;
+	kc: number;
+	attackStyles: AttackStyles[];
+}
+
 export interface RaidsOptions extends ActivityTaskOptionsWithUsers {
 	type: 'Raids';
 	leader: string;
@@ -478,6 +573,28 @@ export interface ColoTaskOptions extends ActivityTaskOptions {
 	scytheCharges: number;
 	venatorBowCharges: number;
 	bloodFuryCharges: number;
+}
+
+// A Delve Trek is one complete Doom attempt from Delve 1 until cash-out, a unique stop, or death.
+export interface DoomActivityTrekData {
+	dur: number;
+	dead: boolean;
+	lastDelve: number;
+	loot?: ItemBank;
+	diedAt?: number;
+	ayak?: number;
+}
+
+export interface DoomTaskOptions extends ActivityTaskOptions {
+	type: 'DoomOfMokhaiotl';
+	targetDelve: number;
+	treks: DoomActivityTrekData[];
+	refund?: ItemBank;
+	refundAmmo?: ItemBank;
+	fakeDuration: number;
+	quantity?: number;
+	stopOnUnique?: boolean;
+	disableZcbBoost?: boolean;
 }
 
 type UserID = string;
@@ -571,6 +688,18 @@ export interface ShadesOfMortonOptions extends MinigameActivityTaskOptions {
 	shadeID: string;
 	logID: number;
 }
+
+export interface ShadesOfMortonSacredOilOptions extends ActivityTaskOptions {
+	type: 'ShadesOfMortonSacredOil';
+	quantity: number;
+}
+
+export interface ShadesOfMortonPyreLogsOptions extends ActivityTaskOptions {
+	type: 'ShadesOfMortonPyreLogs';
+	quantity: number;
+	logID: number;
+}
+
 export interface SpecificQuestOptions extends ActivityTaskOptions {
 	type: 'SpecificQuest';
 	questID: number;
@@ -582,11 +711,13 @@ export type ActivityTaskData =
 	| CollectingOptions
 	| RaidsOptions
 	| GauntletOptions
+	| YamaActivityTaskOptions
 	| CastingActivityTaskOptions
 	| EnchantingActivityTaskOptions
 	| ConstructionActivityTaskOptions
 	| HunterActivityTaskOptions
-	| ZalcanoActivityTaskOptions
+	| MasteringMixologyContractActivityTaskOptions
+	| MasteringMixologyContractCreatingTaskOptions
 	| SawmillActivityTaskOptions
 	| ButlerActivityTaskOptions
 	| FarmingActivityTaskOptions
@@ -607,6 +738,8 @@ export type ActivityTaskData =
 	| GiantsFoundryActivityTaskOptions
 	| NightmareZoneActivityTaskOptions
 	| ShadesOfMortonOptions
+	| ShadesOfMortonSacredOilOptions
+	| ShadesOfMortonPyreLogsOptions
 	| UnderwaterAgilityThievingTaskOptions
 	| PickpocketActivityTaskOptions
 	| BuryingActivityTaskOptions
@@ -632,6 +765,7 @@ export type ActivityTaskData =
 	| NightmareActivityTaskOptions
 	| TitheFarmActivityTaskOptions
 	| SepulchreActivityTaskOptions
+	| ValeTotemsActivityTaskOptions
 	| GnomeRestaurantActivityTaskOptions
 	| SpecificQuestOptions
 	| ActivityTaskOptionsWithNoChanges
@@ -643,4 +777,5 @@ export type ActivityTaskData =
 	| MinigameActivityTaskOptionsWithNoChanges
 	| CutLeapingFishActivityTaskOptions
 	| CreateForestersRationsActivityTaskOptions
-	| ColoTaskOptions;
+	| ColoTaskOptions
+	| DoomTaskOptions;

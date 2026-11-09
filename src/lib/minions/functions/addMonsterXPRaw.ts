@@ -1,5 +1,4 @@
-import { randomVariation } from '@oldschoolgg/rng';
-import { type Monster, Monsters, NIGHTMARES_HP } from 'oldschooljs';
+import { EMonster, type Monster, Monsters, NIGHTMARES_HP } from 'oldschooljs';
 
 import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '@/lib/minions/data/combatConstants.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
@@ -9,7 +8,8 @@ import { XPBank } from '@/lib/structures/XPBank.js';
 
 const miscHpMap: Record<number, number> = {
 	9415: NIGHTMARES_HP,
-	3127: 250
+	3127: 250,
+	[EMonster.DOOM_OF_MOKHAIOTL]: 675
 };
 
 export interface AddMonsterXpParams {
@@ -26,6 +26,7 @@ export interface AddMonsterXpParams {
 }
 
 export function addMonsterXPRaw(params: {
+	rng: RNGProvider;
 	monsterID: number;
 	quantity: number;
 	duration: number;
@@ -49,9 +50,9 @@ export function addMonsterXPRaw(params: {
 	let hp = miscHpMap[params.monsterID] ?? 1;
 	let xpMultiplier = 1;
 	const cannonQty = params.cannonMulti
-		? randomVariation(Math.floor((xpPercentToCannonM / 100) * params.quantity), xpCannonVaryPercent)
+		? params.rng.randomVariation(Math.floor((xpPercentToCannonM / 100) * params.quantity), xpCannonVaryPercent)
 		: params.usingCannon
-			? randomVariation(Math.floor((xpPercentToCannon / 100) * params.quantity), xpCannonVaryPercent)
+			? params.rng.randomVariation(Math.floor((xpPercentToCannon / 100) * params.quantity), xpCannonVaryPercent)
 			: 0;
 
 	// Remove superiors from the regular count to be added separately.

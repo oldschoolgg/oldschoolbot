@@ -6,6 +6,7 @@ export function taskGroupFromActivity(type: activity_type_enum): ActivityGroup {
 		case 'ClueCompletion':
 			return ActivityGroup.Clue;
 		case 'GroupMonsterKilling':
+		case 'Yama':
 		case 'MonsterKilling':
 			return ActivityGroup.Monster;
 		case 'Fishing':
@@ -33,6 +34,7 @@ export function taskGroupFromActivity(type: activity_type_enum): ActivityGroup {
 		case 'Enchanting':
 		case 'Casting':
 		case 'GloryCharging':
+		case 'GloryUncharging':
 		case 'WealthCharging':
 		case 'Collecting':
 		case 'BlastFurnace':
@@ -44,6 +46,7 @@ export function taskGroupFromActivity(type: activity_type_enum): ActivityGroup {
 		case 'AnimatedArmour':
 		case 'Cyclops':
 		case 'Sepulchre':
+		case 'ValeTotems':
 		case 'Plunder':
 		case 'Zalcano':
 		case 'FishingTrawler':
@@ -58,6 +61,7 @@ export function taskGroupFromActivity(type: activity_type_enum): ActivityGroup {
 		case 'GnomeRestaurant':
 		case 'RoguesDenMaze':
 		case 'Gauntlet':
+		case 'DoomOfMokhaiotl':
 		case 'CastleWars':
 		case 'MageArena':
 		case 'Raids':
