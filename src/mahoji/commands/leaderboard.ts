@@ -1,5 +1,6 @@
 import { DISCO_AESTHETICS, type DiscoAesthetic } from '@/lib/bso/discoBloodbath.js';
 import { bsoItemContractDonationGivenLb, bsoItemContractLb } from '@/lib/bso/leaderboards/itemContractsLb.js';
+import { bsoLeaguesLeaderboard } from '@/lib/bso/leaderboards/leaguesLb.js';
 import { bsoTamesHatchedLb } from '@/lib/bso/leaderboards/tamesHatchedLb.js';
 
 import { calcWhatPercent, formatDuration, stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
@@ -1025,6 +1026,10 @@ export const leaderboardCommand = defineCommand({
 
 		if (options.unique_ic_donation_given) {
 			return bsoItemContractDonationGivenLb(interaction, false);
+		}
+
+		if (options.leagues) {
+			return bsoLeaguesLeaderboard(interaction, options.leagues.type);
 		}
 
 		if (options.clues) {
