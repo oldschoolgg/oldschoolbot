@@ -35,6 +35,11 @@ export interface HolderSnapshot {
 	ironman: HolderCounts;
 }
 
+export async function createEconomyItemSnapshot(): Promise<void> {
+	await prisma.$executeRaw`INSERT INTO economy_item_banks (bank, holder_count)
+VALUES (get_economy_bank(), get_item_holder_counts());`;
+}
+
 export async function fetchLatestHolderSnapshot(): Promise<HolderSnapshot | null> {
 	const [snapshot] = await prisma.$queryRaw<HolderSnapshotRaw[]>`
                 SELECT date, holder_count

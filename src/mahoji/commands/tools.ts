@@ -1,5 +1,4 @@
 import { EmbedBuilder } from '@oldschoolgg/discord';
-import { randArrItem } from '@oldschoolgg/rng';
 import { formatDuration, stringMatches, stringSearch } from '@oldschoolgg/toolkit';
 import {
 	Bank,
@@ -991,7 +990,7 @@ export const toolsCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ options, user, interaction, guildId }): CommandResponse => {
+	run: async ({ options, user, interaction, guildId, rng }): CommandResponse => {
 		await interaction.defer();
 
 		if (options.patron) {
@@ -1030,7 +1029,7 @@ export const toolsCommand = defineCommand({
 					795, // War ship
 					11918 // Birthday present
 				];
-				if (item && blacklist.includes(item.id)) return randArrItem(gifs);
+				if (item && blacklist.includes(item.id)) return rng.pick(gifs);
 
 				if (!item) return "That's not a valid item.";
 				const ironmanOnly = Boolean(patron.item_holders.ironman);
