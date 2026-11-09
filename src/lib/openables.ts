@@ -39,6 +39,7 @@ import {
 	type OpenableOpenOptions,
 	resolveItems,
 	SeedPack,
+	SharkLurePack,
 	SilverHAMChest,
 	SinisterChest,
 	SteelHAMChest,
@@ -482,6 +483,14 @@ const osjsOpenables: UnifiedOpenable[] = [
 		aliases: ['expert potion pack'],
 		output: ExpertPotionPack.table,
 		allItems: ExpertPotionPack.table.allItems
+	},
+	{
+		name: 'Shark lure pack',
+		id: SharkLurePack.id,
+		openedItem: Items.getOrThrow(SharkLurePack.id),
+		aliases: [...SharkLurePack.aliases],
+		output: SharkLurePack.table,
+		allItems: SharkLurePack.table.allItems
 	},
 	{
 		name: 'Intricate pouch',
