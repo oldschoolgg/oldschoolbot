@@ -84,3 +84,38 @@ BEGIN
   );
 END;
 $$ LANGUAGE plpgsql PARALLEL SAFE;
+
+CREATE OR REPLACE FUNCTION get_item_holder_counts()
+RETURNS jsonb AS
+$$
+BEGIN
+  RETURN jsonb_build_object(
+    'all', COALESCE(
+      (
+        SELECT json_object_agg(item_id, holders)::jsonb
+        FROM (
+          SELECT bank_items.key::int AS item_id, COUNT(DISTINCT u.id) AS holders
+          FROM users u
+          CROSS JOIN LATERAL json_each_text(u.bank) AS bank_items
+          WHERE bank_items.value::bigint > 0
+          GROUP BY bank_items.key::int
+        ) aggregated
+      ),
+      '{}'::jsonb
+    ),
+    'ironman', COALESCE(
+      (
+        SELECT json_object_agg(item_id, holders)::jsonb
+        FROM (
+          SELECT bank_items.key::int AS item_id, COUNT(DISTINCT u.id) AS holders
+          FROM users u
+          CROSS JOIN LATERAL json_each_text(u.bank) AS bank_items
+          WHERE bank_items.value::bigint > 0 AND u."minion.ironman" = true
+          GROUP BY bank_items.key::int
+        ) aggregated
+      ),
+      '{}'::jsonb
+    )
+  );
+END;
+$$ LANGUAGE plpgsql PARALLEL SAFE;
