@@ -1,8 +1,18 @@
 import { EmbedBuilder } from '@oldschoolgg/discord';
 import { formatDuration, stringMatches, stringSearch } from '@oldschoolgg/toolkit';
-import { Bank, type Item, type ItemBank, ItemGroups, Items, resolveItems, ToBUniqueTable } from 'oldschooljs';
+import {
+	Bank,
+	ECreature,
+	type Item,
+	type ItemBank,
+	ItemGroups,
+	Items,
+	resolveItems,
+	ToBUniqueTable
+} from 'oldschooljs';
 
 import type { Activity } from '@/prisma/main.js';
+import { Prisma } from '@/prisma/main.js';
 import { choicesOf, itemOption, monsterOption, skillOption } from '@/discord/index.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { allStashUnitsFlat } from '@/lib/clues/stashUnits.js';
@@ -341,6 +351,25 @@ LIMIT 10;`);
 }
 
 export const dryStreakEntities: DrystreakEntity[] = [
+	{
+		name: 'Herbiboar',
+		items: resolveItems(['Herbi']),
+		run: async ({ item, ironmanOnly }) => {
+			const creatureId = ECreature.HERBIBOAR.toString();
+			const itemId = item.id.toString();
+			const result = await prisma.$queryRaw<{ id: string; val: number }[]>(Prisma.sql`
+SELECT "users"."id", ("creature_scores"->>${creatureId})::int AS val
+FROM users
+INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
+WHERE "collectionLogBank"->>${itemId} IS NULL
+AND "creature_scores"->>${creatureId} IS NOT NULL
+${ironmanOnly ? Prisma.sql`AND "minion.ironman" = true` : Prisma.empty}
+ORDER BY ("creature_scores"->>${creatureId})::int DESC
+LIMIT 10;`);
+			return result;
+		},
+		format: num => `${num.toLocaleString()} Catches`
+	},
 	{
 		name: 'Chambers of Xeric (CoX)',
 		items: resolveItems([

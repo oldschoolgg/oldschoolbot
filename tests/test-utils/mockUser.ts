@@ -8,7 +8,7 @@ import { expect } from 'vitest';
 
 import type { GearSetupType, Prisma, User, UserStats } from '@/prisma/main.js';
 import { rawCommandHandlerInner } from '@/discord/commandHandler.js';
-import { MessageBuilderClass } from '@/discord/MessageBuilder.js';
+import { MessageBuilder } from '@/discord/MessageBuilder.js';
 import type { PvMMethod } from '@/lib/constants.js';
 import { BitField } from '@/lib/constants.js';
 import type { DegradeableItem } from '@/lib/degradeableItems.js';
@@ -246,7 +246,7 @@ export class TestUser extends MUserClass {
 			rng: MathRNG,
 			ignoreUserIsBusy: otherOptions.bypassBusy ? true : undefined
 		});
-		if (result instanceof MessageBuilderClass) {
+		if (result instanceof MessageBuilder) {
 			result = await result.build();
 		}
 		await this.sync();
@@ -302,6 +302,7 @@ export async function mockUser(
 		mageLevel: number;
 		wildyGear: number[];
 		meleeGear: number[];
+		finishedQuestIds: number[];
 		slayerLevel: number;
 		venatorBowCharges: number;
 		bank: Bank;
@@ -343,7 +344,9 @@ export async function mockUser(
 		gear_mage: options.mageGear ? (mageGear.raw() as Prisma.InputJsonValue) : undefined,
 		gear_melee: options.meleeGear ? (meleeGear.raw() as Prisma.InputJsonValue) : undefined,
 		gear_range: options.rangeGear ? (rangeGear.raw() as Prisma.InputJsonValue) : undefined,
+		gear_wildy: options.wildyGear ? (wildyGear.raw() as Prisma.InputJsonValue) : undefined,
 		venator_bow_charges: options.venatorBowCharges,
+		finished_quest_ids: options.finishedQuestIds,
 		QP: options.QP,
 		minion_hasBought: true
 	});
@@ -353,11 +356,6 @@ export async function mockUser(
 	if (options.maxed) {
 		await user.max();
 	}
-	await prisma.newUser.create({
-		data: {
-			id: user.id
-		}
-	});
 	return user;
 }
 

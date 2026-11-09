@@ -176,7 +176,9 @@ export const offerCommand = defineCommand({
 			});
 
 			return {
-				content: `You offered ${quantity}x ${egg.name} to the Shrine and received the attached loot and ${xpStr}.`,
+				content: `You offered ${quantity}x ${egg.name} to the Shrine and received the attached loot.${
+					xpStr.length > 0 ? ` ${xpStr}` : ''
+				}`,
 				files: [file]
 			};
 		}

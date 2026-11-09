@@ -10,7 +10,7 @@ import { Planks } from '@/lib/minions/data/planks.js';
 import { quests } from '@/lib/minions/data/quests.js';
 import Agility from '@/lib/skilling/skills/agility.js';
 import Constructables from '@/lib/skilling/skills/construction/constructables.js';
-import Cooking from '@/lib/skilling/skills/cooking/cooking.js';
+import Cooking, { CookingMethodEnum } from '@/lib/skilling/skills/cooking/cooking.js';
 import ForestryRations from '@/lib/skilling/skills/cooking/forestersRations.js';
 import { LeapingFish } from '@/lib/skilling/skills/cooking/leapingFish.js';
 import Crafting from '@/lib/skilling/skills/crafting/index.js';
@@ -45,6 +45,7 @@ import type {
 	CreateForestersRationsActivityTaskOptions,
 	CutLeapingFishActivityTaskOptions,
 	DarkAltarOptions,
+	DoomTaskOptions,
 	EnchantingActivityTaskOptions,
 	FarmingActivityTaskOptions,
 	FightCavesActivityTaskOptions,
@@ -82,6 +83,7 @@ import type {
 	TOAOptions,
 	ValeTotemsActivityTaskOptions,
 	WoodcuttingActivityTaskOptions,
+	YamaActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '@/lib/types/minions.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
@@ -116,6 +118,11 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 			}. ${formattedDuration}`;
 		}
 
+		case 'Yama': {
+			const data = currentTask as YamaActivityTaskOptions;
+			return `${name} is currently ${data.solo ? 'soloing' : 'duoing'} ${data.quantity}x Yama. ${formattedDuration}`;
+		}
+
 		case 'ClueCompletion': {
 			const data = currentTask as ClueActivityTaskOptions;
 
@@ -146,7 +153,13 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 		case 'Cooking': {
 			const data = currentTask as CookingActivityTaskOptions;
 
-			const cookable = Cooking.Cookables.find(cookable => cookable.id === data.cookableID);
+			if (data.method === CookingMethodEnum.KarambwanShop) {
+				return `${name} is currently buying, cooking and dropping ${data.quantity}x karambwans. ${formattedDuration} Your ${
+					Emoji.Cooking
+				} Cooking level is ${user.skillsAsLevels.cooking}`;
+			}
+
+			const cookable = Cooking.Cookables.find(item => item.id === data.cookableID);
 
 			return `${name} is currently cooking ${data.quantity}x ${cookable?.name}. ${formattedDuration} Your ${
 				Emoji.Cooking
@@ -549,7 +562,6 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 				data.corrupted ? 'Corrupted' : 'Normal'
 			} Gauntlet. ${formattedDuration}`;
 		}
-
 		case 'CastleWars': {
 			const data = currentTask as MinigameActivityTaskOptionsWithNoChanges;
 			return `${name} is currently doing ${data.quantity}x Castle Wars games. ${formattedDuration}`;
@@ -767,6 +779,16 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 		}
 		case 'Colosseum': {
 			return `${name} is currently attempting the Colosseum, if they are successful, the trip should have about ${formattedDuration}.`;
+		}
+		case 'DoomOfMokhaiotl': {
+			const data = currentTask as DoomTaskOptions;
+			const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
+			if (durationRemaining < 0) {
+				return `${name} is finishing up their last Delve attempt at the Doom of Mokhaiotl, and will be back shortly...`;
+			}
+			return `${name} is currently attempting the Doom of Mokhaiotl (targeting delve **${
+				data.targetDelve
+			}**). There is about ${formatTripDuration(user, durationRemaining)} remaining.`;
 		}
 		case 'HalloweenEvent': {
 			return `${name} is doing the Halloween event! The trip should take ${loneFormattedDuration}.`;
