@@ -5,13 +5,13 @@ import { redis } from '@/lib/redis.js';
 
 export async function syncBlacklists(): Promise<void> {
 	const allBlacklist = await roboChimpClient.blacklistedEntity.findMany();
-	const a = groupBy(allBlacklist, b => b.type);
-	await redis.del(RedisKeys.BlacklistedUsers);
-	if (a.user) {
-		await redis.sadd(RedisKeys.BlacklistedUsers, ...a.user.map(b => b.id.toString()));
-	}
-	await redis.del(RedisKeys.BlacklistedGuilds);
-	if (a.guild) {
-		await redis.sadd(RedisKeys.BlacklistedGuilds, ...a.guild.map(b => b.id.toString()));
+	const { user, guild } = groupBy(allBlacklist, entry => entry.type);
+	const transaction = redis.multi().del(RedisKeys.BlacklistedUsers, RedisKeys.BlacklistedGuilds);
+	if (user?.length) transaction.sadd(RedisKeys.BlacklistedUsers, ...user.map(entry => entry.id.toString()));
+	if (guild?.length) transaction.sadd(RedisKeys.BlacklistedGuilds, ...guild.map(entry => entry.id.toString()));
+	const results = await transaction.exec();
+	if (!results) throw new Error('Blacklist cache refresh was aborted.');
+	for (const [error] of results) {
+		if (error) throw error;
 	}
 }

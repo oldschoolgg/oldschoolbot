@@ -59,7 +59,7 @@ export async function fetchBingosThatUserIsInvolvedIn(userId: string) {
 }
 
 async function bingoTeamLeaderboard(interaction: MInteraction, bingo: BingoManager): CommandResponse {
-	const { teams } = await bingo.fetchAllParticipants();
+	const teams = await bingo.fetchLeaderboardTeams();
 
 	const users = await Promise.all(
 		[...teams]
@@ -70,7 +70,8 @@ async function bingoTeamLeaderboard(interaction: MInteraction, bingo: BingoManag
 				return {
 					id: team.team_id.toString(),
 					score: team.tilesCompletedCount,
-					customName: label
+					customName: label,
+					team: true as const
 				};
 			})
 	);
