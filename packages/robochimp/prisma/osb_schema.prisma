@@ -59,6 +59,7 @@ model Analytic {
 
 model ClientStorage {
   id                           String   @id @db.VarChar(19)
+  extra_settings               Json     @default("{}") @db.Json
   totalCommandsUsed            Int      @default(0)
   prices                       Json     @default("{}") @db.Json
   sold_items_bank              Json     @default("{}") @db.Json
@@ -198,17 +199,18 @@ model GearPreset {
 }
 
 model Giveaway {
-  id          Int      @id
-  user_id     String   @db.VarChar(19)
-  start_date  DateTime @db.Timestamp(6)
-  finish_date DateTime @db.Timestamp(6)
-  duration    Int
-  completed   Boolean
-  guild_id    String?  @db.VarChar(20)
-  channel_id  String   @db.VarChar(19)
-  loot        Json     @db.Json
-  message_id  String   @db.VarChar(19)
-  reaction_id String?  @db.VarChar(19)
+  id            String   @id @db.VarChar(19)
+  user_id       String   @db.VarChar(19)
+  start_date    DateTime @db.Timestamp(6)
+  finish_date   DateTime @db.Timestamp(6)
+  duration      Int
+  completed     Boolean
+  allow_ironmen Boolean  @default(false)
+  guild_id      String?  @db.VarChar(20)
+  channel_id    String   @db.VarChar(19)
+  loot          Json     @db.Json
+  message_id    String   @db.VarChar(19)
+  reaction_id   String?  @db.VarChar(19)
 
   users_entered String[] @default([])
 
@@ -273,6 +275,7 @@ enum bank_sort_method_enum {
 }
 
 model User {
+  gambles                     Gamble[]
   id                          String    @id @db.VarChar(19)
   last_command_date           DateTime? @db.Timestamp(6)
   minion_bought_date          DateTime? @db.Timestamp(6)
@@ -658,6 +661,43 @@ model EconomyTransaction {
   items_received Json? @default("{}") @db.Json
 
   @@map("economy_transaction")
+}
+
+model GamblingTransaction {
+  id            Int      @id @default(autoincrement())
+  user_id       BigInt
+  date          DateTime @default(now())
+  type          String   @db.VarChar(32)
+  amount_staked BigInt
+  pnl           BigInt
+
+  @@index([user_id, date])
+  @@index([type, date])
+  @@map("gambling_transaction")
+}
+
+model Gamble {
+  id Int @id @default(autoincrement())
+
+  user_id String @db.VarChar(19)
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  game        String @db.VarChar(32)
+  bet_amount  BigInt
+  bet_item_id Int?
+
+  payout_amount  BigInt @default(0)
+  payout_item_id Int?
+
+  won         Boolean @default(false)
+  profit_loss BigInt?
+
+  created_at DateTime  @default(now()) @db.Timestamp(6)
+  settled_at DateTime? @db.Timestamp(6)
+
+  @@index([user_id, created_at])
+  @@index([game, created_at])
+  @@map("gamble")
 }
 
 model StashUnit {

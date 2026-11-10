@@ -25,6 +25,10 @@ async function mahojiClientSettingsUpdate(data: Prisma.ClientStorageUpdateInput)
 	});
 }
 
+async function getExtraSettings() {
+	return Cache.getExtraSettings();
+}
+
 async function updateClientGPTrackSetting(
 	setting:
 		| 'gp_luckypick'
@@ -171,6 +175,7 @@ async function addToGPTaxBalance(user: MUser, amount: number) {
 const ClientSettingsSrc = {
 	fetch: mahojiClientSettingsFetch,
 	update: mahojiClientSettingsUpdate,
+	getExtraSettings,
 	updateClientGPTrackSetting,
 	updateBankSetting,
 	removeFromBankSetting,

@@ -153,7 +153,6 @@ describe('MUser', () => {
 		for (let i = 0; i < 100; i++) {
 			const tier = randArrItem(ClueTiers)!;
 			clues.push({
-				id: randInt(1, 100_000_000),
 				user_id: BigInt(user.id),
 				start_date: new Date(Date.now() - Time.Hour),
 				duration: Time.Hour,

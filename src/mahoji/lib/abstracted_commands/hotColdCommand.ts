@@ -1,6 +1,7 @@
 import { EmbedBuilder } from '@oldschoolgg/discord';
 import { LootTable, resolveItems, toKMB } from 'oldschooljs';
 
+import { createGamble, settleGamble } from '@/lib/gambling.js';
 import { trackGamblingTransaction } from '@/lib/util/gambling.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
@@ -46,6 +47,7 @@ ${explanation}`
 
 	await user.sync();
 	if (user.GP < amount) return "You can't afford to gamble that much.";
+	const gamble = await createGamble({ userId: user.id, game: 'hot_cold', betAmount: amount });
 	await user.transactItems({
 		itemsToAdd: flowerLoot,
 		collectionLog: true
@@ -85,6 +87,7 @@ ${explanation}`
 			amountStaked: amount,
 			pnl: amountWon
 		});
+		await settleGamble(gamble.id, { won: true, profitLoss: amountWon, payoutAmount: amountWon });
 		embed
 			.setDescription(
 				`You rolled a special flower, and received 5x of your bet! You received ${toKMB(amountWon)}`
@@ -125,9 +128,11 @@ ${explanation}`
 			amountStaked: amount,
 			pnl: amount
 		});
+		await settleGamble(gamble.id, { won: true, profitLoss: amount, payoutAmount: amountWon });
 		embed.setDescription(`You **won** ${toKMB(amountWon)}!`).setColor(6_875_960);
 		return response;
 	}
+	await settleGamble(gamble.id, { won: false, profitLoss: -amount });
 	await user.statsUpdate({
 		gp_hotcold: {
 			decrement: amount

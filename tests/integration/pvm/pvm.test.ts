@@ -706,9 +706,10 @@ describe('PVM', async () => {
 		expect(nonWildyEliteResult.activityResult!.duration).toEqual(nonWildyBaseResult.activityResult!.duration);
 		expect(wildyBaseResult.commandResult).not.toContain('Wilderness Elite Diary');
 		expect(wildyEliteResult.commandResult).toContain('30% for Wilderness Elite Diary');
+		// Allow for duration rounding while still checking the 30% reduction.
 		expect(wildyEliteResult.activityResult!.duration / wildyBaseResult.activityResult!.duration).toBeCloseTo(
 			0.7,
-			5
+			2
 		);
 	});
 

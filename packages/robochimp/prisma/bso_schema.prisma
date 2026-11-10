@@ -255,7 +255,7 @@ model GearPreset {
 }
 
 model Giveaway {
-  id            Int      @id
+  id            String   @id @db.VarChar(19)
   user_id       String   @db.VarChar(19)
   start_date    DateTime @db.Timestamp(6)
   finish_date   DateTime @db.Timestamp(6)
@@ -548,6 +548,19 @@ model User {
 
   @@index([id, last_command_date])
   @@map("users")
+}
+
+model GamblingTransaction {
+  id            Int      @id @default(autoincrement())
+  user_id       BigInt
+  date          DateTime @default(now())
+  type          String   @db.VarChar(32)
+  amount_staked BigInt
+  pnl           BigInt
+
+  @@index([user_id, date])
+  @@index([type, date])
+  @@map("gambling_transaction")
 }
 
 model Gamble {

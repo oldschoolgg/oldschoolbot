@@ -3,6 +3,7 @@ import { Bank, toKMB } from 'oldschooljs';
 import { chunk } from 'remeda';
 
 import { EmojiId } from '@/lib/data/emojis.js';
+import { createGamble, settleGamble } from '@/lib/gambling.js';
 import { trackGamblingTransaction } from '@/lib/util/gambling.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
@@ -136,6 +137,7 @@ export async function luckyPickCommand(
 		return "You don't have enough GP to make this bet.";
 	}
 	await user.removeItemsFromBank(new Bank().add('Coins', amount));
+	const gamble = await createGamble({ userId: user.id, game: 'lucky_pick', betAmount: amount });
 
 	const buttons = getButtons(rng);
 	await interaction.reply({
@@ -150,6 +152,7 @@ export async function luckyPickCommand(
 	});
 	if (!selectionResult) {
 		await user.addItemsToBank({ items: new Bank().add('Coins', amount) });
+		await settleGamble(gamble.id, { won: false, profitLoss: 0, payoutAmount: amount });
 		return `You didn't pick any buttons in time, so you were refunded ${toKMB(amount)} GP.`;
 	}
 
@@ -163,6 +166,11 @@ export async function luckyPickCommand(
 		type: 'lucky_pick',
 		amountStaked: amount,
 		pnl: amountReceived - amount
+	});
+	await settleGamble(gamble.id, {
+		won: amountReceived > 0,
+		profitLoss: amountReceived - amount,
+		payoutAmount: amountReceived
 	});
 	await ClientSettings.updateClientGPTrackSetting('gp_luckypick', amountReceived - amount);
 	await user.updateGPTrackSetting('gp_luckypick', amountReceived - amount);
