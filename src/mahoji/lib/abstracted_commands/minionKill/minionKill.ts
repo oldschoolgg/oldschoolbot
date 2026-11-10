@@ -30,7 +30,9 @@ export async function minionKillCommand(
 	wilderness: boolean | undefined,
 	solo: boolean | undefined
 ): CommandResponse {
-	if (inputQuantity !== undefined && inputQuantity < 1) return 'Quantity must be greater than 0.';
+	if (inputQuantity !== undefined && (!Number.isSafeInteger(inputQuantity) || inputQuantity < 1)) {
+		return 'Quantity must be a positive whole number.';
+	}
 	if (await user.minionIsBusy()) {
 		return 'Your minion is busy.';
 	}
