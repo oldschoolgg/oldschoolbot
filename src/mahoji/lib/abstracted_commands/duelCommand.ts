@@ -2,8 +2,8 @@ import { Emoji, Events, sleep } from '@oldschoolgg/toolkit';
 import { Bank, toKMB } from 'oldschooljs';
 
 import { BOT_TYPE } from '@/lib/constants.js';
+import { createGamble, settleGamble } from '@/lib/gambling.js';
 import { MUserClass } from '@/lib/user/MUser.js';
-import { trackGamblingTransaction } from '@/lib/util/gambling.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 async function checkBal(user: MUser, amount: number) {
@@ -47,29 +47,15 @@ async function handleFinishUpdates({
 	const loot = new Bank().add('Coins', amountGPWinnerReceives);
 	await winner.addItemsToBank({ items: loot, collectionLog: false });
 
-	await Promise.all([
-		prisma.economyTransaction.create({
-			data: {
-				guild_id: guildId ? BigInt(guildId) : null,
-				sender: BigInt(loser.id),
-				recipient: BigInt(winner.id),
-				items_sent: new Bank().add('Coins').toJSON(),
-				type: 'duel'
-			}
-		}),
-		trackGamblingTransaction({
-			userID: winner.id,
-			type: 'duel',
-			amountStaked: amount,
-			pnl: amountGPWinnerReceives - amount
-		}),
-		trackGamblingTransaction({
-			userID: loser.id,
-			type: 'duel',
-			amountStaked: amount,
-			pnl: -amount
-		})
-	]);
+	await prisma.economyTransaction.create({
+		data: {
+			guild_id: guildId ? BigInt(guildId) : null,
+			sender: BigInt(loser.id),
+			recipient: BigInt(winner.id),
+			items_sent: new Bank().add('Coins').toJSON(),
+			type: 'duel'
+		}
+	});
 	return {
 		amountGPWinnerReceives,
 		taxPaid: tax
@@ -129,6 +115,9 @@ export async function duelCommand(
 
 	const cost = new Bank().add('Coins', amount);
 	await Promise.all([duelSourceUser.removeItemsFromBank(cost), duelTargetUser.removeItemsFromBank(cost)]);
+	const gambles = await Promise.all(
+		[duelSourceUser, duelTargetUser].map(user => createGamble({ userId: user.id, game: 'duel', betAmount: amount }))
+	);
 
 	try {
 		await interaction.reply(`${targetUserUsername} accepted the duel. You both enter the duel arena...`);
@@ -153,6 +142,16 @@ export async function duelCommand(
 		guildId: interaction.guildId ?? null,
 		amount
 	});
+	await Promise.all(
+		gambles.map(gamble => {
+			const won = gamble.user_id === winner.id;
+			return settleGamble(gamble.id, {
+				won,
+				profitLoss: won ? amountGPWinnerReceives - amount : -amount,
+				payoutAmount: won ? amountGPWinnerReceives : 0
+			});
+		})
+	);
 
 	if (amount >= 1_000_000_000) {
 		globalClient.emit(

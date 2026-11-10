@@ -2,7 +2,6 @@ import { EmbedBuilder } from '@oldschoolgg/discord';
 import { LootTable, resolveItems, toKMB } from 'oldschooljs';
 
 import { createGamble, settleGamble } from '@/lib/gambling.js';
-import { trackGamblingTransaction } from '@/lib/util/gambling.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 export const flowerTable = new LootTable()
@@ -81,12 +80,6 @@ ${explanation}`
 				decrement: amountWon
 			}
 		});
-		await trackGamblingTransaction({
-			userID: user.id,
-			type: 'hot_cold',
-			amountStaked: amount,
-			pnl: amountWon
-		});
 		await settleGamble(gamble.id, { won: true, profitLoss: amountWon, payoutAmount: amountWon });
 		embed
 			.setDescription(
@@ -122,12 +115,6 @@ ${explanation}`
 				increment: amount
 			}
 		});
-		await trackGamblingTransaction({
-			userID: user.id,
-			type: 'hot_cold',
-			amountStaked: amount,
-			pnl: amount
-		});
 		await settleGamble(gamble.id, { won: true, profitLoss: amount, payoutAmount: amountWon });
 		embed.setDescription(`You **won** ${toKMB(amountWon)}!`).setColor(6_875_960);
 		return response;
@@ -137,12 +124,6 @@ ${explanation}`
 		gp_hotcold: {
 			decrement: amount
 		}
-	});
-	await trackGamblingTransaction({
-		userID: user.id,
-		type: 'hot_cold',
-		amountStaked: amount,
-		pnl: -amount
 	});
 
 	embed.setDescription(`You lost ${toKMB(amount)}.`).setColor(15_417_396);

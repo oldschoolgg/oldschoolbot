@@ -4,7 +4,6 @@ import { chunk } from 'remeda';
 
 import { EmojiId } from '@/lib/data/emojis.js';
 import { createGamble, settleGamble } from '@/lib/gambling.js';
-import { trackGamblingTransaction } from '@/lib/util/gambling.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 const buttons: Button[] = [
@@ -161,12 +160,6 @@ export async function luckyPickCommand(
 	if (amountReceived > 0) {
 		await user.addItemsToBank({ items: new Bank().add('Coins', amountReceived) });
 	}
-	await trackGamblingTransaction({
-		userID: user.id,
-		type: 'lucky_pick',
-		amountStaked: amount,
-		pnl: amountReceived - amount
-	});
 	await settleGamble(gamble.id, {
 		won: amountReceived > 0,
 		profitLoss: amountReceived - amount,

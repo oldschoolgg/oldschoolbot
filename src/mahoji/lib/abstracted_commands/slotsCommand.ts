@@ -4,7 +4,6 @@ import { Bank, SimpleTable, toKMB } from 'oldschooljs';
 import { chunk } from 'remeda';
 
 import { createGamble, settleGamble } from '@/lib/gambling.js';
-import { trackGamblingTransaction } from '@/lib/util/gambling.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 interface Button {
@@ -150,12 +149,6 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`;
 			: `You won ${toKMB(amountReceived)}!`;
 
 	await user.transactItems({ itemsToAdd: new Bank().add('Coins', amountReceived), collectionLog: false });
-	await trackGamblingTransaction({
-		userID: user.id,
-		type: 'slots',
-		amountStaked: amount,
-		pnl: amountReceived - amount
-	});
 	await settleGamble(gamble.id, {
 		won: amountReceived > 0,
 		profitLoss: amountReceived - amount,
