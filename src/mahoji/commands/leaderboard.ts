@@ -14,6 +14,7 @@ import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
 import { type SkillNameType, SkillsArray } from '@/lib/skilling/types.js';
 import { fetchCLLeaderboard } from '@/lib/util/clLeaderboard.js';
+import { LEADERBOARD_OVERFETCH } from '@/lib/util/leaderboardEligibility.js';
 import { userEventsToMap } from '@/lib/util/userEvents.js';
 
 async function kcLb(interaction: MInteraction, name: string, ironmanOnly: boolean) {
@@ -26,9 +27,10 @@ async function kcLb(interaction: MInteraction, name: string, ironmanOnly: boolea
 		 WHERE CAST("monster_scores"->>'${monster.id}' AS INTEGER) > 5
 		 ${ironmanOnly ? ' AND "users"."minion.ironman" = true ' : ''}
 		 ORDER BY score DESC
-		 LIMIT 2000;`
+		 LIMIT ${2000 * LEADERBOARD_OVERFETCH};`
 	);
 	return doMenuWrapper({
+		limit: 2000,
 		ironmanOnly,
 		interaction,
 		users: list,
@@ -69,9 +71,10 @@ async function delvesLb(interaction: MInteraction, activity: string, metric: str
 				 WHERE users.id::bigint = scores.user_id AND users."minion.ironman" = true
 			 ))
 		 ORDER BY score DESC
-		 LIMIT 2000;
+		 LIMIT ${2000 * LEADERBOARD_OVERFETCH};
 	`;
 	return doMenuWrapper({
+		limit: 2000,
 		ironmanOnly,
 		interaction,
 		users,
@@ -86,9 +89,10 @@ async function farmingContractLb(interaction: MInteraction, ironmanOnly: boolean
 		 WHERE "minion.farmingContract" is not null and CAST ("minion.farmingContract"->>'contractsCompleted' AS INTEGER) >= 1
 		 ${ironmanOnly ? ' AND "minion.ironman" = true ' : ''}
 		 ORDER BY count DESC
-		 LIMIT 2000;`
+		 LIMIT ${2000 * LEADERBOARD_OVERFETCH};`
 	);
 	return doMenuWrapper({
+		limit: 2000,
 		ironmanOnly,
 		interaction,
 		users: list.map(u => ({ id: u.id, score: u.count })),
@@ -104,10 +108,11 @@ async function infernoLb(interaction: MInteraction) {
 		   AND data->>'deathTime' IS NULL
 		   AND completed = true
 		 ORDER BY duration ASC
-		 LIMIT 10;`
+		 LIMIT ${10 * LEADERBOARD_OVERFETCH};`
 	);
 	if (res.length === 0) return 'There are no users on this leaderboard.';
 	return doMenuWrapper({
+		limit: 10,
 		ironmanOnly: false,
 		interaction,
 		users: res.map(r => ({ id: r.user_id, score: r.duration })),
@@ -126,9 +131,10 @@ async function sacrificeLb(interaction: MInteraction, type: 'value' | 'unique', 
 			 WHERE "sacrificedValue" > 10000
 			 ${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
 			 ORDER BY "sacrificedValue" DESC
-			 LIMIT 400;`
+			 LIMIT ${400 * LEADERBOARD_OVERFETCH};`
 		);
 		return doMenuWrapper({
+			limit: 400,
 			ironmanOnly,
 			interaction,
 			users: list.map(u => ({ id: u.id, score: Number(u.amount) })),
@@ -146,9 +152,10 @@ async function sacrificeLb(interaction: MInteraction, type: 'value' | 'unique', 
 		WHERE us.sacrificed_bank::text != '{}'
 		${ironmanOnly ? 'AND u."minion.ironman" = true' : ''}
 		ORDER BY sacbanklength DESC
-		LIMIT 10;`
+		LIMIT ${10 * LEADERBOARD_OVERFETCH};`
 	);
 	return doMenuWrapper({
+		limit: 10,
 		ironmanOnly,
 		interaction,
 		users: mostUniques.map(u => ({ id: u.id, score: u.sacbanklength })),
@@ -166,9 +173,10 @@ async function minigamesLb(interaction: MInteraction, name: string) {
 			 FROM user_stats
 			 WHERE "tithe_farms_completed" > 10
 			 ORDER BY "tithe_farms_completed" DESC
-			 LIMIT 10;`
+			 LIMIT ${10 * LEADERBOARD_OVERFETCH};`
 		);
 		return doMenuWrapper({
+			limit: 10,
 			ironmanOnly: false,
 			interaction,
 			users: tithe.map(t => ({ id: t.id, score: t.amount })),
@@ -178,9 +186,10 @@ async function minigamesLb(interaction: MInteraction, name: string) {
 	const res = await prisma.minigame.findMany({
 		where: { [minigame.column]: { gt: minigame.column === 'champions_challenge' ? 1 : 10 } },
 		orderBy: { [minigame.column]: 'desc' },
-		take: 10
+		take: 10 * LEADERBOARD_OVERFETCH
 	});
 	return doMenuWrapper({
+		limit: 10,
 		ironmanOnly: false,
 		interaction,
 		users: res.map(u => ({ id: u.user_id, score: u[minigame.column] })),
@@ -198,7 +207,7 @@ async function clLb(interaction: MInteraction, inputType: string, ironmenOnly: b
 		ironmanOnly: ironmenOnly,
 		interaction,
 		users: users.map(u => ({ id: u.id, score: u.qty })),
-		title: `${inputType} Collection Log Leaderboard`,
+		title: `${inputType} Collection Log L eaderboard`,
 		formatter: val => `${val.toLocaleString()} (${calcWhatPercent(val, items.size).toFixed(1)}%)`
 	});
 }
@@ -212,9 +221,10 @@ async function creaturesLb(interaction: MInteraction, creatureName: string) {
 	if (!creature) return 'Thats not a valid creature.';
 	const query = `SELECT user_id::text as id, ("creature_scores"->>'${creature.id}')::int as count
 				   FROM user_stats WHERE "creature_scores"->>'${creature.id}' IS NOT NULL
-				   ORDER BY count DESC LIMIT 50;`;
+				   ORDER BY count DESC LIMIT ${50 * LEADERBOARD_OVERFETCH};`;
 	const data: { id: string; count: number }[] = await prisma.$queryRawUnsafe(query);
 	return doMenuWrapper({
+		limit: 50,
 		ironmanOnly: false,
 		interaction,
 		users: data.map(d => ({ id: d.id, score: d.count })),
@@ -229,9 +239,10 @@ async function lapsLb(interaction: MInteraction, courseName: string) {
 		`SELECT user_id::text as id, ("laps_scores"->>'${course.id}')::int as count
 		 FROM user_stats
 		 WHERE "laps_scores"->>'${course.id}' IS NOT NULL
-		 ORDER BY count DESC LIMIT 50;`
+		 ORDER BY count DESC LIMIT ${50 * LEADERBOARD_OVERFETCH};`
 	);
 	return doMenuWrapper({
+		limit: 50,
 		ironmanOnly: false,
 		interaction,
 		users: data.map(d => ({ id: d.id, score: d.count })),
@@ -263,9 +274,10 @@ async function openLb(interaction: MInteraction, name: string, ironmanOnly: bool
 			${ironmanOnly ? 'INNER JOIN users ON users.id::bigint = user_stats.user_id' : ''}
 			WHERE ("openable_scores"->>'${entityID}')::int > 3
 			${ironmanOnly ? ' AND "minion.ironman" = true ' : ''}
-			ORDER BY qty DESC LIMIT 30;`
+			ORDER BY qty DESC LIMIT ${30 * LEADERBOARD_OVERFETCH};`
 	);
 	return doMenuWrapper({
+		limit: 30,
 		ironmanOnly,
 		interaction,
 		users: list.map(u => ({ id: u.id, score: u.qty })),
@@ -281,10 +293,11 @@ async function gpLb(interaction: MInteraction, ironmanOnly: boolean) {
 			 WHERE "GP" > 1000000
 			 ${ironmanOnly ? ' AND "minion.ironman" = true ' : ''}
 			 ORDER BY "GP" DESC
-			 LIMIT 100;`
+			 LIMIT ${100 * LEADERBOARD_OVERFETCH};`
 		)
 	).map(res => ({ id: res.id, score: Number(res.GP) }));
 	return doMenuWrapper({
+		limit: 100,
 		ironmanOnly,
 		interaction,
 		users,
@@ -310,7 +323,7 @@ async function skillsLb(interaction: MInteraction, inputSkill: string, type: 'xp
 		FROM users u
 		${ironmanOnly ? ' WHERE "minion.ironman" = true ' : ''}
 		ORDER BY totalxp DESC
-		LIMIT 2000;`;
+		LIMIT ${2000 * LEADERBOARD_OVERFETCH};`;
 		res =
 			await prisma.$queryRawUnsafe<
 				({ id: string; totalxp: bigint } & Record<`skills.${SkillNameType}`, bigint>)[]
@@ -334,13 +347,14 @@ async function skillsLb(interaction: MInteraction, inputSkill: string, type: 'xp
 				return 0;
 			});
 		}
-		const users = overallUsers.slice(0, 100).map(u => ({
+		const users = overallUsers.map(u => ({
 			id: u.id,
 			score: type === 'xp' ? u.totalXP : u.totalLevel,
 			extraLevel: u.totalLevel,
 			extraXP: u.totalXP
 		}));
 		return doMenuWrapper({
+			limit: 100,
 			ironmanOnly,
 			interaction,
 			users,
@@ -358,7 +372,7 @@ async function skillsLb(interaction: MInteraction, inputSkill: string, type: 'xp
 		FROM users u
 		${ironmanOnly ? ' WHERE "minion.ironman" = true ' : ''}
 		ORDER BY 1 DESC
-		LIMIT 2000;`;
+		LIMIT ${2000 * LEADERBOARD_OVERFETCH};`;
 	const rows = await prisma.$queryRawUnsafe<{ xp: number; id: string }[]>(query);
 
 	const events = await prisma.userEvent.findMany({
@@ -384,6 +398,7 @@ async function skillsLb(interaction: MInteraction, inputSkill: string, type: 'xp
 		return { id: r.id, score: Number(r.xp), level: lvl };
 	});
 	return doMenuWrapper({
+		limit: 2000,
 		ironmanOnly,
 		interaction,
 		users,
@@ -404,10 +419,11 @@ async function cluesLb(interaction: MInteraction, clueTierName: string, ironmanO
 			   AND ("collectionLogBank"->>'${id}')::int > 25
 			   ${ironmanOnly ? 'AND "minion.ironman" = true ' : ''}
 			 ORDER BY ("collectionLogBank"->>'${id}')::int DESC
-			 LIMIT 50;`
+			 LIMIT ${50 * LEADERBOARD_OVERFETCH};`
 		)
 	).map(res => ({ id: res.id, score: Number(res.score) }));
 	return doMenuWrapper({
+		limit: 50,
 		ironmanOnly,
 		interaction,
 		users,
@@ -435,8 +451,9 @@ async function globalLb(interaction: MInteraction, type: GlobalLbType) {
        FROM public.user
        WHERE osb_total_xp IS NOT NULL AND bso_total_xp IS NOT NULL
        ORDER BY average_percentage DESC
-       LIMIT 10;`;
+       LIMIT ${10 * LEADERBOARD_OVERFETCH};`;
 		return doMenuWrapper({
+			limit: 10,
 			ironmanOnly: false,
 			interaction,
 			users: result.map(r => ({
@@ -456,8 +473,9 @@ async function globalLb(interaction: MInteraction, type: GlobalLbType) {
 			 FROM public.user
 			 WHERE osb_mastery IS NOT NULL AND bso_mastery IS NOT NULL
 			 ORDER BY avg DESC
-			 LIMIT 10;`;
+			 LIMIT ${10 * LEADERBOARD_OVERFETCH};`;
 		return doMenuWrapper({
+			limit: 10,
 			ironmanOnly: false,
 			interaction,
 			users: result.map(r => ({ id: r.id, score: r.avg })),
@@ -471,8 +489,9 @@ async function globalLb(interaction: MInteraction, type: GlobalLbType) {
 		 FROM public.user
 		 WHERE osb_cl_percent IS NOT NULL AND bso_cl_percent IS NOT NULL
 		 ORDER BY total_cl_percent DESC
-		 LIMIT 20;`;
+		 LIMIT ${20 * LEADERBOARD_OVERFETCH};`;
 	return doMenuWrapper({
+		limit: 20,
 		ironmanOnly: false,
 		interaction,
 		users: result.map(r => ({ id: r.id, score: r.total_cl_percent })),
@@ -518,7 +537,7 @@ SELECT lc.user_id::text,
 FROM latest_count lc
 JOIN seven_days_ago_count sdac ON lc.user_id = sdac.user_id AND lc.date_row = 1 AND sdac.date_row = 1
 ORDER BY count_increase DESC
-LIMIT 10;`
+LIMIT ${10 * LEADERBOARD_OVERFETCH};`
 			: `WITH latest_count AS (
   SELECT user_id, cl_global_rank, cl_completion_percentage, cl_completion_count, ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY date DESC) AS date_row
   FROM historical_data
@@ -541,9 +560,10 @@ SELECT CAST(lc.user_id AS TEXT) AS user_id,
 FROM latest_count lc
 JOIN seven_days_ago_count sdac ON lc.user_id = sdac.user_id AND lc.date_row = 1 AND sdac.date_row = 1
 ORDER BY score DESC
-LIMIT 10;`
+LIMIT ${10 * LEADERBOARD_OVERFETCH};`
 	);
 	return doMenuWrapper({
+		limit: 10,
 		ironmanOnly: false,
 		interaction,
 		users: result.map(r => ({
@@ -566,10 +586,11 @@ async function caLb(interaction: MInteraction) {
 			 FROM users
 			 WHERE CARDINALITY(completed_ca_task_ids) > 0
 			 ORDER BY CARDINALITY(completed_ca_task_ids) DESC
-			 LIMIT 50;`
+			 LIMIT ${50 * LEADERBOARD_OVERFETCH};`
 		)
 	).map(res => ({ id: res.id, score: Number(res.qty) }));
 	return doMenuWrapper({
+		limit: 50,
 		ironmanOnly: false,
 		interaction,
 		users,
@@ -583,11 +604,12 @@ async function masteryLb(interaction: MInteraction) {
 		await roboChimpClient.user.findMany({
 			where: { [masteryKey]: { not: null } },
 			orderBy: { [masteryKey]: 'desc' },
-			take: 50,
+			take: 50 * LEADERBOARD_OVERFETCH,
 			select: { id: true, osb_mastery: true, bso_mastery: true }
 		})
 	).map(u => ({ id: u.id.toString(), score: u[masteryKey] ?? 0 }));
 	return doMenuWrapper({
+		limit: 50,
 		interaction,
 		title: 'Mastery Leaderboard',
 		ironmanOnly: false,
@@ -627,9 +649,10 @@ async function giantsFoundryLb(interaction: MInteraction, ironmanOnly: boolean, 
 
 	rows.sort((a, b) => (sortByTotal ? b.total - a.total : b.uniques - a.uniques));
 
-	const top = rows.slice(0, 10);
+	const top = rows;
 
 	return doMenuWrapper({
+		limit: 10,
 		ironmanOnly,
 		interaction,
 		users: top.map(t => ({ id: t.id, score: sortByTotal ? t.total : t.uniques })),

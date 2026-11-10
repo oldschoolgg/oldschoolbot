@@ -1,6 +1,7 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
 
 import { SQL } from '@/lib/rawSql.js';
+import { LEADERBOARD_OVERFETCH, leaderboardEligibility } from '@/lib/util/leaderboardEligibility.js';
 import { userEventsToMap } from '@/lib/util/userEvents.js';
 
 export async function fetchMultipleCLLeaderboards(
@@ -11,6 +12,7 @@ export async function fetchMultipleCLLeaderboards(
 		clName: string;
 	}[]
 ) {
+	const eligibility = await leaderboardEligibility();
 	const userEvents = await prisma.userEvent.findMany({
 		where: {
 			type: 'CLCompletion'
@@ -48,7 +50,7 @@ FROM (
 		${SQL.GROUP_BY_U_ID}
 	) AS subquery
 ORDER BY qty DESC
-LIMIT ${resultLimit};
+LIMIT ${resultLimit * LEADERBOARD_OVERFETCH};
 `;
 			return prisma.$queryRawUnsafe<{ id: string; qty: number }[]>(query);
 		})
@@ -58,6 +60,7 @@ LIMIT ${resultLimit};
 		const src = parsedLeaderboards[index];
 
 		const users = res
+			.filter(user => eligibility.includes(user.id))
 			.sort((a, b) => {
 				const valueDifference = b.qty - a.qty;
 				if (valueDifference !== 0) {
@@ -76,7 +79,8 @@ LIMIT ${resultLimit};
 				}
 				return 0;
 			})
-			.filter(i => i.qty > 0);
+			.filter(i => i.qty > 0)
+			.slice(0, src.resultLimit);
 
 		return {
 			...src,
