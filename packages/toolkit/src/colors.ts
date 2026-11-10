@@ -1,5 +1,5 @@
 export function isValidHexColor(hex: string): boolean {
-	const isValid = hex.length === 7 && /^#([0-9A-F]{3}){1,2}$/i.test(hex);
+	const isValid = hex.length === 7 && /^#?([0-9A-F]{3}){1,2}$/i.test(hex);
 	return isValid;
 }
 
