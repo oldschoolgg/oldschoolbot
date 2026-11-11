@@ -62,7 +62,7 @@
 		"ioredis": "^5.9.3",
 		"lru-cache": "^11.2.6",
 		"luxon": "^3.7.2",
-		"node-rng": "^0.0.3",
+		"node-rng": "workspace:*",
 		"oldschooljs": "workspace:*",
 		"p-queue": "8.1.1",
 		"pg": "^8.16.3",
