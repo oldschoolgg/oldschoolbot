@@ -290,10 +290,7 @@ export async function autoFarm(
 	const patchGroupCount = summaryLines.length;
 	let response = `${user.minionName} is now auto farming ${patchGroupCount.toLocaleString()} patch group${
 		patchGroupCount === 1 ? '' : 's'
-	}, the trip will return in about ${formatTripDuration(
-		user,
-		totalDuration
-	)}:\n\n**Patches:**\n${summaryLines.join('\n')}`;
+	}, the trip will return ${formatTripDuration(user, totalDuration)}:\n\n**Patches:**\n${summaryLines.join('\n')}`;
 
 	const itemsUsed = formatItemsUsed(totalCost);
 	if (itemsUsed.length > 0) {

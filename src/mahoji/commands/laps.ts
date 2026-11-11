@@ -150,7 +150,7 @@ export const lapsCommand = defineCommand({
 
 		let response = `${user.minionName} is now doing ${quantity}x ${
 			course.name
-		} laps, it'll take around ${formatTripDuration(user, duration)} to finish.`;
+		} laps, they are expected to finish ${formatTripDuration(user, duration)}.`;
 
 		const alchResult = course.name === 'Ape Atoll Agility Course' || !options.alch ? null : alching(user, duration);
 		if (alchResult !== null) {

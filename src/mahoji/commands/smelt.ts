@@ -158,7 +158,7 @@ export const smeltingCommand = defineCommand({
 
 		const response = `${user.minionName} is now smelting ${quantity}x ${
 			bar.name
-		}, it'll take around ${formatTripDuration(user, duration)} to finish. ${
+		}, they are expected to finish ${formatTripDuration(user, duration)}. ${
 			blast_furnace ? `You paid ${coinsToRemove} GP to use the Blast Furnace.` : ''
 		} ${boosts.length > 0 ? `\n\n**Boosts: ** ${boosts.join(', ')}` : ''}`;
 

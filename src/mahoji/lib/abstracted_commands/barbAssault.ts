@@ -262,7 +262,7 @@ export async function barbAssaultStartCommand({ user, channelId, rng }: OSIntera
 		user.minionName
 	} is now off to do ${quantity} waves of Barbarian Assault. Each wave takes ${formatDuration(
 		waveTime
-	)} - the total trip will return in about ${formatTripDuration(user, duration)}.`;
+	)} - the total trip will return ${formatTripDuration(user, duration)}.`;
 
 	str += `\n\n**Boosts:** ${boosts.join(', ')}.${venBowMsg}`;
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({

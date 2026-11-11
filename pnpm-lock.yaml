@@ -314,6 +314,9 @@ importers:
       '@oldschoolgg/schemas':
         specifier: workspace:*
         version: link:../schemas
+      '@oldschoolgg/toolkit':
+        specifier: workspace:*
+        version: link:../toolkit
       '@oldschoolgg/util':
         specifier: workspace:*
         version: link:../util
@@ -329,6 +332,9 @@ importers:
       lucide-react:
         specifier: ^0.555.0
         version: 0.555.0(react@19.2.0)
+      node-rng:
+        specifier: workspace:*
+        version: link:../node-rng
       oldschooljs:
         specifier: workspace:*
         version: link:../oldschooljs
@@ -372,7 +378,13 @@ importers:
       deepmerge:
         specifier: 4.3.1
         version: 4.3.1
+      node-rng:
+        specifier: workspace:*
+        version: link:../node-rng
     devDependencies:
+      '@oldschoolgg/toolkit':
+        specifier: workspace:*
+        version: link:../toolkit
       deep-object-diff:
         specifier: ^1.1.9
         version: 1.1.9
@@ -415,6 +427,9 @@ importers:
       ioredis:
         specifier: ^5.8.2
         version: 5.9.3
+      node-rng:
+        specifier: workspace:*
+        version: link:../node-rng
       oldschooljs:
         specifier: workspace:*
         version: link:../oldschooljs
@@ -455,6 +470,9 @@ importers:
       '@octokit/graphql':
         specifier: ^8.1.1
         version: 8.2.2
+      '@oldschoolgg/discord':
+        specifier: workspace:*
+        version: link:../discord
       '@oldschoolgg/schemas':
         specifier: workspace:*
         version: link:../schemas
@@ -482,6 +500,9 @@ importers:
       ioredis:
         specifier: ^5.8.2
         version: 5.8.2
+      node-rng:
+        specifier: workspace:*
+        version: link:../node-rng
       oldschooljs:
         specifier: workspace:*
         version: link:../oldschooljs

@@ -278,7 +278,7 @@ export const huntCommand = defineCommand({
 
 		let response = `${user.minionName} is now ${crystalImpling ? 'hunting' : `${creature.huntTechnique}`}${
 			crystalImpling ? ' ' : ` ${quantity}x `
-		}${creature.name}, it'll take around ${formatTripDuration(user, duration)} to finish.`;
+		}${creature.name}, they are expected to finish ${formatTripDuration(user, duration)}.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;

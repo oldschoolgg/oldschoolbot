@@ -1,9 +1,8 @@
-import { Emoji, increaseNumByPercent, PerkTier, reduceNumByPercent, Time, toTitleCase } from '@oldschoolgg/toolkit';
+import { Emoji, increaseNumByPercent, reduceNumByPercent, toTitleCase } from '@oldschoolgg/toolkit';
 import { MathRNG } from 'node-rng';
 import { Items } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
-import { BitField } from '@/lib/constants.js';
 import { findTripBuyable } from '@/lib/data/buyables/tripBuyables.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { Planks } from '@/lib/minions/data/planks.js';
@@ -91,22 +90,6 @@ import { shades, shadesLogs } from '@/mahoji/lib/abstracted_commands/shadesOfMor
 import { ValeTotemsDecorations } from '@/mahoji/lib/abstracted_commands/valeTotemsCommand.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
 
-function formatStatusTime(user: MUser, duration: number): string {
-	if (user.perkTier >= PerkTier.Two && !user.bitfield.includes(BitField.DisableDynamicTimestamp)) {
-		return formatTripDuration(user, duration);
-	}
-	const units: [Intl.RelativeTimeFormatUnit, number][] = [
-		['year', Time.Year],
-		['month', Time.Month],
-		['day', Time.Day],
-		['hour', Time.Hour],
-		['minute', Time.Minute],
-		['second', Time.Second]
-	];
-	const [unit, size] = units.find(([, size]) => Math.abs(duration) >= size) ?? units[units.length - 1];
-	return new Intl.RelativeTimeFormat('en', { numeric: 'always' }).format(Math.round(duration / size), unit);
-}
-
 export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, rng = MathRNG) {
 	const name = user.minionName;
 	if (!currentTask) {
@@ -114,7 +97,7 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 	}
 
 	const durationRemaining = currentTask.finishDate - Date.now();
-	const formattedDuration = `Expected to finish ${formatStatusTime(user, durationRemaining)}.`;
+	const formattedDuration = `Expected to finish ${formatTripDuration(user, durationRemaining)}.`;
 
 	switch (currentTask.type) {
 		case 'MonsterKilling': {
@@ -199,10 +182,10 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 			return `${name} is currently mining ${ore?.name}. ${
 				data.fakeDurationMax === data.fakeDurationMin
 					? formattedDuration
-					: `Expected to finish between ${formatStatusTime(
+					: `Expected to finish between ${formatTripDuration(
 							user,
 							rng.randomVariation(reduceNumByPercent(durationRemaining, 25), 20)
-						)} and ${formatStatusTime(
+						)} and ${formatTripDuration(
 							user,
 							rng.randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
 						)}.`
@@ -215,10 +198,10 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 			return `${name} is currently mining at the Motherlode Mine. ${
 				data.fakeDurationMax === data.fakeDurationMin
 					? formattedDuration
-					: `Expected to finish between ${formatStatusTime(
+					: `Expected to finish between ${formatTripDuration(
 							user,
 							rng.randomVariation(reduceNumByPercent(durationRemaining, 25), 20)
-						)} and ${formatStatusTime(
+						)} and ${formatTripDuration(
 							user,
 							rng.randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
 						)}.`
@@ -297,10 +280,10 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 			return `${name} is currently chopping ${log?.name}. ${
 				data.fakeDurationMax === data.fakeDurationMin
 					? formattedDuration
-					: `Expected to finish between ${formatStatusTime(
+					: `Expected to finish between ${formatTripDuration(
 							user,
 							rng.randomVariation(reduceNumByPercent(durationRemaining, 25), 20)
-						)} and ${formatStatusTime(
+						)} and ${formatTripDuration(
 							user,
 							rng.randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
 						)}.`
@@ -330,7 +313,7 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 			const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
 			return `${name} is currently attempting the ${Emoji.AnimatedFireCape} **Fight caves** ${
 				Emoji.TzRekJad
-			}. If they're successful and don't die, they should finish ${formatStatusTime(user, durationRemaining)}.`;
+			}. If they're successful and don't die, they should finish ${formatTripDuration(user, durationRemaining)}.`;
 		}
 		case 'TitheFarm': {
 			return `${name} is currently farming at the **Tithe Farm**. ${formattedDuration}`;
@@ -651,13 +634,13 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 		case 'Inferno': {
 			const data = currentTask as InfernoOptions;
 			const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
-			return `${name} is currently attempting the Inferno, if they're successful and don't die, they should finish ${formatStatusTime(user, durationRemaining)}.`;
+			return `${name} is currently attempting the Inferno, if they're successful and don't die, they should finish ${formatTripDuration(user, durationRemaining)}.`;
 		}
 		case 'TheatreOfBlood': {
 			const data = currentTask as TheatreOfBloodTaskOptions;
 			const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
 
-			return `${name} is currently attempting the Theatre of Blood, if your team is successful and doesn't die, they should finish ${formatStatusTime(user, durationRemaining)}.`;
+			return `${name} is currently attempting the Theatre of Blood, if your team is successful and doesn't die, they should finish ${formatTripDuration(user, durationRemaining)}.`;
 		}
 		case 'LastManStanding': {
 			const data = currentTask as MinigameActivityTaskOptionsWithNoChanges;
@@ -685,7 +668,7 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 			const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
 			return `${name} is currently killing Nex ${data.quantity} times with a team of ${
 				data.teamDetails.length
-			}. Expected to finish ${formatStatusTime(user, durationRemaining)}.`;
+			}. Expected to finish ${formatTripDuration(user, durationRemaining)}.`;
 		}
 		case 'TroubleBrewing': {
 			const data = currentTask as MinigameActivityTaskOptionsWithNoChanges;
@@ -735,7 +718,7 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 			const data = currentTask as TOAOptions;
 			const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
 
-			return `${name} is currently attempting the Tombs of Amascut, if your team is successful and doesn't die, they should finish ${formatStatusTime(user, durationRemaining)}.`;
+			return `${name} is currently attempting the Tombs of Amascut, if your team is successful and doesn't die, they should finish ${formatTripDuration(user, durationRemaining)}.`;
 		}
 		case 'UnderwaterAgilityThieving': {
 			return `${name} is currently doing Underwater Agility and Thieving. ${formattedDuration}`;
@@ -763,7 +746,7 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 			}
 			return `${name} is currently attempting the Doom of Mokhaiotl (targeting delve **${
 				data.targetDelve
-			}**). Expected to finish around ${formatStatusTime(user, durationRemaining)}.`;
+			}**). Expected to finish around ${formatTripDuration(user, durationRemaining)}.`;
 		}
 		case 'HalloweenEvent': {
 			return `${name} is doing the Halloween event! ${formattedDuration}`;

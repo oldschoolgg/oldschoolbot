@@ -153,10 +153,10 @@ export async function minionKillCommand(
 		attackStyles: result.attackStyles,
 		onTask: result.isOnTask
 	});
-	let response = `${minionName} is now killing ${result.quantity}x ${monster.name}, it'll take around ${formatTripDuration(
+	let response = `${minionName} is now killing ${result.quantity}x ${monster.name}, they are expected to finish ${formatTripDuration(
 		user,
 		result.duration
-	)} to finish. Attack styles used: ${result.attackStyles.join(', ')}.`;
+	)}. Attack styles used: ${result.attackStyles.join(', ')}.`;
 
 	if (result.messages.length > 0) {
 		response += `\n\n${result.messages.join(', ')}`;

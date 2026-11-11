@@ -109,10 +109,10 @@ export async function darkAltarCommand({
 		useExtracts: extracts
 	});
 
-	let response = `${user.minionName} is now going to Runecraft ${runeData.item.name}'s for ${formatTripDuration(
+	let response = `${user.minionName} is now going to Runecraft ${runeData.item.name}'s at the Dark altar, finishing ${formatTripDuration(
 		user,
 		duration
-	)} at the Dark altar.`;
+	)}.`;
 
 	if (extracts) {
 		response += `\nYou will use ${quantity}x Scarred extract during this trip.`;

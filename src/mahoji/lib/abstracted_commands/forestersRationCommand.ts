@@ -71,5 +71,5 @@ export async function forestersRationCommand({
 
 	return `${user.minionName} is now creating ${quantity}x ${
 		forestryFood.name
-	}, it'll take around ${formatTripDuration(user, duration)} to finish.`;
+	}, they are expected to finish ${formatTripDuration(user, duration)}.`;
 }

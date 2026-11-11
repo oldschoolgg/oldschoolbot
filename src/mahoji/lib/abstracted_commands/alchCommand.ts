@@ -100,10 +100,10 @@ export async function alchCommand(
 		type: 'Alching'
 	});
 
-	const response = `${user.minionName} is now alching ${quantity}x ${osItem.name}, it'll take around ${formatTripDuration(
+	const response = `${user.minionName} is now alching ${quantity}x ${osItem.name}, they are expected to finish ${formatTripDuration(
 		user,
 		duration
-	)} to finish.`;
+	)}.`;
 
 	return response;
 }

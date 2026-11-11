@@ -25,10 +25,12 @@
 	"dependencies": {
 		"deepmerge": "4.3.1",
 		"@oldschoolgg/gear": "workspace:*",
-		"@oldschoolgg/util": "workspace:*"
+		"@oldschoolgg/util": "workspace:*",
+		"node-rng": "workspace:*"
 	},
 	"devDependencies": {
 		"deep-object-diff": "^1.1.9",
-		"wtf_wikipedia": "^10.3.2"
+		"wtf_wikipedia": "^10.3.2",
+		"@oldschoolgg/toolkit": "workspace:*"
 	}
 }

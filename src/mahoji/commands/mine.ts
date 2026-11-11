@@ -292,11 +292,11 @@ export const mineCommand = defineCommand({
 		const outputName = ore.outputId ? Items.itemNameFromId(ore.outputId) : ore.name;
 		let response = `${user.minionName} is now mining ${ore.name} until your minion ${
 			quantity ? `mined ${quantity}x ${outputName} or gets tired` : 'is satisfied'
-		}, it'll take ${
+		}, they are expected to finish ${
 			quantity
 				? `between ${formatTripDuration(user, res.fakeDurationMin)} **and** ${formatTripDuration(user, res.fakeDurationMax)}`
 				: formatTripDuration(user, res.duration)
-		} to finish.`;
+		}.`;
 
 		if (res.boosts.length > 0) {
 			response += `\n\n**Boosts:** ${res.boosts.join(', ')}.`;

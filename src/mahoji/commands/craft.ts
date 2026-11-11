@@ -115,6 +115,6 @@ export const craftCommand = defineCommand({
 
 		return `${user.minionName} is now crafting ${quantity}${sets} ${
 			craftable.name
-		}, it'll take around ${formatTripDuration(user, duration)} to finish. Removed ${itemsNeeded} from your bank.`;
+		}, they are expected to finish ${formatTripDuration(user, duration)}. Removed ${itemsNeeded} from your bank.`;
 	}
 });

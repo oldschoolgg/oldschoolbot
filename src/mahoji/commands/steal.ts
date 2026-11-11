@@ -129,7 +129,7 @@ export const stealCommand = defineCommand({
 
 		let str = `${user.minionName} is now going to ${
 			stealable.type === 'pickpockable' ? 'pickpocket' : 'steal from'
-		} a ${stealable.name} ${quantity}x times, it'll take around ${formatTripDuration(user, duration)} to finish.`;
+		} a ${stealable.name} ${quantity}x times, they are expected to finish ${formatTripDuration(user, duration)}.`;
 
 		const isRoguesCastleChest = stealable.name === "Rogues' Castle chest";
 		const potionsToRemove = new Bank();
