@@ -158,11 +158,12 @@ export const masteringMixologyBuyables = [
 	},
 	{
 		item: Items.getOrThrow('Prescription goggles'),
-		cost: { Mox: 8600, Aga: 7000, Lye: 9350 }
+		cost: { Mox: 8600, Aga: 7000, Lye: 9350 },
+		refundable: true
 	},
-	{ item: Items.getOrThrow('Alchemist labcoat'), cost: { Mox: 2250, Aga: 2800, Lye: 3700 } },
-	{ item: Items.getOrThrow('Alchemist pants'), cost: { Mox: 2250, Aga: 2800, Lye: 3700 } },
-	{ item: Items.getOrThrow('Alchemist gloves'), cost: { Mox: 2250, Aga: 2800, Lye: 3700 } },
+	{ item: Items.getOrThrow('Alchemist labcoat'), cost: { Mox: 2250, Aga: 2800, Lye: 3700 }, refundable: true },
+	{ item: Items.getOrThrow('Alchemist pants'), cost: { Mox: 2250, Aga: 2800, Lye: 3700 }, refundable: true },
+	{ item: Items.getOrThrow('Alchemist gloves'), cost: { Mox: 2250, Aga: 2800, Lye: 3700 }, refundable: true },
 	{ item: Items.getOrThrow('Reagent pouch'), cost: { Mox: 13800, Aga: 11200, Lye: 15100 } },
 	{ item: Items.getOrThrow('Potion storage'), cost: { Mox: 7750, Aga: 6300, Lye: 8950 } },
 	{
@@ -172,6 +173,8 @@ export const masteringMixologyBuyables = [
 	{ item: Items.getOrThrow("Alchemist's amulet"), cost: { Mox: 6900, Aga: 5650, Lye: 7400 } },
 	{ item: Items.getOrThrow('Aldarium'), cost: { Mox: 80, Aga: 60, Lye: 90 } }
 ];
+
+export const masteringMixologyRefundables = masteringMixologyBuyables.filter(i => i.refundable);
 
 export function createMixologyPoints(): MixologyPoints {
 	return { Mox: 0, Lye: 0, Aga: 0 };

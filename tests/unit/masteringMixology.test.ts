@@ -17,6 +17,7 @@ import * as tripLength from '@/lib/util/calcMaxTripLength.js';
 import {
 	MasteringMixologyBuyCommand,
 	MasteringMixologyContractStartCommand,
+	MasteringMixologyRefundCommand,
 	MasteringMixologyStatusCommand,
 	MixologyPasteCreationCommand
 } from '@/mahoji/lib/abstracted_commands/masteringMixologyCommand.js';
@@ -248,5 +249,45 @@ You have completed 12 Mastering Mixology contracts.`);
 		expect(result).toEqual(
 			"You don't have enough Mixology points to buy 2x Aldarium. You need 160 Mox, 120 Aga and 180 Lye points."
 		);
+	});
+
+	test.each([
+		['Prescription goggles', 3440, 2800, 3740],
+		['Alchemist labcoat', 900, 1120, 1480],
+		['Alchemist pants', 900, 1120, 1480],
+		['Alchemist gloves', 900, 1120, 1480]
+	] as const)('refunds 40%% of the point cost for %s', async (item, mox, aga, lye) => {
+		const cost = new Bank().add(item, 2);
+		const transactItems = vi.fn();
+		const statsUpdate = vi.fn();
+		const user = mockMixologyUser({ bank: cost.clone(), transactItems, statsUpdate });
+
+		await MasteringMixologyRefundCommand(user, item, 2);
+
+		expect(transactItems).toHaveBeenCalledExactlyOnceWith({ itemsToRemove: cost });
+		expect(statsUpdate).toHaveBeenCalledExactlyOnceWith({
+			mixology_mox_points: { increment: mox * 2 },
+			mixology_aga_points: { increment: aga * 2 },
+			mixology_lye_points: { increment: lye * 2 }
+		});
+	});
+
+	test.each([
+		['Aldarium', 1, new Bank().add('Aldarium')],
+		["Alchemist's amulet", 1, new Bank().add("Alchemist's amulet")],
+		['Prescription goggles', 1, new Bank()],
+		['Prescription goggles', 2, new Bank().add('Prescription goggles')],
+		['Prescription goggles', 0, new Bank().add('Prescription goggles')],
+		['Prescription goggles', -1, new Bank().add('Prescription goggles')],
+		['Prescription goggles', 1.5, new Bank().add('Prescription goggles')]
+	] as const)('rejects invalid refund requests (%s, %s)', async (item, quantity, bank) => {
+		const transactItems = vi.fn();
+		const statsUpdate = vi.fn();
+		const user = mockMixologyUser({ bank, transactItems, statsUpdate });
+
+		await MasteringMixologyRefundCommand(user, item, quantity);
+
+		expect(transactItems).not.toHaveBeenCalled();
+		expect(statsUpdate).not.toHaveBeenCalled();
 	});
 });

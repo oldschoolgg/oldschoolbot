@@ -56,3 +56,9 @@ The potion packs have Herblore level requirements:
 - Apprentice potion pack requires **60 Herblore**.
 - Adept potion pack requires **70 Herblore**.
 - Expert potion pack requires **85 Herblore**.
+
+### Refunds
+
+Prescription goggles, Alchemist labcoat, Alchemist pants and Alchemist gloves can be refunded for **40%** of their original Mox, Aga and Lye point cost using [[/minigames mastering_mixology refund name\:<item> quantity\:<quantity>]]. The quantity defaults to 1. Other rewards cannot be refunded, including Alchemist's amulet.
+
+Items must be in your bank to refund them, so unequip them first if needed. The bot does not require the in-game "Change" option. The [[/sell]] command blocks these items and directs you to the Mixology refund command.
