@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { Farming } from '../../src/lib/skilling/skills/farming/index.js';
 import type { IPatchData } from '../../src/lib/skilling/skills/farming/utils/types.js';
 import type { FarmingActivityTaskOptions } from '../../src/lib/types/minions.js';
@@ -56,9 +57,10 @@ describe('minionStatus - Farming', () => {
 		};
 
 		const result = minionStatus(user, task);
+		const expectedRemaining = `${formatTripDuration(user, currentDuration)}`;
 
 		expect(result).toContain('auto-farming multiple patches');
-		expect(result).toContain('Expected to finish in 40 seconds.');
+		expect(result).toContain(`Expected to finish ${expectedRemaining}`);
 		expect(result).toContain(`Current step: ${plantsName} (${task.quantity}x).`);
 
 		vi.useRealTimers();
@@ -88,9 +90,9 @@ describe('minionStatus - Farming', () => {
 		};
 
 		const result = minionStatus(user, task);
-
+		const expectedRemaining = `${formatTripDuration(user, currentDuration)}`;
 		expect(result).toContain(`currently farming ${task.quantity}x ${plantsName}`);
-		expect(result).toContain('Expected to finish in 25 seconds.');
+		expect(result).toContain(`Expected to finish ${expectedRemaining}`);
 		expect(result).not.toContain('auto-farming multiple patches');
 
 		vi.useRealTimers();
