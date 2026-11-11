@@ -46,7 +46,7 @@ export interface MinionKillOptions {
 	monster: KillableMonster;
 	isTryingToUseWildy: boolean;
 	combatOptions: readonly ECombatOption[];
-	inputPVMMethod: PvMMethod | undefined;
+	inputPVMMethod: PvMMethod | PvMMethod[] | undefined;
 	monsterKC: number;
 	poh: PlayerOwnedHouse;
 	maxTripLength: number;
@@ -123,7 +123,7 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 	const combatMethods = determineCombatBoosts({
 		cbOpts: combatOptions,
 		monster,
-		methods: [inputPVMMethod ?? 'none'],
+		methods: [inputPVMMethod ?? 'none'].flat(),
 		isOnTask,
 		wildyBurst: isAbleToBurstInWilderness
 	});
