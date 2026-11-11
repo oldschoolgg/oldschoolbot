@@ -1,8 +1,9 @@
-import { Emoji, increaseNumByPercent, reduceNumByPercent, toTitleCase } from '@oldschoolgg/toolkit';
+import { Emoji, increaseNumByPercent, PerkTier, reduceNumByPercent, Time, toTitleCase } from '@oldschoolgg/toolkit';
 import { MathRNG } from 'node-rng';
 import { Items } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { BitField } from '@/lib/constants.js';
 import { findTripBuyable } from '@/lib/data/buyables/tripBuyables.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { Planks } from '@/lib/minions/data/planks.js';
@@ -90,6 +91,22 @@ import { shades, shadesLogs } from '@/mahoji/lib/abstracted_commands/shadesOfMor
 import { ValeTotemsDecorations } from '@/mahoji/lib/abstracted_commands/valeTotemsCommand.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
 
+function formatStatusTime(user: MUser, duration: number): string {
+	if (user.perkTier >= PerkTier.Two && !user.bitfield.includes(BitField.DisableDynamicTimestamp)) {
+		return formatTripDuration(user, duration);
+	}
+	const units: [Intl.RelativeTimeFormatUnit, number][] = [
+		['year', Time.Year],
+		['month', Time.Month],
+		['day', Time.Day],
+		['hour', Time.Hour],
+		['minute', Time.Minute],
+		['second', Time.Second]
+	];
+	const [unit, size] = units.find(([, size]) => Math.abs(duration) >= size) ?? units[units.length - 1];
+	return new Intl.RelativeTimeFormat('en', { numeric: 'always' }).format(Math.round(duration / size), unit);
+}
+
 export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, rng = MathRNG) {
 	const name = user.minionName;
 	if (!currentTask) {
@@ -97,8 +114,7 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 	}
 
 	const durationRemaining = currentTask.finishDate - Date.now();
-	const loneFormattedDuration = `${formatTripDuration(user, durationRemaining)}`;
-	const formattedDuration = `${loneFormattedDuration} remaining.`;
+	const formattedDuration = `Expected to finish ${formatStatusTime(user, durationRemaining)}.`;
 
 	switch (currentTask.type) {
 		case 'MonsterKilling': {
@@ -183,13 +199,13 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 			return `${name} is currently mining ${ore?.name}. ${
 				data.fakeDurationMax === data.fakeDurationMin
 					? formattedDuration
-					: `approximately ${formatTripDuration(
+					: `Expected to finish between ${formatStatusTime(
 							user,
 							rng.randomVariation(reduceNumByPercent(durationRemaining, 25), 20)
-						)} **to** ${formatTripDuration(
+						)} and ${formatStatusTime(
 							user,
 							rng.randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
-						)} remaining.`
+						)}.`
 			} Your ${Emoji.Mining} Mining level is ${user.skillsAsLevels.mining}`;
 		}
 
@@ -199,13 +215,13 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 			return `${name} is currently mining at the Motherlode Mine. ${
 				data.fakeDurationMax === data.fakeDurationMin
 					? formattedDuration
-					: `approximately ${formatTripDuration(
+					: `Expected to finish between ${formatStatusTime(
 							user,
 							rng.randomVariation(reduceNumByPercent(durationRemaining, 25), 20)
-						)} **to** ${formatTripDuration(
+						)} and ${formatStatusTime(
 							user,
 							rng.randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
-						)} remaining.`
+						)}.`
 			} Your ${Emoji.Mining} Mining level is ${user.skillsAsLevels.mining}`;
 		}
 
@@ -281,13 +297,13 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 			return `${name} is currently chopping ${log?.name}. ${
 				data.fakeDurationMax === data.fakeDurationMin
 					? formattedDuration
-					: `approximately ${formatTripDuration(
+					: `Expected to finish between ${formatStatusTime(
 							user,
 							rng.randomVariation(reduceNumByPercent(durationRemaining, 25), 20)
-						)} **to** ${formatTripDuration(
+						)} and ${formatStatusTime(
 							user,
 							rng.randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
-						)} remaining.`
+						)}.`
 			} Your ${Emoji.Woodcutting} Woodcutting level is ${user.skillsAsLevels.woodcutting}`;
 		}
 		case 'Runecraft': {
@@ -314,7 +330,7 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 			const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
 			return `${name} is currently attempting the ${Emoji.AnimatedFireCape} **Fight caves** ${
 				Emoji.TzRekJad
-			}. If they're successful and don't die, the trip should take ${formatTripDuration(user, durationRemaining)}.`;
+			}. If they're successful and don't die, they should finish ${formatStatusTime(user, durationRemaining)}.`;
 		}
 		case 'TitheFarm': {
 			return `${name} is currently farming at the **Tithe Farm**. ${formattedDuration}`;
@@ -355,6 +371,12 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 			const data = currentTask as ActivityTaskOptionsWithQuantity;
 			return `${name} is currently fighting Wintertodt ${data.quantity}x times. ${formattedDuration}`;
 		}
+		case 'MasteringMixologyContract': {
+			return `${name} is currently completing ${currentTask.quantity}x Mastering Mixology contracts. ${formattedDuration}`;
+		}
+		case 'MixologyPasteCreation': {
+			return `${name} is currently making paste from ${currentTask.quantity}x ${currentTask.herbName}. ${formattedDuration}`;
+		}
 		case 'Tempoross': {
 			return `${name} is currently fighting Tempoross. ${formattedDuration}`;
 		}
@@ -377,10 +399,9 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 				((data.autoFarmPlan && data.autoFarmPlan.length > 0) || data.autoFarmSummary);
 
 			if (isCombinedAutoFarm) {
-				const totalRemaining = Math.max(0, durationRemaining);
-				const formattedCombinedDuration = `${formatTripDuration(user, totalRemaining)} remaining.`;
+				const formattedCombinedDuration = formattedDuration;
 				const currentStep = plants?.name ? ` Current step: ${plants.name} (${data.quantity}x).` : '';
-				return `${name} is currently auto-farming multiple patches. Estimated time remaining: ${formattedCombinedDuration}${currentStep} Your ${Emoji.Farming} Farming level is ${user.skillsAsLevels.farming}.`;
+				return `${name} is currently auto-farming multiple patches. ${formattedCombinedDuration}${currentStep} Your ${Emoji.Farming} Farming level is ${user.skillsAsLevels.farming}.`;
 			}
 
 			return `${name} is currently farming ${data.quantity}x ${plants?.name}. ${formattedDuration} Your ${
@@ -630,38 +651,24 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 		case 'Inferno': {
 			const data = currentTask as InfernoOptions;
 			const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
-			return `${name} is currently attempting the Inferno, if they're successful and don't die, the trip should take ${formatTripDuration(
-				user,
-				durationRemaining
-			)}.`;
+			return `${name} is currently attempting the Inferno, if they're successful and don't die, they should finish ${formatStatusTime(user, durationRemaining)}.`;
 		}
 		case 'TheatreOfBlood': {
 			const data = currentTask as TheatreOfBloodTaskOptions;
 			const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
 
-			return `${name} is currently attempting the Theatre of Blood, if your team is successful and doesn't die, the trip should take ${formatTripDuration(
-				user,
-				durationRemaining
-			)}.`;
+			return `${name} is currently attempting the Theatre of Blood, if your team is successful and doesn't die, they should finish ${formatStatusTime(user, durationRemaining)}.`;
 		}
 		case 'LastManStanding': {
 			const data = currentTask as MinigameActivityTaskOptionsWithNoChanges;
 
-			return `${name} is currently doing ${
-				data.quantity
-			} Last Man Standing matches, the trip should take ${formatTripDuration(user, durationRemaining)}.`;
+			return `${name} is currently doing ${data.quantity} Last Man Standing matches. ${formattedDuration}`;
 		}
 		case 'BirthdayEvent': {
-			return `${name} is currently doing the Birthday Event! The trip should take ${formatTripDuration(
-				user,
-				durationRemaining
-			)}.`;
+			return `${name} is currently doing the Birthday Event! ${formattedDuration}`;
 		}
 		case 'TokkulShop': {
-			return `${name} is currently shopping at Tzhaar stores. The trip should take ${formatTripDuration(
-				user,
-				durationRemaining
-			)}.`;
+			return `${name} is currently shopping at Tzhaar stores. ${formattedDuration}`;
 		}
 		case 'Buy': {
 			const data = currentTask as BuyActivityTaskOptions;
@@ -671,52 +678,35 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 				tripBuyable?.quantity && tripBuyable.quantity > 0
 					? data.quantity / tripBuyable.quantity
 					: data.quantity;
-			return `${name} is currently buying ${quantity}x ${itemName}. The trip should take ${formatTripDuration(user, durationRemaining)}.`;
+			return `${name} is currently buying ${quantity}x ${itemName}. ${formattedDuration}`;
 		}
 		case 'Nex': {
 			const data = currentTask as NexTaskOptions;
 			const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
 			return `${name} is currently killing Nex ${data.quantity} times with a team of ${
 				data.teamDetails.length
-			}. The trip should take ${formatTripDuration(user, durationRemaining)}.`;
+			}. Expected to finish ${formatStatusTime(user, durationRemaining)}.`;
 		}
 		case 'TroubleBrewing': {
 			const data = currentTask as MinigameActivityTaskOptionsWithNoChanges;
-			return `${name} is currently doing ${
-				data.quantity
-			}x games of Trouble Brewing. The trip should take ${formatTripDuration(user, durationRemaining)}.`;
+			return `${name} is currently doing ${data.quantity}x games of Trouble Brewing. ${formattedDuration}`;
 		}
 		case 'PuroPuro': {
-			return `${name} is currently hunting in Puro-Puro. The trip should take ${formatTripDuration(
-				user,
-				durationRemaining
-			)}.`;
+			return `${name} is currently hunting in Puro-Puro. ${formattedDuration}`;
 		}
 		case 'ShootingStars': {
-			return `${name} is currently mining a Crashed Star. The trip should take ${formatTripDuration(
-				user,
-				durationRemaining
-			)}.`;
+			return `${name} is currently mining a Crashed Star. ${formattedDuration}`;
 		}
 		case 'GiantsFoundry': {
 			return `${name} is currently creating ${
 				currentTask.quantity
-			}x giant weapons for Kovac in the Giants' Foundry minigame. The trip should take ${formatTripDuration(
-				user,
-				durationRemaining
-			)}.`;
+			}x giant weapons for Kovac in the Giants' Foundry minigame. ${formattedDuration}`;
 		}
 		case 'GuardiansOfTheRift': {
-			return `${name} is currently helping the Great Guardian to close the rift. The trip should take ${formatTripDuration(
-				user,
-				durationRemaining
-			)}.`;
+			return `${name} is currently helping the Great Guardian to close the rift. ${formattedDuration}`;
 		}
 		case 'NightmareZone': {
-			return `${name} is currently killing Monsters in the Nightmare Zone. The trip should take ${formatTripDuration(
-				user,
-				durationRemaining
-			)}.`;
+			return `${name} is currently killing Monsters in the Nightmare Zone. ${formattedDuration}`;
 		}
 		case 'ShadesOfMorton': {
 			const data = currentTask as ShadesOfMortonOptions;
@@ -724,55 +714,46 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 			const shade = shades.find(i => i.shadeName === data.shadeID)!;
 			return `${name} is currently doing ${data.quantity} trips of Shades of Mort'ton, cremating ${
 				shade.shadeName
-			} remains with ${log.oiledLog.name}! The trip should take ${formatTripDuration(user, durationRemaining)}.`;
+			} remains with ${log.oiledLog.name}! ${formattedDuration}`;
 		}
 		case 'ShadesOfMortonSacredOil': {
 			const data = currentTask as ShadesOfMortonSacredOilOptions;
-			return `${name} is currently sanctifying ${data.quantity} vials of Sacred oil. The trip should take ${formatTripDuration(user, durationRemaining)}.`;
+			return `${name} is currently sanctifying ${data.quantity} vials of Sacred oil. ${formattedDuration}`;
 		}
 		case 'ShadesOfMortonPyreLogs': {
 			const data = currentTask as ShadesOfMortonPyreLogsOptions;
 			const log = shadesLogs.find(i => i.normalLog.id === data.logID)!;
-			return `${name} is currently creating ${data.quantity}x ${log.oiledLog.name}. The trip should take ${formatTripDuration(user, durationRemaining)}.`;
+			return `${name} is currently creating ${data.quantity}x ${log.oiledLog.name}. ${formattedDuration}`;
 		}
 		case 'ValeTotems': {
 			const data = currentTask as ValeTotemsActivityTaskOptions;
 			const logs = ValeTotemsDecorations.find(i => i.log.id === data.logId)!;
 			const item = ValeTotemsDecorations.find(i => i.item.id === data.itemId)!;
-			return `${name} is currently building ${logs.log.name} totems, carving them, and decorating them with ${item.item.name} around the valley for ${data.quantity} laps. The trip should take ${formatTripDuration(
-				user,
-				durationRemaining
-			)}.`;
+			return `${name} is currently building ${logs.log.name} totems, carving them, and decorating them with ${item.item.name} around the valley for ${data.quantity} laps. ${formattedDuration}`;
 		}
 		case 'TombsOfAmascut': {
 			const data = currentTask as TOAOptions;
 			const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
 
-			return `${name} is currently attempting the Tombs of Amascut, if your team is successful and doesn't die, the trip should take ${formatTripDuration(
-				user,
-				durationRemaining
-			)}.`;
+			return `${name} is currently attempting the Tombs of Amascut, if your team is successful and doesn't die, they should finish ${formatStatusTime(user, durationRemaining)}.`;
 		}
 		case 'UnderwaterAgilityThieving': {
 			return `${name} is currently doing Underwater Agility and Thieving. ${formattedDuration}`;
 		}
 		case 'StrongholdOfSecurity': {
-			return `${name} is currently doing the Stronghold of Security! The trip should take ${formatTripDuration(
-				user,
-				durationRemaining
-			)}.`;
+			return `${name} is currently doing the Stronghold of Security! ${formattedDuration}`;
 		}
 		case 'CombatRing': {
-			return `${name} is currently fighting in the Combat Ring! Only another ${loneFormattedDuration}!`;
+			return `${name} is currently fighting in the Combat Ring! ${formattedDuration}`;
 		}
 		case 'SpecificQuest': {
 			const data = currentTask as SpecificQuestOptions;
 			return `${name} is currently doing the ${
 				quests.find(i => i.id === data.questID)?.name
-			}! The trip should be done in about ${loneFormattedDuration}.`;
+			}! ${formattedDuration}`;
 		}
 		case 'Colosseum': {
-			return `${name} is currently attempting the Colosseum, if they are successful, the trip should have about ${formattedDuration}.`;
+			return `${name} is currently attempting the Colosseum, if they are successful. ${formattedDuration}`;
 		}
 		case 'DoomOfMokhaiotl': {
 			const data = currentTask as DoomTaskOptions;
@@ -782,15 +763,19 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 			}
 			return `${name} is currently attempting the Doom of Mokhaiotl (targeting delve **${
 				data.targetDelve
-			}**). There is about ${formatTripDuration(user, durationRemaining)} remaining.`;
+			}**). Expected to finish around ${formatStatusTime(user, durationRemaining)}.`;
 		}
 		case 'HalloweenEvent': {
-			return `${name} is doing the Halloween event! The trip should take ${loneFormattedDuration}.`;
+			return `${name} is doing the Halloween event! ${formattedDuration}`;
 		}
 		case 'Easter':
 		case 'BlastFurnace':
 		case 'Revenants': {
 			throw new Error(`Removed`);
+		}
+		default: {
+			const unhandled: never = currentTask;
+			throw new Error(`Unhandled activity: ${JSON.stringify(unhandled)}`);
 		}
 	}
 }

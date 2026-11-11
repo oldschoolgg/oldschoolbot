@@ -47,7 +47,7 @@ client.on('messageCreate', async msg => {
 	} catch (err) {
 		Logging.logError(err as Error);
 	}
-	onMessage(msg);
+	void onMessage(msg);
 });
 client.on('error', err => Logging.logError(err));
 

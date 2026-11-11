@@ -77,6 +77,26 @@ export class MInteraction<T extends AnyInteraction = AnyInteraction> extends Bas
 	}
 
 	async defer({ ephemeral }: { ephemeral?: boolean } = {}): Promise<void> {
+		if (this.replied) {
+			const context = {
+				interactionId: this.id,
+				kind: this.kind,
+				userId: this.userId,
+				channelId: this.channelId,
+				guildId: this.guildId,
+				createdTimestamp: this.createdTimestamp,
+				deferred: this.deferred,
+				replied: this.replied,
+				ephemeral: this.ephemeral,
+				requestedEphemeral: ephemeral,
+				data: this.rawInteraction.data
+			};
+			this.client.emit(
+				'error',
+				new Error(`Tried to defer an already acknowledged interaction`, { cause: JSON.stringify(context) })
+			);
+			return;
+		}
 		await this.baseDeferReply({ ephemeral });
 	}
 
