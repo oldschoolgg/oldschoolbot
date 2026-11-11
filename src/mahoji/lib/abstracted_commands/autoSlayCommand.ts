@@ -488,13 +488,14 @@ export async function autoSlayCommand({
 		if (ehpMonster?.efficientName) {
 			const magicLevel = user.gearBank.skillsAsLevels.magic;
 			const efficientMethod = Array.isArray(ehpMonster.efficientMethod)
-				? ehpMonster.efficientMethod.map(method => replaceBarrageWithBurst(method, magicLevel))
+				? ehpMonster.efficientMethod.map(method => replaceBarrageWithBurst(method, magicLevel)).join('+')
 				: ehpMonster.efficientMethod && replaceBarrageWithBurst(ehpMonster.efficientMethod, magicLevel);
 			const args: CommandOptions = {
-				name: ehpMonster.efficientName
+				name: ehpMonster.efficientName,
+				wilderness: Boolean(usersTask.assignedTask.wilderness)
 			};
 			if (efficientMethod) {
-				args.method = efficientMethod as unknown as CommandOptions;
+				args.method = efficientMethod;
 			}
 
 			return runCommand({
