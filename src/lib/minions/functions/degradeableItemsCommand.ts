@@ -18,7 +18,8 @@ export async function degradeableItemsCommand(
 		if (!user.hasEquippedOrInBank(item.item.id)) return `You don't own a ${item.item.name}.`;
 		const charges = user.user[item.settingsKey];
 		if (charges === 0) return `Your ${item.item.name} has no charges.`;
-		const refund = item.chargeInput.cost.clone().multiply(Math.floor(charges / item.chargeInput.charges));
+		const refundQuantity = Math.floor(charges / item.chargeInput.charges);
+		const refund = refundQuantity > 0 ? item.chargeInput.cost.clone().multiply(refundQuantity) : new Bank();
 		await interaction.confirmation(`Uncharge your ${item.item.name} and receive ${refund}?`);
 		await user.transactItems({
 			itemsToAdd: refund,

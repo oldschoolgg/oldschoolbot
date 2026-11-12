@@ -277,7 +277,7 @@ describe("Alchemist's amulet charges", () => {
 		expect(user.transactItems).not.toHaveBeenCalled();
 	});
 
-	test.each([0, 9, 10, 59, 25_009])('uncharges %i charges, rounding the refund down', async charges => {
+	test.each([0, 1, 9, 10, 59, 25_009])('uncharges %i charges, rounding the refund down', async charges => {
 		const user = chargingUser(charges);
 		await degradeableItemsCommand(
 			{ confirmation: vi.fn() } as unknown as MInteraction,
@@ -294,6 +294,7 @@ describe("Alchemist's amulet charges", () => {
 				collectionLog: false,
 				otherUpdates: { alchemist_amulet_charges: 0 }
 			});
+			expect(user.transactItems.mock.calls[0][0].itemsToAdd!.validate()).toEqual([]);
 		} else {
 			expect(user.transactItems).not.toHaveBeenCalled();
 		}
