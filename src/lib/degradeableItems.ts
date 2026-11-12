@@ -1,6 +1,6 @@
 import type { GearSetupType, PrimaryGearSetupType } from '@oldschoolgg/gear';
 import { MathRNG } from 'node-rng';
-import { Bank, type Item, Items, itemID, type Monster } from 'oldschooljs';
+import { Bank, EItem, type Item, Items, itemID, type Monster } from 'oldschooljs';
 
 import type { KillableMonster } from '@/lib/minions/types.js';
 import type { ChargeBank } from '@/lib/structures/Bank.js';
@@ -28,6 +28,14 @@ export interface DegradeableItem {
 	};
 	unchargedItem?: Item;
 	convertOnCharge?: boolean;
+	requiresItemToCharge?: boolean;
+	keepOnEmpty?: boolean;
+	canUncharge?: boolean;
+	chargeTransfer?: {
+		settingsKey: DegradeableItemColumns;
+		chargesPerSourceCharge: number;
+		name: string;
+	};
 	emoji: string;
 }
 
@@ -144,6 +152,27 @@ export const degradeableItems: DegradeableItem[] = [
 		chargeInput: {
 			cost: new Bank().add('Amulet of chemistry').freeze(),
 			charges: 5
+		},
+		emoji: '🧪'
+	},
+	{
+		item: Items.getOrThrow("Alchemist's amulet"),
+		settingsKey: 'alchemist_amulet_charges',
+		itemsToRefundOnBreak: new Bank().freeze(),
+		refundVariants: [],
+		setup: 'skilling',
+		aliases: ['alchemist amulet', 'alchemists amulet'],
+		chargeInput: {
+			cost: new Bank().add('Amulet of chemistry').freeze(),
+			charges: 10
+		},
+		requiresItemToCharge: true,
+		keepOnEmpty: true,
+		canUncharge: true,
+		chargeTransfer: {
+			settingsKey: 'chemistry_amulet_charges',
+			chargesPerSourceCharge: 2,
+			name: 'chemistry charges'
 		},
 		emoji: '🧪'
 	},
@@ -359,7 +388,7 @@ export async function degradeItem({
 
 	// 5% chance to not consume a charge when Ghommal's lucky penny is equipped
 	let pennyReduction = 0;
-	if (user.hasEquipped("Ghommal's lucky penny")) {
+	if (item.id !== EItem.ALCHEMISTS_AMULET && user.hasEquipped("Ghommal's lucky penny")) {
 		for (let i = 0; i < chargesToDegrade; i++) {
 			if (MathRNG.percentChance(5)) {
 				pennyReduction++;
@@ -371,6 +400,15 @@ export async function degradeItem({
 	const currentCharges = user.user[degItem.settingsKey];
 	assert(typeof currentCharges === 'number');
 	const newCharges = Math.floor(currentCharges - chargesToDegrade);
+
+	if (newCharges <= 0 && degItem.keepOnEmpty) {
+		await user.update({ [degItem.settingsKey]: 0 });
+		return {
+			chargesToDegrade,
+			chargesRemaining: 0,
+			userMessage: `Your ${item.name} ran out of charges.`
+		};
+	}
 
 	if (newCharges <= 0) {
 		// If no more charges left, break and refund the item.

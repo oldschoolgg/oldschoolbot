@@ -29,6 +29,7 @@ export type DegradeableItemColumns =
 	| 'serp_helm_charges'
 	| 'blood_fury_charges'
 	| 'chemistry_amulet_charges'
+	| 'alchemist_amulet_charges'
 	| 'tum_shadow_charges'
 	| 'ayak_charges'
 	| 'blood_essence_charges'

@@ -10,14 +10,14 @@ const chemistryExcludedMixableIDs = new Set([Items.getOrThrow('Guthix rest(3)').
 
 interface ApplyChemistryArgs {
 	user: MUser;
-	mixableItem: { item: Item };
+	mixableItem: Mixable;
 	quantity: number;
 	zahur: boolean;
 	wesley: boolean;
 	rng: RNGProvider;
 }
 
-async function applyAmuletOfChemistry({
+async function applyHerbloreAmulet({
 	user,
 	mixableItem,
 	quantity,
@@ -25,40 +25,43 @@ async function applyAmuletOfChemistry({
 	wesley,
 	rng
 }: ApplyChemistryArgs): Promise<null | {
-	fourDoseItem: Item;
-	fourDoseCount: number;
+	bonusDoseItem: Item;
+	bonusDoseCount: number;
 	messages: string[];
 }> {
 	if (zahur || wesley) return null;
-	if (!mixableItem.item.name.includes('(3)')) return null;
+	const doses = Number(mixableItem.item.name.match(/\(([1-3])\)$/)?.[1]);
+	if (!doses) return null;
 	if (chemistryExcludedMixableIDs.has(mixableItem.item.id)) return null;
+	if (mixableItem.inputItems.items().some(([item]) => /\(4\)$/.test(item.name))) return null;
 
-	const chemistryItem = Items.getOrThrow('Amulet of chemistry');
+	const hasAlchemistAmulet = user.gear.skilling.hasEquipped(EItem.ALCHEMISTS_AMULET, false, false);
+	if (!hasAlchemistAmulet && doses !== 3) return null;
+	const chemistryItem = Items.getOrThrow(hasAlchemistAmulet ? "Alchemist's amulet" : 'Amulet of chemistry');
 	if (!user.gear.skilling.hasEquipped(chemistryItem.id, false, false)) return null;
 
-	const potentialFourDoseName = mixableItem.item.name.replace(/\(3\)/g, '(4)');
-	const fourDoseItem = Items.getItem(potentialFourDoseName);
-	if (!fourDoseItem) return null;
+	const bonusDoseItem = Items.getItem(mixableItem.item.name.replace(/\([1-3]\)$/, `(${doses + 1})`));
+	if (!bonusDoseItem) return null;
 
 	const chemistryCharges = await checkDegradeableItemCharges({ item: chemistryItem, user });
 	let available = chemistryCharges;
 
 	if (available <= 0) return null;
-	let fourDoseCount = 0;
+	let bonusDoseCount = 0;
 
 	for (let i = 0; i < quantity && available > 0; i++) {
-		if (rng.percentChance(5)) {
-			fourDoseCount++;
+		if (rng.percentChance(hasAlchemistAmulet ? 15 : 5)) {
+			bonusDoseCount++;
 			available--;
 		}
 	}
 
 	const messages: string[] = [];
 
-	if (fourDoseCount > 0) {
+	if (bonusDoseCount > 0) {
 		const degradeResult = await degradeItem({
 			item: chemistryItem,
-			chargesToDegrade: fourDoseCount,
+			chargesToDegrade: bonusDoseCount,
 			user
 		});
 
@@ -67,16 +70,16 @@ async function applyAmuletOfChemistry({
 
 		if (typeof used === 'number' && typeof remaining === 'number') {
 			messages.push(
-				`Your Amulet of chemistry created ${fourDoseCount} extra 4-dose ${
-					fourDoseCount === 1 ? 'potion' : 'potions'
+				`Your ${chemistryItem.name} created ${bonusDoseCount} extra ${doses + 1}-dose ${
+					bonusDoseCount === 1 ? 'potion' : 'potions'
 				} and used ${
 					used === 0 ? 'no charges' : used === 1 ? '1 charge' : `${used} charges`
 				} (${remaining.toLocaleString()} left).`
 			);
 		} else {
 			messages.push(
-				`Your Amulet of chemistry created ${fourDoseCount} extra 4-dose ${
-					fourDoseCount === 1 ? 'potion' : 'potions'
+				`Your ${chemistryItem.name} created ${bonusDoseCount} extra ${doses + 1}-dose ${
+					bonusDoseCount === 1 ? 'potion' : 'potions'
 				} and used its remaining charges.`
 			);
 		}
@@ -87,8 +90,8 @@ async function applyAmuletOfChemistry({
 	}
 
 	return {
-		fourDoseCount,
-		fourDoseItem,
+		bonusDoseCount,
+		bonusDoseItem,
 		messages
 	};
 }
@@ -191,10 +194,10 @@ export const herbloreTask: MinionTask = {
 			outputQuantity = scales;
 		}
 
-		// Amulet of chemistry logic: only for hand-mixed (no Zahur/Wesley) 3-dose outputs
-		const aocResult = await applyAmuletOfChemistry({ user, mixableItem, quantity, zahur, wesley, rng });
-		const fourDoseItem = aocResult?.fourDoseItem ?? null;
-		const fourDoseCount = aocResult?.fourDoseCount ?? 0;
+		// Amulets add one dose to eligible hand-mixed potions, consuming charges only on success.
+		const aocResult = await applyHerbloreAmulet({ user, mixableItem, quantity, zahur, wesley, rng });
+		const bonusDoseItem = aocResult?.bonusDoseItem ?? null;
+		const bonusDoseCount = aocResult?.bonusDoseCount ?? 0;
 		const chemistryMessages = aocResult?.messages ?? [];
 
 		const savedItems = new Bank();
@@ -206,12 +209,12 @@ export const herbloreTask: MinionTask = {
 		const xpRes = await user.addXP({ skillName: 'herblore', amount: xpReceived, duration });
 		const loot = new Bank();
 
-		if (fourDoseCount > 0 && fourDoseItem) {
-			const threeDoseCount = Math.max(outputQuantity - fourDoseCount, 0);
-			if (threeDoseCount > 0) {
-				loot.add(mixableItem.item.id, threeDoseCount);
+		if (bonusDoseCount > 0 && bonusDoseItem) {
+			const normalCount = Math.max(outputQuantity - bonusDoseCount, 0);
+			if (normalCount > 0) {
+				loot.add(mixableItem.item.id, normalCount);
 			}
-			loot.add(fourDoseItem.id, fourDoseCount);
+			loot.add(bonusDoseItem.id, bonusDoseCount);
 		} else {
 			loot.add(mixableItem.item.id, outputQuantity);
 		}
@@ -220,9 +223,9 @@ export const herbloreTask: MinionTask = {
 		await user.transactItems({ collectionLog: true, itemsToAdd: loot });
 
 		let completionMessage: string;
-		if (fourDoseCount > 0 && fourDoseItem) {
-			const threeDoseCount = Math.max(outputQuantity - fourDoseCount, 0);
-			completionMessage = `${user}, ${user.minionName} finished making ${threeDoseCount}x ${mixableItem.item.name} and ${fourDoseCount}x ${fourDoseItem.name}.`;
+		if (bonusDoseCount > 0 && bonusDoseItem) {
+			const normalCount = Math.max(outputQuantity - bonusDoseCount, 0);
+			completionMessage = `${user}, ${user.minionName} finished making ${normalCount}x ${mixableItem.item.name} and ${bonusDoseCount}x ${bonusDoseItem.name}.`;
 		} else {
 			completionMessage = `${user}, ${user.minionName} finished making ${outputQuantity}x ${mixableItem.item.name}.`;
 		}
