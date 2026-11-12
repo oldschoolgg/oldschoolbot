@@ -15,10 +15,10 @@ const TradeableUniqueTable = new LootTable({ limit: 8 })
 	.add("Leviathan's lure", 1, 1);
 
 const ClueTable: LootTable = new LootTable()
-	.add('Clue scroll (easy)')
-	.add('Clue scroll (medium)')
-	.add('Clue scroll (hard)')
-	.add('Clue scroll (elite)');
+	.tertiary(160, 'Clue scroll (easy)')
+	.tertiary(160, 'Clue scroll (medium)')
+	.tertiary(160, 'Clue scroll (hard)')
+	.tertiary(160, 'Clue scroll (elite)');
 
 const SupplyTable: LootTable = new LootTable()
 	.every('Prayer potion(3)', 1)
@@ -81,9 +81,8 @@ class TheLeviathanSingleton extends Monster {
 				loot.add(ResourceTable.roll());
 			}
 
-			if (roll(40)) {
-				loot.add(ClueTable.roll());
-			}
+			const lootTableOptions = { ...options.lootTableOptions, targetBank: loot };
+			ClueTable.roll(1, lootTableOptions);
 			if (roll(2500)) {
 				loot.add("Lil'viathan");
 			}

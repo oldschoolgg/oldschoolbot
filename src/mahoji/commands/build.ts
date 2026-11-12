@@ -136,10 +136,10 @@ export const buildCommand = defineCommand({
 
 		const xpHr = `${(((object.xp * quantity) / (duration / Time.Minute)) * 60).toLocaleString()} XP/Hr`;
 
-		return `${user.minionName} is now constructing ${quantity}x ${object.name}, it'll take around ${formatTripDuration(
+		return `${user.minionName} is now constructing ${quantity}x ${object.name}, they are expected to finish ${formatTripDuration(
 			user,
 			duration
-		)} to finish. Removed ${cost} from your bank. **${xpHr}**
+		)}. Removed ${cost} from your bank. **${xpHr}**
 
 You paid ${gpNeeded.toLocaleString()} GP, because you used ${invsPerTrip} inventories of planks.
 `;

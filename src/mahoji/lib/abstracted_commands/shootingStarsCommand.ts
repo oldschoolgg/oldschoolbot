@@ -1,6 +1,6 @@
 import type { ButtonBuilder } from '@oldschoolgg/discord';
-import { SimpleTable, Time } from '@oldschoolgg/toolkit';
-import { Bank, Items } from 'oldschooljs';
+import { Time } from '@oldschoolgg/toolkit';
+import { Bank, Items, SimpleTable } from 'oldschooljs';
 
 import type { activity_type_enum } from '@/prisma/main/enums.js';
 import type { ShootingStars } from '@/prisma/main.js';
@@ -10,7 +10,9 @@ import { determineMiningTime } from '@/lib/skilling/functions/determineMiningTim
 import { pickaxes } from '@/lib/skilling/functions/miningBoosts.js';
 import type { ActivityTaskData, ShootingStarsOptions } from '@/lib/types/minions.js';
 import { makeShootingStarButton } from '@/lib/util/interactions.js';
-import { formatTripDuration } from '@/lib/util/minionUtils.js';
+import { formatTripDuration, rollForMoonKeyHalf } from '@/lib/util/minionUtils.js';
+
+const CRASHED_STAR_MOON_KEY_CATCH_RATE = { numerator: 1, denominator: 3477 };
 
 export const starSizes: Star[] = [
 	{
@@ -234,6 +236,15 @@ export async function shootingStarsCommand({
 			addSkillingClueToLoot(rng, user, 'mining', newQuantity, s.clueScrollChance, loot);
 		}
 
+		rollForMoonKeyHalf({
+			rng,
+			user,
+			duration: timeToMine,
+			loot,
+			quantity: newQuantity,
+			perCatchRate: CRASHED_STAR_MOON_KEY_CATCH_RATE
+		});
+
 		// Roll for pet
 		if (s.petChance && rng.roll(Math.round(Math.min(s.petChance - skills.mining * 25) / newQuantity))) {
 			loot.add('Rock golem');
@@ -259,7 +270,7 @@ export async function shootingStarsCommand({
 
 	let str = `${user.minionName} is now mining a size ${star.size} Crashed Star with ${
 		usersWith - 1 || 'no'
-	} other players! The trip will return in about ${formatTripDuration(user, duration)}.`;
+	} other players! The trip will return ${formatTripDuration(user, duration)}.`;
 
 	if (boosts.length > 0) {
 		str += `\n\n**Boosts:** ${boosts.join(', ')}.`;

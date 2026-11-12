@@ -23,7 +23,7 @@ test('Birdhouses', async () => {
 	});
 
 	{
-		expect((await birdHouseTrip('Basdfsde')).commandResult).toContain('not a valid birdhouse');
+		expect((await birdHouseTrip('Basdfsde')).commandResult).toContain('birdhouse is not a valid choice');
 		expect((await birdHouseTrip('Bird house')).commandResult).toContain('needs 5 Hunter to place');
 		await user.setLevel('hunter', 20);
 

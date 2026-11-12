@@ -30,6 +30,7 @@ export type DegradeableItemColumns =
 	| 'blood_fury_charges'
 	| 'chemistry_amulet_charges'
 	| 'tum_shadow_charges'
+	| 'ayak_charges'
 	| 'blood_essence_charges'
 	| 'trident_charges'
 	| 'scythe_of_vitur_charges'

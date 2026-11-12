@@ -176,7 +176,9 @@ export const offerCommand = defineCommand({
 			});
 
 			return {
-				content: `You offered ${quantity}x ${egg.name} to the Shrine and received the attached loot and ${xpStr}.`,
+				content: `You offered ${quantity}x ${egg.name} to the Shrine and received the attached loot.${
+					xpStr.length > 0 ? ` ${xpStr}` : ''
+				}`,
 				files: [file]
 			};
 		}
@@ -260,6 +262,6 @@ export const offerCommand = defineCommand({
 		});
 		return `${user.minionName} is now offering ${quantity}x ${
 			bone.name
-		} at the Chaos altar, it'll take around ${formatTripDuration(user, duration)} to finish.`;
+		} at the Chaos altar, they are expected to finish ${formatTripDuration(user, duration)}.`;
 	}
 });

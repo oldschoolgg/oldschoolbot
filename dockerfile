@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     procps \
     curl \
     ca-certificates \
+    postgresql-client \
     && curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
     && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/* \
@@ -20,6 +21,7 @@ FROM base AS dependencies
 WORKDIR /usr/src/app
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
 COPY packages/oldschooljs/package.json ./packages/oldschooljs/package.json
+COPY packages/node-rng/package.json ./packages/node-rng/package.json
 COPY packages/toolkit/package.json ./packages/toolkit/package.json
 COPY packages/util/package.json ./packages/util/package.json
 COPY packages/discord/package.json ./packages/discord/package.json
@@ -39,10 +41,9 @@ RUN pnpm run monorepo:build
 FROM base AS build-run
 WORKDIR /usr/src/app
 COPY --from=build /usr/src/app /usr/src/app
-CMD pnpm prisma db push --schema='./prisma/robochimp.prisma' > /dev/null 2>&1 & \
-    pnpm prisma db push --schema='./prisma/schema.prisma' > /dev/null 2>&1 & \
+
+CMD pnpm prisma db push --schema='./prisma/robochimp.prisma' --force-reset --skip-generate && \
+    pnpm prisma db push --schema='./prisma/schema.prisma' --force-reset --skip-generate && \
     wait && \
-    NODE_NO_WARNINGS=1 pnpm vitest run --config vitest.integration.config.mts && \
-    pnpm prisma db push --schema='./prisma/robochimp.prisma' --skip-generate --force-reset > /dev/null 2>&1 && \
-    pnpm prisma db push --schema='./prisma/schema.prisma' --skip-generate --force-reset > /dev/null 2>&1 && \
-    NODE_NO_WARNINGS=1 pnpm vitest run --config vitest.integration.economy.config.mts
+    NODE_NO_WARNINGS=1 \
+    pnpm vitest run --config vitest.integration.config.mts

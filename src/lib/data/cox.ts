@@ -248,11 +248,15 @@ export function calculateUserGearPercents(user: MUser) {
 		['attack_stab', 'attack_slash', 'attack_crush', 'attack_ranged'],
 		false
 	);
+	const avernicTreadsGearScoreBoost = user.hasEquippedOrInBank('Avernic treads') ? 3 : 0;
+	const boostedMelee = Math.min(100, melee + avernicTreadsGearScoreBoost);
+	const boostedRange = Math.min(100, range + avernicTreadsGearScoreBoost);
+	const boostedMage = Math.min(100, mage + avernicTreadsGearScoreBoost);
 	return {
-		melee,
-		range,
-		mage,
-		total: (melee + range + mage) / 3
+		melee: boostedMelee,
+		range: boostedRange,
+		mage: boostedMage,
+		total: (boostedMelee + boostedRange + boostedMage) / 3
 	};
 }
 

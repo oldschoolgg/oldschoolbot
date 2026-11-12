@@ -3,6 +3,7 @@ import { cryptoRng } from 'node-rng/crypto';
 import type { Activity, activity_type_enum } from '@/prisma/main.js';
 import { globalConfig } from '@/lib/constants.js';
 import { onMinionActivityFinish } from '@/lib/events.js';
+import type { OSInteraction } from '@/lib/structures/OSInteraction.js';
 import { allTasks } from '@/lib/Task.js';
 import type { PrismaCompatibleJsonObject } from '@/lib/types/index.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
@@ -31,6 +32,15 @@ function getActivityLogSummary(activity: Activity): string {
 }
 
 class SActivityManager {
+	private async getGuildIdForActivityError(channelId: string): Promise<string | null> {
+		try {
+			const channel = await Cache.getChannel(channelId);
+			return channel.guild_id;
+		} catch {
+			return null;
+		}
+	}
+
 	async cancelActivity(userID: string): Promise<void> {
 		await prisma.activity.deleteMany({ where: { user_id: BigInt(userID), completed: false } });
 	}
@@ -39,15 +49,16 @@ class SActivityManager {
 		return addSubTaskToActivityTask(tripData);
 	}
 
-	convertStoredActivityToFlatActivity(activity: Activity): ActivityTaskData {
-		if (!activity.channel_id) {
+	convertStoredActivityToFlatActivity(activity: Activity, interaction?: OSInteraction): ActivityTaskData {
+		const channelId = activity.channel_id?.toString() ?? interaction?.channelId?.toString() ?? null;
+		if (!channelId) {
 			throw new Error(`Activity ${activity.id} has no channel_id`);
 		}
 		return {
 			...(activity.data as PrismaCompatibleJsonObject),
 			type: activity.type as activity_type_enum,
 			userID: activity.user_id.toString(),
-			channelId: activity.channel_id.toString(),
+			channelId,
 			duration: activity.duration,
 			finishDate: activity.finish_date.getTime(),
 			id: activity.id
@@ -90,7 +101,17 @@ class SActivityManager {
 				}
 			);
 		} catch (err) {
-			Logging.logError(err as Error);
+			const date = new Date();
+			Logging.logError(err as Error, {
+				type: 'ACTIVITY_ERROR',
+				user_id: activity.userID,
+				activity_type: activity.type,
+				activity_id: activity.id,
+				channel_id: activity.channelId,
+				guild_id: await this.getGuildIdForActivityError(activity.channelId),
+				datetime: date.toISOString(),
+				timestamp: date.getTime()
+			});
 		} finally {
 			await onMinionActivityFinish(activity);
 		}

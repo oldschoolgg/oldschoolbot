@@ -140,7 +140,7 @@ export class BaseInteraction {
 		options: { ephemeral?: boolean; withResponse?: boolean; threadId?: string } = {}
 	): Promise<ReturnType<typeof this.sendCallback> | undefined> {
 		if (this._deferred) return;
-		if (this.replied) throw new Error('baseDeferReply: Tried to defer an interaction that was already replied');
+		if (this._replied) throw new Error('baseDeferReply: Tried to defer an interaction that was already replied');
 		const flags = options.ephemeral ? MessageFlags.Ephemeral : 0;
 		const res: any = await this.rest.post(Routes.interactionCallback(this.id, this.token), {
 			auth: false,

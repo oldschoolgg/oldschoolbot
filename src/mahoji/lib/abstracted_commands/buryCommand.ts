@@ -57,5 +57,5 @@ export async function buryCommand(user: MUser, channelId: string, boneName: stri
 		type: 'Burying'
 	});
 
-	return `${user.minionName} is now burying ${cost}, it'll take around ${formatTripDuration(user, duration)} to finish.`;
+	return `${user.minionName} is now burying ${cost}, they are expected to finish ${formatTripDuration(user, duration)}.`;
 }

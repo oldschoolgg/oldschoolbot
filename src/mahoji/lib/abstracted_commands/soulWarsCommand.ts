@@ -147,7 +147,7 @@ export async function soulWarsStartCommand(rng: RNGProvider, user: MUser, channe
 
 	return `${
 		user.minionName
-	} is now off to do ${quantity}x games of Soul Wars - the total trip will return in about ${formatTripDuration(user, duration)}.`;
+	} is now off to do ${quantity}x games of Soul Wars - the total trip will return ${formatTripDuration(user, duration)}.`;
 }
 
 export async function soulWarsBuyCommand(user: MUser, input = '', quantity?: number) {
@@ -156,11 +156,14 @@ export async function soulWarsBuyCommand(user: MUser, input = '', quantity?: num
 	if (!quantity) {
 		quantity = 1;
 	}
+
 	if (!Number.isNaN(Number.parseInt(possibleItemName[0]))) {
 		quantity = Number(possibleItemName.shift());
 	}
 
 	input = possibleItemName.join(' ');
+
+	quantity = Math.max(1, quantity);
 
 	const item = soulWarsBuyables.find(i => stringMatches(input, i.item.name));
 	if (!item) {

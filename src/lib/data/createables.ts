@@ -2706,6 +2706,185 @@ const Createables: Createable[] = [
 			'Soiled page': 1
 		})
 	},
+	{
+		name: 'Confliction gauntlets',
+		inputItems: new Bank({
+			'Tormented bracelet': 1,
+			'Mokhaiotl cloth': 1,
+			'Demon tear': 10_000
+		}),
+		outputItems: new Bank({
+			'Confliction gauntlets': 1
+		}),
+		requiredSkills: { crafting: 83, smithing: 70 }
+	},
+	{
+		name: 'Avernic treads (pr)',
+		inputItems: new Bank({
+			'Avernic treads': 1,
+			'Primordial boots': 1,
+			'Demon tear': 4_000
+		}),
+		outputItems: new Bank({ 'Avernic treads (pr)': 1 }),
+		requiredSkills: { magic: 80, runecraft: 60 }
+	},
+	{
+		name: 'Avernic treads (pe)',
+		inputItems: new Bank({
+			'Avernic treads': 1,
+			'Pegasian boots': 1,
+			'Demon tear': 4_000
+		}),
+		outputItems: new Bank({ 'Avernic treads (pe)': 1 }),
+		requiredSkills: { magic: 80, runecraft: 60 }
+	},
+	{
+		name: 'Avernic treads (et)',
+		inputItems: new Bank({
+			'Avernic treads': 1,
+			'Eternal boots': 1,
+			'Demon tear': 4_000
+		}),
+		outputItems: new Bank({ 'Avernic treads (et)': 1 }),
+		requiredSkills: { magic: 80, runecraft: 60 }
+	},
+	{
+		name: 'Avernic treads (pr)(pe)',
+		inputItems: new Bank({
+			'Avernic treads (pr)': 1,
+			'Pegasian boots': 1,
+			'Demon tear': 4_000
+		}),
+		outputItems: new Bank({ 'Avernic treads (pr)(pe)': 1 }),
+		requiredSkills: { magic: 80, runecraft: 60 }
+	},
+	{
+		name: 'Avernic treads (pr)(pe) (from pe)',
+		inputItems: new Bank({
+			'Avernic treads (pe)': 1,
+			'Primordial boots': 1,
+			'Demon tear': 4_000
+		}),
+		outputItems: new Bank({ 'Avernic treads (pr)(pe)': 1 }),
+		requiredSkills: { magic: 80, runecraft: 60 },
+		noCl: true
+	},
+	{
+		name: 'Avernic treads (pr)(et)',
+		inputItems: new Bank({
+			'Avernic treads (pr)': 1,
+			'Eternal boots': 1,
+			'Demon tear': 4_000
+		}),
+		outputItems: new Bank({ 'Avernic treads (pr)(et)': 1 }),
+		requiredSkills: { magic: 80, runecraft: 60 }
+	},
+	{
+		name: 'Avernic treads (pr)(et) (from et)',
+		inputItems: new Bank({
+			'Avernic treads (et)': 1,
+			'Primordial boots': 1,
+			'Demon tear': 4_000
+		}),
+		outputItems: new Bank({ 'Avernic treads (pr)(et)': 1 }),
+		requiredSkills: { magic: 80, runecraft: 60 },
+		noCl: true
+	},
+	{
+		name: 'Avernic treads (pe)(et)',
+		inputItems: new Bank({
+			'Avernic treads (pe)': 1,
+			'Eternal boots': 1,
+			'Demon tear': 4_000
+		}),
+		outputItems: new Bank({ 'Avernic treads (pe)(et)': 1 }),
+		requiredSkills: { magic: 80, runecraft: 60 }
+	},
+	{
+		name: 'Avernic treads (pe)(et) (from et)',
+		inputItems: new Bank({
+			'Avernic treads (et)': 1,
+			'Pegasian boots': 1,
+			'Demon tear': 4_000
+		}),
+		outputItems: new Bank({ 'Avernic treads (pe)(et)': 1 }),
+		requiredSkills: { magic: 80, runecraft: 60 },
+		noCl: true
+	},
+	{
+		name: 'Avernic treads (max) (from pr)(pe)',
+		inputItems: new Bank({
+			'Avernic treads (pr)(pe)': 1,
+			'Eternal boots': 1,
+			'Demon tear': 4_000
+		}),
+		outputItems: new Bank({ 'Avernic treads (max)': 1 }),
+		requiredSkills: { magic: 80, runecraft: 60 }
+	},
+	{
+		name: 'Avernic treads (max) (from pr)(et)',
+		inputItems: new Bank({
+			'Avernic treads (pr)(et)': 1,
+			'Pegasian boots': 1,
+			'Demon tear': 4_000
+		}),
+		outputItems: new Bank({ 'Avernic treads (max)': 1 }),
+		requiredSkills: { magic: 80, runecraft: 60 },
+		noCl: true
+	},
+	{
+		name: 'Avernic treads (max) (from pe)(et)',
+		inputItems: new Bank({
+			'Avernic treads (pe)(et)': 1,
+			'Primordial boots': 1,
+			'Demon tear': 4_000
+		}),
+		outputItems: new Bank({ 'Avernic treads (max)': 1 }),
+		requiredSkills: { magic: 80, runecraft: 60 },
+		noCl: true
+	},
+	{
+		name: 'Revert avernic treads (pr)',
+		inputItems: new Bank({ 'Avernic treads (pr)': 1 }),
+		outputItems: new Bank({ 'Avernic treads': 1, 'Primordial boots': 1 }),
+		noCl: true
+	},
+	{
+		name: 'Revert avernic treads (pe)',
+		inputItems: new Bank({ 'Avernic treads (pe)': 1 }),
+		outputItems: new Bank({ 'Avernic treads': 1, 'Pegasian boots': 1 }),
+		noCl: true
+	},
+	{
+		name: 'Revert avernic treads (et)',
+		inputItems: new Bank({ 'Avernic treads (et)': 1 }),
+		outputItems: new Bank({ 'Avernic treads': 1, 'Eternal boots': 1 }),
+		noCl: true
+	},
+	{
+		name: 'Revert avernic treads (pr)(pe)',
+		inputItems: new Bank({ 'Avernic treads (pr)(pe)': 1 }),
+		outputItems: new Bank({ 'Avernic treads': 1, 'Primordial boots': 1, 'Pegasian boots': 1 }),
+		noCl: true
+	},
+	{
+		name: 'Revert avernic treads (pr)(et)',
+		inputItems: new Bank({ 'Avernic treads (pr)(et)': 1 }),
+		outputItems: new Bank({ 'Avernic treads': 1, 'Primordial boots': 1, 'Eternal boots': 1 }),
+		noCl: true
+	},
+	{
+		name: 'Revert avernic treads (pe)(et)',
+		inputItems: new Bank({ 'Avernic treads (pe)(et)': 1 }),
+		outputItems: new Bank({ 'Avernic treads': 1, 'Pegasian boots': 1, 'Eternal boots': 1 }),
+		noCl: true
+	},
+	{
+		name: 'Revert avernic treads (max)',
+		inputItems: new Bank({ 'Avernic treads (max)': 1 }),
+		outputItems: new Bank({ 'Avernic treads': 1, 'Primordial boots': 1, 'Pegasian boots': 1, 'Eternal boots': 1 }),
+		noCl: true
+	},
 	...Reverteables,
 	...crystalTools,
 	...ornamentKits,

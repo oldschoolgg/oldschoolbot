@@ -13,6 +13,6 @@
 		"test:unit": "vitest run"
 	},
 	"dependencies": {
-		"node-rng": "^0.0.3"
+		"node-rng": "workspace:*"
 	}
 }

@@ -115,6 +115,7 @@ export async function mahoganyHomesBuyCommand(user: MUser, input = '', quantity?
 		quantity = 1;
 	}
 
+	quantity = Math.max(1, quantity);
 	const { item, cost } = buyable;
 	const balance = user.user.carpenter_points;
 	if (balance < cost * quantity) {
@@ -193,7 +194,7 @@ export async function mahoganyHomesBuildCommand(
 
 	let str = `${user.minionName} is now doing ${quantity}x ${
 		tierData.name
-	} Mahogany homes contracts, the trip will return in about ${formatTripDuration(user, duration)}. Removed ${itemsNeeded} from your bank.`;
+	} Mahogany homes contracts, the trip will return ${formatTripDuration(user, duration)}. Removed ${itemsNeeded} from your bank.`;
 
 	if (hasSack) {
 		str += "\nYou're getting more XP/Hr because of your Plank sack!";

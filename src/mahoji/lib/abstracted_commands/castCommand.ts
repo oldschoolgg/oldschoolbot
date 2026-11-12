@@ -118,10 +118,10 @@ export async function castCommand(channelId: string, user: MUser, name: string, 
 		((spell.xp * quantity) / (duration / Time.Minute)) * 60
 	).toLocaleString()} Magic XP/Hr`;
 
-	let response = `${user.minionName} is now casting ${quantity}x ${spell.name}, it'll take around ${formatTripDuration(
+	let response = `${user.minionName} is now casting ${quantity}x ${spell.name}, they are expected to finish ${formatTripDuration(
 		user,
 		duration
-	)} to finish. Removed ${cost}${spell.gpCost ? ` and ${gpCost} Coins` : ''} from your bank. **${magicXpHr}**`;
+	)}. Removed ${cost}${spell.gpCost ? ` and ${gpCost} Coins` : ''} from your bank. **${magicXpHr}**`;
 
 	if (spell.craftXp) {
 		response += ` and** ${Math.round(
