@@ -498,4 +498,31 @@ const Potions: Mixable[] = [
 	}
 ];
 
-export default Potions;
+const variableDosePotionIDs = new Set(
+	[
+		'Stamina potion(4)',
+		'Extended antifire(4)',
+		'Anti-venom(4)',
+		'Forgotten brew(4)',
+		'Extended anti-venom+(4)',
+		'Extended super antifire(4)'
+	].map(name => Items.getOrThrow(name).id)
+);
+
+const lowerDosePotions: Mixable[] = Potions.filter(potion => variableDosePotionIDs.has(potion.item.id)).flatMap(
+	potion =>
+		[1, 2, 3].map(doses => {
+			const item = Items.getOrThrow(potion.item.name.replace(/\(4\)$/, `(${doses})`));
+			const inputItems = new Bank();
+			for (const [input, quantity] of potion.inputItems.items()) {
+				if (/\(4\)$/.test(input.name)) {
+					inputItems.add(input.name.replace(/\(4\)$/, `(${doses})`), quantity);
+				} else {
+					inputItems.add(input, (quantity * doses) / 4);
+				}
+			}
+			return { ...potion, item, aliases: [item.name], inputItems, xp: (potion.xp * doses) / 4 };
+		})
+);
+
+export default [...Potions, ...lowerDosePotions];

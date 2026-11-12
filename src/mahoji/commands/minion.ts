@@ -348,8 +348,14 @@ export const minionCommand = defineCommand({
 		{
 			type: 'Subcommand',
 			name: 'charge',
-			description: 'Charge an item.',
+			description: 'Charge or uncharge an item.',
 			options: [
+				{
+					type: 'Boolean',
+					name: 'uncharge',
+					description: 'Remove charges and return charging items, if supported.',
+					required: false
+				},
 				{
 					type: 'String',
 					name: 'item',
@@ -374,6 +380,9 @@ export const minionCommand = defineCommand({
 							allMethods.set('runes', 'Runes');
 							if (item.altChargeInput) {
 								allMethods.set(item.altChargeInput.name, item.altChargeInput.name);
+							}
+							if (item.chargeTransfer) {
+								allMethods.set(item.chargeTransfer.name, item.chargeTransfer.name);
 							}
 						}
 						return [...allMethods.entries()]
@@ -585,7 +594,8 @@ export const minionCommand = defineCommand({
 				user,
 				options.charge.item,
 				options.charge.amount,
-				options.charge.method
+				options.charge.method,
+				options.charge.uncharge
 			);
 		}
 		if (options.daily) {

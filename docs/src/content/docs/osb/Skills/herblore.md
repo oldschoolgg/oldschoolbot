@@ -27,6 +27,14 @@ Making unfinished potions, cleaning herbs, and preparing secondary ingredients a
 
 **Prescription goggles** - When worn, these give a 10% chance to save a secondary ingredient when mixing potions. This also applies to Torstols when creating Super combat potions or Anti-venom+, and to Irit when mixing Antidote++ (unf). Ashes are never saved when making Serum 207.
 
+**Alchemist's amulet** - When equipped in your skilling setup, this gives a 15% chance to add one dose to an eligible potion, using one charge per successful upgrade and giving no extra XP. Guthix rest and four-dose outputs do not benefit. It works alongside prescription goggles.
+
+Your first alchemist's amulet purchase from Mastering Mixology grants 50 starting charges. Further purchases do not add charges. Use `/minion charge item:Alchemist's amulet amount:1` to consume one Amulet of chemistry for 10 charges. Use `/minion charge item:Alchemist's amulet uncharge:True` to remove all charges and receive one Amulet of chemistry per 10 remaining charges, rounded down. The alchemist's amulet stays equipped when empty.
+
+If you have already charged an Amulet of chemistry, use `/minion charge item:Alchemist's amulet amount:5 method:chemistry charges` to transfer five stored chemistry charges into ten alchemist charges. Here, `amount` is the number of chemistry charges to transfer. Untransferred chemistry charges are kept.
+
+Stamina, anti-venom, forgotten brew, extended antifire, extended super antifire and extended anti-venom+ support one-, two- and three-dose recipes. Specify the dose count, for example `/mix name:Stamina potion(1)`, to use the matching input potion and secondary ingredients. A successful amulet roll upgrades that potion by exactly one dose.
+
 ## Fastest route to 99
 
 1. [[/mix name\:Attack potion (3) quantity\:64]]
