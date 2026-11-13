@@ -1,12 +1,20 @@
 import type { APIAttachment } from '@oldschoolgg/discord';
-import { Time, UserError } from '@oldschoolgg/toolkit';
+import { UserError } from '@oldschoolgg/toolkit';
+import { Items } from 'oldschooljs';
 import { z } from 'zod';
 
-import { Prisma } from '@/prisma/main.js';
+import type { Prisma } from '@/prisma/main.js';
 import { defaultBingoChallenges } from '@/lib/bingo/bingoChallenges.js';
-import { processPendingBingoEvents, setBingoChallengeCompletion } from '@/lib/bingo/bingoSeason.js';
-import { type BingoTheme, bingoBoardSchema, bingoThemes } from '@/lib/bingo/bingoTypes.js';
+import {
+	type BingoChallenge,
+	type BingoTheme,
+	bingoBoardSchema,
+	bingoItemIDs,
+	bingoThemes
+} from '@/lib/bingo/bingoTypes.js';
 import type { BingoManager } from '@/mahoji/lib/bingo/BingoManager.js';
+import type { StoredBingoTile } from '@/mahoji/lib/bingo/bingoUtil.js';
+import { globalBingoTiles } from '@/mahoji/lib/bingo/globalTiles.js';
 
 export const seasonalCreateOptions = [
 	{
@@ -16,12 +24,7 @@ export const seasonalCreateOptions = [
 		required: false,
 		choices: bingoThemes.map(value => ({ name: value, value }))
 	},
-	{
-		type: 'Attachment',
-		name: 'configuration',
-		description: 'JSON file containing 28 challenges for the seasonal board.',
-		required: false
-	}
+	{ type: 'Attachment', name: 'configuration', description: 'JSON file containing 28 bingo tiles.', required: false }
 ] as const satisfies readonly CommandOption[];
 
 export const seasonalManageOptions = [
@@ -29,175 +32,136 @@ export const seasonalManageOptions = [
 	{
 		type: 'Boolean',
 		name: 'template',
-		description: "Download this board's challenge JSON, or a starter template.",
+		description: "Download this board's tile JSON, or a starter template.",
 		required: false
-	},
-	{
-		type: 'Integer',
-		name: 'team',
-		description: 'Team ID for a manual correction or inspection; listed in /bingo leaderboard.',
-		min_value: 1,
-		required: false
-	},
-	{
-		type: 'String',
-		name: 'complete_tile',
-		description: 'Challenge ID to complete for the selected team.',
-		required: false
-	},
-	{
-		type: 'String',
-		name: 'reverse_tile',
-		description: 'Challenge ID to reset for the selected team.',
-		required: false
-	},
-	{
-		type: 'String',
-		name: 'inspect_tile',
-		description: 'Challenge ID to inspect for the selected team.',
-		required: false
-	},
-	{ type: 'String', name: 'reason', description: 'Audit reason for a manual correction.', required: false }
+	}
 ] as const satisfies readonly CommandOption[];
 
-export async function seasonalBingoSettings(theme: BingoTheme, startDate: Date, configuration?: APIAttachment) {
-	let challenges: unknown = defaultBingoChallenges();
-	if (configuration) {
-		if (configuration.size > 100_000) throw new UserError('The configuration must be smaller than 100 KB.');
-		const response = await fetch(configuration.url, { signal: AbortSignal.timeout(10_000) });
-		if (!response.ok) throw new UserError('Unable to download the configuration.');
-		try {
-			challenges = await response.json();
-		} catch {
-			throw new UserError('The configuration must be a valid JSON array.');
-		}
+const nativeTileSchema = z.intersection(
+	z.object({
+		key: z.string().max(64).optional(),
+		name: z.string().min(1).max(80).optional(),
+		description: z.string().max(300).optional(),
+		iconItemID: z
+			.number()
+			.int()
+			.positive()
+			.refine(id => Items.has(id))
+			.optional()
+	}),
+	z.union([
+		z.object({
+			global: z
+				.number()
+				.int()
+				.refine(id => globalBingoTiles.some(tile => tile.id === id))
+		}),
+		z.object({ oneOf: bingoItemIDs }),
+		z.object({ allOf: bingoItemIDs }),
+		z.object({
+			bank: z
+				.record(z.string(), z.number().int().positive().max(1_000_000_000))
+				.refine(bank => Object.keys(bank).length > 0 && Object.keys(bank).every(id => Items.has(Number(id))))
+		}),
+		z.object({
+			custom: z.discriminatedUnion('type', [
+				z.object({
+					type: z.literal('item_quantity'),
+					itemIDs: bingoItemIDs,
+					quantity: z.number().int().positive().max(1_000_000_000)
+				}),
+				z.object({ type: z.literal('item_sets'), sets: z.array(z.array(bingoItemIDs).min(1)).min(1) })
+			])
+		})
+	])
+);
+
+function challengeToTile(challenge: BingoChallenge): StoredBingoTile {
+	const metadata = {
+		key: challenge.id,
+		name: challenge.name,
+		description: challenge.description,
+		iconItemID: challenge.iconItemID
+	};
+	if (challenge.type === 'item_drop') return { ...metadata, oneOf: [...new Set(challenge.targetItemIDs)] };
+	if (challenge.type === 'item_quantity') {
+		const itemIDs = [...new Set(challenge.targetItemIDs)];
+		return itemIDs.length === 1
+			? { ...metadata, bank: { [itemIDs[0]]: challenge.requiredQuantity } }
+			: { ...metadata, custom: { type: 'item_quantity', itemIDs, quantity: challenge.requiredQuantity } };
 	}
-	const parsed = bingoBoardSchema.safeParse(challenges);
-	if (!parsed.success) {
-		throw new UserError(
-			`Invalid bingo configuration: ${parsed.error.issues
-				.slice(0, 3)
-				.map(i => `${i.path.join('.')}: ${i.message}`)
-				.join('; ')}`
-		);
+	if (challenge.itemSets.length === 1 && challenge.itemSets[0].every(group => group.length === 1)) {
+		return { ...metadata, allOf: challenge.itemSets[0].flat() };
 	}
-	return { theme, year: startDate.getUTCFullYear(), challenges: parsed.data };
+	return { ...metadata, custom: { type: 'item_sets', sets: challenge.itemSets } };
 }
 
-type ManageOptions = {
-	theme?: BingoTheme;
-	configuration?: APIAttachment;
-	template?: boolean;
-	team?: number;
-	complete_tile?: string;
-	reverse_tile?: string;
-	inspect_tile?: string;
-	reason?: string;
-};
+export function parseBingoConfiguration(input: unknown): StoredBingoTile[] {
+	const challenges = bingoBoardSchema.safeParse(input);
+	if (challenges.success) return challenges.data.map(challengeToTile);
+	const tiles = z.array(nativeTileSchema).length(28).safeParse(input);
+	if (tiles.success) return tiles.data;
+	throw new UserError(
+		'Invalid bingo configuration. Supply exactly 28 valid item-drop, quantity or item-set tiles. Activity-completion tiles are not supported by the existing loot-based bingo system.'
+	);
+}
+
+export async function importBingoConfiguration(configuration?: APIAttachment): Promise<StoredBingoTile[]> {
+	if (!configuration) return parseBingoConfiguration(defaultBingoChallenges());
+	if (configuration.size > 100_000) throw new UserError('The configuration must be smaller than 100 KB.');
+	const response = await fetch(configuration.url, { signal: AbortSignal.timeout(10_000) });
+	if (!response.ok) throw new UserError('Unable to download the configuration.');
+	let input: unknown;
+	try {
+		input = await response.json();
+	} catch {
+		throw new UserError('The configuration must be a valid JSON array.');
+	}
+	return parseBingoConfiguration(input);
+}
 
 export async function manageSeasonalBingo(
 	bingo: BingoManager,
-	user: MUser,
 	interaction: MInteraction,
-	options: ManageOptions
+	options: {
+		theme?: BingoTheme;
+		configuration?: APIAttachment;
+		template?: boolean;
+	}
 ): Promise<SendableMessage | null> {
-	if (options.template) {
-		const challenges = bingo.season ? bingoBoardSchema.parse(bingo.season.challenges) : defaultBingoChallenges();
+	if (options.template)
 		return {
 			files: [
 				{
-					name: 'bingo-challenges.json',
-					buffer: Buffer.from(JSON.stringify(challenges, null, 2))
+					name: 'bingo-tiles.json',
+					buffer: Buffer.from(
+						JSON.stringify(
+							bingo.rawBingoTiles.length === 28 ? bingo.rawBingoTiles : defaultBingoChallenges(),
+							null,
+							2
+						)
+					)
 				}
 			]
 		};
-	}
-	if (options.configuration || options.theme) {
-		if (bingo.wasFinalized || new Date() >= bingo.startDate)
-			return 'Seasonal boards can only be configured before the bingo starts.';
-		const theme = options.theme ?? bingo.season?.theme;
-		const parsedTheme = z.enum(bingoThemes).safeParse(theme);
-		if (!parsedTheme.success) return 'Choose a seasonal theme with the configuration.';
-		const settings =
-			options.configuration || !bingo.season
-				? await seasonalBingoSettings(parsedTheme.data, bingo.startDate, options.configuration)
-				: {
-						theme: parsedTheme.data,
-						year: bingo.season.year,
-						challenges: bingoBoardSchema.parse(bingo.season.challenges)
-					};
-		await interaction.confirmation(
-			`Use this ${settings.theme} board with 28 challenges for **${bingo.title}**? All teams will use these challenges and keep separate progress.`
-		);
-		await prisma.$transaction(async tx => {
-			// Lock the existing bingo, then its seasonal settings, matching team-registration order.
-			await tx.$queryRaw`SELECT id FROM bingo WHERE id = ${bingo.id} FOR UPDATE`;
-			const current = await tx.bingo.findUniqueOrThrow({ where: { id: bingo.id } });
-			if (current.was_finalized || new Date() >= current.start_date)
-				throw new UserError('This bingo has already started or ended.');
-			await tx.bingoSeason.upsert({
-				where: { bingo_id: bingo.id },
-				create: {
-					...settings,
-					bingo_id: bingo.id,
-					name: current.title,
-					start_date: current.start_date,
-					end_date: new Date(current.start_date.getTime() + current.duration_days * Time.Day)
-				},
-				update: { ...settings, progress_version: { increment: 1 } }
-			});
-		});
-		return 'Updated the seasonal board. Players join using /bingo make_team and view their board using /bingo view.';
-	}
-	const challengeID = options.complete_tile ?? options.reverse_tile ?? options.inspect_tile;
-	if (!challengeID) return null;
-	if (!bingo.season) return 'This bingo does not have a seasonal board.';
-	if (!options.team) return 'Choose a team ID from /bingo leaderboard.';
-	const team = await prisma.bingoTeam.findFirst({ where: { id: options.team, bingo_id: bingo.id } });
-	if (!team) return 'That team is not in this bingo.';
-	const challenge = bingoBoardSchema.parse(bingo.season.challenges).find(c => c.id === challengeID);
-	if (!challenge) return 'Unknown challenge ID. Download the configuration using /bingo manage_bingo template:true.';
-	await processPendingBingoEvents(bingo.season.id);
-	if (options.inspect_tile) {
-		const progress = await prisma.seasonalBingoProgress.findUnique({
-			where: {
-				season_id_team_id_challenge_id: {
-					season_id: bingo.season.id,
-					team_id: team.id,
-					challenge_id: challenge.id
-				}
-			}
-		});
-		const events = await prisma.seasonalBingoEvent.findMany({
-			where: {
-				season_id: bingo.season.id,
-				team_id: team.id,
-				OR: [
-					{ credits: { path: [challenge.id], not: Prisma.JsonNull } },
-					{ metadata: { path: ['challengeID'], equals: challenge.id } }
-				]
-			},
-			orderBy: { occurred_at: 'desc' },
-			take: 20
-		});
-		return {
-			files: [
-				{
-					name: `${challenge.id}-team-${team.id}.json`,
-					buffer: Buffer.from(JSON.stringify({ challenge, progress, recentEvents: events }, null, 2))
-				}
-			]
-		};
-	}
-	if (options.complete_tile && options.reverse_tile) return 'Choose either complete_tile or reverse_tile.';
-	if (!options.reason?.trim()) return 'Provide a reason for the audit log.';
-	await setBingoChallengeCompletion({
-		seasonID: bingo.season.id,
-		teamID: team.id,
-		challengeID: challenge.id,
-		adminID: user.id,
-		completed: Boolean(options.complete_tile),
-		reason: options.reason.trim()
+	if (!options.theme && !options.configuration) return null;
+	if (bingo.wasFinalized || new Date() >= bingo.startDate)
+		return 'Board settings can only be changed before the bingo starts.';
+	const theme = options.theme ?? bingo.theme;
+	const tiles = options.configuration
+		? await importBingoConfiguration(options.configuration)
+		: bingo.rawBingoTiles.length > 0
+			? bingo.rawBingoTiles
+			: await importBingoConfiguration();
+	if (theme && tiles.length !== 28)
+		return 'A seasonal board requires exactly 28 tiles. Upload a configuration with 28 tiles.';
+	await interaction.confirmation(
+		`Use ${tiles.length} tiles${theme ? ` with the ${theme} artwork` : ''} for **${bingo.title}**? Existing team registration and scoring apply.`
+	);
+	const { count } = await prisma.bingo.updateMany({
+		where: { id: bingo.id, was_finalized: false, start_date: { gt: new Date() } },
+		data: { theme, bingo_tiles: tiles as unknown as Prisma.InputJsonObject[] }
 	});
-	return `${options.complete_tile ? 'Completed' : 'Reset'} **${challenge.name}** for team ${team.id}. The correction has been recorded.`;
+	if (count !== 1) throw new UserError('This bingo has already started or ended.');
+	return 'Updated the board. Team progress continues to use the normal bingo item tracking.';
 }

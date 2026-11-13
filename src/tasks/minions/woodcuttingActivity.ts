@@ -360,7 +360,6 @@ export const woodcuttingTask: MinionTask = {
 
 		// Update cl, give loot, and remove items used
 		await user.transactItems({
-			bingoActivityCompletion: true,
 			collectionLog: true,
 			itemsToAdd: loot,
 			itemsToRemove

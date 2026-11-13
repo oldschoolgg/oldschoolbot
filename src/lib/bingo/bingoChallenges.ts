@@ -14,7 +14,7 @@ function set(id: string, name: string, sets: string[][]): BingoChallenge {
 	return {
 		id,
 		name,
-		description: `Earn every component of ${name} during the season, across the community.`,
+		description: `Earn every component of ${name} during the bingo, across your team.`,
 		iconItemID: itemID(sets[0][0]),
 		type: 'custom',
 		evaluator: 'item_sets',
@@ -22,8 +22,7 @@ function set(id: string, name: string, sets: string[][]): BingoChallenge {
 	};
 }
 
-// A starter configuration, copied into each season so later edits never change historical boards.
-// Administrators can supply a replacement 28-challenge JSON configuration when creating a season.
+// Imported into the normal bingo_tiles field; later template edits do not change existing events.
 export function defaultBingoChallenges(): BingoChallenge[] {
 	return bingoBoardSchema.parse([
 		set('torva', 'Full Torva drops', [

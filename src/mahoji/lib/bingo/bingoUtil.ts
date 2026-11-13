@@ -18,7 +18,18 @@ interface BankTile {
 	bank: ItemBank;
 }
 
-export type UniversalBingoTile = {
+export interface BingoTileMetadata {
+	key?: string;
+	name?: string;
+	description?: string;
+	iconItemID?: number;
+}
+
+export type StoredCustomBingoTile = {
+	custom: { type: 'item_quantity'; itemIDs: number[]; quantity: number } | { type: 'item_sets'; sets: number[][][] };
+};
+
+export type UniversalBingoTile = BingoTileMetadata & {
 	id?: number;
 	name: string;
 } & (OneOf | AllOf | BankTile | CustomReq);
@@ -27,7 +38,7 @@ interface StoredGlobalTile {
 	global: number;
 }
 
-export type StoredBingoTile = OneOf | AllOf | BankTile | StoredGlobalTile;
+export type StoredBingoTile = BingoTileMetadata & (OneOf | AllOf | BankTile | StoredGlobalTile | StoredCustomBingoTile);
 
 export type GlobalBingoTile = (OneOf | AllOf | BankTile | CustomReq) & {
 	id: number;
@@ -45,6 +56,7 @@ export function rowsForSquare(n: number): number {
 export function generateTileName(
 	tile: OneOf | AllOf | BankTile | UniversalBingoTile | StoredBingoTile | GlobalBingoTile
 ) {
+	if ('name' in tile && tile.name) return tile.name;
 	if ('global' in tile) {
 		return globalBingoTiles.find(t => t.id === tile.global)?.name ?? 'Unknown';
 	}
@@ -60,7 +72,45 @@ export function generateTileName(
 	if ('bank' in tile) {
 		return `Receive these items: ${new Bank(tile.bank)}`;
 	}
+	if ('custom' in tile) return 'Custom bingo tile';
 	throw new Error(`Invalid tile: ${JSON.stringify(tile)}`);
+}
+
+export function resolveBingoTile(tile: StoredBingoTile): UniversalBingoTile {
+	if (isGlobalTile(tile)) {
+		const global = globalBingoTiles.find(t => t.id === tile.global);
+		if (!global) throw new Error(`Unknown global bingo tile: ${tile.global}`);
+		return { ...global, ...tile, name: tile.name ?? global.name };
+	}
+	if ('custom' in tile) {
+		const rule = tile.custom;
+		return {
+			...tile,
+			name: generateTileName(tile),
+			allItems: rule.type === 'item_quantity' ? rule.itemIDs : rule.sets.flat(2),
+			customReq: cl =>
+				rule.type === 'item_quantity'
+					? rule.itemIDs.reduce((sum, id) => sum + cl.amount(id), 0) >= rule.quantity
+					: rule.sets.some(set => set.every(group => group.some(id => cl.has(id))))
+		};
+	}
+	return { ...tile, name: generateTileName(tile) };
+}
+
+export function bingoTileQuantity(tile: UniversalBingoTile, cl: Bank): { current: number; target: number } | null {
+	if ('bank' in tile) {
+		const entries = Object.entries(tile.bank);
+		if (entries.length === 1) {
+			const [id, target] = entries[0];
+			if (target > 1) return { current: cl.amount(Number(id)), target };
+		}
+	}
+	if ('custom' in tile) {
+		const rule = (tile as StoredCustomBingoTile).custom;
+		if (rule.type === 'item_quantity')
+			return { current: rule.itemIDs.reduce((sum, id) => sum + cl.amount(id), 0), target: rule.quantity };
+	}
+	return null;
 }
 
 export function getAllTileItems(tile: UniversalBingoTile): number[] {

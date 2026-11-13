@@ -114,12 +114,11 @@ export class MUserClass extends BaseUser {
 
 	async rawUpdate({
 		data,
-		gearUpdates,
-		_otherQueries = []
+		gearUpdates
 	}: {
 		data: FullUserUpdateInput;
 		gearUpdates?: GearWithSetupType[];
-		_otherQueries?: Prisma.PrismaPromise<unknown>[];
+		_otherQueries?: any[];
 	}): Promise<MUser> {
 		const secondaryQueries = [];
 
@@ -159,8 +158,7 @@ export class MUserClass extends BaseUser {
 					...(data as Prisma.UserUpdateInput)
 				}
 			}),
-			...secondaryQueries,
-			..._otherQueries
+			...secondaryQueries
 		]);
 		this._updateRawUser(newUser);
 		return this;

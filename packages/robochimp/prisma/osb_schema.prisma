@@ -1088,6 +1088,7 @@ model GEBank {
   @@map("ge_bank")
 }
 
+// Legacy seasonal tables are retained for existing data, but are not used by bingo.
 enum BingoSeasonStatus {
   upcoming
   active
@@ -1111,6 +1112,7 @@ model BingoSeason {
 
   @@index([status, start_date, end_date])
   @@map("bingo_season")
+  @@ignore
 }
 
 model SeasonalBingoProgress {
@@ -1127,9 +1129,10 @@ model SeasonalBingoProgress {
 
   @@id([season_id, team_id, challenge_id])
   @@map("seasonal_bingo_progress")
+  @@ignore
 }
 
-// Durable outbox and audit ledger. Never delete processed events: their IDs prevent replay.
+// Historical event records from the superseded seasonal implementation.
 model SeasonalBingoEvent {
   id                  String      @id
   season_id           String      @db.Uuid
@@ -1149,11 +1152,13 @@ model SeasonalBingoEvent {
   @@index([processed, occurred_at])
   @@index([season_id, user_id])
   @@map("seasonal_bingo_event")
+  @@ignore
 }
 
 model Bingo {
   id     Int          @id @default(autoincrement())
-  season BingoSeason?
+  season BingoSeason? @ignore
+  theme  String?      @db.VarChar(16)
 
   creator    User   @relation(fields: [creator_id], references: [id])
   creator_id String @db.VarChar(19)
