@@ -55,9 +55,12 @@ const eligibleActivities = new Set<string>([
 
 interface BingoActivityContext {
 	activity: Activity;
-	season: BingoSeason | null;
-	itemIDs: Set<number>;
-	trackCompletion: boolean;
+	boards: {
+		season: BingoSeason;
+		teams: Map<string, number>;
+		itemIDs: Set<number>;
+		trackCompletion: boolean;
+	}[];
 	sequences: Map<string, number>;
 	open: boolean;
 }
@@ -66,18 +69,31 @@ const activityContext = new AsyncLocalStorage<BingoActivityContext>();
 
 async function prepareBingoContext(activity: Activity): Promise<BingoActivityContext | null> {
 	const now = new Date();
-	const season = await prisma.bingoSeason.findFirst({
-		where: { status: { not: 'completed' }, start_date: { lte: now }, end_date: { gt: now } }
+	const userIDs = [...new Set([activity.user_id, ...activity.all_user_ids].map(id => id.toString()))];
+	const seasons = await prisma.bingoSeason.findMany({
+		where: {
+			start_date: { lte: activity.start_date },
+			end_date: { gt: now },
+			bingo: { is: { was_finalized: false, bingo_participant: { some: { user_id: { in: userIDs } } } } }
+		},
+		include: { bingo: { select: { bingo_participant: { where: { user_id: { in: userIDs } } } } } }
 	});
-	if (!season || activity.start_date < season.start_date || now >= season.end_date) return null;
-	const challenges = bingoBoardSchema.parse(season.challenges);
+	if (seasons.length === 0) return null;
 	return {
 		activity,
-		season,
 		open: true,
 		sequences: new Map(),
-		itemIDs: new Set(challenges.flatMap(challengeItemIDs)),
-		trackCompletion: challenges.some(c => c.type === 'activity_completion' && c.activityID === activity.type)
+		boards: seasons.map(season => {
+			const challenges = bingoBoardSchema.parse(season.challenges);
+			return {
+				season,
+				teams: new Map(season.bingo!.bingo_participant.map(p => [p.user_id, p.bingo_team_id])),
+				itemIDs: new Set(challenges.flatMap(challengeItemIDs)),
+				trackCompletion: challenges.some(
+					c => c.type === 'activity_completion' && c.activityID === activity.type
+				)
+			};
+		})
 	};
 }
 
@@ -106,25 +122,33 @@ export function bingoRewardQuery(
 	activityCompletion: boolean
 ) {
 	const context = activityContext.getStore();
-	if (!context?.open || !context.season || !collectionLog) return null;
-	const { activity, season } = context;
+	if (!context?.open || !collectionLog) return null;
+	const { activity } = context;
 	if (activity.user_id.toString() !== userID && !activity.all_user_ids.includes(BigInt(userID))) return null;
 	const items = earnedItems();
 	const sequence = context.sequences.get(userID) ?? 0;
 	context.sequences.set(userID, sequence + 1);
-	activityCompletion = activityCompletion && context.trackCompletion;
-	if (!activityCompletion && !items.items().some(([item]) => context.itemIDs.has(item.id))) return null;
-	return prisma.seasonalBingoEvent.createMany({
-		data: {
-			id: `${season.id}:${activity.id}:${userID}:${sequence}`,
-			season_id: season.id,
+	const data: Prisma.SeasonalBingoEventCreateManyInput[] = [];
+	for (const board of context.boards) {
+		const teamID = board.teams.get(userID);
+		if (!teamID) continue;
+		const completed = activityCompletion && board.trackCompletion;
+		if (!completed && !items.items().some(([item]) => board.itemIDs.has(item.id))) continue;
+		data.push({
+			id: `${board.season.id}:${activity.id}:${userID}:${sequence}`,
+			season_id: board.season.id,
+			team_id: teamID,
 			user_id: userID,
 			activity_id: activity.id,
 			activity_type: activity.type,
-			activity_completion: activityCompletion,
+			activity_completion: completed,
 			started_at: activity.start_date,
 			items: items.toJSON() as Prisma.InputJsonObject
-		},
+		});
+	}
+	if (data.length === 0) return null;
+	return prisma.seasonalBingoEvent.createMany({
+		data,
 		skipDuplicates: true
 	});
 }

@@ -1095,6 +1095,8 @@ enum BingoSeasonStatus {
 }
 
 model BingoSeason {
+  bingo_id         Int?                    @unique
+  bingo            Bingo?                  @relation(fields: [bingo_id], references: [id])
   id               String                  @id @default(uuid()) @db.Uuid
   name             String                  @db.VarChar(100)
   theme            String                  @db.VarChar(16)
@@ -1113,6 +1115,7 @@ model BingoSeason {
 
 model SeasonalBingoProgress {
   season_id           String      @db.Uuid
+  team_id             Int         @default(0)
   challenge_id        String      @db.VarChar(64)
   quantity            Float       @default(0)
   items               Json        @default("{}") @db.JsonB
@@ -1122,7 +1125,7 @@ model SeasonalBingoProgress {
   reset_at            DateTime?   @db.Timestamp(6)
   season              BingoSeason @relation(fields: [season_id], references: [id], onDelete: Cascade)
 
-  @@id([season_id, challenge_id])
+  @@id([season_id, team_id, challenge_id])
   @@map("seasonal_bingo_progress")
 }
 
@@ -1130,6 +1133,7 @@ model SeasonalBingoProgress {
 model SeasonalBingoEvent {
   id                  String      @id
   season_id           String      @db.Uuid
+  team_id             Int         @default(0)
   user_id             String      @db.VarChar(19)
   activity_id         Int?
   activity_type       String?
@@ -1148,7 +1152,8 @@ model SeasonalBingoEvent {
 }
 
 model Bingo {
-  id Int @id @default(autoincrement())
+  id     Int          @id @default(autoincrement())
+  season BingoSeason?
 
   creator    User   @relation(fields: [creator_id], references: [id])
   creator_id String @db.VarChar(19)

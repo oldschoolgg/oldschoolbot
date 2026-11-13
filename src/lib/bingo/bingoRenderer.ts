@@ -139,11 +139,14 @@ export async function renderBingoBoard(
 
 const boardCache = new LRUCache<string, Promise<Buffer>>({ max: 8 });
 
-export function cachedBingoBoard(season: BingoSeason & { progress: SeasonalBingoProgress[] }) {
-	const key = `${season.id}:${season.progress_version}`;
+export function cachedBingoBoard(season: BingoSeason & { progress: SeasonalBingoProgress[] }, teamID: number) {
+	const key = `${season.id}:${teamID}:${season.progress_version}`;
 	let image = boardCache.get(key);
 	if (!image) {
-		image = renderBingoBoard(season, season.progress).catch(err => {
+		image = renderBingoBoard(
+			season,
+			season.progress.filter(p => p.team_id === teamID)
+		).catch(err => {
 			boardCache.delete(key);
 			throw err;
 		});

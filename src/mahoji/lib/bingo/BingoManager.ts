@@ -4,7 +4,10 @@ import { addBanks, Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 import { chunk, groupBy } from 'remeda';
 import * as ss from 'simple-statistics';
 
-import type { Bingo, Prisma } from '@/prisma/main.js';
+import type { Bingo, BingoSeason, Prisma, SeasonalBingoProgress } from '@/prisma/main.js';
+import { evaluateBingoChallenge } from '@/lib/bingo/bingoProgress.js';
+import { processPendingBingoEvents } from '@/lib/bingo/bingoSeason.js';
+import { bingoBoardSchema, challengeItemIDs, challengeTarget } from '@/lib/bingo/bingoTypes.js';
 import { EmojiId } from '@/lib/data/emojis.js';
 import { leaderboardEligibility } from '@/lib/util/leaderboardEligibility.js';
 import {
@@ -78,8 +81,10 @@ export class BingoManager {
 	extraGP: number;
 	isGlobal: boolean;
 	trophiesApply: boolean;
+	public season: BingoSeason | null;
 
-	constructor(options: Bingo) {
+	constructor(options: Bingo & { season?: BingoSeason | null }) {
+		this.season = options.season ?? null;
 		this.ticketPrice = Number(options.ticket_price);
 		this.id = options.id;
 		this.startDate = options.start_date;
@@ -106,6 +111,22 @@ export class BingoManager {
 				...tile
 			};
 		});
+		if (this.season) {
+			this.bingoTiles = bingoBoardSchema.parse(this.season.challenges).map(challenge => ({
+				name: challenge.name,
+				allItems: challengeItemIDs(challenge),
+				customReq: (cl: Bank) =>
+					evaluateBingoChallenge(
+						challenge,
+						{ quantity: 0, items: {} },
+						{
+							items: cl.toJSON(),
+							activity_type: null,
+							activity_completion: false
+						}
+					).quantity >= challengeTarget(challenge)
+			}));
+		}
 	}
 
 	public isActive() {
@@ -137,6 +158,7 @@ export class BingoManager {
 	}
 
 	async determineProgressOfTeam(teamID: number) {
+		await this.refreshSeasonalProgress();
 		const bingoParticipant = await prisma.bingoTeam.findFirst({
 			where: {
 				id: teamID,
@@ -148,7 +170,31 @@ export class BingoManager {
 		});
 		if (!bingoParticipant) return null;
 		const cl = addBanks(bingoParticipant.users.map(u => u.cl as ItemBank));
-		return { ...this.determineProgressOfBank(cl), cl };
+		const stored = this.season
+			? await prisma.seasonalBingoProgress.findMany({
+					where: { season_id: this.season.id, team_id: teamID }
+				})
+			: [];
+		return { ...this.determineTeamProgress(cl, stored), cl };
+	}
+
+	private determineTeamProgress(cl: Bank, progress: SeasonalBingoProgress[]) {
+		if (!this.season) return this.determineProgressOfBank(cl);
+		const challenges = bingoBoardSchema.parse(this.season.challenges);
+		const completed = new Set(progress.filter(p => p.completed_at).map(p => p.challenge_id));
+		const tilesCompleted = this.bingoTiles.filter((_, i) => completed.has(challenges[i].id));
+		const tilesNotCompleted = this.bingoTiles.filter((_, i) => !completed.has(challenges[i].id));
+		const bingoTable = challenges.map(c => (completed.has(c.id) ? '✅' : '🛑'));
+		return {
+			tilesCompletedCount: tilesCompleted.length,
+			bingoTable,
+			bingoTableStr: chunk(bingoTable, 7)
+				.map(row => row.join(' '))
+				.join('\n'),
+			tilesCompleted,
+			tilesNotCompleted,
+			tilesCompletedMap: new Set(tilesCompleted.map(t => t.name))
+		};
 	}
 
 	determineProgressOfBank(_cl: ItemBank | Prisma.JsonValue | Bank) {
@@ -215,6 +261,7 @@ export class BingoManager {
 	}
 
 	async fetchAllParticipants() {
+		await this.refreshSeasonalProgress();
 		const rawBingo = await prisma.bingo.findFirst({
 			where: {
 				id: this.id
@@ -235,10 +282,16 @@ export class BingoManager {
 			throw new Error(`Couldn't find bingo with ID ${this.id}`);
 		}
 
+		const progress = this.season
+			? await prisma.seasonalBingoProgress.findMany({ where: { season_id: this.season.id } })
+			: [];
 		const teams = Object.entries(groupBy(rawBingo.bingo_participant, i => i.bingo_team_id))
 			.map(([id, participants]) => ({
 				team_id: Number(id),
-				...this.determineProgressOfBank(addBanks(participants.map(i => i.cl) as ItemBank[])),
+				...this.determineTeamProgress(
+					addBanks(participants.map(i => i.cl) as ItemBank[]),
+					progress.filter(p => p.team_id === Number(id))
+				),
 				participants
 			}))
 			.sort((a, b) => b.tilesCompletedCount - a.tilesCompletedCount);
@@ -278,6 +331,12 @@ export class BingoManager {
 			.filter(team => team.participants.length > 0);
 	}
 
+	private async refreshSeasonalProgress() {
+		if (!this.season) return;
+		await processPendingBingoEvents(this.season.id);
+		this.season = await prisma.bingoSeason.findUniqueOrThrow({ where: { id: this.season.id } });
+	}
+
 	async fetchLeaderboard() {
 		const teams = await this.fetchLeaderboardTeams();
 		return `${this.title} - Bingo Leaderboard
@@ -299,6 +358,8 @@ ${teams
 	}
 
 	async handleNewItems(userID: string, itemsAdded: Bank) {
+		// Seasonal teams use the atomic activity reward ledger, including team-specific corrections.
+		if (this.season) return;
 		const bingoParticipant = await prisma.bingoParticipant.findFirst({
 			where: {
 				user_id: userID,
@@ -364,6 +425,7 @@ ${teams
 
 export async function findBingosWithUserParticipating(userID: string) {
 	const bingos = await prisma.bingo.findMany({
+		include: { season: true },
 		where: {
 			start_date: {
 				lt: new Date()

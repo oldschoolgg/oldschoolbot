@@ -1,9 +1,20 @@
 import { bold, dateFm, userMention } from '@oldschoolgg/discord';
-import { Emoji, formatOrdinal, notEmpty, stringMatches, Time, truncateString, uniqueArr } from '@oldschoolgg/toolkit';
+import {
+	Emoji,
+	formatOrdinal,
+	notEmpty,
+	stringMatches,
+	Time,
+	truncateString,
+	UserError,
+	uniqueArr
+} from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import type { Prisma } from '@/prisma/main.js';
+import { cachedBingoBoard } from '@/lib/bingo/bingoRenderer.js';
+import { bingoBoardSchema, challengeTarget } from '@/lib/bingo/bingoTypes.js';
 import { clImageGenerator } from '@/lib/collectionLogTask.js';
 import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
 import { doMenuWrapper } from '@/lib/menuWrapper.js';
@@ -15,17 +26,33 @@ import type { StoredBingoTile } from '@/mahoji/lib/bingo/bingoUtil.js';
 import { generateTileName, getAllTileItems, isGlobalTile } from '@/mahoji/lib/bingo/bingoUtil.js';
 import { globalBingoTiles } from '@/mahoji/lib/bingo/globalTiles.js';
 import {
-	seasonalBingoCommand,
-	seasonalBingoLeaderboard,
-	seasonalBingoOptions
+	manageSeasonalBingo,
+	seasonalBingoSettings,
+	seasonalCreateOptions,
+	seasonalManageOptions
 } from '@/mahoji/lib/bingo/seasonalBingo.js';
 
-const bingoAutocomplete = async ({ value, user }: StringAutoComplete) => {
-	const bingos = await fetchBingosThatUserIsInvolvedIn(user.id);
+const bingoAutocomplete = async ({ value, user, guildId }: StringAutoComplete) => {
+	const bingos = await prisma.bingo.findMany({
+		where: {
+			OR: [
+				{ bingo_participant: { some: { user_id: user.id } } },
+				{ creator_id: user.id },
+				{ organizers: { has: user.id } },
+				{ is_global: true },
+				...(guildId ? [{ guild_id: guildId }] : [])
+			]
+		},
+		include: { season: true },
+		orderBy: { start_date: 'desc' }
+	});
 	return bingos
 		.map(i => new BingoManager(i))
-		.filter(bingo => (!value ? true : bingo.id.toString() === value))
-		.map(bingo => ({ name: bingo.title, value: bingo.id.toString() }));
+		.filter(
+			bingo => !value || bingo.id.toString() === value || bingo.title.toLowerCase().includes(value.toLowerCase())
+		)
+		.slice(0, 25)
+		.map(bingo => ({ name: truncateString(bingo.title, 100), value: bingo.id.toString() }));
 };
 
 type MakeTeamOptions = {
@@ -39,6 +66,7 @@ type MakeTeamOptions = {
 
 export async function fetchBingosThatUserIsInvolvedIn(userId: string) {
 	const bingos = await prisma.bingo.findMany({
+		include: { season: true },
 		where: {
 			OR: [
 				{
@@ -65,13 +93,15 @@ export async function fetchBingosThatUserIsInvolvedIn(userId: string) {
 
 async function bingoTeamLeaderboard(interaction: MInteraction, bingo: BingoManager): CommandResponse {
 	const teams = await bingo.fetchLeaderboardTeams();
+	if (teams.length === 0)
+		return `**${bingo.title}** has no teams on its leaderboard yet. Players can join before it starts using /bingo make_team.`;
 
 	const users = await Promise.all(
 		[...teams]
 			.sort((a, b) => b.tilesCompletedCount - a.tilesCompletedCount)
 			.map(async team => {
 				const names = await Promise.all(team.participants.map(pt => Cache.getBadgedUsername(pt.user_id)));
-				const label = `${team.trophy?.emoji ? `${team.trophy.emoji} ` : ''}${names.join(', ')}`;
+				const label = `${team.trophy?.emoji ? `${team.trophy.emoji} ` : ''}Team ${team.team_id}: ${names.join(', ')}`;
 				return {
 					id: team.team_id.toString(),
 					score: team.tilesCompletedCount,
@@ -85,7 +115,7 @@ async function bingoTeamLeaderboard(interaction: MInteraction, bingo: BingoManag
 		ironmanOnly: false,
 		interaction,
 		users,
-		title: 'Bingo Team Leaderboard',
+		title: `${bingo.title} — Team Leaderboard`,
 		formatter: v => v.toLocaleString()
 	});
 }
@@ -96,7 +126,7 @@ async function makeTeamCommand(
 	creatorUser: MUser,
 	options: MakeTeamOptions
 ) {
-	if (bingo.isActive()) {
+	if (bingo.wasFinalized || new Date() >= bingo.startDate) {
 		return 'You cannot make a Bingo team, because the bingo has already started!';
 	}
 	const allUsers = await Promise.all(
@@ -134,8 +164,12 @@ async function makeTeamCommand(
 			return `${user} is blacklisted and cannot join bingo teams.`;
 		}
 	}
-	await prisma.$transaction([
-		prisma.user.updateMany({
+	await prisma.$transaction(async tx => {
+		await tx.$queryRaw`SELECT id FROM bingo WHERE id = ${bingo.id} FOR UPDATE`;
+		const current = await tx.bingo.findUniqueOrThrow({ where: { id: bingo.id } });
+		if (current.was_finalized || new Date() >= current.start_date)
+			throw new UserError('This bingo has already started or ended.');
+		await tx.user.updateMany({
 			where: {
 				id: {
 					in: allUsers.filter(i => !i.isIronman).map(i => i.id)
@@ -146,8 +180,8 @@ async function makeTeamCommand(
 					decrement: bingo.ticketPrice
 				}
 			}
-		}),
-		prisma.bingoTeam.create({
+		});
+		await tx.bingoTeam.create({
 			data: {
 				bingo_id: bingo.id,
 				users: {
@@ -160,14 +194,14 @@ async function makeTeamCommand(
 					}
 				}
 			}
-		})
-	]);
+		});
+	});
 
 	return "Successfully created a bingo team! Have fun. You can leave the team before the bingo starts if you'd like, but doing so will delete the team, causing all users to have to join or make a new team.";
 }
 
 async function leaveTeamCommand(interaction: MInteraction, bingo: BingoManager) {
-	if (bingo.isActive()) return "You can't leave a bingo team after bingo has started.";
+	if (new Date() >= bingo.startDate) return "You can't leave a bingo team after bingo has started.";
 	if (bingo.wasFinalized) {
 		return "You can't leave a bingo team after bingo has ended.";
 	}
@@ -180,8 +214,14 @@ async function leaveTeamCommand(interaction: MInteraction, bingo: BingoManager) 
 	);
 
 	const allUsers = await Promise.all(team.participants.map(i => i.user).map(id => mUserFetch(id.id)));
-	await prisma.$transaction([
-		prisma.user.updateMany({
+	await prisma.$transaction(async tx => {
+		await tx.$queryRaw`SELECT id FROM bingo WHERE id = ${bingo.id} FOR UPDATE`;
+		const current = await tx.bingo.findUniqueOrThrow({ where: { id: bingo.id } });
+		if (current.was_finalized || new Date() >= current.start_date)
+			throw new UserError('This bingo has already started or ended.');
+		// Recheck after confirmation so concurrent requests cannot refund a deleted team twice.
+		await tx.bingoTeam.findUniqueOrThrow({ where: { id: team.team_id } });
+		await tx.user.updateMany({
 			where: {
 				id: {
 					in: allUsers.filter(i => !i.isIronman).map(i => i.id)
@@ -192,13 +232,13 @@ async function leaveTeamCommand(interaction: MInteraction, bingo: BingoManager) 
 					increment: bingo.ticketPrice
 				}
 			}
-		}),
-		prisma.bingoTeam.delete({
+		});
+		await tx.bingoTeam.delete({
 			where: {
 				id: team.team_id
 			}
-		})
-	]);
+		});
+	});
 	return `${team.participants
 		.map(pt => userMention(pt.user_id))
 		.join(
@@ -236,7 +276,37 @@ function parseTileAddInput(input: string): StoredBingoTile | null {
 	return delimiter === '+' ? { allOf: items.map(i => i.id) } : { oneOf: items.map(i => i.id) };
 }
 
-async function getBingoFromUserInput(input: string) {
+export async function getBingoFromUserInput(input: string | undefined, userID?: string, guildID?: string | null) {
+	if (!input) {
+		if (!userID) return null;
+		const bingos = await prisma.bingo.findMany({
+			where: {
+				OR: [
+					{ bingo_participant: { some: { user_id: userID } } },
+					{ creator_id: userID },
+					{ organizers: { has: userID } },
+					{ is_global: true },
+					...(guildID ? [{ guild_id: guildID }] : [])
+				]
+			},
+			include: { season: true, bingo_participant: { where: { user_id: userID } } },
+			orderBy: { start_date: 'desc' }
+		});
+		const current = bingos.filter(
+			b => !b.was_finalized && new Date(b.start_date.getTime() + b.duration_days * Time.Day) > new Date()
+		);
+		const joined = current.filter(b => b.bingo_participant.length > 0);
+		return (
+			joined.find(b => b.start_date <= new Date()) ??
+			joined[0] ??
+			current.find(b => b.creator_id === userID || b.organizers.includes(userID)) ??
+			current.find(b => b.start_date <= new Date()) ??
+			current[0] ??
+			bingos.find(b => b.bingo_participant.length > 0) ??
+			bingos[0] ??
+			null
+		);
+	}
 	const where = Number.isNaN(Number(input))
 		? {
 				title: input
@@ -245,7 +315,8 @@ async function getBingoFromUserInput(input: string) {
 				id: Number(input)
 			};
 	const bingo = await prisma.bingo.findFirst({
-		where
+		where,
+		include: { season: true }
 	});
 	return bingo;
 }
@@ -254,7 +325,6 @@ export const bingoCommand = defineCommand({
 	name: 'bingo',
 	description: 'Bingo!',
 	options: [
-		...seasonalBingoOptions,
 		{
 			type: 'Subcommand',
 			name: 'make_team',
@@ -285,7 +355,7 @@ export const bingoCommand = defineCommand({
 						});
 						return bingos
 							.map(i => new BingoManager(i))
-							.filter(bingo => !bingo.isActive())
+							.filter(bingo => !bingo.wasFinalized && new Date() < bingo.startDate)
 							.filter(bingo => (!value ? true : bingo.id.toString() === value))
 							.map(bingo => ({ name: bingo.title, value: bingo.id.toString() }));
 					}
@@ -357,7 +427,7 @@ export const bingoCommand = defineCommand({
 					type: 'String',
 					name: 'bingo',
 					description: 'The bingo.',
-					required: true,
+					required: false,
 					autocomplete: bingoAutocomplete
 				}
 			]
@@ -427,7 +497,8 @@ export const bingoCommand = defineCommand({
 					name: 'organizers',
 					description: 'The organizers (user IDs separated by comma).',
 					required: true
-				}
+				},
+				...seasonalCreateOptions
 			]
 		},
 		{
@@ -520,7 +591,8 @@ export const bingoCommand = defineCommand({
 					name: 'trophy_handout',
 					description: 'Hand out trophies.',
 					required: false
-				}
+				},
+				...seasonalManageOptions
 			]
 		},
 		{
@@ -546,16 +618,6 @@ export const bingoCommand = defineCommand({
 		}
 	],
 	run: async ({ user, userId, options, interaction, guildId }) => {
-		if (
-			options.board ||
-			options.progress ||
-			options.history ||
-			options.seasonal_admin ||
-			Object.keys(options).length === 0
-		) {
-			return seasonalBingoCommand(user, options, guildId);
-		}
-		if (options.leaderboard && !options.leaderboard.bingo) return seasonalBingoLeaderboard();
 		if (options.items) {
 			const bingoID = Number(options.items.bingo);
 			if (Number.isNaN(bingoID)) {
@@ -567,7 +629,7 @@ export const bingoCommand = defineCommand({
 					user_id: user.id
 				},
 				include: {
-					bingo: true
+					bingo: { include: { season: true } }
 				}
 			});
 
@@ -620,13 +682,19 @@ export const bingoCommand = defineCommand({
 			if (!bingo) return 'Invalid bingo.';
 			return leaveTeamCommand(interaction, new BingoManager(bingo));
 		}
-		if (options.leaderboard?.bingo) {
-			const bingo = await getBingoFromUserInput(options.leaderboard.bingo);
-			if (!bingo) return 'Invalid bingo.';
+		if (options.leaderboard) {
+			const bingo = await getBingoFromUserInput(options.leaderboard.bingo, user.id, guildId);
+			if (!bingo) return 'No bingo found. Select a bingo, or create one using /bingo create_bingo.';
 			return bingoTeamLeaderboard(interaction, new BingoManager(bingo));
 		}
 
 		if (options.create_bingo) {
+			if (options.create_bingo.configuration && !options.create_bingo.theme)
+				return 'Choose a seasonal theme with your configuration.';
+			const startDate = new Date(options.create_bingo.start_date_unix_seconds * 1000);
+			const seasonal = options.create_bingo.theme
+				? await seasonalBingoSettings(options.create_bingo.theme, startDate, options.create_bingo.configuration)
+				: null;
 			if (user.isIronman) {
 				return 'Ironmen cannot create bingos.';
 			}
@@ -672,7 +740,21 @@ export const bingoCommand = defineCommand({
 					.filter(id => isValidDiscordSnowflake(id)),
 				bingo_tiles: [],
 				creator_id: user.id,
-				guild_id: channel.guild_id
+				guild_id: channel.guild_id,
+				...(seasonal
+					? {
+							season: {
+								create: {
+									...seasonal,
+									name: options.create_bingo.title,
+									start_date: startDate,
+									end_date: new Date(
+										startDate.getTime() + options.create_bingo.duration_days * Time.Day
+									)
+								}
+							}
+						}
+					: {})
 			};
 
 			if (createOptions.team_size < 1 || createOptions.team_size > 5) {
@@ -697,11 +779,15 @@ export const bingoCommand = defineCommand({
 - Once your Bingo starts, you cannot stop it, or change any settings. Ensure everything is accurate before then.
 - You can only have 1 Bingo active at a time.
 - Ironmen will be able to enter, for free. However, they cannot win rewards.
-- Note: You need to add tiles yourself, using our predefined tiles AND/OR your own custom tiles. You can add tiles using ${globalClient.mentionCommand(
-				'bingo',
-				'manage_bingo',
-				'add_tile'
-			)} command.
+- ${
+				seasonal
+					? 'Your seasonal board contains 28 configured challenges. Each team has its own progress.'
+					: `You need to add tiles yourself, using our predefined tiles AND/OR your own custom tiles. You can add tiles using ${globalClient.mentionCommand(
+							'bingo',
+							'manage_bingo',
+							'add_tile'
+						)} command.`
+			}
 
 **Your Bingo settings(Can be edited):**
 **Title:** ${createOptions.title} (*Cannot be changed after the bingo starts*)
@@ -740,6 +826,8 @@ ${Emoji.Warning} **You will pay a ${toKMB(fee)} GP fee to create this bingo, you
 				return 'You are not an organizer of this bingo.';
 			}
 			const bingo = new BingoManager(_bingo);
+			const seasonalResult = await manageSeasonalBingo(bingo, user, interaction, options.manage_bingo);
+			if (seasonalResult !== null) return seasonalResult;
 			if (options.manage_bingo.finalize) {
 				if (user.id !== bingo.creatorID) {
 					return 'Only the creator of the bingo can finalize it.';
@@ -763,7 +851,17 @@ The creator of the bingo (${userMention(
 						id: bingo.id
 					},
 					data: {
-						was_finalized: true
+						was_finalized: true,
+						...(bingo.season
+							? {
+									season: {
+										update: {
+											status: 'completed',
+											end_date: new Date(Math.min(Date.now(), bingo.endDate.getTime()))
+										}
+									}
+								}
+							: {})
 					}
 				});
 				return `${creator} received ${loot}. The Bingo has now ended.`;
@@ -799,7 +897,9 @@ The creator of the bingo (${userMention(
 			}
 
 			if (options.manage_bingo.add_tile) {
-				if (bingo.isActive()) {
+				if (bingo.season)
+					return 'Use configuration to replace a seasonal board before it starts; it must contain exactly 28 challenges.';
+				if (bingo.wasFinalized || new Date() >= bingo.startDate) {
 					return "You can't add tiles to a bingo after it has started.";
 				}
 				const globalTile = globalBingoTiles.find(t => stringMatches(t.id, options.manage_bingo?.add_tile));
@@ -829,7 +929,9 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 			}
 
 			if (options.manage_bingo.remove_tile) {
-				if (bingo.isActive()) {
+				if (bingo.season)
+					return 'Use configuration to replace a seasonal board before it starts; it must contain exactly 28 challenges.';
+				if (bingo.wasFinalized || new Date() >= bingo.startDate) {
 					return "You can't remove tiles to a bingo after it has started.";
 				}
 				let newTiles = [...bingo.rawBingoTiles];
@@ -942,9 +1044,9 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 			}
 		}
 
-		if (options.view) {
-			const _bingo = await getBingoFromUserInput(options.view.bingo);
-			if (!_bingo) return 'Invalid bingo.';
+		if (options.view || Object.keys(options).length === 0) {
+			const _bingo = await getBingoFromUserInput(options.view?.bingo, user.id, guildId);
+			if (!_bingo) return 'No bingo found. Select a bingo, or create one using /bingo create_bingo.';
 			const bingo = new BingoManager(_bingo);
 
 			const { teams } = await bingo.fetchAllParticipants();
@@ -955,13 +1057,17 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 			if (yourTeam && yourParticipant) {
 				const yourProgress = bingo.determineProgressOfBank(yourParticipant.cl as ItemBank);
 
-				progressString = bingo.isActive()
-					? `You have ${yourProgress.tilesCompletedCount} tiles completed.
+				progressString = bingo.season
+					? `**Your team:** ${yourTeam.participants.map(p => userMention(p.user_id)).join(', ')}
+Your team has ${yourTeam.tilesCompletedCount}/${bingo.bingoTiles.length} tiles completed.
+${yourTeam.bingoTableStr}`
+					: new Date() >= bingo.startDate
+						? `You have ${yourProgress.tilesCompletedCount} tiles completed.
 ${yourProgress.bingoTableStr}
 **Your team:** ${yourTeam.participants.map(p => userMention(p.user_id)).join(', ')}
 Your team has ${yourTeam.tilesCompletedCount} tiles completed.
 ${yourTeam.bingoTableStr}`
-					: '';
+						: '';
 
 				if (bingo.isGlobal) {
 					progressString += `\n${
@@ -977,6 +1083,32 @@ ${yourTeam.bingoTableStr}`
 **Finish:** ${dateFm(bingo.endDate)}
 ${progressString}
 `;
+			if (bingo.season) {
+				const teamID = yourTeam?.team_id ?? 0;
+				const progress = teamID
+					? await prisma.seasonalBingoProgress.findMany({
+							where: { season_id: bingo.season.id, team_id: teamID }
+						})
+					: [];
+				const challenges = bingoBoardSchema.parse(bingo.season.challenges);
+				const quantities = challenges
+					.filter(c => 'requiredQuantity' in c)
+					.slice(0, 8)
+					.map(c => {
+						const p = progress.find(p => p.challenge_id === c.id);
+						return `${c.name}: ${(p?.quantity ?? 0).toLocaleString()}/${challengeTarget(c).toLocaleString()}`;
+					});
+				return {
+					content: `${str}\n${yourTeam ? `Your team's seasonal board (team ${teamID}).` : 'Board preview. Join before the start using /bingo make_team.'}\n${quantities.join('\n')}`,
+					allowed_mentions: { parse: [], users: [] },
+					files: [
+						{
+							name: `bingo-${bingo.id}-team-${teamID}.png`,
+							buffer: await cachedBingoBoard({ ...bingo.season, progress }, teamID)
+						}
+					]
+				};
+			}
 
 			return {
 				content: str,

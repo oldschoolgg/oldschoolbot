@@ -1,65 +1,60 @@
-# Seasonal community bingo
+# Seasonal team bingo
 
-Seasonal bingo shares the existing `/bingo` command with team bingo. It uses the existing Skia canvas, item sprites and OSRS fonts. Backgrounds remain unchanged; their filenames are case-sensitive (`Winter.png`, etc.).
+A seasonal board is an optional appearance and 28-challenge configuration for an ordinary bingo. It uses the existing `Bingo`, `BingoTeam` and `BingoParticipant` records, team sizes, registration, fees, prize pool, organisers and leaderboard. There is no community board or separate seasonal command flow.
 
-## Commands
+## Set up and play
 
-- `/bingo board`: active community board; optional `season` selects a historical board.
-- `/bingo progress`: completion totals and an attachment containing every challenge's ID, description and quantity.
-- `/bingo leaderboard`: community contributors. Supplying the existing `bingo` option continues to show a team leaderboard.
-- `/bingo history`: the ten most recent finished seasons; select a `season` to render its board.
-- `/bingo seasonal_admin action:template`: download the starter configuration.
-- `/bingo seasonal_admin action:create`: create and schedule a season with `theme`, optional `name`, `year`, UTC ISO `start`/`end`, and optional JSON `configuration` attachment. Defaults to starting immediately for 30 days. Upcoming seasons activate automatically. Seasons cannot overlap, including historical dates.
-- `/bingo seasonal_admin action:end`: end the active or selected season early.
-- `/bingo seasonal_admin action:complete|reverse`: select a challenge ID and supply an audit reason. Reversal resets its progress and removes its contributor scores. Previous events remain recorded and cannot be replayed; pending events earned before the reset cannot restore it.
-- `/bingo seasonal_admin action:inspect`: download the configuration, progress and up to 20 recent credited/manual events for a challenge.
+1. Use `/bingo create_bingo` with the usual title, start date, duration, team size (1–5), ticket price, notifications channel and organisers. Add `theme` (`winter`, `spring`, `summer`, `autumn`) and optionally upload a `configuration` JSON file. A theme without a file uses the built-in 28 challenges.
+2. Players register using `/bingo make_team` with the required number of teammates. Everyone confirms and the existing entry rules apply. `/bingo leave_team` works before the start. Team membership remains fixed once the bingo starts, including after it ends.
+3. `/bingo view` shows the caller's team board, completed tiles and quantity progress. Non-members see a blank preview. This command attaches only the board image; organisers can export the challenge JSON through `/bingo manage_bingo template:true`.
+4. `/bingo leaderboard` ranks teams by completed tiles. With no `bingo` argument, it prefers the caller's current joined bingo, then one they organise, then an available event in the server or a global event. Pass an explicit ID to choose another event. An empty event returns a clear message instead of an empty paginator.
+5. Completed events and their boards remain accessible through the same `/bingo view bingo:...` command and autocomplete. `/bingo items` continues to show eligible items earned by the team.
 
-Administrative actions require the existing bot administrator check and, in production, the support server. They do not use guild administrator permissions. Manual completions do not award contributor points.
+Existing bingos without a theme retain their usual tile definitions and behaviour.
+
+## Manage a board
+
+Use `/bingo manage_bingo` with the existing bingo ID. Its normal creator/organiser permission check applies to all seasonal settings and corrections.
+
+- `theme` and `configuration`: set or replace the seasonal board before the event starts. A replacement file must contain exactly 28 challenges. `theme` alone preserves an existing seasonal configuration, or creates the default board for a normal event.
+- `template:true`: download this seasonal board's current configuration, or the default starter configuration for a bingo without a seasonal board.
+- `team` and `complete_tile` or `reverse_tile`, plus `reason`: correct one team's challenge. Team IDs are displayed in the normal leaderboard. Challenge IDs are in the JSON exported with `template:true`. Reversal clears that team's progress and score for the tile, keeps the event audit trail, and excludes older pending events from restoring it.
+- `team` and `inspect_tile`: download the team's challenge state and up to 20 credited/manual events.
+- `finalize`: use the normal event finalisation and prize-pool flow. It also closes the seasonal reward window. Historical team boards remain available.
+
+`/bingo view` uses the normal team bingo data. There are no separate community `/bingo progress`, `/bingo history` or `/bingo seasonal_admin` subcommands.
+
+After deploying/restarting the updated bot, run `/admin sync_commands` with the existing bot administrator permissions in the support server (or the configured test server during development). This publishes the current command definitions. `theme` and `configuration` are **optional** creation arguments, so the required argument list alone does not include them; select them from the optional arguments in Discord. The creation command's registered payload includes both fields. The generated `data/osb/commands.json` is not the source used for Discord command registration and must not be edited manually.
 
 ## Persistence and deployment
 
-The three new models are `BingoSeason`, `SeasonalBingoProgress` and `SeasonalBingoEvent`. The OSB Robochimp schema mirror contains the same additions. Existing team bingo models are unchanged.
+`BingoSeason.bingo_id` links the seasonal settings to one normal bingo. Its dates come from the normal event and different events may overlap. Progress is keyed by `(season_id, team_id, challenge_id)`. Every reward event stores its team ID at capture time. The processor verifies the user's membership in that event and only updates that team's state. It also maintains the existing participant `cl` from eligible events, without counting rewards a second time through the old item hook.
 
-This repository deploys schema changes without a checked-in Prisma migration history. `prisma/sql/seasonal_bingo.sql` is the generated, additive SQL diff for this change; apply it once to an existing production database before starting the updated bot, or use the existing schema deployment procedure. Do not run both against the same database. Regenerate the Prisma clients afterwards. Local PGlite databases are created from the Prisma schema as usual. No database migration has been applied by this implementation.
+Apply `prisma/sql/bingo_teams.sql` once to an existing database that already has the earlier seasonal tables, before starting this version. For a fresh database use the current Prisma schema; if applying the checked-in SQL manually, apply `seasonal_bingo.sql` first and then `bingo_teams.sql`. Use the repository's normal schema deployment procedure instead if appropriate, without applying the same changes twice. Regenerate Prisma clients. The OSB Robochimp schema mirror contains the same model changes. No database migration is applied automatically by these code changes.
 
-Each season stores its own immutable 28-challenge JSON configuration. Progress has a compound primary key `(season_id, challenge_id)`, with completion attribution, time and reward event ID. Reward events form both a durable outbox and an audit ledger; their primary keys prevent duplicate delivery. Do not prune processed event IDs while replay of their activities is possible.
+The follow-up SQL preserves previous rows. Earlier standalone community seasons remain unlinked and are not used by normal team bingo. Their existing progress has team ID `0` and is never assigned to a player's team. Reuse their configuration file on a normal bingo with the intended team size and registration window; progress cannot fairly be split into teams retrospectively.
 
-The ten-second ticker processes up to 100 events per tick, in timestamp order, and updates season statuses. It retries unprocessed events after restarts. Each event transaction locks the season row before reading/updating progress, credits and the image version. Administrative corrections use that same lock. Item grants and outbox insertion share the existing `rawUpdate` database transaction. A later Discord or progress-processing failure cannot undo granted loot; the outbox survives for retry.
+## Reward processing
 
-Image caching holds up to eight render promises keyed by season ID and database progress version. Changed versions make stale images inaccessible, concurrent requests share a render, and failed renders are evicted. Database progress remains authoritative. Persistent Discord board messages are not included in this version.
+The existing activity runner opens an async context for eligible activities. It loads only linked, open bingo events containing participants in that activity. The item helper binds that context across the user queue and inserts qualifying reward events in the same transaction as the bank write. Buying, transfers, gifts, admin grants and existing bank contents do not qualify.
 
-## Reward provenance and coverage
+Trips must start on or after the event start and actually grant rewards before its exclusive end. A failed/cancelled trip without an eligible reward write does not contribute. Committed rewards still contribute if a later message fails. Non-members never contribute. Someone joined to several overlapping bingo events can contribute to each of their own teams independently.
 
-`ActivityManager.completeActivity` creates an async context containing the stored activity and active season. `transactItemsFromBank` explicitly binds that context across the per-user queue, then adds an outbox write alongside the final bank update. Only participants listed on that activity can contribute. Only the explicit earned-activity allowlist in `bingoEvents.ts` and collection-log-enabled bank writes qualify. Only rewards matching configured challenge items, or an explicitly supported activity completion, create events.
+Event IDs are `season:activity:user:reward-write-ordinal`. Duplicate delivery does not count twice. The ten-second ticker processes up to 100 pending events per tick; board and leaderboard requests also process a batch for the selected event. A season-row lock serialises progress changes and manual corrections. The original reward data and processed IDs survive restarts. Do not prune IDs while their activities could be replayed.
 
-The event uses the actually awarded, filtered bank loot, without inspecting existing bank contents. Buying, trades, transfers, gifts, giveaways, admin grants and crafting from banked ingredients do not qualify. Trips must **start on or after the season start**, and rewards must be granted before the exclusive season end. A trip that starts before the season or grants its rewards after the deadline does not qualify, even if its scheduled finish is earlier. Events committed before an early/manual end can still be processed afterwards.
+The renderer uses the unchanged seasonal PNGs, OSRS fonts and item sprites. Render promises are cached by season ID, **team ID** and database progress version, preventing one team's image from being served to another. Failed renders are evicted. Database progress is authoritative.
 
-This covers resource gathering, normal/group PvM, raids, the Gauntlet, clue-completion trips, supported minigames and glory charging when run through `ActivityManager` and the shared item helper. A task that grants loot and subsequently fails to send its message still contributes its committed rewards. Failed or cancelled trips without an actual eligible reward write do not contribute. There is one season lookup per allowlisted activity, rather than one lookup per item.
+Command-only rewards such as `/open`, seed packs, shops and manual harvests outside an activity remain excluded, as do direct bank writes bypassing the item helper and detached work after the activity runner returns. Explicit `activity_completion` challenges currently support successful Woodcutting trips only. A season lookup/configuration failure is logged while the ordinary activity still runs; it cannot automatically contribute without a valid context. Persistent Discord board messages are not included.
 
-If season lookup or configuration loading fails, it is logged and the ordinary activity still runs. That activity cannot contribute automatically without a valid season context; administrators can inspect the logs and correct the board. Once captured, outbox insertion is atomic with the reward write rather than silently losing progress.
+## Challenge JSON
 
-Not covered automatically:
+Upload an array of exactly 28 objects with unique IDs, short tile names, descriptions and valid icon item IDs. Existing configuration files continue to work unchanged; quantities and component sets now accumulate within each team.
 
-- Command-only rewards such as `/open`, seed packs, shops, creation and manual farming harvests outside an activity.
-- Reward paths that write banks directly, without `transactItemsFromBank`.
-- Detached work after the activity runner returns, including unawaited trip-finish effects. The context closes when the task returns.
-- Tasks invoked directly outside `ActivityManager` (including existing direct task test helpers).
+- `item_drop`: any one `targetItemIDs` item completes the tile.
+- `item_quantity`: the sum of eligible item quantities reaches `requiredQuantity`.
+- `activity_completion`: explicit success signals for `activityID` reach `requiredQuantity`.
+- `custom` with `evaluator: "item_sets"`: finish any set in `itemSets`; each set contains groups of alternative item IDs and every group requires a newly earned item. Teammates may supply different components.
 
-Reward IDs are `season:activity:user:reward-write-ordinal`, with independent sequences per participant. Replaying the same activity with the same reward-write order cannot count again, even if the loot rerolls. This does not change the existing activity scheduler's reward retry behaviour. Future paths that split or reorder a trip's reward writes must preserve stable ordinals or provide an explicit source-specific ID before they are eligible.
+Each tile counts once towards the normal team leaderboard. Internal contributor credits are bounded to one point per tile **per team**, split proportionally for quantity/component progress. Manual completions award no contributor credit. Duplicate drops on a completed team tile do not earn more credit.
 
-`activity_completion` currently supports successful Woodcutting trips, whose main reward transaction emits an explicit success signal. Empty/powerchopping trips can count for that challenge. Other activities must emit their own success signal and be added to `bingoCompletionActivities` before they can be configured; simply returning from an activity is insufficient, because many death/failure paths also return normally.
-
-## Challenge configuration and scoring
-
-Configurations are validated with Zod, including exactly 28 unique IDs and real item IDs. Names are short tile labels; descriptions provide the full rules in `/bingo progress`. The starter list is an editable example, not an automatically launched event. It uses OSB-supported reward equivalents where the supplied visual example differs: damaged Torva drops, Kodai insignia, tomes, uncharged raid weapons and Voidwaker components.
-
-- `item_drop`: any item in `targetItemIDs` completes the tile once.
-- `item_quantity`: eligible quantities accumulate community-wide up to `requiredQuantity`.
-- `activity_completion`: explicit successful trip signals accumulate to `requiredQuantity`.
-- `custom`, `evaluator: "item_sets"`: complete any set in `itemSets`. Each set contains groups of alternative item IDs; every group needs a newly earned item. This supports full Barrows sets and multi-component drops without counting traded or previously owned components. Components can come from different players.
-
-Each tile contributes at most one leaderboard point. Quantities award the fraction of the target newly contributed, capped at completion. Sets award increases in the completion fraction of the most advanced alternative set. Duplicate components or progress on a less advanced set retain evidence but award no immediate points. Drop challenges award one point to their first qualifying contributor. This keeps the total available score bounded by the board's challenge count. The leaderboard shows the top 20 contributors.
-
-For a new custom rule, add a discriminated configuration/evaluator branch in `bingoTypes.ts` and `bingoProgress.ts`, and update the event item prefilter where necessary. The renderer and database do not depend on individual challenge names or item lists.
-
-Regression tests are provided in `tests/unit/bingo.test.ts`, `tests/unit/canvas/bingo.test.ts` and `tests/integration/bingo.test.ts`. They have not been executed, following the repository instruction to run only the type check unless tests are explicitly requested.
+Regression coverage is in `tests/unit/bingo.test.ts`, `tests/unit/canvas/bingo.test.ts` and `tests/integration/bingo.test.ts`, including team isolation, normal command routing, concurrent teammates, retries, eligibility and team-specific corrections. Tests are not run without an explicit request, following `AGENTS.md`.
