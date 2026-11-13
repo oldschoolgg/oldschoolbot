@@ -1,7 +1,5 @@
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
-import { globalBingoTiles } from '@/mahoji/lib/bingo/globalTiles.js';
-
 interface CustomReq {
 	customReq: (cl: Bank) => boolean;
 	allItems: number[];
@@ -30,39 +28,17 @@ export type StoredCustomBingoTile = {
 };
 
 export type UniversalBingoTile = BingoTileMetadata & {
-	id?: number;
 	name: string;
 } & (OneOf | AllOf | BankTile | CustomReq);
 
-interface StoredGlobalTile {
-	global: number;
-}
-
-export type StoredBingoTile = BingoTileMetadata & (OneOf | AllOf | BankTile | StoredGlobalTile | StoredCustomBingoTile);
-
-export type GlobalBingoTile = (OneOf | AllOf | BankTile | CustomReq) & {
-	id: number;
-	name: string;
-};
-
-export function isGlobalTile(data: StoredBingoTile): data is StoredGlobalTile {
-	return 'global' in data;
-}
+export type StoredBingoTile = BingoTileMetadata & (OneOf | AllOf | BankTile | StoredCustomBingoTile);
 
 export function rowsForSquare(n: number): number {
 	return Math.ceil(Math.sqrt(n));
 }
 
-export function generateTileName(
-	tile: OneOf | AllOf | BankTile | UniversalBingoTile | StoredBingoTile | GlobalBingoTile
-) {
+export function generateTileName(tile: OneOf | AllOf | BankTile | UniversalBingoTile | StoredBingoTile) {
 	if ('name' in tile && tile.name) return tile.name;
-	if ('global' in tile) {
-		return globalBingoTiles.find(t => t.id === tile.global)?.name ?? 'Unknown';
-	}
-	if ('id' in tile) {
-		return globalBingoTiles.find(t => t.id === tile.id)?.name ?? 'Unknown';
-	}
 	if ('oneOf' in tile) {
 		return `Receive one of: ${tile.oneOf.map(id => Items.getOrThrow(id)?.name).join(', ')}`;
 	}
@@ -77,11 +53,6 @@ export function generateTileName(
 }
 
 export function resolveBingoTile(tile: StoredBingoTile): UniversalBingoTile {
-	if (isGlobalTile(tile)) {
-		const global = globalBingoTiles.find(t => t.id === tile.global);
-		if (!global) throw new Error(`Unknown global bingo tile: ${tile.global}`);
-		return { ...global, ...tile, name: tile.name ?? global.name };
-	}
 	if ('custom' in tile) {
 		const rule = tile.custom;
 		return {

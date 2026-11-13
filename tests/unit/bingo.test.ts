@@ -48,9 +48,9 @@ describe('Bingo JSON import into the existing tile system', () => {
 			imported.determineProgressOfBank(new Bank().add('Logs', 40).add('Oak logs', 60)).tilesCompletedCount
 		).toBe(1);
 	});
-	it('round-trips exported native tiles including global definitions', () => {
+	it('round-trips exported native tiles with explicit item requirements', () => {
 		const native = structuredClone(tiles);
-		native[0] = { global: 6 };
+		native[0] = { name: 'Arcane sigil', oneOf: [itemID('Arcane sigil')] };
 		expect(parseBingoConfiguration(JSON.parse(JSON.stringify(native)))).toEqual(native);
 		expect(bingoWithTiles(native).determineProgressOfBank(new Bank().add('Arcane sigil')).tilesCompletedCount).toBe(
 			2
@@ -61,6 +61,7 @@ describe('Bingo JSON import into the existing tile system', () => {
 		expect(ordinary.determineProgressOfBank(new Bank().add('Coal').add('Logs', 100)).tilesCompletedCount).toBe(2);
 	});
 	it('rejects invalid counts, duplicate challenge IDs and activity-only challenges', () => {
+		expect(() => parseBingoConfiguration([{ global: 6 }, ...tiles.slice(1)])).toThrow();
 		expect(() => parseBingoConfiguration(configuration.slice(1))).toThrow();
 		expect(() => parseBingoConfiguration(configuration.map(() => configuration[0]))).toThrow();
 		expect(() => parseBingoConfiguration(configuration.map(c => ({ ...c, iconItemID: -1 })))).toThrow();

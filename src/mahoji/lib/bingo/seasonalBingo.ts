@@ -14,7 +14,6 @@ import {
 } from '@/lib/bingo/bingoTypes.js';
 import type { BingoManager } from '@/mahoji/lib/bingo/BingoManager.js';
 import type { StoredBingoTile } from '@/mahoji/lib/bingo/bingoUtil.js';
-import { globalBingoTiles } from '@/mahoji/lib/bingo/globalTiles.js';
 
 export const seasonalCreateOptions = [
 	{
@@ -50,12 +49,6 @@ const nativeTileSchema = z.intersection(
 			.optional()
 	}),
 	z.union([
-		z.object({
-			global: z
-				.number()
-				.int()
-				.refine(id => globalBingoTiles.some(tile => tile.id === id))
-		}),
 		z.object({ oneOf: bingoItemIDs }),
 		z.object({ allOf: bingoItemIDs }),
 		z.object({

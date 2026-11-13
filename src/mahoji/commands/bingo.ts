@@ -1,20 +1,16 @@
 import { bold, dateFm, userMention } from '@oldschoolgg/discord';
-import { Emoji, formatOrdinal, notEmpty, stringMatches, Time, truncateString, uniqueArr } from '@oldschoolgg/toolkit';
+import { Emoji, formatOrdinal, notEmpty, Time, truncateString, uniqueArr } from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
-import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
+import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 
 import type { Prisma } from '@/prisma/main.js';
 import { cachedBingoBoard } from '@/lib/bingo/bingoRenderer.js';
 import { clImageGenerator } from '@/lib/collectionLogTask.js';
 import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
 import { doMenuWrapper } from '@/lib/menuWrapper.js';
-import type { PrismaCompatibleJsonObject } from '@/lib/types/index.js';
-import { parseBank } from '@/lib/util/parseStringBank.js';
-import { isValidNickname, md5sum } from '@/lib/util/smallUtils.js';
+import { isValidNickname } from '@/lib/util/smallUtils.js';
 import { BingoManager, BingoTrophies } from '@/mahoji/lib/bingo/BingoManager.js';
-import type { StoredBingoTile } from '@/mahoji/lib/bingo/bingoUtil.js';
-import { bingoTileQuantity, generateTileName, getAllTileItems, isGlobalTile } from '@/mahoji/lib/bingo/bingoUtil.js';
-import { globalBingoTiles } from '@/mahoji/lib/bingo/globalTiles.js';
+import { bingoTileQuantity, getAllTileItems } from '@/mahoji/lib/bingo/bingoUtil.js';
 import {
 	importBingoConfiguration,
 	manageSeasonalBingo,
@@ -222,36 +218,6 @@ async function leaveTeamCommand(interaction: MInteraction, bingo: BingoManager) 
 		.join(
 			', '
 		)} Your Bingo team was deleted, you no longer are in a team. All non-ironmen were refunded their ticket price of ${bingo.ticketPrice.toLocaleString()} GP.`;
-}
-
-function parseTileAddInput(input: string): StoredBingoTile | null {
-	const plus = input.includes('+');
-	const pipe = input.includes('|');
-
-	if (plus && pipe) {
-		return null;
-	}
-
-	if (!plus && !pipe) {
-		const bank = parseBank({ inputStr: input, noDuplicateItems: true });
-		return { bank: bank.toJSON() };
-	}
-
-	const delimiter = plus ? '+' : '|';
-	const arr = input.split(delimiter);
-	const items = [];
-
-	for (const name of arr) {
-		const item = Items.getItem(name);
-		if (item) {
-			items.push(item);
-		}
-	}
-	if (items.length === 0) {
-		return null;
-	}
-
-	return delimiter === '+' ? { allOf: items.map(i => i.id) } : { oneOf: items.map(i => i.id) };
 }
 
 export async function getBingoFromUserInput(input: string | undefined, userID?: string, guildID?: string | null) {
@@ -504,57 +470,10 @@ export const bingoCommand = defineCommand({
 					}
 				},
 				{
-					type: 'String',
-					name: 'add_tile',
-					description: 'Add a tile to your bingo.',
-					required: false,
-					autocomplete: async ({ value }: StringAutoComplete) => {
-						return globalBingoTiles
-							.filter(t => (!value ? true : t.name.toLowerCase().includes(value.toLowerCase())))
-							.map(t => ({
-								name: t.name,
-								value: t.id.toString()
-							}));
-					}
-				},
-				{
 					type: 'Boolean',
 					name: 'csv_dump',
 					description: 'Dump a csv file with all the bingo results.',
 					required: false
-				},
-				{
-					type: 'String',
-					name: 'remove_tile',
-					description: 'Remove a tile from your bingo.',
-					required: false,
-					autocomplete: async ({ value, userId }: StringAutoComplete) => {
-						const bingos = await prisma.bingo.findMany({
-							where: {
-								OR: [
-									{
-										creator_id: userId
-									},
-									{
-										organizers: {
-											has: userId
-										}
-									}
-								],
-								was_finalized: false,
-								start_date: {
-									gt: new Date()
-								}
-							}
-						});
-						return bingos
-							.flatMap(b => new BingoManager(b).bingoTiles)
-							.filter(b => b.name.toLowerCase().includes(value.toLowerCase()))
-							.map(b => ({
-								name: truncateString(b.name, 100),
-								value: b.id ? b.id.toString() : md5sum(b.name)
-							}));
-					}
 				},
 				{
 					type: 'Boolean',
@@ -672,10 +591,7 @@ export const bingoCommand = defineCommand({
 		}
 
 		if (options.create_bingo) {
-			const tiles =
-				options.create_bingo.theme || options.create_bingo.configuration
-					? await importBingoConfiguration(options.create_bingo.configuration)
-					: null;
+			const tiles = await importBingoConfiguration(options.create_bingo.configuration);
 			if (user.isIronman) {
 				return 'Ironmen cannot create bingos.';
 			}
@@ -720,7 +636,7 @@ export const bingoCommand = defineCommand({
 					.split(',')
 					.map(i => i.trim())
 					.filter(id => isValidDiscordSnowflake(id)),
-				bingo_tiles: (tiles ?? []) as unknown as Prisma.InputJsonObject[],
+				bingo_tiles: tiles as unknown as Prisma.InputJsonObject[],
 				theme: options.create_bingo.theme ?? null,
 				creator_id: user.id,
 				guild_id: channel.guild_id
@@ -744,18 +660,14 @@ export const bingoCommand = defineCommand({
 
 - The title must not be inappropriate or offensive.
 - The notifications channel ID must be of a server you own, or have consent to use. The bot will only let you use the channel if you are an Administrator of that server.
-- The organizers must consent to being added as organizers of your Bingo. They are people who have access to moderate/manage the Bingo. Organizers can add tiles to the Bingo, and end the Bingo.
+- The organisers must consent to being added as organisers of your Bingo. They can replace the tile configuration before the start and manage the Bingo.
 - Once your Bingo starts, you cannot stop it, or change any settings. Ensure everything is accurate before then.
 - You can only have 1 Bingo active at a time.
 - Ironmen will be able to enter, for free. However, they cannot win rewards.
 - ${
-				tiles
-					? 'Your board contains 28 imported tiles. The normal team bingo scoring applies.'
-					: `You need to add tiles yourself, using our predefined tiles AND/OR your own custom tiles. You can add tiles using ${globalClient.mentionCommand(
-							'bingo',
-							'manage_bingo',
-							'add_tile'
-						)} command.`
+				options.create_bingo.configuration
+					? 'Your board contains 28 imported tiles.'
+					: 'Your board uses the starter 28 tiles. Upload a JSON configuration using /bingo manage_bingo to replace them before the start.'
 			}
 
 **Your Bingo settings(Can be edited):**
@@ -853,79 +765,6 @@ The creator of the bingo (${userMention(
 						}
 					]
 				};
-			}
-
-			if (options.manage_bingo.add_tile) {
-				if (bingo.theme) return 'Replace the 28-tile configuration to change a seasonal board.';
-				if (bingo.isActive()) {
-					return "You can't add tiles to a bingo after it has started.";
-				}
-				const globalTile = globalBingoTiles.find(t => stringMatches(t.id, options.manage_bingo?.add_tile));
-				let tileToAdd: StoredBingoTile | null = null;
-				if (globalTile) {
-					tileToAdd = { global: globalTile.id };
-				} else {
-					tileToAdd = parseTileAddInput(options.manage_bingo.add_tile);
-				}
-				if (!tileToAdd) {
-					return `Invalid tile to add. You can either select a global/predefined tile, or input a custom tile.
-
-Example: \`add_tile:Coal+Trout+Egg\` is a tile where you have to receive a coal AND trout AND egg.
-Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal OR trout OR egg.`;
-				}
-				await prisma.bingo.update({
-					where: {
-						id: bingo.id
-					},
-					data: {
-						bingo_tiles: {
-							push: tileToAdd as any as PrismaCompatibleJsonObject
-						}
-					}
-				});
-				return `Added tile "${generateTileName(tileToAdd)}" to your bingo.`;
-			}
-
-			if (options.manage_bingo.remove_tile) {
-				if (bingo.theme) return 'Replace the 28-tile configuration to change a seasonal board.';
-				if (bingo.isActive()) {
-					return "You can't remove tiles to a bingo after it has started.";
-				}
-				let newTiles = [...bingo.rawBingoTiles];
-				const globalTile = globalBingoTiles.find(t => stringMatches(t.id, options.manage_bingo?.remove_tile));
-				let tileName = '';
-				if (globalTile) {
-					newTiles = newTiles.filter(
-						t => (isGlobalTile(t) && t.global !== globalTile.id) || !isGlobalTile(t)
-					);
-					tileName = generateTileName(globalTile);
-				} else {
-					const tileToRemove = newTiles.find(
-						t => md5sum(generateTileName(t)) === options.manage_bingo!.remove_tile
-					);
-					if (tileToRemove) {
-						newTiles = newTiles.filter(
-							t => md5sum(generateTileName(t)) !== options.manage_bingo!.remove_tile!
-						);
-						tileName = generateTileName(tileToRemove);
-					}
-				}
-
-				if (newTiles.length === bingo.rawBingoTiles.length) {
-					return 'Invalid tile to remove.';
-				}
-
-				await interaction.confirmation(`Are you sure you want to remove this tile?\n\n${tileName}`);
-				await prisma.bingo.update({
-					where: {
-						id: bingo.id
-					},
-					data: {
-						bingo_tiles: newTiles as any as PrismaCompatibleJsonObject[]
-					}
-				});
-
-				return `Removed "${tileName}" from your bingo.`;
 			}
 
 			if (options.manage_bingo.add_extra_gp) {
