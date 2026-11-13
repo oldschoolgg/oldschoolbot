@@ -539,7 +539,7 @@ export const bingoCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ user, userId, options, interaction }) => {
+	run: async ({ user, options, interaction }) => {
 		if (options.items) {
 			const bingoID = Number(options.items.bingo);
 			if (Number.isNaN(bingoID)) {
@@ -635,12 +635,13 @@ export const bingoCommand = defineCommand({
 			if (!isValidNickname(options.create_bingo.title)) {
 				return 'Invalid title.';
 			}
-			const member = await Cache.getMember({ guildId: channel.guild_id, userId });
-			if (globalConfig.isProduction && (!member || !member.permissions.includes('ADMINISTRATOR'))) {
-				return 'You can only use a notifications channel if you are an Administrator of that server.';
-			}
 			if (channel.guild_id !== interaction.guildId) {
 				return 'The notifications channel must be in the same server as the command.';
+			}
+			// Use the interaction's permissions; the member cache only covers selected servers.
+			const member = interaction.member;
+			if (globalConfig.isProduction && (!member || !member.permissions.includes('ADMINISTRATOR'))) {
+				return 'You can only use a notifications channel if you are an Administrator of that server.';
 			}
 
 			const createOptions = {
