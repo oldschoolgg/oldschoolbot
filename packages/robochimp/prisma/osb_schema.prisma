@@ -1089,7 +1089,8 @@ model GEBank {
 }
 
 model Bingo {
-  id Int @id @default(autoincrement())
+  id    Int     @id @default(autoincrement())
+  theme String? @db.VarChar(16)
 
   creator    User   @relation(fields: [creator_id], references: [id])
   creator_id String @db.VarChar(19)
