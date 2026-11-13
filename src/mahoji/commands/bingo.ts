@@ -406,6 +406,12 @@ export const bingoCommand = defineCommand({
 					description: 'The bingo.',
 					required: false,
 					autocomplete: bingoAutocomplete
+				},
+				{
+					type: 'Boolean',
+					name: 'json',
+					description: 'Download the current tile requirements as JSON.',
+					required: false
 				}
 			]
 		},
@@ -999,6 +1005,18 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 			const _bingo = await getBingoFromUserInput(options.view?.bingo, user.id, guildId);
 			if (!_bingo) return 'No bingo found. Select a bingo, or create one using /bingo create_bingo.';
 			const bingo = new BingoManager(_bingo);
+			if (options.view?.json) {
+				return {
+					content: `Tile requirements for **${bingo.title}**, listed in board order.`,
+					allowed_mentions: { parse: [], users: [] },
+					files: [
+						{
+							name: `bingo-${bingo.id}-tiles.json`,
+							buffer: Buffer.from(JSON.stringify(bingo.rawBingoTiles, null, 2))
+						}
+					]
+				};
+			}
 
 			const { teams } = await bingo.fetchAllParticipants();
 			const yourTeam = teams.find(t => t.participants.some(p => p.user_id === user.id));

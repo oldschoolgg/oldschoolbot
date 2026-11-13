@@ -30,10 +30,13 @@ describe('Bingo Discord command registration', () => {
 			])
 		);
 	});
-	it('publishes view with an optional bingo selector', () => {
+	it('publishes view with an optional bingo selector and JSON download', () => {
 		const view = bingoCommand.options.find(option => option.name === 'view')!;
 		const api = convertCommandOptionToAPIOption(view);
 		if (api.type !== ApplicationCommandOptionType.Subcommand) throw new Error('Expected a subcommand.');
-		expect(api.options).toEqual([expect.objectContaining({ name: 'bingo', required: false, autocomplete: true })]);
+		expect(api.options).toEqual([
+			expect.objectContaining({ name: 'bingo', required: false, autocomplete: true }),
+			expect.objectContaining({ name: 'json', type: ApplicationCommandOptionType.Boolean, required: false })
+		]);
 	});
 });
