@@ -1088,77 +1088,9 @@ model GEBank {
   @@map("ge_bank")
 }
 
-// Legacy seasonal tables are retained for existing data, but are not used by bingo.
-enum BingoSeasonStatus {
-  upcoming
-  active
-  completed
-}
-
-model BingoSeason {
-  bingo_id         Int?                    @unique
-  bingo            Bingo?                  @relation(fields: [bingo_id], references: [id])
-  id               String                  @id @default(uuid()) @db.Uuid
-  name             String                  @db.VarChar(100)
-  theme            String                  @db.VarChar(16)
-  year             Int
-  start_date       DateTime                @db.Timestamp(6)
-  end_date         DateTime                @db.Timestamp(6)
-  status           BingoSeasonStatus       @default(upcoming)
-  challenges       Json                    @db.JsonB
-  progress_version Int                     @default(0)
-  progress         SeasonalBingoProgress[]
-  events           SeasonalBingoEvent[]
-
-  @@index([status, start_date, end_date])
-  @@map("bingo_season")
-  @@ignore
-}
-
-model SeasonalBingoProgress {
-  season_id           String      @db.Uuid
-  team_id             Int         @default(0)
-  challenge_id        String      @db.VarChar(64)
-  quantity            Float       @default(0)
-  items               Json        @default("{}") @db.JsonB
-  completed_by        String?     @db.VarChar(19)
-  completed_at        DateTime?   @db.Timestamp(6)
-  completion_event_id String?
-  reset_at            DateTime?   @db.Timestamp(6)
-  season              BingoSeason @relation(fields: [season_id], references: [id], onDelete: Cascade)
-
-  @@id([season_id, team_id, challenge_id])
-  @@map("seasonal_bingo_progress")
-  @@ignore
-}
-
-// Historical event records from the superseded seasonal implementation.
-model SeasonalBingoEvent {
-  id                  String      @id
-  season_id           String      @db.Uuid
-  team_id             Int         @default(0)
-  user_id             String      @db.VarChar(19)
-  activity_id         Int?
-  activity_type       String?
-  activity_completion Boolean     @default(false)
-  started_at          DateTime    @db.Timestamp(6)
-  occurred_at         DateTime    @default(now()) @db.Timestamp(6)
-  items               Json        @default("{}") @db.JsonB
-  credits             Json        @default("{}") @db.JsonB
-  metadata            Json        @default("{}") @db.JsonB
-  processed           Boolean     @default(false)
-  season              BingoSeason @relation(fields: [season_id], references: [id], onDelete: Cascade)
-
-  @@index([processed, occurred_at])
-  @@index([season_id, user_id])
-  @@map("seasonal_bingo_event")
-  @@ignore
-}
-
 model Bingo {
-  id     Int          @id @default(autoincrement())
-  season BingoSeason? @ignore
-  theme  String?      @db.VarChar(16)
+  id    Int     @id @default(autoincrement())
+  theme String? @db.VarChar(16)
 
   creator    User   @relation(fields: [creator_id], references: [id])
   creator_id String @db.VarChar(19)
