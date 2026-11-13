@@ -14,6 +14,11 @@ import { BingoManager, BingoTrophies } from '@/mahoji/lib/bingo/BingoManager.js'
 import type { StoredBingoTile } from '@/mahoji/lib/bingo/bingoUtil.js';
 import { generateTileName, getAllTileItems, isGlobalTile } from '@/mahoji/lib/bingo/bingoUtil.js';
 import { globalBingoTiles } from '@/mahoji/lib/bingo/globalTiles.js';
+import {
+	seasonalBingoCommand,
+	seasonalBingoLeaderboard,
+	seasonalBingoOptions
+} from '@/mahoji/lib/bingo/seasonalBingo.js';
 
 const bingoAutocomplete = async ({ value, user }: StringAutoComplete) => {
 	const bingos = await fetchBingosThatUserIsInvolvedIn(user.id);
@@ -249,6 +254,7 @@ export const bingoCommand = defineCommand({
 	name: 'bingo',
 	description: 'Bingo!',
 	options: [
+		...seasonalBingoOptions,
 		{
 			type: 'Subcommand',
 			name: 'make_team',
@@ -365,7 +371,7 @@ export const bingoCommand = defineCommand({
 					type: 'String',
 					name: 'bingo',
 					description: 'The bingo to check the leaderboard of.',
-					required: true,
+					required: false,
 					autocomplete: bingoAutocomplete
 				}
 			]
@@ -539,7 +545,17 @@ export const bingoCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ user, userId, options, interaction }) => {
+	run: async ({ user, userId, options, interaction, guildId }) => {
+		if (
+			options.board ||
+			options.progress ||
+			options.history ||
+			options.seasonal_admin ||
+			Object.keys(options).length === 0
+		) {
+			return seasonalBingoCommand(user, options, guildId);
+		}
+		if (options.leaderboard && !options.leaderboard.bingo) return seasonalBingoLeaderboard();
 		if (options.items) {
 			const bingoID = Number(options.items.bingo);
 			if (Number.isNaN(bingoID)) {
@@ -604,7 +620,7 @@ export const bingoCommand = defineCommand({
 			if (!bingo) return 'Invalid bingo.';
 			return leaveTeamCommand(interaction, new BingoManager(bingo));
 		}
-		if (options.leaderboard) {
+		if (options.leaderboard?.bingo) {
 			const bingo = await getBingoFromUserInput(options.leaderboard.bingo);
 			if (!bingo) return 'Invalid bingo.';
 			return bingoTeamLeaderboard(interaction, new BingoManager(bingo));

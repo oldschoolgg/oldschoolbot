@@ -4,6 +4,7 @@ import { TimerManager } from '@sapphire/timer-manager';
 
 import type { User } from '@/prisma/main.js';
 import { analyticsTick } from '@/lib/analytics.js';
+import { processPendingBingoEvents } from '@/lib/bingo/bingoSeason.js';
 import { Channel, globalConfig } from '@/lib/constants.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { cacheGEPrices } from '@/lib/marketPrices.js';
@@ -66,6 +67,13 @@ export const tickers: {
 	productionOnly?: true;
 	cb: () => Promise<unknown>;
 }[] = [
+	{
+		name: 'seasonal_bingo',
+		startupWait: Time.Second * 10,
+		interval: Time.Second * 10,
+		timer: null,
+		cb: processPendingBingoEvents
+	},
 	{
 		name: 'giveaways',
 		startupWait: Time.Second * 30,

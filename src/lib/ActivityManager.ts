@@ -1,6 +1,7 @@
 import { cryptoRng } from 'node-rng/crypto';
 
 import type { Activity, activity_type_enum } from '@/prisma/main.js';
+import { withBingoActivity } from '@/lib/bingo/bingoEvents.js';
 import { globalConfig } from '@/lib/constants.js';
 import { onMinionActivityFinish } from '@/lib/events.js';
 import type { OSInteraction } from '@/lib/structures/OSInteraction.js';
@@ -92,13 +93,15 @@ class SActivityManager {
 		}
 
 		try {
-			await task.run(
-				{ ...activity, channelId: activity.channelId },
-				{
-					user,
-					handleTripFinish,
-					rng: cryptoRng
-				}
+			await withBingoActivity(_activity, () =>
+				task.run(
+					{ ...activity, channelId: activity.channelId },
+					{
+						user,
+						handleTripFinish,
+						rng: cryptoRng
+					}
+				)
 			);
 		} catch (err) {
 			const date = new Date();

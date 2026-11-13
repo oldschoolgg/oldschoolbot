@@ -1,5 +1,7 @@
+import { AsyncLocalStorage } from 'node:async_hooks';
 import { Bank, type ItemBank } from 'oldschooljs';
 
+import { bingoRewardQuery } from '@/lib/bingo/bingoEvents.js';
 import { deduplicateClueScrolls } from '@/lib/clues/clueUtils.js';
 import { handleNewCLItems } from '@/lib/handleNewCLItems.js';
 import { filterLootReplace } from '@/lib/slayer/slayerUtil.js';
@@ -18,6 +20,8 @@ export interface TransactItemsArgs {
 	neverUpdateHistory?: boolean;
 	otherUpdates?: SafeUserUpdateInput;
 	gearUpdates?: GearWithSetupType[];
+	// Explicit success signal; currently emitted by woodcutting's successful reward write.
+	bingoActivityCompletion?: boolean;
 }
 
 async function unqueuedTransactItems({
@@ -28,6 +32,7 @@ async function unqueuedTransactItems({
 	filterLoot,
 	neverUpdateHistory,
 	gearUpdates,
+	bingoActivityCompletion = false,
 	...options
 }: TransactItemsArgs) {
 	let itemsToAdd = options.itemsToAdd ? options.itemsToAdd.clone() : undefined;
@@ -126,7 +131,29 @@ async function unqueuedTransactItems({
 		...clUpdates,
 		...otherUpdates
 	} as const;
-	const newUser = await user.rawUpdate({ data: updateData, gearUpdates });
+	const bingoQuery = bingoRewardQuery(
+		user.id,
+		() => {
+			// Deduplicated clue scrolls and other discarded loot must not become bingo progress.
+			const bingoLoot = new Bank();
+			for (const [item, quantity] of new Bank(itemsToAdd).items()) {
+				const granted = Math.min(
+					quantity,
+					newBank.amount(item.id) - currentBank.amount(item.id) + (itemsToRemove?.amount(item.id) ?? 0)
+				);
+				if (granted > 0) bingoLoot.add(item.id, granted);
+			}
+			if (gpUpdate && gpUpdate.increment > 0) bingoLoot.add('Coins', gpUpdate.increment);
+			return bingoLoot;
+		},
+		collectionLog,
+		bingoActivityCompletion
+	);
+	const newUser = await user.rawUpdate({
+		data: updateData,
+		gearUpdates,
+		_otherQueries: bingoQuery ? [bingoQuery] : []
+	});
 
 	const itemsAdded = new Bank(itemsToAdd);
 	if (itemsAdded && gpUpdate && gpUpdate.increment > 0) {
@@ -171,13 +198,16 @@ export async function transactItemsFromBank({
 	dontAddToTempCL = false,
 	...options
 }: TransactItemsArgs) {
-	return userQueueFn(user.id, async () =>
-		unqueuedTransactItems({
-			user,
-			collectionLog,
-			dontAddToTempCL,
-			filterLoot,
-			...options
-		})
+	return userQueueFn(
+		user.id,
+		AsyncLocalStorage.bind(async () =>
+			unqueuedTransactItems({
+				user,
+				collectionLog,
+				dontAddToTempCL,
+				filterLoot,
+				...options
+			})
+		)
 	);
 }
