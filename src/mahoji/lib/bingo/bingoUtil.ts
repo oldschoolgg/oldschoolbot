@@ -1,6 +1,6 @@
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
-import { globalBingoTiles } from '@/mahoji/lib/bingo/globalTiles.js';
+import { legacyBingoTiles } from '@/mahoji/lib/bingo/legacyBingoTiles.js';
 
 interface CustomReq {
 	customReq: (cl: Bank) => boolean;
@@ -18,39 +18,31 @@ interface BankTile {
 	bank: ItemBank;
 }
 
-export type UniversalBingoTile = {
-	id?: number;
+export interface BingoTileMetadata {
+	key?: string;
+	name?: string;
+	description?: string;
+	iconItemID?: number;
+}
+
+export type StoredCustomBingoTile = {
+	custom: { type: 'item_quantity'; itemIDs: number[]; quantity: number } | { type: 'item_sets'; sets: number[][][] };
+};
+
+export type UniversalBingoTile = BingoTileMetadata & {
 	name: string;
 } & (OneOf | AllOf | BankTile | CustomReq);
 
-interface StoredGlobalTile {
-	global: number;
-}
-
-export type StoredBingoTile = OneOf | AllOf | BankTile | StoredGlobalTile;
-
-export type GlobalBingoTile = (OneOf | AllOf | BankTile | CustomReq) & {
-	id: number;
-	name: string;
-};
-
-export function isGlobalTile(data: StoredBingoTile): data is StoredGlobalTile {
-	return 'global' in data;
-}
+export type StoredBingoTile = BingoTileMetadata &
+	(OneOf | AllOf | BankTile | StoredCustomBingoTile | { global: number });
 
 export function rowsForSquare(n: number): number {
 	return Math.ceil(Math.sqrt(n));
 }
 
-export function generateTileName(
-	tile: OneOf | AllOf | BankTile | UniversalBingoTile | StoredBingoTile | GlobalBingoTile
-) {
-	if ('global' in tile) {
-		return globalBingoTiles.find(t => t.id === tile.global)?.name ?? 'Unknown';
-	}
-	if ('id' in tile) {
-		return globalBingoTiles.find(t => t.id === tile.id)?.name ?? 'Unknown';
-	}
+export function generateTileName(tile: OneOf | AllOf | BankTile | UniversalBingoTile | StoredBingoTile) {
+	if ('name' in tile && tile.name) return tile.name;
+	if ('global' in tile) return legacyBingoTiles.find(legacy => legacy.id === tile.global)?.name ?? 'Unknown';
 	if ('oneOf' in tile) {
 		return `Receive one of: ${tile.oneOf.map(id => Items.getOrThrow(id)?.name).join(', ')}`;
 	}
@@ -60,7 +52,45 @@ export function generateTileName(
 	if ('bank' in tile) {
 		return `Receive these items: ${new Bank(tile.bank)}`;
 	}
+	if ('custom' in tile) return 'Custom bingo tile';
 	throw new Error(`Invalid tile: ${JSON.stringify(tile)}`);
+}
+
+export function resolveBingoTile(tile: StoredBingoTile): UniversalBingoTile {
+	if ('global' in tile) {
+		const legacy = legacyBingoTiles.find(legacy => legacy.id === tile.global);
+		if (!legacy) throw new Error(`Unknown legacy bingo tile: ${tile.global}`);
+		return { ...legacy, ...tile, name: tile.name ?? legacy.name };
+	}
+	if ('custom' in tile) {
+		const rule = tile.custom;
+		return {
+			...tile,
+			name: generateTileName(tile),
+			allItems: rule.type === 'item_quantity' ? rule.itemIDs : rule.sets.flat(2),
+			customReq: cl =>
+				rule.type === 'item_quantity'
+					? rule.itemIDs.reduce((sum, id) => sum + cl.amount(id), 0) >= rule.quantity
+					: rule.sets.some(set => set.every(group => group.some(id => cl.has(id))))
+		};
+	}
+	return { ...tile, name: generateTileName(tile) };
+}
+
+export function bingoTileQuantity(tile: UniversalBingoTile, cl: Bank): { current: number; target: number } | null {
+	if ('bank' in tile) {
+		const entries = Object.entries(tile.bank);
+		if (entries.length === 1) {
+			const [id, target] = entries[0];
+			if (target > 1) return { current: cl.amount(Number(id)), target };
+		}
+	}
+	if ('custom' in tile) {
+		const rule = (tile as StoredCustomBingoTile).custom;
+		if (rule.type === 'item_quantity')
+			return { current: rule.itemIDs.reduce((sum, id) => sum + cl.amount(id), 0), target: rule.quantity };
+	}
+	return null;
 }
 
 export function getAllTileItems(tile: UniversalBingoTile): number[] {
