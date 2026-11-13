@@ -20,7 +20,7 @@ describe('Bingo Discord command registration', () => {
 					name: 'theme',
 					type: ApplicationCommandOptionType.String,
 					required: false,
-					choices: ['winter', 'spring', 'summer', 'autumn'].map(value => ({ name: value, value }))
+					choices: ['winter', 'spring', 'summer', 'autumn', 'ironman'].map(value => ({ name: value, value }))
 				}),
 				expect.objectContaining({
 					name: 'configuration',

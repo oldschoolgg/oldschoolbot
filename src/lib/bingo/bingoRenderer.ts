@@ -25,7 +25,8 @@ export const bingoBackgrounds: Record<BingoTheme, string> = {
 	winter: './src/lib/resources/images/bingo/Winter.png',
 	spring: './src/lib/resources/images/bingo/Spring.png',
 	summer: './src/lib/resources/images/bingo/Summer.png',
-	autumn: './src/lib/resources/images/bingo/Autumn.png'
+	autumn: './src/lib/resources/images/bingo/Autumn.png',
+	ironman: './src/lib/resources/images/bingo/Ironman.png'
 };
 
 export function wrapBingoText(text: string, width: number, measure: (text: string) => number): string[] {

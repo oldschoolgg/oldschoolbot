@@ -1,7 +1,7 @@
 import { Items } from 'oldschooljs';
 import { z } from 'zod';
 
-export const bingoThemes = ['winter', 'spring', 'summer', 'autumn'] as const;
+export const bingoThemes = ['winter', 'spring', 'summer', 'autumn', 'ironman'] as const;
 export const bingoItemIDs = z
 	.array(
 		z

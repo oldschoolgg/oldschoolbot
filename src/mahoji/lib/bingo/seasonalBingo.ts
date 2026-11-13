@@ -19,7 +19,7 @@ export const seasonalCreateOptions = [
 	{
 		type: 'String',
 		name: 'theme',
-		description: 'Optional seasonal board artwork.',
+		description: 'Optional board artwork.',
 		required: false,
 		choices: bingoThemes.map(value => ({ name: value, value }))
 	},

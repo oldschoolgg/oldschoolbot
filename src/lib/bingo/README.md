@@ -4,7 +4,7 @@ Seasonal boards use the existing `Bingo`, `BingoTeam`, `BingoParticipant.cl` and
 
 ## Commands
 
-- `/bingo create_bingo`: use the normal settings, including team size. Optional `theme` selects winter, spring, summer or autumn artwork. Optional `configuration` imports a JSON file directly into `bingo_tiles`. Without a file, the bingo uses the starter 28-tile board. JSON can also be imported without a theme.
+- `/bingo create_bingo`: use the normal settings, including team size. Optional `theme` selects winter, spring, summer, autumn or ironman artwork. Optional `configuration` imports a JSON file directly into `bingo_tiles`. Without a file, the bingo uses the starter 28-tile board. JSON can also be imported without a theme.
 - `/bingo make_team`, `/bingo leave_team`, `/bingo leaderboard`, `/bingo items`: use the existing commands and rules.
 - `/bingo view`: shows the normal event information and the caller's team progress. With a theme it attaches the rendered board image. Non-members see an empty preview. Optional `json:true` downloads the bingo's current stored tile definitions in board order instead, so any player can check the requirements without organiser access.
 - `/bingo manage_bingo`: organisers can set `theme` or upload `configuration` before the start. Tile changes use a complete 28-tile JSON configuration. `template:true` explicitly downloads the current 28 native tiles, or a starter configuration. Normal finalisation, prize handling and CSV export remain available.
