@@ -47,7 +47,7 @@ export function defaultBingoChallenges(): BingoChallenge[] {
 		drop('sigil', 'Any Corp sigil', ['Arcane sigil', 'Spectral sigil', 'Elysian sigil']),
 		drop('crabs', '10,000 Raw dark crab', ['Raw dark crab'], 10_000),
 		drop('blood', 'Blood shard', ['Blood shard']),
-		drop('tome', 'Tome of fire / water', ['Tome of fire (empty)', 'Tome of water (empty)']),
+		drop('tome', 'Tome of fire / water', ['Tome of fire', 'Tome of water (empty)']),
 		drop('goggles', 'Gnome goggles', ['Gnome goggles']),
 		drop('warhammer', 'Dragon warhammer', ['Dragon warhammer']),
 		drop('rev', 'Any Revenant weapon', ["Craw's bow (u)", "Viggora's chainmace (u)", "Thammaron's sceptre (u)"]),

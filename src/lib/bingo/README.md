@@ -22,6 +22,8 @@ The earlier 28-challenge JSON files remain supported for item-based challenges:
 
 Names, descriptions, icon IDs and configuration keys are stored alongside those native tile definitions. Native JSON exports (`oneOf`, `allOf`, `bank` or the serialisable custom requirements) can be imported again. Every import must contain exactly 28 valid tiles with explicit item requirements; predefined catalogue references are not supported. Activity-only challenges are rejected because the established bingo system tracks earned items.
 
+Existing stored catalogue references are read through a compatibility module so historical boards and their participants continue to work. The old catalogue is not exposed through commands or accepted in new JSON uploads. Theme-only edits preserve the stored tile list, including updates confirmed by another organiser.
+
 Progress is evaluated directly from the same combined participant item bank used by the normal leaderboard. The existing bank reward hook updates it, including command rewards that already qualified for ordinary bingo. The artwork adds no new eligibility, replay protection or reward rules.
 
 The renderer uses the existing canvas utilities, fonts, item sprites and supplied seasonal PNGs. Its bounded cache includes the bingo ID, team ID and a hash of the displayed title, artwork, tiles, completion flags and quantities. Changed display state produces a new image; repeated requests share a render. Nothing in the cache determines authoritative progress.

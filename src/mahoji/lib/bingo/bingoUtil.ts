@@ -1,5 +1,7 @@
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
+import { legacyBingoTiles } from '@/mahoji/lib/bingo/legacyBingoTiles.js';
+
 interface CustomReq {
 	customReq: (cl: Bank) => boolean;
 	allItems: number[];
@@ -31,7 +33,8 @@ export type UniversalBingoTile = BingoTileMetadata & {
 	name: string;
 } & (OneOf | AllOf | BankTile | CustomReq);
 
-export type StoredBingoTile = BingoTileMetadata & (OneOf | AllOf | BankTile | StoredCustomBingoTile);
+export type StoredBingoTile = BingoTileMetadata &
+	(OneOf | AllOf | BankTile | StoredCustomBingoTile | { global: number });
 
 export function rowsForSquare(n: number): number {
 	return Math.ceil(Math.sqrt(n));
@@ -39,6 +42,7 @@ export function rowsForSquare(n: number): number {
 
 export function generateTileName(tile: OneOf | AllOf | BankTile | UniversalBingoTile | StoredBingoTile) {
 	if ('name' in tile && tile.name) return tile.name;
+	if ('global' in tile) return legacyBingoTiles.find(legacy => legacy.id === tile.global)?.name ?? 'Unknown';
 	if ('oneOf' in tile) {
 		return `Receive one of: ${tile.oneOf.map(id => Items.getOrThrow(id)?.name).join(', ')}`;
 	}
@@ -53,6 +57,11 @@ export function generateTileName(tile: OneOf | AllOf | BankTile | UniversalBingo
 }
 
 export function resolveBingoTile(tile: StoredBingoTile): UniversalBingoTile {
+	if ('global' in tile) {
+		const legacy = legacyBingoTiles.find(legacy => legacy.id === tile.global);
+		if (!legacy) throw new Error(`Unknown legacy bingo tile: ${tile.global}`);
+		return { ...legacy, ...tile, name: tile.name ?? legacy.name };
+	}
 	if ('custom' in tile) {
 		const rule = tile.custom;
 		return {

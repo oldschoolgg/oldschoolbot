@@ -1,11 +1,12 @@
-import { Bank, type ItemBank } from 'oldschooljs';
+import type { APIAttachment } from '@oldschoolgg/discord';
+import { Bank, type ItemBank, itemID } from 'oldschooljs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { Bingo, Prisma } from '@/prisma/main.js';
 import { defaultBingoChallenges } from '@/lib/bingo/bingoChallenges.js';
 import { bingoCommand, getBingoFromUserInput } from '@/mahoji/commands/bingo.js';
-import { BingoManager } from '@/mahoji/lib/bingo/BingoManager.js';
-import { parseBingoConfiguration } from '@/mahoji/lib/bingo/seasonalBingo.js';
+import { BingoManager, findBingosWithUserParticipating } from '@/mahoji/lib/bingo/BingoManager.js';
+import { manageSeasonalBingo, parseBingoConfiguration } from '@/mahoji/lib/bingo/seasonalBingo.js';
 import { createTestUser } from './util.js';
 
 describe('Seasonal artwork on the existing team bingo system', () => {
@@ -72,6 +73,81 @@ describe('Seasonal artwork on the existing team bingo system', () => {
 			where: { user_id_bingo_id: { user_id: user.id, bingo_id: bingo.id } }
 		});
 		expect(new Bank(participant.cl as ItemBank).amount('Redwood logs')).toBe(1000);
+	});
+	it('grants normal loot to a former participant whose finished board contains catalogue references', async () => {
+		const user = await join();
+		await prisma.bingo.update({
+			where: { id: bingo.id },
+			data: {
+				theme: null,
+				was_finalized: true,
+				start_date: new Date(Date.now() - 3 * 86_400_000),
+				bingo_tiles: [{ global: 6 }, { global: 13 }, { global: 38 }]
+			}
+		});
+		await user.addItemsToBank({ items: new Bank().add('Elysian sigil'), collectionLog: true });
+		await user.sync();
+		expect(user.bank.amount('Elysian sigil')).toBe(1);
+		const historical = (await findBingosWithUserParticipating(user.id)).find(board => board.id === bingo.id)!;
+		expect(historical.isActive()).toBe(false);
+		expect(historical.determineProgressOfBank(new Bank().add('Elysian sigil')).tilesCompletedCount).toBe(1);
+		const participant = await prisma.bingoParticipant.findUniqueOrThrow({
+			where: { user_id_bingo_id: { user_id: user.id, bingo_id: bingo.id } }
+		});
+		expect(participant.cl).toEqual({});
+	});
+	it.each([
+		'theme',
+		'configuration'
+	] as const)('preserves both settings when a %s confirmation finishes after another organiser edits the board', async firstEdit => {
+		const upcoming = await prisma.bingo.update({
+			where: { id: bingo.id },
+			data: { start_date: new Date(Date.now() + 3_600_000) }
+		});
+		const replacement = [{ name: 'Coal', oneOf: [itemID('Coal')] }, ...bingo.bingo_tiles.slice(1)];
+		const json = JSON.stringify(replacement);
+		const configuration: APIAttachment = {
+			id: '1111111111111111',
+			filename: 'replacement.json',
+			size: Buffer.byteLength(json),
+			url: 'https://example.com/replacement.json',
+			proxy_url: 'https://example.com/replacement.json'
+		};
+		vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(json));
+		const edits = { theme: { theme: 'summer' as const }, configuration: { configuration } };
+		let releaseConfirmation!: () => void;
+		let confirmationStarted!: () => void;
+		const held = new Promise<void>(resolve => {
+			releaseConfirmation = resolve;
+		});
+		const ready = new Promise<void>(resolve => {
+			confirmationStarted = resolve;
+		});
+		const pending = manageSeasonalBingo(
+			new BingoManager(upcoming),
+			{
+				confirmation: () => {
+					confirmationStarted();
+					return held;
+				}
+			} as unknown as MInteraction,
+			edits[firstEdit]
+		);
+		await ready;
+		try {
+			const current = await prisma.bingo.findUniqueOrThrow({ where: { id: bingo.id } });
+			await manageSeasonalBingo(
+				new BingoManager(current),
+				{ confirmation: async () => {} } as unknown as MInteraction,
+				edits[firstEdit === 'theme' ? 'configuration' : 'theme']
+			);
+		} finally {
+			releaseConfirmation();
+			await pending;
+		}
+		const updated = await prisma.bingo.findUniqueOrThrow({ where: { id: bingo.id } });
+		expect(updated.theme).toBe('summer');
+		expect(updated.bingo_tiles).toEqual(replacement);
 	});
 	it('returns the team image without exporting JSON in the normal view command', async () => {
 		const user = await join();

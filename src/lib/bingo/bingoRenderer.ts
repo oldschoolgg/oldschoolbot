@@ -50,13 +50,19 @@ export function wrapBingoText(text: string, width: number, measure: (text: strin
 	return lines.map(l => l.trim());
 }
 
-function fitLabel(ctx: CanvasContext, text: string, width: number) {
+export function fitBingoLabel(ctx: CanvasContext, text: string, width: number, height: number) {
 	for (let size = 28; size >= 12; size -= 2) {
 		ctx.font = `${size}px "RuneScape Bold 12"`;
 		const lines = wrapBingoText(text, width, s => ctx.measureText(s).width);
-		if (lines.length * size <= 60) return { lines, size };
+		if (lines.length * size <= height) return { lines, size };
 	}
-	return { lines: wrapBingoText(text, width, s => ctx.measureText(s).width), size: 12 };
+	const lines = wrapBingoText(text, width, s => ctx.measureText(s).width).slice(0, Math.floor(height / 12));
+	if (lines.length > 0) {
+		const lastLine = Array.from(lines[lines.length - 1]);
+		while (lastLine.length > 0 && ctx.measureText(`${lastLine.join('')}...`).width > width) lastLine.pop();
+		lines[lines.length - 1] = `${lastLine.join('').trimEnd()}...`;
+	}
+	return { lines, size: 12 };
 }
 
 export async function renderBingoBoard(board: BingoBoardData): Promise<Buffer> {
@@ -113,12 +119,20 @@ export async function renderBingoBoard(board: BingoBoardData): Promise<Buffer> {
 			width,
 			height
 		);
-		ctx.textAlign = 'center';
-		const { lines, size } = fitLabel(ctx, tile.name, tileWidth - 20);
-		for (const [lineIndex, line] of lines.entries())
-			ctx.fillText(line, x + tileWidth / 2, y + 106 + lineIndex * size);
 		const boxX = x + tileWidth - 32;
 		const boxY = y + tileHeight - 31;
+		const labelY = y + 101;
+		const labelHeight = boxY - labelY - 4;
+		ctx.save();
+		ctx.beginPath();
+		ctx.rect(x + 10, labelY, tileWidth - 20, labelHeight);
+		ctx.clip();
+		ctx.textAlign = 'center';
+		ctx.textBaseline = 'top';
+		const { lines, size } = fitBingoLabel(ctx, tile.name, tileWidth - 20, labelHeight);
+		for (const [lineIndex, line] of lines.entries())
+			ctx.fillText(line, x + tileWidth / 2, labelY + lineIndex * size);
+		ctx.restore();
 		ctx.fillStyle = completed ? '#d9efbd' : '#f5e4ba';
 		ctx.fillRect(boxX, boxY, 23, 23);
 		ctx.strokeStyle = '#342510';
@@ -140,7 +154,8 @@ export async function renderBingoBoard(board: BingoBoardData): Promise<Buffer> {
 			ctx.fillText(
 				`${tile.quantity.current.toLocaleString()}/${tile.quantity.target.toLocaleString()}`,
 				x + 9,
-				boxY + 12
+				boxY + 12,
+				boxX - x - 18
 			);
 		}
 	}

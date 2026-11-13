@@ -6,12 +6,14 @@ import { defaultBingoChallenges } from '@/lib/bingo/bingoChallenges.js';
 import {
 	bingoBackgrounds,
 	cachedBingoBoard,
+	fitBingoLabel,
 	renderBingoBoard,
 	teamBingoBoard,
 	wrapBingoText
 } from '@/lib/bingo/bingoRenderer.js';
 import { bingoThemes } from '@/lib/bingo/bingoTypes.js';
-import { loadImage } from '@/lib/canvas/canvasUtil.js';
+import { createCanvas, loadImage } from '@/lib/canvas/canvasUtil.js';
+import { getAllTileItems } from '@/mahoji/lib/bingo/bingoUtil.js';
 import { parseBingoConfiguration } from '@/mahoji/lib/bingo/seasonalBingo.js';
 import { bingoWithTiles } from '../../test-utils/bingo.js';
 
@@ -23,6 +25,19 @@ describe('Seasonal images from normal team progress', () => {
 		const lines = wrapBingoText(text, 100, measure);
 		expect(lines.every(line => measure(line) <= 100)).toBe(true);
 		expect(lines.join('')).toBe(text);
+	});
+	it('truncates long generated native labels within the space above the quantity and checkbox', () => {
+		const items = [...new Set(bingoWithTiles(tiles).bingoTiles.flatMap(getAllTileItems))];
+		const bingo = bingoWithTiles([{ allOf: items }, ...tiles.slice(1)]);
+		const text = bingo.bingoTiles[0].name;
+		const ctx = createCanvas(200, 185).getContext('2d');
+		const label = fitBingoLabel(ctx, text, 178, 48);
+		expect(text.length).toBeGreaterThan(80);
+		expect(label.lines.length * label.size).toBeLessThanOrEqual(48);
+		expect(label.lines.every(line => ctx.measureText(line).width <= 178)).toBe(true);
+		expect(label.lines.at(-1)).toMatch(/\.\.\.$/);
+		const shortLabel = fitBingoLabel(ctx, 'Elysian sigil', 178, 48);
+		expect(shortLabel.lines.join(' ')).toBe('Elysian sigil');
 	});
 	it('shares unchanged renders and invalidates when progress, title or artwork changes', async () => {
 		const bingo = bingoWithTiles(tiles);

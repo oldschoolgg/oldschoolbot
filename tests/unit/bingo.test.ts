@@ -2,6 +2,7 @@ import { Bank, itemID } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
 import { defaultBingoChallenges } from '@/lib/bingo/bingoChallenges.js';
+import { legacyBingoTiles } from '@/mahoji/lib/bingo/legacyBingoTiles.js';
 import { parseBingoConfiguration } from '@/mahoji/lib/bingo/seasonalBingo.js';
 import { bingoWithTiles } from '../test-utils/bingo.js';
 
@@ -19,6 +20,37 @@ describe('Bingo JSON import into the existing tile system', () => {
 		for (const item of ['Arcane sigil', 'Spectral sigil', 'Elysian sigil']) {
 			expect(completed(new Bank().add(item, 5))).toEqual(['Any Corp sigil']);
 		}
+	});
+	it('counts the actual Wintertodt and Tempoross tome reward variants', () => {
+		for (const item of ['Tome of fire', 'Tome of water (empty)']) {
+			expect(completed(new Bank().add(item))).toContain('Tome of fire / water');
+		}
+	});
+	it('loads every historical catalogue reference without exposing it to JSON imports', () => {
+		const legacy = bingoWithTiles(
+			legacyBingoTiles.map(tile => ({ global: tile.id })),
+			null
+		);
+		expect(legacy.bingoTiles.map(tile => tile.name)).toEqual(legacyBingoTiles.map(tile => tile.name));
+		expect(legacy.determineProgressOfBank(new Bank()).tilesCompletedCount).toBe(0);
+		const sigilTile = legacy.bingoTiles.find(tile => tile.name === 'Receive any Sigil from Corp');
+		expect(legacy.determineProgressOfBank(new Bank().add('Elysian sigil')).tilesCompleted).toContain(sigilTile);
+		expect(() => parseBingoConfiguration([{ global: 6 }, ...tiles.slice(1)])).toThrow();
+	});
+	it('preserves historical custom quantity and ring requirements', () => {
+		const legacy = bingoWithTiles([{ global: 13 }, { global: 38 }], null);
+		const cl = new Bank()
+			.add('Red chinchompa', 4999)
+			.add('Ultor ring')
+			.add('Ultor icon')
+			.add('Ultor vestige')
+			.add('Berserker icon')
+			.add('Berserker ring')
+			.add('Chromium ingot', 2);
+		expect(legacy.determineProgressOfBank(cl).tilesCompletedCount).toBe(0);
+		expect(legacy.determineProgressOfBank(cl.add('Red chinchompa').add('Chromium ingot')).tilesCompletedCount).toBe(
+			2
+		);
 	});
 	it('evaluates quantity totals from the existing combined bank', () => {
 		const cl = new Bank().add('Redwood logs', 1000);

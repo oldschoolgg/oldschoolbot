@@ -141,11 +141,7 @@ export async function manageSeasonalBingo(
 	if (bingo.wasFinalized || new Date() >= bingo.startDate)
 		return 'Board settings can only be changed before the bingo starts.';
 	const theme = options.theme ?? bingo.theme;
-	const tiles = options.configuration
-		? await importBingoConfiguration(options.configuration)
-		: bingo.rawBingoTiles.length > 0
-			? bingo.rawBingoTiles
-			: await importBingoConfiguration();
+	const tiles = options.configuration ? await importBingoConfiguration(options.configuration) : bingo.rawBingoTiles;
 	if (theme && tiles.length !== 28)
 		return 'A seasonal board requires exactly 28 tiles. Upload a configuration with 28 tiles.';
 	await interaction.confirmation(
@@ -153,7 +149,10 @@ export async function manageSeasonalBingo(
 	);
 	const { count } = await prisma.bingo.updateMany({
 		where: { id: bingo.id, was_finalized: false, start_date: { gt: new Date() } },
-		data: { theme, bingo_tiles: tiles as unknown as Prisma.InputJsonObject[] }
+		data: {
+			...(options.theme ? { theme: options.theme } : {}),
+			...(options.configuration ? { bingo_tiles: tiles as unknown as Prisma.InputJsonObject[] } : {})
+		}
 	});
 	if (count !== 1) throw new UserError('This bingo has already started or ended.');
 	return 'Updated the board. Team progress continues to use the normal bingo item tracking.';
