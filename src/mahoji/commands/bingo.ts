@@ -560,6 +560,10 @@ export const bingoCommand = defineCommand({
 					clItems.push(...tile.allOf);
 				}
 
+				if ('bank' in tile) {
+					clItems.push(...getAllTileItems(tile));
+				}
+
 				if ('customReq' in tile) {
 					clItems.push(...tile.allItems.filter(i => teamProgress.cl.has(i)));
 				}

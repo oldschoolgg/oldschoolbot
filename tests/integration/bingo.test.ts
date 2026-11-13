@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { Bingo, Prisma } from '@/prisma/main.js';
 import { defaultBingoChallenges } from '@/lib/bingo/bingoChallenges.js';
+import { clImageGenerator } from '@/lib/collectionLogTask.js';
 import { bingoCommand, getBingoFromUserInput } from '@/mahoji/commands/bingo.js';
 import { BingoManager, findBingosWithUserParticipating } from '@/mahoji/lib/bingo/BingoManager.js';
 import { manageSeasonalBingo, parseBingoConfiguration } from '@/mahoji/lib/bingo/seasonalBingo.js';
@@ -155,6 +156,23 @@ describe('Seasonal artwork on the existing team bingo system', () => {
 		expect(response).toMatchObject({
 			files: [expect.objectContaining({ name: `bingo-${bingo.id}-team-${teamID}.png` })]
 		});
+	});
+	it('keeps quantity items and their earned totals in the items image after their tiles complete', async () => {
+		const user = await join();
+		const manager = new BingoManager(bingo);
+		const image = vi.spyOn(clImageGenerator, 'makeArbitraryCLImage').mockResolvedValue({ files: [] });
+		await manager.handleNewItems(user.id, new Bank().add('Redwood logs', 4999).add('Raw dark crab', 9999));
+		for (const completed of [false, true]) {
+			if (completed) await manager.handleNewItems(user.id, new Bank().add('Redwood logs').add('Raw dark crab'));
+			await user.runCommand(bingoCommand, { items: { bingo: String(bingo.id) } });
+			const rendered = image.mock.calls.at(-1)![0];
+			expect(rendered.clItems.has(itemID('Redwood logs'))).toBe(true);
+			expect(rendered.clItems.has(itemID('Raw dark crab'))).toBe(true);
+			expect(rendered.userBank.amount('Redwood logs')).toBe(completed ? 5000 : 4999);
+			expect(rendered.userBank.amount('Raw dark crab')).toBe(completed ? 10_000 : 9999);
+			expect(manager.determineProgressOfBank(rendered.userBank).tilesCompletedCount).toBe(completed ? 2 : 0);
+		}
+		expect(image).toHaveBeenCalledTimes(2);
 	});
 	it('keeps existing registration and organiser-selected team sizes', async () => {
 		await prisma.bingo.update({ where: { id: bingo.id }, data: { start_date: new Date(Date.now() + 3_600_000) } });
