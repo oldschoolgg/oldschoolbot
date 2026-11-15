@@ -64,7 +64,8 @@ export const clueTask: MinionTask = {
 			str += `\n\nZippy has found these items for you: ${new Bank(bonusLoot)}`;
 		}
 
-		if (user.hasEquipped('Buried firmament') && roll(100)) {
+		const firmament = user.whichEquipped('Buried firmament');
+		if (firmament && roll(100)) {
 			loot.multiply(2);
 			str += '\n\nYour firmament doubled your clue trip rewards.';
 		}

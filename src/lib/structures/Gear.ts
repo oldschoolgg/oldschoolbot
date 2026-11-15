@@ -206,6 +206,12 @@ export class Gear {
 		return bank;
 	}
 
+	whichEquipped(item: number | string): Item | false {
+		const similar = getSimilarItems(itemID(item));
+		const equipped = this.allItems().find(id => similar.includes(id));
+		return equipped === undefined ? false : Items.getOrThrow(equipped);
+	}
+
 	hasEquipped(_items: number | string | (string | number)[], every = false, includeSimilar = true) {
 		const items = resolveItems(_items);
 		const allItems = this.allItems();

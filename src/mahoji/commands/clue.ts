@@ -361,9 +361,10 @@ ${reqs.unmetRequirements.map(str => `- ${str}`).join('\n')}`;
 
 		timeToFinish = result.duration;
 
-		if (user.hasEquipped('Buried firmament')) {
-			timeToFinish *= 0.5;
-			boosts.push('2x clue speed for firmament');
+		const firmament = user.whichEquipped('Buried firmament');
+		if (firmament) {
+			timeToFinish *= 0.666;
+			boosts.push(`2/3rds faster clue speed for ${firmament.name}`);
 		}
 
 		let { quantity } = options;

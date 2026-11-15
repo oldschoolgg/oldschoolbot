@@ -18,7 +18,7 @@ import { Events, formatOrdinal, increaseNumByPercent, notEmpty, Time, toTitleCas
 import { convertLVLtoXP, convertXPtoLVL, type Item, Items, resolveItems, toKMB } from 'oldschooljs';
 
 import { type User, UserEventType } from '@/prisma/main.js';
-import { globalConfig, MAX_LEVEL, MAX_LEVEL_XP, MAX_TOTAL_LEVEL, MAX_XP } from '@/lib/constants.js';
+import { BitField, globalConfig, MAX_LEVEL, MAX_LEVEL_XP, MAX_TOTAL_LEVEL, MAX_XP } from '@/lib/constants.js';
 import { skillEmoji } from '@/lib/data/emojis.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import type { AddXpParams } from '@/lib/minions/types.js';
@@ -140,6 +140,9 @@ function getEquippedCapes(user: MUser): number[] {
 }
 
 export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
+	if (params.minimal && user.bitfield.includes(BitField.ShowDetailedInfo)) {
+		params = { ...params, minimal: false };
+	}
 	const currentXP = Number(user.user[`skills_${params.skillName}`]);
 	const currentLevel = user.skillLevel(params.skillName);
 	const currentTotalLevel = user.totalLevel;
@@ -245,8 +248,8 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 
 	if (totalFirstAgeBonus > 0) params.amount = increaseNumByPercent(params.amount, totalFirstAgeBonus);
 
-	const hasBuriedFirmament = user.hasEquipped('Buried firmament');
-	if (hasBuriedFirmament) params.amount = increaseNumByPercent(params.amount, 1);
+	const firmament = user.whichEquipped('Buried firmament');
+	if (firmament) params.amount = increaseNumByPercent(params.amount, 1);
 
 	let prismareBoostApplied = false;
 	let prismareBoostPercent = 0;
@@ -476,8 +479,8 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 		if (totalFirstAgeBonus > 0 && !params.minimal) {
 			str += ` You received ${totalFirstAgeBonus}% bonus XP for First age outfit items.`;
 		}
-		if (hasBuriedFirmament && !params.minimal) {
-			str += ' You received 1% bonus XP from your firmament.';
+		if (firmament && !params.minimal) {
+			str += ` You received 1% bonus XP from ${firmament.name}.`;
 		}
 		if (prismareBoostApplied && !params.minimal) {
 			str += ` You received ${prismareBoostPercent.toFixed(1)}% bonus XP from your Prismare ring. (${prismareChargesUsed} charges used).`;
