@@ -333,6 +333,8 @@ const source: [string, (string | number)[]][] = [
 	['Pernix gloves', ['Gorajan archer gloves']],
 	['Pernix boots', ['Gorajan archer boots']],
 	['Abyssal cape', ['Vasa cloak', 'TzKal cape', 'Tidal collector']],
+	['Buried firmament', ['Unearthed firmament']],
+	['First age cape', ['Unearthed firmament']],
 	['Ivandis flail', ['Blisterwood flail']],
 	['Angler hat', ['Spirit angler headband', 'Fishing hat']],
 	['Angler top', ['Spirit angler top', 'Fishing jacket']],

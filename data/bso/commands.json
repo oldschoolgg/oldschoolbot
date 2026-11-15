@@ -1,6 +1,6 @@
 {
-	"hash": "16ce6ce1d4bda5bd998d5a09fcb90563",
-	"date": "2026-10-18T15:33:53.934Z",
+	"hash": "ca6d3297e959fc58023e5e6480f862f3",
+	"date": "2026-11-15T22:36:33.796Z",
 	"data": [
 		{
 			"name": "activities",
@@ -338,7 +338,6 @@
 				"disco",
 				"farming_contracts",
 				"global",
-				"gp",
 				"hunter_catches",
 				"inferno",
 				"item_contract_streak",

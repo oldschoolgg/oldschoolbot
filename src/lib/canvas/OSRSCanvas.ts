@@ -428,7 +428,9 @@ export class OSRSCanvas {
 		const scale = size ? Math.min(targetSize.width / itemIcon.width, targetSize.height / itemIcon.height) : 1;
 		const drawWidth = Math.round(itemIcon.width * scale);
 		const drawHeight = Math.round(itemIcon.height * scale);
-		const destX = Math.floor(x + (targetSize.width - drawWidth) / 2);
+		const destX = Math.floor(
+			x + (targetSize.width - drawWidth) / 2 - (!size && drawWidth > 32 ? (drawWidth - 32) / 2 : 0)
+		);
 		const destY = Math.floor(y + (targetSize.height - drawHeight) / 2);
 		let customImage: Image | null = null;
 

@@ -87,7 +87,7 @@ export type PatreonPerk = {
 export type PremiumPerk = {
 	tier: PerkTier;
 	source: 'premium';
-	beneficiary: PaidTierSource;
+	beneficiary: 'cyr' | null;
 	expires: PerkTierExpiry;
 };
 
@@ -293,7 +293,7 @@ export function getPerkTierDetails(user: PerkTierInput, options: PerkTierOptions
 			details.push({
 				tier: premium.tier as PerkTier,
 				source: 'premium',
-				beneficiary: premium.isCyr ? 'cyr' : 'magna',
+				beneficiary: premium.isCyr ? 'cyr' : null,
 				expires: {
 					date: new Date(premiumExpiry),
 					ttl: BigInt(Math.max(0, premiumExpiry - now))
@@ -336,8 +336,9 @@ export function getPerkTierDisplay(user: PerkTierInput, options?: PerkTierOption
 
 	if (premium && premium.tier > patreonTier && premium.tier >= courtesyTier && premium.tier >= legacyTier) {
 		return premiumTiers
-			.map(tier => {
-				const tierLabel = `${tier.beneficiary === 'cyr' ? 'Cyr' : 'Magna'} Tier ${tier.tier - 1}`;
+			.map((tier, index) => {
+				const name = `Tier ${tier.tier - 1}`;
+				const tierLabel = `Temporary: ${index === 0 ? `**${name}**` : name}`;
 				return `${tierLabel} (Expires: ${relativeTimestamp(tier.expires.date)})`;
 			})
 			.join(', ');
