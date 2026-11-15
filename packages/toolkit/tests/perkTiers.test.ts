@@ -70,6 +70,22 @@ describe('perk tiers', () => {
 		).toBe(PerkTier.Two);
 	});
 
+	test('labels Cyr and unspecified premium entitlements as temporary', () => {
+		const input = {
+			patreonBits: [],
+			premiumEntitlements: [
+				{ tier: 5, isCyr: true, expiry: 11_000 },
+				{ tier: 3, isCyr: false, expiry: 21_000 }
+			]
+		};
+		expect(getPerkTierDisplay(input, { now: 1000 })).toBe(
+			'Temporary: **Tier 4** (Expires: <t:11:R>), Temporary: Tier 2 (Expires: <t:21:R>)'
+		);
+		expect(getPerkTierDetails(input, { now: 1000 }).map(detail =>
+			detail.source === 'premium' ? detail.beneficiary : undefined
+		)).toEqual(['cyr', null]);
+	});
+
 	test('formats legacy tiers above paid tiers', () => {
 		expect(getPerkTierDisplay({ patreonBits: [RoboChimpBit.MagnaTier1] }, { legacyTier: 4 })).toBe(
 			'🔴 **Legacy** __Tier 3__'
