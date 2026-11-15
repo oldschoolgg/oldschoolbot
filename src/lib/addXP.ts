@@ -12,7 +12,6 @@ import {
 	type IslandMaintenanceTimestamps,
 	type IslandUpgradeTiers
 } from '@/lib/bso/commands/islandUpgrades.js';
-import { _itemId } from '@/lib/bso/util/bfcrit.js';
 
 import { bold } from '@oldschoolgg/discord';
 import { Events, formatOrdinal, increaseNumByPercent, notEmpty, Time, toTitleCase } from '@oldschoolgg/toolkit';
@@ -214,7 +213,6 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 	let totalStaticBoost = 0;
 	const staticBoostsApplied: string[] = [];
 	let outfitBoostPercent = 0;
-	const _fid = _itemId();
 	for (const item of resolveItems([
 		'First age tiara',
 		'First age amulet',
@@ -226,10 +224,6 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			originalFirstAgeEquipped += 1;
 			totalFirstAgeBonus += 1;
 		}
-	}
-	if (user.hasEquipped(_fid)) {
-		originalFirstAgeEquipped += 1;
-		totalFirstAgeBonus += 2;
 	}
 	if (hasPrismareRing) {
 		originalFirstAgeEquipped += 1;
@@ -250,6 +244,9 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 	}
 
 	if (totalFirstAgeBonus > 0) params.amount = increaseNumByPercent(params.amount, totalFirstAgeBonus);
+
+	const hasBuriedFirmament = user.hasEquipped('Buried firmament');
+	if (hasBuriedFirmament) params.amount = increaseNumByPercent(params.amount, 1.5);
 
 	let prismareBoostApplied = false;
 	let prismareBoostPercent = 0;
@@ -478,6 +475,9 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 		}
 		if (totalFirstAgeBonus > 0 && !params.minimal) {
 			str += ` You received ${totalFirstAgeBonus}% bonus XP for First age outfit items.`;
+		}
+		if (hasBuriedFirmament && !params.minimal) {
+			str += ' You received 1.5% bonus XP from Buried firmament.';
 		}
 		if (prismareBoostApplied && !params.minimal) {
 			str += ` You received ${prismareBoostPercent.toFixed(1)}% bonus XP from your Prismare ring. (${prismareChargesUsed} charges used).`;

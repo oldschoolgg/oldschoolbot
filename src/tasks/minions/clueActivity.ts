@@ -1,5 +1,4 @@
 import { incrementUserCounter } from '@/lib/bso/userCounter.js';
-import { _itemId } from '@/lib/bso/util/bfcrit.js';
 
 import { Time } from '@oldschoolgg/toolkit';
 import { randInt, roll } from 'node-rng';
@@ -65,14 +64,9 @@ export const clueTask: MinionTask = {
 			str += `\n\nZippy has found these items for you: ${new Bank(bonusLoot)}`;
 		}
 
-		const _fid = _itemId();
-		const _fEquipped = Object.values(user.gear).some(setup =>
-			Object.values(setup.raw()).some(slot => slot?.item === _fid)
-		);
-
-		if (_fEquipped && roll(100)) {
+		if (user.hasEquipped('Buried firmament') && roll(100)) {
 			loot.multiply(2);
-			str += '\n\nYour reward caskets have been doubled.';
+			str += '\n\nBuried firmament doubled your clue trip rewards.';
 		}
 
 		await user.transactItems({
