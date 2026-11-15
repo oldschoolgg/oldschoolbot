@@ -8199,6 +8199,7 @@
 					"Grimy marrentill",
 					"Grimy ranarr weed",
 					"Grimy snapdragon",
+					"Grimy spirit weed",
 					"Grimy tarromin",
 					"Grimy toadflax",
 					"Grimy torstol",
@@ -8282,7 +8283,6 @@
 					"Snape grass",
 					"Snape grass seed",
 					"Spirit seed",
-					"Spirit weed",
 					"Spirit weed seed",
 					"Strawberry",
 					"Strawberry seed",
@@ -11257,6 +11257,7 @@
 					"Uncharged dragonfire ward",
 					"Uncharged toxic trident",
 					"Uncut zenyte",
+					"Unearthed firmament",
 					"Unholy book",
 					"Unholy book (or)",
 					"Unholy book page set",
@@ -11497,6 +11498,7 @@
 			},
 			"custom_pets_(discontinued)": {
 				"items": [
+					"Boo'ala",
 					"Buggy",
 					"Buzz",
 					"Casper",
@@ -11723,6 +11725,7 @@
 				"items": [
 					"10% Pumpkinhead pie",
 					"Afterparty afterlife",
+					"Boo'ala",
 					"Couch potato sceptre",
 					"Disco bloodbath",
 					"Disco infernowl",

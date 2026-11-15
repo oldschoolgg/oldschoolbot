@@ -1,7 +1,7 @@
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+
 import type { ItemBank } from 'oldschooljs';
 import { type Bank, itemID } from 'oldschooljs';
-
-import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 
 const REQUIRED_COLLECTION_LOG_ITEMS = [
 	itemID('Elder sigil'),
