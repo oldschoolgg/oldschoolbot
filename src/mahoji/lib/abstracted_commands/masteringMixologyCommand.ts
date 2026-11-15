@@ -1,5 +1,5 @@
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
-import { Bank } from 'oldschooljs';
+import { Bank, EItem } from 'oldschooljs';
 
 import {
 	getMixologyContractCost,
@@ -123,9 +123,11 @@ export async function MasteringMixologyBuyCommand(user: MUser, input = '', quant
 	}
 
 	const loot = new Bank().add(buyable.item.id, quantity);
+	const amuletCharges = buyable.item.id === EItem.ALCHEMISTS_AMULET && !user.cl.has(EItem.ALCHEMISTS_AMULET) ? 50 : 0;
 	await user.transactItems({
 		itemsToAdd: loot,
-		collectionLog: true
+		collectionLog: true,
+		otherUpdates: amuletCharges > 0 ? { alchemist_amulet_charges: { increment: amuletCharges } } : undefined
 	});
 	await user.statsUpdate({
 		mixology_mox_points: { decrement: totalCost.Mox },
