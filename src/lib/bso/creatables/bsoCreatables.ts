@@ -1326,6 +1326,11 @@ export const bsoCreatables: Createable[] = [
 	...bsoShadesOfMortonCreatables,
 	...verdantUniquesRevertables,
 	{
+		name: 'Unearthed firmament',
+		inputItems: new Bank().add('Buried firmament').add('First age cape'),
+		outputItems: new Bank().add('Unearthed firmament')
+	},
+	{
 		name: 'Golden cape',
 		inputItems: new Bank().add('Golden cape shard', 7),
 		outputItems: new Bank().add('Golden cape')

@@ -66,7 +66,7 @@ export const clueTask: MinionTask = {
 
 		if (user.hasEquipped('Buried firmament') && roll(100)) {
 			loot.multiply(2);
-			str += '\n\nBuried firmament doubled your clue trip rewards.';
+			str += '\n\nYour firmament doubled your clue trip rewards.';
 		}
 
 		await user.transactItems({

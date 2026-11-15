@@ -246,7 +246,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 	if (totalFirstAgeBonus > 0) params.amount = increaseNumByPercent(params.amount, totalFirstAgeBonus);
 
 	const hasBuriedFirmament = user.hasEquipped('Buried firmament');
-	if (hasBuriedFirmament) params.amount = increaseNumByPercent(params.amount, 1.5);
+	if (hasBuriedFirmament) params.amount = increaseNumByPercent(params.amount, 1);
 
 	let prismareBoostApplied = false;
 	let prismareBoostPercent = 0;
@@ -477,7 +477,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			str += ` You received ${totalFirstAgeBonus}% bonus XP for First age outfit items.`;
 		}
 		if (hasBuriedFirmament && !params.minimal) {
-			str += ' You received 1.5% bonus XP from Buried firmament.';
+			str += ' You received 1% bonus XP from your firmament.';
 		}
 		if (prismareBoostApplied && !params.minimal) {
 			str += ` You received ${prismareBoostPercent.toFixed(1)}% bonus XP from your Prismare ring. (${prismareChargesUsed} charges used).`;

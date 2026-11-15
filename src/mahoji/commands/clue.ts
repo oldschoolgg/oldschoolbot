@@ -363,7 +363,7 @@ ${reqs.unmetRequirements.map(str => `- ${str}`).join('\n')}`;
 
 		if (user.hasEquipped('Buried firmament')) {
 			timeToFinish *= 0.5;
-			boosts.push('2x clue speed for Buried firmament');
+			boosts.push('2x clue speed for firmament');
 		}
 
 		let { quantity } = options;

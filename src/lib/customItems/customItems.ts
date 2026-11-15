@@ -15639,6 +15639,14 @@ setCustomItem(
 );
 setCustomItem(75_074, "Archon's ichor", 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000);
 
+setCustomItem(
+	75_083,
+	'Unearthed firmament',
+	'Buried firmament',
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true, cantDropFromMysteryBoxes: true } },
+	10_000
+);
+
 //archaic dyes
 setCustomItem(
 	75_075,
