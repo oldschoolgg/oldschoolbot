@@ -168,10 +168,7 @@ export async function farmingContractCommand(
 		contractsCompleted: currentContract.contractsCompleted
 	});
 
-	const components = [
-		...(input !== 'easy' ? [makeEasierFarmingContractButton()] : []),
-		...autoContractButtons(user)
-	];
+	const components = [...(input !== 'easy' ? [makeEasierFarmingContractButton()] : []), ...autoContractButtons(user)];
 	const response = new MessageBuilder()
 		.setContent(formatNewContractContent(plantToGrow, input))
 		.addChatHeadImage(
