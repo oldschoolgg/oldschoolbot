@@ -81,9 +81,11 @@ describe('perk tiers', () => {
 		expect(getPerkTierDisplay(input, { now: 1000 })).toBe(
 			'Temporary: **Tier 4** (Expires: <t:11:R>), Temporary: Tier 2 (Expires: <t:21:R>)'
 		);
-		expect(getPerkTierDetails(input, { now: 1000 }).map(detail =>
-			detail.source === 'premium' ? detail.beneficiary : undefined
-		)).toEqual(['cyr', null]);
+		expect(
+			getPerkTierDetails(input, { now: 1000 }).map(detail =>
+				detail.source === 'premium' ? detail.beneficiary : undefined
+			)
+		).toEqual(['cyr', null]);
 	});
 
 	test('formats legacy tiers above paid tiers', () => {
