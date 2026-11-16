@@ -270,6 +270,14 @@ export class BaseUser {
 		this.updateProperties();
 	}
 
+	whichEquipped(item: number | string): Item | false {
+		for (const gear of Object.values(this.gear)) {
+			const equipped = gear.whichEquipped(item);
+			if (equipped) return equipped;
+		}
+		return false;
+	}
+
 	hasEquipped(_item: number | string | string[] | number[], every = false) {
 		const items = resolveItems(_item);
 		if (items.length === 1 && allPetIDs.includes(items[0])) {

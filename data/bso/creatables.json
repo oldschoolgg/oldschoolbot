@@ -1,6 +1,6 @@
 {
-	"hash": "68eb64821d14362b74eb7c40f66542c5",
-	"date": "2026-08-21T21:57:12.735Z",
+	"hash": "795da452b4e9f66032e76ffa38107e10",
+	"date": "2026-11-15T22:36:33.810Z",
 	"data": [
 		{
 			"name": "3rd age felling axe",
@@ -15180,6 +15180,16 @@
 			"items_required": {
 				"Onyx": 1,
 				"Zenyte shard": 1
+			}
+		},
+		{
+			"name": "Unearthed firmament",
+			"items_created": {
+				"Unearthed firmament": 1
+			},
+			"items_required": {
+				"Buried firmament": 1,
+				"First age cape": 1
 			}
 		},
 		{

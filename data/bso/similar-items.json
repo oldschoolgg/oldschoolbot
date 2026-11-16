@@ -417,6 +417,10 @@
 		]
 	},
 	{
+		"main_item": "Buried firmament",
+		"similar_items": ["Buried firmament", "Unearthed firmament"]
+	},
+	{
 		"main_item": "Celestial ring",
 		"similar_items": ["Celestial ring", "Celestial signet"]
 	},
@@ -879,6 +883,10 @@
 			"Firemaking master cape",
 			"Firemaking master cape (inverted)"
 		]
+	},
+	{
+		"main_item": "First age cape",
+		"similar_items": ["First age cape", "Unearthed firmament"]
 	},
 	{
 		"main_item": "Fishing cape",
