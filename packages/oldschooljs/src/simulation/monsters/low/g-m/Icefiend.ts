@@ -4,6 +4,8 @@ import { SimpleMonster } from '@/structures/Monster.js';
 
 export const IcefiendTable: LootTable = new LootTable({ limit: 128 })
 	.tertiary(128, 'Clue scroll (easy)')
+	.tertiary(150, 'Frozen tear', 5)
+	.tertiary(1373, 'Tooth half of key (moon key)')
 
 	/* Runes */
 	.add('Water rune', [1, 5], 4)
