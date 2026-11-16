@@ -993,10 +993,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 	}
 
 	async fetchUserStat<K extends keyof UserStats>(key: K): Promise<UserStats[K]> {
-		const userStats = (await prisma.userStats.findFirstOrThrow({
-			where: { user_id: BigInt(this.id) },
-			select: { [key]: true }
-		})) as unknown as Pick<UserStats, K>;
+		const userStats = await fetchUserStats(this.id);
 		return userStats[key];
 	}
 

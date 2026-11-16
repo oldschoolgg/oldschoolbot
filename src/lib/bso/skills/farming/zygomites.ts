@@ -151,7 +151,7 @@ export const zygomitePlants: Plant[] = zygomiteFarmingSource.map(src => ({
 	defaultNumOfPatches: 0,
 	canPayFarmer: false,
 	canCompostPatch: true,
-	canCompostandPay: false,
+	canCompostAndPay: false,
 	additionalPatchesByQP: [[1, 1]],
 	additionalPatchesByFarmLvl: [],
 	additionalPatchesByFarmGuildAndLvl: [],
