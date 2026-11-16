@@ -28,7 +28,7 @@ async function soloMessage(user: MUser, duration: number, quantity: number, isPh
 		str += ` They are not scared of ${name} anymore, and ready to fight!`;
 	}
 
-	return `${str} The trip will return in about approximately ${formatTripDuration(user, duration)}.`;
+	return `${str} The trip will return ${formatTripDuration(user, duration)}.`;
 }
 
 const inquisitorItems = resolveItems(["Inquisitor's great helm", "Inquisitor's hauberk", "Inquisitor's plateskirt"]);
@@ -40,7 +40,7 @@ const phosaniBISGear = new Gear({
 	cape: 'Infernal cape',
 	hands: 'Ferocious gloves',
 	legs: "Inquisitor's plateskirt",
-	feet: 'Primordial boots',
+	feet: 'Avernic treads (max)',
 	ring: 'Ultor ring',
 	weapon: "Inquisitor's mace",
 	shield: 'Avernic defender',
@@ -326,7 +326,7 @@ ${soloBoosts.length > 0 ? `**Boosts:** ${soloBoosts.join(', ')}` : ''}`
 					perKillTime
 				)} instead of ${formatDuration(
 					NightmareMonster.timeToFinish
-				)} - the total trip will return in about ${formatTripDuration(user, duration)}.`;
+				)} - the total trip will return ${formatTripDuration(user, duration)}.`;
 
 	str += `\nRemoved ${soloFoodUsage} from your bank.${
 		isPhosani

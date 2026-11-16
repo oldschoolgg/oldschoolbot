@@ -5,15 +5,15 @@ import { chunk, groupBy } from 'remeda';
 import * as ss from 'simple-statistics';
 
 import type { Bingo, Prisma } from '@/prisma/main.js';
+import { type BingoTheme, bingoThemes } from '@/lib/bingo/bingoTypes.js';
 import { EmojiId } from '@/lib/data/emojis.js';
+import { leaderboardEligibility } from '@/lib/util/leaderboardEligibility.js';
 import {
-	generateTileName,
-	isGlobalTile,
+	resolveBingoTile,
 	rowsForSquare,
 	type StoredBingoTile,
 	type UniversalBingoTile
 } from '@/mahoji/lib/bingo/bingoUtil.js';
-import { globalBingoTiles } from '@/mahoji/lib/bingo/globalTiles.js';
 
 export const BingoTrophies = [
 	{
@@ -73,12 +73,14 @@ export class BingoManager {
 	public rawBingoTiles: StoredBingoTile[];
 	public bingoTiles: UniversalBingoTile[];
 	public creatorID: string;
+	public theme: BingoTheme | null;
 	wasFinalized: boolean;
 	extraGP: number;
 	isGlobal: boolean;
 	trophiesApply: boolean;
 
 	constructor(options: Bingo) {
+		this.theme = bingoThemes.find(theme => theme === options.theme) ?? null;
 		this.ticketPrice = Number(options.ticket_price);
 		this.id = options.id;
 		this.startDate = options.start_date;
@@ -96,15 +98,7 @@ export class BingoManager {
 
 		this.trophiesApply = options.trophies_apply;
 
-		this.bingoTiles = this.rawBingoTiles.map(tile => {
-			if (isGlobalTile(tile)) {
-				return globalBingoTiles.find(t => t.id === tile.global)!;
-			}
-			return {
-				name: generateTileName(tile),
-				...tile
-			};
-		});
+		this.bingoTiles = this.rawBingoTiles.map(resolveBingoTile);
 	}
 
 	public isActive() {
@@ -187,7 +181,7 @@ export class BingoManager {
 			bingoTableStr:
 				this.bingoTiles.length === 0
 					? 'No tiles.'
-					: chunk(bingoTable, rowsForSquare(this.bingoTiles.length))
+					: chunk(bingoTable, this.theme ? 7 : rowsForSquare(this.bingoTiles.length))
 							.map(row => `${row.join(' ')}`)
 							.join('\n'),
 			tilesCompleted,
@@ -266,14 +260,25 @@ export class BingoManager {
 		};
 	}
 
-	async fetchLeaderboard() {
+	async fetchLeaderboardTeams() {
+		const eligibility = await leaderboardEligibility();
 		const { teams } = await this.fetchAllParticipants();
+		return teams
+			.map(team => ({
+				...team,
+				participants: team.participants.filter(participant => eligibility.includes(participant.user_id))
+			}))
+			.filter(team => team.participants.length > 0);
+	}
+
+	async fetchLeaderboard() {
+		const teams = await this.fetchLeaderboardTeams();
 		return `${this.title} - Bingo Leaderboard
 ${teams
 	.slice(0, 10)
 	.map(
 		(team, index) =>
-			`${++index}. <@${team.participants.map(participant => userMention(participant.user_id))}> - ${
+			`${++index}. ${team.participants.map(participant => userMention(participant.user_id)).join(', ')} - ${
 				team.tilesCompletedCount
 			} tiles`
 	)

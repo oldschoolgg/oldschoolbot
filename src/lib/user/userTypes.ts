@@ -29,6 +29,7 @@ export type DegradeableItemColumns =
 	| 'serp_helm_charges'
 	| 'blood_fury_charges'
 	| 'tum_shadow_charges'
+	| 'ayak_charges'
 	| 'blood_essence_charges'
 	| 'trident_charges'
 	| 'scythe_of_vitur_charges'

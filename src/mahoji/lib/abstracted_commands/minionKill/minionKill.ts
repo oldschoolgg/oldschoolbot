@@ -30,7 +30,9 @@ export async function minionKillCommand(
 	wilderness: boolean | undefined,
 	solo: boolean | undefined
 ): CommandResponse {
-	if (inputQuantity !== undefined && inputQuantity < 1) return 'Quantity must be greater than 0.';
+	if (inputQuantity !== undefined && (!Number.isSafeInteger(inputQuantity) || inputQuantity < 1)) {
+		return 'Quantity must be a positive whole number.';
+	}
 	if (await user.minionIsBusy()) {
 		return 'Your minion is busy.';
 	}
@@ -39,6 +41,7 @@ export async function minionKillCommand(
 	if (!name) return invalidMonsterMsg;
 
 	if (stringMatches(name, 'colosseum')) return colosseumCommand(interaction);
+	if (stringMatches(name, 'doom')) return 'Use `/delves doom` to fight the Doom of Mokhaiotl.';
 	if (stringMatches(name, 'nex')) return nexCommand(interaction, user, channelId, solo);
 	if (stringMatches(name, 'zalcano')) return zalcanoCommand(rng, user, channelId, inputQuantity);
 	if (stringMatches(name, 'tempoross')) return temporossCommand(user, channelId, inputQuantity);
@@ -47,8 +50,8 @@ export async function minionKillCommand(
 
 	let monster = findMonster(name);
 
-	const matchedRevenantMonster = revenantMonsters.find(monster =>
-		monster.aliases.some(alias => stringMatches(alias, name))
+	const matchedRevenantMonster = revenantMonsters.find(revenantMonster =>
+		revenantMonster.aliases.some(alias => stringMatches(alias, name))
 	);
 	if (matchedRevenantMonster) {
 		monster = matchedRevenantMonster;
@@ -90,6 +93,7 @@ export async function minionKillCommand(
 		slayerUnlocks: user.user.slayer_unlocks,
 		favoriteFood: user.user.favorite_food,
 		bitfield: user.bitfield,
+		hasWildyEliteDiary: user.hasDiary('wilderness.elite'),
 		currentPeak: generateDailyPeakIntervals().currentPeak,
 		rng
 	});
@@ -149,10 +153,10 @@ export async function minionKillCommand(
 		attackStyles: result.attackStyles,
 		onTask: result.isOnTask
 	});
-	let response = `${minionName} is now killing ${result.quantity}x ${monster.name}, it'll take around ${formatTripDuration(
+	let response = `${minionName} is now killing ${result.quantity}x ${monster.name}, they are expected to finish ${formatTripDuration(
 		user,
 		result.duration
-	)} to finish. Attack styles used: ${result.attackStyles.join(', ')}.`;
+	)}. Attack styles used: ${result.attackStyles.join(', ')}.`;
 
 	if (result.messages.length > 0) {
 		response += `\n\n${result.messages.join(', ')}`;

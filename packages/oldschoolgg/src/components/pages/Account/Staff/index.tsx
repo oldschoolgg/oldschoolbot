@@ -1,9 +1,9 @@
 import { useInterval } from '@mantine/hooks';
+import type { ServiceStatus } from '@oldschoolgg/schemas';
 import { useCallback, useEffect, useState } from 'react';
 
 import { BotPreview } from '@/components/pages/Account/Staff/BotPreview.js';
 import { api } from '@/lib/api.js';
-import type { ServiceStatus } from '../../../../../../robochimp/src/structures/ServiceManager.js';
 
 export function StaffIndex() {
 	const [bots, setBots] = useState<ServiceStatus[] | null>(null);

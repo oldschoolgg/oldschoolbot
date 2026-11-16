@@ -8,6 +8,7 @@ SELECT add_constraint('users', 'chk_ash_sanctifier_charges_bounds', 'CHECK (ash_
 SELECT add_constraint('users', 'chk_serp_helm_charges_bounds', 'CHECK (serp_helm_charges >= 0)');
 SELECT add_constraint('users', 'chk_blood_fury_charges_bounds', 'CHECK (blood_fury_charges >= 0)');
 SELECT add_constraint('users', 'chk_tum_shadow_charges_bounds', 'CHECK (tum_shadow_charges >= 0)');
+SELECT add_constraint('users', 'chk_ayak_charges_bounds', 'CHECK (ayak_charges >= 0)');
 SELECT add_constraint('users', 'chk_blood_essence_charges_bounds', 'CHECK (blood_essence_charges >= 0)');
 SELECT add_constraint('users', 'chk_trident_charges_bounds', 'CHECK (trident_charges >= 0)');
 SELECT add_constraint('users', 'chk_venator_bow_charges_bounds', 'CHECK (venator_bow_charges >= 0)');

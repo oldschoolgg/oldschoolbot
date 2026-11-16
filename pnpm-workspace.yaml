@@ -9,7 +9,7 @@ ignoredBuiltDependencies:
 neverBuiltDependencies: []
 
 overrides:
-  "sharp": "0.34.5"
+  "sharp": "0.35.4"
   "dotenv": "16.5.0"
   "discord-api-types": "0.38.32"
   "undici-types": "7.14.0"

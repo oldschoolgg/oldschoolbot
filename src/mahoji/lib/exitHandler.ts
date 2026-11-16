@@ -17,7 +17,9 @@ export async function exitCleanup() {
 		if (roboChimpClient) {
 			roboChimpClient.$disconnect();
 		}
+		await Cache.close();
 	} catch (err) {
 		Logging.logError(err as Error);
+		process.exit(1);
 	}
 }

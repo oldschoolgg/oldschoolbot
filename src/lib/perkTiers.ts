@@ -1,18 +1,34 @@
-import { Time } from '@oldschoolgg/toolkit';
+import {
+	getCyrTripBonus,
+	getPerkTierDetails,
+	getPerkTierEx,
+	getPerkTierDisplay as getSharedPerkDisplay,
+	type PerkTierEntitlement,
+	RoboChimpBit,
+	Time
+} from '@oldschoolgg/toolkit';
 import { LRUCache } from 'lru-cache';
 
 import { BitField, PerkTier } from '@/lib/constants.js';
-
-export const allPerkBitfields: BitField[] = [
-	BitField.PatronTier6,
-	BitField.PatronTier5,
-	BitField.PatronTier4,
-	BitField.PatronTier3,
-	BitField.PatronTier2,
-	BitField.PatronTier1,
-	BitField.HasPermanentTierOne,
-	BitField.BothBotsMaxedFreeTierOnePerks
-];
+import type { RobochimpUser } from '@/lib/roboChimp.js';
+export const RobochimpBitfieldEnum = {
+	MagnaTier1: RoboChimpBit.MagnaTier1,
+	MagnaTier2: RoboChimpBit.MagnaTier2,
+	MagnaTier3: RoboChimpBit.MagnaTier3,
+	MagnaTier4: RoboChimpBit.MagnaTier4,
+	MagnaTier5: RoboChimpBit.MagnaTier5,
+	MagnaTier6: RoboChimpBit.MagnaTier6,
+	CyrTier0: RoboChimpBit.CyrTier0,
+	CyrTier1: RoboChimpBit.CyrTier1,
+	CyrTier2: RoboChimpBit.CyrTier2,
+	CyrTier3: RoboChimpBit.CyrTier3,
+	CyrTier4: RoboChimpBit.CyrTier4,
+	CyrTier5: RoboChimpBit.CyrTier5,
+	CyrTier6: RoboChimpBit.CyrTier6,
+	CyrTier7: RoboChimpBit.CyrTier7,
+	CyrsOriginalPatrons: RoboChimpBit.CyrsOriginalPatrons,
+	BonusMinute: RoboChimpBit.BonusMinute
+} as const;
 
 type PerkTierHotCacheEntry = {
 	tier: number;
@@ -26,9 +42,10 @@ const perkTierHotCache = new LRUCache<string, PerkTierHotCacheEntry>({
 	updateAgeOnGet: false
 });
 
-function setHotCache(userId: string, tier: number) {
+export function setHotCache(userId: string, tier: number) {
 	perkTierHotCache.set(userId, { tier, expires: Date.now() + PerkTierHotTTL });
 }
+
 export function getPerkTierCached(userId: string) {
 	const tierCacheEntry = perkTierHotCache.get(userId);
 	if (tierCacheEntry) {
@@ -36,78 +53,98 @@ export function getPerkTierCached(userId: string) {
 	}
 	return null;
 }
+
+export { getCyrTripBonus };
+
+export function getCourtesyTier(user: MUser): PerkTier {
+	const tiers: number[] = [];
+	if (user.isContributor() || user.isModOrAdmin() || user.isWikiContrib()) {
+		tiers.push(PerkTier.Four);
+	} else if (user.isTrusted()) {
+		tiers.push(PerkTier.Three);
+	}
+	if (
+		user.bitfield.includes(BitField.HasPermanentTierOne) ||
+		user.bitfield.includes(BitField.BothBotsMaxedFreeTierOnePerks)
+	) {
+		tiers.push(PerkTier.Two);
+	}
+	return Math.max(...tiers, PerkTier.Zero) as PerkTier;
+}
+
+export function getLegacyTier(user: MUser): PerkTier {
+	const bitfield = user.bitfield;
+	if (bitfield.includes(BitField.PatronTier6)) return PerkTier.Seven;
+	if (bitfield.includes(BitField.PatronTier5)) return PerkTier.Six;
+	if (bitfield.includes(BitField.PatronTier4)) return PerkTier.Five;
+	if (bitfield.includes(BitField.PatronTier3)) return PerkTier.Four;
+	if (bitfield.includes(BitField.PatronTier2)) return PerkTier.Three;
+	if (bitfield.includes(BitField.PatronTier1)) return PerkTier.Two;
+	return PerkTier.Zero;
+}
+
+function userPerkInput(roboUser: RobochimpUser, patreonBits: number[] = roboUser.bits) {
+	return {
+		patreonBits,
+		premiumTier: roboUser.premium_balance_tier,
+		premiumIsCyr: roboUser.premium_balance_is_cyr,
+		premiumExpiry: roboUser.premium_balance_expiry_date
+	};
+}
+
+export function getMUserPerkDetails(
+	user: MUser,
+	roboUser: RobochimpUser,
+	patreonBits?: number[]
+): PerkTierEntitlement[] {
+	return getPerkTierDetails(userPerkInput(roboUser, patreonBits), {
+		courtesyTier: getCourtesyTier(user),
+		legacyTier: getLegacyTier(user)
+	});
+}
+
+export function getMUserPerkDisplay(user: MUser, roboUser: RobochimpUser, patreonBits?: number[]): string {
+	return getSharedPerkDisplay(userPerkInput(roboUser, patreonBits), {
+		courtesyTier: getCourtesyTier(user),
+		legacyTier: getLegacyTier(user)
+	});
+}
+
 export async function getUsersPerkTier({
 	user,
 	forceNoCache
 }: {
 	user: MUser;
 	forceNoCache?: boolean;
-}): Promise<PerkTier | 0> {
+}): Promise<PerkTier> {
 	if (!forceNoCache) {
-		// We want a way to force a cache refresh
-		// Otherwise, we look for a cached tier:
 		const tierCacheEntry = perkTierHotCache.get(user.id);
-		// If it's not expired, return it:
 		if (tierCacheEntry && tierCacheEntry.expires > Date.now()) {
-			return tierCacheEntry.tier;
+			return tierCacheEntry.tier as PerkTier;
+		}
+		const redisCacheEntry = await Cache.getPerkTier(user.id);
+		if (redisCacheEntry) {
+			setHotCache(user.id, redisCacheEntry);
+			return redisCacheEntry as PerkTier;
 		}
 	}
 
-	const eligibleTiers = [];
-	if (user.isContributor() || user.isModOrAdmin()) {
-		eligibleTiers.push(PerkTier.Four);
-	} else if (user.isTrusted()) {
-		eligibleTiers.push(PerkTier.Three);
-	}
-
-	const bitfield = user.bitfield;
-
-	if (bitfield.includes(BitField.PatronTier6)) {
-		eligibleTiers.push(PerkTier.Seven);
-	}
-
-	if (bitfield.includes(BitField.PatronTier5)) {
-		eligibleTiers.push(PerkTier.Six);
-	}
-
-	if (bitfield.includes(BitField.PatronTier4)) {
-		eligibleTiers.push(PerkTier.Five);
-	}
-
-	if (bitfield.includes(BitField.PatronTier3)) {
-		eligibleTiers.push(PerkTier.Four);
-	}
-
-	if (bitfield.includes(BitField.PatronTier2)) {
-		eligibleTiers.push(PerkTier.Three);
-	}
-
+	const options = { courtesyTier: getCourtesyTier(user), legacyTier: getLegacyTier(user) };
 	const roboChimpCached = await Cache.getRoboChimpUser(user.id);
-	if (roboChimpCached) {
-		eligibleTiers.push(roboChimpCached.perk_tier);
-	}
+	const sharedTier = roboChimpCached
+		? getPerkTierEx(
+				{
+					patreonBits: roboChimpCached.bits,
+					premiumTier: roboChimpCached.premium_balance_tier,
+					premiumIsCyr: roboChimpCached.premium_balance_is_cyr,
+					premiumExpiry: roboChimpCached.premium_balance_expiry_date
+				},
+				options
+			)
+		: getPerkTierEx({ patreonBits: [] }, options);
+	const tier = Math.max(sharedTier, roboChimpCached?.perk_tier ?? PerkTier.Zero);
 
-	// Why bother looking for the member if it doesn't help get a higher tier
-	if (
-		user.bitfield.includes(BitField.PatronTier1) ||
-		user.bitfield.includes(BitField.HasPermanentTierOne) ||
-		user.bitfield.includes(BitField.BothBotsMaxedFreeTierOnePerks)
-	) {
-		eligibleTiers.push(PerkTier.Two);
-	}
-	// Server boosting perk has been eliminated
-
-	const tier = Math.max(...eligibleTiers, 0);
-	// If tier is higher than what robochimp thinks, smack that fool.
-	if (tier > (roboChimpCached?.perk_tier ?? 0)) {
-		await roboChimpClient.user.upsert({
-			where: {
-				id: BigInt(user.id)
-			},
-			update: { perk_tier: tier },
-			create: { id: BigInt(user.id) }
-		});
-	}
 	setHotCache(user.id, tier);
-	return tier;
+	await Cache.setPerkTier(user.id, tier);
+	return tier as PerkTier;
 }

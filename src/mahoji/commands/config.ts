@@ -1,6 +1,7 @@
 import { bold, EmbedBuilder, inlineCode } from '@oldschoolgg/discord';
 import { ECombatOption, type IGuild } from '@oldschoolgg/schemas';
 import {
+	cleanString,
 	formatDuration,
 	hexToDecimal,
 	isValidHexColor,
@@ -15,9 +16,10 @@ import { clamp } from 'remeda';
 
 import type { activity_type_enum } from '@/prisma/main/enums.js';
 import { choicesOf, itemOption } from '@/discord/index.js';
+import { MessageBuilder } from '@/discord/MessageBuilder.js';
 import { CanvasModule } from '@/lib/canvas/CanvasModule.js';
 import { ItemIconPacks } from '@/lib/canvas/iconPacks.js';
-import { BitField, BitFieldData, PerkTier } from '@/lib/constants.js';
+import { BitField, BitFieldData } from '@/lib/constants.js';
 import { Eatables } from '@/lib/data/eatables.js';
 import { CombatOptionsArray } from '@/lib/minions/data/combatConstants.js';
 import { birdhouseSeeds } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
@@ -25,7 +27,7 @@ import { autoslayChoices, slayerMasterChoices } from '@/lib/slayer/constants.js'
 import { setDefaultAutoslay, setDefaultSlayerMaster } from '@/lib/slayer/slayerUtil.js';
 import { BankSortMethods, isValidBankSortMethod } from '@/lib/sorts.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
-import { isValidNickname, patronMsg } from '@/lib/util/smallUtils.js';
+import { isValidNickname } from '@/lib/util/smallUtils.js';
 import { toggleBitfield } from '@/lib/util.js';
 
 type ExtendedBitFieldDataa = (typeof BitFieldData)[BitField] & {
@@ -42,15 +44,17 @@ const configBitFieldOverrides: Partial<Record<BitField, Partial<ExtendedBitField
 		userConfigurable: true,
 		bit: BitField.SelfGamblingLocked,
 		canToggle: async (user, interaction) => {
-			if (user.bitfield.includes(BitField.SelfGamblingLocked)) {
-				if (user.user.gambling_lockout_expiry && user.user.gambling_lockout_expiry.getTime() > Date.now()) {
-					const timeRemaining = user.user.gambling_lockout_expiry.getTime() - Date.now();
-					return {
-						result: false,
-						message: `You cannot toggle this off for another ${formatDuration(
-							timeRemaining
-						)}, you locked yourself from gambling!`
-					};
+			if (user.bitfield.includes(BitField.SelfGamblingLocked) && user.user.gambling_lockout_expiry) {
+				const timeRemaining = user.user.gambling_lockout_expiry.getTime() - Date.now();
+				if (timeRemaining < Time.Year) {
+					if (user.user.gambling_lockout_expiry.getTime() > Date.now()) {
+						return {
+							result: false,
+							message: `You cannot toggle this off for another ${formatDuration(
+								timeRemaining
+							)}, you locked yourself from gambling!`
+						};
+					}
 				}
 				return { result: true, message: 'Your Gambling lockout time has expired.' };
 			} else if (interaction) {
@@ -281,11 +285,6 @@ async function bankSortConfig(
 ): CommandResponse {
 	const currentMethod = user.user.bank_sort_method;
 	const currentWeightingBank = new Bank(user.user.bank_sort_weightings as ItemBank);
-
-	const perkTier = await user.fetchPerkTier();
-	if (perkTier < PerkTier.Two) {
-		return patronMsg(PerkTier.Two);
-	}
 
 	if (!sortMethod && !addWeightingBank && !removeWeightingBank && !resetWeightingBank) {
 		const sortStr = currentMethod
@@ -683,7 +682,7 @@ export const configCommand = defineCommand({
 									.filter(i => {
 										if ((!i.userConfigurable || i.protected) && !user.isAdmin()) return false;
 										if (!value) return true;
-										return stringMatches(i.name, value);
+										return cleanString(i.name).includes(cleanString(value));
 									})
 									.map(i => ({
 										name: `${i.name} (Currently ${bitfield.includes(i.bit) ? 'On' : 'Off'})`,
@@ -867,8 +866,8 @@ export const configCommand = defineCommand({
 							description: 'Add an item to your favorite food.',
 							required: false,
 							autocomplete: async ({ value }: StringAutoComplete) => {
-								return Eatables.filter(i =>
-									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
+								return Eatables.filter(
+									i => !value || i.name.toLowerCase().includes(value.toLowerCase())
 								).map(i => ({
 									name: `${i.name}`,
 									value: i.id.toString()

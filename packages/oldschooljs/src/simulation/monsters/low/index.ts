@@ -65,6 +65,7 @@ import { DagannothSpawn } from './a-f/DagannothSpawn.js';
 import { DagannothFledgeling } from './a-f/DaganothFledgeling.js';
 import { DarkBeast } from './a-f/DarkBeast.js';
 import { DarkWarrior } from './a-f/DarkWarrior.js';
+import { DarkWizard } from './a-f/DarkWizard.js';
 import { DeadlyRedSpider } from './a-f/DeadlyRedSpider.js';
 import { DeathWing } from './a-f/DeathWing.js';
 import { DemonicGorilla } from './a-f/DemonicGorilla.js';
@@ -179,6 +180,7 @@ import { MountainTroll } from './g-m/MountainTroll.js';
 import { MountedTerrorBirdGnome } from './g-m/MountedTerrorBirdGnome.js';
 import { Mourner } from './g-m/Mourner.js';
 import { MutatedBloodveld } from './g-m/MutatedBloodveld.js';
+import { Wizard } from './g-m/Wizard.js';
 import { Nechryael } from './n-s/Nechryael.js';
 import { Ogre } from './n-s/Ogre.js';
 import { OgressShaman } from './n-s/OgressShaman.js';
@@ -291,6 +293,7 @@ export const allLowMonsters: Record<string, SimpleMonster> = {
 	JuvenileCustodianStalker,
 	MatureCustodianStalker,
 	DarkWarrior,
+	DarkWizard,
 	DeadlyRedSpider,
 	ElderChaosDruid,
 	Ent,
@@ -484,6 +487,7 @@ export const allLowMonsters: Record<string, SimpleMonster> = {
 	Gargoyle,
 	MountainTroll,
 	Woman,
+	Wizard,
 	CaveHorror,
 	Goblin,
 	Zygomite,

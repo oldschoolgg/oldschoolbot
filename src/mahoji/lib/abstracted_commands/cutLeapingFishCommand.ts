@@ -72,5 +72,5 @@ export async function cutLeapingFishCommand({
 
 	return `${user.minionName} is now cutting ${quantity}x ${
 		barbarianFish.item.name
-	}, it'll take around ${formatTripDuration(user, duration)} to finish.`;
+	}, they are expected to finish ${formatTripDuration(user, duration)}.`;
 }

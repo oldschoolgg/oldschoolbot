@@ -358,6 +358,15 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
+		item: Items.getOrThrow('Surge potion(3)'),
+		aliases: ['surge potion (3)', 'surge potion', 'surge'],
+		level: 81,
+		xp: 185,
+		inputItems: new Bank({ 'Torstol potion (unf)': 1, 'Demonic tallow': 1 }),
+		tickRate: 2,
+		bankTimePerPotion: 0.3
+	},
+	{
 		item: Items.getOrThrow('Weapon poison(++)'),
 		aliases: ['weapon poison(++)'],
 		level: 82,

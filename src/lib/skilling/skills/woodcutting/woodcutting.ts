@@ -13,6 +13,8 @@ const sulliuscepTable = new LootTable()
 	.oneIn(175, 'Unidentified large fossil')
 	.oneIn(700, 'Unidentified rare fossil');
 
+const infectedRootTable = new LootTable().add('Demon tear', 1, 15).add('Logs', 1, 2);
+
 const logs: Log[] = [
 	{
 		level: 1,
@@ -29,7 +31,8 @@ const logs: Log[] = [
 		wcGuild: true,
 		petChance: 317_647,
 		qpRequired: 0,
-		clueScrollChance: 317_647
+		clueScrollChance: 317_647,
+		moonKeyHalfCatchRate: { numerator: 1, denominator: 2117 }
 	},
 	{
 		level: 1,
@@ -59,7 +62,8 @@ const logs: Log[] = [
 		wcGuild: true,
 		petChance: 361_146,
 		qpRequired: 0,
-		clueScrollChance: 361_146
+		clueScrollChance: 361_146,
+		moonKeyHalfCatchRate: { numerator: 1, denominator: 2407 }
 	},
 	{
 		level: 30,
@@ -75,7 +79,8 @@ const logs: Log[] = [
 		wcGuild: true,
 		petChance: 289_286,
 		qpRequired: 0,
-		clueScrollChance: 289_286
+		clueScrollChance: 289_286,
+		moonKeyHalfCatchRate: { numerator: 1, denominator: 1928 }
 	},
 	{
 		level: 35,
@@ -89,7 +94,8 @@ const logs: Log[] = [
 		depletionChance: 100 * (1 / 8),
 		petChance: 264_336,
 		qpRequired: 0,
-		clueScrollChance: 264_336
+		clueScrollChance: 264_336,
+		moonKeyHalfCatchRate: { numerator: 1, denominator: 1762 }
 	},
 	{
 		level: 45,
@@ -105,7 +111,8 @@ const logs: Log[] = [
 		wcGuild: true,
 		petChance: 221_918,
 		qpRequired: 0,
-		clueScrollChance: 221_918
+		clueScrollChance: 221_918,
+		moonKeyHalfCatchRate: { numerator: 1, denominator: 1479 }
 	},
 	{
 		level: 45,
@@ -133,7 +140,8 @@ const logs: Log[] = [
 		depletionChance: 100 * (1 / 8),
 		petChance: 220_623,
 		qpRequired: 0,
-		clueScrollChance: 220_623
+		clueScrollChance: 220_623,
+		moonKeyHalfCatchRate: { numerator: 1, denominator: 1470 }
 	},
 	{
 		level: 54,
@@ -163,7 +171,8 @@ const logs: Log[] = [
 		wcGuild: true,
 		petChance: 145_013,
 		qpRequired: 0,
-		clueScrollChance: 145_013
+		clueScrollChance: 145_013,
+		moonKeyHalfCatchRate: { numerator: 1, denominator: 966 }
 	},
 	{
 		level: 65,
@@ -196,7 +205,25 @@ const logs: Log[] = [
 		wcGuild: true,
 		petChance: 72_321,
 		qpRequired: 0,
-		clueScrollChance: 72_321
+		clueScrollChance: 72_321,
+		moonKeyHalfCatchRate: { numerator: 1, denominator: 482 }
+	},
+	{
+		level: 80,
+		xp: 10,
+		id: itemID('Demon tear'),
+		lootTable: infectedRootTable,
+		name: 'Infected Roots',
+		aliases: ['infected', 'infected root', 'infected roots', 'demon tear'],
+		findNewTreeTime: 0,
+		bankingTime: 60,
+		slope: 0.13,
+		intercept: 9.47,
+		depletionChance: 0,
+		petChance: 0,
+		qpRequired: 70,
+		clueScrollChance: 0,
+		clueNestsOnly: true
 	},
 	{
 		level: 90,

@@ -14,7 +14,7 @@ import {
 	loadImage
 } from '@/lib/canvas/canvasUtil.js';
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
-import { BitField, PerkTier } from '@/lib/constants.js';
+import { BitField } from '@/lib/constants.js';
 import { allCLItems } from '@/lib/data/Collections.js';
 import { filterableTypes } from '@/lib/data/filterables.js';
 import { marketPriceOfBank, marketPriceOrBotPrice } from '@/lib/marketPrices.js';
@@ -292,7 +292,6 @@ class BankImageTask {
 
 	getBgAndSprite({ bankBackgroundId, farmingContract }: BaseCanvasArgs = {}) {
 		const background = this.backgroundImages.find(i => i.id === bankBackgroundId) ?? this.backgroundImages[0];
-
 		const isFarmingContractReadyToHarvest = Boolean(
 			farmingContract?.contract.hasContract &&
 				farmingContract.matchingPlantedCrop &&
@@ -436,16 +435,17 @@ class BankImageTask {
 		let items = bank.items();
 
 		// Sorting
-		const favorites = user?.user.favoriteItems;
-		const weightings = user?.user.bank_sort_weightings as ItemBank;
-		const perkTier = user ? await user.fetchPerkTier() : 0;
-		const defaultSort: BankSortMethod = perkTier < PerkTier.Two ? 'value' : (user?.bankSortMethod ?? 'value');
+		const useWeightings = !(user?.user.bitfield.includes(BitField.DisableBankWeights) ?? false);
+		const useFavorites = !(user?.user.bitfield.includes(BitField.DisableBankFavorites) ?? false);
+		const favorites = useFavorites ? user?.user.favoriteItems : undefined;
+		const weightings = useWeightings ? (user?.user.bank_sort_weightings as ItemBank) : undefined;
+		const defaultSort: BankSortMethod = user?.bankSortMethod ?? 'value';
 		const sortInput = flags.get('sort');
 		const sort = sortInput ? (BankSortMethods.find(s => s === sortInput) ?? defaultSort) : defaultSort;
 
 		items.sort(sorts[sort]);
 
-		if (favorites) {
+		if (favorites && favorites.length > 0) {
 			items.sort((a, b) => {
 				const aFav = favorites.includes(a[0].id);
 				const bFav = favorites.includes(b[0].id);
@@ -456,7 +456,7 @@ class BankImageTask {
 			});
 		}
 
-		if (perkTier >= PerkTier.Two && weightings && Object.keys(weightings).length > 0) {
+		if (weightings && Object.keys(weightings).length > 0) {
 			items.sort((a, b) => {
 				const aWeight = weightings[a[0].id];
 				const bWeight = weightings[b[0].id];

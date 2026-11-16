@@ -64,6 +64,7 @@ export * from './simulation/openables/Implings.js';
 export * from './simulation/openables/index.js';
 export * from './simulation/subtables/index.js';
 export * from './structures/LootTable.js';
+export * from './structures/SimpleTable.js';
 
 export const NIGHTMARES_HP = 2400;
 export const ZAM_HASTA_CRUSH = 65;

@@ -2986,7 +2986,7 @@
 		"chance_99": 183,
 		"chance_of_death": 25,
 		"protection_payment": {
-			"5968": 200
+			"5968": 1
 		},
 		"needs_chop_for_harvest": false,
 		"fixed_output": false,

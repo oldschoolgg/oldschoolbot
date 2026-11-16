@@ -46,7 +46,7 @@ export async function lmsCommand(
 		if (!itemToBuy) {
 			return "That's not a valid item you can buy.";
 		}
-		const quantity = options.buy.quantity ?? 1;
+		const quantity = Math.max(1, options.buy.quantity ?? 1);
 		const cost = itemToBuy.cost ? itemToBuy.cost * quantity : itemToBuy.cost;
 		if (cost && stats.points < cost) {
 			return `You don't have enough points. ${quantity}x ${itemToBuy.item.name} costs ${cost}, but you have ${stats.points}.`;
@@ -99,5 +99,5 @@ export async function lmsCommand(
 
 	return `${
 		user.minionName
-	} is now off to do ${quantity} games of competitive Last Man Standing. The trip will return in about ${formatTripDuration(user, duration)}.`;
+	} is now off to do ${quantity} games of competitive Last Man Standing. The trip will return ${formatTripDuration(user, duration)}.`;
 }

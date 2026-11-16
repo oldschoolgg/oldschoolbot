@@ -38,6 +38,6 @@ export const Guard: SimpleMonster = new SimpleMonster({
 	id: 995,
 	name: 'Guard',
 	table: GuardTable,
-	pickpocketTable: new LootTable().add('Coins', 30).tertiary(257_211, 'Rocky'),
+	pickpocketTable: new LootTable().add('Coins', 30),
 	aliases: ['guard']
 });

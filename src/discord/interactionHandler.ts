@@ -21,11 +21,10 @@ export async function interactionHandler(client: OldSchoolBotClient, itx: APIInt
 	const userId = user.id;
 
 	if (!DISCORD_USER_IDS_INSERTED_CACHE.has(userId) && user) {
-		client.upsertDiscordUser(user);
+		void client.upsertDiscordUser(user);
 	}
 
-	const fullUser = await mUserFetch(userId);
-
+	if (user?.username) await Cache.updateUsername(user.id, user.username);
 	if (itx.type === InteractionType.ApplicationCommandAutocomplete) {
 		const d: IAutoCompleteInteraction = {
 			id: itx.id,
@@ -40,6 +39,8 @@ export async function interactionHandler(client: OldSchoolBotClient, itx: APIInt
 		};
 		return autoCompleteHandler(d);
 	}
+
+	const fullUser = await mUserFetch(userId);
 
 	// Button
 	if (itx.type === InteractionType.MessageComponent && itx.data.component_type === ComponentType.Button) {
@@ -66,6 +67,7 @@ export async function interactionHandler(client: OldSchoolBotClient, itx: APIInt
 	}
 
 	if (itx.type === InteractionType.ApplicationCommand && itx.data.type === ApplicationCommandType.ChatInput) {
+		await fullUser.fetchPerkTier({ forceNoCache: true });
 		const chatInputItx = itx as APIChatInputApplicationCommandInteraction;
 		const d: IChatInputCommandInteraction = {
 			id: itx.id,

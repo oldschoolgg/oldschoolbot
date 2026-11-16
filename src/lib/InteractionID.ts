@@ -19,7 +19,9 @@ export const InteractionID = {
 		Join: 'PARTY_JOIN',
 		Leave: 'PARTY_LEAVE',
 		Cancel: 'PARTY_CANCEL',
-		Start: 'PARTY_START'
+		Start: 'PARTY_START',
+		HostApprove: 'PARTY_HOST_APPROVE',
+		HostDecline: 'PARTY_HOST_DECLINE'
 	},
 	Confirmation: {
 		Confirm: 'CONFIRM',

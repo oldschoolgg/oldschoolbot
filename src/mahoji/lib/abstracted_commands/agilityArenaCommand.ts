@@ -94,7 +94,7 @@ export async function agilityArenaCommand(
 		minigameID: 'agility_arena'
 	});
 
-	let str = `${user.minionName} is now doing the Brimhaven Agility Arena for ${formatTripDuration(user, duration)}.`;
+	let str = `${user.minionName} is now doing the Brimhaven Agility Arena and should finish ${formatTripDuration(user, duration)}.`;
 
 	if (boosts.length > 0) {
 		str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
@@ -103,6 +103,7 @@ export async function agilityArenaCommand(
 }
 
 export async function agilityArenaBuyCommand(user: MUser, input: string, qty = 1): CommandResponse {
+	qty = Math.max(qty, 1);
 	const buyable = agilityArenaBuyables.find(
 		i => stringMatches(input, i.name) || i.aliases.some(alias => stringMatches(alias, input))
 	);

@@ -68,7 +68,7 @@ export const blacklistCommand = defineCommand({
 					reason: options.add.reason
 				}
 			});
-			await syncBlacklists();
+			await syncBlacklists().catch(err => console.error('Error syncing blacklists:', err));
 			await emitBlacklistLog(
 				`${inputUser.user.username}[${inputUser.user.id}] was blacklisted by ${user.mention}, reason: \`${options.add.reason}\`.`
 			);
@@ -81,7 +81,7 @@ export const blacklistCommand = defineCommand({
 					id
 				}
 			});
-			await syncBlacklists();
+			await syncBlacklists().catch(err => console.error('Error syncing blacklists:', err));
 			await emitBlacklistLog(
 				`${inputUser.user.username}[${inputUser.user.id}] was unblacklisted by ${user.mention}.`
 			);

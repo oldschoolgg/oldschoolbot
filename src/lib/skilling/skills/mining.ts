@@ -31,7 +31,8 @@ const ores: Ore[] = [
 		slope: 1.06,
 		intercept: 49.33,
 		petChance: 741_600,
-		clueScrollChance: 741_600
+		clueScrollChance: 741_600,
+		moonKeyHalfCatchRate: { numerator: 1, denominator: 4944 }
 	},
 	{
 		level: 1,
@@ -54,6 +55,7 @@ const ores: Ore[] = [
 		intercept: 49.33,
 		petChance: 741_600,
 		clueScrollChance: 741_600,
+		moonKeyHalfCatchRate: { numerator: 1, denominator: 4944 },
 		aliases: ['copper']
 	},
 	{
@@ -67,6 +69,7 @@ const ores: Ore[] = [
 		intercept: 49.33,
 		petChance: 741_600,
 		clueScrollChance: 741_600,
+		moonKeyHalfCatchRate: { numerator: 1, denominator: 4944 },
 		aliases: ['tin']
 	},
 	{
@@ -91,6 +94,7 @@ const ores: Ore[] = [
 		petChance: 741_600,
 		minerals: 100,
 		clueScrollChance: 741_600,
+		moonKeyHalfCatchRate: { numerator: 1, denominator: 4944 },
 		aliases: ['iron']
 	},
 	{
@@ -104,6 +108,7 @@ const ores: Ore[] = [
 		intercept: 9,
 		petChance: 741_600,
 		clueScrollChance: 741_600,
+		moonKeyHalfCatchRate: { numerator: 1, denominator: 4944 },
 		aliases: ['silver']
 	},
 	{
@@ -140,7 +145,8 @@ const ores: Ore[] = [
 		intercept: 5.83,
 		petChance: 296_640,
 		minerals: 60,
-		clueScrollChance: 296_640
+		clueScrollChance: 296_640,
+		moonKeyHalfCatchRate: { numerator: 1, denominator: 1937 }
 	},
 	{
 		level: 35,
@@ -179,6 +185,7 @@ const ores: Ore[] = [
 		intercept: 2.15,
 		petChance: 296_640,
 		clueScrollChance: 296_640,
+		moonKeyHalfCatchRate: { numerator: 1, denominator: 1977 },
 		aliases: ['gold']
 	},
 	{
@@ -204,6 +211,7 @@ const ores: Ore[] = [
 		intercept: 0.59,
 		petChance: 148_320,
 		clueScrollChance: 148_320,
+		moonKeyHalfCatchRate: { numerator: 1, denominator: 988 },
 		aliases: ['mith', 'mith ore', 'mithril']
 	},
 	{
@@ -239,7 +247,23 @@ const ores: Ore[] = [
 		intercept: -0.53,
 		petChance: 59_328,
 		clueScrollChance: 59_328,
+		moonKeyHalfCatchRate: { numerator: 1, denominator: 395 },
 		aliases: ['addy', 'adamant', 'adamant ore', 'adamantite']
+	},
+	{
+		level: 78,
+		prayerLevel: 43,
+		xp: 22.5,
+		id: 30_846,
+		name: 'Infernal shale',
+		respawnTime: 0,
+		bankingTime: 0,
+		slope: 0,
+		intercept: 100,
+		aliases: ['infernal', 'shale', 'crushed infernal shale'],
+		outputId: 30_848,
+		outputMultiplier: 1.3,
+		fixedRatePerHour: [1500, 1700]
 	},
 	{
 		level: 85,
@@ -252,6 +276,7 @@ const ores: Ore[] = [
 		intercept: -0.85,
 		petChance: 42_377,
 		clueScrollChance: 42_377,
+		moonKeyHalfCatchRate: { numerator: 1, denominator: 282 },
 		aliases: ['rune', 'rune ore', 'runite']
 	},
 	{
@@ -305,8 +330,8 @@ const prospectorItems: ItemBank = {
 	[itemID('Prospector boots')]: 0.2
 };
 
-export const prospectorItemsArr = Object.entries(prospectorItems).map(([itemID, bonus]) => ({
-	id: Number.parseInt(itemID),
+export const prospectorItemsArr = Object.entries(prospectorItems).map(([itemIDString, bonus]) => ({
+	id: Number.parseInt(itemIDString),
 	boostPercent: bonus
 }));
 

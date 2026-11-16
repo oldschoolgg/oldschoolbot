@@ -35,6 +35,7 @@ export type SkillNameType = (typeof SkillsArray)[number];
 
 export interface Ore {
 	level: number;
+	prayerLevel?: number;
 	xp: number;
 	id: number;
 	name: string;
@@ -45,7 +46,11 @@ export interface Ore {
 	petChance?: number;
 	minerals?: number;
 	clueScrollChance?: number;
+	moonKeyHalfCatchRate?: MoonKeyHalfCatchRate;
 	aliases?: string[];
+	outputId?: number;
+	outputMultiplier?: number;
+	fixedRatePerHour?: [number, number];
 }
 
 export interface Log {
@@ -65,6 +70,7 @@ export interface Log {
 	petChance?: number;
 	qpRequired: number;
 	clueScrollChance?: number;
+	moonKeyHalfCatchRate?: MoonKeyHalfCatchRate;
 	clueNestsOnly?: boolean;
 }
 
@@ -176,6 +182,7 @@ export interface SmithedItem {
 	timeToUse: number;
 	outputMultiple: number;
 	qpRequired?: number;
+	addToCl?: boolean;
 }
 
 export interface Craftable {

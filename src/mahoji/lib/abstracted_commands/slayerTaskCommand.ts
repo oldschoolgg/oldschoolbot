@@ -76,7 +76,8 @@ export async function slayerNewTaskCommand({
 	extraContent,
 	slayerMasterOverride,
 	saveDefaultSlayerMaster,
-	showButtons
+	showButtons,
+	ephemeralButtonResponse = true
 }: {
 	rng?: RNGProvider;
 	user: MUser;
@@ -85,6 +86,7 @@ export async function slayerNewTaskCommand({
 	slayerMasterOverride?: string | undefined;
 	saveDefaultSlayerMaster?: boolean;
 	showButtons?: boolean;
+	ephemeralButtonResponse?: boolean;
 }): CommandResponse {
 	if (!rng) rng = MathRNG;
 	const { currentTask } = await user.fetchSlayerInfo();
@@ -162,7 +164,7 @@ export async function slayerNewTaskCommand({
 		if (showButtons) {
 			return {
 				content: `${extraContent ?? ''}\n\n${returnMessage}`,
-				ephemeral: true,
+				ephemeral: ephemeralButtonResponse,
 				components: slayerActionButtons
 			};
 		}
@@ -196,7 +198,7 @@ export async function slayerNewTaskCommand({
 			if (showButtons) {
 				return {
 					content: `You already have a slayer task: ${resultMessage}`,
-					ephemeral: true,
+					ephemeral: ephemeralButtonResponse,
 					components: slayerActionButtons
 				};
 			}
@@ -237,7 +239,7 @@ export async function slayerNewTaskCommand({
 	if (showButtons) {
 		return {
 			content: resultMessage,
-			ephemeral: true,
+			ephemeral: ephemeralButtonResponse,
 			components: slayerActionButtons
 		};
 	}

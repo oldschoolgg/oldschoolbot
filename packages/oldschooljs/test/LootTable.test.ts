@@ -14,6 +14,15 @@ describe('LootTable', async () => {
 		expect(table2.tertiaryItems.length).toEqual(1);
 	});
 
+	it('should return rolls by method', () => {
+		const table = new LootTable().every('Bones').tertiary(1, 'Coal').oneIn(2, 'Iron ore').add('Mithril ore');
+
+		expect(table.getRollByMethod('every')).toHaveLength(1);
+		expect(table.getRollByMethod('tertiary')).toHaveLength(1);
+		expect(table.getRollByMethod('oneIn')).toHaveLength(1);
+		expect(table.getRollByMethod('add')).toHaveLength(1);
+	});
+
 	it('should roll tertiary items', () => {
 		const table = new LootTable().tertiary(1, 'Coal');
 		for (const qty of [1, 2, 5]) {

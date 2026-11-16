@@ -1,6 +1,6 @@
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 
-import { roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { roboChimpSyncData } from '@/lib/roboChimp.js';
 import { getIdFromMention } from '@/lib/util.js';
 
 export async function refreshUserCache({
@@ -28,8 +28,11 @@ export async function refreshUserCache({
 	};
 	await Promise.all([
 		refreshUser.fetchPerkTier({ forceNoCache: true }),
+		Cache.resetUsername(refreshUser.id),
 		updateGuildMember(refreshUser.id),
-		roboChimpUserFetch(refreshUser.id)
+		Cache.getRoboChimpUser(refreshUser.id, true),
+		roboChimpSyncData(refreshUser)
 	]);
+
 	return `${refreshUser}'s Caches updated successfully!`;
 }

@@ -12,6 +12,7 @@ import {
 import { Bank, Items, itemID } from 'oldschooljs';
 import { clamp } from 'remeda';
 
+import { MessageBuilder } from '@/discord/MessageBuilder.js';
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';
 import { degradeItem } from '@/lib/degradeableItems.js';
 import { countUsersWithItemInCl } from '@/lib/rawSql.js';
@@ -130,6 +131,7 @@ export async function barbAssaultBuyCommand(interaction: MInteraction, user: MUs
 	if (!quantity) {
 		quantity = 1;
 	}
+	quantity = Math.max(1, quantity);
 
 	const { item, cost } = buyable;
 	const stats = await user.fetchStats();
@@ -260,7 +262,7 @@ export async function barbAssaultStartCommand({ user, channelId, rng }: OSIntera
 		user.minionName
 	} is now off to do ${quantity} waves of Barbarian Assault. Each wave takes ${formatDuration(
 		waveTime
-	)} - the total trip will return in about ${formatTripDuration(user, duration)}.`;
+	)} - the total trip will return ${formatTripDuration(user, duration)}.`;
 
 	str += `\n\n**Boosts:** ${boosts.join(', ')}.${venBowMsg}`;
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({

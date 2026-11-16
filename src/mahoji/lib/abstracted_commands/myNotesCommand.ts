@@ -31,8 +31,8 @@ export async function myNotesCommand(user: MUser, channelId: string) {
 
 	return `${
 		user.minionName
-	} is now rummaging ${quantity} skeletons for Ancient pages, it'll take around ${formatTripDuration(
+	} is now rummaging ${quantity} skeletons for Ancient pages, they are expected to finish ${formatTripDuration(
 		user,
 		duration
-	)} to finish. Removed ${foodRemoved}.`;
+	)}. Removed ${foodRemoved}.`;
 }

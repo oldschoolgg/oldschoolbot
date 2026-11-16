@@ -1,4 +1,4 @@
-import { AServiceTypes, type IServiceType } from '@oldschoolgg/schemas';
+import { AServiceTypes, type IServiceType, type ServiceStatus } from '@oldschoolgg/schemas';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 
@@ -6,30 +6,13 @@ const execAsync = promisify(exec);
 
 type ServiceAction = 'start' | 'stop' | 'restart' | 'status';
 
-export interface ServiceStatus {
-	service: IServiceType;
-	active: boolean;
-	state: string;
-	sub_state: string;
-	uptime: number | null;
-	memory: {
-		current: number;
-		peak: number;
-	} | null;
-	cpu: {
-		usage: number;
-	} | null;
-	pid: number | null;
-	restart_count: number;
-}
-
 class ServiceManager {
 	private async exec(service: IServiceType, action: ServiceAction): Promise<string> {
 		if (!AServiceTypes.includes(service)) {
 			throw new Error(`Invalid service: ${service}`);
 		}
 
-		const { stdout, stderr } = await execAsync(`sudo /usr/bin/systemctl ${action} ${service}.service`);
+		const { stdout, stderr } = await execAsync(`sudo /usr/bin/systemctl ${action} ${service}`);
 		return stdout || stderr;
 	}
 

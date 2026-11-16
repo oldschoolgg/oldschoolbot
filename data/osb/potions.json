@@ -394,6 +394,10 @@
 		"items": ["Superattack mix(1)", "Superattack mix(2)"]
 	},
 	{
+		"name": "Surge potion",
+		"items": ["Surge potion(1)", "Surge potion(2)", "Surge potion(3)", "Surge potion(4)"]
+	},
+	{
 		"name": "Zamorak brew",
 		"items": ["Zamorak brew(1)", "Zamorak brew(2)", "Zamorak brew(3)", "Zamorak brew(4)"]
 	},

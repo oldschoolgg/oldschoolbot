@@ -4,26 +4,102 @@ sidebar:
   order: 1
 ---
 
-This guide assumes you have bought a minion ([[/minion buy]]) and have read the [OSB Starter Guide](https://wiki.oldschool.gg/getting-started/beginner-guide). Once you have mid-level equipment (Barrow's or Godwars equipment) and a few mid to high level stats (80s+), then you are done with the early game prep for BSO.
+## Progression Guide
 
-Most of the content within BSO takes place in the endgame, with a few exceptions such as [[Queen Black Dragon]], [[Dungeoneering]], and some [custom pets](/bso/custom-items/pets). To build up early money aside from what you earn levelling skills, it is advised to frequently redeem your [[/minion daily]], as well as opening or selling any mystery boxes you may receive for extra money. You can also earn decent money while training combat stats by levelling your [Slayer](/bso/skills/slayer) skill. Much of the content before doing end game content (which consists mainly of custom bosses) is levelling stats and gathering money to purchase better gear from other players.
+Once you've purchased a minion with [[/minion buy]], you're ready to begin progressing through BSO.
 
-Once you have a decent amount of money, you can kill demi-bosses as a method of earning a decent amount of cash from unique drops and [Grandmaster Clues](/bso/clue-scrolls/grandmaster-clues/). These demi-bosses consist of, in order from lowest requirements to highest: [[Queen Black Dragon]], [[Sea Kraken]], [[Treebeard]], [[Malygos]], [[Nihiliz]]
+Your early goals are simple:
 
-These bosses are better fought with higher tier equipment, so read the following:
-It is advised that after you have killed the demi-bosses enough to afford better gear to focus on killing [[Kalphite King]] and [[Nex]] for the best weapons and armour, respectively. Having these gear pieces unlocks the current end stage of the game, consisting of bosses with high requirements and high rewards. [[Vasa Magus]], [[King Goldemar]], [[Ignecarus]], and [[Emerged Zuk Inferno]] are all late-game bosses that reward BIS gear items for different activities.
-As far as content goes, the above is the current endgame for PvM. However, there are various skilling activities and minigames not listed in this guide that are easily accessed on other wiki pages. If you wish to be more involved with BSO then it is highly recommended that you read up on a few, if not most, of the wiki pages in order to have a better grasp on everything available within the bot.
+- Train your stats, aiming for around level 80+.
+- Upgrade to mid-tier gear, such as Barrows or God Wars equipment.
+- Build up your cash stack.
 
-All xp in BSO is granted a 5x boost from OSB/OSRS rates.
+All XP in BSO is granted a 5x boost from OSB/OSRS rates.
 
-## Global Boosts
+A community spreadsheet, available [here](https://docs.google.com/spreadsheets/d/1ZMaCkbzR2TV9QVoRub74btXCc8Cw1coVff7VXUxvYkE/htmlview), shows all the best XP rates of each skill. You are also able to enter your own XP and see the time left to reach various XP milestones.
 
-There are five extremely rare items called [First Age](/bso/custom-items/#first-age) that each boost all xp gains by 1% with an additional 1% added if you have all 5 equipped.
+For more in-depth information on the unique features of BSO, see the [BSO overview](/getting-started/bso/).
 
-Having a [master cape](/bso/custom-items/capes/#master-capes) equipped anywhere will give a global 3% boost to all xp gained. This goes up to 8% when training the skill you have mastery in.
+## Common Progression Pathways
 
-A community spreadsheet, available [here](https://docs.google.com/spreadsheets/d/1ZMaCkbzR2TV9QVoRub74btXCc8Cw1coVff7VXUxvYkE/htmlview), shows all the best exp rates of each skill. You are also able to enter your own exp and see the time left to reach various xp milestones.`
+1. Questing for Zippy -> running Grandmaster Clues
+2. Rushing 500M Hunter -> catching Sand Geckos
+3. Working towards 120M XP in all skills
 
-## Max Trip Length
+## Making Money
 
-There are many ways to increase your minion's max trip length in BSO. The default time is 30 minutes. This can be increased with patreon by 3 minutes at tier 1, 6 minutes at tier 2, and 10 minutes at tier 3+. You can gain 15 seconds for every 2.5b value (including Skipper bonus) you have sacrificied up to a maximum of +1 minute at 10b. This is multiplied 3x with tier 3+ patron for +3 minutes at 10b. The [Hitpoints Master Cape](/bso/custom-items/capes/#master-capes) increases your max trip length for all things /k by 20% as well as dungeoneering trips by 10% along with an additional +6.18 minutes gained from having level 120 hp. Zak will extended your max trip by 40% (these 20% and 40% boosts are not applied to the time from sac value nor from leagues). Finally for having 50k+ league points you will gain an additional +1 minute to your max trip length.The maximum current trip length is therefore `(30+10+(110/89*5))*1.2*1.4+3+1` = 81.582 minutes
+During the early game, some reliable ways to earn money include:
+
+- Claiming your [[/minion daily]] reward.
+- Opening or selling mystery boxes.
+- Selling valuable drops to other players.
+
+## Custom Pets
+
+BSO offers a variety of [custom pets](/bso/custom-items/pets/) that provide perks for skilling boosts, additional loot, extra mystery box rewards, and more. These pets can be obtained from various activities throughout the game.
+
+## PvM Progression
+
+Once you have reasonable gear, you can begin fighting the demi-bosses.
+
+- [Queen Black Dragon](/bso/monsters/demi-bosses/queen-black-dragon/)
+- [Sea Kraken](/bso/monsters/demi-bosses/sea-kraken/)
+- [Treebeard](/bso/monsters/demi-bosses/treebeard/)
+- [Malygos](/bso/monsters/demi-bosses/malygos/)
+- [Nihiliz](/bso/monsters/demi-bosses/nihiliz/)
+- [Vladimir Drakan](/bso/monsters/demi-bosses/vladimir-drakan/)
+
+These bosses provide valuable unique drops and [Grandmaster Clues](/bso/clue-scrolls/grandmaster-clues/) that will help fund your next upgrades.
+
+## Endgame Gear
+
+After earning enough money, focus on obtaining:
+
+- Kalphite King weapons
+- Nex armour
+
+These unlock the majority of BSO's endgame PvM content.
+
+## Endgame Bosses
+
+The current endgame consists of several challenging bosses with powerful rewards, including:
+
+- [Akumu](/bso/monsters/bosses/akumu/)
+- [Celestara](/bso/monsters/bosses/celestara/)
+- [Emerged Zuk Inferno](/bso/minigames/emerged-zuk-inferno/)
+- [Ignecarus](/bso/monsters/bosses/ignecarus/)
+- [Kalphite King](/bso/monsters/bosses/kalphite-king/)
+- [King Goldemar](/bso/monsters/bosses/king-goldemar/)
+- [Moktang](/bso/monsters/bosses/moktang/)
+- [Naxxus](/bso/monsters/bosses/naxxus/)
+- [Solis](/bso/monsters/bosses/solis/)
+- [Vasa Magus](/bso/monsters/bosses/vasa-magus/)
+- [Venatrix](/bso/monsters/bosses/venatrix/)
+
+Each offers unique equipment and progression opportunities.
+
+## Beyond Combat
+
+BSO also features a wide range of skilling activities, minigames, custom pets, and other content. Explore the rest of the wiki as you progress to discover everything the game has to offer.
+
+## Global XP Bonuses
+
+Several bonuses increase experience gained:
+
+- [First Age equipment](/bso/custom-items/#first-age) - Each piece grants +1% global XP, with an additional bonus for equipping the full set.
+- [Master capes](/bso/custom-items/capes/#master-capes) - Grant +3% global XP, increasing to +8% when training the corresponding skill.
+
+## Maximum Trip Length
+
+Your minion starts with a maximum trip length of 30 minutes.
+
+Trip length can be increased through several upgrades, including:
+
+- Patreon membership
+- Sacrifice value
+- Hitpoints Master Cape
+- Level 120 Hitpoints
+- Zak
+- League Point rewards
+
+With every available upgrade, the current maximum trip length exceeds 81 minutes.

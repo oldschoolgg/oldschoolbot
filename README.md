@@ -49,6 +49,9 @@ You can also ask Magna to invite your Bot with your invite link above if you so 
 - [[Gidedin](https://github.com/imgidedin)]
 - [[Andre](https://github.com/ard35)]
 - [[TastyPumPum](https://github.com/TastyPumPum)]
+- [[Jonesy](https://github.com/nwjgit)]
+- [[Alabastor](https://github.com/DarkWorldsArtist)]
+- [[DayV](https://github.com/DayV-git)]
 
 ### Self Hosting
 

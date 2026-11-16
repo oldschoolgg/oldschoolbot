@@ -6,7 +6,7 @@ import {
 	round,
 	sumArr
 } from '@oldschoolgg/toolkit';
-import { Bank } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
 import * as z from 'zod';
 
@@ -74,6 +74,15 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 	const [newTime, skillBoostMsg] = applySkillBoost(skillsAsLevels, timeToFinish, attackStyles);
 	timeToFinish = newTime;
 	messages.push(skillBoostMsg);
+	if (monster.id === Monsters.Yama.id) {
+		if (skillsAsLevels.agility >= 83) {
+			timeToFinish = reduceNumByPercent(timeToFinish, 12);
+			messages.push('12% for 83 Agility Chasm shortcut');
+		} else if (skillsAsLevels.agility >= 73) {
+			timeToFinish = reduceNumByPercent(timeToFinish, 7);
+			messages.push('7% for 73 Agility Chasm shortcut');
+		}
+	}
 
 	if (percentReduced >= 1) messages.push(`${percentReduced}% for KC`);
 	let currentTaskOptions: CombatMethodOptions = {};

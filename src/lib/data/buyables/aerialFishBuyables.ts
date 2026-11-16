@@ -6,25 +6,25 @@ export const aerialFishBuyables: Buyable[] = [
 	{
 		name: 'Angler hat',
 		itemCost: new Bank({
-			'Molch pearl': 100
+			'Molch pearl': 50
 		})
 	},
 	{
 		name: 'Angler top',
 		itemCost: new Bank({
-			'Molch pearl': 100
+			'Molch pearl': 50
 		})
 	},
 	{
 		name: 'Angler waders',
 		itemCost: new Bank({
-			'Molch pearl': 100
+			'Molch pearl': 50
 		})
 	},
 	{
 		name: 'Angler boots',
 		itemCost: new Bank({
-			'Molch pearl': 100
+			'Molch pearl': 50
 		})
 	},
 	{
@@ -48,7 +48,13 @@ export const aerialFishBuyables: Buyable[] = [
 	{
 		name: 'Fish sack',
 		itemCost: new Bank({
-			'Molch pearl': 1000
+			'Molch pearl': 500
+		})
+	},
+	{
+		name: 'Shark lure pack',
+		itemCost: new Bank({
+			'Molch pearl': 1
 		})
 	}
 ];

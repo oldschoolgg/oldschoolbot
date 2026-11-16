@@ -1,7 +1,7 @@
 import { type Bank, ItemGroups, resolveItems } from 'oldschooljs';
 
 import { skillingPetsCL } from '@/lib/data/CollectionsExport.js';
-import type { GlobalBingoTile } from '@/mahoji/lib/bingo/bingoUtil.js';
+import type { UniversalBingoTile } from '@/mahoji/lib/bingo/bingoUtil.js';
 
 const otherSpiritShieldParts = resolveItems(['Blessed spirit shield', 'Holy elixir', 'Spirit shield']);
 const allSpiritShieldSets = [
@@ -24,7 +24,8 @@ const allRingSets = [
 	])
 ];
 
-export const globalBingoTiles: GlobalBingoTile[] = [
+// Compatibility reader for existing bingo_tiles rows. New JSON imports cannot reference this catalogue.
+export const legacyBingoTiles: readonly (UniversalBingoTile & { id: number })[] = [
 	{
 		id: 1,
 		name: 'Receive any boss pet',

@@ -66,6 +66,26 @@ const itemBoosts = [
 	// Boots
 	[
 		{
+			item: Items.getOrThrow('Avernic treads (max)'),
+			boost: 7
+		},
+		{
+			item: Items.getOrThrow('Avernic treads (pr)(et)'),
+			boost: 7
+		},
+		{
+			item: Items.getOrThrow('Avernic treads (pr)(pe)'),
+			boost: 7
+		},
+		{
+			item: Items.getOrThrow('Avernic treads (pr)'),
+			boost: 7
+		},
+		{
+			item: Items.getOrThrow('Avernic treads'),
+			boost: 5
+		},
+		{
 			item: Items.getOrThrow('Primordial boots'),
 			boost: 5
 		},
@@ -392,7 +412,7 @@ export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrate
 
 	return `${
 		user.minionName
-	} is now killing ${quantity}x monsters in the Nightmare Zone! It will take ${formatTripDuration(user, duration)} to finish. **Boosts:** ${boosts.join(', ')}\nYour minion used up ${totalCost}`;
+	} is now killing ${quantity}x monsters in the Nightmare Zone! They are expected to finish ${formatTripDuration(user, duration)}. **Boosts:** ${boosts.join(', ')}\nYour minion used up ${totalCost}`;
 }
 
 export async function nightmareZoneShopCommand(

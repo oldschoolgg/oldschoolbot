@@ -1,7 +1,22 @@
-import { ApplicationCommandType, type RESTPostAPIApplicationGuildCommandsJSONBody, Routes } from '@oldschoolgg/discord';
+import {
+	ApplicationCommandType,
+	type BaseSendableMessage,
+	type RESTPostAPIApplicationGuildCommandsJSONBody,
+	Routes
+} from '@oldschoolgg/discord';
 
 import { convertCommandOptionToAPIOption } from '@/discord/index.js';
 import { globalConfig } from '@/lib/constants.js';
+
+export async function resolveBotSendableMessage(rawMessage: SendableMessage): Promise<BaseSendableMessage> {
+	if (typeof rawMessage === 'string') {
+		return { content: rawMessage };
+	}
+	if ('build' in rawMessage) {
+		return resolveBotSendableMessage(await rawMessage.build());
+	}
+	return rawMessage;
+}
 
 export function mentionCommand(name: string, subCommand?: string, subSubCommand?: string) {
 	if (process.env.TEST) return '';
@@ -23,6 +38,24 @@ export function mentionCommand(name: string, subCommand?: string, subSubCommand?
 	}
 
 	return `</${name}:${apiCommand.id}>`;
+}
+
+export async function resolveSendable(sendable: SendableMessage) {
+	// SendableMessage is of type: string | BaseSendableMessage | AnyClassWithBuild
+	// Todo: BaseSendableMessage can still be the type, but not have any content, so maybe we add resolution of
+	//   embeds and attachments?
+
+	if (typeof sendable === 'string') {
+		// string
+		return sendable;
+	} else if ('content' in sendable) {
+		// BaseSendableMessage
+		return sendable.content;
+	} else if ('build' in sendable && typeof sendable.build === 'function') {
+		// AnyClassWithBuild
+		return await resolveSendable(await sendable.build());
+	}
+	return undefined;
 }
 
 function convertCommandToAPICommand(

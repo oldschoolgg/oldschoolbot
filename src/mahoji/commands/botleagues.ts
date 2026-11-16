@@ -3,7 +3,7 @@ import { Bank, Items } from 'oldschooljs';
 
 import { leagueBuyables } from '@/lib/data/leaguesBuyables.js';
 import { doMenuWrapper } from '@/lib/menuWrapper.js';
-import { roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { LEADERBOARD_OVERFETCH } from '@/lib/util/leaderboardEligibility.js';
 
 const leaguesTrophiesBuyables = [
 	{
@@ -75,7 +75,7 @@ export const botLeaguesCommand = defineCommand({
 		}
 	],
 	run: async ({ options, user, interaction }) => {
-		const roboChimpUser = await roboChimpUserFetch(user.id);
+		const roboChimpUser = await Cache.getRoboChimpUser(user.id);
 
 		if (options.claim_trophy) {
 			const loot = new Bank();
@@ -140,7 +140,7 @@ ${leaguesTrophiesBuyables
 					leagues_points_total: { gt: 0 }
 				},
 				orderBy: { leagues_points_total: 'desc' },
-				take: 100
+				take: 100 * LEADERBOARD_OVERFETCH
 			});
 
 			return doMenuWrapper({
@@ -151,6 +151,7 @@ ${leaguesTrophiesBuyables
 					score: r.leagues_points_total
 				})),
 				title: 'Leagues Points Leaderboard',
+				limit: 100,
 				formatter: v => `${v.toLocaleString()} Pts`
 			});
 		}

@@ -11,6 +11,17 @@ export interface MakePartyOptions {
 	customDenier?(user: MUser): Promise<[false] | [true, string]>;
 }
 
+export interface MakeDuoOptions {
+	leader: MUser;
+	interaction: MInteraction;
+	message: string;
+	ironmanAllowed: boolean;
+	usersAllowed?: string[];
+	autoStartAfter?: number;
+	customDenier?(user: MUser): Promise<[false] | [true, string]>;
+	confirmMessage?(user: MUser): string;
+}
+
 export type Skills = Partial<{
 	[key in SkillNameType]: number;
 }>;

@@ -8,6 +8,7 @@ import { globalConfig } from '@/lib/constants.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import { allCommandsDONTIMPORT } from '@/mahoji/commands/allCommands.js';
 import { mockMessage, mockUser } from '../integration/util.js';
+import { mockAPIUser } from './fakeUsernames.js';
 import { TestLogs } from './logs.js';
 import { mockedId, mockSnowflake } from './misc.js';
 import { mockChannel } from './mockChannel.js';
@@ -54,6 +55,14 @@ export class TestClient extends AsyncEventEmitter<any> implements AsyncDisposabl
 
 	async fetchChannel() {
 		return mockChannel(this.rng);
+	}
+
+	async fetchUser(userId: string) {
+		return mockAPIUser(userId, this.rng);
+	}
+
+	async fetchUserUsername(userId: string) {
+		return (await this.fetchUser(userId)).username;
 	}
 
 	async editMessage() {

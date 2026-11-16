@@ -66,7 +66,7 @@ export const minionKCommand = defineCommand({
 			name: 'quantity',
 			description: 'The amount you want to kill.',
 			required: false,
-			min_value: 0
+			min_value: 1
 		},
 		{
 			type: 'String',

@@ -233,11 +233,11 @@ export const chopCommand = defineCommand({
 
 		let response = `${user.minionName} is now chopping ${log.name} until your minion ${
 			quantity ? `chopped ${newQuantity}x or gets tired` : 'is satisfied'
-		}, it'll take ${
+		}, they are expected to finish ${
 			quantity
 				? `between ${formatTripDuration(user, fakeDurationMin)} **and** ${formatTripDuration(user, fakeDurationMax)}`
 				: formatTripDuration(user, duration)
-		} to finish.`;
+		}.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
