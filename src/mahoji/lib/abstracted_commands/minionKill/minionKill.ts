@@ -26,7 +26,7 @@ export async function minionKillCommand(
 	name: string,
 	rng: RNGProvider,
 	inputQuantity: number | undefined,
-	method: PvMMethod | undefined,
+	method: PvMMethod | PvMMethod[] | undefined,
 	wilderness: boolean | undefined,
 	solo: boolean | undefined
 ): CommandResponse {

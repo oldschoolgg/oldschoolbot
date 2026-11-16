@@ -1,7 +1,7 @@
 import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 
 import { choicesOf } from '@/discord/index.js';
-import { PVM_METHODS } from '@/lib/constants.js';
+import { PVM_METHODS, type PvMMethod } from '@/lib/constants.js';
 import { Eatables } from '@/lib/data/eatables.js';
 import { autocompleteMonsters, wikiMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
@@ -73,7 +73,11 @@ export const minionKCommand = defineCommand({
 			name: 'method',
 			description: 'If you want to cannon/barrage/burst.',
 			required: false,
-			choices: choicesOf(PVM_METHODS)
+			choices: [
+				...choicesOf(PVM_METHODS),
+				{ name: 'barrage + cannon', value: 'barrage+cannon' },
+				{ name: 'burst + cannon', value: 'burst+cannon' }
+			]
 		},
 		{
 			type: 'Boolean',
@@ -98,6 +102,14 @@ export const minionKCommand = defineCommand({
 		if (options.show_info) {
 			return interaction.returnStringOrFile(await monsterInfo(user, options.name));
 		}
+		let method: PvMMethod | PvMMethod[] | undefined;
+		if (options.method === 'barrage+cannon') {
+			method = ['barrage', 'cannon'];
+		} else if (options.method === 'burst+cannon') {
+			method = ['burst', 'cannon'];
+		} else {
+			method = options.method;
+		}
 		return minionKillCommand(
 			user,
 			interaction,
@@ -105,7 +117,7 @@ export const minionKCommand = defineCommand({
 			options.name,
 			rng,
 			options.quantity,
-			options.method,
+			method,
 			options.wilderness,
 			options.solo
 		);
