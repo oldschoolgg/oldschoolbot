@@ -17,6 +17,7 @@ Auto farming collects ready patches into a single Farming activity so you can ha
 - **Replant** - Only replants patches that already contained that crop and that you still have seeds for. Empty patches stay empty.
 - Configure the behaviour with [[/farming auto_farm_filter auto_farm_filter_data:AllFarm]] or [[/farming auto_farm_filter auto_farm_filter_data:Replant]].
 - Use [[/farming set_preferred]] for per-patch overrides:
+  - Set `quantity` to limit how many patches auto farm plants or replants for that patch type.
   - `seed` to force a specific seed for that patch type
   - `highest_available` to always choose best available for that patch
   - `empty` to skip that patch type entirely
