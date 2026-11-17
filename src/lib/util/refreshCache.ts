@@ -24,7 +24,9 @@ export async function refreshUserCache({
 	}
 
 	const updateGuildMember = async (userId: string) => {
-		if (guildId) await Cache.getMember({ guildId, userId, refreshCache: true, externalServer: true });
+		if (!guildId) return;
+		const guild = await Cache.getGuild(guildId);
+		await Cache.getMember({ guildId, userId, refreshCache: true, forceCheck: Boolean(guild.bingo_admin_role) });
 	};
 	await Promise.all([
 		refreshUser.fetchPerkTier({ forceNoCache: true }),

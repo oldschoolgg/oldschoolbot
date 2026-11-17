@@ -6,7 +6,7 @@ import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 import type { Prisma } from '@/prisma/main.js';
 import { cachedBingoBoard } from '@/lib/bingo/bingoRenderer.js';
 import { clImageGenerator } from '@/lib/collectionLogTask.js';
-import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
+import { BOT_TYPE } from '@/lib/constants.js';
 import { doMenuWrapper } from '@/lib/menuWrapper.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
 import { BingoManager, BingoTrophies } from '@/mahoji/lib/bingo/BingoManager.js';
@@ -623,10 +623,18 @@ export const bingoCommand = defineCommand({
 			if (channel.guild_id !== interaction.guildId) {
 				return 'The notifications channel must be in the same server as the command.';
 			}
-			// Use the interaction's permissions; the member cache only covers selected servers.
-			const member = interaction.member;
-			if (globalConfig.isProduction && (!member || !member.permissions.includes('ADMINISTRATOR'))) {
-				return 'You can only use a notifications channel if you are an Administrator of that server.';
+			if (!interaction.member?.permissions.includes('ADMINISTRATOR')) {
+				const guild = await Cache.getGuild(channel.guild_id);
+				const member = guild.bingo_admin_role
+					? await Cache.getMember({ guildId: channel.guild_id, userId: user.id, forceCheck: true })
+					: null;
+				if (
+					!guild.bingo_admin_role ||
+					!member ||
+					(guild.bingo_admin_role !== channel.guild_id && !member.roles.includes(guild.bingo_admin_role))
+				) {
+					return 'You must be a server administrator or have the bingo admin role to create a bingo.';
+				}
 			}
 
 			const createOptions = {

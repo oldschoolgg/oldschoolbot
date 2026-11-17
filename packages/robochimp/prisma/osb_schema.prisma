@@ -222,6 +222,7 @@ model Guild {
   id                String   @id @db.VarChar(19)
   disabledCommands  String[] @default([])
   petchannel        String?  @db.VarChar(19)
+  bingoAdminRole    String?  @db.VarChar(19)
   staffOnlyChannels String[] @default([]) @db.VarChar(19)
 
   @@map("guilds")
