@@ -173,6 +173,7 @@ export enum BitField {
 	HasRiteOfVileTransference = 59,
 	DisableRiteOfVileTransference = 60,
 	CompostWarning = 61,
+	SkillMilestoneDMs = 62,
 
 	OriginalCyrSupporter = 199,
 	BannedFromGambling = 237
@@ -254,6 +255,11 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 	},
 	[BitField.DisableGrandExchangeDMs]: {
 		name: 'Disable Grand Exchange DMs',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.SkillMilestoneDMs]: {
+		name: 'Skill Milestone DMs',
 		protected: false,
 		userConfigurable: true
 	},
