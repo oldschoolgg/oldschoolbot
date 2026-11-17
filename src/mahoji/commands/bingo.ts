@@ -595,10 +595,29 @@ export const bingoCommand = defineCommand({
 		}
 
 		if (options.create_bingo) {
-			const tiles = await importBingoConfiguration(options.create_bingo.configuration);
 			if (user.isIronman) {
 				return 'Ironmen cannot create bingos.';
 			}
+
+			const bingoGuildId = interaction.guildId;
+			if (!bingoGuildId) {
+				return 'You must be a server administrator or have the bingo admin role to create a bingo.';
+			}
+			if (!interaction.member?.permissions.includes('ADMINISTRATOR')) {
+				const guild = await Cache.getGuild(bingoGuildId);
+				const member = guild.bingo_admin_role
+					? await Cache.getMember({ guildId: bingoGuildId, userId: user.id, forceCheck: true })
+					: null;
+				if (
+					!guild.bingo_admin_role ||
+					!member ||
+					(guild.bingo_admin_role !== bingoGuildId && !member.roles.includes(guild.bingo_admin_role))
+				) {
+					return 'You must be a server administrator or have the bingo admin role to create a bingo.';
+				}
+			}
+
+			const tiles = await importBingoConfiguration(options.create_bingo.configuration);
 			const fee = BOT_TYPE === 'OSB' ? 20_000_000 : 50_000_000;
 			const creationCost = new Bank().add('Coins', fee);
 			if (user.GP < creationCost.amount('Coins')) {
@@ -609,32 +628,19 @@ export const bingoCommand = defineCommand({
 			if (!isValidDiscordSnowflake(channelId)) {
 				return "That's not a valid channel ID, if you need help on how to get a channel id, you can ask us for help.";
 			}
-			const channel = await Cache.getChannel(options.create_bingo.notifications_channel_id);
+			const channel = await Cache.getChannel(channelId);
+			if (!channel || !channel.guild_id) {
+				return 'Invalid notifications channel.';
+			}
+			if (channel.guild_id !== bingoGuildId) {
+				return 'The notifications channel must be in the same server as the command.';
+			}
 			const sendable = await globalClient.channelIsSendable(channel);
 			if (!sendable) {
 				return 'I cannot send messages to the notifications channel.';
 			}
-			if (!channel || !channel.guild_id) {
-				return 'Invalid notifications channel.';
-			}
 			if (!isValidNickname(options.create_bingo.title)) {
 				return 'Invalid title.';
-			}
-			if (channel.guild_id !== interaction.guildId) {
-				return 'The notifications channel must be in the same server as the command.';
-			}
-			if (!interaction.member?.permissions.includes('ADMINISTRATOR')) {
-				const guild = await Cache.getGuild(channel.guild_id);
-				const member = guild.bingo_admin_role
-					? await Cache.getMember({ guildId: channel.guild_id, userId: user.id, forceCheck: true })
-					: null;
-				if (
-					!guild.bingo_admin_role ||
-					!member ||
-					(guild.bingo_admin_role !== channel.guild_id && !member.roles.includes(guild.bingo_admin_role))
-				) {
-					return 'You must be a server administrator or have the bingo admin role to create a bingo.';
-				}
 			}
 
 			const createOptions = {
@@ -651,7 +657,7 @@ export const bingoCommand = defineCommand({
 				bingo_tiles: tiles as unknown as Prisma.InputJsonObject[],
 				theme: options.create_bingo.theme ?? null,
 				creator_id: user.id,
-				guild_id: channel.guild_id
+				guild_id: bingoGuildId
 			};
 
 			if (createOptions.team_size < 1 || createOptions.team_size > 5) {
