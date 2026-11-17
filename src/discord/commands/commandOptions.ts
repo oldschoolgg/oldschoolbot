@@ -61,9 +61,11 @@ type OptionValue<O> = O extends { type: 'String'; choices?: infer C }
 				? MahojiUserOption
 				: O extends { type: 'Attachment' }
 					? APIAttachment
-					: O extends { type: 'Channel' | 'Role' | 'Mentionable' }
-						? string
-						: never;
+					: O extends { type: 'Role' }
+						? IRole
+						: O extends { type: 'Channel' | 'Mentionable' }
+							? string
+							: never;
 
 type ExtractArgs<T extends AnyArr<unknown> | undefined> =
 	T extends AnyArr<unknown>

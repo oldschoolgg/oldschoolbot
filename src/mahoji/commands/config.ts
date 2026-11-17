@@ -1032,7 +1032,7 @@ LIMIT 20;
 				if (!interaction.member?.permissions.includes('ADMINISTRATOR')) {
 					return 'You must be a server administrator to change the bingo admin role.';
 				}
-				const roleId = options.server.bingo_admin_role.role ?? null;
+				const roleId = options.server.bingo_admin_role.role?.id ?? null;
 				await Cache.updateGuild(guildId, { bingo_admin_role: roleId });
 				return roleId ? `Bingo admin role set to <@&${roleId}>.` : 'Bingo admin role cleared.';
 			}
