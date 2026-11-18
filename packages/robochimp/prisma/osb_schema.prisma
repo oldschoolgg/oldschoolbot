@@ -316,6 +316,7 @@ model User {
   // Configs/Settings
   minion_defaultCompostToUse CropUpgradeType    @default(compost) @map("minion.defaultCompostToUse")
   auto_farm_filter           AutoFarmFilterEnum @default(AllFarm)
+  auto_farm_button_patch     FarmingPatch?
   favoriteItems              Int[]              @default([])
   favorite_alchables         Int[]              @default([])
   favorite_food              Int[]              @default([])
@@ -1026,6 +1027,28 @@ enum xp_gains_skill_enum {
 enum AutoFarmFilterEnum {
   AllFarm
   Replant
+}
+
+enum FarmingPatch {
+  herb
+  fruit_tree
+  tree
+  allotment
+  hops
+  cactus
+  bush
+  spirit
+  hardwood
+  seaweed
+  vine
+  calquat
+  redwood
+  crystal
+  celastrus
+  hespori
+  flower
+  mushroom
+  belladonna
 }
 
 enum GEListingType {

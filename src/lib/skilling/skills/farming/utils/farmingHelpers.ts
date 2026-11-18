@@ -107,6 +107,10 @@ export function canShowAutoFarmButtonForPatches(
 export async function canShowAutoFarmButton(user: MUser): Promise<boolean> {
 	const { getFarmingInfoFromUser } = await import('./getFarmingInfo.js');
 	const info = getFarmingInfoFromUser(user);
+	const preferredPatch = user.user.auto_farm_button_patch;
+	if (preferredPatch) {
+		return info.patchesDetailed.some(patch => patch.patchName === preferredPatch && patch.ready === true);
+	}
 	return canShowAutoFarmButtonForPatches(user, info.patchesDetailed);
 }
 
