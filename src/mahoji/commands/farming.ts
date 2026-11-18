@@ -158,6 +158,27 @@ export const farmingCommand = defineCommand({
 		},
 		{
 			type: 'Subcommand',
+			name: 'auto_farm_button',
+			description: 'Choose which patch must be ready to show the Auto Farm button after trips.',
+			required: false,
+			options: [
+				{
+					type: 'String',
+					name: 'patch',
+					description: 'The patch that must be ready, or any to restore the default behaviour.',
+					required: true,
+					choices: [
+						{ name: 'Any patch (default)', value: 'any' },
+						...Farming.farmingPatchNames.map(name => ({
+							name: toTitleCase(name.replace(/_/g, ' ')),
+							value: name
+						}))
+					]
+				}
+			]
+		},
+		{
+			type: 'Subcommand',
 			name: 'auto_farm_filter',
 			description: 'Set which auto farm filter you want to use by default.',
 			required: false,
@@ -337,6 +358,16 @@ export const farmingCommand = defineCommand({
 				minion_defaultCompostToUse: tier.name
 			});
 			return `You will now use ${tier.item.name} by default.`;
+		}
+		if (options.auto_farm_button) {
+			const patch = options.auto_farm_button.patch;
+			if (patch !== 'any' && !Farming.isPatchName(patch)) return 'Invalid patch.';
+			await user.update({
+				auto_farm_button_patch: patch === 'any' ? null : patch
+			});
+			return patch === 'any'
+				? 'The Auto Farm button will now appear after trips when any patch is ready or an empty patch can be planted.'
+				: `The Auto Farm button will now only appear after trips when your ${toTitleCase(patch.replace(/_/g, ' '))} patch is ready to harvest.`;
 		}
 		if (options.auto_farm_filter) {
 			const autoFarmFilterString = Object.values(AutoFarmFilterEnum).find(

@@ -29,6 +29,7 @@ import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import {
 	canShowAutoFarmButton,
 	canShowAutoFarmButtonForPatches,
+	type FarmingPatchName,
 	findPlant,
 	getFarmingKeyFromName,
 	hasAnyReadyPatch,
@@ -42,15 +43,20 @@ function setFarmingPreferenceData(
 	user: MUser,
 	data: {
 		autoFarmFilter?: AutoFarmFilterEnum;
+		autoFarmButtonPatch?: FarmingPatchName | null;
 		preferredSeeds?: unknown;
 	}
 ) {
 	const writableUser = user.user as unknown as {
 		auto_farm_filter?: AutoFarmFilterEnum;
+		auto_farm_button_patch?: FarmingPatchName | null;
 		minion_farmingPreferredSeeds?: unknown;
 	};
 	if (data.autoFarmFilter) {
 		writableUser.auto_farm_filter = data.autoFarmFilter;
+	}
+	if (data.autoFarmButtonPatch !== undefined) {
+		writableUser.auto_farm_button_patch = data.autoFarmButtonPatch;
 	}
 	if (data.preferredSeeds) {
 		writableUser.minion_farmingPreferredSeeds = data.preferredSeeds;
@@ -103,6 +109,46 @@ describe('farming helpers', () => {
 		getFarmingInfoFromUserMock.mockReturnValueOnce({ patchesDetailed: [{ ready: null } as IPatchDataDetailed] });
 		const resultWithoutReady = await canShowAutoFarmButton(mockMUser());
 		expect(resultWithoutReady).toBe(false);
+	});
+
+	it.each([
+		true,
+		false,
+		null
+	] as const)('only shows the trip auto farm button when the preferred patch is ready (ready: %s)', async ready => {
+		const user = mockMUser({
+			bank: new Bank().add('Guam seed', 10),
+			skills_farming: convertLVLtoXP(10)
+		});
+		setFarmingPreferenceData(user, {
+			autoFarmFilter: AutoFarmFilterEnum.AllFarm,
+			autoFarmButtonPatch: 'herb'
+		});
+		getFarmingInfoFromUserMock.mockReturnValueOnce({
+			patchesDetailed: [
+				{ patchName: 'herb', ready } as IPatchDataDetailed,
+				{ patchName: 'tree', ready: true } as IPatchDataDetailed
+			]
+		});
+
+		await expect(canShowAutoFarmButton(user)).resolves.toBe(ready === true);
+	});
+
+	it('supports other preferred patches and resetting to any patch', async () => {
+		const user = mockMUser();
+		setFarmingPreferenceData(user, { autoFarmButtonPatch: 'tree' });
+		const patchesDetailed = [
+			{ patchName: 'herb', ready: true } as IPatchDataDetailed,
+			{ patchName: 'tree', ready: false } as IPatchDataDetailed
+		];
+		getFarmingInfoFromUserMock.mockReturnValue({ patchesDetailed });
+
+		await expect(canShowAutoFarmButton(user)).resolves.toBe(false);
+		patchesDetailed[1].ready = true;
+		await expect(canShowAutoFarmButton(user)).resolves.toBe(true);
+		patchesDetailed[1].ready = false;
+		setFarmingPreferenceData(user, { autoFarmButtonPatch: null });
+		await expect(canShowAutoFarmButton(user)).resolves.toBe(true);
 	});
 
 	it('shows the auto farm button when AllFarm can plant an empty patch', async () => {
@@ -161,7 +207,7 @@ describe('farming helpers', () => {
 		expect(canShowAutoFarmButtonForPatches(user, [emptyHerbPatch])).toBe(false);
 	});
 
-	it('userGrowingProgressStr includes all patch states and auto farm button', () => {
+	it('userGrowingProgressStr includes all patch states and ignores the trip button patch preference', () => {
 		const basePatch: IPatchDataDetailed = {
 			lastPlanted: 'Guam',
 			patchPlanted: true,
@@ -191,7 +237,9 @@ describe('farming helpers', () => {
 			friendlyName: 'Empty patch'
 		};
 
-		const result = userGrowingProgressStr([basePatch, growingPatch, emptyPatch], mockMUser());
+		const user = mockMUser();
+		setFarmingPreferenceData(user, { autoFarmButtonPatch: 'tree' });
+		const result = userGrowingProgressStr([basePatch, growingPatch, emptyPatch], user);
 
 		const normalized = normalizeGrowingProgress(result);
 
