@@ -8,20 +8,14 @@ import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import type { ClueActivityTaskOptions } from '@/lib/types/minions.js';
 
 const possibleFound = new LootTable()
-	.add('Reward casket (beginner)')
-	.add('Reward casket (beginner)')
-	.add('Reward casket (beginner)')
-	.add('Reward casket (easy)')
-	.add('Reward casket (easy)')
-	.add('Reward casket (easy)')
-	.add('Reward casket (medium)')
-	.add('Reward casket (medium)')
-	.add('Reward casket (hard)')
-	.add('Reward casket (elite)')
-	.add('Reward casket (master)')
-	.add('Tradeable Mystery Box')
-	.add('Tradeable Mystery Box')
-	.add('Untradeable Mystery Box');
+	.add('Reward casket (beginner)', 1, 3)
+	.add('Reward casket (easy)', 1, 3)
+	.add('Reward casket (medium)', 1, 2)
+	.add('Reward casket (hard)', 1, 1)
+	.add('Reward casket (elite)', 1, 1)
+	.add('Reward casket (master)', 1, 1)
+	.add('Tradeable Mystery Box', 1, 2)
+	.add('Untradeable Mystery Box', 1, 1);
 
 export const clueTask: MinionTask = {
 	type: 'ClueCompletion',
