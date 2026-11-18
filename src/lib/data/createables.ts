@@ -1868,6 +1868,15 @@ const Createables: Createable[] = [
 		})
 	},
 	{
+		name: 'Dragon hasta',
+		inputItems: new Bank({
+			'Broken dragon hasta': 1
+		}),
+		outputItems: new Bank({
+			'Dragon hasta': 1
+		})
+	},
+	{
 		name: 'Zamorakian hasta',
 		inputItems: new Bank({
 			'Zamorakian spear': 1
