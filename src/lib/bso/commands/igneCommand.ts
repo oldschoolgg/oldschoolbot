@@ -119,7 +119,10 @@ ${bossUsers.map(u => `**${u.user.usernameOrMention}**: ${u.debugStr}`).join('\n\
 		)
 		.setImage(
 			'https://cdn.discordapp.com/attachments/357422607982919680/857358542456487996/grzegorz-rutkowski-dragons-breath-1920-2.jpg'
-		);
+		)
+		.setFooter({
+			text: 'Ratings are capped at 100%. Average combines Gear, KC and Boosts equally. Extra bonuses still shorten the trip.'
+		});
 
 	return {
 		embeds: [embed],
