@@ -69,19 +69,25 @@ function resolveComponents(
 
 const DEFAULT_ALLOWED_MENTIONS: APIAllowedMentions = { users: [], roles: [], parse: [] };
 
-export async function sendableMsgToApiCreate({ msg }: { msg: SendableMessage }): Promise<APISendableMessage> {
+export async function sendableMsgToApiCreate({
+	msg,
+	isEdit = false
+}: {
+	msg: SendableMessage;
+	isEdit?: boolean;
+}): Promise<APISendableMessage> {
 	if (typeof msg === 'string') {
-		return sendableMsgToApiCreate({ msg: { content: msg } });
+		return sendableMsgToApiCreate({ msg: { content: msg }, isEdit });
 	}
 
 	if ('build' in msg) {
 		// TODO: if content >2k, send as txt file
-		return sendableMsgToApiCreate({ msg: await msg.build() });
+		return sendableMsgToApiCreate({ msg: await msg.build(), isEdit });
 	}
 
 	const message: RESTPostAPIChannelMessageJSONBody = {
-		content: msg.content ?? '',
-		components: resolveComponents(msg.components),
+		content: msg.content ?? (isEdit ? undefined : ''),
+		components: isEdit && msg.components === undefined ? undefined : resolveComponents(msg.components),
 		embeds: msg.embeds?.map(embed => embed.toJSON()),
 		flags: msg.ephemeral ? MessageFlags.Ephemeral : undefined,
 		allowed_mentions: merge(DEFAULT_ALLOWED_MENTIONS, msg.allowedMentions),
