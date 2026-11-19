@@ -7,6 +7,7 @@ import {
 	type UpgradeCategory
 } from '@/lib/bso/commands/islandUpgrades.js';
 import { elderRequiredClueCLItems, elderSherlockItems } from '@/lib/bso/elderClueRequirements.js';
+import { ignecarusBISGear } from '@/lib/bso/gear/ignecarusGear.js';
 import { type Nursery, TameSpeciesID, tameFeedableItems } from '@/lib/bso/tames/tames.js';
 
 import { EmbedBuilder, userMention } from '@oldschoolgg/discord';
@@ -646,7 +647,8 @@ const spawnPresets = [
 	['potions', potionsPreset],
 	['food', foodPreset],
 	['runes', runePreset],
-	['island', islandPreset]
+	['island', islandPreset],
+	['igne', ignecarusBISGear.allItemsBank().add('Heat res. brew', 10_000).add('Heat res. restore', 10_000)]
 ] as const;
 
 const thingsToWipe = [
@@ -1441,6 +1443,10 @@ export const testPotatoCommand = globalConfig.isProduction
 						return `${Items.getOrThrow(unspawnableItem).name} cannot be spawned.`;
 
 					await user.addItemsToBank({ items: bankToGive, collectionLog: Boolean(collectionlog) });
+					if (preset === 'igne') {
+						await user.updateGear([{ setup: 'melee', gear: ignecarusBISGear.raw() }]);
+						return `Spawned: ${bankToGive.toString().slice(0, 500)}. Equipped BiS Ignecarus melee gear.`;
+					}
 					return `Spawned: ${bankToGive.toString().slice(0, 500)}.`;
 				}
 
