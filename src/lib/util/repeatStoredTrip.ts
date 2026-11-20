@@ -1022,8 +1022,6 @@ export async function repeatTrip(
 		}
 		throw err;
 	}
-	const commandName =
-		typeof handler.commandName === 'function' ? handler.commandName(args as any) : handler.commandName;
 	const continueDeltaMillis = interaction.createdTimestamp - idToUnixTs(interaction.messageId);
 	return runCommand({
 		commandName: handler.commandName,
