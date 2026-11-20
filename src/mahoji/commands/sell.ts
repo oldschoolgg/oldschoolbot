@@ -5,6 +5,7 @@ import { clamp } from 'remeda';
 import type { Prisma } from '@/prisma/main.js';
 import { filterOption } from '@/discord/index.js';
 import { CUSTOM_PRICE_CACHE } from '@/lib/cache.js';
+import { masteringMixologyRefundables } from '@/lib/minions/data/masteringMixology.js';
 import { NestBoxesTable } from '@/lib/simulation/misc.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
@@ -133,6 +134,10 @@ export const sellCommand = defineCommand({
 				content: 'Here is your selected bank in text file format.',
 				files: [{ name: 'bank.txt', buffer: Buffer.from(bankToSell.toString()) }]
 			};
+		}
+
+		if (masteringMixologyRefundables.some(i => bankToSell.has(i.item.id))) {
+			return `Prescription goggles and alchemist clothing can be refunded for 40% of their Mixology point cost using ${globalClient.mentionCommand('minigames', 'mastering_mixology', 'refund')}. Remove these items from your selection to sell other items.`;
 		}
 
 		if (bankToSell.has('mole claw') || bankToSell.has('mole skin')) {

@@ -3,7 +3,11 @@ import { NMZ_STRATEGY } from '@/lib/constants.js';
 import TrekShopItems from '@/lib/data/buyables/trekBuyables.js';
 import { ValeTotemsBuyables, ValeTotemsSellables } from '@/lib/data/buyables/valeTotemsBuyables.js';
 import { LMSBuyables } from '@/lib/data/CollectionsExport.js';
-import { masteringMixologyBuyables, mixologyHerbs } from '@/lib/minions/data/masteringMixology.js';
+import {
+	masteringMixologyBuyables,
+	masteringMixologyRefundables,
+	mixologyHerbs
+} from '@/lib/minions/data/masteringMixology.js';
 import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
 import {
 	agilityArenaBuyables,
@@ -49,6 +53,7 @@ import {
 import {
 	MasteringMixologyBuyCommand,
 	MasteringMixologyContractStartCommand,
+	MasteringMixologyRefundCommand,
 	MasteringMixologyStatusCommand,
 	MixologyPasteCreationCommand
 } from '@/mahoji/lib/abstracted_commands/masteringMixologyCommand.js';
@@ -722,6 +727,28 @@ export const minigamesCommand = defineCommand({
 					type: 'Subcommand',
 					name: 'status',
 					description: 'Show your mixology status.'
+				},
+				{
+					type: 'Subcommand',
+					name: 'refund',
+					description: 'Refund goggles or alchemist clothing for 40% of their mixology point cost.',
+					options: [
+						{
+							type: 'String',
+							name: 'name',
+							required: true,
+							description: 'The item to refund.',
+							choices: masteringMixologyRefundables.map(i => ({ name: i.item.name, value: i.item.name }))
+						},
+						{
+							type: 'Integer',
+							name: 'quantity',
+							description: 'Quantity.',
+							required: false,
+							min_value: 1,
+							max_value: 1000
+						}
+					]
 				}
 			]
 		},
@@ -1447,6 +1474,14 @@ export const minigamesCommand = defineCommand({
 				user,
 				options.mastering_mixology.buy.name,
 				options.mastering_mixology.buy.quantity
+			);
+		}
+
+		if (options.mastering_mixology?.refund) {
+			return MasteringMixologyRefundCommand(
+				user,
+				options.mastering_mixology.refund.name,
+				options.mastering_mixology.refund.quantity
 			);
 		}
 
