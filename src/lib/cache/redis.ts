@@ -20,6 +20,7 @@ import { Redis } from 'ioredis';
 import type { Guild } from '@/prisma/main.js';
 import { BitField, BOT_TYPE, globalConfig } from '@/lib/constants.js';
 import { loadRoboChimpGroup, type RobochimpUser } from '@/lib/roboChimp.js';
+import { type IExtraSettings, ZExtraSettings } from '@/lib/settings/extraSettings.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
 
 type LockStatus = 'locked' | 'unlocked';
@@ -35,20 +36,25 @@ type RatelimitConfig = {
 	max: number;
 };
 
-type RatelimitType = 'random_events' | 'global_buttons' | 'stats_command' | 'delay_member_fetch' | 'delay_guild_fetch';
+type RatelimitType = 'random_events' | 'global_buttons' | 'stats_command' | 'delay_guild_fetch';
 
 const RATELIMITS: Record<RatelimitType, RatelimitConfig> = {
 	global_buttons: { windowSeconds: 2, max: 1 },
 	random_events: { windowSeconds: TTL.Hour * 3, max: 5 },
 	stats_command: { windowSeconds: 5, max: 1 },
-	delay_member_fetch: { windowSeconds: 5 * 60, max: 1 },
 	delay_guild_fetch: { windowSeconds: 5 * 60, max: 1 }
 } as const;
 
 const BotKeys = RedisKeys[BOT_TYPE];
 const ROBOCHIMP_USER_CACHE_TTL_SECONDS = TTL.Minute * 5;
-type CachedGuildSettings = Pick<Guild, 'id' | 'disabledCommands' | 'petchannel' | 'staffOnlyChannels'>;
+type CachedGuildSettings = Pick<
+	Guild,
+	'id' | 'disabledCommands' | 'petchannel' | 'staffOnlyChannels' | 'bingoAdminRole'
+>;
+type CachedGuild = IGuild & { bingo_admin_role: string | null; bingo_role_version: string };
+type CachedMember = IMember & { bingo_role_version?: string };
 type GuildSettingsUpdate = Partial<{
+	bingo_admin_role: string | null;
 	disabled_commands: string[];
 	petchannel: string | null;
 	staff_only_channels: string[];
@@ -113,34 +119,40 @@ class CacheManager {
 				id: true,
 				disabledCommands: true,
 				petchannel: true,
-				staffOnlyChannels: true
+				staffOnlyChannels: true,
+				bingoAdminRole: true
 			}
 		});
 		return guildSettings;
 	}
 
-	async getGuild(guildId: string): Promise<IGuild> {
+	async getGuild(guildId: string): Promise<CachedGuild> {
+		const version = (await this.getString(`${BotKeys.GuildSettings(guildId)}:bingo_role_version`)) ?? '0';
 		const delayCheck = await this.tryRatelimit(guildId, 'delay_guild_fetch');
 		if (!delayCheck.success) {
 			// If we're under time out, it could be assumed to be cached, but...
-			const cacheGuild = await this.getJson<IGuild>(BotKeys.GuildSettings(guildId));
-			if (cacheGuild) {
+			const cacheGuild = await this.getJson<CachedGuild>(BotKeys.GuildSettings(guildId));
+			if (cacheGuild && cacheGuild.bingo_admin_role !== undefined && cacheGuild.bingo_role_version === version) {
 				return cacheGuild;
 			}
 		}
 
 		const guildSettings = await this.getGuildSettings(guildId);
-		const guild: IGuild = guildSettings
+		const guild: CachedGuild = guildSettings
 			? {
 					id: guildSettings.id,
 					disabled_commands: guildSettings.disabledCommands,
 					petchannel: guildSettings.petchannel,
+					bingo_admin_role: guildSettings.bingoAdminRole,
+					bingo_role_version: version,
 					staff_only_channels: guildSettings.staffOnlyChannels
 				}
 			: {
 					id: guildId,
 					disabled_commands: [],
 					petchannel: null,
+					bingo_admin_role: null,
+					bingo_role_version: version,
 					staff_only_channels: []
 				};
 
@@ -149,68 +161,70 @@ class CacheManager {
 	}
 
 	public async updateGuild(guildId: string, updates: GuildSettingsUpdate) {
+		const versionKey = `${BotKeys.GuildSettings(guildId)}:bingo_role_version`;
+		let version = (await this.getString(versionKey)) ?? '0';
 		const guildSettings = await prisma.guild.upsert({
 			where: { id: guildId },
 			create: {
 				id: guildId,
 				disabledCommands: updates.disabled_commands ?? undefined,
 				petchannel: updates.petchannel ?? undefined,
+				bingoAdminRole: updates.bingo_admin_role,
 				staffOnlyChannels: updates.staff_only_channels ?? undefined
 			},
 			update: {
 				disabledCommands: updates.disabled_commands ?? undefined,
 				petchannel: updates.petchannel ?? undefined,
+				bingoAdminRole: updates.bingo_admin_role,
 				staffOnlyChannels: updates.staff_only_channels ?? undefined
 			}
 		});
 
-		const newGuild: IGuild = {
+		if (updates.bingo_admin_role !== undefined) {
+			version = String(await this.client.incr(versionKey));
+		}
+		const newGuild: CachedGuild = {
 			id: guildSettings.id,
 			disabled_commands: guildSettings.disabledCommands,
 			petchannel: guildSettings.petchannel,
+			bingo_admin_role: guildSettings.bingoAdminRole,
+			bingo_role_version: version,
 			staff_only_channels: guildSettings.staffOnlyChannels
 		};
 		return this.setJson(BotKeys.GuildSettings(guildId), newGuild);
 	}
 
-	// We will only try to getMember's when guildId == SupportServerID, UNLESS forceFetch is true, in which case we will always fetch.
 	async getMember({
 		guildId,
 		userId,
 		cacheOnly,
 		refreshCache,
-		externalServer
+		forceCheck
 	}: {
 		guildId: string;
 		userId: string;
 		cacheOnly?: boolean;
 		refreshCache?: boolean;
-		externalServer?: boolean;
+		forceCheck?: boolean;
 	}): Promise<IMember | null> {
-		// If we cache this guild, lets check it
-		const cachedServer = globalConfig.guildIdsToCache.includes(guildId);
-		if (cachedServer) {
-			const key = `${guildId}:${userId}`;
-			if (refreshCache) return await globalClient.fetchMember({ guildId, userId });
-			const delayCheck = await Cache.tryRatelimit(key, 'delay_member_fetch');
-			if (cacheOnly || !delayCheck.success) {
-				// If we're under time out, it could be assumed to be cached, but...
-				const cacheMember = await this.getJson<IMember>(RedisKeys.Discord.Member(guildId, userId));
-				if (cacheMember) {
-					return cacheMember;
-				} else {
-					if (cacheOnly) return null;
-					const member = await globalClient.fetchMember({ guildId, userId });
-					await Cache.setMember(member);
-					return member;
-				}
-			}
+		if (!forceCheck && !globalConfig.guildIdsToCache.includes(guildId)) return null;
+		const version = forceCheck
+			? `${BOT_TYPE}:${(await this.getString(`${BotKeys.GuildSettings(guildId)}:bingo_role_version`)) ?? '0'}`
+			: undefined;
+		if (!refreshCache) {
+			const key = RedisKeys.Discord.Member(guildId, userId);
+			const member = await this.getJson<CachedMember>(key);
+			if (
+				member &&
+				(!forceCheck || member.bingo_role_version === version) &&
+				(cacheOnly || (await this.client.ttl(key)) > 0)
+			)
+				return member;
 		}
-		if (cachedServer || externalServer) {
-			// We can fetch now
-			return await globalClient.fetchMember({ guildId, userId });
-		}
-		return null;
+		if (cacheOnly) return null;
+		const member = await globalClient.fetchMember({ guildId, userId });
+		await this.setMember(forceCheck ? { ...member, bingo_role_version: version } : member);
+		return member;
 	}
 
 	async getChannel(channelId: string): Promise<IChannel> {
@@ -235,13 +249,17 @@ class CacheManager {
 		return this.getJson<IMember>(RedisKeys.Discord.Member(globalConfig.supportServerID, userId));
 	}
 
-	async setMember(member: IMember): Promise<void> {
+	async setMember(member: CachedMember): Promise<void> {
 		ZMember.parse(member);
-		await this.setJson(RedisKeys.Discord.Member(member.guild_id, member.user_id), member);
+		await this.setJsonWithTTL(
+			RedisKeys.Discord.Member(member.guild_id, member.user_id),
+			member,
+			this.jitterTTL(TTL.Minute * 5, 0.1)
+		);
 	}
 
 	async bulkSetMembers(members: IMember[]): Promise<void> {
-		await this.bulkSet(members, m => RedisKeys.Discord.Member(m.guild_id, m.user_id));
+		await Promise.all(members.map(member => this.setMember(member)));
 	}
 
 	async bulkSetEmojis(emojis: IEmoji[]): Promise<void> {
@@ -542,6 +560,35 @@ class CacheManager {
 
 	async setDisabledCommands(newDisabledCommands: string[]): Promise<void> {
 		await this.setJson(BotKeys.DisabledCommands, newDisabledCommands);
+	}
+
+	async getExtraSettings({ forceRefresh = false }: { forceRefresh?: boolean } = {}): Promise<IExtraSettings> {
+		if (!forceRefresh) {
+			const cached = await this.getJson(BotKeys.Global.ExtraClientSettings);
+			if (cached) return ZExtraSettings.parse(cached);
+		}
+
+		const [clientSettings] = await prisma.$queryRaw<{ extra_settings: unknown }[]>`
+			SELECT extra_settings
+			FROM "clientStorage"
+			WHERE id = ${globalConfig.clientID}
+		`;
+		const settings = ZExtraSettings.parse(clientSettings?.extra_settings ?? {});
+		await this.setExtraSettings(settings);
+		return settings;
+	}
+
+	async setExtraSettings(value: IExtraSettings): Promise<void> {
+		await this.setJsonWithTTL(BotKeys.Global.ExtraClientSettings, value, TTL.Hour);
+	}
+
+	async refreshExtraSettingsCache(): Promise<IExtraSettings> {
+		await this.resetExtraSettings();
+		return this.getExtraSettings({ forceRefresh: true });
+	}
+
+	async resetExtraSettings(): Promise<void> {
+		await this.client.del(BotKeys.Global.ExtraClientSettings);
 	}
 
 	async isUserBlacklisted(id: string): Promise<boolean> {

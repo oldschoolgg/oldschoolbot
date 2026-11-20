@@ -302,16 +302,16 @@ export async function coxCommand(
 	let str = isSolo
 		? `${user.minionName} is now doing ${quantity > 1 ? quantity : 'a'} ${raidName} raid${
 				quantity > 1 ? 's' : ''
-			}. The total trip will return in about ${formatTripDuration(user, duration)}.`
+			}. The total trip will return ${formatTripDuration(user, duration)}.`
 		: isFakeMass
 			? `${partyOptions.leader.usernameOrMention} your party of (${user.minionName} & ${users.length - 1} simulated users) is now off to do ${quantity > 1 ? quantity : 'a'} ${raidName} raid${
 					quantity > 1 ? 's' : ''
-				} - the total trip will return in about ${formatTripDuration(user, duration)}.`
+				} - the total trip will return ${formatTripDuration(user, duration)}.`
 			: `${partyOptions.leader.usernameOrMention}'s party (${users
 					.map(u => u.usernameOrMention)
 					.join(', ')}) is now off to do ${quantity > 1 ? quantity : 'a'} ${raidName} raid${
 					quantity > 1 ? 's' : ''
-				} - the total trip will return in about ${formatTripDuration(user, duration)}.`;
+				} - the total trip will return ${formatTripDuration(user, duration)}.`;
 
 	str += ` \n\n${debugStr}`;
 

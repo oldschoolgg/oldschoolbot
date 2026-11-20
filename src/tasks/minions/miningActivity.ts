@@ -132,8 +132,15 @@ export function determineMiningResult({
 		}
 	}
 
-	if (ore.name === 'Runite ore') {
-		rollForMoonKeyHalf({ user: hasFinishedCOTS, duration, loot: updateBank.itemLootBank, rng });
+	if (ore.moonKeyHalfCatchRate) {
+		rollForMoonKeyHalf({
+			user: hasFinishedCOTS,
+			duration,
+			loot: updateBank.itemLootBank,
+			rng,
+			quantity,
+			perCatchRate: ore.moonKeyHalfCatchRate
+		});
 	}
 
 	return {

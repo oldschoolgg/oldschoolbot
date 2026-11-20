@@ -2,6 +2,7 @@ import { Events, formatOrdinal } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
+import { createGamble, settleGamble } from '@/lib/gambling.js';
 import { petMessage } from '@/lib/util/displayCluesAndPets.js';
 
 export async function capeGambleStatsCommand(user: MUser) {
@@ -94,8 +95,20 @@ export async function capeGambleCommand(
 	const pet = src.success.loot;
 	const gotPet = rng.roll(chance);
 	const loot = gotPet ? new Bank().add(pet.id) : undefined;
+	const gamble = await createGamble({
+		userId: user.id,
+		game: 'item',
+		betAmount: 1,
+		betItemId: item.id
+	});
 
 	await user.transactItems({ itemsToAdd: loot, itemsToRemove: new Bank().add(item.id), collectionLog: true });
+	await settleGamble(gamble.id, {
+		won: gotPet,
+		profitLoss: gotPet ? 0 : -1,
+		payoutAmount: gotPet ? 1 : 0,
+		payoutItemId: gotPet ? pet.id : undefined
+	});
 	let str = '';
 	if (gotPet) {
 		str += petMessage(loot);

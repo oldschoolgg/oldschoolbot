@@ -45,6 +45,9 @@ export const buyCommand = defineCommand({
 	run: async ({ options, user, interaction, channelId }) => {
 		const { name } = options;
 		let quantity: number | null = mahojiParseNumber({ input: options.quantity, min: 1 });
+		if (options.quantity !== undefined && quantity === null) {
+			return 'Quantity must be a positive number.';
+		}
 
 		if (stringMatches(name, 'kitten')) {
 			return buyKitten(interaction);

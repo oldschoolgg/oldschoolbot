@@ -25,7 +25,9 @@ export async function runCommand({
 	commandName,
 	args,
 	interaction,
-	ignoreUserIsBusy
+	ignoreUserIsBusy,
+	isContinue,
+	continueDeltaMillis
 }: RunCommandArgs): CommandResponse {
 	const command = globalClient.allCommands.find(c => c.name === commandName)!;
 
@@ -34,6 +36,8 @@ export async function runCommand({
 		command,
 		options: args,
 		ignoreUserIsBusy,
+		isContinue,
+		continueDeltaMs: continueDeltaMillis,
 		rng: cryptoRng
 	});
 	return response;

@@ -9,6 +9,9 @@ export const RedisKeys = {
 			LockStatus: (id: string): string => `osb:user:${id.toString()}:lock_status`,
 			Ratelimit: (id: string, type: string): string => `osb:user:${id.toString()}:ratelimit:${type}`
 		},
+		Global: {
+			ExtraClientSettings: 'osb:global:client_storage_extra_settings'
+		},
 		GuildSettings: (id: string): string => `osb:guild:${id.toString()}:settings`,
 		DisabledCommands: 'osb:disabled_commands',
 		Webhook: (channelId: string): string => `osb:webhook:${channelId}`,
@@ -20,6 +23,9 @@ export const RedisKeys = {
 			BadgedUsername: (id: string): string => `bso:user:${id.toString()}:badged_username`,
 			LockStatus: (id: string): string => `bso:user:${id.toString()}:lock_status`,
 			Ratelimit: (id: string, type: string): string => `bso:user:${id.toString()}:ratelimit:${type}`
+		},
+		Global: {
+			ExtraClientSettings: 'bso:global:client_storage_extra_settings'
 		},
 		GuildSettings: (id: string): string => `bso:guild:${id.toString()}:settings`,
 		DisabledCommands: 'bso:disabled_commands',

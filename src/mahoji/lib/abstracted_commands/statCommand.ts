@@ -17,7 +17,7 @@ import { SkillsArray } from '@/lib/skilling/types.js';
 import { getSlayerTaskStats } from '@/lib/slayer/slayerUtil.js';
 import { sorts } from '@/lib/sorts.js';
 import type { InfernoOptions } from '@/lib/types/minions.js';
-import { createChart } from '@/lib/util/chart.js';
+import { type ChartOptions, createChart } from '@/lib/util/chart.js';
 import { fetchUserStats } from '@/lib/util/fetchUserStats.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
@@ -25,7 +25,7 @@ import { collectables } from '@/mahoji/lib/collectables.js';
 interface DataPiece {
 	name: string;
 	perkTierNeeded: PerkTier | null;
-	run: (user: MUser, stats: UserStats) => SendableMessage | Promise<SendableMessage>;
+	run: (user: MUser, stats: UserStats, text?: boolean) => SendableMessage | Promise<SendableMessage>;
 }
 
 function wrap(str: string) {
@@ -287,10 +287,34 @@ GROUP BY data->>'collectableID';`);
 	return bank;
 }
 
-async function makeResponseForBank(bank: Bank, title: string, content?: string): Promise<SendableMessage> {
+function makeResponseForText(title: string, rows: [string, number][], content?: string): SendableMessage {
+	return {
+		files: [
+			{
+				buffer: Buffer.from(`${title}\n\n${rows.map(([label, value]) => `${label}: ${value}`).join('\n')}`),
+				name: `${title}.txt`
+			}
+		],
+		content
+	};
+}
+
+async function makeResponseForBank(
+	text: boolean,
+	bank: Bank,
+	title: string,
+	content?: string
+): Promise<SendableMessage> {
 	bank.removeInvalidValues();
 	if (bank.length === 0) {
 		return { content: 'No results.' };
+	}
+	if (text) {
+		return makeResponseForText(
+			title,
+			bank.items().map(([item, qty]) => [item.name, qty]),
+			content
+		);
 	}
 	const image = await makeBankImage({
 		title,
@@ -301,11 +325,17 @@ async function makeResponseForBank(bank: Bank, title: string, content?: string):
 		content
 	};
 }
-function makeResponseForBuffer(buffer: Buffer): SendableMessage {
+async function makeResponseForChart(text: boolean, options: ChartOptions): Promise<SendableMessage> {
+	if (text) {
+		return makeResponseForText(
+			options.title,
+			options.values.map(([label, value]) => [label, value])
+		);
+	}
 	return {
 		files: [
 			{
-				buffer,
+				buffer: await createChart(options),
 				name: 'image.jpg'
 			}
 		]
@@ -316,7 +346,7 @@ export const dataPoints: readonly DataPiece[] = [
 	{
 		name: 'Personal Activity Types',
 		perkTierNeeded: PerkTier.Four,
-		run: async (user: MUser) => {
+		run: async (user: MUser, _, text = false) => {
 			const result: { type: activity_type_enum; qty: number }[] =
 				await prisma.$queryRawUnsafe(`SELECT type, count(type)::int AS qty
 FROM activity
@@ -325,20 +355,18 @@ AND user_id = ${BigInt(user.id)}
 OR (data->>'users')::jsonb @> ${wrap(user.id)}::jsonb
 GROUP BY type;`);
 			const dataPoints: [string, number][] = result.filter(i => i.qty >= 5).map(i => [i.type, i.qty]);
-			return makeResponseForBuffer(
-				await createChart({
-					title: 'Your Activity Types',
-					format: 'kmb',
-					values: dataPoints,
-					type: 'bar'
-				})
-			);
+			return makeResponseForChart(text, {
+				title: 'Your Activity Types',
+				format: 'kmb',
+				values: dataPoints,
+				type: 'bar'
+			});
 		}
 	},
 	{
 		name: 'Personal Activity Durations (Hours)',
 		perkTierNeeded: PerkTier.Four,
-		run: async (user: MUser) => {
+		run: async (user: MUser, _, text = false) => {
 			const result: { type: activity_type_enum; hours: number }[] =
 				await prisma.$queryRawUnsafe(`SELECT type, sum(duration::bigint)::bigint / ${Time.Hour} AS hours
 FROM activity
@@ -350,39 +378,35 @@ GROUP BY type;`);
 				.filter(i => i.hours >= 1)
 				.sort((a, b) => Number(b.hours - a.hours))
 				.map(i => [i.type, Number(i.hours)]);
-			return makeResponseForBuffer(
-				await createChart({
-					title: 'Your Activity Durations',
-					format: 'kmb',
-					values: dataPoints,
-					type: 'bar'
-				})
-			);
+			return makeResponseForChart(text, {
+				title: 'Your Activity Durations',
+				format: 'kmb',
+				values: dataPoints,
+				type: 'bar'
+			});
 		}
 	},
 	{
 		name: 'Personal Monster KC',
 		perkTierNeeded: PerkTier.Four,
-		run: async (user: MUser) => {
+		run: async (user: MUser, _, text = false) => {
 			const monsterScores = (await user.fetchMStats()).monsterScores;
 			const dataPoints: [string, number][] = Object.entries(monsterScores)
 				.sort((a, b) => b[1] - a[1])
 				.slice(0, 30)
 				.map(i => [killableMonsters.find(mon => mon.id === Number(i))?.name ?? i[0].toString(), i[1]]);
-			return makeResponseForBuffer(
-				await createChart({
-					title: "Your Monster KC's",
-					format: 'kmb',
-					values: dataPoints,
-					type: 'bar'
-				})
-			);
+			return makeResponseForChart(text, {
+				title: "Your Monster KC's",
+				format: 'kmb',
+				values: dataPoints,
+				type: 'bar'
+			});
 		}
 	},
 	{
 		name: 'Personal Top Bank Value Items',
 		perkTierNeeded: PerkTier.Four,
-		run: async (user: MUser) => {
+		run: async (user: MUser, _, text = false) => {
 			const items = user.bank.items().sort(sorts.value);
 			const dataPoints: [string, number][] = items
 				.filter(i => i[1] >= 1)
@@ -392,38 +416,34 @@ GROUP BY type;`);
 			const everythingElseBank = new Bank();
 			for (const i of everythingElse) everythingElseBank.add(i[0].name, i[1]);
 			dataPoints.push(['Everything else', everythingElseBank.value()]);
-			return makeResponseForBuffer(
-				await createChart({
-					title: 'Your Top Bank Value Items',
-					format: 'kmb',
-					values: dataPoints,
-					type: 'bar'
-				})
-			);
+			return makeResponseForChart(text, {
+				title: 'Your Top Bank Value Items',
+				format: 'kmb',
+				values: dataPoints,
+				type: 'bar'
+			});
 		}
 	},
 	{
 		name: 'Personal Collection Log Progress',
 		perkTierNeeded: PerkTier.Four,
-		run: async (user: MUser) => {
+		run: async (user: MUser, _, text = false) => {
 			const { percent } = calcCLDetails(user);
-			return makeResponseForBuffer(
-				await createChart({
-					title: 'Your Personal Collection Log Progress',
-					format: 'percent',
-					values: [
-						['Complete Collection Log Items', percent, '#9fdfb2'],
-						['Incomplete Collection Log Items', 100 - percent, '#df9f9f']
-					],
-					type: 'pie'
-				})
-			);
+			return makeResponseForChart(text, {
+				title: 'Your Personal Collection Log Progress',
+				format: 'percent',
+				values: [
+					['Complete Collection Log Items', percent, '#9fdfb2'],
+					['Incomplete Collection Log Items', 100 - percent, '#df9f9f']
+				],
+				type: 'pie'
+			});
 		}
 	},
 	{
 		name: 'Global Inferno Death Times',
 		perkTierNeeded: PerkTier.Four,
-		run: async () => {
+		run: async (_, __, text = false) => {
 			const result: { mins: number; count: number }[] =
 				await prisma.$queryRaw`SELECT mins, COUNT(mins)::int FROM (SELECT ((data->>'deathTime')::int / 1000 / 60) as mins
 FROM activity
@@ -433,20 +453,18 @@ AND data->>'deathTime' IS NOT NULL) death_mins
 GROUP BY mins;`;
 			if (result.length === 0) return 'No results.';
 
-			return makeResponseForBuffer(
-				await createChart({
-					title: 'Global Inferno Death Times',
-					format: 'kmb',
-					values: result.map(i => [i.mins.toString(), i.count]),
-					type: 'line'
-				})
-			);
+			return makeResponseForChart(text, {
+				title: 'Global Inferno Death Times',
+				format: 'kmb',
+				values: result.map(i => [i.mins.toString(), i.count]),
+				type: 'line'
+			});
 		}
 	},
 	{
 		name: 'Personal Inferno Death Times',
 		perkTierNeeded: PerkTier.Four,
-		run: async (user: MUser) => {
+		run: async (user: MUser, _, text = false) => {
 			const result: { mins: number; count: number }[] =
 				await prisma.$queryRawUnsafe(`SELECT mins, COUNT(mins)::int FROM (SELECT ((data->>'deathTime')::int / 1000 / 60) as mins
 FROM activity
@@ -457,20 +475,18 @@ AND data->>'deathTime' IS NOT NULL) death_mins
 GROUP BY mins;`);
 			if (result.length === 0) return 'No results.';
 
-			return makeResponseForBuffer(
-				await createChart({
-					title: 'Personal Inferno Death Times',
-					format: 'kmb',
-					values: result.map(i => [i.mins.toString(), i.count]),
-					type: 'line'
-				})
-			);
+			return makeResponseForChart(text, {
+				title: 'Personal Inferno Death Times',
+				format: 'kmb',
+				values: result.map(i => [i.mins.toString(), i.count]),
+				type: 'line'
+			});
 		}
 	},
 	{
 		name: 'Personal Inferno',
 		perkTierNeeded: PerkTier.Four,
-		run: async (user: MUser) => {
+		run: async (user: MUser, _, text = false) => {
 			const activities = await prisma.activity.findMany({
 				where: {
 					user_id: BigInt(user.id),
@@ -494,6 +510,7 @@ GROUP BY mins;`);
 			}
 
 			return makeResponseForBank(
+				text,
 				totalCost,
 				'Your Personal Inferno',
 				`**First Cape:** ${completedAt ? `After ${completedAt} attempts` : 'Never'}
@@ -505,7 +522,7 @@ GROUP BY mins;`);
 	{
 		name: 'Global 200ms',
 		perkTierNeeded: PerkTier.Four,
-		run: async () => {
+		run: async (_, __, text = false) => {
 			const result = (
 				await Promise.all(
 					SkillsArray.map(
@@ -519,20 +536,18 @@ WHERE "skills.${skillName}" = 200000000::int;`) as Promise<{ qty: number; skill_
 				.map(i => i[0])
 				.sort((a, b) => b.qty - a.qty);
 
-			return makeResponseForBuffer(
-				await createChart({
-					title: 'Global 200ms',
-					format: 'kmb',
-					values: result.map(i => [i.skill_name, i.qty]),
-					type: 'bar'
-				})
-			);
+			return makeResponseForChart(text, {
+				title: 'Global 200ms',
+				format: 'kmb',
+				values: result.map(i => [i.skill_name, i.qty]),
+				type: 'bar'
+			});
 		}
 	},
 	{
 		name: 'Personal Farmed Crops',
 		perkTierNeeded: PerkTier.Four,
-		run: async (user: MUser) => {
+		run: async (user: MUser, _, text = false) => {
 			const result: { plant: string; qty: number }[] =
 				await prisma.$queryRawUnsafe(`SELECT data->>'plantsName' as plant, COUNT(data->>'plantsName')::int AS qty
 FROM activity
@@ -542,20 +557,18 @@ AND user_id = ${BigInt(user.id)}
 GROUP BY data->>'plantsName'`);
 			result.sort((a, b) => b.qty - a.qty);
 
-			return makeResponseForBuffer(
-				await createChart({
-					title: 'Personal Farmed Crops',
-					format: 'kmb',
-					values: result.map(i => [i.plant, i.qty]),
-					type: 'bar'
-				})
-			);
+			return makeResponseForChart(text, {
+				title: 'Personal Farmed Crops',
+				format: 'kmb',
+				values: result.map(i => [i.plant, i.qty]),
+				type: 'bar'
+			});
 		}
 	},
 	{
 		name: 'Global Farmed Crops',
 		perkTierNeeded: PerkTier.Four,
-		run: async () => {
+		run: async (_, __, text = false) => {
 			const result: { plant: string; qty: number }[] =
 				await prisma.$queryRaw`SELECT data->>'plantsName' as plant, COUNT(data->>'plantsName')::int AS qty
 FROM activity
@@ -564,28 +577,26 @@ AND data->>'plantsName' IS NOT NULL
 GROUP BY data->>'plantsName'`;
 			result.sort((a, b) => b.qty - a.qty);
 
-			return makeResponseForBuffer(
-				await createChart({
-					title: 'Global Farmed Crops',
-					format: 'kmb',
-					values: result.map(i => [i.plant, i.qty]),
-					type: 'bar'
-				})
-			);
+			return makeResponseForChart(text, {
+				title: 'Global Farmed Crops',
+				format: 'kmb',
+				values: result.map(i => [i.plant, i.qty]),
+				type: 'bar'
+			});
 		}
 	},
 	{
 		name: 'Personal TOB Cost',
 		perkTierNeeded: PerkTier.Four,
-		run: async (_, stats) => {
-			return makeResponseForBank(new Bank(stats.tob_cost as ItemBank), 'Your TOB Cost');
+		run: async (_, stats, text = false) => {
+			return makeResponseForBank(text, new Bank(stats.tob_cost as ItemBank), 'Your TOB Cost');
 		}
 	},
 	{
 		name: 'Personal TOB Loot',
 		perkTierNeeded: PerkTier.Four,
-		run: async (_, stats) => {
-			return makeResponseForBank(new Bank(stats.tob_loot as ItemBank), 'Your TOB Loot');
+		run: async (_, stats, text = false) => {
+			return makeResponseForBank(text, new Bank(stats.tob_loot as ItemBank), 'Your TOB Loot');
 		}
 	},
 	{
@@ -864,8 +875,8 @@ GROUP BY "bankBackground";`);
 	{
 		name: 'Personal Open Stats',
 		perkTierNeeded: null,
-		run: async (_, stats) => {
-			return makeResponseForBank(new Bank(stats.openable_scores as ItemBank), "You've opened...");
+		run: async (_, stats, text = false) => {
+			return makeResponseForBank(text, new Bank(stats.openable_scores as ItemBank), "You've opened...");
 		}
 	},
 	{
@@ -889,8 +900,8 @@ GROUP BY "bankBackground";`);
 	{
 		name: 'Total Items Sold',
 		perkTierNeeded: PerkTier.Four,
-		run: async (_, stats) => {
-			return makeResponseForBank(new Bank(stats.items_sold_bank as ItemBank), "You've sold...");
+		run: async (_, stats, text = false) => {
+			return makeResponseForBank(text, new Bank(stats.items_sold_bank as ItemBank), "You've sold...");
 		}
 	},
 	{
@@ -984,14 +995,14 @@ GROUP BY "bankBackground";`);
 	{
 		name: 'Ashes Scattered',
 		perkTierNeeded: null,
-		run: async (_, stats) => {
-			return makeResponseForBank(new Bank(stats.scattered_ashes_bank as ItemBank), "You've scattered...");
+		run: async (_, stats, text = false) => {
+			return makeResponseForBank(text, new Bank(stats.scattered_ashes_bank as ItemBank), "You've scattered...");
 		}
 	},
 	{
 		name: 'Total Giveaway Cost',
 		perkTierNeeded: PerkTier.Four,
-		run: async u => {
+		run: async (u, _, text = false) => {
 			const giveaways = await prisma.economyTransaction.findMany({
 				where: {
 					sender: BigInt(u.id),
@@ -1006,13 +1017,13 @@ GROUP BY "bankBackground";`);
 				items.add(g.items_sent as ItemBank);
 			}
 			items.removeInvalidValues();
-			return makeResponseForBank(items, "You've given away...");
+			return makeResponseForBank(text, items, "You've given away...");
 		}
 	},
 	{
 		name: 'Total Giveaway Winnings/Loot',
 		perkTierNeeded: PerkTier.Four,
-		run: async u => {
+		run: async (u, _, text = false) => {
 			const giveaways = await prisma.economyTransaction.findMany({
 				where: {
 					recipient: BigInt(u.id),
@@ -1027,7 +1038,7 @@ GROUP BY "bankBackground";`);
 				items.add(g.items_sent as ItemBank);
 			}
 			items.removeInvalidValues();
-			return makeResponseForBank(items, "You've received from giveaways...");
+			return makeResponseForBank(text, items, "You've received from giveaways...");
 		}
 	},
 	{
@@ -1096,15 +1107,15 @@ ${bank
 	{
 		name: 'Tombs of Amascut (TOA) cost',
 		perkTierNeeded: PerkTier.Four,
-		run: (_, userStats) => {
-			return makeResponseForBank(new Bank(userStats.toa_cost as ItemBank), 'Your TOA Cost');
+		run: (_, userStats, text = false) => {
+			return makeResponseForBank(text, new Bank(userStats.toa_cost as ItemBank), 'Your TOA Cost');
 		}
 	},
 	{
 		name: 'Tombs of Amascut (TOA) loot',
 		perkTierNeeded: PerkTier.Four,
-		run: (_, userStats) => {
-			return makeResponseForBank(new Bank(userStats.toa_loot as ItemBank), 'Your TOA Loot');
+		run: (_, userStats, text = false) => {
+			return makeResponseForBank(text, new Bank(userStats.toa_loot as ItemBank), 'Your TOA Loot');
 		}
 	},
 	{
@@ -1174,20 +1185,21 @@ ${(
 	{
 		name: 'Items In Bank Not Sacrificed',
 		perkTierNeeded: null,
-		run: (user, userStats) => {
+		run: (user, userStats, text = false) => {
 			const sacrificedItems = new Bank(userStats.sacrificed_bank as ItemBank).items().map(i => i[0].id);
 			const itemsNotSac = user.bank.items().map(i => i[0].id);
 			const itemsNotSacFiltered = itemsNotSac.filter(i => !sacrificedItems.includes(i));
 			const itemsNotSacBank = new Bank();
 			for (const item of itemsNotSacFiltered) itemsNotSacBank.add(item);
-			return makeResponseForBank(itemsNotSacBank, 'Not Sacrificed Items');
+			return makeResponseForBank(text, itemsNotSacBank, 'Not Sacrificed Items');
 		}
 	},
 	{
 		name: 'Herbs cleaned while farming',
 		perkTierNeeded: PerkTier.Four,
-		run: (_, userStats) => {
+		run: (_, userStats, text = false) => {
 			return makeResponseForBank(
+				text,
 				new Bank().add(userStats.herbs_cleaned_while_farming_bank as ItemBank),
 				'Herbs cleaned while farming'
 			);
@@ -1196,8 +1208,9 @@ ${(
 	{
 		name: 'Implings Obtained Passively',
 		perkTierNeeded: null,
-		run: (_, userStats) => {
+		run: (_, userStats, text = false) => {
 			return makeResponseForBank(
+				text,
 				new Bank().add(userStats.passive_implings_bank as ItemBank),
 				'Implings Obtained Passively'
 			);
@@ -1206,70 +1219,62 @@ ${(
 	{
 		name: 'Weekly XP Gains',
 		perkTierNeeded: PerkTier.Four,
-		run: async user => {
+		run: async (user, _, text = false) => {
 			const result = await fetchHistoricalDataDifferences(user);
 			const dataPoints: [string, number][] = result.map(i => [i.week_start, i.diff_total_xp]);
-			return makeResponseForBuffer(
-				await createChart({
-					title: 'Your Weekly XP Gains',
-					format: 'kmb',
-					values: dataPoints,
-					type: 'bar'
-				})
-			);
+			return makeResponseForChart(text, {
+				title: 'Your Weekly XP Gains',
+				format: 'kmb',
+				values: dataPoints,
+				type: 'bar'
+			});
 		}
 	},
 	{
 		name: 'Weekly CL slot gains',
 		perkTierNeeded: PerkTier.Four,
-		run: async user => {
+		run: async (user, _, text = false) => {
 			const result = await fetchHistoricalDataDifferences(user);
 			const dataPoints: [string, number][] = result.map(i => [i.week_start, i.diff_cl_completion_count]);
-			return makeResponseForBuffer(
-				await createChart({
-					title: 'Your Weekly CL slot Gains',
-					format: 'kmb',
-					values: dataPoints,
-					type: 'bar'
-				})
-			);
+			return makeResponseForChart(text, {
+				title: 'Your Weekly CL slot Gains',
+				format: 'kmb',
+				values: dataPoints,
+				type: 'bar'
+			});
 		}
 	},
 	{
 		name: 'Weekly CL leaderboard rank gains',
 		perkTierNeeded: PerkTier.Four,
-		run: async user => {
+		run: async (user, _, text = false) => {
 			const result = await fetchHistoricalDataDifferences(user);
 			const dataPoints: [string, number][] = result.map(i => [i.week_start, i.diff_cl_global_rank]);
-			return makeResponseForBuffer(
-				await createChart({
-					title: 'Your Weekly CL leaderboard rank gains',
-					format: 'delta',
-					values: dataPoints,
-					type: 'bar'
-				})
-			);
+			return makeResponseForChart(text, {
+				title: 'Your Weekly CL leaderboard rank gains',
+				format: 'delta',
+				values: dataPoints,
+				type: 'bar'
+			});
 		}
 	},
 	{
 		name: 'Weekly GP gains',
 		perkTierNeeded: PerkTier.Four,
-		run: async user => {
+		run: async (user, _, text = false) => {
 			const result = await fetchHistoricalDataDifferences(user);
 			const dataPoints: [string, number][] = result.map(i => [i.week_start, i.diff_GP]);
-			return makeResponseForBuffer(
-				await createChart({
-					title: 'Your Weekly GP gains',
-					format: 'delta',
-					values: dataPoints,
-					type: 'bar'
-				})
-			);
+			return makeResponseForChart(text, {
+				title: 'Your Weekly GP gains',
+				format: 'delta',
+				values: dataPoints,
+				type: 'bar'
+			});
 		}
 	}
 ] as const;
 
-export async function statsCommand(user: MUser, type: string): Promise<SendableMessage> {
+export async function statsCommand(user: MUser, type: string, text = false): Promise<SendableMessage> {
 	const ratelimit = await Cache.tryRatelimit(user.id, 'stats_command');
 	if (!ratelimit.success) {
 		return `This command is on cooldown, you can use it again in ${formatDuration(ratelimit.timeRemainingMs)}.`;
@@ -1281,5 +1286,5 @@ export async function statsCommand(user: MUser, type: string): Promise<SendableM
 		return `Sorry, you need to be a Tier ${perkTierNeeded - 1} Patron to see this stat.`;
 	}
 	const userStats = await fetchUserStats(user.id);
-	return dataPoint.run(user, userStats);
+	return dataPoint.run(user, userStats, text);
 }

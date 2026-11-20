@@ -1,5 +1,3 @@
-import { PerkTier } from './misc.js';
-
 export enum Time {
 	Millisecond = 1,
 	Second = 1000,
@@ -100,6 +98,19 @@ export function relativeTimestamp(date: Date): string {
 	return `<t:${unixSeconds}:R>`;
 }
 
+export function formatDurationModern(duration: number): string {
+	const units: [Intl.RelativeTimeFormatUnit, number][] = [
+		['year', Time.Year],
+		['month', Time.Month],
+		['day', Time.Day],
+		['hour', Time.Hour],
+		['minute', Time.Minute],
+		['second', Time.Second]
+	];
+	const [unit, size] = units.find(([, size]) => Math.abs(duration) >= size) ?? units[units.length - 1];
+	return new Intl.RelativeTimeFormat('en', { numeric: 'always' }).format(Math.round(duration / size), unit);
+}
+
 export function formatDuration(ms: number, short = false, precise = false): string {
 	if (ms < 0) ms = -ms;
 	const time = {
@@ -123,15 +134,7 @@ export function formatDuration(ms: number, short = false, precise = false): stri
 		.join(short ? '' : ', ');
 }
 
-export function formatDurationWithTimestamp(
-	durationMs: number,
-	perkTier: number,
-	disableShowTimestamp: boolean
-): string {
-	const duration = formatDuration(durationMs);
-	if (perkTier >= PerkTier.Two && !disableShowTimestamp) {
-		const finishDate = new Date(Date.now() + durationMs);
-		return `${relativeTimestamp(finishDate)} (${timeOnly(finishDate)})`;
-	}
-	return duration;
+export function discordTimestampRemaining(durationMs: number): string {
+	const finishDate = new Date(Date.now() + durationMs);
+	return `${relativeTimestamp(finishDate)} (${timeOnly(finishDate)})`;
 }

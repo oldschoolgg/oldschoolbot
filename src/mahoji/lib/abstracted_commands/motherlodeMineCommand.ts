@@ -94,11 +94,11 @@ export async function motherlodeMineCommand({
 	});
 	let response = `${user.minionName} is now mining at the Motherlode Mine until your minion ${
 		quantity ? `mined ${quantity}x pay-dirt or gets tired` : 'is satisfied'
-	}, it'll take ${
+	}, they are expected to finish ${
 		quantity
 			? `between ${formatTripDuration(user, fakeDurationMin)} **and** ${formatTripDuration(user, fakeDurationMax)}`
 			: formatTripDuration(user, duration)
-	} to finish.`;
+	}.`;
 
 	if (boosts.length > 0) {
 		response += `\n\n**Boosts:** ${boosts.join(', ')}.`;

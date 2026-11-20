@@ -3,6 +3,7 @@ import { Bank, Items } from 'oldschooljs';
 
 import { leagueBuyables } from '@/lib/data/leaguesBuyables.js';
 import { doMenuWrapper } from '@/lib/menuWrapper.js';
+import { LEADERBOARD_OVERFETCH } from '@/lib/util/leaderboardEligibility.js';
 
 const leaguesTrophiesBuyables = [
 	{
@@ -139,7 +140,7 @@ ${leaguesTrophiesBuyables
 					leagues_points_total: { gt: 0 }
 				},
 				orderBy: { leagues_points_total: 'desc' },
-				take: 100
+				take: 100 * LEADERBOARD_OVERFETCH
 			});
 
 			return doMenuWrapper({
@@ -150,6 +151,7 @@ ${leaguesTrophiesBuyables
 					score: r.leagues_points_total
 				})),
 				title: 'Leagues Points Leaderboard',
+				limit: 100,
 				formatter: v => `${v.toLocaleString()} Pts`
 			});
 		}

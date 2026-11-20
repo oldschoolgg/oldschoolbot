@@ -116,10 +116,10 @@ export const cookCommand = defineCommand({
 
 			return `${
 				user.minionName
-			} is now buying, cooking and dropping ${quantity.toLocaleString()}x karambwans, it'll take around ${formatTripDuration(
+			} is now buying, cooking and dropping ${quantity.toLocaleString()}x karambwans, they are expected to finish ${formatTripDuration(
 				user,
 				duration
-			)} to finish. This cost ${totalCost}.`;
+			)}. This cost ${totalCost}.`;
 		}
 
 		const cookable = Cooking.Cookables.find(
@@ -198,9 +198,9 @@ export const cookCommand = defineCommand({
 			type: 'Cooking'
 		});
 
-		return `${user.minionName} is now cooking ${quantity}x ${cookable.name}, it'll take around ${formatTripDuration(
+		return `${user.minionName} is now cooking ${quantity}x ${cookable.name}, they are expected to finish ${formatTripDuration(
 			user,
 			duration
-		)} to finish.${boosts.length > 0 ? `\n\nBoosts: ${boosts.join(', ')}` : ''}`;
+		)}.${boosts.length > 0 ? `\n\nBoosts: ${boosts.join(', ')}` : ''}`;
 	}
 });

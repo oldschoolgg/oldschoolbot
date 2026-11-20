@@ -386,7 +386,6 @@ export class OldSchoolBotClient extends DiscordClient {
 				return button;
 			});
 			allowedUsers ??= [interaction.userId];
-			await interaction.defer();
 			const msg = await interaction.replyWithResponse({
 				content,
 				components: buttons,
@@ -400,7 +399,7 @@ export class OldSchoolBotClient extends DiscordClient {
 				timeoutMs: Time.Second * 30
 			});
 			if (!res) return null;
-			res.silentButtonAck();
+			void res.silentButtonAck();
 			const resId = res.customId!.replace(CUSTOM_ID_PREFIX, '');
 			const choice = options.find(o => o.id === resId)!;
 			return { choice, userId: res.userId };

@@ -255,7 +255,7 @@ model GearPreset {
 }
 
 model Giveaway {
-  id            Int      @id
+  id            String   @id @db.VarChar(19)
   user_id       String   @db.VarChar(19)
   start_date    DateTime @db.Timestamp(6)
   finish_date   DateTime @db.Timestamp(6)

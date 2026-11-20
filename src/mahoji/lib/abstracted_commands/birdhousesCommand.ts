@@ -130,7 +130,7 @@ export async function birdhouseHarvestCommand(user: MUser, channelId: string, in
 		birdhouseId: birdhouseToPlant.birdhouseItem
 	});
 
-	return `${infoStr.join(' ')}\n\nIt'll take around ${formatTripDuration(user, duration)} to finish.\n\n${
+	return `${infoStr.join(' ')}\n\nThey are expected to finish ${formatTripDuration(user, duration)}.\n\n${
 		boostStr.length > 0 ? '**Boosts**: ' : ''
 	}${boostStr.join(', ')}`;
 }

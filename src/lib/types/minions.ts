@@ -364,6 +364,9 @@ export interface AutoFarmSummaryStep {
 	patchType: string;
 	plantsName: string;
 	quantity: number;
+	harvestedName?: string;
+	harvestedQuantity?: number;
+	alive?: number;
 	xp: number;
 	bonusXp: number;
 	weeds: number;
@@ -430,6 +433,18 @@ export interface MahoganyHomesActivityTaskOptions extends MinigameActivityTaskOp
 	quantity: number;
 	points: number;
 	tier: number;
+}
+
+export interface MasteringMixologyContractActivityTaskOptions extends MinigameActivityTaskOptions {
+	type: 'MasteringMixologyContract';
+	quantity: number;
+	contractIDs?: number[];
+}
+
+export interface MasteringMixologyContractCreatingTaskOptions extends MinigameActivityTaskOptions {
+	type: 'MixologyPasteCreation';
+	herbName: string;
+	quantity: number;
 }
 
 export interface NightmareActivityTaskOptions extends ActivityTaskOptions {
@@ -684,7 +699,8 @@ export type ActivityTaskData =
 	| EnchantingActivityTaskOptions
 	| ConstructionActivityTaskOptions
 	| HunterActivityTaskOptions
-	| ZalcanoActivityTaskOptions
+	| MasteringMixologyContractActivityTaskOptions
+	| MasteringMixologyContractCreatingTaskOptions
 	| SawmillActivityTaskOptions
 	| ButlerActivityTaskOptions
 	| FarmingActivityTaskOptions

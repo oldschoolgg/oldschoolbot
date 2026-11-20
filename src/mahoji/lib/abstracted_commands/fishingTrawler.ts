@@ -27,5 +27,5 @@ export async function fishingTrawlerCommand(user: MUser, channelId: string) {
 		duration
 	});
 
-	return `${user.minionName} is now doing ${quantity}x Fishing Trawler trips, it will take around ${formatTripDuration(user, duration)} to finish.\n\n**Boosts:** ${boost}% boost for experience`;
+	return `${user.minionName} is now doing ${quantity}x Fishing Trawler trips, they are expected to finish ${formatTripDuration(user, duration)}.\n\n**Boosts:** ${boost}% boost for experience`;
 }

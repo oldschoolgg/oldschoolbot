@@ -21,10 +21,16 @@ export const dataCommand = defineCommand({
 					}));
 			},
 			required: true
+		},
+		{
+			type: 'Boolean',
+			name: 'text',
+			description: 'Return a text file instead of an image.',
+			required: false
 		}
 	],
 	run: async ({ interaction, options, user }) => {
 		await interaction.defer();
-		return statsCommand(user, options.name);
+		return statsCommand(user, options.name, options.text);
 	}
 });

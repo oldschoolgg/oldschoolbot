@@ -1,0 +1,37 @@
+name: Unit Tests
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  unit_tests:
+    name: Node v${{ matrix.node_version }} - ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
+    strategy:
+      matrix:
+        node_version: [24]
+        os: [ubuntu-latest]
+    steps:
+      - name: Checkout Project
+        uses: actions/checkout@v4
+      - run: corepack enable && corepack install && corepack prepare pnpm@10.17.0 --activate
+      - name: Use Node.js ${{ matrix.node_version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node_version }}
+          cache: pnpm
+      - name: Restore CI Cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-${{ matrix.node_version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+      - name: Install Dependencies
+        run: pnpm install --shamefully-hoist --frozen-lockfile
+      - name: Build
+        run: pnpm build
+      - name: Test
+        run: pnpm test

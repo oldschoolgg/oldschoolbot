@@ -161,6 +161,15 @@ export const slayerCreatables: Createable[] = [
 		GPCost: 0
 	},
 	{
+		name: 'Echo boots',
+		inputItems: new Bank({
+			'Echo crystal': 1,
+			'Guardian boots': 1
+		}),
+		outputItems: new Bank({ 'Echo boots': 1 }),
+		GPCost: 0
+	},
+	{
 		name: 'Abyssal bludgeon',
 		inputItems: new Bank({
 			'Bludgeon claw': 1,

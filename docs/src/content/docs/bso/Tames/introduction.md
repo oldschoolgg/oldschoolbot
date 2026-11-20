@@ -8,9 +8,9 @@ A tame is a special type of pet that isn't stored in your bank or equipped. You 
 
 **Currently available tames:**
 
-- Dragon tame (PvM trips): see [Igne Tame](igne-tame)
-- Monkey tame (gathering): see [Monkey Tame](monkey-tame)
-- Eagle tame (clue scrolls): see [Eagle Tame](eagle-tame)
+- Dragon tame (PvM trips): see [Igne Tame](/bso/tames/igne-tame/)
+- Monkey tame (gathering): see [Monkey Tame](/bso/tames/monkey-tame/)
+- Eagle tame (clue scrolls): see [Eagle Tame](/bso/tames/eagle-tame/)
 
 ## Commands
 

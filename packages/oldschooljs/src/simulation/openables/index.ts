@@ -1,3 +1,4 @@
+import { SharkLurePack } from '@/simulation/openables/SharkLurePack.js';
 import { Collection } from '@/structures/Collection.js';
 import type Openable from '@/structures/Openable.js';
 import type { SimpleOpenable } from '@/structures/SimpleOpenable.js';
@@ -36,6 +37,7 @@ import { NestBoxRing } from './NestBoxRing.js';
 import { NestBoxSeeds } from './NestBoxSeeds.js';
 import { OgreCoffin } from './OgreCoffin.js';
 import { GiantsFoundryOrePack, VolcanicMineOrePack } from './OrePack.js';
+import { AdeptPotionPack, ApprenticePotionPack, ExpertPotionPack } from './PotionPacks.js';
 import { SeedPackOpenable as SeedPack } from './SeedPack.js';
 import { SinisterChest } from './SinisterChest.js';
 import { ZombiePiratesLocker } from './ZombiePiratesLocker.js';
@@ -77,13 +79,17 @@ export {
 	LuckyImpling,
 	VolcanicMineOrePack,
 	GiantsFoundryOrePack,
+	ApprenticePotionPack,
+	AdeptPotionPack,
+	ExpertPotionPack,
 	IntricatePouch,
 	BasicSack,
 	AdeptSack,
 	ExpertSack,
 	MasterSack,
 	ZombiePiratesLocker,
-	CastleWarsSupplyCrate
+	CastleWarsSupplyCrate,
+	SharkLurePack
 };
 
 const openablesObject: Record<string, SimpleOpenable> = {
@@ -123,12 +129,16 @@ const openablesObject: Record<string, SimpleOpenable> = {
 	LuckyImpling,
 	VolcanicMineOrePack,
 	GiantsFoundryOrePack,
+	ApprenticePotionPack,
+	AdeptPotionPack,
+	ExpertPotionPack,
 	IntricatePouch,
 	BasicSack,
 	AdeptSack,
 	ExpertSack,
 	MasterSack,
-	CastleWarsSupplyCrate
+	CastleWarsSupplyCrate,
+	SharkLurePack
 };
 
 const allMonsters: [number, Openable][] = Object.values(openablesObject).map(openable => [openable.id, openable]);

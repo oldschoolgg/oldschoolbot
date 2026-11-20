@@ -24,7 +24,7 @@ export async function castleWarsStartCommand(user: MUser, channelId: string, qua
 
 	return `${
 		user.minionName
-	} is now doing ${quantity} games of Castle Wars. The trip will return in about around ${formatTripDuration(user, duration)}.`;
+	} is now doing ${quantity} games of Castle Wars. The trip will return ${formatTripDuration(user, duration)}.`;
 }
 export async function castleWarsStatsCommand(user: MUser) {
 	const { bank } = user;

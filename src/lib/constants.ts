@@ -172,8 +172,10 @@ export enum BitField {
 	Boring = 58,
 	HasRiteOfVileTransference = 59,
 	DisableRiteOfVileTransference = 60,
+	CompostWarning = 61,
 
-	OriginalCyrSupporter = 199
+	OriginalCyrSupporter = 199,
+	BannedFromGambling = 237
 }
 
 export interface IBitFieldData {
@@ -210,6 +212,7 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 	[BitField.UsedSirenicTablet]: { name: 'Used Sirenic Tablet', protected: false, userConfigurable: false },
 	[BitField.UsedStrangledTablet]: { name: 'Used Strangled Tablet', protected: false, userConfigurable: false },
 	[BitField.SelfGamblingLocked]: { name: 'Self Gambling Lock', protected: false, userConfigurable: true },
+	[BitField.BannedFromGambling]: { name: 'Banned from Gambling', protected: false, userConfigurable: false },
 	[BitField.OriginalCyrSupporter]: { name: "One of Cyr's first Patrons", protected: true, userConfigurable: false },
 
 	[BitField.BypassAgeRestriction]: { name: 'Bypassed Age Restriction', protected: false, userConfigurable: false },
@@ -276,6 +279,11 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 	},
 	[BitField.DisableAutoFarmButton]: {
 		name: 'Disable Auto Farm Button',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.CompostWarning]: {
+		name: 'Compost Warning',
 		protected: false,
 		userConfigurable: true
 	},

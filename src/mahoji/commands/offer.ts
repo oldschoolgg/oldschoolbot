@@ -262,6 +262,6 @@ export const offerCommand = defineCommand({
 		});
 		return `${user.minionName} is now offering ${quantity}x ${
 			bone.name
-		} at the Chaos altar, it'll take around ${formatTripDuration(user, duration)} to finish.`;
+		} at the Chaos altar, they are expected to finish ${formatTripDuration(user, duration)}.`;
 	}
 });

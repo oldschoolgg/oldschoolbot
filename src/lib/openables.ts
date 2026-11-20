@@ -1,6 +1,8 @@
 import type { IFarmingContract } from '@oldschoolgg/schemas';
 import { Emoji, Events, formatOrdinal } from '@oldschoolgg/toolkit';
 import {
+	AdeptPotionPack,
+	ApprenticePotionPack,
 	Bank,
 	BrimstoneChest,
 	BronzeHAMChest,
@@ -10,6 +12,7 @@ import {
 	EliteMimicTable,
 	ElvenCrystalChest,
 	EMonster,
+	ExpertPotionPack,
 	ForgottenLockbox,
 	GiantEggSacFull,
 	GiantsFoundryOrePack,
@@ -36,6 +39,7 @@ import {
 	type OpenableOpenOptions,
 	resolveItems,
 	SeedPack,
+	SharkLurePack,
 	SilverHAMChest,
 	SinisterChest,
 	SteelHAMChest,
@@ -455,6 +459,38 @@ const osjsOpenables: UnifiedOpenable[] = [
 		aliases: ['ore pack (volcanic mine)', 'volcanic', 'volcanic mine'],
 		output: VolcanicMineOrePack.table,
 		allItems: VolcanicMineOrePack.table.allItems
+	},
+	{
+		name: 'Apprentice potion pack',
+		id: 29_971,
+		openedItem: Items.getOrThrow(29_971),
+		aliases: ['apprentice potion pack'],
+		output: ApprenticePotionPack.table,
+		allItems: ApprenticePotionPack.table.allItems
+	},
+	{
+		name: 'Adept potion pack',
+		id: 29_972,
+		openedItem: Items.getOrThrow(29_972),
+		aliases: ['adept potion pack'],
+		output: AdeptPotionPack.table,
+		allItems: AdeptPotionPack.table.allItems
+	},
+	{
+		name: 'Expert potion pack',
+		id: 29_973,
+		openedItem: Items.getOrThrow(29_973),
+		aliases: ['expert potion pack'],
+		output: ExpertPotionPack.table,
+		allItems: ExpertPotionPack.table.allItems
+	},
+	{
+		name: 'Shark lure pack',
+		id: SharkLurePack.id,
+		openedItem: Items.getOrThrow(SharkLurePack.id),
+		aliases: [...SharkLurePack.aliases],
+		output: SharkLurePack.table,
+		allItems: SharkLurePack.table.allItems
 	},
 	{
 		name: 'Intricate pouch',

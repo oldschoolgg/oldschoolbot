@@ -25,6 +25,8 @@ Making unfinished potions, cleaning herbs, and preparing secondary ingredients a
 
 - E.g. [[/mix name\:Crushed nest wesley\:True]]
 
+**Prescription goggles** - When worn, these give a 10% chance to save a secondary ingredient when mixing potions. This also applies to Torstols when creating Super combat potions or Anti-venom+, and to Irit when mixing Antidote++ (unf). Ashes are never saved when making Serum 207.
+
 ## Fastest route to 99
 
 1. [[/mix name\:Attack potion (3) quantity\:64]]
