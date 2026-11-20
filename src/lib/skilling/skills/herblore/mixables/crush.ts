@@ -4,6 +4,16 @@ import type { Mixable } from '@/lib/skilling/types.js';
 
 const Crush: Mixable[] = [
 	{
+		item: Items.getOrThrow('Half coconut'),
+		aliases: ['half coconut', 'coconut'],
+		level: 1,
+		xp: 0,
+		inputItems: new Bank({ Coconut: 1 }),
+		tickRate: 1,
+		bankTimePerPotion: 0,
+		wesley: true
+	},
+	{
 		item: Items.getOrThrow('Unicorn horn dust'),
 		aliases: ['unicorn horn dust', 'unicorn horn'],
 		level: 1,

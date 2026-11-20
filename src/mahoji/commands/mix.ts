@@ -1,5 +1,5 @@
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
-import { Bank } from 'oldschooljs';
+import { Bank, EItem } from 'oldschooljs';
 
 import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
 import type { HerbloreActivityTaskOptions } from '@/lib/types/minions.js';
@@ -44,7 +44,8 @@ export const mixCommand = defineCommand({
 		{
 			type: 'Boolean',
 			name: 'zahur',
-			description: 'If available, pay Zahur to clean herbs. (optional).',
+			description:
+				'If available, use Zahur to clean herbs, make unfinished potions or decant coconut milk. (optional).',
 			required: false
 		}
 	],
@@ -65,6 +66,7 @@ export const mixCommand = defineCommand({
 		const requiredItems = new Bank(mixableItem.inputItems);
 		const baseCost = new Bank(mixableItem.inputItems);
 		const { zahur, wesley, quantity: optionQuantity } = options;
+		const isZahurCoconutMilk = zahur && mixableItem.item.id === EItem.COCONUT_MILK;
 		const {
 			tickRate,
 			bankTimePerPotion,
@@ -81,10 +83,13 @@ export const mixCommand = defineCommand({
 		const isInstantTrip = (zahur && mixableZahur) || (wesley && mixableWesley);
 		if (isInstantTrip) {
 			timeToMixSingleItem = 0.000_001;
-			requiredItems.add('Coins', mixableWesley ? 50 : 200);
-			cost = `decided to pay ${
-				mixableWesley ? 'Wesley 50' : 'Zahur 200'
-			} gp for each item so they don't have to go.`;
+			if (isZahurCoconutMilk) {
+				cost = 'is now having Zahur help with';
+			} else {
+				requiredItems.add('Coins', mixableWesley ? 50 : 200);
+				cost = `decided to pay ${mixableWesley ? 'Wesley 50' : 'Zahur 200'
+					} gp for each item so they don't have to go.`;
+			}
 		}
 
 		const maxTripLength = await user.calcMaxTripLength('Herblore');
@@ -132,9 +137,8 @@ export const mixCommand = defineCommand({
 			type: 'Herblore'
 		});
 
-		return `${user.minionName} ${cost} making ${quantity}x ${
-			mixableItem.outputMultiple ? 'batches of' : ''
-		} ${itemName}, they are expected to finish ${formatTripDuration(user, duration)}.
+		return `${user.minionName} ${cost} making ${quantity}x ${mixableItem.outputMultiple ? 'batches of' : ''
+			} ${itemName}, they are expected to finish ${formatTripDuration(user, duration)}.
 			\nRemoved ${finalCost} from your bank.`;
 	}
 });

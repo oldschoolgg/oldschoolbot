@@ -24,6 +24,7 @@ const herbNames = [
 ];
 
 function isSaveableSecondary(item: Item, mixableName: string): boolean {
+	if (mixableName === 'Coconut milk' || mixableName === 'Half coconut') return false;
 	if (item.name === 'Vial of water') return false;
 	if (item.name === 'Coconut milk') return false;
 	if (item.name === 'Crystal dust') return false;
@@ -110,6 +111,9 @@ export const herbloreTask: MinionTask = {
 
 		const xpRes = await user.addXP({ skillName: 'herblore', amount: xpReceived, duration });
 		const loot = new Bank().add(mixableItem.item.id, outputQuantity).add(savedItems);
+		if (mixableItem.item.id === EItem.COCONUT_MILK) {
+			loot.add('Coconut shell', quantity);
+		}
 
 		await user.transactItems({ collectionLog: true, itemsToAdd: loot });
 
