@@ -5,7 +5,7 @@ import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Bank, type Item, type ItemBank } from 'oldschooljs';
 
-import { UserEventType, xp_gains_skill_enum } from '@/prisma/main/enums.js';
+import { activity_type_enum, command_name_enum, UserEventType, xp_gains_skill_enum } from '@/prisma/main/enums.js';
 import { choicesOf, gearSetupOption } from '@/discord/index.js';
 import { marketPricemap } from '@/lib/cache.js';
 import { CanvasModule } from '@/lib/canvas/CanvasModule.js';
@@ -34,6 +34,13 @@ import { getUserInfo } from '@/mahoji/commands/minion.js';
 import { sellPriceOfItem } from '@/mahoji/commands/sell.js';
 import { cancelUsersListings } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
 import { gearViewCommand } from '@/mahoji/lib/abstracted_commands/gearCommands.js';
+import {
+	historyAutocomplete,
+	recentActivities,
+	recentCommands,
+	specificActivity,
+	specificCommand
+} from '@/mahoji/lib/abstracted_commands/playerData.js';
 
 const itemFilters = [
 	{
@@ -52,8 +59,7 @@ const itemFilters = [
 function isProtectedAccount(user: MUser) {
 	const botAccounts = ['303730326692429825', '729244028989603850', '969542224058654790'];
 	if (botAccounts.includes(user.id)) return true;
-	if (user.isModOrAdmin) return true;
-	return false;
+	return user.isModOrAdmin;
 }
 
 type StealItemsOptions = {
@@ -85,9 +91,7 @@ async function handleStealItems({
 	if (
 		globalConfig.isProduction &&
 		!adminUser.isAdmin &&
-		![Channel.CyrCommandsChannel, CHANNELS.MODERATORS, CHANNELS.MODERATORS_COMMANDS].includes(
-			interaction.channelId
-		)
+		![Channel.CyrCommandsChannel, CHANNELS.MODERATORS, CHANNELS.MODERATORS_COMMANDS].includes(interaction.channelId)
 	) {
 		return `You can only use this command in <#${CHANNELS.MODERATORS}> or <#${CHANNELS.MODERATORS_COMMANDS}>.`;
 	}
@@ -253,6 +257,85 @@ export const rpCommand = defineCommand({
 					required: false,
 					min_value: 1,
 					max_value: MAX_STAFF_BESTOW_QUANTITY
+				}
+			]
+		},
+		{
+			type: 'SubcommandGroup',
+			name: 'pdata',
+			description: 'Player history',
+			options: [
+				{
+					type: 'Subcommand',
+					name: 'activity_recent',
+					description: 'Recent activities',
+					options: [
+						{ type: 'User', name: 'user', description: 'Player', required: true },
+						{
+							type: 'Integer',
+							name: 'qty',
+							description: 'Quantity (default 25)',
+							min_value: 1,
+							max_value: 1000,
+							required: false
+						},
+						{
+							type: 'String',
+							name: 'trip_type',
+							description: 'Activity type',
+							required: false,
+							autocomplete: async ({ value }: StringAutoComplete) =>
+								historyAutocomplete(Object.values(activity_type_enum), value)
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'activity_specific',
+					description: 'View an activity',
+					options: [
+						{ type: 'User', name: 'user', description: 'Player', required: true },
+						{ type: 'Integer', name: 'trip_id', description: 'Activity ID', required: true, min_value: 1 }
+					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'commands_recent',
+					description: 'Recent command usage',
+					options: [
+						{ type: 'User', name: 'user', description: 'Player', required: true },
+						{
+							type: 'Integer',
+							name: 'qty',
+							description: 'Quantity (default 25)',
+							min_value: 1,
+							max_value: 1000,
+							required: false
+						},
+						{
+							type: 'String',
+							name: 'command_name',
+							description: 'Command name',
+							required: false,
+							autocomplete: async ({ value }: StringAutoComplete) =>
+								historyAutocomplete(Object.values(command_name_enum), value)
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'commands_specific',
+					description: 'View command usage',
+					options: [
+						{ type: 'User', name: 'user', description: 'Player', required: true },
+						{
+							type: 'Integer',
+							name: 'command_id',
+							description: 'Command usage ID',
+							required: true,
+							min_value: 1
+						}
+					]
 				}
 			]
 		},
@@ -632,6 +715,39 @@ export const rpCommand = defineCommand({
 		if (!adminUser.isStaff) return rng.pick(gifs);
 		await interaction.defer();
 
+		if (options.pdata) {
+			if (!adminUser.isModOrAdmin) return 'Only moderators and admins can view player data.';
+			const targetId =
+				options.pdata.activity_recent?.user.user.id ??
+				options.pdata.activity_specific?.user.user.id ??
+				options.pdata.commands_recent?.user.user.id ??
+				options.pdata.commands_specific?.user.user.id;
+			if (!targetId) return 'Invalid player data request.';
+			if (!adminUser.isAdmin) {
+				const target = await mUserFetch(targetId);
+				if (target.isAdmin || (!adminUser.isGameHacker && target.isMod)) {
+					return 'You cannot view this player’s data.';
+				}
+			}
+		}
+
+		if (options.pdata?.activity_recent) {
+			const o = options.pdata.activity_recent;
+			return recentActivities(o.user.user.id, o.qty ?? 25, o.trip_type);
+		}
+		if (options.pdata?.activity_specific) {
+			const o = options.pdata.activity_specific;
+			return specificActivity(adminUser, o.user.user.id, o.trip_id);
+		}
+		if (options.pdata?.commands_recent) {
+			const o = options.pdata.commands_recent;
+			return recentCommands(o.user.user.id, o.qty ?? 25, o.command_name);
+		}
+		if (options.pdata?.commands_specific) {
+			const o = options.pdata.commands_specific;
+			return specificCommand(adminUser, o.user.user.id, o.command_id);
+		}
+
 		if (options.user_event) {
 			const messageId =
 				options.user_event.cl_completion?.message_id ??
@@ -861,7 +977,7 @@ Date: ${dateFm(date)}`;
 				where.push(`guild_id = ${options.player.list_trades.guild_id}`);
 			}
 
-			const sql = `${`${baseSql} WHERE ${where.join(' AND ')}`} ORDER BY date DESC`;
+			const sql = `${baseSql} WHERE ${where.join(' AND ')} ORDER BY date DESC`;
 
 			let report =
 				'date\tguild_id\tsender_id\trecipient_id\tsender\trecipient\tsent_bank\trcvd_bank\tsent_value\trcvd_value\tsent_value_last_100\trcvd_value_last_100\n';
