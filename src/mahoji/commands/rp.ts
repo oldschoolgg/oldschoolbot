@@ -1,6 +1,6 @@
-import { codeBlock, dateFm } from '@oldschoolgg/discord';
+import { codeBlock, dateFm, EmbedBuilder } from '@oldschoolgg/discord';
 import { type GearSetupType, GearSetupTypes } from '@oldschoolgg/gear';
-import { sumArr, toTitleCase } from '@oldschoolgg/toolkit';
+import { CHANNELS, sumArr, toTitleCase } from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Bank, type Item, type ItemBank } from 'oldschooljs';
@@ -8,10 +8,12 @@ import { Bank, type Item, type ItemBank } from 'oldschooljs';
 import { UserEventType, xp_gains_skill_enum } from '@/prisma/main/enums.js';
 import { choicesOf, gearSetupOption } from '@/discord/index.js';
 import { marketPricemap } from '@/lib/cache.js';
+import { CanvasModule } from '@/lib/canvas/CanvasModule.js';
+import { GeImageGenerator } from '@/lib/canvas/geImage.js';
+import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 import { Channel, globalConfig } from '@/lib/constants.js';
-import { customItems } from '@/lib/customItems/util.js';
 import { allCollectionLogsFlat, allDcSet } from '@/lib/data/Collections.js';
-import { GrandExchange } from '@/lib/grandExchange.js';
+import { type GEListingWithTransactions, GrandExchange, geListingToString } from '@/lib/grandExchange.js';
 import { unEquipAllCommand } from '@/lib/minions/functions/unequipAllCommand.js';
 import { unequipPet } from '@/lib/minions/functions/unequipPet.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
@@ -77,11 +79,17 @@ async function handleStealItems({
 	rng: RNGProvider;
 	stealItemsOptions: StealItemsOptions;
 }): CommandResponse {
-	if (!adminUser.isGameHacker && !adminUser.isAdmin) {
+	if (!adminUser.isModOrAdmin) {
 		return rng.pick(gifs);
 	}
-	if (globalConfig.isProduction && !adminUser.isAdmin && interaction.channelId !== Channel.CyrCommandsChannel) {
-		return `You can only use this command in <#${Channel.CyrCommandsChannel}>.`;
+	if (
+		globalConfig.isProduction &&
+		!adminUser.isAdmin &&
+		![Channel.CyrCommandsChannel, CHANNELS.MODERATORS, CHANNELS.MODERATORS_COMMANDS].includes(
+			interaction.channelId
+		)
+	) {
+		return `You can only use this command in <#${CHANNELS.MODERATORS}> or <#${CHANNELS.MODERATORS_COMMANDS}>.`;
 	}
 	const toDelete = stealItemsOptions.delete ?? false;
 	const actionMsg = toDelete ? 'delete' : 'steal';
@@ -110,7 +118,8 @@ async function handleStealItems({
 	if (items.length === 0) {
 		return `${userToStealFrom.mention} doesn't have those items, or they don't exist.`;
 	}
-	if (!adminUser.isAdmin && items.itemIDs.some(i => allDcSet.has(i) && customItems.includes(i))) {
+	const containsDiscontinued = items.itemIDs.some(i => allDcSet.has(i));
+	if (!adminUser.isAdmin && !adminUser.isGameHacker && containsDiscontinued) {
 		return `You cannot steal Discontinued Items, sorry!`;
 	}
 	await interaction.confirmation(
@@ -131,13 +140,76 @@ async function handleStealItems({
 		files: [{ buffer: Buffer.from(items.toString()), name: 'items.txt' }]
 	};
 	await globalClient.sendMessage(Channel.BotLogs, auditMessage);
-	if (!adminUser.isAdmin) {
+	if (!adminUser.isAdmin && (!adminUser.isGameHacker || containsDiscontinued)) {
 		await dmCyrAudit(auditMessage.content, auditMessage.files);
 	}
 
 	await userToStealFrom.removeItemsFromBank(items);
 	if (!toDelete) await adminUser.addItemsToBank({ items, collectionLog: false });
 	return `${toTitleCase(actionMsgPast)} ${items.toString().slice(0, 500)} from ${userToStealFrom.mention}`;
+}
+
+async function generateAdminGEListingsImage({
+	user,
+	listingData,
+	unlockedSlots,
+	trim
+}: {
+	user: MUser;
+	listingData: GEListingWithTransactions[];
+	unlockedSlots: number;
+	trim?: true;
+}) {
+	await CanvasModule.waitTillReady();
+	if (!GeImageGenerator.ready) await GeImageGenerator.init();
+
+	const rowLength = 4;
+	const startY = 78;
+	const slotCount =
+		Math.ceil(
+			(trim ? Math.max(listingData.length, rowLength) : Math.max(listingData.length, unlockedSlots)) / rowLength
+		) * rowLength;
+	const rowCount = Math.max(1, slotCount / rowLength);
+	const height = startY + rowCount * GeImageGenerator.geSlotOpen!.height + (rowCount - 1) * 10 + 10;
+	const canvas = new OSRSCanvas({ width: GeImageGenerator.geInterface!.width, height });
+	const ctx = canvas.ctx;
+	const interfaceImage = GeImageGenerator.geInterface!;
+	const bodyHeight = interfaceImage.height - 38;
+
+	for (let y = 34; y < canvas.height - 3; y += bodyHeight) {
+		const drawHeight = Math.min(bodyHeight, canvas.height - 3 - y);
+		ctx.drawImage(interfaceImage, 4, 34, canvas.width - 8, drawHeight, 4, y, canvas.width - 8, drawHeight);
+	}
+	ctx.drawImage(interfaceImage, 0, 0, canvas.width, 34, 0, 0, canvas.width, 34);
+	ctx.fillStyle = '#4b463c';
+	ctx.fillRect(4, 4, canvas.width - 8, 26);
+	ctx.fillStyle = '#1d1b18';
+	ctx.fillRect(0, 31, canvas.width, 3);
+	ctx.fillRect(0, canvas.height - 3, canvas.width, 3);
+	ctx.fillRect(0, 0, 3, canvas.height);
+	ctx.fillRect(canvas.width - 3, 0, 3, canvas.height);
+
+	const title = `${user.username}'s Listings`;
+	const slots = `Slots Used: ${listingData.length} of ${unlockedSlots}`;
+	const timestamp = new Date()
+		.toISOString()
+		.replace('T', ' ')
+		.replace(/\.\d{3}Z$/, '');
+	const userID = `ID: ${user.id}`;
+	canvas.drawTitleText({ text: title, x: 16, y: 20 });
+	canvas.drawTitleText({ text: slots, x: canvas.width - 16 - canvas.measureTextWidth(slots, 'Bold'), y: 20 });
+	canvas.drawTitleText({ text: timestamp, x: 16, y: 56 });
+	canvas.drawTitleText({ text: userID, x: canvas.width - 16 - canvas.measureTextWidth(userID, 'Bold'), y: 56 });
+
+	await GeImageGenerator.addInterfaceSlots(canvas, listingData, {
+		unlockedSlots,
+		trim,
+		rowLength,
+		startY,
+		user
+	});
+
+	return canvas.toScaledOutput(2);
 }
 
 export const rpCommand = defineCommand({
@@ -399,6 +471,20 @@ export const rpCommand = defineCommand({
 							name: 'user',
 							description: 'The user',
 							required: true
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'ge_list',
+					description: "Show a user's Grand Exchange listings.",
+					options: [
+						{ type: 'User', name: 'user', description: 'The user', required: true },
+						{
+							type: 'Boolean',
+							name: 'all',
+							description: 'Include recent completed listings',
+							required: false
 						}
 					]
 				}
@@ -845,6 +931,96 @@ Date: ${dateFm(date)}`;
 			}
 
 			return { files: [{ buffer: Buffer.from(report), name: 'trade_report.txt' }] };
+		}
+
+		if (options.player?.ge_list) {
+			const user = await mUserFetch(options.player.ge_list.user.user.id);
+			const showAll = options.player.ge_list.all ?? false;
+			const activeListings = await prisma.gEListing.findMany({
+				where: {
+					user_id: user.id,
+					quantity_remaining: {
+						gt: 0
+					},
+					fulfilled_at: null,
+					cancelled_at: null
+				},
+				include: {
+					buyTransactions: true,
+					sellTransactions: true
+				},
+				orderBy: {
+					created_at: 'desc'
+				}
+			});
+			const recentInactiveListings = showAll
+				? await prisma.gEListing.findMany({
+						where: {
+							user_id: user.id,
+							...(isAdmin ? {} : { cancelled_at: null }),
+							OR: [
+								{
+									fulfilled_at: {
+										not: null
+									}
+								},
+								{
+									quantity_remaining: 0
+								},
+								...(isAdmin
+									? [
+											{
+												cancelled_at: {
+													not: null
+												}
+											}
+										]
+									: [])
+							]
+						},
+						include: {
+							buyTransactions: true,
+							sellTransactions: true
+						},
+						orderBy: {
+							created_at: 'desc'
+						},
+						take: 5
+					})
+				: [];
+			const slots = await GrandExchange.calculateSlotsOfUser(user);
+			const activeListingText = activeListings.length
+				? (
+						await Promise.all(
+							activeListings.map(async listing => {
+								const buyLimit = await GrandExchange.checkBuyLimitForListing(listing);
+								return geListingToString(listing, buyLimit);
+							})
+						)
+					).join('\n')
+				: '-- No Listings --';
+			const recentInactiveListingText = recentInactiveListings.length
+				? recentInactiveListings.map(i => geListingToString(i)).join('\n')
+				: '-- No Listings --';
+			const listingSections = [
+				`**Active Listings**\n${activeListingText}`,
+				`**Recent ${isAdmin ? 'Fulfilled/Cancelled' : 'Fulfilled'} Listings**\n${recentInactiveListingText}`
+			];
+
+			return {
+				embeds: showAll ? [new EmbedBuilder().setDescription(listingSections.join('\n\n'))] : [],
+				files: [
+					{
+						name: 'ge-listings.png',
+						buffer: await generateAdminGEListingsImage({
+							user,
+							listingData: activeListings,
+							unlockedSlots: slots.slots,
+							...(!showAll ? { trim: true } : {})
+						})
+					}
+				]
+			};
 		}
 
 		if (options.player?.ge_cancel) {

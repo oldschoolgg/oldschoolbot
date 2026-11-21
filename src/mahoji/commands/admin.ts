@@ -18,7 +18,12 @@ import {
 	validateStoredLeaguesTasks,
 	verifyLeaguesTasksForUser
 } from '@/lib/bso/leagues/leagues.js';
-import { LazyMysteryBoxTable, SkrinkBoxTable, SkrodBoxTable } from '@/lib/bso/openables/holidayOpenables.js';
+import {
+	FealtyBoxTable,
+	LazyMysteryBoxTable,
+	SkrinkBoxTable,
+	SkrodBoxTable
+} from '@/lib/bso/openables/holidayOpenables.js';
 import { BeachMysteryBoxTable, FestivePresentTable, RoyalMysteryBoxTable } from '@/lib/bso/openables/tables.js';
 import { getLydiaQuote } from '@/lib/bso/summerDays.js';
 
@@ -51,14 +56,12 @@ import {
 	listBitFields
 } from '@/lib/bitFieldUtils.js';
 import { giveawayCache } from '@/lib/cache.js';
-import { CanvasModule } from '@/lib/canvas/CanvasModule.js';
 import { canvasToBuffer, createCanvas } from '@/lib/canvas/canvasUtil.js';
-import { GeImageGenerator } from '@/lib/canvas/geImage.js';
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 import { BadgesEnum, BitField, BitFieldData, badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
 import { customItems } from '@/lib/customItems/util.js';
 import { allDcSet } from '@/lib/data/Collections.js';
-import { type GEListingWithTransactions, GrandExchange, geListingToString } from '@/lib/grandExchange.js';
+import { GrandExchange } from '@/lib/grandExchange.js';
 import { doMenuWrapper } from '@/lib/menuWrapper.js';
 import { syncCustomPrices } from '@/lib/preStartup.js';
 import { countUsersWithItemInCl } from '@/lib/rawSql.js';
@@ -225,177 +228,7 @@ function findDiscontinuedStaffBestowItems(schedule: StaffGrants) {
 	return [...found.values()].flat();
 }
 
-async function generateAdminGEListingsImage({
-	user,
-	listingData,
-	unlockedSlots,
-	trim
-}: {
-	user: MUser;
-	listingData: GEListingWithTransactions[];
-	unlockedSlots: number;
-	trim?: true;
-}) {
-	await CanvasModule.waitTillReady();
-	if (!GeImageGenerator.ready) await GeImageGenerator.init();
-
-	const rowLength = 4;
-	const startY = 78;
-	const slotCount =
-		Math.ceil(
-			(trim ? Math.max(listingData.length, rowLength) : Math.max(listingData.length, unlockedSlots)) / rowLength
-		) * rowLength;
-	const rowCount = Math.max(1, slotCount / rowLength);
-	const height = startY + rowCount * GeImageGenerator.geSlotOpen!.height + (rowCount - 1) * 10 + 10;
-	const canvas = new OSRSCanvas({ width: GeImageGenerator.geInterface!.width, height });
-	const ctx = canvas.ctx;
-	const interfaceImage = GeImageGenerator.geInterface!;
-	const bodyHeight = interfaceImage.height - 38;
-
-	for (let y = 34; y < canvas.height - 3; y += bodyHeight) {
-		const drawHeight = Math.min(bodyHeight, canvas.height - 3 - y);
-		ctx.drawImage(interfaceImage, 4, 34, canvas.width - 8, drawHeight, 4, y, canvas.width - 8, drawHeight);
-	}
-	ctx.drawImage(interfaceImage, 0, 0, canvas.width, 34, 0, 0, canvas.width, 34);
-	ctx.fillStyle = '#4b463c';
-	ctx.fillRect(4, 4, canvas.width - 8, 26);
-	ctx.fillStyle = '#1d1b18';
-	ctx.fillRect(0, 31, canvas.width, 3);
-	ctx.fillRect(0, canvas.height - 3, canvas.width, 3);
-	ctx.fillRect(0, 0, 3, canvas.height);
-	ctx.fillRect(canvas.width - 3, 0, 3, canvas.height);
-
-	const title = `${user.username}'s Listings`;
-	const slots = `Slots Used: ${listingData.length} of ${unlockedSlots}`;
-	const timestamp = new Date()
-		.toISOString()
-		.replace('T', ' ')
-		.replace(/\.\d{3}Z$/, '');
-	const userID = `ID: ${user.id}`;
-	canvas.drawTitleText({ text: title, x: 16, y: 20 });
-	canvas.drawTitleText({ text: slots, x: canvas.width - 16 - canvas.measureTextWidth(slots, 'Bold'), y: 20 });
-	canvas.drawTitleText({ text: timestamp, x: 16, y: 56 });
-	canvas.drawTitleText({ text: userID, x: canvas.width - 16 - canvas.measureTextWidth(userID, 'Bold'), y: 56 });
-
-	await GeImageGenerator.addInterfaceSlots(canvas, listingData, {
-		unlockedSlots,
-		trim,
-		rowLength,
-		startY,
-		user
-	});
-
-	return canvas.toScaledOutput(2);
-}
-
 const adminRunnableCommands: AdminRunnableCommand[] = [
-	{
-		name: 'view_ge_listings',
-		description: "Shows a user's active Grand Exchange listings in one image.",
-		args: [
-			{
-				name: 'userId',
-				description: 'The user in Discord ID format.',
-				required: true
-			},
-			{
-				name: 'view',
-				description: 'Use "all" to include recent completed listings.'
-			}
-		],
-		run: async ({ arg1, arg2, adminUser }) => {
-			if (!arg1 || !isValidDiscordSnowflake(arg1)) return 'Not a valid User ID.';
-
-			const showAll = arg2 === 'all';
-			const isAdmin = adminUser.isAdmin;
-			const user = await mUserFetch(arg1);
-			const activeListings = await prisma.gEListing.findMany({
-				where: {
-					user_id: user.id,
-					quantity_remaining: {
-						gt: 0
-					},
-					fulfilled_at: null,
-					cancelled_at: null
-				},
-				include: {
-					buyTransactions: true,
-					sellTransactions: true
-				},
-				orderBy: {
-					created_at: 'desc'
-				}
-			});
-			const recentInactiveListings = showAll
-				? await prisma.gEListing.findMany({
-						where: {
-							user_id: user.id,
-							...(isAdmin ? {} : { cancelled_at: null }),
-							OR: [
-								{
-									fulfilled_at: {
-										not: null
-									}
-								},
-								{
-									quantity_remaining: 0
-								},
-								...(isAdmin
-									? [
-											{
-												cancelled_at: {
-													not: null
-												}
-											}
-										]
-									: [])
-							]
-						},
-						include: {
-							buyTransactions: true,
-							sellTransactions: true
-						},
-						orderBy: {
-							created_at: 'desc'
-						},
-						take: 5
-					})
-				: [];
-			const slots = await GrandExchange.calculateSlotsOfUser(user);
-			const activeListingText = activeListings.length
-				? (
-						await Promise.all(
-							activeListings.map(async listing => {
-								const buyLimit = await GrandExchange.checkBuyLimitForListing(listing);
-								return geListingToString(listing, buyLimit);
-							})
-						)
-					).join('\n')
-				: '-- No Listings --';
-			const recentInactiveListingText = recentInactiveListings.length
-				? recentInactiveListings.map(i => geListingToString(i)).join('\n')
-				: '-- No Listings --';
-			const listingSections = [
-				`**Active Listings**\n${activeListingText}`,
-				`**Recent ${isAdmin ? 'Fulfilled/Cancelled' : 'Fulfilled'} Listings**\n${recentInactiveListingText}`
-			];
-
-			return {
-				embeds: showAll ? [new EmbedBuilder().setDescription(listingSections.join('\n\n'))] : [],
-				files: [
-					{
-						name: 'ge-listings.png',
-						buffer: await generateAdminGEListingsImage({
-							user,
-							listingData: activeListings,
-							unlockedSlots: slots.slots,
-							...(!showAll ? { trim: true } : {})
-						})
-					}
-				]
-			};
-		}
-	},
 	{
 		name: 'tax_gp',
 		description: 'Tax eligible users by a percentage while preserving the configured GP floor.',
@@ -1806,6 +1639,27 @@ ${META_CONSTANTS.RENDERED_STR}`
 			if (items.length === 0) return 'No items were given.';
 			const itemErrors = items.validate();
 			if (itemErrors.length > 0) return `Invalid items: ${itemErrors.join(', ')}`;
+			if (!isAdmin) {
+				const restricted = new Set([
+					...BeachMysteryBoxTable.allItems,
+					...RoyalMysteryBoxTable.allItems,
+					...FealtyBoxTable.allItems,
+					...LazyMysteryBoxTable.allItems,
+					...[
+						'Beach mystery box',
+						'Royal mystery box',
+						'Fealty Mystery Box',
+						'Lazy Mystery Box',
+						'Smokey',
+						'Cob',
+						'Craig',
+						'Hoppy',
+						'Flappy',
+						'Mini Pumpkinhead'
+					].map(name => Items.getOrThrow(name).id)
+				]);
+				if (items.itemIDs.some(id => restricted.has(id))) return 'You cannot give these restricted items.';
+			}
 
 			const destination = options.give_items.destination;
 			const targetUser = options.give_items.user ? await mUserFetch(options.give_items.user.user.id) : null;
@@ -1849,6 +1703,11 @@ ${META_CONSTANTS.RENDERED_STR}`
 			return `Added ${items} to ${targetDescription}.`;
 		}
 
+		if (options.sync_commands) {
+			await bulkUpdateCommands();
+			return 'Done.';
+		}
+
 		/**
 		 *
 		 * Admin Only Commands
@@ -1856,11 +1715,6 @@ ${META_CONSTANTS.RENDERED_STR}`
 		 */
 		if (!isGameHacker) {
 			return rng.pick(gifs);
-		}
-
-		if (options.sync_commands) {
-			await bulkUpdateCommands();
-			return 'Done.';
 		}
 
 		if (options.view) {

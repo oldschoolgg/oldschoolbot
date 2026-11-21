@@ -1,4 +1,8 @@
-import { stringMatches } from '@oldschoolgg/toolkit';
+import { checkEntitlements } from '@/lib/bso/util/entitlementChecker.js';
+import { findGroupOfUser } from '@/lib/bso/util/findGroupOfUser.js';
+
+import { ButtonBuilder, ButtonStyle, ComponentType } from '@oldschoolgg/discord';
+import { PerkTier, RoboChimpBit, stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, resolveItems, toKMB } from 'oldschooljs';
 
 import { bankImageTask } from '@/lib/canvas/bankImage.js';
@@ -28,6 +32,32 @@ export async function bankBgCommand(interaction: MInteraction, user: MUser, name
 			bankBackground: selectedImage.id
 		});
 		return `Your bank background is now **${selectedImage.name}**!`;
+	}
+
+	if (selectedImage.owners) {
+		const userIDs = await findGroupOfUser(user.id);
+		if (selectedImage.owners.some(owner => userIDs.includes(owner))) {
+			const entitlement = await checkEntitlements(user, [
+				{ perkTier: PerkTier.Six },
+				{ bitfield: RoboChimpBit.CyrTier4 }
+			]);
+			if (!entitlement.success) {
+				return {
+					content:
+						"✨ We still have your custom bank background, and it's waiting for you! All you need is **~~Tier 5~~ Tier 4** on Cyr's Patreon to use it again. ❤️",
+					components: [
+						new ButtonBuilder({
+							type: ComponentType.Button,
+							label: 'Visit Patreon',
+							style: ButtonStyle.Link,
+							url: 'https://www.patreon.com/OldschoolCyr'
+						})
+					]
+				};
+			}
+			await user.update({ bankBackground: selectedImage.id });
+			return `Your bank background is now **${selectedImage.name}**!`;
+		}
 	}
 
 	if (selectedImage.sacValueRequired) {
