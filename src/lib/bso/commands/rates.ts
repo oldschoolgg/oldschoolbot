@@ -174,7 +174,7 @@ export const ratesCommand = defineCommand({
 				);
 			}
 			return {
-				...interaction.returnStringOrFile(tableArr.join('\n'))
+				content: tableArr.join('\n')
 			};
 		}
 		if (options.misc?.zygomite_seeds) {
@@ -243,10 +243,8 @@ ${zygomiteFarmingSource
 				}
 			}
 
-			return {
-				content: 'Assumes abyssal jibwings (e) and divine ring',
-				...interaction.returnStringOrFile(results)
-			};
+			return `Assumes abyssal jibwings (e) and divine ring
+${results}`;
 		}
 
 		if (options.xphr?.hunter) {
@@ -377,8 +375,10 @@ ${zygomiteFarmingSource
 				}
 			}
 			return {
-				...interaction.returnStringOrFile(results),
-				content: 'Assumes: Hunter master cape, level 120 Hunter, full Graceful, Sandy pet equipped.'
+				content:
+					results +
+					String.fromCharCode(10) +
+					'Assumes: Hunter master cape, level 120 Hunter, full Graceful, Sandy pet equipped.'
 			};
 		}
 
@@ -433,8 +433,7 @@ ${zygomiteFarmingSource
 			}
 
 			return {
-				...interaction.returnStringOrFile(results),
-				content: 'Assumes: Slayer master cape (8% boost to slayer xp)'
+				content: results + String.fromCharCode(10) + 'Assumes: Slayer master cape (8% boost to slayer xp)'
 			};
 		}
 
@@ -561,8 +560,9 @@ ${zygomiteFarmingSource
 				}
 			}
 			return {
-				...interaction.returnStringOrFile(results),
 				content:
+					results +
+					String.fromCharCode(10) +
 					'Assumes: Mining master cape, full Prospector, Glory, Varrock armour 4, 120 mining, Volcanic pickaxe.'
 			};
 		}
@@ -657,7 +657,7 @@ ${zygomiteFarmingSource
 				}
 			}
 
-			return interaction.returnStringOrFile(results);
+			return results;
 		}
 
 		if (options.xphr?.agility) {
@@ -707,7 +707,7 @@ ${zygomiteFarmingSource
 					}
 				}
 			}
-			return interaction.returnStringOrFile(results);
+			return results;
 		}
 
 		if (options.xphr?.dungeoneering) {
@@ -747,8 +747,10 @@ ${zygomiteFarmingSource
 				}
 			}
 			return {
-				...interaction.returnStringOrFile(results),
-				content: 'Assumes: 120 Dungeoneering, Ring of luck, master cape (For gora shard chance)'
+				content:
+					results +
+					String.fromCharCode(10) +
+					'Assumes: 120 Dungeoneering, Ring of luck, master cape (For gora shard chance)'
 			};
 		}
 		return 'No option selected.';

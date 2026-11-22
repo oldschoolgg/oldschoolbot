@@ -224,30 +224,38 @@ class CacheManager {
 		refreshCache?: boolean;
 		externalServer?: boolean;
 	}): Promise<IMember | null> {
-		// If we cache this guild, lets check it
 		const cachedServer = globalConfig.guildIdsToCache.includes(guildId);
-		if (cachedServer) {
-			const key = `${guildId}:${userId}`;
-			if (refreshCache) return await globalClient.fetchMember({ guildId, userId });
-			const delayCheck = await Cache.tryRatelimit(key, 'delay_member_fetch');
-			if (cacheOnly || !delayCheck.success) {
-				// If we're under time out, it could be assumed to be cached, but...
-				const cacheMember = await this.getJson<IMember>(RedisKeys.Discord.Member(guildId, userId));
-				if (cacheMember) {
-					return cacheMember;
-				} else {
-					if (cacheOnly) return null;
-					const member = await globalClient.fetchMember({ guildId, userId });
-					await Cache.setMember(member);
-					return member;
-				}
-			}
+		if (cachedServer && !refreshCache) {
+			const cached = await this.getJson<IMember>(RedisKeys.Discord.Member(guildId, userId));
+			if (cacheOnly || (cached && (await this.client.ttl(RedisKeys.Discord.Member(guildId, userId))) > 0))
+				return cached;
 		}
 		if (cachedServer || externalServer) {
-			// We can fetch now
-			return await globalClient.fetchMember({ guildId, userId });
+			const member = await globalClient.fetchMember({ guildId, userId });
+			if (cachedServer) await this.setMember(member);
+			return member;
 		}
 		return null;
+	}
+
+	private managedRoleKey(guildId: string, roleId: string) {
+		return `${BOT_TYPE}:managed-role:${guildId}:${roleId}`;
+	}
+
+	async getManagedRoleMembers(guildId: string, roleId: string): Promise<string[] | null> {
+		const members = await this.client.smembers(this.managedRoleKey(guildId, roleId));
+		return members.includes('initialized') ? members.filter(id => id !== 'initialized') : null;
+	}
+
+	async initializeManagedRole(guildId: string, roleId: string, userIds: string[]) {
+		await this.client.sadd(this.managedRoleKey(guildId, roleId), 'initialized', ...userIds);
+	}
+
+	async updateManagedRole(guildId: string, roleId: string, userId: string, hasRole: boolean) {
+		const key = this.managedRoleKey(guildId, roleId);
+		if (!(await this.client.sismember(key, 'initialized'))) return;
+		if (hasRole) await this.client.sadd(key, userId);
+		else await this.client.srem(key, userId);
 	}
 
 	async getChannel(channelId: string): Promise<IChannel> {
@@ -274,11 +282,23 @@ class CacheManager {
 
 	async setMember(member: IMember): Promise<void> {
 		ZMember.parse(member);
-		await this.setJson(RedisKeys.Discord.Member(member.guild_id, member.user_id), member);
+		await this.setJsonWithTTL(RedisKeys.Discord.Member(member.guild_id, member.user_id), member, TTL.Day * 10);
+	}
+
+	async clearMember(guildId: string, userId: string) {
+		await this.client.del(RedisKeys.Discord.Member(guildId, userId));
 	}
 
 	async bulkSetMembers(members: IMember[]): Promise<void> {
-		await this.bulkSet(members, m => RedisKeys.Discord.Member(m.guild_id, m.user_id));
+		const pipeline = this.client.pipeline();
+		for (const member of members)
+			pipeline.set(
+				RedisKeys.Discord.Member(member.guild_id, member.user_id),
+				JSON.stringify(member),
+				'EX',
+				TTL.Day * 10
+			);
+		await pipeline.exec();
 	}
 
 	async bulkSetEmojis(emojis: IEmoji[]): Promise<void> {

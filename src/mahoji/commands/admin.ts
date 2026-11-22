@@ -484,7 +484,8 @@ const adminRunnableCommands: AdminRunnableCommand[] = [
 			}
 		],
 		run: async ({ arg1, adminUser }) => {
-			if (!adminUser.isAdmin && !adminUser.isGameHacker) return 'You must be an admin or game hacker to reset the grand exchange.';
+			if (!adminUser.isAdmin && !adminUser.isGameHacker)
+				return 'You must be an admin or game hacker to reset the grand exchange.';
 			if (globalConfig.isProduction) {
 				return 'You cannot reset the grand exchange on production no matter who you are.';
 			}
@@ -1771,7 +1772,9 @@ ${META_CONSTANTS.RENDERED_STR}`
 			}
 			await interaction.confirmation(`Are you sure you want to bury ${itemsToBury} in the sand?`);
 			if (!isAdmin && shouldSpawn && itemsToBury.itemIDs.some(id => allDcSet.has(id))) {
-				await dmCyrAudit(`${adminUser.logName} spawned discontinued items in the buried treasure bank: ${itemsToBury}`);
+				await dmCyrAudit(
+					`${adminUser.logName} spawned discontinued items in the buried treasure bank: ${itemsToBury}`
+				);
 			}
 
 			if (!shouldSpawn) {
