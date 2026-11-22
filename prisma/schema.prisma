@@ -1229,6 +1229,7 @@ model CLCategoryItem {
 }
 
 enum command_name_enum {
+  thanksgiving
   cache_refresh
   testpotato
   achievementdiary

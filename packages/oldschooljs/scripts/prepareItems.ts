@@ -83,6 +83,99 @@ export function moidLink(items: number[]) {
 
 const manualItems: Item[] = [
 	{
+		id: 34740,
+		name: 'Vampyre monocle',
+		equipable: true,
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 0,
+			attack_ranged: 0,
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 0,
+			defence_ranged: 0,
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 0,
+			slot: EquipmentSlot.Head,
+			requirements: null
+		}
+	},
+	{
+		id: 34742,
+		name: 'Vampyre costume top',
+		equipable: true,
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 0,
+			attack_ranged: 0,
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 0,
+			defence_ranged: 0,
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 0,
+			slot: EquipmentSlot.Body,
+			requirements: null
+		}
+	},
+	{
+		id: 34744,
+		name: 'Vampyre costume bottom',
+		equipable: true,
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 0,
+			attack_ranged: 0,
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 0,
+			defence_ranged: 0,
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 0,
+			slot: EquipmentSlot.Legs,
+			requirements: null
+		}
+	},
+	{
+		id: 34746,
+		name: 'Vampyre costume cape',
+		equipable: true,
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 0,
+			attack_ranged: 0,
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 0,
+			defence_ranged: 0,
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 0,
+			slot: EquipmentSlot.Cape,
+			requirements: null
+		}
+	},
+
+	{
 		id: 28_329,
 		name: 'Ring of shadows',
 		members: true,
