@@ -325,10 +325,8 @@ export const sellCommand = defineCommand({
 			prisma.botItemSell.createMany({ data: botItemSellData })
 		]);
 
-		return interaction.returnStringOrFile(
-			`Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(totalPrice)})**${
-				user.isIronman ? ' (General store price)' : ` (${taxRatePercent}% below market price)`
-			}.`
-		);
+		return `Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(totalPrice)})**${
+			user.isIronman ? ' (General store price)' : ` (${taxRatePercent}% below market price)`
+		}.`;
 	}
 });
