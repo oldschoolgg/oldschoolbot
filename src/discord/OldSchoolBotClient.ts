@@ -262,7 +262,7 @@ export class OldSchoolBotClient extends DiscordClient {
 		return webhook;
 	}
 
-	private async sendToWebhook(channelId: string, data: SendableMessage): Promise<IMessage | null> {
+	async sendToWebhook(channelId: string, data: SendableMessage): Promise<IMessage | null> {
 		let webhook: IWebhook | null = null;
 		try {
 			webhook = await this.getChannelWebhook(channelId);
@@ -275,6 +275,7 @@ export class OldSchoolBotClient extends DiscordClient {
 			Logging.logError(err, { context, msg });
 			if (webhook) {
 				await this.deleteWebhook(channelId);
+				await Cache.setWebhookPermissions({ channel_id: channelId, can_create_webhook: false });
 			}
 			return null;
 		}
