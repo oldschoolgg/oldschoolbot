@@ -741,9 +741,9 @@ export const adminCommand = defineCommand({
 		await interaction.defer();
 
 		const adminUser = await mUserFetch(userId);
-		const isAdmin = adminUser.isAdmin();
-		const isMod = isAdmin || adminUser.isMod();
-		const isGameHacker = isAdmin || adminUser.isGameHacker();
+		const isAdmin = adminUser.isAdmin;
+		const isMod = isAdmin || adminUser.isMod;
+		const isGameHacker = isAdmin || adminUser.isGameHacker;
 		if (!guildId || !isMod || (globalConfig.isProduction && guildId.toString() !== globalConfig.supportServerID)) {
 			return rng.pick(gifs);
 		}

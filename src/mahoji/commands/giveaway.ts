@@ -15,7 +15,7 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 
 function userHasUnlimitedGiveaways(user: MUser) {
-	return user.isTrusted() || user.bitfield.includes(BitField.UnlimitedGiveaways);
+	return user.isTrusted || user.bitfield.includes(BitField.UnlimitedGiveaways);
 }
 
 export function makeGiveawayButtons(giveawayID: string) {

@@ -58,9 +58,9 @@ export { getCyrTripBonus };
 
 export function getCourtesyTier(user: MUser): PerkTier {
 	const tiers: number[] = [];
-	if (user.isContributor() || user.isModOrAdmin() || user.isWikiContrib()) {
+	if (user.isContributor || user.isModOrAdmin || user.isWikiContrib) {
 		tiers.push(PerkTier.Four);
-	} else if (user.isTrusted()) {
+	} else if (user.isTrusted) {
 		tiers.push(PerkTier.Three);
 	}
 	if (

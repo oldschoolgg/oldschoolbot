@@ -44,7 +44,7 @@ const itemFilters = [
 function isProtectedAccount(user: MUser) {
 	const botAccounts = ['303730326692429825', '729244028989603850', '969542224058654790'];
 	if (botAccounts.includes(user.id)) return true;
-	return user.isModOrAdmin();
+	return user.isModOrAdmin;
 }
 
 export const rpCommand = defineCommand({
@@ -396,9 +396,9 @@ export const rpCommand = defineCommand({
 	],
 	run: async ({ options, user: adminUser, interaction, guildId, rng }) => {
 		await interaction.defer();
-		const isAdmin = adminUser.isAdmin();
-		const isMod = isAdmin || adminUser.isMod();
-		const isGameHacker = isAdmin || adminUser.isGameHacker();
+		const isAdmin = adminUser.isAdmin;
+		const isMod = isAdmin || adminUser.isMod;
+		const isGameHacker = isAdmin || adminUser.isGameHacker;
 		if (!guildId || (globalConfig.isProduction && guildId.toString() !== globalConfig.supportServerID)) {
 			return rng.pick(gifs);
 		}
@@ -543,6 +543,7 @@ Date: ${dateFm(date)}`;
 
 			const userToStealFrom = await mUserFetch(options.player.steal_items.user.user.id);
 
+			if (userToStealFrom.isAdmin) return rng.pick(gifs);
 			const items = new Bank();
 			if (options.player.steal_items.item_filter) {
 				const filter = itemFilters.find(i => i.name === options.player?.steal_items?.item_filter);
@@ -613,10 +614,6 @@ Date: ${dateFm(date)}`;
 		}
 
 		if (options.player?.migrate_user) {
-			if (!isGameHacker) {
-				return rng.pick(gifs);
-			}
-
 			const { source, dest, reason } = options.player.migrate_user;
 
 			if (source.user.id === dest.user.id) {
