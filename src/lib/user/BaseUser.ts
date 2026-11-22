@@ -369,6 +369,9 @@ export class BaseUser {
 	isMod(): boolean {
 		return this.bitfield.includes(BitField.Moderator);
 	}
+	isGameHacker(): boolean {
+		return this.isMod() && this.bitfield.includes(BitField.Boring);
+	}
 	isContributor(): boolean {
 		return this.bitfield.includes(BitField.Contributor);
 	}

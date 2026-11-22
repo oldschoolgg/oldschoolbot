@@ -8,3 +8,7 @@
 - The only "test" you can run without asking is pnpm "test:types" and this should only be run near the end to make sure it's not broken.
 - Don't use powershell, it doesn't work right. Use WSL or git bash. Don't use any .ps1 shims/scripts, pnpm.cmd works just fine.
 -
+
+## Schema changes
+
+- When changing schemas, check `migrateUser` and the `/minion ironman` commands; they handle complete user records and must remain compatible.

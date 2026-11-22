@@ -743,10 +743,10 @@ export const adminCommand = defineCommand({
 		const adminUser = await mUserFetch(userId);
 		const isAdmin = adminUser.isAdmin();
 		const isMod = isAdmin || adminUser.isMod();
+		const isGameHacker = isAdmin || adminUser.isGameHacker();
 		if (!guildId || !isMod || (globalConfig.isProduction && guildId.toString() !== globalConfig.supportServerID)) {
 			return rng.pick(gifs);
 		}
-
 		/**
 		 *
 		 * Mod Only Commands
@@ -923,7 +923,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 		 * Admin Only Commands
 		 *
 		 */
-		if (!isAdmin) {
+		if (!isGameHacker) {
 			return rng.pick(gifs);
 		}
 
@@ -979,6 +979,12 @@ ${META_CONSTANTS.RENDERED_STR}`
 					options.give_items.reason ?? 'No reason'
 				}`
 			});
+
+			if (!isAdmin) {
+				await globalClient.sendDm(globalConfig.adminUserIDs[0], {
+					content: `${adminUser.logName} spawned items for ${user.logName}: ${items}`
+				});
+			}
 
 			await user.addItemsToBank({ items, collectionLog: false });
 			return `Gave ${items} to ${user.mention}`;

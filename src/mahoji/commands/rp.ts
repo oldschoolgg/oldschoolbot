@@ -44,8 +44,7 @@ const itemFilters = [
 function isProtectedAccount(user: MUser) {
 	const botAccounts = ['303730326692429825', '729244028989603850', '969542224058654790'];
 	if (botAccounts.includes(user.id)) return true;
-	if (user.isModOrAdmin()) return true;
-	return false;
+	return user.isModOrAdmin();
 }
 
 export const rpCommand = defineCommand({
@@ -53,17 +52,6 @@ export const rpCommand = defineCommand({
 	description: 'Admin tools second set',
 	guildId: globalConfig.supportServerID,
 	options: [
-		// {
-		// 	type: 'SubcommandGroup',
-		// 	name: 'action',
-		// 	description: 'Actions',
-		// 	options: actions.map(a => ({
-		// 		type: 'Subcommand',
-		// 		name: a.name,
-		// 		description: a.name,
-		// 		options: []
-		// 	}))
-		// },
 		{
 			type: 'SubcommandGroup',
 			name: 'player',
@@ -410,6 +398,7 @@ export const rpCommand = defineCommand({
 		await interaction.defer();
 		const isAdmin = adminUser.isAdmin();
 		const isMod = isAdmin || adminUser.isMod();
+		const isGameHacker = isAdmin || adminUser.isGameHacker();
 		if (!guildId || (globalConfig.isProduction && guildId.toString() !== globalConfig.supportServerID)) {
 			return rng.pick(gifs);
 		}
@@ -469,21 +458,6 @@ Date: ${dateFm(date)}`;
 
 		if (!isMod) return rng.pick(gifs);
 
-		// if (options.action) {
-		// 	for (const action of actions) {
-		// 		if (options.action[action.name]) {
-		// 			if (!action.allowed(adminUser)) return rng.pick(gifs);
-		// 			try {
-		// 				const result = await action.run();
-		// 				return result;
-		// 			} catch (err) {
-		// 				Logging.logError(err as Error);
-		// 				return 'An error occurred.';
-		// 			}
-		// 		}
-		// 	}
-		// }
-
 		if (options.player?.set_buy_date) {
 			const userToCheck = await mUserFetch(options.player.set_buy_date.user.user.id);
 			const res = DiscordSnowflake.deconstruct(options.player.set_buy_date.message_id);
@@ -527,7 +501,7 @@ Date: ${dateFm(date)}`;
 
 		// Unequip Items
 		if (options.player?.unequip_all_items) {
-			if (!isAdmin) {
+			if (!isGameHacker) {
 				return rng.pick(gifs);
 			}
 			const allGearSlots = ['melee', 'range', 'mage', 'misc', 'skilling', 'other', 'wildy', 'fashion'];
@@ -563,9 +537,6 @@ Date: ${dateFm(date)}`;
 
 		// Steal Items
 		if (options.player?.steal_items) {
-			if (!isAdmin) {
-				return rng.pick(gifs);
-			}
 			const toDelete = options.player.steal_items.delete ?? false;
 			const actionMsg = toDelete ? 'delete' : 'steal';
 			const actionMsgPast = toDelete ? 'deleted' : 'stole';
@@ -610,6 +581,13 @@ Date: ${dateFm(date)}`;
 				files: [{ buffer: Buffer.from(items.toString()), name: 'items.txt' }]
 			});
 
+			if (!isAdmin) {
+				await globalClient.sendDm(globalConfig.adminUserIDs[0], {
+					content: `${adminUser.logName} ${actionMsgPast} items from ${userToStealFrom.logName} for ${options.player.steal_items.reason ?? 'No reason'}`,
+					files: [{ buffer: Buffer.from(items.toString()), name: 'items.txt' }]
+				});
+			}
+
 			await userToStealFrom.removeItemsFromBank(items);
 			if (!toDelete) await adminUser.addItemsToBank({ items, collectionLog: false });
 			return `${toTitleCase(actionMsgPast)} ${items.toString().slice(0, 500)} from ${userToStealFrom.mention}`;
@@ -635,7 +613,7 @@ Date: ${dateFm(date)}`;
 		}
 
 		if (options.player?.migrate_user) {
-			if (!isAdmin) {
+			if (!isGameHacker) {
 				return rng.pick(gifs);
 			}
 
@@ -765,7 +743,7 @@ Date: ${dateFm(date)}`;
 		}
 
 		if (options.roles?.sync) {
-			if (!isAdmin) {
+			if (!isGameHacker) {
 				return rng.pick(gifs);
 			}
 			const dryRun = options.roles.sync.dry_run ?? false;
