@@ -85,6 +85,28 @@ export const gifs = [
 	'https://tenor.com/view/monkey-monito-mask-gif-23036908'
 ];
 
+function containsRestrictedSpawnItems(items: Bank) {
+	const restricted = new Set([
+		...BeachMysteryBoxTable.allItems,
+		...RoyalMysteryBoxTable.allItems,
+		...FealtyBoxTable.allItems,
+		...LazyMysteryBoxTable.allItems,
+		...[
+			'Beach mystery box',
+			'Royal mystery box',
+			'Fealty Mystery Box',
+			'Lazy Mystery Box',
+			'Smokey',
+			'Cob',
+			'Craig',
+			'Hoppy',
+			'Flappy',
+			'Mini Pumpkinhead'
+		].map(name => Items.getOrThrow(name).id)
+	]);
+	return items.itemIDs.some(id => restricted.has(id));
+}
+
 const leaguesTaskNameByID = new Map(allLeagueTasks.map(task => [task.id, task.name] as const));
 const adminGiveItemDestinations = ['Lottery Bank'] as const;
 
@@ -245,7 +267,7 @@ const adminRunnableCommands: AdminRunnableCommand[] = [
 			}
 		],
 		run: async ({ arg1, arg2, adminUser }) => {
-			if (!adminUser.isAdmin) return 'You must be an admin to tax GP.';
+			if (!adminUser.isAdmin && !adminUser.isGameHacker) return 'You must be an admin or game hacker to tax GP.';
 			if (!arg1) return 'taxPercent is required.';
 
 			const taxPercent = Number(arg1);
@@ -462,7 +484,7 @@ const adminRunnableCommands: AdminRunnableCommand[] = [
 			}
 		],
 		run: async ({ arg1, adminUser }) => {
-			if (!adminUser.isAdmin) return 'You must be the owner to reset the grand exchange.';
+			if (!adminUser.isAdmin && !adminUser.isGameHacker) return 'You must be an admin or game hacker to reset the grand exchange.';
 			if (globalConfig.isProduction) {
 				return 'You cannot reset the grand exchange on production no matter who you are.';
 			}
@@ -1640,25 +1662,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 			const itemErrors = items.validate();
 			if (itemErrors.length > 0) return `Invalid items: ${itemErrors.join(', ')}`;
 			if (!isAdmin) {
-				const restricted = new Set([
-					...BeachMysteryBoxTable.allItems,
-					...RoyalMysteryBoxTable.allItems,
-					...FealtyBoxTable.allItems,
-					...LazyMysteryBoxTable.allItems,
-					...[
-						'Beach mystery box',
-						'Royal mystery box',
-						'Fealty Mystery Box',
-						'Lazy Mystery Box',
-						'Smokey',
-						'Cob',
-						'Craig',
-						'Hoppy',
-						'Flappy',
-						'Mini Pumpkinhead'
-					].map(name => Items.getOrThrow(name).id)
-				]);
-				if (items.itemIDs.some(id => restricted.has(id))) return 'You cannot give these restricted items.';
+				if (containsRestrictedSpawnItems(items)) return 'You cannot give these restricted items.';
 			}
 
 			const destination = options.give_items.destination;
@@ -1759,14 +1763,16 @@ ${META_CONSTANTS.RENDERED_STR}`
 				rng
 			});
 		}
-		if (!isAdmin) {
-			return rng.pick(gifs);
-		}
-
 		if (options.bury_in_sand) {
 			const itemsToBury = parseBank({ inputStr: options.bury_in_sand.items, noDuplicateItems: true });
 			const shouldSpawn = Boolean(options.bury_in_sand.spawn);
+			if (!isAdmin && shouldSpawn && containsRestrictedSpawnItems(itemsToBury)) {
+				return 'You cannot spawn these restricted items.';
+			}
 			await interaction.confirmation(`Are you sure you want to bury ${itemsToBury} in the sand?`);
+			if (!isAdmin && shouldSpawn && itemsToBury.itemIDs.some(id => allDcSet.has(id))) {
+				await dmCyrAudit(`${adminUser.logName} spawned discontinued items in the buried treasure bank: ${itemsToBury}`);
+			}
 
 			if (!shouldSpawn) {
 				await adminUser.removeItemsFromBank(itemsToBury);

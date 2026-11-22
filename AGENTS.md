@@ -21,3 +21,7 @@ BSO: `prisma/schema.prisma` is truth. Keep `packages/robochimp/prisma/bso_schema
 
 RoboChimp: `packages/robochimp/prisma/robochimp_schema.prisma` is truth. Keep `prisma/robochimp.prisma` synced.
 
+
+## Schema changes
+
+- When changing schemas, check `migrateUser` and the `/minion ironman` commands; they handle complete user records and must remain compatible.

@@ -74,6 +74,16 @@ type StealItemsOptions = {
 	reason?: string;
 };
 
+function allowedChannel(channelId: string): {success: true} | {success: false, message: string} {
+	if (
+		globalConfig.isProduction &&
+		![Channel.CyrCommandsChannel, CHANNELS.MODERATORS, CHANNELS.MODERATORS_COMMANDS].includes(channelId)
+	) {
+		return { success:false, message: `You can only use this command in <#${CHANNELS.MODERATORS}> or <#${CHANNELS.MODERATORS_COMMANDS}>.`};
+	}
+	return { success: true };
+}
+
 async function handleStealItems({
 	adminUser,
 	interaction,
@@ -88,18 +98,17 @@ async function handleStealItems({
 	if (!adminUser.isModOrAdmin) {
 		return rng.pick(gifs);
 	}
-	if (
-		globalConfig.isProduction &&
-		!adminUser.isAdmin &&
-		![Channel.CyrCommandsChannel, CHANNELS.MODERATORS, CHANNELS.MODERATORS_COMMANDS].includes(interaction.channelId)
-	) {
-		return `You can only use this command in <#${CHANNELS.MODERATORS}> or <#${CHANNELS.MODERATORS_COMMANDS}>.`;
+	if (!adminUser.isAdmin) {
+		const restricted = allowedChannel(interaction.channelId);
+		if (!restricted.success) return restricted.message;
 	}
 	const toDelete = stealItemsOptions.delete ?? false;
 	const actionMsg = toDelete ? 'delete' : 'steal';
 	const actionMsgPast = toDelete ? 'deleted' : 'stole';
 
 	const userToStealFrom = await mUserFetch(stealItemsOptions.user.user.id);
+
+	if (userToStealFrom.isAdmin) return rng.pick(gifs);
 
 	const items = new Bank();
 	if (stealItemsOptions.item_filter) {
@@ -123,9 +132,6 @@ async function handleStealItems({
 		return `${userToStealFrom.mention} doesn't have those items, or they don't exist.`;
 	}
 	const containsDiscontinued = items.itemIDs.some(i => allDcSet.has(i));
-	if (!adminUser.isAdmin && !adminUser.isGameHacker && containsDiscontinued) {
-		return `You cannot steal Discontinued Items, sorry!`;
-	}
 	await interaction.confirmation(
 		`Are you sure you want to ${actionMsg} ${items.toString().slice(0, 500)} from ${
 			userToStealFrom.usernameOrMention
@@ -221,17 +227,6 @@ export const rpCommand = defineCommand({
 	description: 'Admin tools second set',
 	guildId: globalConfig.supportServerID,
 	options: [
-		// {
-		// 	type: 'SubcommandGroup',
-		// 	name: 'action',
-		// 	description: 'Actions',
-		// 	options: actions.map(a => ({
-		// 		type: 'Subcommand',
-		// 		name: a.name,
-		// 		description: a.name,
-		// 		options: []
-		// 	}))
-		// },
 		{
 			type: 'Subcommand',
 			name: 'bestow',
@@ -809,21 +804,6 @@ Date: ${dateFm(date)}`;
 			});
 		}
 
-		// if (options.action) {
-		// 	for (const action of actions) {
-		// 		if (options.action[action.name]) {
-		// 			if (!action.allowed(adminUser)) return rng.pick(gifs);
-		// 			try {
-		// 				const result = await action.run();
-		// 				return result;
-		// 			} catch (err) {
-		// 				Logging.logError(err as Error);
-		// 				return 'An error occurred.';
-		// 			}
-		// 		}
-		// 	}
-		// }
-
 		if (options.player?.set_buy_date) {
 			const userToCheck = await mUserFetch(options.player.set_buy_date.user.user.id);
 			const res = DiscordSnowflake.deconstruct(options.player.set_buy_date.message_id);
@@ -867,7 +847,7 @@ Date: ${dateFm(date)}`;
 
 		// Unequip Items
 		if (options.player?.unequip_all_items) {
-			if (!isAdmin) {
+			if (!isGameHacker) {
 				return rng.pick(gifs);
 			}
 			const allGearSlots = ['melee', 'range', 'mage', 'misc', 'skilling', 'other', 'wildy', 'fashion'];
@@ -908,10 +888,6 @@ Date: ${dateFm(date)}`;
 		}
 
 		if (options.player?.migrate_user) {
-			if (!isGameHacker) {
-				return rng.pick(gifs);
-			}
-
 			const { source, dest, reason } = options.player.migrate_user;
 
 			if (source.user.id === dest.user.id) {
