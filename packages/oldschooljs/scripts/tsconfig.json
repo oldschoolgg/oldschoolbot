@@ -1,13 +1,15 @@
 {
 	"extends": "../tsconfig.monorepo.json",
 	"include": ["**/*.ts", "**/*.tsx"],
+	"exclude": [],
 	"compilerOptions": {
 		"noEmit": true,
 		"composite": false,
+		"isolatedDeclarations": false,
+		"rootDir": "..",
 		"baseUrl": "..",
 		"paths": {
 			"@/*": ["src/*"]
 		}
-	},
-	"references": [{ "path": ".." }]
+	}
 }
