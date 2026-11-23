@@ -705,6 +705,7 @@ model StashUnit {
 }
 
 model UserStats {
+  thanksgiving_2026 Json @default("{}") @db.JsonB
   user_id                BigInt @id
   sell_gp                BigInt @default(0)
   items_sold_bank        Json   @default("{}") @db.Json

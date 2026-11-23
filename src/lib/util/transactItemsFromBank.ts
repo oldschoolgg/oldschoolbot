@@ -1,5 +1,6 @@
 import { Bank, type ItemBank } from 'oldschooljs';
 
+import type { Prisma } from '@/prisma/main.js';
 import { deduplicateClueScrolls } from '@/lib/clues/clueUtils.js';
 import { handleNewCLItems } from '@/lib/handleNewCLItems.js';
 import { filterLootReplace } from '@/lib/slayer/slayerUtil.js';
@@ -18,6 +19,7 @@ export interface TransactItemsArgs {
 	neverUpdateHistory?: boolean;
 	otherUpdates?: SafeUserUpdateInput;
 	gearUpdates?: GearWithSetupType[];
+	otherQueries?: Prisma.PrismaPromise<unknown>[];
 }
 
 async function unqueuedTransactItems({
@@ -28,6 +30,7 @@ async function unqueuedTransactItems({
 	filterLoot,
 	neverUpdateHistory,
 	gearUpdates,
+	otherQueries,
 	...options
 }: TransactItemsArgs) {
 	let itemsToAdd = options.itemsToAdd ? options.itemsToAdd.clone() : undefined;
@@ -126,7 +129,7 @@ async function unqueuedTransactItems({
 		...clUpdates,
 		...otherUpdates
 	} as const;
-	const newUser = await user.rawUpdate({ data: updateData, gearUpdates });
+	const newUser = await user.rawUpdate({ data: updateData, gearUpdates, otherQueries });
 
 	const itemsAdded = new Bank(itemsToAdd);
 	if (itemsAdded && gpUpdate && gpUpdate.increment > 0) {
