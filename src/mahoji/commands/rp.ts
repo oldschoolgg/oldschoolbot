@@ -1,4 +1,4 @@
-import { codeBlock, dateFm, EmbedBuilder } from '@oldschoolgg/discord';
+import { ButtonBuilder, ButtonStyle, codeBlock, dateFm, EmbedBuilder, InteractionID } from '@oldschoolgg/discord';
 import { type GearSetupType, GearSetupTypes } from '@oldschoolgg/gear';
 import { CHANNELS, sumArr, toTitleCase } from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
@@ -515,6 +515,12 @@ export const rpCommand = defineCommand({
 							type: 'String',
 							name: 'reason',
 							description: 'The reason'
+						},
+						{
+							type: 'Boolean',
+							name: 'force',
+							description: 'Admin only: allow protected or self migration',
+							required: false
 						}
 					]
 				},
@@ -912,25 +918,48 @@ Date: ${dateFm(date)}`;
 		}
 
 		if (options.player?.migrate_user) {
-			const { source, dest, reason } = options.player.migrate_user;
+			const { source, dest, reason, force } = options.player.migrate_user;
 
 			if (source.user.id === dest.user.id) {
 				return 'Destination cannot be the same as the source!';
 			}
 
-			if (source.user.id === adminUser.id || dest.user.id === adminUser.id) {
-				return 'You cannot migrate yourself! Ask another mod if you need help, this is because Discord makes it too easy to put your own user accidentally.';
-			}
-
+			const selfMigration = source.user.id === adminUser.id || dest.user.id === adminUser.id;
 			const sourceUser = await mUserFetch(source.user.id);
 			const destUser = await mUserFetch(dest.user.id);
-
-			if (isProtectedAccount(destUser)) return 'You cannot clobber that account.';
+			const protectedAccount = isProtectedAccount(destUser);
+			if (selfMigration || protectedAccount) {
+				if (!adminUser.isAdmin || force !== true) {
+					return selfMigration
+						? 'You cannot migrate yourself! Ask another mod if you need help, this is because Discord makes it too easy to put your own user accidentally.'
+						: 'You cannot clobber that account.';
+				}
+				await interaction.confirmation(
+					`**FORCED MIGRATION WARNING:** ${selfMigration ? 'This migration involves your own account. ' : ''}${protectedAccount ? 'The destination is a protected account. ' : ''}You are overriding a safeguard and destroying the destination account's existing data. Are you sure?`,
+					{
+						buttons: [
+							new ButtonBuilder()
+								.setCustomId('FORCE_SRUE')
+								.setLabel('Srue')
+								.setStyle(ButtonStyle.Success),
+							new ButtonBuilder()
+								.setCustomId(InteractionID.CANCEL)
+								.setLabel('Nope')
+								.setStyle(ButtonStyle.Secondary),
+							new ButtonBuilder()
+								.setCustomId(InteractionID.CONFIRM)
+								.setLabel("Yes, I'm SURE")
+								.setStyle(ButtonStyle.Danger)
+						]
+					}
+				);
+			}
 			const sourceXp = sumArr(Object.values(sourceUser.skillsAsXP));
 			const destXp = sumArr(Object.values(destUser.skillsAsXP));
 			if (destXp > sourceXp) {
 				await interaction.confirmation(
-					`The target user, ${destUser.logName}, has more XP than the source user; are you really sure the names aren't backwards?`
+					`The target user, ${destUser.logName}, has more XP than the source user; are you really sure the names aren't backwards?`,
+					{ swap: true }
 				);
 			}
 			await interaction.confirmation(

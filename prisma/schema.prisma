@@ -1633,6 +1633,7 @@ model UserCounter {
 }
 
 enum command_name_enum {
+  thanksgiving
   cache_refresh
   buried_treasure
   testpotato

@@ -92,12 +92,30 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 		prisma.bingoParticipant.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } })
 	);
 
+	transactions.push(prisma.$executeRaw`
+		UPDATE bingo
+		SET organizers = ARRAY(
+			SELECT DISTINCT CASE WHEN organizer_id = ${sourceUser.id} THEN ${destUser.id} ELSE organizer_id END
+			FROM UNNEST(organizers) AS organizer(organizer_id)
+		)
+		WHERE ${sourceUser.id} = ANY(organizers)
+	`);
+
 	transactions.push(
 		prisma.gearPreset.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } })
 	);
 	transactions.push(
 		prisma.giveaway.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } })
 	);
+	transactions.push(prisma.$executeRaw`
+		UPDATE giveaway
+		SET users_entered = ARRAY(
+			SELECT DISTINCT CASE WHEN entrant_id = ${sourceUser.id} THEN ${destUser.id} ELSE entrant_id END
+			FROM UNNEST(users_entered) AS entrant(entrant_id)
+		)
+		WHERE ${sourceUser.id} = ANY(users_entered)
+	`);
+
 	transactions.push(
 		prisma.minigame.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } })
 	);

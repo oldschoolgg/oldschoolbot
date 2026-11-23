@@ -4,8 +4,7 @@ import { cryptoRng } from 'node-rng/crypto';
 
 import { convertAPIOptionsToCommandOptions } from '@/discord/index.js';
 import { preCommand } from '@/discord/preCommand.js';
-import { splitSendableMessage } from '@/discord/splitSendableMessage.js';
-import { resolveBotSendableMessage } from '@/discord/utils.js';
+import { sendCommandResponse } from '@/discord/sendCommandResponse.js';
 import { BitField, busyImmuneCommands, SILENT_ERROR } from '@/lib/constants.js';
 import { RawSQL } from '@/lib/rawSql.js';
 
@@ -144,21 +143,5 @@ export async function commandHandler(
 	) {
 		return;
 	}
-	const message = await resolveBotSendableMessage(response);
-	const parts = splitSendableMessage(message);
-	await interaction.reply(parts[0]);
-	let webhookFailed = false;
-	for (const part of parts.slice(1)) {
-		if (!webhookFailed) {
-			try {
-				await interaction.followUp(part);
-				continue;
-			} catch (err) {
-				Logging.logError(err as Error);
-				webhookFailed = true;
-			}
-		}
-		if (message.ephemeral || interaction.ephemeral) throw new Error('Cannot deliver ephemeral follow-up');
-		await globalClient.sendMessage(interaction.channelId, part);
-	}
+	await sendCommandResponse(interaction, response);
 }

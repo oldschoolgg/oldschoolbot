@@ -27,7 +27,7 @@ import {
 import { BeachMysteryBoxTable, FestivePresentTable, RoyalMysteryBoxTable } from '@/lib/bso/openables/tables.js';
 import { getLydiaQuote } from '@/lib/bso/summerDays.js';
 
-import { dateFm, EmbedBuilder, type SpecialResponse } from '@oldschoolgg/discord';
+import { ButtonBuilder, ButtonStyle, dateFm, EmbedBuilder, type SpecialResponse } from '@oldschoolgg/discord';
 import type { GearSetup } from '@oldschoolgg/gear';
 import {
 	calcPerHour,
@@ -717,6 +717,30 @@ async function gpLb(interaction: MInteraction) {
 
 const viewableThings: ViewableThing[] = [
 	{
+		name: 'Total Banks From All Blacklisted Players',
+		run: async () => {
+			const blacklisted = await roboChimpClient.blacklistedEntity.findMany({
+				where: { type: 'user' },
+				select: { id: true }
+			});
+			const users = await prisma.user.findMany({
+				where: { id: { in: blacklisted.map(({ id }) => String(id)) } },
+				select: { GP: true, bank: true }
+			});
+			const totalBank = new Bank();
+			let totalGP = 0n;
+			for (const user of users) {
+				totalBank.add(user.bank as ItemBank);
+				totalGP += user.GP;
+			}
+			if (totalGP > BigInt(Number.MAX_SAFE_INTEGER) || totalGP < BigInt(Number.MIN_SAFE_INTEGER)) {
+				throw new Error("Blacklisted players' GP exceeds the safe integer range.");
+			}
+			totalBank.add('Coins', Number(totalGP));
+			return { files: [await makeBankImage({ bank: totalBank, title: "Blacklisted Players' Bank" })] };
+		}
+	},
+	{
 		name: 'GP Leaderboard',
 		run: async (_clientSettings, _choice, _user, _rng, interaction) => {
 			if (!interaction) return 'Unable to find the interaction.';
@@ -1121,6 +1145,27 @@ export const adminCommand = defineCommand({
 	options: [
 		{
 			type: 'Subcommand',
+			name: 'test_big_message',
+			description: 'Test delivery of a long command response.',
+			options: [
+				{
+					type: 'Boolean',
+					name: 'ephemeral',
+					description: 'Make the returned message ephemeral.',
+					required: false
+				},
+				{ type: 'Boolean', name: 'confirm', description: 'Ask for confirmation first.', required: false },
+				{ type: 'Boolean', name: 'reply', description: 'Reply before returning.', required: false },
+				{
+					type: 'Boolean',
+					name: 'reply_ephemeral',
+					description: 'Reply ephemerally before returning.',
+					required: false
+				}
+			]
+		},
+		{
+			type: 'Subcommand',
 			name: 'shut_down',
 			description: 'Shut down the bot without rebooting.'
 		},
@@ -1496,7 +1541,7 @@ export const adminCommand = defineCommand({
 		}
 	],
 	run: async ({ options, userId, interaction, guildId, rng }) => {
-		await interaction.defer();
+		await interaction.defer({ ephemeral: Boolean(options.test_big_message?.reply_ephemeral) });
 
 		const adminUser = await mUserFetch(userId);
 		const isAdmin = adminUser.isAdmin;
@@ -1504,6 +1549,37 @@ export const adminCommand = defineCommand({
 		const isGameHacker = isAdmin || (adminUser.isMod && adminUser.isGameHacker);
 		if (!guildId || !isMod || (globalConfig.isProduction && guildId.toString() !== globalConfig.supportServerID)) {
 			return rng.pick(gifs);
+		}
+
+		if (options.test_big_message) {
+			if (!isAdmin) return 'Only admins can use this command.';
+			const test = options.test_big_message;
+			if (test.confirm) await interaction.confirmation('Confirm the long message delivery test.');
+			if (test.reply || test.reply_ephemeral) await interaction.reply('Initial test reply.');
+			let content = 'Rune dragon cabbage goblin adventurer. '.repeat(140).slice(0, 5000);
+			for (const [offset, marker] of [
+				[0, '11111111111'],
+				[2200, '2222222222'],
+				[4300, '33333333']
+			] as const) {
+				content = content.slice(0, offset) + marker + content.slice(offset + marker.length);
+			}
+			return {
+				content,
+				ephemeral: test.ephemeral === true,
+				files: [{ name: 'test.txt', buffer: Buffer.from('Test attachment.') }],
+				embeds: [new EmbedBuilder().setDescription('Test embed.')],
+				components: [
+					new ButtonBuilder()
+						.setCustomId('TEST_BIG_MESSAGE_ONE')
+						.setLabel('One')
+						.setStyle(ButtonStyle.Primary),
+					new ButtonBuilder()
+						.setCustomId('TEST_BIG_MESSAGE_TWO')
+						.setLabel('Two')
+						.setStyle(ButtonStyle.Secondary)
+				]
+			};
 		}
 
 		/**

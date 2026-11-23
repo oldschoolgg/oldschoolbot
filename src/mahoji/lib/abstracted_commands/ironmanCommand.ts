@@ -1,3 +1,4 @@
+import { ButtonBuilder, ButtonStyle, InteractionID } from '@oldschoolgg/discord';
 import type { ItemBank } from 'oldschooljs';
 
 import { Prisma } from '@/prisma/main.js';
@@ -24,11 +25,15 @@ async function ensureDeletedUserExists() {
 	}
 }
 
-export async function ironmanCommand(user: MUser, interaction: MInteraction | null) {
+export async function ironmanCommand(user: MUser, interaction: MInteraction | null, deleteAccount?: string) {
+	if (deleteAccount !== undefined && deleteAccount !== 'CONFIRM!')
+		return 'To delete your account, enter exactly `CONFIRM!`.';
+	if (deleteAccount !== undefined && !user.isIronman) return 'Only ironman accounts can be deleted this way.';
+	if (deleteAccount !== undefined && !interaction) return 'Account deletion requires an interaction.';
 	if (await user.minionIsBusy()) return 'Your minion is busy.';
 
-	if (user.isIronman) {
-		return 'You are already an ironman.';
+	if (user.isIronman && deleteAccount === undefined) {
+		return 'You are already an ironman. To start over as a non-ironman, use `delete_account: CONFIRM!` to permanently wipe your BSO account.';
 	}
 
 	const existingGiveaways = await prisma.giveaway.findMany({
@@ -39,7 +44,7 @@ export async function ironmanCommand(user: MUser, interaction: MInteraction | nu
 	});
 
 	if (existingGiveaways.length !== 0) {
-		return "You can't become an ironman because you have active giveaways.";
+		return `You can't ${deleteAccount !== undefined ? 'delete your account' : 'become an ironman'} because you have active giveaways.`;
 	}
 
 	const bingos = await prisma.bingo.count({
@@ -50,7 +55,7 @@ export async function ironmanCommand(user: MUser, interaction: MInteraction | nu
 	});
 
 	if (bingos !== 0) {
-		return "You can't become an ironman because you have active bingos.";
+		return `You can't ${deleteAccount !== undefined ? 'delete your account' : 'become an ironman'} because you have active bingos.`;
 	}
 
 	const activeListings = await prisma.gEListing.findMany({
@@ -72,10 +77,33 @@ export async function ironmanCommand(user: MUser, interaction: MInteraction | nu
 	});
 	// Return early if no active listings.
 	if (activeListings.length !== 0) {
-		return `You can't become an ironman because you have active Grand Exchange listings. Cancel them and try again: ${globalClient.mentionCommand(
+		return `You can't ${deleteAccount !== undefined ? 'delete your account' : 'become an ironman'} because you have active Grand Exchange listings. Cancel them and try again: ${globalClient.mentionCommand(
 			'ge',
 			'cancel'
 		)}`;
+	}
+
+	if (deleteAccount !== undefined && interaction) {
+		const buttons = () => [
+			new ButtonBuilder()
+				.setCustomId(InteractionID.CONFIRM)
+				.setLabel('Delete my account')
+				.setStyle(ButtonStyle.Danger),
+			new ButtonBuilder()
+				.setCustomId(InteractionID.CANCEL)
+				.setLabel('Keep my account')
+				.setStyle(ButtonStyle.Secondary)
+		];
+		await interaction.confirmation(
+			'**ACCOUNT DELETION - FIRST WARNING:** This permanently wipes your BSO account to remove ironman status: your bank, items, XP, stats, progress and minion will be gone. Command usage, shared transaction/history records and shared account entitlements remain. You will start again from scratch. Death is usually safer than this.',
+			{ buttons: buttons() }
+		);
+		await interaction.confirmation(
+			'**FINAL WARNING: DELETE YOUR BSO ACCOUNT?** Your ironman progress and possessions will be permanently destroyed, and you will start as a fresh non-iron account. There is no banker waiting to hand your stuff back.',
+			{ buttons: buttons(), swap: true }
+		);
+		await deleteIronmanAccount(user);
+		return 'Your BSO account was deleted. You can start over as a non-ironman.';
 	}
 
 	if (interaction) {
@@ -86,7 +114,7 @@ The following things will be COMPLETELY reset/wiped from your account, with no c
 After becoming an ironman:
 	- You will no longer be able to receive GP from  \`/daily\`
 	- You will no longer be able to use \`/pay\`, \`/duel\`, \`/sellto\`, \`/sell\`, \`/dice\`, \`/gamble give_random_item\`
-	- You **cannot** de-iron, it is PERMANENT.
+	- To de-iron, you must permanently delete your entire BSO account and start over.
     - Your entire BSO account, EVERYTHING, will be reset.
 Type \`confirm permanent ironman\` if you understand the above information, and want to become an ironman now.`
 		);
@@ -132,7 +160,7 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 
 	// Ensure deleted user exists
 	await ensureDeletedUserExists();
-	await prisma.bingoParticipant.updateMany({ where: { user_id: user.id }, data: { user_id: DELETED_USER_ID } });
+	await prisma.bingoParticipant.deleteMany({ where: { user_id: user.id } });
 	await prisma.bingo.updateMany({ where: { creator_id: user.id }, data: { creator_id: DELETED_USER_ID } });
 
 	// Delete tables with foreign keys first:
@@ -145,6 +173,14 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 	await prisma.minigame.deleteMany({ where: { user_id: user.id } });
 	await prisma.slayerTask.deleteMany({ where: { user_id: user.id } });
 
+	await prisma.gearPreset.deleteMany({ where: { user_id: user.id } });
+	await prisma.reclaimableItem.deleteMany({ where: { user_id: user.id } });
+	await prisma.tableBank.deleteMany({ where: { user_id: user.id } });
+	await prisma.shootingStars.deleteMany({ where: { user_id: user.id } });
+	await prisma.lootTrack.deleteMany({ where: { user_id: BigInt(user.id) } });
+	await prisma.lastManStandingGame.deleteMany({ where: { user_id: BigInt(user.id) } });
+	await prisma.halloweenEvent.deleteMany({ where: { user_id: user.id } });
+	await prisma.archonEvent.deleteMany({ where: { user_id: user.id } });
 	// Now we can delete the user
 	await prisma.user.deleteMany({
 		where: { id: user.id }
@@ -173,7 +209,7 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 				id: BigInt(user.id)
 			},
 			data: {
-				leagues_points_balance_bso: roboChimpUser.leagues_points_balance_bso
+				leagues_points_balance_bso: roboChimpUser.leagues_points_total
 			}
 		});
 	}
@@ -187,4 +223,47 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 		`Ironman sanity check - ID: ${user.user.id}`
 	);
 	return 'You are now an ironman.';
+}
+
+async function deleteIronmanAccount(user: MUser) {
+	await ensureDeletedUserExists();
+	const id = user.id;
+	const bigId = BigInt(id);
+	await prisma.$transaction([
+		prisma.bingoParticipant.deleteMany({ where: { user_id: id } }),
+		prisma.bingo.updateMany({ where: { creator_id: id }, data: { creator_id: DELETED_USER_ID } }),
+		prisma.gEListing.updateMany({ where: { user_id: id }, data: { user_id: null } }),
+		prisma.giftBox.updateMany({ where: { creator_id: id }, data: { creator_id: null } }),
+		prisma.giftBox.updateMany({ where: { owner_id: id }, data: { owner_id: null } }),
+		prisma.gearPreset.deleteMany({ where: { user_id: id } }),
+		prisma.giveaway.deleteMany({ where: { user_id: id } }),
+		prisma.pinnedTrip.deleteMany({ where: { user_id: id } }),
+		prisma.slayerTask.deleteMany({ where: { user_id: id } }),
+		prisma.farmedCrop.deleteMany({ where: { user_id: id } }),
+		prisma.botItemSell.deleteMany({ where: { user_id: id } }),
+		prisma.portent.deleteMany({ where: { user_id: id } }),
+		prisma.tameActivity.deleteMany({ where: { user_id: id } }),
+		prisma.tame.deleteMany({ where: { user_id: id } }),
+		prisma.playerOwnedHouse.deleteMany({ where: { user_id: id } }),
+		prisma.reclaimableItem.deleteMany({ where: { user_id: id } }),
+		prisma.tableBank.deleteMany({ where: { user_id: id } }),
+		prisma.jsonBank.deleteMany({ where: { user_id: id } }),
+		prisma.userEvent.deleteMany({ where: { user_id: id } }),
+		prisma.halloweenEvent.deleteMany({ where: { user_id: id } }),
+		prisma.archonEvent.deleteMany({ where: { user_id: id } }),
+		prisma.shootingStars.deleteMany({ where: { user_id: id } }),
+		prisma.mortimerTricks.deleteMany({ where: { OR: [{ trickster_id: id }, { target_id: id }] } }),
+		prisma.activity.deleteMany({ where: { user_id: bigId } }),
+		prisma.xPGain.deleteMany({ where: { user_id: bigId } }),
+		prisma.stashUnit.deleteMany({ where: { user_id: bigId } }),
+		prisma.userStats.deleteMany({ where: { user_id: bigId } }),
+		prisma.lootTrack.deleteMany({ where: { user_id: bigId } }),
+		prisma.lastManStandingGame.deleteMany({ where: { user_id: bigId } }),
+		prisma.buyCommandTransaction.deleteMany({ where: { user_id: bigId } }),
+		prisma.fishingContestCatch.deleteMany({ where: { user_id: bigId } }),
+		prisma.userCounter.deleteMany({ where: { user_id: bigId } }),
+		prisma.user.deleteMany({ where: { id } }),
+		prisma.user.create({ data: { id } })
+	]);
+	await user.sync();
 }
