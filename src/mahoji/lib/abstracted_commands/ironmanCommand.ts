@@ -161,7 +161,7 @@ After becoming an ironman:
 
 	// Ensure deleted user exists
 	await ensureDeletedUserExists();
-	await prisma.bingoParticipant.updateMany({ where: { user_id: user.id }, data: { user_id: DELETED_USER_ID } });
+	await prisma.bingoParticipant.deleteMany({ where: { user_id: user.id } });
 	await prisma.bingo.updateMany({ where: { creator_id: user.id }, data: { creator_id: DELETED_USER_ID } });
 
 	// Delete tables with foreign keys first:
@@ -182,6 +182,12 @@ After becoming an ironman:
 	await prisma.buyCommandTransaction.deleteMany({ where: { user_id: BigInt(user.id) } });
 	await prisma.jsonBank.deleteMany({ where: { user_id: user.id } });
 
+	await prisma.gearPreset.deleteMany({ where: { user_id: user.id } });
+	await prisma.reclaimableItem.deleteMany({ where: { user_id: user.id } });
+	await prisma.tableBank.deleteMany({ where: { user_id: user.id } });
+	await prisma.shootingStars.deleteMany({ where: { user_id: user.id } });
+	await prisma.lootTrack.deleteMany({ where: { user_id: BigInt(user.id) } });
+	await prisma.lastManStandingGame.deleteMany({ where: { user_id: BigInt(user.id) } });
 	// Now we can delete the user
 	await prisma.user.deleteMany({
 		where: { id: user.id }

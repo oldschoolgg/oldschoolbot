@@ -20,7 +20,7 @@ export const adminBitfieldOption = defineOption({
 	autocomplete: async ({ value, user }: StringAutoComplete) => {
 		return Object.entries(BitFieldData)
 			.filter(bf => {
-				if (bf[1].protected && !user.isAdmin()) return false;
+				if (bf[1].protected && !user.isAdmin) return false;
 				if (!value) return true;
 				return stringSearch(value, bf[1].name);
 			})

@@ -96,7 +96,7 @@ const inhibitors: Inhibitor[] = [
 			}
 
 			// Allow contributors + moderators to use disabled channels in SupportServer
-			if (interaction.guildId === globalConfig.supportServerID && user.isModOrAdmin()) {
+			if (interaction.guildId === globalConfig.supportServerID && user.isModOrAdmin) {
 				return false;
 			}
 

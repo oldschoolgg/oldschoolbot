@@ -201,7 +201,7 @@ export const minionCommand = defineCommand({
 							.filter(bg => bg.storeBitField && user.user.store_bitfield.includes(bg.storeBitField))
 							.map(bg => bg.id);
 						return bankImages
-							.filter(bg => user.isModOrAdmin() || bg.available || owned.includes(bg.id))
+							.filter(bg => user.isModOrAdmin || bg.available || owned.includes(bg.id))
 							.filter(bg => (!value ? true : bg.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => {
 								const name = i.perkTierNeeded

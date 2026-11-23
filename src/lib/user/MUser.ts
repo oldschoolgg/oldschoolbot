@@ -728,7 +728,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 	}
 
 	async checkBankBackground() {
-		if (this.isModOrAdmin()) {
+		if (this.isModOrAdmin) {
 			return;
 		}
 		const resetBackground = async () => {

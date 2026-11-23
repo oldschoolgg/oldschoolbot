@@ -1,5 +1,5 @@
-import LootTable from '../../structures/LootTable';
-import { SimpleOpenable } from '../../structures/SimpleOpenable';
+import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
+import LootTable from '../../structures/LootTable.js';
 
 const ApprenticePotionTable = new LootTable()
 	.add('Attack potion(3)', [2, 4], 11)

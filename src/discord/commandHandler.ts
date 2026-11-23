@@ -4,6 +4,7 @@ import { cryptoRng } from 'node-rng/crypto';
 
 import { convertAPIOptionsToCommandOptions } from '@/discord/index.js';
 import { preCommand } from '@/discord/preCommand.js';
+import { sendCommandResponse } from '@/discord/sendCommandResponse.js';
 import { BitField, busyImmuneCommands, SILENT_ERROR } from '@/lib/constants.js';
 import { RawSQL } from '@/lib/rawSql.js';
 
@@ -42,7 +43,7 @@ export async function rawCommandHandlerInner({
 	}
 	RawSQL.updateUserLastCommandDate({ userId: interaction.userId }).catch(err => Logging.logError(err));
 
-	const shouldIgnoreBusy = user.isAdmin() || ignoreUserIsBusy || busyImmuneCommands.includes(command.name);
+	const shouldIgnoreBusy = user.isAdmin || ignoreUserIsBusy || busyImmuneCommands.includes(command.name);
 
 	if (!shouldIgnoreBusy && (await user.getIsLocked())) {
 		return {
@@ -141,5 +142,5 @@ export async function commandHandler(
 	) {
 		return;
 	}
-	await interaction.reply(response);
+	await sendCommandResponse(interaction, response);
 }

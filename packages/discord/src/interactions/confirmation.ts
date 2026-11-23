@@ -5,7 +5,7 @@ import type { BaseSendableMessage } from '../client/types.js';
 import { createInteractionCollector } from './interactionCollector.js';
 import type { MInteraction } from './MInteraction.js';
 
-const InteractionID = {
+export const InteractionID = {
 	CONFIRM: 'CONFIRM',
 	CANCEL: 'CANCEL'
 };
@@ -23,9 +23,15 @@ export type InteractionConfirmationMessage =
 			| { ephemeral?: boolean; users?: undefined }
 	  ));
 
+export interface InteractionConfirmationOptions {
+	swap?: boolean;
+	buttons?: ButtonBuilder[];
+}
+
 export async function interactionConfirmation(
 	interaction: MInteraction,
-	message: InteractionConfirmationMessage
+	message: InteractionConfirmationMessage,
+	{ swap = false, buttons }: InteractionConfirmationOptions = {}
 ): Promise<void> {
 	const ephemeral = typeof message !== 'string' ? (message.ephemeral ?? false) : false;
 	interaction.isConfirmation = true;
@@ -35,10 +41,22 @@ export async function interactionConfirmation(
 		typeof message !== 'string' ? (message.users ?? [interaction.userId]) : [interaction.userId];
 	const timeout: number = typeof message !== 'string' ? (message.timeout ?? 15_000) : 15_000;
 
-	const confirmRow: ButtonBuilder[] = [
-		new ButtonBuilder().setCustomId(InteractionID.CONFIRM).setLabel('Confirm').setStyle(ButtonStyle.Primary),
-		new ButtonBuilder().setCustomId(InteractionID.CANCEL).setLabel('Cancel').setStyle(ButtonStyle.Secondary)
-	];
+	const confirmRow: ButtonBuilder[] = buttons
+		? [...buttons]
+		: [
+				new ButtonBuilder()
+					.setCustomId(InteractionID.CONFIRM)
+					.setLabel('Confirm')
+					.setStyle(ButtonStyle.Primary),
+				new ButtonBuilder().setCustomId(InteractionID.CANCEL).setLabel('Cancel').setStyle(ButtonStyle.Secondary)
+			];
+
+	if (!confirmRow.some(button => 'custom_id' in button.data && button.data.custom_id === InteractionID.CONFIRM)) {
+		throw new Error('Confirmation buttons must include a CONFIRM button.');
+	}
+	if (swap) confirmRow.reverse();
+
+	// await interaction.defer({ ephemeral });
 
 	await interaction.reply({
 		content: `${content}\n\nYou have ${Math.floor(timeout / 1000)} seconds to confirm.`,
@@ -67,7 +85,7 @@ export async function interactionConfirmation(
 				return;
 			}
 
-			if (buttonInteraction.customId === InteractionID.CANCEL) {
+			if (buttonInteraction.customId !== InteractionID.CONFIRM) {
 				collector.stop(StopReason.UserCancelled);
 				return;
 			}

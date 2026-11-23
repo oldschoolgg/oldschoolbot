@@ -16,7 +16,7 @@ export async function refreshUserCache({
 
 	if (possibleTarget) {
 		possibleTarget = getIdFromMention(possibleTarget);
-		if (user.isMod() || user.isAdmin()) {
+		if (user.isMod || user.isAdmin) {
 			if (!isValidDiscordSnowflake(possibleTarget)) return 'Invalid user ID.';
 			refreshUser = await mUserFetch(possibleTarget);
 			if (!refreshUser.hasMinion) return 'Target player does not have a minion.';
