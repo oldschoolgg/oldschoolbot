@@ -324,7 +324,7 @@ The next buy limit reset is at: ${dateFm(GrandExchange.getInterval().end)}, it r
 				]
 			};
 
-			return interaction.returnStringOrFile(geResult);
+			return geResult;
 		}
 
 		if (options.view) {

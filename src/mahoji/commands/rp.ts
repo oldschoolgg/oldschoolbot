@@ -1,4 +1,4 @@
-import { codeBlock, dateFm, EmbedBuilder } from '@oldschoolgg/discord';
+import { ButtonBuilder, ButtonStyle, codeBlock, dateFm, EmbedBuilder, InteractionID } from '@oldschoolgg/discord';
 import { type GearSetupType, GearSetupTypes } from '@oldschoolgg/gear';
 import { CHANNELS, sumArr, toTitleCase } from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
@@ -16,6 +16,7 @@ import { allCollectionLogsFlat, allDcSet } from '@/lib/data/Collections.js';
 import { type GEListingWithTransactions, GrandExchange, geListingToString } from '@/lib/grandExchange.js';
 import { unEquipAllCommand } from '@/lib/minions/functions/unequipAllCommand.js';
 import { unequipPet } from '@/lib/minions/functions/unequipPet.js';
+import { runRolesTask } from '@/lib/rolesTask.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import {
 	autocompleteStaffBestowRewards,
@@ -74,6 +75,19 @@ type StealItemsOptions = {
 	reason?: string;
 };
 
+function allowedChannel(channelId: string): { success: true } | { success: false; message: string } {
+	if (
+		globalConfig.isProduction &&
+		![Channel.CyrCommandsChannel, CHANNELS.MODERATORS, CHANNELS.MODERATORS_COMMANDS].includes(channelId)
+	) {
+		return {
+			success: false,
+			message: `You can only use this command in <#${CHANNELS.MODERATORS}> or <#${CHANNELS.MODERATORS_COMMANDS}>.`
+		};
+	}
+	return { success: true };
+}
+
 async function handleStealItems({
 	adminUser,
 	interaction,
@@ -88,18 +102,17 @@ async function handleStealItems({
 	if (!adminUser.isModOrAdmin) {
 		return rng.pick(gifs);
 	}
-	if (
-		globalConfig.isProduction &&
-		!adminUser.isAdmin &&
-		![Channel.CyrCommandsChannel, CHANNELS.MODERATORS, CHANNELS.MODERATORS_COMMANDS].includes(interaction.channelId)
-	) {
-		return `You can only use this command in <#${CHANNELS.MODERATORS}> or <#${CHANNELS.MODERATORS_COMMANDS}>.`;
+	if (!adminUser.isAdmin) {
+		const restricted = allowedChannel(interaction.channelId);
+		if (!restricted.success) return restricted.message;
 	}
 	const toDelete = stealItemsOptions.delete ?? false;
 	const actionMsg = toDelete ? 'delete' : 'steal';
 	const actionMsgPast = toDelete ? 'deleted' : 'stole';
 
 	const userToStealFrom = await mUserFetch(stealItemsOptions.user.user.id);
+
+	if (userToStealFrom.isAdmin) return rng.pick(gifs);
 
 	const items = new Bank();
 	if (stealItemsOptions.item_filter) {
@@ -123,9 +136,6 @@ async function handleStealItems({
 		return `${userToStealFrom.mention} doesn't have those items, or they don't exist.`;
 	}
 	const containsDiscontinued = items.itemIDs.some(i => allDcSet.has(i));
-	if (!adminUser.isAdmin && !adminUser.isGameHacker && containsDiscontinued) {
-		return `You cannot steal Discontinued Items, sorry!`;
-	}
 	await interaction.confirmation(
 		`Are you sure you want to ${actionMsg} ${items.toString().slice(0, 500)} from ${
 			userToStealFrom.usernameOrMention
@@ -221,17 +231,6 @@ export const rpCommand = defineCommand({
 	description: 'Admin tools second set',
 	guildId: globalConfig.supportServerID,
 	options: [
-		// {
-		// 	type: 'SubcommandGroup',
-		// 	name: 'action',
-		// 	description: 'Actions',
-		// 	options: actions.map(a => ({
-		// 		type: 'Subcommand',
-		// 		name: a.name,
-		// 		description: a.name,
-		// 		options: []
-		// 	}))
-		// },
 		{
 			type: 'Subcommand',
 			name: 'bestow',
@@ -516,6 +515,12 @@ export const rpCommand = defineCommand({
 							type: 'String',
 							name: 'reason',
 							description: 'The reason'
+						},
+						{
+							type: 'Boolean',
+							name: 'force',
+							description: 'Admin only: allow protected or self migration',
+							required: false
 						}
 					]
 				},
@@ -673,6 +678,26 @@ export const rpCommand = defineCommand({
 					]
 				}
 			]
+		},
+		{
+			type: 'SubcommandGroup',
+			name: 'roles',
+			description: 'Manage support server roles.',
+			options: [
+				{
+					type: 'Subcommand',
+					name: 'sync',
+					description: 'Run the support server roles sync task.',
+					options: [
+						{
+							type: 'Boolean',
+							name: 'dry_run',
+							description: 'Run without making any changes.',
+							required: false
+						}
+					]
+				}
+			]
 		}
 	],
 	run: async ({ options, user: adminUser, interaction, guildId, rng }) => {
@@ -809,21 +834,6 @@ Date: ${dateFm(date)}`;
 			});
 		}
 
-		// if (options.action) {
-		// 	for (const action of actions) {
-		// 		if (options.action[action.name]) {
-		// 			if (!action.allowed(adminUser)) return rng.pick(gifs);
-		// 			try {
-		// 				const result = await action.run();
-		// 				return result;
-		// 			} catch (err) {
-		// 				Logging.logError(err as Error);
-		// 				return 'An error occurred.';
-		// 			}
-		// 		}
-		// 	}
-		// }
-
 		if (options.player?.set_buy_date) {
 			const userToCheck = await mUserFetch(options.player.set_buy_date.user.user.id);
 			const res = DiscordSnowflake.deconstruct(options.player.set_buy_date.message_id);
@@ -867,7 +877,7 @@ Date: ${dateFm(date)}`;
 
 		// Unequip Items
 		if (options.player?.unequip_all_items) {
-			if (!isAdmin) {
+			if (!isGameHacker) {
 				return rng.pick(gifs);
 			}
 			const allGearSlots = ['melee', 'range', 'mage', 'misc', 'skilling', 'other', 'wildy', 'fashion'];
@@ -908,29 +918,48 @@ Date: ${dateFm(date)}`;
 		}
 
 		if (options.player?.migrate_user) {
-			if (!isGameHacker) {
-				return rng.pick(gifs);
-			}
-
-			const { source, dest, reason } = options.player.migrate_user;
+			const { source, dest, reason, force } = options.player.migrate_user;
 
 			if (source.user.id === dest.user.id) {
 				return 'Destination cannot be the same as the source!';
 			}
 
-			if (source.user.id === adminUser.id || dest.user.id === adminUser.id) {
-				return 'You cannot migrate yourself! Ask another mod if you need help, this is because Discord makes it too easy to put your own user accidentally.';
-			}
-
+			const selfMigration = source.user.id === adminUser.id || dest.user.id === adminUser.id;
 			const sourceUser = await mUserFetch(source.user.id);
 			const destUser = await mUserFetch(dest.user.id);
-
-			if (isProtectedAccount(destUser)) return 'You cannot clobber that account.';
+			const protectedAccount = isProtectedAccount(destUser);
+			if (selfMigration || protectedAccount) {
+				if (!adminUser.isAdmin || force !== true) {
+					return selfMigration
+						? 'You cannot migrate yourself! Ask another mod if you need help, this is because Discord makes it too easy to put your own user accidentally.'
+						: 'You cannot clobber that account.';
+				}
+				await interaction.confirmation(
+					`**FORCED MIGRATION WARNING:** ${selfMigration ? 'This migration involves your own account. ' : ''}${protectedAccount ? 'The destination is a protected account. ' : ''}You are overriding a safeguard and destroying the destination account's existing data. Are you sure?`,
+					{
+						buttons: [
+							new ButtonBuilder()
+								.setCustomId('FORCE_SRUE')
+								.setLabel('Srue')
+								.setStyle(ButtonStyle.Success),
+							new ButtonBuilder()
+								.setCustomId(InteractionID.CANCEL)
+								.setLabel('Nope')
+								.setStyle(ButtonStyle.Secondary),
+							new ButtonBuilder()
+								.setCustomId(InteractionID.CONFIRM)
+								.setLabel("Yes, I'm SURE")
+								.setStyle(ButtonStyle.Danger)
+						]
+					}
+				);
+			}
 			const sourceXp = sumArr(Object.values(sourceUser.skillsAsXP));
 			const destXp = sumArr(Object.values(destUser.skillsAsXP));
 			if (destXp > sourceXp) {
 				await interaction.confirmation(
-					`The target user, ${destUser.logName}, has more XP than the source user; are you really sure the names aren't backwards?`
+					`The target user, ${destUser.logName}, has more XP than the source user; are you really sure the names aren't backwards?`,
+					{ swap: true }
 				);
 			}
 			await interaction.confirmation(
@@ -1143,6 +1172,22 @@ Date: ${dateFm(date)}`;
 			const targetUser = await mUserFetch(options.player.ge_cancel.user.user.id);
 			await cancelUsersListings(targetUser);
 			return `Cancelled listings for ${targetUser}`;
+		}
+
+		if (options.roles?.sync) {
+			await interaction.defer();
+			if (!isGameHacker) {
+				return rng.pick(gifs);
+			}
+			const dryRun = options.roles.sync.dry_run ?? false;
+			if (!dryRun) {
+				await interaction.confirmation('Are you sure you want to sync support server roles?');
+			}
+			const result = await runRolesTask(dryRun);
+			await globalClient.sendMessage(Channel.BotLogs, {
+				content: `${adminUser.logName} ran the support server roles sync${dryRun ? ' (dry run)' : ''}.`
+			});
+			return result;
 		}
 
 		return 'Invalid command.';

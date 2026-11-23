@@ -341,14 +341,12 @@ export const sellCommand = defineCommand({
 		if (user.isIronman) {
 			return `Sold ${bankToSell} (${formatBankItemSummary(bankToSell)}) for **${totalPrice.toLocaleString()}gp (${toKMB(totalPrice)})**`;
 		}
-		return interaction.returnStringOrFile(
-			`Sold ${bankToSell} (${formatBankItemSummary(bankToSell)}) for **${totalPrice.toLocaleString()}gp (${toKMB(
-				totalPrice
-			)})** (${taxRatePercent}% below market price). ${
-				hasSkipper
-					? '\n\n<:skipper:755853421801766912> Skipper has negotiated with the bank and you were charged less tax on the sale!'
-					: ''
-			}`
-		);
+		return `Sold ${bankToSell} (${formatBankItemSummary(bankToSell)}) for **${totalPrice.toLocaleString()}gp (${toKMB(
+			totalPrice
+		)})** (${taxRatePercent}% below market price). ${
+			hasSkipper
+				? '\n\n<:skipper:755853421801766912> Skipper has negotiated with the bank and you were charged less tax on the sale!'
+				: ''
+		}`;
 	}
 });

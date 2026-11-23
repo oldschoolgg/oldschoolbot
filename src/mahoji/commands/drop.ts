@@ -80,6 +80,6 @@ export const dropCommand = defineCommand({
 		await user.removeItemsFromBank(bank);
 		await ClientSettings.updateBankSetting('dropped_items', bank);
 
-		return interaction.returnStringOrFile(`Dropped ${bank}.`);
+		return `Dropped ${bank}.`;
 	}
 });

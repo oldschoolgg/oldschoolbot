@@ -365,6 +365,12 @@ export const minionCommand = defineCommand({
 					name: 'permanent',
 					description: 'Do you want to become a permanent ironman?',
 					required: false
+				},
+				{
+					type: 'String',
+					name: 'delete_account',
+					description: 'Type CONFIRM! to wipe your BSO ironman account and start over',
+					required: false
 				}
 			]
 		},
@@ -594,7 +600,7 @@ export const minionCommand = defineCommand({
 		}
 
 		if (options.buy) return minionBuyCommand(user, Boolean(options.buy.ironman));
-		if (options.ironman) return ironmanCommand(user, interaction);
+		if (options.ironman) return ironmanCommand(user, interaction, options.ironman.delete_account);
 
 		if (options.charge) {
 			return degradeableItemsCommand(interaction, user, options.charge.item, options.charge.amount);
