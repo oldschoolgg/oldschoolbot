@@ -4,7 +4,7 @@ import type { ItemBank } from 'oldschooljs';
 
 import type { AutoFarmFilterEnum, bank_sort_method_enum, CropUpgradeType } from '@/prisma/main.js';
 import type { PatchTypes } from '@/lib/skilling/skills/farming/index.js';
-import type { FarmingPatchSettingsKey } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
+import type { FarmingPatchName, FarmingPatchSettingsKey } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { FarmingPreferredSeeds } from '@/lib/skilling/skills/farming/utils/types.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { DegradeableItemColumns, GearColumns } from '@/lib/user/userTypes.js';
@@ -73,6 +73,7 @@ export type FullUserUpdateInput = Partial<
 		minion_birdhouseTraps: IBirdhouseData | null;
 		bank_sort_method: bank_sort_method_enum | null;
 		auto_farm_filter: AutoFarmFilterEnum;
+		auto_farm_button_patch: FarmingPatchName | null;
 		minion_defaultCompostToUse: CropUpgradeType;
 		minion_farmingPreferredContract: boolean;
 		minion_farmingPreferredSeeds: FarmingPreferredSeeds | null;

@@ -10,6 +10,8 @@ Auto farming collects ready patches into a single Farming activity so you can ha
 - The trip is planned as one continuous Farming activity whose duration equals the sum of each patch step (travel, harvest, replant). Your minion stays out for the full Farming trip length instead of returning after every patch.
 - You can also trigger auto farming from the button that appears on [[/farming check_patches]] when something is ready, or when an empty patch can be planted by **AllFarm**.
 - The Auto Farm button can be disabled with [[/config user toggle name\:Disable Auto Farm Button]].
+- Use [[/farming auto_farm_button patch:herb]] to only show the Auto Farm button at the end of trips when your herb patch is ready to harvest. You can select any patch type. Growing or empty preferred patches will keep the button hidden, even if other patches are ready.
+- Use [[/farming auto_farm_button patch:any]] to restore the default behaviour: show the button when any patch is ready or an empty patch can be planted. This preference only controls the button after trips; [[/farming check_patches]] and the patches farmed by auto farming are unaffected.
 
 ## Filters
 
