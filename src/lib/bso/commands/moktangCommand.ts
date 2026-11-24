@@ -3,11 +3,12 @@ import { dwarvenOutfit } from '@/lib/bso/collection-log/main.js';
 import { getGlobalBossSpeedBonus } from '@/lib/bso/commands/islandUpgrades.js';
 
 import { spoiler } from '@oldschoolgg/discord';
-import { formatDuration, Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank, Items, resolveItems } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
 import { PercentCounter } from '@/lib/structures/PercentCounter.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { readState } from '@/mahoji/commands/islandupgrade.js';
 
 const requiredPickaxes = resolveItems(['Crystal pickaxe', 'Volcanic pickaxe', 'Dwarven pickaxe', 'Dragon pickaxe']);
@@ -81,7 +82,8 @@ export async function moktangCommand(user: MUser, channelId: string, inputQuanti
 		type: 'Moktang'
 	});
 
-	return `${user.minionName} is now off to kill Moktang ${quantity}x times, their trip will take ${formatDuration(
+	return `${user.minionName} is now off to kill Moktang ${quantity}x times, their trip will take ${formatTripDuration(
+		user,
 		duration
 	)}. Removed ${cost}.
 **Boosts:** ${timeToKill.messages.join(', ')} ${

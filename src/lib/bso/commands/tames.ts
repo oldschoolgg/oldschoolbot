@@ -59,6 +59,7 @@ import Tanning from '@/lib/skilling/skills/crafting/craftables/tanning.js';
 import Bars from '@/lib/skilling/skills/smithing/smeltables.js';
 import { assert } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { parseStringBank } from '@/lib/util/parseStringBank.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { getItemCostFromConsumables } from '@/mahoji/lib/abstracted_commands/minionKill/handleConsumables.js';
@@ -1018,7 +1019,7 @@ async function killCommand(user: MUser, channelId: string, str: string) {
 
 	let reply = `${tame} is now killing ${quantity}x ${monster.name}${
 		deathChance > 0 ? `, and has a ${deathChance.toFixed(2)}% chance of dying` : ''
-	}. The trip will take ${formatDuration(fakeDuration)}.\n\nRemoved ${foodRes.str}`;
+	}. The trip will take ${formatTripDuration(user, fakeDuration)}.\n\nRemoved ${foodRes.str}`;
 
 	if (boosts.length > 0) {
 		reply += `\n\n**Boosts:** ${boosts.join(', ')}.`;
@@ -1116,7 +1117,7 @@ async function collectCommand(user: MUser, channelId: string, str: string) {
 
 	let reply = `${tame} is now collecting ${quantity * collectable.quantity}x ${
 		collectable.item.name
-	}. The trip will take ${formatDuration(duration)}.`;
+	}. The trip will take ${formatTripDuration(user, duration)}.`;
 
 	if (boosts.length > 0) {
 		reply += `\n\n**Boosts:** ${boosts.join(', ')}.`;
@@ -1246,7 +1247,7 @@ async function monkeyMagicHandler(
 
 	let reply = `${tame} is now casting the ${
 		spellOptions.spell.name
-	} spell ${quantity}x times, removed ${finalCost} from your bank. The trip will take ${formatDuration(duration)}.`;
+	} spell ${quantity}x times, removed ${finalCost} from your bank. The trip will take ${formatTripDuration(user, duration)}.`;
 
 	if (boosts.length > 0) {
 		reply += `\n\n**Boosts:** ${boosts.join(', ')}.`;
@@ -1645,7 +1646,7 @@ async function tameClueCommand(user: MUser, channelId: string, inputName: string
 
 	let reply = `${tame} is now completing ${quantity}x ${Items.itemNameFromId(
 		clueTier.scrollID
-	)}. Removed ${cost} from your bank. The trip will take ${formatDuration(task.duration)}.`;
+	)}. Removed ${cost} from your bank. The trip will take ${formatTripDuration(user, task.duration)}.`;
 
 	if (boosts.length > 0) {
 		reply += `\n\n**Boosts:** ${boosts.join(', ')}.`;
@@ -1988,7 +1989,8 @@ export const tamesCommand = defineCommand({
 			});
 			if (typeof task === 'string') return task;
 
-			let reply = `${tame} is now doing ${tameActivity.name}. The trip will take ${formatDuration(
+			let reply = `${tame} is now doing ${tameActivity.name}. The trip will take ${formatTripDuration(
+				user,
 				task.duration
 			)}.`;
 

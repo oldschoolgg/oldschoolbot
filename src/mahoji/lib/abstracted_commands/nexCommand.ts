@@ -12,6 +12,7 @@ import type { KillableMonster } from '@/lib/minions/types.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import type { BossActivityTaskOptions } from '@/lib/types/minions.js';
 import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 async function checkReqs(users: MUser[], monster: KillableMonster, quantity: number): Promise<string | undefined> {
 	// Check if every user has the requirements for this monster.
@@ -294,12 +295,13 @@ export async function nexCommand(
 
 	let str =
 		type === 'solo'
-			? `Your minion is now attempting to kill ${quantity}x Nex. ${foodString} The trip will take ${formatDuration(duration)}.`
+			? `Your minion is now attempting to kill ${quantity}x Nex. ${foodString} The trip will take ${formatTripDuration(user, duration)}.`
 			: `${partyOptions.leader.usernameOrMention}'s party (${users
 					.map(u => u.usernameOrMention)
 					.join(', ')}) is now off to kill ${quantity}x ${NexMonster.name}. Each kill takes ${formatDuration(
 					perKillTime
-				)} instead of ${formatDuration(NexMonster.timeToFinish)} - the total trip will take ${formatDuration(
+				)} instead of ${formatDuration(NexMonster.timeToFinish)} - the total trip will take ${formatTripDuration(
+					user,
 					duration
 				)}. ${foodString}`;
 
