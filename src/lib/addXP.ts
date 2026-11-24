@@ -1,10 +1,10 @@
 import { bold } from '@oldschoolgg/discord';
-import { Events, formatOrdinal, Time, toTitleCase } from '@oldschoolgg/toolkit';
+import { Events, formatOrdinal, noOp, Time, toTitleCase } from '@oldschoolgg/toolkit';
 import { convertXPtoLVL, toKMB } from 'oldschooljs';
 
 import { UserEventType } from '@/prisma/main/enums.js';
 import type { User } from '@/prisma/main.js';
-import { globalConfig, MAX_LEVEL, MAX_LEVEL_XP, MAX_TOTAL_LEVEL, MAX_XP } from '@/lib/constants.js';
+import { BitField, globalConfig, MAX_LEVEL, MAX_LEVEL_XP, MAX_TOTAL_LEVEL, MAX_XP } from '@/lib/constants.js';
 import { skillEmoji } from '@/lib/data/emojis.js';
 import type { AddXpParams } from '@/lib/minions/types.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
@@ -147,6 +147,26 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 	);
 	(user.user as User)[`skills_${params.skillName}`] = BigInt(Math.floor(newXP));
 	user.updateProperties();
+
+	if (user.bitfield.includes(BitField.SkillMilestoneDMs)) {
+		const milestones: string[] = [];
+		if (currentLevel < MAX_LEVEL && newLevel >= MAX_LEVEL) {
+			milestones.push(`level ${MAX_LEVEL}, the maximum level`);
+		}
+		if (currentXP < MAX_XP && newXP >= MAX_XP) {
+			milestones.push(`${MAX_XP.toLocaleString()} XP, the maximum possible XP`);
+		}
+		if (milestones.length > 0) {
+			await globalClient
+				.sendDm(
+					user.id,
+					`${skill.emoji} Congratulations! Your minion has reached ${milestones.join(' and ')} in ${name}!${
+						newXP >= MAX_XP ? ' You cannot gain any more XP in this skill.' : ''
+					}`
+				)
+				.catch(noOp);
+		}
+	}
 
 	if (currentXP < MAX_XP && newXP === MAX_XP && Object.values(user.skillsAsXP).every(xp => xp === MAX_XP)) {
 		globalClient.emit(
