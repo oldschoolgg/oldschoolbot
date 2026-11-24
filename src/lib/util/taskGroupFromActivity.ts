@@ -6,7 +6,6 @@ export function taskGroupFromActivity(type: activity_type_enum): ActivityGroup {
 		case 'ClueCompletion':
 			return ActivityGroup.Clue;
 		case 'GroupMonsterKilling':
-		case 'Yama':
 		case 'MonsterKilling':
 			return ActivityGroup.Monster;
 		case 'Fishing':
