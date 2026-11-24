@@ -3,6 +3,7 @@ import { championsChallengeCommand } from '@/mahoji/lib/abstracted_commands/cham
 import { combatRingCommand } from '@/mahoji/lib/abstracted_commands/combatRingCommand.js';
 import { mageArena2Command } from '@/mahoji/lib/abstracted_commands/mageArena2Command.js';
 import { mageArenaCommand } from '@/mahoji/lib/abstracted_commands/mageArenaCommand.js';
+import { huntCrashedStarsCommand } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
 import { strongHoldOfSecurityCommand } from '@/mahoji/lib/abstracted_commands/strongHoldOfSecurityCommand.js';
 
 export const otherActivities = [
@@ -25,6 +26,10 @@ export const otherActivities = [
 	{
 		name: 'Combat Ring (Shayzien)',
 		type: activity_type_enum.CombatRing
+	},
+	{
+		name: 'Hunt Crashed Stars',
+		type: activity_type_enum.ShootingStars
 	}
 ];
 
@@ -55,6 +60,9 @@ export function otherActivitiesCommand({
 	}
 	if (type === 'CombatRing') {
 		return combatRingCommand(interaction);
+	}
+	if (type === 'ShootingStars') {
+		return huntCrashedStarsCommand({ rng, channelId, user });
 	}
 	return 'Invalid activity type.';
 }
