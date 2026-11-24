@@ -119,6 +119,7 @@ export async function planAutoFarmTrip(
 			user,
 			patch,
 			candidates: levelEligibleCandidates,
+			quantity: request.quantity,
 			maxTripLength,
 			remainingBank,
 			totalDuration,

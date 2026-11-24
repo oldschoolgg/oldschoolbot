@@ -34,6 +34,7 @@ export interface PlanRequest {
 	type: 'highest' | 'plant';
 	patch: IPatchDataDetailed;
 	plant?: Plant;
+	quantity?: number;
 }
 
 export interface BuildSummaryResult {
@@ -87,6 +88,7 @@ export function buildPlanRequests({
 }): PlanRequest[] {
 	const planRequests: PlanRequest[] = [];
 	for (const patch of patchesDetailed) {
+		const preferredQuantity = preferredSeeds.get(patch.patchName)?.quantity;
 		const resolved = resolveSeedForPatch({
 			patch,
 			preferContract,
@@ -101,7 +103,12 @@ export function buildPlanRequests({
 		}
 
 		if (resolved.type === 'plant') {
-			const planRequest: PlanRequest = { type: 'plant', patch, plant: resolved.plant };
+			const planRequest: PlanRequest = {
+				type: 'plant',
+				patch,
+				plant: resolved.plant,
+				quantity: preferredQuantity
+			};
 			if (resolved.reason === 'contract') {
 				planRequests.unshift(planRequest);
 			} else {
@@ -110,7 +117,7 @@ export function buildPlanRequests({
 			continue;
 		}
 
-		planRequests.push({ type: 'highest', patch });
+		planRequests.push({ type: 'highest', patch, quantity: preferredQuantity });
 	}
 
 	return planRequests;
@@ -193,6 +200,7 @@ export async function evaluateCandidateForPatch({
 	user,
 	candidate,
 	patch,
+	quantity: preferredQuantity,
 	maxTripLength,
 	remainingBank,
 	totalDuration,
@@ -203,6 +211,7 @@ export async function evaluateCandidateForPatch({
 	user: MUser;
 	candidate: Plant;
 	patch: IPatchDataDetailed;
+	quantity?: number;
 	maxTripLength: number;
 	remainingBank: Bank;
 	totalDuration: number;
@@ -213,7 +222,7 @@ export async function evaluateCandidateForPatch({
 	const prepared = await prepareFarmingStep({
 		user,
 		plant: candidate,
-		quantity: null,
+		quantity: preferredQuantity ?? null,
 		pay: false,
 		patchDetailed: patch,
 		maxTripLength,
@@ -290,6 +299,7 @@ export async function selectCandidateForPatch({
 	user,
 	patch,
 	candidates,
+	quantity,
 	maxTripLength,
 	remainingBank,
 	totalDuration,
@@ -302,6 +312,7 @@ export async function selectCandidateForPatch({
 	user: MUser;
 	patch: IPatchDataDetailed;
 	candidates: Plant[];
+	quantity?: number;
 	maxTripLength: number;
 	remainingBank: Bank;
 	totalDuration: number;
@@ -327,6 +338,7 @@ export async function selectCandidateForPatch({
 			user,
 			candidate,
 			patch,
+			quantity,
 			maxTripLength,
 			remainingBank,
 			totalDuration: currentTotalDuration,

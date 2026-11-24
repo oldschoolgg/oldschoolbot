@@ -38,8 +38,8 @@ export type DetailedFarmingContract = {
 };
 
 export type FarmingSeedPreference =
-	| { type: 'seed'; seedID: number }
-	| { type: 'highest_available' }
-	| { type: 'empty' };
+	| { type: 'seed'; seedID: number; quantity?: number }
+	| { type: 'highest_available'; quantity?: number }
+	| { type: 'empty'; quantity?: number };
 
 export type FarmingPreferredSeeds = Record<string, FarmingSeedPreference>;

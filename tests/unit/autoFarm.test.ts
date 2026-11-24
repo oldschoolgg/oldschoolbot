@@ -362,6 +362,34 @@ describe('auto farm helpers', () => {
 		expect(plan.totalCost.amount('Compost')).toBe(4);
 	});
 
+	it.each<FarmingSeedPreference>([
+		{ type: 'seed', seedID: herbSeedID, quantity: 2 },
+		{ type: 'highest_available', quantity: 2 }
+	])('planAutoFarmTrip respects the quantity for a $type preference', async preference => {
+		const user = mockMUser({
+			bank: new Bank().add('Guam seed', 4).add('Compost', 4),
+			skills_farming: convertLVLtoXP(50)
+		});
+		const mutableUser = user.user as MutableUser;
+		mutableUser.auto_farm_filter = AutoFarmFilterEnum.AllFarm;
+		mutableUser.minion_defaultCompostToUse = CropUpgradeType.compost;
+		mutableUser.minion_farmingPreferredSeeds = { [herbPlant.seedType]: preference };
+
+		calcMaxTripLengthSpy.mockReturnValue(300 * 1000);
+
+		const plan = await planAutoFarmTrip(
+			user,
+			[herbPatchDetailed],
+			herbPatches as Record<FarmingPatchName, IPatchData>
+		);
+
+		expect(plan.plannedSteps).toHaveLength(1);
+		expect(plan.plannedSteps[0]?.quantity).toBe(2);
+		expect(plan.autoFarmPlan[0]?.quantity).toBe(2);
+		expect(plan.totalCost.amount('Guam seed')).toBe(2);
+		expect(plan.totalCost.amount('Compost')).toBe(2);
+	});
+
 	it('planAutoFarmTrip prioritizes contract patch requests before other patch requests', async () => {
 		const bank = new Bank().add('Guam seed', 6).add('Acorn', 1).add('Compost', 10);
 		const user = mockMUser({
@@ -829,7 +857,7 @@ describe('auto farm helpers', () => {
 			contractsCompleted: 0
 		};
 		(mutableUser as any).minion_farmingPreferredSeeds = {
-			herb: { type: 'seed', seedID: itemID('Ranarr seed') }
+			herb: { type: 'seed', seedID: itemID('Ranarr seed'), quantity: 2 }
 		};
 
 		const transactResult = {
@@ -856,6 +884,10 @@ describe('auto farm helpers', () => {
 
 		// As above – detailed choice logic is tested in resolveSeedForPatch.
 		expect(addSubTaskToActivityTask).toHaveBeenCalledTimes(1);
+		expect(vi.mocked(addSubTaskToActivityTask).mock.calls[0]?.[0]).toMatchObject({
+			quantity: 2,
+			autoFarmPlan: [expect.objectContaining({ quantity: 2 })]
+		});
 	});
 
 	it('autoFarm starts with the contract patch when contract priority is enabled', async () => {
