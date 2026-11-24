@@ -69,8 +69,6 @@ export async function duelCommand(
 	targetAPIUser: MahojiUserOption,
 	duelAmount?: string
 ) {
-	await interaction.defer();
-
 	const duelSourceUser = user;
 	const duelTargetUser = duelUser;
 
