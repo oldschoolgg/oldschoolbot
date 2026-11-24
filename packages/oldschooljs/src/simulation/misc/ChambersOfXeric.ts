@@ -82,22 +82,27 @@ const itemScales = resolveNameBank({
 const NonUniqueTable = new SimpleTable<number>();
 for (const itemID of Object.keys(itemScales)) NonUniqueTable.add(Number.parseInt(itemID));
 
-export const CoXUniqueTable: LootTable = new LootTable()
-	.add('Dexterous prayer scroll', 1, 20)
-	.add('Arcane prayer scroll', 1, 20)
+function createCoXUniqueTable(scrollWeight: number): LootTable {
+	return new LootTable()
+		.add('Dexterous prayer scroll', 1, scrollWeight)
+		.add('Arcane prayer scroll', 1, scrollWeight)
 
-	.add('Twisted buckler', 1, 4)
-	.add('Dragon hunter crossbow', 1, 4)
+		.add('Twisted buckler', 1, 4)
+		.add('Dragon hunter crossbow', 1, 4)
+		.add('Ancestral hat', 1, 4)
+		.add('Ancestral robe top', 1, 4)
+		.add('Ancestral robe bottom', 1, 4)
 
-	.add("Dinh's bulwark", 1, 3)
-	.add('Ancestral hat', 1, 3)
-	.add('Ancestral robe top', 1, 3)
-	.add('Ancestral robe bottom', 1, 3)
-	.add('Dragon claws', 1, 3)
+		.add("Dinh's bulwark", 1, 3)
+		.add('Dragon claws', 1, 3)
 
-	.add('Elder maul', 1, 2)
-	.add('Kodai insignia', 1, 2)
-	.add('Twisted bow', 1, 2);
+		.add('Elder maul', 1, 2)
+		.add('Kodai insignia', 1, 2)
+		.add('Twisted bow', 1, 2);
+}
+
+export const CoXUniqueTable: LootTable = createCoXUniqueTable(14);
+export const CoXCMUniqueTable: LootTable = createCoXUniqueTable(12);
 
 const cmTeamTimes = [
 	[1, Time.Hour + Time.Minute * 10],
@@ -163,7 +168,7 @@ export class ChambersOfXericClass extends Minigame {
 		return completionTime <= Time.Hour + Time.Minute * 20;
 	}
 
-	public rollLootFromChances(chances: number[]): Bank {
+	public rollLootFromChances(chances: number[], challengeMode = false): Bank {
 		let rolls = 0;
 
 		for (const chance of chances) {
@@ -172,7 +177,7 @@ export class ChambersOfXericClass extends Minigame {
 			}
 		}
 
-		return CoXUniqueTable.roll(rolls);
+		return (challengeMode ? CoXCMUniqueTable : CoXUniqueTable).roll(rolls);
 	}
 
 	// We're rolling 2 non-unique loots based off a number of personal points.
@@ -220,7 +225,7 @@ export class ChambersOfXericClass extends Minigame {
 		const teamPoints = sumArr(options.team.map(val => val.personalPoints));
 
 		const dropChances = this.determineUniqueChancesFromTeamPoints(teamPoints);
-		const uniqueLoot = this.rollLootFromChances(dropChances);
+		const uniqueLoot = this.rollLootFromChances(dropChances, options.challengeMode);
 
 		const lootResult: LootBank = {};
 
