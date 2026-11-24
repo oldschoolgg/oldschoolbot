@@ -33,7 +33,7 @@ describe('Prescription goggles', () => {
 	});
 
 	test('saves secondaries when making barbarian mixes', () => {
-		const savedItems = calculatePrescriptionGogglesSavedItems(getMixable('Attack mix (2)'), 2, mockRng(true));
+		const savedItems = calculatePrescriptionGogglesSavedItems(getMixable('Attack mix(2)'), 2, mockRng(true));
 
 		expect(savedItems.amount('Roe')).toEqual(2);
 		expect(savedItems.amount('Attack potion(2)')).toEqual(0);
