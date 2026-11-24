@@ -201,6 +201,11 @@ export const Minigames: readonly BotMinigame[] = [
 		column: 'colosseum'
 	},
 	{
+		name: 'Stealing artefacts',
+		aliases: ['artefacts', 'artifacts', 'stealing artefacts', 'stealing artifacts'],
+		column: 'stealing_artefacts'
+	},
+	{
 		name: 'Mastering Mixology',
 		aliases: ['mixology', 'herbtodt'],
 		column: 'mastering_mixology'
