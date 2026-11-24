@@ -73,9 +73,9 @@ Full fortified Masori armour with [[Zaryte vambraces]] matches Elite Void's 5% t
 
 ## Combat Achievements
 
-Doom CAs are rolled from successful Doom trips. Doom Chaser uses the trip duration shown by the bot and needs delve 8 under 10:00. Doom Racer also uses the shown duration and needs delve 8 under 7:15, which is reachable with max speed boosts, max KC speed reduction, high combat stats, and a fast duration roll.
+Doom CAs are rolled from successful Doom Delve Treks. Doom Chaser needs a completed level 1-8 Delve Trek under 10:00. Doom Racer needs a completed level 1-8 Delve Trek under 7:15, which is reachable with max speed boosts, max KC speed reduction, high combat stats, and a fast duration roll. Multi-Trek Doom tasks can complete these if any stored Delve Trek meets the time. Max trips use their number of stored Delve Treks for combat-achievement rolls, so one trip can award several Doom CAs.
 
-Doom Crawler keeps the in-game 30-second challenge wording, but is represented in the bot as a 1/20 chance from successful Doom trips that complete at least delve 1.
+Doom Crawler keeps the in-game 30-second challenge wording, but is represented in the bot as a 1/20 chance from successful Doom Delve Treks that complete at least Delve 1.
 
 ## Related Items
 

@@ -3,6 +3,7 @@ import { type Item, Items } from 'oldschooljs';
 import { clone } from 'remeda';
 
 import type { activity_type_enum } from '@/prisma/main/enums.js';
+import { getCombatAchievementRollQuantity } from '@/lib/combat_achievements/caUtils.js';
 import { easyCombatAchievements } from '@/lib/combat_achievements/easy.js';
 import { eliteCombatAchievements } from '@/lib/combat_achievements/elite.js';
 import { grandmasterCombatAchievements } from '@/lib/combat_achievements/grandmaster.js';
@@ -176,12 +177,7 @@ export const combatAchievementTripEffect = async ({
 }) => {
 	const dataCopy = clone(data);
 
-	let quantity = 1;
-	if ('q' in dataCopy) {
-		quantity = dataCopy.q;
-	} else if ('quantity' in dataCopy && dataCopy.quantity) {
-		quantity = dataCopy.quantity;
-	}
+	let quantity = getCombatAchievementRollQuantity(dataCopy);
 	if (Number.isNaN(quantity)) return;
 
 	if (data.type === 'TombsOfAmascut') {
