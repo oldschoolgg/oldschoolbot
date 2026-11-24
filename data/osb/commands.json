@@ -252,6 +252,11 @@
 			"subOptions": []
 		},
 		{
+			"name": "info",
+			"desc": "Shows bot information through subcommands.",
+			"subOptions": ["commit", "overview", "recent_updates", "uptime"]
+		},
+		{
 			"name": "invite",
 			"desc": "Shows the invite link for the bot.",
 			"subOptions": []
