@@ -15,9 +15,9 @@ import { gearImages } from '@/lib/canvas/gearImageData.js';
 import { BitField } from '@/lib/constants.js';
 import { makeArchonButton } from '@/lib/util/interactions.js';
 import { assert } from '@/lib/util/logError.js';
-import { readState } from '@/mahoji/commands/islandupgrade.js';
 import { archonPresentations, getEligibleTier } from '@/mahoji/lib/abstracted_commands/archonCommand.js';
 import { flowerTable } from '@/mahoji/lib/abstracted_commands/hotColdCommand.js';
+import { readState } from '@/mahoji/lib/abstracted_commands/islandCommand.js';
 
 const easterUseTrollItemIDs = new Set([Items.getOrThrow('Magnegg').id, Items.getOrThrow('Wabbit eggs').id]);
 const easterUseTrollMessages = [

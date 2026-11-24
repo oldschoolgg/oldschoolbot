@@ -1,612 +1,413 @@
-import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
-import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
-import { mutations } from '@/lib/bso/skills/farming/mutations.js';
-import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
+import { type MaterialType, materialTypes } from '@/lib/bso/skills/invention/index.js';
+import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
-import { Time } from '@oldschoolgg/toolkit';
-import { randInt, roll } from 'node-rng';
-import { Bank, Items, increaseBankQuantitesByPercent, Monsters } from 'oldschooljs';
+import { toTitleCase } from '@oldschoolgg/toolkit';
+import { Bank, toKMB } from 'oldschooljs';
 
-import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements.js';
-import { BitField } from '@/lib/constants.js';
-import { Farming, type PatchTypes } from '@/lib/skilling/skills/farming/index.js';
-import { getFarmingKeyFromName } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
-import type { Plant } from '@/lib/skilling/types.js';
-import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '@/lib/types/minions.js';
-import { assert } from '@/lib/util/logError.js';
-import { skillingPetDropRate } from '@/lib/util.js';
+import { formatFarmingBoosts } from '@/lib/skilling/skills/farming/utils/farmingFormatters.js';
+import type { AutoFarmStepData, AutoFarmSummary, FarmingActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish as defaultHandleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { executeFarmingStep, type FarmingStepResult, type FarmingStepSummary } from './farmingStep.js';
 
-const plopperBoostPercent = 100;
+function getPatchLabel(data: FarmingActivityTaskOptions): string {
+	const patchType = data.patchType as Partial<typeof data.patchType> & { friendlyName?: string; patchName?: string };
+	return data.patchName ?? patchType.friendlyName ?? patchType.patchName ?? 'patches';
+}
 
-async function farmingLootBoosts(
-	user: MUser,
-	method: 'harvest' | 'plant',
-	plant: Plant,
-	quantity: number,
-	loot: Bank,
-	messages: string[]
-) {
-	let bonusPercentage = 0;
-	if (user.allItemsOwned.has('Plopper')) {
-		bonusPercentage += plopperBoostPercent;
-		messages.push(`${plopperBoostPercent}% for Plopper`);
-	}
+function getMaterialTypeFromDisplayName(displayName: string): MaterialType | null {
+	const normalisedName = displayName.toLowerCase();
+	return materialTypes.find(type => type === normalisedName || toTitleCase(type) === displayName) ?? null;
+}
 
-	if (user.hasEquippedOrInBank('Farming master cape')) {
-		bonusPercentage += 100;
-		messages.push('100% for Farming master cape');
-	}
-	if (method === 'harvest' && user.hasEquippedOrInBank(['Arcane harvester']) && !plant.noArcaneHarvester) {
-		const boostRes = await inventionItemBoost({
-			user,
-			inventionID: InventionID.ArcaneHarvester,
-			duration: plant.level * Time.Second * quantity
-		});
-		if (boostRes.success) {
-			bonusPercentage += inventionBoosts.arcaneHarvester.harvestBoostPercent;
-			messages.push(
-				`${inventionBoosts.arcaneHarvester.harvestBoostPercent}% bonus yield from Arcane Harvester (${boostRes.messages})`
-			);
+function parseMaterialCostSegment(segment: string): { material: MaterialType; quantity: number } | null {
+	const match = segment.match(/^([\d,]+)x (.+)$/);
+	if (!match) return null;
+
+	const quantity = Number.parseInt(match[1].replace(/,/g, ''), 10);
+	const material = getMaterialTypeFromDisplayName(match[2]);
+	if (!material || Number.isNaN(quantity)) return null;
+
+	return { material, quantity };
+}
+
+function parseArcaneHarvesterBoost(
+	boost: string
+): { percent: string; materialCost: MaterialBank; notes: string[] } | null {
+	const match = boost.match(/^(\d+)% bonus yield from Arcane Harvester \((.+)\)$/);
+	if (!match) return null;
+
+	const messageParts = match[2].split(', ');
+	const firstPart = messageParts.shift();
+	if (!firstPart?.startsWith('Removed ')) return null;
+
+	const firstCost = parseMaterialCostSegment(firstPart.replace('Removed ', ''));
+	if (!firstCost) return null;
+
+	const materialCost = new MaterialBank();
+	const notes: string[] = [];
+	materialCost.add(firstCost.material, firstCost.quantity);
+
+	for (const part of messageParts) {
+		const cost = parseMaterialCostSegment(part);
+		if (cost) {
+			materialCost.add(cost.material, cost.quantity);
+		} else {
+			notes.push(part);
 		}
 	}
-	increaseBankQuantitesByPercent(loot, bonusPercentage);
+
+	return { percent: match[1], materialCost, notes };
+}
+
+function formatAutoFarmBoosts(summary: AutoFarmSummary): string {
+	const boostSources = summary.boostSources ?? summary.boosts.map(boost => ({ boost }));
+	const arcaneHarvester = {
+		percent: '',
+		materialCost: new MaterialBank(),
+		notes: new Set<string>()
+	};
+	const boosts: string[] = [];
+
+	for (const { boost } of boostSources) {
+		const arcaneBoost = parseArcaneHarvesterBoost(boost);
+		if (!arcaneBoost) {
+			boosts.push(boost);
+			continue;
+		}
+
+		arcaneHarvester.percent = arcaneBoost.percent;
+		arcaneHarvester.materialCost.add(arcaneBoost.materialCost);
+		for (const note of arcaneBoost.notes) {
+			arcaneHarvester.notes.add(note);
+		}
+	}
+
+	if (arcaneHarvester.percent && arcaneHarvester.materialCost.values().length > 0) {
+		const notes = [...arcaneHarvester.notes];
+		const noteStr = notes.length > 0 ? `, ${notes.join(', ')}` : '';
+		boosts.push(
+			`${arcaneHarvester.percent}% bonus yield from Arcane Harvester (Removed ${arcaneHarvester.materialCost}${noteStr})`
+		);
+	}
+
+	return formatFarmingBoosts(boosts, { prefix: '', label: '**Boosts:**' });
+}
+
+function extractXPBoostMessages(message: string | undefined): string[] {
+	if (!message) return [];
+	return message.match(/You received (?:\d+(?:\.\d+)?% bonus XP|bonus XP from)[^.]*\./g) ?? [];
+}
+
+function updateAutoFarmSummary({
+	existingSummary,
+	data,
+	loot,
+	stepSummary
+}: {
+	existingSummary: AutoFarmSummary | undefined;
+	data: FarmingActivityTaskOptions;
+	loot: Bank | null;
+	stepSummary: FarmingStepSummary | undefined;
+}): AutoFarmSummary {
+	const baseSummary: AutoFarmSummary = existingSummary ?? {
+		totalXP: 0,
+		totalBonusXP: 0,
+		totalWeeds: 0,
+		totalDuration: 0,
+		totalWoodcuttingXP: 0,
+		totalHerbloreXP: 0,
+		totalLoot: {},
+		contractsCompleted: 0,
+		boosts: [],
+		boostSources: [],
+		xpBoostMessages: [],
+		attachmentMessages: [],
+		steps: []
+	};
+
+	const xpTotal = stepSummary?.xp.totalFarming ?? 0;
+	const bonusXP = stepSummary?.xp.bonus ?? 0;
+	const woodcuttingXP = stepSummary?.xp.woodcutting ?? 0;
+	const herbloreXP = stepSummary?.xp.herblore ?? 0;
+	const duration = stepSummary?.duration ?? data.duration ?? 0;
+	const weeds = loot?.amount('Weeds') ?? 0;
+	const boosts = new Set(baseSummary.boosts);
+	if (stepSummary?.boosts) {
+		for (const boost of stepSummary.boosts) {
+			boosts.add(boost);
+		}
+	}
+	const stepBoostSources = (stepSummary?.boosts ?? []).map(boost => ({
+		boost
+	}));
+
+	const lootBank = new Bank(baseSummary.totalLoot ?? {});
+	if (loot) {
+		lootBank.add(loot);
+	}
+
+	const stepQuantity =
+		stepSummary?.planted?.quantity ?? stepSummary?.harvested?.quantity ?? data.quantity ?? baseSummary.steps.length;
+	const plantsName =
+		stepSummary?.planted?.itemName ?? stepSummary?.harvested?.itemName ?? data.plantsName ?? 'Unknown plant';
+
+	return {
+		totalXP: baseSummary.totalXP + xpTotal,
+		totalBonusXP: baseSummary.totalBonusXP + bonusXP,
+		totalWeeds: baseSummary.totalWeeds + weeds,
+		totalDuration: baseSummary.totalDuration + duration,
+		totalWoodcuttingXP: baseSummary.totalWoodcuttingXP + woodcuttingXP,
+		totalHerbloreXP: baseSummary.totalHerbloreXP + herbloreXP,
+		totalLoot: lootBank.toJSON(),
+		contractsCompleted: baseSummary.contractsCompleted + (stepSummary?.contractCompleted ? 1 : 0),
+		boosts: [...boosts],
+		boostSources: [...(baseSummary.boostSources ?? []), ...stepBoostSources],
+		xpBoostMessages: [
+			...(baseSummary.xpBoostMessages ?? []),
+			...extractXPBoostMessages(stepSummary?.xpMessages.farming)
+		],
+		attachmentMessages: [
+			...(baseSummary.attachmentMessages ?? []),
+			...(stepSummary?.attachmentMessage ? [stepSummary.attachmentMessage] : [])
+		],
+		steps: [
+			...baseSummary.steps,
+			{
+				patchType: getPatchLabel(data),
+				plantsName,
+				quantity: stepQuantity,
+				harvestedName: stepSummary?.harvested?.itemName,
+				harvestedQuantity: stepSummary?.harvested?.quantity,
+				alive: stepSummary?.harvested?.alive,
+				xp: xpTotal,
+				bonusXp: bonusXP,
+				weeds,
+				duration,
+				loot: loot?.toJSON()
+			}
+		]
+	};
+}
+
+function buildCombinedAutoFarmMessage(user: MUser, summary: AutoFarmSummary): string {
+	const calcXPPerHour = (xp: number, duration: number): number => {
+		if (duration <= 0) return 0;
+		let rawXPHr = (xp / (duration / 60_000)) * 60;
+		rawXPHr = Math.floor(rawXPHr / 1000) * 1000;
+		return Math.floor(rawXPHr);
+	};
+	const formatXPWithRate = (skillName: string, xp: number, duration: number): string => {
+		return `${skillName} ${xp.toLocaleString()} XP (${toKMB(calcXPPerHour(xp, duration))}/Hr)`;
+	};
+
+	const lines: string[] = [`${user}, ${user.minionName} finished auto farming your patches.`];
+
+	const xpParts: string[] = [];
+	if (summary.totalXP > 0) {
+		const bonusSegment = summary.totalBonusXP > 0 ? `, +${summary.totalBonusXP.toLocaleString()} bonus` : '';
+		xpParts.push(
+			`Farming ${summary.totalXP.toLocaleString()} XP (${toKMB(calcXPPerHour(summary.totalXP, summary.totalDuration))}/Hr${bonusSegment})`
+		);
+	}
+	if (summary.totalWoodcuttingXP > 0) {
+		xpParts.push(formatXPWithRate('Woodcutting', summary.totalWoodcuttingXP, summary.totalDuration));
+	}
+	if (summary.totalHerbloreXP > 0) {
+		xpParts.push(formatXPWithRate('Herblore', summary.totalHerbloreXP, summary.totalDuration));
+	}
+	if (xpParts.length > 0) {
+		lines.push(`**XP gained:** ${xpParts.join(', ')}.`);
+	}
+	if (summary.totalBonusXP > 0) {
+		lines.push(
+			`You received an additional ${summary.totalBonusXP.toLocaleString()} bonus XP from your farmer's outfit.`
+		);
+	}
+	const xpBoostMessages = [...new Set(summary.xpBoostMessages ?? [])];
+	if (xpBoostMessages.length > 0) {
+		lines.push(...xpBoostMessages);
+	}
+
+	if (summary.contractsCompleted > 0) {
+		const suffix = summary.contractsCompleted === 1 ? '' : 's';
+		lines.push(`Completed ${summary.contractsCompleted.toLocaleString()} farming contract${suffix}.`);
+	}
+
+	const survivalLines = summary.steps.flatMap(step => {
+		if (!step.harvestedName || step.harvestedQuantity === undefined || step.alive === undefined) {
+			return [];
+		}
+		if (step.alive >= step.harvestedQuantity) {
+			return [];
+		}
+		return `${step.harvestedName}: ${(step.harvestedQuantity - step.alive).toLocaleString()} died`;
+	});
+	if (survivalLines.length > 0) {
+		lines.push(`**Crop deaths:** ${survivalLines.join('; ')}.`);
+	}
+
+	const totalLoot = new Bank(summary.totalLoot ?? {});
+	if (summary.totalWeeds > 0 && totalLoot.amount('Weeds') === 0) {
+		totalLoot.add('Weeds', summary.totalWeeds);
+	}
+
+	const boostLine = formatAutoFarmBoosts(summary);
+	if (boostLine) lines.push(boostLine);
+
+	return lines.join('\n');
+}
+
+function taskToAutoFarmStep(data: FarmingActivityTaskOptions): AutoFarmStepData {
+	return {
+		plantsName: data.plantsName,
+		quantity: data.quantity,
+		upgradeType: data.upgradeType,
+		patchName: data.patchName,
+		payment: data.payment,
+		treeChopFeePaid: data.treeChopFeePaid,
+		treeChopFeePlanned: data.treeChopFeePlanned,
+		patchType: data.patchType,
+		planting: data.planting,
+		currentDate: data.currentDate,
+		duration: data.duration,
+		pid: data.pid
+	};
+}
+
+function planIncludesCurrentTask(data: FarmingActivityTaskOptions, plan: AutoFarmStepData[]): boolean {
+	const firstStep = plan[0];
+	const patchNameMatches = !firstStep?.patchName || !data.patchName || firstStep.patchName === data.patchName;
+	return Boolean(
+		firstStep &&
+			firstStep.plantsName === data.plantsName &&
+			firstStep.currentDate === data.currentDate &&
+			patchNameMatches
+	);
+}
+
+function makeStepTaskData(
+	data: FarmingActivityTaskOptions,
+	channelId: string,
+	step: AutoFarmStepData
+): FarmingActivityTaskOptions {
+	return {
+		...data,
+		channelId,
+		plantsName: step.plantsName,
+		patchType: step.patchType,
+		quantity: step.quantity,
+		upgradeType: step.upgradeType,
+		payment: step.payment,
+		treeChopFeePaid: step.treeChopFeePaid,
+		treeChopFeePlanned: step.treeChopFeePlanned,
+		planting: step.planting,
+		duration: step.duration,
+		currentDate: step.currentDate,
+		autoFarmed: true,
+		autoFarmPlan: [],
+		autoFarmCombined: false,
+		autoFarmSummary: undefined,
+		patchName: step.patchName,
+		pid: step.pid
+	};
 }
 
 export const farmingTask: MinionTask = {
 	type: 'Farming',
-	async run(data: FarmingActivityTaskOptions, { user, handleTripFinish, rng }) {
-		const {
-			plantsName,
-			patchType,
-			quantity,
-			upgradeType,
-			payment,
-			channelId,
-			planting,
-			currentDate,
-			pid,
-			duration
-		} = data;
-		const currentFarmingLevel = Math.min(99, user.skillsAsLevels.farming);
-		const currentWoodcuttingLevel = Math.min(99, user.skillsAsLevels.woodcutting);
-		let baseBonus = 1;
-		let bonusXP = 0;
-		let plantXp = 0;
-		let harvestXp = 0;
-		let compostXp = 0;
-		let checkHealthXp = 0;
-		let rakeXp = 0;
-		let woodcuttingXp = 0;
-		let herbloreXp = 0;
-		let payStr = '';
-		let wcBool = false;
-		let rakeStr = '';
-		let plantingStr = '';
-		const infoStr: string[] = [];
-		let alivePlants = 0;
-		let chopped = false;
-		let farmingXpReceived = 0;
-		let chanceOfDeathReduction = 1;
-		let cropYield = 0;
-		let lives = 3;
-		let bonusXpMultiplier = 0;
-		let farmersPiecesCheck = 0;
-		let loot = new Bank();
-
-		const hasPlopper = user.allItemsOwned.has('Plopper');
-
-		const plant = Farming.Plants.find(plant => plant.name === plantsName)!;
-		assert(Boolean(plant));
-
-		if (user.hasEquippedOrInBank('Magic secateurs')) {
-			baseBonus += 0.1;
+	async run(data: FarmingActivityTaskOptions, options) {
+		const user = options?.user ?? (await mUserFetch(data.userID));
+		const handleTripFinish = options?.handleTripFinish ?? defaultHandleTripFinish;
+		const rng = options?.rng;
+		const legacyChannelId = (data as { channelID?: string }).channelID;
+		const channelId = data.channelId ?? legacyChannelId;
+		if (!channelId) {
+			throw new Error('Farming task completed without a channel id.');
 		}
 
-		if (user.hasEquippedOrInBank('Farming cape')) {
-			baseBonus += 0.05;
-		}
+		const combinedMode = Boolean(data.autoFarmCombined);
+		let result: FarmingStepResult | null = null;
+		let updatedSummary = data.autoFarmSummary;
 
-		if (upgradeType === 'compost') compostXp = 18;
-		if (upgradeType === 'supercompost') compostXp = 26;
-		if (upgradeType === 'ultracompost') compostXp = 36;
-
-		// initial lives = 3. Compost, super, ultra, increases lives by 1 respectively and reduces chanceofdeath as well.
-		// Payment = 0% chance of death
-		if (patchType.lastUpgradeType === 'compost') {
-			lives += 1;
-			chanceOfDeathReduction = 1 / 2;
-		} else if (patchType.lastUpgradeType === 'supercompost') {
-			lives += 2;
-			chanceOfDeathReduction = 1 / 5;
-		} else if (patchType.lastUpgradeType === 'ultracompost') {
-			lives += 3;
-			chanceOfDeathReduction = 1 / 10;
-		}
-
-		if (patchType.lastPayment) chanceOfDeathReduction = 0;
-
-		// check bank for farmer's items
-		if (user.hasEquippedOrInBank("Farmer's strawhat")) {
-			bonusXpMultiplier += 0.004;
-			farmersPiecesCheck++;
-		}
-		if (user.hasEquippedOrInBank("Farmer's jacket") || user.hasEquippedOrInBank("Farmer's shirt")) {
-			bonusXpMultiplier += 0.008;
-			farmersPiecesCheck++;
-		}
-		if (user.hasEquippedOrInBank("Farmer's boro trousers")) {
-			bonusXpMultiplier += 0.006;
-			farmersPiecesCheck++;
-		}
-		if (user.hasEquippedOrInBank("Farmer's boots")) {
-			bonusXpMultiplier += 0.002;
-			farmersPiecesCheck++;
-		}
-		if (farmersPiecesCheck === 4) bonusXpMultiplier += 0.005;
-
-		// If they have nothing planted here, just plant the seeds and return.
-		if (!patchType.patchPlanted) {
-			rakeXp = quantity * 4 * 3; // # of patches * exp per weed * # of weeds
-			plantXp = quantity * (plant.plantXp + compostXp);
-			farmingXpReceived = plantXp + harvestXp + rakeXp;
-
-			loot.add('Weeds', quantity * 3);
-
-			let str = `${user}, ${user.minionName} finished raking ${quantity} patches and planting ${quantity}x ${
-				plant.name
-			}.\n\nYou received ${plantXp.toLocaleString()} XP from planting and ${rakeXp.toLocaleString()} XP from raking for a total of ${farmingXpReceived.toLocaleString()} Farming XP.`;
-
-			bonusXP += Math.floor(farmingXpReceived * bonusXpMultiplier);
-			if (bonusXP > 0) {
-				str += ` You received an additional ${bonusXP.toLocaleString()} in bonus XP.`;
-			}
-
-			str += `\n${await user.addXP({
-				skillName: 'farming',
-				amount: Math.floor(farmingXpReceived + bonusXP),
-				duration: data.duration
-			})}`;
-
-			await farmingLootBoosts(user, 'plant', plant, quantity, loot, infoStr);
-
-			if (loot.has('Plopper')) {
-				loot.set('Plopper', 1);
-			}
-
-			if (loot.length > 0) {
-				str += `\n\nYou received: ${loot}.`;
-			}
-
-			await ClientSettings.updateBankSetting('farming_loot_bank', loot);
-			await user.transactItems({
-				collectionLog: true,
-				itemsToAdd: loot
-			});
-
-			const newPatch: PatchTypes.PatchData = {
-				lastPlanted: plant.name,
-				patchPlanted: true,
-				plantTime: currentDate,
-				lastQuantity: quantity,
-				lastUpgradeType: upgradeType,
-				lastPayment: payment ?? false,
-				pid
-			};
-
-			await user.update({
-				[getFarmingKeyFromName(plant.seedType)]: newPatch
-			});
-
-			str += `\n\n${user.minionName} tells you to come back after your plants have finished growing!`;
-
-			handleTripFinish({ user, channelId, message: str, data });
-		} else if (patchType.patchPlanted) {
-			// If they do have something planted here, harvest it and possibly replant.
-			const plantToHarvest = Farming.Plants.find(plant => plant.name === patchType.lastPlanted)!;
-
-			let quantityDead = 0;
-			if (!hasPlopper) {
-				for (let i = 0; i < patchType.lastQuantity; i++) {
-					for (let j = 0; j < plantToHarvest.numOfStages - 1; j++) {
-						const deathRoll = Math.random();
-						if (deathRoll < Math.floor(plantToHarvest.chanceOfDeath * chanceOfDeathReduction) / 128) {
-							quantityDead += 1;
-							break;
-						}
-					}
+		if (combinedMode) {
+			const storedPlan = data.autoFarmPlan ?? [];
+			const steps = planIncludesCurrentTask(data, storedPlan)
+				? storedPlan
+				: [taskToAutoFarmStep(data), ...storedPlan];
+			for (const step of steps) {
+				const stepData = makeStepTaskData(data, channelId, step);
+				result = await executeFarmingStep({ user, channelID: channelId, data: stepData, rng });
+				if (!result) {
+					await handleTripFinish({
+						user,
+						channelId,
+						message: `${user}, ${user.minionName} finished farming, but could not complete all follow-up actions.`,
+						data,
+						loot: null
+					});
+					return;
 				}
-			}
-
-			alivePlants = patchType.lastQuantity - quantityDead;
-
-			if (planting) {
-				plantXp = quantity * (plant.plantXp + compostXp);
-			}
-			checkHealthXp = alivePlants * plantToHarvest.checkXp;
-
-			const shouldCleanHerb =
-				plantToHarvest.cleanHerbCrop !== undefined &&
-				user.bitfield.includes(BitField.CleanHerbsFarming) &&
-				user.skillsAsLevels.herblore >= plantToHarvest.herbLvl!;
-
-			if (plantToHarvest.givesCrops) {
-				let cropToHarvest = plantToHarvest.outputCrop;
-				if (shouldCleanHerb) {
-					cropToHarvest = plantToHarvest.cleanHerbCrop;
+				if (result.stopChain) {
+					break;
 				}
-				if (plantToHarvest.variableYield) {
-					cropYield = Farming.calcVariableYield(
-						rng,
-						plantToHarvest,
-						patchType.lastUpgradeType,
-						currentFarmingLevel,
-						alivePlants
-					);
-				} else if (plantToHarvest.fixedOutput) {
-					if (!plantToHarvest.fixedOutputAmount) return;
-					cropYield = plantToHarvest.fixedOutputAmount * alivePlants;
-				} else {
-					const plantChanceFactor =
-						Math.floor(
-							Math.floor(
-								plantToHarvest.chance1 +
-									(plantToHarvest.chance99 - plantToHarvest.chance1) *
-										((currentFarmingLevel - 1) / 98)
-							) * baseBonus
-						) + 1;
-					const chanceToSaveLife = Math.min(0.95, (plantChanceFactor + 1) / 256);
-
-					if (plantToHarvest.seedType === 'bush') lives = 4;
-					cropYield = 0;
-					const livesHolder = lives;
-					for (let k = 0; k < alivePlants; k++) {
-						lives = livesHolder;
-						for (let _n = 0; lives > 0; _n++) {
-							if (Math.random() > chanceToSaveLife) {
-								lives -= 1;
-								cropYield += 1;
-							} else {
-								cropYield += 1;
-							}
-						}
-					}
-				}
-
-				if (quantity > patchType.lastQuantity) {
-					loot.add(cropToHarvest, cropYield);
-					loot.add('Weeds', quantity - patchType.lastQuantity);
-				} else {
-					loot.add(cropToHarvest, cropYield);
-				}
-
-				if (shouldCleanHerb && plantToHarvest.herbXp) {
-					herbloreXp = cropYield * plantToHarvest.herbXp;
-					const uncleanedHerbLoot = new Bank().add(plantToHarvest.outputCrop, cropYield);
-					await user.addItemsToCollectionLog({ itemsToAdd: uncleanedHerbLoot });
-					const cleanedHerbLoot = new Bank().add(plantToHarvest.cleanHerbCrop, cropYield);
-					await user.statsBankUpdate('herbs_cleaned_while_farming_bank', cleanedHerbLoot);
-				}
-
-				if (plantToHarvest.name === 'Limpwurt') {
-					harvestXp = plantToHarvest.harvestXp * alivePlants;
-				} else {
-					harvestXp = cropYield * plantToHarvest.harvestXp;
-				}
-			}
-
-			if (plantToHarvest.needsChopForHarvest) {
-				if (!plantToHarvest.treeWoodcuttingLevel) return;
-				if (currentWoodcuttingLevel >= plantToHarvest.treeWoodcuttingLevel) {
-					chopped = true;
-				} else {
-					const GP = Number(user.user.GP);
-					const gpToCutTree = plantToHarvest.seedType === 'redwood' ? 2000 * alivePlants : 200 * alivePlants;
-					if (GP < gpToCutTree) {
-						return handleTripFinish({
-							user,
-							channelId,
-							message: `You do not have the required woodcutting level or enough GP to clear your patches, in order to be able to plant more. You need ${gpToCutTree} GP.`,
-							data
-						});
-					}
-					payStr = `*You did not have the woodcutting level required, so you paid a nearby farmer ${gpToCutTree} GP to remove the previous trees.*`;
-					await user.removeItemsFromBank(new Bank().add('Coins', gpToCutTree));
-
-					harvestXp = 0;
-				}
-				if (plantToHarvest.givesLogs && chopped) {
-					assert(
-						typeof plantToHarvest.outputLogs === 'number' &&
-							typeof plantToHarvest.woodcuttingXp === 'number'
-					);
-
-					const amountOfLogs = rng.randInt(5, 10) * alivePlants;
-					loot.add(plantToHarvest.outputLogs, amountOfLogs);
-
-					if (plantToHarvest.outputRoots) {
-						loot.add(plantToHarvest.outputRoots, rng.randInt(1, 4) * alivePlants);
-					}
-
-					woodcuttingXp += amountOfLogs * plantToHarvest.woodcuttingXp!;
-					wcBool = true;
-
-					harvestXp = 0;
-				} else if (plantToHarvest.givesCrops && chopped) {
-					if (!plantToHarvest.outputCrop) return;
-
-					loot.add(
-						plantToHarvest.outputCrop,
-						plantToHarvest.fixedOutput && plantToHarvest.fixedOutputAmount
-							? plantToHarvest.fixedOutputAmount * alivePlants
-							: cropYield
-					);
-
-					harvestXp = cropYield * alivePlants * plantToHarvest.harvestXp;
-				}
-			}
-
-			if (quantity > patchType.lastQuantity) {
-				loot.add('Weeds', (quantity - patchType.lastQuantity) * 3);
-				rakeXp = (quantity - patchType.lastQuantity) * 3 * 4;
-				rakeStr += ` ${rakeXp} XP for raking, `;
-			}
-
-			farmingXpReceived = plantXp + harvestXp + checkHealthXp + rakeXp;
-			let deathStr = '';
-			if (quantityDead > 0) {
-				deathStr = ` During your harvest, you found that ${quantityDead}/${patchType.lastQuantity} of your plants died.`;
-			}
-
-			if (planting) {
-				plantingStr = `${user}, ${user.minionName} finished planting ${quantity}x ${plant.name} and `;
-			} else {
-				plantingStr = `${user}, ${user.minionName} finished `;
-			}
-
-			bonusXP += Math.floor(farmingXpReceived * bonusXpMultiplier);
-
-			const xpRes = await user.addXP({
-				skillName: 'farming',
-				amount: Math.floor(farmingXpReceived + bonusXP),
-				duration: data.duration
-			});
-			const wcXP = await user.addXP({
-				skillName: 'woodcutting',
-				amount: Math.floor(woodcuttingXp)
-			});
-			await user.addXP({
-				skillName: 'herblore',
-				amount: Math.floor(herbloreXp),
-				source: 'CleaningHerbsWhileFarming'
-			});
-
-			infoStr.push(
-				`${plantingStr}harvesting ${patchType.lastQuantity}x ${
-					plantToHarvest.name
-				}.${deathStr}${payStr}\n\nYou received ${plantXp.toLocaleString()} XP for planting, ${rakeStr}${harvestXp.toLocaleString()} XP for harvesting, and ${checkHealthXp.toLocaleString()} XP for checking health. In total: ${xpRes}. ${
-					wcBool ? wcXP : ''
-				}`
-			);
-
-			if (bonusXP > 0) {
-				infoStr.push(
-					`\nYou received an additional ${bonusXP.toLocaleString()} bonus XP from your farmer's outfit.`
-				);
-			}
-
-			if (herbloreXp > 0) {
-				infoStr.push(
-					`\nYou received ${herbloreXp.toLocaleString()} Herblore XP for cleaning the herbs during your trip.`
-				);
-			}
-
-			if (duration > Time.Minute * 20 && roll(10)) {
-				loot.multiply(2);
-				loot.add(MysteryBoxes.roll());
-			}
-
-			const { petDropRate } = skillingPetDropRate(user, 'farming', plantToHarvest.petChance);
-			if (plantToHarvest.seedType === 'hespori') {
-				await user.incrementKC(Monsters.Hespori.id, patchType.lastQuantity);
-				const hesporiLoot = Monsters.Hespori.kill(patchType.lastQuantity, {
-					farmingLevel: currentFarmingLevel
+				updatedSummary = updateAutoFarmSummary({
+					existingSummary: updatedSummary,
+					data: stepData,
+					loot: result.loot ?? null,
+					stepSummary: result.summary
 				});
-				const fakeMonsterTaskOptions: MonsterActivityTaskOptions = {
-					mi: Monsters.Hespori.id,
-					q: patchType.lastQuantity,
-					type: 'MonsterKilling',
-					userID: user.id,
-					duration: data.duration,
-					finishDate: data.finishDate,
-					channelId: data.channelId,
-					id: 1
-				};
-				await combatAchievementTripEffect({ user, messages: infoStr, data: fakeMonsterTaskOptions, rng });
-				loot = hesporiLoot;
-				const plopperDroprate = clAdjustedDroprate(
+			}
+		} else {
+			result = await executeFarmingStep({ user, channelID: channelId, data, rng });
+			if (!result) {
+				await handleTripFinish({
 					user,
-					'Plopper',
-					(plantToHarvest.petChance - currentFarmingLevel * 25) / patchType.lastQuantity / 5,
-					2
-				);
-				if (roll(plopperDroprate)) loot.add('Plopper');
-			} else if (
-				patchType.patchPlanted &&
-				plantToHarvest.petChance &&
-				alivePlants > 0 &&
-				rng.roll(Math.ceil(petDropRate / alivePlants))
-			) {
-				loot.add('Tangleroot');
-			} else if (patchType.patchPlanted && plantToHarvest.petChance && alivePlants > 0) {
-				const plopperDroprate = clAdjustedDroprate(
-					user,
-					'Plopper',
-					(plantToHarvest.petChance - currentFarmingLevel * 25) / alivePlants / 5,
-					2
-				);
-				if (roll(plopperDroprate)) loot.add('Plopper');
-			}
-			if (plantToHarvest.seedType === 'seaweed' && rng.roll(3)) loot.add('Seaweed spore', rng.randInt(1, 3));
-
-			if (plantToHarvest.seedType !== 'hespori') {
-				let hesporiSeeds = 0;
-				for (let i = 0; i < alivePlants; i++) {
-					if (rng.roll(Math.ceil(plantToHarvest.petChance / 500))) {
-						hesporiSeeds++;
-					}
-				}
-				if (hesporiSeeds > 0) loot.add('Hespori seed', hesporiSeeds);
-			}
-
-			let newPatch: PatchTypes.PatchData = {
-				lastPlanted: null,
-				patchPlanted: false,
-				plantTime: 0,
-				lastQuantity: 0,
-				lastUpgradeType: null,
-				lastPayment: false
-			};
-
-			if (planting) {
-				newPatch = {
-					lastPlanted: plant.name,
-					patchPlanted: true,
-					plantTime: currentDate,
-					lastQuantity: quantity,
-					lastUpgradeType: upgradeType,
-					lastPayment: payment ? payment : false,
-					pid
-				};
-			}
-
-			await user.update({
-				[getFarmingKeyFromName(plant.seedType)]: newPatch
-			});
-
-			const { contract: currentContract } = user.farmingContract();
-
-			const { contractsCompleted } = currentContract;
-
-			let janeMessage = false;
-			if (currentContract.hasContract && plantToHarvest.name === currentContract.plantToGrow && alivePlants > 0) {
-				await user.updateFarmingContract({
-					hasContract: false,
-					difficultyLevel: null,
-					plantToGrow: currentContract.plantToGrow,
-					plantTier: currentContract.plantTier,
-					contractsCompleted: contractsCompleted + 1
+					channelId,
+					message: `${user}, ${user.minionName} finished farming, but could not complete all follow-up actions.`,
+					data,
+					loot: null
 				});
-
-				loot.add('Seed pack');
-
-				janeMessage = true;
+				return;
 			}
-
-			if (!planting) {
-				infoStr.push('\nThe patches have been cleared. They are ready to have new seeds planted.');
-			} else {
-				infoStr.push(`\n${user.minionName} tells you to come back after your plants have finished growing!`);
-			}
-
-			await farmingLootBoosts(user, 'harvest', plantToHarvest, patchType.lastQuantity, loot, infoStr);
-			if ('onHarvest' in plantToHarvest && plantToHarvest.onHarvest) {
-				await plantToHarvest.onHarvest({ user, loot, quantity: patchType.lastQuantity, messages: infoStr });
-			}
-
-			if (plantToHarvest.name === 'Mysterious tree') {
-				if (loot.has('Seed Pack')) {
-					loot.add('Seed Pack', 1);
-					infoStr.push('+1 Seed Pack for Mysterious tree farming contract');
-				}
-			}
-
-			if (loot.has('Plopper')) {
-				loot.set('Plopper', 1);
-				infoStr.push(
-					'<:plopper:787310793321349120> You found a pig on a farm and have adopted it to help you with farming.'
-				);
-			}
-
-			if (user.hasEquippedOrInBank('Farming master cape')) {
-				for (let j = 0; j < alivePlants; j++) {
-					if (roll(10)) {
-						loot.add(MysteryBoxes.roll());
-					}
-				}
-			}
-			// Give boxes for planting when harvesting
-			if (planting && plant.name === 'Mysterious tree') {
-				for (let j = 0; j < quantity; j++) {
-					const upper = randInt(1, 2);
-					for (let i = 0; i < upper; i++) {
-						loot.add(MysteryBoxes.roll());
-					}
-				}
-			}
-			// Give the boxes for harvesting during a harvest
-			if (alivePlants && plantToHarvest.name === 'Mysterious tree') {
-				for (let j = 0; j < alivePlants; j++) {
-					const upper = randInt(1, 3);
-					for (let i = 0; i < upper; i++) {
-						loot.add(MysteryBoxes.roll());
-					}
-				}
-			}
-
-			for (const mut of mutations) {
-				if (alivePlants && plantToHarvest.name === mut.plantName && roll(mut.chance)) {
-					loot.add(mut.output);
-					infoStr.push(`One of your crops mutated into a ${Items.itemNameFromId(mut.output)}.`);
-				}
-			}
-
-			if (Object.keys(loot).length > 0) {
-				infoStr.push(`\nYou received: ${loot}.`);
-			}
-
-			ClientSettings.updateBankSetting('farming_loot_bank', loot);
-			await user.transactItems({
-				collectionLog: true,
-				itemsToAdd: loot
-			});
-			await user.statsBankUpdate('farming_harvest_loot_bank', loot);
-			if (pid) {
-				await prisma.farmedCrop.update({
-					where: {
-						id: pid
-					},
-					data: {
-						date_harvested: new Date()
-					}
-				});
-			}
-
-			const hasFive = Farming.getFarmingInfoFromUser(user).patches.spirit.lastQuantity >= 5;
-			if (hasFive && !user.bitfield.includes(BitField.GrewFiveSpiritTrees)) {
-				await user.update({
-					bitfield: {
-						push: BitField.GrewFiveSpiritTrees
-					}
-				});
-			}
-
-			const message = new MessageBuilder().setContent(infoStr.join('\n'));
-			if (janeMessage) {
-				message.addChatHeadImage(
-					'jane',
-					`You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
-						contractsCompleted + 1
-					} farming contracts.`
-				);
-			}
-
-			return handleTripFinish({
+		}
+		if (!result) {
+			await handleTripFinish({
 				user,
 				channelId,
-				message,
+				message: `${user}, ${user.minionName} finished farming, but could not complete all follow-up actions.`,
 				data,
-				loot
+				loot: null
 			});
+			return;
 		}
+
+		const shouldRenderCombinedSummary = Boolean(combinedMode && updatedSummary && !result.stopChain);
+		const totalLoot = shouldRenderCombinedSummary ? new Bank(updatedSummary!.totalLoot ?? {}) : result.loot;
+		const content = shouldRenderCombinedSummary
+			? buildCombinedAutoFarmMessage(user, updatedSummary!)
+			: result.message;
+		const finalContent =
+			shouldRenderCombinedSummary && updatedSummary!.attachmentMessages.length > 0
+				? `${content}\n\n${updatedSummary!.attachmentMessages.join('\n\n')}`
+				: content;
+		const files: SendableFile[] = [];
+		if (result.attachment) {
+			files.push(result.attachment);
+		}
+		if (shouldRenderCombinedSummary && totalLoot && totalLoot.length > 0) {
+			files.push(await makeBankImage({ bank: totalLoot, title: 'Loot From Auto Farming', user }));
+		}
+		const message = files.length > 0 ? { content: finalContent, files } : finalContent;
+		const tripFinishData = shouldRenderCombinedSummary
+			? ({ ...data, duration: updatedSummary!.totalDuration } satisfies FarmingActivityTaskOptions)
+			: data;
+
+		await handleTripFinish({
+			user,
+			channelId,
+			message,
+			data: tripFinishData,
+			loot: totalLoot && totalLoot.length > 0 ? totalLoot : null
+		});
 	}
 };
