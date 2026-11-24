@@ -5,6 +5,7 @@ import {
 	getMixologyContractCost,
 	getMixologyContractDuration,
 	masteringMixologyBuyables,
+	masteringMixologyRefundables,
 	masteringMixologyWeightedRandom,
 	mixologyContractDuration,
 	mixologyContracts,
@@ -134,6 +135,35 @@ export async function MasteringMixologyBuyCommand(user: MUser, input = '', quant
 	});
 
 	return `Successfully purchased ${loot} for ${totalCost.Mox} Mox, ${totalCost.Aga} Aga and ${totalCost.Lye} Lye points.`;
+}
+
+export async function MasteringMixologyRefundCommand(user: MUser, input: string, quantity = 1) {
+	const refundable = masteringMixologyRefundables.find(i => stringMatches(input, i.item.name));
+	if (!refundable) {
+		return `Only ${masteringMixologyRefundables.map(i => i.item.name).join(', ')} can be refunded for Mixology points.`;
+	}
+	if (!Number.isInteger(quantity) || quantity < 1 || quantity > 1000) {
+		return 'You can only refund between 1 and 1,000 items at a time.';
+	}
+
+	const cost = new Bank().add(refundable.item.id, quantity);
+	if (!user.bank.has(cost)) {
+		return `You don't have ${cost} in your bank to refund. Unequip any equipped items first.`;
+	}
+
+	const refund = {
+		Mox: Math.floor(refundable.cost.Mox * 0.4) * quantity,
+		Aga: Math.floor(refundable.cost.Aga * 0.4) * quantity,
+		Lye: Math.floor(refundable.cost.Lye * 0.4) * quantity
+	};
+	await user.transactItems({ itemsToRemove: cost });
+	await user.statsUpdate({
+		mixology_mox_points: { increment: refund.Mox },
+		mixology_aga_points: { increment: refund.Aga },
+		mixology_lye_points: { increment: refund.Lye }
+	});
+
+	return `Refunded ${cost} for ${refund.Mox} Mox, ${refund.Aga} Aga and ${refund.Lye} Lye points (40% of the purchase cost).`;
 }
 
 export async function MasteringMixologyContractStartCommand(user: MUser, channelID: string, contracts?: number) {
