@@ -224,6 +224,7 @@ export interface Mixable {
 	zahur?: boolean;
 	wesley?: boolean;
 	qpRequired?: number;
+	alternatives?: { [key: string]: string };
 }
 
 export interface Bone {
