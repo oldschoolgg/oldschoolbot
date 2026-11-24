@@ -100,14 +100,6 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		aliases: ['red dragon', 'red dragons']
 	},
 	{
-		id: SlayerTaskUnlocksEnum.IHopeYouMithMe,
-		name: 'I hope you mith me!',
-		desc: 'Unlocks the ability to receive Mithril dragons as a task.',
-		slayerPointCost: 80,
-		canBeRemoved: true,
-		aliases: ['mithril dragons', 'mithril dragon']
-	},
-	{
 		id: SlayerTaskUnlocksEnum.WatchTheBirdie,
 		name: 'Watch the birdie',
 		desc: 'Unlocks the ability to receive Aviansies as a task.',
@@ -313,42 +305,32 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 	{
 		id: SlayerTaskUnlocksEnum.PedalToTheMetals,
 		name: 'Pedal to the metals',
-		desc: 'Extends Bronze, Iron, and Steel dragon tasks.',
+		desc: 'Extends Metal dragon tasks.',
 		slayerPointCost: 100,
-		extendID: [Monsters.BronzeDragon.id, Monsters.IronDragon.id, Monsters.SteelDragon.id],
-		extendMult: 3,
+		extendID: [
+			Monsters.BronzeDragon.id,
+			Monsters.IronDragon.id,
+			Monsters.SteelDragon.id,
+			Monsters.MithrilDragon.id,
+			Monsters.AdamantDragon.id,
+			Monsters.RuneDragon.id
+		],
 		canBeRemoved: true,
-		aliases: ['extend metal dragons', 'extend steel dragons', 'extend bronze dragons', 'extend iron dragons']
-	},
-	{
-		id: SlayerTaskUnlocksEnum.IReallyMithYou,
-		name: 'I really mith you',
-		desc: 'Extends Mithril dragon tasks.',
-		slayerPointCost: 120,
-		extendID: [Monsters.MithrilDragon.id],
-		extendMult: 4,
-		canBeRemoved: true,
-		aliases: ['extend mith dragons', 'extend mithril dragons', 'extend mith drags']
-	},
-	{
-		id: SlayerTaskUnlocksEnum.AdamindSomeMore,
-		name: 'Adamind some more',
-		desc: 'Extends Adamant dragon tasks.',
-		slayerPointCost: 100,
-		extendID: [Monsters.AdamantDragon.id],
-		extendMult: 5,
-		canBeRemoved: true,
-		aliases: ['extend addy dragons', 'extend adamant dragons']
-	},
-	{
-		id: SlayerTaskUnlocksEnum.RUUUUUNE,
-		name: 'RUUUUUNE',
-		desc: 'Extends Rune dragon tasks.',
-		slayerPointCost: 100,
-		extendID: [Monsters.RuneDragon.id],
-		extendMult: 9,
-		canBeRemoved: true,
-		aliases: ['rune', 'extend rune dragons', 'extend rune dragon']
+		aliases: [
+			'extend metal dragons',
+			'extend bronze dragons',
+			'extend iron dragons',
+			'extend steel dragons',
+			'extend mith dragons',
+			'extend mithril dragons',
+			'extend mith drags',
+			'extend addy dragons',
+			'extend adamant dragons',
+			'extend rune dragons',
+			'extend rune dragon',
+			'extend runite dragons',
+			'extend runite dragon'
+		]
 	},
 	{
 		id: SlayerTaskUnlocksEnum.SpiritualFervour,
