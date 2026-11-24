@@ -1,3 +1,4 @@
+import { unified } from '@astrojs/markdown-remark';
 import preact from '@astrojs/preact';
 import starlight from '@astrojs/starlight';
 import tailwindcss from '@tailwindcss/vite';
@@ -85,9 +86,11 @@ export default defineConfig({
 		enabled: false
 	},
 	markdown: {
-		remarkPlugins: [remarkItems as any],
-		rehypePlugins: [rehypeFixInlineSpacing],
-		smartypants: false,
+		processor: unified({
+			remarkPlugins: [remarkItems as any],
+			rehypePlugins: [rehypeFixInlineSpacing],
+			smartypants: false
+		}),
 		syntaxHighlight: false
 	},
 	site: 'https://wiki.oldschool.gg',
@@ -131,17 +134,17 @@ window.onload = () => document.body.classList.add('bso-theme');
 			sidebar: [
 				{
 					label: 'Getting Started',
-					autogenerate: { directory: 'getting-started' },
+					items: [{ autogenerate: { directory: 'getting-started' } }],
 					collapsed: false
 				},
 				{
 					label: 'Old School Bot (OSB)',
-					autogenerate: { directory: 'osb', collapsed: true },
+					items: [{ autogenerate: { directory: 'osb', collapsed: true } }],
 					collapsed: false
 				},
 				{
 					label: 'BSO',
-					autogenerate: { directory: 'bso', collapsed: true },
+					items: [{ autogenerate: { directory: 'bso', collapsed: true } }],
 					collapsed: false
 				}
 			]
