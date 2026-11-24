@@ -1,8 +1,23 @@
-import { GeneralBank, type GeneralBankType } from '@oldschoolgg/toolkit';
+import { GeneralBank, type GeneralBankType, sumArr } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { type DegradeableItem, degradeableItems } from '@/lib/degradeableItems.js';
+import { type RumourOption, RumourOptions } from '@/lib/skilling/skills/hunter/rumours/util.js';
 import { assert } from '@/lib/util/logError.js';
+
+export class RumourTierBank extends GeneralBank<RumourOption> {
+	constructor(initialBank?: GeneralBankType<RumourOption>) {
+		super({ initialBank: initialBank ? { ...initialBank } : undefined, allowedKeys: RumourOptions });
+	}
+
+	get total() {
+		return sumArr(this.entries().map(([, quantity]) => quantity));
+	}
+
+	toJSON() {
+		return { ...this._bank };
+	}
+}
 
 export class ChargeBank extends GeneralBank<DegradeableItem['settingsKey']> {
 	constructor(initialBank?: GeneralBankType<DegradeableItem['settingsKey']>) {

@@ -4,7 +4,7 @@ import { Bank, ECreature, itemID } from 'oldschooljs';
 import { hasWildyHuntGearEquipped } from '@/lib/gear/functions/hasWildyHuntGearEquipped.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { soteSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';
-import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
+import Hunter, { hunterOutfitBonus } from '@/lib/skilling/skills/hunter/hunter.js';
 import { HunterTechniqueEnum } from '@/lib/skilling/types.js';
 import type { HunterActivityTaskOptions } from '@/lib/types/minions.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
@@ -58,6 +58,8 @@ export const huntCommand = defineCommand({
 		const userBank = user.bank;
 		const userQP = user.QP;
 		const boosts = [];
+		const outfitMod = hunterOutfitBonus(user);
+		if (outfitMod > 0) boosts.push('+' + outfitMod + '% catch chance from the Guild hunter outfit');
 		let traps = 1;
 		const usingHuntPotion = Boolean(options.hunter_potion);
 		let wildyScore = 0;

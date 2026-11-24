@@ -4,6 +4,8 @@ import { Bank, EItem, itemID } from 'oldschooljs';
 import Cooking, { Cookables, CookingMethodEnum, CookingMethods } from '@/lib/skilling/skills/cooking/cooking.js';
 import ForestryRations from '@/lib/skilling/skills/cooking/forestersRations.js';
 import { LeapingFish } from '@/lib/skilling/skills/cooking/leapingFish.js';
+import type { RumourOption } from '@/lib/skilling/skills/hunter/rumours/util.js';
+import { RumourTierBank } from '@/lib/structures/Bank.js';
 import type { CookingActivityTaskOptions } from '@/lib/types/minions.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { cutLeapingFishCommand } from '@/mahoji/lib/abstracted_commands/cutLeapingFishCommand.js';
@@ -136,6 +138,20 @@ export const cookCommand = defineCommand({
 
 		if (user.skillLevel('cooking') < cookable.level) {
 			return `${user.minionName} needs ${cookable.level} Cooking to cook ${cookable.name}s.`;
+		}
+		if (cookable.rumoursRequired) {
+			const { rumours } = await user.fetchStats();
+			const rumourTierBank = new RumourTierBank(rumours as Record<RumourOption, number>);
+			if (rumourTierBank.total < cookable.rumoursRequired) {
+				return (
+					user.minionName +
+					' needs ' +
+					cookable.rumoursRequired +
+					' Hunter Rumours completed to cook ' +
+					cookable.name +
+					'.'
+				);
+			}
 		}
 
 		// These are just for notifying the user, they only take effect in the Activity.

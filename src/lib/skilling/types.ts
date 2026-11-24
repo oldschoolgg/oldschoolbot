@@ -3,6 +3,7 @@ import type { Bank, Item, ItemBank, LootTable } from 'oldschooljs';
 
 import type { QuestID } from '@/lib/minions/data/quests.js';
 import type { FarmingPatchName } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
+import type { RumourOption } from '@/lib/skilling/skills/hunter/rumours/util.js';
 import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 
 export const SkillsArray = [
@@ -138,6 +139,7 @@ export interface Course {
 }
 
 export interface Cookable {
+	rumoursRequired?: number;
 	level: number;
 	xp: number;
 	id: number;
@@ -329,6 +331,8 @@ export enum HunterTechniqueEnum {
 }
 
 export interface Creature {
+	tier?: RumourOption[];
+	rumourLevel?: number;
 	name: string;
 	id: number;
 	aliases: string[];
