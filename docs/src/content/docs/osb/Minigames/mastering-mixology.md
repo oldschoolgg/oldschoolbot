@@ -51,6 +51,10 @@ Spend your Mixology points using [[/minigames mastering_mixology buy]]. All rewa
 
 Prescription goggles provide a 10% chance to save a secondary ingredient while mixing potions. This also works on Torstols for Super combat potions and Anti-venom+, and on Irit when mixing Antidote++ (unf). They will not save Ashes when creating Serum 207.
 
+The first alchemist's amulet purchase grants 50 starting charges. Further purchases do not add charges. It gives a 15% chance to create an extra potion dose when equipped in the skilling setup. Only successful upgrades consume charges, and bonus doses give no extra XP. It cannot upgrade Guthix rest or four-dose potions. Recharge it using `/minion charge item:Alchemist's amulet amount:1`, with each Amulet of chemistry adding 10 charges. The amulet is retained when empty.
+
+Already stored chemistry charges can be transferred with `/minion charge item:Alchemist's amulet amount:5 method:chemistry charges`. Each chemistry charge becomes two alchemist charges, and any chemistry charges you do not transfer are kept.
+
 The potion packs have Herblore level requirements:
 
 - Apprentice potion pack requires **60 Herblore**.

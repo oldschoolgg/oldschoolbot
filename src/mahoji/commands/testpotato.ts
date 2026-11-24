@@ -1273,6 +1273,8 @@ export const testPotatoCommand = globalConfig.isProduction
 							tum_shadow_charges: 10000,
 							ayak_charges: 10000,
 							blood_essence_charges: 10000,
+							chemistry_amulet_charges: 10_000,
+							alchemist_amulet_charges: 10_000,
 							ash_sanctifier_charges: 10000,
 							celestial_ring_charges: 10000,
 							scythe_of_vitur_charges: 10000,
