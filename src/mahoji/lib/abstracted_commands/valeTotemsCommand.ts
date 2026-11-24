@@ -5,6 +5,7 @@ import { ValeTotemsBuyables, ValeTotemsSellables } from '@/lib/data/buyables/val
 import { QuestID } from '@/lib/minions/data/quests.js';
 import { claimValeOfferings } from '@/lib/minions/data/valeTotems.js';
 import type { ValeTotemsActivityTaskOptions } from '@/lib/types/minions.js';
+import { makeStartQuestResponse } from '@/lib/util/interactions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
@@ -30,7 +31,10 @@ export async function valeTotemsStartCommand(
 	}
 
 	if (!user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
-		return `${user.minionName} needs to complete the "Children of the Sun" quest before ${user.minionName} can start Vale Totems minigame.`;
+		return makeStartQuestResponse(
+			`${user.minionName} needs to complete the "Children of the Sun" quest before ${user.minionName} can start Vale Totems minigame.`,
+			QuestID.ChildrenOfTheSun
+		);
 	}
 
 	const fletchingLvl = user.skillLevel('fletching');
@@ -362,7 +366,10 @@ export async function valeTotemsRummageCommand(
 
 export async function valeTotemsBuyCommand(interaction: MInteraction, user: MUser, item?: string, quantity = 1) {
 	if (!user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
-		return `${user.minionName} needs to complete the "Children of the Sun" quest before ${user.minionName} can access Vale Research Exchange.`;
+		return makeStartQuestResponse(
+			`${user.minionName} needs to complete the "Children of the Sun" quest before ${user.minionName} can access Vale Research Exchange.`,
+			QuestID.ChildrenOfTheSun
+		);
 	}
 
 	const { vale_research_points: currentResearchPoints } = await user.fetchStats();
@@ -417,7 +424,10 @@ export async function valeTotemsSellCommand(
 	quantity = 1
 ) {
 	if (!user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
-		return `${user.minionName} needs to complete the "Children of the Sun" quest before ${user.minionName} can access Vale Research Exchange.`;
+		return makeStartQuestResponse(
+			`${user.minionName} needs to complete the "Children of the Sun" quest before ${user.minionName} can access Vale Research Exchange.`,
+			QuestID.ChildrenOfTheSun
+		);
 	}
 
 	const shopItem = ValeTotemsSellables.find(
