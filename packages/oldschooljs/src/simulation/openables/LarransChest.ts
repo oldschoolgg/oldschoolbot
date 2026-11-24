@@ -6,6 +6,21 @@ import type { OpenableOpenOptions } from '@/structures/Openable.js';
 import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
 import { chanceOfFish, LarransBigChestFish, LarransSmallChestFish } from './BonusOpenables.js';
 
+const LarransBigChestUniqueTable: LootTable = new LootTable()
+	.add("Dagon'hai hat")
+	.add("Dagon'hai robe top")
+	.add("Dagon'hai robe bottom");
+
+const LarransChestFishAllItemsTable: LootTable = new LootTable()
+	.add('Raw tuna')
+	.add('Raw lobster')
+	.add('Raw swordfish')
+	.add('Raw monkfish')
+	.add('Raw shark')
+	.add('Shark lure')
+	.add('Raw sea turtle')
+	.add('Raw manta ray');
+
 const LarransSmallChestTable: LootTable = new LootTable()
 	.add('Uncut diamond', 21, 5)
 	.add('Uncut ruby', [24, 29], 5)
@@ -32,9 +47,6 @@ const LarransSmallChestTable: LootTable = new LootTable()
 	.add('Pure essence', [3359, 5815], 1);
 
 const LarransBigChestTable: LootTable = new LootTable()
-	.oneIn(256, "Dagon'hai hat")
-	.oneIn(256, "Dagon'hai robe top")
-	.oneIn(256, "Dagon'hai robe bottom")
 	.add('Uncut diamond', [35, 45], 5)
 	.add('Uncut ruby', [35, 45], 5)
 	.add('Coal', [450, 650], 5)
@@ -61,6 +73,39 @@ const LarransBigChestTable: LootTable = new LootTable()
 
 const LarransChestTable: LootTable = new LootTable().add(LarransSmallChestTable).add(LarransBigChestTable);
 
+function rollLarransFish(loot: Bank, fishLvl: number, fishTable: typeof LarransBigChestFish): void {
+	const lobster = fishTable.find(fish => fish.item === 'Raw lobster');
+	let fishRolled = false;
+	for (const fish of fishTable) {
+		if (fish.item === 'Raw lobster') continue;
+		if (fishLvl >= fish.req) {
+			if (percentChance(chanceOfFish(fishLvl, fish.low, fish.high))) {
+				let fishItem = fish.item;
+				let fishQty = randInt(fish.qty[0], fish.qty[1]);
+
+				// Manta/sea turtle/shark can transform into raw shark or shark lure.
+				if (fish.item === 'Raw manta ray' || fish.item === 'Raw sea turtle' || fish.item === 'Raw shark') {
+					const sharkSubRoll = randInt(1, 8);
+					if (sharkSubRoll <= 3) {
+						fishItem = 'Raw shark';
+					} else if (sharkSubRoll <= 6) {
+						fishItem = 'Shark lure';
+						fishQty *= 2;
+					}
+				}
+
+				loot.add(fishItem, fishQty);
+				fishRolled = true;
+				break;
+			}
+		}
+	}
+
+	if (!fishRolled) {
+		loot.add(lobster?.item, randInt(lobster!.qty[0], lobster!.qty[1]));
+	}
+}
+
 export class LarransChestOpenable extends SimpleOpenable {
 	public override open(quantity = 1, options: OpenableOpenOptions = { fishLvl: 99, chestSize: 'big' }): Bank {
 		const loot = new Bank();
@@ -68,46 +113,24 @@ export class LarransChestOpenable extends SimpleOpenable {
 		const fishLvl = options.fishLvl ?? 99;
 
 		if (tier.toLowerCase() === 'big') {
-			const lobster = LarransBigChestFish.find(fish => fish.item === 'Raw lobster');
 			for (let i = 0; i < quantity; i++) {
+				if (roll(256)) {
+					loot.add(LarransBigChestUniqueTable.roll());
+				}
+
+				loot.add(LarransBigChestTable.roll());
+
 				if (roll(20)) {
-					let fishRolled = false;
-					for (const fish of LarransBigChestFish) {
-						if (fishLvl >= fish.req) {
-							if (percentChance(chanceOfFish(fishLvl, fish.low, fish.high))) {
-								loot.add(fish.item, randInt(fish.qty[0], fish.qty[1]));
-								fishRolled = true;
-								break;
-							}
-						}
-					}
-					if (!fishRolled) {
-						loot.add(lobster?.item, randInt(lobster!.qty[0], lobster!.qty[1]));
-					}
-				} else {
-					loot.add(LarransBigChestTable.roll());
+					rollLarransFish(loot, fishLvl, LarransBigChestFish);
 				}
 			}
 			return loot;
 		}
-		const lobster = LarransSmallChestFish.find(fish => fish.item === 'Raw lobster');
 		for (let i = 0; i < quantity; i++) {
+			loot.add(LarransSmallChestTable.roll());
+
 			if (roll(20)) {
-				let fishRolled = false;
-				for (const fish of LarransSmallChestFish) {
-					if (fishLvl >= fish.req) {
-						if (percentChance(chanceOfFish(fishLvl, fish.low, fish.high))) {
-							loot.add(fish.item, randInt(fish.qty[0], fish.qty[1]));
-							fishRolled = true;
-							break;
-						}
-					}
-				}
-				if (!fishRolled) {
-					loot.add(lobster?.item, randInt(lobster!.qty[0], lobster!.qty[1]));
-				}
-			} else {
-				loot.add(LarransSmallChestTable.roll());
+				rollLarransFish(loot, fishLvl, LarransSmallChestFish);
 			}
 		}
 		return loot;
@@ -126,5 +149,12 @@ export const LarransChest: LarransChestOpenable = new LarransChestOpenable({
 		'larrans small chest',
 		"larran's small chest"
 	],
-	table: LarransChestTable
+	table: LarransChestTable,
+	allItems: Array.from(
+		new Set([
+			...LarransChestTable.allItems,
+			...LarransBigChestUniqueTable.allItems,
+			...LarransChestFishAllItemsTable.allItems
+		])
+	)
 });

@@ -11,6 +11,16 @@ const VorkathBoltTipTable: LootTable = new LootTable()
 	.add('Onyx bolt tips', [25, 30], 3)
 	.add('Sapphire bolt tips', [25, 30], 2);
 
+const VorkathSharkLureTable: LootTable = new LootTable();
+for (let qty = 70; qty <= 110; qty += 2) {
+	VorkathSharkLureTable.add('Shark lure', qty);
+}
+
+const VorkathSharkTable: LootTable = new LootTable()
+	.add('Raw shark', [35, 55], 3)
+	.add(VorkathSharkLureTable, 1, 3)
+	.add('Manta ray', [35, 55], 2);
+
 const VorkathTable: LootTable = new LootTable()
 	.every('Superior dragon bones')
 	.every('Blue dragonhide')
@@ -25,8 +35,8 @@ const VorkathTable: LootTable = new LootTable()
 	.add('Dragon plateskirt', 1, 2)
 
 	/* Runes */
-	.add('Chaos rune', [650, 1000], 6)
-	.add('Death rune', [300, 500], 6)
+	.add('Chaos rune', [250, 350], 6)
+	.add('Death rune', [200, 300], 6)
 	.add('Wrath rune', [30, 60], 3)
 
 	/* Dragonhide */
@@ -50,10 +60,10 @@ const VorkathTable: LootTable = new LootTable()
 	.add('Snapdragon seed')
 	.add('Torstol seed')
 	.add('Adamantite ore', [10, 30], 7)
-	.add('Coins', [20_000, 81_000], 5)
+	.add('Coins', [20_000, 80_000], 5)
 	.add('Grapes', [250, 300], 5)
 	.add('Magic logs', 50, 5)
-	.add('Manta ray', [35, 55], 4)
+	.add(VorkathSharkTable, 1, 4)
 	.add('Dragon bones', [15, 20], 4)
 	.add('Diamond', [10, 20], 4)
 	.add('Dragonstone', [2, 3], 3)
