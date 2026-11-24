@@ -2,6 +2,8 @@ import type { RNGProvider } from 'node-rng';
 import { Bank, EItem, type Item } from 'oldschooljs';
 
 import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
+import { barbMixes } from '@/lib/skilling/skills/herblore/mixables/barbMixes.js';
+import Potions from '@/lib/skilling/skills/herblore/mixables/potions.js';
 import type { Mixable } from '@/lib/skilling/types.js';
 import type { HerbloreActivityTaskOptions } from '@/lib/types/minions.js';
 
@@ -60,6 +62,8 @@ function isSaveableSecondary(item: Item, mixableName: string): boolean {
 
 export function calculatePrescriptionGogglesSavedItems(mixableItem: Mixable, quantity: number, rng: RNGProvider): Bank {
 	const savedItems = new Bank();
+	if (![...Potions, ...barbMixes].some(potion => potion.item.id === mixableItem.item.id)) return savedItems;
+
 	for (let i = 0; i < quantity; i++) {
 		for (const [item, qty] of mixableItem.inputItems.items()) {
 			if (!isSaveableSecondary(item, mixableItem.item.name)) continue;
