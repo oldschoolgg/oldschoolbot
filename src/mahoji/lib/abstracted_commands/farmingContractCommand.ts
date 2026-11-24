@@ -3,10 +3,12 @@ import type { IFarmingContract, IFarmingContractDifficultyLevel } from '@oldscho
 import { toTitleCase } from '@oldschoolgg/toolkit';
 
 import type { MessageBuilderClass } from '@/discord/MessageBuilder.js';
+import { BitField } from '@/lib/constants.js';
 import { EmojiId } from '@/lib/data/emojis.js';
 import { Farming, plants } from '@/lib/skilling/skills/farming/index.js';
 import { getPlantToGrow } from '@/lib/skilling/skills/farming/utils/calcFarmingContracts.js';
 import type { ContractOption } from '@/lib/skilling/skills/farming/utils/types.js';
+import { makeAutoContractButton } from '@/lib/util/interactions.js';
 import { farmingPlantCommand, harvestCommand } from '@/mahoji/lib/abstracted_commands/farmingCommand.js';
 import { abstractedOpenCommand } from '@/mahoji/lib/abstracted_commands/openCommand.js';
 
@@ -16,6 +18,12 @@ function makeEasierFarmingContractButton() {
 		.setLabel('Ask for easier Contract')
 		.setStyle(ButtonStyle.Secondary)
 		.setEmoji({ id: EmojiId.Seedpack });
+}
+
+function autoContractButtons(user: MUser, requireReady = false) {
+	if (user.bitfield.includes(BitField.DisableAutoFarmContractButton)) return [];
+	if (requireReady && !canRunAutoContract(user)) return [];
+	return [makeAutoContractButton()];
 }
 
 const contractToFarmingLevel = {
@@ -99,13 +107,18 @@ export async function farmingContractCommand(
 				contractsCompleted: currentContract.contractsCompleted
 			});
 
+			const components = [
+				...(newContractLevel !== 'easy' ? [makeEasierFarmingContractButton()] : []),
+				...autoContractButtons(user)
+			];
+
 			const response = new MessageBuilder()
 				.setContent(formatNewContractContent(plantToGrow, newContractLevel))
 				.addChatHeadImage(
 					'jane',
 					`I suppose you were too chicken for the challenge. Please could you grow a ${plantToGrow} instead for us? I'll reward you once you have checked its health.`
 				)
-				.addComponents(newContractLevel !== 'easy' ? [makeEasierFarmingContractButton()] : undefined);
+				.addComponents(components.length ? components : undefined);
 
 			return response;
 		}
@@ -114,14 +127,16 @@ export async function farmingContractCommand(
 		if (currentContract.difficultyLevel !== 'easy') {
 			easierStr = "\nYou can request an easier contract if you'd like.";
 		}
+		const components = [
+			...(currentContract.difficultyLevel !== 'easy' ? [makeEasierFarmingContractButton()] : []),
+			...autoContractButtons(user, true)
+		];
 		const response = new MessageBuilder()
 			.addChatHeadImage(
 				'jane',
 				`Your current contract (${currentContract.difficultyLevel}) is to grow ${currentContract.plantToGrow}. Please come back when you have finished this contract first.${easierStr}`
 			)
-			.addComponents(
-				currentContract.difficultyLevel !== 'easy' ? [makeEasierFarmingContractButton()] : undefined
-			);
+			.addComponents(components.length ? components : undefined);
 
 		return response;
 	}
@@ -153,13 +168,14 @@ export async function farmingContractCommand(
 		contractsCompleted: currentContract.contractsCompleted
 	});
 
+	const components = [...(input !== 'easy' ? [makeEasierFarmingContractButton()] : []), ...autoContractButtons(user)];
 	const response = new MessageBuilder()
 		.setContent(formatNewContractContent(plantToGrow, input))
 		.addChatHeadImage(
 			'jane',
 			`Please could you grow a ${plantToGrow} for us? I'll reward you once you have checked its health.`
 		)
-		.addComponents(input !== 'easy' ? [makeEasierFarmingContractButton()] : undefined);
+		.addComponents(components.length ? components : undefined);
 	return response;
 }
 
