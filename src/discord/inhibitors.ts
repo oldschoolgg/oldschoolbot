@@ -78,7 +78,7 @@ const inhibitors: Inhibitor[] = [
 				return false;
 			if (interaction.channelId !== Channel.ServerGeneral) return false;
 			const perkTier = await user.fetchPerkTier();
-			if (interaction.member && perkTier >= PerkTier.Two) {
+			if (perkTier >= PerkTier.Two) {
 				return false;
 			}
 
