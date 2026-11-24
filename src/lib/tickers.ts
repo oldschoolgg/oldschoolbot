@@ -5,6 +5,7 @@ import { TimerManager } from '@sapphire/timer-manager';
 import type { User } from '@/prisma/main.js';
 import { analyticsTick } from '@/lib/analytics.js';
 import { Channel, globalConfig } from '@/lib/constants.js';
+import { createEconomyItemSnapshot } from '@/lib/economyItemHolders.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { cacheGEPrices } from '@/lib/marketPrices.js';
 import { collectMetrics } from '@/lib/metrics.js';
@@ -335,10 +336,7 @@ LIMIT 10;`);
 		timer: null,
 		startupWait: Time.Minute * 20,
 		interval: Time.Hour * 13.55,
-		cb: async () => {
-			await prisma.$executeRaw`INSERT INTO economy_item_banks (bank)
-VALUES (get_economy_bank());`;
-		}
+		cb: createEconomyItemSnapshot
 	},
 	{
 		name: 'Cache G.E Prices',

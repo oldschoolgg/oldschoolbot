@@ -30,22 +30,45 @@ export const SQL = {
 	WHERE_IRON: (ironOnly: boolean) => (ironOnly ? '"minion.ironman" = true' : '')
 } as const;
 
-/**
- * ⚠️ Uses queryRawUnsafe
- */
 export async function countUsersWithItemInCl(itemID: number, ironmenOnly: boolean) {
 	if (!Number.isInteger(itemID) || Number.isNaN(itemID)) {
 		throw new Error(`Invalid itemID passed to countUsersWithItemInCl: ${itemID}`);
 	}
-	const query = `SELECT COUNT(id)::int
-				   FROM users
-				   WHERE ("collectionLogBank"->>'${itemID}') IS NOT NULL
-				   AND ("collectionLogBank"->>'${itemID}')::int >= 1
-				   ${ironmenOnly ? 'AND "minion.ironman" = true' : ''};`;
-	const res = await prisma.$queryRawUnsafe<{ count: bigint }[]>(query);
-	const count = Number(res[0].count);
+
+	const itemKey = String(itemID);
+	const ironmanFilter = ironmenOnly ? Prisma.sql`AND "minion.ironman" = true` : Prisma.sql``;
+	const [result] = await prisma.$queryRaw<{ count: bigint }[]>`
+                SELECT COUNT(id)::int
+                FROM users
+                WHERE ("collectionLogBank"->>${itemKey}) IS NOT NULL
+                AND ("collectionLogBank"->>${itemKey})::int >= 1
+                ${ironmanFilter};
+        `;
+
+	const count = Number(result?.count ?? 0);
 	if (Number.isNaN(count)) {
 		throw new Error(`countUsersWithItemInCl produced invalid number '${count}' for ${itemID}`);
+	}
+	return count;
+}
+
+export async function countUsersWithItemInBank(itemID: number, ironmenOnly: boolean) {
+	if (!Number.isInteger(itemID) || Number.isNaN(itemID)) {
+		throw new Error(`Invalid itemID passed to countUsersWithItemInBank: ${itemID}`);
+	}
+
+	const itemKey = String(itemID);
+	const ironmanFilter = ironmenOnly ? Prisma.sql`AND "minion.ironman" = true` : Prisma.sql``;
+	const [result] = await prisma.$queryRaw<{ count: bigint }[]>`
+                SELECT COUNT(DISTINCT id)::int
+                FROM users
+                WHERE COALESCE((bank ->> ${itemKey})::bigint, 0) > 0
+                ${ironmanFilter};
+        `;
+
+	const count = Number(result?.count ?? 0);
+	if (Number.isNaN(count)) {
+		throw new Error(`countUsersWithItemInBank produced invalid number '${count}' for ${itemID}`);
 	}
 	return count;
 }

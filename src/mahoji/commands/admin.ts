@@ -29,6 +29,7 @@ import {
 } from '@/lib/bitFieldUtils.js';
 import { giveawayCache } from '@/lib/cache.js';
 import { BadgesEnum, BitField, badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
+import { createEconomyItemSnapshot } from '@/lib/economyItemHolders.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { syncCustomPrices } from '@/lib/preStartup.js';
 import { countUsersWithItemInCl } from '@/lib/rawSql.js';
@@ -519,6 +520,11 @@ export const adminCommand = defineCommand({
 			options: []
 		},
 		{
+			type: 'Subcommand',
+			name: 'economy_snapshot',
+			description: 'Create a new economy item snapshot, including item holder counts.'
+		},
+		{
 			type: 'SubcommandGroup',
 			name: 'system',
 			description: 'System controls.',
@@ -1006,6 +1012,11 @@ ${META_CONSTANTS.RENDERED_STR}`
 		if (options.sync_commands) {
 			await bulkUpdateCommands();
 			return 'Done.';
+		}
+
+		if (options.economy_snapshot) {
+			await createEconomyItemSnapshot();
+			return 'Created a new economy item snapshot, including item holder counts.';
 		}
 
 		if (options.allow_giveaway_irons) {
