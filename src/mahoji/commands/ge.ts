@@ -129,7 +129,7 @@ export const geCommand = defineCommand({
 					autocomplete: async ({ value, user }: StringAutoComplete) => {
 						return user.bank
 							.items()
-							.filter(i => i[0].tradeable_on_ge)
+							.filter(i => itemIsTradeable(i[0].id))
 							.filter(i => (!value ? true : i[0].name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: `${i[0].name} (${i[1]}x Owned)`, value: i[0].name }));
 					}
@@ -213,7 +213,7 @@ export const geCommand = defineCommand({
 			description: 'Lookup information about an item on the g.e',
 			options: [
 				{
-					...itemOption(item => Boolean(item.tradeable_on_ge)),
+					...itemOption(item => itemIsTradeable(item.id)),
 					name: 'item',
 					description: 'The item to view.'
 				}
