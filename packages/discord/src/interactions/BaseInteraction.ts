@@ -156,7 +156,9 @@ export class BaseInteraction {
 		options: SendableMessage
 	): Promise<RESTPostAPIInteractionCallbackWithResponseResult | APIBaseMessageNoChannel | null> {
 		if (this._deferred || this._replied) {
-			return this.baseEditReply(options);
+			const response = await this.baseEditReply(options);
+			this._replied = true;
+			return response;
 		}
 		this._replied = true;
 		const res = await this.sendCallback(InteractionResponseType.ChannelMessageWithSource, options);

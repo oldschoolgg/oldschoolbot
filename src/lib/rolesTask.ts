@@ -1,4 +1,4 @@
-import { noOp, notEmpty, Stopwatch, uniqueArr } from '@oldschoolgg/toolkit';
+import { notEmpty, Stopwatch, uniqueArr } from '@oldschoolgg/toolkit';
 import { convertXPtoLVL, type ItemBank } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { partition } from 'remeda';
@@ -8,6 +8,7 @@ import { Prisma } from '@/prisma/main.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { BadgesEnum, globalConfig, MAX_LEVEL, Roles } from '@/lib/constants.js';
 import { getCollectionItems } from '@/lib/data/Collections.js';
+import { getManagedRoleMembers, managedRoles } from '@/lib/managedRoles.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import { type SkillNameType, SkillsArray } from '@/lib/skilling/types.js';
@@ -350,6 +351,7 @@ async function globalCL() {
 export async function runRolesTask(dryRun: boolean): Promise<CommandResponse> {
 	const results: RoleResult[] = [];
 	const debugMessages: string[] = [];
+	let failed = false;
 
 	const promiseQueue = new PQueue({ concurrency: 2 });
 
@@ -373,10 +375,12 @@ export async function runRolesTask(dryRun: boolean): Promise<CommandResponse> {
 				const [validResults, invalidResults] = partition(res, i => RoleResultSchema.safeParse(i).success);
 				results.push(...validResults);
 				if (invalidResults.length > 0) {
+					failed = true;
 					Logging.logError(`[RolesTask] Invalid results for ${name}: ${JSON.stringify(invalidResults)}`);
 					debugMessages.push(`The ${name} roles had invalid results.`);
 				}
 			} catch (err) {
+				failed = true;
 				debugMessages.push(`The ${name} roles errored.`);
 				Logging.logError(`[RolesTask] Error in ${name}: ${err}`);
 			} finally {
@@ -389,93 +393,70 @@ export async function runRolesTask(dryRun: boolean): Promise<CommandResponse> {
 
 	debugMessages.push(`Finished role functions, ${results.length} results`);
 
-	const allBadgeIDs = uniqueArr(results.map(i => i.badge)).filter(notEmpty);
-	// const allRoleIDs = uniqueArr(results.map(i => i.roleID)).filter(notEmpty);
+	const report = [
+		'Role entitlements',
+		...managedRoles.map(role => {
+			const members = results.filter(result => result.roleID === role);
+			return `<@&${role}>: ${members.length ? members.map(result => `<@${result.userID}> (${result.reason})`).join(', ') : 'No eligible users'}`;
+		}),
+		'',
+		...debugMessages
+	].join(String.fromCharCode(10));
+	if (dryRun) return `Dry run: ${report}`;
+	if (failed)
+		return `Role sync aborted because entitlement calculations failed.
+${report}`;
 
-	if (!dryRun) {
-		const roleNames = new Map<string, string>();
-		// const supportServerGuild = globalClient.guilds.cache.get(globalConfig.supportServerID)!;
-
-		// Remove all top badges from all users (and add back later)
-		const badgeIDs = `ARRAY[${allBadgeIDs.join(',')}]`;
-		await prisma.$queryRawUnsafe(`
-UPDATE users
-SET badges = badges - ${badgeIDs}
-WHERE badges && ${badgeIDs}
-`);
-
-		// Remove roles from ineligible users
-		// for (const member of supportServerGuild.members.cache.values()) {
-		// 	const rolesToRemove = member.roles.cache
-		// 		.filter(r => allRoleIDs.includes(r.id))
-		// 		.filter(roleToRemove => {
-		// 			const shouldHaveThisRole = results.some(
-		// 				r => r.userID === member.id && r.roleID === roleToRemove.id
-		// 			);
-		// 			return !shouldHaveThisRole;
-		// 		});
-		// 	if (rolesToRemove.size > 0) {
-		// 		await member.roles.remove(rolesToRemove.map(r => r.id)).catch(console.error);
-		// 		debugMessages.push(
-		// 			`Removing these roles from ${member.user.tag}: ${rolesToRemove.map(r => r.name).join(', ')}`
-		// 		);
-		// 	}
-		// }
-
-		// Add roles to users
-		const mainServerRoles = await globalClient.fetchRolesOfGuild(globalConfig.supportServerID);
-
-		for (const { userID, roleID, badge } of results) {
-			if (!userID) continue;
-			const user = await mUserFetch(userID);
-
-			const role = mainServerRoles.find(_r => _r.id === roleID);
-			const member = await globalClient.fetchMainServerMember(userID).catch(noOp);
-			if (!member) {
-				debugMessages.push(`Failed to find member ${userID}`);
-				continue;
-			}
-			if (!role) {
-				debugMessages.push(`Failed to find role ${roleID}`);
-				continue;
-			}
-			roleNames.set(roleID, role.name);
-
-			if (!member.roles.some(_r => _r === roleID)) {
-				// await member.roles.add(roleID).catch(console.error);
-				debugMessages.push(`Adding the ${role.name} role to ${user.username}`);
-			} else {
-				debugMessages.push(`${user.username} already has the ${role.name} role`);
-			}
-
-			if (badge) {
-				if (!user.user.badges.includes(badge)) {
-					await user.update({
-						badges: {
-							push: badge
-						}
-					});
-					debugMessages.push(`Adding badge ${badge} to ${user.username}`);
-				} else {
-					debugMessages.push(`${user.username} already has badge ${badge}`);
-				}
+	const guildId = globalConfig.supportServerID;
+	const current = await getManagedRoleMembers();
+	const desired = new Map(managedRoles.map(role => [role, new Set<string>()]));
+	for (const result of results) {
+		const members = desired.get(result.roleID);
+		if (!members) throw new Error(`Unregistered managed role ${result.roleID}`);
+		members.add(result.userID);
+	}
+	for (const [role, members] of current) {
+		for (const userId of members) {
+			if (desired.get(role)!.has(userId)) continue;
+			try {
+				await globalClient.takeRole(guildId, userId, role);
+				await Cache.updateManagedRole(guildId, role, userId, false);
+				await Cache.clearMember(guildId, userId);
+				debugMessages.push(`Removed <@&${role}> from <@${userId}>`);
+			} catch (err) {
+				Logging.logError(err as Error);
+				debugMessages.push(`Failed to remove <@&${role}> from <@${userId}>`);
 			}
 		}
-
-		const text = (
-			await Promise.all(
-				results.map(
-					async r =>
-						`${await Cache.getBadgedUsername(r.userID)} got ${roleNames.get(r.roleID)} because ${r.reason}`
-				)
-			)
-		).join('\n');
-		return `Roles
-${text}
-
-Debug Messages:
-${debugMessages.join('\n')}`;
 	}
-
-	return 'Dry run';
+	for (const [role, members] of desired) {
+		for (const userId of members) {
+			if (current.get(role)!.has(userId)) continue;
+			try {
+				await globalClient.giveRole(guildId, userId, role);
+				await Cache.updateManagedRole(guildId, role, userId, true);
+				await Cache.clearMember(guildId, userId);
+				debugMessages.push(`Added <@&${role}> to <@${userId}>`);
+			} catch (err) {
+				Logging.logError(err as Error);
+				debugMessages.push(`Failed to add <@&${role}> to <@${userId}>`);
+			}
+		}
+	}
+	const allBadgeIDs = uniqueArr(results.map(i => i.badge)).filter(notEmpty);
+	if (allBadgeIDs.length) {
+		const badgeIDs = `ARRAY[${allBadgeIDs.join(',')}]`;
+		await prisma.$queryRawUnsafe(`UPDATE users SET badges = badges - ${badgeIDs} WHERE badges && ${badgeIDs}`);
+	}
+	const badgesByUser = new Map<string, Set<number>>();
+	for (const { userID, badge } of results) {
+		if (!badge) continue;
+		if (!badgesByUser.has(userID)) badgesByUser.set(userID, new Set());
+		badgesByUser.get(userID)!.add(badge);
+	}
+	for (const [userId, badges] of badgesByUser) {
+		const user = await mUserFetch(userId);
+		await user.update({ badges: { push: [...badges] } });
+	}
+	return [report, '', 'Sync:', ...debugMessages].join(String.fromCharCode(10));
 }

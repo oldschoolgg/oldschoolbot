@@ -227,6 +227,26 @@ class CacheManager {
 		return member;
 	}
 
+	private managedRoleKey(guildId: string, roleId: string) {
+		return `${BOT_TYPE}:managed-role:${guildId}:${roleId}`;
+	}
+
+	async getManagedRoleMembers(guildId: string, roleId: string): Promise<string[] | null> {
+		const members = await this.client.smembers(this.managedRoleKey(guildId, roleId));
+		return members.includes('initialized') ? members.filter(id => id !== 'initialized') : null;
+	}
+
+	async initializeManagedRole(guildId: string, roleId: string, userIds: string[]) {
+		await this.client.sadd(this.managedRoleKey(guildId, roleId), 'initialized', ...userIds);
+	}
+
+	async updateManagedRole(guildId: string, roleId: string, userId: string, hasRole: boolean) {
+		const key = this.managedRoleKey(guildId, roleId);
+		if (!(await this.client.sismember(key, 'initialized'))) return;
+		if (hasRole) await this.client.sadd(key, userId);
+		else await this.client.srem(key, userId);
+	}
+
 	async getChannel(channelId: string): Promise<IChannel> {
 		const key = RedisKeys.Discord.Channel(channelId);
 		const cached = await this.getJson<IChannel>(key);
@@ -251,11 +271,11 @@ class CacheManager {
 
 	async setMember(member: CachedMember): Promise<void> {
 		ZMember.parse(member);
-		await this.setJsonWithTTL(
-			RedisKeys.Discord.Member(member.guild_id, member.user_id),
-			member,
-			this.jitterTTL(TTL.Minute * 5, 0.1)
-		);
+		await this.setJsonWithTTL(RedisKeys.Discord.Member(member.guild_id, member.user_id), member, TTL.Day * 10);
+	}
+
+	async clearMember(guildId: string, userId: string) {
+		await this.client.del(RedisKeys.Discord.Member(guildId, userId));
 	}
 
 	async bulkSetMembers(members: IMember[]): Promise<void> {

@@ -48,11 +48,11 @@ export function bitfieldCanUserManipulate<T extends IBitFieldData = IBitFieldDat
 		if (!isValidBitField(bit)) return 'Invalid bitfield.';
 		bit = { bit, data: bfData[bit] };
 	}
-	if (user.isAdmin()) return true;
+	if (user.isAdmin) return true;
 	if (bit.data.protected) {
 		return 'Silly monkey... kicks are for trids!';
 	}
-	if (!globalConfig.isProduction || user.isMod()) return true;
+	if (!globalConfig.isProduction || user.isMod) return true;
 	if (target) {
 		return MathRNG.pick(gifs);
 	}
@@ -90,7 +90,7 @@ export async function changeBitFieldForUser(user: MUser, bit: BitField, action: 
 
 export function listBitFields(user?: MUser, dataMap: Record<BitField, IBitFieldData> = BitFieldData) {
 	return Object.entries(dataMap)
-		.filter(([, data]) => !(data.protected && user && !user.isAdmin()))
+		.filter(([, data]) => !(data.protected && user && !user.isAdmin))
 		.map(([key, data]) => `**${key}:** ${data.name}`)
 		.join('\n');
 }

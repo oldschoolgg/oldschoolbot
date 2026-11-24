@@ -2,7 +2,6 @@ import { WebSocketShardEvents, WebSocketShardStatus } from '@discordjs/ws';
 import {
 	type APIApplication,
 	type APIUser,
-	type BaseSendableMessage,
 	ButtonBuilder,
 	ButtonStyle,
 	ChannelType,
@@ -19,6 +18,7 @@ import { omit } from 'remeda';
 
 import { makeDuo } from '@/discord/interaction/makeDuo.js';
 import { makeParty } from '@/discord/interaction/makeParty.js';
+import { splitSendableMessage } from '@/discord/splitSendableMessage.js';
 import { mentionCommand, resolveBotSendableMessage, resolveSendable } from '@/discord/utils.js';
 import { DISCORD_USER_IDS_INSERTED_CACHE } from '@/lib/cache.js';
 import { globalConfig } from '@/lib/constants.js';
@@ -26,59 +26,6 @@ import { ReactEmoji } from '@/lib/data/emojis.js';
 import type { MakeDuoOptions, MakePartyOptions } from '@/lib/types/index.js';
 import { allCommandsDONTIMPORT } from '@/mahoji/commands/allCommands.js';
 import type { FetchedShardStatus } from './OSBWorkerShardingStrategy.js';
-
-const MAX_MESSAGE_LENGTH = 1950;
-
-function splitContentIntoMessages(content: string): string[] {
-	if (content.length <= MAX_MESSAGE_LENGTH) return [content];
-
-	const parts: string[] = [];
-	let remaining = content;
-	while (remaining.length > MAX_MESSAGE_LENGTH) {
-		let splitAt = -1;
-		for (let i = MAX_MESSAGE_LENGTH; i >= 0; i--) {
-			const char = remaining[i];
-			if (char === '\n' || char === ' ' || char === '\t') {
-				splitAt = i;
-				break;
-			}
-		}
-		if (splitAt <= 0) {
-			splitAt = MAX_MESSAGE_LENGTH;
-		}
-		parts.push(remaining.slice(0, splitAt).trimEnd());
-		remaining = remaining.slice(splitAt).trimStart();
-	}
-	if (remaining.length > 0) {
-		parts.push(remaining);
-	}
-	return parts;
-}
-
-function splitSendableMessage(rawMessage: BaseSendableMessage): BaseSendableMessage[] {
-	const content = rawMessage.content ?? '';
-	const contentParts = splitContentIntoMessages(content);
-	if (contentParts.length === 1) return [rawMessage];
-
-	return contentParts.map((part, index) => {
-		const isLast = index === contentParts.length - 1;
-		return {
-			content: part,
-			allowedMentions: rawMessage.allowedMentions,
-			...(isLast
-				? {
-						components: rawMessage.components,
-						embeds: rawMessage.embeds,
-						files: rawMessage.files,
-						ephemeral: rawMessage.ephemeral,
-						messageReference: rawMessage.messageReference,
-						threadId: rawMessage.threadId,
-						withResponse: rawMessage.withResponse
-					}
-				: {})
-		};
-	});
-}
 
 export class OldSchoolBotClient extends DiscordClient {
 	public isShuttingDown = false;
@@ -315,7 +262,7 @@ export class OldSchoolBotClient extends DiscordClient {
 		return webhook;
 	}
 
-	private async sendToWebhook(channelId: string, data: SendableMessage): Promise<IMessage | null> {
+	async sendToWebhook(channelId: string, data: SendableMessage): Promise<IMessage | null> {
 		let webhook: IWebhook | null = null;
 		try {
 			webhook = await this.getChannelWebhook(channelId);
@@ -328,6 +275,7 @@ export class OldSchoolBotClient extends DiscordClient {
 			Logging.logError(err, { context, msg });
 			if (webhook) {
 				await this.deleteWebhook(channelId);
+				await Cache.setWebhookPermissions({ channel_id: channelId, can_create_webhook: false });
 			}
 			return null;
 		}
@@ -337,12 +285,14 @@ export class OldSchoolBotClient extends DiscordClient {
 		const message = await resolveBotSendableMessage(rawMessage);
 		const splitMessages = splitSendableMessage(message);
 		let lastMessage: IMessage | null = null;
+		let useWebhook = true;
 		for (const part of splitMessages) {
-			const webhookResponse = await this.sendToWebhook(channelId, part);
+			const webhookResponse = useWebhook ? await this.sendToWebhook(channelId, part) : null;
 			if (webhookResponse) {
 				lastMessage = webhookResponse;
 				continue;
 			}
+			useWebhook = false;
 			lastMessage = await this.sendMessage(channelId, part);
 		}
 		return lastMessage;

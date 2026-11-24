@@ -642,7 +642,7 @@ async function mostDrops(user: MUser, itemName: string, filter: string) {
 				? 'AND "minion.ironman" = false'
 				: '';
 	if (!item) return "That's not a valid item.";
-	if (!allDroppedItems.includes(item.id) && !user.isMod()) {
+	if (!allDroppedItems.includes(item.id) && !user.isMod) {
 		return "You can't check this item, because it's not on any collection log.";
 	}
 
