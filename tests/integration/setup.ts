@@ -3,7 +3,7 @@ import '../../src/lib/cache/redis.js';
 
 import { noOp } from '@oldschoolgg/toolkit';
 import type { Bank } from 'oldschooljs';
-import { vi } from 'vitest';
+import { afterEach, vi } from 'vitest';
 
 import type { OldSchoolBotClient } from '@/discord/OldSchoolBotClient.js';
 import { globalConfig } from '@/lib/constants.js';
@@ -23,6 +23,10 @@ await prisma.clientStorage
 	.catch(noOp);
 
 global.globalClient = new TestClient({} as any) as any as OldSchoolBotClient;
+
+afterEach(() => {
+	vi.restoreAllMocks();
+});
 
 vi.mock('../../src/lib/util/handleTripFinish.js', async importOriginal => {
 	const originalModule: any = await importOriginal();
