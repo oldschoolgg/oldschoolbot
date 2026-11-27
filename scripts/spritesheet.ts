@@ -798,25 +798,7 @@ const itemsMustBeInSpritesheet: number[] = uniqueArr([
 	33365,
 	33368,
 	33382,
-	33424,
-	// Brutus drops and related items, including non-tradeable variants.
-	33089,
-	33091,
-	33093,
-	33096,
-	33097,
-	33098,
-	33099,
-	33101,
-	33103,
-	33104,
-	33106,
-	33109,
-	33112,
-	33115,
-	33118,
-	33124
-	// End Brutus
+	33424
 ]);
 
 const bisGearItems = new Set<number>();
