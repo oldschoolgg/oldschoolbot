@@ -32,6 +32,22 @@ const killableMonsters: KillableMonster[] = [
 	...creatureCreationCreatures,
 	...reanimatedMonsters,
 	{
+		id: Monsters.Brutus.id,
+		name: Monsters.Brutus.name,
+		aliases: Monsters.Brutus.aliases,
+		timeToFinish: Time.Minute,
+		table: Monsters.Brutus,
+		wildy: false,
+		difficultyRating: 1,
+		qpRequired: 0,
+		customMonsterHP: 58,
+		combatXpMultiplier: 2,
+		healAmountNeeded: 10,
+		attackStyleToUse: GearStat.AttackSlash,
+		attackStylesUsed: [GearStat.AttackCrush],
+		notifyDrops: resolveItems(['Mooleta', 'Bottomless milk bucket (empty)', 'Cow slippers', 'Beef'])
+	},
+	{
 		id: Monsters.Barrows.id,
 		name: Monsters.Barrows.name,
 		aliases: Monsters.Barrows.aliases,
