@@ -18,6 +18,7 @@ export class UpdateBank {
 
 	// Things added
 	public itemLootBank: Bank = new Bank();
+	public collectionLogOnlyBank: Bank = new Bank();
 	public xpBank: XPBank = new XPBank();
 	public kcBank: KCBank = new KCBank();
 	public itemLootBankNoCL: Bank = new Bank();
@@ -61,6 +62,10 @@ export class UpdateBank {
 		let itemTransactionResult: Awaited<ReturnType<MUser['addItemsToBank']>> | null = null;
 		if (this.itemLootBank.length > 0) {
 			itemTransactionResult = await user.transactItems({ itemsToAdd: this.itemLootBank, collectionLog: true });
+		}
+
+		if (this.collectionLogOnlyBank.length > 0) {
+			await user.addItemsToCollectionLog({ itemsToAdd: this.collectionLogOnlyBank });
 		}
 
 		// XP

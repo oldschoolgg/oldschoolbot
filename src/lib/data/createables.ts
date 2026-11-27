@@ -1457,6 +1457,11 @@ const Reverteables: Createable[] = [
 
 const Createables: Createable[] = [
 	{
+		name: 'Bottomless milk bucket',
+		inputItems: new Bank().add('Bottomless milk bucket (empty)').add('Bucket of milk', 10_000),
+		outputItems: new Bank().add('Bottomless milk bucket')
+	},
+	{
 		name: 'Godsword blade',
 		inputItems: {
 			[itemID('Godsword shard 1')]: 1,

@@ -1,5 +1,5 @@
 import { sumArr, Time } from '@oldschoolgg/toolkit';
-import { Bank } from 'oldschooljs';
+import { Bank, EItem } from 'oldschooljs';
 
 import type { Skills } from '@/lib/types/index.js';
 
@@ -486,7 +486,7 @@ export const quests: Quest[] = [
 		id: QuestID.TheIdesOfMilk,
 		qp: 1,
 		name: 'The Ides of Milk',
-		rewards: new Bank().add('Cowbell amulet').add(33117).freeze(),
+		rewards: new Bank().add('Cowbell amulet').add(EItem.MAGIC_LAMP).freeze(),
 		calcTime: (user: MUser) => {
 			let duration = Time.Minute * 2;
 			if (user.combatLevel < 15) {

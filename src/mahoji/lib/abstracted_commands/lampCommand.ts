@@ -117,11 +117,11 @@ export const XPLamps: IXPLamp[] = [
 		minimumLevel: 70
 	},
 	{
-		itemID: itemID(33117),
+		itemID: itemID('Magic lamp'),
 		name: 'Magic lamp (The Ides of Milk)',
 		amount: 1000,
 		minimumLevel: 1,
-		allowedSkills: ['attack', 'strength', 'defence', 'hitpoints', 'ranged', 'magic']
+		allowedSkills: ['attack', 'strength', 'defence', 'hitpoints', 'ranged', 'magic', 'prayer']
 	}
 ];
 

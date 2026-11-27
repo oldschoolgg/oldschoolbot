@@ -3539,6 +3539,12 @@
 		]
 	},
 	{
+		"name": "Shark lure pack",
+		"id": 34065,
+		"opened_item": "Shark lure pack",
+		"all_items": ["Shark lure"]
+	},
+	{
 		"name": "Silver HAM chest",
 		"id": 8868,
 		"opened_item": "Silver key",

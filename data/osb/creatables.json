@@ -1,6 +1,6 @@
 {
-	"hash": "59fcfb583994e0f240471444158a0914",
-	"date": "2026-11-06T16:04:43.171Z",
+	"hash": "f25bc4804be81a52f31e14f6e71d4f33",
+	"date": "2026-11-27T11:20:18.363Z",
 	"data": [
 		{
 			"name": "3rd age felling axe",
@@ -1435,6 +1435,16 @@
 			}
 		},
 		{
+			"name": "Bottomless milk bucket",
+			"items_created": {
+				"Bottomless milk bucket": 1
+			},
+			"items_required": {
+				"Bottomless milk bucket (empty)": 1,
+				"Bucket of milk": 10000
+			}
+		},
+		{
 			"name": "Bow of faerdhinen (c)",
 			"items_created": {
 				"Bow of faerdhinen (c)": 1
@@ -2310,6 +2320,15 @@
 			"items_required": {
 				"Dragon harpoon": 1,
 				"Trailblazer tool ornament kit": 1
+			}
+		},
+		{
+			"name": "Dragon hasta",
+			"items_created": {
+				"Dragon hasta": 1
+			},
+			"items_required": {
+				"Broken dragon hasta": 1
 			}
 		},
 		{

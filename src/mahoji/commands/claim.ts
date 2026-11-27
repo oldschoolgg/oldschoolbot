@@ -7,9 +7,24 @@ import { MessageBuilder } from '@/discord/MessageBuilder.js';
 import { BitField, BOT_TYPE, BSO_MAX_TOTAL_LEVEL, Channel } from '@/lib/constants.js';
 import { calcCLDetails } from '@/lib/data/Collections.js';
 import { HolidayItems } from '@/lib/data/holidayItems.js';
+import { QuestID } from '@/lib/minions/data/quests.js';
 import { getReclaimableItemsOfUser } from '@/lib/reclaimableItems.js';
 
 const claimables = [
+	{
+		name: 'Cowbell amulet',
+		hasRequirement: async (user: MUser): Promise<true | string> => {
+			if (!user.user.finished_quest_ids.includes(QuestID.TheIdesOfMilk)) {
+				return 'You need to complete The Ides of Milk first.';
+			}
+			return true;
+		},
+		action: async (user: MUser) => {
+			if (user.allItemsOwned.has('Cowbell amulet')) return 'You already own a Cowbell amulet.';
+			await user.addItemsToBank({ items: new Bank().add('Cowbell amulet'), collectionLog: false });
+			return 'You reclaimed your Cowbell amulet.';
+		}
+	},
 	{
 		name: 'Free T1 Perks',
 		hasRequirement: async (user: MUser): Promise<true | string> => {
@@ -103,6 +118,7 @@ const claimables = [
 
 export const claimCommand = defineCommand({
 	name: 'claim',
+	flags: ['REQUIRES_LOCK'],
 	description: 'Claim prizes, rewards and other things.',
 	options: [
 		{

@@ -485,11 +485,25 @@
 				"rng": {
 					"chance_per_kill": 5
 				}
+			},
+			{
+				"id": 39,
+				"name": "Brutus Novice",
+				"type": "kill_count",
+				"monster": "Brutus",
+				"desc": "Kill Brutus.",
+				"requirements": [
+					{
+						"kcRequirement": {
+							"15627": 1
+						}
+					}
+				]
 			}
 		],
 		"name": "Easy",
 		"taskPoints": 1,
-		"rewardThreshold": 38
+		"rewardThreshold": 39
 	},
 	"medium": {
 		"tasks": [
@@ -1106,11 +1120,35 @@
 						}
 					}
 				]
+			},
+			{
+				"id": 151,
+				"name": "Brutus Champion",
+				"type": "kill_count",
+				"monster": "Brutus",
+				"desc": "Kill Brutus 10 times.",
+				"requirements": [
+					{
+						"kcRequirement": {
+							"15627": 10
+						}
+					}
+				]
+			},
+			{
+				"id": 152,
+				"name": "Beef vs Beef",
+				"type": "perfection",
+				"monster": "Brutus",
+				"desc": "Kill Brutus whilst neither equipping nor consuming anything.",
+				"rng": {
+					"chance_per_kill": 10
+				}
 			}
 		],
 		"name": "Medium",
 		"taskPoints": 2,
-		"rewardThreshold": 138
+		"rewardThreshold": 143
 	},
 	"hard": {
 		"tasks": [
@@ -1990,11 +2028,21 @@
 				"rng": {
 					"chance_per_kill": 15
 				}
+			},
+			{
+				"id": 275,
+				"name": "Smarter than a Cow",
+				"type": "mechanical",
+				"monster": "Brutus",
+				"desc": "Kill Brutus without being attacked.",
+				"rng": {
+					"chance_per_kill": 25
+				}
 			}
 		],
 		"name": "Hard",
 		"taskPoints": 3,
-		"rewardThreshold": 363
+		"rewardThreshold": 371
 	},
 	"elite": {
 		"tasks": [
@@ -3758,11 +3806,21 @@
 				"rng": {
 					"chance_per_kill": 60
 				}
+			},
+			{
+				"id": 1161,
+				"name": "Brutus Speed-Trialist",
+				"type": "speed",
+				"monster": "Brutus",
+				"desc": "Kill Brutus in less than 2 seconds.",
+				"rng": {
+					"chance_per_kill": 100
+				}
 			}
 		],
 		"name": "Elite",
 		"taskPoints": 4,
-		"rewardThreshold": 979
+		"rewardThreshold": 991
 	},
 	"master": {
 		"tasks": [
@@ -5575,7 +5633,7 @@
 		],
 		"name": "Master",
 		"taskPoints": 5,
-		"rewardThreshold": 1789
+		"rewardThreshold": 1801
 	},
 	"grandmaster": {
 		"tasks": [
@@ -6863,6 +6921,6 @@
 		],
 		"name": "Grandmaster",
 		"taskPoints": 6,
-		"rewardThreshold": 2491
+		"rewardThreshold": 2503
 	}
 }

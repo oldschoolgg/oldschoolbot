@@ -79,6 +79,11 @@
 		"heal_amount": 3
 	},
 	{
+		"name": "Cooked t-bone steak",
+		"id": 33109,
+		"heal_amount": 9
+	},
+	{
 		"name": "Curry",
 		"id": 2011,
 		"heal_amount": 19

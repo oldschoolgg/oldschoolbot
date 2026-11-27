@@ -14,6 +14,13 @@ interface Collectable {
 
 export const collectables: Collectable[] = [
 	{
+		item: Items.getOrThrow('Bucket of milk'),
+		quantity: 1,
+		itemCost: new Bank().add('Bucket'),
+		// Seven ticks per bucket, plus 30 seconds per inventory for banking and travel.
+		duration: Time.Second * (4.2 + 30 / 28)
+	},
+	{
 		item: Items.getOrThrow('Blue dragon scale'),
 		quantity: 26,
 		itemCost: new Bank({

@@ -21,7 +21,7 @@
 		"output_items": {
 			"13069": 1
 		},
-		"qp_required": 328,
+		"qp_required": 331,
 		"gp_cost": 99000
 	},
 	{
@@ -118,7 +118,7 @@
 	{
 		"name": "Angler boots",
 		"item_cost": {
-			"22820": 100
+			"22820": 50
 		},
 		"output_items": {
 			"13261": 1
@@ -127,7 +127,7 @@
 	{
 		"name": "Angler hat",
 		"item_cost": {
-			"22820": 100
+			"22820": 50
 		},
 		"output_items": {
 			"13258": 1
@@ -136,7 +136,7 @@
 	{
 		"name": "Angler top",
 		"item_cost": {
-			"22820": 100
+			"22820": 50
 		},
 		"output_items": {
 			"13259": 1
@@ -145,7 +145,7 @@
 	{
 		"name": "Angler waders",
 		"item_cost": {
-			"22820": 100
+			"22820": 50
 		},
 		"output_items": {
 			"13260": 1
@@ -1455,7 +1455,7 @@
 	{
 		"name": "Fish sack",
 		"item_cost": {
-			"22820": 1000
+			"22820": 500
 		},
 		"output_items": {
 			"22838": 1
@@ -3275,7 +3275,7 @@
 			"9813": 1,
 			"9814": 1
 		},
-		"qp_required": 328,
+		"qp_required": 331,
 		"gp_cost": 99000
 	},
 	{
@@ -3283,7 +3283,7 @@
 		"output_items": {
 			"13068": 1
 		},
-		"qp_required": 328,
+		"qp_required": 331,
 		"gp_cost": 99000
 	},
 	{
@@ -3787,6 +3787,15 @@
 		"qp_required": 10,
 		"output_items": {
 			"10858": 1
+		}
+	},
+	{
+		"name": "Shark lure pack",
+		"item_cost": {
+			"22820": 1
+		},
+		"output_items": {
+			"34065": 1
 		}
 	},
 	{

@@ -1,6 +1,6 @@
 {
-	"hash": "547ad8b4eeee5669697cfd9249281ab7",
-	"date": "2026-11-06T16:04:43.157Z",
+	"hash": "7009c2b321220f60e36bfe67d26b48d3",
+	"date": "2026-11-27T11:20:18.351Z",
 	"data": [
 		{
 			"name": "activities",
@@ -511,6 +511,11 @@
 			"name": "steal",
 			"desc": "Sends your minion to steal to train Thieving.",
 			"examples": ["/steal name:Man"],
+			"subOptions": []
+		},
+		{
+			"name": "thanksgiving",
+			"desc": "Help prepare a delightfully spooky Thanksgiving feast.",
 			"subOptions": []
 		},
 		{

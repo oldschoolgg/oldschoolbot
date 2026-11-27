@@ -41,14 +41,17 @@ export async function collectCommand(
 		}
 	}
 
+	const hasCowbell = collectable.item.name === 'Bucket of milk' && user.hasEquippedOrInBank('Cowbell amulet');
+	const durationPerCollection = collectable.duration - (hasCowbell ? Time.Second * 0.6 : 0);
+
 	if (no_stams === undefined) {
 		no_stams = false;
 	}
 
 	if (!quantity) {
-		quantity = Math.floor(maxTripLength / collectable.duration);
+		quantity = Math.floor(maxTripLength / durationPerCollection);
 	}
-	let duration = collectable.duration * quantity;
+	let duration = durationPerCollection * quantity;
 	if (duration > maxTripLength) {
 		return `${user.minionName} can't go on a trip longer than ${formatDuration(
 			maxTripLength

@@ -36,11 +36,21 @@ export const groupoMonsterTask: MinionTask = {
 				isOnTask: false,
 				taskQuantity: null
 			});
+			const bullBones = loot.amount('Bull bones');
+			if (bullBones > 0) {
+				loot.remove('Bull bones', bullBones);
+				await user.addXP({ skillName: 'prayer', amount: bullBones * 40 });
+				resultStr += `**${user} buried ${bullBones} bull bones.**
+`;
+			}
 			totalLoot.add(loot);
 			await user.transactItems({
 				collectionLog: true,
 				itemsToAdd: loot
 			});
+			if (bullBones > 0) {
+				await user.addItemsToCollectionLog({ itemsToAdd: new Bank().add('Bull bones', bullBones) });
+			}
 			const kcToAdd = kcAmounts[user.id];
 			if (kcToAdd) await user.incrementKC(monsterID, kcToAdd);
 			const purple = loot.items().some(([item]) => isImportantItemForMonster(item.id, monster));
