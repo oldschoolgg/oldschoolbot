@@ -1,5 +1,5 @@
 import { type APIChatInputApplicationCommandInteraction, SpecialResponse } from '@oldschoolgg/discord';
-import { UserError } from '@oldschoolgg/toolkit';
+import { Time, UserError } from '@oldschoolgg/toolkit';
 import { cryptoRng } from 'node-rng/crypto';
 
 import { convertAPIOptionsToCommandOptions } from '@/discord/index.js';
@@ -84,8 +84,12 @@ export async function rawCommandHandlerInner({
 			});
 
 		const requiresLock = Boolean('flags' in command && command.flags?.includes('REQUIRES_LOCK'));
+		const petOptions = options.pet;
+		const isPetChange = command.name === 'gear' && typeof petOptions === 'object' && 'change' in petOptions;
+		// Each of the 20 retries can wait 10 seconds for a click and 10 seconds to reveal the result.
+		const lockTimeoutMs = isPetChange ? 8 * Time.Minute : undefined;
 		const response: Awaited<CommandResponse> = requiresLock
-			? await user.withLock(command.name, runClosure)
+			? await user.withLock(command.name, runClosure, lockTimeoutMs)
 			: await runClosure();
 		return response;
 	} catch (err) {

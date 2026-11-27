@@ -357,6 +357,13 @@ export function doMonsterTrip(data: newOptions) {
 				}
 			}
 		}
+		const bullBones = loot.amount('Bull bones');
+		if (bullBones > 0) {
+			loot.remove('Bull bones', bullBones);
+			updateBank.collectionLogOnlyBank.add('Bull bones', bullBones);
+			updateBank.xpBank.add('prayer', bullBones * 40);
+			messages.push(`Your minion buried ${bullBones} bull bones.`);
+		}
 		updateBank.itemLootBank.add(loot);
 		updateBank.xpBank.add(
 			addMonsterXPRaw({

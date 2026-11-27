@@ -12,6 +12,11 @@ interface Eatable {
 
 export const Eatables: readonly Eatable[] = [
 	{
+		name: 'Cooked t-bone steak',
+		id: itemID('Cooked t-bone steak'),
+		healAmount: 9
+	},
+	{
 		name: 'Anchovies',
 		id: itemID('Anchovies'),
 		healAmount: 1

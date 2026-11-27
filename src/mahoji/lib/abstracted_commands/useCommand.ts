@@ -2,6 +2,8 @@ import { notEmpty } from '@oldschoolgg/toolkit';
 import { Bank, type Item, Items } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
+import { toaGuardianPetIds, toaMetamorphUnlockableMap } from '@/lib/petVariations.js';
+import { fetchUserStats } from '@/lib/util/fetchUserStats.js';
 import { assert } from '@/lib/util/logError.js';
 import { flowerTable } from '@/mahoji/lib/abstracted_commands/hotColdCommand.js';
 
@@ -10,6 +12,48 @@ interface Usable {
 	run: (user: MUser) => Promise<string>;
 }
 const usables: Usable[] = [];
+
+for (const unlock of toaMetamorphUnlockableMap.filter(entry => entry.unlockable !== null)) {
+	usables.push({
+		items: [Items.getOrThrow(Items.itemNameFromId(unlock.unlockable!)!), Items.getOrThrow("Tumeken's guardian")],
+		run: async user => {
+			const equipped = user.user.minion_equippedPet;
+			if (!equipped || !toaGuardianPetIds.includes(equipped))
+				return "Equip Tumeken's Guardian to use a remnant on it.";
+			const stats = await fetchUserStats(user.id);
+			if (stats.unlocked_toa_pets.includes(unlock.pet))
+				return 'You have already unlocked this guardian metamorphosis.';
+			await user.transactItems({
+				itemsToRemove: new Bank().add(unlock.unlockable!),
+				otherUpdates: { minion_equippedPet: unlock.pet },
+				collectionLog: true
+			});
+			await prisma.userStats.upsert({
+				where: { user_id: BigInt(user.id) },
+				create: { user_id: BigInt(user.id), unlocked_toa_pets: [unlock.pet] },
+				update: { unlocked_toa_pets: { push: unlock.pet } }
+			});
+			return `You used ${Items.itemNameFromId(unlock.unlockable!)} to unlock ${Items.itemNameFromId(unlock.pet)}.`;
+		}
+	});
+}
+
+usables.push({
+	items: [Items.getOrThrow('Funky shaped log'), Items.getOrThrow('Beaver')],
+	run: async user => {
+		if (user.user.minion_equippedPet !== Items.getOrThrow('Beaver').id) {
+			return 'Equip your Beaver pet to use the Funky shaped log on it.';
+		}
+		if (user.bitfield.includes(BitField.FUNKY_SHAPED_LOG_USED)) {
+			return 'You have already unlocked Beaver pet recolors.';
+		}
+		await user.transactItems({
+			itemsToRemove: new Bank().add('Funky shaped log'),
+			otherUpdates: { bitfield: { push: BitField.FUNKY_SHAPED_LOG_USED } }
+		});
+		return 'You used the Funky shaped log with your Beaver, unlocking Beaver pet recolors.';
+	}
+});
 
 interface UsableUnlock {
 	item: Item;
@@ -153,7 +197,33 @@ export async function useCommand(user: MUser, _firstItem: string, _secondItem?: 
 	for (const i of items) checkBank.add(i.id);
 	if (!bank.has(checkBank)) return `You don't own ${checkBank}.`;
 
-	const usable = usables.find(i => i.items.length === items.length && i.items.every(t => items.includes(t)));
+	const usable = usables.find(
+		i => i.items.length === items.length && i.items.every(t => items.some(item => item.id === t.id))
+	);
+	const toaUnlock = toaMetamorphUnlockableMap.find(
+		entry => entry.unlockable !== null && (entry.unlockable === firstItem.id || entry.unlockable === secondItem?.id)
+	);
+	const guardianIds = toaGuardianPetIds;
+	if (
+		toaUnlock &&
+		items.length === 2 &&
+		items.some(item => item.id === toaUnlock.unlockable) &&
+		guardianIds.includes(user.user.minion_equippedPet ?? -1)
+	) {
+		const stats = await fetchUserStats(user.id);
+		if (stats.unlocked_toa_pets.includes(toaUnlock.pet))
+			return 'You have already unlocked this guardian metamorphosis.';
+		await user.transactItems({
+			itemsToRemove: new Bank().add(toaUnlock.unlockable!),
+			otherUpdates: { minion_equippedPet: toaUnlock.pet }
+		});
+		await prisma.userStats.upsert({
+			where: { user_id: BigInt(user.id) },
+			create: { user_id: BigInt(user.id), unlocked_toa_pets: [toaUnlock.pet] },
+			update: { unlocked_toa_pets: { push: toaUnlock.pet } }
+		});
+		return `You used ${Items.itemNameFromId(toaUnlock.unlockable!)} to unlock ${Items.itemNameFromId(toaUnlock.pet)}.`;
+	}
 	if (!usable) return `That's not a usable ${items.length === 1 ? 'item' : 'combination'}.`;
 	return usable.run(user);
 }

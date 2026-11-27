@@ -613,5 +613,28 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 				'Royal Titans': [10, Monsters.Branda.id, Monsters.Eldric.id, Monsters.RoyalTitans.id]
 			}
 		})
+	},
+	{
+		id: 151,
+		name: 'Brutus Champion',
+		type: 'kill_count',
+		monster: 'Brutus',
+		desc: 'Kill Brutus 10 times.',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Brutus.id]: 10
+			}
+		})
+	},
+	{
+		id: 152,
+		name: 'Beef vs Beef',
+		type: 'perfection',
+		monster: 'Brutus',
+		desc: 'Kill Brutus whilst neither equipping nor consuming anything.',
+		rng: {
+			chancePerKill: 10,
+			hasChance: isCertainMonsterTrip(Monsters.Brutus.id)
+		}
 	}
 ];

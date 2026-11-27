@@ -75,6 +75,7 @@ import { smithCommand } from '@/mahoji/commands/smith.js';
 import { statsCommand } from '@/mahoji/commands/stats.js';
 import { stealCommand } from '@/mahoji/commands/steal.js';
 import { testPotatoCommand } from '@/mahoji/commands/testpotato.js';
+import { thanksgivingCommand } from '@/mahoji/commands/thanksgiving.js';
 import { tksCommand } from '@/mahoji/commands/tokkulshop.js';
 import { toolsCommand } from '@/mahoji/commands/tools.js';
 import { tradeCommand } from '@/mahoji/commands/trade.js';
@@ -150,6 +151,7 @@ export const allCommandsDONTIMPORT: AnyCommand[] = [
 	stealCommand,
 	tradeCommand,
 	triviaCommand,
+	thanksgivingCommand,
 	toolsCommand,
 	tksCommand,
 	mahojiUseCommand,

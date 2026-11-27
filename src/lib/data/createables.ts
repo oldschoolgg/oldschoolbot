@@ -628,7 +628,72 @@ const camdozaalItems: Createable[] = [
 	}
 ];
 
-const metamorphPets: Createable[] = [
+export const metamorphPets: Createable[] = [
+	{
+		name: 'Kalphite princess',
+		inputItems: { [itemID('Kalphite Princess (flying)')]: 1 },
+		outputItems: { [itemID('Kalphite princess')]: 1 }
+	},
+	{
+		name: 'Pet smoke devil (smoke)',
+		inputItems: { [itemID('Pet smoke devil')]: 1 },
+		outputItems: { [itemID('Pet smoke devil (smoke)')]: 1 }
+	},
+	{
+		name: 'Pet corporeal critter',
+		inputItems: { [itemID('Pet dark core')]: 1 },
+		outputItems: { [itemID('Pet corporeal critter')]: 1 }
+	},
+	{
+		name: 'Pet snakeling (mutated)',
+		inputItems: { [itemID('Pet snakeling')]: 1 },
+		outputItems: { [itemID('Pet snakeling (mutated)')]: 1 }
+	},
+	{
+		name: 'Pet snakeling (tanzanite)',
+		inputItems: { [itemID('Pet snakeling')]: 1 },
+		outputItems: { [itemID('Pet snakeling (tanzanite)')]: 1 }
+	},
+	{
+		name: 'Venenatis spiderling (orphan)',
+		inputItems: { [itemID('Venenatis spiderling')]: 1 },
+		outputItems: { [itemID('Venenatis spiderling (orphan)')]: 1 }
+	},
+	{
+		name: 'Callisto cub (orphan)',
+		inputItems: { [itemID('Callisto cub')]: 1 },
+		outputItems: { [itemID('Callisto cub (orphan)')]: 1 }
+	},
+	{
+		name: "Vet'ion jr. (skeletal)",
+		inputItems: { [itemID("Vet'ion jr.")]: 1 },
+		outputItems: { [itemID("Vet'ion jr. (skeletal)")]: 1 }
+	},
+	{
+		name: "Vet'ion jr. (reanimated)",
+		inputItems: { [itemID("Vet'ion jr.")]: 1 },
+		outputItems: { [itemID("Vet'ion jr. (reanimated)")]: 1 }
+	},
+	{
+		name: 'Ikkle hydra (magna)',
+		inputItems: { [itemID('Ikkle hydra')]: 1 },
+		outputItems: { [itemID('Ikkle hydra (magna)')]: 1 }
+	},
+	{
+		name: 'Ikkle hydra (serpentine)',
+		inputItems: { [itemID('Ikkle hydra')]: 1 },
+		outputItems: { [itemID('Ikkle hydra (serpentine)')]: 1 }
+	},
+	{
+		name: 'Ikkle hydra (icy)',
+		inputItems: { [itemID('Ikkle hydra')]: 1 },
+		outputItems: { [itemID('Ikkle hydra (icy)')]: 1 }
+	},
+	{
+		name: "Lil' destructor",
+		inputItems: { [itemID("Lil' creator")]: 1 },
+		outputItems: { [itemID("Lil' destructor")]: 1 }
+	},
 	{
 		name: 'Midnight',
 		inputItems: {
@@ -700,7 +765,7 @@ const metamorphPets: Createable[] = [
 	{
 		name: 'Greatish guardian',
 		inputItems: {
-			[itemID('Rift guardian')]: 1,
+			[itemID('Rift guardian (air)')]: 1,
 			[itemID("Guardian's eye")]: 1
 		},
 		outputItems: {
@@ -718,7 +783,7 @@ const metamorphPets: Createable[] = [
 		}
 	},
 	{
-		name: 'Bone Squirrel',
+		name: 'Bone squirrel',
 		inputItems: {
 			[itemID('Calcified acorn')]: 1,
 			[itemID('Giant squirrel')]: 1
@@ -741,7 +806,85 @@ const metamorphPets: Createable[] = [
 	}
 ];
 
-const revertMetamorphPets: Createable[] = [
+export const revertMetamorphPets: Createable[] = [
+	{
+		name: 'Revert kalphite princess',
+		inputItems: { [itemID('Kalphite princess')]: 1 },
+		outputItems: { [itemID('Kalphite Princess (flying)')]: 1 },
+		noCl: true
+	},
+	{
+		name: 'Revert pet smoke devil',
+		inputItems: { [itemID('Pet smoke devil (smoke)')]: 1 },
+		outputItems: { [itemID('Pet smoke devil')]: 1 },
+		noCl: true
+	},
+	{
+		name: 'Revert pet corporeal critter',
+		inputItems: { [itemID('Pet corporeal critter')]: 1 },
+		outputItems: { [itemID('Pet dark core')]: 1 },
+		noCl: true
+	},
+	{
+		name: 'Revert Pet snakeling (mutated)',
+		inputItems: { [itemID('Pet snakeling (mutated)')]: 1 },
+		outputItems: { [itemID('Pet snakeling')]: 1 },
+		noCl: true
+	},
+	{
+		name: 'Revert Pet snakeling (tanzanite)',
+		inputItems: { [itemID('Pet snakeling (tanzanite)')]: 1 },
+		outputItems: { [itemID('Pet snakeling')]: 1 },
+		noCl: true
+	},
+	{
+		name: 'Revert Venenatis spiderling',
+		inputItems: { [itemID('Venenatis spiderling (orphan)')]: 1 },
+		outputItems: { [itemID('Venenatis spiderling')]: 1 },
+		noCl: true
+	},
+	{
+		name: 'Revert Callisto cub',
+		inputItems: { [itemID('Callisto cub (orphan)')]: 1 },
+		outputItems: { [itemID('Callisto cub')]: 1 },
+		noCl: true
+	},
+	{
+		name: "Revert Vet'ion jr. skeletal",
+		inputItems: { [itemID("Vet'ion jr. (skeletal)")]: 1 },
+		outputItems: { [itemID("Vet'ion jr.")]: 1 },
+		noCl: true
+	},
+	{
+		name: "Revert Vet'ion jr. reanimated",
+		inputItems: { [itemID("Vet'ion jr. (reanimated)")]: 1 },
+		outputItems: { [itemID("Vet'ion jr.")]: 1 },
+		noCl: true
+	},
+	{
+		name: 'Revert Ikkle hydra (magna)',
+		inputItems: { [itemID('Ikkle hydra (magna)')]: 1 },
+		outputItems: { [itemID('Ikkle hydra')]: 1 },
+		noCl: true
+	},
+	{
+		name: 'Revert Ikkle hydra serpentine',
+		inputItems: { [itemID('Ikkle hydra (serpentine)')]: 1 },
+		outputItems: { [itemID('Ikkle hydra')]: 1 },
+		noCl: true
+	},
+	{
+		name: 'Revert Ikkle hydra icy',
+		inputItems: { [itemID('Ikkle hydra (icy)')]: 1 },
+		outputItems: { [itemID('Ikkle hydra')]: 1 },
+		noCl: true
+	},
+	{
+		name: 'Revert Lil’ creator',
+		inputItems: { [itemID("Lil' destructor")]: 1 },
+		outputItems: { [itemID("Lil' creator")]: 1 },
+		noCl: true
+	},
 	{
 		name: 'Revert midnight',
 		inputItems: {
@@ -822,7 +965,7 @@ const revertMetamorphPets: Createable[] = [
 			[itemID('Greatish guardian')]: 1
 		},
 		outputItems: {
-			[itemID('Rift guardian')]: 1,
+			[itemID('Rift guardian (air)')]: 1,
 			[itemID("Guardian's eye")]: 1
 		},
 		noCl: true
@@ -839,7 +982,7 @@ const revertMetamorphPets: Createable[] = [
 		noCl: true
 	},
 	{
-		name: 'Revert Bone Squirrel',
+		name: 'Revert Bone squirrel',
 		inputItems: {
 			[itemID('Bone squirrel')]: 1
 		},
@@ -1456,6 +1599,11 @@ const Reverteables: Createable[] = [
 ];
 
 const Createables: Createable[] = [
+	{
+		name: 'Bottomless milk bucket',
+		inputItems: new Bank().add('Bottomless milk bucket (empty)').add('Bucket of milk', 10_000),
+		outputItems: new Bank().add('Bottomless milk bucket')
+	},
 	{
 		name: 'Godsword blade',
 		inputItems: {

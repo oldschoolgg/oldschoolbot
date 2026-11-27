@@ -22,7 +22,7 @@ const pets: Pet[] = [
 		id: 1,
 		emoji: '<:Baby_chinchompa_red:324127375539306497>',
 		chance: 95_898,
-		name: 'Baby Chinchompa',
+		name: 'Baby chinchompa',
 		type: 'SKILL',
 		altNames: ['CHINCHOMPA', 'BABYCHINCHOMPA', 'CHIN'],
 		formatFinish: (num: number) =>
@@ -758,6 +758,14 @@ const pets: Pet[] = [
 		type: 'SKILL',
 		altNames: ['SOUP', 'SAILING'],
 		formatFinish: (num: number) => `You had to complete ${fm(num)} Sailing activities to get Soup! :pet:`
+	},
+	{
+		id: 67,
+		chance: 1000,
+		name: 'Beef',
+		type: 'BOSS',
+		altNames: ['BEEF', 'BRUTUS', 'DEMONICBRUTUS'],
+		formatFinish: (num: number) => `You had to defeat Brutus ${fm(num)} times to get Beef! :pet:`
 	}
 ];
 

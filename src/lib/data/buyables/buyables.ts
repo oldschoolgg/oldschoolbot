@@ -1120,6 +1120,11 @@ const Buyables: Buyable[] = [
 		}
 	},
 	{
+		name: 'Rock',
+		gpCost: 500_000,
+		ironmanPrice: 100_000
+	},
+	{
 		name: 'Lockpick',
 		gpCost: 5000,
 		ironmanPrice: 500,

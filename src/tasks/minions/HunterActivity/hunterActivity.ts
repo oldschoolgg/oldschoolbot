@@ -1,6 +1,6 @@
 import { EquipmentSlot } from '@oldschoolgg/gear';
 import { Events, Time } from '@oldschoolgg/toolkit';
-import { Bank, ECreature, EItem } from 'oldschooljs';
+import { Bank, ECreature, EItem, itemID } from 'oldschooljs';
 
 import { MAX_LEVEL } from '@/lib/constants.js';
 import { hasWildyHuntGearEquipped } from '@/lib/gear/functions/hasWildyHuntGearEquipped.js';
@@ -10,6 +10,12 @@ import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
 import type { HunterActivityTaskOptions } from '@/lib/types/minions.js';
 import { PeakTier } from '@/lib/util/peaks.js';
 import { skillingPetDropRate } from '@/lib/util.js';
+
+const chinchompaPets = new Map<number, { name: string; baseRate: number }>([
+	[ECreature.CHINCHOMPA, { name: 'Baby chinchompa (grey)', baseRate: 131_395 }],
+	[ECreature.CARNIVOROUS_CHINCHOMPA, { name: 'Baby chinchompa (red)', baseRate: 98_373 }],
+	[ECreature.BLACK_CHINCHOMPA, { name: 'Baby chinchompa (black)', baseRate: 82_758 }]
+]);
 
 const riskDeathNumbers = [
 	{
@@ -142,14 +148,24 @@ export const hunterTask: MinionTask = {
 			loot.add(creatureTable.roll());
 		}
 
-		if (creature.name.toLowerCase().includes('chinchompa')) {
-			const babyChinChance =
-				creature.name === 'Chinchompa' ? 131_395 : creature.name === 'Carnivorous chinchompa' ? 98_373 : 82_758;
-			const { petDropRate } = skillingPetDropRate(user, 'hunter', babyChinChance);
+		let collectionLog: true | Bank = true;
+		let babyChinDrop: string | undefined;
+		const babyChin = chinchompaPets.get(creature.id);
+		if (babyChin) {
+			const petId = itemID(babyChin.name);
+			const { petDropRate } = skillingPetDropRate(user, 'hunter', babyChin.baseRate);
 
 			for (let i = 0; i < actualQty; i++) {
 				if (rng.roll(petDropRate)) {
-					loot.add(EItem.BABY_CHINCHOMPA);
+					loot.add(petId);
+				}
+			}
+
+			const petQuantity = loot.amount(petId);
+			if (petQuantity > 0) {
+				babyChinDrop = babyChin.name;
+				if (petId !== EItem.BABY_CHINCHOMPA) {
+					collectionLog = loot.clone().add(EItem.BABY_CHINCHOMPA, petQuantity);
 				}
 			}
 		}
@@ -160,7 +176,7 @@ export const hunterTask: MinionTask = {
 		}
 
 		await user.transactItems({
-			collectionLog: true,
+			collectionLog,
 			itemsToAdd: loot
 		});
 		xpStr += await user.addXP({
@@ -185,13 +201,11 @@ export const hunterTask: MinionTask = {
 			str += `\n${diedStr}`;
 		}
 
-		if (loot.amount('Baby chinchompa') > 0 || loot.amount('Herbi') > 0) {
+		if (babyChinDrop || loot.has('Herbi')) {
 			globalClient.emit(
 				Events.ServerNotification,
 				`**${user.usernameOrMention}'s** minion, ${user.minionName}, just received a ${
-					loot.amount('Baby chinchompa') > 0
-						? '**Baby chinchompa** <:Baby_chinchompa_red:324127375539306497>'
-						: '**Herbi** <:Herbi:357773175318249472>'
+					babyChinDrop ? `**${babyChinDrop}**` : '**Herbi** <:Herbi:357773175318249472>'
 				} while hunting a ${creature.name}, their Hunter level is ${currentLevel}!`
 			);
 		}

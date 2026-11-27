@@ -363,6 +363,38 @@
 					"Verac's plateskirt"
 				]
 			},
+			"brutus": {
+				"kc_activity": {
+					"default": ["Brutus", "Demonic Brutus"],
+					"brutus": "Brutus",
+					"demonic_brutus": "Demonic Brutus"
+				},
+				"all_items": [
+					"Acorn",
+					"Air rune",
+					"Beef",
+					"Bottomless milk bucket (empty)",
+					"Brutus slippers",
+					"Bull bones",
+					"Chaos rune",
+					"Clue scroll (beginner)",
+					"Clue scroll (easy)",
+					"Cow slippers",
+					"Cowhide",
+					"Iron arrow",
+					"Iron full helm",
+					"Iron platebody",
+					"Iron platelegs",
+					"Iron plateskirt",
+					"Logs",
+					"Mind rune",
+					"Mooleta",
+					"Oak logs",
+					"Potato seed",
+					"Raw t-bone steak"
+				],
+				"items": ["Beef", "Bottomless milk bucket (empty)", "Cow slippers", "Mooleta"]
+			},
 			"bryophyta": {
 				"all_items": [
 					"Adamant arrow",
@@ -5214,6 +5246,7 @@
 					"Baby mole",
 					"Baron",
 					"Beaver",
+					"Beef",
 					"Bloodhound",
 					"Bran",
 					"Butch",
@@ -6974,6 +7007,7 @@
 					"Book of war page set",
 					"Boots of brimstone",
 					"Bottled dragonbreath",
+					"Bottomless milk bucket",
 					"Bow of faerdhinen (c)",
 					"Bow of faerdhinen (inactive)",
 					"Bracelet of ethereum",
@@ -7047,6 +7081,7 @@
 					"Dragon felling axe",
 					"Dragon full helm (g)",
 					"Dragon harpoon (or)",
+					"Dragon hasta",
 					"Dragon hunter crossbow (b)",
 					"Dragon hunter crossbow (t)",
 					"Dragon hunter lance",

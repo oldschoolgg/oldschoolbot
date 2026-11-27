@@ -1,11 +1,29 @@
 import { Emoji, Events } from '@oldschoolgg/toolkit';
-import { Bank, EItem } from 'oldschooljs';
+import { Bank, EItem, itemID } from 'oldschooljs';
 
 import { bloodEssence, raimentBonus } from '@/lib/skilling/functions/calcsRunecrafting.js';
 import Runecraft from '@/lib/skilling/skills/runecraft.js';
 import type { RunecraftActivityTaskOptions } from '@/lib/types/minions.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 import { calcMaxRCQuantity } from '@/mahoji/mahojiSettings.js';
+
+const riftGuardianVariants = [
+	'air',
+	'mind',
+	'water',
+	'earth',
+	'fire',
+	'body',
+	'cosmic',
+	'chaos',
+	'nature',
+	'law',
+	'death',
+	'soul',
+	'astral',
+	'blood',
+	'wrath'
+];
 
 export const runecraftTask: MinionTask = {
 	type: 'Runecraft',
@@ -57,9 +75,16 @@ export const runecraftTask: MinionTask = {
 		}
 
 		const loot = new Bank().add(rune.id, runeQuantity);
+		let collectionLog: true | Bank = true;
 		const { petDropRate } = skillingPetDropRate(user, 'runecraft', 1_795_758);
 		if (rng.roll(Math.ceil(petDropRate / essenceQuantity))) {
-			loot.add('Rift guardian');
+			const variant = rune.inputTalisman
+				? rng.pick(riftGuardianVariants)!
+				: rune.name.toLowerCase().replace(/ rune$/, '');
+			const awardedPetId = itemID(`Rift guardian (${variant})`);
+			loot.add(awardedPetId);
+			const basePetId = itemID('Rift guardian');
+			if (awardedPetId !== basePetId) collectionLog = loot.clone().add(basePetId);
 			globalClient.emit(
 				Events.ServerNotification,
 				`${Emoji.Runecraft} **${user.badgedUsername}'s** minion, ${
@@ -89,7 +114,7 @@ export const runecraftTask: MinionTask = {
 		}
 
 		await user.transactItems({
-			collectionLog: true,
+			collectionLog,
 			itemsToAdd: loot
 		});
 

@@ -114,11 +114,12 @@ export class MUserClass extends BaseUser {
 
 	async rawUpdate({
 		data,
-		gearUpdates
+		gearUpdates,
+		otherQueries = []
 	}: {
 		data: FullUserUpdateInput;
 		gearUpdates?: GearWithSetupType[];
-		_otherQueries?: any[];
+		otherQueries?: Prisma.PrismaPromise<unknown>[];
 	}): Promise<MUser> {
 		const secondaryQueries = [];
 
@@ -158,7 +159,8 @@ export class MUserClass extends BaseUser {
 					...(data as Prisma.UserUpdateInput)
 				}
 			}),
-			...secondaryQueries
+			...secondaryQueries,
+			...otherQueries
 		]);
 		this._updateRawUser(newUser);
 		return this;
@@ -1064,7 +1066,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 		let timer: NodeJS.Timeout | undefined;
 
 		const timeoutPromise = new Promise<never>((_, reject) => {
-			timer = setTimeout(() => reject(new Error(`${id} held lock for over 60s`)), timeoutMs);
+			timer = setTimeout(() => reject(new Error(`${id} held lock for over ${timeoutMs / 1000}s`)), timeoutMs);
 		});
 
 		const res = await Promise.race([

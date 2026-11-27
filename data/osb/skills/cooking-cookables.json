@@ -301,6 +301,18 @@
 		"burnt_cookable": "Burnt swordfish"
 	},
 	{
+		"level": 13,
+		"xp": 90,
+		"id": 33109,
+		"name": "T-bone steak",
+		"input_cookables": {
+			"33106": 1
+		},
+		"stop_burn_at": 49,
+		"burn_kourend_bonus": [46, 46, 46, 46],
+		"burnt_cookable": "Burnt t-bone steak"
+	},
+	{
 		"level": 15,
 		"xp": 70,
 		"id": 333,

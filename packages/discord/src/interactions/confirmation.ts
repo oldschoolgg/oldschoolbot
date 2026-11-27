@@ -119,7 +119,10 @@ export async function interactionConfirmation(
 		});
 
 		collector.on('end', async (collected, reason) => {
-			if (reason === StopReason.AllConfirmed) return resolve();
+			if (reason === StopReason.AllConfirmed) {
+				await interaction.reply({ components: [] });
+				return resolve();
+			}
 			if (reason === StopReason.UserCancelled) {
 				await interaction.reply({ content: `The confirmation was cancelled.`, components: [], embeds: [] });
 				return reject(new Error('SILENT_ERROR'));

@@ -18,6 +18,7 @@ import { BOT_TYPE } from '../src/lib/constants.js';
 import Buyables from '../src/lib/data/buyables/buyables.js';
 import { allCLItems } from '../src/lib/data/Collections.js';
 import Createables from '../src/lib/data/createables.js';
+import { allPetVariations, petCostBanks } from '../src/lib/petVariations.js';
 
 const SPRITESHEETS_DIR = './src/lib/resources/spritesheets';
 const OSB_ICONS_DIR = './src/lib/resources/images/osb_icons';
@@ -28,6 +29,16 @@ const itemsMustBeInSpritesheet: number[] = uniqueArr([
 	...allCLItems,
 	...tradeableItems,
 	...Createables.map(c => new Bank(c.outputItems).items().flatMap(i => i[0].id)).flat(2),
+	...allPetVariations.flatMap(variation => [
+		variation.base,
+		...variation.metamorphs.flatMap(morph => [
+			...(Array.isArray(morph.random) ? morph.random.map(pet => pet.petId) : []),
+			...(morph.cost ?? []).flatMap(pet => [
+				pet.petId,
+				...petCostBanks(pet.costOption).flatMap(bank => bank.items().map(([item]) => item.id))
+			])
+		])
+	]),
 	...Buyables.flatMap(b => {
 		if (!b.outputItems) return [];
 		if (isFunction(b.outputItems)) {
@@ -63,11 +74,6 @@ const itemsMustBeInSpritesheet: number[] = uniqueArr([
 		'Dwarven rock cake',
 		'Jewellery',
 		'Fishing trophy',
-		'Crystal tangleroot',
-		'Dragonfruit tangleroot',
-		'Herb tangleroot',
-		'White lily tangleroot',
-		'Redwood tangleroot',
 		'Termites',
 		'Fancier boots',
 		...HolidayItems.Halloween.halloweenItems,
@@ -738,13 +744,18 @@ const itemsMustBeInSpritesheet: number[] = uniqueArr([
 	33082,
 	33084,
 	33086,
+	33096,
+	33097,
+	33098,
 	33099,
 	33101,
+	33103,
+	33104,
 	33106,
 	33109,
 	33112,
 	33115,
-	33117,
+	EItem.MAGIC_LAMP,
 	33118,
 	33120,
 	33124,

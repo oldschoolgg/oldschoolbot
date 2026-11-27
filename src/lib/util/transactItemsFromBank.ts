@@ -1,5 +1,6 @@
 import { Bank, type ItemBank } from 'oldschooljs';
 
+import type { Prisma } from '@/prisma/main.js';
 import { deduplicateClueScrolls } from '@/lib/clues/clueUtils.js';
 import { handleNewCLItems } from '@/lib/handleNewCLItems.js';
 import { filterLootReplace } from '@/lib/slayer/slayerUtil.js';
@@ -12,12 +13,13 @@ export interface TransactItemsArgs {
 	user: MUser;
 	itemsToAdd?: Bank;
 	itemsToRemove?: Bank;
-	collectionLog?: boolean;
+	collectionLog?: boolean | Bank;
 	filterLoot?: boolean;
 	dontAddToTempCL?: boolean;
 	neverUpdateHistory?: boolean;
 	otherUpdates?: SafeUserUpdateInput;
 	gearUpdates?: GearWithSetupType[];
+	otherQueries?: Prisma.PrismaPromise<unknown>[];
 }
 
 async function unqueuedTransactItems({
@@ -28,6 +30,7 @@ async function unqueuedTransactItems({
 	filterLoot,
 	neverUpdateHistory,
 	gearUpdates,
+	otherQueries,
 	...options
 }: TransactItemsArgs) {
 	let itemsToAdd = options.itemsToAdd ? options.itemsToAdd.clone() : undefined;
@@ -63,10 +66,10 @@ async function unqueuedTransactItems({
 		const { bankLoot, clLoot } = filterLoot
 			? filterLootReplace({ currentBank, itemsToAdd })
 			: { bankLoot: itemsToAdd, clLoot: itemsToAdd };
-		clLootBank = clLoot;
+		clLootBank = collectionLog instanceof Bank ? collectionLog : clLoot;
 		itemsToAdd = bankLoot;
 
-		clUpdates = collectionLog ? user.calculateAddItemsToCLUpdates({ items: clLoot, dontAddToTempCL }) : {};
+		clUpdates = collectionLog ? user.calculateAddItemsToCLUpdates({ items: clLootBank, dontAddToTempCL }) : {};
 	}
 
 	let gpUpdate: { increment: number } | undefined;
@@ -126,7 +129,7 @@ async function unqueuedTransactItems({
 		...clUpdates,
 		...otherUpdates
 	} as const;
-	const newUser = await user.rawUpdate({ data: updateData, gearUpdates });
+	const newUser = await user.rawUpdate({ data: updateData, gearUpdates, otherQueries });
 
 	const itemsAdded = new Bank(itemsToAdd);
 	if (itemsAdded && gpUpdate && gpUpdate.increment > 0) {
@@ -139,18 +142,19 @@ async function unqueuedTransactItems({
 	}
 
 	const newCL = new Bank(newUser.user.collectionLogBank as ItemBank);
+	const trackedItems = collectionLog instanceof Bank ? collectionLog : itemsAdded;
 
 	if (!dontAddToTempCL && collectionLog) {
 		const activeBingos = await findBingosWithUserParticipating(user.id);
 		for (const bingo of activeBingos) {
 			if (bingo.isActive()) {
-				bingo.handleNewItems(user.id, itemsAdded);
+				bingo.handleNewItems(user.id, trackedItems);
 			}
 		}
 	}
 
 	if (!neverUpdateHistory) {
-		await handleNewCLItems({ itemsAdded, user: user, previousCL, newCL });
+		await handleNewCLItems({ itemsAdded: trackedItems, user: user, previousCL, newCL });
 	}
 
 	return {

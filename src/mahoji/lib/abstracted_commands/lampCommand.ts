@@ -115,6 +115,13 @@ export const XPLamps: IXPLamp[] = [
 		amount: 50_000,
 		name: 'Antique lamp (grandmaster ca)',
 		minimumLevel: 70
+	},
+	{
+		itemID: itemID('Magic lamp'),
+		name: 'Magic lamp (The Ides of Milk)',
+		amount: 1000,
+		minimumLevel: 1,
+		allowedSkills: ['attack', 'strength', 'defence', 'hitpoints', 'ranged', 'magic', 'prayer']
 	}
 ];
 
