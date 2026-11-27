@@ -2923,8 +2923,7 @@ const Createables: Createable[] = [
 			'Demon tear': 4_000
 		}),
 		outputItems: new Bank({ 'Avernic treads (pr)(pe)': 1 }),
-		requiredSkills: { magic: 80, runecraft: 60 },
-		noCl: true
+		requiredSkills: { magic: 80, runecraft: 60 }
 	},
 	{
 		name: 'Avernic treads (pr)(et)',
@@ -2944,8 +2943,7 @@ const Createables: Createable[] = [
 			'Demon tear': 4_000
 		}),
 		outputItems: new Bank({ 'Avernic treads (pr)(et)': 1 }),
-		requiredSkills: { magic: 80, runecraft: 60 },
-		noCl: true
+		requiredSkills: { magic: 80, runecraft: 60 }
 	},
 	{
 		name: 'Avernic treads (pe)(et)',
@@ -2965,8 +2963,7 @@ const Createables: Createable[] = [
 			'Demon tear': 4_000
 		}),
 		outputItems: new Bank({ 'Avernic treads (pe)(et)': 1 }),
-		requiredSkills: { magic: 80, runecraft: 60 },
-		noCl: true
+		requiredSkills: { magic: 80, runecraft: 60 }
 	},
 	{
 		name: 'Avernic treads (max) (from pr)(pe)',
@@ -2986,8 +2983,7 @@ const Createables: Createable[] = [
 			'Demon tear': 4_000
 		}),
 		outputItems: new Bank({ 'Avernic treads (max)': 1 }),
-		requiredSkills: { magic: 80, runecraft: 60 },
-		noCl: true
+		requiredSkills: { magic: 80, runecraft: 60 }
 	},
 	{
 		name: 'Avernic treads (max) (from pe)(et)',
@@ -2997,8 +2993,7 @@ const Createables: Createable[] = [
 			'Demon tear': 4_000
 		}),
 		outputItems: new Bank({ 'Avernic treads (max)': 1 }),
-		requiredSkills: { magic: 80, runecraft: 60 },
-		noCl: true
+		requiredSkills: { magic: 80, runecraft: 60 }
 	},
 	{
 		name: 'Revert avernic treads (pr)',
