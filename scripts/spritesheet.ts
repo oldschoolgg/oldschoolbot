@@ -815,7 +815,7 @@ const itemsMustBeInSpritesheet: number[] = uniqueArr([
 	33112,
 	33115,
 	33118,
-	33124,
+	33124
 	// End Brutus
 ]);
 

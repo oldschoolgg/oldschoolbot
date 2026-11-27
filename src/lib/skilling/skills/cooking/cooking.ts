@@ -10,6 +10,16 @@ export enum CookingMethodEnum {
 
 export const Cookables: Cookable[] = [
 	{
+		level: 13,
+		xp: 90,
+		id: itemID('Cooked t-bone steak'),
+		name: 'T-bone steak',
+		inputCookables: { [itemID('Raw t-bone steak')]: 1 },
+		stopBurnAt: 49,
+		burnKourendBonus: [46, 46, 46, 46],
+		burntCookable: itemID('Burnt t-bone steak')
+	},
+	{
 		level: 1,
 		xp: 30,
 		id: itemID('Cooked meat'),
