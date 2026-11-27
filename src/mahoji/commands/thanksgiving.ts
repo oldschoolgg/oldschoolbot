@@ -6,6 +6,8 @@ function setStage(userId: string, stage: number) {
 	return prisma.$executeRaw`UPDATE user_stats SET thanksgiving_2026 = jsonb_set(COALESCE(thanksgiving_2026, '{}'::jsonb), '{stage}', to_jsonb(${stage}::int)) WHERE user_id = ${BigInt(userId)}`;
 }
 
+const eventEndsAt = Date.UTC(2026, 11, 10);
+
 const feathers = new Bank().add('Feather', 25);
 const supplies = new Bank().add('Onion', 3).add('Cadava berries', 3);
 
@@ -53,6 +55,7 @@ export const thanksgivingCommand = defineCommand({
 			await user.addItemsToBank({ items: reclaimed, collectionLog: true });
 			return `Your guests replace your lost rewards: ${reclaimed}.`;
 		}
+		if (Date.now() >= eventEndsAt) return 'The Thanksgiving event has ended.';
 		if (stage < 1) {
 			if (action !== 'start') return 'Start the event with `/thanksgiving` first.';
 			await setStage(user.id, 1);
