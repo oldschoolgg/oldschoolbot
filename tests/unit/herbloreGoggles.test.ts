@@ -2,6 +2,7 @@ import type { RNGProvider } from 'node-rng';
 import { describe, expect, test, vi } from 'vitest';
 
 import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
+import Crush from '@/lib/skilling/skills/herblore/mixables/crush.js';
 import { calculatePrescriptionGogglesSavedItems } from '@/tasks/minions/herbloreActivity.js';
 
 function getMixable(name: string) {
@@ -15,6 +16,29 @@ function mockRng(result: boolean): RNGProvider {
 }
 
 describe('Prescription goggles', () => {
+	test.each(Crush)('does not save ingredients when crushing $item.name', mixable => {
+		const rng = mockRng(true);
+		const savedItems = calculatePrescriptionGogglesSavedItems(mixable, 10, rng);
+
+		expect(savedItems.length).toEqual(0);
+		expect(rng.percentChance).not.toHaveBeenCalled();
+	});
+
+	test.each(['Guam leaf', 'Guam potion (unf)', 'Guam tar'])('does not save ingredients when making %s', name => {
+		const rng = mockRng(true);
+		const savedItems = calculatePrescriptionGogglesSavedItems(getMixable(name), 10, rng);
+
+		expect(savedItems.length).toEqual(0);
+		expect(rng.percentChance).not.toHaveBeenCalled();
+	});
+
+	test('saves secondaries when making barbarian mixes', () => {
+		const savedItems = calculatePrescriptionGogglesSavedItems(getMixable('Attack mix(2)'), 2, mockRng(true));
+
+		expect(savedItems.amount('Roe')).toEqual(2);
+		expect(savedItems.amount('Attack potion(2)')).toEqual(0);
+	});
+
 	test('saves stackable secondaries once per potion proc', () => {
 		const rng = mockRng(true);
 		const savedItems = calculatePrescriptionGogglesSavedItems(getMixable('Anti-venom(4)'), 2, rng);
