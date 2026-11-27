@@ -11,6 +11,7 @@ import { CommanderZilyana } from './CommanderZilyana.js';
 import { DagannothPrime } from './DagannothPrime.js';
 import { DagannothRex } from './DagannothRex.js';
 import { DagannothSupreme } from './DagannothSupreme.js';
+import { DemonicBrutus } from './DemonicBrutus.js';
 import { DerangedArchaeologist } from './DerangedArchaeologist.js';
 import { DoomOfMokhaiotl } from './DoomOfMokhaiotl.js';
 import { DukeSucellus } from './DukeSucellus.js';
@@ -54,6 +55,7 @@ export const allBosses: Record<string, SimpleMonster> = {
 	KrilTsutsaroth,
 	Bryophyta,
 	Brutus,
+	DemonicBrutus,
 	Skotizo,
 	DerangedArchaeologist,
 	PhantomMuspah,

@@ -1870,5 +1870,16 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 			chancePerKill: 60,
 			hasChance: isCertainMonsterTrip(Monsters.Yama.id)
 		}
+	},
+	{
+		id: 1161,
+		name: 'Brutus Speed-Trialist',
+		type: 'speed',
+		monster: 'Brutus',
+		desc: 'Kill Brutus in less than 2 seconds.',
+		rng: {
+			chancePerKill: 100,
+			hasChance: isCertainMonsterTrip(Monsters.Brutus.id)
+		}
 	}
 ];
