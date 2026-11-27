@@ -4,6 +4,16 @@ import type { Mixable } from '@/lib/skilling/types.js';
 
 const Potions: Mixable[] = [
 	{
+		item: Items.getOrThrow('Coconut milk'),
+		aliases: ['coconut milk'],
+		level: 1,
+		xp: 0,
+		inputItems: new Bank({ 'Half coconut': 1, Vial: 1 }),
+		tickRate: 1,
+		bankTimePerPotion: 0,
+		zahur: true
+	},
+	{
 		item: Items.getOrThrow('Attack potion (3)'),
 		aliases: ['attack potion', 'attack', 'attack potion (3)'],
 		level: 3,
