@@ -1,12 +1,11 @@
 import { dwarvenOutfit } from '@/lib/bso/collection-log/main.js';
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+import { ignecarusBISGear, ignecarusReferenceGear } from '@/lib/bso/gear/ignecarusGear.js';
 import { BossInstance } from '@/lib/bso/structures/Boss.js';
 
 import { EmbedBuilder } from '@oldschoolgg/discord';
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
-
-import { Gear } from '@/lib/structures/Gear.js';
 
 export async function igneCommand(
 	interaction: MInteraction,
@@ -41,18 +40,8 @@ export async function igneCommand(
 		customDenier: async () => {
 			return [false];
 		},
-		bisGear: new Gear({
-			head: 'Dwarven full helm',
-			body: 'Dwarven platebody',
-			legs: 'Dwarven platelegs',
-			hands: 'Dwarven gloves',
-			feet: 'Dwarven boots',
-			cape: 'TzKal cape',
-			ring: 'Ignis ring(i)',
-			weapon: 'Drygore longsword',
-			shield: 'Dragonfire shield',
-			neck: "Brawler's hook necklace"
-		}),
+		bisGear: ignecarusReferenceGear,
+		gearRatingSetup: ignecarusBISGear,
 		gearSetup: 'melee',
 		itemCost: async data => {
 			const userBank = data.user.bank;
@@ -119,10 +108,16 @@ ${bossUsers.map(u => `**${u.user.usernameOrMention}**: ${u.debugStr}`).join('\n\
 		)
 		.setImage(
 			'https://cdn.discordapp.com/attachments/357422607982919680/857358542456487996/grzegorz-rutkowski-dragons-breath-1920-2.jpg'
-		);
+		)
+		.setFooter({
+			text: 'Gear is the percentage of recommended items equipped. Ratings are capped at 100%. Average combines Gear, KC and Item boosts equally. Extra bonuses still shorten the trip.'
+		});
 
 	return {
 		embeds: [embed],
-		content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : 'No boosts.'
+		content:
+			instance.boosts.length > 0
+				? `**Extra trip bonuses:** ${instance.boosts.join(', ')}.`
+				: 'No extra trip bonuses.'
 	};
 }

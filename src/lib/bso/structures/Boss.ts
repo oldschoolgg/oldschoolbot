@@ -133,6 +133,8 @@ export interface BossOptions {
 	additionalItemBoosts?: [string, number][];
 	customDenier: (user: MUser) => Promise<UserDenyResult>;
 	bisGear: Gear;
+	// Optional recommended setup for the displayed rating; combat calculations still use bisGear.
+	gearRatingSetup?: Gear;
 	gearSetup: GearSetupType;
 	itemCost?: (options: { user: MUser; kills: number; baseFood: Bank; solo: boolean }) => Promise<Bank>;
 	mostImportantStat: keyof GearStats;
@@ -185,6 +187,7 @@ export class BossInstance {
 	additionalItemBoosts: [string, number][] = [];
 	customDenier: (user: MUser) => Promise<UserDenyResult>;
 	bisGear: Gear;
+	gearRatingSetup?: Gear;
 	gearSetup: GearSetupType;
 	itemCost?: (options: { user: MUser; kills: number; baseFood: Bank; solo: boolean }) => Promise<Bank>;
 	mostImportantStat: keyof GearStats;
@@ -225,6 +228,7 @@ export class BossInstance {
 		this.additionalItemBoosts = options.additionalItemBoosts ?? [];
 		this.customDenier = options.customDenier;
 		this.bisGear = options.bisGear;
+		this.gearRatingSetup = options.gearRatingSetup;
 		this.gearSetup = options.gearSetup;
 		this.itemCost = options.itemCost;
 		this.mostImportantStat = options.mostImportantStat;
@@ -263,8 +267,9 @@ export class BossInstance {
 					`**Additional Boosts:** ${this.additionalItemBoosts.map(i => `${i[0]}: ${i[1]}%`).join(', ')}`
 				);
 			}
-			if (this.bisGear.allItems(false).length > 0) {
-				massText.push(`**BiS Gear:** ${this.bisGear}`);
+			const recommendedGear = this.gearRatingSetup ?? this.bisGear;
+			if (recommendedGear.allItems(false).length > 0) {
+				massText.push(`**BiS Gear:** ${recommendedGear}`);
 			}
 			this.massText = massText.join('\n');
 		}
@@ -397,6 +402,7 @@ export class BossInstance {
 		// The total combined values for item boosts equal their relative contribution to the speed
 		const speedReductionForBoosts = this.boostMax ?? sumArr(this.itemBoosts.map(i => i[1]));
 		const totalSpeedReduction = speedReductionForGear + speedReductionForKC + speedReductionForBoosts;
+		const ratingItems = this.gearRatingSetup?.allItems() ?? [];
 
 		const bossUsers: BossUser[] = [];
 		let totalPercent = 0;
@@ -421,7 +427,11 @@ export class BossInstance {
 				this.additionalItemBoosts.length > 0 ? taperBoostPercent(rawGearPercent) : rawGearPercent;
 			const gearBoostPercent = calcPercentOfNum(gearPercent, speedReductionForGear);
 			userPercentChange += gearBoostPercent;
-			debugStr.push(`**Gear**[${gearPercent.toFixed(1)}%]`);
+			const gearRating =
+				ratingItems.length > 0
+					? calcWhatPercent(ratingItems.filter(item => gear.hasEquipped(item)).length, ratingItems.length)
+					: Math.min(100, gearPercent);
+			debugStr.push(`**Gear**[${gearRating.toFixed(1)}%]`);
 
 			// KC
 			const kc = await user.getKC(this.id);
@@ -431,6 +441,7 @@ export class BossInstance {
 			debugStr.push(`**KC**[${kcPercent.toFixed(1)}%]`);
 
 			// Item boosts
+			let boostRating = 0;
 			if (this.itemBoosts.length > 0) {
 				let itemBoosts = 0;
 				for (const [name, amount] of this.itemBoosts) {
@@ -450,19 +461,21 @@ export class BossInstance {
 					const itemBoostPercent = taperBoostPercent(rawItemBoostPercent);
 					const averagePercent = (gearPercent + kcPercent + itemBoostPercent) / 3;
 					userPercentChange = averagePercent;
-					debugStr.push(`**Boosts**[${rawItemBoostPercent.toFixed(1)}%]`);
+					boostRating = Math.min(100, itemBoostPercent);
+					debugStr.push(`**Item boosts**[${boostRating.toFixed(1)}%]`);
 				} else {
 					const itemBoostsBoostPercent = calcPercentOfNum(baseItemBoostPercent, speedReductionForBoosts);
 					userPercentChange += itemBoostsBoostPercent;
-					debugStr.push(`**Boosts**[${baseItemBoostPercent.toFixed(1)}%]`);
+					debugStr.push(`**Item boosts**[${baseItemBoostPercent.toFixed(1)}%]`);
 				}
 			}
 
-			// Total
+			// Cap display ratings only; speed and death calculations keep the full bonuses.
+			const averageRating = (gearRating + kcPercent + boostRating) / 3;
 			debugStr.push(
-				`**Total**[${
+				`**${this.additionalItemBoosts.length > 0 ? 'Average' : 'Total'}**[${
 					this.additionalItemBoosts.length > 0
-						? userPercentChange.toFixed(2)
+						? averageRating.toFixed(2)
 						: calcWhatPercent(userPercentChange, totalSpeedReduction).toFixed(2)
 				}%]`
 			);
