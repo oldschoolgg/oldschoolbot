@@ -13,7 +13,7 @@ export interface TransactItemsArgs {
 	user: MUser;
 	itemsToAdd?: Bank;
 	itemsToRemove?: Bank;
-	collectionLog?: boolean;
+	collectionLog?: boolean | Bank;
 	filterLoot?: boolean;
 	dontAddToTempCL?: boolean;
 	neverUpdateHistory?: boolean;
@@ -66,10 +66,10 @@ async function unqueuedTransactItems({
 		const { bankLoot, clLoot } = filterLoot
 			? filterLootReplace({ currentBank, itemsToAdd })
 			: { bankLoot: itemsToAdd, clLoot: itemsToAdd };
-		clLootBank = clLoot;
+		clLootBank = collectionLog instanceof Bank ? collectionLog : clLoot;
 		itemsToAdd = bankLoot;
 
-		clUpdates = collectionLog ? user.calculateAddItemsToCLUpdates({ items: clLoot, dontAddToTempCL }) : {};
+		clUpdates = collectionLog ? user.calculateAddItemsToCLUpdates({ items: clLootBank, dontAddToTempCL }) : {};
 	}
 
 	let gpUpdate: { increment: number } | undefined;
@@ -142,18 +142,19 @@ async function unqueuedTransactItems({
 	}
 
 	const newCL = new Bank(newUser.user.collectionLogBank as ItemBank);
+	const trackedItems = collectionLog instanceof Bank ? collectionLog : itemsAdded;
 
 	if (!dontAddToTempCL && collectionLog) {
 		const activeBingos = await findBingosWithUserParticipating(user.id);
 		for (const bingo of activeBingos) {
 			if (bingo.isActive()) {
-				bingo.handleNewItems(user.id, itemsAdded);
+				bingo.handleNewItems(user.id, trackedItems);
 			}
 		}
 	}
 
 	if (!neverUpdateHistory) {
-		await handleNewCLItems({ itemsAdded, user: user, previousCL, newCL });
+		await handleNewCLItems({ itemsAdded: trackedItems, user: user, previousCL, newCL });
 	}
 
 	return {

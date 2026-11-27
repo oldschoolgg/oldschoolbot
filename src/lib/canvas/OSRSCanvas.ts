@@ -348,6 +348,8 @@ export class OSRSCanvas {
 		itemID: number;
 		iconPackId?: IconPackID;
 	}): Promise<Canvas | CanvasImage> {
+		await CanvasModule.ensureInit();
+
 		// Custom item icon pack icons
 		if (iconPackId && ItemIconPacks[iconPackId].icons.has(itemID)) {
 			return ItemIconPacks[iconPackId].icons.get(itemID) as Image;

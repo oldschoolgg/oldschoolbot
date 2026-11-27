@@ -57,7 +57,8 @@ function isButtonMatrix(arr: ButtonBuilder[] | ButtonBuilder[][]): arr is Button
 function resolveComponents(
 	components: BaseSendableMessage['components']
 ): RESTPostAPIChannelMessageJSONBody['components'] {
-	if (!components || !components[0]) return [];
+	if (!components) return undefined;
+	if (!components[0]) return [];
 	if (isButtonMatrix(components)) {
 		return components.map(row => ({ type: 1, components: row.map(button => button.toJSON()) }));
 	}
@@ -80,11 +81,14 @@ export async function sendableMsgToApiCreate({ msg }: { msg: SendableMessage }):
 	}
 
 	const message: RESTPostAPIChannelMessageJSONBody = {
-		content: msg.content ?? '',
+		content: msg.content,
 		components: resolveComponents(msg.components),
 		embeds: msg.embeds?.map(embed => embed.toJSON()),
 		flags: msg.ephemeral ? MessageFlags.Ephemeral : undefined,
-		allowed_mentions: merge(DEFAULT_ALLOWED_MENTIONS, msg.allowedMentions),
+		allowed_mentions:
+			msg.content !== undefined || msg.allowedMentions
+				? merge(DEFAULT_ALLOWED_MENTIONS, msg.allowedMentions)
+				: undefined,
 		message_reference: msg.messageReference
 	};
 

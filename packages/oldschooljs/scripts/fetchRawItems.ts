@@ -10,9 +10,11 @@ export interface RawItemCollection {
 }
 
 export async function fetchRawItems(): Promise<RawItemCollection> {
-	const allItemsRaw = await fetch(
+	const response = await fetch(
 		'https://raw.githubusercontent.com/0xNeffarion/osrsreboxed-db/37322fed3abb2d58236c59dfc6babb37a27a50ea/docs/items-complete.json'
-	).then(res => res.json());
+	);
+	if (!response.ok) throw new Error(`Failed to fetch items: ${response.status} ${response.statusText}`);
+	const allItemsRaw = await response.json();
 
 	return allItemsRaw as RawItemCollection;
 }

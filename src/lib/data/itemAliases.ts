@@ -1,6 +1,8 @@
 import { replaceWhitespaceAndUppercase } from '@oldschoolgg/toolkit';
 import { ItemGroups, Items } from 'oldschooljs';
 
+import { registerMetamorphAliases } from './itemAliasesMetamorphs.js';
+
 function setItemAlias(id: number, name: string | string[], rename = true) {
 	const existingItem = Items.get(id);
 	if (!existingItem) {
@@ -27,7 +29,7 @@ function setItemAlias(id: number, name: string | string[], rename = true) {
 			id
 		});
 	}
-	if (Items.get(id)!.name !== firstName) {
+	if (rename && Items.get(id)!.name !== firstName) {
 		throw new Error(`Failed to set item alias for item ${id}`);
 	}
 }
@@ -186,25 +188,10 @@ setItemAlias(21_633, 'Ancient wyvern shield');
 setItemAlias(22_003, 'Uncharged dragonfire ward');
 setItemAlias(22_002, 'Dragonfire ward');
 
-// Metamorphs
-setItemAlias(24_555, 'Crystal tangleroot');
-setItemAlias(24_557, 'Dragonfruit tangleroot');
-setItemAlias(24_559, 'Herb tangleroot');
-setItemAlias(24_561, 'White lily tangleroot');
-setItemAlias(24_563, 'Redwood tangleroot');
-setItemAlias(13_324, 'Grey baby chinchompa');
-setItemAlias(13_325, 'Black baby chinchompa');
-setItemAlias(13_326, 'Gold baby chinchompa');
-setItemAlias(24_483, 'Green phoenix');
-setItemAlias(24_484, 'Blue phoenix');
-setItemAlias(24_485, 'White phoenix');
-setItemAlias(24_486, 'Purple phoenix');
-setItemAlias(12_939, 'Magma pet snakeling');
-setItemAlias(12_940, 'Tanzanite pet snakeling');
-setItemAlias(25_842, 'Orange sraracha');
-setItemAlias(25_843, 'Blue sraracha');
-setItemAlias(12_654, 'Airborne kalphite princess');
+registerMetamorphAliases(setItemAlias);
 
+setItemAlias(453, 'Coal ore', false);
+setItemAlias(31_722, 'Rubium ore', false);
 // Kittens
 setItemAlias(1555, 'Grey and black kitten');
 setItemAlias(1556, 'White kitten');

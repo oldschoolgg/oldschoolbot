@@ -82,6 +82,13 @@ export function moidLink(items: number[]) {
 }
 
 const manualItems: Item[] = [
+	{ id: 31276, name: 'Rock golem (lead)', members: true },
+	{ id: 31277, name: 'Rock golem (rubium)', members: true },
+	{ id: 31278, name: 'Rock golem (nickel)', members: true },
+	{ id: 31279, name: 'Beaver (camphor)', members: true },
+	{ id: 31280, name: 'Beaver (ironwood)', members: true },
+	{ id: 31281, name: 'Beaver (jatoba)', members: true },
+	{ id: 31282, name: 'Beaver (rosewood)', members: true },
 	{
 		id: 33089,
 		name: 'Bottomless milk bucket',

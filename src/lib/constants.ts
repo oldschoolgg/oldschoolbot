@@ -173,6 +173,7 @@ export enum BitField {
 	HasRiteOfVileTransference = 59,
 	DisableRiteOfVileTransference = 60,
 	CompostWarning = 61,
+	FUNKY_SHAPED_LOG_USED = 62,
 
 	OriginalCyrSupporter = 199,
 	BannedFromGambling = 237
@@ -199,6 +200,7 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 	[BitField.PatronTier6]: { name: 'Tier 6 Patron', protected: false, userConfigurable: false },
 
 	[BitField.HasHosidiusWallkit]: { name: 'Hosidius Wall Kit Unlocked', protected: false, userConfigurable: false },
+	[BitField.FUNKY_SHAPED_LOG_USED]: { name: 'Beaver Pet Recolors', protected: false, userConfigurable: false },
 	[BitField.HasDexScroll]: { name: 'Dexterous Scroll Used', protected: false, userConfigurable: false },
 	[BitField.HasArcaneScroll]: { name: 'Arcane Scroll Used', protected: false, userConfigurable: false },
 	[BitField.HasTornPrayerScroll]: { name: 'Torn Prayer Scroll Used', protected: false, userConfigurable: false },

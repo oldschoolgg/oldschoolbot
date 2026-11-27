@@ -197687,6 +197687,34 @@
 		"highalch": 96,
 		"cost": 160
 	},
+	"31276": {
+		"name": "Rock golem (lead)",
+		"members": true
+	},
+	"31277": {
+		"name": "Rock golem (rubium)",
+		"members": true
+	},
+	"31278": {
+		"name": "Rock golem (nickel)",
+		"members": true
+	},
+	"31279": {
+		"name": "Beaver (camphor)",
+		"members": true
+	},
+	"31280": {
+		"name": "Beaver (ironwood)",
+		"members": true
+	},
+	"31281": {
+		"name": "Beaver (jatoba)",
+		"members": true
+	},
+	"31282": {
+		"name": "Beaver (rosewood)",
+		"members": true
+	},
 	"31283": {
 		"name": "Soup",
 		"members": true

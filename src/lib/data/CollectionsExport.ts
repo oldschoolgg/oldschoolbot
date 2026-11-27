@@ -12,6 +12,7 @@ import {
 } from '@/lib/data/gracefulVariants.js';
 import { growablePets } from '@/lib/growablePets.js';
 import { implings } from '@/lib/implings.js';
+import { allPetVariations } from '@/lib/petVariations.js';
 import type { MinigameScore } from '@/lib/settings/minigames.js';
 import type { MUserStats } from '@/lib/structures/MUserStats.js';
 
@@ -374,7 +375,7 @@ export const chambersOfXericMetamorphPets = resolveItems([
 	'Vespina'
 ]);
 export const tobMetamorphPets = resolveItems(["Lil' Maiden", "Lil' Bloat", "Lil' Nylo", "Lil' Sot", "Lil' Xarp"]);
-const toaMetamorphPets = resolveItems(['Zebo', "Tumeken's guardian", 'Kephriti', 'Babi', 'Akkhito']);
+export const toaMetamorphPets = resolveItems(['Zebo', "Tumeken's guardian", 'Kephriti', 'Babi', 'Akkhito']);
 export const chambersOfXericNormalCL = resolveItems([
 	'Olmlet',
 	'Twisted bow',
@@ -2075,6 +2076,13 @@ const metamorphPets = resolveItems([
 ]);
 
 export const allPetIDs = [
+	...allPetVariations.flatMap(variation => [
+		variation.base,
+		...variation.metamorphs.flatMap(morph => [
+			...(Array.isArray(morph.random) ? morph.random.map(pet => pet.petId) : []),
+			...(morph.cost ?? []).map(pet => pet.petId)
+		])
+	]),
 	...allPetsCL,
 	...chambersOfXericMetamorphPets,
 	...tobMetamorphPets,

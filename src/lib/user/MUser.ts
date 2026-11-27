@@ -1066,7 +1066,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 		let timer: NodeJS.Timeout | undefined;
 
 		const timeoutPromise = new Promise<never>((_, reject) => {
-			timer = setTimeout(() => reject(new Error(`${id} held lock for over 60s`)), timeoutMs);
+			timer = setTimeout(() => reject(new Error(`${id} held lock for over ${timeoutMs / 1000}s`)), timeoutMs);
 		});
 
 		const res = await Promise.race([

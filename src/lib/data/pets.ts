@@ -22,7 +22,7 @@ const pets: Pet[] = [
 		id: 1,
 		emoji: '<:Baby_chinchompa_red:324127375539306497>',
 		chance: 95_898,
-		name: 'Baby Chinchompa',
+		name: 'Baby chinchompa',
 		type: 'SKILL',
 		altNames: ['CHINCHOMPA', 'BABYCHINCHOMPA', 'CHIN'],
 		formatFinish: (num: number) =>

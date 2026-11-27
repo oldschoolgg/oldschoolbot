@@ -1,9 +1,12 @@
+import { ButtonBuilder, ButtonStyle, collectSingleInteraction, SpecialResponse } from '@oldschoolgg/discord';
 import { GearSetupTypes, GearStat } from '@oldschoolgg/gear';
-import { toTitleCase } from '@oldschoolgg/toolkit';
+import { sleep, Time, toTitleCase } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
+import { chunk } from 'remeda';
 
 import { choicesOf, equippedItemOption, gearPresetOption, gearSetupOption, ownedItemOption } from '@/discord/index.js';
 import { canvasToBuffer, createCanvas, loadImage } from '@/lib/canvas/canvasUtil.js';
+import { petMetamorphChatMsg } from '@/lib/canvas/petMetamorphChatMsg.js';
 import { BOT_TYPE } from '@/lib/constants.js';
 import { allPetIDs } from '@/lib/data/CollectionsExport.js';
 import { findBestGearSetups } from '@/lib/gear/functions/findBestGearSetups.js';
@@ -17,8 +20,21 @@ import {
 	gearUnequipCommand,
 	gearViewCommand
 } from '@/mahoji/lib/abstracted_commands/gearCommands.js';
+import { petChangeCommand, petMorphAutocomplete } from '@/mahoji/lib/abstracted_commands/petChangeCommand.js';
 
 const gearValidationChecks = new Set();
+const PET_CHANGE_RETRY_LIMIT = 10;
+const PET_CHANGE_REVEAL_DELAY = 10 * Time.Second;
+
+const petEquipAutocomplete = async ({ value, user }: StringAutoComplete) =>
+	[...new Set(allPetIDs)]
+		.filter(id => user.bank.has(id))
+		.map(id => ({ id, name: Items.itemNameFromId(id) }))
+		.filter(item => item.name && (!value || item.name.toLowerCase().includes(value.toLowerCase())))
+		.map(item => ({
+			name: `${item.name}`,
+			value: String(item.id)
+		}));
 
 export const gearCommand = defineCommand({
 	name: 'gear',
@@ -102,28 +118,37 @@ export const gearCommand = defineCommand({
 			]
 		},
 		{
-			type: 'Subcommand',
+			type: 'SubcommandGroup',
 			name: 'pet',
-			description: 'Equip or unequip a pet.',
+			description: 'Manage your pet.',
 			options: [
 				{
-					type: 'String',
+					type: 'Subcommand',
 					name: 'equip',
-					description: 'Equip a pet.',
-					required: false,
-					autocomplete: async ({ value, user }: StringAutoComplete) => {
-						return allPetIDs
-							.filter(i => user.bank.has(i))
-							.map(i => Items.itemNameFromId(i)!)
-							.filter(i => (!value ? true : i.toLowerCase().includes(value.toLowerCase())))
-							.map(i => ({ name: i, value: i }));
-					}
+					description: 'Equip a pet from your bank.',
+					options: [
+						{
+							type: 'String',
+							name: 'pet',
+							description: 'The pet to equip.',
+							required: true,
+							autocomplete: petEquipAutocomplete
+						}
+					]
 				},
+				{ type: 'Subcommand', name: 'unequip', description: 'Unequip your pet.' },
 				{
-					type: 'Boolean',
-					name: 'unequip',
-					description: 'Unequip your pet.',
-					required: false
+					type: 'Subcommand',
+					name: 'change',
+					description: 'Change your equipped pet’s appearance.',
+					options: [
+						{
+							type: 'String',
+							name: 'morph',
+							description: 'The appearance to change your pet to.',
+							autocomplete: petMorphAutocomplete
+						}
+					]
 				}
 			]
 		},
@@ -186,7 +211,7 @@ export const gearCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ options, interaction, user }) => {
+	run: async ({ options, interaction, user, rng }) => {
 		await interaction.defer();
 		if (options.best_in_slot?.stat) {
 			const res = findBestGearSetups({ stat: options.best_in_slot.stat, ignoreUnobtainable: BOT_TYPE === 'OSB' });
@@ -235,8 +260,159 @@ ${res
 			return gearUnequipCommand(user, options.unequip.gear_setup, options.unequip.item, options.unequip.all);
 		}
 		if (options.stats) return gearStatsCommand(user, options.stats.gear_setup);
-		if (options.pet?.equip) return equipPet(user, options.pet.equip);
+		if (options.pet?.equip) {
+			const petId = Number(options.pet.equip.pet);
+			if (!Number.isSafeInteger(petId) || petId <= 0) return 'Choose a valid pet from your bank.';
+			return equipPet(user, petId);
+		}
 		if (options.pet?.unequip) return unequipPet(user);
+		if (options.pet?.change) {
+			const buttonPrefix = `DYN_PET_CHANGE_${interaction.id}_`;
+			const originalPetId = user.user.minion_equippedPet;
+			let result = await petChangeCommand(user, options.pet.change.morph, rng);
+			if (result.choices) {
+				const morphButtonId = (value: string) => `${buttonPrefix}MORPH_${value}`;
+				const actions = result.choices.map(target => ({ value: String(target.petId), label: target.name }));
+				if (result.supportsRandom) actions.push({ value: 'random', label: 'Random unlocked form' });
+				if (!actions.length) return result.message;
+				await interaction.baseEditReply({
+					content: result.message,
+					components: chunk(
+						actions.map(({ value, label }) =>
+							new ButtonBuilder()
+								.setCustomId(morphButtonId(value))
+								.setLabel(label)
+								.setStyle(ButtonStyle.Primary)
+						),
+						4
+					)
+				});
+				const sent = await interaction.fetchReply();
+				const selected = await collectSingleInteraction({
+					interaction,
+					messageId: sent.id,
+					channelId: interaction.channelId,
+					users: [user.id],
+					timeoutMs: Time.Second * 10,
+					filter: button => actions.some(({ value }) => button.customId === morphButtonId(value))
+				});
+				const action = actions.find(({ value }) => selected?.customId === morphButtonId(value));
+				if (!selected || !action) {
+					await interaction.baseEditReply({ components: [] });
+					return SpecialResponse.RespondedManually;
+				}
+				await selected.silentButtonAck();
+				await user.sync();
+				if (user.user.minion_equippedPet !== originalPetId) {
+					await interaction.baseEditReply({
+						content: 'Your equipped pet changed. Run the command again.',
+						components: []
+					});
+					return SpecialResponse.RespondedManually;
+				}
+				result = await petChangeCommand(user, action.value, rng);
+				if (!result.petId) {
+					await interaction.baseEditReply({ content: result.message, components: [] });
+					return SpecialResponse.RespondedManually;
+				}
+			}
+			if (!result.petId) return result.message;
+			const congratulation = async () => {
+				const text = [
+					`Love your new pet! Take good care of them.`,
+					`Your new friend is lucky to have you. Appreciate them!`,
+					`Give your new pet all the love they deserve!`
+				][Math.floor(Math.random() * 3)]!;
+				const files = [
+					{
+						name: 'new_pet.png',
+						buffer: await petMetamorphChatMsg({ content: text, petId: user.user.minion_equippedPet! })
+					}
+				];
+				await interaction.baseEditReply({ files, components: [] });
+			};
+			if (result.changed || result.rare) {
+				await interaction.baseEditReply({
+					content: result.message,
+					files: [
+						{
+							name: 'new_pet.png',
+							buffer: await petMetamorphChatMsg({
+								content: 'Your new friend is lucky to have you. Love and care for them!',
+								petId: result.petId
+							})
+						}
+					],
+					components: []
+				});
+				return result.changed ? SpecialResponse.RespondedManually : 'Your pet’s new appearance is ready!';
+			}
+			const tryAgainId = `${buttonPrefix}TRY_AGAIN`;
+			const thanksId = `${buttonPrefix}THANKS`;
+			const components = [
+				new ButtonBuilder().setCustomId(tryAgainId).setLabel('Try again').setStyle(ButtonStyle.Primary),
+				new ButtonBuilder().setCustomId(thanksId).setLabel('Thanks!').setStyle(ButtonStyle.Secondary)
+			];
+			const disabledComponents = components.map(button => new ButtonBuilder(button.toJSON()).setDisabled(true));
+			await interaction.baseEditReply({
+				content: result.message,
+				components
+			});
+			const sent = await interaction.fetchReply();
+			let attempts = 0;
+			while (attempts < PET_CHANGE_RETRY_LIMIT) {
+				const selected = await collectSingleInteraction({
+					interaction,
+					messageId: sent.id,
+					channelId: interaction.channelId,
+					users: [user.id],
+					timeoutMs: Time.Second * 10,
+					filter: button => button.customId === tryAgainId || button.customId === thanksId
+				});
+				if (!selected) break;
+				if (selected.customId === thanksId) {
+					await selected.silentButtonAck();
+					await congratulation();
+					return 'Your pet’s new appearance is ready!';
+				}
+				await selected.update({ content: 'Trying up to ten times....', components: disabledComponents });
+				attempts++;
+				await sleep(PET_CHANGE_REVEAL_DELAY);
+				const next = await petChangeCommand(user, 'random', rng, 10);
+				if (!next.petId) {
+					await interaction.baseEditReply({ content: next.message, components: [] });
+					return SpecialResponse.RespondedManually;
+				}
+				if (next.rare) {
+					await interaction.baseEditReply({
+						content: next.message,
+						files: [
+							{
+								name: 'new_pet.png',
+								buffer: await petMetamorphChatMsg({
+									content: 'Your new friend is lucky to have you. Love and care for them!',
+									petId: next.petId
+								})
+							}
+						],
+						components: []
+					});
+					return SpecialResponse.RespondedManually;
+				}
+				result = next;
+				if (attempts < PET_CHANGE_RETRY_LIMIT)
+					await interaction.baseEditReply({ content: result.message, components });
+			}
+			if (attempts >= PET_CHANGE_RETRY_LIMIT) {
+				await interaction.baseEditReply({
+					content: `${result.message}\n\nStart a new command to try again 😃`,
+					components: []
+				});
+				return SpecialResponse.RespondedManually;
+			}
+			await congratulation();
+			return SpecialResponse.RespondedManually;
+		}
 		if (options.view) return gearViewCommand(user, options.view.setup, Boolean(options.view.text_format));
 		if (options.swap) {
 			return gearSwapCommand(interaction, user, options.swap.setup_one, options.swap.setup_two);

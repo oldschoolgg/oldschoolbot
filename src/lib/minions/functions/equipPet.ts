@@ -3,8 +3,8 @@ import { Bank, Items } from 'oldschooljs';
 import { allPetIDs } from '@/lib/data/CollectionsExport.js';
 import { unequipPet } from '@/lib/minions/functions/unequipPet.js';
 
-export async function equipPet(user: MUser, itemName: string) {
-	const petItem = Items.getItem(itemName);
+export async function equipPet(user: MUser, itemName: string | number) {
+	const petItem = typeof itemName === 'number' ? Items.get(itemName) : Items.getItem(itemName);
 	if (!petItem) return "That's not a valid item.";
 	const cost = new Bank().add(petItem.id);
 
